@@ -17,12 +17,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
+ * Evaluation log model.
  * @author Roman Batygin
  */
 @Data
@@ -34,12 +33,14 @@ public class EvaluationLog {
     @GeneratedValue
     private Long id;
 
+    @Column(name = "ip_address", nullable = false)
+    private String ipAddress;
+
+    @Column(name = "request_date", nullable = false)
+    private LocalDateTime requestDate;
+
     @Column(name = "classifier_name", nullable = false)
     private String classifierName;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "evaluation_date", nullable = false)
-    private Date evaluationDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "evaluation_status", nullable = false)
@@ -48,6 +49,18 @@ public class EvaluationLog {
     @Enumerated(EnumType.STRING)
     @Column(name = "evaluation_method", nullable = false)
     private EvaluationMethod evaluationMethod;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "numFolds", column =
+            @Column(name = "number_of_folds")),
+            @AttributeOverride(name = "numTests", column =
+            @Column(name = "number_of_tests")),
+    })
+    private EvaluationOptions evaluationOptions;
+
+    @Column(name = "error_message")
+    private String errorMessage;
 
     @Embedded
     @AttributeOverrides({

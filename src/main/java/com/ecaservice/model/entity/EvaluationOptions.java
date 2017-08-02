@@ -7,21 +7,17 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Embeddable;
 
 /**
- * Input data options model.
+ * Evaluation options information.
  * @author Roman Batygin
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class InstancesInfo {
+public class EvaluationOptions {
 
-    private String relationName;
+    private Integer numFolds;
 
-    private Integer numInstances;
-
-    private Integer numAttributes;
-
-    private Integer numClasses;
+    private Integer numTests;
 
 }

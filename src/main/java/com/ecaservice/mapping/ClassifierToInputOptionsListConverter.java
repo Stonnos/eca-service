@@ -1,9 +1,13 @@
-package com.ecaservice.converter;
+package com.ecaservice.mapping;
 
+import com.ecaservice.model.InputOptionsList;
 import com.ecaservice.model.entity.InputOptions;
 import org.springframework.stereotype.Component;
 import ma.glasnost.orika.metadata.Type;
 import ma.glasnost.orika.CustomConverter;
+import weka.classifiers.AbstractClassifier;
+import weka.classifiers.Classifier;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,10 +16,12 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Component
-public class InputOptionsConverterImpl extends CustomConverter<String[], List<InputOptions>>  {
+public class ClassifierToInputOptionsListConverter extends CustomConverter<Classifier, InputOptionsList>  {
 
     @Override
-    public List<InputOptions> convert(String[] options, Type<? extends List<InputOptions>> listType) {
+    public InputOptionsList convert(Classifier classifier, Type<? extends InputOptionsList> listType) {
+        String[] options = ((AbstractClassifier) classifier).getOptions();
+
         List<InputOptions> optionsList = new ArrayList<>( options.length / 2);
 
         for (int i = 0; i < options.length; i += 2) {
@@ -25,6 +31,6 @@ public class InputOptionsConverterImpl extends CustomConverter<String[], List<In
             optionsList.add(inputOptions);
         }
 
-        return optionsList;
+        return new InputOptionsList(optionsList);
     }
 }

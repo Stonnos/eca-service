@@ -1,4 +1,4 @@
-package com.ecaservice.converter;
+package com.ecaservice.mapping;
 
 import java.util.Map;
 

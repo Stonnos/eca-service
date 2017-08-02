@@ -1,9 +1,10 @@
-package com.ecaservice.service;
+package com.ecaservice.service.impl;
 
 
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.model.ClassificationResult;
 import com.ecaservice.model.EvaluationMethod;
+import com.ecaservice.service.EvaluationService;
 import eca.beans.ClassifierDescriptor;
 import eca.core.evaluation.Evaluation;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,6 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
-import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -29,11 +29,15 @@ public class EvaluationServiceImpl implements EvaluationService {
 
     private static final int MINIMUM_NUMBER_OF_TESTS = 1;
 
-    private CrossValidationConfig crossValidationConfig;
+    private static final int MAXIMUM_NUMBER_OF_FOLDS = 100;
+
+    private static final int MAXIMUM_NUMBER_OF_TESTS = 100;
+
+    private CrossValidationConfig config;
 
     @Autowired
-    public EvaluationServiceImpl(CrossValidationConfig crossValidationConfig) {
-        this.crossValidationConfig = crossValidationConfig;
+    public EvaluationServiceImpl(CrossValidationConfig config) {
+        this.config = config;
     }
 
     @Override
@@ -47,25 +51,35 @@ public class EvaluationServiceImpl implements EvaluationService {
         Assert.notNull(data,"Input data is not specified!");
         Assert.notNull(evaluationMethod, "Evaluation method is not specified!");
 
-        if (numFolds == null) {
-            numFolds = crossValidationConfig.getNumFolds();
+        if (evaluationMethod == EvaluationMethod.CROSS_VALIDATION) {
+            if (numFolds == null) {
+                numFolds = config.getNumFolds();
+            }
+
+            Assert.isTrue(numFolds >= MINIMUM_NUMBER_OF_FOLDS,
+                    String.format("The number of folds must be greater than or equal to %d!", MINIMUM_NUMBER_OF_FOLDS));
+
+            Assert.isTrue(numFolds <= MAXIMUM_NUMBER_OF_FOLDS,
+                    String.format("Number of folds must be less than or equal to %d!", MAXIMUM_NUMBER_OF_FOLDS));
+
+            if (numTests == null) {
+                numTests = config.getNumTests();
+            }
+
+            Assert.isTrue(numTests >= MINIMUM_NUMBER_OF_TESTS,
+                    String.format("Number of tests must be greater than or equal to %d!", MINIMUM_NUMBER_OF_TESTS));
+
+            Assert.isTrue(numTests <= MAXIMUM_NUMBER_OF_TESTS,
+                    String.format("Number of tests must be less than or equal to %d!", MAXIMUM_NUMBER_OF_TESTS));
         }
 
-        Assert.state(numFolds >= MINIMUM_NUMBER_OF_FOLDS,
-                String.format("Number of folds must be greater than %d!", MINIMUM_NUMBER_OF_FOLDS));
-
-        if (numTests == null) {
-            numTests = crossValidationConfig.getNumTests();
-        }
-
-        Assert.state(numTests >= MINIMUM_NUMBER_OF_TESTS,
-                String.format("Number of tests must be greater than %d!", MINIMUM_NUMBER_OF_TESTS));
+        String classifierName = classifier.getClass().getSimpleName();
 
         log.info("Starting model evaluation.");
 
-        log.trace("Model evaluation starting for classifier = {}, options = {}, data = {}, evaluationMethod = {}",
-                classifier.getClass().getSimpleName(), Arrays.asList(classifier.getOptions()),
-                data.relationName(), evaluationMethod);
+        log.trace("Model evaluation starting for classifier = {}, data = {}, evaluationMethod = {}",
+                classifierName, data.relationName(), evaluationMethod);
+        log.trace("numFolds = {}, numTests = {}", numFolds, numTests);
 
         ClassificationResult classificationResult = new ClassificationResult();
 
@@ -77,11 +91,11 @@ public class EvaluationServiceImpl implements EvaluationService {
             switch (evaluationMethod) {
 
                 case TRAINING_DATA: {
-                    stopWatch.start("Model training");
+                    stopWatch.start(String.format("%s model training", classifierName));
                     classifier.buildClassifier(data);
                     stopWatch.stop();
 
-                    stopWatch.start("Model evaluation");
+                    stopWatch.start(String.format("%s model evaluation", classifierName));
                     evaluation.evaluateModel(classifier, data);
                     stopWatch.stop();
 
@@ -89,20 +103,21 @@ public class EvaluationServiceImpl implements EvaluationService {
                 }
 
                 case CROSS_VALIDATION: {
-                    stopWatch.start("Model evaluation");
-
+                    stopWatch.start(String.format("%s model evaluation", classifierName));
                     Classifier classifierCopy = AbstractClassifier.makeCopy(classifier);
-                    Random random = new Random(crossValidationConfig.getSeed());
+                    Random random = new Random(config.getSeed());
                     evaluation.kCrossValidateModel(classifierCopy, data, numFolds, numTests, random);
-
                     stopWatch.stop();
 
-                    stopWatch.start("Model training");
+                    stopWatch.start(String.format("%s model training", classifierName));
                     classifier.buildClassifier(data);
                     stopWatch.stop();
 
                     break;
                 }
+
+                default:
+                    throw new IllegalArgumentException("Incorrect evaluation method value!");
 
             }
 
@@ -111,8 +126,7 @@ public class EvaluationServiceImpl implements EvaluationService {
             classificationResult.setClassifierDescriptor(classifierDescriptor);
             classificationResult.setSuccess(true);
 
-            log.info("Evaluation for model '{}' has been successfully finished!",
-                    classifier.getClass().getSimpleName());
+            log.info("Evaluation for model '{}' has been successfully finished!", classifierName);
             log.info(stopWatch.prettyPrint());
 
         } catch (Exception exception) {

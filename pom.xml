@@ -24,24 +24,38 @@
         <lombok.version>1.16.12</lombok.version>
         <eca.version>3.5.1</eca.version>
         <orika.version>1.4.6</orika.version>
+        <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
     </properties>
 
 
     <profiles>
         <profile>
             <id>prod</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <properties>
-                <hibernate.dialect>org.hibernate.dialect.MySQLDialect</hibernate.dialect>
-                <hibernate.hbm2ddl.auto>create</hibernate.hbm2ddl.auto>
+                <jdbc.dialect>org.hibernate.dialect.MySQLDialect</jdbc.dialect>
+                <jdbc.ddlAuto>create-drop</jdbc.ddlAuto>
                 <jdbc.driver>com.mysql.jdbc.Driver</jdbc.driver>
                 <jdbc.url>jdbc:mysql://localhost:3306/eca?useUnicode=true&amp;characterEncoding=UTF-8</jdbc.url>
                 <jdbc.user>root</jdbc.user>
                 <jdbc.password>123</jdbc.password>
+                <server.port>8008</server.port>
             </properties>
         </profile>
+
+        <!-- Profile is used to use embedded h2 datasource -->
+        <profile>
+            <id>h2</id>
+            <properties>
+                <jdbc.url>jdbc:h2:mem:eca;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE</jdbc.url>
+                <jdbc.user>sa</jdbc.user>
+                <jdbc.password></jdbc.password>
+                <jdbc.driver>org.h2.Driver</jdbc.driver>
+                <jdbc.ddlAuto>create-drop</jdbc.ddlAuto>
+                <jdbc.dialect>org.hibernate.dialect.H2Dialect</jdbc.dialect>
+                <server.port>8008</server.port>
+            </properties>
+        </profile>
+
     </profiles>
 
     <dependencies>
@@ -111,6 +125,11 @@
             <version>${orika.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -125,7 +144,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.6.1</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>

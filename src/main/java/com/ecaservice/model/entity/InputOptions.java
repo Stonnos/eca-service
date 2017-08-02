@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
+ * Classifier input options model.
  * @author Roman Batygin
  */
 @Data
