@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 
 /**
  * Input data options model.
+ *
  * @author Roman Batygin
  */
 @Data

@@ -4,14 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>eca.web.api</groupId>
-    <artifactId>eca-web-api</artifactId>
+    <groupId>eca.service</groupId>
+    <artifactId>eca-service</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.2.RELEASE</version>
+        <version>1.5.6.RELEASE</version>
     </parent>
 
     <packaging>jar</packaging>
@@ -21,19 +21,24 @@
         <logback.version>1.2.1</logback.version>
         <slf4j.version>1.7.5</slf4j.version>
         <mysql.version>5.1.40</mysql.version>
+        <oracle.version>12.1.0.2</oracle.version>
+        <postresql.version>9.4.1212</postresql.version>
         <lombok.version>1.16.12</lombok.version>
-        <eca.version>3.5.1</eca.version>
+        <eca.version>4.0</eca.version>
         <orika.version>1.4.6</orika.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
+        <assertj.core.version>3.8.0</assertj.core.version>
     </properties>
 
 
     <profiles>
+
+        <!-- Profile is used to use mysql datasource -->
         <profile>
-            <id>prod</id>
+            <id>mysql</id>
             <properties>
                 <jdbc.dialect>org.hibernate.dialect.MySQLDialect</jdbc.dialect>
-                <jdbc.ddlAuto>create-drop</jdbc.ddlAuto>
+                <jdbc.ddlAuto>update</jdbc.ddlAuto>
                 <jdbc.driver>com.mysql.jdbc.Driver</jdbc.driver>
                 <jdbc.url>jdbc:mysql://localhost:3306/eca?useUnicode=true&amp;characterEncoding=UTF-8</jdbc.url>
                 <jdbc.user>root</jdbc.user>
@@ -50,8 +55,36 @@
                 <jdbc.user>sa</jdbc.user>
                 <jdbc.password></jdbc.password>
                 <jdbc.driver>org.h2.Driver</jdbc.driver>
-                <jdbc.ddlAuto>create-drop</jdbc.ddlAuto>
+                <jdbc.ddlAuto>update</jdbc.ddlAuto>
                 <jdbc.dialect>org.hibernate.dialect.H2Dialect</jdbc.dialect>
+                <server.port>8008</server.port>
+            </properties>
+        </profile>
+
+        <!-- Profile is used to use postgres datasource -->
+        <profile>
+            <id>postgres</id>
+            <properties>
+                <jdbc.url>jdbc:postgresql://localhost:5432/eca</jdbc.url>
+                <jdbc.user>roman</jdbc.user>
+                <jdbc.password>123</jdbc.password>
+                <jdbc.driver>org.postgresql.Driver</jdbc.driver>
+                <jdbc.ddlAuto>update</jdbc.ddlAuto>
+                <jdbc.dialect>org.hibernate.dialect.PostgreSQL9Dialect</jdbc.dialect>
+                <server.port>8008</server.port>
+            </properties>
+        </profile>
+
+        <!-- Profile is used to use postgres datasource -->
+        <profile>
+            <id>oracle</id>
+            <properties>
+                <jdbc.url>jdbc:oracle:thin:@localhost:1521:xe</jdbc.url>
+                <jdbc.user>SYSTEM</jdbc.user>
+                <jdbc.password>123</jdbc.password>
+                <jdbc.driver>oracle.jdbc.driver.OracleDriver</jdbc.driver>
+                <jdbc.ddlAuto>update</jdbc.ddlAuto>
+                <jdbc.dialect>org.hibernate.dialect.Oracle10gDialect</jdbc.dialect>
                 <server.port>8008</server.port>
             </properties>
         </profile>
@@ -83,6 +116,18 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.noraui</groupId>
+            <artifactId>ojdbc7</artifactId>
+            <version>${oracle.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postresql.version}</version>
         </dependency>
 
         <dependency>
@@ -128,6 +173,20 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+        </dependency>
+
+        <!--test dependencies-->
+        <dependency>
+            <scope>test</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+
+        <dependency>
+            <scope>test</scope>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.core.version}</version>
         </dependency>
 
     </dependencies>

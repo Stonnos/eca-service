@@ -1,10 +1,11 @@
 package com.ecaservice.model;
 
-import eca.beans.ClassifierDescriptor;
+import eca.model.ClassifierDescriptor;
 import lombok.Data;
 
 /**
  * Implements classification results.
+ *
  * @author Roman Batygin
  */
 @Data

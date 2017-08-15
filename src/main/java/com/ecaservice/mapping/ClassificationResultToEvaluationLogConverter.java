@@ -5,17 +5,16 @@ import com.ecaservice.model.InputOptionsList;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationStatus;
 import com.ecaservice.model.entity.InstancesInfo;
-import eca.beans.ClassifierDescriptor;
+import eca.model.ClassifierDescriptor;
 import eca.core.evaluation.Evaluation;
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.metadata.Type;
 import org.springframework.stereotype.Component;
 import weka.classifiers.Classifier;
 
-import java.util.Date;
-
 /**
  * Implements the conversion of classification results into the evaluation log entity.
+ *
  * @author Roman Batygin
  */
 @Component

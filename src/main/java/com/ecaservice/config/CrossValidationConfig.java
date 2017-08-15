@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Cross - validation configuration class.
+ *
  * @author Roman Batygin
  */
 @Data

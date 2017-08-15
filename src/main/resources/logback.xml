@@ -15,7 +15,7 @@
             <fileNamePattern>eca-service.%d{yyyy-MM-dd}.log</fileNamePattern>
             <!-- 21 days keep logs -->
             <maxHistory>21</maxHistory>
-            <totalSizeCap>1Gb</totalSizeCap>
+            <totalSizeCap>100mb</totalSizeCap>
         </rollingPolicy>
 
         <layout class="ch.qos.logback.classic.PatternLayout">

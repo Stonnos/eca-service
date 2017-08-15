@@ -24,6 +24,13 @@ public class EvaluationLogServiceImpl implements EvaluationLogService {
     private DataBaseConfig dataBaseConfig;
     private OrikaBeanMapper mapper;
 
+    /**
+     * Constructor with dependency spring injection.
+     *
+     * @param evaluationLogRepository {@link EvaluationLogRepository} bean
+     * @param dataBaseConfig          {@link DataBaseConfig} bean
+     * @param mapper                  {@link OrikaBeanMapper} bean
+     */
     @Autowired
     public EvaluationLogServiceImpl(EvaluationLogRepository evaluationLogRepository,
                                     DataBaseConfig dataBaseConfig,

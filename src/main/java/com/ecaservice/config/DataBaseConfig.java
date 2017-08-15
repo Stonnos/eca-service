@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Database enabled configuration class.
+ *
  * @author Roman Batygin
  */
 @Data

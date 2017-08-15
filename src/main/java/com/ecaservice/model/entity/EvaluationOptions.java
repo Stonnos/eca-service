@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 
 /**
  * Evaluation options information.
+ *
  * @author Roman Batygin
  */
 @Data

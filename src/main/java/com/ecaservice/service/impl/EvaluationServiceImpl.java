@@ -5,7 +5,7 @@ import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.model.ClassificationResult;
 import com.ecaservice.model.EvaluationMethod;
 import com.ecaservice.service.EvaluationService;
-import eca.beans.ClassifierDescriptor;
+import eca.model.ClassifierDescriptor;
 import eca.core.evaluation.Evaluation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +35,11 @@ public class EvaluationServiceImpl implements EvaluationService {
 
     private CrossValidationConfig config;
 
+    /**
+     * Constructor with dependency spring injection.
+     *
+     * @param config {@link CrossValidationConfig} bean
+     */
     @Autowired
     public EvaluationServiceImpl(CrossValidationConfig config) {
         this.config = config;
@@ -47,12 +52,14 @@ public class EvaluationServiceImpl implements EvaluationService {
                                               Integer numFolds,
                                               Integer numTests) {
 
-        Assert.notNull(classifier,"Classifier is not specified!");
-        Assert.notNull(data,"Input data is not specified!");
+        Assert.notNull(classifier, "Classifier is not specified!");
+        Assert.notNull(data, "Input data is not specified!");
         Assert.notNull(evaluationMethod, "Evaluation method is not specified!");
 
         if (evaluationMethod == EvaluationMethod.CROSS_VALIDATION) {
             if (numFolds == null) {
+                log.warn("Folds number is not defined. Default folds number = {} has been used.",
+                        config.getNumFolds());
                 numFolds = config.getNumFolds();
             }
 
@@ -63,6 +70,8 @@ public class EvaluationServiceImpl implements EvaluationService {
                     String.format("Number of folds must be less than or equal to %d!", MAXIMUM_NUMBER_OF_FOLDS));
 
             if (numTests == null) {
+                log.warn("Tests number is not defined. Default tests number = {} has been used.",
+                        config.getNumTests());
                 numTests = config.getNumTests();
             }
 

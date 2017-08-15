@@ -22,6 +22,7 @@ import java.util.List;
 
 /**
  * Evaluation log model.
+ *
  * @author Roman Batygin
  */
 @Data
@@ -51,7 +52,7 @@ public class EvaluationLog {
     private EvaluationMethod evaluationMethod;
 
     @Embedded
-    @AttributeOverrides({
+    @AttributeOverrides( {
             @AttributeOverride(name = "numFolds", column =
             @Column(name = "number_of_folds")),
             @AttributeOverride(name = "numTests", column =
@@ -63,15 +64,15 @@ public class EvaluationLog {
     private String errorMessage;
 
     @Embedded
-    @AttributeOverrides({
+    @AttributeOverrides( {
             @AttributeOverride(name = "relationName", column =
-                @Column(name = "relation_name", nullable = false)),
+            @Column(name = "relation_name", nullable = false)),
             @AttributeOverride(name = "numInstances", column =
-                @Column(name = "number_of_instances", nullable = false)),
+            @Column(name = "number_of_instances", nullable = false)),
             @AttributeOverride(name = "numAttributes", column =
-                @Column(name = "number_of_attributes", nullable = false)),
+            @Column(name = "number_of_attributes", nullable = false)),
             @AttributeOverride(name = "numClasses", column =
-                @Column(name = "number_of_classes", nullable = false))
+            @Column(name = "number_of_classes", nullable = false))
     })
     private InstancesInfo instancesInfo;
 

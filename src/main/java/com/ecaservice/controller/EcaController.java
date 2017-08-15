@@ -4,7 +4,7 @@ import com.ecaservice.model.ClassificationResult;
 import com.ecaservice.model.EvaluationMethod;
 import com.ecaservice.service.EvaluationLogService;
 import com.ecaservice.service.EvaluationService;
-import eca.beans.InputData;
+import eca.model.InputData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -23,6 +23,7 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * Implements the main rest controller for processing input requests.
+ *
  * @author Roman Batygin
  */
 @Slf4j
@@ -35,6 +36,12 @@ public class EcaController {
     private EvaluationService evaluationService;
     private EvaluationLogService logService;
 
+    /**
+     * Constructor with dependency spring injection.
+     *
+     * @param evaluationService {@link EvaluationService} bean
+     * @param logService        {@link EvaluationLogService} bean
+     */
     @Autowired
     public EcaController(EvaluationService evaluationService, EvaluationLogService logService) {
         this.evaluationService = evaluationService;
@@ -43,19 +50,20 @@ public class EcaController {
 
     /**
      * Processed the request on classifier model evaluation.
-     * @param model input options
+     *
+     * @param model            input options
      * @param evaluationMethod evaluation method
-     * @param numFolds the number of folds for k * V cross - validation method
-     * @param numTests the number of tests for k * V cross - validation method
+     * @param numFolds         the number of folds for k * V cross - validation method
+     * @param numTests         the number of tests for k * V cross - validation method
      * @return <tt>ResponseEntity</tt> object
      */
     @RequestMapping(value = "/execute", method = RequestMethod.POST)
     public ResponseEntity<ByteArrayResource>
-                execute(@RequestPart(value = "model") ByteArrayResource model,
-                        @RequestParam(value = "evaluationMethod") String evaluationMethod,
-                        @RequestParam(value = "numFolds", required = false) Integer numFolds,
-                        @RequestParam(value = "numTests", required = false) Integer numTests,
-                        HttpServletRequest request) {
+    execute(@RequestPart(value = "model") ByteArrayResource model,
+            @RequestParam(value = "evaluationMethod") String evaluationMethod,
+            @RequestParam(value = "numFolds", required = false) Integer numFolds,
+            @RequestParam(value = "numTests", required = false) Integer numTests,
+            HttpServletRequest request) {
 
         LocalDateTime requestDate = LocalDateTime.now();
         String ipAddress = request.getRemoteAddr();

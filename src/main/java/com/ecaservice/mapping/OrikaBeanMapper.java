@@ -1,7 +1,5 @@
 package com.ecaservice.mapping;
 
-import java.util.Map;
-
 import ma.glasnost.orika.Converter;
 import ma.glasnost.orika.Mapper;
 import ma.glasnost.orika.MapperFactory;
@@ -9,11 +7,12 @@ import ma.glasnost.orika.converter.ConverterFactory;
 import ma.glasnost.orika.impl.ConfigurableMapper;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import ma.glasnost.orika.metadata.ClassMapBuilder;
-
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 /**
  * Orika mapper exposed as a Spring Bean. It contains the configuration for the mapper factory and factory builder. It will scan
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Component;
  * to autowire it into our class.
  *
  * @author dlizarra
- *
  */
 @Component
 public class OrikaBeanMapper extends ConfigurableMapper implements ApplicationContextAware {
