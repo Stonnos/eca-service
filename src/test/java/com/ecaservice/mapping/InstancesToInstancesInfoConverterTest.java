@@ -1,6 +1,6 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.InstancesBuilder;
+import com.ecaservice.TestDataBuilder;
 import com.ecaservice.model.entity.InstancesInfo;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +18,7 @@ public class InstancesToInstancesInfoConverterTest extends AbstractConverterTest
 
     @Before
     public void setUp() {
-        instances = InstancesBuilder.generate(25,6);
+        instances = TestDataBuilder.generate(25, 6);
     }
 
     @Test

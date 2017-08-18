@@ -5,8 +5,8 @@ import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.model.ClassificationResult;
 import com.ecaservice.model.EvaluationMethod;
 import com.ecaservice.service.EvaluationService;
-import eca.model.ClassifierDescriptor;
 import eca.core.evaluation.Evaluation;
+import eca.model.ClassifierDescriptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,13 +25,13 @@ import java.util.Random;
 @Service
 public class EvaluationServiceImpl implements EvaluationService {
 
-    private static final int MINIMUM_NUMBER_OF_FOLDS = 2;
+    public static final int MINIMUM_NUMBER_OF_FOLDS = 2;
 
-    private static final int MINIMUM_NUMBER_OF_TESTS = 1;
+    public static final int MINIMUM_NUMBER_OF_TESTS = 1;
 
-    private static final int MAXIMUM_NUMBER_OF_FOLDS = 100;
+    public static final int MAXIMUM_NUMBER_OF_FOLDS = 100;
 
-    private static final int MAXIMUM_NUMBER_OF_TESTS = 100;
+    public static final int MAXIMUM_NUMBER_OF_TESTS = 100;
 
     private CrossValidationConfig config;
 

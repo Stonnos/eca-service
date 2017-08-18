@@ -11,7 +11,7 @@ ECA service
 ----------------------------------------
 * jdk 1.8
 * maven 3.3.9
-* eca 4.0
+* eca 4.0.1
 * DB для сохранения логов EvaluationLog
 
 Описание ключевой конфигурации модуля
@@ -61,5 +61,5 @@ ECA service
        
 2. Запустить приложение из КОРНЕВОЙ папки проекта
 
-    java -jar target/eca-service.jar
+    java -jar target/eca-service-1.0.jar
     
