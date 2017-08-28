@@ -1,7 +1,7 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.model.InputOptionsList;
-import com.ecaservice.model.entity.InputOptions;
+import com.ecaservice.dto.InputOptionsList;
+import com.ecaservice.model.InputOptions;
 import eca.metrics.KNearestNeighbours;
 import eca.metrics.distances.ChebyshevDistance;
 import org.junit.Test;
@@ -12,9 +12,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
+ * Unit tests that checks ClassifierToInputOptionsListConverter functionality
+ * (see {@link ClassifierToInputOptionsListConverter}).
+ *
  * @author Roman Batygin
  */
-
 public class ClassifierToInputOptionsListConverterTest extends AbstractConverterTest {
 
     @Test

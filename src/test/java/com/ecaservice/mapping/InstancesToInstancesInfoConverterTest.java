@@ -1,7 +1,7 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.TestDataBuilder;
-import com.ecaservice.model.entity.InstancesInfo;
+import com.ecaservice.model.InstancesInfo;
 import org.junit.Before;
 import org.junit.Test;
 import weka.core.Instances;
@@ -9,9 +9,11 @@ import weka.core.Instances;
 import static org.junit.Assert.assertEquals;
 
 /**
+ * Unit tests that checks InstancesToInstancesInfoConverter functionality
+ * (see {@link InstancesToInstancesInfoConverter}).
+ *
  * @author Roman Batygin
  */
-
 public class InstancesToInstancesInfoConverterTest extends AbstractConverterTest {
 
     private Instances instances;

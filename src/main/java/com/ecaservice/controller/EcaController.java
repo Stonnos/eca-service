@@ -1,9 +1,9 @@
 package com.ecaservice.controller;
 
-import com.ecaservice.model.ClassificationResult;
+import com.ecaservice.dto.ClassificationResult;
+import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.model.EvaluationMethod;
-import com.ecaservice.service.EvaluationLogService;
-import com.ecaservice.service.EvaluationService;
+import com.ecaservice.service.EcaService;
 import eca.model.InputData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,19 +33,16 @@ public class EcaController {
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss");
 
-    private EvaluationService evaluationService;
-    private EvaluationLogService logService;
+    private final EcaService ecaService;
 
     /**
      * Constructor with dependency spring injection.
      *
-     * @param evaluationService {@link EvaluationService} bean
-     * @param logService        {@link EvaluationLogService} bean
+     * @param ecaService {@link EcaService} bean
      */
     @Autowired
-    public EcaController(EvaluationService evaluationService, EvaluationLogService logService) {
-        this.evaluationService = evaluationService;
-        this.logService = logService;
+    public EcaController(EcaService ecaService) {
+        this.ecaService = ecaService;
     }
 
     /**
@@ -55,7 +52,7 @@ public class EcaController {
      * @param evaluationMethod evaluation method
      * @param numFolds         the number of folds for k * V cross - validation method
      * @param numTests         the number of tests for k * V cross - validation method
-     * @return <tt>ResponseEntity</tt> object
+     * @return {@link ResponseEntity} object
      */
     @RequestMapping(value = "/execute", method = RequestMethod.POST)
     public ResponseEntity<ByteArrayResource>
@@ -78,12 +75,12 @@ public class EcaController {
 
         EvaluationMethod method = EvaluationMethod.valueOf(evaluationMethod);
 
-        ClassificationResult result = evaluationService.evaluateModel(inputData.getClassifier(),
-                inputData.getData(), method, numFolds, numTests);
+        EvaluationRequest evaluationRequest = new EvaluationRequest(ipAddress, requestDate,
+                inputData, method, numFolds, numTests);
 
-        logService.save(result, method, numFolds, numTests, requestDate, ipAddress);
+        ClassificationResult result = ecaService.processRequest(evaluationRequest);
 
-        if (result.isSuccess()) {
+        if (result != null && result.isSuccess()) {
             log.info("Starting classification results serialization.");
 
             byte[] bytes = SerializationUtils.serialize(result.getClassifierDescriptor());

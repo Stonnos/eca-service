@@ -1,4 +1,4 @@
-package com.ecaservice.model.entity;
+package com.ecaservice.model;
 
 /**
  * Evaluation status enum.
@@ -6,5 +6,12 @@ package com.ecaservice.model.entity;
  * @author Roman Batygin
  */
 public enum EvaluationStatus {
-    SUCCESS, ERROR
+
+    PROGRESS,
+
+    FINISHED,
+
+    TIMEOUT,
+
+    ERROR
 }

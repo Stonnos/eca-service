@@ -2,11 +2,13 @@ package com.ecaservice.service.impl;
 
 
 import com.ecaservice.config.CrossValidationConfig;
-import com.ecaservice.model.ClassificationResult;
+import com.ecaservice.dto.ClassificationResult;
 import com.ecaservice.model.EvaluationMethod;
+import com.ecaservice.model.EvaluationMethodVisitor;
 import com.ecaservice.service.EvaluationService;
 import eca.core.evaluation.Evaluation;
 import eca.model.ClassifierDescriptor;
+import eca.model.InputData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +35,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 
     public static final int MAXIMUM_NUMBER_OF_TESTS = 100;
 
-    private CrossValidationConfig config;
+    private final CrossValidationConfig config;
 
     /**
      * Constructor with dependency spring injection.
@@ -46,60 +48,35 @@ public class EvaluationServiceImpl implements EvaluationService {
     }
 
     @Override
-    public ClassificationResult evaluateModel(AbstractClassifier classifier,
-                                              Instances data,
-                                              EvaluationMethod evaluationMethod,
-                                              Integer numFolds,
-                                              Integer numTests) {
+    public ClassificationResult evaluateModel(final InputData inputData,
+                                              final EvaluationMethod evaluationMethod,
+                                              final Integer numFolds,
+                                              final Integer numTests) {
 
-        Assert.notNull(classifier, "Classifier is not specified!");
-        Assert.notNull(data, "Input data is not specified!");
+        Assert.notNull(inputData, "Input data is not specified!");
+        Assert.notNull(inputData.getClassifier(), "Classifier is not specified!");
+        Assert.notNull(inputData.getData(), "Input data is not specified!");
         Assert.notNull(evaluationMethod, "Evaluation method is not specified!");
 
-        if (evaluationMethod == EvaluationMethod.CROSS_VALIDATION) {
-            if (numFolds == null) {
-                log.warn("Folds number is not defined. Default folds number = {} has been used.",
-                        config.getNumFolds());
-                numFolds = config.getNumFolds();
-            }
-
-            Assert.isTrue(numFolds >= MINIMUM_NUMBER_OF_FOLDS,
-                    String.format("The number of folds must be greater than or equal to %d!", MINIMUM_NUMBER_OF_FOLDS));
-
-            Assert.isTrue(numFolds <= MAXIMUM_NUMBER_OF_FOLDS,
-                    String.format("Number of folds must be less than or equal to %d!", MAXIMUM_NUMBER_OF_FOLDS));
-
-            if (numTests == null) {
-                log.warn("Tests number is not defined. Default tests number = {} has been used.",
-                        config.getNumTests());
-                numTests = config.getNumTests();
-            }
-
-            Assert.isTrue(numTests >= MINIMUM_NUMBER_OF_TESTS,
-                    String.format("Number of tests must be greater than or equal to %d!", MINIMUM_NUMBER_OF_TESTS));
-
-            Assert.isTrue(numTests <= MAXIMUM_NUMBER_OF_TESTS,
-                    String.format("Number of tests must be less than or equal to %d!", MAXIMUM_NUMBER_OF_TESTS));
-        }
-
-        String classifierName = classifier.getClass().getSimpleName();
+        final AbstractClassifier classifier = inputData.getClassifier();
+        final Instances data = inputData.getData();
+        final String classifierName = classifier.getClass().getSimpleName();
 
         log.info("Starting model evaluation.");
 
         log.trace("Model evaluation starting for classifier = {}, data = {}, evaluationMethod = {}",
                 classifierName, data.relationName(), evaluationMethod);
-        log.trace("numFolds = {}, numTests = {}", numFolds, numTests);
 
         ClassificationResult classificationResult = new ClassificationResult();
 
         try {
-            Evaluation evaluation = new Evaluation(data);
+            final Evaluation evaluation = new Evaluation(data);
 
-            StopWatch stopWatch = new StopWatch();
+            final StopWatch stopWatch = new StopWatch(String.format("Stop watching for %s", classifierName));
 
-            switch (evaluationMethod) {
-
-                case TRAINING_DATA: {
+            evaluationMethod.accept(new EvaluationMethodVisitor() {
+                @Override
+                public void evaluateModel() throws Exception {
                     stopWatch.start(String.format("%s model training", classifierName));
                     classifier.buildClassifier(data);
                     stopWatch.stop();
@@ -107,28 +84,57 @@ public class EvaluationServiceImpl implements EvaluationService {
                     stopWatch.start(String.format("%s model evaluation", classifierName));
                     evaluation.evaluateModel(classifier, data);
                     stopWatch.stop();
-
-                    break;
                 }
 
-                case CROSS_VALIDATION: {
+                @Override
+                public void crossValidateModel() throws Exception {
+                    log.trace("numFolds = {}, numTests = {}", numFolds, numTests);
+
+                    int folds;
+                    if (numFolds == null) {
+                        log.warn("Folds number is not defined. Default folds number = {} has been used.",
+                                config.getNumFolds());
+                        folds = config.getNumFolds();
+                    } else {
+                        folds = numFolds;
+                    }
+
+                    Assert.isTrue(numFolds >= MINIMUM_NUMBER_OF_FOLDS,
+                            String.format("The number of folds must be greater than or equal to %d!",
+                                    MINIMUM_NUMBER_OF_FOLDS));
+
+                    Assert.isTrue(numFolds <= MAXIMUM_NUMBER_OF_FOLDS,
+                            String.format("Number of folds must be less than or equal to %d!",
+                                    MAXIMUM_NUMBER_OF_FOLDS));
+
+                    int tests;
+                    if (numTests == null) {
+                        log.warn("Tests number is not defined. Default tests number = {} has been used.",
+                                config.getNumTests());
+                        tests = config.getNumTests();
+                    } else {
+                        tests = numTests;
+                    }
+
+                    Assert.isTrue(numTests >= MINIMUM_NUMBER_OF_TESTS,
+                            String.format("Number of tests must be greater than or equal to %d!",
+                                    MINIMUM_NUMBER_OF_TESTS));
+
+                    Assert.isTrue(numTests <= MAXIMUM_NUMBER_OF_TESTS,
+                            String.format("Number of tests must be less than or equal to %d!",
+                                    MAXIMUM_NUMBER_OF_TESTS));
+
                     stopWatch.start(String.format("%s model evaluation", classifierName));
                     Classifier classifierCopy = AbstractClassifier.makeCopy(classifier);
                     Random random = new Random(config.getSeed());
-                    evaluation.kCrossValidateModel(classifierCopy, data, numFolds, numTests, random);
+                    evaluation.kCrossValidateModel(classifierCopy, data, folds, tests, random);
                     stopWatch.stop();
 
                     stopWatch.start(String.format("%s model training", classifierName));
                     classifier.buildClassifier(data);
                     stopWatch.stop();
-
-                    break;
                 }
-
-                default:
-                    throw new IllegalArgumentException("Incorrect evaluation method value!");
-
-            }
+            });
 
             ClassifierDescriptor classifierDescriptor = new ClassifierDescriptor(classifier, evaluation);
 

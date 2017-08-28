@@ -1,11 +1,12 @@
 package com.ecaservice.service;
 
 import com.ecaservice.config.CrossValidationConfig;
-import com.ecaservice.model.ClassificationResult;
+import com.ecaservice.dto.ClassificationResult;
 import com.ecaservice.model.EvaluationMethod;
 import com.ecaservice.service.impl.EvaluationServiceImpl;
 import eca.generators.SimpleDataGenerator;
 import eca.metrics.KNearestNeighbours;
+import eca.model.InputData;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +19,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 /**
+ * Unit tests that checks EvaluationService functionality (see {@link EvaluationService}).
+ *
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
@@ -37,7 +40,6 @@ public class EvaluationServiceTest {
 
     @Before
     public void setUp() {
-        evaluationService = new EvaluationServiceImpl(config);
         when(config.getSeed()).thenReturn(SEED);
         when(config.getNumFolds()).thenReturn(NUM_FOLDS);
         when(config.getNumTests()).thenReturn(NUM_TEST);
@@ -45,51 +47,64 @@ public class EvaluationServiceTest {
         dataGenerator.setNumInstances(NUM_INSTANCES);
         dataGenerator.setNumAttributes(NUM_ATTRIBUTES);
         testInstances = dataGenerator.generate();
+        evaluationService = new EvaluationServiceImpl(config);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testForNullClassifier() {
-        evaluationService.evaluateModel(null, testInstances,
+        InputData inputData = new InputData(null, testInstances);
+        evaluationService.evaluateModel(inputData,
                 EvaluationMethod.TRAINING_DATA, NUM_FOLDS, NUM_TEST);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testForNullData() {
-        evaluationService.evaluateModel(new KNearestNeighbours(), null,
+        InputData inputData = new InputData(new KNearestNeighbours(), null);
+        evaluationService.evaluateModel(inputData,
                 EvaluationMethod.TRAINING_DATA, NUM_FOLDS, NUM_TEST);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+
+    @Test
     public void testForMinimumNumberOfFoldsExceeded() {
-        evaluationService.evaluateModel(new KNearestNeighbours(), testInstances,
+        InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
+        ClassificationResult result = evaluationService.evaluateModel(inputData,
                 EvaluationMethod.CROSS_VALIDATION,
                 EvaluationServiceImpl.MINIMUM_NUMBER_OF_FOLDS - 1, NUM_TEST);
+        assertFalse(result.isSuccess());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testForMinimumNumberOfTestsExceeded() {
-        evaluationService.evaluateModel(new KNearestNeighbours(), testInstances,
+        InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
+        ClassificationResult result = evaluationService.evaluateModel(inputData,
                 EvaluationMethod.CROSS_VALIDATION, NUM_FOLDS,
                 EvaluationServiceImpl.MINIMUM_NUMBER_OF_TESTS - 1);
+        assertFalse(result.isSuccess());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testForMaximumNumberOfFoldsExceeded() {
-        evaluationService.evaluateModel(new KNearestNeighbours(), testInstances,
+        InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
+        ClassificationResult result = evaluationService.evaluateModel(inputData,
                 EvaluationMethod.CROSS_VALIDATION,
                 EvaluationServiceImpl.MAXIMUM_NUMBER_OF_FOLDS + 1, NUM_TEST);
+        assertFalse(result.isSuccess());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testForMaximumNumberOfTestsExceeded() {
-        evaluationService.evaluateModel(new KNearestNeighbours(), testInstances,
+        InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
+        ClassificationResult result = evaluationService.evaluateModel(inputData,
                 EvaluationMethod.CROSS_VALIDATION, NUM_FOLDS,
                 EvaluationServiceImpl.MAXIMUM_NUMBER_OF_TESTS + 1);
+        assertFalse(result.isSuccess());
     }
 
     @Test
     public void testTrainingDataMethod() {
-        ClassificationResult result = evaluationService.evaluateModel(new KNearestNeighbours(), testInstances,
+        InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
+        ClassificationResult result = evaluationService.evaluateModel(inputData,
                 EvaluationMethod.TRAINING_DATA, null, null);
 
         assertTrue(result.isSuccess());
@@ -98,7 +113,8 @@ public class EvaluationServiceTest {
 
     @Test
     public void testCrossValidationMethod() {
-        ClassificationResult result = evaluationService.evaluateModel(new KNearestNeighbours(), testInstances,
+        InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
+        ClassificationResult result = evaluationService.evaluateModel(inputData,
                 EvaluationMethod.CROSS_VALIDATION, NUM_FOLDS, NUM_TEST);
 
         assertTrue(result.isSuccess());
@@ -109,7 +125,8 @@ public class EvaluationServiceTest {
     public void testClassificationResultWithError() {
         when(config.getSeed()).thenThrow(Exception.class);
 
-        ClassificationResult result = evaluationService.evaluateModel(new KNearestNeighbours(), testInstances,
+        InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
+        ClassificationResult result = evaluationService.evaluateModel(inputData,
                 EvaluationMethod.CROSS_VALIDATION, NUM_FOLDS, NUM_TEST);
 
         assertFalse(result.isSuccess());

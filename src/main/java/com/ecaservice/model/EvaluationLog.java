@@ -1,6 +1,5 @@
-package com.ecaservice.model.entity;
+package com.ecaservice.model;
 
-import com.ecaservice.model.EvaluationMethod;
 import lombok.Data;
 
 import javax.persistence.AttributeOverride;
@@ -17,6 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -47,6 +48,9 @@ public class EvaluationLog {
     @Column(name = "evaluation_status", nullable = false)
     private EvaluationStatus evaluationStatus;
 
+    @Column(name = "error_message")
+    private String errorMessage;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "evaluation_method", nullable = false)
     private EvaluationMethod evaluationMethod;
@@ -59,9 +63,6 @@ public class EvaluationLog {
             @Column(name = "number_of_tests")),
     })
     private EvaluationOptions evaluationOptions;
-
-    @Column(name = "error_message")
-    private String errorMessage;
 
     @Embedded
     @AttributeOverrides( {

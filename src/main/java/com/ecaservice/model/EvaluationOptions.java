@@ -1,4 +1,4 @@
-package com.ecaservice.model.entity;
+package com.ecaservice.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

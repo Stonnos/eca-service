@@ -39,12 +39,12 @@
             <id>mysql</id>
             <properties>
                 <jdbc.dialect>org.hibernate.dialect.MySQLDialect</jdbc.dialect>
-                <jdbc.ddlAuto>update</jdbc.ddlAuto>
+                <jdbc.ddlAuto>create-drop</jdbc.ddlAuto>
                 <jdbc.driver>com.mysql.jdbc.Driver</jdbc.driver>
                 <jdbc.url>jdbc:mysql://localhost:3306/eca?useUnicode=true&amp;characterEncoding=UTF-8</jdbc.url>
                 <jdbc.user>root</jdbc.user>
                 <jdbc.password>123</jdbc.password>
-                <server.port>8008</server.port>
+                <server.port>8085</server.port>
             </properties>
         </profile>
 

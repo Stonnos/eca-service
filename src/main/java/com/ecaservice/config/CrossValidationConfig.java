@@ -13,13 +13,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class CrossValidationConfig {
 
-    @Value("${cross.validation.folds:10}")
+    @Value("${cross-validation.numFolds:10}")
     private Integer numFolds;
 
-    @Value("${cross.validation.tests:10}")
+    @Value("${cross-validation.numTests:10}")
     private Integer numTests;
 
-    @Value("${cross.validation.seed:3}")
+    @Value("${cross-validation.seed:3}")
     private Integer seed;
 
+    @Value("${cross-validation.timeout:10}")
+    private Integer timeout;
 }

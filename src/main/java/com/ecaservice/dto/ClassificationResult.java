@@ -1,4 +1,4 @@
-package com.ecaservice.model;
+package com.ecaservice.dto;
 
 import eca.model.ClassifierDescriptor;
 import lombok.Data;
