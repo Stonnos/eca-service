@@ -9,6 +9,7 @@ import eca.model.InputData;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -26,7 +27,7 @@ public class EvaluationRequestToEvaluationLogConverterTest extends AbstractConve
     public void testEvaluationRequestToEvaluationLogConversion() {
         EvaluationRequest evaluationRequest = new EvaluationRequest();
         evaluationRequest.setIpAddress("127.0.0.1");
-        evaluationRequest.setRequestDate(LocalDateTime.now());
+        evaluationRequest.setRequestDate(new Date());
         evaluationRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
 
         InputData inputData = new InputData(new KNearestNeighbours(),

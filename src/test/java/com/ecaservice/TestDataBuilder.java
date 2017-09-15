@@ -1,11 +1,14 @@
 package com.ecaservice;
 
-import com.ecaservice.dto.ClassificationResult;
-import eca.core.evaluation.Evaluation;
+import com.ecaservice.dto.EvaluationRequest;
+import com.ecaservice.model.EvaluationMethod;
 import eca.generators.SimpleDataGenerator;
 import eca.metrics.KNearestNeighbours;
-import eca.model.ClassifierDescriptor;
+import eca.model.InputData;
 import weka.core.Instances;
+
+import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * Test data builder class.
@@ -29,21 +32,23 @@ public class TestDataBuilder {
     }
 
     /**
-     * Creates classification results.
+     * Creates <tt>EvaluationRequest</tt> object
      *
-     * @param numInstances  number of instances
-     * @param numAttributes number of attributes
-     * @return {@link ClassificationResult} object
-     * @throws Exception
+     * @param ipAddress     ip address
+     * @param numInstances  the number of instances
+     * @param numAttributes the number of folds
+     * @return {@link EvaluationRequest} object
      */
-    public static ClassificationResult createClassificationResult(int numInstances,
-                                                                  int numAttributes) throws Exception {
-        ClassificationResult result = new ClassificationResult();
-        Instances instances = generate(numInstances, numAttributes);
-        KNearestNeighbours kNearestNeighbours = new KNearestNeighbours();
-        result.setClassifierDescriptor(new ClassifierDescriptor(kNearestNeighbours,
-                new Evaluation(instances)));
-        return result;
+    public static EvaluationRequest createEvaluationRequest(String ipAddress,
+                                                            int numInstances,
+                                                            int numAttributes) {
+        EvaluationRequest request = new EvaluationRequest();
+        request.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
+        request.setRequestDate(new Date());
+        request.setIpAddress(ipAddress);
+        request.setInputData(new InputData(new KNearestNeighbours(),
+                generate(numInstances, numAttributes)));
+        return request;
     }
 
 }

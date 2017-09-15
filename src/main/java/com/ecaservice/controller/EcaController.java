@@ -8,6 +8,7 @@ import eca.model.InputData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.SerializationUtils;
@@ -18,8 +19,11 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  * Implements the main rest controller for processing input requests.
@@ -31,7 +35,7 @@ import java.time.format.DateTimeFormatter;
 @RequestMapping("/eca-service")
 public class EcaController {
 
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss");
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
 
     private final EcaService ecaService;
 
@@ -62,7 +66,7 @@ public class EcaController {
             @RequestParam(value = "numTests", required = false) Integer numTests,
             HttpServletRequest request) {
 
-        LocalDateTime requestDate = LocalDateTime.now();
+        Date requestDate = new Date();
         String ipAddress = request.getRemoteAddr();
 
         log.info("Received request for client {} at: {}", ipAddress, DATE_FORMAT.format(requestDate));

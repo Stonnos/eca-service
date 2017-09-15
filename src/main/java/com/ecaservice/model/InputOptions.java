@@ -29,7 +29,4 @@ public class InputOptions {
     @Column(name = "option_value", nullable = false)
     private String value;
 
-    @ManyToOne
-    private EvaluationLog evaluationLog;
-
 }

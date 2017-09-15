@@ -15,10 +15,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,7 +41,7 @@ public class EvaluationLog {
     private String ipAddress;
 
     @Column(name = "request_date", nullable = false)
-    private LocalDateTime requestDate;
+    private Date requestDate;
 
     @Column(name = "classifier_name", nullable = false)
     private String classifierName;
@@ -64,17 +66,8 @@ public class EvaluationLog {
     })
     private EvaluationOptions evaluationOptions;
 
-    @Embedded
-    @AttributeOverrides( {
-            @AttributeOverride(name = "relationName", column =
-            @Column(name = "relation_name", nullable = false)),
-            @AttributeOverride(name = "numInstances", column =
-            @Column(name = "number_of_instances", nullable = false)),
-            @AttributeOverride(name = "numAttributes", column =
-            @Column(name = "number_of_attributes", nullable = false)),
-            @AttributeOverride(name = "numClasses", column =
-            @Column(name = "number_of_classes", nullable = false))
-    })
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "instances_info_id")
     private InstancesInfo instancesInfo;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

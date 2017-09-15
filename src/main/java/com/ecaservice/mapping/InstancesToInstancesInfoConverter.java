@@ -16,7 +16,11 @@ public class InstancesToInstancesInfoConverter extends CustomConverter<Instances
 
     @Override
     public InstancesInfo convert(Instances data, Type<? extends InstancesInfo> instancesType) {
-        return new InstancesInfo(data.relationName(), data.numInstances(),
-                data.numAttributes(), data.numClasses());
+        InstancesInfo instancesInfo = new InstancesInfo();
+        instancesInfo.setRelationName(data.relationName());
+        instancesInfo.setNumInstances(data.numInstances());
+        instancesInfo.setNumAttributes(data.numAttributes());
+        instancesInfo.setNumClasses(data.numClasses());
+        return instancesInfo;
     }
 }

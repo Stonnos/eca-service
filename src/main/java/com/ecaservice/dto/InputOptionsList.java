@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
+ * Input options list model.
  * @author Roman Batygin
  */
 @Data

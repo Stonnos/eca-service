@@ -22,6 +22,10 @@ public class CalculationExecutorServiceImpl implements CalculationExecutorServic
 
     private final ExecutorService executorService;
 
+    /**
+     * Constructor with spring dependency injection.
+     * @param executorService {@link ExecutorService} bean
+     */
     @Autowired
     public CalculationExecutorServiceImpl(ExecutorService executorService) {
         this.executorService = executorService;
@@ -29,8 +33,7 @@ public class CalculationExecutorServiceImpl implements CalculationExecutorServic
 
     @Override
     public <V> V execute(Callable<V> task, long timeout, TimeUnit timeUnit)
-            throws InterruptedException, ExecutionException,
-            TimeoutException {
+            throws InterruptedException, ExecutionException, TimeoutException {
         Future<V> future = executorService.submit(task);
         log.trace("execute: calculation started");
         StopWatch stopWatch = new StopWatch();

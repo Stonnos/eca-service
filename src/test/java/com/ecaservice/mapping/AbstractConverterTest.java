@@ -14,8 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ContextConfiguration(classes = {OrikaBeanMapper.class,
         InstancesToInstancesInfoConverter.class,
         ClassifierToInputOptionsListConverter.class,
-        EvaluationRequestToEvaluationLogConverter.class,
-        LocalDateTimeConverter.class})
+        EvaluationRequestToEvaluationLogConverter.class})
 public abstract class AbstractConverterTest {
 
     @Autowired

@@ -10,6 +10,8 @@ import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.metadata.Type;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 /**
  * Implements the conversion of evaluation request into the evaluation log entity.
  *

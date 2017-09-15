@@ -4,7 +4,7 @@ import eca.model.ClassifierDescriptor;
 import lombok.Data;
 
 /**
- * Implements classification results.
+ * Classification results model.
  *
  * @author Roman Batygin
  */
