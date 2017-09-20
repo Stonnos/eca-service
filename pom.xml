@@ -24,13 +24,23 @@
         <oracle.version>12.1.0.2</oracle.version>
         <postresql.version>9.4.1212</postresql.version>
         <lombok.version>1.16.12</lombok.version>
-        <eca.version>4.0.1</eca.version>
+        <eca.version>4.1</eca.version>
         <orika.version>1.4.6</orika.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <assertj.core.version>3.8.0</assertj.core.version>
         <mockito.version>1.9.5</mockito.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>eca-mvn-repo</id>
+            <url>https://raw.github.com/Stonnos/eca/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <profiles>
 
