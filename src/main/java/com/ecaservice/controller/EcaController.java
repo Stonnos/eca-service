@@ -1,10 +1,10 @@
 package com.ecaservice.controller;
 
-import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.EvaluationRequestDto;
+import com.ecaservice.dto.EvaluationResponse;
+import com.ecaservice.mapping.OrikaBeanMapper;
 import com.ecaservice.model.EvaluationRequest;
 import com.ecaservice.service.EcaService;
-import com.ecaservice.model.InputData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,76 +32,26 @@ public class EcaController {
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
 
     private final EcaService ecaService;
+    private final OrikaBeanMapper mapper;
 
     /**
      * Constructor with dependency spring injection.
      *
      * @param ecaService {@link EcaService} bean
+     * @param mapper {@link OrikaBeanMapper} bean
      */
     @Autowired
-    public EcaController(EcaService ecaService) {
+    public EcaController(EcaService ecaService, OrikaBeanMapper mapper) {
         this.ecaService = ecaService;
+        this.mapper = mapper;
     }
 
     /**
      * Processed the request on classifier model evaluation.
-     *
-     * @param model            input options
-     * @param evaluationMethod evaluation method
-     * @param numFolds         the number of folds for k * V cross - validation method
-     * @param numTests         the number of tests for k * V cross - validation method
+     * @param evaluationRequestDto {@link EvaluationRequestDto} object
+     * @param request {@link HttpServletRequest} object
      * @return {@link ResponseEntity} object
      */
-    /*
-    @RequestMapping(value = "/execute", method = RequestMethod.POST)
-    public ResponseEntity<ClassificationResultsDto>
-    execute(@RequestPart(value = "model") ByteArrayResource model,
-            @RequestParam(value = "evaluationMethod") String evaluationMethod,
-            @RequestParam(value = "numFolds", required = false) Integer numFolds,
-            @RequestParam(value = "numTests", required = false) Integer numTests,
-            HttpServletRequest request) {
-
-        Date requestDate = new Date();
-        String ipAddress = request.getRemoteAddr();
-
-        log.info("Received request for client {} at: {}", ipAddress, DATE_FORMAT.format(requestDate));
-
-        log.info("Starting to read input data.");
-
-        InputData inputData = (InputData) SerializationUtils.deserialize(model.getByteArray());
-
-        log.info("Input data has been successfully read!");
-
-        EvaluationMethod method = EvaluationMethod.valueOf(evaluationMethod);
-
-        EvaluationRequest evaluationRequest = new EvaluationRequest(ipAddress, requestDate,
-                inputData, method, numFolds, numTests);
-
-        ClassificationResult result = ecaService.processRequest(evaluationRequest);
-
-
-        if (result != null && result.isSuccess()) {
-            log.info("Starting classification results serialization.");
-
-            byte[] bytes = SerializationUtils.serialize(result.getClassifierDescriptor());
-
-            log.info("Classification results has been successfully serialized!");
-
-            return new ResponseEntity<>(new ByteArrayResource(bytes), HttpStatus.OK);
-        }
-
-        ClassificationResultsDto classificationResultsDto = new ClassificationResultsDto();
-        classificationResultsDto.setClassifierDescriptor(result.getClassifierDescriptor());
-        classificationResultsDto.setSuccess(result.isSuccess());
-        classificationResultsDto.setErrorMessage(result.getErrorMessage());
-
-        return new ResponseEntity<>(classificationResultsDto, HttpStatus.OK);
-
-        //return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    */
-
     @RequestMapping(value = "/execute", method = RequestMethod.POST)
     public ResponseEntity<EvaluationResponse> execute(@RequestBody EvaluationRequestDto evaluationRequestDto,
                                                       HttpServletRequest request) {
@@ -109,15 +59,17 @@ public class EcaController {
         Date requestDate = new Date();
         String ipAddress = request.getRemoteAddr();
 
-        log.info("{}", evaluationRequestDto);
-
         log.info("Received request for client {} at: {}", ipAddress, DATE_FORMAT.format(requestDate));
 
-        EvaluationRequest evaluationRequest = new EvaluationRequest(ipAddress, requestDate,
-                new InputData(evaluationRequestDto.getClassifier(), evaluationRequestDto.getData()),
-                evaluationRequestDto.getEvaluationMethod(), evaluationRequestDto.getNumFolds(), evaluationRequestDto.getNumTests());
+        EvaluationRequest evaluationRequest = mapper.map(evaluationRequestDto, EvaluationRequest.class);
+        evaluationRequest.setRequestDate(requestDate);
+        evaluationRequest.setIpAddress(ipAddress);
 
-        return new ResponseEntity<>(ecaService.processRequest(evaluationRequest), HttpStatus.OK);
+        EvaluationResponse evaluationResponse = ecaService.processRequest(evaluationRequest);
+
+        log.info("Evaluation response with status [{}] was built.", evaluationResponse.getStatus());
+
+        return new ResponseEntity<>(evaluationResponse, HttpStatus.OK);
     }
 
 }

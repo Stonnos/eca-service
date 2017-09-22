@@ -50,19 +50,21 @@ public class EvaluationServiceTest {
         evaluationService = new EvaluationServiceImpl(config);
     }
 
-    /*@Test(expected = IllegalArgumentException.class)
+    @Test
     public void testForNullClassifier() {
         InputData inputData = new InputData(null, testInstances);
-        evaluationService.evaluateModel(inputData,
+        ClassificationResult result = evaluationService.evaluateModel(inputData,
                 EvaluationMethod.TRAINING_DATA, NUM_FOLDS, NUM_TEST);
+        assertFalse(result.isSuccess());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testForNullData() {
         InputData inputData = new InputData(new KNearestNeighbours(), null);
-        evaluationService.evaluateModel(inputData,
+        ClassificationResult result = evaluationService.evaluateModel(inputData,
                 EvaluationMethod.TRAINING_DATA, NUM_FOLDS, NUM_TEST);
-    }*/
+        assertFalse(result.isSuccess());
+    }
 
 
     @Test
