@@ -1,8 +1,8 @@
 package com.ecaservice.service;
 
-import com.ecaservice.dto.ClassificationResult;
-import com.ecaservice.model.EvaluationMethod;
-import eca.model.InputData;
+import com.ecaservice.model.ClassificationResult;
+import com.ecaservice.model.entity.EvaluationMethod;
+import com.ecaservice.model.InputData;
 
 /**
  * Implements classifier model evaluation.

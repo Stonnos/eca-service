@@ -1,14 +1,13 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.TestDataBuilder;
-import com.ecaservice.dto.EvaluationRequest;
-import com.ecaservice.model.EvaluationLog;
-import com.ecaservice.model.EvaluationMethod;
+import com.ecaservice.model.EvaluationRequest;
+import com.ecaservice.model.entity.EvaluationLog;
+import com.ecaservice.model.entity.EvaluationMethod;
 import eca.metrics.KNearestNeighbours;
-import eca.model.InputData;
+import com.ecaservice.model.InputData;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;

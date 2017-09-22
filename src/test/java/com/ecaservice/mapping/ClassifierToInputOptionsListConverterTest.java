@@ -1,7 +1,7 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.dto.InputOptionsList;
-import com.ecaservice.model.InputOptions;
+import com.ecaservice.model.InputOptionsList;
+import com.ecaservice.model.entity.InputOptions;
 import eca.metrics.KNearestNeighbours;
 import eca.metrics.distances.ChebyshevDistance;
 import org.junit.Test;

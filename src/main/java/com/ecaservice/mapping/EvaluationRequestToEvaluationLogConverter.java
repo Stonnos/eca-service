@@ -1,16 +1,14 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.dto.EvaluationRequest;
-import com.ecaservice.dto.InputOptionsList;
-import com.ecaservice.model.EvaluationLog;
-import com.ecaservice.model.EvaluationOptions;
-import com.ecaservice.model.InstancesInfo;
-import eca.model.InputData;
+import com.ecaservice.model.EvaluationRequest;
+import com.ecaservice.model.InputOptionsList;
+import com.ecaservice.model.entity.EvaluationLog;
+import com.ecaservice.model.entity.EvaluationOptions;
+import com.ecaservice.model.entity.InstancesInfo;
+import com.ecaservice.model.InputData;
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.metadata.Type;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
 
 /**
  * Implements the conversion of evaluation request into the evaluation log entity.

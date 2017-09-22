@@ -2,14 +2,16 @@ package com.ecaservice.service;
 
 import com.ecaservice.TestDataBuilder;
 import com.ecaservice.config.CrossValidationConfig;
-import com.ecaservice.dto.ClassificationResult;
-import com.ecaservice.dto.EvaluationRequest;
+import com.ecaservice.dto.EvaluationResponse;
+import com.ecaservice.dto.TechnicalStatus;
+import com.ecaservice.model.ClassificationResult;
+import com.ecaservice.model.EvaluationRequest;
 import com.ecaservice.mapping.ClassifierToInputOptionsListConverter;
 import com.ecaservice.mapping.EvaluationRequestToEvaluationLogConverter;
 import com.ecaservice.mapping.InstancesToInstancesInfoConverter;
 import com.ecaservice.mapping.OrikaBeanMapper;
-import com.ecaservice.model.EvaluationLog;
-import com.ecaservice.model.EvaluationStatus;
+import com.ecaservice.model.entity.EvaluationLog;
+import com.ecaservice.model.entity.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.impl.CalculationExecutorServiceImpl;
 import com.ecaservice.service.impl.EcaServiceImpl;
@@ -101,9 +103,9 @@ public class EcaServiceTest {
 
         EvaluationRequest request = TestDataBuilder.createEvaluationRequest(IP, NUM_INSTANCES, NUM_ATTRIBUTES);
 
-        ClassificationResult result = ecaService.processRequest(request);
+        EvaluationResponse evaluationResponse = ecaService.processRequest(request);
 
-        assertTrue(result.isSuccess());
+        assertEquals(evaluationResponse.getStatus(), TechnicalStatus.SUCCESS);
 
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
 
@@ -120,7 +122,9 @@ public class EcaServiceTest {
         EvaluationRequest request = TestDataBuilder.createEvaluationRequest(IP, NUM_INSTANCES, NUM_ATTRIBUTES);
 
         when(crossValidationConfig.getTimeout()).thenThrow(Exception.class);
-        ecaService.processRequest(request);
+        EvaluationResponse evaluationResponse = ecaService.processRequest(request);
+
+        assertEquals(evaluationResponse.getStatus(), TechnicalStatus.ERROR);
 
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
 
@@ -137,7 +141,10 @@ public class EcaServiceTest {
         EvaluationRequest request = TestDataBuilder.createEvaluationRequest(IP, NUM_INSTANCES, NUM_ATTRIBUTES);
 
         when(crossValidationConfig.getTimeout()).thenThrow(TimeoutException.class);
-        ecaService.processRequest(request);
+
+        EvaluationResponse evaluationResponse = ecaService.processRequest(request);
+
+        assertEquals(evaluationResponse.getStatus(), TechnicalStatus.TIMEOUT);
 
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
 

@@ -1,6 +1,6 @@
-package com.ecaservice.dto;
+package com.ecaservice.model;
 
-import com.ecaservice.model.InputOptions;
+import com.ecaservice.model.entity.InputOptions;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,12 +1,11 @@
-package com.ecaservice.dto;
+package com.ecaservice.model;
 
-import com.ecaservice.model.EvaluationMethod;
-import eca.model.InputData;
+import com.ecaservice.model.entity.EvaluationMethod;
+import com.ecaservice.model.InputData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**

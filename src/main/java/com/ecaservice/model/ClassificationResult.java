@@ -1,6 +1,6 @@
-package com.ecaservice.dto;
+package com.ecaservice.model;
 
-import eca.model.ClassifierDescriptor;
+import eca.core.evaluation.EvaluationResults;
 import lombok.Data;
 
 /**
@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class ClassificationResult {
 
-    private ClassifierDescriptor classifierDescriptor;
+    private EvaluationResults evaluationResults;
 
     private boolean success;
 

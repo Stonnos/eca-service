@@ -1,11 +1,13 @@
 package com.ecaservice.service.impl;
 
 import com.ecaservice.config.CrossValidationConfig;
-import com.ecaservice.dto.ClassificationResult;
-import com.ecaservice.dto.EvaluationRequest;
+import com.ecaservice.dto.EvaluationResponse;
+import com.ecaservice.dto.TechnicalStatus;
+import com.ecaservice.model.ClassificationResult;
+import com.ecaservice.model.EvaluationRequest;
 import com.ecaservice.mapping.OrikaBeanMapper;
-import com.ecaservice.model.EvaluationLog;
-import com.ecaservice.model.EvaluationStatus;
+import com.ecaservice.model.entity.EvaluationLog;
+import com.ecaservice.model.entity.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.CalculationExecutorService;
 import com.ecaservice.service.EcaService;
@@ -54,39 +56,48 @@ public class EcaServiceImpl implements EcaService {
     }
 
     @Override
-    public ClassificationResult processRequest(final EvaluationRequest request) {
+    public EvaluationResponse processRequest(final EvaluationRequest request) {
 
-        Assert.notNull(request, "Request is not specified!");
+        Assert.notNull(request, "Evaluation request is not specified!");
 
         EvaluationLog evaluationLog = mapper.map(request, EvaluationLog.class);
         evaluationLog.setEvaluationStatus(EvaluationStatus.PROGRESS);
         evaluationLog = evaluationLogRepository.save(evaluationLog);
 
-        ClassificationResult result = null;
+        EvaluationResponse evaluationResponse = new EvaluationResponse();
+
         try {
             Callable<ClassificationResult> callable = () ->
                     evaluationService.evaluateModel(request.getInputData(), request.getEvaluationMethod(),
                             request.getNumFolds(), request.getNumTests());
 
-            result = executorService.execute(callable, crossValidationConfig.getTimeout(), TimeUnit.MINUTES);
+            ClassificationResult classificationResult = executorService.execute(callable,
+                    crossValidationConfig.getTimeout(), TimeUnit.MINUTES);
 
-            if (result.isSuccess()) {
+            if (classificationResult.isSuccess()) {
                 evaluationLog.setEvaluationStatus(EvaluationStatus.FINISHED);
+                evaluationResponse.setEvaluationResults(classificationResult.getEvaluationResults());
+                evaluationResponse.setStatus(TechnicalStatus.SUCCESS);
             } else {
                 evaluationLog.setEvaluationStatus(EvaluationStatus.ERROR);
-                evaluationLog.setErrorMessage(result.getErrorMessage());
+                evaluationLog.setErrorMessage(classificationResult.getErrorMessage());
+                evaluationResponse.setStatus(TechnicalStatus.ERROR);
+                evaluationResponse.setErrorMessage(classificationResult.getErrorMessage());
             }
-        } catch (TimeoutException e) {
+        } catch (TimeoutException ex) {
             log.warn("There was a timeout.");
             evaluationLog.setEvaluationStatus(EvaluationStatus.TIMEOUT);
-        } catch (Throwable e) {
-            log.error("There was an error occurred in evaluation : {}", e);
+            evaluationResponse.setStatus(TechnicalStatus.TIMEOUT);
+        } catch (Throwable ex) {
+            log.error("There was an error occurred in evaluation : {}", ex);
             evaluationLog.setEvaluationStatus(EvaluationStatus.ERROR);
-            evaluationLog.setErrorMessage(e.getMessage());
+            evaluationLog.setErrorMessage(ex.getMessage());
+            evaluationResponse.setStatus(TechnicalStatus.ERROR);
+            evaluationResponse.setErrorMessage(ex.getMessage());
         } finally {
             evaluationLogRepository.save(evaluationLog);
         }
 
-        return result;
+        return evaluationResponse;
     }
 }

@@ -29,6 +29,7 @@
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <assertj.core.version>3.8.0</assertj.core.version>
         <mockito.version>1.9.5</mockito.version>
+        <jackson.version>2.9.1</jackson.version>
     </properties>
 
     <repositories>
@@ -166,7 +167,7 @@
 
         <dependency>
             <groupId>eca</groupId>
-            <artifactId>eca</artifactId>
+            <artifactId>eca-core</artifactId>
             <version>${eca.version}</version>
         </dependency>
 
@@ -208,6 +209,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
 
     </dependencies>
 

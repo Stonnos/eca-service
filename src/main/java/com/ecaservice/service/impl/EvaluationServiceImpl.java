@@ -2,13 +2,13 @@ package com.ecaservice.service.impl;
 
 
 import com.ecaservice.config.CrossValidationConfig;
-import com.ecaservice.dto.ClassificationResult;
-import com.ecaservice.model.EvaluationMethod;
-import com.ecaservice.model.EvaluationMethodVisitor;
+import com.ecaservice.model.ClassificationResult;
+import com.ecaservice.model.entity.EvaluationMethod;
+import com.ecaservice.model.entity.EvaluationMethodVisitor;
 import com.ecaservice.service.EvaluationService;
 import eca.core.evaluation.Evaluation;
-import eca.model.ClassifierDescriptor;
-import eca.model.InputData;
+import eca.core.evaluation.EvaluationResults;
+import com.ecaservice.model.InputData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,23 +53,23 @@ public class EvaluationServiceImpl implements EvaluationService {
                                               final Integer numFolds,
                                               final Integer numTests) {
 
-        Assert.notNull(inputData, "Input data is not specified!");
-        Assert.notNull(inputData.getClassifier(), "Classifier is not specified!");
-        Assert.notNull(inputData.getData(), "Input data is not specified!");
-        Assert.notNull(evaluationMethod, "Evaluation method is not specified!");
-
-        final AbstractClassifier classifier = inputData.getClassifier();
-        final Instances data = inputData.getData();
-        final String classifierName = classifier.getClass().getSimpleName();
-
-        log.info("Starting model evaluation.");
-
-        log.trace("Model evaluation starting for classifier = {}, data = {}, evaluationMethod = {}",
-                classifierName, data.relationName(), evaluationMethod);
-
         ClassificationResult classificationResult = new ClassificationResult();
 
         try {
+            Assert.notNull(inputData, "Input data is not specified!");
+            Assert.notNull(inputData.getClassifier(), "Classifier is not specified!");
+            Assert.notNull(inputData.getData(), "Input data is not specified!");
+            Assert.notNull(evaluationMethod, "Evaluation method is not specified!");
+
+            final AbstractClassifier classifier = inputData.getClassifier();
+            final Instances data = inputData.getData();
+            final String classifierName = classifier.getClass().getSimpleName();
+
+            log.info("Starting model evaluation.");
+
+            log.trace("Model evaluation starting for classifier = {}, data = {}, evaluationMethod = {}",
+                    classifierName, data.relationName(), evaluationMethod);
+
             final Evaluation evaluation = new Evaluation(data);
 
             final StopWatch stopWatch = new StopWatch(String.format("Stop watching for %s", classifierName));
@@ -136,9 +136,9 @@ public class EvaluationServiceImpl implements EvaluationService {
                 }
             });
 
-            ClassifierDescriptor classifierDescriptor = new ClassifierDescriptor(classifier, evaluation);
+            EvaluationResults evaluationResults = new EvaluationResults(classifier, evaluation);
 
-            classificationResult.setClassifierDescriptor(classifierDescriptor);
+            classificationResult.setEvaluationResults(evaluationResults);
             classificationResult.setSuccess(true);
 
             log.info("Evaluation for model '{}' has been successfully finished!", classifierName);

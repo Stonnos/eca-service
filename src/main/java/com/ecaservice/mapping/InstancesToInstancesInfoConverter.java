@@ -1,6 +1,6 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.model.InstancesInfo;
+import com.ecaservice.model.entity.InstancesInfo;
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.metadata.Type;
 import org.springframework.stereotype.Component;

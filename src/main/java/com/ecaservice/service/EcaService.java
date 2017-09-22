@@ -1,7 +1,7 @@
 package com.ecaservice.service;
 
-import com.ecaservice.dto.ClassificationResult;
-import com.ecaservice.dto.EvaluationRequest;
+import com.ecaservice.dto.EvaluationResponse;
+import com.ecaservice.model.EvaluationRequest;
 
 /**
  * Eca - service.
@@ -14,7 +14,7 @@ public interface EcaService {
      * Processes input request and returns classification results.
      *
      * @param request {@link EvaluationRequest} object
-     * @return {@link ClassificationResult} object
+     * @return {@link EvaluationResponse} object
      */
-    ClassificationResult processRequest(EvaluationRequest request);
+    EvaluationResponse processRequest(EvaluationRequest request);
 }

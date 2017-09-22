@@ -1,7 +1,7 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.TestDataBuilder;
-import com.ecaservice.model.InstancesInfo;
+import com.ecaservice.model.entity.InstancesInfo;
 import org.junit.Before;
 import org.junit.Test;
 import weka.core.Instances;
