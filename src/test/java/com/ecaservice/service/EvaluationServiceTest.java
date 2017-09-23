@@ -2,11 +2,11 @@ package com.ecaservice.service;
 
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.model.ClassificationResult;
+import com.ecaservice.model.InputData;
 import com.ecaservice.model.entity.EvaluationMethod;
 import com.ecaservice.service.impl.EvaluationServiceImpl;
 import eca.generators.SimpleDataGenerator;
 import eca.metrics.KNearestNeighbours;
-import com.ecaservice.model.InputData;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

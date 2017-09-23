@@ -8,6 +8,7 @@ import weka.core.Instances;
 
 /**
  * Input data model.
+ *
  * @author Roman Batygin
  */
 @Data

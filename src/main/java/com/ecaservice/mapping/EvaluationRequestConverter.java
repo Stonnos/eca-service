@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Implements the conversion of {@link EvaluationRequestDto} object into the {@link EvaluationRequest} object.
+ *
  * @author Roman Batygin
  */
 @Component

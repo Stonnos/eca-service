@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Main class.
+ *
  * @author Roman Batygin
  */
 @SpringBootApplication

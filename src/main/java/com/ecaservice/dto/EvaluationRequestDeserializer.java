@@ -14,6 +14,7 @@ import java.util.Base64;
 
 /**
  * Evaluation request json deserializer.
+ *
  * @author Roman Batygin
  */
 

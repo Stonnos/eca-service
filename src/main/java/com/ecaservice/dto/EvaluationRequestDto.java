@@ -8,6 +8,7 @@ import weka.core.Instances;
 
 /**
  * Evaluation request transport model.
+ *
  * @author Roman Batygin
  */
 @Data

@@ -38,7 +38,7 @@ public class EcaController {
      * Constructor with dependency spring injection.
      *
      * @param ecaService {@link EcaService} bean
-     * @param mapper {@link OrikaBeanMapper} bean
+     * @param mapper     {@link OrikaBeanMapper} bean
      */
     @Autowired
     public EcaController(EcaService ecaService, OrikaBeanMapper mapper) {
@@ -48,8 +48,9 @@ public class EcaController {
 
     /**
      * Processed the request on classifier model evaluation.
+     *
      * @param evaluationRequestDto {@link EvaluationRequestDto} object
-     * @param request {@link HttpServletRequest} object
+     * @param request              {@link HttpServletRequest} object
      * @return {@link ResponseEntity} object
      */
     @RequestMapping(value = "/execute", method = RequestMethod.POST)

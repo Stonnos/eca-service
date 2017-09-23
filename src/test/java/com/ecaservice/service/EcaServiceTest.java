@@ -4,12 +4,11 @@ import com.ecaservice.TestDataBuilder;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.TechnicalStatus;
-import com.ecaservice.model.ClassificationResult;
-import com.ecaservice.model.EvaluationRequest;
 import com.ecaservice.mapping.ClassifierToInputOptionsListConverter;
 import com.ecaservice.mapping.EvaluationRequestToEvaluationLogConverter;
 import com.ecaservice.mapping.InstancesToInstancesInfoConverter;
 import com.ecaservice.mapping.OrikaBeanMapper;
+import com.ecaservice.model.EvaluationRequest;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
@@ -35,7 +34,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 /**

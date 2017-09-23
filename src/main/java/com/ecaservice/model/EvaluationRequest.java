@@ -1,7 +1,6 @@
 package com.ecaservice.model;
 
 import com.ecaservice.model.entity.EvaluationMethod;
-import com.ecaservice.model.InputData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +9,7 @@ import java.util.Date;
 
 /**
  * Evaluation request model.
+ *
  * @author Roman Batygin
  */
 @Data

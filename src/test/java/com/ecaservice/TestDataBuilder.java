@@ -1,10 +1,10 @@
 package com.ecaservice;
 
 import com.ecaservice.model.EvaluationRequest;
+import com.ecaservice.model.InputData;
 import com.ecaservice.model.entity.EvaluationMethod;
 import eca.generators.SimpleDataGenerator;
 import eca.metrics.KNearestNeighbours;
-import com.ecaservice.model.InputData;
 import weka.core.Instances;
 
 import java.util.Date;

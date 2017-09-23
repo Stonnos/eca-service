@@ -42,7 +42,7 @@ public class EvaluationLog {
     private EvaluationMethod evaluationMethod;
 
     @Embedded
-    @AttributeOverrides( {
+    @AttributeOverrides({
             @AttributeOverride(name = "numFolds", column =
             @Column(name = "number_of_folds")),
             @AttributeOverride(name = "numTests", column =

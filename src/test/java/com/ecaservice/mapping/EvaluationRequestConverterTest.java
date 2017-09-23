@@ -12,8 +12,9 @@ import weka.core.Instances;
 import static org.junit.Assert.*;
 
 /**
- *  Unit tests that checks EvaluationRequestConverter functionality
+ * Unit tests that checks EvaluationRequestConverter functionality
  * (see {@link EvaluationRequestConverter}).
+ *
  * @author Roman Batygin
  */
 public class EvaluationRequestConverterTest extends AbstractConverterTest {
