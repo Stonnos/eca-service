@@ -3,9 +3,9 @@ package com.ecaservice.service.impl;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.TechnicalStatus;
+import com.ecaservice.mapping.OrikaBeanMapper;
 import com.ecaservice.model.ClassificationResult;
 import com.ecaservice.model.EvaluationRequest;
-import com.ecaservice.mapping.OrikaBeanMapper;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
@@ -62,7 +62,7 @@ public class EcaServiceImpl implements EcaService {
 
         EvaluationLog evaluationLog = mapper.map(request, EvaluationLog.class);
         evaluationLog.setEvaluationStatus(EvaluationStatus.PROGRESS);
-        evaluationLog = evaluationLogRepository.save(evaluationLog);
+        evaluationLogRepository.save(evaluationLog);
 
         EvaluationResponse evaluationResponse = new EvaluationResponse();
 

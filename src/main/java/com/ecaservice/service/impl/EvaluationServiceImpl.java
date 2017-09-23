@@ -3,12 +3,12 @@ package com.ecaservice.service.impl;
 
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.model.ClassificationResult;
+import com.ecaservice.model.InputData;
 import com.ecaservice.model.entity.EvaluationMethod;
 import com.ecaservice.model.entity.EvaluationMethodVisitor;
 import com.ecaservice.service.EvaluationService;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
-import com.ecaservice.model.InputData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,7 +65,7 @@ public class EvaluationServiceImpl implements EvaluationService {
             final Instances data = inputData.getData();
             final String classifierName = classifier.getClass().getSimpleName();
 
-            log.info("Starting model evaluation.");
+            log.info("Starting {} model evaluation.", classifierName);
 
             log.trace("Model evaluation starting for classifier = {}, data = {}, evaluationMethod = {}",
                     classifierName, data.relationName(), evaluationMethod);

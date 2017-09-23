@@ -55,7 +55,7 @@
                 <jdbc.url>jdbc:mysql://localhost:3306/eca?useUnicode=true&amp;characterEncoding=UTF-8</jdbc.url>
                 <jdbc.user>root</jdbc.user>
                 <jdbc.password>123</jdbc.password>
-                <server.port>8085</server.port>
+                <server.port>8090</server.port>
             </properties>
         </profile>
 
@@ -69,7 +69,7 @@
                 <jdbc.driver>org.h2.Driver</jdbc.driver>
                 <jdbc.ddlAuto>update</jdbc.ddlAuto>
                 <jdbc.dialect>org.hibernate.dialect.H2Dialect</jdbc.dialect>
-                <server.port>8008</server.port>
+                <server.port>8090</server.port>
             </properties>
         </profile>
 
@@ -78,12 +78,12 @@
             <id>postgres</id>
             <properties>
                 <jdbc.url>jdbc:postgresql://localhost:5432/eca</jdbc.url>
-                <jdbc.user>roman</jdbc.user>
-                <jdbc.password>123</jdbc.password>
+                <jdbc.user>postgres</jdbc.user>
+                <jdbc.password>postgres</jdbc.password>
                 <jdbc.driver>org.postgresql.Driver</jdbc.driver>
                 <jdbc.ddlAuto>update</jdbc.ddlAuto>
                 <jdbc.dialect>org.hibernate.dialect.PostgreSQL9Dialect</jdbc.dialect>
-                <server.port>8008</server.port>
+                <server.port>8090</server.port>
             </properties>
         </profile>
 
@@ -97,7 +97,7 @@
                 <jdbc.driver>oracle.jdbc.driver.OracleDriver</jdbc.driver>
                 <jdbc.ddlAuto>update</jdbc.ddlAuto>
                 <jdbc.dialect>org.hibernate.dialect.Oracle10gDialect</jdbc.dialect>
-                <server.port>8008</server.port>
+                <server.port>8090</server.port>
             </properties>
         </profile>
 
