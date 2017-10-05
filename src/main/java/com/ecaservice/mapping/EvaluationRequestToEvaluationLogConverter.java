@@ -21,20 +21,15 @@ public class EvaluationRequestToEvaluationLogConverter extends CustomConverter<E
     @Override
     public EvaluationLog convert(EvaluationRequest request, Type<? extends EvaluationLog> logType) {
         EvaluationLog evaluationLog = new EvaluationLog();
-
         evaluationLog.setIpAddress(request.getIpAddress());
         evaluationLog.setRequestDate(request.getRequestDate());
-
         InputData inputData = request.getInputData();
-
         evaluationLog.setClassifierName(inputData.getClassifier().getClass().getSimpleName());
         evaluationLog.setInputOptionsList(mapperFacade.map(inputData.getClassifier(), InputOptionsList.class)
                 .getInputOptionsList());
         evaluationLog.setInstancesInfo(mapperFacade.map(inputData.getData(), InstancesInfo.class));
         evaluationLog.setEvaluationMethod(request.getEvaluationMethod());
-
         evaluationLog.setEvaluationOptions(new EvaluationOptions(request.getNumFolds(), request.getNumTests()));
-
         return evaluationLog;
     }
 }

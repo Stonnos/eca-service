@@ -11,10 +11,19 @@ import lombok.Data;
 @Data
 public class ClassificationResult {
 
+    /**
+     * Evaluation results
+     */
     private EvaluationResults evaluationResults;
 
+    /**
+     * Success evaluation?
+     */
     private boolean success;
 
+    /**
+     * Error message
+     */
     private String errorMessage;
 
 }

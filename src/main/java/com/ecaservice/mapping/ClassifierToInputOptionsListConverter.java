@@ -17,21 +17,18 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Component
-public class ClassifierToInputOptionsListConverter extends CustomConverter<Classifier, InputOptionsList> {
+public class ClassifierToInputOptionsListConverter extends CustomConverter<AbstractClassifier, InputOptionsList> {
 
     @Override
-    public InputOptionsList convert(Classifier classifier, Type<? extends InputOptionsList> listType) {
-        String[] options = ((AbstractClassifier) classifier).getOptions();
-
+    public InputOptionsList convert(AbstractClassifier classifier, Type<? extends InputOptionsList> listType) {
+        String[] options = classifier.getOptions();
         List<InputOptions> optionsList = new ArrayList<>(options.length / 2);
-
         for (int i = 0; i < options.length; i += 2) {
             InputOptions inputOptions = new InputOptions();
             inputOptions.setName(options[i]);
             inputOptions.setValue(options[i + 1]);
             optionsList.add(inputOptions);
         }
-
         return new InputOptionsList(optionsList);
     }
 }

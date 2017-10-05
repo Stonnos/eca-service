@@ -17,8 +17,14 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class EvaluationOptions {
 
+    /**
+     * Number of folds in k * V cross validation method
+     */
     private Integer numFolds;
 
+    /**
+     * Number of tests in k * V cross validation method
+     */
     private Integer numTests;
 
 }

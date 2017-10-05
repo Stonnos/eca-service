@@ -27,6 +27,10 @@ public class EvaluationLog {
     @Column(name = "request_date", nullable = false)
     private Date requestDate;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "operation_date", nullable = false)
+    private Date operationDate;
+
     @Column(name = "classifier_name", nullable = false)
     private String classifierName;
 
@@ -34,7 +38,7 @@ public class EvaluationLog {
     @Column(name = "evaluation_status", nullable = false)
     private EvaluationStatus evaluationStatus;
 
-    @Column(name = "error_message")
+    @Column(name = "error_message", columnDefinition = "text")
     private String errorMessage;
 
     @Enumerated(EnumType.STRING)

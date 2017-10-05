@@ -17,15 +17,33 @@ import java.util.Date;
 @AllArgsConstructor
 public class EvaluationRequest {
 
+    /**
+     * Remote ip address
+     */
     private String ipAddress;
 
+    /**
+     * Request date
+     */
     private Date requestDate;
 
+    /**
+     * Input data
+     */
     private InputData inputData;
 
+    /**
+     * Evaluation method
+     */
     private EvaluationMethod evaluationMethod;
 
+    /**
+     * Number of folds in k * V cross validation method
+     */
     private Integer numFolds;
 
+    /**
+     * Number of tests in k * V cross validation method
+     */
     private Integer numTests;
 }
