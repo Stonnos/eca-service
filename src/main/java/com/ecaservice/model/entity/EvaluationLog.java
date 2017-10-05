@@ -54,8 +54,7 @@ public class EvaluationLog {
     })
     private EvaluationOptions evaluationOptions;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "instances_info_id")
+    @OneToOne(mappedBy = "evaluationLog", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private InstancesInfo instancesInfo;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

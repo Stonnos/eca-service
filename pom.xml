@@ -81,7 +81,7 @@
                 <jdbc.user>postgres</jdbc.user>
                 <jdbc.password>postgres</jdbc.password>
                 <jdbc.driver>org.postgresql.Driver</jdbc.driver>
-                <jdbc.ddlAuto>update</jdbc.ddlAuto>
+                <jdbc.ddlAuto>create-drop</jdbc.ddlAuto>
                 <jdbc.dialect>org.hibernate.dialect.PostgreSQL9Dialect</jdbc.dialect>
                 <server.port>8090</server.port>
             </properties>

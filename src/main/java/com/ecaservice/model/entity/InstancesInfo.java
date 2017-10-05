@@ -30,4 +30,8 @@ public class InstancesInfo {
     @Column(name = "num_classes", nullable = false)
     private Integer numClasses;
 
+    @OneToOne
+    @JoinColumn(name = "evaluation_log_id")
+    private EvaluationLog evaluationLog;
+
 }
