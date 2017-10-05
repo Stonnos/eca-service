@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * Implements the main rest controller for processing input requests.
@@ -57,10 +57,10 @@ public class EcaController {
     public ResponseEntity<EvaluationResponse> execute(@RequestBody EvaluationRequestDto evaluationRequestDto,
                                                       HttpServletRequest request) {
 
-        Date requestDate = new Date();
+        LocalDateTime requestDate = LocalDateTime.now();
         String ipAddress = request.getRemoteAddr();
 
-        log.info("Received request for client {} at: {}", ipAddress, DATE_FORMAT.format(requestDate));
+        //log.info("Received request for client {} at: {}", ipAddress, DATE_FORMAT.format(requestDate));
 
         EvaluationRequest evaluationRequest = mapper.map(evaluationRequestDto, EvaluationRequest.class);
         evaluationRequest.setRequestDate(requestDate);

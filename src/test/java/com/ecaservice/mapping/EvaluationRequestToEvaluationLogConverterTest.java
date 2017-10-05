@@ -8,7 +8,7 @@ import com.ecaservice.model.entity.EvaluationMethod;
 import eca.metrics.KNearestNeighbours;
 import org.junit.Test;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import static org.junit.Assert.*;
 
@@ -24,7 +24,7 @@ public class EvaluationRequestToEvaluationLogConverterTest extends AbstractConve
     public void testEvaluationRequestToEvaluationLogConversion() {
         EvaluationRequest evaluationRequest = new EvaluationRequest();
         evaluationRequest.setIpAddress("127.0.0.1");
-        evaluationRequest.setRequestDate(new Date());
+        evaluationRequest.setRequestDate(LocalDateTime.now());
         evaluationRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
 
         InputData inputData = new InputData(new KNearestNeighbours(),

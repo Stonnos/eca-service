@@ -4,6 +4,7 @@ import ma.glasnost.orika.Converter;
 import ma.glasnost.orika.Mapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.converter.ConverterFactory;
+import ma.glasnost.orika.converter.builtin.PassThroughConverter;
 import ma.glasnost.orika.impl.ConfigurableMapper;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import ma.glasnost.orika.metadata.ClassMapBuilder;
@@ -12,6 +13,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
@@ -79,6 +81,7 @@ public class OrikaBeanMapper extends ConfigurableMapper implements ApplicationCo
         for (Converter converter : converters.values()) {
             addConverter(converter);
         }
+        factory.getConverterFactory().registerConverter(new PassThroughConverter(LocalDateTime.class));
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

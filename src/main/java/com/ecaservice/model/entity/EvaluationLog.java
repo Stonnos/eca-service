@@ -3,7 +3,7 @@ package com.ecaservice.model.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -23,13 +23,11 @@ public class EvaluationLog {
     @Column(name = "ip_address", nullable = false)
     private String ipAddress;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "request_date", nullable = false)
-    private Date requestDate;
+    private LocalDateTime requestDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "operation_date", nullable = false)
-    private Date operationDate;
+    private LocalDateTime operationDate;
 
     @Column(name = "classifier_name", nullable = false)
     private String classifierName;

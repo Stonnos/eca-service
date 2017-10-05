@@ -7,7 +7,7 @@ import eca.generators.SimpleDataGenerator;
 import eca.metrics.KNearestNeighbours;
 import weka.core.Instances;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * Test data builder class.
@@ -43,7 +43,7 @@ public class TestDataBuilder {
                                                             int numAttributes) {
         EvaluationRequest request = new EvaluationRequest();
         request.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        request.setRequestDate(new Date());
+        request.setRequestDate(LocalDateTime.now());
         request.setIpAddress(ipAddress);
         request.setInputData(new InputData(new KNearestNeighbours(),
                 generate(numInstances, numAttributes)));

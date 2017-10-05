@@ -30,6 +30,7 @@
         <assertj.core.version>3.8.0</assertj.core.version>
         <mockito.version>1.9.5</mockito.version>
         <jackson.version>2.9.1</jackson.version>
+        <hibernate.version>5.2.10.Final</hibernate.version>
     </properties>
 
     <repositories>
@@ -104,6 +105,17 @@
     </profiles>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-java8</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
 
         <!-- Slf4j -->
         <dependency>

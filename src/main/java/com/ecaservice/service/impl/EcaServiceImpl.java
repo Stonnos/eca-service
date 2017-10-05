@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -63,7 +63,7 @@ public class EcaServiceImpl implements EcaService {
 
         EvaluationLog evaluationLog = mapper.map(request, EvaluationLog.class);
         evaluationLog.setEvaluationStatus(EvaluationStatus.PROGRESS);
-        evaluationLog.setOperationDate(new Date());
+        evaluationLog.setOperationDate(LocalDateTime.now());
         evaluationLogRepository.save(evaluationLog);
 
         EvaluationResponse evaluationResponse = new EvaluationResponse();
@@ -97,7 +97,7 @@ public class EcaServiceImpl implements EcaService {
             evaluationResponse.setStatus(TechnicalStatus.ERROR);
             evaluationResponse.setErrorMessage(ex.getMessage());
         } finally {
-            evaluationLog.setOperationDate(new Date());
+            evaluationLog.setOperationDate(LocalDateTime.now());
             evaluationLogRepository.save(evaluationLog);
         }
 

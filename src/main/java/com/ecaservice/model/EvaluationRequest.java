@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * Evaluation request model.
@@ -25,7 +25,7 @@ public class EvaluationRequest {
     /**
      * Request date
      */
-    private Date requestDate;
+    private LocalDateTime requestDate;
 
     /**
      * Input data
