@@ -9,7 +9,9 @@ import org.junit.Before;
 import org.junit.Test;
 import weka.core.Instances;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * Unit tests that checks EvaluationRequestConverter functionality

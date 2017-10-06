@@ -11,7 +11,10 @@ import org.junit.Test;
 
 import java.time.LocalDateTime;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit tests that checks EvaluationRequestToEvaluationLogConverter functionality
@@ -41,9 +44,9 @@ public class EvaluationRequestToEvaluationLogConverterTest extends AbstractConve
         assertEquals(evaluationRequest.getIpAddress(), evaluationLog.getIpAddress());
         assertEquals(evaluationRequest.getRequestDate(), evaluationLog.getRequestDate());
         assertEquals(evaluationRequest.getNumFolds(),
-                Integer.valueOf(evaluationLog.getEvaluationOptionsMap().get(EcaServiceDictionary.NUMBER_OF_FOLDS)));
+                Integer.valueOf(evaluationLog.getEvaluationOptionsMap().get(EcaServiceDictionary.NUMBER_OF_FOLDS_KEY)));
         assertEquals(evaluationRequest.getNumTests(),
-                Integer.valueOf(evaluationLog.getEvaluationOptionsMap().get(EcaServiceDictionary.NUMBER_OF_FOLDS)));
+                Integer.valueOf(evaluationLog.getEvaluationOptionsMap().get(EcaServiceDictionary.NUMBER_OF_FOLDS_KEY)));
         assertEquals(evaluationRequest.getInputData().getData().relationName(),
                 evaluationLog.getInstancesInfo().getRelationName());
         assertEquals(evaluationRequest.getInputData().getData().numAttributes(),
@@ -52,7 +55,37 @@ public class EvaluationRequestToEvaluationLogConverterTest extends AbstractConve
                 evaluationLog.getInstancesInfo().getNumClasses().intValue());
         assertEquals(evaluationRequest.getInputData().getData().numInstances(),
                 evaluationLog.getInstancesInfo().getNumInstances().intValue());
-        assertNotNull(evaluationLog.getInputOptionsList());
-        assertFalse(evaluationLog.getInputOptionsList().isEmpty());
+        assertNotNull(evaluationLog.getInputOptionsMap());
+        assertFalse(evaluationLog.getInputOptionsMap().isEmpty());
+    }
+
+    @Test
+    public void testEvaluationRequestToEvaluationLogConversionInTrainingData() {
+        EvaluationRequest evaluationRequest = new EvaluationRequest();
+        evaluationRequest.setIpAddress(TestDataHelper.IP_ADDRESS);
+        evaluationRequest.setRequestDate(LocalDateTime.now());
+        evaluationRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
+
+        InputData inputData = new InputData(new KNearestNeighbours(),
+                TestDataHelper.generate(TestDataHelper.NUM_INSTANCES, TestDataHelper.NUM_ATTRIBUTES));
+        evaluationRequest.setInputData(inputData);
+
+        EvaluationLog evaluationLog = mapper.map(evaluationRequest, EvaluationLog.class);
+
+        assertNotNull(evaluationLog);
+        assertEquals(evaluationRequest.getEvaluationMethod(), evaluationLog.getEvaluationMethod());
+        assertEquals(evaluationRequest.getIpAddress(), evaluationLog.getIpAddress());
+        assertEquals(evaluationRequest.getRequestDate(), evaluationLog.getRequestDate());
+        assertTrue(evaluationLog.getEvaluationOptionsMap().isEmpty());
+        assertEquals(evaluationRequest.getInputData().getData().relationName(),
+                evaluationLog.getInstancesInfo().getRelationName());
+        assertEquals(evaluationRequest.getInputData().getData().numAttributes(),
+                evaluationLog.getInstancesInfo().getNumAttributes().intValue());
+        assertEquals(evaluationRequest.getInputData().getData().numClasses(),
+                evaluationLog.getInstancesInfo().getNumClasses().intValue());
+        assertEquals(evaluationRequest.getInputData().getData().numInstances(),
+                evaluationLog.getInstancesInfo().getNumInstances().intValue());
+        assertNotNull(evaluationLog.getInputOptionsMap());
+        assertFalse(evaluationLog.getInputOptionsMap().isEmpty());
     }
 }

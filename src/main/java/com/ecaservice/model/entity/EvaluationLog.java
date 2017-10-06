@@ -14,11 +14,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -58,25 +56,19 @@ public class EvaluationLog {
     @Column(name = "evaluation_method", nullable = false)
     private EvaluationMethod evaluationMethod;
 
-    /*@Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "numFolds", column =
-            @Column(name = "number_of_folds")),
-            @AttributeOverride(name = "numTests", column =
-            @Column(name = "number_of_tests")),
-    })
-    private EvaluationOptions evaluationOptions;*/
+    @ElementCollection
+    @CollectionTable(name = "input_options")
+    @MapKeyColumn(name = "option")
+    @Column(name = "option_value", nullable = false)
+    private Map<String, String> inputOptionsMap;
+
     @ElementCollection
     @CollectionTable(name = "evaluation_options")
     @MapKeyColumn(name = "option")
-    @Column(name = "value")
+    @Column(name = "option_value")
     private Map<String, String> evaluationOptionsMap;
 
     @OneToOne(mappedBy = "evaluationLog", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private InstancesInfo instancesInfo;
-
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "evaluation_log_id")
-    private List<InputOptions> inputOptionsList;
 
 }

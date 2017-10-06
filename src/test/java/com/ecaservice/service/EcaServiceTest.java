@@ -4,7 +4,7 @@ import com.ecaservice.TestDataHelper;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.TechnicalStatus;
-import com.ecaservice.mapping.ClassifierToInputOptionsListConverter;
+import com.ecaservice.mapping.ClassifierToInputOptionsMapConverter;
 import com.ecaservice.mapping.EvaluationRequestToEvaluationLogConverter;
 import com.ecaservice.mapping.InstancesToInstancesInfoConverter;
 import com.ecaservice.mapping.OrikaBeanMapper;
@@ -44,7 +44,7 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {OrikaBeanMapper.class,
         InstancesToInstancesInfoConverter.class,
-        ClassifierToInputOptionsListConverter.class,
+        ClassifierToInputOptionsMapConverter.class,
         EvaluationRequestToEvaluationLogConverter.class})
 @AutoConfigureDataJpa
 @EnableJpaRepositories(basePackageClasses = EvaluationLogRepository.class)

@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {OrikaBeanMapper.class,
         InstancesToInstancesInfoConverter.class,
-        ClassifierToInputOptionsListConverter.class,
+        ClassifierToInputOptionsMapConverter.class,
         EvaluationRequestToEvaluationLogConverter.class,
         EvaluationRequestConverter.class})
 public abstract class AbstractConverterTest {
