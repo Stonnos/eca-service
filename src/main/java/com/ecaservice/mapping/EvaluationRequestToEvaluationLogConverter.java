@@ -4,11 +4,17 @@ import com.ecaservice.model.EvaluationRequest;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.InputOptionsList;
 import com.ecaservice.model.entity.EvaluationLog;
-import com.ecaservice.model.entity.EvaluationOptions;
+import com.ecaservice.model.entity.EvaluationMethod;
 import com.ecaservice.model.entity.InstancesInfo;
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.metadata.Type;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+import java.util.HashMap;
+
+import static com.ecaservice.dictionary.EcaServiceDictionary.NUMBER_OF_FOLDS;
+import static com.ecaservice.dictionary.EcaServiceDictionary.NUMBER_OF_TESTS;
 
 /**
  * Implements the conversion of evaluation request into the evaluation log entity.
@@ -29,7 +35,14 @@ public class EvaluationRequestToEvaluationLogConverter extends CustomConverter<E
                 .getInputOptionsList());
         evaluationLog.setInstancesInfo(mapperFacade.map(inputData.getData(), InstancesInfo.class));
         evaluationLog.setEvaluationMethod(request.getEvaluationMethod());
-        evaluationLog.setEvaluationOptions(new EvaluationOptions(request.getNumFolds(), request.getNumTests()));
+
+        if (EvaluationMethod.CROSS_VALIDATION.equals(request.getEvaluationMethod())) {
+            evaluationLog.setEvaluationOptionsMap(new HashMap<>());
+            evaluationLog.getEvaluationOptionsMap().put(NUMBER_OF_FOLDS, String.valueOf(request.getNumFolds()));
+            evaluationLog.getEvaluationOptionsMap().put(NUMBER_OF_TESTS, String.valueOf(request.getNumTests()));
+        } else {
+            evaluationLog.setEvaluationOptionsMap(Collections.emptyMap());
+        }
         return evaluationLog;
     }
 }

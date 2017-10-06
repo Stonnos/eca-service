@@ -22,14 +22,9 @@ public class ClassifierToInputOptionsListConverterTest extends AbstractConverter
     @Test
     public void testMapClassifierTOInputOptionsList() {
         KNearestNeighbours kNearestNeighbours = new KNearestNeighbours();
-        kNearestNeighbours.setDistance(new ChebyshevDistance());
-        kNearestNeighbours.setWeight(0.77);
-        kNearestNeighbours.setNumNeighbours(50);
-
         List<InputOptions> optionsList = mapper.map(kNearestNeighbours, InputOptionsList.class)
                 .getInputOptionsList();
         String[] options = kNearestNeighbours.getOptions();
-
         assertTrue(optionsList.size() == 3);
 
         for (int i = 0, j = 0; i < optionsList.size(); i++, j += 2) {

@@ -1,6 +1,6 @@
 package com.ecaservice.service;
 
-import com.ecaservice.TestDataBuilder;
+import com.ecaservice.TestDataHelper;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.TechnicalStatus;
@@ -53,13 +53,6 @@ import static org.mockito.Mockito.when;
 @TestPropertySource("classpath:application-test.properties")
 public class EcaServiceTest {
 
-    private static final int NUM_INSTANCES = 25;
-    private static final int NUM_ATTRIBUTES = 6;
-    private static final int SEED = 3;
-    private static final int NUM_FOLDS = 10;
-    private static final int NUM_TEST = 10;
-    private static final String IP = "127.0.0.1";
-
     @Mock
     private CrossValidationConfig crossValidationConfig;
     @Autowired
@@ -78,15 +71,12 @@ public class EcaServiceTest {
 
     @Before
     public void setUp() {
-        when(crossValidationConfig.getSeed()).thenReturn(SEED);
-        when(crossValidationConfig.getNumFolds()).thenReturn(NUM_FOLDS);
-        when(crossValidationConfig.getNumTests()).thenReturn(NUM_TEST);
-
+        when(crossValidationConfig.getSeed()).thenReturn(TestDataHelper.SEED);
+        when(crossValidationConfig.getNumFolds()).thenReturn(TestDataHelper.NUM_FOLDS);
+        when(crossValidationConfig.getNumTests()).thenReturn(TestDataHelper.NUM_TESTS);
         executorService = Executors.newCachedThreadPool();
         calculationExecutorService = new CalculationExecutorServiceImpl(executorService);
-
         evaluationService = new EvaluationServiceImpl(crossValidationConfig);
-
         ecaService = new EcaServiceImpl(crossValidationConfig, calculationExecutorService, evaluationService,
                 evaluationLogRepository, mapper);
     }
@@ -98,59 +88,41 @@ public class EcaServiceTest {
 
     @Test
     public void testSuccessClassification() {
-
-        EvaluationRequest request = TestDataBuilder.createEvaluationRequest(IP, NUM_INSTANCES, NUM_ATTRIBUTES);
-
+        EvaluationRequest request = TestDataHelper.createEvaluationRequest(TestDataHelper.IP_ADDRESS,
+                TestDataHelper.NUM_INSTANCES, TestDataHelper.NUM_ATTRIBUTES);
         EvaluationResponse evaluationResponse = ecaService.processRequest(request);
-
         assertEquals(evaluationResponse.getStatus(), TechnicalStatus.SUCCESS);
-
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
-
         assertEquals(evaluationLogList.size(), 1);
         assertEquals(evaluationLogList.get(0).getEvaluationStatus(), EvaluationStatus.FINISHED);
-
         evaluationLogRepository.deleteAll();
-
     }
 
     @Test
     public void testErrorClassification() {
-
-        EvaluationRequest request = TestDataBuilder.createEvaluationRequest(IP, NUM_INSTANCES, NUM_ATTRIBUTES);
-
+        EvaluationRequest request = TestDataHelper.createEvaluationRequest(TestDataHelper.IP_ADDRESS,
+                TestDataHelper.NUM_INSTANCES, TestDataHelper.NUM_ATTRIBUTES);
         when(crossValidationConfig.getTimeout()).thenThrow(Exception.class);
         EvaluationResponse evaluationResponse = ecaService.processRequest(request);
-
         assertEquals(evaluationResponse.getStatus(), TechnicalStatus.ERROR);
-
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
-
         assertEquals(evaluationLogList.size(), 1);
         assertEquals(evaluationLogList.get(0).getEvaluationStatus(), EvaluationStatus.ERROR);
-
         evaluationLogRepository.deleteAll();
 
     }
 
     @Test
     public void testTimeoutInClassification() {
-
-        EvaluationRequest request = TestDataBuilder.createEvaluationRequest(IP, NUM_INSTANCES, NUM_ATTRIBUTES);
-
+        EvaluationRequest request = TestDataHelper.createEvaluationRequest(TestDataHelper.IP_ADDRESS,
+                TestDataHelper.NUM_INSTANCES, TestDataHelper.NUM_ATTRIBUTES);
         when(crossValidationConfig.getTimeout()).thenThrow(TimeoutException.class);
-
         EvaluationResponse evaluationResponse = ecaService.processRequest(request);
-
         assertEquals(evaluationResponse.getStatus(), TechnicalStatus.TIMEOUT);
-
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
-
         assertEquals(evaluationLogList.size(), 1);
         assertEquals(evaluationLogList.get(0).getEvaluationStatus(), EvaluationStatus.TIMEOUT);
-
         evaluationLogRepository.deleteAll();
-
     }
 
 }

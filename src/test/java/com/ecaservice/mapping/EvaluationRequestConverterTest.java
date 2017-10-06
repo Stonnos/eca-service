@@ -1,6 +1,6 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.TestDataBuilder;
+import com.ecaservice.TestDataHelper;
 import com.ecaservice.dto.EvaluationRequestDto;
 import com.ecaservice.model.EvaluationRequest;
 import com.ecaservice.model.entity.EvaluationMethod;
@@ -23,7 +23,7 @@ public class EvaluationRequestConverterTest extends AbstractConverterTest {
 
     @Before
     public void setUp() {
-        instances = TestDataBuilder.generate(25, 6);
+        instances = TestDataHelper.generate(TestDataHelper.NUM_INSTANCES, TestDataHelper.NUM_ATTRIBUTES);
     }
 
     @Test
@@ -32,11 +32,9 @@ public class EvaluationRequestConverterTest extends AbstractConverterTest {
         evaluationRequestDto.setClassifier(new KNearestNeighbours());
         evaluationRequestDto.setData(instances);
         evaluationRequestDto.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        evaluationRequestDto.setNumFolds(10);
-        evaluationRequestDto.setNumTests(10);
-
+        evaluationRequestDto.setNumFolds(TestDataHelper.NUM_FOLDS);
+        evaluationRequestDto.setNumTests(TestDataHelper.NUM_TESTS);
         EvaluationRequest evaluationRequest = mapper.map(evaluationRequestDto, EvaluationRequest.class);
-
         assertNotNull(evaluationRequest);
         assertNotNull(evaluationRequest.getInputData());
         assertEquals(evaluationRequestDto.getClassifier(), evaluationRequest.getInputData().getClassifier());
@@ -52,11 +50,9 @@ public class EvaluationRequestConverterTest extends AbstractConverterTest {
         evaluationRequestDto.setClassifier(new KNearestNeighbours());
         evaluationRequestDto.setData(instances);
         evaluationRequestDto.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
-        evaluationRequestDto.setNumFolds(10);
-        evaluationRequestDto.setNumTests(10);
-
+        evaluationRequestDto.setNumFolds(TestDataHelper.NUM_FOLDS);
+        evaluationRequestDto.setNumTests(TestDataHelper.NUM_TESTS);
         EvaluationRequest evaluationRequest = mapper.map(evaluationRequestDto, EvaluationRequest.class);
-
         assertNotNull(evaluationRequest);
         assertNotNull(evaluationRequest.getInputData());
         assertEquals(evaluationRequestDto.getClassifier(), evaluationRequest.getInputData().getClassifier());

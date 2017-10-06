@@ -10,11 +10,18 @@ import weka.core.Instances;
 import java.time.LocalDateTime;
 
 /**
- * Test data builder class.
+ * Test data helper class.
  *
  * @author Roman Batygin
  */
-public class TestDataBuilder {
+public class TestDataHelper {
+
+    public static final int NUM_INSTANCES = 25;
+    public static final int NUM_ATTRIBUTES = 6;
+    public static final int SEED = 3;
+    public static final int NUM_FOLDS = 10;
+    public static final int NUM_TESTS = 10;
+    public static final String IP_ADDRESS = "127.0.0.1";
 
     /**
      * Generates the test data set.
@@ -45,8 +52,7 @@ public class TestDataBuilder {
         request.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         request.setRequestDate(LocalDateTime.now());
         request.setIpAddress(ipAddress);
-        request.setInputData(new InputData(new KNearestNeighbours(),
-                generate(numInstances, numAttributes)));
+        request.setInputData(new InputData(new KNearestNeighbours(), generate(numInstances, numAttributes)));
         return request;
     }
 

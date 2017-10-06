@@ -1,5 +1,6 @@
 package com.ecaservice.service;
 
+import com.ecaservice.TestDataHelper;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.model.ClassificationResult;
 import com.ecaservice.model.InputData;
@@ -26,12 +27,6 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 public class EvaluationServiceTest {
 
-    private static final int SEED = 3;
-    private static final int NUM_FOLDS = 10;
-    private static final int NUM_TEST = 10;
-    private static final int NUM_INSTANCES = 25;
-    private static final int NUM_ATTRIBUTES = 6;
-
     @Mock
     private CrossValidationConfig config;
 
@@ -40,12 +35,12 @@ public class EvaluationServiceTest {
 
     @Before
     public void setUp() {
-        when(config.getSeed()).thenReturn(SEED);
-        when(config.getNumFolds()).thenReturn(NUM_FOLDS);
-        when(config.getNumTests()).thenReturn(NUM_TEST);
+        when(config.getSeed()).thenReturn(TestDataHelper.SEED);
+        when(config.getNumFolds()).thenReturn(TestDataHelper.NUM_FOLDS);
+        when(config.getNumTests()).thenReturn(TestDataHelper.NUM_TESTS);
         SimpleDataGenerator dataGenerator = new SimpleDataGenerator();
-        dataGenerator.setNumInstances(NUM_INSTANCES);
-        dataGenerator.setNumAttributes(NUM_ATTRIBUTES);
+        dataGenerator.setNumInstances(TestDataHelper.NUM_INSTANCES);
+        dataGenerator.setNumAttributes(TestDataHelper.NUM_ATTRIBUTES);
         testInstances = dataGenerator.generate();
         evaluationService = new EvaluationServiceImpl(config);
     }
@@ -54,7 +49,7 @@ public class EvaluationServiceTest {
     public void testForNullClassifier() {
         InputData inputData = new InputData(null, testInstances);
         ClassificationResult result = evaluationService.evaluateModel(inputData,
-                EvaluationMethod.TRAINING_DATA, NUM_FOLDS, NUM_TEST);
+                EvaluationMethod.TRAINING_DATA, TestDataHelper.NUM_FOLDS, TestDataHelper.NUM_TESTS);
         assertFalse(result.isSuccess());
     }
 
@@ -62,7 +57,7 @@ public class EvaluationServiceTest {
     public void testForNullData() {
         InputData inputData = new InputData(new KNearestNeighbours(), null);
         ClassificationResult result = evaluationService.evaluateModel(inputData,
-                EvaluationMethod.TRAINING_DATA, NUM_FOLDS, NUM_TEST);
+                EvaluationMethod.TRAINING_DATA, TestDataHelper.NUM_FOLDS, TestDataHelper.NUM_TESTS);
         assertFalse(result.isSuccess());
     }
 
@@ -72,7 +67,7 @@ public class EvaluationServiceTest {
         InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
         ClassificationResult result = evaluationService.evaluateModel(inputData,
                 EvaluationMethod.CROSS_VALIDATION,
-                EvaluationServiceImpl.MINIMUM_NUMBER_OF_FOLDS - 1, NUM_TEST);
+                EvaluationServiceImpl.MINIMUM_NUMBER_OF_FOLDS - 1, TestDataHelper.NUM_TESTS);
         assertFalse(result.isSuccess());
     }
 
@@ -80,7 +75,7 @@ public class EvaluationServiceTest {
     public void testForMinimumNumberOfTestsExceeded() {
         InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
         ClassificationResult result = evaluationService.evaluateModel(inputData,
-                EvaluationMethod.CROSS_VALIDATION, NUM_FOLDS,
+                EvaluationMethod.CROSS_VALIDATION, TestDataHelper.NUM_FOLDS,
                 EvaluationServiceImpl.MINIMUM_NUMBER_OF_TESTS - 1);
         assertFalse(result.isSuccess());
     }
@@ -90,7 +85,7 @@ public class EvaluationServiceTest {
         InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
         ClassificationResult result = evaluationService.evaluateModel(inputData,
                 EvaluationMethod.CROSS_VALIDATION,
-                EvaluationServiceImpl.MAXIMUM_NUMBER_OF_FOLDS + 1, NUM_TEST);
+                EvaluationServiceImpl.MAXIMUM_NUMBER_OF_FOLDS + 1, TestDataHelper.NUM_TESTS);
         assertFalse(result.isSuccess());
     }
 
@@ -98,7 +93,7 @@ public class EvaluationServiceTest {
     public void testForMaximumNumberOfTestsExceeded() {
         InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
         ClassificationResult result = evaluationService.evaluateModel(inputData,
-                EvaluationMethod.CROSS_VALIDATION, NUM_FOLDS,
+                EvaluationMethod.CROSS_VALIDATION, TestDataHelper.NUM_FOLDS,
                 EvaluationServiceImpl.MAXIMUM_NUMBER_OF_TESTS + 1);
         assertFalse(result.isSuccess());
     }
@@ -108,7 +103,6 @@ public class EvaluationServiceTest {
         InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
         ClassificationResult result = evaluationService.evaluateModel(inputData,
                 EvaluationMethod.TRAINING_DATA, null, null);
-
         assertTrue(result.isSuccess());
         assertFalse(result.getEvaluationResults().getEvaluation().isKCrossValidationMethod());
     }
@@ -117,8 +111,7 @@ public class EvaluationServiceTest {
     public void testCrossValidationMethod() {
         InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
         ClassificationResult result = evaluationService.evaluateModel(inputData,
-                EvaluationMethod.CROSS_VALIDATION, NUM_FOLDS, NUM_TEST);
-
+                EvaluationMethod.CROSS_VALIDATION, TestDataHelper.NUM_FOLDS, TestDataHelper.NUM_TESTS);
         assertTrue(result.isSuccess());
         assertTrue(result.getEvaluationResults().getEvaluation().isKCrossValidationMethod());
     }
@@ -126,11 +119,9 @@ public class EvaluationServiceTest {
     @Test
     public void testClassificationResultWithError() {
         when(config.getSeed()).thenThrow(Exception.class);
-
         InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
         ClassificationResult result = evaluationService.evaluateModel(inputData,
-                EvaluationMethod.CROSS_VALIDATION, NUM_FOLDS, NUM_TEST);
-
+                EvaluationMethod.CROSS_VALIDATION, TestDataHelper.NUM_FOLDS, TestDataHelper.NUM_TESTS);
         assertFalse(result.isSuccess());
     }
 
