@@ -1,10 +1,13 @@
 package com.ecaservice.dto;
 
-import com.ecaservice.model.entity.EvaluationMethod;
+import com.ecaservice.model.EvaluationMethod;
+import com.ecaservice.model.EvaluationOption;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
+
+import java.util.Map;
 
 /**
  * Evaluation request transport model.
@@ -15,13 +18,23 @@ import weka.core.Instances;
 @JsonDeserialize(using = EvaluationRequestDeserializer.class)
 public class EvaluationRequestDto {
 
+    /**
+     * Classifier model
+     */
     private AbstractClassifier classifier;
 
+    /**
+     * Training data
+     */
     private Instances data;
 
+    /**
+     * Evaluation method
+     */
     private EvaluationMethod evaluationMethod;
 
-    private Integer numFolds;
-
-    private Integer numTests;
+    /**
+     * Evaluation options map
+     */
+    private Map<EvaluationOption, String> evaluationOptionsMap;
 }

@@ -1,21 +1,11 @@
 package com.ecaservice.model.entity;
 
+import com.ecaservice.model.EvaluationMethod;
+import com.ecaservice.model.EvaluationOption;
+import com.ecaservice.model.EvaluationStatus;
 import lombok.Data;
 
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.MapKeyColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -58,15 +48,15 @@ public class EvaluationLog {
 
     @ElementCollection
     @CollectionTable(name = "input_options")
-    @MapKeyColumn(name = "option")
+    @MapKeyColumn(name = "option_name")
     @Column(name = "option_value", nullable = false)
     private Map<String, String> inputOptionsMap;
 
     @ElementCollection
     @CollectionTable(name = "evaluation_options")
-    @MapKeyColumn(name = "option")
+    @MapKeyColumn(name = "option_name")
     @Column(name = "option_value")
-    private Map<String, String> evaluationOptionsMap;
+    private Map<EvaluationOption, String> evaluationOptionsMap;
 
     @OneToOne(mappedBy = "evaluationLog", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private InstancesInfo instancesInfo;

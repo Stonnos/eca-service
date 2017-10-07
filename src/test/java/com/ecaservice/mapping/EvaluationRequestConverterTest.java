@@ -2,16 +2,17 @@ package com.ecaservice.mapping;
 
 import com.ecaservice.TestDataHelper;
 import com.ecaservice.dto.EvaluationRequestDto;
+import com.ecaservice.model.EvaluationMethod;
+import com.ecaservice.model.EvaluationOption;
 import com.ecaservice.model.EvaluationRequest;
-import com.ecaservice.model.entity.EvaluationMethod;
 import eca.metrics.KNearestNeighbours;
 import org.junit.Before;
 import org.junit.Test;
 import weka.core.Instances;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import java.util.HashMap;
+
+import static org.junit.Assert.*;
 
 /**
  * Unit tests that checks EvaluationRequestConverter functionality
@@ -34,16 +35,13 @@ public class EvaluationRequestConverterTest extends AbstractConverterTest {
         evaluationRequestDto.setClassifier(new KNearestNeighbours());
         evaluationRequestDto.setData(instances);
         evaluationRequestDto.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        evaluationRequestDto.setNumFolds(TestDataHelper.NUM_FOLDS);
-        evaluationRequestDto.setNumTests(TestDataHelper.NUM_TESTS);
         EvaluationRequest evaluationRequest = mapper.map(evaluationRequestDto, EvaluationRequest.class);
         assertNotNull(evaluationRequest);
         assertNotNull(evaluationRequest.getInputData());
         assertEquals(evaluationRequestDto.getClassifier(), evaluationRequest.getInputData().getClassifier());
         assertEquals(evaluationRequestDto.getData(), evaluationRequest.getInputData().getData());
         assertEquals(evaluationRequestDto.getEvaluationMethod(), evaluationRequest.getEvaluationMethod());
-        assertNull(evaluationRequest.getNumFolds());
-        assertNull(evaluationRequest.getNumTests());
+        assertTrue(evaluationRequest.getEvaluationOptionsMap().isEmpty());
     }
 
     @Test
@@ -52,15 +50,20 @@ public class EvaluationRequestConverterTest extends AbstractConverterTest {
         evaluationRequestDto.setClassifier(new KNearestNeighbours());
         evaluationRequestDto.setData(instances);
         evaluationRequestDto.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
-        evaluationRequestDto.setNumFolds(TestDataHelper.NUM_FOLDS);
-        evaluationRequestDto.setNumTests(TestDataHelper.NUM_TESTS);
+        evaluationRequestDto.setEvaluationOptionsMap(new HashMap<>());
+        evaluationRequestDto.getEvaluationOptionsMap().put(EvaluationOption.NUM_FOLDS,
+                String.valueOf(TestDataHelper.NUM_FOLDS));
+        evaluationRequestDto.getEvaluationOptionsMap().put(EvaluationOption.NUM_TESTS,
+                String.valueOf(TestDataHelper.NUM_TESTS));
         EvaluationRequest evaluationRequest = mapper.map(evaluationRequestDto, EvaluationRequest.class);
         assertNotNull(evaluationRequest);
         assertNotNull(evaluationRequest.getInputData());
         assertEquals(evaluationRequestDto.getClassifier(), evaluationRequest.getInputData().getClassifier());
         assertEquals(evaluationRequestDto.getData(), evaluationRequest.getInputData().getData());
         assertEquals(evaluationRequestDto.getEvaluationMethod(), evaluationRequest.getEvaluationMethod());
-        assertEquals(evaluationRequestDto.getNumFolds(), evaluationRequest.getNumFolds());
-        assertEquals(evaluationRequestDto.getNumTests(), evaluationRequest.getNumTests());
+        assertEquals(evaluationRequestDto.getEvaluationOptionsMap().get(EvaluationOption.NUM_FOLDS),
+                evaluationRequest.getEvaluationOptionsMap().get(EvaluationOption.NUM_FOLDS));
+        assertEquals(evaluationRequestDto.getEvaluationOptionsMap().get(EvaluationOption.NUM_TESTS),
+                evaluationRequest.getEvaluationOptionsMap().get(EvaluationOption.NUM_TESTS));
     }
 }

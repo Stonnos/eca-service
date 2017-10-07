@@ -15,9 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Implements the main rest controller for processing input requests.
@@ -29,7 +28,7 @@ import java.time.LocalDateTime;
 @RequestMapping("/eca-service")
 public class EcaController {
 
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss");
 
     private final EcaService ecaService;
     private final OrikaBeanMapper mapper;
@@ -56,20 +55,14 @@ public class EcaController {
     @RequestMapping(value = "/execute", method = RequestMethod.POST)
     public ResponseEntity<EvaluationResponse> execute(@RequestBody EvaluationRequestDto evaluationRequestDto,
                                                       HttpServletRequest request) {
-
         LocalDateTime requestDate = LocalDateTime.now();
         String ipAddress = request.getRemoteAddr();
-
-        //log.info("Received request for client {} at: {}", ipAddress, DATE_FORMAT.format(requestDate));
-
+        log.info("Received request for client {} at: {}", ipAddress, DATE_FORMAT.format(requestDate));
         EvaluationRequest evaluationRequest = mapper.map(evaluationRequestDto, EvaluationRequest.class);
         evaluationRequest.setRequestDate(requestDate);
         evaluationRequest.setIpAddress(ipAddress);
-
         EvaluationResponse evaluationResponse = ecaService.processRequest(evaluationRequest);
-
         log.info("Evaluation response with status [{}] was built.", evaluationResponse.getStatus());
-
         return new ResponseEntity<>(evaluationResponse, HttpStatus.OK);
     }
 

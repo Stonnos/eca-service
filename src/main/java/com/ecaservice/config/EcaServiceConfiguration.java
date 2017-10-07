@@ -23,4 +23,9 @@ public class EcaServiceConfiguration {
     public ExecutorService executorService() {
         return Executors.newCachedThreadPool();
     }
+
+    @Bean
+    public CrossValidationConfig crossValidationConfig() {
+        return new CrossValidationConfig();
+    }
 }

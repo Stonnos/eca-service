@@ -1,4 +1,4 @@
-package com.ecaservice.model.entity;
+package com.ecaservice.model;
 
 /**
  * Evaluation method enum.
@@ -12,7 +12,7 @@ public enum EvaluationMethod {
      */
     TRAINING_DATA {
         @Override
-        public void accept(EvaluationMethodVisitor visitor) throws Exception {
+        public void handle(EvaluationMethodVisitor visitor) throws Exception {
             visitor.evaluateModel();
         }
     },
@@ -22,7 +22,7 @@ public enum EvaluationMethod {
      */
     CROSS_VALIDATION {
         @Override
-        public void accept(EvaluationMethodVisitor visitor) throws Exception {
+        public void handle(EvaluationMethodVisitor visitor) throws Exception {
             visitor.crossValidateModel();
         }
     };
@@ -33,5 +33,5 @@ public enum EvaluationMethod {
      * @param visitor visitor class
      * @throws Exception
      */
-    public abstract void accept(EvaluationMethodVisitor visitor) throws Exception;
+    public abstract void handle(EvaluationMethodVisitor visitor) throws Exception;
 }

@@ -2,12 +2,12 @@ package com.ecaservice.service.impl;
 
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.EvaluationResponse;
-import com.ecaservice.dto.TechnicalStatus;
 import com.ecaservice.mapping.OrikaBeanMapper;
 import com.ecaservice.model.ClassificationResult;
 import com.ecaservice.model.EvaluationRequest;
+import com.ecaservice.model.EvaluationStatus;
+import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.EvaluationLog;
-import com.ecaservice.model.entity.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.CalculationExecutorService;
 import com.ecaservice.service.EcaService;
@@ -71,7 +71,7 @@ public class EcaServiceImpl implements EcaService {
         try {
             Callable<ClassificationResult> callable = () ->
                     evaluationService.evaluateModel(request.getInputData(), request.getEvaluationMethod(),
-                            request.getNumFolds(), request.getNumTests());
+                            request.getEvaluationOptionsMap());
 
             ClassificationResult classificationResult = executorService.execute(callable,
                     crossValidationConfig.getTimeout(), TimeUnit.MINUTES);

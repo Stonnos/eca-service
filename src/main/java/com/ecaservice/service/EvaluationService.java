@@ -1,8 +1,11 @@
 package com.ecaservice.service;
 
 import com.ecaservice.model.ClassificationResult;
+import com.ecaservice.model.EvaluationMethod;
+import com.ecaservice.model.EvaluationOption;
 import com.ecaservice.model.InputData;
-import com.ecaservice.model.entity.EvaluationMethod;
+
+import java.util.Map;
 
 /**
  * Implements classifier model evaluation.
@@ -16,11 +19,10 @@ public interface EvaluationService {
      *
      * @param inputData        {@link InputData} object
      * @param evaluationMethod evaluation method
-     * @param numFolds         the number of folds for k * V cross - validation method
-     * @param numTests         the number of tests for k * V cross - validation method
-     * @return <tt>ClassificationResult</tt> object
+     * @param evaluationOptionsMap evaluation options map
+     * @return {@link ClassificationResult} object
      */
     ClassificationResult evaluateModel(InputData inputData, EvaluationMethod evaluationMethod,
-                                       Integer numFolds, Integer numTests);
+                                       Map<EvaluationOption, String> evaluationOptionsMap);
 
 }

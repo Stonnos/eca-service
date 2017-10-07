@@ -2,10 +2,7 @@ package com.ecaservice.service.impl;
 
 
 import com.ecaservice.config.CrossValidationConfig;
-import com.ecaservice.model.ClassificationResult;
-import com.ecaservice.model.InputData;
-import com.ecaservice.model.entity.EvaluationMethod;
-import com.ecaservice.model.entity.EvaluationMethodVisitor;
+import com.ecaservice.model.*;
 import com.ecaservice.service.EvaluationService;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
@@ -18,6 +15,7 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -26,14 +24,6 @@ import java.util.Random;
 @Slf4j
 @Service
 public class EvaluationServiceImpl implements EvaluationService {
-
-    public static final int MINIMUM_NUMBER_OF_FOLDS = 2;
-
-    public static final int MINIMUM_NUMBER_OF_TESTS = 1;
-
-    public static final int MAXIMUM_NUMBER_OF_FOLDS = 100;
-
-    public static final int MAXIMUM_NUMBER_OF_TESTS = 100;
 
     private final CrossValidationConfig config;
 
@@ -50,8 +40,7 @@ public class EvaluationServiceImpl implements EvaluationService {
     @Override
     public ClassificationResult evaluateModel(final InputData inputData,
                                               final EvaluationMethod evaluationMethod,
-                                              final Integer numFolds,
-                                              final Integer numTests) {
+                                              final Map<EvaluationOption, String> evaluationOptionsMap) {
 
         ClassificationResult classificationResult = new ClassificationResult();
 
@@ -60,27 +49,25 @@ public class EvaluationServiceImpl implements EvaluationService {
             Assert.notNull(inputData.getClassifier(), "Classifier is not specified!");
             Assert.notNull(inputData.getData(), "Input data is not specified!");
             Assert.notNull(evaluationMethod, "Evaluation method is not specified!");
+            Assert.notNull(evaluationOptionsMap, "Evaluation options map is not specified!");
 
             final AbstractClassifier classifier = inputData.getClassifier();
             final Instances data = inputData.getData();
             final String classifierName = classifier.getClass().getSimpleName();
 
             log.info("Starting {} model evaluation.", classifierName);
-
             log.trace("Model evaluation starting for classifier = {}, data = {}, evaluationMethod = {}",
                     classifierName, data.relationName(), evaluationMethod);
 
             final Evaluation evaluation = new Evaluation(data);
-
             final StopWatch stopWatch = new StopWatch(String.format("Stop watching for %s", classifierName));
 
-            evaluationMethod.accept(new EvaluationMethodVisitor() {
+            evaluationMethod.handle(new EvaluationMethodVisitor() {
                 @Override
                 public void evaluateModel() throws Exception {
                     stopWatch.start(String.format("%s model training", classifierName));
                     classifier.buildClassifier(data);
                     stopWatch.stop();
-
                     stopWatch.start(String.format("%s model evaluation", classifierName));
                     evaluation.evaluateModel(classifier, data);
                     stopWatch.stop();
@@ -88,7 +75,9 @@ public class EvaluationServiceImpl implements EvaluationService {
 
                 @Override
                 public void crossValidateModel() throws Exception {
-                    log.trace("numFolds = {}, numTests = {}", numFolds, numTests);
+                    String numFolds = evaluationOptionsMap.get(EvaluationOption.NUM_FOLDS);
+                    String numTests = evaluationOptionsMap.get(EvaluationOption.NUM_TESTS);
+                    log.trace("evaluateModel: numFolds = {}, numTests = {}", numFolds, numTests);
 
                     int folds;
                     if (numFolds == null) {
@@ -96,16 +85,8 @@ public class EvaluationServiceImpl implements EvaluationService {
                                 config.getNumFolds());
                         folds = config.getNumFolds();
                     } else {
-                        folds = numFolds;
+                        folds = Integer.valueOf(numFolds);
                     }
-
-                    Assert.isTrue(numFolds >= MINIMUM_NUMBER_OF_FOLDS,
-                            String.format("The number of folds must be greater than or equal to %d!",
-                                    MINIMUM_NUMBER_OF_FOLDS));
-
-                    Assert.isTrue(numFolds <= MAXIMUM_NUMBER_OF_FOLDS,
-                            String.format("Number of folds must be less than or equal to %d!",
-                                    MAXIMUM_NUMBER_OF_FOLDS));
 
                     int tests;
                     if (numTests == null) {
@@ -113,16 +94,8 @@ public class EvaluationServiceImpl implements EvaluationService {
                                 config.getNumTests());
                         tests = config.getNumTests();
                     } else {
-                        tests = numTests;
+                        tests = Integer.valueOf(numTests);
                     }
-
-                    Assert.isTrue(numTests >= MINIMUM_NUMBER_OF_TESTS,
-                            String.format("Number of tests must be greater than or equal to %d!",
-                                    MINIMUM_NUMBER_OF_TESTS));
-
-                    Assert.isTrue(numTests <= MAXIMUM_NUMBER_OF_TESTS,
-                            String.format("Number of tests must be less than or equal to %d!",
-                                    MAXIMUM_NUMBER_OF_TESTS));
 
                     stopWatch.start(String.format("%s model evaluation", classifierName));
                     Classifier classifierCopy = AbstractClassifier.makeCopy(classifier);
@@ -137,10 +110,8 @@ public class EvaluationServiceImpl implements EvaluationService {
             });
 
             EvaluationResults evaluationResults = new EvaluationResults(classifier, evaluation);
-
             classificationResult.setEvaluationResults(evaluationResults);
             classificationResult.setSuccess(true);
-
             log.info("Evaluation for model '{}' has been successfully finished!", classifierName);
             log.info(stopWatch.prettyPrint());
 

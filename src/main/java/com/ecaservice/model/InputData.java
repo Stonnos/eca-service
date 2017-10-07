@@ -16,7 +16,13 @@ import weka.core.Instances;
 @AllArgsConstructor
 public class InputData {
 
+    /**
+     * Classifier model
+     */
     private AbstractClassifier classifier;
 
+    /**
+     * Training data
+     */
     private Instances data;
 }

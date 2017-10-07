@@ -1,4 +1,4 @@
-package com.ecaservice.dto;
+package com.ecaservice.model;
 
 /**
  * Evaluation response technical status.

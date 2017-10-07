@@ -1,13 +1,14 @@
 package com.ecaservice;
 
+import com.ecaservice.model.EvaluationMethod;
 import com.ecaservice.model.EvaluationRequest;
 import com.ecaservice.model.InputData;
-import com.ecaservice.model.entity.EvaluationMethod;
 import eca.generators.SimpleDataGenerator;
 import eca.metrics.KNearestNeighbours;
 import weka.core.Instances;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 
 /**
  * Test data helper class.
@@ -52,6 +53,7 @@ public class TestDataHelper {
         request.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         request.setRequestDate(LocalDateTime.now());
         request.setIpAddress(ipAddress);
+        request.setEvaluationOptionsMap(Collections.emptyMap());
         request.setInputData(new InputData(new KNearestNeighbours(), generate(numInstances, numAttributes)));
         return request;
     }

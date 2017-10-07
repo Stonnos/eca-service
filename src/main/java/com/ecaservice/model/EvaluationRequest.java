@@ -1,11 +1,11 @@
 package com.ecaservice.model;
 
-import com.ecaservice.model.entity.EvaluationMethod;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * Evaluation request model.
@@ -38,12 +38,7 @@ public class EvaluationRequest {
     private EvaluationMethod evaluationMethod;
 
     /**
-     * Number of folds in k * V cross validation method
+     * Evaluation options map
      */
-    private Integer numFolds;
-
-    /**
-     * Number of tests in k * V cross validation method
-     */
-    private Integer numTests;
+    private Map<EvaluationOption, String> evaluationOptionsMap;
 }

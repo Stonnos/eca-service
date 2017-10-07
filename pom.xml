@@ -84,7 +84,7 @@
                 <jdbc.driver>org.postgresql.Driver</jdbc.driver>
                 <jdbc.ddlAuto>create-drop</jdbc.ddlAuto>
                 <jdbc.dialect>org.hibernate.dialect.PostgreSQL9Dialect</jdbc.dialect>
-                <server.port>8090</server.port>
+                <server.port>8085</server.port>
             </properties>
         </profile>
 
