@@ -5,10 +5,7 @@ import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.ExperimentTypeVisitor;
 import eca.dataminer.*;
-import eca.ensemble.AdaBoostClassifier;
-import eca.ensemble.HeterogeneousClassifier;
-import eca.ensemble.ModifiedHeterogeneousClassifier;
-import eca.ensemble.StackingClassifier;
+import eca.ensemble.*;
 import eca.metrics.KNearestNeighbours;
 import eca.neural.NeuralNetwork;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,35 +27,49 @@ public class ExperimentInitializer implements ExperimentTypeVisitor<AbstractExpe
 
     @Override
     public AbstractExperiment caseNeuralNetwork(Instances data) {
-        AutomatedNeuralNetwork automatedNeuralNetwork = new AutomatedNeuralNetwork(data, new NeuralNetwork(data));
+        NeuralNetwork neuralNetwork = new NeuralNetwork(data);
+        neuralNetwork.getDecimalFormat().setMaximumFractionDigits(experimentConfig.getMaximumFractionDigits());
+        AutomatedNeuralNetwork automatedNeuralNetwork = new AutomatedNeuralNetwork(data, neuralNetwork);
         automatedNeuralNetwork.setNumIterations(experimentConfig.getNumIterations());
         return automatedNeuralNetwork;
     }
 
     @Override
     public AbstractExperiment caseHeterogeneousEnsemble(Instances data) {
-        return new AutomatedHeterogeneousEnsemble(new HeterogeneousClassifier(), data);
+        ClassifiersSet classifiersSet = ClassifiersSetBuilder.createClassifiersSet(data,
+                experimentConfig.getMaximumFractionDigits());
+        return new AutomatedHeterogeneousEnsemble(new HeterogeneousClassifier(classifiersSet), data);
     }
 
     @Override
     public AbstractExperiment caseModifiedHeterogeneousEnsemble(Instances data) {
-        return new AutomatedHeterogeneousEnsemble(new ModifiedHeterogeneousClassifier(), data);
+        ClassifiersSet classifiersSet = ClassifiersSetBuilder.createClassifiersSet(data,
+                experimentConfig.getMaximumFractionDigits());
+        return new AutomatedHeterogeneousEnsemble(new ModifiedHeterogeneousClassifier(classifiersSet), data);
     }
 
     @Override
     public AbstractExperiment caseAdaBoost(Instances data) {
-        return new AutomatedHeterogeneousEnsemble(new AdaBoostClassifier(), data);
+        ClassifiersSet classifiersSet = ClassifiersSetBuilder.createClassifiersSet(data,
+                experimentConfig.getMaximumFractionDigits());
+        return new AutomatedHeterogeneousEnsemble(new AdaBoostClassifier(classifiersSet), data);
     }
 
     @Override
     public AbstractExperiment caseStacking(Instances data) {
-        return new AutomatedStacking(new StackingClassifier(), data);
+        ClassifiersSet classifiersSet = ClassifiersSetBuilder.createClassifiersSet(data,
+                experimentConfig.getMaximumFractionDigits());
+        StackingClassifier stackingClassifier = new StackingClassifier();
+        stackingClassifier.setClassifiers(classifiersSet);
+        return new AutomatedStacking(stackingClassifier, data);
     }
 
     @Override
     public AbstractExperiment caseKNearestNeighbours(Instances data) {
+        KNearestNeighbours kNearestNeighbours = new KNearestNeighbours();
+        kNearestNeighbours.getDecimalFormat().setMaximumFractionDigits(experimentConfig.getMaximumFractionDigits());
         AutomatedKNearestNeighbours automatedKNearestNeighbours =
-                new AutomatedKNearestNeighbours(data, new KNearestNeighbours());
+                new AutomatedKNearestNeighbours(data, kNearestNeighbours);
         automatedKNearestNeighbours.setNumIterations(experimentConfig.getNumIterations());
         return automatedKNearestNeighbours;
     }

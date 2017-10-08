@@ -29,6 +29,9 @@ public class ExperimentConfig {
     @Value("${experiment.dateFormat}")
     private String dateFormat;
 
+    @Value("${experimant.maximumFractionDigits}")
+    private Integer maximumFractionDigits;
+
     @Value("${experiment.timeout:5}")
     private Integer timeout;
 
