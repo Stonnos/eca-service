@@ -7,7 +7,6 @@ import eca.generators.SimpleDataGenerator;
 import eca.metrics.KNearestNeighbours;
 import weka.core.Instances;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 
 /**
@@ -51,7 +50,6 @@ public class TestDataHelper {
                                                             int numAttributes) {
         EvaluationRequest request = new EvaluationRequest();
         request.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        request.setRequestDate(LocalDateTime.now());
         request.setIpAddress(ipAddress);
         request.setEvaluationOptionsMap(Collections.emptyMap());
         request.setInputData(new InputData(new KNearestNeighbours(), generate(numInstances, numAttributes)));

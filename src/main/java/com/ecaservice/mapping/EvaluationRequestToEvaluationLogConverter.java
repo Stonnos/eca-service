@@ -21,7 +21,6 @@ public class EvaluationRequestToEvaluationLogConverter extends CustomConverter<E
     public EvaluationLog convert(EvaluationRequest request, Type<? extends EvaluationLog> logType) {
         EvaluationLog evaluationLog = new EvaluationLog();
         evaluationLog.setIpAddress(request.getIpAddress());
-        evaluationLog.setRequestDate(request.getRequestDate());
         InputData inputData = request.getInputData();
         evaluationLog.setClassifierName(inputData.getClassifier().getClass().getSimpleName());
         evaluationLog.setInputOptionsMap(mapperFacade.map(inputData.getClassifier(), InputOptionsMap.class)

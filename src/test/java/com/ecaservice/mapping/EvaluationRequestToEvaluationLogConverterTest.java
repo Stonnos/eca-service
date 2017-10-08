@@ -8,7 +8,6 @@ import com.ecaservice.model.entity.EvaluationLog;
 import eca.metrics.KNearestNeighbours;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 
 import static org.junit.Assert.*;
@@ -25,7 +24,6 @@ public class EvaluationRequestToEvaluationLogConverterTest extends AbstractConve
     public void testEvaluationRequestToEvaluationLogConversion() {
         EvaluationRequest evaluationRequest = new EvaluationRequest();
         evaluationRequest.setIpAddress(TestDataHelper.IP_ADDRESS);
-        evaluationRequest.setRequestDate(LocalDateTime.now());
         evaluationRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         evaluationRequest.setEvaluationOptionsMap(new HashMap<>());
 
@@ -38,7 +36,6 @@ public class EvaluationRequestToEvaluationLogConverterTest extends AbstractConve
         assertNotNull(evaluationLog);
         assertEquals(evaluationRequest.getEvaluationMethod(), evaluationLog.getEvaluationMethod());
         assertEquals(evaluationRequest.getIpAddress(), evaluationLog.getIpAddress());
-        assertEquals(evaluationRequest.getRequestDate(), evaluationLog.getRequestDate());
         assertNotNull(evaluationLog.getEvaluationOptionsMap());
         assertEquals(evaluationRequest.getInputData().getData().relationName(),
                 evaluationLog.getInstancesInfo().getRelationName());

@@ -174,12 +174,23 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
 
         <dependency>
             <groupId>eca</groupId>
             <artifactId>eca-core</artifactId>
+            <version>${eca.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca</groupId>
+            <artifactId>eca-data-source</artifactId>
             <version>${eca.version}</version>
         </dependency>
 

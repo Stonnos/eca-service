@@ -1,23 +1,22 @@
 package com.ecaservice.model.entity;
 
 import com.ecaservice.model.EvaluationMethod;
-import com.ecaservice.model.EvaluationOption;
 import com.ecaservice.model.EvaluationStatus;
+import com.ecaservice.model.ExperimentType;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Map;
 
 /**
- * Evaluation log model.
+ * Experiment model.
  *
  * @author Roman Batygin
  */
-@Data
 @Entity
-@Table(name = "evaluation_log")
-public class EvaluationLog {
+@Table(name = "experiment")
+@Data
+public class Experiment {
 
     @Id
     @GeneratedValue
@@ -25,6 +24,18 @@ public class EvaluationLog {
 
     @Column(name = "ip_address", nullable = false)
     private String ipAddress;
+
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
+    @Column(name = "email", nullable = false)
+    private String email;
+
+    @Column(name = "experiment_absolute_path")
+    private String experimentAbsolutePath;
+
+    @Column(name = "training_data_absolute_path")
+    private String trainingDataAbsolutePath;
 
     @Column(name = "creation_date", nullable = false)
     private LocalDateTime creationDate;
@@ -35,8 +46,12 @@ public class EvaluationLog {
     @Column(name = "end_date")
     private LocalDateTime endDate;
 
-    @Column(name = "classifier_name", nullable = false)
-    private String classifierName;
+    @Column(name = "sent_date")
+    private LocalDateTime sentDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "experiment_type", nullable = false)
+    private ExperimentType experimentType;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "evaluation_status", nullable = false)
@@ -49,19 +64,6 @@ public class EvaluationLog {
     @Column(name = "evaluation_method", nullable = false)
     private EvaluationMethod evaluationMethod;
 
-    @ElementCollection
-    @CollectionTable(name = "input_options")
-    @MapKeyColumn(name = "option_name")
-    @Column(name = "option_value", nullable = false)
-    private Map<String, String> inputOptionsMap;
-
-    @ElementCollection
-    @CollectionTable(name = "evaluation_options")
-    @MapKeyColumn(name = "option_name")
-    @Column(name = "option_value")
-    private Map<EvaluationOption, String> evaluationOptionsMap;
-
-    @OneToOne(mappedBy = "evaluationLog", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private InstancesInfo instancesInfo;
-
+    @Column(name = "retries_to_sent")
+    private int retriesToSent;
 }

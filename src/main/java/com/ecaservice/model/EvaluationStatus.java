@@ -8,9 +8,9 @@ package com.ecaservice.model;
 public enum EvaluationStatus {
 
     /**
-     * In progress status
+     * New status
      */
-    PROGRESS,
+    NEW,
 
     /**
      * Finished status
@@ -25,5 +25,15 @@ public enum EvaluationStatus {
     /**
      * Error status
      */
-    ERROR
+    ERROR,
+
+    /**
+     * Email not send status
+     */
+    FAILED,
+
+    /**
+     * Exceed status
+     */
+    EXCEEDED
 }

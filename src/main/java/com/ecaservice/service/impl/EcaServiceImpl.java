@@ -62,8 +62,9 @@ public class EcaServiceImpl implements EcaService {
         Assert.notNull(request, "Evaluation request is not specified!");
 
         EvaluationLog evaluationLog = mapper.map(request, EvaluationLog.class);
-        evaluationLog.setEvaluationStatus(EvaluationStatus.PROGRESS);
-        evaluationLog.setOperationDate(LocalDateTime.now());
+        evaluationLog.setEvaluationStatus(EvaluationStatus.NEW);
+        evaluationLog.setCreationDate(LocalDateTime.now());
+        evaluationLog.setStartDate(LocalDateTime.now());
         evaluationLogRepository.save(evaluationLog);
 
         EvaluationResponse evaluationResponse = new EvaluationResponse();
@@ -97,7 +98,7 @@ public class EcaServiceImpl implements EcaService {
             evaluationResponse.setStatus(TechnicalStatus.ERROR);
             evaluationResponse.setErrorMessage(ex.getMessage());
         } finally {
-            evaluationLog.setOperationDate(LocalDateTime.now());
+            evaluationLog.setEndDate(LocalDateTime.now());
             evaluationLogRepository.save(evaluationLog);
         }
 

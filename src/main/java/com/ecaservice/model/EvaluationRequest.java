@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
@@ -21,11 +20,6 @@ public class EvaluationRequest {
      * Remote ip address
      */
     private String ipAddress;
-
-    /**
-     * Request date
-     */
-    private LocalDateTime requestDate;
 
     /**
      * Input data
