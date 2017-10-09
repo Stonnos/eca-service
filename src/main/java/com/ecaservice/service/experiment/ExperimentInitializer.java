@@ -3,7 +3,8 @@ package com.ecaservice.service.experiment;
 
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.model.ExperimentTypeVisitor;
+import com.ecaservice.model.experiment.ExperimentTypeVisitor;
+import com.ecaservice.model.experiment.InitializationParams;
 import eca.dataminer.*;
 import eca.ensemble.*;
 import eca.metrics.KNearestNeighbours;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component;
 import weka.core.Instances;
 
 @Component
-public class ExperimentInitializer implements ExperimentTypeVisitor<AbstractExperiment, Instances> {
+public class ExperimentInitializer implements ExperimentTypeVisitor<AbstractExperiment, InitializationParams> {
 
     private final ExperimentConfig experimentConfig;
     private final CrossValidationConfig crossValidationConfig;
@@ -26,55 +27,67 @@ public class ExperimentInitializer implements ExperimentTypeVisitor<AbstractExpe
     }
 
     @Override
-    public AbstractExperiment caseNeuralNetwork(Instances data) {
-        NeuralNetwork neuralNetwork = new NeuralNetwork(data);
+    public AbstractExperiment caseNeuralNetwork(InitializationParams initializationParams) {
+        NeuralNetwork neuralNetwork = new NeuralNetwork(initializationParams.getData());
         neuralNetwork.getDecimalFormat().setMaximumFractionDigits(experimentConfig.getMaximumFractionDigits());
-        AutomatedNeuralNetwork automatedNeuralNetwork = new AutomatedNeuralNetwork(data, neuralNetwork);
+        AutomatedNeuralNetwork automatedNeuralNetwork =
+                new AutomatedNeuralNetwork(initializationParams.getData(), neuralNetwork);
         automatedNeuralNetwork.setNumIterations(experimentConfig.getNumIterations());
         return automatedNeuralNetwork;
     }
 
     @Override
-    public AbstractExperiment caseHeterogeneousEnsemble(Instances data) {
-        ClassifiersSet classifiersSet = ClassifiersSetBuilder.createClassifiersSet(data,
+    public AbstractExperiment caseHeterogeneousEnsemble(InitializationParams initializationParams) {
+        ClassifiersSet classifiersSet = ClassifiersSetBuilder.createClassifiersSet(initializationParams.getData(),
                 experimentConfig.getMaximumFractionDigits());
-        return new AutomatedHeterogeneousEnsemble(new HeterogeneousClassifier(classifiersSet), data);
+        HeterogeneousClassifier heterogeneousClassifier = new HeterogeneousClassifier(classifiersSet);
+        heterogeneousClassifier.setIterationsNum(experimentConfig.getEnsembleNumIterations());
+        return new AutomatedHeterogeneousEnsemble(heterogeneousClassifier, initializationParams.getData());
     }
 
     @Override
-    public AbstractExperiment caseModifiedHeterogeneousEnsemble(Instances data) {
-        ClassifiersSet classifiersSet = ClassifiersSetBuilder.createClassifiersSet(data,
+    public AbstractExperiment caseModifiedHeterogeneousEnsemble(InitializationParams initializationParams) {
+        ClassifiersSet classifiersSet = ClassifiersSetBuilder.createClassifiersSet(initializationParams.getData(),
                 experimentConfig.getMaximumFractionDigits());
-        return new AutomatedHeterogeneousEnsemble(new ModifiedHeterogeneousClassifier(classifiersSet), data);
+        ModifiedHeterogeneousClassifier modifiedHeterogeneousClassifier =
+                new ModifiedHeterogeneousClassifier(classifiersSet);
+        modifiedHeterogeneousClassifier.setIterationsNum(experimentConfig.getEnsembleNumIterations());
+        return new AutomatedHeterogeneousEnsemble(modifiedHeterogeneousClassifier, initializationParams.getData());
     }
 
     @Override
-    public AbstractExperiment caseAdaBoost(Instances data) {
-        ClassifiersSet classifiersSet = ClassifiersSetBuilder.createClassifiersSet(data,
+    public AbstractExperiment caseAdaBoost(InitializationParams initializationParams) {
+        ClassifiersSet classifiersSet = ClassifiersSetBuilder.createClassifiersSet(initializationParams.getData(),
                 experimentConfig.getMaximumFractionDigits());
-        return new AutomatedHeterogeneousEnsemble(new AdaBoostClassifier(classifiersSet), data);
+        AdaBoostClassifier adaBoostClassifier = new AdaBoostClassifier(classifiersSet);
+        adaBoostClassifier.setIterationsNum(experimentConfig.getEnsembleNumIterations());
+        return new AutomatedHeterogeneousEnsemble(adaBoostClassifier, initializationParams.getData());
     }
 
     @Override
-    public AbstractExperiment caseStacking(Instances data) {
-        ClassifiersSet classifiersSet = ClassifiersSetBuilder.createClassifiersSet(data,
+    public AbstractExperiment caseStacking(InitializationParams initializationParams) {
+        ClassifiersSet classifiersSet = ClassifiersSetBuilder.createClassifiersSet(initializationParams.getData(),
                 experimentConfig.getMaximumFractionDigits());
         StackingClassifier stackingClassifier = new StackingClassifier();
         stackingClassifier.setClassifiers(classifiersSet);
-        return new AutomatedStacking(stackingClassifier, data);
+        return new AutomatedStacking(stackingClassifier, initializationParams.getData());
     }
 
     @Override
-    public AbstractExperiment caseKNearestNeighbours(Instances data) {
+    public AbstractExperiment caseKNearestNeighbours(InitializationParams initializationParams) {
         KNearestNeighbours kNearestNeighbours = new KNearestNeighbours();
         kNearestNeighbours.getDecimalFormat().setMaximumFractionDigits(experimentConfig.getMaximumFractionDigits());
         AutomatedKNearestNeighbours automatedKNearestNeighbours =
-                new AutomatedKNearestNeighbours(data, kNearestNeighbours);
+                new AutomatedKNearestNeighbours(initializationParams.getData(), kNearestNeighbours);
         automatedKNearestNeighbours.setNumIterations(experimentConfig.getNumIterations());
         return automatedKNearestNeighbours;
     }
 
-    private void initializeEvaluationMethodOptions(AbstractExperiment experiment) {
-
+    @Override
+    public void afterHandle(AbstractExperiment experiment, InitializationParams initializationParams) {
+        experiment.setEvaluationMethod(initializationParams.getEvaluationMethod());
+        experiment.setNumFolds(crossValidationConfig.getNumFolds());
+        experiment.setNumTests(crossValidationConfig.getNumTests());
     }
+
 }

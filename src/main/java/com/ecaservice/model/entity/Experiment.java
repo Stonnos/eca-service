@@ -2,7 +2,7 @@ package com.ecaservice.model.entity;
 
 import com.ecaservice.model.EvaluationMethod;
 import com.ecaservice.model.EvaluationStatus;
-import com.ecaservice.model.ExperimentType;
+import com.ecaservice.model.experiment.ExperimentType;
 import lombok.Data;
 
 import javax.persistence.*;

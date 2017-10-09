@@ -1,4 +1,4 @@
-package com.ecaservice.model;
+package com.ecaservice.model.experiment;
 
 /**
  * Interface for visitor pattern.
@@ -19,5 +19,7 @@ public interface ExperimentTypeVisitor<T, P> {
     T caseStacking(P parameter);
 
     T caseKNearestNeighbours(P parameter);
+
+    void afterHandle(T result, P parameter);
 
 }

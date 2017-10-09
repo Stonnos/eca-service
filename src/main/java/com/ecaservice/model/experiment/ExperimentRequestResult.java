@@ -1,4 +1,4 @@
-package com.ecaservice.model;
+package com.ecaservice.model.experiment;
 
 import lombok.Data;
 

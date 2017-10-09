@@ -1,7 +1,7 @@
 package com.ecaservice.dto;
 
 import com.ecaservice.model.EvaluationMethod;
-import com.ecaservice.model.ExperimentType;
+import com.ecaservice.model.experiment.ExperimentType;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import weka.core.Instances;

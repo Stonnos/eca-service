@@ -1,6 +1,7 @@
 package com.ecaservice.service.experiment;
 
 
+import eca.converters.model.ExperimentHistory;
 import weka.core.Instances;
 
 import java.io.File;
@@ -24,4 +25,12 @@ public interface DataService {
      * @throws Exception
      */
     Instances load(File file) throws Exception;
+
+    /**
+     * Saves experiment history to file.
+     * @param file file object
+     * @param experimentHistory {@link ExperimentHistory} object
+     * @throws Exception
+     */
+    void save(File file, ExperimentHistory experimentHistory) throws Exception;
 }

@@ -3,20 +3,26 @@ package com.ecaservice.controller;
 import com.ecaservice.dto.EvaluationRequestDto;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.mapping.OrikaBeanMapper;
+import com.ecaservice.model.EvaluationMethod;
 import com.ecaservice.model.EvaluationRequest;
+import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.model.experiment.ExperimentRequest;
+import com.ecaservice.model.experiment.ExperimentRequestResult;
+import com.ecaservice.model.experiment.ExperimentType;
+import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.EcaService;
+import com.ecaservice.service.experiment.ExperimentService;
+import eca.generators.SimpleDataGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -36,18 +42,26 @@ public class EcaController {
     private final EcaService ecaService;
     private final OrikaBeanMapper mapper;
     private final JavaMailSender javaMailSender;
+    private final ExperimentService experimentService;
+    private final ExperimentRepository experimentRepository;
 
     /**
      * Constructor with dependency spring injection.
-     *  @param ecaService {@link EcaService} bean
+     * @param ecaService {@link EcaService} bean
      * @param mapper     {@link OrikaBeanMapper} bean
      * @param javaMailSender
+     * @param experimentService
+     * @param experimentRepository
      */
     @Autowired
-    public EcaController(EcaService ecaService, OrikaBeanMapper mapper, JavaMailSender javaMailSender) {
+    public EcaController(EcaService ecaService, OrikaBeanMapper mapper, JavaMailSender javaMailSender,
+                         ExperimentService experimentService,
+                         ExperimentRepository experimentRepository) {
         this.ecaService = ecaService;
         this.mapper = mapper;
         this.javaMailSender = javaMailSender;
+        this.experimentService = experimentService;
+        this.experimentRepository = experimentRepository;
     }
 
     /**
@@ -71,7 +85,7 @@ public class EcaController {
 
     @RequestMapping(value = "/send")
     public ResponseEntity<String> sendMessage() {
-        MimeMessage message = javaMailSender.createMimeMessage();
+        /*MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
         try {
@@ -82,8 +96,22 @@ public class EcaController {
             javaMailSender.send(message);
         } catch (Exception e) {
             log.error(e.getMessage());
+        }*/
+        ExperimentRequest experimentRequest = new ExperimentRequest();
+        experimentRequest.setFirstName("Alex");
+        experimentRequest.setEmail("rr.bb@mail.ru");
+        experimentRequest.setIpAddress("127.0.0.1");
+        experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
+        experimentRequest.setExperimentType(ExperimentType.KNN);
+        SimpleDataGenerator simpleDataGenerator = new SimpleDataGenerator();
+        experimentRequest.setData(simpleDataGenerator.generate());
+        ExperimentRequestResult requestResult = experimentService.createExperiment(experimentRequest);
+
+        for (Experiment experiment : experimentRepository.findAll()) {
+            experimentService.processExperiment(experiment);
         }
-        return new ResponseEntity("OK", HttpStatus.OK);
+
+        return new ResponseEntity(requestResult, HttpStatus.OK);
     }
 
 }
