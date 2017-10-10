@@ -37,6 +37,9 @@ public class Experiment {
     @Column(name = "training_data_absolute_path")
     private String trainingDataAbsolutePath;
 
+    @Column(unique = true)
+    private String uuid;
+
     @Column(name = "creation_date", nullable = false)
     private LocalDateTime creationDate;
 
@@ -49,18 +52,15 @@ public class Experiment {
     @Column(name = "sent_date")
     private LocalDateTime sentDate;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "experiment_type", nullable = false)
     private ExperimentType experimentType;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "evaluation_status", nullable = false)
     private EvaluationStatus evaluationStatus;
 
     @Column(name = "error_message", columnDefinition = "text")
     private String errorMessage;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "evaluation_method", nullable = false)
     private EvaluationMethod evaluationMethod;
 

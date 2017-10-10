@@ -31,6 +31,7 @@
         <mockito.version>1.9.5</mockito.version>
         <jackson.version>2.9.1</jackson.version>
         <hibernate.version>5.2.10.Final</hibernate.version>
+        <commons.io.version>2.5</commons.io.version>
     </properties>
 
     <repositories>
@@ -195,11 +196,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>ma.glasnost.orika</groupId>
             <artifactId>orika-core</artifactId>
             <version>${orika.version}</version>
@@ -239,6 +235,18 @@
             <version>${jackson.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons.io.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        
     </dependencies>
 
     <build>

@@ -11,13 +11,13 @@ import com.ecaservice.model.experiment.ExperimentRequestResult;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.EcaService;
+import com.ecaservice.service.NotificationService;
 import com.ecaservice.service.experiment.ExperimentService;
 import eca.generators.SimpleDataGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,26 +41,27 @@ public class EcaController {
 
     private final EcaService ecaService;
     private final OrikaBeanMapper mapper;
-    private final JavaMailSender javaMailSender;
     private final ExperimentService experimentService;
+    private final NotificationService notificationService;
     private final ExperimentRepository experimentRepository;
 
     /**
      * Constructor with dependency spring injection.
      * @param ecaService {@link EcaService} bean
      * @param mapper     {@link OrikaBeanMapper} bean
-     * @param javaMailSender
      * @param experimentService
+     * @param notificationService
      * @param experimentRepository
      */
     @Autowired
-    public EcaController(EcaService ecaService, OrikaBeanMapper mapper, JavaMailSender javaMailSender,
+    public EcaController(EcaService ecaService, OrikaBeanMapper mapper,
                          ExperimentService experimentService,
+                         NotificationService notificationService,
                          ExperimentRepository experimentRepository) {
         this.ecaService = ecaService;
         this.mapper = mapper;
-        this.javaMailSender = javaMailSender;
         this.experimentService = experimentService;
+        this.notificationService = notificationService;
         this.experimentRepository = experimentRepository;
     }
 
@@ -85,21 +86,9 @@ public class EcaController {
 
     @RequestMapping(value = "/send")
     public ResponseEntity<String> sendMessage() {
-        /*MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
-
-        try {
-            helper.setFrom("roman.batygin@mail.ru");
-            helper.setTo("r.batygin@intabia.ru");
-            helper.setSubject("Hello");
-            helper.setText("Hello");
-            javaMailSender.send(message);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }*/
         ExperimentRequest experimentRequest = new ExperimentRequest();
-        experimentRequest.setFirstName("Alex");
-        experimentRequest.setEmail("rr.bb@mail.ru");
+        experimentRequest.setFirstName("Роман");
+        experimentRequest.setEmail("roman.batygin@mail.ru");
         experimentRequest.setIpAddress("127.0.0.1");
         experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         experimentRequest.setExperimentType(ExperimentType.KNN);
@@ -109,6 +98,7 @@ public class EcaController {
 
         for (Experiment experiment : experimentRepository.findAll()) {
             experimentService.processExperiment(experiment);
+            notificationService.notifyByEmail(experiment);
         }
 
         return new ResponseEntity(requestResult, HttpStatus.OK);

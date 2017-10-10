@@ -17,17 +17,20 @@ public class ExperimentConfig {
     @Value("${experiment.resultSize:100}")
     private Integer resultSize;
 
-    @Value("${experiment.dataFileFormat}")
-    private String dataFileFormat;
-
     @Value("${experiment.fileFormat}")
     private String fileFormat;
 
-    @Value("${experiment.dataStoragePath}")
-    private String dataStoragePath;
-
     @Value("${experiment.storagePath}")
     private String storagePath;
+
+    @Value("${experiment.data.fileFormat}")
+    private String dataFileFormat;
+
+    @Value("${experiment.data.storagePath}")
+    private String dataStoragePath;
+
+    @Value("${experiment.downloadUrl}")
+    private String downloadUrl;
 
     @Value("${experiment.dateFormat}")
     private String dateFormat;
@@ -42,6 +45,6 @@ public class ExperimentConfig {
     private Integer timeout;
 
     @Value("${experiment.delay:60000}")
-    private String delay;
+    private Integer delay;
 
 }

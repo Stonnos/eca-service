@@ -19,6 +19,7 @@ import eca.dataminer.IterativeExperiment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StopWatch;
 import weka.core.Instances;
 
@@ -26,6 +27,8 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -116,6 +119,7 @@ public class ExperimentService {
             stopWatch.stop();
 
             experiment.setExperimentAbsolutePath(experimentFile.getAbsolutePath());
+            experiment.setUuid(UUID.randomUUID().toString());
             experiment.setEvaluationStatus(EvaluationStatus.FINISHED);
 
             log.info("Experiment#{} has been successfully finished!", experiment.getId());
@@ -131,6 +135,25 @@ public class ExperimentService {
             experiment.setEndDate(LocalDateTime.now());
             experimentRepository.save(experiment);
         }
+    }
+
+    /**
+     * Finds experiment file by uuid.
+     * @param uuid uuid
+     * @return experiment file object
+     */
+    public File findExperimentByUuid(String uuid) {
+       Experiment experiment = experimentRepository.findByUuid(uuid);
+       if (experiment == null) {
+           log.warn("Experiment for uuid = {} not found!", uuid);
+           return null;
+       }
+       if (experiment.getExperimentAbsolutePath() == null) {
+           log.warn("Experiment file for uuid = {} not found!", uuid);
+           return null;
+       } else {
+           return new File(experiment.getExperimentAbsolutePath());
+       }
     }
 
     /**
@@ -172,6 +195,9 @@ public class ExperimentService {
         }
 
         List<EvaluationResults> createResults(ArrayList<EvaluationResults> experimentHistory) {
+            if (CollectionUtils.isEmpty(experimentHistory)) {
+                throw new RuntimeException("No model was built!");
+            }
             if (experimentHistory.size() < experimentConfig.getResultSize()) {
                 return experimentHistory;
             } else {
