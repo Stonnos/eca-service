@@ -45,11 +45,6 @@ public class ExperimentStatusTemplateVisitor implements ExperimentStatusVisitor<
     }
 
     @Override
-    public Context caseFailed(Experiment parameter) {
-        throw builtUnsupportedOperationException(parameter);
-    }
-
-    @Override
     public Context caseExceeded(Experiment parameter) {
         throw builtUnsupportedOperationException(parameter);
     }

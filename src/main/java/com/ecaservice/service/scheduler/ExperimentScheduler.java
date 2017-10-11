@@ -23,8 +23,7 @@ import java.util.List;
 public class ExperimentScheduler {
 
     private static final Collection<ExperimentStatus> SENT_STATUSES =
-            Arrays.asList(ExperimentStatus.FINISHED, ExperimentStatus.ERROR,
-                    ExperimentStatus.TIMEOUT, ExperimentStatus.FAILED);
+            Arrays.asList(ExperimentStatus.FINISHED, ExperimentStatus.ERROR, ExperimentStatus.TIMEOUT);
 
     private final ExperimentRepository experimentRepository;
     private final ExperimentService experimentService;

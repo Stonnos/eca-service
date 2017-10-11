@@ -17,7 +17,5 @@ public interface ExperimentStatusVisitor<T, P> {
 
     T caseError(P parameter);
 
-    T caseFailed(P parameter);
-
     T caseExceeded(P parameter);
 }

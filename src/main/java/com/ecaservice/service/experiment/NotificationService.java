@@ -59,18 +59,17 @@ public class NotificationService {
             experiment.setSentDate(LocalDateTime.now());
         } catch (Exception ex) {
             log.warn(ex.getMessage());
-            populateFailedSent(experiment, ex.getMessage());
+            populateErrorSent(experiment, ex.getMessage());
         } finally {
             experimentRepository.save(experiment);
         }
     }
 
-    private void populateFailedSent(Experiment experiment, String errorMessage) {
+    private void populateErrorSent(Experiment experiment, String errorMessage) {
         if (experiment.getRetriesToSent() >= mailConfig.getMaxRetriesToSent()) {
             experiment.setExperimentStatus(ExperimentStatus.EXCEEDED);
             experiment.setErrorMessage("Number of sent retries exceeded maximum.");
         } else {
-            experiment.setExperimentStatus(ExperimentStatus.FAILED);
             experiment.setErrorMessage(errorMessage);
             experiment.setRetriesToSent(experiment.getRetriesToSent() + 1);
         }

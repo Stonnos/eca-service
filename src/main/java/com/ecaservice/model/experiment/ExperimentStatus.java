@@ -47,16 +47,6 @@ public enum ExperimentStatus {
     },
 
     /**
-     * Email not send status
-     */
-    FAILED {
-        @Override
-        public <T, P> T handle(ExperimentStatusVisitor<T, P> visitor, P parameter) {
-            return visitor.caseFailed(parameter);
-        }
-    },
-
-    /**
      * Exceed status
      */
     EXCEEDED {
