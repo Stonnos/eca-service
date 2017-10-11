@@ -8,7 +8,7 @@
     Здравствуйте, <span th:text="${firstName}"></span>!
 </p>
 <p>
-    Результаты эксперимента доступны по ссылке <a th:href="${downloadUrl}"></a>
+    Эксперимент был успешно построен. Результаты доступны по ссылке <a th:text="${downloadUrl}" th:href="@{${downloadUrl}}"></a>
 </p>
 </body>
 </html>
