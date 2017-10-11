@@ -62,3 +62,4 @@ experiment:
       FINISHED: email-message-template.html
       ERROR: email-error-message-template.html
       TIMEOUT: email-error-message-template.html
+      REQUEST_ERROR: email-request-error-message-template.html

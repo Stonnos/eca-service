@@ -37,6 +37,16 @@ public enum ExperimentStatus {
     },
 
     /**
+     * Request error status
+     */
+    REQUEST_ERROR {
+        @Override
+        public <T, P> T handle(ExperimentStatusVisitor<T, P> visitor, P parameter) {
+            return visitor.caseError(parameter);
+        }
+    },
+
+    /**
      * Error status
      */
     ERROR {

@@ -28,8 +28,7 @@ public class ExperimentStatusTemplateVisitor implements ExperimentStatusVisitor<
 
     @Override
     public Context caseFinished(Experiment parameter) {
-        Context context = new Context();
-        context.setVariable(TemplateVariablesDictionary.FIRST_NAME_KEY, parameter.getFirstName());
+        Context context = createContext(parameter);
         context.setVariable(TemplateVariablesDictionary.DOWNLOAD_URL_KEY,
                 String.format(experimentConfig.getDownloadUrl(), parameter.getUuid()));
         return context;
@@ -37,16 +36,17 @@ public class ExperimentStatusTemplateVisitor implements ExperimentStatusVisitor<
 
     @Override
     public Context caseTimeout(Experiment parameter) {
-        Context context = new Context();
-        context.setVariable(TemplateVariablesDictionary.FIRST_NAME_KEY, parameter.getFirstName());
-        return context;
+        return createContext(parameter);
+    }
+
+    @Override
+    public Context caseRequestError(Experiment parameter) {
+        return createContext(parameter);
     }
 
     @Override
     public Context caseError(Experiment parameter) {
-        Context context = new Context();
-        context.setVariable(TemplateVariablesDictionary.FIRST_NAME_KEY, parameter.getFirstName());
-        return context;
+        return createContext(parameter);
     }
 
     @Override
@@ -57,6 +57,12 @@ public class ExperimentStatusTemplateVisitor implements ExperimentStatusVisitor<
     @Override
     public Context caseExceeded(Experiment parameter) {
         throw builtUnsupportedOperationException(parameter);
+    }
+
+    private Context createContext(Experiment parameter) {
+        Context context = new Context();
+        context.setVariable(TemplateVariablesDictionary.FIRST_NAME_KEY, parameter.getFirstName());
+        return context;
     }
 
     private UnsupportedOperationException builtUnsupportedOperationException(Experiment experiment) {

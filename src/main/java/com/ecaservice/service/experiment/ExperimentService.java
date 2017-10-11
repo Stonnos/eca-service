@@ -2,9 +2,9 @@ package com.ecaservice.service.experiment;
 
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.mapping.OrikaBeanMapper;
+import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentRequest;
 import com.ecaservice.model.experiment.ExperimentRequestResult;
-import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.repository.ExperimentRepository;
@@ -67,10 +67,9 @@ public class ExperimentService {
      * @param experimentRequest {@link ExperimentRequest} object
      * @return {@link ExperimentRequestResult} object
      */
-    public ExperimentRequestResult createExperiment(ExperimentRequest experimentRequest) {
-        ExperimentRequestResult experimentRequestResult = new ExperimentRequestResult();
+    public Experiment createExperiment(ExperimentRequest experimentRequest) {
+        Experiment experiment = mapper.map(experimentRequest, Experiment.class);
         try {
-            Experiment experiment = mapper.map(experimentRequest, Experiment.class);
             experiment.setExperimentStatus(ExperimentStatus.NEW);
             experiment.setCreationDate(LocalDateTime.now());
             experiment.setRetriesToSent(0);
@@ -78,13 +77,15 @@ public class ExperimentService {
                     String.format(experimentConfig.getData().getFileFormat(), System.currentTimeMillis()));
             dataService.save(dataFile, experimentRequest.getData());
             experiment.setTrainingDataAbsolutePath(dataFile.getAbsolutePath());
-            experimentRepository.save(experiment);
-            experimentRequestResult.setSuccess(true);
+            throw new Exception();
         } catch (Exception ex) {
             log.error(ex.getMessage());
-            experimentRequestResult.setErrorMessage(ex.getMessage());
+            experiment.setExperimentStatus(ExperimentStatus.REQUEST_ERROR);
+            experiment.setErrorMessage(ex.getMessage());
+        } finally {
+            experimentRepository.save(experiment);
         }
-        return experimentRequestResult;
+        return experiment;
     }
 
     /**

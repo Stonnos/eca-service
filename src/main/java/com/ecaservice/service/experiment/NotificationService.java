@@ -68,9 +68,10 @@ public class NotificationService {
     private void populateFailedSent(Experiment experiment, String errorMessage) {
         if (experiment.getRetriesToSent() >= mailConfig.getMaxRetriesToSent()) {
             experiment.setExperimentStatus(ExperimentStatus.EXCEEDED);
-            experiment.setErrorMessage("Number of sent retries exceeded maximum");
+            experiment.setErrorMessage("Number of sent retries exceeded maximum.");
         } else {
             experiment.setExperimentStatus(ExperimentStatus.FAILED);
+            experiment.setErrorMessage(errorMessage);
             experiment.setRetriesToSent(experiment.getRetriesToSent() + 1);
         }
     }

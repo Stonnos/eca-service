@@ -8,6 +8,7 @@ import com.ecaservice.model.EvaluationRequest;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentRequest;
 import com.ecaservice.model.experiment.ExperimentRequestResult;
+import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.EcaService;
@@ -94,14 +95,13 @@ public class EcaController {
         experimentRequest.setExperimentType(ExperimentType.KNN);
         SimpleDataGenerator simpleDataGenerator = new SimpleDataGenerator();
         experimentRequest.setData(simpleDataGenerator.generate());
-        ExperimentRequestResult requestResult = experimentService.createExperiment(experimentRequest);
-
-        for (Experiment experiment : experimentRepository.findAll()) {
+        Experiment experiment = experimentService.createExperiment(experimentRequest);
+        if (ExperimentStatus.NEW.equals(experiment.getExperimentStatus())) {
             experimentService.processExperiment(experiment);
-            notificationService.notifyByEmail(experiment);
         }
+        notificationService.notifyByEmail(experiment);
 
-        return new ResponseEntity(requestResult, HttpStatus.OK);
+        return new ResponseEntity(experiment, HttpStatus.OK);
     }
 
 }
