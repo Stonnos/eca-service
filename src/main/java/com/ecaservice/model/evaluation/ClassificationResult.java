@@ -1,4 +1,4 @@
-package com.ecaservice.model;
+package com.ecaservice.model.evaluation;
 
 import eca.core.evaluation.EvaluationResults;
 import lombok.Data;

@@ -1,7 +1,7 @@
 package com.ecaservice.dto;
 
-import com.ecaservice.model.EvaluationMethod;
-import com.ecaservice.model.EvaluationOption;
+import com.ecaservice.model.evaluation.EvaluationMethod;
+import com.ecaservice.model.evaluation.EvaluationOption;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import weka.classifiers.AbstractClassifier;

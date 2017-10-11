@@ -1,7 +1,7 @@
 package com.ecaservice;
 
-import com.ecaservice.model.EvaluationMethod;
-import com.ecaservice.model.EvaluationRequest;
+import com.ecaservice.model.evaluation.EvaluationMethod;
+import com.ecaservice.model.evaluation.EvaluationRequest;
 import com.ecaservice.model.InputData;
 import eca.generators.SimpleDataGenerator;
 import eca.metrics.KNearestNeighbours;

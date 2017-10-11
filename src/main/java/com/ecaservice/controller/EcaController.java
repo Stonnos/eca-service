@@ -3,15 +3,13 @@ package com.ecaservice.controller;
 import com.ecaservice.dto.EvaluationRequestDto;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.mapping.OrikaBeanMapper;
-import com.ecaservice.model.EvaluationMethod;
-import com.ecaservice.model.EvaluationRequest;
+import com.ecaservice.model.evaluation.EvaluationMethod;
+import com.ecaservice.model.evaluation.EvaluationRequest;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentRequest;
-import com.ecaservice.model.experiment.ExperimentRequestResult;
-import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.repository.ExperimentRepository;
-import com.ecaservice.service.EcaService;
+import com.ecaservice.service.evaluation.EcaService;
 import com.ecaservice.service.experiment.NotificationService;
 import com.ecaservice.service.experiment.ExperimentService;
 import eca.generators.SimpleDataGenerator;
@@ -96,10 +94,10 @@ public class EcaController {
         SimpleDataGenerator simpleDataGenerator = new SimpleDataGenerator();
         experimentRequest.setData(simpleDataGenerator.generate());
         Experiment experiment = experimentService.createExperiment(experimentRequest);
-        if (ExperimentStatus.NEW.equals(experiment.getExperimentStatus())) {
-            experimentService.processExperiment(experiment);
-        }
-        notificationService.notifyByEmail(experiment);
+        //if (ExperimentStatus.NEW.equals(experiment.getExperimentStatus())) {
+        //    experimentService.processExperiment(experiment);
+        //}
+        //notificationService.notifyByEmail(experiment);
 
         return new ResponseEntity(experiment, HttpStatus.OK);
     }

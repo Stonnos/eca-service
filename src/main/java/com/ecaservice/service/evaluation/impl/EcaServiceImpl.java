@@ -1,17 +1,17 @@
-package com.ecaservice.service.impl;
+package com.ecaservice.service.evaluation.impl;
 
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.mapping.OrikaBeanMapper;
-import com.ecaservice.model.ClassificationResult;
-import com.ecaservice.model.EvaluationRequest;
-import com.ecaservice.model.EvaluationStatus;
+import com.ecaservice.model.evaluation.ClassificationResult;
+import com.ecaservice.model.evaluation.EvaluationRequest;
+import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.repository.EvaluationLogRepository;
-import com.ecaservice.service.CalculationExecutorService;
-import com.ecaservice.service.EcaService;
-import com.ecaservice.service.EvaluationService;
+import com.ecaservice.service.evaluation.CalculationExecutorService;
+import com.ecaservice.service.evaluation.EcaService;
+import com.ecaservice.service.evaluation.EvaluationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -18,6 +18,11 @@ public class DataServiceImpl implements DataService {
     private final DataSaver dataSaver;
     private final DataLoader dataLoader;
 
+    /**
+     * Constructor with dependency spring injection.
+     * @param dataSaver {@link DataSaver} bean
+     * @param dataLoader {@link DataLoader} bean
+     */
     @Autowired
     public DataServiceImpl(DataSaver dataSaver, DataLoader dataLoader) {
         this.dataSaver = dataSaver;

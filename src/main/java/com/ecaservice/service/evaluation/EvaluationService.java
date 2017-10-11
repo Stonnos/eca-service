@@ -1,8 +1,8 @@
-package com.ecaservice.service;
+package com.ecaservice.service.evaluation;
 
-import com.ecaservice.model.ClassificationResult;
-import com.ecaservice.model.EvaluationMethod;
-import com.ecaservice.model.EvaluationOption;
+import com.ecaservice.model.evaluation.ClassificationResult;
+import com.ecaservice.model.evaluation.EvaluationMethod;
+import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.model.InputData;
 
 import java.util.Map;

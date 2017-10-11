@@ -15,8 +15,6 @@ public interface ExperimentStatusVisitor<T, P> {
 
     T caseTimeout(P parameter);
 
-    T caseRequestError(P parameter);
-
     T caseError(P parameter);
 
     T caseFailed(P parameter);

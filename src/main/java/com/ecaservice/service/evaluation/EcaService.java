@@ -1,7 +1,7 @@
-package com.ecaservice.service;
+package com.ecaservice.service.evaluation;
 
 import com.ecaservice.dto.EvaluationResponse;
-import com.ecaservice.model.EvaluationRequest;
+import com.ecaservice.model.evaluation.EvaluationRequest;
 
 /**
  * Eca - service.

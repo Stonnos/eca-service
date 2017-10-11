@@ -12,12 +12,21 @@ import eca.neural.NeuralNetwork;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * Implements experiment parameters initialization.
+ * @author Roman Batygin
+ */
 @Component
 public class ExperimentInitializer implements ExperimentTypeVisitor<AbstractExperiment, InitializationParams> {
 
     private final ExperimentConfig experimentConfig;
     private final CrossValidationConfig crossValidationConfig;
 
+    /**
+     * Constructor with dependency spring injection.
+     * @param experimentConfig {@link ExperimentConfig} bean
+     * @param crossValidationConfig {@link CrossValidationConfig} bean
+     */
     @Autowired
     public ExperimentInitializer(ExperimentConfig experimentConfig,
                                  CrossValidationConfig crossValidationConfig) {

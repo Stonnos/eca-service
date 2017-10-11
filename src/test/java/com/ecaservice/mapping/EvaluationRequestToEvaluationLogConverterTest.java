@@ -1,8 +1,8 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.TestDataHelper;
-import com.ecaservice.model.EvaluationMethod;
-import com.ecaservice.model.EvaluationRequest;
+import com.ecaservice.model.evaluation.EvaluationMethod;
+import com.ecaservice.model.evaluation.EvaluationRequest;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.entity.EvaluationLog;
 import eca.metrics.KNearestNeighbours;

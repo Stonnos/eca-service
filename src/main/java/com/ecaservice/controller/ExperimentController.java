@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,7 +30,7 @@ public class ExperimentController {
 
     @RequestMapping(value = "/download/{uuid}", method = RequestMethod.GET)
     public void download(@PathVariable String uuid, HttpServletResponse response) {
-        File experimentFile = experimentService.findExperimentByUuid(uuid);
+        File experimentFile = experimentService.findExperimentFileByUuid(uuid);
         if (experimentFile == null) {
             log.warn("Experiment file by uuid {} not found!", uuid);
         } else {

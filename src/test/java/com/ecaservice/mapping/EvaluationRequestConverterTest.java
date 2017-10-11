@@ -2,9 +2,9 @@ package com.ecaservice.mapping;
 
 import com.ecaservice.TestDataHelper;
 import com.ecaservice.dto.EvaluationRequestDto;
-import com.ecaservice.model.EvaluationMethod;
-import com.ecaservice.model.EvaluationOption;
-import com.ecaservice.model.EvaluationRequest;
+import com.ecaservice.model.evaluation.EvaluationMethod;
+import com.ecaservice.model.evaluation.EvaluationOption;
+import com.ecaservice.model.evaluation.EvaluationRequest;
 import eca.metrics.KNearestNeighbours;
 import org.junit.Before;
 import org.junit.Test;

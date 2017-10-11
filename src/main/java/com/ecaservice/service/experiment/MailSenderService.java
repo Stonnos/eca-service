@@ -22,6 +22,10 @@ public class MailSenderService {
 
     private final JavaMailSender mailSender;
 
+    /**
+     * Constructor with dependency spring injection.
+     * @param mailSender {@link JavaMailSender} bean
+     */
     @Autowired
     public MailSenderService(JavaMailSender mailSender) {
         this.mailSender = mailSender;

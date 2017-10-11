@@ -1,6 +1,6 @@
 package com.ecaservice.model.experiment;
 
-import com.ecaservice.model.EvaluationMethod;
+import com.ecaservice.model.evaluation.EvaluationMethod;
 import lombok.Data;
 import weka.core.Instances;
 

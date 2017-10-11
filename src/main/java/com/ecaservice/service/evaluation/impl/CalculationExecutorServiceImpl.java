@@ -1,6 +1,6 @@
-package com.ecaservice.service.impl;
+package com.ecaservice.service.evaluation.impl;
 
-import com.ecaservice.service.CalculationExecutorService;
+import com.ecaservice.service.evaluation.CalculationExecutorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

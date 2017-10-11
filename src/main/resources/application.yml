@@ -45,7 +45,7 @@ experiment:
   maximumFractionDigits: 4
   ## Experiment timeout in hours
   timeout: 5
-  edelay: 60000
+  delay: 60000
 
   data:
     storagePath: /home/roman/experiment/data/

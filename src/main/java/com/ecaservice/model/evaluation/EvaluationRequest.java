@@ -1,5 +1,6 @@
-package com.ecaservice.model;
+package com.ecaservice.model.evaluation;
 
+import com.ecaservice.model.InputData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

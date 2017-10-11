@@ -6,6 +6,10 @@ import weka.core.Instances;
 
 import java.io.File;
 
+/**
+ * Data service interface.
+ * @author Roman Batygin
+ */
 public interface DataService {
 
     /**

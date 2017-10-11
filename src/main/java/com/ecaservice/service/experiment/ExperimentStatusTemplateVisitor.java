@@ -40,11 +40,6 @@ public class ExperimentStatusTemplateVisitor implements ExperimentStatusVisitor<
     }
 
     @Override
-    public Context caseRequestError(Experiment parameter) {
-        return createContext(parameter);
-    }
-
-    @Override
     public Context caseError(Experiment parameter) {
         return createContext(parameter);
     }

@@ -1,6 +1,7 @@
 package com.ecaservice.service;
 
-import com.ecaservice.service.impl.CalculationExecutorServiceImpl;
+import com.ecaservice.service.evaluation.CalculationExecutorService;
+import com.ecaservice.service.evaluation.impl.CalculationExecutorServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 

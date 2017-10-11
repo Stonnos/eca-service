@@ -1,6 +1,6 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.model.EvaluationRequest;
+import com.ecaservice.model.evaluation.EvaluationRequest;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.InputOptionsMap;
 import com.ecaservice.model.entity.EvaluationLog;

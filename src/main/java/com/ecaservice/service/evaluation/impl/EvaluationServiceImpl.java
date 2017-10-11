@@ -1,9 +1,13 @@
-package com.ecaservice.service.impl;
+package com.ecaservice.service.evaluation.impl;
 
 
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.model.*;
-import com.ecaservice.service.EvaluationService;
+import com.ecaservice.model.evaluation.ClassificationResult;
+import com.ecaservice.model.evaluation.EvaluationMethod;
+import com.ecaservice.model.evaluation.EvaluationMethodVisitor;
+import com.ecaservice.model.evaluation.EvaluationOption;
+import com.ecaservice.service.evaluation.EvaluationService;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;

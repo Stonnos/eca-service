@@ -1,8 +1,8 @@
 package com.ecaservice.model.entity;
 
-import com.ecaservice.model.EvaluationMethod;
-import com.ecaservice.model.EvaluationOption;
-import com.ecaservice.model.EvaluationStatus;
+import com.ecaservice.model.evaluation.EvaluationMethod;
+import com.ecaservice.model.evaluation.EvaluationOption;
+import com.ecaservice.model.evaluation.EvaluationStatus;
 import lombok.Data;
 
 import javax.persistence.*;

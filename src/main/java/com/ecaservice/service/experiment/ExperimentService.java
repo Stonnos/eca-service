@@ -8,7 +8,7 @@ import com.ecaservice.model.experiment.ExperimentRequestResult;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.repository.ExperimentRepository;
-import com.ecaservice.service.CalculationExecutorService;
+import com.ecaservice.service.evaluation.CalculationExecutorService;
 import eca.converters.model.ExperimentHistory;
 import eca.core.EvaluationMethod;
 import eca.core.evaluation.EvaluationResults;
@@ -18,6 +18,7 @@ import eca.dataminer.IterativeExperiment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StopWatch;
 import weka.core.Instances;
@@ -33,6 +34,7 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * Experiment service.
+ *
  * @author Roman Batygin
  */
 @Slf4j
@@ -48,6 +50,16 @@ public class ExperimentService {
     private final ExperimentConfig experimentConfig;
     private final ExperimentInitializer experimentInitializer;
 
+    /**
+     * Constructor with dependency spring injection.
+     *
+     * @param experimentRepository  {@link ExperimentRepository}
+     * @param executorService       {@link CalculationExecutorService}
+     * @param mapper                {@link OrikaBeanMapper}
+     * @param dataService           {@link DataService}
+     * @param experimentConfig      {@link ExperimentConfig}
+     * @param experimentInitializer {@link ExperimentInitializer}
+     */
     @Autowired
     public ExperimentService(ExperimentRepository experimentRepository,
                              CalculationExecutorService executorService,
@@ -64,10 +76,12 @@ public class ExperimentService {
 
     /**
      * Creates experiment request.
+     *
      * @param experimentRequest {@link ExperimentRequest} object
      * @return {@link ExperimentRequestResult} object
      */
     public Experiment createExperiment(ExperimentRequest experimentRequest) {
+        Assert.notNull(experimentRequest, "Experiment request is not specified!");
         Experiment experiment = mapper.map(experimentRequest, Experiment.class);
         try {
             experiment.setExperimentStatus(ExperimentStatus.NEW);
@@ -77,10 +91,9 @@ public class ExperimentService {
                     String.format(experimentConfig.getData().getFileFormat(), System.currentTimeMillis()));
             dataService.save(dataFile, experimentRequest.getData());
             experiment.setTrainingDataAbsolutePath(dataFile.getAbsolutePath());
-            throw new Exception();
         } catch (Exception ex) {
             log.error(ex.getMessage());
-            experiment.setExperimentStatus(ExperimentStatus.REQUEST_ERROR);
+            experiment.setExperimentStatus(ExperimentStatus.ERROR);
             experiment.setErrorMessage(ex.getMessage());
         } finally {
             experimentRepository.save(experiment);
@@ -90,28 +103,29 @@ public class ExperimentService {
 
     /**
      * Processes experiment.
+     *
      * @param experiment {@link Experiment} object
      */
     public void processExperiment(Experiment experiment) {
-        log.info("Starting experiment#{}.", experiment.getId());
+        log.info("Starting to built experiment {}.", experiment.getId());
         experiment.setStartDate(LocalDateTime.now());
         experimentRepository.save(experiment);
         try {
-            StopWatch stopWatch = new StopWatch(String.format("Stop watching for experiment#%d", experiment.getId()));
+            StopWatch stopWatch = new StopWatch(String.format("Stop watching for experiment %d", experiment.getId()));
 
-            stopWatch.start(String.format("Loading data for experiment#%d", experiment.getId()));
+            stopWatch.start(String.format("Loading data for experiment %d", experiment.getId()));
             Instances data = dataService.load(new File(experiment.getTrainingDataAbsolutePath()));
             stopWatch.stop();
             InitializationParams initializationParams = new InitializationParams(data,
                     mapper.map(experiment.getEvaluationMethod(), EvaluationMethod.class));
 
-            stopWatch.start(String.format("Experiment#%d processing", experiment.getId()));
+            stopWatch.start(String.format("Experiment %d processing", experiment.getId()));
             ExperimentHistory experimentHistory =
                     executorService.execute(new ExperimentProcessor(experiment, initializationParams),
                             experimentConfig.getTimeout(), TimeUnit.HOURS);
             stopWatch.stop();
 
-            stopWatch.start(String.format("Experiment#%d saving", experiment.getId()));
+            stopWatch.start(String.format("Experiment %d saving", experiment.getId()));
             File experimentFile = new File(experimentConfig.getStoragePath(),
                     String.format(experimentConfig.getFileFormat(), System.currentTimeMillis()));
             dataService.save(experimentFile, experimentHistory);
@@ -121,7 +135,7 @@ public class ExperimentService {
             experiment.setUuid(UUID.randomUUID().toString());
             experiment.setExperimentStatus(ExperimentStatus.FINISHED);
 
-            log.info("Experiment#{} has been successfully finished!", experiment.getId());
+            log.info("Experiment {} has been successfully finished!", experiment.getId());
             log.info(stopWatch.prettyPrint());
         } catch (TimeoutException ex) {
             log.warn("There was a timeout.");
@@ -138,21 +152,22 @@ public class ExperimentService {
 
     /**
      * Finds experiment file by uuid.
+     *
      * @param uuid uuid
      * @return experiment file object
      */
-    public File findExperimentByUuid(String uuid) {
-       Experiment experiment = experimentRepository.findByUuid(uuid);
-       if (experiment == null) {
-           log.warn("Experiment for uuid = {} not found!", uuid);
-           return null;
-       }
-       if (experiment.getExperimentAbsolutePath() == null) {
-           log.warn("Experiment file for uuid = {} not found!", uuid);
-           return null;
-       } else {
-           return new File(experiment.getExperimentAbsolutePath());
-       }
+    public File findExperimentFileByUuid(String uuid) {
+        Experiment experiment = experimentRepository.findByUuid(uuid);
+        if (experiment == null) {
+            log.warn("Experiment for uuid = {} not found!", uuid);
+            return null;
+        }
+        if (experiment.getExperimentAbsolutePath() == null) {
+            log.warn("Experiment file for uuid = {} not found!", uuid);
+            return null;
+        } else {
+            return new File(experiment.getExperimentAbsolutePath());
+        }
     }
 
     /**
@@ -180,11 +195,11 @@ public class ExperimentService {
                     iterativeExperiment.next();
                     int percent = iterativeExperiment.getPercent();
                     if (percent != currentPercent && percent % PROGRESS_STEP == 0) {
-                        log.info("Experiment#{} progress: {} %.", experiment.getId(), percent);
+                        log.info("Experiment {} progress: {} %.", experiment.getId(), percent);
                     }
                     currentPercent = percent;
                 } catch (Exception ex) {
-                    log.warn("Warning for experiment#{}: {}", experiment.getId(), ex.getMessage());
+                    log.warn("Warning for experiment {}: {}", experiment.getId(), ex.getMessage());
                 }
             }
 
