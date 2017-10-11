@@ -11,7 +11,7 @@ import com.ecaservice.model.experiment.ExperimentRequestResult;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.EcaService;
-import com.ecaservice.service.NotificationService;
+import com.ecaservice.service.experiment.NotificationService;
 import com.ecaservice.service.experiment.ExperimentService;
 import eca.generators.SimpleDataGenerator;
 import lombok.extern.slf4j.Slf4j;

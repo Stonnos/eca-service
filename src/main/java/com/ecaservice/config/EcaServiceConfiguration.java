@@ -4,9 +4,6 @@ import eca.data.DataLoader;
 import eca.data.DataSaver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.thymeleaf.spring4.SpringTemplateEngine;
-import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
-import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -67,7 +64,7 @@ public class EcaServiceConfiguration {
     public DataSaver dataSaver() {
         ExperimentConfig experimentConfig = experimentConfig();
         DataSaver dataSaver = new DataSaver();
-        dataSaver.setDateFormat(experimentConfig.getDateFormat());
+        dataSaver.setDateFormat(experimentConfig.getData().getDateFormat());
         return dataSaver;
     }
 
@@ -80,33 +77,8 @@ public class EcaServiceConfiguration {
     public DataLoader dataLoader() {
         ExperimentConfig experimentConfig = experimentConfig();
         DataLoader dataLoader = new DataLoader();
-        dataLoader.setDateFormat(experimentConfig.getDateFormat());
+        dataLoader.setDateFormat(experimentConfig.getData().getDateFormat());
         return dataLoader;
     }
 
-
-    /*
-    @Bean
-    public SpringTemplateEngine templateEngine() {
-        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-        templateEngine.setTemplateResolver(thymeleafTemplateResolver());
-        return templateEngine;
-    }
-
-    @Bean
-    public SpringResourceTemplateResolver thymeleafTemplateResolver() {
-        SpringResourceTemplateResolver templateResolver
-                = new SpringResourceTemplateResolver();
-        templateResolver.setPrefix("/WEB-INF/views/");
-        templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode("HTML5");
-        return templateResolver;
-    }
-
-    @Bean
-    public ThymeleafViewResolver thymeleafViewResolver() {
-        ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
-        viewResolver.setTemplateEngine(templateEngine());
-        return viewResolver;
-    }*/
 }

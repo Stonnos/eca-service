@@ -1,24 +1,39 @@
 package com.ecaservice.config;
 
+import com.ecaservice.model.experiment.ExperimentStatus;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Experiment email configuration class.
+ *
  * @author Roman Batygin
  */
 @Data
+@ConfigurationProperties("experiment.mail")
 public class MailConfig {
 
-    @Value("${experiment.mail.messageTemplatePath}")
-    private String messageTemplatePath;
+    /**
+     * Message templates map
+     */
+    private Map<ExperimentStatus, String> messageTemplatesMap = new HashMap<>();
 
-    @Value("${experiment.mail.from}")
+    /**
+     * Source email
+     */
     private String from;
 
-    @Value("${experiment.mail.subject}")
+    /**
+     * Subject string
+     */
     private String subject;
 
-    @Value("${experiment.mail.maxRetriesToSent}")
+    /**
+     * Maximum retries number to sent
+     */
     private Integer maxRetriesToSent;
 }

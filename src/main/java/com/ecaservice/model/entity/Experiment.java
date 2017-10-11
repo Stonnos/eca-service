@@ -2,6 +2,7 @@ package com.ecaservice.model.entity;
 
 import com.ecaservice.model.EvaluationMethod;
 import com.ecaservice.model.EvaluationStatus;
+import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import lombok.Data;
 
@@ -55,8 +56,8 @@ public class Experiment {
     @Column(name = "experiment_type", nullable = false)
     private ExperimentType experimentType;
 
-    @Column(name = "evaluation_status", nullable = false)
-    private EvaluationStatus evaluationStatus;
+    @Column(name = "experiment_status", nullable = false)
+    private ExperimentStatus experimentStatus;
 
     @Column(name = "error_message", columnDefinition = "text")
     private String errorMessage;

@@ -1,13 +1,10 @@
-package com.ecaservice.service;
+package com.ecaservice.service.experiment;
 
-import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.config.MailConfig;
-import com.ecaservice.model.EvaluationStatus;
 import com.ecaservice.model.Mail;
 import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.repository.ExperimentRepository;
-import com.ecaservice.service.experiment.MailSenderService;
-import com.ecaservice.service.experiment.dictionary.TemplateVariablesDictionary;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,19 +24,20 @@ public class NotificationService {
     private final TemplateEngine templateEngine;
     private final MailSenderService mailSenderService;
     private final MailConfig mailConfig;
-    private final ExperimentConfig experimentConfig;
+    private final ExperimentStatusTemplateVisitor statusTemplateVisitor;
     private final ExperimentRepository experimentRepository;
 
     @Autowired
     public NotificationService(TemplateEngine templateEngine,
                                MailSenderService mailSenderService,
                                ExperimentRepository experimentRepository,
-                               MailConfig mailConfig, ExperimentConfig experimentConfig) {
+                               MailConfig mailConfig,
+                               ExperimentStatusTemplateVisitor statusTemplateVisitor) {
         this.templateEngine = templateEngine;
         this.mailSenderService = mailSenderService;
         this.mailConfig = mailConfig;
         this.experimentRepository = experimentRepository;
-        this.experimentConfig = experimentConfig;
+        this.statusTemplateVisitor = statusTemplateVisitor;
     }
 
     /**
@@ -48,11 +46,9 @@ public class NotificationService {
      */
     public void notifyByEmail(Experiment experiment) {
         try {
-            Context context = new Context();
-            context.setVariable(TemplateVariablesDictionary.FIRST_NAME_KEY, experiment.getFirstName());
-            context.setVariable(TemplateVariablesDictionary.DOWNLOAD_URL_KEY,
-                    String.format(experimentConfig.getDownloadUrl(), experiment.getUuid()));
-            String message = templateEngine.process(mailConfig.getMessageTemplatePath(), context);
+            String template = mailConfig.getMessageTemplatesMap().get(experiment.getExperimentStatus());
+            Context context = experiment.getExperimentStatus().handle(statusTemplateVisitor, experiment);
+            String message = templateEngine.process(template, context);
             Mail mail = new Mail();
             mail.setFrom(mailConfig.getFrom());
             mail.setTo(experiment.getEmail());
@@ -71,11 +67,10 @@ public class NotificationService {
 
     private void populateFailedSent(Experiment experiment, String errorMessage) {
         if (experiment.getRetriesToSent() >= mailConfig.getMaxRetriesToSent()) {
-            experiment.setEvaluationStatus(EvaluationStatus.EXCEEDED);
+            experiment.setExperimentStatus(ExperimentStatus.EXCEEDED);
             experiment.setErrorMessage("Number of sent retries exceeded maximum");
         } else {
-            experiment.setEvaluationStatus(EvaluationStatus.FAILED);
-            experiment.setErrorMessage(errorMessage);
+            experiment.setExperimentStatus(ExperimentStatus.FAILED);
             experiment.setRetriesToSent(experiment.getRetriesToSent() + 1);
         }
     }

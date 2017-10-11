@@ -3,7 +3,8 @@ package com.ecaservice.model.experiment;
 /**
  * Interface for visitor pattern.
  *
- * @param <T> - generic type
+ * @param <T> - results generic type
+ * @param <P> - params generic type
  * @author Roman Batygin
  */
 public interface ExperimentTypeVisitor<T, P> {

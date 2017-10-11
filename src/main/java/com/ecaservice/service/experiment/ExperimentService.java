@@ -2,14 +2,13 @@ package com.ecaservice.service.experiment;
 
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.mapping.OrikaBeanMapper;
-import com.ecaservice.model.EvaluationStatus;
 import com.ecaservice.model.experiment.ExperimentRequest;
 import com.ecaservice.model.experiment.ExperimentRequestResult;
 import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.CalculationExecutorService;
-import eca.converters.ModelConverter;
 import eca.converters.model.ExperimentHistory;
 import eca.core.EvaluationMethod;
 import eca.core.evaluation.EvaluationResults;
@@ -27,7 +26,6 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -73,11 +71,11 @@ public class ExperimentService {
         ExperimentRequestResult experimentRequestResult = new ExperimentRequestResult();
         try {
             Experiment experiment = mapper.map(experimentRequest, Experiment.class);
-            experiment.setEvaluationStatus(EvaluationStatus.NEW);
+            experiment.setExperimentStatus(ExperimentStatus.NEW);
             experiment.setCreationDate(LocalDateTime.now());
             experiment.setRetriesToSent(0);
-            File dataFile = new File(experimentConfig.getDataStoragePath(),
-                    String.format(experimentConfig.getDataFileFormat(), System.currentTimeMillis()));
+            File dataFile = new File(experimentConfig.getData().getStoragePath(),
+                    String.format(experimentConfig.getData().getFileFormat(), System.currentTimeMillis()));
             dataService.save(dataFile, experimentRequest.getData());
             experiment.setTrainingDataAbsolutePath(dataFile.getAbsolutePath());
             experimentRepository.save(experiment);
@@ -120,16 +118,16 @@ public class ExperimentService {
 
             experiment.setExperimentAbsolutePath(experimentFile.getAbsolutePath());
             experiment.setUuid(UUID.randomUUID().toString());
-            experiment.setEvaluationStatus(EvaluationStatus.FINISHED);
+            experiment.setExperimentStatus(ExperimentStatus.FINISHED);
 
             log.info("Experiment#{} has been successfully finished!", experiment.getId());
             log.info(stopWatch.prettyPrint());
         } catch (TimeoutException ex) {
             log.warn("There was a timeout.");
-            experiment.setEvaluationStatus(EvaluationStatus.TIMEOUT);
+            experiment.setExperimentStatus(ExperimentStatus.TIMEOUT);
         } catch (Throwable ex) {
             log.error("There was an error occurred in evaluation : {}", ex);
-            experiment.setEvaluationStatus(EvaluationStatus.ERROR);
+            experiment.setExperimentStatus(ExperimentStatus.ERROR);
             experiment.setErrorMessage(ex.getMessage());
         } finally {
             experiment.setEndDate(LocalDateTime.now());

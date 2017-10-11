@@ -1,7 +1,7 @@
 package com.ecaservice.config;
 
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Experiment configuration class.
@@ -9,42 +9,91 @@ import org.springframework.beans.factory.annotation.Value;
  * @author Roman Batygin
  */
 @Data
+@ConfigurationProperties("experiment")
 public class ExperimentConfig {
 
-    @Value("${experiment.numIterations:10000}")
+    /**
+     * Experiment iterations number
+     */
     private Integer numIterations;
 
-    @Value("${experiment.resultSize:100}")
+    /**
+     * Experiment result models size
+     */
     private Integer resultSize;
 
-    @Value("${experiment.fileFormat}")
+    /**
+     * Experiment file format
+     */
     private String fileFormat;
 
-    @Value("${experiment.storagePath}")
+    /**
+     * Experiment storage path
+     */
     private String storagePath;
 
-    @Value("${experiment.data.fileFormat}")
-    private String dataFileFormat;
+    /**
+     * Data config
+     */
+    private DataConfig data;
 
-    @Value("${experiment.data.storagePath}")
-    private String dataStoragePath;
+    /**
+     * Ensemble config
+     */
+    private EnsembleConfig ensemble;
 
-    @Value("${experiment.downloadUrl}")
+    /**
+     * Experiment download url
+     */
     private String downloadUrl;
 
-    @Value("${experiment.dateFormat}")
-    private String dateFormat;
-
-    @Value("${experiment.maximumFractionDigits:4}")
+    /**
+     * Maximum fraction digits
+     */
     private Integer maximumFractionDigits;
 
-    @Value("${experiment.ensemble.numIterations:25}")
-    private Integer ensembleNumIterations;
-
-    @Value("${experiment.timeout:5}")
+    /**
+     * Experiment timeout value in hours
+     */
     private Integer timeout;
 
-    @Value("${experiment.delay:60000}")
+    /**
+     * Delay value for scheduler in millis
+     */
     private Integer delay;
+
+    /**
+     * Data configuration properties.
+     */
+    @Data
+    public static class DataConfig {
+
+        /**
+         * Data file format
+         */
+        private String fileFormat;
+
+        /**
+         * Data storage path
+         */
+        private String storagePath;
+
+        /**
+         * Date format
+         */
+        private String dateFormat;
+    }
+
+    /**
+     * Ensemble configuration properties.
+     */
+    @Data
+    public static class EnsembleConfig {
+
+        /**
+         * Number of iterations
+         */
+        private Integer numIterations;
+    }
 
 }

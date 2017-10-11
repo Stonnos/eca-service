@@ -27,13 +27,4 @@ public enum EvaluationStatus {
      */
     ERROR,
 
-    /**
-     * Email not send status
-     */
-    FAILED,
-
-    /**
-     * Exceed status
-     */
-    EXCEEDED
 }

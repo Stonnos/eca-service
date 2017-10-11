@@ -1,0 +1,64 @@
+## Datasource properties
+datasource:
+  driver-class-name: @jdbc.driver@
+  url: @jdbc.url@
+  username: @jdbc.user@
+  password: @jdbc.password@
+jpa:
+  hibernate:
+    ddl-auto: @jdbc.ddlAuto@
+  database-platform: @jdbc.dialect@
+
+## Cross - validation properties
+cross-validation:
+  numFolds: 10
+  numTests: 10
+  seed: 3
+  ## Cross validation timeout in minutes
+  timeout: 60
+
+## Server port
+server:
+  port: @server.port@
+
+## Email properties
+spring:
+  mail:
+    host: smtp.yandex.com
+    port: 25
+    username: r.batygin@intabia.ru
+    password: o-dkXq2D
+    properties:
+      mail.transport.protocol: smtp
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.debug: true
+
+## Experiment properties
+experiment:
+  resultSize: 100
+  numIterations: 1000
+  fileFormat: experiment%d.txt
+  storagePath: /home/roman/experiment/
+  downloadUrl: http://localhost:@server.port@/eca-service/experiment/download/%s
+  dateFormat: yyyy-MM-dd HH:mm:ss
+  maximumFractionDigits: 4
+  ## Experiment timeout in hours
+  timeout: 5
+  edelay: 60000
+
+  data:
+    storagePath: /home/roman/experiment/data/
+    fileFormat: data%d.arff
+    dateFormat: yyyy-MM-dd HH:mm:ss
+  ensemble:
+    numIterations: 25
+
+  mail:
+    from: r.batygin@intabia.ru
+    subject: Experiment results from eca - service
+    maxRetriesToSent: 10
+    messageTemplatesMap:
+      FINISHED: email-message-template.html
+      ERROR: email-error-message-template.html
+      TIMEOUT: email-error-message-template.html

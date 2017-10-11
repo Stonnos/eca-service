@@ -11,7 +11,6 @@ import eca.metrics.KNearestNeighbours;
 import eca.neural.NeuralNetwork;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import weka.core.Instances;
 
 @Component
 public class ExperimentInitializer implements ExperimentTypeVisitor<AbstractExperiment, InitializationParams> {
@@ -41,7 +40,7 @@ public class ExperimentInitializer implements ExperimentTypeVisitor<AbstractExpe
         ClassifiersSet classifiersSet = ClassifiersSetBuilder.createClassifiersSet(initializationParams.getData(),
                 experimentConfig.getMaximumFractionDigits());
         HeterogeneousClassifier heterogeneousClassifier = new HeterogeneousClassifier(classifiersSet);
-        heterogeneousClassifier.setIterationsNum(experimentConfig.getEnsembleNumIterations());
+        heterogeneousClassifier.setIterationsNum(experimentConfig.getEnsemble().getNumIterations());
         return new AutomatedHeterogeneousEnsemble(heterogeneousClassifier, initializationParams.getData());
     }
 
@@ -51,7 +50,7 @@ public class ExperimentInitializer implements ExperimentTypeVisitor<AbstractExpe
                 experimentConfig.getMaximumFractionDigits());
         ModifiedHeterogeneousClassifier modifiedHeterogeneousClassifier =
                 new ModifiedHeterogeneousClassifier(classifiersSet);
-        modifiedHeterogeneousClassifier.setIterationsNum(experimentConfig.getEnsembleNumIterations());
+        modifiedHeterogeneousClassifier.setIterationsNum(experimentConfig.getEnsemble().getNumIterations());
         return new AutomatedHeterogeneousEnsemble(modifiedHeterogeneousClassifier, initializationParams.getData());
     }
 
@@ -60,7 +59,7 @@ public class ExperimentInitializer implements ExperimentTypeVisitor<AbstractExpe
         ClassifiersSet classifiersSet = ClassifiersSetBuilder.createClassifiersSet(initializationParams.getData(),
                 experimentConfig.getMaximumFractionDigits());
         AdaBoostClassifier adaBoostClassifier = new AdaBoostClassifier(classifiersSet);
-        adaBoostClassifier.setIterationsNum(experimentConfig.getEnsembleNumIterations());
+        adaBoostClassifier.setIterationsNum(experimentConfig.getEnsemble().getNumIterations());
         return new AutomatedHeterogeneousEnsemble(adaBoostClassifier, initializationParams.getData());
     }
 
