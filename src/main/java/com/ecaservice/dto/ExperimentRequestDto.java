@@ -7,7 +7,7 @@ import lombok.Data;
 import weka.core.Instances;
 
 /**
- * Experiment request model.
+ * Experiment request transport model.
  *
  * @author Roman Batygin
  */

@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
- * Experiment model.
+ * Experiment persistence entity.
  *
  * @author Roman Batygin
  */
@@ -22,48 +22,90 @@ public class Experiment {
     @GeneratedValue
     private Long id;
 
+    /**
+     * Request remote ip address
+     */
     @Column(name = "ip_address", nullable = false)
     private String ipAddress;
 
+    /**
+     * First name
+     */
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
+    /**
+     * Email
+     */
     @Column(name = "email", nullable = false)
     private String email;
 
+    /**
+     * Experiment file absolute path
+     */
     @Column(name = "experiment_absolute_path")
     private String experimentAbsolutePath;
 
+    /**
+     * Training data absolute path
+     */
     @Column(name = "training_data_absolute_path")
     private String trainingDataAbsolutePath;
 
     @Column(unique = true)
     private String uuid;
 
+    /**
+     * Request creation date
+     */
     @Column(name = "creation_date", nullable = false)
     private LocalDateTime creationDate;
 
+    /**
+     * Experiment processing start date
+     */
     @Column(name = "start_date")
     private LocalDateTime startDate;
 
+    /**
+     * Experiment processing end date
+     */
     @Column(name = "end_date")
     private LocalDateTime endDate;
 
+    /**
+     * Email sent date
+     */
     @Column(name = "sent_date")
     private LocalDateTime sentDate;
 
+    /**
+     * Experiment type
+     */
+    @Enumerated(EnumType.STRING)
     @Column(name = "experiment_type", nullable = false)
     private ExperimentType experimentType;
 
+    /**
+     * Experiment status
+     */
+    @Enumerated(EnumType.STRING)
     @Column(name = "experiment_status", nullable = false)
     private ExperimentStatus experimentStatus;
 
     @Column(name = "error_message", columnDefinition = "text")
     private String errorMessage;
 
+    /**
+     * Evaluation method
+     */
+    @Enumerated(EnumType.STRING)
     @Column(name = "evaluation_method", nullable = false)
     private EvaluationMethod evaluationMethod;
 
-    @Column(name = "retries_to_sent")
-    private int retriesToSent;
+    /**
+     * Number of failed attempts to send email
+     */
+    @Column(name = "failed_attempts_to_sent")
+    private int failedAttemptsToSent;
 }

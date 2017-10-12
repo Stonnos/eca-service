@@ -11,6 +11,10 @@ import weka.core.Instances;
 
 import java.io.File;
 
+/**
+ * Data service implementation.
+ * @author Roman Batygin
+ */
 @Slf4j
 @Service
 public class DataServiceImpl implements DataService {

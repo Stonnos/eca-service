@@ -1,13 +1,25 @@
-## Datasource properties
-datasource:
-  driver-class-name: @jdbc.driver@
-  url: @jdbc.url@
-  username: @jdbc.user@
-  password: @jdbc.password@
-jpa:
-  hibernate:
-    ddl-auto: @jdbc.ddlAuto@
-  database-platform: @jdbc.dialect@
+spring:
+  ## Email properties
+  mail:
+    host: smtp.yandex.com
+    port: 25
+    username: r.batygin@intabia.ru
+    password: o-dkXq2D
+    properties:
+      mail.transport.protocol: smtp
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.debug: true
+  ## Datasource properties
+  datasource:
+    driver-class-name: @jdbc.driver@
+    url: @jdbc.url@
+    username: @jdbc.user@
+    password: @jdbc.password@
+  jpa:
+    hibernate:
+      ddl-auto: @jdbc.ddlAuto@
+    database-platform: @jdbc.dialect@
 
 ## Cross - validation properties
 cross-validation:
@@ -20,19 +32,6 @@ cross-validation:
 ## Server port
 server:
   port: @server.port@
-
-## Email properties
-spring:
-  mail:
-    host: smtp.yandex.com
-    port: 25
-    username: r.batygin@intabia.ru
-    password: o-dkXq2D
-    properties:
-      mail.transport.protocol: smtp
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
-      mail.debug: true
 
 ## Experiment properties
 experiment:

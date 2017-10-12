@@ -16,6 +16,7 @@ import java.util.List;
 
 /**
  * Experiment scheduler.
+ *
  * @author Roman Batygin
  */
 @Slf4j
@@ -29,6 +30,13 @@ public class ExperimentScheduler {
     private final ExperimentService experimentService;
     private final NotificationService notificationService;
 
+    /**
+     * Constructor with dependency spring injection.
+     *
+     * @param experimentRepository {@link ExperimentRepository} bean
+     * @param experimentService    {@link ExperimentService} bean
+     * @param notificationService  {@link NotificationService} bean
+     */
     @Autowired
     public ExperimentScheduler(ExperimentRepository experimentRepository,
                                ExperimentService experimentService,
@@ -46,7 +54,7 @@ public class ExperimentScheduler {
         log.info("Starting to built experiments.");
         List<Experiment> experiments =
                 experimentRepository.findByExperimentStatusInAndSentDateIsNull(Arrays.asList(ExperimentStatus.NEW));
-        log.info("Obtained {} new experiments.", experiments.size());
+        log.info("{} new experiments has been obtained.", experiments.size());
         for (Experiment experiment : experiments) {
             experimentService.processExperiment(experiment);
         }
@@ -54,14 +62,14 @@ public class ExperimentScheduler {
     }
 
     /**
-     * Processing experiment requests to sent.
+     * Processing experiment requests for sending.
      */
     @Scheduled(fixedDelayString = "${experiment.delay}")
     public void processingRequestsToSent() {
         log.info("Starting to sent experiment results.");
         List<Experiment> experiments =
                 experimentRepository.findByExperimentStatusInAndSentDateIsNull(SENT_STATUSES);
-        log.info("Obtained {} experiments to sent.", experiments.size());
+        log.info("{} experiments has been obtained for sending.", experiments.size());
         for (Experiment experiment : experiments) {
             notificationService.notifyByEmail(experiment);
         }

@@ -1,6 +1,6 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.dto.ExperimentRequestDto;
 import com.ecaservice.model.experiment.ExperimentRequest;
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.metadata.Type;
@@ -10,16 +10,16 @@ import org.springframework.stereotype.Component;
  * @author Roman Batygin
  */
 @Component
-public class ExperimentRequestConverter extends CustomConverter<ExperimentRequest, Experiment> {
+public class ExperimentRequestConverter extends CustomConverter<ExperimentRequestDto, ExperimentRequest> {
 
     @Override
-    public Experiment convert(ExperimentRequest experimentRequest, Type<? extends Experiment> type) {
-        Experiment experiment = new Experiment();
-        experiment.setFirstName(experimentRequest.getFirstName());
-        experiment.setEmail(experimentRequest.getEmail());
-        experiment.setIpAddress(experimentRequest.getIpAddress());
-        experiment.setExperimentType(experimentRequest.getExperimentType());
-        experiment.setEvaluationMethod(experimentRequest.getEvaluationMethod());
-        return experiment;
+    public ExperimentRequest convert(ExperimentRequestDto experimentRequest, Type<? extends ExperimentRequest> type) {
+        ExperimentRequest request = new ExperimentRequest();
+        request.setData(experimentRequest.getData());
+        request.setExperimentType(experimentRequest.getExperimentType());
+        request.setEvaluationMethod(experimentRequest.getEvaluationMethod());
+        request.setEmail(experimentRequest.getEmail());
+        request.setFirstName(experimentRequest.getFirstName());
+        return request;
     }
 }

@@ -4,7 +4,6 @@ import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.mapping.OrikaBeanMapper;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentRequest;
-import com.ecaservice.model.experiment.ExperimentRequestResult;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.repository.ExperimentRepository;
@@ -78,7 +77,7 @@ public class ExperimentService {
      * Creates experiment request.
      *
      * @param experimentRequest {@link ExperimentRequest} object
-     * @return {@link ExperimentRequestResult} object
+     * @return {@link Experiment} object
      */
     public Experiment createExperiment(ExperimentRequest experimentRequest) {
         Assert.notNull(experimentRequest, "Experiment request is not specified!");
@@ -86,7 +85,7 @@ public class ExperimentService {
         try {
             experiment.setExperimentStatus(ExperimentStatus.NEW);
             experiment.setCreationDate(LocalDateTime.now());
-            experiment.setRetriesToSent(0);
+            experiment.setFailedAttemptsToSent(0);
             File dataFile = new File(experimentConfig.getData().getStoragePath(),
                     String.format(experimentConfig.getData().getFileFormat(), System.currentTimeMillis()));
             dataService.save(dataFile, experimentRequest.getData());
@@ -135,7 +134,8 @@ public class ExperimentService {
             experiment.setUuid(UUID.randomUUID().toString());
             experiment.setExperimentStatus(ExperimentStatus.FINISHED);
 
-            log.info("Experiment {} has been successfully finished!", experiment.getId());
+            log.info("Experiment {} has been successfully finished! {} best models has been built.",
+                    experiment.getId(), experimentHistory.getExperiment().size());
             log.info(stopWatch.prettyPrint());
         } catch (TimeoutException ex) {
             log.warn("There was a timeout.");

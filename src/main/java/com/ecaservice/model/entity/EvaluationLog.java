@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
- * Evaluation log model.
+ * Evaluation log persistence entity.
  *
  * @author Roman Batygin
  */
@@ -23,21 +23,39 @@ public class EvaluationLog {
     @GeneratedValue
     private Long id;
 
+    /**
+     * Request remote ip address
+     */
     @Column(name = "ip_address", nullable = false)
     private String ipAddress;
 
+    /**
+     * Request creation date
+     */
     @Column(name = "creation_date", nullable = false)
     private LocalDateTime creationDate;
 
+    /**
+     * Evaluation start date
+     */
     @Column(name = "start_date")
     private LocalDateTime startDate;
 
+    /**
+     * Evaluation end date
+     */
     @Column(name = "end_date")
     private LocalDateTime endDate;
 
+    /**
+     * Classifier name
+     */
     @Column(name = "classifier_name", nullable = false)
     private String classifierName;
 
+    /**
+     * Evaluation status
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "evaluation_status", nullable = false)
     private EvaluationStatus evaluationStatus;
@@ -45,22 +63,34 @@ public class EvaluationLog {
     @Column(name = "error_message", columnDefinition = "text")
     private String errorMessage;
 
+    /**
+     * Evaluation method
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "evaluation_method", nullable = false)
     private EvaluationMethod evaluationMethod;
 
+    /**
+     * Classifier input options map
+     */
     @ElementCollection
     @CollectionTable(name = "input_options")
     @MapKeyColumn(name = "option_name")
     @Column(name = "option_value", nullable = false)
     private Map<String, String> inputOptionsMap;
 
+    /**
+     * Evaluation options map
+     */
     @ElementCollection
     @CollectionTable(name = "evaluation_options")
     @MapKeyColumn(name = "option_name")
     @Column(name = "option_value")
     private Map<EvaluationOption, String> evaluationOptionsMap;
 
+    /**
+     * Training data info
+     */
     @OneToOne(mappedBy = "evaluationLog", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private InstancesInfo instancesInfo;
 

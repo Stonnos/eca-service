@@ -1,6 +1,5 @@
 package com.ecaservice.dto;
 
-import com.ecaservice.model.TechnicalStatus;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eca.core.evaluation.EvaluationResults;
 import lombok.Data;
@@ -12,20 +11,11 @@ import lombok.Data;
  */
 @Data
 @JsonSerialize(using = EvaluationResponseSerializer.class)
-public class EvaluationResponse {
+public class EvaluationResponse extends EcaResponse {
 
     /**
      * Evaluation results
      */
     private EvaluationResults evaluationResults;
 
-    /**
-     * Technical status
-     */
-    private TechnicalStatus status;
-
-    /**
-     * Error message
-     */
-    private String errorMessage;
 }
