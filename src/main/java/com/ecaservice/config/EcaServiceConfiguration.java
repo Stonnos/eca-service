@@ -1,7 +1,7 @@
 package com.ecaservice.config;
 
-import eca.data.DataLoader;
-import eca.data.DataSaver;
+import eca.data.file.FileDataLoader;
+import eca.data.file.FileDataSaver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -58,27 +58,27 @@ public class EcaServiceConfiguration {
     }
 
     /**
-     * Creates <tt>DataSaver</tt> bean
+     * Creates <tt>FileDataSaver</tt> bean
      *
-     * @return {@link DataSaver} bean
+     * @return {@link FileDataSaver} bean
      */
     @Bean
-    public DataSaver dataSaver() {
+    public FileDataSaver dataSaver() {
         ExperimentConfig experimentConfig = experimentConfig();
-        DataSaver dataSaver = new DataSaver();
+        FileDataSaver dataSaver = new FileDataSaver();
         dataSaver.setDateFormat(experimentConfig.getData().getDateFormat());
         return dataSaver;
     }
 
     /**
-     * Creates <tt>DataLoader</tt> bean
+     * Creates <tt>FileDataLoader</tt> bean
      *
-     * @return {@link DataLoader} bean
+     * @return {@link FileDataLoader} bean
      */
     @Bean
-    public DataLoader dataLoader() {
+    public FileDataLoader dataLoader() {
         ExperimentConfig experimentConfig = experimentConfig();
-        DataLoader dataLoader = new DataLoader();
+        FileDataLoader dataLoader = new FileDataLoader();
         dataLoader.setDateFormat(experimentConfig.getData().getDateFormat());
         return dataLoader;
     }

@@ -4,7 +4,7 @@ import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.experiment.ExperimentService;
-import com.ecaservice.service.experiment.NotificationService;
+import com.ecaservice.service.experiment.mail.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;

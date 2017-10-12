@@ -1,4 +1,4 @@
-package com.ecaservice.service.experiment;
+package com.ecaservice.service.experiment.visitors;
 
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.Experiment;
@@ -9,15 +9,20 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 
 /**
+ * Visitor obtaining email template context for experiment status.
  * @author Roman Batygin
  */
 @Component
-public class ExperimentStatusTemplateVisitor implements ExperimentStatusVisitor<Context, Experiment> {
+public class EmailTemplateVisitor implements ExperimentStatusVisitor<Context, Experiment> {
 
     private final ExperimentConfig experimentConfig;
 
+    /**
+     * Constructor with dependency spring injection.
+     * @param experimentConfig {@link ExperimentConfig} bean
+     */
     @Autowired
-    public ExperimentStatusTemplateVisitor(ExperimentConfig experimentConfig) {
+    public EmailTemplateVisitor(ExperimentConfig experimentConfig) {
         this.experimentConfig = experimentConfig;
     }
 

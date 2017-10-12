@@ -2,11 +2,10 @@ package com.ecaservice.config;
 
 import com.ecaservice.model.experiment.ExperimentStatus;
 import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Experiment email configuration class.

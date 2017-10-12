@@ -1,16 +1,18 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.TestDataHelper;
-import com.ecaservice.model.evaluation.EvaluationMethod;
-import com.ecaservice.model.evaluation.EvaluationRequest;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.entity.EvaluationLog;
+import com.ecaservice.model.evaluation.EvaluationMethod;
+import com.ecaservice.model.evaluation.EvaluationRequest;
 import eca.metrics.KNearestNeighbours;
 import org.junit.Test;
 
 import java.util.HashMap;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Unit tests that checks EvaluationRequestToEvaluationLogConverter functionality

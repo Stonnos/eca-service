@@ -192,12 +192,6 @@
         </dependency>
 
         <dependency>
-            <groupId>eca</groupId>
-            <artifactId>eca-data-source</artifactId>
-            <version>${eca.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>ma.glasnost.orika</groupId>
             <artifactId>orika-core</artifactId>
             <version>${orika.version}</version>

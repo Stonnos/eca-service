@@ -7,17 +7,15 @@ import com.ecaservice.mapping.ClassifierToInputOptionsMapConverter;
 import com.ecaservice.mapping.EvaluationRequestToEvaluationLogConverter;
 import com.ecaservice.mapping.InstancesToInstancesInfoConverter;
 import com.ecaservice.mapping.OrikaBeanMapper;
-import com.ecaservice.model.evaluation.EvaluationRequest;
-import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.EvaluationLog;
+import com.ecaservice.model.evaluation.EvaluationRequest;
+import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.service.evaluation.EcaService;
 import com.ecaservice.service.evaluation.EvaluationService;
 import com.ecaservice.service.evaluation.impl.CalculationExecutorServiceImpl;
-import com.ecaservice.service.evaluation.impl.EcaServiceImpl;
-import com.ecaservice.service.evaluation.impl.EvaluationServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -79,8 +77,8 @@ public class EcaServiceTest {
         when(crossValidationConfig.getNumTests()).thenReturn(TestDataHelper.NUM_TESTS);
         executorService = Executors.newCachedThreadPool();
         calculationExecutorService = new CalculationExecutorServiceImpl(executorService);
-        evaluationService = new EvaluationServiceImpl(crossValidationConfig);
-        ecaService = new EcaServiceImpl(crossValidationConfig, calculationExecutorService, evaluationService,
+        evaluationService = new EvaluationService(crossValidationConfig);
+        ecaService = new EcaService(crossValidationConfig, calculationExecutorService, evaluationService,
                 evaluationLogRepository, mapper);
     }
 

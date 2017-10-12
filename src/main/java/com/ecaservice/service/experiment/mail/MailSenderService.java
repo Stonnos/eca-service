@@ -1,4 +1,4 @@
-package com.ecaservice.service.experiment;
+package com.ecaservice.service.experiment.mail;
 
 import com.ecaservice.model.Mail;
 import lombok.extern.slf4j.Slf4j;

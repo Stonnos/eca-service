@@ -1,9 +1,10 @@
-package com.ecaservice.service.experiment;
+package com.ecaservice.service.experiment.impl;
 
+import com.ecaservice.service.experiment.DataService;
 import eca.converters.ModelConverter;
 import eca.converters.model.ExperimentHistory;
-import eca.data.DataLoader;
-import eca.data.DataSaver;
+import eca.data.file.FileDataLoader;
+import eca.data.file.FileDataSaver;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,16 +20,16 @@ import java.io.File;
 @Service
 public class DataServiceImpl implements DataService {
 
-    private final DataSaver dataSaver;
-    private final DataLoader dataLoader;
+    private final FileDataSaver dataSaver;
+    private final FileDataLoader dataLoader;
 
     /**
      * Constructor with dependency spring injection.
-     * @param dataSaver {@link DataSaver} bean
-     * @param dataLoader {@link DataLoader} bean
+     * @param dataSaver {@link FileDataSaver} bean
+     * @param dataLoader {@link FileDataLoader} bean
      */
     @Autowired
-    public DataServiceImpl(DataSaver dataSaver, DataLoader dataLoader) {
+    public DataServiceImpl(FileDataSaver dataSaver, FileDataLoader dataLoader) {
         this.dataSaver = dataSaver;
         this.dataLoader = dataLoader;
     }
@@ -43,7 +44,8 @@ public class DataServiceImpl implements DataService {
     @Override
     public Instances load(File file) throws Exception {
         log.info("Starting to load data from file {}", file.getAbsolutePath());
-        Instances data = dataLoader.getDataSet(file);
+        dataLoader.setFile(file);
+        Instances data = dataLoader.loadInstances();
         log.info("{} data has been successfully loaded from file {}", data.relationName(), file.getAbsolutePath());
         return data;
     }

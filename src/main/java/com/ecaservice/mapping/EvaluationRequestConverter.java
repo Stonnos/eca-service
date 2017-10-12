@@ -1,9 +1,9 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.dto.EvaluationRequestDto;
+import com.ecaservice.model.InputData;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationRequest;
-import com.ecaservice.model.InputData;
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.metadata.Type;
 import org.springframework.stereotype.Component;

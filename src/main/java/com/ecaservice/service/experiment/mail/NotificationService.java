@@ -1,10 +1,11 @@
-package com.ecaservice.service.experiment;
+package com.ecaservice.service.experiment.mail;
 
 import com.ecaservice.config.MailConfig;
 import com.ecaservice.model.Mail;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.repository.ExperimentRepository;
+import com.ecaservice.service.experiment.visitors.EmailTemplateVisitor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class NotificationService {
     private final TemplateEngine templateEngine;
     private final MailSenderService mailSenderService;
     private final MailConfig mailConfig;
-    private final ExperimentStatusTemplateVisitor statusTemplateVisitor;
+    private final EmailTemplateVisitor statusTemplateVisitor;
     private final ExperimentRepository experimentRepository;
 
     @Autowired
@@ -32,7 +33,7 @@ public class NotificationService {
                                MailSenderService mailSenderService,
                                ExperimentRepository experimentRepository,
                                MailConfig mailConfig,
-                               ExperimentStatusTemplateVisitor statusTemplateVisitor) {
+                               EmailTemplateVisitor statusTemplateVisitor) {
         this.templateEngine = templateEngine;
         this.mailSenderService = mailSenderService;
         this.mailConfig = mailConfig;

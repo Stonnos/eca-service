@@ -1,12 +1,21 @@
-package com.ecaservice.service.experiment;
+package com.ecaservice.service.experiment.visitors;
 
 
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.experiment.ExperimentTypeVisitor;
 import com.ecaservice.model.experiment.InitializationParams;
-import eca.dataminer.*;
-import eca.ensemble.*;
+import eca.dataminer.AbstractExperiment;
+import eca.dataminer.AutomatedHeterogeneousEnsemble;
+import eca.dataminer.AutomatedKNearestNeighbours;
+import eca.dataminer.AutomatedNeuralNetwork;
+import eca.dataminer.AutomatedStacking;
+import eca.dataminer.ExperimentUtil;
+import eca.ensemble.AdaBoostClassifier;
+import eca.ensemble.ClassifiersSet;
+import eca.ensemble.HeterogeneousClassifier;
+import eca.ensemble.ModifiedHeterogeneousClassifier;
+import eca.ensemble.StackingClassifier;
 import eca.metrics.KNearestNeighbours;
 import eca.neural.NeuralNetwork;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +26,7 @@ import org.springframework.stereotype.Component;
  * @author Roman Batygin
  */
 @Component
-public class ExperimentInitializer implements ExperimentTypeVisitor<AbstractExperiment, InitializationParams> {
+public class ExperimentInitializationVisitor implements ExperimentTypeVisitor<AbstractExperiment, InitializationParams> {
 
     private final ExperimentConfig experimentConfig;
     private final CrossValidationConfig crossValidationConfig;
@@ -28,8 +37,8 @@ public class ExperimentInitializer implements ExperimentTypeVisitor<AbstractExpe
      * @param crossValidationConfig {@link CrossValidationConfig} bean
      */
     @Autowired
-    public ExperimentInitializer(ExperimentConfig experimentConfig,
-                                 CrossValidationConfig crossValidationConfig) {
+    public ExperimentInitializationVisitor(ExperimentConfig experimentConfig,
+                                           CrossValidationConfig crossValidationConfig) {
         this.experimentConfig = experimentConfig;
         this.crossValidationConfig = crossValidationConfig;
     }
@@ -46,7 +55,7 @@ public class ExperimentInitializer implements ExperimentTypeVisitor<AbstractExpe
 
     @Override
     public AbstractExperiment caseHeterogeneousEnsemble(InitializationParams initializationParams) {
-        ClassifiersSet classifiersSet = ClassifiersSetBuilder.createClassifiersSet(initializationParams.getData(),
+        ClassifiersSet classifiersSet = ExperimentUtil.builtClassifiersSet(initializationParams.getData(),
                 experimentConfig.getMaximumFractionDigits());
         HeterogeneousClassifier heterogeneousClassifier = new HeterogeneousClassifier(classifiersSet);
         heterogeneousClassifier.setIterationsNum(experimentConfig.getEnsemble().getNumIterations());
@@ -55,7 +64,7 @@ public class ExperimentInitializer implements ExperimentTypeVisitor<AbstractExpe
 
     @Override
     public AbstractExperiment caseModifiedHeterogeneousEnsemble(InitializationParams initializationParams) {
-        ClassifiersSet classifiersSet = ClassifiersSetBuilder.createClassifiersSet(initializationParams.getData(),
+        ClassifiersSet classifiersSet = ExperimentUtil.builtClassifiersSet(initializationParams.getData(),
                 experimentConfig.getMaximumFractionDigits());
         ModifiedHeterogeneousClassifier modifiedHeterogeneousClassifier =
                 new ModifiedHeterogeneousClassifier(classifiersSet);
@@ -65,7 +74,7 @@ public class ExperimentInitializer implements ExperimentTypeVisitor<AbstractExpe
 
     @Override
     public AbstractExperiment caseAdaBoost(InitializationParams initializationParams) {
-        ClassifiersSet classifiersSet = ClassifiersSetBuilder.createClassifiersSet(initializationParams.getData(),
+        ClassifiersSet classifiersSet = ExperimentUtil.builtClassifiersSet(initializationParams.getData(),
                 experimentConfig.getMaximumFractionDigits());
         AdaBoostClassifier adaBoostClassifier = new AdaBoostClassifier(classifiersSet);
         adaBoostClassifier.setIterationsNum(experimentConfig.getEnsemble().getNumIterations());
@@ -74,7 +83,7 @@ public class ExperimentInitializer implements ExperimentTypeVisitor<AbstractExpe
 
     @Override
     public AbstractExperiment caseStacking(InitializationParams initializationParams) {
-        ClassifiersSet classifiersSet = ClassifiersSetBuilder.createClassifiersSet(initializationParams.getData(),
+        ClassifiersSet classifiersSet = ExperimentUtil.builtClassifiersSet(initializationParams.getData(),
                 experimentConfig.getMaximumFractionDigits());
         StackingClassifier stackingClassifier = new StackingClassifier();
         stackingClassifier.setClassifiers(classifiersSet);
