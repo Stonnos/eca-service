@@ -7,6 +7,9 @@ package com.ecaservice.model.experiment;
  */
 public enum ExperimentType {
 
+    /**
+     * Optimal options automatic selection for neural networks.
+     */
     NEURAL_NETWORKS {
         @Override
         public <T, P> T internalHandle(ExperimentTypeVisitor<T, P> visitor, P parameter) {
@@ -14,6 +17,9 @@ public enum ExperimentType {
         }
     },
 
+    /**
+     * Optimal options automatic selection for heterogeneous ensemble algorithm.
+     */
     HETEROGENEOUS_ENSEMBLE {
         @Override
         public <T, P> T internalHandle(ExperimentTypeVisitor<T, P> visitor, P parameter) {
@@ -21,6 +27,9 @@ public enum ExperimentType {
         }
     },
 
+    /**
+     * Optimal options automatic selection for modified heterogeneous ensemble algorithm.
+     */
     MODIFIED_HETEROGENEOUS_ENSEMBLE {
         @Override
         public <T, P> T internalHandle(ExperimentTypeVisitor<T, P> visitor, P parameter) {
@@ -28,6 +37,9 @@ public enum ExperimentType {
         }
     },
 
+    /**
+     * Optimal options automatic selection for AdaBoost algorithm.
+     */
     ADA_BOOST {
         @Override
         public <T, P> T internalHandle(ExperimentTypeVisitor<T, P> visitor, P parameter) {
@@ -35,6 +47,9 @@ public enum ExperimentType {
         }
     },
 
+    /**
+     * Optimal options automatic selection for stacking algorithm.
+     */
     STACKING {
         @Override
         public <T, P> T internalHandle(ExperimentTypeVisitor<T, P> visitor, P parameter) {
@@ -42,6 +57,9 @@ public enum ExperimentType {
         }
     },
 
+    /**
+     * Optimal options automatic selection for k - nearest neighbours algorithm.
+     */
     KNN {
         @Override
         public <T, P> T internalHandle(ExperimentTypeVisitor<T, P> visitor, P parameter) {
