@@ -15,7 +15,8 @@ import org.springframework.test.context.junit4.SpringRunner;
         InstancesToInstancesInfoConverter.class,
         ClassifierToInputOptionsMapConverter.class,
         EvaluationRequestToEvaluationLogConverter.class,
-        EvaluationRequestConverter.class})
+        EvaluationRequestConverter.class,
+        ExperimentToEcaResponseConverter.class})
 public abstract class AbstractConverterTest {
 
     @Autowired

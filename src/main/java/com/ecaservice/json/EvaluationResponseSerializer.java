@@ -1,5 +1,6 @@
-package com.ecaservice.dto;
+package com.ecaservice.json;
 
+import com.ecaservice.dto.EvaluationResponse;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;

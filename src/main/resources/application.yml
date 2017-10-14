@@ -38,16 +38,15 @@ experiment:
   resultSize: 100
   numIterations: 1000
   fileFormat: experiment%d.txt
-  storagePath: /home/roman/experiment/
+  storagePath: @storagePath@
   downloadUrl: http://localhost:@server.port@/eca-service/experiment/download/%s
-  dateFormat: yyyy-MM-dd HH:mm:ss
   maximumFractionDigits: 4
   ## Experiment timeout in hours
   timeout: 5
   delay: 60000
 
   data:
-    storagePath: /home/roman/experiment/data/
+    storagePath: @data.storagePath@
     fileFormat: data%d.arff
     dateFormat: yyyy-MM-dd HH:mm:ss
   ensemble:
@@ -56,7 +55,7 @@ experiment:
   mail:
     from: r.batygin@intabia.ru
     subject: Experiment results from eca - service
-    maxRetriesToSent: 10
+    maxFailedAttemptsToSent: 10
     messageTemplatesMap:
       FINISHED: email-message-template.html
       ERROR: email-error-message-template.html

@@ -1,5 +1,6 @@
-package com.ecaservice.dto;
+package com.ecaservice.json;
 
+import com.ecaservice.dto.ExperimentRequestDto;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.fasterxml.jackson.core.JsonParser;

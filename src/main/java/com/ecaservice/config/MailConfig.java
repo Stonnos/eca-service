@@ -32,7 +32,7 @@ public class MailConfig {
     private String subject;
 
     /**
-     * Maximum retries number to sent
+     * Maximum number of failed attempts to sent
      */
-    private Integer maxRetriesToSent;
+    private Integer maxFailedAttemptsToSent;
 }

@@ -1,5 +1,6 @@
 package com.ecaservice.dto;
 
+import com.ecaservice.json.EvaluationRequestDeserializer;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

@@ -49,6 +49,15 @@
 
     <profiles>
 
+        <!-- Experiment profile -->
+        <profile>
+            <id>experiment</id>
+            <properties>
+                <storagePath>/home/roman/experiment/</storagePath>
+                <data.storagePath>/home/roman/experiment/data/</data.storagePath>
+            </properties>
+        </profile>
+
         <!-- Profile is used to use mysql datasource -->
         <profile>
             <id>mysql</id>

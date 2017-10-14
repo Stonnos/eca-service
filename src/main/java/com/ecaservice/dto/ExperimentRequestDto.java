@@ -1,5 +1,6 @@
 package com.ecaservice.dto;
 
+import com.ecaservice.json.ExperimentRequestDeserializer;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
