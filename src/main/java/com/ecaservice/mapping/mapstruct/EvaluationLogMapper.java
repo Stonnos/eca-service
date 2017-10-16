@@ -2,37 +2,56 @@ package com.ecaservice.mapping.mapstruct;
 
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.entity.EvaluationLog;
+import com.ecaservice.model.entity.InstancesInfo;
 import com.ecaservice.model.evaluation.EvaluationRequest;
+import org.mapstruct.AfterMapping;
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
+ * Implements evaluation request to evaluation log mapping.
  * @author Roman Batygin
  */
-//@Mapper
+@Mapper
 public abstract class EvaluationLogMapper {
 
-    @Mappings({
-            @Mapping(source = "ipAddress", target = "ipAddress"),
-            @Mapping(source = "evaluationMethod", target = "evaluationMethod"),
-            @Mapping(source = "evaluationOptionsMap", target = "evaluationOptionsMap"),
-            @Mapping(target = "classifierName", ignore = true),
-            @Mapping(target = "inputOptionsMap", ignore = true)
-    })
+    /**
+     * Maps evaluation request to evaluation log.
+     * @param evaluationRequest {@link EvaluationRequest} object
+     * @return {@link EvaluationLog} object
+     */
     public abstract EvaluationLog map(EvaluationRequest evaluationRequest);
 
-    private void mapClassifier(EvaluationRequest evaluationRequest, @MappingTarget EvaluationLog evaluationLog) {
+    @AfterMapping
+    protected void mapClassifier(EvaluationRequest evaluationRequest, @MappingTarget EvaluationLog evaluationLog) {
         InputData inputData = evaluationRequest.getInputData();
-        evaluationLog.setClassifierName(inputData.getClassifier().getClass().getSimpleName());
-        String[] options = inputData.getClassifier().getOptions();
-        Map<String, String> optionsMap = new HashMap<>();
-        for (int i = 0; i < options.length; i += 2) {
-            optionsMap.put(options[i], options[i + 1]);
+        if (Optional.ofNullable(inputData).map(InputData::getClassifier).isPresent()) {
+            evaluationLog.setClassifierName(inputData.getClassifier().getClass().getSimpleName());
+            String[] options = inputData.getClassifier().getOptions();
+            Map<String, String> optionsMap = new HashMap<>();
+            for (int i = 0; i < options.length; i += 2) {
+                optionsMap.put(options[i], options[i + 1]);
+            }
+            evaluationLog.setInputOptionsMap(optionsMap);
         }
-        evaluationLog.setInputOptionsMap(optionsMap);
+    }
+
+    @AfterMapping
+    protected void mapData(EvaluationRequest evaluationRequest, @MappingTarget EvaluationLog evaluationLog) {
+        InputData inputData = evaluationRequest.getInputData();
+        if (Optional.ofNullable(inputData).map(InputData::getData).isPresent()) {
+            InstancesInfo instancesInfo = new InstancesInfo();
+            instancesInfo.setRelationName(inputData.getData().relationName());
+            instancesInfo.setNumInstances(inputData.getData().numInstances());
+            instancesInfo.setNumAttributes(inputData.getData().numAttributes());
+            instancesInfo.setNumClasses(inputData.getData().numClasses());
+            evaluationLog.setInstancesInfo(instancesInfo);
+        }
     }
 }

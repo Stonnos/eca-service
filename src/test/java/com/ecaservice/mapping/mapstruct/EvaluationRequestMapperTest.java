@@ -1,4 +1,4 @@
-package com.ecaservice.mapping;
+package com.ecaservice.mapping.mapstruct;
 
 import com.ecaservice.TestDataHelper;
 import com.ecaservice.dto.EvaluationRequestDto;
@@ -8,6 +8,10 @@ import com.ecaservice.model.evaluation.EvaluationRequest;
 import eca.metrics.KNearestNeighbours;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
 
 import java.util.HashMap;
@@ -17,12 +21,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Unit tests that checks EvaluationRequestConverter functionality
- * (see {@link EvaluationRequestConverter}).
- *
+ * Unit tests that checks EvaluationRequestMapper functionality
+ * (see {@link EvaluationRequestMapper}).
  * @author Roman Batygin
  */
-public class EvaluationRequestConverterTest extends AbstractConverterTest {
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = EvaluationRequestMapperImpl.class)
+public class EvaluationRequestMapperTest {
+
+    @Autowired
+    private EvaluationRequestMapper evaluationRequestMapper;
 
     private Instances instances;
 
@@ -37,7 +45,7 @@ public class EvaluationRequestConverterTest extends AbstractConverterTest {
         evaluationRequestDto.setClassifier(new KNearestNeighbours());
         evaluationRequestDto.setData(instances);
         evaluationRequestDto.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        EvaluationRequest evaluationRequest = mapper.map(evaluationRequestDto, EvaluationRequest.class);
+        EvaluationRequest evaluationRequest = evaluationRequestMapper.map(evaluationRequestDto);
         assertNotNull(evaluationRequest);
         assertNotNull(evaluationRequest.getInputData());
         assertEquals(evaluationRequestDto.getClassifier(), evaluationRequest.getInputData().getClassifier());
@@ -57,7 +65,7 @@ public class EvaluationRequestConverterTest extends AbstractConverterTest {
                 String.valueOf(TestDataHelper.NUM_FOLDS));
         evaluationRequestDto.getEvaluationOptionsMap().put(EvaluationOption.NUM_TESTS,
                 String.valueOf(TestDataHelper.NUM_TESTS));
-        EvaluationRequest evaluationRequest = mapper.map(evaluationRequestDto, EvaluationRequest.class);
+        EvaluationRequest evaluationRequest = evaluationRequestMapper.map(evaluationRequestDto);
         assertNotNull(evaluationRequest);
         assertNotNull(evaluationRequest.getInputData());
         assertEquals(evaluationRequestDto.getClassifier(), evaluationRequest.getInputData().getClassifier());

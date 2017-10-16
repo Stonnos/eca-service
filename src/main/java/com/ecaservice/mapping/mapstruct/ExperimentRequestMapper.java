@@ -12,12 +12,5 @@ import org.mapstruct.Mappings;
 @Mapper
 public abstract class ExperimentRequestMapper {
 
-    @Mappings({
-            @Mapping(source = "firstName", target = "firstName"),
-            @Mapping(source = "email", target = "email"),
-            @Mapping(source = "experimentType", target = "experimentType"),
-            @Mapping(source = "data", target = "data"),
-            @Mapping(source = "evaluationMethod", target = "evaluationMethod"),
-    })
     public abstract ExperimentRequest map(ExperimentRequestDto experimentRequestDto);
 }

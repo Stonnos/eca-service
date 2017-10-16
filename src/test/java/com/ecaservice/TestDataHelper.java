@@ -30,7 +30,7 @@ public class TestDataHelper {
      * @param numAttributes number of attributes
      * @return {@link Instances} object
      */
-    public static Instances generate(int numInstances, int numAttributes) {
+    public static Instances generateInstances(int numInstances, int numAttributes) {
         SimpleDataGenerator simpleDataGenerator = new SimpleDataGenerator();
         simpleDataGenerator.setNumInstances(numInstances);
         simpleDataGenerator.setNumAttributes(numAttributes);
@@ -52,7 +52,7 @@ public class TestDataHelper {
         request.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         request.setIpAddress(ipAddress);
         request.setEvaluationOptionsMap(Collections.emptyMap());
-        request.setInputData(new InputData(new KNearestNeighbours(), generate(numInstances, numAttributes)));
+        request.setInputData(new InputData(new KNearestNeighbours(), generateInstances(numInstances, numAttributes)));
         return request;
     }
 

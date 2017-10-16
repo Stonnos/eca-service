@@ -20,7 +20,7 @@ public class InstancesToInstancesInfoConverterTest extends AbstractConverterTest
 
     @Before
     public void setUp() {
-        instances = TestDataHelper.generate(TestDataHelper.NUM_INSTANCES, TestDataHelper.NUM_ATTRIBUTES);
+        instances = TestDataHelper.generateInstances(TestDataHelper.NUM_INSTANCES, TestDataHelper.NUM_ATTRIBUTES);
     }
 
     @Test
