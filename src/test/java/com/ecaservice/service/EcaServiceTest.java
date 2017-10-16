@@ -6,7 +6,8 @@ import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.mapping.ClassifierToInputOptionsMapConverter;
 import com.ecaservice.mapping.EvaluationRequestToEvaluationLogConverter;
 import com.ecaservice.mapping.InstancesToInstancesInfoConverter;
-import com.ecaservice.mapping.OrikaBeanMapper;
+import com.ecaservice.mapping.mapstruct.EvaluationLogMapper;
+import com.ecaservice.mapping.mapstruct.EvaluationLogMapperImpl;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.evaluation.EvaluationRequest;
@@ -43,7 +44,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {OrikaBeanMapper.class,
+@ContextConfiguration(classes = {EvaluationLogMapperImpl.class,
         InstancesToInstancesInfoConverter.class,
         ClassifierToInputOptionsMapConverter.class,
         EvaluationRequestToEvaluationLogConverter.class})
@@ -60,7 +61,7 @@ public class EcaServiceTest {
     private EvaluationLogRepository evaluationLogRepository;
 
     @Autowired
-    private OrikaBeanMapper mapper;
+    private EvaluationLogMapper evaluationLogMapper;
 
     private EvaluationService evaluationService;
 
@@ -79,7 +80,7 @@ public class EcaServiceTest {
         calculationExecutorService = new CalculationExecutorServiceImpl(executorService);
         evaluationService = new EvaluationService(crossValidationConfig);
         ecaService = new EcaService(crossValidationConfig, calculationExecutorService, evaluationService,
-                evaluationLogRepository, mapper);
+                evaluationLogRepository, evaluationLogMapper);
     }
 
     @Test(expected = IllegalArgumentException.class)

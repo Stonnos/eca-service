@@ -1,6 +1,7 @@
 package com.ecaservice.service.experiment;
 
 import com.ecaservice.config.ExperimentConfig;
+import com.ecaservice.exception.ExperimentException;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.service.experiment.visitors.ExperimentInitializationVisitor;
@@ -31,6 +32,12 @@ public class ExperimentProcessorService {
     private final ExperimentInitializationVisitor experimentInitializer;
     private final ExperimentConfig experimentConfig;
 
+    /**
+     * Constructor with dependency spring injection.
+     *
+     * @param experimentInitializer {@link ExperimentInitializationVisitor} bean
+     * @param experimentConfig      {@link ExperimentConfig} bean
+     */
     @Autowired
     public ExperimentProcessorService(ExperimentInitializationVisitor experimentInitializer,
                                       ExperimentConfig experimentConfig) {
@@ -41,8 +48,8 @@ public class ExperimentProcessorService {
     public ExperimentHistory processExperimentHistory(Experiment experiment,
                                                       InitializationParams initializationParams) {
         Assert.notNull(initializationParams, "Initialization params is not specified!");
-        AbstractExperiment abstractExperiment = experiment.getExperimentType()
-                .handle(experimentInitializer, initializationParams);
+        AbstractExperiment abstractExperiment =
+                experiment.getExperimentType().handle(experimentInitializer, initializationParams);
         IterativeExperiment iterativeExperiment = abstractExperiment.getIterativeExperiment();
         int currentPercent = 0;
 
@@ -70,7 +77,7 @@ public class ExperimentProcessorService {
 
     private List<EvaluationResults> findBestResults(ArrayList<EvaluationResults> experimentHistory) {
         if (CollectionUtils.isEmpty(experimentHistory)) {
-            throw new RuntimeException("No models was built!");
+            throw new ExperimentException("No models was built!");
         }
         if (experimentHistory.size() < experimentConfig.getResultSize()) {
             return experimentHistory;

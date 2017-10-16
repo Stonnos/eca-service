@@ -19,6 +19,7 @@ import weka.classifiers.Classifier;
 import weka.core.Instances;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -92,7 +93,7 @@ public class EvaluationService {
                     log.trace("evaluateModel: numFolds = {}, numTests = {}", numFolds, numTests);
 
                     int folds;
-                    if (numFolds == null) {
+                    if (Objects.isNull(numFolds)) {
                         log.warn("Folds number is not defined. Default folds number = {} has been used.",
                                 config.getNumFolds());
                         folds = config.getNumFolds();
@@ -101,7 +102,7 @@ public class EvaluationService {
                     }
 
                     int tests;
-                    if (numTests == null) {
+                    if (Objects.isNull(numTests)) {
                         log.warn("Tests number is not defined. Default tests number = {} has been used.",
                                 config.getNumTests());
                         tests = config.getNumTests();

@@ -2,7 +2,7 @@ package com.ecaservice.controller;
 
 import com.ecaservice.dto.EvaluationRequestDto;
 import com.ecaservice.dto.EvaluationResponse;
-import com.ecaservice.mapping.OrikaBeanMapper;
+import com.ecaservice.mapping.mapstruct.EvaluationRequestMapper;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationRequest;
@@ -39,7 +39,7 @@ public class EcaController {
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss");
 
     private final EcaService ecaService;
-    private final OrikaBeanMapper mapper;
+    private final EvaluationRequestMapper evaluationRequestMapper;
     private final ExperimentService experimentService;
     private final NotificationService notificationService;
     private final ExperimentRepository experimentRepository;
@@ -47,18 +47,19 @@ public class EcaController {
     /**
      * Constructor with dependency spring injection.
      * @param ecaService {@link EcaService} bean
-     * @param mapper     {@link OrikaBeanMapper} bean
+     * @param evaluationRequestMapper {@link EvaluationRequestMapper} bean
      * @param experimentService
      * @param notificationService
      * @param experimentRepository
      */
     @Autowired
-    public EcaController(EcaService ecaService, OrikaBeanMapper mapper,
+    public EcaController(EcaService ecaService,
+                         EvaluationRequestMapper evaluationRequestMapper,
                          ExperimentService experimentService,
                          NotificationService notificationService,
                          ExperimentRepository experimentRepository) {
         this.ecaService = ecaService;
-        this.mapper = mapper;
+        this.evaluationRequestMapper = evaluationRequestMapper;
         this.experimentService = experimentService;
         this.notificationService = notificationService;
         this.experimentRepository = experimentRepository;
@@ -76,7 +77,7 @@ public class EcaController {
                                                       HttpServletRequest request) {
         log.info("Received request for client {} at: {}", request.getRemoteAddr(),
                 DATE_FORMAT.format(LocalDateTime.now()));
-        EvaluationRequest evaluationRequest = mapper.map(evaluationRequestDto, EvaluationRequest.class);
+        EvaluationRequest evaluationRequest = evaluationRequestMapper.map(evaluationRequestDto);
         evaluationRequest.setIpAddress(request.getRemoteAddr());
         EvaluationResponse evaluationResponse = ecaService.processRequest(evaluationRequest);
         log.info("Evaluation response with status [{}] was built.", evaluationResponse.getStatus());

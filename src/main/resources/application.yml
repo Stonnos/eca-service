@@ -1,10 +1,10 @@
 spring:
   ## Email properties
   mail:
-    host: smtp.yandex.com
-    port: 25
-    username: r.batygin@intabia.ru
-    password: o-dkXq2D
+    host: @mail.host@
+    port: @mail.port@
+    username: @mail.username@
+    password: @mail.password@
     properties:
       mail.transport.protocol: smtp
       mail.smtp.auth: true

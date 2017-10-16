@@ -1,12 +1,16 @@
 package com.ecaservice.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Email model.
  * @author Roman Batygin
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Mail {
 
     /**

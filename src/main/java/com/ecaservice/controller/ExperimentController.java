@@ -2,7 +2,8 @@ package com.ecaservice.controller;
 
 import com.ecaservice.dto.EcaResponse;
 import com.ecaservice.dto.ExperimentRequestDto;
-import com.ecaservice.mapping.OrikaBeanMapper;
+import com.ecaservice.mapping.mapstruct.EcaResponseMapper;
+import com.ecaservice.mapping.mapstruct.ExperimentRequestMapper;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentRequest;
 import com.ecaservice.service.experiment.ExperimentService;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.OutputStream;
+import java.util.Objects;
 
 /**
  * Experiment controller.
@@ -34,24 +36,28 @@ import java.io.OutputStream;
 public class ExperimentController {
 
     private final ExperimentService experimentService;
-    private final OrikaBeanMapper mapper;
+    private final ExperimentRequestMapper experimentRequestMapper;
+    private final EcaResponseMapper ecaResponseMapper;
 
     /**
      * Constructor with dependency spring injection.
-     *
      * @param experimentService {@link ExperimentService} bean
-     * @param mapper            {@link OrikaBeanMapper} bean
+     * @param experimentRequestMapper {@link ExperimentRequestMapper} bean
+     * @param ecaResponseMapper {@link EcaResponseMapper} bean
      */
     @Autowired
-    public ExperimentController(ExperimentService experimentService, OrikaBeanMapper mapper) {
+    public ExperimentController(ExperimentService experimentService,
+                                ExperimentRequestMapper experimentRequestMapper,
+                                EcaResponseMapper ecaResponseMapper) {
         this.experimentService = experimentService;
-        this.mapper = mapper;
+        this.experimentRequestMapper = experimentRequestMapper;
+        this.ecaResponseMapper = ecaResponseMapper;
     }
 
     @RequestMapping(value = "/download/{uuid}", method = RequestMethod.GET)
     public void downloadExperiment(@PathVariable String uuid, HttpServletResponse response) {
         File experimentFile = experimentService.findExperimentFileByUuid(uuid);
-        if (experimentFile == null) {
+        if (Objects.isNull(experimentFile)) {
             log.warn("Experiment file by uuid {} not found!", uuid);
         } else {
             response.setContentType("text/plain");
@@ -71,10 +77,10 @@ public class ExperimentController {
     @ResponseBody
     public ResponseEntity<EcaResponse> createRequest(@RequestBody ExperimentRequestDto experimentRequest,
                                                      HttpServletRequest httpServletRequest) {
-        ExperimentRequest request = mapper.map(experimentRequest, ExperimentRequest.class);
+        ExperimentRequest request = experimentRequestMapper.map(experimentRequest);
         request.setIpAddress(httpServletRequest.getRemoteAddr());
         Experiment experiment = experimentService.createExperiment(request);
-        return new ResponseEntity(mapper.map(experiment, EcaResponse.class), HttpStatus.OK);
+        return new ResponseEntity(ecaResponseMapper.map(experiment), HttpStatus.OK);
     }
 
 }

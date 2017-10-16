@@ -1,7 +1,7 @@
 package com.ecaservice.service.experiment;
 
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.mapping.OrikaBeanMapper;
+import com.ecaservice.mapping.mapstruct.ExperimentMapper;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentRequest;
 import com.ecaservice.model.experiment.ExperimentStatus;
@@ -9,7 +9,6 @@ import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import eca.converters.model.ExperimentHistory;
-import eca.core.evaluation.EvaluationMethod;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +18,7 @@ import weka.core.Instances;
 
 import java.io.File;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -35,30 +35,30 @@ public class ExperimentService {
 
     private final ExperimentRepository experimentRepository;
     private final CalculationExecutorService executorService;
-    private final OrikaBeanMapper mapper;
+    private final ExperimentMapper experimentMapper;
     private final DataService dataService;
     private final ExperimentConfig experimentConfig;
     private final ExperimentProcessorService experimentProcessorService;
 
     /**
      * Constructor with dependency spring injection.
-     * @param experimentRepository  {@link ExperimentRepository}
-     * @param executorService       {@link CalculationExecutorService}
-     * @param mapper                {@link OrikaBeanMapper}
-     * @param dataService           {@link DataService}
-     * @param experimentConfig      {@link ExperimentConfig}
-     * @param experimentProcessorService
+     * @param experimentRepository  {@link ExperimentRepository} bean
+     * @param executorService       {@link CalculationExecutorService} bean
+     * @param experimentMapper {@link ExperimentMapper} bean
+     * @param dataService           {@link DataService} bean
+     * @param experimentConfig      {@link ExperimentConfig} bean
+     * @param experimentProcessorService {@link ExperimentProcessorService} bean
      */
     @Autowired
     public ExperimentService(ExperimentRepository experimentRepository,
                              CalculationExecutorService executorService,
-                             OrikaBeanMapper mapper,
+                             ExperimentMapper experimentMapper,
                              DataService dataService,
                              ExperimentConfig experimentConfig,
                              ExperimentProcessorService experimentProcessorService) {
         this.experimentRepository = experimentRepository;
         this.executorService = executorService;
-        this.mapper = mapper;
+        this.experimentMapper = experimentMapper;
         this.dataService = dataService;
         this.experimentConfig = experimentConfig;
         this.experimentProcessorService = experimentProcessorService;
@@ -72,7 +72,7 @@ public class ExperimentService {
      */
     public Experiment createExperiment(ExperimentRequest experimentRequest) {
         Assert.notNull(experimentRequest, "Experiment request is not specified!");
-        Experiment experiment = mapper.map(experimentRequest, Experiment.class);
+        Experiment experiment = experimentMapper.map(experimentRequest);
         try {
             experiment.setExperimentStatus(ExperimentStatus.NEW);
             experiment.setCreationDate(LocalDateTime.now());
@@ -106,8 +106,8 @@ public class ExperimentService {
             stopWatch.start(String.format("Loading data for experiment %d", experiment.getId()));
             Instances data = dataService.load(new File(experiment.getTrainingDataAbsolutePath()));
             stopWatch.stop();
-            final InitializationParams initializationParams = new InitializationParams(data,
-                    mapper.map(experiment.getEvaluationMethod(), EvaluationMethod.class));
+            final InitializationParams initializationParams =
+                    new InitializationParams(data, experiment.getEvaluationMethod());
 
             stopWatch.start(String.format("Experiment %d processing", experiment.getId()));
 
@@ -133,7 +133,7 @@ public class ExperimentService {
         } catch (TimeoutException ex) {
             log.warn("There was a timeout.");
             experiment.setExperimentStatus(ExperimentStatus.TIMEOUT);
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             log.error("There was an error occurred in evaluation : {}", ex);
             experiment.setExperimentStatus(ExperimentStatus.ERROR);
             experiment.setErrorMessage(ex.getMessage());
@@ -151,11 +151,11 @@ public class ExperimentService {
      */
     public File findExperimentFileByUuid(String uuid) {
         Experiment experiment = experimentRepository.findByUuid(uuid);
-        if (experiment == null) {
+        if (Objects.isNull(experiment)) {
             log.warn("Experiment for uuid = {} not found!", uuid);
             return null;
         }
-        if (experiment.getExperimentAbsolutePath() == null) {
+        if (Objects.isNull(experiment.getExperimentAbsolutePath())) {
             log.warn("Experiment file for uuid = {} not found!", uuid);
             return null;
         } else {

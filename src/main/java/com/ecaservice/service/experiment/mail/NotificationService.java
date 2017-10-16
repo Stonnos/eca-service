@@ -28,6 +28,15 @@ public class NotificationService {
     private final EmailTemplateVisitor statusTemplateVisitor;
     private final ExperimentRepository experimentRepository;
 
+    /**
+     * Constructor with dependency spring injection.
+     *
+     * @param templateEngine        {@link TemplateEngine} bean
+     * @param mailSenderService     {@link MailSenderService} bean
+     * @param experimentRepository  {@link ExperimentRepository} bean
+     * @param mailConfig            {@link MailConfig} bean
+     * @param statusTemplateVisitor {@link EmailTemplateVisitor} bean
+     */
     @Autowired
     public NotificationService(TemplateEngine templateEngine,
                                MailSenderService mailSenderService,
@@ -50,12 +59,8 @@ public class NotificationService {
             String template = mailConfig.getMessageTemplatesMap().get(experiment.getExperimentStatus());
             Context context = experiment.getExperimentStatus().handle(statusTemplateVisitor, experiment);
             String message = templateEngine.process(template, context);
-            Mail mail = new Mail();
-            mail.setFrom(mailConfig.getFrom());
-            mail.setTo(experiment.getEmail());
-            mail.setSubject(mailConfig.getSubject());
-            mail.setMessage(message);
-            mail.setHtml(true);
+            Mail mail = new Mail(mailConfig.getFrom(), experiment.getEmail(), mailConfig.getSubject(),
+                    message, true);
             mailSenderService.sendEmail(mail);
             experiment.setSentDate(LocalDateTime.now());
         } catch (Exception ex) {

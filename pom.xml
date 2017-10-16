@@ -56,6 +56,10 @@
             <properties>
                 <storagePath>/home/roman/experiment/</storagePath>
                 <data.storagePath>/home/roman/experiment/data/</data.storagePath>
+                <mail.host>smtp.yandex.com</mail.host>
+                <mail.port>25</mail.port>
+                <mail.username>r.batygin@intabia.ru</mail.username>
+                <mail.password>o-dkXq2D</mail.password>
             </properties>
         </profile>
 

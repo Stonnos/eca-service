@@ -6,9 +6,7 @@ import com.ecaservice.model.entity.InstancesInfo;
 import com.ecaservice.model.evaluation.EvaluationRequest;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
 
 import java.util.HashMap;
 import java.util.Map;

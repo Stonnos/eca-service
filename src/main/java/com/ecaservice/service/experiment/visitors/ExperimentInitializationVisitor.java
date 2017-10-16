@@ -3,6 +3,7 @@ package com.ecaservice.service.experiment.visitors;
 
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
+import com.ecaservice.mapping.mapstruct.EvaluationMethodMapper;
 import com.ecaservice.model.experiment.ExperimentTypeVisitor;
 import com.ecaservice.model.experiment.InitializationParams;
 import eca.dataminer.AbstractExperiment;
@@ -30,17 +31,21 @@ public class ExperimentInitializationVisitor implements ExperimentTypeVisitor<Ab
 
     private final ExperimentConfig experimentConfig;
     private final CrossValidationConfig crossValidationConfig;
+    private final EvaluationMethodMapper evaluationMethodMapper;
 
     /**
      * Constructor with dependency spring injection.
      * @param experimentConfig {@link ExperimentConfig} bean
      * @param crossValidationConfig {@link CrossValidationConfig} bean
+     * @param evaluationMethodMapper {@link EvaluationMethodMapper} bean
      */
     @Autowired
     public ExperimentInitializationVisitor(ExperimentConfig experimentConfig,
-                                           CrossValidationConfig crossValidationConfig) {
+                                           CrossValidationConfig crossValidationConfig,
+                                           EvaluationMethodMapper evaluationMethodMapper) {
         this.experimentConfig = experimentConfig;
         this.crossValidationConfig = crossValidationConfig;
+        this.evaluationMethodMapper = evaluationMethodMapper;
     }
 
     @Override
@@ -102,7 +107,7 @@ public class ExperimentInitializationVisitor implements ExperimentTypeVisitor<Ab
 
     @Override
     public void afterHandle(AbstractExperiment experiment, InitializationParams initializationParams) {
-        experiment.setEvaluationMethod(initializationParams.getEvaluationMethod());
+        experiment.setEvaluationMethod(evaluationMethodMapper.map(initializationParams.getEvaluationMethod()));
         experiment.setNumFolds(crossValidationConfig.getNumFolds());
         experiment.setNumTests(crossValidationConfig.getNumTests());
     }

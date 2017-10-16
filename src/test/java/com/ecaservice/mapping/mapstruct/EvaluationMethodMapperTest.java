@@ -1,6 +1,5 @@
 package com.ecaservice.mapping.mapstruct;
 
-import com.ecaservice.mapping.ClassifierToInputOptionsMapConverter;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,7 +1,6 @@
 package com.ecaservice.mapping.mapstruct;
 
 import com.ecaservice.dto.EcaResponse;
-import com.ecaservice.mapping.EvaluationRequestConverter;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentStatus;
