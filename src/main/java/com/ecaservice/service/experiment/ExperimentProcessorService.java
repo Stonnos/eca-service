@@ -67,7 +67,7 @@ public class ExperimentProcessorService {
             }
         }
 
-        ArrayList<EvaluationResults> experimentHistory = abstractExperiment.getHistory();
+        List<EvaluationResults> experimentHistory = abstractExperiment.getHistory();
         experimentHistory.sort(new ClassifierComparator());
         List<EvaluationResults> evaluationResults = findBestResults(experimentHistory);
         log.info("Experiment {} processing has been finished with {} best models!",
@@ -75,7 +75,7 @@ public class ExperimentProcessorService {
         return new ExperimentHistory(evaluationResults, abstractExperiment.getData());
     }
 
-    private List<EvaluationResults> findBestResults(ArrayList<EvaluationResults> experimentHistory) {
+    private List<EvaluationResults> findBestResults(List<EvaluationResults> experimentHistory) {
         if (CollectionUtils.isEmpty(experimentHistory)) {
             throw new ExperimentException("No models was built!");
         }

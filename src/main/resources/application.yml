@@ -36,7 +36,7 @@ server:
 ## Experiment properties
 experiment:
   resultSize: 100
-  numIterations: 1000
+  numIterations: 50
   fileFormat: experiment%d.txt
   storagePath: @storagePath@
   downloadUrl: http://localhost:@server.port@/eca-service/experiment/download/%s

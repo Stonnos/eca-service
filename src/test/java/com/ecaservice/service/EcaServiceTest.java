@@ -36,6 +36,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
 /**
@@ -97,6 +99,10 @@ public class EcaServiceTest {
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
         assertEquals(evaluationLogList.size(), 1);
         assertEquals(evaluationLogList.get(0).getEvaluationStatus(), EvaluationStatus.FINISHED);
+        assertEquals(evaluationResponse.getStatus(), TechnicalStatus.SUCCESS);
+        assertNotNull(evaluationResponse.getEvaluationResults());
+        assertNotNull(evaluationResponse.getEvaluationResults().getClassifier());
+        assertNotNull(evaluationResponse.getEvaluationResults().getEvaluation());
         evaluationLogRepository.deleteAll();
     }
 
@@ -110,6 +116,8 @@ public class EcaServiceTest {
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
         assertEquals(evaluationLogList.size(), 1);
         assertEquals(evaluationLogList.get(0).getEvaluationStatus(), EvaluationStatus.ERROR);
+        assertEquals(evaluationResponse.getStatus(), TechnicalStatus.ERROR);
+        assertNull(evaluationResponse.getEvaluationResults());
         evaluationLogRepository.deleteAll();
 
     }
@@ -124,6 +132,8 @@ public class EcaServiceTest {
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
         assertEquals(evaluationLogList.size(), 1);
         assertEquals(evaluationLogList.get(0).getEvaluationStatus(), EvaluationStatus.TIMEOUT);
+        assertEquals(evaluationResponse.getStatus(), TechnicalStatus.TIMEOUT);
+        assertNull(evaluationResponse.getEvaluationResults());
         evaluationLogRepository.deleteAll();
     }
 

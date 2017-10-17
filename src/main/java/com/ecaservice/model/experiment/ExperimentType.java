@@ -1,5 +1,7 @@
 package com.ecaservice.model.experiment;
 
+import com.ecaservice.model.dictionary.ExperimentTypeDictionary;
+
 /**
  * Experiment type.
  *
@@ -10,7 +12,7 @@ public enum ExperimentType {
     /**
      * Optimal options automatic selection for neural networks.
      */
-    NEURAL_NETWORKS {
+    NEURAL_NETWORKS(ExperimentTypeDictionary.NEURAL_NETWORKS_NAME) {
         @Override
         public <T, P> T internalHandle(ExperimentTypeVisitor<T, P> visitor, P parameter) {
             return visitor.caseNeuralNetwork(parameter);
@@ -20,7 +22,7 @@ public enum ExperimentType {
     /**
      * Optimal options automatic selection for heterogeneous ensemble algorithm.
      */
-    HETEROGENEOUS_ENSEMBLE {
+    HETEROGENEOUS_ENSEMBLE(ExperimentTypeDictionary.HETEROGENEOUS_ENSEMBLE_NAME) {
         @Override
         public <T, P> T internalHandle(ExperimentTypeVisitor<T, P> visitor, P parameter) {
             return visitor.caseHeterogeneousEnsemble(parameter);
@@ -30,7 +32,7 @@ public enum ExperimentType {
     /**
      * Optimal options automatic selection for modified heterogeneous ensemble algorithm.
      */
-    MODIFIED_HETEROGENEOUS_ENSEMBLE {
+    MODIFIED_HETEROGENEOUS_ENSEMBLE(ExperimentTypeDictionary.MODIFIED_HETEROGENEOUS_ENSEMBLE_NAME) {
         @Override
         public <T, P> T internalHandle(ExperimentTypeVisitor<T, P> visitor, P parameter) {
             return visitor.caseModifiedHeterogeneousEnsemble(parameter);
@@ -40,7 +42,7 @@ public enum ExperimentType {
     /**
      * Optimal options automatic selection for AdaBoost algorithm.
      */
-    ADA_BOOST {
+    ADA_BOOST(ExperimentTypeDictionary.ADA_BOOST_NAME) {
         @Override
         public <T, P> T internalHandle(ExperimentTypeVisitor<T, P> visitor, P parameter) {
             return visitor.caseAdaBoost(parameter);
@@ -50,7 +52,7 @@ public enum ExperimentType {
     /**
      * Optimal options automatic selection for stacking algorithm.
      */
-    STACKING {
+    STACKING(ExperimentTypeDictionary.STACKING_NAME) {
         @Override
         public <T, P> T internalHandle(ExperimentTypeVisitor<T, P> visitor, P parameter) {
             return visitor.caseStacking(parameter);
@@ -60,12 +62,27 @@ public enum ExperimentType {
     /**
      * Optimal options automatic selection for k - nearest neighbours algorithm.
      */
-    KNN {
+    KNN(ExperimentTypeDictionary.KNN_NAME) {
         @Override
         public <T, P> T internalHandle(ExperimentTypeVisitor<T, P> visitor, P parameter) {
             return visitor.caseKNearestNeighbours(parameter);
         }
     };
+
+    private String description;
+
+    ExperimentType(String description) {
+        this.description = description;
+    }
+
+    /**
+     * Returns experiment description.
+     *
+     * @return experiment description
+     */
+    public String getDescription() {
+        return description;
+    }
 
     /**
      * Visitor pattern common method.

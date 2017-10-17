@@ -5,7 +5,6 @@ import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.evaluation.ClassificationResult;
 import com.ecaservice.model.evaluation.EvaluationMethod;
-import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.service.evaluation.EvaluationService;
 import eca.generators.SimpleDataGenerator;
 import eca.metrics.KNearestNeighbours;
@@ -17,8 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -51,10 +48,17 @@ public class EvaluationServiceTest {
     }
 
     @Test
+    public void testForNullInputData() {
+        ClassificationResult result = evaluationService.evaluateModel(null, EvaluationMethod.TRAINING_DATA,
+                TestDataHelper.createEvaluationOptionsMap(TestDataHelper.NUM_FOLDS, TestDataHelper.NUM_TESTS));
+        assertFalse(result.isSuccess());
+    }
+
+    @Test
     public void testForNullClassifier() {
         InputData inputData = new InputData(null, testInstances);
-        ClassificationResult result = evaluationService.evaluateModel(inputData,
-                EvaluationMethod.TRAINING_DATA, createEvaluationOptionsMap(TestDataHelper.NUM_FOLDS, TestDataHelper.NUM_TESTS));
+        ClassificationResult result = evaluationService.evaluateModel(inputData, EvaluationMethod.TRAINING_DATA,
+                TestDataHelper.createEvaluationOptionsMap(TestDataHelper.NUM_FOLDS, TestDataHelper.NUM_TESTS));
         assertFalse(result.isSuccess());
     }
 
@@ -62,8 +66,24 @@ public class EvaluationServiceTest {
     public void testForNullData() {
         InputData inputData = new InputData(new KNearestNeighbours(), null);
         ClassificationResult result = evaluationService.evaluateModel(inputData,
-                EvaluationMethod.TRAINING_DATA, createEvaluationOptionsMap(TestDataHelper.NUM_FOLDS,
+                EvaluationMethod.TRAINING_DATA, TestDataHelper.createEvaluationOptionsMap(TestDataHelper.NUM_FOLDS,
                         TestDataHelper.NUM_TESTS));
+        assertFalse(result.isSuccess());
+    }
+
+    @Test
+    public void testForNullEvaluationMethod() {
+        InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
+        ClassificationResult result = evaluationService.evaluateModel(inputData, null,
+                TestDataHelper.createEvaluationOptionsMap(TestDataHelper.NUM_FOLDS, TestDataHelper.NUM_TESTS));
+        assertFalse(result.isSuccess());
+    }
+
+    @Test
+    public void testForNullEvaluationOptionsMap() {
+        InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
+        ClassificationResult result =
+                evaluationService.evaluateModel(inputData, EvaluationMethod.TRAINING_DATA, null);
         assertFalse(result.isSuccess());
     }
 
@@ -80,7 +100,7 @@ public class EvaluationServiceTest {
     public void testCrossValidationMethod() {
         InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
         ClassificationResult result = evaluationService.evaluateModel(inputData, EvaluationMethod.CROSS_VALIDATION,
-                createEvaluationOptionsMap(TestDataHelper.NUM_FOLDS, TestDataHelper.NUM_TESTS));
+                TestDataHelper.createEvaluationOptionsMap(TestDataHelper.NUM_FOLDS, TestDataHelper.NUM_TESTS));
         assertTrue(result.isSuccess());
         assertTrue(result.getEvaluationResults().getEvaluation().isKCrossValidationMethod());
     }
@@ -90,15 +110,9 @@ public class EvaluationServiceTest {
         when(config.getSeed()).thenThrow(Exception.class);
         InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
         ClassificationResult result = evaluationService.evaluateModel(inputData, EvaluationMethod.CROSS_VALIDATION,
-                createEvaluationOptionsMap(TestDataHelper.NUM_FOLDS, TestDataHelper.NUM_TESTS));
+                TestDataHelper.createEvaluationOptionsMap(TestDataHelper.NUM_FOLDS, TestDataHelper.NUM_TESTS));
         assertFalse(result.isSuccess());
     }
 
-    private Map<EvaluationOption, String> createEvaluationOptionsMap(int numFolds, int numTests) {
-        Map<EvaluationOption, String> evaluationOptionsMap = new HashMap<>();
-        evaluationOptionsMap.put(EvaluationOption.NUM_FOLDS, String.valueOf(numFolds));
-        evaluationOptionsMap.put(EvaluationOption.NUM_TESTS, String.valueOf(numTests));
-        return evaluationOptionsMap;
-    }
 
 }

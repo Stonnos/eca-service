@@ -57,7 +57,8 @@ public class EmailTemplateVisitor implements ExperimentStatusVisitor<Context, Ex
     private Context createContext(Experiment parameter) {
         Context context = new Context();
         context.setVariable(TemplateVariablesDictionary.FIRST_NAME_KEY, parameter.getFirstName());
-        context.setVariable(TemplateVariablesDictionary.EXPERIMENT_TYPE_KEY, parameter.getExperimentType());
+        context.setVariable(TemplateVariablesDictionary.EXPERIMENT_TYPE_KEY,
+                parameter.getExperimentType().getDescription());
         return context;
     }
 
