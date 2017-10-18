@@ -41,7 +41,9 @@ public class EmailTemplateVisitor implements ExperimentStatusVisitor<Context, Ex
 
     @Override
     public Context caseTimeout(Experiment parameter) {
-        return createContext(parameter);
+        Context context = createContext(parameter);
+        context.setVariable(TemplateVariablesDictionary.TIMEOUT_KEY, experimentConfig.getTimeout());
+        return context;
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.ecaservice.service.evaluation;
 
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.EvaluationResponse;
-import com.ecaservice.mapping.mapstruct.EvaluationLogMapper;
+import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.evaluation.ClassificationResult;

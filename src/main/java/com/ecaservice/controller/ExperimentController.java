@@ -2,8 +2,8 @@ package com.ecaservice.controller;
 
 import com.ecaservice.dto.EcaResponse;
 import com.ecaservice.dto.ExperimentRequestDto;
-import com.ecaservice.mapping.mapstruct.EcaResponseMapper;
-import com.ecaservice.mapping.mapstruct.ExperimentRequestMapper;
+import com.ecaservice.mapping.EcaResponseMapper;
+import com.ecaservice.mapping.ExperimentRequestMapper;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentRequest;
 import com.ecaservice.service.experiment.ExperimentService;
@@ -23,6 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.OutputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 /**
@@ -34,6 +36,8 @@ import java.util.Objects;
 @Controller
 @RequestMapping("/eca-service/experiment")
 public class ExperimentController {
+
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss");
 
     private final ExperimentService experimentService;
     private final ExperimentRequestMapper experimentRequestMapper;
@@ -54,6 +58,11 @@ public class ExperimentController {
         this.ecaResponseMapper = ecaResponseMapper;
     }
 
+    /**
+     * Downloads experiment.
+     * @param uuid experiment uuid
+     * @param response {@link HttpServletResponse} object
+     */
     @RequestMapping(value = "/download/{uuid}", method = RequestMethod.GET)
     public void downloadExperiment(@PathVariable String uuid, HttpServletResponse response) {
         File experimentFile = experimentService.findExperimentFileByUuid(uuid);
@@ -73,14 +82,24 @@ public class ExperimentController {
         }
     }
 
+    /**
+     * Creates experiment request.
+     * @param experimentRequest {@link ExperimentRequestDto} object
+     * @param httpServletRequest {@link HttpServletRequest} object
+     * @return {@link ResponseEntity} object
+     */
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<EcaResponse> createRequest(@RequestBody ExperimentRequestDto experimentRequest,
                                                      HttpServletRequest httpServletRequest) {
+        log.info("Received request to experiment {} for client {} at: {}", experimentRequest.getExperimentType(),
+                httpServletRequest.getRemoteAddr(), DATE_FORMAT.format(LocalDateTime.now()));
         ExperimentRequest request = experimentRequestMapper.map(experimentRequest);
         request.setIpAddress(httpServletRequest.getRemoteAddr());
         Experiment experiment = experimentService.createExperiment(request);
-        return new ResponseEntity(ecaResponseMapper.map(experiment), HttpStatus.OK);
+        EcaResponse ecaResponse = ecaResponseMapper.map(experiment);
+        log.info("Experiment request has been created with status [{}].", ecaResponse.getStatus());
+        return new ResponseEntity(ecaResponse, HttpStatus.OK);
     }
 
 }

@@ -1,7 +1,7 @@
 package com.ecaservice.service.experiment;
 
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.mapping.mapstruct.ExperimentMapper;
+import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentRequest;
 import com.ecaservice.model.experiment.ExperimentStatus;
@@ -102,18 +102,15 @@ public class ExperimentService {
         experimentRepository.save(experiment);
         try {
             StopWatch stopWatch = new StopWatch(String.format("Stop watching for experiment %d", experiment.getId()));
-
             stopWatch.start(String.format("Loading data for experiment %d", experiment.getId()));
             Instances data = dataService.load(new File(experiment.getTrainingDataAbsolutePath()));
             stopWatch.stop();
+
             final InitializationParams initializationParams =
                     new InitializationParams(data, experiment.getEvaluationMethod());
-
             stopWatch.start(String.format("Experiment %d processing", experiment.getId()));
-
             Callable<ExperimentHistory> callable = () ->
                     experimentProcessorService.processExperimentHistory(experiment, initializationParams);
-
             ExperimentHistory experimentHistory = executorService.execute(callable,
                     experimentConfig.getTimeout(), TimeUnit.HOURS);
             stopWatch.stop();

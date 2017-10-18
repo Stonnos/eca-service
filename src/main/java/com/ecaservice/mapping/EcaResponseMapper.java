@@ -1,4 +1,4 @@
-package com.ecaservice.mapping.mapstruct;
+package com.ecaservice.mapping;
 
 import com.ecaservice.dto.EcaResponse;
 import com.ecaservice.model.TechnicalStatus;

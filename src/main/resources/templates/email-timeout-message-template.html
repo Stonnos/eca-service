@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<p>
+    Здравствуйте, <span th:text="${firstName}"></span>!
+</p>
+<p>
+    Было превышено максимальное допустимое время для построения "<span th:text="${experimentType}"></span>".
+    Максимальное допустимое время составляет "<span th:text="${timeout}"></span>" часов.
+</p>
+</body>
+</html>

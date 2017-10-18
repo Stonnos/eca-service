@@ -1,4 +1,4 @@
-package com.ecaservice.mapping.mapstruct;
+package com.ecaservice.mapping;
 
 import com.ecaservice.dto.EvaluationRequestDto;
 import com.ecaservice.model.InputData;

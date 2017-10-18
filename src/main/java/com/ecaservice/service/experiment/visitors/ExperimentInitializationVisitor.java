@@ -3,7 +3,7 @@ package com.ecaservice.service.experiment.visitors;
 
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.mapping.mapstruct.EvaluationMethodMapper;
+import com.ecaservice.mapping.EvaluationMethodMapper;
 import com.ecaservice.model.experiment.ExperimentTypeVisitor;
 import com.ecaservice.model.experiment.InitializationParams;
 import eca.dataminer.AbstractExperiment;

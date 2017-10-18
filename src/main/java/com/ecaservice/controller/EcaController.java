@@ -2,17 +2,9 @@ package com.ecaservice.controller;
 
 import com.ecaservice.dto.EvaluationRequestDto;
 import com.ecaservice.dto.EvaluationResponse;
-import com.ecaservice.mapping.mapstruct.EvaluationRequestMapper;
-import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.model.evaluation.EvaluationMethod;
+import com.ecaservice.mapping.EvaluationRequestMapper;
 import com.ecaservice.model.evaluation.EvaluationRequest;
-import com.ecaservice.model.experiment.ExperimentRequest;
-import com.ecaservice.model.experiment.ExperimentType;
-import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.evaluation.EcaService;
-import com.ecaservice.service.experiment.ExperimentService;
-import com.ecaservice.service.experiment.mail.NotificationService;
-import eca.generators.SimpleDataGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,29 +32,17 @@ public class EcaController {
 
     private final EcaService ecaService;
     private final EvaluationRequestMapper evaluationRequestMapper;
-    private final ExperimentService experimentService;
-    private final NotificationService notificationService;
-    private final ExperimentRepository experimentRepository;
 
     /**
      * Constructor with dependency spring injection.
      * @param ecaService {@link EcaService} bean
      * @param evaluationRequestMapper {@link EvaluationRequestMapper} bean
-     * @param experimentService
-     * @param notificationService
-     * @param experimentRepository
      */
     @Autowired
     public EcaController(EcaService ecaService,
-                         EvaluationRequestMapper evaluationRequestMapper,
-                         ExperimentService experimentService,
-                         NotificationService notificationService,
-                         ExperimentRepository experimentRepository) {
+                         EvaluationRequestMapper evaluationRequestMapper) {
         this.ecaService = ecaService;
         this.evaluationRequestMapper = evaluationRequestMapper;
-        this.experimentService = experimentService;
-        this.notificationService = notificationService;
-        this.experimentRepository = experimentRepository;
     }
 
     /**
@@ -80,27 +60,8 @@ public class EcaController {
         EvaluationRequest evaluationRequest = evaluationRequestMapper.map(evaluationRequestDto);
         evaluationRequest.setIpAddress(request.getRemoteAddr());
         EvaluationResponse evaluationResponse = ecaService.processRequest(evaluationRequest);
-        log.info("Evaluation response with status [{}] was built.", evaluationResponse.getStatus());
+        log.info("Evaluation response with status [{}] has been built.", evaluationResponse.getStatus());
         return new ResponseEntity<>(evaluationResponse, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/send")
-    public ResponseEntity<String> sendMessage() {
-        ExperimentRequest experimentRequest = new ExperimentRequest();
-        experimentRequest.setFirstName("Роман");
-        experimentRequest.setEmail("roman.batygin@mail.ru");
-        experimentRequest.setIpAddress("127.0.0.1");
-        experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        experimentRequest.setExperimentType(ExperimentType.KNN);
-        SimpleDataGenerator simpleDataGenerator = new SimpleDataGenerator();
-        experimentRequest.setData(simpleDataGenerator.generate());
-        Experiment experiment = experimentService.createExperiment(experimentRequest);
-        //if (ExperimentStatus.NEW.equals(experiment.getExperimentStatus())) {
-        //    experimentService.processExperiment(experiment);
-        //}
-        //notificationService.notifyByEmail(experiment);
-
-        return new ResponseEntity(experiment, HttpStatus.OK);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.ecaservice.service;
+package com.ecaservice.service.evaluation;
 
 import com.ecaservice.TestDataHelper;
 import com.ecaservice.config.CrossValidationConfig;

@@ -14,5 +14,5 @@ public class ExperimentTypeDictionary {
             "Модифицированный неоднородный ансамблевый алгоритм";
     public static final String ADA_BOOST_NAME = "Алгоритм AdaBoost";
     public static final String STACKING_NAME = "Алгоритм Stacking";
-    public static final String KNN_NAME = "K - взвешенных ближайших соседей";
+    public static final String KNN_NAME = "Алгоритм k - взвешенных ближайших соседей";
 }

@@ -1,4 +1,4 @@
-package com.ecaservice.mapping.mapstruct;
+package com.ecaservice.mapping;
 
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import org.junit.Test;

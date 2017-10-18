@@ -1,4 +1,4 @@
-package com.ecaservice.mapping.mapstruct;
+package com.ecaservice.mapping;
 
 import com.ecaservice.dto.ExperimentRequestDto;
 import com.ecaservice.model.experiment.ExperimentRequest;

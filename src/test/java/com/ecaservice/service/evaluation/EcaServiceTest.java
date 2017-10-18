@@ -1,13 +1,10 @@
-package com.ecaservice.service;
+package com.ecaservice.service.evaluation;
 
 import com.ecaservice.TestDataHelper;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.EvaluationResponse;
-import com.ecaservice.mapping.ClassifierToInputOptionsMapConverter;
-import com.ecaservice.mapping.EvaluationRequestToEvaluationLogConverter;
-import com.ecaservice.mapping.InstancesToInstancesInfoConverter;
-import com.ecaservice.mapping.mapstruct.EvaluationLogMapper;
-import com.ecaservice.mapping.mapstruct.EvaluationLogMapperImpl;
+import com.ecaservice.mapping.EvaluationLogMapper;
+import com.ecaservice.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.evaluation.EvaluationRequest;
@@ -17,6 +14,7 @@ import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.service.evaluation.EcaService;
 import com.ecaservice.service.evaluation.EvaluationService;
 import com.ecaservice.service.evaluation.impl.CalculationExecutorServiceImpl;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,15 +39,12 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests that checks EvaluationService functionality (see {@link EcaService}).
+ * Unit tests that checks EcaService functionality (see {@link EcaService}).
  *
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {EvaluationLogMapperImpl.class,
-        InstancesToInstancesInfoConverter.class,
-        ClassifierToInputOptionsMapConverter.class,
-        EvaluationRequestToEvaluationLogConverter.class})
+@ContextConfiguration(classes = {EvaluationLogMapperImpl.class})
 @AutoConfigureDataJpa
 @EnableJpaRepositories(basePackageClasses = EvaluationLogRepository.class)
 @EntityScan(basePackageClasses = EvaluationLog.class)
@@ -67,8 +62,6 @@ public class EcaServiceTest {
 
     private EvaluationService evaluationService;
 
-    private ExecutorService executorService;
-
     private CalculationExecutorService calculationExecutorService;
 
     private EcaService ecaService;
@@ -78,11 +71,15 @@ public class EcaServiceTest {
         when(crossValidationConfig.getSeed()).thenReturn(TestDataHelper.SEED);
         when(crossValidationConfig.getNumFolds()).thenReturn(TestDataHelper.NUM_FOLDS);
         when(crossValidationConfig.getNumTests()).thenReturn(TestDataHelper.NUM_TESTS);
-        executorService = Executors.newCachedThreadPool();
-        calculationExecutorService = new CalculationExecutorServiceImpl(executorService);
+        calculationExecutorService = new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
         evaluationService = new EvaluationService(crossValidationConfig);
         ecaService = new EcaService(crossValidationConfig, calculationExecutorService, evaluationService,
                 evaluationLogRepository, evaluationLogMapper);
+    }
+
+    @After
+    public void after() {
+        evaluationLogRepository.deleteAll();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -103,7 +100,6 @@ public class EcaServiceTest {
         assertNotNull(evaluationResponse.getEvaluationResults());
         assertNotNull(evaluationResponse.getEvaluationResults().getClassifier());
         assertNotNull(evaluationResponse.getEvaluationResults().getEvaluation());
-        evaluationLogRepository.deleteAll();
     }
 
     @Test
@@ -118,8 +114,6 @@ public class EcaServiceTest {
         assertEquals(evaluationLogList.get(0).getEvaluationStatus(), EvaluationStatus.ERROR);
         assertEquals(evaluationResponse.getStatus(), TechnicalStatus.ERROR);
         assertNull(evaluationResponse.getEvaluationResults());
-        evaluationLogRepository.deleteAll();
-
     }
 
     @Test
@@ -134,7 +128,6 @@ public class EcaServiceTest {
         assertEquals(evaluationLogList.get(0).getEvaluationStatus(), EvaluationStatus.TIMEOUT);
         assertEquals(evaluationResponse.getStatus(), TechnicalStatus.TIMEOUT);
         assertNull(evaluationResponse.getEvaluationResults());
-        evaluationLogRepository.deleteAll();
     }
 
 }

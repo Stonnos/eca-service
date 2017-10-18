@@ -57,6 +57,6 @@ experiment:
     subject: Experiment results from eca - service
     maxFailedAttemptsToSent: 10
     messageTemplatesMap:
-      FINISHED: email-message-template.html
+      FINISHED: email-mesage-template.html
       ERROR: email-error-message-template.html
-      TIMEOUT: email-error-message-template.html
+      TIMEOUT: email-timeout-message-template.html

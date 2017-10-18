@@ -1,4 +1,4 @@
-package com.ecaservice.service;
+package com.ecaservice.service.evaluation;
 
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.service.evaluation.impl.CalculationExecutorServiceImpl;
