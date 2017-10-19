@@ -8,6 +8,7 @@ import com.ecaservice.model.experiment.ExperimentType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -20,7 +21,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = ExperimentMapperImpl.class)
+@Import(ExperimentMapperImpl.class)
 public class ExperimentMapperTest {
 
     @Autowired

@@ -1,4 +1,4 @@
-package com.ecaservice.service.experiment.visitors;
+package com.ecaservice.service.experiment.visitor;
 
 
 import com.ecaservice.config.CrossValidationConfig;

@@ -4,7 +4,7 @@ import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.exception.ExperimentException;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.InitializationParams;
-import com.ecaservice.service.experiment.visitors.ExperimentInitializationVisitor;
+import com.ecaservice.service.experiment.visitor.ExperimentInitializationVisitor;
 import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationResults;
 import eca.dataminer.AbstractExperiment;

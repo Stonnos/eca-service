@@ -28,13 +28,14 @@
         <orika.version>1.4.6</orika.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <assertj.core.version>3.8.0</assertj.core.version>
-        <mockito.version>1.9.5</mockito.version>
+        <mockito.version>1.10.19</mockito.version>
         <jackson.version>2.9.1</jackson.version>
         <hibernate.version>5.2.10.Final</hibernate.version>
         <commons.io.version>2.5</commons.io.version>
         <thymeleaf.version>3.0.6.RELEASE</thymeleaf.version>
         <thymeleaf-layout-dialect.version>2.2.2</thymeleaf-layout-dialect.version>
         <org.mapstruct.version>1.2.0.CR2</org.mapstruct.version>
+        <powermock.version>1.7.3</powermock.version>
     </properties>
 
     <repositories>
@@ -238,6 +239,42 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4-rule</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>-->
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-classloading-xstream</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-classloading-objenesis</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>-->
+
+
         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -356,7 +393,6 @@
                     <excludes>
                         <exclude>**/model/**/*</exclude>
                         <exclude>**/dto/**/*</exclude>
-                        <exclude>**/json/**/*</exclude>
                         <exclude>**/dictionary/**/*</exclude>
                         <exclude>**/config/**/*</exclude>
                         <exclude>**/exception/**/*</exclude>

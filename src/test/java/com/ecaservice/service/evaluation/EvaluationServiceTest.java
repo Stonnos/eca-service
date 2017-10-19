@@ -5,7 +5,6 @@ import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.evaluation.ClassificationResult;
 import com.ecaservice.model.evaluation.EvaluationMethod;
-import com.ecaservice.service.evaluation.EvaluationService;
 import eca.generators.SimpleDataGenerator;
 import eca.metrics.KNearestNeighbours;
 import org.junit.Before;

@@ -23,8 +23,6 @@ import static org.junit.Assert.assertNotNull;
  * Abstract experiment test class.
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {ExperimentMapperImpl.class, ExperimentConfig.class})
 @AutoConfigureDataJpa
 @EnableJpaRepositories(basePackageClasses = ExperimentRepository.class)
 @EntityScan(basePackageClasses = Experiment.class)

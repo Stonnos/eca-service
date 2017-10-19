@@ -9,6 +9,7 @@ import eca.metrics.KNearestNeighbours;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -18,6 +19,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit tests that checks EvaluationLogMapper functionality
@@ -25,7 +27,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = EvaluationLogMapperImpl.class)
+@Import(EvaluationLogMapperImpl.class)
 public class EvaluationLogMapperTest {
 
     @Autowired
@@ -61,7 +63,7 @@ public class EvaluationLogMapperTest {
     private void assertOptions(EvaluationLog evaluationLog, EvaluationRequest request) {
         Map<String, String> inputOptionsMap = evaluationLog.getInputOptionsMap();
         assertNotNull(inputOptionsMap);
-        assertFalse(inputOptionsMap.isEmpty());
+        assertThat(inputOptionsMap).isNotEmpty();
         String[] options = request.getInputData().getClassifier().getOptions();
         assertEquals(inputOptionsMap.size(), options.length / 2);
 

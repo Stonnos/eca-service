@@ -3,6 +3,7 @@ package com.ecaservice.service.experiment;
 import com.ecaservice.TestDataHelper;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.mapping.ExperimentMapper;
+import com.ecaservice.mapping.ExperimentMapperImpl;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentRequest;
 import com.ecaservice.model.experiment.ExperimentStatus;
@@ -14,8 +15,12 @@ import eca.converters.model.ExperimentHistory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
 
 import java.io.File;
@@ -32,10 +37,13 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
+
 /**
  * Unit tests that checks ExperimentService functionality (see {@link ExperimentService}).
  * @author Roman Batygin
  */
+@RunWith(SpringRunner.class)
+@Import({ExperimentMapperImpl.class, ExperimentConfig.class})
 public class ExperimentServiceTest extends AbstractExperimentTest {
 
     @Autowired

@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit tests that checks EvaluationRequestMapper functionality
@@ -26,7 +28,7 @@ import static org.junit.Assert.assertTrue;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = EvaluationRequestMapperImpl.class)
+@Import(EvaluationRequestMapperImpl.class)
 public class EvaluationRequestMapperTest {
 
     @Autowired
@@ -51,7 +53,7 @@ public class EvaluationRequestMapperTest {
         assertEquals(evaluationRequestDto.getClassifier(), evaluationRequest.getInputData().getClassifier());
         assertEquals(evaluationRequestDto.getData(), evaluationRequest.getInputData().getData());
         assertEquals(evaluationRequestDto.getEvaluationMethod(), evaluationRequest.getEvaluationMethod());
-        assertTrue(evaluationRequest.getEvaluationOptionsMap().isEmpty());
+        assertThat(evaluationRequest.getEvaluationOptionsMap()).isEmpty();
     }
 
     @Test

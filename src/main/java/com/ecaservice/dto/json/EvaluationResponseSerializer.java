@@ -1,4 +1,4 @@
-package com.ecaservice.json;
+package com.ecaservice.dto.json;
 
 import com.ecaservice.dto.EvaluationResponse;
 import com.fasterxml.jackson.core.JsonGenerator;

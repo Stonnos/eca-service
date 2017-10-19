@@ -1,4 +1,4 @@
-package com.ecaservice.json;
+package com.ecaservice.dto.json;
 
 import com.ecaservice.dto.ExperimentRequestDto;
 import com.ecaservice.model.evaluation.EvaluationMethod;

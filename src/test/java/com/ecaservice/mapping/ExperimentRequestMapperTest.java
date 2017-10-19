@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
@@ -22,7 +23,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = ExperimentRequestMapperImpl.class)
+@Import(ExperimentRequestMapperImpl.class)
 public class ExperimentRequestMapperTest {
 
     @Autowired

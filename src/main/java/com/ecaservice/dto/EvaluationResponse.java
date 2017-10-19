@@ -1,6 +1,6 @@
 package com.ecaservice.dto;
 
-import com.ecaservice.json.EvaluationResponseSerializer;
+import com.ecaservice.dto.json.EvaluationResponseSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eca.core.evaluation.EvaluationResults;
 import lombok.Data;

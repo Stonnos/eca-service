@@ -1,6 +1,7 @@
 package com.ecaservice.model.experiment;
 
 import com.ecaservice.model.dictionary.ExperimentTypeDictionary;
+import eca.metrics.distances.DistanceType;
 
 /**
  * Experiment type.
@@ -82,6 +83,21 @@ public enum ExperimentType {
      */
     public String getDescription() {
         return description;
+    }
+
+    /**
+     * Finds experiment type by description
+     *
+     * @param description description string.
+     * @return {@link ExperimentType} object
+     */
+    public static ExperimentType findByDescription(String description) {
+        for (ExperimentType experimentType : values()) {
+            if (experimentType.getDescription().equals(description)) {
+                return experimentType;
+            }
+        }
+        return null;
     }
 
     /**
