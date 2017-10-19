@@ -19,7 +19,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
 
@@ -28,14 +27,9 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 /**
@@ -125,8 +119,9 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
     public void testSuccessFindExperimentFileByUuid() {
         Experiment experiment = TestDataHelper.createExperiment(TestDataHelper.UUID);
         experimentRepository.save(experiment);
-        File file = experimentService.findExperimentFileByUuid(TestDataHelper.UUID);
-        assertEquals(file.getAbsolutePath(), experiment.getExperimentAbsolutePath());
+        File actualFile = experimentService.findExperimentFileByUuid(TestDataHelper.UUID);
+        File expectedFile = new File(experiment.getExperimentAbsolutePath());
+        assertEquals(actualFile.getAbsolutePath(), expectedFile.getAbsolutePath());
     }
 
     @Test

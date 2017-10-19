@@ -86,6 +86,7 @@ public class TestDataHelper {
 
     /**
      * Creates experiment request.
+     *
      * @return {@link ExperimentRequest} object
      */
     public static ExperimentRequest createExperimentRequest() {
@@ -101,6 +102,7 @@ public class TestDataHelper {
 
     /**
      * Creates experiment.
+     *
      * @param uuid uuid
      * @return {@link Experiment} object
      */
@@ -121,12 +123,25 @@ public class TestDataHelper {
 
     /**
      * Creates experiment initialization params.
+     *
      * @param data {@link Instances} object
      * @return {@link InitializationParams} object
      */
     public static InitializationParams createInitializationParams(Instances data) {
         InitializationParams initializationParams = new InitializationParams();
         initializationParams.setData(data);
+        initializationParams.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
+        return initializationParams;
+    }
+
+    /**
+     * Creates experiment initialization params.
+     *
+     * @return {@link InitializationParams} object
+     */
+    public static InitializationParams createInitializationParams() {
+        InitializationParams initializationParams = new InitializationParams();
+        initializationParams.setData(generateInstances(NUM_INSTANCES, NUM_ATTRIBUTES));
         initializationParams.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         return initializationParams;
     }

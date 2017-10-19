@@ -9,23 +9,26 @@ import com.ecaservice.service.experiment.dictionary.TemplateVariablesDictionary;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.thymeleaf.context.Context;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 
 /**
+ * Unit tests that checks EmailTemplateVisitor functionality (see {@link EmailTemplateVisitor}).
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
+@Import(ExperimentConfig.class)
+@EnableConfigurationProperties
+@TestPropertySource("classpath:application-test.properties")
 public class EmailTemplateVisitorTest {
 
-    private static final int TIMEOUT_VALUE = 5;
-    private static final String DOWNLOAD_URL_FORMAT = "http://localhost/download/%s";
-
-    @Mock
+    @Autowired
     private ExperimentConfig experimentConfig;
 
     private EmailTemplateVisitor emailTemplateVisitor;
@@ -33,8 +36,6 @@ public class EmailTemplateVisitorTest {
     @Before
     public void setUp() {
         emailTemplateVisitor = new EmailTemplateVisitor(experimentConfig);
-        when(experimentConfig.getTimeout()).thenReturn(TIMEOUT_VALUE);
-        when(experimentConfig.getDownloadUrl()).thenReturn(DOWNLOAD_URL_FORMAT);
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -69,7 +70,7 @@ public class EmailTemplateVisitorTest {
         Context context = experiment.getExperimentStatus().handle(emailTemplateVisitor, experiment);
         assertContext(context, experiment);
         String actualUrl = context.getVariable(TemplateVariablesDictionary.DOWNLOAD_URL_KEY).toString();
-        assertEquals(String.format(DOWNLOAD_URL_FORMAT, experiment.getUuid()), actualUrl);
+        assertEquals(String.format(experimentConfig.getDownloadUrl(), experiment.getUuid()), actualUrl);
     }
 
     private void assertContext(Context context, Experiment experiment) {
