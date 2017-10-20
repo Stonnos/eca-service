@@ -6,7 +6,7 @@
 
     <groupId>eca.service</groupId>
     <artifactId>eca-service</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -51,12 +51,25 @@
 
     <profiles>
 
-        <!-- Experiment profile -->
+        <!-- Experiment profile for linux -->
         <profile>
-            <id>experiment</id>
+            <id>experiment.linux</id>
             <properties>
                 <storagePath>/home/roman/experiment/</storagePath>
                 <data.storagePath>/home/roman/experiment/data/</data.storagePath>
+                <mail.host>smtp.yandex.com</mail.host>
+                <mail.port>25</mail.port>
+                <mail.username>r.batygin@intabia.ru</mail.username>
+                <mail.password>o-dkXq2D</mail.password>
+            </properties>
+        </profile>
+
+        <!-- Experiment profile for windows -->
+        <profile>
+            <id>experiment.windows</id>
+            <properties>
+                <storagePath>D:/experiment/</storagePath>
+                <data.storagePath>D:/experiment/data/</data.storagePath>
                 <mail.host>smtp.yandex.com</mail.host>
                 <mail.port>25</mail.port>
                 <mail.username>r.batygin@intabia.ru</mail.username>
@@ -100,7 +113,7 @@
                 <jdbc.user>postgres</jdbc.user>
                 <jdbc.password>postgres</jdbc.password>
                 <jdbc.driver>org.postgresql.Driver</jdbc.driver>
-                <jdbc.ddlAuto>create-drop</jdbc.ddlAuto>
+                <jdbc.ddlAuto>update</jdbc.ddlAuto>
                 <jdbc.dialect>org.hibernate.dialect.PostgreSQL9Dialect</jdbc.dialect>
                 <server.port>8085</server.port>
             </properties>
@@ -404,7 +417,7 @@
                                         <limit>
                                             <counter>INSTRUCTION</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.40</minimum>
+                                            <minimum>0.70</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
