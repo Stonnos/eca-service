@@ -1,7 +1,7 @@
 package com.ecaservice.service.scheduler;
 
+import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.experiment.mail.NotificationService;
@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -23,27 +21,27 @@ import java.util.List;
 @Service
 public class ExperimentScheduler {
 
-    private static final Collection<ExperimentStatus> SENT_STATUSES =
-            Arrays.asList(ExperimentStatus.FINISHED, ExperimentStatus.ERROR, ExperimentStatus.TIMEOUT);
-
     private final ExperimentRepository experimentRepository;
     private final ExperimentService experimentService;
     private final NotificationService notificationService;
+    private final ExperimentConfig experimentConfig;
 
     /**
      * Constructor with dependency spring injection.
-     *
      * @param experimentRepository {@link ExperimentRepository} bean
      * @param experimentService    {@link ExperimentService} bean
      * @param notificationService  {@link NotificationService} bean
+     * @param experimentConfig {@link ExperimentConfig} bean
      */
     @Autowired
     public ExperimentScheduler(ExperimentRepository experimentRepository,
                                ExperimentService experimentService,
-                               NotificationService notificationService) {
+                               NotificationService notificationService,
+                               ExperimentConfig experimentConfig) {
         this.experimentRepository = experimentRepository;
         this.experimentService = experimentService;
         this.notificationService = notificationService;
+        this.experimentConfig = experimentConfig;
     }
 
     /**
@@ -53,7 +51,7 @@ public class ExperimentScheduler {
     public void processingNewRequests() {
         log.info("Starting to built experiments.");
         List<Experiment> experiments =
-                experimentRepository.findByExperimentStatusInAndSentDateIsNull(Arrays.asList(ExperimentStatus.NEW));
+                experimentRepository.findByExperimentStatusInAndSentDateIsNull(experimentConfig.getProcessStatuses());
         log.info("{} new experiments has been obtained.", experiments.size());
         for (Experiment experiment : experiments) {
             experimentService.processExperiment(experiment);
@@ -68,7 +66,7 @@ public class ExperimentScheduler {
     public void processingRequestsToSent() {
         log.info("Starting to sent experiment results.");
         List<Experiment> experiments =
-                experimentRepository.findByExperimentStatusInAndSentDateIsNull(SENT_STATUSES);
+                experimentRepository.findByExperimentStatusInAndSentDateIsNull(experimentConfig.getSentStatuses());
         log.info("{} experiments has been obtained for sending.", experiments.size());
         for (Experiment experiment : experiments) {
             notificationService.notifyByEmail(experiment);

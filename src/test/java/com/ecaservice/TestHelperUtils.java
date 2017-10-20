@@ -108,10 +108,21 @@ public class TestHelperUtils {
      * @return {@link Experiment} object
      */
     public static Experiment createExperiment(String uuid) {
+        return createExperiment(uuid, ExperimentStatus.NEW);
+    }
+
+    /**
+     * Creates experiment.
+     *
+     * @param uuid             uuid
+     * @param experimentStatus experiment status
+     * @return {@link Experiment} object
+     */
+    public static Experiment createExperiment(String uuid, ExperimentStatus experimentStatus) {
         Experiment experiment = new Experiment();
         experiment.setFirstName(FIRST_NAME);
         experiment.setEmail(TEST_MAIL_RU);
-        experiment.setExperimentStatus(ExperimentStatus.NEW);
+        experiment.setExperimentStatus(experimentStatus);
         experiment.setCreationDate(LocalDateTime.now());
         experiment.setIpAddress(IP_ADDRESS);
         experiment.setExperimentType(ExperimentType.KNN);

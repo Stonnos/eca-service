@@ -44,6 +44,8 @@ experiment:
   ## Experiment timeout in hours
   timeout: 5
   delay: 60000
+  processStatuses: [NEW]
+  sentStatuses: [FINISHED, ERROR, TIMEOUT]
 
   data:
     storagePath: @data.storagePath@

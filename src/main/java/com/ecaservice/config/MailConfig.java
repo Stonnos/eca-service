@@ -4,7 +4,6 @@ import com.ecaservice.model.experiment.ExperimentStatus;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -19,7 +18,7 @@ public class MailConfig {
     /**
      * Message templates map
      */
-    private Map<ExperimentStatus, String> messageTemplatesMap = new HashMap<>();
+    private Map<ExperimentStatus, String> messageTemplatesMap;
 
     /**
      * Source email
