@@ -1,6 +1,7 @@
 package com.ecaservice;
 
 import com.ecaservice.model.InputData;
+import com.ecaservice.model.Mail;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
@@ -23,7 +24,7 @@ import java.util.Map;
  *
  * @author Roman Batygin
  */
-public class TestDataHelper {
+public class TestHelperUtils {
 
     public static final int NUM_INSTANCES = 25;
     public static final int NUM_ATTRIBUTES = 6;
@@ -33,7 +34,7 @@ public class TestDataHelper {
     public static final String IP_ADDRESS = "127.0.0.1";
     public static final String FIRST_NAME = "Roman";
     public static final String TEST_MAIL_RU = "test@mail.ru";
-    public static final String UUID = "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
+    public static final String UUID = "a01ebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
     public static final String TRAINING_DATA_ABSOLUTE_PATH = "/home/data";
     public static final String EXPERIMENT_ABSOLUTE_PATH = "/home/experiment";
 
@@ -144,6 +145,19 @@ public class TestDataHelper {
         initializationParams.setData(generateInstances(NUM_INSTANCES, NUM_ATTRIBUTES));
         initializationParams.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         return initializationParams;
+    }
+
+    /**
+     * Creates mail.
+     * @return {@link Mail} object
+     */
+    public static Mail createMail() {
+        Mail mail = new Mail();
+        mail.setSender("sender@mail.ru");
+        mail.setReceiver("receiver@mail.tu");
+        mail.setSubject("subject");
+        mail.setMessage("message");
+        return mail;
     }
 
 }

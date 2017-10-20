@@ -14,14 +14,14 @@ import lombok.NoArgsConstructor;
 public class Mail {
 
     /**
-     * Source email
+     * Sender email
      */
-    private String from;
+    private String sender;
 
     /**
-     * Target email
+     * Receiver email
      */
-    private String to;
+    private String receiver;
 
     /**
      * Subject message

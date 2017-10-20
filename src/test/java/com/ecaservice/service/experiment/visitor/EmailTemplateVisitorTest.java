@@ -1,6 +1,6 @@
 package com.ecaservice.service.experiment.visitor;
 
-import com.ecaservice.TestDataHelper;
+import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentStatus;
@@ -47,7 +47,7 @@ public class EmailTemplateVisitorTest {
 
     @Test
     public void testErrorStatusContext() {
-        Experiment experiment = TestDataHelper.createExperiment(null);
+        Experiment experiment = TestHelperUtils.createExperiment(null);
         experiment.setExperimentStatus(ExperimentStatus.ERROR);
         Context context = experiment.getExperimentStatus().handle(emailTemplateVisitor, experiment);
         assertContext(context, experiment);
@@ -55,7 +55,7 @@ public class EmailTemplateVisitorTest {
 
     @Test
     public void testTimeoutStatusContext() {
-        Experiment experiment = TestDataHelper.createExperiment(null);
+        Experiment experiment = TestHelperUtils.createExperiment(null);
         experiment.setExperimentStatus(ExperimentStatus.TIMEOUT);
         Context context = experiment.getExperimentStatus().handle(emailTemplateVisitor, experiment);
         assertContext(context, experiment);
@@ -65,7 +65,7 @@ public class EmailTemplateVisitorTest {
 
     @Test
     public void testFinishedStatusContext() {
-        Experiment experiment = TestDataHelper.createExperiment(TestDataHelper.UUID);
+        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID);
         experiment.setExperimentStatus(ExperimentStatus.FINISHED);
         Context context = experiment.getExperimentStatus().handle(emailTemplateVisitor, experiment);
         assertContext(context, experiment);

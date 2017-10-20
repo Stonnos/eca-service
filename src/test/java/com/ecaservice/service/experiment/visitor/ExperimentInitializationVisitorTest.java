@@ -1,6 +1,6 @@
 package com.ecaservice.service.experiment.visitor;
 
-import com.ecaservice.TestDataHelper;
+import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.mapping.EvaluationMethodMapper;
@@ -49,7 +49,7 @@ public class ExperimentInitializationVisitorTest {
 
     @Test
     public void testInitializeNeuralNetwork() {
-        InitializationParams initializationParams = TestDataHelper.createInitializationParams();
+        InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedNeuralNetwork automatedNeuralNetwork =
                 (AutomatedNeuralNetwork) experimentInitializationVisitor.caseNeuralNetwork(initializationParams);
         assertExperiment(automatedNeuralNetwork);
@@ -60,7 +60,7 @@ public class ExperimentInitializationVisitorTest {
 
     @Test
     public void testInitializeHeterogeneousEnsemble() {
-        InitializationParams initializationParams = TestDataHelper.createInitializationParams();
+        InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedHeterogeneousEnsemble automatedHeterogeneousEnsemble =
                 (AutomatedHeterogeneousEnsemble) experimentInitializationVisitor.caseHeterogeneousEnsemble(initializationParams);
         assertHeterogeneousEnsembleExperiment(automatedHeterogeneousEnsemble);
@@ -68,7 +68,7 @@ public class ExperimentInitializationVisitorTest {
 
     @Test
     public void testInitializeModifiedHeterogeneousEnsemble() {
-        InitializationParams initializationParams = TestDataHelper.createInitializationParams();
+        InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedHeterogeneousEnsemble automatedHeterogeneousEnsemble =
                 (AutomatedHeterogeneousEnsemble) experimentInitializationVisitor.caseModifiedHeterogeneousEnsemble(initializationParams);
         assertHeterogeneousEnsembleExperiment(automatedHeterogeneousEnsemble);
@@ -76,7 +76,7 @@ public class ExperimentInitializationVisitorTest {
 
     @Test
     public void testInitializeAdaBoost() {
-        InitializationParams initializationParams = TestDataHelper.createInitializationParams();
+        InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedHeterogeneousEnsemble automatedHeterogeneousEnsemble =
                 (AutomatedHeterogeneousEnsemble) experimentInitializationVisitor.caseAdaBoost(initializationParams);
         assertHeterogeneousEnsembleExperiment(automatedHeterogeneousEnsemble);
@@ -84,7 +84,7 @@ public class ExperimentInitializationVisitorTest {
 
     @Test
     public void testInitializeStacking() {
-        InitializationParams initializationParams = TestDataHelper.createInitializationParams();
+        InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedStacking automatedStacking =
                 (AutomatedStacking) experimentInitializationVisitor.caseStacking(initializationParams);
         assertExperiment(automatedStacking);
@@ -93,7 +93,7 @@ public class ExperimentInitializationVisitorTest {
 
     @Test
     public void testInitializeKNearestNeighbours() {
-        InitializationParams initializationParams = TestDataHelper.createInitializationParams();
+        InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedKNearestNeighbours automatedKNearestNeighbours =
                 (AutomatedKNearestNeighbours) experimentInitializationVisitor.caseKNearestNeighbours(initializationParams);
         assertExperiment(automatedKNearestNeighbours);
@@ -104,7 +104,7 @@ public class ExperimentInitializationVisitorTest {
 
     @Test
     public void testAfterHandle() {
-        InitializationParams initializationParams = TestDataHelper.createInitializationParams();
+        InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         initializationParams.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         AbstractExperiment experiment = ExperimentType.KNN.handle(experimentInitializationVisitor, initializationParams);
         assertEquals(eca.core.evaluation.EvaluationMethod.CROSS_VALIDATION, experiment.getEvaluationMethod());

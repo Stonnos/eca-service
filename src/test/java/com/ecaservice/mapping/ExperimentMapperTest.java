@@ -1,6 +1,6 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.TestDataHelper;
+import com.ecaservice.TestHelperUtils;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.experiment.ExperimentRequest;
@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertEquals;
@@ -34,7 +33,7 @@ public class ExperimentMapperTest {
         experimentRequest.setFirstName("mail@mail.ru");
         experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         experimentRequest.setExperimentType(ExperimentType.KNN);
-        experimentRequest.setIpAddress(TestDataHelper.IP_ADDRESS);
+        experimentRequest.setIpAddress(TestHelperUtils.IP_ADDRESS);
 
         Experiment experiment = experimentMapper.map(experimentRequest);
 

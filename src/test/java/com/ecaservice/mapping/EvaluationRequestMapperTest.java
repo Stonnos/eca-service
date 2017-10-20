@@ -1,6 +1,6 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.TestDataHelper;
+import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.EvaluationRequestDto;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
 
@@ -38,7 +37,7 @@ public class EvaluationRequestMapperTest {
 
     @Before
     public void setUp() {
-        instances = TestDataHelper.generateInstances(TestDataHelper.NUM_INSTANCES, TestDataHelper.NUM_ATTRIBUTES);
+        instances = TestHelperUtils.generateInstances(TestHelperUtils.NUM_INSTANCES, TestHelperUtils.NUM_ATTRIBUTES);
     }
 
     @Test
@@ -64,9 +63,9 @@ public class EvaluationRequestMapperTest {
         evaluationRequestDto.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         evaluationRequestDto.setEvaluationOptionsMap(new HashMap<>());
         evaluationRequestDto.getEvaluationOptionsMap().put(EvaluationOption.NUM_FOLDS,
-                String.valueOf(TestDataHelper.NUM_FOLDS));
+                String.valueOf(TestHelperUtils.NUM_FOLDS));
         evaluationRequestDto.getEvaluationOptionsMap().put(EvaluationOption.NUM_TESTS,
-                String.valueOf(TestDataHelper.NUM_TESTS));
+                String.valueOf(TestHelperUtils.NUM_TESTS));
         EvaluationRequest evaluationRequest = evaluationRequestMapper.map(evaluationRequestDto);
         assertNotNull(evaluationRequest);
         assertNotNull(evaluationRequest.getInputData());

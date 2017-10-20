@@ -1,6 +1,6 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.TestDataHelper;
+import com.ecaservice.TestHelperUtils;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.evaluation.EvaluationMethod;
@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.HashMap;
@@ -36,11 +35,11 @@ public class EvaluationLogMapperTest {
     @Test
     public void testMapToEvaluationLog() {
         EvaluationRequest evaluationRequest = new EvaluationRequest();
-        evaluationRequest.setIpAddress(TestDataHelper.IP_ADDRESS);
+        evaluationRequest.setIpAddress(TestHelperUtils.IP_ADDRESS);
         evaluationRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         evaluationRequest.setEvaluationOptionsMap(new HashMap<>());
         InputData inputData = new InputData(new KNearestNeighbours(),
-                TestDataHelper.generateInstances(TestDataHelper.NUM_INSTANCES, TestDataHelper.NUM_ATTRIBUTES));
+                TestHelperUtils.generateInstances(TestHelperUtils.NUM_INSTANCES, TestHelperUtils.NUM_ATTRIBUTES));
         evaluationRequest.setInputData(inputData);
         EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequest);
 

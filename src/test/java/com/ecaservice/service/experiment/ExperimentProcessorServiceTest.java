@@ -1,6 +1,6 @@
 package com.ecaservice.service.experiment;
 
-import com.ecaservice.TestDataHelper;
+import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.InitializationParams;
@@ -46,7 +46,7 @@ public class ExperimentProcessorServiceTest {
     @Before
     public void setUp() {
         when(experimentConfig.getResultSize()).thenReturn(RESULTS_SIZE);
-        data = TestDataHelper.generateInstances(TestDataHelper.NUM_INSTANCES, TestDataHelper.NUM_ATTRIBUTES);
+        data = TestHelperUtils.generateInstances(TestHelperUtils.NUM_INSTANCES, TestHelperUtils.NUM_ATTRIBUTES);
     }
 
 
@@ -57,13 +57,13 @@ public class ExperimentProcessorServiceTest {
 
     @Test
     public void testProcessExperimentHistory() {
-        InitializationParams initializationParams = TestDataHelper.createInitializationParams(data);
+        InitializationParams initializationParams = TestHelperUtils.createInitializationParams(data);
         AutomatedKNearestNeighbours automatedKNearestNeighbours =
                 new AutomatedKNearestNeighbours(data, new KNearestNeighbours());
         when(experimentInitializationVisitor.caseKNearestNeighbours(initializationParams))
                 .thenReturn(automatedKNearestNeighbours);
         ExperimentHistory experimentHistory = experimentProcessorService.processExperimentHistory(
-                TestDataHelper.createExperiment(null), initializationParams);
+                TestHelperUtils.createExperiment(null), initializationParams);
         assertNotNull(experimentHistory);
         assertNotNull(experimentHistory.getExperiment());
         assertEquals(experimentHistory.getExperiment().size(), experimentConfig.getResultSize().intValue());

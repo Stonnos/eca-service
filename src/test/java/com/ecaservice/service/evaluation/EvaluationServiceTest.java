@@ -1,6 +1,6 @@
 package com.ecaservice.service.evaluation;
 
-import com.ecaservice.TestDataHelper;
+import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.evaluation.ClassificationResult;
@@ -36,12 +36,12 @@ public class EvaluationServiceTest {
 
     @Before
     public void setUp() {
-        when(config.getSeed()).thenReturn(TestDataHelper.SEED);
-        when(config.getNumFolds()).thenReturn(TestDataHelper.NUM_FOLDS);
-        when(config.getNumTests()).thenReturn(TestDataHelper.NUM_TESTS);
+        when(config.getSeed()).thenReturn(TestHelperUtils.SEED);
+        when(config.getNumFolds()).thenReturn(TestHelperUtils.NUM_FOLDS);
+        when(config.getNumTests()).thenReturn(TestHelperUtils.NUM_TESTS);
         SimpleDataGenerator dataGenerator = new SimpleDataGenerator();
-        dataGenerator.setNumInstances(TestDataHelper.NUM_INSTANCES);
-        dataGenerator.setNumAttributes(TestDataHelper.NUM_ATTRIBUTES);
+        dataGenerator.setNumInstances(TestHelperUtils.NUM_INSTANCES);
+        dataGenerator.setNumAttributes(TestHelperUtils.NUM_ATTRIBUTES);
         testInstances = dataGenerator.generate();
         evaluationService = new EvaluationService(config);
     }
@@ -49,7 +49,7 @@ public class EvaluationServiceTest {
     @Test
     public void testForNullInputData() {
         ClassificationResult result = evaluationService.evaluateModel(null, EvaluationMethod.TRAINING_DATA,
-                TestDataHelper.createEvaluationOptionsMap(TestDataHelper.NUM_FOLDS, TestDataHelper.NUM_TESTS));
+                TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
         assertFalse(result.isSuccess());
     }
 
@@ -57,7 +57,7 @@ public class EvaluationServiceTest {
     public void testForNullClassifier() {
         InputData inputData = new InputData(null, testInstances);
         ClassificationResult result = evaluationService.evaluateModel(inputData, EvaluationMethod.TRAINING_DATA,
-                TestDataHelper.createEvaluationOptionsMap(TestDataHelper.NUM_FOLDS, TestDataHelper.NUM_TESTS));
+                TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
         assertFalse(result.isSuccess());
     }
 
@@ -65,8 +65,8 @@ public class EvaluationServiceTest {
     public void testForNullData() {
         InputData inputData = new InputData(new KNearestNeighbours(), null);
         ClassificationResult result = evaluationService.evaluateModel(inputData,
-                EvaluationMethod.TRAINING_DATA, TestDataHelper.createEvaluationOptionsMap(TestDataHelper.NUM_FOLDS,
-                        TestDataHelper.NUM_TESTS));
+                EvaluationMethod.TRAINING_DATA, TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS,
+                        TestHelperUtils.NUM_TESTS));
         assertFalse(result.isSuccess());
     }
 
@@ -74,7 +74,7 @@ public class EvaluationServiceTest {
     public void testForNullEvaluationMethod() {
         InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
         ClassificationResult result = evaluationService.evaluateModel(inputData, null,
-                TestDataHelper.createEvaluationOptionsMap(TestDataHelper.NUM_FOLDS, TestDataHelper.NUM_TESTS));
+                TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
         assertFalse(result.isSuccess());
     }
 
@@ -99,7 +99,7 @@ public class EvaluationServiceTest {
     public void testCrossValidationMethod() {
         InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
         ClassificationResult result = evaluationService.evaluateModel(inputData, EvaluationMethod.CROSS_VALIDATION,
-                TestDataHelper.createEvaluationOptionsMap(TestDataHelper.NUM_FOLDS, TestDataHelper.NUM_TESTS));
+                TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
         assertTrue(result.isSuccess());
         assertTrue(result.getEvaluationResults().getEvaluation().isKCrossValidationMethod());
     }
@@ -109,7 +109,7 @@ public class EvaluationServiceTest {
         when(config.getSeed()).thenThrow(Exception.class);
         InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
         ClassificationResult result = evaluationService.evaluateModel(inputData, EvaluationMethod.CROSS_VALIDATION,
-                TestDataHelper.createEvaluationOptionsMap(TestDataHelper.NUM_FOLDS, TestDataHelper.NUM_TESTS));
+                TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
         assertFalse(result.isSuccess());
     }
 

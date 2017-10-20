@@ -1,6 +1,6 @@
 package com.ecaservice.service.experiment.mail;
 
-import com.ecaservice.TestDataHelper;
+import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.MailConfig;
 import com.ecaservice.model.Mail;
 import com.ecaservice.model.entity.Experiment;
@@ -117,7 +117,7 @@ public class NotificationServiceTest extends AbstractExperimentTest {
     }
 
     private Experiment createAndSaveExperiment() {
-        Experiment experiment = TestDataHelper.createExperiment(TestDataHelper.UUID);
+        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID);
         experiment.setExperimentStatus(ExperimentStatus.FINISHED);
         experimentRepository.save(experiment);
         return experiment;

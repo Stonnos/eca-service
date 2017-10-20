@@ -1,6 +1,6 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.TestDataHelper;
+import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.ExperimentRequestDto;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.experiment.ExperimentRequest;
@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
 
@@ -33,7 +32,7 @@ public class ExperimentRequestMapperTest {
 
     @Before
     public void setUp() {
-        instances = TestDataHelper.generateInstances(TestDataHelper.NUM_INSTANCES, TestDataHelper.NUM_ATTRIBUTES);
+        instances = TestHelperUtils.generateInstances(TestHelperUtils.NUM_INSTANCES, TestHelperUtils.NUM_ATTRIBUTES);
     }
 
     @Test

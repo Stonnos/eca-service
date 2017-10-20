@@ -1,6 +1,5 @@
 package com.ecaservice.service.evaluation;
 
-import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.service.evaluation.impl.CalculationExecutorServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,12 +17,13 @@ import java.util.concurrent.TimeoutException;
  */
 public class CalculationExecutorServiceTest {
 
-    private static final ExecutorService executor = Executors.newCachedThreadPool();
+    private static final long TIMEOUT = 1000L;
 
     private CalculationExecutorService executorService;
 
     @Before
     public void setUp() {
+        ExecutorService executor = Executors.newCachedThreadPool();
         executorService = new CalculationExecutorServiceImpl(executor);
     }
 
@@ -31,10 +31,10 @@ public class CalculationExecutorServiceTest {
     public void testTimeOut() throws Exception {
         executorService.execute(() -> {
             {
-                Thread.sleep(1100);
+                Thread.sleep(TIMEOUT + 100L);
                 return null;
             }
-        }, 1000l, TimeUnit.MILLISECONDS);
+        }, TIMEOUT, TimeUnit.MILLISECONDS);
     }
 }
 

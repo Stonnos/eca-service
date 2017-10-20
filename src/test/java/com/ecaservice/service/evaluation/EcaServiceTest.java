@@ -1,6 +1,6 @@
 package com.ecaservice.service.evaluation;
 
-import com.ecaservice.TestDataHelper;
+import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.mapping.EvaluationLogMapper;
@@ -12,9 +12,6 @@ import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.model.evaluation.EvaluationRequest;
 import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
-import com.ecaservice.service.evaluation.CalculationExecutorService;
-import com.ecaservice.service.evaluation.EcaService;
-import com.ecaservice.service.evaluation.EvaluationService;
 import com.ecaservice.service.evaluation.impl.CalculationExecutorServiceImpl;
 import eca.core.evaluation.Evaluation;
 import org.junit.After;
@@ -28,13 +25,11 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 
@@ -69,9 +64,9 @@ public class EcaServiceTest {
 
     @Before
     public void setUp() {
-        when(crossValidationConfig.getSeed()).thenReturn(TestDataHelper.SEED);
-        when(crossValidationConfig.getNumFolds()).thenReturn(TestDataHelper.NUM_FOLDS);
-        when(crossValidationConfig.getNumTests()).thenReturn(TestDataHelper.NUM_TESTS);
+        when(crossValidationConfig.getSeed()).thenReturn(TestHelperUtils.SEED);
+        when(crossValidationConfig.getNumFolds()).thenReturn(TestHelperUtils.NUM_FOLDS);
+        when(crossValidationConfig.getNumTests()).thenReturn(TestHelperUtils.NUM_TESTS);
         CalculationExecutorService calculationExecutorService =
                 new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
         EvaluationService evaluationService = new EvaluationService(crossValidationConfig);
@@ -91,8 +86,8 @@ public class EcaServiceTest {
 
     @Test
     public void testSuccessClassification() {
-        EvaluationRequest request = TestDataHelper.createEvaluationRequest(TestDataHelper.IP_ADDRESS,
-                TestDataHelper.NUM_INSTANCES, TestDataHelper.NUM_ATTRIBUTES);
+        EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS,
+                TestHelperUtils.NUM_INSTANCES, TestHelperUtils.NUM_ATTRIBUTES);
         EvaluationResponse evaluationResponse = ecaService.processRequest(request);
         assertEquals(evaluationResponse.getStatus(), TechnicalStatus.SUCCESS);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
@@ -106,8 +101,8 @@ public class EcaServiceTest {
 
     @Test
     public void testClassificationWithException() {
-        EvaluationRequest request = TestDataHelper.createEvaluationRequest(TestDataHelper.IP_ADDRESS,
-                TestDataHelper.NUM_INSTANCES, TestDataHelper.NUM_ATTRIBUTES);
+        EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS,
+                TestHelperUtils.NUM_INSTANCES, TestHelperUtils.NUM_ATTRIBUTES);
         when(crossValidationConfig.getTimeout()).thenThrow(Exception.class);
         EvaluationResponse evaluationResponse = ecaService.processRequest(request);
         assertEquals(evaluationResponse.getStatus(), TechnicalStatus.ERROR);
@@ -120,8 +115,8 @@ public class EcaServiceTest {
 
     @Test
     public void testClassificationWithError() {
-        EvaluationRequest request = TestDataHelper.createEvaluationRequest(TestDataHelper.IP_ADDRESS,
-                TestDataHelper.NUM_INSTANCES, TestDataHelper.NUM_ATTRIBUTES);
+        EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS,
+                TestHelperUtils.NUM_INSTANCES, TestHelperUtils.NUM_ATTRIBUTES);
         request.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         request.setEvaluationOptionsMap(new HashMap<>());
         request.getEvaluationOptionsMap().put(EvaluationOption.NUM_FOLDS,
@@ -137,8 +132,8 @@ public class EcaServiceTest {
 
     @Test
     public void testTimeoutInClassification() {
-        EvaluationRequest request = TestDataHelper.createEvaluationRequest(TestDataHelper.IP_ADDRESS,
-                TestDataHelper.NUM_INSTANCES, TestDataHelper.NUM_ATTRIBUTES);
+        EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS,
+                TestHelperUtils.NUM_INSTANCES, TestHelperUtils.NUM_ATTRIBUTES);
         when(crossValidationConfig.getTimeout()).thenThrow(TimeoutException.class);
         EvaluationResponse evaluationResponse = ecaService.processRequest(request);
         assertEquals(evaluationResponse.getStatus(), TechnicalStatus.TIMEOUT);

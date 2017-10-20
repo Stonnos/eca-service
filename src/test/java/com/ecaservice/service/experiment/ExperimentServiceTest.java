@@ -1,6 +1,6 @@
 package com.ecaservice.service.experiment;
 
-import com.ecaservice.TestDataHelper;
+import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentMapperImpl;
@@ -60,7 +60,7 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
 
     @Before
     public void setUp() {
-        data = TestDataHelper.generateInstances(TestDataHelper.NUM_INSTANCES, TestDataHelper.NUM_ATTRIBUTES);
+        data = TestHelperUtils.generateInstances(TestHelperUtils.NUM_INSTANCES, TestHelperUtils.NUM_ATTRIBUTES);
         executorService = new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
         experimentService = new ExperimentService(experimentRepository, executorService, experimentMapper,
                 dataService, experimentConfig, experimentProcessorService);
@@ -78,7 +78,7 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
 
     @Test
     public void testSuccessExperimentRequestCreation() throws Exception {
-        ExperimentRequest experimentRequest = TestDataHelper.createExperimentRequest();
+        ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
         doNothing().when(dataService).save(any(File.class), any(Instances.class));
         experimentService.createExperiment(experimentRequest);
         List<Experiment> experiments = experimentRepository.findAll();
@@ -91,7 +91,7 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
 
     @Test
     public void testExperimentRequestCreationWithError() throws Exception {
-        ExperimentRequest experimentRequest = TestDataHelper.createExperimentRequest();
+        ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
         doThrow(Exception.class).when(dataService).save(any(File.class), any(Instances.class));
         experimentService.createExperiment(experimentRequest);
         List<Experiment> experiments = experimentRepository.findAll();
@@ -104,22 +104,22 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
 
     @Test
     public void testFindExperimentFileByUuidWithNullExperiment() {
-        assertNull(experimentService.findExperimentFileByUuid(TestDataHelper.UUID));
+        assertNull(experimentService.findExperimentFileByUuid(TestHelperUtils.UUID));
     }
 
     @Test
     public void testFindExperimentFileByUuidWithNullFile() {
-        Experiment experiment = TestDataHelper.createExperiment(TestDataHelper.UUID);
+        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID);
         experiment.setExperimentAbsolutePath(null);
         experimentRepository.save(experiment);
-        assertNull(experimentService.findExperimentFileByUuid(TestDataHelper.UUID));
+        assertNull(experimentService.findExperimentFileByUuid(TestHelperUtils.UUID));
     }
 
     @Test
     public void testSuccessFindExperimentFileByUuid() {
-        Experiment experiment = TestDataHelper.createExperiment(TestDataHelper.UUID);
+        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID);
         experimentRepository.save(experiment);
-        File actualFile = experimentService.findExperimentFileByUuid(TestDataHelper.UUID);
+        File actualFile = experimentService.findExperimentFileByUuid(TestHelperUtils.UUID);
         File expectedFile = new File(experiment.getExperimentAbsolutePath());
         assertEquals(actualFile.getAbsolutePath(), expectedFile.getAbsolutePath());
     }
@@ -130,7 +130,7 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
         when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
                 any(InitializationParams.class))).thenReturn(new ExperimentHistory());
         doNothing().when(dataService).save(any(File.class), any(ExperimentHistory.class));
-        experimentService.processExperiment(TestDataHelper.createExperiment(null));
+        experimentService.processExperiment(TestHelperUtils.createExperiment(null));
         List<Experiment> experiments = experimentRepository.findAll();
         assertList(experiments);
         Experiment experiment = experiments.get(0);
@@ -144,7 +144,7 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
     @Test
     public void testProcessExperimentWithErrorStatus() throws Exception {
         when(dataService.load(any(File.class))).thenThrow(Exception.class);
-        experimentService.processExperiment(TestDataHelper.createExperiment(null));
+        experimentService.processExperiment(TestHelperUtils.createExperiment(null));
         List<Experiment> experiments = experimentRepository.findAll();
         assertList(experiments);
         Experiment experiment = experiments.get(0);
@@ -159,7 +159,7 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
         when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
                 any(InitializationParams.class))).thenReturn(new ExperimentHistory());
         doThrow(TimeoutException.class).when(dataService).save(any(File.class), any(ExperimentHistory.class));
-        experimentService.processExperiment(TestDataHelper.createExperiment(null));
+        experimentService.processExperiment(TestHelperUtils.createExperiment(null));
         List<Experiment> experiments = experimentRepository.findAll();
         assertList(experiments);
         Experiment experiment = experiments.get(0);
