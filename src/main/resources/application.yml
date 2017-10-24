@@ -55,7 +55,7 @@ experiment:
     numIterations: 25
 
   mail:
-    from: r.batygin@intabia.ru
+    from: ***
     subject: Experiment results from eca - service
     maxFailedAttemptsToSent: 10
     messageTemplatesMap:
