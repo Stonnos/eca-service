@@ -83,7 +83,7 @@ ECA service
     java -jar target/eca-service-1.2.jar
     
 3. Для запуска вместе с модулем DataMiner необходимо собрать приложение с профилем experiment, указав
-основные параметры. Ниже приведен пример:
+   его основные параметры. Ниже приведен пример:
 
     mvn clean install -Pexperiment, postgres -Dexperiment.storagePath=/home/roman/experiment/
         -Dexperiment.data.storagePath=/home/roman/experiment/data/ -Dspring.mail.host=smtp.yandex.com
