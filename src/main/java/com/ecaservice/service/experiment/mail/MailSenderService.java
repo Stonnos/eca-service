@@ -50,6 +50,7 @@ public class MailSenderService {
      */
     public void sendEmail(Mail mail) throws MailException, MessagingException {
         Assert.notNull(mail, "Mail is not specified!");
+        log.info("Starting to send email message from '{}' to '{}'.", mail.getSender(), mail.getReceiver());
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(message);
         messageHelper.setFrom(mail.getSender());
@@ -60,5 +61,6 @@ public class MailSenderService {
         Email email = emailMapper.map(mail);
         email.setSaveDate(LocalDateTime.now());
         emailRepository.save(email);
+        log.info("Email message has been sent from '{}' to '{}'.", mail.getSender(), mail.getReceiver());
     }
 }

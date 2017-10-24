@@ -85,9 +85,8 @@ public class EcaServiceTest {
     }
 
     @Test
-    public void testSuccessClassification() {
-        EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS,
-                TestHelperUtils.NUM_INSTANCES, TestHelperUtils.NUM_ATTRIBUTES);
+    public void testSuccessClassification() throws Exception {
+        EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS);
         EvaluationResponse evaluationResponse = ecaService.processRequest(request);
         assertEquals(evaluationResponse.getStatus(), TechnicalStatus.SUCCESS);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
@@ -100,9 +99,8 @@ public class EcaServiceTest {
     }
 
     @Test
-    public void testClassificationWithException() {
-        EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS,
-                TestHelperUtils.NUM_INSTANCES, TestHelperUtils.NUM_ATTRIBUTES);
+    public void testClassificationWithException() throws Exception {
+        EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS);
         when(crossValidationConfig.getTimeout()).thenThrow(Exception.class);
         EvaluationResponse evaluationResponse = ecaService.processRequest(request);
         assertEquals(evaluationResponse.getStatus(), TechnicalStatus.ERROR);
@@ -114,9 +112,8 @@ public class EcaServiceTest {
     }
 
     @Test
-    public void testClassificationWithError() {
-        EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS,
-                TestHelperUtils.NUM_INSTANCES, TestHelperUtils.NUM_ATTRIBUTES);
+    public void testClassificationWithError() throws Exception {
+        EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS);
         request.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         request.setEvaluationOptionsMap(new HashMap<>());
         request.getEvaluationOptionsMap().put(EvaluationOption.NUM_FOLDS,
@@ -131,9 +128,8 @@ public class EcaServiceTest {
     }
 
     @Test
-    public void testTimeoutInClassification() {
-        EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS,
-                TestHelperUtils.NUM_INSTANCES, TestHelperUtils.NUM_ATTRIBUTES);
+    public void testTimeoutInClassification() throws Exception {
+        EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS);
         when(crossValidationConfig.getTimeout()).thenThrow(TimeoutException.class);
         EvaluationResponse evaluationResponse = ecaService.processRequest(request);
         assertEquals(evaluationResponse.getStatus(), TechnicalStatus.TIMEOUT);

@@ -10,10 +10,11 @@ import com.ecaservice.model.experiment.ExperimentRequest;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
-import eca.generators.SimpleDataGenerator;
+import eca.data.file.XLSLoader;
 import eca.metrics.KNearestNeighbours;
 import weka.core.Instances;
 
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,42 +33,40 @@ public class TestHelperUtils {
     public static final int NUM_FOLDS = 10;
     public static final int NUM_TESTS = 10;
     public static final String IP_ADDRESS = "127.0.0.1";
-    public static final String FIRST_NAME = "Roman";
-    public static final String TEST_MAIL_RU = "test@mail.ru";
     public static final String UUID = "a01ebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
-    public static final String TRAINING_DATA_ABSOLUTE_PATH = "/home/data";
-    public static final String EXPERIMENT_ABSOLUTE_PATH = "/home/experiment";
+
+    private static final String FIRST_NAME = "Roman";
+    private static final String TEST_MAIL_RU = "test@mail.ru";
+    private static final String TRAINING_DATA_ABSOLUTE_PATH = "/home/data";
+    private static final String EXPERIMENT_ABSOLUTE_PATH = "/home/experiment";
+    private static final String DATA_PATH = "data/iris.xls";
 
     /**
      * Generates the test data set.
      *
-     * @param numInstances  number of instances
-     * @param numAttributes number of attributes
      * @return {@link Instances} object
      */
-    public static Instances generateInstances(int numInstances, int numAttributes) {
-        SimpleDataGenerator simpleDataGenerator = new SimpleDataGenerator();
-        simpleDataGenerator.setNumInstances(numInstances);
-        simpleDataGenerator.setNumAttributes(numAttributes);
-        return simpleDataGenerator.generate();
+    public static Instances loadInstances() throws Exception {
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+        try (InputStream inputStream = classLoader.getResourceAsStream(DATA_PATH)) {
+            XLSLoader xlsLoader = new XLSLoader();
+            xlsLoader.setInputStream(inputStream);
+            return xlsLoader.getDataSet();
+        }
     }
 
     /**
      * Creates <tt>EvaluationRequest</tt> object
      *
      * @param ipAddress     ip address
-     * @param numInstances  the number of instances
-     * @param numAttributes the number of folds
      * @return {@link EvaluationRequest} object
      */
-    public static EvaluationRequest createEvaluationRequest(String ipAddress,
-                                                            int numInstances,
-                                                            int numAttributes) {
+    public static EvaluationRequest createEvaluationRequest(String ipAddress) throws Exception {
         EvaluationRequest request = new EvaluationRequest();
         request.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         request.setIpAddress(ipAddress);
         request.setEvaluationOptionsMap(Collections.emptyMap());
-        request.setInputData(new InputData(new KNearestNeighbours(), generateInstances(numInstances, numAttributes)));
+        request.setInputData(new InputData(new KNearestNeighbours(), loadInstances()));
         return request;
     }
 
@@ -90,12 +89,12 @@ public class TestHelperUtils {
      *
      * @return {@link ExperimentRequest} object
      */
-    public static ExperimentRequest createExperimentRequest() {
+    public static ExperimentRequest createExperimentRequest() throws Exception {
         ExperimentRequest experimentRequest = new ExperimentRequest();
         experimentRequest.setIpAddress(IP_ADDRESS);
         experimentRequest.setExperimentType(ExperimentType.KNN);
         experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        experimentRequest.setData(generateInstances(NUM_INSTANCES, NUM_TESTS));
+        experimentRequest.setData(loadInstances());
         experimentRequest.setFirstName(FIRST_NAME);
         experimentRequest.setEmail(TEST_MAIL_RU);
         return experimentRequest;
@@ -151,9 +150,9 @@ public class TestHelperUtils {
      *
      * @return {@link InitializationParams} object
      */
-    public static InitializationParams createInitializationParams() {
+    public static InitializationParams createInitializationParams() throws Exception {
         InitializationParams initializationParams = new InitializationParams();
-        initializationParams.setData(generateInstances(NUM_INSTANCES, NUM_ATTRIBUTES));
+        initializationParams.setData(loadInstances());
         initializationParams.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         return initializationParams;
     }

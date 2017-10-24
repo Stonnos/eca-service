@@ -9,7 +9,7 @@ spring:
       mail.transport.protocol: smtp
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
-      mail.debug: true
+      mail.debug: false
   ## Datasource properties
   datasource:
     driver-class-name: @jdbc.driver@

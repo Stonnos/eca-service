@@ -16,13 +16,8 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
 
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 /**
  * Unit tests that checks ExperimentProcessorService functionality (see {@link ExperimentProcessorService}).
@@ -44,9 +39,9 @@ public class ExperimentProcessorServiceTest {
     private Instances data;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         when(experimentConfig.getResultSize()).thenReturn(RESULTS_SIZE);
-        data = TestHelperUtils.generateInstances(TestHelperUtils.NUM_INSTANCES, TestHelperUtils.NUM_ATTRIBUTES);
+        data = TestHelperUtils.loadInstances();
     }
 
 

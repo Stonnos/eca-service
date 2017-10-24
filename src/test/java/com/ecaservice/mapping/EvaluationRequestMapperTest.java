@@ -16,10 +16,9 @@ import weka.core.Instances;
 
 import java.util.HashMap;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit tests that checks EvaluationRequestMapper functionality
@@ -36,8 +35,8 @@ public class EvaluationRequestMapperTest {
     private Instances instances;
 
     @Before
-    public void setUp() {
-        instances = TestHelperUtils.generateInstances(TestHelperUtils.NUM_INSTANCES, TestHelperUtils.NUM_ATTRIBUTES);
+    public void setUp() throws Exception {
+        instances = TestHelperUtils.loadInstances();
     }
 
     @Test

@@ -27,9 +27,13 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 
 /**
@@ -59,8 +63,8 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
     private Instances data;
 
     @Before
-    public void setUp() {
-        data = TestHelperUtils.generateInstances(TestHelperUtils.NUM_INSTANCES, TestHelperUtils.NUM_ATTRIBUTES);
+    public void setUp() throws Exception {
+        data = TestHelperUtils.loadInstances();
         executorService = new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
         experimentService = new ExperimentService(experimentRepository, executorService, experimentMapper,
                 dataService, experimentConfig, experimentProcessorService);

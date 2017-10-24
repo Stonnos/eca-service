@@ -8,7 +8,11 @@ import com.ecaservice.mapping.EvaluationMethodMapperTest;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
-import eca.dataminer.*;
+import eca.dataminer.AbstractExperiment;
+import eca.dataminer.AutomatedHeterogeneousEnsemble;
+import eca.dataminer.AutomatedKNearestNeighbours;
+import eca.dataminer.AutomatedNeuralNetwork;
+import eca.dataminer.AutomatedStacking;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +52,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeNeuralNetwork() {
+    public void testInitializeNeuralNetwork() throws Exception {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedNeuralNetwork automatedNeuralNetwork =
                 (AutomatedNeuralNetwork) experimentInitializationVisitor.caseNeuralNetwork(initializationParams);
@@ -59,7 +63,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeHeterogeneousEnsemble() {
+    public void testInitializeHeterogeneousEnsemble() throws Exception {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedHeterogeneousEnsemble automatedHeterogeneousEnsemble =
                 (AutomatedHeterogeneousEnsemble) experimentInitializationVisitor.caseHeterogeneousEnsemble(initializationParams);
@@ -67,7 +71,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeModifiedHeterogeneousEnsemble() {
+    public void testInitializeModifiedHeterogeneousEnsemble() throws Exception {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedHeterogeneousEnsemble automatedHeterogeneousEnsemble =
                 (AutomatedHeterogeneousEnsemble) experimentInitializationVisitor.caseModifiedHeterogeneousEnsemble(initializationParams);
@@ -75,7 +79,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeAdaBoost() {
+    public void testInitializeAdaBoost() throws Exception {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedHeterogeneousEnsemble automatedHeterogeneousEnsemble =
                 (AutomatedHeterogeneousEnsemble) experimentInitializationVisitor.caseAdaBoost(initializationParams);
@@ -83,7 +87,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeStacking() {
+    public void testInitializeStacking() throws Exception {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedStacking automatedStacking =
                 (AutomatedStacking) experimentInitializationVisitor.caseStacking(initializationParams);
@@ -92,7 +96,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeKNearestNeighbours() {
+    public void testInitializeKNearestNeighbours() throws Exception {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedKNearestNeighbours automatedKNearestNeighbours =
                 (AutomatedKNearestNeighbours) experimentInitializationVisitor.caseKNearestNeighbours(initializationParams);
@@ -103,7 +107,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testAfterHandle() {
+    public void testAfterHandle() throws Exception {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         initializationParams.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         AbstractExperiment experiment = ExperimentType.KNN.handle(experimentInitializationVisitor, initializationParams);

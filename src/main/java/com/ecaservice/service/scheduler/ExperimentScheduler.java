@@ -49,14 +49,14 @@ public class ExperimentScheduler {
      */
     @Scheduled(fixedDelayString = "${experiment.delay}")
     public void processingNewRequests() {
-        log.info("Starting to built experiments.");
+        log.trace("Starting to built experiments.");
         List<Experiment> experiments =
                 experimentRepository.findByExperimentStatusInAndSentDateIsNull(experimentConfig.getProcessStatuses());
-        log.info("{} new experiments has been obtained.", experiments.size());
+        log.trace("{} new experiments has been obtained.", experiments.size());
         for (Experiment experiment : experiments) {
             experimentService.processExperiment(experiment);
         }
-        log.info("Building experiments has been successfully finished.");
+        log.trace("Building experiments has been successfully finished.");
     }
 
     /**
@@ -64,13 +64,13 @@ public class ExperimentScheduler {
      */
     @Scheduled(fixedDelayString = "${experiment.delay}")
     public void processingRequestsToSent() {
-        log.info("Starting to sent experiment results.");
+        log.trace("Starting to sent experiment results.");
         List<Experiment> experiments =
                 experimentRepository.findByExperimentStatusInAndSentDateIsNull(experimentConfig.getSentStatuses());
-        log.info("{} experiments has been obtained for sending.", experiments.size());
+        log.trace("{} experiments has been obtained for sending.", experiments.size());
         for (Experiment experiment : experiments) {
             notificationService.notifyByEmail(experiment);
         }
-        log.info("Sending experiments has been successfully finished.");
+        log.trace("Sending experiments has been successfully finished.");
     }
 }

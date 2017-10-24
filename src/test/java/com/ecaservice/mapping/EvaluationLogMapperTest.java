@@ -15,10 +15,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Unit tests that checks EvaluationLogMapper functionality
@@ -33,13 +32,13 @@ public class EvaluationLogMapperTest {
     private EvaluationLogMapper evaluationLogMapper;
 
     @Test
-    public void testMapToEvaluationLog() {
+    public void testMapToEvaluationLog() throws Exception {
         EvaluationRequest evaluationRequest = new EvaluationRequest();
         evaluationRequest.setIpAddress(TestHelperUtils.IP_ADDRESS);
         evaluationRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         evaluationRequest.setEvaluationOptionsMap(new HashMap<>());
         InputData inputData = new InputData(new KNearestNeighbours(),
-                TestHelperUtils.generateInstances(TestHelperUtils.NUM_INSTANCES, TestHelperUtils.NUM_ATTRIBUTES));
+                TestHelperUtils.loadInstances());
         evaluationRequest.setInputData(inputData);
         EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequest);
 

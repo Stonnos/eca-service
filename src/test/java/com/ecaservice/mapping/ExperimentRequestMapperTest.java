@@ -31,8 +31,8 @@ public class ExperimentRequestMapperTest {
     private Instances instances;
 
     @Before
-    public void setUp() {
-        instances = TestHelperUtils.generateInstances(TestHelperUtils.NUM_INSTANCES, TestHelperUtils.NUM_ATTRIBUTES);
+    public void setUp() throws Exception {
+        instances = TestHelperUtils.loadInstances();
     }
 
     @Test
