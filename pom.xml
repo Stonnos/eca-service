@@ -25,7 +25,6 @@
         <postresql.version>9.4.1212</postresql.version>
         <lombok.version>1.16.12</lombok.version>
         <eca.version>5.0</eca.version>
-        <orika.version>1.4.6</orika.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <assertj.core.version>3.8.0</assertj.core.version>
         <mockito.version>1.10.19</mockito.version>
@@ -204,12 +203,6 @@
             <groupId>eca</groupId>
             <artifactId>eca-core</artifactId>
             <version>${eca.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ma.glasnost.orika</groupId>
-            <artifactId>orika-core</artifactId>
-            <version>${orika.version}</version>
         </dependency>
 
         <dependency>
