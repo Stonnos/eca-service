@@ -57,10 +57,10 @@
             <properties>
                 <storagePath>/home/roman/experiment/</storagePath>
                 <data.storagePath>/home/roman/experiment/data/</data.storagePath>
-                <mail.host>smtp.yandex.com</mail.host>
+                <mail.host>smtp.gmail.com</mail.host>
                 <mail.port>25</mail.port>
-                <mail.username>username</mail.username>
-                <mail.password>password</mail.password>
+                <mail.username>rbatsw@gmail.com</mail.username>
+                <mail.password>1953s50w42i65m14015</mail.password>
             </properties>
         </profile>
 

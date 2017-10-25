@@ -55,7 +55,7 @@ experiment:
     numIterations: 25
 
   mail:
-    from: ***
+    from: rbatsw@gmail.com
     subject: Experiment results from eca - service
     maxFailedAttemptsToSent: 10
     messageTemplatesMap:
