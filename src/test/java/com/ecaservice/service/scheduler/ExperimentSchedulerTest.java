@@ -8,7 +8,6 @@ import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.experiment.AbstractExperimentTest;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.experiment.mail.NotificationService;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,13 +46,9 @@ public class ExperimentSchedulerTest extends AbstractExperimentTest {
 
     @Before
     public void setUp() {
+        experimentRepository.deleteAll();
         experimentScheduler = new ExperimentScheduler(experimentRepository, experimentService, notificationService,
                 experimentConfig);
-    }
-
-    @After
-    public void clear() {
-        experimentRepository.deleteAll();
     }
 
     @Test

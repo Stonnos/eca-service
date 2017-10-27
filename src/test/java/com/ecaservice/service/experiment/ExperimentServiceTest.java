@@ -12,7 +12,6 @@ import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.service.evaluation.impl.CalculationExecutorServiceImpl;
 import eca.converters.model.ExperimentHistory;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,15 +63,11 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
 
     @Before
     public void setUp() throws Exception {
+        experimentRepository.deleteAll();
         data = TestHelperUtils.loadInstances();
         executorService = new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
         experimentService = new ExperimentService(experimentRepository, executorService, experimentMapper,
                 dataService, experimentConfig, experimentProcessorService);
-    }
-
-    @After
-    public void after() {
-        experimentRepository.deleteAll();
     }
 
     @Test(expected = IllegalArgumentException.class)

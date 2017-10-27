@@ -14,7 +14,6 @@ import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.evaluation.impl.CalculationExecutorServiceImpl;
 import eca.core.evaluation.Evaluation;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,6 +63,7 @@ public class EcaServiceTest {
 
     @Before
     public void setUp() {
+        evaluationLogRepository.deleteAll();
         when(crossValidationConfig.getSeed()).thenReturn(TestHelperUtils.SEED);
         when(crossValidationConfig.getNumFolds()).thenReturn(TestHelperUtils.NUM_FOLDS);
         when(crossValidationConfig.getNumTests()).thenReturn(TestHelperUtils.NUM_TESTS);
@@ -72,11 +72,6 @@ public class EcaServiceTest {
         EvaluationService evaluationService = new EvaluationService(crossValidationConfig);
         ecaService = new EcaService(crossValidationConfig, calculationExecutorService, evaluationService,
                 evaluationLogRepository, evaluationLogMapper);
-    }
-
-    @After
-    public void after() {
-        evaluationLogRepository.deleteAll();
     }
 
     @Test(expected = IllegalArgumentException.class)

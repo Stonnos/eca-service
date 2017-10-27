@@ -61,9 +61,9 @@ public class ExperimentConfig {
     private Integer timeout;
 
     /**
-     * Delay value for scheduler in millis
+     * Delay value for scheduler in seconds
      */
-    private Integer delay;
+    private Integer delaySeconds;
 
     /**
      * Process statuses list

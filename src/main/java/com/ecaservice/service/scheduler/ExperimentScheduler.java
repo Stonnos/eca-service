@@ -47,7 +47,7 @@ public class ExperimentScheduler {
     /**
      * Processing new experiment requests.
      */
-    @Scheduled(fixedDelayString = "${experiment.delay}")
+    @Scheduled(fixedDelayString = "${experiment.delaySeconds}000")
     public void processingNewRequests() {
         log.trace("Starting to built experiments.");
         List<Experiment> experiments =
@@ -62,7 +62,7 @@ public class ExperimentScheduler {
     /**
      * Processing experiment requests for sending.
      */
-    @Scheduled(fixedDelayString = "${experiment.delay}")
+    @Scheduled(fixedDelayString = "${experiment.delaySeconds}000")
     public void processingRequestsToSent() {
         log.trace("Starting to sent experiment results.");
         List<Experiment> experiments =

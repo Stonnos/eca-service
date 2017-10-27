@@ -7,7 +7,6 @@ import com.ecaservice.model.Mail;
 import com.ecaservice.model.entity.Email;
 import com.ecaservice.repository.EmailRepository;
 import com.ecaservice.service.experiment.AbstractExperimentTest;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,12 +46,8 @@ public class MailSenderServiceTest extends AbstractExperimentTest {
 
     @Before
     public void setUp() {
-        mailSenderService = new MailSenderService(mailSender, emailMapper, emailRepository);
-    }
-
-    @After
-    public void after() {
         emailRepository.deleteAll();
+        mailSenderService = new MailSenderService(mailSender, emailMapper, emailRepository);
     }
 
     @Test(expected = IllegalArgumentException.class)

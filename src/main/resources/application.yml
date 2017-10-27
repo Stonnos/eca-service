@@ -36,14 +36,15 @@ server:
 ## Experiment properties
 experiment:
   resultSize: 100
-  numIterations: 10000
+  numIterations: 1000
   fileFormat: experiment%d.txt
   storagePath: @storagePath@
   downloadUrl: http://localhost:@server.port@/eca-service/experiment/download/%s
   maximumFractionDigits: 4
   ## Experiment timeout in hours
   timeout: 5
-  delay: 60000
+  ## Scheduler delay in seconds
+  delaySeconds: 120
   processStatuses: [NEW]
   sentStatuses: [FINISHED, ERROR, TIMEOUT]
 

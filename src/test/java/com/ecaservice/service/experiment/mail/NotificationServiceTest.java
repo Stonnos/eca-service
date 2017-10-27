@@ -8,7 +8,6 @@ import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.experiment.AbstractExperimentTest;
 import com.ecaservice.service.experiment.visitor.EmailTemplateVisitor;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,6 +58,7 @@ public class NotificationServiceTest extends AbstractExperimentTest {
 
     @Before
     public void setUp() {
+        experimentRepository.deleteAll();
         templateEngine = PowerMockito.mock(TemplateEngine.class);
         notificationService = new NotificationService(templateEngine, mailSenderService,  experimentRepository,
                 mailConfig, statusTemplateVisitor);
@@ -66,11 +66,6 @@ public class NotificationServiceTest extends AbstractExperimentTest {
         statusMap.put(ExperimentStatus.FINISHED, TEMPLATE_HTML);
         when(mailConfig.getMessageTemplatesMap()).thenReturn(statusMap);
         when(mailConfig.getMaxFailedAttemptsToSent()).thenReturn(MAX_FAILED_ATTEMPTS_TO_SENT);
-    }
-
-    @After
-    public void after() {
-        experimentRepository.deleteAll();
     }
 
     @Test
