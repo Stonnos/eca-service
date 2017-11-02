@@ -5,13 +5,7 @@ import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
@@ -31,19 +25,19 @@ public class Experiment {
     /**
      * Request remote ip address
      */
-    @Column(name = "ip_address", nullable = false)
+    @Column(name = "ip_address")
     private String ipAddress;
 
     /**
      * First name
      */
-    @Column(name = "first_name", nullable = false)
+    @Column(name = "first_name")
     private String firstName;
 
     /**
      * Email
      */
-    @Column(name = "email", nullable = false)
+    @Column(name = "email")
     private String email;
 
     /**
@@ -64,7 +58,7 @@ public class Experiment {
     /**
      * Request creation date
      */
-    @Column(name = "creation_date", nullable = false)
+    @Column(name = "creation_date")
     private LocalDateTime creationDate;
 
     /**
@@ -89,14 +83,14 @@ public class Experiment {
      * Experiment type
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "experiment_type", nullable = false)
+    @Column(name = "experiment_type")
     private ExperimentType experimentType;
 
     /**
      * Experiment status
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "experiment_status", nullable = false)
+    @Column(name = "experiment_status")
     private ExperimentStatus experimentStatus;
 
     @Column(name = "error_message", columnDefinition = "text")
@@ -106,7 +100,7 @@ public class Experiment {
      * Evaluation method
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "evaluation_method", nullable = false)
+    @Column(name = "evaluation_method")
     private EvaluationMethod evaluationMethod;
 
     /**
