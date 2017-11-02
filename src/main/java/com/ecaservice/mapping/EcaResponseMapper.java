@@ -23,6 +23,12 @@ public abstract class EcaResponseMapper {
     private static final Collection<ExperimentStatus> SUCCESS_STATUSES =
             Arrays.asList(ExperimentStatus.NEW, ExperimentStatus.FINISHED);
 
+    /**
+     * Maps experiment to eca response object.
+     *
+     * @param experiment {@link Experiment} object
+     * @return {@link EcaResponse} object
+     */
     @Mappings({
             @Mapping(target = "status", ignore = true),
             @Mapping(target = "errorMessage", ignore = true)

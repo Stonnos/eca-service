@@ -13,11 +13,18 @@ import org.mapstruct.Mappings;
 import java.util.Collections;
 
 /**
+ * Evaluation request mapper.
  * @author Roman Batygin
  */
 @Mapper
 public abstract class EvaluationRequestMapper {
 
+    /**
+     * Maps evaluation request dto to evaluation request.
+     *
+     * @param evaluationRequestDto {@link EvaluationRequestDto} object
+     * @return {@link EvaluationRequest} object
+     */
     @Mappings({
             @Mapping(target = "evaluationOptionsMap", ignore = true)
     })

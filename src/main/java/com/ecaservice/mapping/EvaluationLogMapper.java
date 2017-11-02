@@ -49,6 +49,7 @@ public abstract class EvaluationLogMapper {
             instancesInfo.setNumInstances(inputData.getData().numInstances());
             instancesInfo.setNumAttributes(inputData.getData().numAttributes());
             instancesInfo.setNumClasses(inputData.getData().numClasses());
+            instancesInfo.setClassName(inputData.getData().classAttribute().name());
             evaluationLog.setInstancesInfo(instancesInfo);
         }
     }

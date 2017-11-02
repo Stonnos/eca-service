@@ -22,19 +22,14 @@ public class Email {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
     private String sender;
-
-    @Column(nullable = false)
     private String receiver;
-
-    @Column(nullable = false)
     private String subject;
 
-    @Column(columnDefinition = "text", nullable = false)
+    @Column(columnDefinition = "text")
     private String message;
 
-    @Column(name = "save_date", nullable = false)
+    @Column(name = "save_date")
     private LocalDateTime saveDate;
 
 }

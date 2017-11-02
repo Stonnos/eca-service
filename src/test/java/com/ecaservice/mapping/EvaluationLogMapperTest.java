@@ -48,6 +48,8 @@ public class EvaluationLogMapperTest {
         assertNotNull(evaluationLog.getEvaluationOptionsMap());
         assertEquals(evaluationRequest.getInputData().getData().relationName(),
                 evaluationLog.getInstancesInfo().getRelationName());
+        assertEquals(evaluationRequest.getInputData().getData().classAttribute().name(),
+                evaluationLog.getInstancesInfo().getClassName());
         assertEquals(evaluationRequest.getInputData().getData().numAttributes(),
                 evaluationLog.getInstancesInfo().getNumAttributes().intValue());
         assertEquals(evaluationRequest.getInputData().getData().numClasses(),

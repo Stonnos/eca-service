@@ -9,12 +9,12 @@ import org.mapstruct.Mapper;
  * @author Roman Batygin
  */
 @Mapper
-public abstract class EmailMapper {
+public interface EmailMapper {
 
     /**
      * Maps mail to email persistence entity.
      * @param mail {@link Mail} object
      * @return {@link Email} object
      */
-    public abstract Email map(Mail mail);
+    Email map(Mail mail);
 }

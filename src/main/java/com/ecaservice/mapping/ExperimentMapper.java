@@ -5,10 +5,17 @@ import com.ecaservice.model.experiment.ExperimentRequest;
 import org.mapstruct.Mapper;
 
 /**
+ * Experiment mapper.
  * @author Roman Batygin
  */
 @Mapper
-public abstract class ExperimentMapper {
+public interface ExperimentMapper {
 
-    public abstract Experiment map(ExperimentRequest experimentRequest);
+    /**
+     * Maps experiment request to experiment persistence entity.
+     *
+     * @param experimentRequest {@link ExperimentRequest} object
+     * @return {@link Experiment} object
+     */
+    Experiment map(ExperimentRequest experimentRequest);
 }

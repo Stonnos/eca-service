@@ -28,10 +28,11 @@ public class ExperimentScheduler {
 
     /**
      * Constructor with dependency spring injection.
+     *
      * @param experimentRepository {@link ExperimentRepository} bean
      * @param experimentService    {@link ExperimentService} bean
      * @param notificationService  {@link NotificationService} bean
-     * @param experimentConfig {@link ExperimentConfig} bean
+     * @param experimentConfig     {@link ExperimentConfig} bean
      */
     @Autowired
     public ExperimentScheduler(ExperimentRepository experimentRepository,
@@ -51,7 +52,8 @@ public class ExperimentScheduler {
     public void processingNewRequests() {
         log.trace("Starting to built experiments.");
         List<Experiment> experiments =
-                experimentRepository.findByExperimentStatusInAndSentDateIsNull(experimentConfig.getProcessStatuses());
+                experimentRepository.findByExperimentStatusInAndSentDateIsNullOrderByCreationDate(
+                        experimentConfig.getProcessStatuses());
         log.trace("{} new experiments has been obtained.", experiments.size());
         for (Experiment experiment : experiments) {
             experimentService.processExperiment(experiment);
@@ -66,7 +68,8 @@ public class ExperimentScheduler {
     public void processingRequestsToSent() {
         log.trace("Starting to sent experiment results.");
         List<Experiment> experiments =
-                experimentRepository.findByExperimentStatusInAndSentDateIsNull(experimentConfig.getSentStatuses());
+                experimentRepository.findByExperimentStatusInAndSentDateIsNullOrderByCreationDate(
+                        experimentConfig.getSentStatuses());
         log.trace("{} experiments has been obtained for sending.", experiments.size());
         for (Experiment experiment : experiments) {
             notificationService.notifyByEmail(experiment);

@@ -14,7 +14,7 @@ public class EcaApplication {
     /**
      * Runs application.
      *
-     * @param args
+     * @param args command line arguments
      */
     public static void main(String[] args) {
         SpringApplication.run(EcaApplication.class, args);

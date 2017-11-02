@@ -25,7 +25,7 @@ import java.io.File;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Experiment controller.
@@ -66,8 +66,8 @@ public class ExperimentController {
     @RequestMapping(value = "/download/{uuid}", method = RequestMethod.GET)
     public void downloadExperiment(@PathVariable String uuid, HttpServletResponse response) {
         File experimentFile = experimentService.findExperimentFileByUuid(uuid);
-        if (Objects.isNull(experimentFile)) {
-            log.warn("Experiment file by uuid {} not found!", uuid);
+        if (!Optional.ofNullable(experimentFile).isPresent()) {
+            log.warn("Experiment results file by uuid '{}' not found!", uuid);
         } else {
             response.setContentType("text/plain");
             response.setContentLength((int) experimentFile.length());
@@ -76,6 +76,8 @@ public class ExperimentController {
             try (OutputStream outputStream = response.getOutputStream()) {
                 FileUtils.copyFile(experimentFile, outputStream);
                 outputStream.flush();
+                log.info("Experiment results file '{}' by uuid '{}' has been successfully downloaded.",
+                        experimentFile.getAbsolutePath(), uuid);
             } catch (Exception ex) {
                 log.error("There was an error {} while downloading file {}", ex.getMessage(), experimentFile.getName());
             }
@@ -99,7 +101,7 @@ public class ExperimentController {
         Experiment experiment = experimentService.createExperiment(request);
         EcaResponse ecaResponse = ecaResponseMapper.map(experiment);
         log.info("Experiment request has been created with status [{}].", ecaResponse.getStatus());
-        return new ResponseEntity(ecaResponse, HttpStatus.OK);
+        return new ResponseEntity<>(ecaResponse, HttpStatus.OK);
     }
 
 }

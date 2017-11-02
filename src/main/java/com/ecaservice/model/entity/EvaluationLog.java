@@ -38,13 +38,13 @@ public class EvaluationLog {
     /**
      * Request remote ip address
      */
-    @Column(name = "ip_address", nullable = false)
+    @Column(name = "ip_address")
     private String ipAddress;
 
     /**
      * Request creation date
      */
-    @Column(name = "creation_date", nullable = false)
+    @Column(name = "creation_date")
     private LocalDateTime creationDate;
 
     /**
@@ -62,14 +62,14 @@ public class EvaluationLog {
     /**
      * Classifier name
      */
-    @Column(name = "classifier_name", nullable = false)
+    @Column(name = "classifier_name")
     private String classifierName;
 
     /**
      * Evaluation status
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "evaluation_status", nullable = false)
+    @Column(name = "evaluation_status")
     private EvaluationStatus evaluationStatus;
 
     @Column(name = "error_message", columnDefinition = "text")
@@ -79,7 +79,7 @@ public class EvaluationLog {
      * Evaluation method
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "evaluation_method", nullable = false)
+    @Column(name = "evaluation_method")
     private EvaluationMethod evaluationMethod;
 
     /**
@@ -88,7 +88,7 @@ public class EvaluationLog {
     @ElementCollection
     @CollectionTable(name = "input_options")
     @MapKeyColumn(name = "option_name")
-    @Column(name = "option_value", nullable = false)
+    @Column(name = "option_value")
     private Map<String, String> inputOptionsMap;
 
     /**
@@ -96,8 +96,8 @@ public class EvaluationLog {
      */
     @ElementCollection
     @CollectionTable(name = "evaluation_options")
-    @MapKeyColumn(name = "option_name")
-    @Column(name = "option_value")
+    @MapKeyColumn(name = "evaluation_option_name")
+    @Column(name = "evaluation_option_value")
     private Map<EvaluationOption, String> evaluationOptionsMap;
 
     /**

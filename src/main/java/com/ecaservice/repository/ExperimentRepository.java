@@ -25,6 +25,7 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long> {
      * @param statuses {@link ExperimentStatus} collection
      * @return {@link Experiment} list
      */
-    List<Experiment> findByExperimentStatusInAndSentDateIsNull(Collection<ExperimentStatus> statuses);
+    List<Experiment> findByExperimentStatusInAndSentDateIsNullOrderByCreationDate(
+            Collection<ExperimentStatus> statuses);
 
 }

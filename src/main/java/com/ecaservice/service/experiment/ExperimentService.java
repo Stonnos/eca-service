@@ -18,7 +18,7 @@ import weka.core.Instances;
 
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -148,11 +148,11 @@ public class ExperimentService {
      */
     public File findExperimentFileByUuid(String uuid) {
         Experiment experiment = experimentRepository.findByUuid(uuid);
-        if (Objects.isNull(experiment)) {
+        if (!Optional.ofNullable(experiment).isPresent()) {
             log.warn("Experiment for uuid = {} not found!", uuid);
             return null;
         }
-        if (Objects.isNull(experiment.getExperimentAbsolutePath())) {
+        if (!Optional.ofNullable(experiment).map(Experiment::getExperimentAbsolutePath).isPresent()) {
             log.warn("Experiment file for uuid = {} not found!", uuid);
             return null;
         } else {
