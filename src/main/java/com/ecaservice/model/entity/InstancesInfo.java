@@ -2,13 +2,7 @@ package com.ecaservice.model.entity;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Input data information model.
@@ -38,9 +32,5 @@ public class InstancesInfo {
 
     @Column(name = "class_name")
     private String className;
-
-    @OneToOne
-    @JoinColumn(name = "evaluation_log_id")
-    private EvaluationLog evaluationLog;
 
 }

@@ -92,7 +92,8 @@ public class EvaluationLog {
     /**
      * Training data info
      */
-    @OneToOne(mappedBy = "evaluationLog", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "instances_info_id")
     private InstancesInfo instancesInfo;
 
 }
