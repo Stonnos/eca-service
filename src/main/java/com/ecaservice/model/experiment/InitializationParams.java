@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import weka.core.Instances;
 
 /**
+ * Experiment initialization params model.
  * @author Roman Batygin
  */
 @Data

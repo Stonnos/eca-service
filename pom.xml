@@ -6,7 +6,7 @@
 
     <groupId>eca.service</groupId>
     <artifactId>eca-service</artifactId>
-    <version>1.2</version>
+    <version>1.3</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -367,6 +367,7 @@
                         <exclude>**/dictionary/**/*</exclude>
                         <exclude>**/config/**/*</exclude>
                         <exclude>**/exception/**/*</exclude>
+                        <exclude>**/util/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>

@@ -5,7 +5,6 @@ import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.evaluation.ClassificationResult;
 import com.ecaservice.model.evaluation.EvaluationMethod;
-import eca.generators.SimpleDataGenerator;
 import eca.metrics.KNearestNeighbours;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,14 +34,11 @@ public class EvaluationServiceTest {
     private Instances testInstances;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         when(config.getSeed()).thenReturn(TestHelperUtils.SEED);
         when(config.getNumFolds()).thenReturn(TestHelperUtils.NUM_FOLDS);
         when(config.getNumTests()).thenReturn(TestHelperUtils.NUM_TESTS);
-        SimpleDataGenerator dataGenerator = new SimpleDataGenerator();
-        dataGenerator.setNumInstances(TestHelperUtils.NUM_INSTANCES);
-        dataGenerator.setNumAttributes(TestHelperUtils.NUM_ATTRIBUTES);
-        testInstances = dataGenerator.generate();
+        testInstances = TestHelperUtils.loadInstances();
         evaluationService = new EvaluationService(config);
     }
 

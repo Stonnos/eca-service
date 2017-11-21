@@ -107,6 +107,11 @@ public class ExperimentConfig {
          * Number of iterations
          */
         private Integer numIterations;
+
+        /**
+         * Number of best individual classifiers
+         */
+        private Integer numBestClassifiers;
     }
 
 }

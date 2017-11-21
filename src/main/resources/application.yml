@@ -24,7 +24,7 @@ spring:
 ## Cross - validation properties
 cross-validation:
   numFolds: 10
-  numTests: 10
+  numTests: 1
   seed: 3
   ## Cross validation timeout in minutes
   timeout: 60
@@ -35,8 +35,8 @@ server:
 
 ## Experiment properties
 experiment:
-  resultSize: 50
-  numIterations: 500
+  resultSize: 25
+  numIterations: 100
   fileFormat: experiment%d.txt
   storagePath: @storagePath@
   downloadUrl: http://localhost:@server.port@/eca-service/experiment/download/%s
@@ -54,6 +54,7 @@ experiment:
     dateFormat: yyyy-MM-dd HH:mm:ss
   ensemble:
     numIterations: 25
+    numBestClassifiers: 4
 
   mail:
     from: rbatsw@gmail.com

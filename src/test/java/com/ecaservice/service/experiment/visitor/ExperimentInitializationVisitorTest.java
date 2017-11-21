@@ -8,22 +8,29 @@ import com.ecaservice.mapping.EvaluationMethodMapperTest;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
+import com.ecaservice.service.experiment.ClassifiersSetSearcher;
 import eca.dataminer.AbstractExperiment;
 import eca.dataminer.AutomatedHeterogeneousEnsemble;
 import eca.dataminer.AutomatedKNearestNeighbours;
 import eca.dataminer.AutomatedNeuralNetwork;
 import eca.dataminer.AutomatedStacking;
+import eca.ensemble.ClassifiersSet;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import weka.core.Instances;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyMap;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests that checks ExperimentInitializationVisitor functionality (see {@link ExperimentInitializationVisitor}).
@@ -42,13 +49,17 @@ public class ExperimentInitializationVisitorTest {
     private CrossValidationConfig crossValidationConfig;
     @Autowired
     private EvaluationMethodMapper evaluationMethodMapper;
+    @Mock
+    private ClassifiersSetSearcher classifiersSetSearcher;
 
     private ExperimentInitializationVisitor experimentInitializationVisitor;
 
     @Before
     public void setUp() {
         experimentInitializationVisitor = new ExperimentInitializationVisitor(experimentConfig,
-                crossValidationConfig, evaluationMethodMapper);
+                crossValidationConfig, evaluationMethodMapper, classifiersSetSearcher);
+        when(classifiersSetSearcher.findBestClassifiers(any(Instances.class), any(EvaluationMethod.class),
+                anyMap())).thenReturn(new ClassifiersSet());
     }
 
     @Test
