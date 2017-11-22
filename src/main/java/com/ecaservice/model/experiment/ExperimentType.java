@@ -1,7 +1,6 @@
 package com.ecaservice.model.experiment;
 
 import com.ecaservice.model.dictionary.ExperimentTypeDictionary;
-import eca.metrics.distances.DistanceType;
 
 /**
  * Experiment type.

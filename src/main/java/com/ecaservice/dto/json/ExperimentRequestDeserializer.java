@@ -1,6 +1,7 @@
 package com.ecaservice.dto.json;
 
 import com.ecaservice.dto.ExperimentRequestDto;
+import com.ecaservice.dto.dictionary.JsonFieldsDictionary;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.fasterxml.jackson.core.JsonParser;
@@ -25,14 +26,15 @@ public class ExperimentRequestDeserializer extends JsonDeserializer<ExperimentRe
                                             DeserializationContext context) throws IOException {
         JsonNode jsonNode = jsonParser.getCodec().readTree(jsonParser);
         ExperimentRequestDto experimentRequestDto = new ExperimentRequestDto();
-        experimentRequestDto.setFirstName(jsonNode.get("firstName").textValue());
-        experimentRequestDto.setEmail(jsonNode.get("email").textValue());
-        experimentRequestDto.setExperimentType(ExperimentType.valueOf(jsonNode.get("experimentType").textValue()));
-        String dataStr = jsonNode.get("data").textValue();
+        experimentRequestDto.setFirstName(jsonNode.get(JsonFieldsDictionary.FIRST_NAME).textValue());
+        experimentRequestDto.setEmail(jsonNode.get(JsonFieldsDictionary.EMAIL).textValue());
+        experimentRequestDto.setExperimentType(
+                ExperimentType.valueOf(jsonNode.get(JsonFieldsDictionary.EXPERIMENT_TYPE).textValue()));
+        String dataStr = jsonNode.get(JsonFieldsDictionary.DATA).textValue();
         byte[] dataBytes = Base64.getDecoder().decode(dataStr);
         experimentRequestDto.setData((Instances) SerializationUtils.deserialize(dataBytes));
         experimentRequestDto.setEvaluationMethod(EvaluationMethod.valueOf(
-                jsonNode.get("evaluationMethod").textValue()));
+                jsonNode.get(JsonFieldsDictionary.EVALUATION_METHOD).textValue()));
         return experimentRequestDto;
     }
 }

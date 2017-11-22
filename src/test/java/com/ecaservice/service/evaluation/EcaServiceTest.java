@@ -27,7 +27,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
@@ -110,7 +110,7 @@ public class EcaServiceTest {
     public void testClassificationWithError() throws Exception {
         EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS);
         request.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
-        request.setEvaluationOptionsMap(new HashMap<>());
+        request.setEvaluationOptionsMap(new EnumMap<>(EvaluationOption.class));
         request.getEvaluationOptionsMap().put(EvaluationOption.NUM_FOLDS,
                 String.valueOf(Evaluation.MINIMUM_NUMBER_OF_FOLDS - 1));
         EvaluationResponse evaluationResponse = ecaService.processRequest(request);

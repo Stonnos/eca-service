@@ -17,7 +17,7 @@ import weka.core.Instances;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 /**
@@ -27,8 +27,6 @@ import java.util.Map;
  */
 public class TestHelperUtils {
 
-    public static final int NUM_INSTANCES = 25;
-    public static final int NUM_ATTRIBUTES = 6;
     public static final int SEED = 3;
     public static final int NUM_FOLDS = 10;
     public static final int NUM_TESTS = 10;
@@ -40,6 +38,10 @@ public class TestHelperUtils {
     private static final String TRAINING_DATA_ABSOLUTE_PATH = "/home/data";
     private static final String EXPERIMENT_ABSOLUTE_PATH = "/home/experiment";
     private static final String DATA_PATH = "data/iris.xls";
+    private static final String SENDER_MAIL = "sender@mail.ru";
+    private static final String RECEIVER_MAIL = "receiver@mail.tu";
+    private static final String SUBJECT = "subject";
+    private static final String MAIL_MESSAGE = "message";
 
     /**
      * Generates the test data set.
@@ -78,7 +80,7 @@ public class TestHelperUtils {
      * @return evaluation options map
      */
     public static Map<EvaluationOption, String> createEvaluationOptionsMap(int numFolds, int numTests) {
-        Map<EvaluationOption, String> evaluationOptionsMap = new HashMap<>();
+        Map<EvaluationOption, String> evaluationOptionsMap = new EnumMap<>(EvaluationOption.class);
         evaluationOptionsMap.put(EvaluationOption.NUM_FOLDS, String.valueOf(numFolds));
         evaluationOptionsMap.put(EvaluationOption.NUM_TESTS, String.valueOf(numTests));
         return evaluationOptionsMap;
@@ -163,10 +165,10 @@ public class TestHelperUtils {
      */
     public static Mail createMail() {
         Mail mail = new Mail();
-        mail.setSender("sender@mail.ru");
-        mail.setReceiver("receiver@mail.tu");
-        mail.setSubject("subject");
-        mail.setMessage("message");
+        mail.setSender(SENDER_MAIL);
+        mail.setReceiver(RECEIVER_MAIL);
+        mail.setSubject(SUBJECT);
+        mail.setMessage(MAIL_MESSAGE);
         return mail;
     }
 

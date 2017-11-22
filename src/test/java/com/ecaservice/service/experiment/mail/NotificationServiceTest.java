@@ -21,7 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -62,7 +62,7 @@ public class NotificationServiceTest extends AbstractExperimentTest {
         templateEngine = PowerMockito.mock(TemplateEngine.class);
         notificationService = new NotificationService(templateEngine, mailSenderService,  experimentRepository,
                 mailConfig, statusTemplateVisitor);
-        HashMap<ExperimentStatus, String> statusMap = new HashMap<>();
+        EnumMap<ExperimentStatus, String> statusMap = new EnumMap<>(ExperimentStatus.class);
         statusMap.put(ExperimentStatus.FINISHED, TEMPLATE_HTML);
         when(mailConfig.getMessageTemplatesMap()).thenReturn(statusMap);
         when(mailConfig.getMaxFailedAttemptsToSent()).thenReturn(MAX_FAILED_ATTEMPTS_TO_SENT);

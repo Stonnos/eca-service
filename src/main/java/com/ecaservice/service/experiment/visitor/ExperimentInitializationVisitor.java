@@ -14,7 +14,6 @@ import eca.dataminer.AutomatedHeterogeneousEnsemble;
 import eca.dataminer.AutomatedKNearestNeighbours;
 import eca.dataminer.AutomatedNeuralNetwork;
 import eca.dataminer.AutomatedStacking;
-import eca.dataminer.ExperimentUtil;
 import eca.ensemble.AdaBoostClassifier;
 import eca.ensemble.ClassifiersSet;
 import eca.ensemble.HeterogeneousClassifier;
@@ -26,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 /**
@@ -99,8 +98,8 @@ public class ExperimentInitializationVisitor implements ExperimentTypeVisitor<Ab
 
     @Override
     public AbstractExperiment caseStacking(InitializationParams initializationParams) {
-        ClassifiersSet classifiersSet = ExperimentUtil.builtClassifiersSet(initializationParams.getData(),
-                experimentConfig.getMaximumFractionDigits());
+        ClassifiersSet classifiersSet = classifiersSetSearcher.findBestClassifiers(initializationParams.getData(),
+                initializationParams.getEvaluationMethod(), createEvaluationOptionsMap(initializationParams));
         StackingClassifier stackingClassifier = new StackingClassifier();
         stackingClassifier.setClassifiers(classifiersSet);
         return new AutomatedStacking(stackingClassifier, initializationParams.getData());
@@ -125,7 +124,7 @@ public class ExperimentInitializationVisitor implements ExperimentTypeVisitor<Ab
 
     private Map<EvaluationOption, String> createEvaluationOptionsMap(InitializationParams initializationParams) {
         if (EvaluationMethod.CROSS_VALIDATION.equals(initializationParams.getEvaluationMethod())) {
-            Map<EvaluationOption, String> evaluationOptionStringMap = new HashMap<>();
+            Map<EvaluationOption, String> evaluationOptionStringMap = new EnumMap<>(EvaluationOption.class);
             evaluationOptionStringMap.put(EvaluationOption.NUM_FOLDS,
                     String.valueOf(crossValidationConfig.getNumFolds()));
             evaluationOptionStringMap.put(EvaluationOption.NUM_TESTS,

@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -60,7 +60,7 @@ public class EvaluationRequestMapperTest {
         evaluationRequestDto.setClassifier(new KNearestNeighbours());
         evaluationRequestDto.setData(instances);
         evaluationRequestDto.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
-        evaluationRequestDto.setEvaluationOptionsMap(new HashMap<>());
+        evaluationRequestDto.setEvaluationOptionsMap(new EnumMap<>(EvaluationOption.class));
         evaluationRequestDto.getEvaluationOptionsMap().put(EvaluationOption.NUM_FOLDS,
                 String.valueOf(TestHelperUtils.NUM_FOLDS));
         evaluationRequestDto.getEvaluationOptionsMap().put(EvaluationOption.NUM_TESTS,
