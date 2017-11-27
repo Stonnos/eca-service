@@ -5,7 +5,13 @@ import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 /**
@@ -78,6 +84,12 @@ public class Experiment {
      */
     @Column(name = "sent_date")
     private LocalDateTime sentDate;
+
+    /**
+     * Experiment files deleted date
+     */
+    @Column(name = "deleted_date")
+    private LocalDateTime deletedDate;
 
     /**
      * Experiment type

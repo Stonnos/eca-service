@@ -33,6 +33,7 @@ cross-validation:
 server:
   port: @server.port@
 
+
 ## Experiment properties
 experiment:
   resultSize: 25
@@ -41,6 +42,9 @@ experiment:
   storagePath: @storagePath@
   downloadUrl: http://localhost:@server.port@/eca-service/experiment/download/%s
   maximumFractionDigits: 4
+  numberOfDaysForStorage: 30
+  ## Each day at midnight
+  schedulerCron: 0 0 0 * * *
   ## Experiment timeout in hours
   timeout: 5
   ## Scheduler delay in seconds
@@ -64,3 +68,7 @@ experiment:
       FINISHED: email-message-template.html
       ERROR: email-error-message-template.html
       TIMEOUT: email-timeout-message-template.html
+
+liquibase:
+  contexts: schema,data
+  change-log: classpath:db/liquibase-changelog.xml

@@ -160,4 +160,22 @@ public class ExperimentService {
         }
     }
 
+    /**
+     * Removes experiments data files from disk.
+     *
+     * @param experiment {@link Experiment} object
+     */
+    public void removeExperimentData(Experiment experiment) {
+        if (Optional.ofNullable(experiment).map(Experiment::getTrainingDataAbsolutePath).isPresent()) {
+            dataService.delete(new File(experiment.getTrainingDataAbsolutePath()));
+            experiment.setTrainingDataAbsolutePath(null);
+        }
+        if (Optional.ofNullable(experiment).map(Experiment::getExperimentAbsolutePath).isPresent()) {
+            dataService.delete(new File(experiment.getExperimentAbsolutePath()));
+            experiment.setExperimentAbsolutePath(null);
+        }
+        experiment.setDeletedDate(LocalDateTime.now());
+        experimentRepository.save(experiment);
+    }
+
 }

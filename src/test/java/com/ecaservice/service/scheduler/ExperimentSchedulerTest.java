@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -70,5 +71,23 @@ public class ExperimentSchedulerTest extends AbstractExperimentTest {
         experimentRepository.save(experiments);
         experimentScheduler.processingRequestsToSent();
         verify(notificationService, times(experiments.size())).notifyByEmail(any(Experiment.class));
+    }
+
+    @Test
+    public void testRemoveExperiments() {
+        List<Experiment> experiments = new ArrayList<>();
+        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), ExperimentStatus.FINISHED));
+        experiments.add(TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), ExperimentStatus.ERROR,
+                LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage() + 1)));
+        experiments.add(TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), ExperimentStatus.FINISHED,
+                LocalDateTime.now()));
+        Experiment experiment =
+                TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), ExperimentStatus.TIMEOUT,
+                        LocalDateTime.now());
+        experiment.setDeletedDate(LocalDateTime.now());
+        experiments.add(experiment);
+        experimentRepository.save(experiments);
+        experimentScheduler.processingRequestsToRemove();
+        verify(experimentService, times(1)).removeExperimentData(any(Experiment.class));
     }
 }

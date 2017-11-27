@@ -47,7 +47,7 @@ public enum ExperimentStatus {
     },
 
     /**
-     * Exceed status
+     * Exceeded status
      */
     EXCEEDED {
         @Override

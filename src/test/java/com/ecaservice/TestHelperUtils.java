@@ -60,7 +60,7 @@ public class TestHelperUtils {
     /**
      * Creates <tt>EvaluationRequest</tt> object
      *
-     * @param ipAddress     ip address
+     * @param ipAddress ip address
      * @return {@link EvaluationRequest} object
      */
     public static EvaluationRequest createEvaluationRequest(String ipAddress) throws Exception {
@@ -135,6 +135,21 @@ public class TestHelperUtils {
     }
 
     /**
+     * Creates sent experiment.
+     *
+     * @param uuid             uuid
+     * @param experimentStatus experiment status
+     * @param sentDate         sent date
+     * @return {@link Experiment} object
+     */
+    public static Experiment createSentExperiment(String uuid, ExperimentStatus experimentStatus,
+                                                  LocalDateTime sentDate) {
+        Experiment experiment = createExperiment(uuid, experimentStatus);
+        experiment.setSentDate(sentDate);
+        return experiment;
+    }
+
+    /**
      * Creates experiment initialization params.
      *
      * @param data {@link Instances} object
@@ -161,6 +176,7 @@ public class TestHelperUtils {
 
     /**
      * Creates mail.
+     *
      * @return {@link Mail} object
      */
     public static Mail createMail() {

@@ -56,6 +56,11 @@ public class ExperimentConfig {
     private Integer maximumFractionDigits;
 
     /**
+     * Number of days for experiment storage
+     */
+    private Long numberOfDaysForStorage;
+
+    /**
      * Experiment timeout value in hours
      */
     private Integer timeout;

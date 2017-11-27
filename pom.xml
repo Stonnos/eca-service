@@ -35,6 +35,7 @@
         <thymeleaf-layout-dialect.version>2.2.2</thymeleaf-layout-dialect.version>
         <org.mapstruct.version>1.2.0.CR2</org.mapstruct.version>
         <powermock.version>1.7.3</powermock.version>
+        <liquibase.version>3.5.3</liquibase.version>
     </properties>
 
     <repositories>
@@ -288,6 +289,12 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-jdk8</artifactId>
             <version>${org.mapstruct.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>${liquibase.version}</version>
         </dependency>
 
     </dependencies>

@@ -43,4 +43,5 @@ public interface ExperimentStatusVisitor<T, P> {
      * @return generic object
      */
     T caseExceeded(P parameter);
+
 }

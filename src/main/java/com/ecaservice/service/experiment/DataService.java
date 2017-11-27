@@ -37,4 +37,11 @@ public interface DataService {
      * @throws Exception
      */
     void save(File file, ExperimentHistory experimentHistory) throws Exception;
+
+    /**
+     * Deletes file from disk.
+     *
+     * @param file file object
+     */
+    void delete(File file);
 }

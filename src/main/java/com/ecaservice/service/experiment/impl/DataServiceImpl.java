@@ -6,6 +6,7 @@ import eca.converters.model.ExperimentHistory;
 import eca.data.file.FileDataLoader;
 import eca.data.file.FileDataSaver;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import weka.core.Instances;
@@ -55,5 +56,10 @@ public class DataServiceImpl implements DataService {
         log.info("Starting to save experiment history to file {}", file.getAbsolutePath());
         ModelConverter.saveModel(file, experimentHistory);
         log.info("Experiment history has been successfully saved to file {}", file.getAbsolutePath());
+    }
+
+    @Override
+    public void delete(File file) {
+        FileUtils.deleteQuietly(file);
     }
 }

@@ -23,6 +23,7 @@ import weka.core.Instances;
 
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 
@@ -165,6 +166,15 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
         assertNotNull(experiment.getStartDate());
         assertNotNull(experiment.getEndDate());
         assertEquals(experiment.getExperimentStatus(), ExperimentStatus.TIMEOUT);
+    }
+
+    @Test
+    public void testRemoveExperiment() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        experimentService.removeExperimentData(experiment);
+        assertNull(experiment.getExperimentAbsolutePath());
+        assertNull(experiment.getTrainingDataAbsolutePath());
+        assertNotNull(experiment.getDeletedDate());
     }
 
 }

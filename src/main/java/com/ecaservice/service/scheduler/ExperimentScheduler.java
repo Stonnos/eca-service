@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -75,5 +76,19 @@ public class ExperimentScheduler {
             notificationService.notifyByEmail(experiment);
         }
         log.trace("Sending experiments has been successfully finished.");
+    }
+
+    /**
+     * Removes experiments data by cron.
+     */
+    @Scheduled(cron = "${experiment.schedulerCron}")
+    public void processingRequestsToRemove() {
+        log.info("Starting to remove experiment requests.");
+        List<Experiment> experiments = experimentRepository.findByDeletedDateIsNullAndSentDateIsBeforeOrderBySentDate(
+                LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage()));
+        for (Experiment experiment : experiments) {
+            experimentService.removeExperimentData(experiment);
+        }
+        log.info("Experiments removal has been finished.");
     }
 }
