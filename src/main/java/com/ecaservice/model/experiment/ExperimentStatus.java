@@ -2,6 +2,7 @@ package com.ecaservice.model.experiment;
 
 /**
  * Experiment status enum.
+ *
  * @author Roman Batygin
  */
 public enum ExperimentStatus {
@@ -58,10 +59,11 @@ public enum ExperimentStatus {
 
     /**
      * Visitor pattern common method.
-     * @param visitor {@link ExperimentStatus} object
+     *
+     * @param visitor   {@link ExperimentStatus} object
      * @param parameter param
-     * @param <T> - result generic type
-     * @param <P> - param generic type
+     * @param <T>       - result generic type
+     * @param <P>       - param generic type
      * @return result generic class
      */
     public abstract <T, P> T handle(ExperimentStatusVisitor<T, P> visitor, P parameter);

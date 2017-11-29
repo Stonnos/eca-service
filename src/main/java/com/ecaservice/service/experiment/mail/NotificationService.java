@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 
 /**
  * Notification service.
+ *
  * @author Roman Batygin
  */
 @Slf4j
@@ -52,6 +53,7 @@ public class NotificationService {
 
     /**
      * Sends experiment download reference to email.
+     *
      * @param experiment {@link Experiment} object
      */
     public void notifyByEmail(Experiment experiment) {

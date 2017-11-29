@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import({ExperimentConfig.class, CrossValidationConfig.class, EvaluationMethodMapperTest.class})
+@Import( {ExperimentConfig.class, CrossValidationConfig.class, EvaluationMethodMapperTest.class})
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application-test.properties")
 public class ExperimentInitializationVisitorTest {
@@ -77,7 +77,8 @@ public class ExperimentInitializationVisitorTest {
     public void testInitializeHeterogeneousEnsemble() throws Exception {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedHeterogeneousEnsemble automatedHeterogeneousEnsemble =
-                (AutomatedHeterogeneousEnsemble) experimentInitializationVisitor.caseHeterogeneousEnsemble(initializationParams);
+                (AutomatedHeterogeneousEnsemble) experimentInitializationVisitor.caseHeterogeneousEnsemble(
+                        initializationParams);
         assertHeterogeneousEnsembleExperiment(automatedHeterogeneousEnsemble);
     }
 
@@ -85,7 +86,8 @@ public class ExperimentInitializationVisitorTest {
     public void testInitializeModifiedHeterogeneousEnsemble() throws Exception {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedHeterogeneousEnsemble automatedHeterogeneousEnsemble =
-                (AutomatedHeterogeneousEnsemble) experimentInitializationVisitor.caseModifiedHeterogeneousEnsemble(initializationParams);
+                (AutomatedHeterogeneousEnsemble) experimentInitializationVisitor.caseModifiedHeterogeneousEnsemble(
+                        initializationParams);
         assertHeterogeneousEnsembleExperiment(automatedHeterogeneousEnsemble);
     }
 
@@ -110,7 +112,8 @@ public class ExperimentInitializationVisitorTest {
     public void testInitializeKNearestNeighbours() throws Exception {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedKNearestNeighbours automatedKNearestNeighbours =
-                (AutomatedKNearestNeighbours) experimentInitializationVisitor.caseKNearestNeighbours(initializationParams);
+                (AutomatedKNearestNeighbours) experimentInitializationVisitor.caseKNearestNeighbours(
+                        initializationParams);
         assertExperiment(automatedKNearestNeighbours);
         assertEquals(experimentConfig.getNumIterations().intValue(), automatedKNearestNeighbours.getNumIterations());
         assertEquals(experimentConfig.getMaximumFractionDigits().intValue(),
@@ -121,7 +124,8 @@ public class ExperimentInitializationVisitorTest {
     public void testAfterHandle() throws Exception {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         initializationParams.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
-        AbstractExperiment experiment = ExperimentType.KNN.handle(experimentInitializationVisitor, initializationParams);
+        AbstractExperiment experiment =
+                ExperimentType.KNN.handle(experimentInitializationVisitor, initializationParams);
         assertEquals(eca.core.evaluation.EvaluationMethod.CROSS_VALIDATION, experiment.getEvaluationMethod());
         assertEquals(crossValidationConfig.getNumFolds().intValue(), experiment.getNumFolds());
         assertEquals(crossValidationConfig.getNumTests().intValue(), experiment.getNumTests());

@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Unit tests that checks EcaResponseMapper functionality
  * (see {@link EcaResponseMapper}).
+ *
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)

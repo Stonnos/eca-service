@@ -15,6 +15,7 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * Calculation executor implementation.
+ *
  * @author Roman Batygin
  */
 @Slf4j

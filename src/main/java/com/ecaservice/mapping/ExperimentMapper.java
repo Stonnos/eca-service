@@ -6,6 +6,7 @@ import org.mapstruct.Mapper;
 
 /**
  * Experiment mapper.
+ *
  * @author Roman Batygin
  */
 @Mapper

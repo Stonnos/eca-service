@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Unit tests that checks EvaluationRequestMapper functionality
  * (see {@link EvaluationRequestMapper}).
+ *
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)

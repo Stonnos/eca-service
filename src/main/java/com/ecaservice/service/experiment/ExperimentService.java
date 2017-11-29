@@ -42,11 +42,12 @@ public class ExperimentService {
 
     /**
      * Constructor with dependency spring injection.
-     * @param experimentRepository  {@link ExperimentRepository} bean
-     * @param executorService       {@link CalculationExecutorService} bean
-     * @param experimentMapper {@link ExperimentMapper} bean
-     * @param dataService           {@link DataService} bean
-     * @param experimentConfig      {@link ExperimentConfig} bean
+     *
+     * @param experimentRepository       {@link ExperimentRepository} bean
+     * @param executorService            {@link CalculationExecutorService} bean
+     * @param experimentMapper           {@link ExperimentMapper} bean
+     * @param dataService                {@link DataService} bean
+     * @param experimentConfig           {@link ExperimentConfig} bean
      * @param experimentProcessorService {@link ExperimentProcessorService} bean
      */
     @Autowired
@@ -148,12 +149,12 @@ public class ExperimentService {
      */
     public File findExperimentFileByUuid(String uuid) {
         Experiment experiment = experimentRepository.findByUuid(uuid);
-        if (!Optional.ofNullable(experiment).isPresent()) {
+        if (experiment == null) {
             log.warn("Experiment for uuid = {} not found!", uuid);
             return null;
         }
-        if (!Optional.ofNullable(experiment).map(Experiment::getExperimentAbsolutePath).isPresent()) {
-            log.warn("Experiment file for uuid = {} not found!", uuid);
+        if (experiment.getExperimentAbsolutePath() == null) {
+            log.warn("Experiment results file for uuid = {} not found!", uuid);
             return null;
         } else {
             return new File(experiment.getExperimentAbsolutePath());

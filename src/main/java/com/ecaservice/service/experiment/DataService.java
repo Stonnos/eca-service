@@ -8,6 +8,7 @@ import java.io.File;
 
 /**
  * Data service interface.
+ *
  * @author Roman Batygin
  */
 public interface DataService {
@@ -32,7 +33,8 @@ public interface DataService {
 
     /**
      * Saves experiment history to file.
-     * @param file file object
+     *
+     * @param file              file object
      * @param experimentHistory {@link ExperimentHistory} object
      * @throws Exception
      */

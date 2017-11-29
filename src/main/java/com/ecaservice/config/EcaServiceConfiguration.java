@@ -50,6 +50,7 @@ public class EcaServiceConfiguration {
 
     /**
      * Creates <tt>MailConfig</tt> bean
+     *
      * @return {@link MailConfig} bean
      */
     @Bean

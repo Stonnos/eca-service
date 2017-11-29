@@ -19,8 +19,10 @@ import weka.core.Instances;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
+
 /**
  * Unit tests that checks ExperimentProcessorService functionality (see {@link ExperimentProcessorService}).
+ *
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)

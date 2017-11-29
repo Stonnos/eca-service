@@ -5,6 +5,7 @@ import lombok.Data;
 
 /**
  * Response basic model.
+ *
  * @author Roman Batygin
  */
 @Data

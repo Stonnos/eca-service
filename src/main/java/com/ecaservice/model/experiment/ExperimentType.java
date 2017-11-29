@@ -101,10 +101,11 @@ public enum ExperimentType {
 
     /**
      * Visitor pattern common method.
-     * @param visitor {@link ExperimentTypeVisitor} object
+     *
+     * @param visitor   {@link ExperimentTypeVisitor} object
      * @param parameter param
-     * @param <T> - result generic type
-     * @param <P> - param generic type
+     * @param <T>       - result generic type
+     * @param <P>       - param generic type
      * @return result generic class
      */
     public <T, P> T handle(ExperimentTypeVisitor<T, P> visitor, P parameter) {
@@ -115,10 +116,11 @@ public enum ExperimentType {
 
     /**
      * Visitor pattern internal handling method.
-     * @param visitor {@link ExperimentTypeVisitor} object
+     *
+     * @param visitor   {@link ExperimentTypeVisitor} object
      * @param parameter param
-     * @param <T> - result generic type
-     * @param <P> - param generic type
+     * @param <T>       - result generic type
+     * @param <P>       - param generic type
      * @return result generic class
      */
     public abstract <T, P> T internalHandle(ExperimentTypeVisitor<T, P> visitor, P parameter);

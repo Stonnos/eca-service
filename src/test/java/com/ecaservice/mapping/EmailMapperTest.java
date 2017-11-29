@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Unit tests that checks EmailMapper functionality
  * (see {@link EmailMapper}).
+ *
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)

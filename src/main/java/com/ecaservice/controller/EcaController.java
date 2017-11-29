@@ -35,7 +35,8 @@ public class EcaController {
 
     /**
      * Constructor with dependency spring injection.
-     * @param ecaService {@link EcaService} bean
+     *
+     * @param ecaService              {@link EcaService} bean
      * @param evaluationRequestMapper {@link EvaluationRequestMapper} bean
      */
     @Autowired

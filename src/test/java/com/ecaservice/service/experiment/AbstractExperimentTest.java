@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNotNull;
 
 /**
  * Abstract experiment test class.
+ *
  * @author Roman Batygin
  */
 @AutoConfigureDataJpa

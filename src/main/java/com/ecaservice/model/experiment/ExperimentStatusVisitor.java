@@ -11,6 +11,7 @@ public interface ExperimentStatusVisitor<T, P> {
 
     /**
      * Method executed in case if experiment status is NEW.
+     *
      * @param parameter input parameter
      * @return generic object
      */
@@ -18,6 +19,7 @@ public interface ExperimentStatusVisitor<T, P> {
 
     /**
      * Method executed in case if experiment status is FINISHED.
+     *
      * @param parameter input parameter
      * @return generic object
      */
@@ -25,6 +27,7 @@ public interface ExperimentStatusVisitor<T, P> {
 
     /**
      * Method executed in case if experiment status is TIMEOUT.
+     *
      * @param parameter input parameter
      * @return generic object
      */
@@ -32,6 +35,7 @@ public interface ExperimentStatusVisitor<T, P> {
 
     /**
      * Method executed in case if experiment status is ERROR.
+     *
      * @param parameter input parameter
      * @return generic object
      */
@@ -39,6 +43,7 @@ public interface ExperimentStatusVisitor<T, P> {
 
     /**
      * Method executed in case if experiment status is EXCEEDED.
+     *
      * @param parameter input parameter
      * @return generic object
      */

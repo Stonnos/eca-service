@@ -14,6 +14,7 @@ import java.util.Collections;
 
 /**
  * Evaluation request mapper.
+ *
  * @author Roman Batygin
  */
 @Mapper
@@ -25,7 +26,7 @@ public abstract class EvaluationRequestMapper {
      * @param evaluationRequestDto {@link EvaluationRequestDto} object
      * @return {@link EvaluationRequest} object
      */
-    @Mappings({
+    @Mappings( {
             @Mapping(target = "evaluationOptionsMap", ignore = true)
     })
     public abstract EvaluationRequest map(EvaluationRequestDto evaluationRequestDto);

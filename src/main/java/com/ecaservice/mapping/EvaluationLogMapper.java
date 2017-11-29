@@ -14,6 +14,7 @@ import java.util.Optional;
 
 /**
  * Implements evaluation request to evaluation log mapping.
+ *
  * @author Roman Batygin
  */
 @Mapper
@@ -21,6 +22,7 @@ public abstract class EvaluationLogMapper {
 
     /**
      * Maps evaluation request to evaluation log.
+     *
      * @param evaluationRequest {@link EvaluationRequest} object
      * @return {@link EvaluationLog} object
      */

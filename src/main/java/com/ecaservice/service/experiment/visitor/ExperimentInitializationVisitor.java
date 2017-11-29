@@ -30,10 +30,12 @@ import java.util.Map;
 
 /**
  * Implements experiment parameters initialization.
+ *
  * @author Roman Batygin
  */
 @Component
-public class ExperimentInitializationVisitor implements ExperimentTypeVisitor<AbstractExperiment, InitializationParams> {
+public class ExperimentInitializationVisitor
+        implements ExperimentTypeVisitor<AbstractExperiment, InitializationParams> {
 
     private final ExperimentConfig experimentConfig;
     private final CrossValidationConfig crossValidationConfig;
@@ -42,8 +44,9 @@ public class ExperimentInitializationVisitor implements ExperimentTypeVisitor<Ab
 
     /**
      * Constructor with dependency spring injection.
-     * @param experimentConfig {@link ExperimentConfig} bean
-     * @param crossValidationConfig {@link CrossValidationConfig} bean
+     *
+     * @param experimentConfig       {@link ExperimentConfig} bean
+     * @param crossValidationConfig  {@link CrossValidationConfig} bean
      * @param evaluationMethodMapper {@link EvaluationMethodMapper} bean
      * @param classifiersSetSearcher {@link ClassifiersSetSearcher} bean
      */

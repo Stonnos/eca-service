@@ -11,6 +11,7 @@ public interface ExperimentTypeVisitor<T, P> {
 
     /**
      * Method executed in case if experiment type is NEURAL_NETWORK.
+     *
      * @param parameter input parameter
      * @return generic object
      */
@@ -18,6 +19,7 @@ public interface ExperimentTypeVisitor<T, P> {
 
     /**
      * Method executed in case if experiment type is HETEROGENEOUS_ENSEMBLE.
+     *
      * @param parameter input parameter
      * @return generic object
      */
@@ -25,6 +27,7 @@ public interface ExperimentTypeVisitor<T, P> {
 
     /**
      * Method executed in case if experiment type is MODIFIED_HETEROGENEOUS_ENSEMBLE.
+     *
      * @param parameter input parameter
      * @return generic object
      */
@@ -32,6 +35,7 @@ public interface ExperimentTypeVisitor<T, P> {
 
     /**
      * Method executed in case if experiment type is ADA_BOOST.
+     *
      * @param parameter input parameter
      * @return generic object
      */
@@ -39,6 +43,7 @@ public interface ExperimentTypeVisitor<T, P> {
 
     /**
      * Method executed in case if experiment type is STACKING.
+     *
      * @param parameter input parameter
      * @return generic object
      */
@@ -46,6 +51,7 @@ public interface ExperimentTypeVisitor<T, P> {
 
     /**
      * Method executed in case if experiment type is KNN.
+     *
      * @param parameter input parameter
      * @return generic object
      */
@@ -53,7 +59,8 @@ public interface ExperimentTypeVisitor<T, P> {
 
     /**
      * Method that calls after common handling.
-     * @param result results
+     *
+     * @param result    results
      * @param parameter input parameter
      */
     void afterHandle(T result, P parameter);

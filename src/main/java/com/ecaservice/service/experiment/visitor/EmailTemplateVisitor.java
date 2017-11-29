@@ -10,6 +10,7 @@ import org.thymeleaf.context.Context;
 
 /**
  * Visitor obtaining email template context for experiment status.
+ *
  * @author Roman Batygin
  */
 @Component
@@ -19,6 +20,7 @@ public class EmailTemplateVisitor implements ExperimentStatusVisitor<Context, Ex
 
     /**
      * Constructor with dependency spring injection.
+     *
      * @param experimentConfig {@link ExperimentConfig} bean
      */
     @Autowired

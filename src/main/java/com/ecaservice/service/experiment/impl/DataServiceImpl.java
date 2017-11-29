@@ -15,6 +15,7 @@ import java.io.File;
 
 /**
  * Data service implementation.
+ *
  * @author Roman Batygin
  */
 @Slf4j
@@ -26,7 +27,8 @@ public class DataServiceImpl implements DataService {
 
     /**
      * Constructor with dependency spring injection.
-     * @param dataSaver {@link FileDataSaver} bean
+     *
+     * @param dataSaver  {@link FileDataSaver} bean
      * @param dataLoader {@link FileDataLoader} bean
      */
     @Autowired

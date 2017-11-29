@@ -15,6 +15,7 @@ import java.util.Collection;
 
 /**
  * Eca response mapper.
+ *
  * @author Roman Batygin
  */
 @Mapper
@@ -29,7 +30,7 @@ public abstract class EcaResponseMapper {
      * @param experiment {@link Experiment} object
      * @return {@link EcaResponse} object
      */
-    @Mappings({
+    @Mappings( {
             @Mapping(target = "status", ignore = true),
             @Mapping(target = "errorMessage", ignore = true)
     })

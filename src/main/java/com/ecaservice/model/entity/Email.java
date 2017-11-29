@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 
 /**
  * Email persistence entity.
+ *
  * @author Roman Batygin
  */
 @Data

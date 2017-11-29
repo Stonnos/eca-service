@@ -38,10 +38,11 @@ import static org.mockito.Mockito.when;
 
 /**
  * Unit tests that checks ExperimentService functionality (see {@link ExperimentService}).
+ *
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import({ExperimentMapperImpl.class, ExperimentConfig.class})
+@Import( {ExperimentMapperImpl.class, ExperimentConfig.class})
 public class ExperimentServiceTest extends AbstractExperimentTest {
 
     @Autowired

@@ -6,6 +6,7 @@ import weka.core.Instances;
 
 /**
  * Experiment request model.
+ *
  * @author Roman Batygin
  */
 @Data

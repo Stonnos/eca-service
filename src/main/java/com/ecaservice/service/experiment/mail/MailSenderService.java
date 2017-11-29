@@ -31,8 +31,9 @@ public class MailSenderService {
 
     /**
      * Constructor with dependency spring injection.
-     * @param mailSender {@link JavaMailSender} bean
-     * @param emailMapper {@link EmailMapper} bean
+     *
+     * @param mailSender      {@link JavaMailSender} bean
+     * @param emailMapper     {@link EmailMapper} bean
      * @param emailRepository {@link EmailRepository} bean
      */
     @Autowired

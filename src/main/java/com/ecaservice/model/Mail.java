@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Email model.
+ *
  * @author Roman Batygin
  */
 @Data

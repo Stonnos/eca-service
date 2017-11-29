@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 
 /**
  * Unit tests that checks MailSenderService functionality (see {@link MailSenderService}).
+ *
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)

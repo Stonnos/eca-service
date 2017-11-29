@@ -2,6 +2,7 @@ package com.ecaservice.service.experiment.dictionary;
 
 /**
  * Email message template variables.
+ *
  * @author Roman Batygin
  */
 public class TemplateVariablesDictionary {

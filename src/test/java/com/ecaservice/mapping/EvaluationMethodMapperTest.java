@@ -12,6 +12,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Unit tests that checks EvaluationMethodMapper functionality
  * (see {@link EvaluationMethodMapper}).
+ *
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)

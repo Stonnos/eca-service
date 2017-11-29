@@ -42,7 +42,8 @@ public class EvaluationRequestDeserializer extends JsonDeserializer<EvaluationRe
         JsonNode evaluationOptionsNode = jsonNode.get(JsonFieldsDictionary.EVALUATION_OPTIONS_MAP);
         if (!evaluationOptionsNode.isNull()) {
             Map<EvaluationOption, String> evaluationOptionsMap = new EnumMap<>(EvaluationOption.class);
-            for (Iterator<Map.Entry<String, JsonNode>> iterator = evaluationOptionsNode.fields(); iterator.hasNext(); ) {
+            for (Iterator<Map.Entry<String, JsonNode>> iterator = evaluationOptionsNode.fields();
+                 iterator.hasNext(); ) {
                 Map.Entry<String, JsonNode> entry = iterator.next();
                 evaluationOptionsMap.put(EvaluationOption.valueOf(entry.getKey()), entry.getValue().textValue());
             }

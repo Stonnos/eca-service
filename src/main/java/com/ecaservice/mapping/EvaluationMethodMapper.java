@@ -5,6 +5,7 @@ import org.mapstruct.Mapper;
 
 /**
  * Evaluation method mapper.
+ *
  * @author Roman Batygin
  */
 @Mapper

@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Unit tests that checks EmailTemplateVisitor functionality (see {@link EmailTemplateVisitor}).
+ *
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
@@ -77,7 +78,8 @@ public class EmailTemplateVisitorTest {
         assertEquals(context.getVariable(TemplateVariablesDictionary.FIRST_NAME_KEY),
                 experiment.getFirstName());
         ExperimentType actualExperimentType =
-                ExperimentType.findByDescription(context.getVariable(TemplateVariablesDictionary.EXPERIMENT_TYPE_KEY).toString());
+                ExperimentType.findByDescription(
+                        context.getVariable(TemplateVariablesDictionary.EXPERIMENT_TYPE_KEY).toString());
         assertEquals(actualExperimentType, experiment.getExperimentType());
     }
 }

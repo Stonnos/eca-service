@@ -2,30 +2,30 @@ package com.ecaservice.controller;
 
 import com.ecaservice.dto.EcaResponse;
 import com.ecaservice.dto.ExperimentRequestDto;
+import com.ecaservice.exception.ExperimentException;
 import com.ecaservice.mapping.EcaResponseMapper;
 import com.ecaservice.mapping.ExperimentRequestMapper;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentRequest;
 import com.ecaservice.service.experiment.ExperimentService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 /**
  * Experiment controller.
@@ -33,11 +33,12 @@ import java.util.Optional;
  * @author Roman Batygin
  */
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("/eca-service/experiment")
 public class ExperimentController {
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss");
+    private static final String ATTACHMENT = "attachment";
 
     private final ExperimentService experimentService;
     private final ExperimentRequestMapper experimentRequestMapper;
@@ -45,9 +46,10 @@ public class ExperimentController {
 
     /**
      * Constructor with dependency spring injection.
-     * @param experimentService {@link ExperimentService} bean
+     *
+     * @param experimentService       {@link ExperimentService} bean
      * @param experimentRequestMapper {@link ExperimentRequestMapper} bean
-     * @param ecaResponseMapper {@link EcaResponseMapper} bean
+     * @param ecaResponseMapper       {@link EcaResponseMapper} bean
      */
     @Autowired
     public ExperimentController(ExperimentService experimentService,
@@ -59,39 +61,31 @@ public class ExperimentController {
     }
 
     /**
-     * Downloads experiment.
+     * Downloads experiment by specified uuid.
+     *
      * @param uuid experiment uuid
-     * @param response {@link HttpServletResponse} object
      */
     @RequestMapping(value = "/download/{uuid}", method = RequestMethod.GET)
-    public void downloadExperiment(@PathVariable String uuid, HttpServletResponse response) {
+    public HttpEntity<FileSystemResource> downloadExperiment(@PathVariable String uuid) {
         File experimentFile = experimentService.findExperimentFileByUuid(uuid);
-        if (!Optional.ofNullable(experimentFile).isPresent()) {
-            log.warn("Experiment results file by uuid '{}' not found!", uuid);
-        } else {
-            response.setContentType("text/plain");
-            response.setContentLength((int) experimentFile.length());
-            response.setHeader("Content-Disposition",
-                    String.format("attachment; filename=%s", experimentFile.getName()));
-            try (OutputStream outputStream = response.getOutputStream()) {
-                FileUtils.copyFile(experimentFile, outputStream);
-                outputStream.flush();
-                log.info("Experiment results file '{}' by uuid '{}' has been successfully downloaded.",
-                        experimentFile.getAbsolutePath(), uuid);
-            } catch (Exception ex) {
-                log.error("There was an error {} while downloading file {}", ex.getMessage(), experimentFile.getName());
-            }
+        if (experimentFile == null) {
+            throw new ExperimentException("Experiment file not found!");
         }
+        FileSystemResource resource = new FileSystemResource(experimentFile);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData(ATTACHMENT, resource.getFilename());
+        return new HttpEntity<>(resource, headers);
     }
 
     /**
      * Creates experiment request.
-     * @param experimentRequest {@link ExperimentRequestDto} object
+     *
+     * @param experimentRequest  {@link ExperimentRequestDto} object
      * @param httpServletRequest {@link HttpServletRequest} object
      * @return {@link ResponseEntity} object
      */
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<EcaResponse> createRequest(@RequestBody ExperimentRequestDto experimentRequest,
                                                      HttpServletRequest httpServletRequest) {
         log.info("Received request to experiment {} for client {} at: {}", experimentRequest.getExperimentType(),

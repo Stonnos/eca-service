@@ -33,6 +33,7 @@ import static org.mockito.Mockito.when;
 
 /**
  * Unit tests that checks NotificationService functionality (see {@link NotificationService}).
+ *
  * @author Roman Batygin
  */
 @RunWith(PowerMockRunner.class)
@@ -60,7 +61,7 @@ public class NotificationServiceTest extends AbstractExperimentTest {
     public void setUp() {
         experimentRepository.deleteAll();
         templateEngine = PowerMockito.mock(TemplateEngine.class);
-        notificationService = new NotificationService(templateEngine, mailSenderService,  experimentRepository,
+        notificationService = new NotificationService(templateEngine, mailSenderService, experimentRepository,
                 mailConfig, statusTemplateVisitor);
         EnumMap<ExperimentStatus, String> statusMap = new EnumMap<>(ExperimentStatus.class);
         statusMap.put(ExperimentStatus.FINISHED, TEMPLATE_HTML);

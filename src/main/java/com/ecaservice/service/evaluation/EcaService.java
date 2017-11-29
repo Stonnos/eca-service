@@ -21,6 +21,7 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * Eca - service.
+ *
  * @author Roman Batygin
  */
 @Slf4j
@@ -35,11 +36,12 @@ public class EcaService {
 
     /**
      * Constructor with dependency spring injection.
-     *  @param crossValidationConfig   {@link CrossValidationConfig} bean
+     *
+     * @param crossValidationConfig   {@link CrossValidationConfig} bean
      * @param executorService         {@link java.util.concurrent.ExecutorService} bean
      * @param evaluationService       {@link EvaluationService} bean
      * @param evaluationLogRepository {@link EvaluationLogRepository} bean
-     * @param evaluationLogMapper {@link EvaluationLogMapper} bean
+     * @param evaluationLogMapper     {@link EvaluationLogMapper} bean
      */
     @Autowired
     public EcaService(CrossValidationConfig crossValidationConfig,
