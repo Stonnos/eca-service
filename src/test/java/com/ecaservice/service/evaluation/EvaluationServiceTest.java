@@ -15,8 +15,7 @@ import weka.core.Instances;
 
 import java.util.Collections;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -46,7 +45,7 @@ public class EvaluationServiceTest {
     public void testForNullInputData() {
         ClassificationResult result = evaluationService.evaluateModel(null, EvaluationMethod.TRAINING_DATA,
                 TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
-        assertFalse(result.isSuccess());
+        assertThat(result.isSuccess()).isFalse();
     }
 
     @Test
@@ -54,7 +53,7 @@ public class EvaluationServiceTest {
         InputData inputData = new InputData(null, testInstances);
         ClassificationResult result = evaluationService.evaluateModel(inputData, EvaluationMethod.TRAINING_DATA,
                 TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
-        assertFalse(result.isSuccess());
+        assertThat(result.isSuccess()).isFalse();
     }
 
     @Test
@@ -63,7 +62,7 @@ public class EvaluationServiceTest {
         ClassificationResult result = evaluationService.evaluateModel(inputData,
                 EvaluationMethod.TRAINING_DATA, TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS,
                         TestHelperUtils.NUM_TESTS));
-        assertFalse(result.isSuccess());
+        assertThat(result.isSuccess()).isFalse();
     }
 
     @Test
@@ -71,7 +70,7 @@ public class EvaluationServiceTest {
         InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
         ClassificationResult result = evaluationService.evaluateModel(inputData, null,
                 TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
-        assertFalse(result.isSuccess());
+        assertThat(result.isSuccess()).isFalse();
     }
 
     @Test
@@ -79,7 +78,7 @@ public class EvaluationServiceTest {
         InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
         ClassificationResult result =
                 evaluationService.evaluateModel(inputData, EvaluationMethod.TRAINING_DATA, null);
-        assertFalse(result.isSuccess());
+        assertThat(result.isSuccess()).isFalse();
     }
 
     @Test
@@ -87,8 +86,8 @@ public class EvaluationServiceTest {
         InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
         ClassificationResult result = evaluationService.evaluateModel(inputData,
                 EvaluationMethod.TRAINING_DATA, Collections.emptyMap());
-        assertTrue(result.isSuccess());
-        assertFalse(result.getEvaluationResults().getEvaluation().isKCrossValidationMethod());
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.getEvaluationResults().getEvaluation().isKCrossValidationMethod()).isFalse();
     }
 
     @Test
@@ -96,8 +95,8 @@ public class EvaluationServiceTest {
         InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
         ClassificationResult result = evaluationService.evaluateModel(inputData, EvaluationMethod.CROSS_VALIDATION,
                 TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
-        assertTrue(result.isSuccess());
-        assertTrue(result.getEvaluationResults().getEvaluation().isKCrossValidationMethod());
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.getEvaluationResults().getEvaluation().isKCrossValidationMethod()).isTrue();
     }
 
     @Test
@@ -106,7 +105,7 @@ public class EvaluationServiceTest {
         InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
         ClassificationResult result = evaluationService.evaluateModel(inputData, EvaluationMethod.CROSS_VALIDATION,
                 TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
-        assertFalse(result.isSuccess());
+        assertThat(result.isSuccess()).isFalse();
     }
 
 
