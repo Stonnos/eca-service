@@ -14,6 +14,7 @@ import eca.ensemble.ClassifiersSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
@@ -70,7 +71,7 @@ public class ClassifiersSetSearcher {
             }
         }
 
-        if (builtClassifiers.isEmpty()) {
+        if (CollectionUtils.isEmpty(builtClassifiers)) {
             throw new ExperimentException("Can't find the best individual classifiers!");
         }
 
