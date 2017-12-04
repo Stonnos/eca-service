@@ -64,11 +64,12 @@ public class ExperimentController {
      * @param uuid experiment uuid
      */
     @RequestMapping(value = "/download/{uuid}", method = RequestMethod.GET)
-    public ResponseEntity<FileSystemResource> downloadExperiment(@PathVariable String uuid) {
+    public ResponseEntity downloadExperiment(@PathVariable String uuid) {
         File experimentFile = experimentService.findExperimentFileByUuid(uuid);
         if (experimentFile == null) {
-            log.error("Experiment results file for uuid = {} not found!", uuid);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            log.error("Experiment results file for uuid = '{}' not found!", uuid);
+            return new ResponseEntity<>(String.format("Experiment results file for uuid = '%s' not found!", uuid),
+                    HttpStatus.BAD_REQUEST);
         }
         FileSystemResource resource = new FileSystemResource(experimentFile);
         HttpHeaders headers = new HttpHeaders();
