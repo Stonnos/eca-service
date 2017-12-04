@@ -149,15 +149,10 @@ public class ExperimentService {
      */
     public File findExperimentFileByUuid(String uuid) {
         Experiment experiment = experimentRepository.findByUuid(uuid);
-        if (experiment == null) {
-            log.warn("Experiment for uuid = {} not found!", uuid);
-            return null;
-        }
-        if (experiment.getExperimentAbsolutePath() == null) {
-            log.warn("Experiment results file for uuid = {} not found!", uuid);
-            return null;
-        } else {
+        if (Optional.ofNullable(experiment).map(Experiment::getExperimentAbsolutePath).isPresent()) {
             return new File(experiment.getExperimentAbsolutePath());
+        } else {
+            return null;
         }
     }
 

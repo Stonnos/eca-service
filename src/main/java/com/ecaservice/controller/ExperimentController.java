@@ -2,7 +2,6 @@ package com.ecaservice.controller;
 
 import com.ecaservice.dto.EcaResponse;
 import com.ecaservice.dto.ExperimentRequestDto;
-import com.ecaservice.exception.ExperimentException;
 import com.ecaservice.mapping.EcaResponseMapper;
 import com.ecaservice.mapping.ExperimentRequestMapper;
 import com.ecaservice.model.entity.Experiment;
@@ -11,7 +10,6 @@ import com.ecaservice.service.experiment.ExperimentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -66,16 +64,17 @@ public class ExperimentController {
      * @param uuid experiment uuid
      */
     @RequestMapping(value = "/download/{uuid}", method = RequestMethod.GET)
-    public HttpEntity<FileSystemResource> downloadExperiment(@PathVariable String uuid) {
+    public ResponseEntity<FileSystemResource> downloadExperiment(@PathVariable String uuid) {
         File experimentFile = experimentService.findExperimentFileByUuid(uuid);
         if (experimentFile == null) {
-            throw new ExperimentException("Experiment file not found!");
+            log.error("Experiment results file for uuid = {} not found!", uuid);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         FileSystemResource resource = new FileSystemResource(experimentFile);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData(ATTACHMENT, resource.getFilename());
-        return new HttpEntity<>(resource, headers);
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
     /**
