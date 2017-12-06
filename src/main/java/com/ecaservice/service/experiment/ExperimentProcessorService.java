@@ -13,7 +13,6 @@ import eca.dataminer.IterativeExperiment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -46,9 +45,15 @@ public class ExperimentProcessorService {
         this.experimentConfig = experimentConfig;
     }
 
+    /**
+     * Processes experiment and returns its history.
+     *
+     * @param experiment           {@link Experiment} object
+     * @param initializationParams {@link InitializationParams} object
+     * @return {@link ExperimentHistory} object
+     */
     public ExperimentHistory processExperimentHistory(Experiment experiment,
                                                       InitializationParams initializationParams) {
-        Assert.notNull(initializationParams, "Initialization params is not specified!");
         AbstractExperiment abstractExperiment =
                 experiment.getExperimentType().handle(experimentInitializer, initializationParams);
         IterativeExperiment iterativeExperiment = abstractExperiment.getIterativeExperiment();
@@ -78,7 +83,7 @@ public class ExperimentProcessorService {
 
     private List<EvaluationResults> findBestResults(List<EvaluationResults> experimentHistory) {
         if (CollectionUtils.isEmpty(experimentHistory)) {
-            throw new ExperimentException("No models was built!");
+            throw new ExperimentException("No models has benn built!");
         }
         if (experimentHistory.size() < experimentConfig.getResultSize()) {
             return experimentHistory;
