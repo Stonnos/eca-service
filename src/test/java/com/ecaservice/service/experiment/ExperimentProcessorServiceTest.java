@@ -46,7 +46,6 @@ public class ExperimentProcessorServiceTest {
         data = TestHelperUtils.loadInstances();
     }
 
-
     @Test(expected = IllegalArgumentException.class)
     public void testNullInitializationParams() {
         experimentProcessorService.processExperimentHistory(new Experiment(), null);

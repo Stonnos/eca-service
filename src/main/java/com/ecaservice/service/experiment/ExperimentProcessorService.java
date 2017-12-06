@@ -13,6 +13,7 @@ import eca.dataminer.IterativeExperiment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ public class ExperimentProcessorService {
      */
     public ExperimentHistory processExperimentHistory(Experiment experiment,
                                                       InitializationParams initializationParams) {
+        Assert.notNull(initializationParams, "Initialization params is not specified!");
         AbstractExperiment abstractExperiment =
                 experiment.getExperimentType().handle(experimentInitializer, initializationParams);
         IterativeExperiment iterativeExperiment = abstractExperiment.getIterativeExperiment();
