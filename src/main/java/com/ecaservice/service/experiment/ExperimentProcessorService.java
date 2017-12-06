@@ -85,7 +85,7 @@ public class ExperimentProcessorService {
 
     private List<EvaluationResults> findBestResults(List<EvaluationResults> experimentHistory) {
         if (CollectionUtils.isEmpty(experimentHistory)) {
-            throw new ExperimentException("No models has benn built!");
+            throw new ExperimentException("No models has been built!");
         }
         if (experimentHistory.size() < experimentConfig.getResultSize()) {
             return experimentHistory;
