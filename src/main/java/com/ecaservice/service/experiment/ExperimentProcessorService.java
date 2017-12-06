@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Experiment processing service
@@ -87,14 +87,8 @@ public class ExperimentProcessorService {
         if (CollectionUtils.isEmpty(experimentHistory)) {
             throw new ExperimentException("No models has been built!");
         }
-        if (experimentHistory.size() < experimentConfig.getResultSize()) {
-            return experimentHistory;
-        } else {
-            List<EvaluationResults> resultsList = new ArrayList<>(experimentConfig.getResultSize());
-            for (int i = 0; i < experimentConfig.getResultSize(); i++) {
-                resultsList.add(experimentHistory.get(i));
-            }
-            return resultsList;
-        }
+        return experimentHistory.stream().limit(
+                experimentHistory.size() < experimentConfig.getResultSize() ? experimentHistory.size() :
+                        experimentConfig.getResultSize()).collect(Collectors.toList());
     }
 }

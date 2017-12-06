@@ -60,26 +60,25 @@ public class ClassifiersSetSearcher {
         log.info("Starting to find the best individual classifiers using {} evaluation method.", evaluationMethod);
         List<AbstractClassifier> classifiersSet =
                 ExperimentUtils.builtClassifiersSet(data, experimentConfig.getMaximumFractionDigits());
-        ArrayList<EvaluationResults> builtClassifiers = new ArrayList<>(classifiersSet.size());
+        ArrayList<EvaluationResults> finished = new ArrayList<>(classifiersSet.size());
 
         for (AbstractClassifier classifier : classifiersSet) {
             ClassificationResult classificationResult =
                     evaluationService.evaluateModel(new InputData(classifier, data), evaluationMethod,
                             evaluationOptionStringMap);
             if (classificationResult.isSuccess()) {
-                builtClassifiers.add(classificationResult.getEvaluationResults());
+                finished.add(classificationResult.getEvaluationResults());
             }
         }
 
-        if (CollectionUtils.isEmpty(builtClassifiers)) {
+        if (CollectionUtils.isEmpty(finished)) {
             throw new ExperimentException("Can't find the best individual classifiers!");
         }
 
-        builtClassifiers.sort(new ClassifierComparator());
+        finished.sort(new ClassifierComparator());
         ClassifiersSet classifiers = new ClassifiersSet();
-        for (int i = 0;
-             i < Integer.min(experimentConfig.getEnsemble().getNumBestClassifiers(), builtClassifiers.size()); i++) {
-            classifiers.addClassifier(builtClassifiers.get(i).getClassifier());
+        for (int i = 0; i < Integer.min(experimentConfig.getEnsemble().getNumBestClassifiers(), finished.size()); i++) {
+            classifiers.addClassifier(finished.get(i).getClassifier());
         }
         log.info("{} best classifiers has been built.", classifiers.size());
         return classifiers;
