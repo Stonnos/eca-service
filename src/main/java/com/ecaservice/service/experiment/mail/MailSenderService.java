@@ -6,7 +6,6 @@ import com.ecaservice.model.entity.Email;
 import com.ecaservice.repository.EmailRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -48,8 +47,9 @@ public class MailSenderService {
      * Sends email.
      *
      * @param mail {@link Mail} object
+     * @throws MessagingException if something wrong
      */
-    public void sendEmail(Mail mail) throws MailException, MessagingException {
+    public void sendEmail(Mail mail) throws MessagingException {
         Assert.notNull(mail, "Mail is not specified!");
         log.info("Starting to send email message from '{}' to '{}'.", mail.getSender(), mail.getReceiver());
         MimeMessage message = mailSender.createMimeMessage();
