@@ -1,5 +1,6 @@
 package com.ecaservice.service.experiment;
 
+import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.mapping.ExperimentMapper;
@@ -83,7 +84,7 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
         doNothing().when(dataService).save(any(File.class), any(Instances.class));
         experimentService.createExperiment(experimentRequest);
         List<Experiment> experiments = experimentRepository.findAll();
-        assertList(experiments);
+        AssertionUtils.assertList(experiments);
         Experiment experiment = experiments.get(0);
         assertEquals(experiment.getExperimentStatus(), ExperimentStatus.NEW);
         assertNotNull(experiment.getCreationDate());
@@ -96,7 +97,7 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
         doThrow(Exception.class).when(dataService).save(any(File.class), any(Instances.class));
         experimentService.createExperiment(experimentRequest);
         List<Experiment> experiments = experimentRepository.findAll();
-        assertList(experiments);
+        AssertionUtils.assertList(experiments);
         Experiment experiment = experiments.get(0);
         assertEquals(experiment.getExperimentStatus(), ExperimentStatus.ERROR);
         assertNotNull(experiment.getCreationDate());
@@ -133,7 +134,7 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
         doNothing().when(dataService).save(any(File.class), any(ExperimentHistory.class));
         experimentService.processExperiment(TestHelperUtils.createExperiment(null));
         List<Experiment> experiments = experimentRepository.findAll();
-        assertList(experiments);
+        AssertionUtils.assertList(experiments);
         Experiment experiment = experiments.get(0);
         assertNotNull(experiment.getStartDate());
         assertNotNull(experiment.getEndDate());
@@ -147,7 +148,7 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
         when(dataService.load(any(File.class))).thenThrow(Exception.class);
         experimentService.processExperiment(TestHelperUtils.createExperiment(null));
         List<Experiment> experiments = experimentRepository.findAll();
-        assertList(experiments);
+        AssertionUtils.assertList(experiments);
         Experiment experiment = experiments.get(0);
         assertNotNull(experiment.getStartDate());
         assertNotNull(experiment.getEndDate());
@@ -162,7 +163,7 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
         doThrow(TimeoutException.class).when(dataService).save(any(File.class), any(ExperimentHistory.class));
         experimentService.processExperiment(TestHelperUtils.createExperiment(null));
         List<Experiment> experiments = experimentRepository.findAll();
-        assertList(experiments);
+        AssertionUtils.assertList(experiments);
         Experiment experiment = experiments.get(0);
         assertNotNull(experiment.getStartDate());
         assertNotNull(experiment.getEndDate());

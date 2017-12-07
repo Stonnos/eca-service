@@ -1,5 +1,6 @@
 package com.ecaservice.service.experiment.mail;
 
+import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.MailConfig;
 import com.ecaservice.model.Mail;
@@ -77,7 +78,7 @@ public class NotificationServiceTest extends AbstractExperimentTest {
         doNothing().when(mailSenderService).sendEmail(any(Mail.class));
         notificationService.notifyByEmail(experiment);
         List<Experiment> experimentList = experimentRepository.findAll();
-        assertList(experimentList);
+        AssertionUtils.assertList(experimentList);
         Experiment actualExperiment = experimentList.get(0);
         assertNotNull(actualExperiment.getSentDate());
     }
@@ -91,7 +92,7 @@ public class NotificationServiceTest extends AbstractExperimentTest {
         int expectedFailedAttemptsToSent = experiment.getFailedAttemptsToSent() + 1;
         notificationService.notifyByEmail(experiment);
         List<Experiment> experimentList = experimentRepository.findAll();
-        assertList(experimentList);
+        AssertionUtils.assertList(experimentList);
         Experiment actualExperiment = experimentList.get(0);
         assertNull(actualExperiment.getSentDate());
         assertEquals(expectedFailedAttemptsToSent, actualExperiment.getFailedAttemptsToSent());
@@ -106,7 +107,7 @@ public class NotificationServiceTest extends AbstractExperimentTest {
                 .thenThrow(Exception.class);
         notificationService.notifyByEmail(experiment);
         List<Experiment> experimentList = experimentRepository.findAll();
-        assertList(experimentList);
+        AssertionUtils.assertList(experimentList);
         Experiment actualExperiment = experimentList.get(0);
         assertNull(actualExperiment.getSentDate());
         assertEquals(ExperimentStatus.EXCEEDED, actualExperiment.getExperimentStatus());

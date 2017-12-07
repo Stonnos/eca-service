@@ -8,12 +8,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.TestPropertySource;
 
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-
 /**
  * Abstract experiment test class.
  *
@@ -25,10 +19,4 @@ import static org.junit.Assert.assertNotNull;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application-test.properties")
 public abstract class AbstractExperimentTest {
-
-    protected void assertList(List<Experiment> experiments) {
-        assertNotNull(experiments);
-        assertFalse(experiments.isEmpty());
-        assertEquals(experiments.size(), 1);
-    }
 }
