@@ -60,7 +60,7 @@ public enum ExperimentStatus {
     /**
      * Visitor pattern common method.
      *
-     * @param visitor   {@link ExperimentStatus} object
+     * @param visitor   {@link ExperimentStatusVisitor} object
      * @param parameter param
      * @param <T>       - result generic type
      * @param <P>       - param generic type

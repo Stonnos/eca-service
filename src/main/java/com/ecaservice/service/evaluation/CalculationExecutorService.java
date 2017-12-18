@@ -14,7 +14,7 @@ import java.util.concurrent.TimeoutException;
 public interface CalculationExecutorService {
 
     /**
-     * Executes asynchronous task with the specified timeout.
+     * Executes task with the specified timeout.
      * When timeout is reached service interrupted.
      *
      * @param task     task object
