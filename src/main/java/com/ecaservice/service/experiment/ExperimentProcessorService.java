@@ -74,10 +74,7 @@ public class ExperimentProcessorService {
                 log.warn("Warning for experiment {}: {}", experiment.getId(), ex.getMessage());
             }
         }
-
-        List<EvaluationResults> experimentHistory = abstractExperiment.getHistory();
-        experimentHistory.sort(new ClassifierComparator());
-        List<EvaluationResults> evaluationResults = findBestResults(experimentHistory);
+        List<EvaluationResults> evaluationResults = findBestResults(abstractExperiment.getHistory());
         log.info("Experiment {} processing has been finished with {} best models!",
                 experiment.getId(), evaluationResults.size());
         return new ExperimentHistory(evaluationResults, abstractExperiment.getData());
@@ -87,6 +84,7 @@ public class ExperimentProcessorService {
         if (CollectionUtils.isEmpty(experimentHistory)) {
             throw new ExperimentException("No models has been built!");
         }
+        experimentHistory.sort(new ClassifierComparator());
         return experimentHistory.stream().limit(
                 experimentHistory.size() < experimentConfig.getResultSize() ? experimentHistory.size() :
                         experimentConfig.getResultSize()).collect(Collectors.toList());
