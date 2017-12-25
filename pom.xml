@@ -36,6 +36,7 @@
         <org.mapstruct.version>1.2.0.CR2</org.mapstruct.version>
         <powermock.version>1.7.3</powermock.version>
         <liquibase.version>3.5.3</liquibase.version>
+        <swagger-version>2.7.0</swagger-version>
     </properties>
 
     <repositories>
@@ -295,6 +296,17 @@
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
             <version>${liquibase.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${swagger-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${swagger-version}</version>
         </dependency>
 
     </dependencies>

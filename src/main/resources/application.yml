@@ -33,6 +33,9 @@ cross-validation:
 server:
   port: @server.port@
 
+project:
+  version: @project.version@
+
 
 ## Experiment properties
 experiment:

@@ -5,6 +5,8 @@ import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.mapping.EvaluationRequestMapper;
 import com.ecaservice.model.evaluation.EvaluationRequest;
 import com.ecaservice.service.evaluation.EcaService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,7 @@ import java.time.format.DateTimeFormatter;
  *
  * @author Roman Batygin
  */
+@Api(tags = "Operations for individual and ensemble classifiers learning")
 @Slf4j
 @RestController
 @RequestMapping("/eca-service")
@@ -53,6 +56,10 @@ public class EcaController {
      * @param request              {@link HttpServletRequest} object
      * @return {@link ResponseEntity} object
      */
+    @ApiOperation(
+            value = "Evaluates classifier using specified evaluation method",
+            notes = "Evaluates classifier using specified evaluation method"
+    )
     @RequestMapping(value = "/execute", method = RequestMethod.POST)
     public ResponseEntity<EvaluationResponse> execute(@RequestBody EvaluationRequestDto evaluationRequestDto,
                                                       HttpServletRequest request) {

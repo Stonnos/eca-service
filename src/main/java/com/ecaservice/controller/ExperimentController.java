@@ -7,6 +7,8 @@ import com.ecaservice.mapping.ExperimentRequestMapper;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentRequest;
 import com.ecaservice.service.experiment.ExperimentService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -30,6 +32,7 @@ import java.time.format.DateTimeFormatter;
  *
  * @author Roman Batygin
  */
+@Api(tags = "Operations for experiment processing")
 @Slf4j
 @RestController
 @RequestMapping("/eca-service/experiment")
@@ -63,6 +66,10 @@ public class ExperimentController {
      *
      * @param uuid experiment uuid
      */
+    @ApiOperation(
+            value = "Downloads experiment by specified uuid",
+            notes = "Downloads experiment by specified uuid"
+    )
     @RequestMapping(value = "/download/{uuid}", method = RequestMethod.GET)
     public ResponseEntity downloadExperiment(@PathVariable String uuid) {
         File experimentFile = experimentService.findExperimentFileByUuid(uuid);
@@ -85,6 +92,10 @@ public class ExperimentController {
      * @param httpServletRequest {@link HttpServletRequest} object
      * @return {@link ResponseEntity} object
      */
+    @ApiOperation(
+            value = "Creates experiment request",
+            notes = "Creates experiment request"
+    )
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseEntity<EcaResponse> createRequest(@RequestBody ExperimentRequestDto experimentRequest,
                                                      HttpServletRequest httpServletRequest) {
