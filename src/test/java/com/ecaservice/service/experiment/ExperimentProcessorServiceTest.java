@@ -16,8 +16,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -60,9 +59,9 @@ public class ExperimentProcessorServiceTest {
                 .thenReturn(automatedKNearestNeighbours);
         ExperimentHistory experimentHistory = experimentProcessorService.processExperimentHistory(
                 TestHelperUtils.createExperiment(null), initializationParams);
-        assertNotNull(experimentHistory);
-        assertNotNull(experimentHistory.getExperiment());
-        assertEquals(experimentHistory.getExperiment().size(), experimentConfig.getResultSize().intValue());
+        assertThat(experimentHistory).isNotNull();
+        assertThat(experimentHistory.getExperiment()).isNotNull();
+        assertThat(experimentHistory.getExperiment().size()).isEqualTo(experimentConfig.getResultSize().intValue());
     }
 
 }

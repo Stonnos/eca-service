@@ -26,8 +26,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyMap;
 import static org.mockito.Mockito.when;
@@ -68,9 +67,9 @@ public class ExperimentInitializationVisitorTest {
         AutomatedNeuralNetwork automatedNeuralNetwork =
                 (AutomatedNeuralNetwork) experimentInitializationVisitor.caseNeuralNetwork(initializationParams);
         assertExperiment(automatedNeuralNetwork);
-        assertEquals(experimentConfig.getNumIterations().intValue(), automatedNeuralNetwork.getNumIterations());
-        assertEquals(experimentConfig.getMaximumFractionDigits().intValue(),
-                automatedNeuralNetwork.getClassifier().getDecimalFormat().getMaximumFractionDigits());
+        assertThat(automatedNeuralNetwork.getNumIterations()).isEqualTo(experimentConfig.getNumIterations().intValue());
+        assertThat(automatedNeuralNetwork.getClassifier().getDecimalFormat().getMaximumFractionDigits()).isEqualTo(
+                experimentConfig.getMaximumFractionDigits().intValue());
     }
 
     @Test
@@ -105,7 +104,7 @@ public class ExperimentInitializationVisitorTest {
         AutomatedStacking automatedStacking =
                 (AutomatedStacking) experimentInitializationVisitor.caseStacking(initializationParams);
         assertExperiment(automatedStacking);
-        assertNotNull(automatedStacking.getClassifier().getClassifiers());
+        assertThat(automatedStacking.getClassifier().getClassifiers()).isNotNull();
     }
 
     @Test
@@ -115,9 +114,10 @@ public class ExperimentInitializationVisitorTest {
                 (AutomatedKNearestNeighbours) experimentInitializationVisitor.caseKNearestNeighbours(
                         initializationParams);
         assertExperiment(automatedKNearestNeighbours);
-        assertEquals(experimentConfig.getNumIterations().intValue(), automatedKNearestNeighbours.getNumIterations());
-        assertEquals(experimentConfig.getMaximumFractionDigits().intValue(),
-                automatedKNearestNeighbours.getClassifier().getDecimalFormat().getMaximumFractionDigits());
+        assertThat(automatedKNearestNeighbours.getNumIterations()).isEqualTo(
+                experimentConfig.getNumIterations().intValue());
+        assertThat(automatedKNearestNeighbours.getClassifier().getDecimalFormat().getMaximumFractionDigits()).isEqualTo(
+                experimentConfig.getMaximumFractionDigits().intValue());
     }
 
     @Test
@@ -126,22 +126,22 @@ public class ExperimentInitializationVisitorTest {
         initializationParams.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         AbstractExperiment experiment =
                 ExperimentType.KNN.handle(experimentInitializationVisitor, initializationParams);
-        assertEquals(eca.core.evaluation.EvaluationMethod.CROSS_VALIDATION, experiment.getEvaluationMethod());
-        assertEquals(crossValidationConfig.getNumFolds().intValue(), experiment.getNumFolds());
-        assertEquals(crossValidationConfig.getNumTests().intValue(), experiment.getNumTests());
+        assertThat(experiment.getEvaluationMethod()).isEqualTo(eca.core.evaluation.EvaluationMethod.CROSS_VALIDATION);
+        assertThat(experiment.getNumFolds()).isEqualTo(crossValidationConfig.getNumFolds().intValue());
+        assertThat(experiment.getNumTests()).isEqualTo(crossValidationConfig.getNumTests().intValue());
 
     }
 
     private void assertHeterogeneousEnsembleExperiment(AutomatedHeterogeneousEnsemble automatedHeterogeneousEnsemble) {
         assertExperiment(automatedHeterogeneousEnsemble);
-        assertEquals(experimentConfig.getEnsemble().getNumIterations().intValue(),
-                automatedHeterogeneousEnsemble.getClassifier().getIterationsNum());
-        assertNotNull(automatedHeterogeneousEnsemble.getClassifier().getClassifiersSet());
+        assertThat(automatedHeterogeneousEnsemble.getClassifier().getIterationsNum()).isEqualTo(
+                experimentConfig.getEnsemble().getNumIterations().intValue());
+        assertThat(automatedHeterogeneousEnsemble.getClassifier().getClassifiersSet()).isNotNull();
     }
 
     private void assertExperiment(AbstractExperiment abstractExperiment) {
-        assertNotNull(abstractExperiment);
-        assertNotNull(abstractExperiment.getData());
-        assertNotNull(abstractExperiment.getClassifier());
+        assertThat(abstractExperiment).isNotNull();
+        assertThat(abstractExperiment.getData()).isNotNull();
+        assertThat(abstractExperiment.getClassifier()).isNotNull();
     }
 }

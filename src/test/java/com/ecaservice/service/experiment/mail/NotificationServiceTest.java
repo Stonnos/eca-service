@@ -25,9 +25,7 @@ import org.thymeleaf.context.Context;
 import java.util.EnumMap;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -80,22 +78,21 @@ public class NotificationServiceTest extends AbstractExperimentTest {
         List<Experiment> experimentList = experimentRepository.findAll();
         AssertionUtils.assertList(experimentList);
         Experiment actualExperiment = experimentList.get(0);
-        assertNotNull(actualExperiment.getSentDate());
+        assertThat(actualExperiment.getSentDate()).isNotNull();
     }
 
     @Test
     public void testErrorNotification() throws Exception {
         Experiment experiment = createAndSaveExperiment();
         when(statusTemplateVisitor.caseFinished(experiment)).thenReturn(new Context());
-        when(templateEngine.process(any(String.class), any(Context.class)))
-                .thenThrow(Exception.class);
+        when(templateEngine.process(any(String.class), any(Context.class))).thenThrow(Exception.class);
         int expectedFailedAttemptsToSent = experiment.getFailedAttemptsToSent() + 1;
         notificationService.notifyByEmail(experiment);
         List<Experiment> experimentList = experimentRepository.findAll();
         AssertionUtils.assertList(experimentList);
         Experiment actualExperiment = experimentList.get(0);
-        assertNull(actualExperiment.getSentDate());
-        assertEquals(expectedFailedAttemptsToSent, actualExperiment.getFailedAttemptsToSent());
+        assertThat(actualExperiment.getSentDate()).isNull();
+        assertThat(actualExperiment.getFailedAttemptsToSent()).isEqualTo(expectedFailedAttemptsToSent);
     }
 
     @Test
@@ -103,14 +100,13 @@ public class NotificationServiceTest extends AbstractExperimentTest {
         Experiment experiment = createAndSaveExperiment();
         experiment.setFailedAttemptsToSent(MAX_FAILED_ATTEMPTS_TO_SENT);
         when(statusTemplateVisitor.caseFinished(experiment)).thenReturn(new Context());
-        when(templateEngine.process(any(String.class), any(Context.class)))
-                .thenThrow(Exception.class);
+        when(templateEngine.process(any(String.class), any(Context.class))).thenThrow(Exception.class);
         notificationService.notifyByEmail(experiment);
         List<Experiment> experimentList = experimentRepository.findAll();
         AssertionUtils.assertList(experimentList);
         Experiment actualExperiment = experimentList.get(0);
-        assertNull(actualExperiment.getSentDate());
-        assertEquals(ExperimentStatus.EXCEEDED, actualExperiment.getExperimentStatus());
+        assertThat(actualExperiment.getSentDate()).isNull();
+        assertThat(actualExperiment.getExperimentStatus()).isEqualTo(ExperimentStatus.EXCEEDED);
     }
 
     private Experiment createAndSaveExperiment() {

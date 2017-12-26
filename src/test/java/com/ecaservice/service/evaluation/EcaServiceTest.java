@@ -32,9 +32,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -83,14 +81,14 @@ public class EcaServiceTest {
     public void testSuccessClassification() throws Exception {
         EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS);
         EvaluationResponse evaluationResponse = ecaService.processRequest(request);
-        assertEquals(evaluationResponse.getStatus(), TechnicalStatus.SUCCESS);
+        assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.SUCCESS);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
-        assertEquals(evaluationLogList.size(), 1);
-        assertEquals(evaluationLogList.get(0).getEvaluationStatus(), EvaluationStatus.FINISHED);
-        assertEquals(evaluationResponse.getStatus(), TechnicalStatus.SUCCESS);
-        assertNotNull(evaluationResponse.getEvaluationResults());
-        assertNotNull(evaluationResponse.getEvaluationResults().getClassifier());
-        assertNotNull(evaluationResponse.getEvaluationResults().getEvaluation());
+        assertThat(evaluationLogList.size()).isEqualTo(1);
+        assertThat(evaluationLogList.get(0).getEvaluationStatus()).isEqualTo(EvaluationStatus.FINISHED);
+        assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.SUCCESS);
+        assertThat(evaluationResponse.getEvaluationResults()).isNotNull();
+        assertThat(evaluationResponse.getEvaluationResults().getClassifier()).isNotNull();
+        assertThat(evaluationResponse.getEvaluationResults().getEvaluation()).isNotNull();
     }
 
     @Test
@@ -98,12 +96,12 @@ public class EcaServiceTest {
         EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS);
         when(crossValidationConfig.getTimeout()).thenThrow(Exception.class);
         EvaluationResponse evaluationResponse = ecaService.processRequest(request);
-        assertEquals(evaluationResponse.getStatus(), TechnicalStatus.ERROR);
+        assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
-        assertEquals(evaluationLogList.size(), 1);
-        assertEquals(evaluationLogList.get(0).getEvaluationStatus(), EvaluationStatus.ERROR);
-        assertEquals(evaluationResponse.getStatus(), TechnicalStatus.ERROR);
-        assertNull(evaluationResponse.getEvaluationResults());
+        assertThat(evaluationLogList.size()).isEqualTo(1);
+        assertThat(evaluationLogList.get(0).getEvaluationStatus()).isEqualTo(EvaluationStatus.ERROR);
+        assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
+        assertThat(evaluationResponse.getEvaluationResults()).isNull();
     }
 
     @Test
@@ -114,12 +112,12 @@ public class EcaServiceTest {
         request.getEvaluationOptionsMap().put(EvaluationOption.NUM_FOLDS,
                 String.valueOf(Evaluation.MINIMUM_NUMBER_OF_FOLDS - 1));
         EvaluationResponse evaluationResponse = ecaService.processRequest(request);
-        assertEquals(evaluationResponse.getStatus(), TechnicalStatus.ERROR);
+        assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
-        assertEquals(evaluationLogList.size(), 1);
-        assertEquals(evaluationLogList.get(0).getEvaluationStatus(), EvaluationStatus.ERROR);
-        assertEquals(evaluationResponse.getStatus(), TechnicalStatus.ERROR);
-        assertNull(evaluationResponse.getEvaluationResults());
+        assertThat(evaluationLogList.size()).isEqualTo(1);
+        assertThat(evaluationLogList.get(0).getEvaluationStatus()).isEqualTo(EvaluationStatus.ERROR);
+        assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
+        assertThat(evaluationResponse.getEvaluationResults()).isNull();
     }
 
     @Test
@@ -127,12 +125,12 @@ public class EcaServiceTest {
         EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS);
         when(crossValidationConfig.getTimeout()).thenThrow(TimeoutException.class);
         EvaluationResponse evaluationResponse = ecaService.processRequest(request);
-        assertEquals(evaluationResponse.getStatus(), TechnicalStatus.TIMEOUT);
+        assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.TIMEOUT);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
-        assertEquals(evaluationLogList.size(), 1);
-        assertEquals(evaluationLogList.get(0).getEvaluationStatus(), EvaluationStatus.TIMEOUT);
-        assertEquals(evaluationResponse.getStatus(), TechnicalStatus.TIMEOUT);
-        assertNull(evaluationResponse.getEvaluationResults());
+        assertThat(evaluationLogList.size()).isEqualTo(1);
+        assertThat(evaluationLogList.get(0).getEvaluationStatus()).isEqualTo(EvaluationStatus.TIMEOUT);
+        assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.TIMEOUT);
+        assertThat(evaluationResponse.getEvaluationResults()).isNull();
     }
 
 }

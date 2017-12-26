@@ -10,8 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit tests that checks EcaResponseMapper functionality
@@ -31,8 +30,8 @@ public class EcaResponseMapperTest {
         Experiment experiment = new Experiment();
         experiment.setExperimentStatus(ExperimentStatus.NEW);
         EcaResponse ecaResponse = ecaResponseMapper.map(experiment);
-        assertNotNull(ecaResponse);
-        assertEquals(ecaResponse.getStatus(), TechnicalStatus.SUCCESS);
+        assertThat(ecaResponse).isNotNull();
+        assertThat(ecaResponse.getStatus()).isEqualTo(TechnicalStatus.SUCCESS);
     }
 
     @Test
@@ -40,7 +39,7 @@ public class EcaResponseMapperTest {
         Experiment experiment = new Experiment();
         experiment.setExperimentStatus(ExperimentStatus.ERROR);
         EcaResponse ecaResponse = ecaResponseMapper.map(experiment);
-        assertNotNull(ecaResponse);
-        assertEquals(ecaResponse.getStatus(), TechnicalStatus.ERROR);
+        assertThat(ecaResponse).isNotNull();
+        assertThat(ecaResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
     }
 }

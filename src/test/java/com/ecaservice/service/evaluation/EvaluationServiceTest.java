@@ -107,6 +107,4 @@ public class EvaluationServiceTest {
                 TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
         assertThat(result.isSuccess()).isFalse();
     }
-
-
 }

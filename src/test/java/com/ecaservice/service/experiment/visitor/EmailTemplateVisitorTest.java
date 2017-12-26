@@ -16,7 +16,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.thymeleaf.context.Context;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 /**
  * Unit tests that checks EmailTemplateVisitor functionality (see {@link EmailTemplateVisitor}).
@@ -60,8 +61,8 @@ public class EmailTemplateVisitorTest {
         experiment.setExperimentStatus(ExperimentStatus.TIMEOUT);
         Context context = experiment.getExperimentStatus().handle(emailTemplateVisitor, experiment);
         assertContext(context, experiment);
-        assertEquals(experimentConfig.getTimeout(),
-                Integer.valueOf(context.getVariable(TemplateVariablesDictionary.TIMEOUT_KEY).toString()));
+        assertThat(Integer.valueOf(context.getVariable(TemplateVariablesDictionary.TIMEOUT_KEY).toString())).isEqualTo(
+                experimentConfig.getTimeout());
     }
 
     @Test
@@ -71,15 +72,15 @@ public class EmailTemplateVisitorTest {
         Context context = experiment.getExperimentStatus().handle(emailTemplateVisitor, experiment);
         assertContext(context, experiment);
         String actualUrl = context.getVariable(TemplateVariablesDictionary.DOWNLOAD_URL_KEY).toString();
-        assertEquals(String.format(experimentConfig.getDownloadUrl(), experiment.getUuid()), actualUrl);
+        assertThat(actualUrl).isEqualTo(String.format(experimentConfig.getDownloadUrl(), experiment.getUuid()));
     }
 
     private void assertContext(Context context, Experiment experiment) {
-        assertEquals(context.getVariable(TemplateVariablesDictionary.FIRST_NAME_KEY),
+        assertThat(context.getVariable(TemplateVariablesDictionary.FIRST_NAME_KEY)).isEqualTo(
                 experiment.getFirstName());
         ExperimentType actualExperimentType =
                 ExperimentType.findByDescription(
                         context.getVariable(TemplateVariablesDictionary.EXPERIMENT_TYPE_KEY).toString());
-        assertEquals(actualExperimentType, experiment.getExperimentType());
+        assertThat(actualExperimentType).isEqualTo(experiment.getExperimentType());
     }
 }

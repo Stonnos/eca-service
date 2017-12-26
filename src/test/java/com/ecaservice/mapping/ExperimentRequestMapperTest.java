@@ -13,8 +13,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit tests that checks ExperimentRequestMapper functionality
@@ -44,14 +43,13 @@ public class ExperimentRequestMapperTest {
         experimentRequestDto.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         experimentRequestDto.setExperimentType(ExperimentType.KNN);
         experimentRequestDto.setData(instances);
-
         ExperimentRequest experimentRequest = experimentRequestMapper.map(experimentRequestDto);
-        assertNotNull(experimentRequest);
-        assertEquals(experimentRequest.getFirstName(), experimentRequestDto.getFirstName());
-        assertEquals(experimentRequest.getEmail(), experimentRequestDto.getEmail());
-        assertEquals(experimentRequest.getEvaluationMethod(), experimentRequestDto.getEvaluationMethod());
-        assertEquals(experimentRequest.getExperimentType(), experimentRequestDto.getExperimentType());
-        assertNotNull(experimentRequest.getData());
-        assertEquals(experimentRequest.getData().relationName(), experimentRequestDto.getData().relationName());
+        assertThat(experimentRequest).isNotNull();
+        assertThat(experimentRequest.getFirstName()).isEqualTo(experimentRequestDto.getFirstName());
+        assertThat(experimentRequest.getEmail()).isEqualTo(experimentRequestDto.getEmail());
+        assertThat(experimentRequest.getEvaluationMethod()).isEqualTo(experimentRequestDto.getEvaluationMethod());
+        assertThat(experimentRequest.getExperimentType()).isEqualTo(experimentRequestDto.getExperimentType());
+        assertThat(experimentRequest.getData()).isNotNull();
+        assertThat(experimentRequest.getData().relationName()).isEqualTo(experimentRequestDto.getData().relationName());
     }
 }

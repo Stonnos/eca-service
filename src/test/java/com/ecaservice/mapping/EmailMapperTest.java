@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit tests that checks EmailMapper functionality
@@ -28,10 +28,9 @@ public class EmailMapperTest {
     public void testMapEmail() {
         Mail mail = TestHelperUtils.createMail();
         Email email = emailMapper.map(mail);
-
-        assertEquals(mail.getSender(), email.getSender());
-        assertEquals(mail.getReceiver(), email.getReceiver());
-        assertEquals(mail.getSubject(), email.getSubject());
-        assertEquals(mail.getMessage(), email.getMessage());
+        assertThat(mail.getSender()).isEqualTo(email.getSender());
+        assertThat(mail.getReceiver()).isEqualTo(email.getReceiver());
+        assertThat(mail.getSubject()).isEqualTo(email.getSubject());
+        assertThat(mail.getMessage()).isEqualTo(email.getMessage());
     }
 }

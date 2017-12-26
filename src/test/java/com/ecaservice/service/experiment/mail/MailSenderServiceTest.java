@@ -19,8 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.mail.internet.MimeMessage;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -63,13 +62,13 @@ public class MailSenderServiceTest extends AbstractExperimentTest {
         doNothing().when(mailSender).send(mimeMessage);
         mailSenderService.sendEmail(mail);
         List<Email> emails = emailRepository.findAll();
-        assertNotNull(emails);
-        assertEquals(emails.size(), 1);
+        assertThat(emails).isNotNull();
+        assertThat(emails.size()).isEqualTo(1);
         Email email = emails.get(0);
-        assertNotNull(email.getSaveDate());
-        assertEquals(mail.getSender(), email.getSender());
-        assertEquals(mail.getReceiver(), email.getReceiver());
-        assertEquals(mail.getSubject(), email.getSubject());
-        assertEquals(mail.getMessage(), email.getMessage());
+        assertThat(email.getSaveDate()).isNotNull();
+        assertThat(mail.getSender()).isEqualTo(mail.getSender());
+        assertThat(email.getReceiver()).isEqualTo(mail.getReceiver());
+        assertThat(email.getSubject()).isEqualTo(mail.getSubject());
+        assertThat(email.getMessage()).isEqualTo(mail.getMessage());
     }
 }

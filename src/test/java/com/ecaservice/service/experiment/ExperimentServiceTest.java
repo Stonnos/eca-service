@@ -28,9 +28,7 @@ import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -86,9 +84,9 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.assertList(experiments);
         Experiment experiment = experiments.get(0);
-        assertEquals(experiment.getExperimentStatus(), ExperimentStatus.NEW);
-        assertNotNull(experiment.getCreationDate());
-        assertNotNull(experiment.getTrainingDataAbsolutePath());
+        assertThat(experiment.getExperimentStatus()).isEqualTo(ExperimentStatus.NEW);
+        assertThat(experiment.getCreationDate()).isNotNull();
+        assertThat(experiment.getTrainingDataAbsolutePath()).isNotNull();
     }
 
     @Test
@@ -99,14 +97,14 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.assertList(experiments);
         Experiment experiment = experiments.get(0);
-        assertEquals(experiment.getExperimentStatus(), ExperimentStatus.ERROR);
-        assertNotNull(experiment.getCreationDate());
-        assertNull(experiment.getTrainingDataAbsolutePath());
+        assertThat(experiment.getExperimentStatus()).isEqualTo(ExperimentStatus.ERROR);
+        assertThat(experiment.getCreationDate()).isNotNull();
+        assertThat(experiment.getTrainingDataAbsolutePath()).isNull();
     }
 
     @Test
     public void testFindExperimentFileByUuidWithNullExperiment() {
-        assertNull(experimentService.findExperimentFileByUuid(TestHelperUtils.UUID));
+        assertThat(experimentService.findExperimentFileByUuid(TestHelperUtils.UUID)).isNull();
     }
 
     @Test
@@ -114,16 +112,16 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
         Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID);
         experiment.setExperimentAbsolutePath(null);
         experimentRepository.save(experiment);
-        assertNull(experimentService.findExperimentFileByUuid(TestHelperUtils.UUID));
+        assertThat(experimentService.findExperimentFileByUuid(TestHelperUtils.UUID)).isNull();
     }
 
     @Test
     public void testSuccessFindExperimentFileByUuid() {
         Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID);
         experimentRepository.save(experiment);
-        File actualFile = experimentService.findExperimentFileByUuid(TestHelperUtils.UUID);
-        File expectedFile = new File(experiment.getExperimentAbsolutePath());
-        assertEquals(actualFile.getAbsolutePath(), expectedFile.getAbsolutePath());
+        File expectedFile = experimentService.findExperimentFileByUuid(TestHelperUtils.UUID);
+        File actualFile = new File(experiment.getExperimentAbsolutePath());
+        assertThat(actualFile.getAbsolutePath()).isEqualTo(expectedFile.getAbsolutePath());
     }
 
     @Test
@@ -136,11 +134,11 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.assertList(experiments);
         Experiment experiment = experiments.get(0);
-        assertNotNull(experiment.getStartDate());
-        assertNotNull(experiment.getEndDate());
-        assertNotNull(experiment.getExperimentAbsolutePath());
-        assertNotNull(experiment.getUuid());
-        assertEquals(experiment.getExperimentStatus(), ExperimentStatus.FINISHED);
+        assertThat(experiment.getStartDate()).isNotNull();
+        assertThat(experiment.getEndDate()).isNotNull();
+        assertThat(experiment.getExperimentAbsolutePath()).isNotNull();
+        assertThat(experiment.getUuid()).isNotNull();
+        assertThat(experiment.getExperimentStatus()).isEqualTo(ExperimentStatus.FINISHED);
     }
 
     @Test
@@ -150,9 +148,9 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.assertList(experiments);
         Experiment experiment = experiments.get(0);
-        assertNotNull(experiment.getStartDate());
-        assertNotNull(experiment.getEndDate());
-        assertEquals(experiment.getExperimentStatus(), ExperimentStatus.ERROR);
+        assertThat(experiment.getStartDate()).isNotNull();
+        assertThat(experiment.getEndDate()).isNotNull();
+        assertThat(experiment.getExperimentStatus()).isEqualTo(ExperimentStatus.ERROR);
     }
 
     @Test
@@ -165,18 +163,18 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.assertList(experiments);
         Experiment experiment = experiments.get(0);
-        assertNotNull(experiment.getStartDate());
-        assertNotNull(experiment.getEndDate());
-        assertEquals(experiment.getExperimentStatus(), ExperimentStatus.TIMEOUT);
+        assertThat(experiment.getStartDate()).isNotNull();
+        assertThat(experiment.getEndDate()).isNotNull();
+        assertThat(experiment.getExperimentStatus()).isEqualTo(ExperimentStatus.TIMEOUT);
     }
 
     @Test
     public void testRemoveExperiment() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         experimentService.removeExperimentData(experiment);
-        assertNull(experiment.getExperimentAbsolutePath());
-        assertNull(experiment.getTrainingDataAbsolutePath());
-        assertNotNull(experiment.getDeletedDate());
+        assertThat(experiment.getExperimentAbsolutePath()).isNull();
+        assertThat(experiment.getTrainingDataAbsolutePath()).isNull();
+        assertThat(experiment.getDeletedDate()).isNotNull();
     }
 
 }

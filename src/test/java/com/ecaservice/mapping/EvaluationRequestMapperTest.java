@@ -17,8 +17,6 @@ import weka.core.Instances;
 import java.util.EnumMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * Unit tests that checks EvaluationRequestMapper functionality
@@ -47,11 +45,11 @@ public class EvaluationRequestMapperTest {
         evaluationRequestDto.setData(instances);
         evaluationRequestDto.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         EvaluationRequest evaluationRequest = evaluationRequestMapper.map(evaluationRequestDto);
-        assertNotNull(evaluationRequest);
-        assertNotNull(evaluationRequest.getInputData());
-        assertEquals(evaluationRequestDto.getClassifier(), evaluationRequest.getInputData().getClassifier());
-        assertEquals(evaluationRequestDto.getData(), evaluationRequest.getInputData().getData());
-        assertEquals(evaluationRequestDto.getEvaluationMethod(), evaluationRequest.getEvaluationMethod());
+        assertThat(evaluationRequest).isNotNull();
+        assertThat(evaluationRequest.getInputData()).isNotNull();
+        assertThat(evaluationRequest.getInputData().getClassifier()).isEqualTo(evaluationRequestDto.getClassifier());
+        assertThat(evaluationRequest.getInputData().getData()).isEqualTo(evaluationRequestDto.getData());
+        assertThat(evaluationRequest.getEvaluationMethod()).isEqualTo(evaluationRequestDto.getEvaluationMethod());
         assertThat(evaluationRequest.getEvaluationOptionsMap()).isEmpty();
     }
 
@@ -67,14 +65,14 @@ public class EvaluationRequestMapperTest {
         evaluationRequestDto.getEvaluationOptionsMap().put(EvaluationOption.NUM_TESTS,
                 String.valueOf(TestHelperUtils.NUM_TESTS));
         EvaluationRequest evaluationRequest = evaluationRequestMapper.map(evaluationRequestDto);
-        assertNotNull(evaluationRequest);
-        assertNotNull(evaluationRequest.getInputData());
-        assertEquals(evaluationRequestDto.getClassifier(), evaluationRequest.getInputData().getClassifier());
-        assertEquals(evaluationRequestDto.getData(), evaluationRequest.getInputData().getData());
-        assertEquals(evaluationRequestDto.getEvaluationMethod(), evaluationRequest.getEvaluationMethod());
-        assertEquals(evaluationRequestDto.getEvaluationOptionsMap().get(EvaluationOption.NUM_FOLDS),
-                evaluationRequest.getEvaluationOptionsMap().get(EvaluationOption.NUM_FOLDS));
-        assertEquals(evaluationRequestDto.getEvaluationOptionsMap().get(EvaluationOption.NUM_TESTS),
-                evaluationRequest.getEvaluationOptionsMap().get(EvaluationOption.NUM_TESTS));
+        assertThat(evaluationRequest).isNotNull();
+        assertThat(evaluationRequest.getInputData()).isNotNull();
+        assertThat(evaluationRequest.getInputData().getClassifier()).isEqualTo(evaluationRequestDto.getClassifier());
+        assertThat(evaluationRequest.getInputData().getData()).isEqualTo(evaluationRequestDto.getData());
+        assertThat(evaluationRequest.getEvaluationMethod()).isEqualTo(evaluationRequestDto.getEvaluationMethod());
+        assertThat(evaluationRequest.getEvaluationOptionsMap().get(EvaluationOption.NUM_FOLDS)).isEqualTo(
+                evaluationRequestDto.getEvaluationOptionsMap().get(EvaluationOption.NUM_FOLDS));
+        assertThat(evaluationRequest.getEvaluationOptionsMap().get(EvaluationOption.NUM_TESTS)).isEqualTo(
+                evaluationRequestDto.getEvaluationOptionsMap().get(EvaluationOption.NUM_TESTS));
     }
 }

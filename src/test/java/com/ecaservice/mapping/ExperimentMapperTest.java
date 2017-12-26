@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 /**
  * Unit tests that checks ExperimentMapper functionality
@@ -35,14 +35,12 @@ public class ExperimentMapperTest {
         experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         experimentRequest.setExperimentType(ExperimentType.KNN);
         experimentRequest.setIpAddress(TestHelperUtils.IP_ADDRESS);
-
         Experiment experiment = experimentMapper.map(experimentRequest);
-
-        assertNotNull(experiment);
-        assertEquals(experiment.getFirstName(), experimentRequest.getFirstName());
-        assertEquals(experiment.getEmail(), experimentRequest.getEmail());
-        assertEquals(experiment.getIpAddress(), experimentRequest.getIpAddress());
-        assertEquals(experiment.getEvaluationMethod(), experimentRequest.getEvaluationMethod());
-        assertEquals(experiment.getExperimentType(), experimentRequest.getExperimentType());
+        assertThat(experiment).isNotNull();
+        assertThat(experiment.getFirstName()).isEqualTo(experimentRequest.getFirstName());
+        assertThat(experiment.getEmail()).isEqualTo(experimentRequest.getEmail());
+        assertThat(experiment.getIpAddress()).isEqualTo(experimentRequest.getIpAddress());
+        assertThat(experiment.getEvaluationMethod()).isEqualTo(experimentRequest.getEvaluationMethod());
+        assertThat(experiment.getExperimentType()).isEqualTo(experimentRequest.getExperimentType());
     }
 }

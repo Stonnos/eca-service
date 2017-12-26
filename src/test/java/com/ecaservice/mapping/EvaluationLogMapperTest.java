@@ -16,8 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * Unit tests that checks EvaluationLogMapper functionality
@@ -43,33 +41,31 @@ public class EvaluationLogMapperTest {
         evaluationRequest.setInputData(inputData);
         EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequest);
 
-        assertNotNull(evaluationLog);
-        assertEquals(evaluationRequest.getEvaluationMethod(), evaluationLog.getEvaluationMethod());
-        assertEquals(evaluationRequest.getIpAddress(), evaluationLog.getIpAddress());
-        assertNotNull(evaluationLog.getEvaluationOptionsMap());
-        assertEquals(evaluationRequest.getInputData().getData().relationName(),
-                evaluationLog.getInstancesInfo().getRelationName());
-        assertEquals(evaluationRequest.getInputData().getData().classAttribute().name(),
-                evaluationLog.getInstancesInfo().getClassName());
-        assertEquals(evaluationRequest.getInputData().getData().numAttributes(),
-                evaluationLog.getInstancesInfo().getNumAttributes().intValue());
-        assertEquals(evaluationRequest.getInputData().getData().numClasses(),
-                evaluationLog.getInstancesInfo().getNumClasses().intValue());
-        assertEquals(evaluationRequest.getInputData().getData().numInstances(),
-                evaluationLog.getInstancesInfo().getNumInstances().intValue());
-
+        assertThat(evaluationLog).isNotNull();
+        assertThat(evaluationLog.getEvaluationMethod()).isEqualTo(evaluationRequest.getEvaluationMethod());
+        assertThat(evaluationLog.getIpAddress()).isEqualTo(evaluationRequest.getIpAddress());
+        assertThat(evaluationLog.getEvaluationOptionsMap()).isNotNull();
+        assertThat(evaluationLog.getInstancesInfo().getRelationName()).isEqualTo(
+                evaluationRequest.getInputData().getData().relationName());
+        assertThat(evaluationLog.getInstancesInfo().getClassName()).isEqualTo(
+                evaluationRequest.getInputData().getData().classAttribute().name());
+        assertThat(evaluationLog.getInstancesInfo().getNumAttributes().intValue()).isEqualTo(
+                evaluationRequest.getInputData().getData().numAttributes());
+        assertThat(evaluationLog.getInstancesInfo().getNumClasses().intValue()).isEqualTo(
+                evaluationRequest.getInputData().getData().numClasses());
+        assertThat(evaluationLog.getInstancesInfo().getNumInstances().intValue()).isEqualTo(
+                evaluationRequest.getInputData().getData().numInstances());
         assertOptions(evaluationLog, evaluationRequest);
     }
 
     private void assertOptions(EvaluationLog evaluationLog, EvaluationRequest request) {
         Map<String, String> inputOptionsMap = evaluationLog.getInputOptionsMap();
-        assertNotNull(inputOptionsMap);
+        assertThat(inputOptionsMap).isNotNull();
         assertThat(inputOptionsMap).isNotEmpty();
         String[] options = request.getInputData().getClassifier().getOptions();
-        assertEquals(inputOptionsMap.size(), options.length / 2);
-
+        assertThat(inputOptionsMap.size()).isEqualTo(options.length / 2);
         for (int i = 0; i < options.length; i += 2) {
-            assertEquals(options[i + 1], inputOptionsMap.get(options[i]));
+            assertThat(options[i + 1]).isEqualTo(inputOptionsMap.get(options[i]));
         }
     }
 }

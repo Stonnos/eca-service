@@ -21,7 +21,7 @@ import weka.core.Instances;
 
 import java.util.Collections;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.when;
 
@@ -66,7 +66,7 @@ public class ClassifiersSetSearcherTest extends AbstractExperimentTest {
         when(evaluationService.evaluateModel(anyObject(), anyObject(), anyObject())).thenReturn(classificationResult);
         ClassifiersSet classifiers = classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod
                 .TRAINING_DATA, Collections.emptyMap());
-        assertEquals(classifiers.size(), experimentConfig.getEnsemble().getNumBestClassifiers().intValue());
+        assertThat(classifiers.size()).isEqualTo(experimentConfig.getEnsemble().getNumBestClassifiers().intValue());
     }
 
 
