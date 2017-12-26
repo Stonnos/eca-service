@@ -30,25 +30,20 @@ import static springfox.documentation.schema.AlternateTypeRules.newRule;
 @Configuration
 public class Swagger2Configuration {
 
-    @Autowired
-    private TypeResolver typeResolver;
-
-    @Value("${project.version}")
-    private String projectVersion;
-
     /**
      * Returns swagger configuration bean.
      *
      * @return {@link Docket} bean
      */
     @Bean
-    public Docket ecaServiceApi() {
+    @Autowired
+    public Docket ecaServiceApi(TypeResolver typeResolver, @Value("${project.version}") String projectVersion) {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.ecaservice.controller"))
                 .paths(PathSelectors.any())
                 .build()
-                .apiInfo(apiInfo())
+                .apiInfo(apiInfo(projectVersion))
                 .pathMapping("/")
                 .directModelSubstitute(OffsetDateTime.class, String.class)
                 .alternateTypeRules(
@@ -58,7 +53,7 @@ public class Swagger2Configuration {
                 );
     }
 
-    private ApiInfo apiInfo() {
+    private ApiInfo apiInfo(String projectVersion) {
         return new ApiInfo("Eca service REST API",
                 "API for individual and ensemble classification models learning",
                 projectVersion, null,
