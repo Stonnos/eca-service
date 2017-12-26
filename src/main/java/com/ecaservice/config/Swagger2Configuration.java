@@ -33,19 +33,22 @@ public class Swagger2Configuration {
     @Autowired
     private TypeResolver typeResolver;
 
+    @Value("${project.version}")
+    private String projectVersion;
+
     /**
      * Returns swagger configuration bean.
      *
      * @return {@link Docket} bean
      */
     @Bean
-    public Docket ecaServiceApi(@Value("${project.version}") String projectVersion) {
+    public Docket ecaServiceApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.ecaservice.controller"))
                 .paths(PathSelectors.any())
                 .build()
-                .apiInfo(apiInfo(projectVersion))
+                .apiInfo(apiInfo())
                 .pathMapping("/")
                 .directModelSubstitute(OffsetDateTime.class, String.class)
                 .alternateTypeRules(
@@ -55,7 +58,7 @@ public class Swagger2Configuration {
                 );
     }
 
-    private ApiInfo apiInfo(String projectVersion) {
+    private ApiInfo apiInfo() {
         return new ApiInfo("Eca service REST API",
                 "API for individual and ensemble classification models learning",
                 projectVersion, null,

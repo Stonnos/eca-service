@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -88,6 +89,6 @@ public class ExperimentSchedulerTest extends AbstractExperimentTest {
         experiments.add(experiment);
         experimentRepository.save(experiments);
         experimentScheduler.processingRequestsToRemove();
-        verify(experimentService, times(1)).removeExperimentData(any(Experiment.class));
+        verify(experimentService, atLeastOnce()).removeExperimentData(any(Experiment.class));
     }
 }
