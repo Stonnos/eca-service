@@ -120,7 +120,7 @@ public class EvaluationService {
                     stopWatch.stop();
                 }
             });
-
+            evaluation.setTotalTimeMillis(stopWatch.getTotalTimeMillis());
             EvaluationResults evaluationResults = new EvaluationResults(classifier, evaluation);
             classificationResult.setEvaluationResults(evaluationResults);
             classificationResult.setSuccess(true);
