@@ -12,7 +12,6 @@ import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.model.evaluation.EvaluationRequest;
 import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
-import com.ecaservice.service.evaluation.impl.CalculationExecutorServiceImpl;
 import eca.core.evaluation.Evaluation;
 import org.junit.Before;
 import org.junit.Test;

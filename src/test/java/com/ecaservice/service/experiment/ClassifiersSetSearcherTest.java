@@ -46,7 +46,8 @@ public class ClassifiersSetSearcherTest extends AbstractExperimentTest {
     @Before
     public void init() throws Exception {
         testInstances = TestHelperUtils.loadInstances();
-        classifiersSetSearcher = new ClassifiersSetSearcher(evaluationService, experimentConfig);
+        classifiersSetSearcher = new ClassifiersSetSearcher(evaluationService, null,
+                experimentConfig);
         evaluationResults = new EvaluationResults(new KNearestNeighbours(), new Evaluation(testInstances));
     }
 

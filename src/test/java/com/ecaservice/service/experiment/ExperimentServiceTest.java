@@ -11,7 +11,7 @@ import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
-import com.ecaservice.service.evaluation.impl.CalculationExecutorServiceImpl;
+import com.ecaservice.service.evaluation.CalculationExecutorServiceImpl;
 import eca.converters.model.ExperimentHistory;
 import org.junit.Before;
 import org.junit.Test;

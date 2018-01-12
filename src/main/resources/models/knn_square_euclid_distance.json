@@ -1,0 +1,5 @@
+{
+  "type": "knn",
+  "distanceType": "SQUARE_EUCLID",
+  "maximumFractionDigits": 4
+}

@@ -61,11 +61,11 @@ public class EcaServiceConfiguration {
     /**
      * Creates <tt>FileDataSaver</tt> bean
      *
+     * @param experimentConfig {@link ExperimentConfig} bean
      * @return {@link FileDataSaver} bean
      */
     @Bean
-    public FileDataSaver dataSaver() {
-        ExperimentConfig experimentConfig = experimentConfig();
+    public FileDataSaver dataSaver(ExperimentConfig experimentConfig) {
         FileDataSaver dataSaver = new FileDataSaver();
         dataSaver.setDateFormat(experimentConfig.getData().getDateFormat());
         return dataSaver;
@@ -74,11 +74,11 @@ public class EcaServiceConfiguration {
     /**
      * Creates <tt>FileDataLoader</tt> bean
      *
+     * @param experimentConfig {@link ExperimentConfig} bean
      * @return {@link FileDataLoader} bean
      */
     @Bean
-    public FileDataLoader dataLoader() {
-        ExperimentConfig experimentConfig = experimentConfig();
+    public FileDataLoader dataLoader(ExperimentConfig experimentConfig) {
         FileDataLoader dataLoader = new FileDataLoader();
         dataLoader.setDateFormat(experimentConfig.getData().getDateFormat());
         return dataLoader;

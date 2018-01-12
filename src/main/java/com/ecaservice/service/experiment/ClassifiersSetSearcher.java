@@ -7,7 +7,6 @@ import com.ecaservice.model.evaluation.ClassificationResult;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.service.evaluation.EvaluationService;
-import com.ecaservice.util.ExperimentUtils;
 import eca.core.evaluation.EvaluationResults;
 import eca.dataminer.ClassifierComparator;
 import eca.ensemble.ClassifiersSet;
@@ -32,18 +31,22 @@ import java.util.Map;
 public class ClassifiersSetSearcher {
 
     private final EvaluationService evaluationService;
+    private final ExperimentConfigurationService experimentConfigurationService;
     private final ExperimentConfig experimentConfig;
 
     /**
      * Constructor with spring dependency injection.
      *
-     * @param evaluationService {@link EvaluationService} bean
-     * @param experimentConfig  {@link ExperimentConfig} bean
+     * @param evaluationService              {@link EvaluationService} bean
+     * @param experimentConfigurationService {@link ExperimentConfigurationService} bean
+     * @param experimentConfig               {@link ExperimentConfig} bean
      */
     @Autowired
     public ClassifiersSetSearcher(EvaluationService evaluationService,
+                                  ExperimentConfigurationService experimentConfigurationService,
                                   ExperimentConfig experimentConfig) {
         this.evaluationService = evaluationService;
+        this.experimentConfigurationService = experimentConfigurationService;
         this.experimentConfig = experimentConfig;
     }
 
@@ -58,8 +61,7 @@ public class ClassifiersSetSearcher {
     public ClassifiersSet findBestClassifiers(Instances data, EvaluationMethod evaluationMethod,
                                               Map<EvaluationOption, String> evaluationOptionStringMap) {
         log.info("Starting to find the best individual classifiers using {} evaluation method.", evaluationMethod);
-        List<AbstractClassifier> classifiersSet =
-                ExperimentUtils.builtClassifiersSet(data, experimentConfig.getMaximumFractionDigits());
+        List<AbstractClassifier> classifiersSet = experimentConfigurationService.findClassifiers();
         ArrayList<EvaluationResults> finished = new ArrayList<>(classifiersSet.size());
 
         for (AbstractClassifier classifier : classifiersSet) {

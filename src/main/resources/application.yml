@@ -43,6 +43,7 @@ experiment:
   numIterations: 100
   fileFormat: experiment%d.txt
   storagePath: @storagePath@
+  individualClassifiersStoragePath: models/
   downloadUrl: http://localhost:@server.port@/eca-service/experiment/download/%s
   maximumFractionDigits: 4
   numberOfDaysForStorage: 30

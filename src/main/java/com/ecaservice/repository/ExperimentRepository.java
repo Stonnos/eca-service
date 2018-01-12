@@ -3,13 +3,15 @@ package com.ecaservice.repository;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
 /**
- * Implements repository that deals with {@link Experiment} entities.
+ * Implements repository that manages with {@link Experiment} entities.
  *
  * @author Roman Batygin
  */
@@ -29,8 +31,8 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long> {
      * @param statuses {@link ExperimentStatus} collection
      * @return {@link Experiment} list
      */
-    List<Experiment> findByExperimentStatusInAndSentDateIsNullOrderByCreationDate(
-            Collection<ExperimentStatus> statuses);
+    @Query("select e from Experiment e where e.experimentStatus in (:statuses) and e.sentDate is null order by e.creationDate")
+    List<Experiment> findNotSentExperiments(@Param("statuses") Collection<ExperimentStatus> statuses);
 
     /**
      * Finds experiments which sent date is after N days.
@@ -38,6 +40,7 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long> {
      * @param dateTime date time threshold value
      * @return {@link Experiment} list
      */
-    List<Experiment> findByDeletedDateIsNullAndSentDateIsBeforeOrderBySentDate(LocalDateTime dateTime);
+    @Query("select e from Experiment e where e.deletedDate is null and e.sentDate < :dateTime order by e.sentDate")
+    List<Experiment> findNotDeletedExperiments(@Param("dateTime") LocalDateTime dateTime);
 
 }

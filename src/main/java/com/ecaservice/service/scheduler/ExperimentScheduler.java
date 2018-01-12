@@ -53,8 +53,7 @@ public class ExperimentScheduler {
     public void processingNewRequests() {
         log.trace("Starting to built experiments.");
         List<Experiment> experiments =
-                experimentRepository.findByExperimentStatusInAndSentDateIsNullOrderByCreationDate(
-                        experimentConfig.getProcessStatuses());
+                experimentRepository.findNotSentExperiments(experimentConfig.getProcessStatuses());
         log.trace("{} new experiments has been obtained.", experiments.size());
         for (Experiment experiment : experiments) {
             experimentService.processExperiment(experiment);
@@ -68,9 +67,7 @@ public class ExperimentScheduler {
     @Scheduled(fixedDelayString = "${experiment.delaySeconds}000")
     public void processingRequestsToSent() {
         log.trace("Starting to sent experiment results.");
-        List<Experiment> experiments =
-                experimentRepository.findByExperimentStatusInAndSentDateIsNullOrderByCreationDate(
-                        experimentConfig.getSentStatuses());
+        List<Experiment> experiments = experimentRepository.findNotSentExperiments(experimentConfig.getSentStatuses());
         log.trace("{} experiments has been obtained for sending.", experiments.size());
         for (Experiment experiment : experiments) {
             notificationService.notifyByEmail(experiment);
@@ -84,7 +81,7 @@ public class ExperimentScheduler {
     @Scheduled(cron = "${experiment.schedulerCron}")
     public void processingRequestsToRemove() {
         log.info("Starting to remove experiment requests.");
-        List<Experiment> experiments = experimentRepository.findByDeletedDateIsNullAndSentDateIsBeforeOrderBySentDate(
+        List<Experiment> experiments = experimentRepository.findNotDeletedExperiments(
                 LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage()));
         for (Experiment experiment : experiments) {
             experimentService.removeExperimentData(experiment);

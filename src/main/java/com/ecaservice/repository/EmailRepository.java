@@ -4,7 +4,7 @@ import com.ecaservice.model.entity.Email;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * Implements repository that deals with {@link Email} entities.
+ * Implements repository that manages with {@link Email} entities.
  *
  * @author Roman Batygin
  */

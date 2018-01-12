@@ -1,0 +1,5 @@
+{
+  "type": "knn",
+  "distanceType": "MANHATTAN",
+  "maximumFractionDigits": 4
+}

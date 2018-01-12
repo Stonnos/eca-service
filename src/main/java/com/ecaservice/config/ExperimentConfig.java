@@ -36,6 +36,11 @@ public class ExperimentConfig {
     private String storagePath;
 
     /**
+     * Individual classifiers options resource path
+     */
+    private String individualClassifiersStoragePath;
+
+    /**
      * Data config
      */
     private DataConfig data;

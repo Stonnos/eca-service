@@ -24,7 +24,7 @@
         <oracle.version>12.1.0.2</oracle.version>
         <postresql.version>9.4.1212</postresql.version>
         <lombok.version>1.16.12</lombok.version>
-        <eca.version>5.0.1</eca.version>
+        <eca.version>5.0.2</eca.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <assertj.core.version>3.8.0</assertj.core.version>
         <mockito.version>1.10.19</mockito.version>
@@ -33,7 +33,7 @@
         <commons.io.version>2.5</commons.io.version>
         <thymeleaf.version>3.0.6.RELEASE</thymeleaf.version>
         <thymeleaf-layout-dialect.version>2.2.2</thymeleaf-layout-dialect.version>
-        <org.mapstruct.version>1.2.0.CR2</org.mapstruct.version>
+        <org.mapstruct.version>1.2.0.Final</org.mapstruct.version>
         <powermock.version>1.7.3</powermock.version>
         <liquibase.version>3.5.3</liquibase.version>
         <swagger-version>2.7.0</swagger-version>

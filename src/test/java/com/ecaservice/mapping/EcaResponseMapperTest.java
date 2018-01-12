@@ -4,6 +4,9 @@ import com.ecaservice.dto.EcaResponse;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentStatus;
+import com.ecaservice.model.options.ClassifierOptions;
+import com.ecaservice.model.options.DecisionTreeOptions;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +38,17 @@ public class EcaResponseMapperTest {
     }
 
     @Test
-    public void testExperimentToEcaResponseConversionWithErrorStatus() {
+    public void testExperimentToEcaResponseConversionWithErrorStatus() throws Exception {
         Experiment experiment = new Experiment();
         experiment.setExperimentStatus(ExperimentStatus.ERROR);
         EcaResponse ecaResponse = ecaResponseMapper.map(experiment);
         assertThat(ecaResponse).isNotNull();
         assertThat(ecaResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
+
+        ClassifierOptions options = new DecisionTreeOptions();
+        ((DecisionTreeOptions) options).setMaxDepth(2);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(options);
+        System.out.println();
     }
 }

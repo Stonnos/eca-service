@@ -1,6 +1,5 @@
-package com.ecaservice.service.experiment.impl;
+package com.ecaservice.service.experiment;
 
-import com.ecaservice.service.experiment.DataService;
 import eca.converters.ModelConverter;
 import eca.converters.model.ExperimentHistory;
 import eca.data.file.FileDataLoader;
