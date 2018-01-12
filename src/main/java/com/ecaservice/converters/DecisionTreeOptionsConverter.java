@@ -31,7 +31,7 @@ public class DecisionTreeOptionsConverter
         decisionTreeClassifier.setMaxDepth(decisionTreeOptions.getMaxDepth());
         decisionTreeClassifier.setUseBinarySplits(decisionTreeOptions.getUseBinarySplits());
         decisionTreeClassifier.setUseRandomSplits(decisionTreeOptions.getUseRandomSplits());
-        decisionTreeClassifier.setNumRandomAttr(decisionTreeOptions.getNumRandomAttrs());
+        //decisionTreeClassifier.setNumRandomAttr(decisionTreeOptions.getNumRandomAttrs());
         decisionTreeClassifier.setNumRandomSplits(decisionTreeOptions.getNumRandomSplits());
         return decisionTreeClassifier;
     }

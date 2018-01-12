@@ -10,6 +10,11 @@ import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.ensemble.ClassifiersSet;
 import eca.metrics.KNearestNeighbours;
+import eca.regression.Logistic;
+import eca.trees.C45;
+import eca.trees.CART;
+import eca.trees.CHAID;
+import eca.trees.ID3;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,9 +22,12 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
+import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyObject;
@@ -38,6 +46,8 @@ public class ClassifiersSetSearcherTest extends AbstractExperimentTest {
     private ExperimentConfig experimentConfig;
     @Mock
     private EvaluationService evaluationService;
+    @Mock
+    private ExperimentConfigurationService experimentConfigurationService;
 
     private ClassifiersSetSearcher classifiersSetSearcher;
     private Instances testInstances;
@@ -46,7 +56,7 @@ public class ClassifiersSetSearcherTest extends AbstractExperimentTest {
     @Before
     public void init() throws Exception {
         testInstances = TestHelperUtils.loadInstances();
-        classifiersSetSearcher = new ClassifiersSetSearcher(evaluationService, null,
+        classifiersSetSearcher = new ClassifiersSetSearcher(evaluationService, experimentConfigurationService,
                 experimentConfig);
         evaluationResults = new EvaluationResults(new KNearestNeighbours(), new Evaluation(testInstances));
     }
@@ -54,20 +64,35 @@ public class ClassifiersSetSearcherTest extends AbstractExperimentTest {
     @Test(expected = ExperimentException.class)
     public void testEmptySet() {
         ClassificationResult classificationResult = new ClassificationResult();
+        when(experimentConfigurationService.findClassifiers()).thenReturn(Arrays.asList(new CART(), new Logistic()));
         when(evaluationService.evaluateModel(anyObject(), anyObject(), anyObject())).thenReturn(classificationResult);
         classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA,
                 Collections.emptyMap());
     }
 
+    /**
+     * Unit test that checking success building cases:
+     * Case 1: the classifiers size is greater than best classifiers number specified in configs.
+     * Case 2: the classifiers size is less than best classifiers number specified in configs.
+     */
     @Test
     public void testSuccessBuilt() {
         ClassificationResult classificationResult = new ClassificationResult();
         classificationResult.setSuccess(true);
         classificationResult.setEvaluationResults(evaluationResults);
+        //checks case 1
+        when(experimentConfigurationService.findClassifiers()).thenReturn(Arrays.asList(new CART(), new Logistic(),
+                new ID3(), new C45(), new CHAID()));
         when(evaluationService.evaluateModel(anyObject(), anyObject(), anyObject())).thenReturn(classificationResult);
         ClassifiersSet classifiers = classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod
                 .TRAINING_DATA, Collections.emptyMap());
         assertThat(classifiers.size()).isEqualTo(experimentConfig.getEnsemble().getNumBestClassifiers().intValue());
+        //checks case 2
+        List<AbstractClassifier> classifierList = Arrays.asList(new CART(), new Logistic());
+        when(experimentConfigurationService.findClassifiers()).thenReturn(classifierList);
+        classifiers = classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod
+                .TRAINING_DATA, Collections.emptyMap());
+        assertThat(classifierList.size()).isEqualTo(classifiers.size());
     }
 
 

@@ -2,6 +2,7 @@ package com.ecaservice;
 
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.Mail;
+import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
@@ -186,6 +187,21 @@ public class TestHelperUtils {
         mail.setSubject(SUBJECT);
         mail.setMessage(MAIL_MESSAGE);
         return mail;
+    }
+
+    /**
+     * Creates classifiers options database model.
+     *
+     * @param config  json options configs
+     * @param version configs version
+     * @return {@link ClassifierOptionsDatabaseModel} object
+     */
+    public static ClassifierOptionsDatabaseModel createClassifierOptionsDatabaseModel(String config, int version) {
+        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
+        classifierOptionsDatabaseModel.setVersion(version);
+        classifierOptionsDatabaseModel.setConfig(config);
+        classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
+        return classifierOptionsDatabaseModel;
     }
 
 }

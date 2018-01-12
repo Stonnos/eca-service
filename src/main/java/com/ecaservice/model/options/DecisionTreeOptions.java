@@ -17,7 +17,7 @@ public class DecisionTreeOptions extends ClassifierOptions {
 
     private Integer maxDepth;
 
-    private Integer numRandomAttrs;
+    private Integer numRandomAttr;
 
     private Boolean useBinarySplits;
 
