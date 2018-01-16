@@ -1,13 +1,13 @@
 package com.ecaservice.service.experiment;
 
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.exception.ExperimentException;
 import com.ecaservice.mapping.ClassifierOptionsMapper;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,11 +16,12 @@ import weka.classifiers.AbstractClassifier;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
+
+import static com.ecaservice.util.ExperimentLogUtils.error;
 
 /**
  * Service for saving individual classifiers input options into database.
@@ -58,18 +59,15 @@ public class ExperimentConfigurationService {
      */
     public void saveClassifiersOptions() {
         if (StringUtils.isEmpty(experimentConfig.getIndividualClassifiersStoragePath())) {
-            logAndThrowError("Classifiers input options directory doesn't specified.");
+            error("Classifiers input options directory doesn't specified.", log);
         }
-        URL modelsUrl = getClass().getClassLoader().getResource(experimentConfig.getIndividualClassifiersStoragePath());
-        if (!Optional.ofNullable(modelsUrl).map(URL::getPath).isPresent()) {
-            logAndThrowError("Models directory not found.");
-        }
-        File classifiersOptionsDir = new File(modelsUrl.getPath());
-        File[] modelFiles = classifiersOptionsDir.listFiles();
-        if (modelFiles == null || modelFiles.length == 0) {
-            logAndThrowError("Classifiers input options directory is empty.");
+        File classifiersOptionsDir = new File(getClass().getClassLoader().getResource(
+                experimentConfig.getIndividualClassifiersStoragePath()).getFile());
+        Collection<File> modelFiles = FileUtils.listFiles(classifiersOptionsDir, null, true);
+        if (CollectionUtils.isEmpty(modelFiles)) {
+            error("Classifiers input options directory is empty.", log);
         } else {
-            int version = getLatestVersion();
+            int version = getConfigLatestVersion();
             List<ClassifierOptionsDatabaseModel> latestOptions =
                     classifierOptionsDatabaseModelRepository.findAllByVersion(version);
             List<ClassifierOptionsDatabaseModel> newOptions = createClassifiersOptions(modelFiles, version + 1);
@@ -82,16 +80,38 @@ public class ExperimentConfigurationService {
     }
 
     /**
+     * Saves classifier input options config into database.
+     *
+     * @param classifierOptions {@link ClassifierOptions} object
+     */
+    public ClassifierOptionsDatabaseModel saveClassifierOptions(ClassifierOptions classifierOptions) {
+        int version = getConfigLatestVersion();
+        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
+                createClassifierOptions(classifierOptions, version == 0 ? version + 1 : version);
+        classifierOptionsDatabaseModelRepository.save(classifierOptionsDatabaseModel);
+        log.info("New classifier options {} has been saved.", classifierOptions);
+        return classifierOptionsDatabaseModel;
+    }
+
+    /**
+     * Finds the last classifiers options configs.
+     *
+     * @return {@link ClassifierOptionsDatabaseModel} list
+     */
+    public List<ClassifierOptionsDatabaseModel> findLastClassifiersOptions() {
+        return classifierOptionsDatabaseModelRepository.findAllByVersion(getConfigLatestVersion());
+    }
+
+    /**
      * Reads classifiers configurations from database.
      *
      * @return {@link AbstractClassifier} list
      */
     public List<AbstractClassifier> findClassifiers() {
         log.info("Starting to read classifiers input options config from database");
-        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
-                classifierOptionsDatabaseModelRepository.findAllByVersion(getLatestVersion());
+        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = findLastClassifiersOptions();
         if (CollectionUtils.isEmpty(classifierOptionsDatabaseModels)) {
-            logAndThrowError("Classifiers options config hasn't been found.");
+            error("Classifiers options config hasn't been found.", log);
         }
         log.trace("{} classifiers configs has been found.", classifierOptionsDatabaseModels.size());
         List<AbstractClassifier> classifierList = new ArrayList<>(classifierOptionsDatabaseModels.size());
@@ -106,45 +126,52 @@ public class ExperimentConfigurationService {
                 }
             }
         } catch (Exception ex) {
-            logAndThrowError(
-                    String.format("There was an error while read classifiers input options config from database: %s",
-                            ex.getMessage()));
+            error(String.format("There was an error while read classifiers input options config from database: %s",
+                    ex.getMessage()), log);
         }
         log.info("{} classifiers input options config has been successfully read from database.",
                 classifierList.size());
         return classifierList;
     }
 
-    private int getLatestVersion() {
+    /**
+     * Returns classifiers input options configs latest version. Version 0 means that
+     * classifiers options configs is empty.
+     *
+     * @return classifiers input options configs latest version
+     */
+    private int getConfigLatestVersion() {
         Integer latestVersion = classifierOptionsDatabaseModelRepository.findLatestVersion();
         return latestVersion == null ? 0 : latestVersion;
     }
 
-    private List<ClassifierOptionsDatabaseModel> createClassifiersOptions(File[] modelFiles, int version) {
-        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = new ArrayList<>(modelFiles.length);
+    private List<ClassifierOptionsDatabaseModel> createClassifiersOptions(Collection<File> modelFiles, int version) {
+        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = new ArrayList<>(modelFiles.size());
         for (File modelFile : modelFiles) {
-            classifierOptionsDatabaseModels.add(createClassifierOptions(modelFile, version));
+            try {
+                classifierOptionsDatabaseModels.add(
+                        createClassifierOptions(objectMapper.readValue(modelFile, ClassifierOptions.class), version));
+            } catch (IOException ex) {
+                error(String.format("There was an error while parsing json file '%s': %s", modelFile.getAbsolutePath(),
+                        ex.getMessage()), log);
+            }
         }
         return classifierOptionsDatabaseModels;
     }
 
-    private ClassifierOptionsDatabaseModel createClassifierOptions(File modelFile, int version) {
+    private ClassifierOptionsDatabaseModel createClassifierOptions(ClassifierOptions classifierOptions, int version) {
+        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = null;
         try {
-            ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
+            classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
             classifierOptionsDatabaseModel.setVersion(version);
-            ClassifierOptions classifierOptions = objectMapper.readValue(modelFile, ClassifierOptions.class);
             classifierOptionsDatabaseModel.setConfig(objectMapper.writeValueAsString(classifierOptions));
             classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
             return classifierOptionsDatabaseModel;
         } catch (IOException ex) {
-            log.error("There was an error while parsing json file '{}': {}", modelFile.getAbsolutePath(),
-                    ex.getMessage());
-            throw new ExperimentException(ex.getMessage());
+            error(String.format("There was an error while parsing object [%s]: %s", classifierOptions, ex.getMessage()),
+                    log);
         }
+        return classifierOptionsDatabaseModel;
     }
 
-    private void logAndThrowError(String message) {
-        log.error(message);
-        throw new ExperimentException(message);
-    }
 }

@@ -6,7 +6,7 @@
 
     <groupId>eca.service</groupId>
     <artifactId>eca-service</artifactId>
-    <version>1.3</version>
+    <version>1.4</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -312,15 +312,7 @@
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -396,8 +388,8 @@
                     <excludes>
                         <exclude>**/model/**/*</exclude>
                         <exclude>**/dto/**/*</exclude>
-                        <exclude>**/dictionary/**/*</exclude>
                         <exclude>**/config/**/*</exclude>
+                        <exclude>**/dictionary/**/*</exclude>
                         <exclude>**/exception/**/*</exclude>
                         <exclude>**/util/**/*</exclude>
                     </excludes>

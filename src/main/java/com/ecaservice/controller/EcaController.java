@@ -11,9 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +28,7 @@ import java.time.format.DateTimeFormatter;
 @Api(tags = "Operations for individual and ensemble classifiers learning")
 @Slf4j
 @RestController
-@RequestMapping("/eca-service")
+@RequestMapping("/eca-service/evaluation")
 public class EcaController {
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss");
@@ -60,7 +60,7 @@ public class EcaController {
             value = "Evaluates classifier using specified evaluation method",
             notes = "Evaluates classifier using specified evaluation method"
     )
-    @RequestMapping(value = "/execute", method = RequestMethod.POST)
+    @PostMapping(value = "/execute")
     public ResponseEntity<EvaluationResponse> execute(@RequestBody EvaluationRequestDto evaluationRequestDto,
                                                       HttpServletRequest request) {
         log.info("Received request for client {} at: {}", request.getRemoteAddr(),

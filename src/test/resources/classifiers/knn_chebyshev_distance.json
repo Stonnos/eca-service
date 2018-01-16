@@ -1,0 +1,5 @@
+{
+  "type": "knn",
+  "distanceType": "CHEBYSHEV",
+  "maximumFractionDigits": 4
+}

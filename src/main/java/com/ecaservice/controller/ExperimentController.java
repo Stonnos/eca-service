@@ -16,10 +16,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -70,7 +71,7 @@ public class ExperimentController {
             value = "Downloads experiment by specified uuid",
             notes = "Downloads experiment by specified uuid"
     )
-    @RequestMapping(value = "/download/{uuid}", method = RequestMethod.GET)
+    @GetMapping(value = "/download/{uuid}")
     public ResponseEntity downloadExperiment(@PathVariable String uuid) {
         File experimentFile = experimentService.findExperimentFileByUuid(uuid);
         if (experimentFile == null) {
@@ -96,7 +97,7 @@ public class ExperimentController {
             value = "Creates experiment request",
             notes = "Creates experiment request"
     )
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @PostMapping(value = "/create")
     public ResponseEntity<EcaResponse> createRequest(@RequestBody ExperimentRequestDto experimentRequest,
                                                      HttpServletRequest httpServletRequest) {
         log.info("Received request to experiment {} for client {} at: {}", experimentRequest.getExperimentType(),

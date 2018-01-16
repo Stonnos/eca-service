@@ -2,7 +2,6 @@ package com.ecaservice.config;
 
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +15,7 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 import static springfox.documentation.schema.AlternateTypeRules.newRule;
@@ -37,15 +36,15 @@ public class Swagger2Configuration {
      */
     @Bean
     @Autowired
-    public Docket ecaServiceApi(TypeResolver typeResolver, @Value("${project.version}") String projectVersion) {
+    public Docket ecaServiceApi(TypeResolver typeResolver, Swagger2ApiConfig swagger2ApiConfig) {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.ecaservice.controller"))
                 .paths(PathSelectors.any())
                 .build()
-                .apiInfo(apiInfo(projectVersion))
+                .apiInfo(apiInfo(swagger2ApiConfig))
                 .pathMapping("/")
-                .directModelSubstitute(OffsetDateTime.class, String.class)
+                .directModelSubstitute(LocalDateTime.class, String.class)
                 .alternateTypeRules(
                         newRule(typeResolver.resolve(DeferredResult.class,
                                 typeResolver.resolve(ResponseEntity.class, WildcardType.class)),
@@ -53,11 +52,16 @@ public class Swagger2Configuration {
                 );
     }
 
-    private ApiInfo apiInfo(String projectVersion) {
-        return new ApiInfo("Eca service REST API",
-                "API for individual and ensemble classification models learning",
-                projectVersion, null,
-                new Contact("Roman Batygin", null, "roman.batygin@mail.ru"), null, null,
+    @Bean
+    protected Swagger2ApiConfig swagger2ApiConfig() {
+        return new Swagger2ApiConfig();
+    }
+
+    private ApiInfo apiInfo(Swagger2ApiConfig swagger2ApiConfig) {
+        return new ApiInfo(swagger2ApiConfig.getTitle(),
+                swagger2ApiConfig.getDescription(),
+                swagger2ApiConfig.getProjectVersion(), null,
+                new Contact(swagger2ApiConfig.getAuthor(), null, swagger2ApiConfig.getEmail()), null, null,
                 Collections.emptyList());
     }
 }
