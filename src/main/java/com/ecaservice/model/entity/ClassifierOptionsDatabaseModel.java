@@ -27,6 +27,9 @@ public class ClassifierOptionsDatabaseModel {
 
     private int version;
 
+    @Column(name = "options_name")
+    private String optionsName;
+
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
 

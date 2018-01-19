@@ -15,6 +15,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="version" type="int"/>
+            <column name="options_name" type="varchar(255)"/>
             <column name="creation_date" type="timestamp"/>
             <column name="config" type="text"/>
         </createTable>

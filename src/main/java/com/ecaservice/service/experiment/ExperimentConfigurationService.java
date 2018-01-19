@@ -164,6 +164,7 @@ public class ExperimentConfigurationService {
         try {
             classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
             classifierOptionsDatabaseModel.setVersion(version);
+            classifierOptionsDatabaseModel.setOptionsName(classifierOptions.getClass().getSimpleName());
             classifierOptionsDatabaseModel.setConfig(objectMapper.writeValueAsString(classifierOptions));
             classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
             return classifierOptionsDatabaseModel;
