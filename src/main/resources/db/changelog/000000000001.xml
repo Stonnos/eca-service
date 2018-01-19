@@ -6,6 +6,7 @@
 
     <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
             <not>
                 <columnExists tableName="experiment" columnName="deleted_date"/>
             </not>
