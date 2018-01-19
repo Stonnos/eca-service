@@ -63,7 +63,7 @@ public class EvaluationService {
             Assert.notNull(evaluationMethod, "Evaluation method is not specified!");
             Assert.notNull(evaluationOptionsMap, "Evaluation options map is not specified!");
 
-            final AbstractClassifier classifier = inputData.getClassifier();
+            final Classifier classifier = AbstractClassifier.makeCopy(inputData.getClassifier());
             final Instances data = inputData.getData();
             final String classifierName = classifier.getClass().getSimpleName();
 
@@ -110,9 +110,8 @@ public class EvaluationService {
                     }
 
                     stopWatch.start(String.format("%s model evaluation", classifierName));
-                    Classifier classifierCopy = AbstractClassifier.makeCopy(classifier);
                     Random random = new Random(config.getSeed());
-                    evaluation.kCrossValidateModel(classifierCopy, data, folds, tests, random);
+                    evaluation.kCrossValidateModel(AbstractClassifier.makeCopy(classifier), data, folds, tests, random);
                     stopWatch.stop();
 
                     stopWatch.start(String.format("%s model training", classifierName));

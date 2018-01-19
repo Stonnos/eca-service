@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import weka.classifiers.AbstractClassifier;
@@ -107,6 +108,7 @@ public class ExperimentConfigurationService {
      *
      * @return {@link AbstractClassifier} list
      */
+    @Cacheable("classifiers")
     public List<AbstractClassifier> findClassifiers() {
         log.info("Starting to read classifiers input options config from database");
         List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = findLastClassifiersOptions();

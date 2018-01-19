@@ -20,6 +20,10 @@ spring:
     hibernate:
       ddl-auto: @jdbc.ddlAuto@
     database-platform: @jdbc.dialect@
+  cache:
+    cache-names: classifiers
+    caffeine:
+      spec: maximumSize=25, expireAfterWrite=7200s
 
 ## Cross - validation properties
 cross-validation:
