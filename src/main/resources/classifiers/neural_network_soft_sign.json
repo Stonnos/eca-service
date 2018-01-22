@@ -1,0 +1,6 @@
+{
+  "type": "neural_network",
+  "activationFunctionOptions": {
+    "activationFunctionType": "SOFT_SIGN"
+  }
+}
