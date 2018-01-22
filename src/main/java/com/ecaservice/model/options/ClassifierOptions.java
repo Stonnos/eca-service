@@ -2,7 +2,6 @@ package com.ecaservice.model.options;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import eca.trees.J48;
 
 /**
  * Classifier options abstract model.
@@ -18,7 +17,7 @@ import eca.trees.J48;
         @JsonSubTypes.Type(value = LogisticOptions.class, name = "logistic"),
         @JsonSubTypes.Type(value = KNearestNeighboursOptions.class, name = "knn"),
         @JsonSubTypes.Type(value = NeuralNetworkOptions.class, name = "neural_network"),
-        @JsonSubTypes.Type(value = J48.class, name = "j48"),
+        @JsonSubTypes.Type(value = J48Options.class, name = "j48"),
 })
 public abstract class ClassifierOptions {
 }
