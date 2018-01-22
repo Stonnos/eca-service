@@ -14,7 +14,7 @@ ECA service
 ----------------------------------------
 * jdk 1.8
 * maven 3.3.9
-* eca-core 5.0
+* eca-core 5.0.2
 * DB для хранения информации.
 
 Описание ключевой конфигурации модуля
@@ -31,6 +31,7 @@ ECA service
    resultSize - число наилучших конфигураций классификаторов
    numIterations - число итераций эксперимента
    storagePath - путь к папке в файловой системе для хранения файлов с историей экспериментов
+   individualClassifiersStoragePath - путь к папке в ресурсах для хранения json - конфигураций классификаторов
    downloadUrl - url ссылки на скачивание файла с результатами эксперимента
    maximumFractionDigits - число десятичных знаков после запятой
    timeout - время таймаута в часах.
@@ -79,12 +80,8 @@ ECA service
         create-drop - создать базу данных. После завершения работы приложения, созданная
                         база данных будет удалена.
    
-       
-2. Запустить приложение из КОРНЕВОЙ папки проекта
-
-    java -jar target/eca-service-1.2.jar
     
-3. Для запуска вместе с модулем DataMiner необходимо собрать приложение с профилем experiment-linux или
+2. Для запуска вместе с модулем DataMiner необходимо собрать приложение с профилем experiment-linux или
     experiment-windows, указав его основные параметры. Ниже приведен пример:
 
     mvn clean install -Pexperiment-linux, postgres -Dexperiment.storagePath=/home/roman/experiment/
