@@ -69,6 +69,7 @@ public class ClassifiersSetSearcher {
                     evaluationService.evaluateModel(new InputData(classifier, data), evaluationMethod,
                             evaluationOptionStringMap);
             if (classificationResult.isSuccess()) {
+                classificationResult.getEvaluationResults().setClassifier(classifier);
                 finished.add(classificationResult.getEvaluationResults());
             }
         }

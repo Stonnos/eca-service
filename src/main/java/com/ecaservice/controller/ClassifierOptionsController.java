@@ -31,6 +31,12 @@ public class ClassifierOptionsController {
     private final ExperimentConfigurationService experimentConfigurationService;
     private final ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
 
+    /**
+     * Constructor with spring dependency injection.
+     *
+     * @param experimentConfigurationService       {@link ExperimentConfigurationService} bean
+     * @param classifierOptionsDatabaseModelMapper {@link ClassifierOptionsDatabaseModelMapper} bean
+     */
     @Autowired
     public ClassifierOptionsController(ExperimentConfigurationService experimentConfigurationService,
                                        ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper) {
