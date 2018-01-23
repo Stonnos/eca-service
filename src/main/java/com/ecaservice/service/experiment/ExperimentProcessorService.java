@@ -5,7 +5,9 @@ import com.ecaservice.exception.ExperimentException;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.service.experiment.visitor.ExperimentInitializationVisitor;
+import eca.converters.model.EvaluationParams;
 import eca.converters.model.ExperimentHistory;
+import eca.core.evaluation.EvaluationMethod;
 import eca.core.evaluation.EvaluationResults;
 import eca.dataminer.AbstractExperiment;
 import eca.dataminer.ClassifierComparator;
@@ -77,7 +79,16 @@ public class ExperimentProcessorService {
         List<EvaluationResults> evaluationResults = findBestResults(abstractExperiment.getHistory());
         log.info("Experiment {} processing has been finished with {} best models!",
                 experiment.getId(), evaluationResults.size());
-        return new ExperimentHistory(evaluationResults, abstractExperiment.getData());
+        return buildExperimentHistory(evaluationResults, abstractExperiment);
+    }
+
+    private ExperimentHistory buildExperimentHistory(List<EvaluationResults> evaluationResults,
+                                                     AbstractExperiment abstractExperiment) {
+        EvaluationParams evaluationParams = EvaluationMethod.TRAINING_DATA.equals(abstractExperiment
+                .getEvaluationMethod()) ? null : new EvaluationParams(abstractExperiment.getNumFolds(),
+                abstractExperiment.getNumTests());
+        return new ExperimentHistory(evaluationResults, abstractExperiment.getData(), abstractExperiment
+                .getEvaluationMethod(), evaluationParams);
     }
 
     private List<EvaluationResults> findBestResults(List<EvaluationResults> experimentHistory) {
