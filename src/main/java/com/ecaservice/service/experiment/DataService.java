@@ -84,6 +84,11 @@ public class DataService {
      * @param file file object
      */
     public void delete(File file) {
-        FileUtils.deleteQuietly(file);
+        boolean deleted = FileUtils.deleteQuietly(file);
+        if (deleted) {
+            log.info("File {} has been deleted from disk.", file.getAbsolutePath());
+        } else {
+            log.warn("File {} hasn't been deleted from disk.", file.getAbsolutePath());
+        }
     }
 }

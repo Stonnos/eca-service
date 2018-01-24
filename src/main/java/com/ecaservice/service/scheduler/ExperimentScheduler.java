@@ -80,12 +80,13 @@ public class ExperimentScheduler {
      */
     @Scheduled(cron = "${experiment.schedulerCron}")
     public void processingRequestsToRemove() {
-        log.info("Starting to remove experiment requests.");
+        log.info("Starting to remove experiments data.");
         List<Experiment> experiments = experimentRepository.findNotDeletedExperiments(
                 LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage()));
+        log.info("Finds {} not removed experiments data.", experiments.size());
         for (Experiment experiment : experiments) {
             experimentService.removeExperimentData(experiment);
         }
-        log.info("Experiments removal has been finished.");
+        log.info("Experiments data removing has been finished.");
     }
 }
