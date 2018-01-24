@@ -19,7 +19,7 @@ ECA service
 
 Описание ключевой конфигурации модуля
 ----------------------------------------
-Настройки для проекта eca-service находятся в application.properties. Основные параметы:
+Настройки для проекта eca-service находятся в application.yml. Основные параметы:
 1) spring.datasource - настройки БД для хранения информации
 2) server.port — номер порта сервера
 3) cross.validation — настройки параметров для метода k * V блочной кросс - проверки
@@ -30,13 +30,14 @@ ECA service
    основных настроек:
    resultSize - число наилучших конфигураций классификаторов
    numIterations - число итераций эксперимента
-   storagePath - путь к папке в файловой системе для хранения файлов с историей экспериментов
-   individualClassifiersStoragePath - путь к папке в ресурсах для хранения json - конфигураций классификаторов
+   storagePath - путь к папке на файловой системе для хранения файлов с историей экспериментов
+   individualClassifiersStoragePath - путь к папке в ресурсах для хранения json - конфигураций классификаторов,
+   которые впоследствии будут использоваться при построении эксперимента
    downloadUrl - url ссылки на скачивание файла с результатами эксперимента
    maximumFractionDigits - число десятичных знаков после запятой
-   timeout - время таймаута в часах.
+   timeout - время таймаута эксперимента в часах.
    delay - интервал между запусками scheduler для обработки экспериметов
-   data.storagePath - путь к папке в файловой системе для хранения файлов с исходныи данными (обучающая выборка)
+   data.storagePath - путь к папке на файловой системе для хранения файлов с исходныи данными (обучающая выборка)
    ensemble.numIterations - число итераций для ансамблевых алгоритмов
    ensemble.numBestClassifiers - число наилучших по точности базовых классификаторов, которые впоследствии
    будут использоваться при построении ансамбля
@@ -45,47 +46,43 @@ ECA service
    mail.maxFailedAttemptsToSent - максимальной число попыток для отправки письма
 5) spring.mail - настройки smtp сервера для отправки результатов экспериментов по email 
 
-Инструкция
+Инструкция по развертыванию
 ----------------------------------------
 
-1. Для запуска сервиса с использованием БД MySQL необходимо:
-    Собрать проект с использованием профиля mysql:
+1. Для запуска сервиса сначала необходимо собрать проект. Ниже приведен пример команды:
     
-    mvn clean install -Pmysql -Djdbc.url=url -Djdbc.user=user -Djdbc.password=pass -Djdbc.dllAuto=update
+   mvn clean install -P[experiment-profile],[db-profile] -Dexperiment.storagePath=/home/roman/experiment/
+           -Dexperiment.data.storagePath=/home/roman/experiment/data/ -Dmail.host=smtp.yandex.com
+           -Dmail.port=25 -Dmail.username=test@yandex.ru -Dmail.password=password
+           -Djdbc.url=url -Djdbc.user=user -Djdbc.password=pass -Djdbc.dllAuto=update 
     
-   Для запуска сервиса с использованием БД PostreSQL необходимо:
-    Собрать проект с использованием профиля postgres:
-       
-    mvn clean install -Ppostgres -Djdbc.url=url -Djdbc.user=user -Djdbc.password=pass -Djdbc.dllAuto=update
-       
-   Для запуска сервиса с использованием БД OracleSQL необходимо:
-    Собрать проект с использованием профиля oracle:
-       
-    mvn clean install -Poracle -Djdbc.url=url -Djdbc.user=user -Djdbc.password=pass -Djdbc.dllAuto=update
- 
-   Для запуска сервиса с использованием БД H2 необходимо:
-    Собрать проект с использованием профиля h2:
-       
-    mvn clean install -Ph2
-    
-   где:
-   url - url для подключения к БД
-   user - логин
-   pass - пароль
-   ddlAuto - параметр, который может принимать одно из четырех значений:
+   Ниже приведен перечень основных параметров:
    
-        validate - не вносить изменения в базу данных.
-        update - обновить схему базы данных.
-        create - создать базу данных, уничтожив предыдущие данные.
-        create-drop - создать базу данных. После завершения работы приложения, созданная
+   a) experiment-profile - профиль для параметров модуля Data Miner. Может принимать одно из следующих значений:
+        * experiment-linux - используется для машин с ОС семейства Linux.
+        * experiment-windows - используется для машин с ОС семейства Windows.
+   b) db-profile - профиль для настройки параметров конкретной БД. Может принимать одно из следующих значений:
+        * postgres - профиль для параметров СУБД PostgreSQL
+        * mysql - профиль для параметров СУБД MySQL
+        * oracle - профиль для параметров СУБД Oracle
+        * h2 - профиль для параметров СУБД H2
+   c) Параметры БД:
+        * jdbc.url - url для подключения к БД
+        * jdbc.user - логин
+        * jdbc.password - пароль
+        * jdbc.ddlAuto - параметр, который может принимать одно из четырех значений:
+   
+            validate - не вносить изменения в базу данных.
+            update - обновить схему базы данных.
+            create - создать базу данных, уничтожив предыдущие данные.
+            create-drop - создать базу данных. После завершения работы приложения, созданная
                         база данных будет удалена.
-   
-    
-2. Для запуска вместе с модулем DataMiner необходимо собрать приложение с профилем experiment-linux или
-    experiment-windows, указав его основные параметры. Ниже приведен пример:
-
-    mvn clean install -Pexperiment-linux, postgres -Dexperiment.storagePath=/home/roman/experiment/
-        -Dexperiment.data.storagePath=/home/roman/experiment/data/ -Dspring.mail.host=smtp.yandex.com
-        -Dspring.mail.port=25 -Dspring.mail.username=test@yandex.ru -Dspring.mail.password=password
-        -Dmail.from=test@yandex.ru
+   d) Параметры модуля Data Miner:
+        * experiment.storagePath - путь к папке на файловой системе для хранения файлов с историей экспериментов
+        * experiment.data.storagePath - путь к папке на файловой системе для хранения файлов с
+            исходныи данными (обучающая выборка)
+        * mail - настройки smtp - сервера для отправки результатов эксперимента по email
+             
+2. Страница с документацией swagger находится по адресу http://[host]:[port]/swagger-ui.html, где host и port
+соответственно адрес машины и порт на котором развернуто приложение.
     
