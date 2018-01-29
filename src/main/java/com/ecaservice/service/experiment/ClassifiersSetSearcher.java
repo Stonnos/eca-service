@@ -20,6 +20,7 @@ import weka.core.Instances;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Service for searching the best individual classifiers set by the criterion of accuracy maximization.
@@ -83,7 +84,9 @@ public class ClassifiersSetSearcher {
         for (int i = 0; i < Integer.min(experimentConfig.getEnsemble().getNumBestClassifiers(), finished.size()); i++) {
             classifiers.addClassifier(finished.get(i).getClassifier());
         }
-        log.info("{} best classifiers has been built.", classifiers.size());
+        log.info("{} best classifiers has been built.",
+                classifiers.toList().stream().map(classifier -> classifier.getClass().getSimpleName()).collect(
+                        Collectors.toList()));
         return classifiers;
     }
 }
