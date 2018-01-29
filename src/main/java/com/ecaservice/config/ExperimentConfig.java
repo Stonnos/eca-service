@@ -86,6 +86,16 @@ public class ExperimentConfig {
     private List<ExperimentStatus> sentStatuses;
 
     /**
+     * Is concurrent classification algorithms enabled?
+     */
+    private Boolean multiThreadModeEnabled;
+
+    /**
+     * Specified threads number
+     */
+    private Integer numThreads;
+
+    /**
      * Data configuration properties.
      */
     @Data

@@ -63,6 +63,8 @@ experiment:
   delaySeconds: 120
   processStatuses: [NEW]
   sentStatuses: [FINISHED, ERROR, TIMEOUT]
+  multiThreadModeEnabled: true
+  numThreads:
 
   data:
     storagePath: @data.storagePath@

@@ -76,6 +76,7 @@ public class ExperimentInitializationVisitor
         ClassifiersSet classifiersSet = classifiersSetSearcher.findBestClassifiers(initializationParams.getData(),
                 initializationParams.getEvaluationMethod(), createEvaluationOptionsMap(initializationParams));
         HeterogeneousClassifier heterogeneousClassifier = new HeterogeneousClassifier(classifiersSet);
+        heterogeneousClassifier.setNumThreads(getNumThreads());
         heterogeneousClassifier.setIterationsNum(experimentConfig.getEnsemble().getNumIterations());
         return new AutomatedHeterogeneousEnsemble(heterogeneousClassifier, initializationParams.getData());
     }
@@ -86,6 +87,7 @@ public class ExperimentInitializationVisitor
                 initializationParams.getEvaluationMethod(), createEvaluationOptionsMap(initializationParams));
         ModifiedHeterogeneousClassifier modifiedHeterogeneousClassifier =
                 new ModifiedHeterogeneousClassifier(classifiersSet);
+        modifiedHeterogeneousClassifier.setNumThreads(getNumThreads());
         modifiedHeterogeneousClassifier.setIterationsNum(experimentConfig.getEnsemble().getNumIterations());
         return new AutomatedHeterogeneousEnsemble(modifiedHeterogeneousClassifier, initializationParams.getData());
     }
@@ -123,6 +125,21 @@ public class ExperimentInitializationVisitor
         experiment.setEvaluationMethod(evaluationMethodMapper.map(initializationParams.getEvaluationMethod()));
         experiment.setNumFolds(crossValidationConfig.getNumFolds());
         experiment.setNumTests(crossValidationConfig.getNumTests());
+    }
+
+    /**
+     * Returns specified threads number for concurrent algorithms. If threads number isn't specified then
+     * returns available JVM processors number.
+     *
+     * @return threads number for concurrent algorithms
+     */
+    private Integer getNumThreads() {
+        if (experimentConfig.getMultiThreadModeEnabled()) {
+            return experimentConfig.getNumThreads() != null ? experimentConfig.getNumThreads() :
+                    Runtime.getRuntime().availableProcessors();
+        } else {
+            return null;
+        }
     }
 
     private Map<EvaluationOption, String> createEvaluationOptionsMap(InitializationParams initializationParams) {
