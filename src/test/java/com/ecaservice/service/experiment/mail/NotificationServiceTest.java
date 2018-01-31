@@ -76,7 +76,7 @@ public class NotificationServiceTest extends AbstractExperimentTest {
         doNothing().when(mailSenderService).sendEmail(any(Mail.class));
         notificationService.notifyByEmail(experiment);
         List<Experiment> experimentList = experimentRepository.findAll();
-        AssertionUtils.assertList(experimentList);
+        AssertionUtils.assertSingletonList(experimentList);
         Experiment actualExperiment = experimentList.get(0);
         assertThat(actualExperiment.getSentDate()).isNotNull();
     }
@@ -89,7 +89,7 @@ public class NotificationServiceTest extends AbstractExperimentTest {
         int expectedFailedAttemptsToSent = experiment.getFailedAttemptsToSent() + 1;
         notificationService.notifyByEmail(experiment);
         List<Experiment> experimentList = experimentRepository.findAll();
-        AssertionUtils.assertList(experimentList);
+        AssertionUtils.assertSingletonList(experimentList);
         Experiment actualExperiment = experimentList.get(0);
         assertThat(actualExperiment.getSentDate()).isNull();
         assertThat(actualExperiment.getFailedAttemptsToSent()).isEqualTo(expectedFailedAttemptsToSent);
@@ -103,7 +103,7 @@ public class NotificationServiceTest extends AbstractExperimentTest {
         when(templateEngine.process(any(String.class), any(Context.class))).thenThrow(Exception.class);
         notificationService.notifyByEmail(experiment);
         List<Experiment> experimentList = experimentRepository.findAll();
-        AssertionUtils.assertList(experimentList);
+        AssertionUtils.assertSingletonList(experimentList);
         Experiment actualExperiment = experimentList.get(0);
         assertThat(actualExperiment.getSentDate()).isNull();
         assertThat(actualExperiment.getExperimentStatus()).isEqualTo(ExperimentStatus.EXCEEDED);

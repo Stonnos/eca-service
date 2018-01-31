@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import( {ExperimentConfig.class, DecisionTreeOptionsMapperImpl.class, LogisticOptionsMapperImpl.class,
+@Import({ExperimentConfig.class, DecisionTreeOptionsMapperImpl.class, LogisticOptionsMapperImpl.class,
         KNearestNeighboursOptionsMapperImpl.class, NeuralNetworkOptionsMapperImpl.class, DecisionTreeFactory.class,
         ExperimentConfigurationService.class})
 public class ExperimentConfigurationServiceTest extends AbstractExperimentTest {

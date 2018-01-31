@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import( {ExperimentConfig.class, CrossValidationConfig.class, EvaluationMethodMapperTest.class})
+@Import({ExperimentConfig.class, CrossValidationConfig.class, EvaluationMethodMapperTest.class})
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application-test.properties")
 public class ExperimentInitializationVisitorTest {

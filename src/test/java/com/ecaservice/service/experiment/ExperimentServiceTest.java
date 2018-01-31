@@ -41,7 +41,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import( {ExperimentMapperImpl.class, ExperimentConfig.class})
+@Import({ExperimentMapperImpl.class, ExperimentConfig.class})
 public class ExperimentServiceTest extends AbstractExperimentTest {
 
     @Autowired
@@ -89,7 +89,7 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
         doNothing().when(dataService).save(any(File.class), any(Instances.class));
         experimentService.createExperiment(experimentRequest);
         List<Experiment> experiments = experimentRepository.findAll();
-        AssertionUtils.assertList(experiments);
+        AssertionUtils.assertSingletonList(experiments);
         Experiment experiment = experiments.get(0);
         assertThat(experiment.getExperimentStatus()).isEqualTo(ExperimentStatus.NEW);
         assertThat(experiment.getCreationDate()).isNotNull();
@@ -102,7 +102,7 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
         doThrow(Exception.class).when(dataService).save(any(File.class), any(Instances.class));
         experimentService.createExperiment(experimentRequest);
         List<Experiment> experiments = experimentRepository.findAll();
-        AssertionUtils.assertList(experiments);
+        AssertionUtils.assertSingletonList(experiments);
         Experiment experiment = experiments.get(0);
         assertThat(experiment.getExperimentStatus()).isEqualTo(ExperimentStatus.ERROR);
         assertThat(experiment.getCreationDate()).isNotNull();
@@ -139,7 +139,7 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
         doNothing().when(dataService).save(any(File.class), any(ExperimentHistory.class));
         experimentService.processExperiment(TestHelperUtils.createExperiment(null));
         List<Experiment> experiments = experimentRepository.findAll();
-        AssertionUtils.assertList(experiments);
+        AssertionUtils.assertSingletonList(experiments);
         Experiment experiment = experiments.get(0);
         assertThat(experiment.getStartDate()).isNotNull();
         assertThat(experiment.getEndDate()).isNotNull();
@@ -153,7 +153,7 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
         when(dataService.load(any(File.class))).thenThrow(Exception.class);
         experimentService.processExperiment(TestHelperUtils.createExperiment(null));
         List<Experiment> experiments = experimentRepository.findAll();
-        AssertionUtils.assertList(experiments);
+        AssertionUtils.assertSingletonList(experiments);
         Experiment experiment = experiments.get(0);
         assertThat(experiment.getStartDate()).isNotNull();
         assertThat(experiment.getEndDate()).isNotNull();
@@ -168,7 +168,7 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
         doThrow(TimeoutException.class).when(dataService).save(any(File.class), any(ExperimentHistory.class));
         experimentService.processExperiment(TestHelperUtils.createExperiment(null));
         List<Experiment> experiments = experimentRepository.findAll();
-        AssertionUtils.assertList(experiments);
+        AssertionUtils.assertSingletonList(experiments);
         Experiment experiment = experiments.get(0);
         assertThat(experiment.getStartDate()).isNotNull();
         assertThat(experiment.getEndDate()).isNotNull();

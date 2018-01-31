@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import( {DecisionTreeOptionsMapperImpl.class, DecisionTreeFactory.class})
+@Import({DecisionTreeOptionsMapperImpl.class, DecisionTreeFactory.class})
 public class DecisionTreeOptionsMapperTest {
 
     @Autowired
