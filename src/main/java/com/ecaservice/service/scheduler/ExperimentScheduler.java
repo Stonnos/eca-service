@@ -137,7 +137,7 @@ public class ExperimentScheduler {
             totalCount += page.getSize();
             log.trace("Experiments page [{}, {}] has been processed.", page.getNumber(), page.getSize());
         } while (page.hasNext());
-        log.info("{} experiments has been processed.", totalCount);
+        log.trace("{} experiments has been processed.", totalCount);
     }
 
 }
