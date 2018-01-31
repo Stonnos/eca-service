@@ -22,28 +22,31 @@ ECA service
 Настройки для проекта eca-service находятся в application.yml. Основные параметы:
 1) spring.datasource - настройки БД для хранения информации
 2) server.port — номер порта сервера
-3) cross.validation — настройки параметров для метода k * V блочной кросс - проверки
+3) cross-validation — настройки параметров для метода k * V блочной кросс - проверки
    на тестовой выборке:
-   numFolds - число блоков
-   numTests - число тестов
+   cross-validation.numFolds - число блоков
+   cross-validation.numTests - число тестов
 4) experiment - настройки параметров модуля Data Miner. Ниже приведено описание
    основных настроек:
-   resultSize - число наилучших конфигураций классификаторов
-   numIterations - число итераций эксперимента
-   storagePath - путь к папке на файловой системе для хранения файлов с историей экспериментов
-   individualClassifiersStoragePath - путь к папке в ресурсах для хранения json - конфигураций классификаторов,
+   experiment.resultSize - число наилучших конфигураций классификаторов
+   experiment.numIterations - число итераций эксперимента
+   experiment.storagePath - путь к папке на файловой системе для хранения файлов с историей экспериментов
+   experiment.individualClassifiersStoragePath - путь к папке в ресурсах для хранения json - конфигураций классификаторов,
    которые впоследствии будут использоваться при построении эксперимента
-   downloadUrl - url ссылки на скачивание файла с результатами эксперимента
+   experiment.downloadUrl - url ссылки на скачивание файла с результатами эксперимента
    maximumFractionDigits - число десятичных знаков после запятой
-   timeout - время таймаута эксперимента в часах.
-   delay - интервал между запусками scheduler для обработки экспериметов
-   data.storagePath - путь к папке на файловой системе для хранения файлов с исходныи данными (обучающая выборка)
-   ensemble.numIterations - число итераций для ансамблевых алгоритмов
-   ensemble.numBestClassifiers - число наилучших по точности базовых классификаторов, которые впоследствии
+   experiment.timeout - время таймаута эксперимента в часах.
+   experiment.pageSize - размер страницы для постраничной обработки экспериментов.
+   experiment.delay - интервал между запусками scheduler для обработки экспериметов
+   experiment.data.storagePath - путь к папке на файловой системе для хранения файлов с исходныи данными (обучающая выборка)
+   experiment.ensemble.numIterations - число итераций для ансамблевых алгоритмов
+   experiment.ensemble.numBestClassifiers - число наилучших по точности базовых классификаторов, которые впоследствии
    будут использоваться при построении ансамбля
-   mail.from - email отправителя
-   mail.subject - тема письма
-   mail.maxFailedAttemptsToSent - максимальной число попыток для отправки письма
+   experiment.ensemble.multiThreadModeEnabled - многопоточный режим для ансамблевых алгоритмов (вкл./выкл.)
+   experiment.ensemble.numThreads - число используемых потоков
+   experiment.mail.from - email отправителя
+   experiment.mail.subject - тема письма
+   experiment.mail.maxFailedAttemptsToSent - максимальной число попыток для отправки письма
 5) spring.mail - настройки smtp сервера для отправки результатов экспериментов по email 
 
 Инструкция по развертыванию

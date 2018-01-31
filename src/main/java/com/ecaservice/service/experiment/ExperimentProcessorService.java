@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Experiment processing service
+ * Experiment processing service.
  *
  * @author Roman Batygin
  */
