@@ -59,7 +59,7 @@ public class ExperimentSchedulerTest extends AbstractExperimentTest {
         experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         experimentRepository.save(experiments);
-        experimentScheduler.processingNewRequests();
+        experimentScheduler.processNewRequests();
         verify(experimentService, times(experiments.size())).processExperiment(any(Experiment.class));
     }
 
@@ -70,7 +70,7 @@ public class ExperimentSchedulerTest extends AbstractExperimentTest {
         experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), ExperimentStatus.ERROR));
         experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), ExperimentStatus.TIMEOUT));
         experimentRepository.save(experiments);
-        experimentScheduler.processingRequestsToSent();
+        experimentScheduler.processRequestsToSent();
         verify(notificationService, times(experiments.size())).notifyByEmail(any(Experiment.class));
     }
 
@@ -88,7 +88,7 @@ public class ExperimentSchedulerTest extends AbstractExperimentTest {
         experiment.setDeletedDate(LocalDateTime.now());
         experiments.add(experiment);
         experimentRepository.save(experiments);
-        experimentScheduler.processingRequestsToRemove();
+        experimentScheduler.processRequestsToRemove();
         verify(experimentService, atLeastOnce()).removeExperimentData(any(Experiment.class));
     }
 }

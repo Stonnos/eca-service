@@ -1,6 +1,7 @@
 package com.ecaservice.service.experiment;
 
 import com.ecaservice.config.ExperimentConfig;
+import com.ecaservice.exception.ExperimentException;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentRequest;
@@ -102,6 +103,10 @@ public class ExperimentService {
         experiment.setStartDate(LocalDateTime.now());
         experimentRepository.save(experiment);
         try {
+            if (experiment.getTrainingDataAbsolutePath() == null) {
+                throw new ExperimentException("Training data path is not specified!");
+            }
+
             StopWatch stopWatch = new StopWatch(String.format("Stop watching for experiment %d", experiment.getId()));
             stopWatch.start(String.format("Loading data for experiment %d", experiment.getId()));
             Instances data = dataService.load(new File(experiment.getTrainingDataAbsolutePath()));

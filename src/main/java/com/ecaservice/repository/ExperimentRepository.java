@@ -2,13 +2,14 @@ package com.ecaservice.repository;
 
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Implements repository that manages with {@link Experiment} entities.
@@ -29,18 +30,21 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long> {
      * Finds not sent experiments by statuses
      *
      * @param statuses {@link ExperimentStatus} collection
+     * @param pageable {@link Pageable} object
      * @return {@link Experiment} list
      */
-    @Query("select e from Experiment e where e.experimentStatus in (:statuses) and e.sentDate is null order by e.creationDate")
-    List<Experiment> findNotSentExperiments(@Param("statuses") Collection<ExperimentStatus> statuses);
+    @Query("select exp from Experiment exp where exp.experimentStatus in (:statuses) and exp.sentDate is null order by exp.creationDate")
+    Page<Experiment> findNotSentExperiments(@Param("statuses") Collection<ExperimentStatus> statuses,
+                                            Pageable pageable);
 
     /**
      * Finds experiments which sent date is after N days.
      *
      * @param dateTime date time threshold value
+     * @param pageable {@link Pageable} object
      * @return {@link Experiment} list
      */
-    @Query("select e from Experiment e where e.deletedDate is null and e.sentDate < :dateTime order by e.sentDate")
-    List<Experiment> findNotDeletedExperiments(@Param("dateTime") LocalDateTime dateTime);
+    @Query("select exp from Experiment exp where exp.deletedDate is null and exp.sentDate < :dateTime order by exp.sentDate")
+    Page<Experiment> findNotDeletedExperiments(@Param("dateTime") LocalDateTime dateTime, Pageable pageable);
 
 }

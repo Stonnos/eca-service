@@ -86,14 +86,9 @@ public class ExperimentConfig {
     private List<ExperimentStatus> sentStatuses;
 
     /**
-     * Is concurrent classification algorithms enabled?
+     * Page size for processing experiments
      */
-    private Boolean multiThreadModeEnabled;
-
-    /**
-     * Specified threads number
-     */
-    private Integer numThreads;
+    private Integer pageSize;
 
     /**
      * Data configuration properties.
@@ -132,6 +127,16 @@ public class ExperimentConfig {
          * Number of best individual classifiers
          */
         private Integer numBestClassifiers;
+
+        /**
+         * Is concurrent classification algorithms enabled?
+         */
+        private Boolean multiThreadModeEnabled;
+
+        /**
+         * Specified threads number
+         */
+        private Integer numThreads;
     }
 
 }

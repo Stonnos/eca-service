@@ -63,8 +63,7 @@ experiment:
   delaySeconds: 120
   processStatuses: [NEW]
   sentStatuses: [FINISHED, ERROR, TIMEOUT]
-  multiThreadModeEnabled: true
-  numThreads:
+  pageSize: 1
 
   data:
     storagePath: @data.storagePath@
@@ -73,6 +72,8 @@ experiment:
   ensemble:
     numIterations: 25
     numBestClassifiers: 4
+    multiThreadModeEnabled: true
+    numThreads:
 
   mail:
     from: rbatsw@gmail.com

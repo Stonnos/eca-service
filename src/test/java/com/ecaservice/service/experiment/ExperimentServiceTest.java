@@ -77,6 +77,13 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
     }
 
     @Test
+    public void testNullTrainingDataPath() {
+        Experiment experiment = new Experiment();
+        experimentService.processExperiment(experiment);
+        assertThat(experiment.getExperimentStatus()).isEqualTo(ExperimentStatus.ERROR);
+    }
+
+    @Test
     public void testSuccessExperimentRequestCreation() throws Exception {
         ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
         doNothing().when(dataService).save(any(File.class), any(Instances.class));

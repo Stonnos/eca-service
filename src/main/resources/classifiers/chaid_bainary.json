@@ -1,5 +1,5 @@
 {
   "type": "decision_tree",
   "decisionTreeType": "CHAID",
-  "useBinarySplits": false
+  "useBinarySplits": true
 }

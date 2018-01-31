@@ -134,9 +134,9 @@ public class ExperimentInitializationVisitor
      * @return threads number for concurrent algorithms
      */
     private Integer getNumThreads() {
-        if (experimentConfig.getMultiThreadModeEnabled()) {
-            return experimentConfig.getNumThreads() != null ? experimentConfig.getNumThreads() :
-                    Runtime.getRuntime().availableProcessors();
+        if (experimentConfig.getEnsemble().getMultiThreadModeEnabled()) {
+            return experimentConfig.getEnsemble().getNumThreads() != null ?
+                    experimentConfig.getEnsemble().getNumThreads() : Runtime.getRuntime().availableProcessors();
         } else {
             return null;
         }
