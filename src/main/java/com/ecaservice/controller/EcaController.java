@@ -28,7 +28,7 @@ import java.time.format.DateTimeFormatter;
 @Api(tags = "Operations for individual and ensemble classifiers learning")
 @Slf4j
 @RestController
-@RequestMapping("/eca-service/evaluation")
+@RequestMapping("/evaluation")
 public class EcaController {
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss");

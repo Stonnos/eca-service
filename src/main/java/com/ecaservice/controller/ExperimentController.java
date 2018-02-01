@@ -36,7 +36,7 @@ import java.time.format.DateTimeFormatter;
 @Api(tags = "Operations for experiment processing")
 @Slf4j
 @RestController
-@RequestMapping("/eca-service/experiment")
+@RequestMapping("/experiment")
 public class ExperimentController {
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss");

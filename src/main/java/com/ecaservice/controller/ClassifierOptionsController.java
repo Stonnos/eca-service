@@ -25,7 +25,7 @@ import java.util.List;
  */
 @Api(tags = "Operations for experiment classifiers configs")
 @RestController
-@RequestMapping("/eca-service/experiment/classifiers-config")
+@RequestMapping("/experiment/classifiers-config")
 public class ClassifierOptionsController {
 
     private final ExperimentConfigurationService experimentConfigurationService;
