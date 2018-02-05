@@ -53,9 +53,7 @@ public class EvaluationService {
     public ClassificationResult evaluateModel(final InputData inputData,
                                               final EvaluationMethod evaluationMethod,
                                               final Map<EvaluationOption, String> evaluationOptionsMap) {
-
         ClassificationResult classificationResult = new ClassificationResult();
-
         try {
             Assert.notNull(inputData, "Input data is not specified!");
             Assert.notNull(inputData.getClassifier(), "Classifier is not specified!");
@@ -63,7 +61,7 @@ public class EvaluationService {
             Assert.notNull(evaluationMethod, "Evaluation method is not specified!");
             Assert.notNull(evaluationOptionsMap, "Evaluation options map is not specified!");
 
-            final Classifier classifier = inputData.getClassifier();
+            final Classifier classifier = AbstractClassifier.makeCopy(inputData.getClassifier());
             final Instances data = inputData.getData();
             final String classifierName = classifier.getClass().getSimpleName();
 
@@ -130,7 +128,6 @@ public class EvaluationService {
             log.error("There was an error occurred in evaluation : {}", ex);
             classificationResult.setErrorMessage(ex.getMessage());
         }
-
         return classificationResult;
     }
 
