@@ -1,5 +1,6 @@
 package com.ecaservice.mapping;
 
+import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.options.ActivationFunctionOptions;
 import com.ecaservice.model.options.NeuralNetworkOptions;
 import eca.neural.NeuralNetwork;
@@ -8,6 +9,7 @@ import eca.neural.functions.ActivationFunctionBuilder;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Implements neural network input options mapping to neural network model.
@@ -16,6 +18,9 @@ import org.mapstruct.MappingTarget;
  */
 @Mapper
 public abstract class NeuralNetworkOptionsMapper extends ClassifierOptionsMapper<NeuralNetworkOptions, NeuralNetwork> {
+
+    @Autowired
+    private ExperimentConfig experimentConfig;
 
     protected NeuralNetworkOptionsMapper() {
         super(NeuralNetworkOptions.class);
@@ -38,8 +43,8 @@ public abstract class NeuralNetworkOptionsMapper extends ClassifierOptionsMapper
     @AfterMapping
     protected void mapMaxFractionDigits(NeuralNetworkOptions networkOptions,
                                         @MappingTarget NeuralNetwork neuralNetwork) {
-        if (networkOptions.getMaximumFractionDigits() != null) {
-            neuralNetwork.getDecimalFormat().setMaximumFractionDigits(networkOptions.getMaximumFractionDigits());
+        if (experimentConfig.getMaximumFractionDigits() != null) {
+            neuralNetwork.getDecimalFormat().setMaximumFractionDigits(experimentConfig.getMaximumFractionDigits());
         }
     }
 

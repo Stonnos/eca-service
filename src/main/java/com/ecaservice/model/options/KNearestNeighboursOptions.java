@@ -11,11 +11,19 @@ import lombok.Data;
 @Data
 public class KNearestNeighboursOptions extends ClassifierOptions {
 
+    /**
+     * Neighbours number
+     */
     private Integer numNeighbours;
 
+    /**
+     * Neighbour's weight value
+     */
     private Double weight;
 
+    /**
+     * Distance function type
+     */
     private DistanceType distanceType;
 
-    private Integer maximumFractionDigits;
 }

@@ -83,6 +83,7 @@ public class ExperimentController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData(ATTACHMENT, resource.getFilename());
+        log.info("Download file '{}' for uuid = '{}'", experimentFile.getAbsolutePath(), uuid);
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 

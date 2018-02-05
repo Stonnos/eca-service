@@ -10,7 +10,13 @@ import lombok.Data;
 @Data
 public class LogisticOptions extends ClassifierOptions {
 
+    /**
+     * Maximum iterations number for optimization method
+     */
     private Integer maxIts;
 
+    /**
+     * Is use conjugate gradient descent method?
+     */
     private Boolean useConjugateGradientDescent;
 }

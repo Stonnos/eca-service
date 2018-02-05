@@ -11,7 +11,13 @@ import lombok.Data;
 @Data
 public class ActivationFunctionOptions {
 
+    /**
+     * Activation function type
+     */
     private ActivationFunctionType activationFunctionType;
 
+    /**
+     * Activation function coefficient value
+     */
     private Double coefficient;
 }

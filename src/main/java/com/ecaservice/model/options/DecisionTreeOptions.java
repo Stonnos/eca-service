@@ -11,19 +11,43 @@ import lombok.Data;
 @Data
 public class DecisionTreeOptions extends ClassifierOptions {
 
+    /**
+     * Decision tree algorithm
+     */
     private DecisionTreeType decisionTreeType;
 
+    /**
+     * Minimum objects number per leaf
+     */
     private Integer minObj;
 
+    /**
+     * Maximum tree depth
+     */
     private Integer maxDepth;
 
-    private Integer numRandomAttr;
-
-    private Boolean useBinarySplits;
-
-    private Boolean useRandomSplits;
-
+    /**
+     * Is random tree
+     */
     private Boolean randomTree;
 
+    /**
+     * Random attributes number at each split for random tree
+     */
+    private Integer numRandomAttr;
+
+    /**
+     * Is binary tree?
+     */
+    private Boolean useBinarySplits;
+
+    /**
+     * Is use random splits?
+     */
+    private Boolean useRandomSplits;
+
+    /**
+     * Random splits number at each node split
+     */
     private Integer numRandomSplits;
 }

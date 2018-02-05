@@ -10,7 +10,9 @@ import lombok.Data;
 @Data
 public class NeuralNetworkOptions extends ClassifierOptions {
 
+    /**
+     * Activation function options
+     */
     private ActivationFunctionOptions activationFunctionOptions;
 
-    private Integer maximumFractionDigits;
 }
