@@ -43,7 +43,9 @@ public class EvaluationService {
     }
 
     /**
-     * Evaluates classifier model.
+     * Evaluates classifier model. For evaluation classifier's copy is created.
+     * If options for cross - validation method is not specified then the options
+     * from configs will be used for evaluation.
      *
      * @param inputData            {@link InputData} object
      * @param evaluationMethod     evaluation method

@@ -52,7 +52,7 @@ public class NotificationService {
     }
 
     /**
-     * Sends experiment download reference to email.
+     * Sends experiment downloading reference to specified email.
      *
      * @param experiment {@link Experiment} object
      */

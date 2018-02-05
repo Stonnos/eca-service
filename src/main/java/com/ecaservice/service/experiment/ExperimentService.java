@@ -94,7 +94,8 @@ public class ExperimentService {
     }
 
     /**
-     * Processes experiment.
+     * Processes new experiment. Experiments results are saved into file after processing and
+     * unique UUID for downloading is generated.
      *
      * @param experiment {@link Experiment} object
      */
