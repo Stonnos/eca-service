@@ -93,11 +93,11 @@ public class EcaService {
                 evaluationResponse.setErrorMessage(classificationResult.getErrorMessage());
             }
         } catch (TimeoutException ex) {
-            log.warn("There was a timeout.");
+            log.warn("There was a timeout for evaluation with id = {}.", evaluationLog.getId());
             evaluationLog.setEvaluationStatus(EvaluationStatus.TIMEOUT);
             evaluationResponse.setStatus(TechnicalStatus.TIMEOUT);
         } catch (Exception ex) {
-            log.error("There was an error occurred in evaluation : {}", ex);
+            log.error("There was an error occurred for evaluation with id = {}: {}", evaluationLog.getId(), ex);
             evaluationLog.setEvaluationStatus(EvaluationStatus.ERROR);
             evaluationLog.setErrorMessage(ex.getMessage());
             evaluationResponse.setStatus(TechnicalStatus.ERROR);

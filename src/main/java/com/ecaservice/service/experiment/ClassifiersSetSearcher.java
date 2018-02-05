@@ -7,6 +7,8 @@ import com.ecaservice.model.evaluation.ClassificationResult;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.service.evaluation.EvaluationService;
+import com.ecaservice.service.experiment.handler.ClassifierInputDataHandler;
+import com.ecaservice.util.ClassifierUtils;
 import eca.core.evaluation.EvaluationResults;
 import eca.dataminer.ClassifierComparator;
 import eca.ensemble.ClassifiersSet;
@@ -34,6 +36,7 @@ public class ClassifiersSetSearcher {
     private final EvaluationService evaluationService;
     private final ExperimentConfigurationService experimentConfigurationService;
     private final ExperimentConfig experimentConfig;
+    private final List<ClassifierInputDataHandler> classifierInputDataHandlers;
 
     /**
      * Constructor with spring dependency injection.
@@ -41,14 +44,17 @@ public class ClassifiersSetSearcher {
      * @param evaluationService              {@link EvaluationService} bean
      * @param experimentConfigurationService {@link ExperimentConfigurationService} bean
      * @param experimentConfig               {@link ExperimentConfig} bean
+     * @param classifierInputDataHandlers    {@link ClassifierInputDataHandler} beans
      */
     @Autowired
     public ClassifiersSetSearcher(EvaluationService evaluationService,
                                   ExperimentConfigurationService experimentConfigurationService,
-                                  ExperimentConfig experimentConfig) {
+                                  ExperimentConfig experimentConfig,
+                                  List<ClassifierInputDataHandler> classifierInputDataHandlers) {
         this.evaluationService = evaluationService;
         this.experimentConfigurationService = experimentConfigurationService;
         this.experimentConfig = experimentConfig;
+        this.classifierInputDataHandlers = classifierInputDataHandlers;
     }
 
     /**
@@ -63,9 +69,11 @@ public class ClassifiersSetSearcher {
                                               Map<EvaluationOption, String> evaluationOptionStringMap) {
         log.info("Starting to find the best individual classifiers using {} evaluation method.", evaluationMethod);
         List<AbstractClassifier> classifiersSet = experimentConfigurationService.findClassifiers();
-        ArrayList<EvaluationResults> finished = new ArrayList<>(classifiersSet.size());
+        List<AbstractClassifier> classifiersCopies = ClassifierUtils.createCopies(classifiersSet);
+        initializeInputData(classifiersCopies, data);
+        ArrayList<EvaluationResults> finished = new ArrayList<>(classifiersCopies.size());
 
-        for (AbstractClassifier classifier : classifiersSet) {
+        for (AbstractClassifier classifier : classifiersCopies) {
             ClassificationResult classificationResult =
                     evaluationService.evaluateModel(new InputData(classifier, data), evaluationMethod,
                             evaluationOptionStringMap);
@@ -88,5 +96,16 @@ public class ClassifiersSetSearcher {
                 classifiers.toList().stream().map(classifier -> classifier.getClass().getSimpleName()).collect(
                         Collectors.toList()));
         return classifiers;
+    }
+
+    private void initializeInputData(List<AbstractClassifier> classifiers, Instances data) {
+        //Initialize classifiers options based on training data
+        for (AbstractClassifier classifier : classifiers) {
+            for (ClassifierInputDataHandler handler : classifierInputDataHandlers) {
+                if (handler.canHandle(classifier)) {
+                    handler.handle(data, classifier);
+                }
+            }
+        }
     }
 }

@@ -6,6 +6,8 @@ import com.ecaservice.exception.ExperimentException;
 import com.ecaservice.model.evaluation.ClassificationResult;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.service.evaluation.EvaluationService;
+import com.ecaservice.service.experiment.handler.ClassifierInputDataHandler;
+import com.ecaservice.service.experiment.handler.NeuralNetworkInputDataHandler;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.ensemble.ClassifiersSet;
@@ -39,11 +41,13 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import(ExperimentConfig.class)
+@Import({ExperimentConfig.class, NeuralNetworkInputDataHandler.class})
 public class ClassifiersSetSearcherTest extends AbstractExperimentTest {
 
     @Autowired
     private ExperimentConfig experimentConfig;
+    @Autowired
+    private List<ClassifierInputDataHandler> classifierInputDataHandlers;
     @Mock
     private EvaluationService evaluationService;
     @Mock
@@ -57,7 +61,7 @@ public class ClassifiersSetSearcherTest extends AbstractExperimentTest {
     public void init() throws Exception {
         testInstances = TestHelperUtils.loadInstances();
         classifiersSetSearcher = new ClassifiersSetSearcher(evaluationService, experimentConfigurationService,
-                experimentConfig);
+                experimentConfig, classifierInputDataHandlers);
         evaluationResults = new EvaluationResults(new KNearestNeighbours(), new Evaluation(testInstances));
     }
 

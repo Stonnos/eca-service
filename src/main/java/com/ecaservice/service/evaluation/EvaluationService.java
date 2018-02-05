@@ -63,7 +63,7 @@ public class EvaluationService {
             Assert.notNull(evaluationMethod, "Evaluation method is not specified!");
             Assert.notNull(evaluationOptionsMap, "Evaluation options map is not specified!");
 
-            final Classifier classifier = AbstractClassifier.makeCopy(inputData.getClassifier());
+            final Classifier classifier = inputData.getClassifier();
             final Instances data = inputData.getData();
             final String classifierName = classifier.getClass().getSimpleName();
 
@@ -126,9 +126,9 @@ public class EvaluationService {
             log.info("Evaluation for model '{}' has been successfully finished!", classifierName);
             log.info(stopWatch.prettyPrint());
 
-        } catch (Exception exception) {
-            log.error("evaluateModel: ", exception);
-            classificationResult.setErrorMessage(exception.getMessage());
+        } catch (Exception ex) {
+            log.error("There was an error occurred in evaluation : {}", ex);
+            classificationResult.setErrorMessage(ex.getMessage());
         }
 
         return classificationResult;

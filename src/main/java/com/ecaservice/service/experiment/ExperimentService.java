@@ -134,10 +134,10 @@ public class ExperimentService {
             log.info("Experiment {} has been successfully finished!", experiment.getId());
             log.info(stopWatch.prettyPrint());
         } catch (TimeoutException ex) {
-            log.warn("There was a timeout.");
+            log.warn("There was a timeout for experiment with id = {}.", experiment.getId());
             experiment.setExperimentStatus(ExperimentStatus.TIMEOUT);
         } catch (Exception ex) {
-            log.error("There was an error occurred in evaluation : {}", ex);
+            log.error("There was an error occurred for experiment with id = {}: {}", experiment.getId(), ex);
             experiment.setExperimentStatus(ExperimentStatus.ERROR);
             experiment.setErrorMessage(ex.getMessage());
         } finally {
