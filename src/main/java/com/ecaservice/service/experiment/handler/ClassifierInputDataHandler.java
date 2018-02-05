@@ -38,5 +38,11 @@ public abstract class ClassifierInputDataHandler<T extends AbstractClassifier> {
      * @param data       {@link Instances} object
      * @param classifier classifier object
      */
-    public abstract void handle(Instances data, T classifier);
+    public void handle(Instances data, T classifier) {
+        if (data != null && classifier != null) {
+            internalHandle(data, classifier);
+        }
+    }
+
+    protected abstract void internalHandle(Instances data, T classifier);
 }
