@@ -1,5 +1,6 @@
 package com.ecaservice.service.experiment.handler;
 
+import org.springframework.util.Assert;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
@@ -39,9 +40,9 @@ public abstract class ClassifierInputDataHandler<T extends AbstractClassifier> {
      * @param classifier classifier object
      */
     public void handle(Instances data, T classifier) {
-        if (data != null && classifier != null) {
-            internalHandle(data, classifier);
-        }
+        Assert.notNull(data, "Input data is not specified!");
+        Assert.notNull(classifier, "Classifier is not specified!");
+        internalHandle(data, classifier);
     }
 
     protected abstract void internalHandle(Instances data, T classifier);

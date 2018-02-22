@@ -32,11 +32,10 @@ public class DecisionTreeInputDataHandlerTest {
 
     /**
      * Test checking following cases:
-     * Case 1: Nullable input data -> 0
-     * Case 2: Decision tree isn't random -> 0
-     * Case 3: Decision tree is random and random attributes number is 0 -> not 0
-     * Case 4: Decision tree is random and random attributes number is grater than data attributes number -> not 0
-     * Case 5: Decision tree is random and random attributes number is less than data attributes number -> not 0
+     * Case 1: Decision tree isn't random -> 0
+     * Case 2: Decision tree is random and random attributes number is 0 -> not 0
+     * Case 3: Decision tree is random and random attributes number is grater than data attributes number -> not 0
+     * Case 4: Decision tree is random and random attributes number is less than data attributes number -> not 0
      */
     @Test
     public void testDecisionTreeInputDataHandle() {
@@ -44,21 +43,18 @@ public class DecisionTreeInputDataHandlerTest {
         classifier.setNumRandomAttr(0);
         classifier.setRandomTree(false);
         //Case 1
-        decisionTreeInputDataHandler.handle(null, classifier);
-        assertThat(classifier.numRandomAttr()).isZero();
-        //Case 2
         decisionTreeInputDataHandler.handle(data, classifier);
         assertThat(classifier.numRandomAttr()).isZero();
-        //Case 3
+        //Case 2
         classifier.setRandomTree(true);
         when(data.numAttributes()).thenReturn(DEFAULT_NUM_ATTRIBUTES);
         decisionTreeInputDataHandler.handle(data, classifier);
         assertThat(classifier.numRandomAttr()).isNotZero();
-        //Case 4
+        //Case 3
         classifier.setNumRandomAttr(DEFAULT_NUM_ATTRIBUTES + 1);
         decisionTreeInputDataHandler.handle(data, classifier);
         assertThat(classifier.numRandomAttr()).isNotZero();
-        //Case 5
+        //Case 4
         classifier.setNumRandomAttr(DEFAULT_NUM_ATTRIBUTES - 1);
         assertThat(classifier.numRandomAttr()).isEqualTo(DEFAULT_NUM_ATTRIBUTES - 1);
     }

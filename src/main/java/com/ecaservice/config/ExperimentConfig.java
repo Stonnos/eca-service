@@ -1,10 +1,7 @@
 package com.ecaservice.config;
 
-import com.ecaservice.model.experiment.ExperimentStatus;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import java.util.List;
 
 /**
  * Experiment configuration class.
@@ -74,16 +71,6 @@ public class ExperimentConfig {
      * Delay value for scheduler in seconds
      */
     private Integer delaySeconds;
-
-    /**
-     * Process statuses list
-     */
-    private List<ExperimentStatus> processStatuses;
-
-    /**
-     * Sent statuses list
-     */
-    private List<ExperimentStatus> sentStatuses;
 
     /**
      * Page size for processing experiments

@@ -32,17 +32,11 @@ public class NeuralNetworkInputDataHandlerTest {
     private Instances data;
 
     /**
-     * Test checking following cases:
-     * Case 1: input data is null
-     * Case 2: successful handling
+     * Test checking successful handling.
      */
     @Test
     public void testNeuralNetworkInputDataHandle() {
         NeuralNetwork neuralNetwork = new NeuralNetwork();
-        //Case 1
-        neuralNetworkInputDataHandler.handle(null, neuralNetwork);
-        assertThat(neuralNetwork.network().getHiddenLayer()).isNull();
-        //Case 2
         when(data.numAttributes()).thenReturn(DEFAULT_NUM_ATTRIBUTES);
         when(data.numClasses()).thenReturn(DEFAULT_NUM_CLASSES);
         when(data.numInstances()).thenReturn(DEFAULT_NUM_INSTANCES);

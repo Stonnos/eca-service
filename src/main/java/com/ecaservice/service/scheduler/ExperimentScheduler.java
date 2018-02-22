@@ -2,6 +2,7 @@ package com.ecaservice.service.scheduler;
 
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.PageableCallback;
 import com.ecaservice.service.experiment.ExperimentService;
@@ -15,6 +16,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -66,7 +69,8 @@ public class ExperimentScheduler {
 
             @Override
             public Page<Experiment> findNextPage(Pageable pageable) {
-                return experimentRepository.findNotSentExperiments(experimentConfig.getProcessStatuses(), pageable);
+                return experimentRepository.findNotSentExperiments(Collections.singletonList(ExperimentStatus.NEW),
+                        pageable);
             }
         });
         log.trace("Building experiments has been successfully finished.");
@@ -88,7 +92,9 @@ public class ExperimentScheduler {
 
             @Override
             public Page<Experiment> findNextPage(Pageable pageable) {
-                return experimentRepository.findNotSentExperiments(experimentConfig.getSentStatuses(), pageable);
+                return experimentRepository.findNotSentExperiments(
+                        Arrays.asList(ExperimentStatus.FINISHED, ExperimentStatus.ERROR, ExperimentStatus.TIMEOUT),
+                        pageable);
             }
         });
         log.trace("Sending experiments has been successfully finished.");

@@ -70,11 +70,10 @@ public class ClassifiersSetSearcher {
                                               Map<EvaluationOption, String> evaluationOptionStringMap) {
         log.info("Starting to find the best individual classifiers using {} evaluation method.", evaluationMethod);
         List<AbstractClassifier> classifiersSet = experimentConfigurationService.findClassifiers();
-        List<AbstractClassifier> classifiersCopies = ClassifierUtils.createCopies(classifiersSet);
-        initializeInputData(classifiersCopies, data);
-        ArrayList<EvaluationResults> finished = new ArrayList<>(classifiersCopies.size());
+        List<AbstractClassifier> initializedClassifiers = initializeClassifiers(classifiersSet, data);
+        ArrayList<EvaluationResults> finished = new ArrayList<>(initializedClassifiers.size());
 
-        for (AbstractClassifier classifier : classifiersCopies) {
+        for (AbstractClassifier classifier : initializedClassifiers) {
             ClassificationResult classificationResult =
                     evaluationService.evaluateModel(new InputData(classifier, data), evaluationMethod,
                             evaluationOptionStringMap);
@@ -99,14 +98,16 @@ public class ClassifiersSetSearcher {
         return classifiers;
     }
 
-    private void initializeInputData(List<AbstractClassifier> classifiers, Instances data) {
+    private List<AbstractClassifier> initializeClassifiers(List<AbstractClassifier> classifiers, Instances data) {
+        List<AbstractClassifier> classifiersCopies = ClassifierUtils.createCopies(classifiers);
         //Initialize classifiers options based on training data
-        for (AbstractClassifier classifier : classifiers) {
+        for (AbstractClassifier classifier : classifiersCopies) {
             for (ClassifierInputDataHandler handler : classifierInputDataHandlers) {
                 if (handler.canHandle(classifier)) {
                     handler.handle(data, classifier);
                 }
             }
         }
+        return classifiersCopies;
     }
 }

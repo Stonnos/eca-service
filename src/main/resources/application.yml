@@ -61,8 +61,6 @@ experiment:
   timeout: 5
   ## Scheduler delay in seconds
   delaySeconds: 120
-  processStatuses: [NEW]
-  sentStatuses: [FINISHED, ERROR, TIMEOUT]
   pageSize: 1
 
   data:

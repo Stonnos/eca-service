@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * Implements the main rest controller for processing input requests.
@@ -30,8 +28,6 @@ import java.time.format.DateTimeFormatter;
 @RestController
 @RequestMapping("/evaluation")
 public class EcaController {
-
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss");
 
     private final EcaService ecaService;
     private final EvaluationRequestMapper evaluationRequestMapper;
@@ -63,8 +59,7 @@ public class EcaController {
     @PostMapping(value = "/execute")
     public ResponseEntity<EvaluationResponse> execute(@RequestBody EvaluationRequestDto evaluationRequestDto,
                                                       HttpServletRequest request) {
-        log.info("Received request for client {} at: {}", request.getRemoteAddr(),
-                DATE_FORMAT.format(LocalDateTime.now()));
+        log.info("Received evaluation request for client {}", request.getRemoteAddr());
         EvaluationRequest evaluationRequest = evaluationRequestMapper.map(evaluationRequestDto);
         evaluationRequest.setIpAddress(request.getRemoteAddr());
         EvaluationResponse evaluationResponse = ecaService.processRequest(evaluationRequest);

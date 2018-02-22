@@ -25,8 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * Experiment controller.
@@ -39,7 +37,6 @@ import java.time.format.DateTimeFormatter;
 @RequestMapping("/experiment")
 public class ExperimentController {
 
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss");
     private static final String ATTACHMENT = "attachment";
 
     private final ExperimentService experimentService;
@@ -101,8 +98,8 @@ public class ExperimentController {
     @PostMapping(value = "/create")
     public ResponseEntity<EcaResponse> createRequest(@RequestBody ExperimentRequestDto experimentRequest,
                                                      HttpServletRequest httpServletRequest) {
-        log.info("Received request to experiment {} for client {} at: {}", experimentRequest.getExperimentType(),
-                httpServletRequest.getRemoteAddr(), DATE_FORMAT.format(LocalDateTime.now()));
+        log.info("Received request to experiment [{}] for client '{}'", experimentRequest.getExperimentType(),
+                httpServletRequest.getRemoteAddr());
         ExperimentRequest request = experimentRequestMapper.map(experimentRequest);
         request.setIpAddress(httpServletRequest.getRemoteAddr());
         Experiment experiment = experimentService.createExperiment(request);
