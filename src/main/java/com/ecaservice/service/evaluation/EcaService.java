@@ -87,10 +87,7 @@ public class EcaService {
                 evaluationResponse.setEvaluationResults(classificationResult.getEvaluationResults());
                 evaluationResponse.setStatus(TechnicalStatus.SUCCESS);
             } else {
-                evaluationLog.setEvaluationStatus(EvaluationStatus.ERROR);
-                evaluationLog.setErrorMessage(classificationResult.getErrorMessage());
-                evaluationResponse.setStatus(TechnicalStatus.ERROR);
-                evaluationResponse.setErrorMessage(classificationResult.getErrorMessage());
+                handleError(evaluationLog, evaluationResponse, classificationResult.getErrorMessage());
             }
         } catch (TimeoutException ex) {
             log.warn("There was a timeout for evaluation with id = {}.", evaluationLog.getId());
@@ -98,15 +95,19 @@ public class EcaService {
             evaluationResponse.setStatus(TechnicalStatus.TIMEOUT);
         } catch (Exception ex) {
             log.error("There was an error occurred for evaluation with id = {}: {}", evaluationLog.getId(), ex);
-            evaluationLog.setEvaluationStatus(EvaluationStatus.ERROR);
-            evaluationLog.setErrorMessage(ex.getMessage());
-            evaluationResponse.setStatus(TechnicalStatus.ERROR);
-            evaluationResponse.setErrorMessage(ex.getMessage());
+            handleError(evaluationLog, evaluationResponse, ex.getMessage());
         } finally {
             evaluationLog.setEndDate(LocalDateTime.now());
             evaluationLogRepository.save(evaluationLog);
         }
 
         return evaluationResponse;
+    }
+
+    private void handleError(EvaluationLog evaluationLog, EvaluationResponse evaluationResponse, String errorMessage) {
+        evaluationLog.setEvaluationStatus(EvaluationStatus.ERROR);
+        evaluationLog.setErrorMessage(errorMessage);
+        evaluationResponse.setStatus(TechnicalStatus.ERROR);
+        evaluationResponse.setErrorMessage(errorMessage);
     }
 }
