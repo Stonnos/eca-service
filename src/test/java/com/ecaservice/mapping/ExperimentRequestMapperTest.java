@@ -16,8 +16,7 @@ import weka.core.Instances;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests that checks ExperimentRequestMapper functionality
- * (see {@link ExperimentRequestMapper}).
+ * Unit tests that checks ExperimentRequestMapper functionality {@see ExperimentRequestMapper}.
  *
  * @author Roman Batygin
  */

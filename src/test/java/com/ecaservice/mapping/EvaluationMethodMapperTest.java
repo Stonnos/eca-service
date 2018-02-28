@@ -10,8 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests that checks EvaluationMethodMapper functionality
- * (see {@link EvaluationMethodMapper}).
+ * Unit tests that checks EvaluationMethodMapper functionality {@see EvaluationMethodMapper}.
  *
  * @author Roman Batygin
  */

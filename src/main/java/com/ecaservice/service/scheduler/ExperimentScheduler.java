@@ -127,7 +127,7 @@ public class ExperimentScheduler {
      * Processes experiments using pagination. Method <code>findNextPage</code> always takes
      * the initial page request, because experiments fields are updated at each iteration.
      *
-     * @param pageableCallback {@link PageableCallback} object
+     * @param pageableCallback callback {@link PageableCallback}
      */
     private void processExperiments(PageableCallback<Experiment> pageableCallback) {
         Pageable pageable = new PageRequest(0, experimentConfig.getPageSize());

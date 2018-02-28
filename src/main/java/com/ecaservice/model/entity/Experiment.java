@@ -58,6 +58,9 @@ public class Experiment {
     @Column(name = "training_data_absolute_path")
     private String trainingDataAbsolutePath;
 
+    /**
+     * Experiment uuid
+     */
     @Column(unique = true)
     private String uuid;
 

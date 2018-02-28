@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests that checks ExperimentProcessorService functionality (see {@link ExperimentProcessorService}).
+ * Unit tests that checks ExperimentProcessorService functionality {@see ExperimentProcessorService}.
  *
  * @author Roman Batygin
  */

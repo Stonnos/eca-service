@@ -14,7 +14,7 @@ import java.util.List;
 public class AssertionUtils {
 
     /**
-     * Asserts list.
+     * Asserts that list has only one element.
      *
      * @param list list object
      * @param <T>  generic type

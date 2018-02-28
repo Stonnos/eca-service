@@ -19,8 +19,7 @@ import java.util.EnumMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests that checks EvaluationRequestMapper functionality
- * (see {@link EvaluationRequestMapper}).
+ * Unit tests that checks EvaluationRequestMapper functionality {@see EvaluationRequestMapper}.
  *
  * @author Roman Batygin
  */

@@ -60,7 +60,7 @@ experiment:
   ## Experiment timeout in hours
   timeout: 5
   ## Scheduler delay in seconds
-  delaySeconds: 120
+  delaySeconds: 30
   pageSize: 1
 
   data:

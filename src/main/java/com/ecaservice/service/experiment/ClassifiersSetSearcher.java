@@ -61,10 +61,10 @@ public class ClassifiersSetSearcher {
      * Finds the best individual classifiers set by the criterion of accuracy maximization.
      * Individual classifiers set are taken from database and then are cached on time specified in configs.
      *
-     * @param data                      {@link Instances} object
-     * @param evaluationMethod          {@link EvaluationMethod} object
+     * @param data                      training data
+     * @param evaluationMethod          evaluation method
      * @param evaluationOptionStringMap evaluation options {@link Map}
-     * @return {@link ClassifiersSet} object
+     * @return classifiers set {@link ClassifiersSet}
      */
     public ClassifiersSet findBestClassifiers(Instances data, EvaluationMethod evaluationMethod,
                                               Map<EvaluationOption, String> evaluationOptionStringMap) {

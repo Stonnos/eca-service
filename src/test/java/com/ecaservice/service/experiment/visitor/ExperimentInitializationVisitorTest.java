@@ -32,7 +32,7 @@ import static org.mockito.Mockito.anyMap;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests that checks ExperimentInitializationVisitor functionality (see {@link ExperimentInitializationVisitor}).
+ * Unit tests that checks ExperimentInitializationVisitor functionality {@see ExperimentInitializationVisitor}.
  *
  * @author Roman Batygin
  */

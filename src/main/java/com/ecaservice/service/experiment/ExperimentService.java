@@ -69,8 +69,8 @@ public class ExperimentService {
     /**
      * Creates experiment request.
      *
-     * @param experimentRequest {@link ExperimentRequest} object
-     * @return {@link Experiment} object
+     * @param experimentRequest experiment request {@link ExperimentRequest}
+     * @return created experiment entity
      */
     public Experiment createExperiment(ExperimentRequest experimentRequest) {
         Assert.notNull(experimentRequest, "Experiment request is not specified!");
@@ -97,7 +97,7 @@ public class ExperimentService {
      * Processes new experiment. Experiments results are saved into file after processing and
      * unique UUID for downloading is generated.
      *
-     * @param experiment {@link Experiment} object
+     * @param experiment experiment to process
      */
     public void processExperiment(final Experiment experiment) {
         log.info("Starting to built experiment {}.", experiment.getId());

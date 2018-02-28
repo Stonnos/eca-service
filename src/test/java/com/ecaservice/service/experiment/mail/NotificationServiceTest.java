@@ -3,9 +3,10 @@ package com.ecaservice.service.experiment.mail;
 import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.MailConfig;
-import com.ecaservice.model.Mail;
+import com.ecaservice.model.entity.Email;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentStatus;
+import com.ecaservice.repository.EmailRepository;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.experiment.AbstractExperimentTest;
 import com.ecaservice.service.experiment.visitor.EmailTemplateVisitor;
@@ -28,10 +29,11 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests that checks NotificationService functionality (see {@link NotificationService}).
+ * Unit tests that checks NotificationService functionality {@see NotificationService}.
  *
  * @author Roman Batygin
  */
@@ -51,6 +53,8 @@ public class NotificationServiceTest extends AbstractExperimentTest {
     private EmailTemplateVisitor statusTemplateVisitor;
     @Autowired
     private ExperimentRepository experimentRepository;
+    @Autowired
+    private EmailRepository emailRepository;
 
     private TemplateEngine templateEngine;
 
@@ -58,10 +62,11 @@ public class NotificationServiceTest extends AbstractExperimentTest {
 
     @Before
     public void setUp() {
+        emailRepository.deleteAll();
         experimentRepository.deleteAll();
         templateEngine = PowerMockito.mock(TemplateEngine.class);
         notificationService = new NotificationService(templateEngine, mailSenderService, experimentRepository,
-                mailConfig, statusTemplateVisitor);
+                mailConfig, statusTemplateVisitor, emailRepository);
         EnumMap<ExperimentStatus, String> statusMap = new EnumMap<>(ExperimentStatus.class);
         statusMap.put(ExperimentStatus.FINISHED, TEMPLATE_HTML);
         when(mailConfig.getMessageTemplatesMap()).thenReturn(statusMap);
@@ -73,19 +78,21 @@ public class NotificationServiceTest extends AbstractExperimentTest {
         Experiment experiment = createAndSaveExperiment();
         when(statusTemplateVisitor.caseFinished(experiment)).thenReturn(new Context());
         when(templateEngine.process(any(String.class), any(Context.class))).thenReturn("message");
-        doNothing().when(mailSenderService).sendEmail(any(Mail.class));
+        doNothing().when(mailSenderService).sendEmail(any(Email.class));
         notificationService.notifyByEmail(experiment);
         List<Experiment> experimentList = experimentRepository.findAll();
         AssertionUtils.assertSingletonList(experimentList);
         Experiment actualExperiment = experimentList.get(0);
         assertThat(actualExperiment.getSentDate()).isNotNull();
+        AssertionUtils.assertSingletonList(emailRepository.findAll());
     }
 
     @Test
     public void testErrorNotification() throws Exception {
         Experiment experiment = createAndSaveExperiment();
         when(statusTemplateVisitor.caseFinished(experiment)).thenReturn(new Context());
-        when(templateEngine.process(any(String.class), any(Context.class))).thenThrow(Exception.class);
+        when(templateEngine.process(any(String.class), any(Context.class))).thenReturn("message");
+        doThrow(new RuntimeException()).when(mailSenderService).sendEmail(any(Email.class));
         int expectedFailedAttemptsToSent = experiment.getFailedAttemptsToSent() + 1;
         notificationService.notifyByEmail(experiment);
         List<Experiment> experimentList = experimentRepository.findAll();
@@ -100,7 +107,8 @@ public class NotificationServiceTest extends AbstractExperimentTest {
         Experiment experiment = createAndSaveExperiment();
         experiment.setFailedAttemptsToSent(MAX_FAILED_ATTEMPTS_TO_SENT);
         when(statusTemplateVisitor.caseFinished(experiment)).thenReturn(new Context());
-        when(templateEngine.process(any(String.class), any(Context.class))).thenThrow(Exception.class);
+        when(templateEngine.process(any(String.class), any(Context.class))).thenReturn("message");
+        doThrow(new RuntimeException()).when(mailSenderService).sendEmail(any(Email.class));
         notificationService.notifyByEmail(experiment);
         List<Experiment> experimentList = experimentRepository.findAll();
         AssertionUtils.assertSingletonList(experimentList);

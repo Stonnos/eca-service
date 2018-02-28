@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests that checks EvaluationService functionality (see {@link EvaluationService}).
+ * Unit tests that checks EvaluationService functionality {@see EvaluationService}.
  *
  * @author Roman Batygin
  */

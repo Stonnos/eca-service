@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="email"/>
+            <not>
+                <columnExists tableName="email" columnName="sent_date"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="email">
+            <column name="sent_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="email"/>
+            <not>
+                <columnExists tableName="email" columnName="sent"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="email">
+            <column name="sent" type="boolean"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="email"/>
+            <not>
+                <columnExists tableName="email" columnName="error_message"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="email">
+            <column name="error_message" type="text"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="email"/>
+            <tableExists tableName="experiment"/>
+            <not>
+                <columnExists tableName="email" columnName="experiment_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="email">
+            <column name="experiment_id" type="bigint">
+                <constraints foreignKeyName="fk_experiment" referencedTableName="experiment"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="5" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="email"/>
+            <columnExists tableName="email" columnName="sent"/>
+        </preConditions>
+        <sql>
+            UPDATE email SET sent = true;
+        </sql>
+    </changeSet>
+
+    <changeSet id="6" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="email"/>
+            <columnExists tableName="email" columnName="sent_date"/>
+        </preConditions>
+        <sql>
+            UPDATE email em SET sent_date = em.save_date;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

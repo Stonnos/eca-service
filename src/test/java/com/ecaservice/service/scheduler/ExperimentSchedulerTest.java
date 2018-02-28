@@ -11,6 +11,8 @@ import com.ecaservice.service.experiment.mail.NotificationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -21,13 +23,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 /**
- * Unit tests that checks ExperimentScheduler functionality (see {@link ExperimentScheduler}).
+ * Unit tests that checks ExperimentScheduler functionality {@see ExperimentScheduler}.
  *
  * @author Roman Batygin
  */
@@ -41,6 +43,9 @@ public class ExperimentSchedulerTest extends AbstractExperimentTest {
     private ExperimentService experimentService;
     @Mock
     private NotificationService notificationService;
+    @Captor
+    private ArgumentCaptor<Experiment> argumentCaptor;
+
     @Autowired
     private ExperimentConfig experimentConfig;
 
@@ -78,8 +83,10 @@ public class ExperimentSchedulerTest extends AbstractExperimentTest {
     public void testRemoveExperiments() {
         List<Experiment> experiments = new ArrayList<>();
         experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), ExperimentStatus.FINISHED));
-        experiments.add(TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), ExperimentStatus.ERROR,
-                LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage() + 1)));
+        Experiment experimentToRemove =
+                TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), ExperimentStatus.ERROR,
+                        LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage() + 1));
+        experiments.add(experimentToRemove);
         experiments.add(TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), ExperimentStatus.FINISHED,
                 LocalDateTime.now()));
         Experiment experiment =
@@ -89,6 +96,7 @@ public class ExperimentSchedulerTest extends AbstractExperimentTest {
         experiments.add(experiment);
         experimentRepository.save(experiments);
         experimentScheduler.processRequestsToRemove();
-        verify(experimentService, atLeastOnce()).removeExperimentData(any(Experiment.class));
+        verify(experimentService).removeExperimentData(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue()).isEqualTo(experimentToRemove);
     }
 }

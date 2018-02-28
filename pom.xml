@@ -6,12 +6,12 @@
 
     <groupId>eca.service</groupId>
     <artifactId>eca-service</artifactId>
-    <version>1.4</version>
+    <version>1.5</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.6.RELEASE</version>
+        <version>1.5.8.RELEASE</version>
     </parent>
 
     <packaging>war</packaging>
@@ -51,17 +51,6 @@
     </repositories>
 
     <profiles>
-
-        <profile>
-            <id>tomcat</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
-        </profile>
 
         <!-- Experiment profile for linux operation systems-->
         <profile>
@@ -332,6 +321,12 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
             <version>${swagger-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

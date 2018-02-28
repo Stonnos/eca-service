@@ -13,8 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests that checks EcaResponseMapper functionality
- * (see {@link EcaResponseMapper}).
+ * Unit tests that checks EcaResponseMapper functionality {@see EcaResponseMapper}.
  *
  * @author Roman Batygin
  */

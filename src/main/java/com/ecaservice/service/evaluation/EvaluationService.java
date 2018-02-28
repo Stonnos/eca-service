@@ -47,10 +47,10 @@ public class EvaluationService {
      * If options for cross - validation method is not specified then the options
      * from configs will be used for evaluation.
      *
-     * @param inputData            {@link InputData} object
+     * @param inputData            input data {@link InputData}
      * @param evaluationMethod     evaluation method
      * @param evaluationOptionsMap evaluation options map
-     * @return {@link ClassificationResult} object
+     * @return classification results {@link ClassificationResult}
      */
     public ClassificationResult evaluateModel(final InputData inputData,
                                               final EvaluationMethod evaluationMethod,

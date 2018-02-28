@@ -1,5 +1,6 @@
 package com.ecaservice.service.evaluation;
 
+import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.EvaluationResponse;
@@ -32,10 +33,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests that checks EcaService functionality (see {@link EcaService}).
+ * Unit tests that checks EcaService functionality {@see EcaService}.
  *
  * @author Roman Batygin
  */
@@ -82,7 +84,7 @@ public class EcaServiceTest {
         EvaluationResponse evaluationResponse = ecaService.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.SUCCESS);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
-        assertThat(evaluationLogList.size()).isEqualTo(1);
+        AssertionUtils.assertSingletonList(evaluationLogList);
         assertThat(evaluationLogList.get(0).getEvaluationStatus()).isEqualTo(EvaluationStatus.FINISHED);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.SUCCESS);
         assertThat(evaluationResponse.getEvaluationResults()).isNotNull();
@@ -97,7 +99,7 @@ public class EcaServiceTest {
         EvaluationResponse evaluationResponse = ecaService.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
-        assertThat(evaluationLogList.size()).isEqualTo(1);
+        AssertionUtils.assertSingletonList(evaluationLogList);
         assertThat(evaluationLogList.get(0).getEvaluationStatus()).isEqualTo(EvaluationStatus.ERROR);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         assertThat(evaluationResponse.getEvaluationResults()).isNull();
@@ -113,7 +115,7 @@ public class EcaServiceTest {
         EvaluationResponse evaluationResponse = ecaService.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
-        assertThat(evaluationLogList.size()).isEqualTo(1);
+        AssertionUtils.assertSingletonList(evaluationLogList);
         assertThat(evaluationLogList.get(0).getEvaluationStatus()).isEqualTo(EvaluationStatus.ERROR);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         assertThat(evaluationResponse.getEvaluationResults()).isNull();
@@ -126,7 +128,7 @@ public class EcaServiceTest {
         EvaluationResponse evaluationResponse = ecaService.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.TIMEOUT);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
-        assertThat(evaluationLogList.size()).isEqualTo(1);
+        AssertionUtils.assertSingletonList(evaluationLogList);
         assertThat(evaluationLogList.get(0).getEvaluationStatus()).isEqualTo(EvaluationStatus.TIMEOUT);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.TIMEOUT);
         assertThat(evaluationResponse.getEvaluationResults()).isNull();

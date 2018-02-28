@@ -1,9 +1,10 @@
 package com.ecaservice.service.experiment.mail;
 
 import com.ecaservice.config.MailConfig;
-import com.ecaservice.model.Mail;
+import com.ecaservice.model.entity.Email;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentStatus;
+import com.ecaservice.repository.EmailRepository;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.experiment.visitor.EmailTemplateVisitor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ public class NotificationService {
     private final MailConfig mailConfig;
     private final EmailTemplateVisitor statusTemplateVisitor;
     private final ExperimentRepository experimentRepository;
+    private final EmailRepository emailRepository;
 
     /**
      * Constructor with dependency spring injection.
@@ -37,48 +39,66 @@ public class NotificationService {
      * @param experimentRepository  {@link ExperimentRepository} bean
      * @param mailConfig            {@link MailConfig} bean
      * @param statusTemplateVisitor {@link EmailTemplateVisitor} bean
+     * @param emailRepository       {@link EmailRepository} bean
      */
     @Autowired
     public NotificationService(TemplateEngine templateEngine,
                                MailSenderService mailSenderService,
                                ExperimentRepository experimentRepository,
                                MailConfig mailConfig,
-                               EmailTemplateVisitor statusTemplateVisitor) {
+                               EmailTemplateVisitor statusTemplateVisitor,
+                               EmailRepository emailRepository) {
         this.templateEngine = templateEngine;
         this.mailSenderService = mailSenderService;
         this.mailConfig = mailConfig;
         this.experimentRepository = experimentRepository;
         this.statusTemplateVisitor = statusTemplateVisitor;
+        this.emailRepository = emailRepository;
     }
 
     /**
      * Sends experiment downloading reference to specified email.
      *
-     * @param experiment {@link Experiment} object
+     * @param experiment experiment to sent {@link Experiment}
      */
     public void notifyByEmail(Experiment experiment) {
         try {
-            String template = mailConfig.getMessageTemplatesMap().get(experiment.getExperimentStatus());
-            Context context = experiment.getExperimentStatus().handle(statusTemplateVisitor, experiment);
-            String message = templateEngine.process(template, context);
-            Mail mail = new Mail(mailConfig.getFrom(), experiment.getEmail(), mailConfig.getSubject(),
-                    message, true);
-            mailSenderService.sendEmail(mail);
+            Email email = createAndSaveEmail(experiment);
+            mailSenderService.sendEmail(email);
             experiment.setSentDate(LocalDateTime.now());
         } catch (Exception ex) {
-            log.warn(ex.getMessage());
-            populateErrorSent(experiment, ex.getMessage());
+            log.error("There was an error: {}", ex.getMessage());
+            populateErrorSent(experiment);
         } finally {
             experimentRepository.save(experiment);
         }
     }
 
-    private void populateErrorSent(Experiment experiment, String errorMessage) {
+    private String buildEmailMessage(Experiment experiment) {
+        String template = mailConfig.getMessageTemplatesMap().get(experiment.getExperimentStatus());
+        Context context = experiment.getExperimentStatus().handle(statusTemplateVisitor, experiment);
+        return templateEngine.process(template, context);
+    }
+
+    private Email createAndSaveEmail(Experiment experiment) {
+        Email email = emailRepository.findByExperiment(experiment);
+        if (email == null) {
+            email = new Email();
+            email.setSender(mailConfig.getFrom());
+            email.setReceiver(experiment.getEmail());
+            email.setSaveDate(LocalDateTime.now());
+            email.setExperiment(experiment);
+            email.setSubject(mailConfig.getSubject());
+            email.setMessage(buildEmailMessage(experiment));
+            emailRepository.save(email);
+        }
+        return email;
+    }
+
+    private void populateErrorSent(Experiment experiment) {
         if (experiment.getFailedAttemptsToSent() >= mailConfig.getMaxFailedAttemptsToSent()) {
             experiment.setExperimentStatus(ExperimentStatus.EXCEEDED);
-            experiment.setErrorMessage("Number of sent retries exceeded maximum.");
         } else {
-            experiment.setErrorMessage(errorMessage);
             experiment.setFailedAttemptsToSent(experiment.getFailedAttemptsToSent() + 1);
         }
     }

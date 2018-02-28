@@ -1,8 +1,8 @@
 package com.ecaservice;
 
 import com.ecaservice.model.InputData;
-import com.ecaservice.model.Mail;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
+import com.ecaservice.model.entity.Email;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
@@ -47,7 +47,7 @@ public class TestHelperUtils {
     /**
      * Generates the test data set.
      *
-     * @return {@link Instances} object
+     * @return created training data
      */
     public static Instances loadInstances() throws Exception {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
@@ -59,10 +59,10 @@ public class TestHelperUtils {
     }
 
     /**
-     * Creates <tt>EvaluationRequest</tt> object
+     * Creates evaluation request object.
      *
      * @param ipAddress ip address
-     * @return {@link EvaluationRequest} object
+     * @return created evaluation request
      */
     public static EvaluationRequest createEvaluationRequest(String ipAddress) throws Exception {
         EvaluationRequest request = new EvaluationRequest();
@@ -90,7 +90,7 @@ public class TestHelperUtils {
     /**
      * Creates experiment request.
      *
-     * @return {@link ExperimentRequest} object
+     * @return created experiment request
      */
     public static ExperimentRequest createExperimentRequest() throws Exception {
         ExperimentRequest experimentRequest = new ExperimentRequest();
@@ -107,7 +107,7 @@ public class TestHelperUtils {
      * Creates experiment.
      *
      * @param uuid uuid
-     * @return {@link Experiment} object
+     * @return created experiment
      */
     public static Experiment createExperiment(String uuid) {
         return createExperiment(uuid, ExperimentStatus.NEW);
@@ -118,7 +118,7 @@ public class TestHelperUtils {
      *
      * @param uuid             uuid
      * @param experimentStatus experiment status
-     * @return {@link Experiment} object
+     * @return created experiment
      */
     public static Experiment createExperiment(String uuid, ExperimentStatus experimentStatus) {
         Experiment experiment = new Experiment();
@@ -141,7 +141,7 @@ public class TestHelperUtils {
      * @param uuid             uuid
      * @param experimentStatus experiment status
      * @param sentDate         sent date
-     * @return {@link Experiment} object
+     * @return created experiment
      */
     public static Experiment createSentExperiment(String uuid, ExperimentStatus experimentStatus,
                                                   LocalDateTime sentDate) {
@@ -153,8 +153,8 @@ public class TestHelperUtils {
     /**
      * Creates experiment initialization params.
      *
-     * @param data {@link Instances} object
-     * @return {@link InitializationParams} object
+     * @param data training data
+     * @return initialization params
      */
     public static InitializationParams createInitializationParams(Instances data) {
         InitializationParams initializationParams = new InitializationParams();
@@ -166,7 +166,7 @@ public class TestHelperUtils {
     /**
      * Creates experiment initialization params.
      *
-     * @return {@link InitializationParams} object
+     * @return initialization params
      */
     public static InitializationParams createInitializationParams() throws Exception {
         InitializationParams initializationParams = new InitializationParams();
@@ -178,10 +178,10 @@ public class TestHelperUtils {
     /**
      * Creates mail.
      *
-     * @return {@link Mail} object
+     * @return created email
      */
-    public static Mail createMail() {
-        Mail mail = new Mail();
+    public static Email createEmail() {
+        Email mail = new Email();
         mail.setSender(SENDER_MAIL);
         mail.setReceiver(RECEIVER_MAIL);
         mail.setSubject(SUBJECT);
@@ -194,7 +194,7 @@ public class TestHelperUtils {
      *
      * @param config  json options configs
      * @param version configs version
-     * @return {@link ClassifierOptionsDatabaseModel} object
+     * @return classifier options db model {@see ClassifierOptionsDatabaseModel}
      */
     public static ClassifierOptionsDatabaseModel createClassifierOptionsDatabaseModel(String config, int version) {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();

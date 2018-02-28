@@ -36,7 +36,7 @@ public abstract class ClassifierInputDataHandler<T extends AbstractClassifier> {
     /**
      * Initialize classifiers options based on training data.
      *
-     * @param data       {@link Instances} object
+     * @param data       training data
      * @param classifier classifier object
      */
     public void handle(Instances data, T classifier) {

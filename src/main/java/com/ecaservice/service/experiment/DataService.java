@@ -41,7 +41,7 @@ public class DataService {
      * Saves data to file.
      *
      * @param file file object
-     * @param data {@link Instances} object
+     * @param data training data
      * @throws Exception
      */
     public void save(File file, Instances data) throws Exception {
@@ -54,7 +54,7 @@ public class DataService {
      * Loads data from file.
      *
      * @param file file object
-     * @return {@link Instances} object
+     * @return training data
      * @throws Exception
      */
     public Instances load(File file) throws Exception {
@@ -69,7 +69,7 @@ public class DataService {
      * Saves experiment history to file.
      *
      * @param file              file object
-     * @param experimentHistory {@link ExperimentHistory} object
+     * @param experimentHistory experiment history
      * @throws Exception
      */
     public void save(File file, ExperimentHistory experimentHistory) throws Exception {

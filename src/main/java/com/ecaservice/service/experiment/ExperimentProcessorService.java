@@ -51,9 +51,9 @@ public class ExperimentProcessorService {
     /**
      * Processes experiment and returns its history.
      *
-     * @param experiment           {@link Experiment} object
-     * @param initializationParams {@link InitializationParams} object
-     * @return {@link ExperimentHistory} object
+     * @param experiment           experiment {@link Experiment}
+     * @param initializationParams experiment initialization params {@link InitializationParams}
+     * @return experiment history
      */
     public ExperimentHistory processExperimentHistory(Experiment experiment,
                                                       InitializationParams initializationParams) {

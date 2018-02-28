@@ -1,7 +1,6 @@
 package com.ecaservice.service.experiment.mail;
 
-import com.ecaservice.mapping.EmailMapper;
-import com.ecaservice.model.Mail;
+import com.ecaservice.exception.EcaServiceException;
 import com.ecaservice.model.entity.Email;
 import com.ecaservice.repository.EmailRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -25,43 +24,52 @@ import java.time.LocalDateTime;
 public class MailSenderService {
 
     private final JavaMailSender mailSender;
-    private final EmailMapper emailMapper;
     private final EmailRepository emailRepository;
 
     /**
      * Constructor with dependency spring injection.
      *
      * @param mailSender      {@link JavaMailSender} bean
-     * @param emailMapper     {@link EmailMapper} bean
      * @param emailRepository {@link EmailRepository} bean
      */
     @Autowired
-    public MailSenderService(JavaMailSender mailSender, EmailMapper emailMapper,
+    public MailSenderService(JavaMailSender mailSender,
                              EmailRepository emailRepository) {
         this.mailSender = mailSender;
-        this.emailMapper = emailMapper;
         this.emailRepository = emailRepository;
     }
 
     /**
      * Sends email.
      *
-     * @param mail {@link Mail} object
-     * @throws MessagingException if something wrong
+     * @param email {@link Email} email object
      */
-    public void sendEmail(Mail mail) throws MessagingException {
-        Assert.notNull(mail, "Mail is not specified!");
-        log.info("Starting to send email message from '{}' to '{}'.", mail.getSender(), mail.getReceiver());
+    public void sendEmail(Email email) {
+        Assert.notNull(email, "Mail is not specified!");
+        log.info("Starting to send email message from '{}' to '{}'.", email.getSender(), email.getReceiver());
+        try {
+            MimeMessage message = buildMimeMessage(email);
+            mailSender.send(message);
+            email.setSent(true);
+            email.setSentDate(LocalDateTime.now());
+            log.info("Email message has been sent from '{}' to '{}'.", email.getSender(), email.getReceiver());
+        } catch (Exception ex) {
+            log.error("There was an error while sending email [{}]: {} ", email.getId(), ex.getMessage());
+            email.setSent(false);
+            email.setErrorMessage(ex.getMessage());
+            throw new EcaServiceException(ex.getMessage());
+        } finally {
+            emailRepository.save(email);
+        }
+    }
+
+    private MimeMessage buildMimeMessage(Email email) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(message);
-        messageHelper.setFrom(mail.getSender());
-        messageHelper.setTo(mail.getReceiver());
-        messageHelper.setSubject(mail.getSubject());
-        messageHelper.setText(mail.getMessage(), mail.isHtml());
-        mailSender.send(message);
-        Email email = emailMapper.map(mail);
-        email.setSaveDate(LocalDateTime.now());
-        emailRepository.save(email);
-        log.info("Email message has been sent from '{}' to '{}'.", mail.getSender(), mail.getReceiver());
+        messageHelper.setFrom(email.getSender());
+        messageHelper.setTo(email.getReceiver());
+        messageHelper.setSubject(email.getSubject());
+        messageHelper.setText(email.getMessage(), true);
+        return message;
     }
 }

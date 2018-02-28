@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 /**
- * Unit tests that checks EmailTemplateVisitor functionality (see {@link EmailTemplateVisitor}).
+ * Unit tests that checks EmailTemplateVisitor functionality {@see EmailTemplateVisitor}.
  *
  * @author Roman Batygin
  */

@@ -9,8 +9,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Unit tests that checks CalculationExecutorService functionality
- * (see {@link CalculationExecutorService}).
+ * Unit tests that checks CalculationExecutorService functionality {@see CalculationExecutorService}.
  *
  * @author Roman Batygin
  */

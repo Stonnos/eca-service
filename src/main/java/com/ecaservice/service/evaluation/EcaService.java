@@ -59,8 +59,8 @@ public class EcaService {
     /**
      * Processes input request and returns classification results.
      *
-     * @param request {@link EvaluationRequest} object
-     * @return {@link EvaluationResponse} object
+     * @param request evaluation request {@link EvaluationRequest}
+     * @return evaluation response {@link EvaluationResponse}
      */
     public EvaluationResponse processRequest(final EvaluationRequest request) {
 

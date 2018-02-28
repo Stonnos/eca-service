@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
 
 
 /**
- * Unit tests that checks ExperimentService functionality (see {@link ExperimentService}).
+ * Unit tests that checks ExperimentService functionality {@see ExperimentService}.
  *
  * @author Roman Batygin
  */

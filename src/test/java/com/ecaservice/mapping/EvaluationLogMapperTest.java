@@ -18,8 +18,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests that checks EvaluationLogMapper functionality
- * (see {@link EvaluationLogMapper}).
+ * Unit tests that checks EvaluationLogMapper functionality {@see EvaluationLogMapper}.
  *
  * @author Roman Batygin
  */
