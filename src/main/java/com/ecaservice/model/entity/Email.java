@@ -53,7 +53,7 @@ public class Email {
     private LocalDateTime saveDate;
 
     /**
-     * Email sent date
+     * Email successful sent date
      */
     @Column(name = "sent_date")
     private LocalDateTime sentDate;

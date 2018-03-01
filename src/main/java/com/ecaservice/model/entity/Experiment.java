@@ -83,7 +83,7 @@ public class Experiment {
     private LocalDateTime endDate;
 
     /**
-     * Email sent date
+     * Date when experiment results is sent
      */
     @Column(name = "sent_date")
     private LocalDateTime sentDate;
