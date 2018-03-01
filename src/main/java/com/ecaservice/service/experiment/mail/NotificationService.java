@@ -68,7 +68,7 @@ public class NotificationService {
             experiment.setSentDate(LocalDateTime.now());
         } catch (Exception ex) {
             log.error("There was an error: {}", ex.getMessage());
-            populateErrorSent(experiment);
+            handleErrorSent(experiment);
         } finally {
             experimentRepository.save(experiment);
         }
@@ -95,7 +95,7 @@ public class NotificationService {
         return email;
     }
 
-    private void populateErrorSent(Experiment experiment) {
+    private void handleErrorSent(Experiment experiment) {
         if (experiment.getFailedAttemptsToSent() >= mailConfig.getMaxFailedAttemptsToSent()) {
             experiment.setExperimentStatus(ExperimentStatus.EXCEEDED);
         } else {
