@@ -7,7 +7,8 @@ import eca.metrics.distances.DistanceBuilder;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.inject.Inject;
 
 /**
  * Implements k - nearest neighbours input options mapping to k - nearest neighbours model.
@@ -18,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class KNearestNeighboursOptionsMapper
         extends ClassifierOptionsMapper<KNearestNeighboursOptions, KNearestNeighbours> {
 
-    @Autowired
+    @Inject
     private ExperimentConfig experimentConfig;
 
     protected KNearestNeighboursOptionsMapper() {

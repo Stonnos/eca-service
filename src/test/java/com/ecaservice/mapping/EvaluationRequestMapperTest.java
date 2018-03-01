@@ -9,11 +9,11 @@ import eca.metrics.KNearestNeighbours;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
 
+import javax.inject.Inject;
 import java.util.EnumMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(EvaluationRequestMapperImpl.class)
 public class EvaluationRequestMapperTest {
 
-    @Autowired
+    @Inject
     private EvaluationRequestMapper evaluationRequestMapper;
 
     private Instances instances;

@@ -9,7 +9,8 @@ import eca.neural.functions.ActivationFunctionBuilder;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.inject.Inject;
 
 /**
  * Implements neural network input options mapping to neural network model.
@@ -19,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Mapper
 public abstract class NeuralNetworkOptionsMapper extends ClassifierOptionsMapper<NeuralNetworkOptions, NeuralNetwork> {
 
-    @Autowired
+    @Inject
     private ExperimentConfig experimentConfig;
 
     protected NeuralNetworkOptionsMapper() {

@@ -14,10 +14,10 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.verify;
 @Import(ExperimentConfig.class)
 public class ExperimentSchedulerTest extends AbstractExperimentTest {
 
-    @Autowired
+    @Inject
     private ExperimentRepository experimentRepository;
     @Mock
     private ExperimentService experimentService;
@@ -46,7 +46,7 @@ public class ExperimentSchedulerTest extends AbstractExperimentTest {
     @Captor
     private ArgumentCaptor<Experiment> argumentCaptor;
 
-    @Autowired
+    @Inject
     private ExperimentConfig experimentConfig;
 
     private ExperimentScheduler experimentScheduler;

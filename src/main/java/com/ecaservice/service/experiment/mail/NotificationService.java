@@ -8,11 +8,11 @@ import com.ecaservice.repository.EmailRepository;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.experiment.visitor.EmailTemplateVisitor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import javax.inject.Inject;
 import java.time.LocalDateTime;
 
 /**
@@ -41,7 +41,7 @@ public class NotificationService {
      * @param statusTemplateVisitor {@link EmailTemplateVisitor} bean
      * @param emailRepository       {@link EmailRepository} bean
      */
-    @Autowired
+    @Inject
     public NotificationService(TemplateEngine templateEngine,
                                MailSenderService mailSenderService,
                                ExperimentRepository experimentRepository,

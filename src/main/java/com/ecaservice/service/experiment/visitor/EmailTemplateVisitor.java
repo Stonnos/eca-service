@@ -4,9 +4,10 @@ import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentStatusVisitor;
 import com.ecaservice.service.experiment.dictionary.TemplateVariablesDictionary;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
+
+import javax.inject.Inject;
 
 /**
  * Visitor obtaining email template context for experiment status.
@@ -23,7 +24,7 @@ public class EmailTemplateVisitor implements ExperimentStatusVisitor<Context, Ex
      *
      * @param experimentConfig {@link ExperimentConfig} bean
      */
-    @Autowired
+    @Inject
     public EmailTemplateVisitor(ExperimentConfig experimentConfig) {
         this.experimentConfig = experimentConfig;
     }

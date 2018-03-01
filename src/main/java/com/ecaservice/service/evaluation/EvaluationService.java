@@ -10,7 +10,6 @@ import com.ecaservice.model.evaluation.EvaluationOption;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StopWatch;
@@ -18,6 +17,7 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
+import javax.inject.Inject;
 import java.util.Map;
 import java.util.Random;
 
@@ -37,7 +37,7 @@ public class EvaluationService {
      *
      * @param config {@link CrossValidationConfig} bean
      */
-    @Autowired
+    @Inject
     public EvaluationService(CrossValidationConfig config) {
         this.config = config;
     }

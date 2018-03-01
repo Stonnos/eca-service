@@ -21,9 +21,9 @@ import eca.ensemble.ModifiedHeterogeneousClassifier;
 import eca.ensemble.StackingClassifier;
 import eca.metrics.KNearestNeighbours;
 import eca.neural.NeuralNetwork;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
@@ -50,7 +50,7 @@ public class ExperimentInitializationVisitor
      * @param evaluationMethodMapper {@link EvaluationMethodMapper} bean
      * @param classifiersSetSearcher {@link ClassifiersSetSearcher} bean
      */
-    @Autowired
+    @Inject
     public ExperimentInitializationVisitor(ExperimentConfig experimentConfig,
                                            CrossValidationConfig crossValidationConfig,
                                            EvaluationMethodMapper evaluationMethodMapper,

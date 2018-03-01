@@ -4,9 +4,10 @@ import com.ecaservice.model.options.J48Options;
 import eca.trees.J48;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import javax.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(J48OptionsMapperImpl.class)
 public class J48OptionsMapperTest {
 
-    @Autowired
+    @Inject
     private J48OptionsMapper j48OptionsMapper;
 
     @Test

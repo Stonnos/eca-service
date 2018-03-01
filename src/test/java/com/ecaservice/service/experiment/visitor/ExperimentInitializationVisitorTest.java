@@ -26,6 +26,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
 
+import javax.inject.Inject;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyMap;
@@ -42,11 +44,11 @@ import static org.mockito.Mockito.when;
 @TestPropertySource("classpath:application-test.properties")
 public class ExperimentInitializationVisitorTest {
 
-    @Autowired
+    @Inject
     private ExperimentConfig experimentConfig;
-    @Autowired
+    @Inject
     private CrossValidationConfig crossValidationConfig;
-    @Autowired
+    @Inject
     private EvaluationMethodMapper evaluationMethodMapper;
     @Mock
     private ClassifiersSetSearcher classifiersSetSearcher;

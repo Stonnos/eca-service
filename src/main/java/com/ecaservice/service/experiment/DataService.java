@@ -7,10 +7,10 @@ import eca.data.file.FileDataLoader;
 import eca.data.file.FileDataSaver;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import weka.core.Instances;
 
+import javax.inject.Inject;
 import java.io.File;
 
 /**
@@ -31,7 +31,7 @@ public class DataService {
      * @param dataSaver  {@link FileDataSaver} bean
      * @param dataLoader {@link FileDataLoader} bean
      */
-    @Autowired
+    @Inject
     public DataService(FileDataSaver dataSaver, FileDataLoader dataLoader) {
         this.dataSaver = dataSaver;
         this.dataLoader = dataLoader;

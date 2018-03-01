@@ -1,7 +1,6 @@
 package com.ecaservice.config;
 
 import com.fasterxml.classmate.TypeResolver;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +14,7 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
@@ -35,7 +35,7 @@ public class Swagger2Configuration {
      * @return {@link Docket} bean
      */
     @Bean
-    @Autowired
+    @Inject
     public Docket ecaServiceApi(TypeResolver typeResolver, Swagger2ApiConfig swagger2ApiConfig) {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()

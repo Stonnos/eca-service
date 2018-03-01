@@ -8,13 +8,13 @@ import com.ecaservice.service.PageableCallback;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.experiment.mail.NotificationService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,7 +42,7 @@ public class ExperimentScheduler {
      * @param notificationService  {@link NotificationService} bean
      * @param experimentConfig     {@link ExperimentConfig} bean
      */
-    @Autowired
+    @Inject
     public ExperimentScheduler(ExperimentRepository experimentRepository,
                                ExperimentService experimentService,
                                NotificationService notificationService,

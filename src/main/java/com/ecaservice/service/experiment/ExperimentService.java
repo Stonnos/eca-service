@@ -11,12 +11,12 @@ import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import eca.converters.model.ExperimentHistory;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StopWatch;
 import weka.core.Instances;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -51,7 +51,7 @@ public class ExperimentService {
      * @param experimentConfig           {@link ExperimentConfig} bean
      * @param experimentProcessorService {@link ExperimentProcessorService} bean
      */
-    @Autowired
+    @Inject
     public ExperimentService(ExperimentRepository experimentRepository,
                              CalculationExecutorService executorService,
                              ExperimentMapper experimentMapper,

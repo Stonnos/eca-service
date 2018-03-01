@@ -13,11 +13,11 @@ import eca.dataminer.AbstractExperiment;
 import eca.dataminer.ClassifierComparator;
 import eca.dataminer.IterativeExperiment;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
+import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +41,7 @@ public class ExperimentProcessorService {
      * @param experimentInitializer {@link ExperimentInitializationVisitor} bean
      * @param experimentConfig      {@link ExperimentConfig} bean
      */
-    @Autowired
+    @Inject
     public ExperimentProcessorService(ExperimentInitializationVisitor experimentInitializer,
                                       ExperimentConfig experimentConfig) {
         this.experimentInitializer = experimentInitializer;

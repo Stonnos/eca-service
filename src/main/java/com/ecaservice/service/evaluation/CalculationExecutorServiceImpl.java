@@ -1,10 +1,10 @@
 package com.ecaservice.service.evaluation;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
+import javax.inject.Inject;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -28,7 +28,7 @@ public class CalculationExecutorServiceImpl implements CalculationExecutorServic
      *
      * @param executorService {@link ExecutorService} bean
      */
-    @Autowired
+    @Inject
     public CalculationExecutorServiceImpl(ExecutorService executorService) {
         this.executorService = executorService;
     }

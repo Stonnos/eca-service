@@ -4,10 +4,10 @@ import com.ecaservice.dto.ClassifierOptionsDto;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.inject.Inject;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(ClassifierOptionsDatabaseModelMapperImpl.class)
 public class ClassifierOptionsDatabaseModelMapperTest {
 
-    @Autowired
+    @Inject
     private ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
 
     @Test

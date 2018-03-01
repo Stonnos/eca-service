@@ -13,12 +13,12 @@ import eca.core.evaluation.EvaluationResults;
 import eca.dataminer.ClassifierComparator;
 import eca.ensemble.ClassifiersSet;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +46,7 @@ public class ClassifiersSetSearcher {
      * @param experimentConfig               {@link ExperimentConfig} bean
      * @param classifierInputDataHandlers    {@link ClassifierInputDataHandler} beans
      */
-    @Autowired
+    @Inject
     public ClassifiersSetSearcher(EvaluationService evaluationService,
                                   ExperimentConfigurationService experimentConfigurationService,
                                   ExperimentConfig experimentConfig,

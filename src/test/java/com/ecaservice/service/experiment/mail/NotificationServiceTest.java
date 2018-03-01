@@ -18,11 +18,11 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import javax.inject.Inject;
 import java.util.EnumMap;
 import java.util.List;
 
@@ -51,9 +51,9 @@ public class NotificationServiceTest extends AbstractExperimentTest {
     private MailConfig mailConfig;
     @Mock
     private EmailTemplateVisitor statusTemplateVisitor;
-    @Autowired
+    @Inject
     private ExperimentRepository experimentRepository;
-    @Autowired
+    @Inject
     private EmailRepository emailRepository;
 
     private TemplateEngine templateEngine;

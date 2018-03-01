@@ -10,7 +10,6 @@ import com.ecaservice.service.experiment.ExperimentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 
@@ -50,7 +50,7 @@ public class ExperimentController {
      * @param experimentRequestMapper {@link ExperimentRequestMapper} bean
      * @param ecaResponseMapper       {@link EcaResponseMapper} bean
      */
-    @Autowired
+    @Inject
     public ExperimentController(ExperimentService experimentService,
                                 ExperimentRequestMapper experimentRequestMapper,
                                 EcaResponseMapper ecaResponseMapper) {

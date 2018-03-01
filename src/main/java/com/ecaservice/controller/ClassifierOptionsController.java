@@ -7,7 +7,6 @@ import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.service.experiment.ExperimentConfigurationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -37,7 +37,7 @@ public class ClassifierOptionsController {
      * @param experimentConfigurationService       {@link ExperimentConfigurationService} bean
      * @param classifierOptionsDatabaseModelMapper {@link ClassifierOptionsDatabaseModelMapper} bean
      */
-    @Autowired
+    @Inject
     public ClassifierOptionsController(ExperimentConfigurationService experimentConfigurationService,
                                        ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper) {
         this.experimentConfigurationService = experimentConfigurationService;

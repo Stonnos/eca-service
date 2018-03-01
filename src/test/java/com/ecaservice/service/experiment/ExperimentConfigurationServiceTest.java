@@ -22,12 +22,12 @@ import eca.neural.functions.ActivationFunctionType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import weka.classifiers.AbstractClassifier;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -49,11 +49,11 @@ public class ExperimentConfigurationServiceTest extends AbstractExperimentTest {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final int CONFIG_VERSION = 1;
 
-    @Autowired
+    @Inject
     private ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
-    @Autowired
+    @Inject
     private ExperimentConfig experimentConfig;
-    @Autowired
+    @Inject
     private List<ClassifierOptionsMapper> classifierOptionsMappers;
 
     private ExperimentConfigurationService experimentConfigurationService;

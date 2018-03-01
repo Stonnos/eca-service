@@ -4,12 +4,12 @@ import com.ecaservice.exception.EcaServiceException;
 import com.ecaservice.model.entity.Email;
 import com.ecaservice.repository.EmailRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
@@ -32,7 +32,7 @@ public class MailSenderService {
      * @param mailSender      {@link JavaMailSender} bean
      * @param emailRepository {@link EmailRepository} bean
      */
-    @Autowired
+    @Inject
     public MailSenderService(JavaMailSender mailSender,
                              EmailRepository emailRepository) {
         this.mailSender = mailSender;

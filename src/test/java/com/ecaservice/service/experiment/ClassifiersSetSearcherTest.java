@@ -21,12 +21,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
+import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -44,9 +44,9 @@ import static org.mockito.Mockito.when;
 @Import({ExperimentConfig.class, NeuralNetworkInputDataHandler.class})
 public class ClassifiersSetSearcherTest extends AbstractExperimentTest {
 
-    @Autowired
+    @Inject
     private ExperimentConfig experimentConfig;
-    @Autowired
+    @Inject
     private List<ClassifierInputDataHandler> classifierInputDataHandlers;
     @Mock
     private EvaluationService evaluationService;

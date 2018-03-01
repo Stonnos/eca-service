@@ -1,9 +1,9 @@
 package com.ecaservice.service.experiment;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
 /**
  * Application configuration initializer.
@@ -20,7 +20,7 @@ public class UpdateClassifiersService {
      *
      * @param experimentConfigurationService {@link ExperimentConfigurationService} bean
      */
-    @Autowired
+    @Inject
     public UpdateClassifiersService(ExperimentConfigurationService experimentConfigurationService) {
         this.experimentConfigurationService = experimentConfigurationService;
     }

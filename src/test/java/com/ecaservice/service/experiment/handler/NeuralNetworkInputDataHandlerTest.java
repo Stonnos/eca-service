@@ -4,10 +4,11 @@ import eca.neural.NeuralNetwork;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
+
+import javax.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -25,7 +26,7 @@ public class NeuralNetworkInputDataHandlerTest {
     private static final int DEFAULT_NUM_ATTRIBUTES = 10;
     private static final int DEFAULT_NUM_INSTANCES = 100;
 
-    @Autowired
+    @Inject
     private NeuralNetworkInputDataHandler neuralNetworkInputDataHandler;
 
     @Mock

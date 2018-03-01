@@ -6,9 +6,10 @@ import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import javax.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(EcaResponseMapperImpl.class)
 public class EcaResponseMapperTest {
 
-    @Autowired
+    @Inject
     private EcaResponseMapper ecaResponseMapper;
 
     @Test

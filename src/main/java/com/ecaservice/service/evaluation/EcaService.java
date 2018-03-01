@@ -10,10 +10,10 @@ import com.ecaservice.model.evaluation.EvaluationRequest;
 import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -43,7 +43,7 @@ public class EcaService {
      * @param evaluationLogRepository {@link EvaluationLogRepository} bean
      * @param evaluationLogMapper     {@link EvaluationLogMapper} bean
      */
-    @Autowired
+    @Inject
     public EcaService(CrossValidationConfig crossValidationConfig,
                       CalculationExecutorService executorService,
                       EvaluationService evaluationService,

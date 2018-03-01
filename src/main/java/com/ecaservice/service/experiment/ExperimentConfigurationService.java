@@ -9,12 +9,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import weka.classifiers.AbstractClassifier;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -46,7 +46,7 @@ public class ExperimentConfigurationService {
      * @param classifierOptionsDatabaseModelRepository {@link ClassifierOptionsDatabaseModelRepository} bean
      * @param classifierOptionsMappers                 {@link ClassifierOptionsMapper} bean
      */
-    @Autowired
+    @Inject
     public ExperimentConfigurationService(ExperimentConfig experimentConfig,
                                           ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository,
                                           List<ClassifierOptionsMapper> classifierOptionsMappers) {

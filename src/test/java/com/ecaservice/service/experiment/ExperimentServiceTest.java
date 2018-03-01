@@ -17,11 +17,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.util.List;
 import java.util.UUID;
@@ -44,19 +44,16 @@ import static org.mockito.Mockito.when;
 @Import({ExperimentMapperImpl.class, ExperimentConfig.class})
 public class ExperimentServiceTest extends AbstractExperimentTest {
 
-    @Autowired
+    @Inject
     private ExperimentRepository experimentRepository;
-
-    @Autowired
+    @Inject
     private ExperimentMapper experimentMapper;
     @Mock
     private DataService dataService;
-    @Autowired
+    @Inject
     private ExperimentConfig experimentConfig;
     @Mock
     private ExperimentProcessorService experimentProcessorService;
-
-    private CalculationExecutorService executorService;
 
     private ExperimentService experimentService;
 
@@ -66,7 +63,8 @@ public class ExperimentServiceTest extends AbstractExperimentTest {
     public void setUp() throws Exception {
         experimentRepository.deleteAll();
         data = TestHelperUtils.loadInstances();
-        executorService = new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
+        CalculationExecutorService executorService =
+                new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
         experimentService = new ExperimentService(experimentRepository, executorService, experimentMapper,
                 dataService, experimentConfig, experimentProcessorService);
     }
