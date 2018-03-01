@@ -119,7 +119,7 @@ public class Experiment {
     private EvaluationMethod evaluationMethod;
 
     /**
-     * Number of failed attempts to send email
+     * Number of failed attempts to send experiment results
      */
     @Column(name = "failed_attempts_to_sent")
     private int failedAttemptsToSent;
