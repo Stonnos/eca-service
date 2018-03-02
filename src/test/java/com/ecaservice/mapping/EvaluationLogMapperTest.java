@@ -8,7 +8,7 @@ import com.ecaservice.model.evaluation.EvaluationRequest;
 import eca.metrics.KNearestNeighbours;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import(EvaluationLogMapperImpl.class)
+@SpringBootTest
 public class EvaluationLogMapperTest {
 
     @Inject

@@ -4,7 +4,6 @@ import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.mapping.ExperimentMapper;
-import com.ecaservice.mapping.ExperimentMapperImpl;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentRequest;
 import com.ecaservice.model.experiment.ExperimentStatus;
@@ -17,7 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
 
@@ -41,8 +40,8 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import({ExperimentMapperImpl.class, ExperimentConfig.class})
-public class ExperimentServiceTest extends AbstractExperimentTest {
+@SpringBootTest
+public class ExperimentServiceTest {
 
     @Inject
     private ExperimentRepository experimentRepository;

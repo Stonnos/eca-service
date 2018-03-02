@@ -7,7 +7,6 @@ import com.ecaservice.model.evaluation.ClassificationResult;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.service.evaluation.EvaluationService;
 import com.ecaservice.service.experiment.handler.ClassifierInputDataHandler;
-import com.ecaservice.service.experiment.handler.NeuralNetworkInputDataHandler;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.ensemble.ClassifiersSet;
@@ -21,7 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
@@ -41,8 +40,8 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import({ExperimentConfig.class, NeuralNetworkInputDataHandler.class})
-public class ClassifiersSetSearcherTest extends AbstractExperimentTest {
+@SpringBootTest
+public class ClassifiersSetSearcherTest {
 
     @Inject
     private ExperimentConfig experimentConfig;

@@ -5,11 +5,11 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.exception.EcaServiceException;
 import com.ecaservice.model.entity.Email;
 import com.ecaservice.repository.EmailRepository;
-import com.ecaservice.service.experiment.AbstractExperimentTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -28,7 +28,8 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-public class MailSenderServiceTest extends AbstractExperimentTest {
+@SpringBootTest
+public class MailSenderServiceTest {
 
     @Mock
     private JavaMailSender mailSender;

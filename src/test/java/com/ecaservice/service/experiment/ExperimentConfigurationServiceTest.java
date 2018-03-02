@@ -4,11 +4,6 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.exception.ExperimentException;
 import com.ecaservice.mapping.ClassifierOptionsMapper;
-import com.ecaservice.mapping.DecisionTreeFactory;
-import com.ecaservice.mapping.DecisionTreeOptionsMapperImpl;
-import com.ecaservice.mapping.KNearestNeighboursOptionsMapperImpl;
-import com.ecaservice.mapping.LogisticOptionsMapperImpl;
-import com.ecaservice.mapping.NeuralNetworkOptionsMapperImpl;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.options.ActivationFunctionOptions;
 import com.ecaservice.model.options.ClassifierOptions;
@@ -22,7 +17,7 @@ import eca.neural.functions.ActivationFunctionType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import weka.classifiers.AbstractClassifier;
@@ -41,10 +36,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import({ExperimentConfig.class, DecisionTreeOptionsMapperImpl.class, LogisticOptionsMapperImpl.class,
-        KNearestNeighboursOptionsMapperImpl.class, NeuralNetworkOptionsMapperImpl.class, DecisionTreeFactory.class,
-        ExperimentConfigurationService.class})
-public class ExperimentConfigurationServiceTest extends AbstractExperimentTest {
+@SpringBootTest
+public class ExperimentConfigurationServiceTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final int CONFIG_VERSION = 1;

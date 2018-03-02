@@ -4,7 +4,6 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.mapping.EvaluationMethodMapper;
-import com.ecaservice.mapping.EvaluationMethodMapperTest;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
@@ -19,10 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
 
@@ -39,9 +35,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import({ExperimentConfig.class, CrossValidationConfig.class, EvaluationMethodMapperTest.class})
-@EnableConfigurationProperties
-@TestPropertySource("classpath:application-test.properties")
+@SpringBootTest
 public class ExperimentInitializationVisitorTest {
 
     @Inject

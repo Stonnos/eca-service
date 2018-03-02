@@ -5,6 +5,7 @@ import eca.trees.DecisionTreeClassifier;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
@@ -20,7 +21,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import(DecisionTreeInputDataHandler.class)
+@SpringBootTest
 public class DecisionTreeInputDataHandlerTest {
 
     private static final int DEFAULT_NUM_ATTRIBUTES = 10;

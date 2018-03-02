@@ -5,7 +5,6 @@ import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.repository.ExperimentRepository;
-import com.ecaservice.service.experiment.AbstractExperimentTest;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.experiment.mail.NotificationService;
 import org.junit.Before;
@@ -14,7 +13,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
@@ -34,8 +33,8 @@ import static org.mockito.Mockito.verify;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import(ExperimentConfig.class)
-public class ExperimentSchedulerTest extends AbstractExperimentTest {
+@SpringBootTest
+public class ExperimentSchedulerTest {
 
     @Inject
     private ExperimentRepository experimentRepository;

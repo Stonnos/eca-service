@@ -7,9 +7,7 @@ import eca.metrics.distances.DistanceBuilder;
 import eca.metrics.distances.DistanceType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
@@ -22,9 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@EnableConfigurationProperties
-@TestPropertySource("classpath:application-test.properties")
-@Import({KNearestNeighboursOptionsMapperImpl.class, ExperimentConfig.class})
+@SpringBootTest
 public class KNearestNeighboursOptionsMapperTest {
 
     @Inject

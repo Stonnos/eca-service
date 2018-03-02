@@ -8,9 +8,9 @@ import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.repository.EmailRepository;
 import com.ecaservice.repository.ExperimentRepository;
-import com.ecaservice.service.experiment.AbstractExperimentTest;
 import com.ecaservice.service.experiment.visitor.EmailTemplateVisitor;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -18,6 +18,13 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -37,10 +44,18 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
+@Ignore
+//@AutoConfigureDataJpa
+//@EnableJpaRepositories(basePackageClasses = ExperimentRepository.class)
+//@EntityScan(basePackageClasses = Experiment.class)
+//@EnableConfigurationProperties
+//@TestPropertySource("classpath:application.properties")
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
+@SpringBootTest
+//@ContextConfiguration
 @PrepareForTest(TemplateEngine.class)
-public class NotificationServiceTest extends AbstractExperimentTest {
+public class NotificationServiceTest {
 
     private static final String TEMPLATE_HTML = "test-template.html";
     private static final int MAX_FAILED_ATTEMPTS_TO_SENT = 10;

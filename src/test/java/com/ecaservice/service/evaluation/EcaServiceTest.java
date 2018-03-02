@@ -5,7 +5,6 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.mapping.EvaluationLogMapper;
-import com.ecaservice.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.evaluation.EvaluationMethod;
@@ -18,12 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
@@ -41,12 +35,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import(EvaluationLogMapperImpl.class)
-@AutoConfigureDataJpa
-@EnableJpaRepositories(basePackageClasses = EvaluationLogRepository.class)
-@EntityScan(basePackageClasses = EvaluationLog.class)
-@EnableConfigurationProperties
-@TestPropertySource("classpath:application-test.properties")
+@SpringBootTest
 public class EcaServiceTest {
 
     @Mock

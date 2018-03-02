@@ -9,9 +9,7 @@ import eca.neural.functions.ActivationFunctionBuilder;
 import eca.neural.functions.ActivationFunctionType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
@@ -24,9 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@EnableConfigurationProperties
-@TestPropertySource("classpath:application-test.properties")
-@Import({NeuralNetworkOptionsMapperImpl.class, ExperimentConfig.class})
+@SpringBootTest
 public class NeuralNetworkOptionsMapperTest {
 
     @Inject

@@ -4,6 +4,7 @@ import com.ecaservice.model.options.LogisticOptions;
 import eca.regression.Logistic;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -17,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import(LogisticOptionsMapperImpl.class)
+@SpringBootTest
 public class LogisticOptionsMapperTest {
 
     @Inject
