@@ -22,12 +22,11 @@ ECA service v1.5
 ----------------------------------------
 Настройки для проекта eca-service находятся в application.yml. Основные параметы:
 1) spring.datasource - настройки БД для хранения информации
-2) server.port — номер порта сервера
-3) cross-validation — настройки параметров для метода k * V блочной кросс - проверки
+2) cross-validation — настройки параметров для метода k * V блочной кросс - проверки
    на тестовой выборке:
    cross-validation.numFolds - число блоков
    cross-validation.numTests - число тестов
-4) experiment - настройки параметров модуля Data Miner. Ниже приведено описание
+3) experiment - настройки параметров модуля Data Miner. Ниже приведено описание
    основных настроек:
    experiment.resultSize - число наилучших конфигураций классификаторов
    experiment.numIterations - число итераций эксперимента
@@ -48,7 +47,7 @@ ECA service v1.5
    experiment.mail.from - email отправителя
    experiment.mail.subject - тема письма
    experiment.mail.maxFailedAttemptsToSent - максимальной число попыток для отправки письма
-5) spring.mail - настройки smtp сервера для отправки результатов экспериментов по email 
+4) spring.mail - настройки smtp сервера для отправки результатов экспериментов по email 
 
 Инструкция по развертыванию
 ----------------------------------------
