@@ -15,8 +15,8 @@ public interface ExperimentRequestMapper {
     /**
      * Maps experiment request dto to experiment request.
      *
-     * @param experimentRequestDto {@link ExperimentRequestDto} object
-     * @return {@link ExperimentRequest} object
+     * @param experimentRequestDto experiment request dto model
+     * @return experiment request
      */
     ExperimentRequest map(ExperimentRequestDto experimentRequestDto);
 }

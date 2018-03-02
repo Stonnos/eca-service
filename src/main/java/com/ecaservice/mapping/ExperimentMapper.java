@@ -15,8 +15,8 @@ public interface ExperimentMapper {
     /**
      * Maps experiment request to experiment persistence entity.
      *
-     * @param experimentRequest {@link ExperimentRequest} object
-     * @return {@link Experiment} object
+     * @param experimentRequest experiment request
+     * @return experiment entity
      */
     Experiment map(ExperimentRequest experimentRequest);
 }

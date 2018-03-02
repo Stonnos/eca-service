@@ -22,7 +22,7 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long> {
      * Finds experiment by uuid.
      *
      * @param uuid uuid
-     * @return {@link Experiment} object
+     * @return experiment entity
      */
     Experiment findByUuid(String uuid);
 
@@ -31,7 +31,7 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long> {
      *
      * @param statuses {@link ExperimentStatus} collection
      * @param pageable {@link Pageable} object
-     * @return {@link Experiment} list
+     * @return experiments list
      */
     @Query("select exp from Experiment exp where exp.experimentStatus in (:statuses) and exp.sentDate is null order by exp.creationDate")
     Page<Experiment> findNotSentExperiments(@Param("statuses") Collection<ExperimentStatus> statuses,
@@ -42,7 +42,7 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long> {
      *
      * @param dateTime date time threshold value
      * @param pageable {@link Pageable} object
-     * @return {@link Experiment} list
+     * @return experiments list
      */
     @Query("select exp from Experiment exp where exp.deletedDate is null and exp.sentDate < :dateTime order by exp.sentDate")
     Page<Experiment> findNotDeletedExperiments(@Param("dateTime") LocalDateTime dateTime, Pageable pageable);

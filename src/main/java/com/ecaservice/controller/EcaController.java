@@ -48,9 +48,9 @@ public class EcaController {
     /**
      * Processed the request on classifier model evaluation.
      *
-     * @param evaluationRequestDto {@link EvaluationRequestDto} object
-     * @param request              {@link HttpServletRequest} object
-     * @return {@link ResponseEntity} object
+     * @param evaluationRequestDto evaluation request dto
+     * @param request              http servlet request
+     * @return response entity
      */
     @ApiOperation(
             value = "Evaluates classifier using specified evaluation method",

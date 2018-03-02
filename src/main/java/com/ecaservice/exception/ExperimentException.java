@@ -9,7 +9,7 @@ package com.ecaservice.exception;
 public class ExperimentException extends EcaServiceException {
 
     /**
-     * Creates <tt>ExperimentException</tt> object
+     * Creates experiment exception.
      *
      * @param message error message
      */

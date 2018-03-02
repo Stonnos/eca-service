@@ -14,8 +14,8 @@ public interface EvaluationMethodMapper {
     /**
      * Maps evaluation method enum to eca-core evaluation method enum.
      *
-     * @param evaluationMethod {@link EvaluationMethod} object
-     * @return {@link eca.core.evaluation.EvaluationMethod} object
+     * @param evaluationMethod evaluation method
+     * @return mapped {@link eca.core.evaluation.EvaluationMethod}
      */
     eca.core.evaluation.EvaluationMethod map(EvaluationMethod evaluationMethod);
 }

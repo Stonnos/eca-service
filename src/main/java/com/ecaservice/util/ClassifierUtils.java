@@ -17,7 +17,7 @@ public class ClassifierUtils {
     /**
      * Creates classifiers copies.
      *
-     * @param classifiers {@link AbstractClassifier} list
+     * @param classifiers classifiers list to copying
      * @return classifiers copies
      */
     public static List<AbstractClassifier> createCopies(List<AbstractClassifier> classifiers) {

@@ -14,7 +14,7 @@ public interface EmailRepository extends JpaRepository<Email, Long> {
     /**
      * Finds email by specified experiment
      *
-     * @param experiment experiment {@link Experiment}
+     * @param experiment experiment
      * @return email object
      */
     Email findByExperiment(Experiment experiment);

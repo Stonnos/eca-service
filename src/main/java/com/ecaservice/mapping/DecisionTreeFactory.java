@@ -18,8 +18,8 @@ public class DecisionTreeFactory {
     /**
      * Creates decision tree classifier by specified type.
      *
-     * @param decisionTreeOptions {@link DecisionTreeOptions} object
-     * @return {@link DecisionTreeClassifier} object
+     * @param decisionTreeOptions decision tree options
+     * @return decision tree classifier
      */
     @ObjectFactory
     public DecisionTreeClassifier createDecisionTreeClassifier(DecisionTreeOptions decisionTreeOptions) {

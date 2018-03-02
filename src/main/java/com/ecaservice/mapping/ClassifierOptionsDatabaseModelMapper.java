@@ -17,16 +17,16 @@ public interface ClassifierOptionsDatabaseModelMapper {
     /**
      * Maps classifier options database model to dto model.
      *
-     * @param classifierOptionsDatabaseModel {@link ClassifierOptionsDatabaseModel} object
-     * @return {@link ClassifierOptionsDto} object
+     * @param classifierOptionsDatabaseModel classifier options database model
+     * @return classifier options dto model
      */
     ClassifierOptionsDto map(ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel);
 
     /**
      * Maps classifier options database models list to dto models list.
      *
-     * @param classifierOptionsDatabaseModels {@link ClassifierOptionsDatabaseModel} list
-     * @return {@link ClassifierOptionsDto} list
+     * @param classifierOptionsDatabaseModels classifier options database model
+     * @return classifier options dto model
      */
     List<ClassifierOptionsDto> map(List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels);
 }

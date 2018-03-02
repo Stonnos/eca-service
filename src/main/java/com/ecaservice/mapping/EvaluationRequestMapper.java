@@ -23,8 +23,8 @@ public abstract class EvaluationRequestMapper {
     /**
      * Maps evaluation request dto to evaluation request.
      *
-     * @param evaluationRequestDto {@link EvaluationRequestDto} object
-     * @return {@link EvaluationRequest} object
+     * @param evaluationRequestDto evaluation request dto model
+     * @return evaluation request
      */
     @Mappings( {
             @Mapping(target = "evaluationOptionsMap", ignore = true)

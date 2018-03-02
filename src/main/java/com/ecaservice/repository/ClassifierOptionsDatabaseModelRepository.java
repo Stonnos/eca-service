@@ -25,7 +25,7 @@ public interface ClassifierOptionsDatabaseModelRepository extends JpaRepository<
      * Finds all classifiers input options by specified version.
      *
      * @param version input options version
-     * @return {@link ClassifierOptionsDatabaseModel} list
+     * @return classifier options database models list
      */
     List<ClassifierOptionsDatabaseModel> findAllByVersion(int version);
 }

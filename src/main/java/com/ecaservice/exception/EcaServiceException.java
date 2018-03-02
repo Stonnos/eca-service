@@ -9,7 +9,7 @@ package com.ecaservice.exception;
 public class EcaServiceException extends RuntimeException {
 
     /**
-     * Creates <tt>EcaServiceException</tt> object
+     * Creates exception.
      *
      * @param message error message
      */

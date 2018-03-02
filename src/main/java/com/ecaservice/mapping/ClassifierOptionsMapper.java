@@ -26,7 +26,7 @@ public abstract class ClassifierOptionsMapper<S extends ClassifierOptions, T ext
     /**
      * Returns <tt>true</tt> if input options can be convert to specified classifier.
      *
-     * @param options {@link ClassifierOptions} object
+     * @param options classifier options
      * @return <tt>true</tt> if input options can be convert to specified classifier
      */
     public boolean canMap(ClassifierOptions options) {

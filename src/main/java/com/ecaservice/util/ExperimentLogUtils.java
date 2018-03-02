@@ -14,7 +14,7 @@ public class ExperimentLogUtils {
      * Logs error message and throws exception.
      *
      * @param message error message
-     * @param logger  {@link Logger} object
+     * @param logger  logger
      */
     public static void error(String message, Logger logger) {
         if (logger.isErrorEnabled()) {

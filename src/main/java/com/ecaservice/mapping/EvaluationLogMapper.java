@@ -23,8 +23,8 @@ public abstract class EvaluationLogMapper {
     /**
      * Maps evaluation request to evaluation log.
      *
-     * @param evaluationRequest {@link EvaluationRequest} object
-     * @return {@link EvaluationLog} object
+     * @param evaluationRequest evaluation request
+     * @return evaluation log entity
      */
     public abstract EvaluationLog map(EvaluationRequest evaluationRequest);
 

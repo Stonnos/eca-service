@@ -27,8 +27,8 @@ public abstract class EcaResponseMapper {
     /**
      * Maps experiment to eca response object.
      *
-     * @param experiment {@link Experiment} object
-     * @return {@link EcaResponse} object
+     * @param experiment experiment
+     * @return eca response model
      */
     @Mappings( {
             @Mapping(target = "status", ignore = true),

@@ -47,8 +47,8 @@ public class ClassifierOptionsController {
     /**
      * Saves classifier input options config into database.
      *
-     * @param classifierOptions {@link ClassifierOptions} object
-     * @return {@link ResponseEntity} object
+     * @param classifierOptions classifiers options for saving
+     * @return response entity
      */
     @ApiOperation(
             value = "Saves classifier input options config into database",
@@ -65,7 +65,7 @@ public class ClassifierOptionsController {
     /**
      * Finds the last classifiers options configs.
      *
-     * @return {@link ResponseEntity} object.
+     * @return response entity
      */
     @ApiOperation(
             value = "Finds the last classifiers options configs",

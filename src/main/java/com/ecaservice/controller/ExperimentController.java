@@ -87,9 +87,9 @@ public class ExperimentController {
     /**
      * Creates experiment request.
      *
-     * @param experimentRequest  {@link ExperimentRequestDto} object
-     * @param httpServletRequest {@link HttpServletRequest} object
-     * @return {@link ResponseEntity} object
+     * @param experimentRequest  experiment request dto
+     * @param httpServletRequest http servlet request
+     * @return response entity
      */
     @ApiOperation(
             value = "Creates experiment request",
