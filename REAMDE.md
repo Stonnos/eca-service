@@ -89,6 +89,6 @@ ECA service v1.5
     
 2. Разверните target/eca-service-1.5.war на одном из контейнеров сервлетов (например, Tomcat) с контекстом /eca-service.
          
-3. Страница с документацией swagger находится по адресу http://[host]:[port]/swagger-ui.html, где host и port
+3. Страница с документацией swagger находится по адресу http://[host]:[port]/eca-service/swagger-ui.html, где host и port
 соответственно адрес машины и порт на котором развернуто приложение.
     
