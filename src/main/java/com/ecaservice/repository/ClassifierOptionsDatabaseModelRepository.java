@@ -18,7 +18,7 @@ public interface ClassifierOptionsDatabaseModelRepository extends JpaRepository<
      *
      * @return the latest classifiers input options version
      */
-    @Query("select max(c.version) from ClassifierOptionsDatabaseModel c")
+    @Query("select coalesce(max(c.version), 0) from ClassifierOptionsDatabaseModel c")
     Integer findLatestVersion();
 
     /**

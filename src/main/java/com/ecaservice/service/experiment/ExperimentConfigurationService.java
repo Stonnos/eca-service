@@ -143,8 +143,7 @@ public class ExperimentConfigurationService {
      * @return classifiers input options configs latest version
      */
     private int getConfigLatestVersion() {
-        Integer latestVersion = classifierOptionsDatabaseModelRepository.findLatestVersion();
-        return latestVersion == null ? 0 : latestVersion;
+        return classifierOptionsDatabaseModelRepository.findLatestVersion();
     }
 
     private List<ClassifierOptionsDatabaseModel> createClassifiersOptions(Collection<File> modelFiles, int version) {
