@@ -33,10 +33,6 @@ cross-validation:
   ## Cross validation timeout in minutes
   timeout: 60
 
-## Server port
-server:
-  port: @server.port@
-
 ## Swagger properties
 swagger2:
   projectVersion: @project.version@
@@ -52,7 +48,7 @@ experiment:
   fileFormat: experiment%d.txt
   storagePath: @storagePath@
   individualClassifiersStoragePath: classifiers
-  downloadUrl: http://localhost:@server.port@/eca-service/experiment/download/%s
+  downloadUrl: http://localhost:8085/eca-service/experiment/download/%s
   maximumFractionDigits: 4
   numberOfDaysForStorage: 30
   ## Each day at midnight

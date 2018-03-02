@@ -89,7 +89,6 @@
                 <jdbc.url>jdbc:mysql://localhost:3306/eca?useUnicode=true&amp;characterEncoding=UTF-8</jdbc.url>
                 <jdbc.user>root</jdbc.user>
                 <jdbc.password>123</jdbc.password>
-                <server.port>8090</server.port>
             </properties>
         </profile>
 
@@ -103,7 +102,6 @@
                 <jdbc.driver>org.h2.Driver</jdbc.driver>
                 <jdbc.ddlAuto>create-drop</jdbc.ddlAuto>
                 <jdbc.dialect>org.hibernate.dialect.H2Dialect</jdbc.dialect>
-                <server.port>8090</server.port>
             </properties>
         </profile>
 
@@ -117,11 +115,10 @@
                 <jdbc.driver>org.postgresql.Driver</jdbc.driver>
                 <jdbc.ddlAuto>validate</jdbc.ddlAuto>
                 <jdbc.dialect>org.hibernate.dialect.PostgreSQL9Dialect</jdbc.dialect>
-                <server.port>8085</server.port>
             </properties>
         </profile>
 
-        <!-- Profile is used to use postgres datasource -->
+        <!-- Profile is used to use oracle datasource -->
         <profile>
             <id>oracle</id>
             <properties>
@@ -131,7 +128,6 @@
                 <jdbc.driver>oracle.jdbc.driver.OracleDriver</jdbc.driver>
                 <jdbc.ddlAuto>validate</jdbc.ddlAuto>
                 <jdbc.dialect>org.hibernate.dialect.Oracle10gDialect</jdbc.dialect>
-                <server.port>8090</server.port>
             </properties>
         </profile>
 
