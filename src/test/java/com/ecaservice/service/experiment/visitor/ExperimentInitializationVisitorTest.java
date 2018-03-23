@@ -12,6 +12,7 @@ import eca.dataminer.AbstractExperiment;
 import eca.dataminer.AutomatedHeterogeneousEnsemble;
 import eca.dataminer.AutomatedKNearestNeighbours;
 import eca.dataminer.AutomatedNeuralNetwork;
+import eca.dataminer.AutomatedRandomForests;
 import eca.dataminer.AutomatedStacking;
 import eca.ensemble.ClassifiersSet;
 import org.junit.Before;
@@ -114,6 +115,18 @@ public class ExperimentInitializationVisitorTest {
                 experimentConfig.getNumIterations().intValue());
         assertThat(automatedKNearestNeighbours.getClassifier().getDecimalFormat().getMaximumFractionDigits()).isEqualTo(
                 experimentConfig.getMaximumFractionDigits().intValue());
+    }
+
+    @Test
+    public void testInitializeRandomForests() throws Exception {
+        InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
+        AutomatedRandomForests automatedRandomForests =
+                (AutomatedRandomForests) experimentInitializationVisitor.caseRandomForests(
+                        initializationParams);
+        assertExperiment(automatedRandomForests);
+        assertThat(automatedRandomForests.getNumIterations()).isEqualTo(
+                experimentConfig.getNumIterations().intValue());
+        assertThat(automatedRandomForests.getNumThreads()).isNull();
     }
 
     @Test
