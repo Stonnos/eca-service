@@ -13,6 +13,7 @@ import eca.dataminer.AbstractExperiment;
 import eca.dataminer.AutomatedHeterogeneousEnsemble;
 import eca.dataminer.AutomatedKNearestNeighbours;
 import eca.dataminer.AutomatedNeuralNetwork;
+import eca.dataminer.AutomatedRandomForests;
 import eca.dataminer.AutomatedStacking;
 import eca.ensemble.AdaBoostClassifier;
 import eca.ensemble.ClassifiersSet;
@@ -118,6 +119,14 @@ public class ExperimentInitializationVisitor
                 new AutomatedKNearestNeighbours(initializationParams.getData(), kNearestNeighbours);
         automatedKNearestNeighbours.setNumIterations(experimentConfig.getNumIterations());
         return automatedKNearestNeighbours;
+    }
+
+    @Override
+    public AbstractExperiment caseRandomForests(InitializationParams initializationParams) {
+        AutomatedRandomForests automatedRandomForests = new AutomatedRandomForests(initializationParams.getData());
+        automatedRandomForests.setNumIterations(experimentConfig.getNumIterations());
+        automatedRandomForests.setNumThreads(getNumThreads());
+        return automatedRandomForests;
     }
 
     @Override

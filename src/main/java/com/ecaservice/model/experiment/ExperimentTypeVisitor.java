@@ -58,6 +58,14 @@ public interface ExperimentTypeVisitor<T, P> {
     T caseKNearestNeighbours(P parameter);
 
     /**
+     * Method executed in case if experiment type is Random forests.
+     *
+     * @param parameter input parameter
+     * @return generic object
+     */
+    T caseRandomForests(P parameter);
+
+    /**
      * Method that calls after common handling.
      *
      * @param result    results

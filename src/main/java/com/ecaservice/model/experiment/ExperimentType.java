@@ -67,6 +67,16 @@ public enum ExperimentType {
         public <T, P> T internalHandle(ExperimentTypeVisitor<T, P> visitor, P parameter) {
             return visitor.caseKNearestNeighbours(parameter);
         }
+    },
+
+    /**
+     * Optimal options automatic selection Random forests algorithm.
+     */
+    RANDOM_FORESTS(ExperimentTypeDictionary.RANDOM_FORESTS_NAME) {
+        @Override
+        public <T, P> T internalHandle(ExperimentTypeVisitor<T, P> visitor, P parameter) {
+            return visitor.caseRandomForests(parameter);
+        }
     };
 
     private String description;
