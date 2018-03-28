@@ -66,11 +66,18 @@ public interface ExperimentTypeVisitor<T, P> {
     T caseRandomForests(P parameter);
 
     /**
+     * Method executed in case if experiment type is STACKING_CV.
+     *
+     * @param parameter input parameter
+     * @return generic object
+     */
+    T caseStackingCV(P parameter);
+
+    /**
      * Method that calls after common handling.
      *
      * @param result    results
      * @param parameter input parameter
      */
     void afterHandle(T result, P parameter);
-
 }

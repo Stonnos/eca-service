@@ -1,7 +1,6 @@
 package com.ecaservice.service.experiment;
 
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.mapping.ClassifierOptionsMapper;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
@@ -12,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import weka.classifiers.AbstractClassifier;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -37,22 +35,18 @@ public class ExperimentConfigurationService {
 
     private final ExperimentConfig experimentConfig;
     private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
-    private final List<ClassifierOptionsMapper> classifierOptionsMappers;
 
     /**
      * Constructor with dependency spring injection.
      *
-     * @param experimentConfig                         {@link ExperimentConfig} bean
-     * @param classifierOptionsDatabaseModelRepository {@link ClassifierOptionsDatabaseModelRepository} bean
-     * @param classifierOptionsMappers                 {@link ClassifierOptionsMapper} bean
+     * @param experimentConfig                         - experiment config bean
+     * @param classifierOptionsDatabaseModelRepository - classifier options database model repository bean
      */
     @Inject
     public ExperimentConfigurationService(ExperimentConfig experimentConfig,
-                                          ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository,
-                                          List<ClassifierOptionsMapper> classifierOptionsMappers) {
+                                          ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository) {
         this.experimentConfig = experimentConfig;
         this.classifierOptionsDatabaseModelRepository = classifierOptionsDatabaseModelRepository;
-        this.classifierOptionsMappers = classifierOptionsMappers;
     }
 
     /**
@@ -99,41 +93,14 @@ public class ExperimentConfigurationService {
      *
      * @return {@link ClassifierOptionsDatabaseModel} list
      */
-    public List<ClassifierOptionsDatabaseModel> findLastClassifiersOptions() {
-        return classifierOptionsDatabaseModelRepository.findAllByVersion(getConfigLatestVersion());
-    }
-
-    /**
-     * Reads classifiers configurations from database.
-     *
-     * @return {@link AbstractClassifier} list
-     */
     @Cacheable("classifiers")
-    public List<AbstractClassifier> findClassifiers() {
-        log.info("Starting to read classifiers input options config from database");
-        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = findLastClassifiersOptions();
-        if (CollectionUtils.isEmpty(classifierOptionsDatabaseModels)) {
-            error("Classifiers options config hasn't been found.", log);
-        }
-        log.trace("{} classifiers configs has been found.", classifierOptionsDatabaseModels.size());
-        List<AbstractClassifier> classifierList = new ArrayList<>(classifierOptionsDatabaseModels.size());
-        try {
-            for (ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel : classifierOptionsDatabaseModels) {
-                ClassifierOptions classifierOptions =
-                        objectMapper.readValue(classifierOptionsDatabaseModel.getConfig(), ClassifierOptions.class);
-                for (ClassifierOptionsMapper optionsMapper : classifierOptionsMappers) {
-                    if (optionsMapper.canMap(classifierOptions)) {
-                        classifierList.add(optionsMapper.map(classifierOptions));
-                    }
-                }
-            }
-        } catch (Exception ex) {
-            error(String.format("There was an error while read classifiers input options config from database: %s",
-                    ex.getMessage()), log);
-        }
-        log.info("{} classifiers input options config has been successfully read from database.",
-                classifierList.size());
-        return classifierList;
+    public List<ClassifierOptionsDatabaseModel> findLastClassifiersOptions() {
+        log.info("Starting to read classifiers input options configs from database");
+        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModelList =
+                classifierOptionsDatabaseModelRepository.findAllByVersion(getConfigLatestVersion());
+        log.info("{} classifiers input options configs has been successfully read from database.",
+                classifierOptionsDatabaseModelList.size());
+        return classifierOptionsDatabaseModelList;
     }
 
     /**

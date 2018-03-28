@@ -102,6 +102,7 @@ public class ExperimentInitializationVisitorTest {
                 (AutomatedStacking) experimentInitializationVisitor.caseStacking(initializationParams);
         assertExperiment(automatedStacking);
         assertThat(automatedStacking.getClassifier().getClassifiers()).isNotNull();
+        assertThat(automatedStacking.getClassifier().getUseCrossValidation()).isFalse();
     }
 
     @Test
@@ -127,6 +128,18 @@ public class ExperimentInitializationVisitorTest {
         assertThat(automatedRandomForests.getNumIterations()).isEqualTo(
                 experimentConfig.getNumIterations().intValue());
         assertThat(automatedRandomForests.getNumThreads()).isNull();
+    }
+
+    @Test
+    public void testInitializeStackingCV() throws Exception {
+        InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
+        AutomatedStacking automatedStacking =
+                (AutomatedStacking) experimentInitializationVisitor.caseStackingCV(initializationParams);
+        assertExperiment(automatedStacking);
+        assertThat(automatedStacking.getClassifier().getClassifiers()).isNotNull();
+        assertThat(automatedStacking.getClassifier().getUseCrossValidation()).isTrue();
+        assertThat(automatedStacking.getClassifier().getNumFolds()).isEqualTo(
+                experimentConfig.getEnsemble().getNumFoldsForStacking());
     }
 
     @Test

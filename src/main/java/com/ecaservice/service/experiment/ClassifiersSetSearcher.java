@@ -2,13 +2,16 @@ package com.ecaservice.service.experiment;
 
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.exception.ExperimentException;
+import com.ecaservice.mapping.ClassifierOptionsMapper;
 import com.ecaservice.model.InputData;
+import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.evaluation.ClassificationResult;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
+import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.service.evaluation.EvaluationService;
 import com.ecaservice.service.experiment.handler.ClassifierInputDataHandler;
-import com.ecaservice.util.ClassifierUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.EvaluationResults;
 import eca.dataminer.ClassifierComparator;
 import eca.ensemble.ClassifiersSet;
@@ -24,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.util.ExperimentLogUtils.error;
+
 /**
  * Service for searching the best individual classifiers set by the criterion of accuracy maximization.
  *
@@ -33,28 +38,34 @@ import java.util.stream.Collectors;
 @Service
 public class ClassifiersSetSearcher {
 
+    private static ObjectMapper objectMapper = new ObjectMapper();
+
     private final EvaluationService evaluationService;
     private final ExperimentConfigurationService experimentConfigurationService;
     private final ExperimentConfig experimentConfig;
     private final List<ClassifierInputDataHandler> classifierInputDataHandlers;
+    private final List<ClassifierOptionsMapper> classifierOptionsMappers;
 
     /**
      * Constructor with spring dependency injection.
      *
-     * @param evaluationService              {@link EvaluationService} bean
-     * @param experimentConfigurationService {@link ExperimentConfigurationService} bean
-     * @param experimentConfig               {@link ExperimentConfig} bean
-     * @param classifierInputDataHandlers    {@link ClassifierInputDataHandler} beans
+     * @param evaluationService              - evaluation service bean
+     * @param experimentConfigurationService - experiment configuration service bean
+     * @param experimentConfig               - experiment config bean
+     * @param classifierInputDataHandlers    - classifier input data handler beans
+     * @param classifierOptionsMappers       - classifier options mapper bean
      */
     @Inject
     public ClassifiersSetSearcher(EvaluationService evaluationService,
                                   ExperimentConfigurationService experimentConfigurationService,
                                   ExperimentConfig experimentConfig,
-                                  List<ClassifierInputDataHandler> classifierInputDataHandlers) {
+                                  List<ClassifierInputDataHandler> classifierInputDataHandlers,
+                                  List<ClassifierOptionsMapper> classifierOptionsMappers) {
         this.evaluationService = evaluationService;
         this.experimentConfigurationService = experimentConfigurationService;
         this.experimentConfig = experimentConfig;
         this.classifierInputDataHandlers = classifierInputDataHandlers;
+        this.classifierOptionsMappers = classifierOptionsMappers;
     }
 
     /**
@@ -69,11 +80,11 @@ public class ClassifiersSetSearcher {
     public ClassifiersSet findBestClassifiers(Instances data, EvaluationMethod evaluationMethod,
                                               Map<EvaluationOption, String> evaluationOptionStringMap) {
         log.info("Starting to find the best individual classifiers using {} evaluation method.", evaluationMethod);
-        List<AbstractClassifier> classifiersSet = experimentConfigurationService.findClassifiers();
-        List<AbstractClassifier> initializedClassifiers = initializeClassifiers(classifiersSet, data);
-        ArrayList<EvaluationResults> finished = new ArrayList<>(initializedClassifiers.size());
+        List<AbstractClassifier> classifiersSet = readClassifiers();
+        initializeClassifiers(classifiersSet, data);
+        ArrayList<EvaluationResults> finished = new ArrayList<>(classifiersSet.size());
 
-        for (AbstractClassifier classifier : initializedClassifiers) {
+        for (AbstractClassifier classifier : classifiersSet) {
             ClassificationResult classificationResult =
                     evaluationService.evaluateModel(new InputData(classifier, data), evaluationMethod,
                             evaluationOptionStringMap);
@@ -98,16 +109,41 @@ public class ClassifiersSetSearcher {
         return classifiers;
     }
 
-    private List<AbstractClassifier> initializeClassifiers(List<AbstractClassifier> classifiers, Instances data) {
-        List<AbstractClassifier> classifiersCopies = ClassifierUtils.createCopies(classifiers);
+    private List<AbstractClassifier> readClassifiers() {
+        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = experimentConfigurationService
+                .findLastClassifiersOptions();
+        if (CollectionUtils.isEmpty(classifierOptionsDatabaseModels)) {
+            throw new ExperimentException("Classifiers options config hasn't been found.");
+        }
+        log.info("{} classifiers configs has been found.", classifierOptionsDatabaseModels.size());
+        List<AbstractClassifier> classifierList = new ArrayList<>(classifierOptionsDatabaseModels.size());
+        try {
+            for (ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel : classifierOptionsDatabaseModels) {
+                ClassifierOptions classifierOptions =
+                        objectMapper.readValue(classifierOptionsDatabaseModel.getConfig(), ClassifierOptions.class);
+                for (ClassifierOptionsMapper optionsMapper : classifierOptionsMappers) {
+                    if (optionsMapper.canMap(classifierOptions)) {
+                        classifierList.add(optionsMapper.map(classifierOptions));
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            error(String.format("There was an error while creating individual classifiers: %s",
+                    ex.getMessage()), log);
+        }
+        log.info("{} individual classifiers has been successfully created.",
+                classifierList.size());
+        return classifierList;
+    }
+
+    private void initializeClassifiers(List<AbstractClassifier> classifiers, Instances data) {
         //Initialize classifiers options based on training data
-        for (AbstractClassifier classifier : classifiersCopies) {
+        for (AbstractClassifier classifier : classifiers) {
             for (ClassifierInputDataHandler handler : classifierInputDataHandlers) {
                 if (handler.canHandle(classifier)) {
                     handler.handle(data, classifier);
                 }
             }
         }
-        return classifiersCopies;
     }
 }

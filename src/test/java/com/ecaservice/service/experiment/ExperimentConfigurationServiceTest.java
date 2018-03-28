@@ -3,7 +3,6 @@ package com.ecaservice.service.experiment;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.exception.ExperimentException;
-import com.ecaservice.mapping.ClassifierOptionsMapper;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.options.ActivationFunctionOptions;
 import com.ecaservice.model.options.ClassifierOptions;
@@ -20,7 +19,6 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
-import weka.classifiers.AbstractClassifier;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -46,22 +44,14 @@ public class ExperimentConfigurationServiceTest {
     private ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
     @Inject
     private ExperimentConfig experimentConfig;
-    @Inject
-    private List<ClassifierOptionsMapper> classifierOptionsMappers;
 
     private ExperimentConfigurationService experimentConfigurationService;
 
     @Before
     public void init() {
         experimentConfigurationService =
-                new ExperimentConfigurationService(experimentConfig, classifierOptionsDatabaseModelRepository,
-                        classifierOptionsMappers);
+                new ExperimentConfigurationService(experimentConfig, classifierOptionsDatabaseModelRepository);
         classifierOptionsDatabaseModelRepository.deleteAll();
-    }
-
-    @Test(expected = ExperimentException.class)
-    public void testEmptyClassifiersList() {
-        experimentConfigurationService.findClassifiers();
     }
 
     @Test
@@ -90,17 +80,8 @@ public class ExperimentConfigurationServiceTest {
         ClassifierOptionsDatabaseModel treeOptionsDatabaseModel = TestHelperUtils.createClassifierOptionsDatabaseModel(
                 objectMapper.writeValueAsString(decisionTreeOptions), CONFIG_VERSION);
         classifierOptionsDatabaseModelRepository.save(treeOptionsDatabaseModel);
-        List<AbstractClassifier> classifierList = experimentConfigurationService.findClassifiers();
+        List<ClassifierOptionsDatabaseModel> classifierList = experimentConfigurationService.findLastClassifiersOptions();
         assertThat(classifierList.size()).isEqualTo(3);
-    }
-
-    @Test(expected = ExperimentException.class)
-    public void testReadingConfigsWithError() {
-        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
-                TestHelperUtils.createClassifierOptionsDatabaseModel(null,
-                        CONFIG_VERSION);
-        classifierOptionsDatabaseModelRepository.save(classifierOptionsDatabaseModel);
-        experimentConfigurationService.findClassifiers();
     }
 
     @Test(expected = ExperimentException.class)

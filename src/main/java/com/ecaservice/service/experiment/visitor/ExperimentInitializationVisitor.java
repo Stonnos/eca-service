@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Implements experiment parameters initialization.
@@ -104,11 +105,7 @@ public class ExperimentInitializationVisitor
 
     @Override
     public AbstractExperiment caseStacking(InitializationParams initializationParams) {
-        ClassifiersSet classifiersSet = classifiersSetSearcher.findBestClassifiers(initializationParams.getData(),
-                initializationParams.getEvaluationMethod(), createEvaluationOptionsMap(initializationParams));
-        StackingClassifier stackingClassifier = new StackingClassifier();
-        stackingClassifier.setClassifiers(classifiersSet);
-        return new AutomatedStacking(stackingClassifier, initializationParams.getData());
+        return createStackingExperiment(initializationParams, false);
     }
 
     @Override
@@ -130,10 +127,26 @@ public class ExperimentInitializationVisitor
     }
 
     @Override
+    public AbstractExperiment caseStackingCV(InitializationParams initializationParams) {
+        AutomatedStacking automatedStacking = createStackingExperiment(initializationParams, true);
+        automatedStacking.getClassifier().setNumFolds(experimentConfig.getEnsemble().getNumFoldsForStacking());
+        return automatedStacking;
+    }
+
+    @Override
     public void afterHandle(AbstractExperiment experiment, InitializationParams initializationParams) {
         experiment.setEvaluationMethod(evaluationMethodMapper.map(initializationParams.getEvaluationMethod()));
         experiment.setNumFolds(crossValidationConfig.getNumFolds());
         experiment.setNumTests(crossValidationConfig.getNumTests());
+    }
+
+    private AutomatedStacking createStackingExperiment(InitializationParams initializationParams,
+                                                       boolean useCrossValidation) {
+        ClassifiersSet classifiersSet = classifiersSetSearcher.findBestClassifiers(initializationParams.getData(),
+                initializationParams.getEvaluationMethod(), createEvaluationOptionsMap(initializationParams));
+        StackingClassifier stackingClassifier = new StackingClassifier(useCrossValidation);
+        stackingClassifier.setClassifiers(classifiersSet);
+        return new AutomatedStacking(stackingClassifier, initializationParams.getData());
     }
 
     /**

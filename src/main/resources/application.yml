@@ -68,6 +68,7 @@ experiment:
     numBestClassifiers: 4
     multiThreadModeEnabled: true
     numThreads:
+    numFoldsForStacking: 10
 
   mail:
     from: rbatsw@gmail.com

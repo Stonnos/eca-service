@@ -3,29 +3,30 @@ package com.ecaservice.service.experiment;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.exception.ExperimentException;
+import com.ecaservice.mapping.ClassifierOptionsMapper;
+import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.evaluation.ClassificationResult;
 import com.ecaservice.model.evaluation.EvaluationMethod;
+import com.ecaservice.model.options.KNearestNeighboursOptions;
+import com.ecaservice.model.options.LogisticOptions;
 import com.ecaservice.service.evaluation.EvaluationService;
 import com.ecaservice.service.experiment.handler.ClassifierInputDataHandler;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.ensemble.ClassifiersSet;
 import eca.metrics.KNearestNeighbours;
-import eca.regression.Logistic;
-import eca.trees.C45;
-import eca.trees.CART;
-import eca.trees.CHAID;
-import eca.trees.ID3;
+import eca.metrics.distances.DistanceType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -43,10 +44,15 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 public class ClassifiersSetSearcherTest {
 
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final int CONFIG_VERSION = 1;
+
     @Inject
     private ExperimentConfig experimentConfig;
     @Inject
     private List<ClassifierInputDataHandler> classifierInputDataHandlers;
+    @Inject
+    private List<ClassifierOptionsMapper> classifierOptionsMappers;
     @Mock
     private EvaluationService evaluationService;
     @Mock
@@ -60,14 +66,37 @@ public class ClassifiersSetSearcherTest {
     public void init() throws Exception {
         testInstances = TestHelperUtils.loadInstances();
         classifiersSetSearcher = new ClassifiersSetSearcher(evaluationService, experimentConfigurationService,
-                experimentConfig, classifierInputDataHandlers);
+                experimentConfig, classifierInputDataHandlers, classifierOptionsMappers);
         evaluationResults = new EvaluationResults(new KNearestNeighbours(), new Evaluation(testInstances));
     }
 
     @Test(expected = ExperimentException.class)
-    public void testEmptySet() {
+    public void testEmptyConfigs() {
+        when(experimentConfigurationService.findLastClassifiersOptions()).thenReturn(Collections.emptyList());
+        classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA,
+                Collections.emptyMap());
+    }
+
+    @Test(expected = ExperimentException.class)
+    public void testErrorConfigs() {
+        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
+        classifierOptionsDatabaseModel.setVersion(CONFIG_VERSION);
+        classifierOptionsDatabaseModel.setConfig("config");
+        when(experimentConfigurationService.findLastClassifiersOptions()).thenReturn(
+                Collections.singletonList(classifierOptionsDatabaseModel));
+        classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA,
+                Collections.emptyMap());
+    }
+
+    @Test(expected = ExperimentException.class)
+    public void testEmptySet() throws Exception {
         ClassificationResult classificationResult = new ClassificationResult();
-        when(experimentConfigurationService.findClassifiers()).thenReturn(Arrays.asList(new CART(), new Logistic()));
+        ClassifierOptionsDatabaseModel logisticModel = TestHelperUtils.createClassifierOptionsDatabaseModel(
+                objectMapper.writeValueAsString(new LogisticOptions()), CONFIG_VERSION);
+        ClassifierOptionsDatabaseModel knnModel = TestHelperUtils.createClassifierOptionsDatabaseModel(
+                objectMapper.writeValueAsString(new KNearestNeighboursOptions()), CONFIG_VERSION);
+        when(experimentConfigurationService.findLastClassifiersOptions()).thenReturn(
+                Arrays.asList(logisticModel, knnModel));
         when(evaluationService.evaluateModel(anyObject(), anyObject(), anyObject())).thenReturn(classificationResult);
         classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA,
                 Collections.emptyMap());
@@ -79,23 +108,35 @@ public class ClassifiersSetSearcherTest {
      * Case 2: the classifiers size is less than best classifiers number specified in configs.
      */
     @Test
-    public void testSuccessBuilt() {
+    public void testSuccessBuilt() throws Exception {
         ClassificationResult classificationResult = new ClassificationResult();
         classificationResult.setSuccess(true);
         classificationResult.setEvaluationResults(evaluationResults);
         //checks case 1
-        when(experimentConfigurationService.findClassifiers()).thenReturn(Arrays.asList(new CART(), new Logistic(),
-                new ID3(), new C45(), new CHAID()));
+        List<ClassifierOptionsDatabaseModel> optionsList = new ArrayList<>();
+        for (DistanceType distanceType : DistanceType.values()) {
+            KNearestNeighboursOptions kNearestNeighboursOptions = new KNearestNeighboursOptions();
+            kNearestNeighboursOptions.setDistanceType(distanceType);
+            optionsList.add(TestHelperUtils.createClassifierOptionsDatabaseModel(
+                    objectMapper.writeValueAsString(kNearestNeighboursOptions), CONFIG_VERSION));
+        }
+        optionsList.add(TestHelperUtils.createClassifierOptionsDatabaseModel(
+                objectMapper.writeValueAsString(new LogisticOptions()), CONFIG_VERSION));
+        when(experimentConfigurationService.findLastClassifiersOptions()).thenReturn(optionsList);
         when(evaluationService.evaluateModel(anyObject(), anyObject(), anyObject())).thenReturn(classificationResult);
         ClassifiersSet classifiers = classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod
                 .TRAINING_DATA, Collections.emptyMap());
         assertThat(classifiers.size()).isEqualTo(experimentConfig.getEnsemble().getNumBestClassifiers().intValue());
         //checks case 2
-        List<AbstractClassifier> classifierList = Arrays.asList(new CART(), new Logistic());
-        when(experimentConfigurationService.findClassifiers()).thenReturn(classifierList);
+        optionsList = Arrays.asList(
+                TestHelperUtils.createClassifierOptionsDatabaseModel(
+                        objectMapper.writeValueAsString(new LogisticOptions()), CONFIG_VERSION),
+                TestHelperUtils.createClassifierOptionsDatabaseModel(
+                        objectMapper.writeValueAsString(new KNearestNeighboursOptions()), CONFIG_VERSION));
+        when(experimentConfigurationService.findLastClassifiersOptions()).thenReturn(optionsList);
         classifiers = classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod
                 .TRAINING_DATA, Collections.emptyMap());
-        assertThat(classifierList.size()).isEqualTo(classifiers.size());
+        assertThat(classifiers.size()).isEqualTo(optionsList.size());
     }
 
 

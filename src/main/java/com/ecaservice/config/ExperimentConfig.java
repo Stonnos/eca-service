@@ -106,7 +106,7 @@ public class ExperimentConfig {
     public static class EnsembleConfig {
 
         /**
-         * Number of iterations
+         * Number of iterations for iterative ensemble algorithms
          */
         private Integer numIterations;
 
@@ -124,6 +124,12 @@ public class ExperimentConfig {
          * Specified threads number
          */
         private Integer numThreads;
+
+        /**
+         * Number of folds for Stacking algorithm using cross - validation method for
+         * meta data set creation
+         */
+        private Integer numFoldsForStacking;
     }
 
 }

@@ -17,9 +17,7 @@ public class ExperimentLogUtils {
      * @param logger  logger
      */
     public static void error(String message, Logger logger) {
-        if (logger.isErrorEnabled()) {
-            logger.error(message);
-        }
+        logger.error(message);
         throw new ExperimentException(message);
     }
 }
