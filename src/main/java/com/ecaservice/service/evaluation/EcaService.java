@@ -63,7 +63,6 @@ public class EcaService {
      * @return evaluation response {@link EvaluationResponse}
      */
     public EvaluationResponse processRequest(final EvaluationRequest request) {
-
         Assert.notNull(request, "Evaluation request is not specified!");
 
         EvaluationLog evaluationLog = evaluationLogMapper.map(request);
@@ -73,7 +72,6 @@ public class EcaService {
         evaluationLogRepository.save(evaluationLog);
 
         EvaluationResponse evaluationResponse = new EvaluationResponse();
-
         try {
             Callable<ClassificationResult> callable = () ->
                     evaluationService.evaluateModel(request.getInputData(), request.getEvaluationMethod(),

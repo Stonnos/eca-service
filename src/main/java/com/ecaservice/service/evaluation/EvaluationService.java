@@ -57,18 +57,13 @@ public class EvaluationService {
                                               final Map<EvaluationOption, String> evaluationOptionsMap) {
         ClassificationResult classificationResult = new ClassificationResult();
         try {
-            Assert.notNull(inputData, "Input data is not specified!");
-            Assert.notNull(inputData.getClassifier(), "Classifier is not specified!");
-            Assert.notNull(inputData.getData(), "Input data is not specified!");
-            Assert.notNull(evaluationMethod, "Evaluation method is not specified!");
-            Assert.notNull(evaluationOptionsMap, "Evaluation options map is not specified!");
+            validateInputData(inputData, evaluationMethod, evaluationOptionsMap);
 
             final Classifier classifier = AbstractClassifier.makeCopy(inputData.getClassifier());
             final Instances data = inputData.getData();
             final String classifierName = classifier.getClass().getSimpleName();
 
-            log.info("Starting {} model evaluation.", classifierName);
-            log.trace("Model evaluation starting for classifier = {}, data = {}, evaluationMethod = {}",
+            log.info("Model evaluation starting for classifier = {}, data = {}, evaluationMethod = {}",
                     classifierName, data.relationName(), evaluationMethod);
 
             final Evaluation evaluation = new Evaluation(data);
@@ -110,8 +105,8 @@ public class EvaluationService {
                     }
 
                     stopWatch.start(String.format("%s model evaluation", classifierName));
-                    Random random = new Random(config.getSeed());
-                    evaluation.kCrossValidateModel(AbstractClassifier.makeCopy(classifier), data, folds, tests, random);
+                    evaluation.kCrossValidateModel(AbstractClassifier.makeCopy(classifier), data, folds, tests,
+                            new Random(config.getSeed()));
                     stopWatch.stop();
 
                     stopWatch.start(String.format("%s model training", classifierName));
@@ -133,4 +128,12 @@ public class EvaluationService {
         return classificationResult;
     }
 
+    private void validateInputData(InputData inputData, EvaluationMethod evaluationMethod,
+                                   Map<EvaluationOption, String> evaluationOptionsMap) {
+        Assert.notNull(inputData, "Input data is not specified!");
+        Assert.notNull(inputData.getClassifier(), "Classifier is not specified!");
+        Assert.notNull(inputData.getData(), "Input data is not specified!");
+        Assert.notNull(evaluationMethod, "Evaluation method is not specified!");
+        Assert.notNull(evaluationOptionsMap, "Evaluation options map is not specified!");
+    }
 }

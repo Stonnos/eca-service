@@ -8,10 +8,12 @@ import eca.data.file.FileDataSaver;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import weka.core.Instances;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Data service interface.
@@ -28,8 +30,8 @@ public class DataService {
     /**
      * Constructor with dependency spring injection.
      *
-     * @param dataSaver  {@link FileDataSaver} bean
-     * @param dataLoader {@link FileDataLoader} bean
+     * @param dataSaver  - file data saver bean
+     * @param dataLoader - file data loader bean
      */
     @Inject
     public DataService(FileDataSaver dataSaver, FileDataLoader dataLoader) {
@@ -40,11 +42,11 @@ public class DataService {
     /**
      * Saves data to file.
      *
-     * @param file file object
-     * @param data training data
-     * @throws Exception
+     * @param file - file object
+     * @param data - training data
+     * @throws IOException
      */
-    public void save(File file, Instances data) throws Exception {
+    public void save(File file, Instances data) throws IOException {
         log.info("Starting to save {} data into file {}.", data.relationName(), file.getAbsolutePath());
         dataSaver.saveData(file, data);
         log.info("{} data has been successfully saved to file {}.", data.relationName(), file.getAbsolutePath());
@@ -53,7 +55,7 @@ public class DataService {
     /**
      * Loads data from file.
      *
-     * @param file file object
+     * @param file - file object
      * @return training data
      * @throws Exception
      */
@@ -68,8 +70,8 @@ public class DataService {
     /**
      * Saves experiment history to file.
      *
-     * @param file              file object
-     * @param experimentHistory experiment history
+     * @param file              - file object
+     * @param experimentHistory - experiment history
      * @throws Exception
      */
     public void save(File file, ExperimentHistory experimentHistory) throws Exception {
@@ -81,14 +83,19 @@ public class DataService {
     /**
      * Deletes file from disk.
      *
-     * @param file file object
+     * @param file - file object
      */
     public void delete(File file) {
-        boolean deleted = FileUtils.deleteQuietly(file);
-        if (deleted) {
-            log.info("File {} has been deleted from disk.", file.getAbsolutePath());
+        Assert.notNull(file, "File isn't specified!");
+        if (!file.exists()) {
+            log.warn("File with name '{}' doesn't exists.", file.getAbsolutePath());
         } else {
-            log.warn("File {} hasn't been deleted from disk.", file.getAbsolutePath());
+            boolean deleted = FileUtils.deleteQuietly(file);
+            if (deleted) {
+                log.info("File '{}' has been deleted from disk.", file.getAbsolutePath());
+            } else {
+                log.warn("There was an error while deleting '{}' file from disk.", file.getAbsolutePath());
+            }
         }
     }
 }
