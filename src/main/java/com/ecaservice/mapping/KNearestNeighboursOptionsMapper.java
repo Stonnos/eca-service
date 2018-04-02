@@ -19,6 +19,8 @@ import javax.inject.Inject;
 public abstract class KNearestNeighboursOptionsMapper
         extends ClassifierOptionsMapper<KNearestNeighboursOptions, KNearestNeighbours> {
 
+    private static final DistanceBuilder DISTANCE_BUILDER = new DistanceBuilder();
+
     @Inject
     private ExperimentConfig experimentConfig;
 
@@ -30,7 +32,7 @@ public abstract class KNearestNeighboursOptionsMapper
     protected void postMapping(KNearestNeighboursOptions kNearestNeighboursOptions,
                                @MappingTarget KNearestNeighbours kNearestNeighbours) {
         if (kNearestNeighboursOptions.getDistanceType() != null) {
-            kNearestNeighbours.setDistance(kNearestNeighboursOptions.getDistanceType().handle(new DistanceBuilder()));
+            kNearestNeighbours.setDistance(kNearestNeighboursOptions.getDistanceType().handle(DISTANCE_BUILDER));
         }
         if (experimentConfig.getMaximumFractionDigits() != null) {
             kNearestNeighbours.getDecimalFormat().setMaximumFractionDigits(

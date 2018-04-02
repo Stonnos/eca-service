@@ -98,8 +98,7 @@ public class EcaServiceTest {
         EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS);
         request.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         request.setEvaluationOptionsMap(new EnumMap<>(EvaluationOption.class));
-        request.getEvaluationOptionsMap().put(EvaluationOption.NUM_FOLDS,
-                String.valueOf(Evaluation.MINIMUM_NUMBER_OF_FOLDS - 1));
+        request.getEvaluationOptionsMap().put(EvaluationOption.NUM_FOLDS, String.valueOf(1));
         EvaluationResponse evaluationResponse = ecaService.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();

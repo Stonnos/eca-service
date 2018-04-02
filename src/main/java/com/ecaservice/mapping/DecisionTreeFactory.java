@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class DecisionTreeFactory {
 
+    private static final DecisionTreeBuilder DECISION_TREE_BUILDER = new DecisionTreeBuilder();
+
     /**
      * Creates decision tree classifier by specified type.
      *
@@ -24,6 +26,6 @@ public class DecisionTreeFactory {
     @ObjectFactory
     public DecisionTreeClassifier createDecisionTreeClassifier(DecisionTreeOptions decisionTreeOptions) {
         return decisionTreeOptions.getDecisionTreeType() != null ?
-                decisionTreeOptions.getDecisionTreeType().handle(new DecisionTreeBuilder()) : new CART();
+                decisionTreeOptions.getDecisionTreeType().handle(DECISION_TREE_BUILDER) : new CART();
     }
 }

@@ -20,6 +20,8 @@ import javax.inject.Inject;
 @Mapper
 public abstract class NeuralNetworkOptionsMapper extends ClassifierOptionsMapper<NeuralNetworkOptions, NeuralNetwork> {
 
+    private static final ActivationFunctionBuilder ACTIVATION_FUNCTION_BUILDER = new ActivationFunctionBuilder();
+
     @Inject
     private ExperimentConfig experimentConfig;
 
@@ -33,7 +35,7 @@ public abstract class NeuralNetworkOptionsMapper extends ClassifierOptionsMapper
         ActivationFunctionOptions activationFunctionOptions = networkOptions.getActivationFunctionOptions();
         if (activationFunctionOptions != null) {
             AbstractFunction activationFunction =
-                    activationFunctionOptions.getActivationFunctionType().handle(new ActivationFunctionBuilder());
+                    activationFunctionOptions.getActivationFunctionType().handle(ACTIVATION_FUNCTION_BUILDER);
             if (activationFunctionOptions.getCoefficient() != null) {
                 activationFunction.setCoefficient(activationFunctionOptions.getCoefficient());
             }
