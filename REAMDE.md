@@ -1,4 +1,4 @@
-ECA service v1.7
+ECA service v1.8
 ========================================
 
 Описание
@@ -14,7 +14,7 @@ ECA service v1.7
 ----------------------------------------
 * jdk 1.8
 * maven 3.3.9
-* eca-core 5.0.3
+* eca-core 5.0.5
 * DB для хранения информации.
 * Контейнер сервлетов (например Tomcat 7)
 
@@ -44,6 +44,7 @@ ECA service v1.7
    будут использоваться при построении ансамбля
    experiment.ensemble.multiThreadModeEnabled - многопоточный режим для ансамблевых алгоритмов (вкл./выкл.)
    experiment.ensemble.numThreads - число используемых потоков
+   experiment.ensemble.numFoldsForStacking - число блоков V - блочной кросс - проверки для алгоритма Stacking
    experiment.mail.from - email отправителя
    experiment.mail.subject - тема письма
    experiment.mail.maxFailedAttemptsToSent - максимальной число попыток для отправки письма
@@ -86,7 +87,7 @@ ECA service v1.7
             исходныи данными (обучающая выборка)
         * mail - настройки smtp - сервера для отправки результатов эксперимента по email
     
-2. Разверните target/eca-service-1.7.war на одном из контейнеров сервлетов (например, Tomcat) с контекстом /eca-service.
+2. Разверните target/eca-service-1.8.war на одном из контейнеров сервлетов (например, Tomcat) с контекстом /eca-service.
          
 3. Страница с документацией swagger находится по адресу http://[host]:[port]/eca-service/swagger-ui.html, где host и port
 соответственно адрес машины и порт на котором развернуто приложение.
