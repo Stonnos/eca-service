@@ -45,7 +45,7 @@ swagger2:
 experiment:
   resultSize: 25
   numIterations: 100
-  fileFormat: experiment%d.txt
+  fileFormat: experiment%d.model
   storagePath: @storagePath@
   individualClassifiersStoragePath: classifiers
   downloadUrl: http://localhost:8085/eca-service/experiment/download/%s
