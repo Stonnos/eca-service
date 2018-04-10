@@ -28,7 +28,6 @@ import java.util.Map;
  */
 public class TestHelperUtils {
 
-    public static final int SEED = 3;
     public static final int NUM_FOLDS = 10;
     public static final int NUM_TESTS = 10;
     public static final String IP_ADDRESS = "127.0.0.1";
