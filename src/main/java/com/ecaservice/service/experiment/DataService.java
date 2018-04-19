@@ -61,7 +61,7 @@ public class DataService {
      */
     public Instances load(File file) throws Exception {
         log.info("Starting to load data from file {}", file.getAbsolutePath());
-        dataLoader.setFile(file);
+        dataLoader.setSource(file);
         Instances data = dataLoader.loadInstances();
         log.info("{} data has been successfully loaded from file {}", data.relationName(), file.getAbsolutePath());
         return data;
