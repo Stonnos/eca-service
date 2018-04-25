@@ -105,7 +105,7 @@ public class ExperimentController {
         Experiment experiment = experimentService.createExperiment(request);
         EcaResponse ecaResponse = ecaResponseMapper.map(experiment);
         log.info("Experiment request has been created with status [{}].", ecaResponse.getStatus());
-        return new ResponseEntity<>(ecaResponse, HttpStatus.OK);
+        return ResponseEntity.ok(ecaResponse);
     }
 
 }

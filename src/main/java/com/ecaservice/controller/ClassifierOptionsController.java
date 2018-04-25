@@ -7,13 +7,8 @@ import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.service.experiment.ExperimentConfigurationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -58,8 +53,7 @@ public class ClassifierOptionsController {
     public ResponseEntity<ClassifierOptionsDto> save(@RequestBody ClassifierOptions classifierOptions) {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
                 experimentConfigurationService.saveClassifierOptions(classifierOptions);
-        return new ResponseEntity<>(classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModel),
-                HttpStatus.OK);
+        return ResponseEntity.ok(classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModel));
     }
 
     /**
@@ -75,7 +69,6 @@ public class ClassifierOptionsController {
     public ResponseEntity<List<ClassifierOptionsDto>> configs() {
         List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
                 experimentConfigurationService.findLastClassifiersOptions();
-        return new ResponseEntity<>(classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModels),
-                HttpStatus.OK);
+        return ResponseEntity.ok(classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModels));
     }
 }

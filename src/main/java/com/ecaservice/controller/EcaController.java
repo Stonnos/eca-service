@@ -8,7 +8,6 @@ import com.ecaservice.service.evaluation.EcaService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -64,7 +63,7 @@ public class EcaController {
         evaluationRequest.setIpAddress(request.getRemoteAddr());
         EvaluationResponse evaluationResponse = ecaService.processRequest(evaluationRequest);
         log.info("Evaluation response with status [{}] has been built.", evaluationResponse.getStatus());
-        return new ResponseEntity<>(evaluationResponse, HttpStatus.OK);
+        return ResponseEntity.ok(evaluationResponse);
     }
 
 }
