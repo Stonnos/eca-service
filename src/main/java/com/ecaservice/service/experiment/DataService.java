@@ -5,6 +5,7 @@ import eca.converters.ModelConverter;
 import eca.converters.model.ExperimentHistory;
 import eca.data.file.FileDataLoader;
 import eca.data.file.FileDataSaver;
+import eca.data.file.resource.FileResource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
@@ -61,7 +62,7 @@ public class DataService {
      */
     public Instances load(File file) throws Exception {
         log.info("Starting to load data from file {}", file.getAbsolutePath());
-        dataLoader.setSource(file);
+        dataLoader.setSource(new FileResource(file));
         Instances data = dataLoader.loadInstances();
         log.info("{} data has been successfully loaded from file {}", data.relationName(), file.getAbsolutePath());
         return data;

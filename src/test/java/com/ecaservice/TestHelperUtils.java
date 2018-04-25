@@ -11,11 +11,12 @@ import com.ecaservice.model.experiment.ExperimentRequest;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
-import eca.data.file.XLSLoader;
+import eca.data.file.resource.FileResource;
+import eca.data.file.xls.XLSLoader;
 import eca.metrics.KNearestNeighbours;
 import weka.core.Instances;
 
-import java.io.InputStream;
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -50,11 +51,9 @@ public class TestHelperUtils {
      */
     public static Instances loadInstances() throws Exception {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-        try (InputStream inputStream = classLoader.getResourceAsStream(DATA_PATH)) {
-            XLSLoader xlsLoader = new XLSLoader();
-            xlsLoader.setInputStream(inputStream);
-            return xlsLoader.getDataSet();
-        }
+        XLSLoader dataLoader = new XLSLoader();
+        dataLoader.setResource(new FileResource(new File(classLoader.getResource(DATA_PATH).getFile())));
+        return dataLoader.getDataSet();
     }
 
     /**
