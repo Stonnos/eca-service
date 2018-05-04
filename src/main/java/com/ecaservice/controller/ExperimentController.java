@@ -73,8 +73,8 @@ public class ExperimentController {
         File experimentFile = experimentService.findExperimentFileByUuid(uuid);
         if (experimentFile == null) {
             log.error("Experiment results file for uuid = '{}' not found!", uuid);
-            return new ResponseEntity<>(String.format("Experiment results file for uuid = '%s' not found!", uuid),
-                    HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body(
+                    String.format("Experiment results file for uuid = '%s' not found!", uuid));
         }
         FileSystemResource resource = new FileSystemResource(experimentFile);
         HttpHeaders headers = new HttpHeaders();
