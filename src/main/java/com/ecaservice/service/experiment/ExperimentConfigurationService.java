@@ -62,10 +62,10 @@ public class ExperimentConfigurationService {
         if (CollectionUtils.isEmpty(modelFiles)) {
             error("Classifiers input options directory is empty.", log);
         } else {
-            int version = getConfigLatestVersion();
+            int version = classifierOptionsDatabaseModelRepository.findLatestVersion();
             List<ClassifierOptionsDatabaseModel> latestOptions =
                     classifierOptionsDatabaseModelRepository.findAllByVersion(version);
-            List<ClassifierOptionsDatabaseModel> newOptions = createClassifiersOptions(modelFiles, version + 1);
+            List<ClassifierOptionsDatabaseModel> newOptions = createClassifiersOptions(modelFiles, ++version);
             if (CollectionUtils.isEmpty(latestOptions) || latestOptions.size() != newOptions.size() ||
                     !latestOptions.equals(newOptions)) {
                 log.info("Saving new classifiers input options with version {}.", version);
@@ -80,7 +80,7 @@ public class ExperimentConfigurationService {
      * @param classifierOptions {@link ClassifierOptions} object
      */
     public ClassifierOptionsDatabaseModel saveClassifierOptions(ClassifierOptions classifierOptions) {
-        int version = getConfigLatestVersion();
+        int version = classifierOptionsDatabaseModelRepository.findLatestVersion();
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
                 createClassifierOptions(classifierOptions, version == 0 ? version + 1 : version);
         classifierOptionsDatabaseModelRepository.save(classifierOptionsDatabaseModel);
@@ -97,20 +97,11 @@ public class ExperimentConfigurationService {
     public List<ClassifierOptionsDatabaseModel> findLastClassifiersOptions() {
         log.info("Starting to read classifiers input options configs from database");
         List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModelList =
-                classifierOptionsDatabaseModelRepository.findAllByVersion(getConfigLatestVersion());
+                classifierOptionsDatabaseModelRepository.findAllByVersion(
+                        classifierOptionsDatabaseModelRepository.findLatestVersion());
         log.info("{} classifiers input options configs has been successfully read from database.",
                 classifierOptionsDatabaseModelList.size());
         return classifierOptionsDatabaseModelList;
-    }
-
-    /**
-     * Returns classifiers input options configs latest version. Version 0 means that
-     * classifiers options configs is empty.
-     *
-     * @return classifiers input options configs latest version
-     */
-    private int getConfigLatestVersion() {
-        return classifierOptionsDatabaseModelRepository.findLatestVersion();
     }
 
     private List<ClassifierOptionsDatabaseModel> createClassifiersOptions(Collection<File> modelFiles, int version) {
