@@ -10,10 +10,11 @@ import com.ecaservice.dto.evaluation.InstancesReport;
 import com.ecaservice.dto.evaluation.StatisticsReport;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
-import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Attribute;
 import weka.core.Instances;
@@ -28,9 +29,10 @@ import java.util.Optional;
  *
  * @author Roman Batygin
  */
-@Slf4j
 @Mapper
 public abstract class EvaluationResultsMapper {
+
+    private static final Logger log = LoggerFactory.getLogger(EvaluationResultsMapper.class);
 
     private static final int CONFIDENCE_INTERVAL_LOWER_INDEX = 0;
     private static final int CONFIDENCE_INTERVAL_UPPER_INDEX = 1;

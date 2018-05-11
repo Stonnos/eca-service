@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <not>
+                <tableExists tableName="evaluation_results_request"/>
+            </not>
+        </preConditions>
+        <createTable tableName="evaluation_results_request">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="request_date" type="timestamp"/>
+            <column name="request_id" type="varchar(255)"/>
+            <column name="response_status" type="varchar(255)"/>
+            <column name="details" type="text"/>
+            <column name="evaluation_log_id" type="bigint">
+                <constraints foreignKeyName="fk_evaluation_log" referencedTableName="evaluation_log"
+                             referencedColumnNames="id" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
