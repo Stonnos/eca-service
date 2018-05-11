@@ -46,9 +46,9 @@ public class ExperimentController {
     /**
      * Constructor with dependency spring injection.
      *
-     * @param experimentService       {@link ExperimentService} bean
-     * @param experimentRequestMapper {@link ExperimentRequestMapper} bean
-     * @param ecaResponseMapper       {@link EcaResponseMapper} bean
+     * @param experimentService       - experiment service bean
+     * @param experimentRequestMapper - experiment request mapper bean
+     * @param ecaResponseMapper       - eca response mapper bean
      */
     @Inject
     public ExperimentController(ExperimentService experimentService,

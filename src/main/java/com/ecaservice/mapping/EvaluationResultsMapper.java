@@ -1,0 +1,201 @@
+package com.ecaservice.mapping;
+
+import com.ecaservice.dto.evaluation.ClassificationCostsReport;
+import com.ecaservice.dto.evaluation.ClassifierReport;
+import com.ecaservice.dto.evaluation.ConfusionMatrixReport;
+import com.ecaservice.dto.evaluation.EvaluationMethod;
+import com.ecaservice.dto.evaluation.EvaluationMethodReport;
+import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
+import com.ecaservice.dto.evaluation.InstancesReport;
+import com.ecaservice.dto.evaluation.StatisticsReport;
+import eca.core.evaluation.Evaluation;
+import eca.core.evaluation.EvaluationResults;
+import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.AfterMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import weka.classifiers.AbstractClassifier;
+import weka.core.Attribute;
+import weka.core.Instances;
+import weka.core.xml.XMLInstances;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Optional;
+
+/**
+ * Implements mapping evaluation results to evaluation results request model or web - service.
+ *
+ * @author Roman Batygin
+ */
+@Slf4j
+@Mapper
+public abstract class EvaluationResultsMapper {
+
+    private static final int CONFIDENCE_INTERVAL_LOWER_INDEX = 0;
+    private static final int CONFIDENCE_INTERVAL_UPPER_INDEX = 1;
+
+    /**
+     * Maps evaluation results to evaluation results request model.
+     *
+     * @param evaluationResults - evaluation results
+     * @return evaluation results request model
+     */
+    public abstract EvaluationResultsRequest map(EvaluationResults evaluationResults);
+
+    /**
+     * Populates training data report.
+     *
+     * @param evaluationResults        - evaluation results
+     * @param evaluationResultsRequest - evaluation results request model
+     */
+    @AfterMapping
+    protected void populateInstancesReport(EvaluationResults evaluationResults,
+                                           @MappingTarget EvaluationResultsRequest evaluationResultsRequest) {
+        if (Optional.ofNullable(evaluationResults.getEvaluation()).map(Evaluation::getData).isPresent()) {
+            Instances instances = evaluationResults.getEvaluation().getData();
+            InstancesReport instancesReport = new InstancesReport();
+            instancesReport.setRelationName(instances.relationName());
+            instancesReport.setNumInstances(BigInteger.valueOf(instances.numInstances()));
+            instancesReport.setNumAttributes(BigInteger.valueOf(instances.numAttributes()));
+            instancesReport.setNumClasses(BigInteger.valueOf(instances.numClasses()));
+            instancesReport.setClassName(instances.classAttribute().name());
+            try {
+                XMLInstances xmlInstances = new XMLInstances();
+                xmlInstances.setInstances(instances);
+                instancesReport.setXmlData(xmlInstances.toString());
+            } catch (Exception ex) {
+                log.error("Can't serialize instances to xml: {}", ex.getMessage());
+            }
+            evaluationResultsRequest.setInstances(instancesReport);
+        }
+    }
+
+    /**
+     * Populates evaluation method report.
+     *
+     * @param evaluationResults        - evaluation results
+     * @param evaluationResultsRequest - evaluation results request model
+     */
+    @AfterMapping
+    protected void populateEvaluationMethodReport(EvaluationResults evaluationResults,
+                                                  @MappingTarget EvaluationResultsRequest evaluationResultsRequest) {
+        if (evaluationResults.getEvaluation() != null) {
+            EvaluationMethodReport evaluationMethodReport = new EvaluationMethodReport();
+            Evaluation evaluation = evaluationResults.getEvaluation();
+            evaluationMethodReport.setEvaluationMethod(
+                    evaluation.isKCrossValidationMethod() ? EvaluationMethod.CROSS_VALIDATION :
+                            EvaluationMethod.TRAINING_DATA);
+            if (evaluation.isKCrossValidationMethod()) {
+                evaluationMethodReport.setNumFolds(BigInteger.valueOf(evaluation.numFolds()));
+                evaluationMethodReport.setNumTests(BigInteger.valueOf(evaluation.getValidationsNum()));
+            }
+            evaluationResultsRequest.setEvaluationMethodReport(evaluationMethodReport);
+        }
+    }
+
+    /**
+     * Populates classifier report.
+     *
+     * @param evaluationResults        - evaluation results
+     * @param evaluationResultsRequest - evaluation results request model
+     */
+    @AfterMapping
+    protected void populateClassifierReport(EvaluationResults evaluationResults,
+                                            @MappingTarget EvaluationResultsRequest evaluationResultsRequest) {
+        if (evaluationResults.getClassifier() != null &&
+                evaluationResults.getClassifier().getClass().isAssignableFrom(AbstractClassifier.class)) {
+            AbstractClassifier classifier = (AbstractClassifier) evaluationResults.getClassifier();
+            ClassifierReport classifierReport = new ClassifierReport();
+            classifierReport.setClassifierName(classifier.getClass().getSimpleName());
+            String[] classifierOptions = classifier.getOptions();
+            classifierReport.setInputOptionsMap(new ClassifierReport.InputOptionsMap());
+            for (int i = 0; i < classifierOptions.length; i += 2) {
+                ClassifierReport.InputOptionsMap.Entry entry = new ClassifierReport.InputOptionsMap.Entry();
+                entry.setKey(classifierOptions[i]);
+                entry.setValue(classifierOptions[i + 1]);
+                classifierReport.getInputOptionsMap().getEntry().add(entry);
+            }
+            evaluationResultsRequest.setClassifierReport(classifierReport);
+        }
+    }
+
+    /**
+     * Populates statistics report.
+     *
+     * @param evaluationResults        - evaluation results
+     * @param evaluationResultsRequest - evaluation results request model
+     */
+    @AfterMapping
+    protected void populateStatisticsReport(EvaluationResults evaluationResults,
+                                            @MappingTarget EvaluationResultsRequest evaluationResultsRequest) {
+        if (evaluationResults.getEvaluation() != null) {
+            StatisticsReport statisticsReport = new StatisticsReport();
+            Evaluation evaluation = evaluationResults.getEvaluation();
+            statisticsReport.setNumCorrect(BigInteger.valueOf((long) evaluation.correct()));
+            statisticsReport.setNumIncorrect(BigInteger.valueOf((long) evaluation.incorrect()));
+            statisticsReport.setPctCorrect(BigDecimal.valueOf(evaluation.pctCorrect()));
+            statisticsReport.setPctIncorrect(BigDecimal.valueOf(evaluation.pctIncorrect()));
+            statisticsReport.setMeanAbsoluteError(BigDecimal.valueOf(evaluation.meanAbsoluteError()));
+            statisticsReport.setRootMeanSquaredError(BigDecimal.valueOf(evaluation.rootMeanSquaredError()));
+            if (evaluation.isKCrossValidationMethod()) {
+                statisticsReport.setVarianceError(BigDecimal.valueOf(evaluation.varianceError()));
+                double[] errorConfidenceInterval = evaluation.errorConfidenceInterval();
+                statisticsReport.setConfidenceIntervalLowerBound(
+                        BigDecimal.valueOf(errorConfidenceInterval[CONFIDENCE_INTERVAL_LOWER_INDEX]));
+                statisticsReport.setConfidenceIntervalUpperBound(
+                        BigDecimal.valueOf(errorConfidenceInterval[CONFIDENCE_INTERVAL_UPPER_INDEX]));
+            }
+            evaluationResultsRequest.setStatistics(statisticsReport);
+        }
+    }
+
+    /**
+     * Populates confusion matrix report.
+     *
+     * @param evaluationResults        - evaluation results
+     * @param evaluationResultsRequest - evaluation results request model
+     */
+    @AfterMapping
+    protected void populateConfusionMatrix(EvaluationResults evaluationResults,
+                                           @MappingTarget EvaluationResultsRequest evaluationResultsRequest) {
+        if (Optional.ofNullable(evaluationResults.getEvaluation()).map(Evaluation::getData).isPresent()) {
+            double[][] confusionMatrix = evaluationResults.getEvaluation().confusionMatrix();
+            Attribute classAttribute = evaluationResults.getEvaluation().getData().classAttribute();
+            for (int i = 0; i < confusionMatrix.length; i++) {
+                for (int j = 0; j < confusionMatrix[i].length; j++) {
+                    ConfusionMatrixReport confusionMatrixReport = new ConfusionMatrixReport();
+                    confusionMatrixReport.setPredictedClass(classAttribute.value(j));
+                    confusionMatrixReport.setActualClass(classAttribute.value(i));
+                    confusionMatrixReport.setNumInstances(BigInteger.valueOf((long) confusionMatrix[i][j]));
+                    evaluationResultsRequest.getConfusionMatrix().add(confusionMatrixReport);
+                }
+            }
+        }
+    }
+
+    /**
+     * Populates classification costs report.
+     *
+     * @param evaluationResults        - evaluation results
+     * @param evaluationResultsRequest - evaluation results request model
+     */
+    @AfterMapping
+    protected void populateClassificationCostsReport(EvaluationResults evaluationResults,
+                                           @MappingTarget EvaluationResultsRequest evaluationResultsRequest) {
+        if (Optional.ofNullable(evaluationResults.getEvaluation()).map(Evaluation::getData).isPresent()) {
+            Evaluation evaluation = evaluationResults.getEvaluation();
+            Attribute classAttribute = evaluationResults.getEvaluation().getData().classAttribute();
+            for (int i = 0; i < classAttribute.numValues(); i++) {
+                ClassificationCostsReport classificationCostsReport = new ClassificationCostsReport();
+                classificationCostsReport.setClassValue(classAttribute.value(i));
+                classificationCostsReport.setFalseNegativeRate(BigDecimal.valueOf(evaluation.falseNegativeRate(i)));
+                classificationCostsReport.setFalsePositiveRate(BigDecimal.valueOf(evaluation.falsePositiveRate(i)));
+                classificationCostsReport.setTrueNegativeRate(BigDecimal.valueOf(evaluation.trueNegativeRate(i)));
+                classificationCostsReport.setTruePositiveRate(BigDecimal.valueOf(evaluation.truePositiveRate(i)));
+                classificationCostsReport.setAucValue(BigDecimal.valueOf(evaluation.areaUnderROC(i)));
+                evaluationResultsRequest.getClassificationCosts().add(classificationCostsReport);
+            }
+        }
+    }
+}

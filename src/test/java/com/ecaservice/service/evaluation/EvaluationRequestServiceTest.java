@@ -13,14 +13,12 @@ import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.model.evaluation.EvaluationRequest;
 import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
-import eca.core.evaluation.Evaluation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.inject.Inject;
 import java.util.EnumMap;
@@ -33,7 +31,6 @@ import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit tests that checks EcaService functionality {@see EcaService}.
@@ -42,7 +39,7 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class EcaServiceTest {
+public class EvaluationRequestServiceTest {
 
     @Inject
     private CrossValidationConfig crossValidationConfig;
@@ -52,27 +49,29 @@ public class EcaServiceTest {
     private EvaluationLogMapper evaluationLogMapper;
     @Inject
     private EvaluationService evaluationService;
+    @Mock
+    private EvaluationResultsSender evaluationResultsSender;
 
-    private EcaService ecaService;
+    private EvaluationRequestService evaluationRequestService;
 
     @Before
     public void setUp() {
         evaluationLogRepository.deleteAll();
         CalculationExecutorService calculationExecutorService =
                 new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
-        ecaService = new EcaService(crossValidationConfig, calculationExecutorService, evaluationService,
-                evaluationLogRepository, evaluationLogMapper);
+        evaluationRequestService = new EvaluationRequestService(crossValidationConfig, calculationExecutorService, evaluationService,
+                evaluationResultsSender, evaluationLogRepository, evaluationLogMapper);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testNullEvaluationRequest() {
-        ecaService.processRequest(null);
+        evaluationRequestService.processRequest(null);
     }
 
     @Test
     public void testSuccessClassification() throws Exception {
         EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS);
-        EvaluationResponse evaluationResponse = ecaService.processRequest(request);
+        EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.SUCCESS);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
         AssertionUtils.assertSingletonList(evaluationLogList);
@@ -87,8 +86,9 @@ public class EcaServiceTest {
     public void testClassificationWithException() throws Exception {
         EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS);
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
-        EcaService service = new EcaService(crossValidationConfig, executorService, evaluationService,
-                evaluationLogRepository, evaluationLogMapper);
+        EvaluationRequestService
+                service = new EvaluationRequestService(crossValidationConfig, executorService, evaluationService,
+                evaluationResultsSender, evaluationLogRepository, evaluationLogMapper);
         doThrow(new EcaServiceException("Error")).when(executorService)
                 .execute(anyObject(), anyLong(), any(TimeUnit.class));
         EvaluationResponse evaluationResponse = service.processRequest(request);
@@ -106,7 +106,7 @@ public class EcaServiceTest {
         request.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         request.setEvaluationOptionsMap(new EnumMap<>(EvaluationOption.class));
         request.getEvaluationOptionsMap().put(EvaluationOption.NUM_FOLDS, String.valueOf(1));
-        EvaluationResponse evaluationResponse = ecaService.processRequest(request);
+        EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
         AssertionUtils.assertSingletonList(evaluationLogList);
@@ -119,8 +119,9 @@ public class EcaServiceTest {
     public void testTimeoutInClassification() throws Exception {
         EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS);
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
-        EcaService service = new EcaService(crossValidationConfig, executorService, evaluationService,
-                evaluationLogRepository, evaluationLogMapper);
+        EvaluationRequestService
+                service = new EvaluationRequestService(crossValidationConfig, executorService, evaluationService,
+                evaluationResultsSender, evaluationLogRepository, evaluationLogMapper);
         doThrow(TimeoutException.class).when(executorService)
                 .execute(anyObject(), anyLong(), any(TimeUnit.class));
         EvaluationResponse evaluationResponse = service.processRequest(request);

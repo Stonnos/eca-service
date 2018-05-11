@@ -5,6 +5,7 @@ import eca.data.file.FileDataSaver;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.concurrent.ExecutorService;
@@ -18,12 +19,13 @@ import java.util.concurrent.Executors;
 @Configuration
 @EnableScheduling
 @EnableCaching
+@EnableAsync
 public class EcaServiceConfiguration {
 
     /**
-     * Creates <tt>ExecutorService</tt> bean
+     * Creates executor service bean.
      *
-     * @return {@link ExecutorService} bean
+     * @return executor service bean
      */
     @Bean
     public ExecutorService executorService() {
@@ -31,9 +33,9 @@ public class EcaServiceConfiguration {
     }
 
     /**
-     * Creates <tt>CrossValidationConfig</tt> bean
+     * Creates cross - validation config bean.
      *
-     * @return {@link CrossValidationConfig} bean
+     * @return cross - validation config bean
      */
     @Bean
     public CrossValidationConfig crossValidationConfig() {
@@ -41,9 +43,9 @@ public class EcaServiceConfiguration {
     }
 
     /**
-     * Creates <tt>ExperimentConfig</tt> bean
+     * Creates experiment config bean.
      *
-     * @return {@link ExperimentConfig} bean
+     * @return experiment config bean
      */
     @Bean
     public ExperimentConfig experimentConfig() {
@@ -51,9 +53,9 @@ public class EcaServiceConfiguration {
     }
 
     /**
-     * Creates <tt>MailConfig</tt> bean
+     * Creates mail config bean.
      *
-     * @return {@link MailConfig} bean
+     * @return mail config bean
      */
     @Bean
     public MailConfig mailConfig() {
@@ -61,10 +63,10 @@ public class EcaServiceConfiguration {
     }
 
     /**
-     * Creates <tt>FileDataSaver</tt> bean
+     * Creates file data saver bean.
      *
-     * @param experimentConfig {@link ExperimentConfig} bean
-     * @return {@link FileDataSaver} bean
+     * @param experimentConfig experiment config bean
+     * @return file data saver  bean
      */
     @Bean
     public FileDataSaver dataSaver(ExperimentConfig experimentConfig) {
@@ -74,10 +76,10 @@ public class EcaServiceConfiguration {
     }
 
     /**
-     * Creates <tt>FileDataLoader</tt> bean
+     * Creates file data loader bean.
      *
-     * @param experimentConfig {@link ExperimentConfig} bean
-     * @return {@link FileDataLoader} bean
+     * @param experimentConfig experiment config bean
+     * @return file data loader bean
      */
     @Bean
     public FileDataLoader dataLoader(ExperimentConfig experimentConfig) {

@@ -79,6 +79,12 @@ experiment:
       ERROR: email-error-message-template.html
       TIMEOUT: email-timeout-message-template.html
 
+evaluationResultsServiceConfig:
+  url: http://localhost:8089/ws/
+  enabled: true
+  threadPoolSize: 10
+
+
 ## Liquibase properties
 liquibase:
   contexts: schema,data

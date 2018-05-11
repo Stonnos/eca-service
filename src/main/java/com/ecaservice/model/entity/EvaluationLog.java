@@ -60,7 +60,8 @@ public class EvaluationLog {
     @Column(name = "evaluation_status")
     private EvaluationStatus evaluationStatus;
 
-    @Column(name = "error_message", columnDefinition = "text")
+    @Lob
+    @Column(name = "error_message")
     private String errorMessage;
 
     /**

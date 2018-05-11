@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
@@ -25,14 +26,26 @@ public class ClassifierOptionsDatabaseModel {
     @GeneratedValue
     private Long id;
 
+    /**
+     * Config version
+     */
     private int version;
 
+    /**
+     * Options name
+     */
     @Column(name = "options_name")
     private String optionsName;
 
+    /**
+     * Config creation date
+     */
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
 
-    @Column(columnDefinition = "text")
+    /**
+     * Classifier options config as json
+     */
+    @Lob
     private String config;
 }

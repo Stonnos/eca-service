@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:evaluation="http://schemas.xmlsoap.org/soap/envelope/"
+            targetNamespace="http://schemas.xmlsoap.org/soap/envelope/"
+            elementFormDefault="qualified">
+
+    <xsd:simpleType name="evaluationMethod">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="TRAINING_DATA"/>
+            <xsd:enumeration value="CROSS_VALIDATION"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="responseStatus">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="SUCCESS"/>
+            <xsd:enumeration value="INVALID_REQUEST_ID"/>
+            <xsd:enumeration value="DUPLICATE_REQUEST_ID"/>
+            <xsd:enumeration value="ERROR"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="classifierReport">
+        <xsd:sequence>
+            <xsd:element name="classifierName" type="xsd:string"/>
+            <xsd:element name="inputOptionsMap">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element maxOccurs="unbounded" minOccurs="0" name="entry">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element minOccurs="0" name="key" type="xsd:string"/>
+                                    <xsd:element minOccurs="0" name="value" type="xsd:string"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="evaluationMethodReport">
+        <xsd:sequence>
+            <xsd:element name="evaluationMethod" type="evaluation:evaluationMethod"/>
+            <xsd:element name="numFolds" type="xsd:integer"/>
+            <xsd:element name="numTests" type="xsd:integer"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="instancesReport">
+        <xsd:sequence>
+            <xsd:element name="xmlData" type="xsd:string"/>
+            <xsd:element name="relationName" type="xsd:string"/>
+            <xsd:element name="numInstances" type="xsd:integer"/>
+            <xsd:element name="numAttributes" type="xsd:integer"/>
+            <xsd:element name="numClasses" type="xsd:integer"/>
+            <xsd:element name="className" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="statisticsReport">
+        <xsd:sequence>
+            <xsd:element name="numCorrect" type="xsd:integer"/>
+            <xsd:element name="numIncorrect" type="xsd:integer"/>
+            <xsd:element name="pctCorrect" type="xsd:decimal"/>
+            <xsd:element name="pctIncorrect" type="xsd:decimal"/>
+            <xsd:element name="meanAbsoluteError" type="xsd:decimal"/>
+            <xsd:element name="rootMeanSquaredError" type="xsd:decimal"/>
+            <xsd:element name="varianceError" type="xsd:decimal"/>
+            <xsd:element name="confidenceIntervalLowerBound" type="xsd:decimal"/>
+            <xsd:element name="confidenceIntervalUpperBound" type="xsd:decimal"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="classificationCostsReport">
+        <xsd:sequence>
+            <xsd:element name="classValue" type="xsd:string"/>
+            <xsd:element name="truePositiveRate" type="xsd:decimal"/>
+            <xsd:element name="falsePositiveRate" type="xsd:decimal"/>
+            <xsd:element name="trueNegativeRate" type="xsd:decimal"/>
+            <xsd:element name="falseNegativeRate" type="xsd:decimal"/>
+            <xsd:element name="aucValue" type="xsd:decimal"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="confusionMatrixReport">
+        <xsd:sequence>
+            <xsd:element name="actualClass" type="xsd:string"/>
+            <xsd:element name="predictedClass" type="xsd:string"/>
+            <xsd:element name="numInstances" type="xsd:integer"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="evaluationResultsRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="requestId" type="xsd:string"/>
+                <xsd:element name="instances" type="evaluation:instancesReport"/>
+                <xsd:element name="classifierReport" type="evaluation:classifierReport"/>
+                <xsd:element name="evaluationMethodReport" type="evaluation:evaluationMethodReport"/>
+                <xsd:element name="statistics" type="evaluation:statisticsReport"/>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" name="classificationCosts"
+                             type="evaluation:classificationCostsReport"/>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" name="confusionMatrix"
+                             type="evaluation:confusionMatrixReport"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="evaluationResultsResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="requestId" type="xsd:string"/>
+                <xsd:element name="status" type="evaluation:responseStatus"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>

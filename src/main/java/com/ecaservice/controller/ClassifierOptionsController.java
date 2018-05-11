@@ -29,8 +29,8 @@ public class ClassifierOptionsController {
     /**
      * Constructor with spring dependency injection.
      *
-     * @param experimentConfigurationService       {@link ExperimentConfigurationService} bean
-     * @param classifierOptionsDatabaseModelMapper {@link ClassifierOptionsDatabaseModelMapper} bean
+     * @param experimentConfigurationService       - experiment configuration service bean
+     * @param classifierOptionsDatabaseModelMapper - classifier options database model mapper bean
      */
     @Inject
     public ClassifierOptionsController(ExperimentConfigurationService experimentConfigurationService,
@@ -42,7 +42,7 @@ public class ClassifierOptionsController {
     /**
      * Saves classifier input options config into database.
      *
-     * @param classifierOptions classifiers options for saving
+     * @param classifierOptions - classifiers options for saving
      * @return response entity
      */
     @ApiOperation(

@@ -7,11 +7,11 @@ import com.ecaservice.model.evaluation.ClassificationResult;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationMethodVisitor;
 import com.ecaservice.model.evaluation.EvaluationOption;
+import com.ecaservice.util.Utils;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 import org.springframework.util.StopWatch;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
@@ -47,9 +47,9 @@ public class EvaluationService {
      * If options for cross - validation method is not specified then the options
      * from configs will be used for evaluation.
      *
-     * @param inputData            input data {@link InputData}
-     * @param evaluationMethod     evaluation method
-     * @param evaluationOptionsMap evaluation options map
+     * @param inputData            - input data {@link InputData}
+     * @param evaluationMethod     - evaluation method
+     * @param evaluationOptionsMap - evaluation options map
      * @return classification results {@link ClassificationResult}
      */
     public ClassificationResult evaluateModel(final InputData inputData,
@@ -57,7 +57,7 @@ public class EvaluationService {
                                               final Map<EvaluationOption, String> evaluationOptionsMap) {
         ClassificationResult classificationResult = new ClassificationResult();
         try {
-            validateInputData(inputData, evaluationMethod, evaluationOptionsMap);
+            Utils.validateInputData(inputData, evaluationMethod, evaluationOptionsMap);
 
             final Classifier classifier = AbstractClassifier.makeCopy(inputData.getClassifier());
             final Instances data = inputData.getData();
@@ -126,14 +126,5 @@ public class EvaluationService {
             classificationResult.setErrorMessage(ex.getMessage());
         }
         return classificationResult;
-    }
-
-    private void validateInputData(InputData inputData, EvaluationMethod evaluationMethod,
-                                   Map<EvaluationOption, String> evaluationOptionsMap) {
-        Assert.notNull(inputData, "Input data is not specified!");
-        Assert.notNull(inputData.getClassifier(), "Classifier is not specified!");
-        Assert.notNull(inputData.getData(), "Input data is not specified!");
-        Assert.notNull(evaluationMethod, "Evaluation method is not specified!");
-        Assert.notNull(evaluationOptionsMap, "Evaluation options map is not specified!");
     }
 }

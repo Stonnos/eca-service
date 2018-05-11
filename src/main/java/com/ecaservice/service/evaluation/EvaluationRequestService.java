@@ -9,6 +9,7 @@ import com.ecaservice.model.evaluation.ClassificationResult;
 import com.ecaservice.model.evaluation.EvaluationRequest;
 import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
+import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -20,38 +21,42 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Eca - service.
+ * Evaluation request service.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Service
-public class EcaService {
+public class EvaluationRequestService {
 
     private final CrossValidationConfig crossValidationConfig;
     private final CalculationExecutorService executorService;
     private final EvaluationService evaluationService;
+    private final EvaluationResultsSender evaluationResultsSender;
     private final EvaluationLogRepository evaluationLogRepository;
     private final EvaluationLogMapper evaluationLogMapper;
 
     /**
      * Constructor with dependency spring injection.
      *
-     * @param crossValidationConfig   {@link CrossValidationConfig} bean
-     * @param executorService         {@link java.util.concurrent.ExecutorService} bean
-     * @param evaluationService       {@link EvaluationService} bean
-     * @param evaluationLogRepository {@link EvaluationLogRepository} bean
-     * @param evaluationLogMapper     {@link EvaluationLogMapper} bean
+     * @param crossValidationConfig   - cross validation config bean
+     * @param executorService         - executor service bean
+     * @param evaluationService       - evaluation service bean
+     * @param evaluationResultsSender - evaluation results sender bean
+     * @param evaluationLogRepository - evaluation log repository bean
+     * @param evaluationLogMapper     - evaluation log mapper bean
      */
     @Inject
-    public EcaService(CrossValidationConfig crossValidationConfig,
-                      CalculationExecutorService executorService,
-                      EvaluationService evaluationService,
-                      EvaluationLogRepository evaluationLogRepository,
-                      EvaluationLogMapper evaluationLogMapper) {
+    public EvaluationRequestService(CrossValidationConfig crossValidationConfig,
+                                    CalculationExecutorService executorService,
+                                    EvaluationService evaluationService,
+                                    EvaluationResultsSender evaluationResultsSender,
+                                    EvaluationLogRepository evaluationLogRepository,
+                                    EvaluationLogMapper evaluationLogMapper) {
         this.crossValidationConfig = crossValidationConfig;
         this.executorService = executorService;
         this.evaluationService = evaluationService;
+        this.evaluationResultsSender = evaluationResultsSender;
         this.evaluationLogRepository = evaluationLogRepository;
         this.evaluationLogMapper = evaluationLogMapper;
     }
@@ -98,8 +103,14 @@ public class EcaService {
             evaluationLog.setEndDate(LocalDateTime.now());
             evaluationLogRepository.save(evaluationLog);
         }
-
+        sendEvaluationResults(evaluationResponse.getEvaluationResults(), evaluationLog);
         return evaluationResponse;
+    }
+
+    private void sendEvaluationResults(EvaluationResults evaluationResults, EvaluationLog evaluationLog) {
+        if (EvaluationStatus.FINISHED.equals(evaluationLog.getEvaluationStatus())) {
+            evaluationResultsSender.sendEvaluationResults(evaluationResults, evaluationLog);
+        }
     }
 
     private void handleError(EvaluationLog evaluationLog, EvaluationResponse evaluationResponse, String errorMessage) {

@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
@@ -43,7 +44,7 @@ public class Email {
     /**
      * Email text
      */
-    @Column(columnDefinition = "text")
+    @Lob
     private String message;
 
     /**
@@ -66,7 +67,8 @@ public class Email {
     /**
      * Error reason
      */
-    @Column(name = "error_message", columnDefinition = "text")
+    @Lob
+    @Column(name = "error_message")
     private String errorMessage;
 
     /**

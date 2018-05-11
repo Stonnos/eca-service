@@ -4,7 +4,7 @@ import com.ecaservice.dto.EvaluationRequestDto;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.mapping.EvaluationRequestMapper;
 import com.ecaservice.model.evaluation.EvaluationRequest;
-import com.ecaservice.service.evaluation.EcaService;
+import com.ecaservice.service.evaluation.EvaluationRequestService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -26,21 +26,21 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @RestController
 @RequestMapping("/evaluation")
-public class EcaController {
+public class EvaluationController {
 
-    private final EcaService ecaService;
+    private final EvaluationRequestService evaluationRequestService;
     private final EvaluationRequestMapper evaluationRequestMapper;
 
     /**
      * Constructor with dependency spring injection.
      *
-     * @param ecaService              {@link EcaService} bean
-     * @param evaluationRequestMapper {@link EvaluationRequestMapper} bean
+     * @param evaluationRequestService - evaluation request service bean
+     * @param evaluationRequestMapper  - evaluation request mapper bean
      */
     @Inject
-    public EcaController(EcaService ecaService,
-                         EvaluationRequestMapper evaluationRequestMapper) {
-        this.ecaService = ecaService;
+    public EvaluationController(EvaluationRequestService evaluationRequestService,
+                                EvaluationRequestMapper evaluationRequestMapper) {
+        this.evaluationRequestService = evaluationRequestService;
         this.evaluationRequestMapper = evaluationRequestMapper;
     }
 
@@ -61,7 +61,7 @@ public class EcaController {
         log.info("Received evaluation request for client {}", request.getRemoteAddr());
         EvaluationRequest evaluationRequest = evaluationRequestMapper.map(evaluationRequestDto);
         evaluationRequest.setIpAddress(request.getRemoteAddr());
-        EvaluationResponse evaluationResponse = ecaService.processRequest(evaluationRequest);
+        EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(evaluationRequest);
         log.info("Evaluation response with status [{}] has been built.", evaluationResponse.getStatus());
         return ResponseEntity.ok(evaluationResponse);
     }
