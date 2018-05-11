@@ -20,7 +20,8 @@ public class AssertionUtils {
      * @param <T>  generic type
      */
     public static <T> void assertSingletonList(List<T> list) {
-        Assertions.assertThat(CollectionUtils.isEmpty(list)).isFalse();
+        Assertions.assertThat(list).isNotNull();
+        Assertions.assertThat(list).isNotEmpty();
         Assertions.assertThat(list.size()).isEqualTo(1);
     }
 }

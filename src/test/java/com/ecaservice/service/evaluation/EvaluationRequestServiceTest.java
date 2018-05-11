@@ -13,6 +13,7 @@ import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.model.evaluation.EvaluationRequest;
 import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
+import eca.core.evaluation.EvaluationResults;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,8 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit tests that checks EcaService functionality {@see EcaService}.
@@ -80,6 +80,7 @@ public class EvaluationRequestServiceTest {
         assertThat(evaluationResponse.getEvaluationResults()).isNotNull();
         assertThat(evaluationResponse.getEvaluationResults().getClassifier()).isNotNull();
         assertThat(evaluationResponse.getEvaluationResults().getEvaluation()).isNotNull();
+        verify(evaluationResultsSender, atLeastOnce()).sendEvaluationResults(any(EvaluationResults.class), any(EvaluationLog.class));
     }
 
     @Test
@@ -98,6 +99,7 @@ public class EvaluationRequestServiceTest {
         assertThat(evaluationLogList.get(0).getEvaluationStatus()).isEqualTo(EvaluationStatus.ERROR);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         assertThat(evaluationResponse.getEvaluationResults()).isNull();
+        verify(evaluationResultsSender, never()).sendEvaluationResults(any(EvaluationResults.class), any(EvaluationLog.class));
     }
 
     @Test
@@ -113,6 +115,7 @@ public class EvaluationRequestServiceTest {
         assertThat(evaluationLogList.get(0).getEvaluationStatus()).isEqualTo(EvaluationStatus.ERROR);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         assertThat(evaluationResponse.getEvaluationResults()).isNull();
+        verify(evaluationResultsSender, never()).sendEvaluationResults(any(EvaluationResults.class), any(EvaluationLog.class));
     }
 
     @Test
@@ -131,5 +134,6 @@ public class EvaluationRequestServiceTest {
         assertThat(evaluationLogList.get(0).getEvaluationStatus()).isEqualTo(EvaluationStatus.TIMEOUT);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.TIMEOUT);
         assertThat(evaluationResponse.getEvaluationResults()).isNull();
+        verify(evaluationResultsSender, never()).sendEvaluationResults(any(EvaluationResults.class), any(EvaluationLog.class));
     }
 }

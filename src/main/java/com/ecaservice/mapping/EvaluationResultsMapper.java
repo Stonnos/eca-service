@@ -105,8 +105,7 @@ public abstract class EvaluationResultsMapper {
     @AfterMapping
     protected void populateClassifierReport(EvaluationResults evaluationResults,
                                             @MappingTarget EvaluationResultsRequest evaluationResultsRequest) {
-        if (evaluationResults.getClassifier() != null &&
-                evaluationResults.getClassifier().getClass().isAssignableFrom(AbstractClassifier.class)) {
+        if (evaluationResults.getClassifier() != null) {
             AbstractClassifier classifier = (AbstractClassifier) evaluationResults.getClassifier();
             ClassifierReport classifierReport = new ClassifierReport();
             classifierReport.setClassifierName(classifier.getClass().getSimpleName());
@@ -184,7 +183,7 @@ public abstract class EvaluationResultsMapper {
      */
     @AfterMapping
     protected void populateClassificationCostsReport(EvaluationResults evaluationResults,
-                                           @MappingTarget EvaluationResultsRequest evaluationResultsRequest) {
+                                                     @MappingTarget EvaluationResultsRequest evaluationResultsRequest) {
         if (Optional.ofNullable(evaluationResults.getEvaluation()).map(Evaluation::getData).isPresent()) {
             Evaluation evaluation = evaluationResults.getEvaluation();
             Attribute classAttribute = evaluationResults.getEvaluation().getData().classAttribute();

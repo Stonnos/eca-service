@@ -3,10 +3,12 @@ package com.ecaservice;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.Email;
+import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.model.evaluation.EvaluationRequest;
+import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.model.experiment.ExperimentRequest;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.ExperimentType;
@@ -200,6 +202,22 @@ public class TestHelperUtils {
         classifierOptionsDatabaseModel.setConfig(config);
         classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
         return classifierOptionsDatabaseModel;
+    }
+
+    /**
+     * Creates evaluation log.
+     *
+     * @return evaluation log
+     */
+    public static EvaluationLog createEvaluationLog() {
+        EvaluationLog evaluationLog = new EvaluationLog();
+        evaluationLog.setCreationDate(LocalDateTime.now());
+        evaluationLog.setStartDate(LocalDateTime.now());
+        evaluationLog.setEndDate(LocalDateTime.now());
+        evaluationLog.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
+        evaluationLog.setEvaluationStatus(EvaluationStatus.FINISHED);
+        evaluationLog.setIpAddress(IP_ADDRESS);
+        return evaluationLog;
     }
 
 }
