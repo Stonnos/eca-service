@@ -60,10 +60,10 @@ public class EvaluationResultsSender {
     @Async("evaluationResultsThreadPoolTaskExecutor")
     public void sendEvaluationResults(EvaluationResults evaluationResults, EvaluationLog evaluationLog) {
         if (!Boolean.TRUE.equals(serviceConfig.getEnabled())) {
-            log.info("Evaluation results sending to url '{}' is disabled.", serviceConfig.getUrl());
+            log.trace("Evaluation results sending to url '{}' is disabled.", serviceConfig.getUrl());
         } else {
             String requestId = UUID.randomUUID().toString();
-            log.info("Starting to send evaluation results request '{}' to: {}.", requestId, serviceConfig.getUrl());
+            log.trace("Starting to send evaluation results request '{}' to: {}.", requestId, serviceConfig.getUrl());
             EvaluationResultsRequestEntity requestEntity =
                     createEvaluationResultsRequestEntity(requestId, evaluationLog);
             try {
@@ -72,7 +72,7 @@ public class EvaluationResultsSender {
                 EvaluationResultsResponse resultsResponse =
                         (EvaluationResultsResponse) webServiceTemplate.marshalSendAndReceive(serviceConfig.getUrl(),
                                 resultsRequest);
-                log.info("Received response with id = {}, status = {} from {}.", resultsResponse.getRequestId(),
+                log.trace("Received response with id = {}, status = {} from {}.", resultsResponse.getRequestId(),
                         resultsResponse.getStatus(), serviceConfig.getUrl());
                 requestEntity.setResponseStatus(resultsResponse.getStatus());
             } catch (Exception ex) {
