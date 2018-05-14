@@ -40,6 +40,7 @@
         <inject.version>1</inject.version>
         <xmlschema.version>2.2.3</xmlschema.version>
         <jaxb2-maven-plugin.version>2.3</jaxb2-maven-plugin.version>
+        <jacoco-plugin.version>0.7.7.201606060606</jacoco-plugin.version>
     </properties>
 
     <repositories>
@@ -419,7 +420,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.7.201606060606</version>
+                <version>${jacoco-plugin.version}</version>
                 <configuration>
                     <excludes>
                         <exclude>**/model/**/*</exclude>
