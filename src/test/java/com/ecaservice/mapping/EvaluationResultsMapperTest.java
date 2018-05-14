@@ -39,7 +39,8 @@ public class EvaluationResultsMapperTest {
         Instances testInstances = TestHelperUtils.loadInstances();
         cart.buildClassifier(testInstances);
         Evaluation evaluation = new Evaluation(testInstances);
-        evaluation.kCrossValidateModel(cart, testInstances, TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS, new Random());
+        evaluation.kCrossValidateModel(cart, testInstances, TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS,
+                new Random());
         evaluationResults = new EvaluationResults(cart, evaluation);
     }
 
@@ -64,14 +65,17 @@ public class EvaluationResultsMapperTest {
         Assertions.assertThat(classifierReport.getClassifierName()).isEqualTo(classifier.getClass().getSimpleName());
         Assertions.assertThat(classifierReport.getInputOptionsMap()).isNotNull();
         Assertions.assertThat(classifierReport.getInputOptionsMap().getEntry()).isNotNull();
-        Assertions.assertThat(classifierReport.getInputOptionsMap().getEntry().size()).isEqualTo(classifier.getOptions().length / 2);
+        Assertions.assertThat(classifierReport.getInputOptionsMap().getEntry().size()).isEqualTo(
+                classifier.getOptions().length / 2);
 
         EvaluationMethodReport evaluationMethodReport = resultsRequest.getEvaluationMethodReport();
         Assertions.assertThat(evaluationMethodReport).isNotNull();
         Evaluation evaluation = evaluationResults.getEvaluation();
-        Assertions.assertThat(evaluationMethodReport.getEvaluationMethod()).isEqualTo(EvaluationMethod.CROSS_VALIDATION);
+        Assertions.assertThat(evaluationMethodReport.getEvaluationMethod()).isEqualTo(
+                EvaluationMethod.CROSS_VALIDATION);
         Assertions.assertThat(evaluationMethodReport.getNumFolds().intValue()).isEqualTo(evaluation.numFolds());
-        Assertions.assertThat(evaluationMethodReport.getNumTests().intValue()).isEqualTo(evaluation.getValidationsNum());
+        Assertions.assertThat(evaluationMethodReport.getNumTests().intValue()).isEqualTo(
+                evaluation.getValidationsNum());
 
         List<ClassificationCostsReport> costsReports = resultsRequest.getClassificationCosts();
         Assertions.assertThat(costsReports).isNotNull();
@@ -79,11 +83,20 @@ public class EvaluationResultsMapperTest {
         Attribute classAttribute = instances.classAttribute();
         for (int i = 0; i < classAttribute.numValues(); i++) {
             Assertions.assertThat(costsReports.get(i).getClassValue()).isEqualTo(classAttribute.value(i));
-            Assertions.assertThat(costsReports.get(i).getAucValue().doubleValue()).isEqualTo(evaluation.areaUnderROC(i));
-            Assertions.assertThat(costsReports.get(i).getFalseNegativeRate().doubleValue()).isEqualTo(evaluation.falseNegativeRate(i));
-            Assertions.assertThat(costsReports.get(i).getFalsePositiveRate().doubleValue()).isEqualTo(evaluation.falsePositiveRate(i));
-            Assertions.assertThat(costsReports.get(i).getTrueNegativeRate().doubleValue()).isEqualTo(evaluation.trueNegativeRate(i));
-            Assertions.assertThat(costsReports.get(i).getTruePositiveRate().doubleValue()).isEqualTo(evaluation.truePositiveRate(i));
+            Assertions.assertThat(costsReports.get(i).getFalseNegativeRate().doubleValue()).isEqualTo(
+                    evaluation.falseNegativeRate(i));
+            Assertions.assertThat(costsReports.get(i).getFalsePositiveRate().doubleValue()).isEqualTo(
+                    evaluation.falsePositiveRate(i));
+            Assertions.assertThat(costsReports.get(i).getTrueNegativeRate().doubleValue()).isEqualTo(
+                    evaluation.trueNegativeRate(i));
+            Assertions.assertThat(costsReports.get(i).getTruePositiveRate().doubleValue()).isEqualTo(
+                    evaluation.truePositiveRate(i));
+            RocCurveReport rocCurveReport = costsReports.get(i).getRocCurve();
+            Assertions.assertThat(rocCurveReport).isNotNull();
+            Assertions.assertThat(rocCurveReport.getAucValue().doubleValue()).isEqualTo(evaluation.areaUnderROC(i));
+            Assertions.assertThat(rocCurveReport.getSpecificity().doubleValue()).isNotNull();
+            Assertions.assertThat(rocCurveReport.getSensitivity().doubleValue()).isNotNull();
+            Assertions.assertThat(rocCurveReport.getThresholdValue().doubleValue()).isNotNull();
         }
 
         List<ConfusionMatrixReport> confusionMatrixReports = resultsRequest.getConfusionMatrix();
@@ -91,10 +104,12 @@ public class EvaluationResultsMapperTest {
         double[][] confusionMatrix = evaluation.confusionMatrix();
         for (int i = 0; i < confusionMatrix.length; i++) {
             for (int j = 0; j < confusionMatrix[i].length; j++) {
-                ConfusionMatrixReport confusionMatrixReport = confusionMatrixReports.get(i * confusionMatrix[i].length + j);
+                ConfusionMatrixReport confusionMatrixReport =
+                        confusionMatrixReports.get(i * confusionMatrix[i].length + j);
                 Assertions.assertThat(confusionMatrixReport.getPredictedClass()).isEqualTo(classAttribute.value(j));
                 Assertions.assertThat(confusionMatrixReport.getActualClass()).isEqualTo(classAttribute.value(i));
-                Assertions.assertThat(confusionMatrixReport.getNumInstances().doubleValue()).isEqualTo(confusionMatrix[i][j]);
+                Assertions.assertThat(confusionMatrixReport.getNumInstances().doubleValue()).isEqualTo(
+                        confusionMatrix[i][j]);
             }
         }
     }

@@ -61,9 +61,12 @@ public class EvaluationResultsSenderTest {
         evaluationResultsRequestRepository.deleteAll();
         evaluationLogRepository.deleteAll();
         when(serviceConfig.getEnabled()).thenReturn(true);
-        evaluationResults = new EvaluationResults(new KNearestNeighbours(), new Evaluation(TestHelperUtils.loadInstances()));
+        evaluationResults =
+                new EvaluationResults(new KNearestNeighbours(), new Evaluation(TestHelperUtils.loadInstances()));
         when(evaluationResultsMapper.map(evaluationResults)).thenReturn(new EvaluationResultsRequest());
-        evaluationResultsSender = new EvaluationResultsSender(webServiceTemplate, evaluationResultsMapper, serviceConfig, evaluationResultsRequestRepository);
+        evaluationResultsSender =
+                new EvaluationResultsSender(webServiceTemplate, evaluationResultsMapper, serviceConfig,
+                        evaluationResultsRequestRepository);
     }
 
     @Test
@@ -79,11 +82,13 @@ public class EvaluationResultsSenderTest {
         evaluationLogRepository.save(evaluationLog);
         EvaluationResultsResponse resultsResponse = new EvaluationResultsResponse();
         resultsResponse.setStatus(ResponseStatus.SUCCESS);
-        when(webServiceTemplate.marshalSendAndReceive(anyString(), any(EvaluationResultsRequest.class))).thenReturn(resultsResponse);
+        when(webServiceTemplate.marshalSendAndReceive(anyString(), any(EvaluationResultsRequest.class))).thenReturn(
+                resultsResponse);
         evaluationResultsSender.sendEvaluationResults(evaluationResults, evaluationLog);
         List<EvaluationResultsRequestEntity> requestEntities = evaluationResultsRequestRepository.findAll();
         AssertionUtils.assertSingletonList(requestEntities);
         EvaluationResultsRequestEntity requestEntity = requestEntities.stream().findFirst().orElse(null);
+        Assertions.assertThat(requestEntity).isNotNull();
         Assertions.assertThat(requestEntity.getResponseStatus()).isEqualTo(resultsResponse.getStatus());
     }
 
@@ -93,11 +98,13 @@ public class EvaluationResultsSenderTest {
         evaluationLogRepository.save(evaluationLog);
         EvaluationResultsResponse resultsResponse = new EvaluationResultsResponse();
         resultsResponse.setStatus(ResponseStatus.ERROR);
-        when(webServiceTemplate.marshalSendAndReceive(anyString(), any(EvaluationResultsRequest.class))).thenThrow(new WebServiceIOException("I/O"));
+        when(webServiceTemplate.marshalSendAndReceive(anyString(), any(EvaluationResultsRequest.class))).thenThrow(
+                new WebServiceIOException("I/O exception"));
         evaluationResultsSender.sendEvaluationResults(evaluationResults, evaluationLog);
         List<EvaluationResultsRequestEntity> requestEntities = evaluationResultsRequestRepository.findAll();
         AssertionUtils.assertSingletonList(requestEntities);
         EvaluationResultsRequestEntity requestEntity = requestEntities.stream().findFirst().orElse(null);
+        Assertions.assertThat(requestEntity).isNotNull();
         Assertions.assertThat(requestEntity.getResponseStatus()).isEqualTo(ResponseStatus.ERROR);
     }
 }

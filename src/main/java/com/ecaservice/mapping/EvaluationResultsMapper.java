@@ -7,9 +7,12 @@ import com.ecaservice.dto.evaluation.EvaluationMethod;
 import com.ecaservice.dto.evaluation.EvaluationMethodReport;
 import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.InstancesReport;
+import com.ecaservice.dto.evaluation.RocCurveReport;
 import com.ecaservice.dto.evaluation.StatisticsReport;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
+import eca.roc.RocCurve;
+import eca.roc.ThresholdModel;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -187,6 +190,7 @@ public abstract class EvaluationResultsMapper {
         if (Optional.ofNullable(evaluationResults.getEvaluation()).map(Evaluation::getData).isPresent()) {
             Evaluation evaluation = evaluationResults.getEvaluation();
             Attribute classAttribute = evaluationResults.getEvaluation().getData().classAttribute();
+            RocCurve rocCurve = new RocCurve(evaluation);
             for (int i = 0; i < classAttribute.numValues(); i++) {
                 ClassificationCostsReport classificationCostsReport = new ClassificationCostsReport();
                 classificationCostsReport.setClassValue(classAttribute.value(i));
@@ -194,9 +198,21 @@ public abstract class EvaluationResultsMapper {
                 classificationCostsReport.setFalsePositiveRate(BigDecimal.valueOf(evaluation.falsePositiveRate(i)));
                 classificationCostsReport.setTrueNegativeRate(BigDecimal.valueOf(evaluation.trueNegativeRate(i)));
                 classificationCostsReport.setTruePositiveRate(BigDecimal.valueOf(evaluation.truePositiveRate(i)));
-                classificationCostsReport.setAucValue(BigDecimal.valueOf(evaluation.areaUnderROC(i)));
+                classificationCostsReport.setRocCurve(populateRocCurveReport(rocCurve, i));
                 evaluationResultsRequest.getClassificationCosts().add(classificationCostsReport);
             }
         }
+    }
+
+    private RocCurveReport populateRocCurveReport(RocCurve rocCurve, int classIndex) {
+        RocCurveReport rocCurveReport = new RocCurveReport();
+        rocCurveReport.setAucValue(BigDecimal.valueOf(rocCurve.evaluation().areaUnderROC(classIndex)));
+        ThresholdModel thresholdModel = rocCurve.findOptimalThreshold(classIndex);
+        if (thresholdModel != null) {
+            rocCurveReport.setSpecificity(BigDecimal.valueOf(1.0 - thresholdModel.getSpecificity()));
+            rocCurveReport.setSensitivity(BigDecimal.valueOf(thresholdModel.getSensitivity()));
+            rocCurveReport.setThresholdValue(BigDecimal.valueOf(thresholdModel.getThresholdValue()));
+        }
+        return rocCurveReport;
     }
 }

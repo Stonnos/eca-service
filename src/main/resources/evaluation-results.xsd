@@ -74,6 +74,15 @@
         </xsd:sequence>
     </xsd:complexType>
 
+    <xsd:complexType name="RocCurveReport">
+        <xsd:sequence>
+            <xsd:element name="aucValue" type="xsd:decimal"/>
+            <xsd:element name="specificity" type="xsd:decimal"/>
+            <xsd:element name="sensitivity" type="xsd:decimal"/>
+            <xsd:element name="thresholdValue" type="xsd:decimal"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
     <xsd:complexType name="classificationCostsReport">
         <xsd:sequence>
             <xsd:element name="classValue" type="xsd:string"/>
@@ -81,7 +90,7 @@
             <xsd:element name="falsePositiveRate" type="xsd:decimal"/>
             <xsd:element name="trueNegativeRate" type="xsd:decimal"/>
             <xsd:element name="falseNegativeRate" type="xsd:decimal"/>
-            <xsd:element name="aucValue" type="xsd:decimal"/>
+            <xsd:element name="rocCurve" type="evaluation:RocCurveReport"/>
         </xsd:sequence>
     </xsd:complexType>
 
