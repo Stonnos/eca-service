@@ -63,7 +63,7 @@ public class EvaluationResultsSender {
             log.info("Evaluation results sending to url '{}' is disabled.", serviceConfig.getUrl());
         } else {
             String requestId = UUID.randomUUID().toString();
-            log.info("Starting to send evaluation results request '{}' to: {}.", serviceConfig.getUrl(), requestId);
+            log.info("Starting to send evaluation results request '{}' to: {}.", requestId, serviceConfig.getUrl());
             EvaluationResultsRequestEntity requestEntity =
                     createEvaluationResultsRequestEntity(requestId, evaluationLog);
             try {
