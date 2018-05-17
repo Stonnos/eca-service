@@ -49,11 +49,11 @@ public class EvaluationResultsService {
     public void saveEvaluationResults(EvaluationResults evaluationResults, EvaluationLog evaluationLog) {
         EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
         requestEntity.setRequestDate(LocalDateTime.now());
+        requestEntity.setRequestId(UUID.randomUUID().toString());
         requestEntity.setEvaluationLog(evaluationLog);
         try {
             EvaluationResultsResponse resultsResponse =
-                    evaluationResultsSender.sendEvaluationResults(evaluationResults, UUID.randomUUID().toString());
-            requestEntity.setRequestId(resultsResponse.getRequestId());
+                    evaluationResultsSender.sendEvaluationResults(evaluationResults, requestEntity.getRequestId());
             requestEntity.setResponseStatus(resultsResponse.getStatus());
         } catch (Exception ex) {
             log.error("There was an error while sending evaluation results: {}", ex.getMessage());
