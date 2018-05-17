@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Implements service for saving evaluation results by sending request to ERS web - service.
@@ -51,7 +52,7 @@ public class EvaluationResultsService {
         requestEntity.setEvaluationLog(evaluationLog);
         try {
             EvaluationResultsResponse resultsResponse =
-                    evaluationResultsSender.sendEvaluationResults(evaluationResults);
+                    evaluationResultsSender.sendEvaluationResults(evaluationResults, UUID.randomUUID().toString());
             requestEntity.setRequestId(resultsResponse.getRequestId());
             requestEntity.setResponseStatus(resultsResponse.getStatus());
         } catch (Exception ex) {

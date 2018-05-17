@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
@@ -69,7 +70,8 @@ public class EvaluationResultsServiceTest {
         evaluationLogRepository.save(evaluationLog);
         EvaluationResultsResponse resultsResponse = new EvaluationResultsResponse();
         resultsResponse.setStatus(ResponseStatus.SUCCESS);
-        when(evaluationResultsSender.sendEvaluationResults(any(EvaluationResults.class))).thenReturn(resultsResponse);
+        when(evaluationResultsSender.sendEvaluationResults(any(EvaluationResults.class), anyString())).thenReturn(
+                resultsResponse);
         evaluationResultsService.saveEvaluationResults(evaluationResults, evaluationLog);
         List<EvaluationResultsRequestEntity> requestEntities = evaluationResultsRequestRepository.findAll();
         AssertionUtils.assertSingletonList(requestEntities);
@@ -86,7 +88,7 @@ public class EvaluationResultsServiceTest {
         evaluationLogRepository.save(evaluationLog);
         EvaluationResultsResponse resultsResponse = new EvaluationResultsResponse();
         resultsResponse.setStatus(ResponseStatus.ERROR);
-        when(evaluationResultsSender.sendEvaluationResults(any(EvaluationResults.class))).thenThrow(
+        when(evaluationResultsSender.sendEvaluationResults(any(EvaluationResults.class), anyString())).thenThrow(
                 new WebServiceIOException("I/O exception"));
         evaluationResultsService.saveEvaluationResults(evaluationResults, evaluationLog);
         List<EvaluationResultsRequestEntity> requestEntities = evaluationResultsRequestRepository.findAll();
@@ -96,6 +98,5 @@ public class EvaluationResultsServiceTest {
         Assertions.assertThat(requestEntity.getResponseStatus()).isEqualTo(ResponseStatus.ERROR);
         Assertions.assertThat(requestEntity.getEvaluationLog()).isNotNull();
         Assertions.assertThat(requestEntity.getEvaluationLog().getId()).isEqualTo(evaluationLog.getId());
-        Assertions.assertThat(requestEntity.getRequestId()).isNull();
     }
 }

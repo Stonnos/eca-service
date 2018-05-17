@@ -53,12 +53,13 @@ public class EvaluationResultsSenderTest {
         when(serviceConfig.getEnabled()).thenReturn(true);
         evaluationResults =
                 new EvaluationResults(new KNearestNeighbours(), new Evaluation(TestHelperUtils.loadInstances()));
+        when(evaluationResultsMapper.map(any(EvaluationResults.class))).thenReturn(new EvaluationResultsRequest());
     }
 
     @Test(expected = EcaServiceException.class)
     public void testEvaluationResultsSendingDisabled() {
         when(serviceConfig.getEnabled()).thenReturn(false);
-        evaluationResultsSender.sendEvaluationResults(evaluationResults);
+        evaluationResultsSender.sendEvaluationResults(evaluationResults, UUID.randomUUID().toString());
     }
 
     @Test
@@ -68,7 +69,8 @@ public class EvaluationResultsSenderTest {
         expectedResponse.setRequestId(UUID.randomUUID().toString());
         when(webServiceTemplate.marshalSendAndReceive(anyString(), any(EvaluationResultsRequest.class))).thenReturn(
                 expectedResponse);
-        EvaluationResultsResponse actualResponse = evaluationResultsSender.sendEvaluationResults(evaluationResults);
+        EvaluationResultsResponse actualResponse =
+                evaluationResultsSender.sendEvaluationResults(evaluationResults, UUID.randomUUID().toString());
         Assertions.assertThat(actualResponse.getRequestId()).isEqualTo(expectedResponse.getRequestId());
         Assertions.assertThat(actualResponse.getStatus()).isEqualTo(expectedResponse.getStatus());
     }
@@ -77,6 +79,6 @@ public class EvaluationResultsSenderTest {
     public void testErrorSending() {
         when(webServiceTemplate.marshalSendAndReceive(anyString(), any(EvaluationResultsRequest.class))).thenThrow(
                 new WebServiceIOException("I/O exception"));
-        evaluationResultsSender.sendEvaluationResults(evaluationResults);
+        evaluationResultsSender.sendEvaluationResults(evaluationResults, UUID.randomUUID().toString());
     }
 }

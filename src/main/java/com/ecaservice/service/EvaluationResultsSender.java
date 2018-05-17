@@ -49,13 +49,14 @@ public class EvaluationResultsSender {
      * @param evaluationResults - evaluation results
      * @return evaluation results response
      */
-    public EvaluationResultsResponse sendEvaluationResults(EvaluationResults evaluationResults) {
+    public EvaluationResultsResponse sendEvaluationResults(EvaluationResults evaluationResults, String requestId) {
         if (!Boolean.TRUE.equals(serviceConfig.getEnabled())) {
             log.trace(String.format(SERVICE_DISABLED_MESSAGE_FORMAT, serviceConfig.getUrl()));
             throw new EcaServiceException(String.format(SERVICE_DISABLED_MESSAGE_FORMAT, serviceConfig.getUrl()));
         } else {
             EvaluationResultsRequest resultsRequest = evaluationResultsMapper.map(evaluationResults);
-            log.trace("Starting to send evaluation results request to: {}.", serviceConfig.getUrl());
+            resultsRequest.setRequestId(requestId);
+            log.trace("Starting to send evaluation results request '{}' to: {}.", requestId, serviceConfig.getUrl());
             EvaluationResultsResponse resultsResponse =
                     (EvaluationResultsResponse) webServiceTemplate.marshalSendAndReceive(serviceConfig.getUrl(),
                             resultsRequest);
