@@ -3,14 +3,19 @@ package com.ecaservice.mapping;
 import com.ecaservice.dto.evaluation.ClassificationCostsReport;
 import com.ecaservice.dto.evaluation.ClassifierReport;
 import com.ecaservice.dto.evaluation.ConfusionMatrixReport;
+import com.ecaservice.dto.evaluation.EnsembleClassifierReport;
 import com.ecaservice.dto.evaluation.EvaluationMethod;
 import com.ecaservice.dto.evaluation.EvaluationMethodReport;
 import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
+import com.ecaservice.dto.evaluation.InputOptionsMap;
 import com.ecaservice.dto.evaluation.InstancesReport;
 import com.ecaservice.dto.evaluation.RocCurveReport;
 import com.ecaservice.dto.evaluation.StatisticsReport;
+import com.ecaservice.util.Utils;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
+import eca.ensemble.AbstractHeterogeneousClassifier;
+import eca.ensemble.StackingClassifier;
 import eca.roc.RocCurve;
 import eca.roc.ThresholdModel;
 import org.mapstruct.AfterMapping;
@@ -25,6 +30,7 @@ import weka.core.xml.XMLInstances;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -110,17 +116,8 @@ public abstract class EvaluationResultsMapper {
                                             @MappingTarget EvaluationResultsRequest evaluationResultsRequest) {
         if (evaluationResults.getClassifier() != null) {
             AbstractClassifier classifier = (AbstractClassifier) evaluationResults.getClassifier();
-            ClassifierReport classifierReport = new ClassifierReport();
-            classifierReport.setClassifierName(classifier.getClass().getSimpleName());
-            String[] classifierOptions = classifier.getOptions();
-            classifierReport.setInputOptionsMap(new ClassifierReport.InputOptionsMap());
-            for (int i = 0; i < classifierOptions.length; i += 2) {
-                ClassifierReport.InputOptionsMap.Entry entry = new ClassifierReport.InputOptionsMap.Entry();
-                entry.setKey(classifierOptions[i]);
-                entry.setValue(classifierOptions[i + 1]);
-                classifierReport.getInputOptionsMap().getEntry().add(entry);
-            }
-            evaluationResultsRequest.setClassifierReport(classifierReport);
+            evaluationResultsRequest.setClassifierReport(Utils.isHeterogeneousEnsembleClassifier(classifier) ?
+                    buildEnsembleClassifierReport(classifier) : buildClassifierReport(classifier));
         }
     }
 
@@ -214,5 +211,51 @@ public abstract class EvaluationResultsMapper {
             rocCurveReport.setThresholdValue(BigDecimal.valueOf(thresholdModel.getThresholdValue()));
         }
         return rocCurveReport;
+    }
+
+    private ClassifierReport buildClassifierReport(AbstractClassifier classifier) {
+        ClassifierReport classifierReport = new ClassifierReport();
+        classifierReport.setClassifierName(classifier.getClass().getSimpleName());
+        classifierReport.setInputOptionsMap(populateInputOptionsMap(classifier));
+        return classifierReport;
+    }
+
+    private EnsembleClassifierReport buildEnsembleClassifierReport(AbstractClassifier classifier) {
+        EnsembleClassifierReport classifierReport = new EnsembleClassifierReport();
+        classifierReport.setClassifierName(classifier.getClass().getSimpleName());
+        classifierReport.setInputOptionsMap(populateInputOptionsMap(classifier));
+        populateIndividualClassifiers(classifierReport.getIndividualClassifiers(), classifier);
+        return classifierReport;
+    }
+
+    private InputOptionsMap populateInputOptionsMap(AbstractClassifier classifier) {
+        InputOptionsMap inputOptionsMap = new InputOptionsMap();
+        String[] classifierOptions = classifier.getOptions();
+        for (int i = 0; i < classifierOptions.length; i += 2) {
+            InputOptionsMap.Entry entry = new InputOptionsMap.Entry();
+            entry.setKey(classifierOptions[i]);
+            entry.setValue(classifierOptions[i + 1]);
+            inputOptionsMap.getEntry().add(entry);
+        }
+        return inputOptionsMap;
+    }
+
+    private void populateIndividualClassifiers(List<ClassifierReport> classifierReportList,
+                                               AbstractClassifier classifier) {
+        if (classifier instanceof AbstractHeterogeneousClassifier) {
+            AbstractHeterogeneousClassifier heterogeneousClassifier =
+                    (AbstractHeterogeneousClassifier) classifier;
+            heterogeneousClassifier.getClassifiersSet().toList().forEach(c -> classifierReportList.add(
+                    buildClassifierReport((AbstractClassifier) c)));
+        } else if (classifier instanceof StackingClassifier) {
+            StackingClassifier stackingClassifier = (StackingClassifier) classifier;
+            stackingClassifier.getClassifiers().toList().forEach(
+                    c -> classifierReportList.add(buildClassifierReport((AbstractClassifier) c)));
+            classifierReportList.add(
+                    buildClassifierReport((AbstractClassifier) stackingClassifier.getMetaClassifier()));
+        } else {
+            throw new IllegalArgumentException(
+                    String.format("Unexpected ensemble classifier: %s!", classifier.getClass().getSimpleName()));
+        }
     }
 }

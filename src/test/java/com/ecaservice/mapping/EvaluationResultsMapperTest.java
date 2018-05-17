@@ -4,7 +4,13 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.evaluation.*;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
+import eca.ensemble.ClassifiersSet;
+import eca.ensemble.HeterogeneousClassifier;
+import eca.ensemble.StackingClassifier;
+import eca.metrics.KNearestNeighbours;
+import eca.regression.Logistic;
 import eca.trees.CART;
+import eca.trees.J48;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -112,5 +118,38 @@ public class EvaluationResultsMapperTest {
                         confusionMatrix[i][j]);
             }
         }
+    }
+
+    @Test
+    public void testHeterogeneousClassifierMap() {
+        HeterogeneousClassifier heterogeneousClassifier = new HeterogeneousClassifier();
+        heterogeneousClassifier.setClassifiersSet(new ClassifiersSet());
+        heterogeneousClassifier.getClassifiersSet().addClassifier(new CART());
+        heterogeneousClassifier.getClassifiersSet().addClassifier(new Logistic());
+        heterogeneousClassifier.getClassifiersSet().addClassifier(new KNearestNeighbours());
+        EvaluationResults results = new EvaluationResults(heterogeneousClassifier, null);
+        EvaluationResultsRequest resultsRequest = evaluationResultsMapper.map(results);
+        Assertions.assertThat(resultsRequest.getClassifierReport()).isNotNull();
+        Assertions.assertThat(resultsRequest.getClassifierReport()).isInstanceOf(EnsembleClassifierReport.class);
+        EnsembleClassifierReport classifierReport = (EnsembleClassifierReport) resultsRequest.getClassifierReport();
+        Assertions.assertThat(classifierReport.getIndividualClassifiers().size()).isEqualTo(
+                heterogeneousClassifier.getClassifiersSet().size());
+    }
+
+    @Test
+    public void testStackingClassifierMap() {
+        StackingClassifier stackingClassifier = new StackingClassifier();
+        stackingClassifier.setClassifiers(new ClassifiersSet());
+        stackingClassifier.getClassifiers().addClassifier(new CART());
+        stackingClassifier.getClassifiers().addClassifier(new Logistic());
+        stackingClassifier.getClassifiers().addClassifier(new KNearestNeighbours());
+        stackingClassifier.setMetaClassifier(new J48());
+        EvaluationResults results = new EvaluationResults(stackingClassifier, null);
+        EvaluationResultsRequest resultsRequest = evaluationResultsMapper.map(results);
+        Assertions.assertThat(resultsRequest.getClassifierReport()).isNotNull();
+        Assertions.assertThat(resultsRequest.getClassifierReport()).isInstanceOf(EnsembleClassifierReport.class);
+        EnsembleClassifierReport classifierReport = (EnsembleClassifierReport) resultsRequest.getClassifierReport();
+        Assertions.assertThat(classifierReport.getIndividualClassifiers().size()).isEqualTo(
+                stackingClassifier.getClassifiers().size() + 1);
     }
 }

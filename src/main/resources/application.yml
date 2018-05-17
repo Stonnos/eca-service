@@ -80,7 +80,7 @@ experiment:
       TIMEOUT: email-timeout-message-template.html
 
 evaluationResultsServiceConfig:
-  url: http://localhost:8085/evaluation-results-service/ws/
+  url: http://localhost:8089/evaluation-results-service/ws/
   enabled: true
   threadPoolSize: 10
 
