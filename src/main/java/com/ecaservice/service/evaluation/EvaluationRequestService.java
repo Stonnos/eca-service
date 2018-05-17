@@ -9,6 +9,7 @@ import com.ecaservice.model.evaluation.ClassificationResult;
 import com.ecaservice.model.evaluation.EvaluationRequest;
 import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
+import com.ecaservice.service.EvaluationResultsService;
 import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,31 +33,31 @@ public class EvaluationRequestService {
     private final CrossValidationConfig crossValidationConfig;
     private final CalculationExecutorService executorService;
     private final EvaluationService evaluationService;
-    private final EvaluationResultsSender evaluationResultsSender;
+    private final EvaluationResultsService evaluationResultsService;
     private final EvaluationLogRepository evaluationLogRepository;
     private final EvaluationLogMapper evaluationLogMapper;
 
     /**
      * Constructor with dependency spring injection.
      *
-     * @param crossValidationConfig   - cross validation config bean
-     * @param executorService         - executor service bean
-     * @param evaluationService       - evaluation service bean
-     * @param evaluationResultsSender - evaluation results sender bean
-     * @param evaluationLogRepository - evaluation log repository bean
-     * @param evaluationLogMapper     - evaluation log mapper bean
+     * @param crossValidationConfig    - cross validation config bean
+     * @param executorService          - executor service bean
+     * @param evaluationService        - evaluation service bean
+     * @param evaluationResultsService - evaluation results service bean
+     * @param evaluationLogRepository  - evaluation log repository bean
+     * @param evaluationLogMapper      - evaluation log mapper bean
      */
     @Inject
     public EvaluationRequestService(CrossValidationConfig crossValidationConfig,
                                     CalculationExecutorService executorService,
                                     EvaluationService evaluationService,
-                                    EvaluationResultsSender evaluationResultsSender,
+                                    EvaluationResultsService evaluationResultsService,
                                     EvaluationLogRepository evaluationLogRepository,
                                     EvaluationLogMapper evaluationLogMapper) {
         this.crossValidationConfig = crossValidationConfig;
         this.executorService = executorService;
         this.evaluationService = evaluationService;
-        this.evaluationResultsSender = evaluationResultsSender;
+        this.evaluationResultsService = evaluationResultsService;
         this.evaluationLogRepository = evaluationLogRepository;
         this.evaluationLogMapper = evaluationLogMapper;
     }
@@ -109,7 +110,7 @@ public class EvaluationRequestService {
 
     private void sendEvaluationResults(EvaluationResults evaluationResults, EvaluationLog evaluationLog) {
         if (EvaluationStatus.FINISHED.equals(evaluationLog.getEvaluationStatus())) {
-            evaluationResultsSender.sendEvaluationResults(evaluationResults, evaluationLog);
+            evaluationResultsService.saveEvaluationResults(evaluationResults, evaluationLog);
         }
     }
 

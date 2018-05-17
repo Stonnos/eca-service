@@ -13,6 +13,7 @@ import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.model.evaluation.EvaluationRequest;
 import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
+import com.ecaservice.service.EvaluationResultsService;
 import eca.core.evaluation.EvaluationResults;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,16 +25,23 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.inject.Inject;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 /**
- * Unit tests that checks EcaService functionality {@see EcaService}.
+ * Unit tests that checks EvaluationRequestService functionality {@see EvaluationRequestService}.
  *
  * @author Roman Batygin
  */
@@ -49,8 +57,9 @@ public class EvaluationRequestServiceTest {
     private EvaluationLogMapper evaluationLogMapper;
     @Inject
     private EvaluationService evaluationService;
+
     @Mock
-    private EvaluationResultsSender evaluationResultsSender;
+    private EvaluationResultsService evaluationResultsService;
 
     private EvaluationRequestService evaluationRequestService;
 
@@ -59,8 +68,11 @@ public class EvaluationRequestServiceTest {
         evaluationLogRepository.deleteAll();
         CalculationExecutorService calculationExecutorService =
                 new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
-        evaluationRequestService = new EvaluationRequestService(crossValidationConfig, calculationExecutorService, evaluationService,
-                evaluationResultsSender, evaluationLogRepository, evaluationLogMapper);
+        evaluationRequestService =
+                new EvaluationRequestService(crossValidationConfig, calculationExecutorService, evaluationService,
+                        evaluationResultsService, evaluationLogRepository, evaluationLogMapper);
+        doNothing().when(evaluationResultsService).saveEvaluationResults(any(EvaluationResults.class),
+                any(EvaluationLog.class));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -80,16 +92,17 @@ public class EvaluationRequestServiceTest {
         assertThat(evaluationResponse.getEvaluationResults()).isNotNull();
         assertThat(evaluationResponse.getEvaluationResults().getClassifier()).isNotNull();
         assertThat(evaluationResponse.getEvaluationResults().getEvaluation()).isNotNull();
-        verify(evaluationResultsSender, atLeastOnce()).sendEvaluationResults(any(EvaluationResults.class), any(EvaluationLog.class));
+        verify(evaluationResultsService, atLeastOnce()).saveEvaluationResults(any(EvaluationResults.class), any
+                (EvaluationLog.class));
     }
 
     @Test
     public void testClassificationWithException() throws Exception {
         EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS);
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
-        EvaluationRequestService
-                service = new EvaluationRequestService(crossValidationConfig, executorService, evaluationService,
-                evaluationResultsSender, evaluationLogRepository, evaluationLogMapper);
+        EvaluationRequestService service =
+                new EvaluationRequestService(crossValidationConfig, executorService, evaluationService,
+                        evaluationResultsService, evaluationLogRepository, evaluationLogMapper);
         doThrow(new EcaServiceException("Error")).when(executorService)
                 .execute(anyObject(), anyLong(), any(TimeUnit.class));
         EvaluationResponse evaluationResponse = service.processRequest(request);
@@ -99,7 +112,8 @@ public class EvaluationRequestServiceTest {
         assertThat(evaluationLogList.get(0).getEvaluationStatus()).isEqualTo(EvaluationStatus.ERROR);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         assertThat(evaluationResponse.getEvaluationResults()).isNull();
-        verify(evaluationResultsSender, never()).sendEvaluationResults(any(EvaluationResults.class), any(EvaluationLog.class));
+        verify(evaluationResultsService, never()).saveEvaluationResults(any(EvaluationResults.class),
+                any(EvaluationLog.class));
     }
 
     @Test
@@ -115,18 +129,18 @@ public class EvaluationRequestServiceTest {
         assertThat(evaluationLogList.get(0).getEvaluationStatus()).isEqualTo(EvaluationStatus.ERROR);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         assertThat(evaluationResponse.getEvaluationResults()).isNull();
-        verify(evaluationResultsSender, never()).sendEvaluationResults(any(EvaluationResults.class), any(EvaluationLog.class));
+        verify(evaluationResultsService, never()).saveEvaluationResults(any(EvaluationResults.class),
+                any(EvaluationLog.class));
     }
 
     @Test
     public void testTimeoutInClassification() throws Exception {
         EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS);
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
-        EvaluationRequestService
-                service = new EvaluationRequestService(crossValidationConfig, executorService, evaluationService,
-                evaluationResultsSender, evaluationLogRepository, evaluationLogMapper);
-        doThrow(TimeoutException.class).when(executorService)
-                .execute(anyObject(), anyLong(), any(TimeUnit.class));
+        EvaluationRequestService service =
+                new EvaluationRequestService(crossValidationConfig, executorService, evaluationService,
+                        evaluationResultsService, evaluationLogRepository, evaluationLogMapper);
+        doThrow(TimeoutException.class).when(executorService).execute(anyObject(), anyLong(), any(TimeUnit.class));
         EvaluationResponse evaluationResponse = service.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.TIMEOUT);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
@@ -134,6 +148,7 @@ public class EvaluationRequestServiceTest {
         assertThat(evaluationLogList.get(0).getEvaluationStatus()).isEqualTo(EvaluationStatus.TIMEOUT);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.TIMEOUT);
         assertThat(evaluationResponse.getEvaluationResults()).isNull();
-        verify(evaluationResultsSender, never()).sendEvaluationResults(any(EvaluationResults.class), any(EvaluationLog.class));
+        verify(evaluationResultsService, never()).saveEvaluationResults(any(EvaluationResults.class),
+                any(EvaluationLog.class));
     }
 }
