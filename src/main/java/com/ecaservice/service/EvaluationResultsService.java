@@ -1,5 +1,6 @@
 package com.ecaservice.service;
 
+import com.ecaservice.config.EcaServiceParam;
 import com.ecaservice.dto.evaluation.EvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.model.entity.ErsRequest;
@@ -44,7 +45,7 @@ public class EvaluationResultsService {
      * @param evaluationResults - evaluation results
      * @param ersRequest        - evaluation results service request
      */
-    @Async("evaluationResultsThreadPoolTaskExecutor")
+    @Async(EcaServiceParam.EVALUATION_RESULTS_POOL_EXECUTOR)
     public void saveEvaluationResults(EvaluationResults evaluationResults, ErsRequest ersRequest) {
         ersRequest.setRequestDate(LocalDateTime.now());
         ersRequest.setRequestId(UUID.randomUUID().toString());
