@@ -39,6 +39,8 @@ ECA service v2.0
    experiment.maximumFractionDigits - число десятичных знаков после запятой
    experiment.timeout - время таймаута эксперимента в часах.
    experiment.pageSize - размер страницы для постраничной обработки экспериментов.
+   experiment.resultSizeToSend - число лучших моделей классификаторов в одном эксперименте, результаты которых впоследствии
+   будут отправлены в сервис evaluation-results-service
    experiment.delay - интервал между запусками scheduler для обработки экспериметов
    experiment.data.storagePath - путь к папке на файловой системе для хранения файлов с исходныи данными (обучающая выборка)
    experiment.ensemble.numIterations - число итераций для ансамблевых алгоритмов
