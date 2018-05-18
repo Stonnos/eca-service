@@ -5,6 +5,7 @@ import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.EvaluationLog;
+import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.model.evaluation.ClassificationResult;
 import com.ecaservice.model.evaluation.EvaluationRequest;
 import com.ecaservice.model.evaluation.EvaluationStatus;
@@ -110,7 +111,9 @@ public class EvaluationRequestService {
 
     private void sendEvaluationResults(EvaluationResults evaluationResults, EvaluationLog evaluationLog) {
         if (EvaluationStatus.FINISHED.equals(evaluationLog.getEvaluationStatus())) {
-            evaluationResultsService.saveEvaluationResults(evaluationResults, evaluationLog);
+            EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
+            requestEntity.setEvaluationLog(evaluationLog);
+            evaluationResultsService.saveEvaluationResults(evaluationResults, requestEntity);
         }
     }
 

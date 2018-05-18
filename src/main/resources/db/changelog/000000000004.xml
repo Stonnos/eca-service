@@ -6,6 +6,24 @@
 
     <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ers_request"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ers_request">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="request_date" type="timestamp"/>
+            <column name="request_id" type="varchar(255)"/>
+            <column name="response_status" type="varchar(255)"/>
+            <column name="details" type="text"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ers_request"/>
             <tableExists tableName="evaluation_log"/>
             <not>
                 <tableExists tableName="evaluation_results_request"/>
@@ -15,14 +33,62 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="request_date" type="timestamp"/>
-            <column name="request_id" type="varchar(255)"/>
-            <column name="response_status" type="varchar(255)"/>
-            <column name="details" type="text"/>
             <column name="evaluation_log_id" type="bigint">
                 <constraints foreignKeyName="fk_evaluation_log" referencedTableName="evaluation_log"
                              referencedColumnNames="id" nullable="false"/>
             </column>
         </createTable>
+
+        <addForeignKeyConstraint baseTableName="evaluation_results_request" baseColumnNames="id"
+                                 constraintName="fk_evaluation_results_id" referencedTableName="ers_request"
+                                 referencedColumnNames="id"/>
     </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <not>
+                <tableExists tableName="experiment_results_request"/>
+            </not>
+        </preConditions>
+        <createTable tableName="experiment_results_request">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="creation_date" type="timestamp"/>
+            <column name="sent_date" type="timestamp"/>
+            <column name="request_status" type="varchar(255)"/>
+            <column name="request_source" type="varchar(255)"/>
+            <column name="details" type="text"/>
+            <column name="experiment_id" type="bigint">
+                <constraints foreignKeyName="fk_experiment" referencedTableName="experiment" referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ers_request"/>
+            <tableExists tableName="experiment_results_request"/>
+            <not>
+                <tableExists tableName="experiment_results_model"/>
+            </not>
+        </preConditions>
+        <createTable tableName="experiment_results_model">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="experiment_results_request_id" type="bigint">
+                <constraints foreignKeyName="fk_experiment_results_request"
+                             referencedTableName="experiment_results_request" referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="experiment_results_model" baseColumnNames="id"
+                                 constraintName="fk_experiment_results_id" referencedTableName="ers_request"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
 </databaseChangeLog>

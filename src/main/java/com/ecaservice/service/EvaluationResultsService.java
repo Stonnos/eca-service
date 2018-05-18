@@ -2,9 +2,8 @@ package com.ecaservice.service;
 
 import com.ecaservice.dto.evaluation.EvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
-import com.ecaservice.model.entity.EvaluationLog;
-import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
-import com.ecaservice.repository.EvaluationResultsRequestRepository;
+import com.ecaservice.model.entity.ErsRequest;
+import com.ecaservice.repository.ErsRequestRepository;
 import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -24,43 +23,41 @@ import java.util.UUID;
 public class EvaluationResultsService {
 
     private final EvaluationResultsSender evaluationResultsSender;
-    private final EvaluationResultsRequestRepository evaluationResultsRequestRepository;
+    private final ErsRequestRepository ersRequestRepository;
 
     /**
      * Constructor with spring dependency injection.
      *
-     * @param evaluationResultsSender            - evaluation results sender bean
-     * @param evaluationResultsRequestRepository - evaluation results request repository bean
+     * @param evaluationResultsSender - evaluation results sender bean
+     * @param ersRequestRepository    - evaluation results service request repository bean
      */
     @Inject
     public EvaluationResultsService(EvaluationResultsSender evaluationResultsSender,
-                                    EvaluationResultsRequestRepository evaluationResultsRequestRepository) {
+                                    ErsRequestRepository ersRequestRepository) {
         this.evaluationResultsSender = evaluationResultsSender;
-        this.evaluationResultsRequestRepository = evaluationResultsRequestRepository;
+        this.ersRequestRepository = ersRequestRepository;
     }
 
     /**
      * Save evaluation results by sending request to ERS web - service.
      *
      * @param evaluationResults - evaluation results
-     * @param evaluationLog     - evaluation log
+     * @param ersRequest        - evaluation results service request
      */
     @Async("evaluationResultsThreadPoolTaskExecutor")
-    public void saveEvaluationResults(EvaluationResults evaluationResults, EvaluationLog evaluationLog) {
-        EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
-        requestEntity.setRequestDate(LocalDateTime.now());
-        requestEntity.setRequestId(UUID.randomUUID().toString());
-        requestEntity.setEvaluationLog(evaluationLog);
+    public void saveEvaluationResults(EvaluationResults evaluationResults, ErsRequest ersRequest) {
+        ersRequest.setRequestDate(LocalDateTime.now());
+        ersRequest.setRequestId(UUID.randomUUID().toString());
         try {
             EvaluationResultsResponse resultsResponse =
-                    evaluationResultsSender.sendEvaluationResults(evaluationResults, requestEntity.getRequestId());
-            requestEntity.setResponseStatus(resultsResponse.getStatus());
+                    evaluationResultsSender.sendEvaluationResults(evaluationResults, ersRequest.getRequestId());
+            ersRequest.setResponseStatus(resultsResponse.getStatus());
         } catch (Exception ex) {
             log.error("There was an error while sending evaluation results: {}", ex.getMessage());
-            requestEntity.setResponseStatus(ResponseStatus.ERROR);
-            requestEntity.setDetails(ex.getMessage());
+            ersRequest.setResponseStatus(ResponseStatus.ERROR);
+            ersRequest.setDetails(ex.getMessage());
         } finally {
-            evaluationResultsRequestRepository.save(requestEntity);
+            ersRequestRepository.save(ersRequest);
         }
     }
 }

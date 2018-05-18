@@ -52,12 +52,14 @@ experiment:
   maximumFractionDigits: 4
   numberOfDaysForStorage: 30
   ## Each day at midnight
-  schedulerCron: 0 0 0 * * *
+  removeExperimentCron: 0 0 0 * * *
   ## Experiment timeout in hours
   timeout: 5
   ## Scheduler delay in seconds
   delaySeconds: 30
   pageSize: 1
+  resultSizeToSend: 5
+  sendResultsCron:  0 0/2 * * * *
 
   data:
     storagePath: @data.storagePath@

@@ -78,6 +78,11 @@ public class ExperimentConfig {
     private Integer pageSize;
 
     /**
+     * Experiment result models size for sending to ERS web - service
+     */
+    private Integer resultSizeToSend;
+
+    /**
      * Data configuration properties.
      */
     @Data
@@ -131,5 +136,4 @@ public class ExperimentConfig {
          */
         private Integer numFoldsForStacking;
     }
-
 }

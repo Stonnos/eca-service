@@ -1,6 +1,7 @@
 package com.ecaservice.service.experiment;
 
 
+import com.ecaservice.exception.EcaServiceException;
 import eca.converters.ModelConverter;
 import eca.converters.model.ExperimentHistory;
 import eca.data.file.FileDataLoader;
@@ -75,10 +76,28 @@ public class DataService {
      * @param experimentHistory - experiment history
      * @throws Exception
      */
-    public void save(File file, ExperimentHistory experimentHistory) throws Exception {
+    public void saveExperimentHistory(File file, ExperimentHistory experimentHistory) throws Exception {
         log.info("Starting to save experiment history to file {}", file.getAbsolutePath());
         ModelConverter.saveModel(file, experimentHistory);
         log.info("Experiment history has been successfully saved to file {}", file.getAbsolutePath());
+    }
+
+    /**
+     * Reads experiment history from specified file.
+     *
+     * @param file - experiment history file
+     * @return experiment history
+     * @throws Exception
+     */
+    public ExperimentHistory readExperimentHistory(File file) throws Exception {
+        if (!file.exists()) {
+            throw new EcaServiceException(String.format("File '%s' does not exists!", file.getAbsolutePath()));
+        } else {
+            log.info("Starting to read experiment history from file {}", file.getAbsolutePath());
+            ExperimentHistory experimentHistory = (ExperimentHistory) ModelConverter.loadModel(file);
+            log.info("Experiment history has been successfully read from file {}", file.getAbsolutePath());
+            return experimentHistory;
+        }
     }
 
     /**

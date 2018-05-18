@@ -4,10 +4,11 @@ import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.evaluation.EvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
+import com.ecaservice.model.entity.ErsRequest;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
+import com.ecaservice.repository.ErsRequestRepository;
 import com.ecaservice.repository.EvaluationLogRepository;
-import com.ecaservice.repository.EvaluationResultsRequestRepository;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.metrics.KNearestNeighbours;
@@ -42,7 +43,7 @@ public class EvaluationResultsServiceTest {
     @Mock
     private EvaluationResultsSender evaluationResultsSender;
     @Inject
-    private EvaluationResultsRequestRepository evaluationResultsRequestRepository;
+    private ErsRequestRepository ersRequestRepository;
 
     private EvaluationResultsService evaluationResultsService;
 
@@ -50,17 +51,14 @@ public class EvaluationResultsServiceTest {
 
     @Before
     public void init() throws Exception {
-        evaluationResultsRequestRepository.deleteAll();
-        evaluationLogRepository.deleteAll();
-        evaluationResultsService =
-                new EvaluationResultsService(evaluationResultsSender, evaluationResultsRequestRepository);
+        evaluationResultsService = new EvaluationResultsService(evaluationResultsSender, ersRequestRepository);
         evaluationResults =
                 new EvaluationResults(new KNearestNeighbours(), new Evaluation(TestHelperUtils.loadInstances()));
     }
 
     @After
     public void after() {
-        evaluationResultsRequestRepository.deleteAll();
+        ersRequestRepository.deleteAll();
         evaluationLogRepository.deleteAll();
     }
 
@@ -72,14 +70,18 @@ public class EvaluationResultsServiceTest {
         resultsResponse.setStatus(ResponseStatus.SUCCESS);
         when(evaluationResultsSender.sendEvaluationResults(any(EvaluationResults.class), anyString())).thenReturn(
                 resultsResponse);
-        evaluationResultsService.saveEvaluationResults(evaluationResults, evaluationLog);
-        List<EvaluationResultsRequestEntity> requestEntities = evaluationResultsRequestRepository.findAll();
+        EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
+        requestEntity.setEvaluationLog(evaluationLog);
+        evaluationResultsService.saveEvaluationResults(evaluationResults, requestEntity);
+        List<ErsRequest> requestEntities = ersRequestRepository.findAll();
         AssertionUtils.assertSingletonList(requestEntities);
-        EvaluationResultsRequestEntity requestEntity = requestEntities.stream().findFirst().orElse(null);
-        Assertions.assertThat(requestEntity).isNotNull();
-        Assertions.assertThat(requestEntity.getResponseStatus()).isEqualTo(resultsResponse.getStatus());
-        Assertions.assertThat(requestEntity.getEvaluationLog()).isNotNull();
-        Assertions.assertThat(requestEntity.getEvaluationLog().getId()).isEqualTo(evaluationLog.getId());
+        ErsRequest ersRequest = requestEntities.stream().findFirst().orElse(null);
+        Assertions.assertThat(ersRequest).isNotNull();
+        Assertions.assertThat(ersRequest.getResponseStatus()).isEqualTo(resultsResponse.getStatus());
+        Assertions.assertThat(ersRequest).isInstanceOf(EvaluationResultsRequestEntity.class);
+        EvaluationResultsRequestEntity actual = (EvaluationResultsRequestEntity) ersRequest;
+        Assertions.assertThat(actual.getEvaluationLog()).isNotNull();
+        Assertions.assertThat(actual.getEvaluationLog().getId()).isEqualTo(evaluationLog.getId());
     }
 
     @Test
@@ -90,13 +92,17 @@ public class EvaluationResultsServiceTest {
         resultsResponse.setStatus(ResponseStatus.ERROR);
         when(evaluationResultsSender.sendEvaluationResults(any(EvaluationResults.class), anyString())).thenThrow(
                 new WebServiceIOException("I/O exception"));
-        evaluationResultsService.saveEvaluationResults(evaluationResults, evaluationLog);
-        List<EvaluationResultsRequestEntity> requestEntities = evaluationResultsRequestRepository.findAll();
+        EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
+        requestEntity.setEvaluationLog(evaluationLog);
+        evaluationResultsService.saveEvaluationResults(evaluationResults, requestEntity);
+        List<ErsRequest> requestEntities = ersRequestRepository.findAll();
         AssertionUtils.assertSingletonList(requestEntities);
-        EvaluationResultsRequestEntity requestEntity = requestEntities.stream().findFirst().orElse(null);
-        Assertions.assertThat(requestEntity).isNotNull();
-        Assertions.assertThat(requestEntity.getResponseStatus()).isEqualTo(ResponseStatus.ERROR);
-        Assertions.assertThat(requestEntity.getEvaluationLog()).isNotNull();
-        Assertions.assertThat(requestEntity.getEvaluationLog().getId()).isEqualTo(evaluationLog.getId());
+        ErsRequest ersRequest = requestEntities.stream().findFirst().orElse(null);
+        Assertions.assertThat(ersRequest).isNotNull();
+        Assertions.assertThat(ersRequest.getResponseStatus()).isEqualTo(ResponseStatus.ERROR);
+        Assertions.assertThat(ersRequest).isInstanceOf(EvaluationResultsRequestEntity.class);
+        EvaluationResultsRequestEntity actual = (EvaluationResultsRequestEntity) ersRequest;
+        Assertions.assertThat(actual.getEvaluationLog()).isNotNull();
+        Assertions.assertThat(actual.getEvaluationLog().getId()).isEqualTo(evaluationLog.getId());
     }
 }

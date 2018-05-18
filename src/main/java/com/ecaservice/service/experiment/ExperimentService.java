@@ -10,6 +10,7 @@ import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import eca.converters.model.ExperimentHistory;
+import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -19,6 +20,8 @@ import weka.core.Instances;
 import javax.inject.Inject;
 import java.io.File;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -125,7 +128,7 @@ public class ExperimentService {
             stopWatch.start(String.format("Experiment %d saving", experiment.getId()));
             File experimentFile = new File(experimentConfig.getStoragePath(),
                     String.format(experimentConfig.getFileFormat(), System.currentTimeMillis()));
-            dataService.save(experimentFile, experimentHistory);
+            dataService.saveExperimentHistory(experimentFile, experimentHistory);
             stopWatch.stop();
 
             experiment.setExperimentAbsolutePath(experimentFile.getAbsolutePath());
@@ -178,6 +181,27 @@ public class ExperimentService {
         }
         experiment.setDeletedDate(LocalDateTime.now());
         experimentRepository.save(experiment);
+    }
+
+    /**
+     * Gets experiment history.
+     *
+     * @param experiment - experiment
+     * @return evaluation results list
+     */
+    public Collection<EvaluationResults> getEvaluationResults(Experiment experiment) {
+        if (!Optional.ofNullable(experiment).map(Experiment::getExperimentAbsolutePath).isPresent()) {
+            return Collections.emptyList();
+        } else {
+            try {
+                ExperimentHistory experimentHistory =
+                        dataService.readExperimentHistory(new File(experiment.getExperimentAbsolutePath()));
+                return experimentHistory.getExperiment();
+            } catch (Exception ex) {
+                log.error("There was an while loading experiment {} history: {}", experiment.getId(), ex);
+                throw new ExperimentException(ex.getMessage());
+            }
+        }
     }
 
 }

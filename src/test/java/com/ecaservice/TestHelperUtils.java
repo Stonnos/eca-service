@@ -5,11 +5,14 @@ import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.Email;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.model.entity.ExperimentResultsRequest;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.model.evaluation.EvaluationRequest;
 import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.model.experiment.ExperimentRequest;
+import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
+import com.ecaservice.model.experiment.ExperimentResultsRequestStatus;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
@@ -133,6 +136,21 @@ public class TestHelperUtils {
         experiment.setExperimentAbsolutePath(EXPERIMENT_ABSOLUTE_PATH);
         experiment.setUuid(uuid);
         return experiment;
+    }
+
+    /**
+     * Creates experiment results request.
+     *
+     * @param experiment - experiment
+     * @return experiment results request
+     */
+    public static ExperimentResultsRequest createExperimentResultsRequest(Experiment experiment) {
+        ExperimentResultsRequest resultsRequest = new ExperimentResultsRequest();
+        resultsRequest.setExperiment(experiment);
+        resultsRequest.setRequestStatus(ExperimentResultsRequestStatus.NEW);
+        resultsRequest.setRequestSource(ExperimentResultsRequestSource.SYSTEM);
+        resultsRequest.setCreationDate(LocalDateTime.now());
+        return resultsRequest;
     }
 
     /**

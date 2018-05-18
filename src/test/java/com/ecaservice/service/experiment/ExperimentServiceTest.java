@@ -133,7 +133,7 @@ public class ExperimentServiceTest {
         when(dataService.load(any(File.class))).thenReturn(data);
         when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
                 any(InitializationParams.class))).thenReturn(new ExperimentHistory());
-        doNothing().when(dataService).save(any(File.class), any(ExperimentHistory.class));
+        doNothing().when(dataService).saveExperimentHistory(any(File.class), any(ExperimentHistory.class));
         experimentService.processExperiment(TestHelperUtils.createExperiment(null));
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.assertSingletonList(experiments);
@@ -162,7 +162,8 @@ public class ExperimentServiceTest {
         when(dataService.load(any(File.class))).thenReturn(data);
         when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
                 any(InitializationParams.class))).thenReturn(new ExperimentHistory());
-        doThrow(TimeoutException.class).when(dataService).save(any(File.class), any(ExperimentHistory.class));
+        doThrow(TimeoutException.class).when(dataService).saveExperimentHistory(any(File.class),
+                any(ExperimentHistory.class));
         experimentService.processExperiment(TestHelperUtils.createExperiment(null));
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.assertSingletonList(experiments);

@@ -7,6 +7,7 @@ import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.exception.EcaServiceException;
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.model.TechnicalStatus;
+import com.ecaservice.model.entity.ErsRequest;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
@@ -72,7 +73,7 @@ public class EvaluationRequestServiceTest {
                 new EvaluationRequestService(crossValidationConfig, calculationExecutorService, evaluationService,
                         evaluationResultsService, evaluationLogRepository, evaluationLogMapper);
         doNothing().when(evaluationResultsService).saveEvaluationResults(any(EvaluationResults.class),
-                any(EvaluationLog.class));
+                any(ErsRequest.class));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -93,7 +94,7 @@ public class EvaluationRequestServiceTest {
         assertThat(evaluationResponse.getEvaluationResults().getClassifier()).isNotNull();
         assertThat(evaluationResponse.getEvaluationResults().getEvaluation()).isNotNull();
         verify(evaluationResultsService, atLeastOnce()).saveEvaluationResults(any(EvaluationResults.class), any
-                (EvaluationLog.class));
+                (ErsRequest.class));
     }
 
     @Test
@@ -113,7 +114,7 @@ public class EvaluationRequestServiceTest {
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         assertThat(evaluationResponse.getEvaluationResults()).isNull();
         verify(evaluationResultsService, never()).saveEvaluationResults(any(EvaluationResults.class),
-                any(EvaluationLog.class));
+                any(ErsRequest.class));
     }
 
     @Test
@@ -130,7 +131,7 @@ public class EvaluationRequestServiceTest {
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         assertThat(evaluationResponse.getEvaluationResults()).isNull();
         verify(evaluationResultsService, never()).saveEvaluationResults(any(EvaluationResults.class),
-                any(EvaluationLog.class));
+                any(ErsRequest.class));
     }
 
     @Test
@@ -149,6 +150,6 @@ public class EvaluationRequestServiceTest {
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.TIMEOUT);
         assertThat(evaluationResponse.getEvaluationResults()).isNull();
         verify(evaluationResultsService, never()).saveEvaluationResults(any(EvaluationResults.class),
-                any(EvaluationLog.class));
+                any(ErsRequest.class));
     }
 }
