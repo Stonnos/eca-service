@@ -59,7 +59,7 @@ experiment:
   delaySeconds: 30
   pageSize: 1
   resultSizeToSend: 5
-  sendResultsCron:  0 0/2 * * * *
+  sendResultsCron:  0 0/5 * * * *
 
   data:
     storagePath: @data.storagePath@
@@ -82,7 +82,7 @@ experiment:
       TIMEOUT: email-timeout-message-template.html
 
 evaluationResultsServiceConfig:
-  url: http://localhost:8089/evaluation-results-service/ws/
+  url: http://localhost:8085/evaluation-results-service/ws/
   enabled: true
   threadPoolSize: 10
 
