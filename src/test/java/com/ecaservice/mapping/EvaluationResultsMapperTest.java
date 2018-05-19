@@ -151,5 +151,7 @@ public class EvaluationResultsMapperTest {
         EnsembleClassifierReport classifierReport = (EnsembleClassifierReport) resultsRequest.getClassifierReport();
         Assertions.assertThat(classifierReport.getIndividualClassifiers().size()).isEqualTo(
                 stackingClassifier.getClassifiers().size() + 1);
+        ClassifierReport metaClassifierReport = classifierReport.getIndividualClassifiers().get(classifierReport.getIndividualClassifiers().size() - 1);
+        Assertions.assertThat(metaClassifierReport.getClassifierDescription()).isNotNull();
     }
 }

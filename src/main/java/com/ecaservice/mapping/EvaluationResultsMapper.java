@@ -45,6 +45,7 @@ public abstract class EvaluationResultsMapper {
 
     private static final int CONFIDENCE_INTERVAL_LOWER_INDEX = 0;
     private static final int CONFIDENCE_INTERVAL_UPPER_INDEX = 1;
+    private static final String META_CLASSIFIER_DESCRIPTION = "Meta classifier";
 
     /**
      * Maps evaluation results to evaluation results request model.
@@ -251,8 +252,9 @@ public abstract class EvaluationResultsMapper {
             StackingClassifier stackingClassifier = (StackingClassifier) classifier;
             stackingClassifier.getClassifiers().toList().forEach(
                     c -> classifierReportList.add(buildClassifierReport((AbstractClassifier) c)));
-            classifierReportList.add(
-                    buildClassifierReport((AbstractClassifier) stackingClassifier.getMetaClassifier()));
+            ClassifierReport metaClassifierReport = buildClassifierReport((AbstractClassifier) stackingClassifier.getMetaClassifier());
+            metaClassifierReport.setClassifierDescription(META_CLASSIFIER_DESCRIPTION);
+            classifierReportList.add(metaClassifierReport);
         } else {
             throw new IllegalArgumentException(
                     String.format("Unexpected ensemble classifier: %s!", classifier.getClass().getSimpleName()));
