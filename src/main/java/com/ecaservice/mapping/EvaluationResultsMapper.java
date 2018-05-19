@@ -11,10 +11,10 @@ import com.ecaservice.dto.evaluation.InputOptionsMap;
 import com.ecaservice.dto.evaluation.InstancesReport;
 import com.ecaservice.dto.evaluation.RocCurveReport;
 import com.ecaservice.dto.evaluation.StatisticsReport;
-import com.ecaservice.util.Utils;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.ensemble.AbstractHeterogeneousClassifier;
+import eca.ensemble.EnsembleUtils;
 import eca.ensemble.StackingClassifier;
 import eca.roc.RocCurve;
 import eca.roc.ThresholdModel;
@@ -117,7 +117,7 @@ public abstract class EvaluationResultsMapper {
                                             @MappingTarget EvaluationResultsRequest evaluationResultsRequest) {
         if (evaluationResults.getClassifier() != null) {
             AbstractClassifier classifier = (AbstractClassifier) evaluationResults.getClassifier();
-            evaluationResultsRequest.setClassifierReport(Utils.isHeterogeneousEnsembleClassifier(classifier) ?
+            evaluationResultsRequest.setClassifierReport(EnsembleUtils.isHeterogeneousEnsembleClassifier(classifier) ?
                     buildEnsembleClassifierReport(classifier) : buildClassifierReport(classifier));
         }
     }
