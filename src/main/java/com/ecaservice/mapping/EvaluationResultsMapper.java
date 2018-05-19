@@ -134,6 +134,7 @@ public abstract class EvaluationResultsMapper {
         if (evaluationResults.getEvaluation() != null) {
             StatisticsReport statisticsReport = new StatisticsReport();
             Evaluation evaluation = evaluationResults.getEvaluation();
+            statisticsReport.setNumTestInstances(BigInteger.valueOf((long) evaluation.numInstances()));
             statisticsReport.setNumCorrect(BigInteger.valueOf((long) evaluation.correct()));
             statisticsReport.setNumIncorrect(BigInteger.valueOf((long) evaluation.incorrect()));
             statisticsReport.setPctCorrect(BigDecimal.valueOf(evaluation.pctCorrect()));

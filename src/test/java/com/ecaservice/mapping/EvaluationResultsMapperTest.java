@@ -118,6 +118,20 @@ public class EvaluationResultsMapperTest {
                         confusionMatrix[i][j]);
             }
         }
+
+        StatisticsReport statisticsReport = resultsRequest.getStatistics();
+        Assertions.assertThat(statisticsReport).isNotNull();
+        Assertions.assertThat(statisticsReport.getNumTestInstances().doubleValue()).isEqualTo(evaluation.numInstances());
+        Assertions.assertThat(statisticsReport.getNumCorrect().doubleValue()).isEqualTo(evaluation.correct());
+        Assertions.assertThat(statisticsReport.getNumIncorrect().doubleValue()).isEqualTo(evaluation.incorrect());
+        Assertions.assertThat(statisticsReport.getPctCorrect().doubleValue()).isEqualTo(evaluation.pctCorrect());
+        Assertions.assertThat(statisticsReport.getPctIncorrect().doubleValue()).isEqualTo(evaluation.pctIncorrect());
+        Assertions.assertThat(statisticsReport.getMeanAbsoluteError().doubleValue()).isEqualTo(evaluation.meanAbsoluteError());
+        Assertions.assertThat(statisticsReport.getRootMeanSquaredError().doubleValue()).isEqualTo(evaluation.rootMeanSquaredError());
+        Assertions.assertThat(statisticsReport.getVarianceError().doubleValue()).isEqualTo(evaluation.varianceError());
+        double[] confidenceInterval = evaluation.errorConfidenceInterval();
+        Assertions.assertThat(statisticsReport.getConfidenceIntervalLowerBound().doubleValue()).isEqualTo(confidenceInterval[0]);
+        Assertions.assertThat(statisticsReport.getConfidenceIntervalUpperBound().doubleValue()).isEqualTo(confidenceInterval[1]);
     }
 
     @Test

@@ -74,6 +74,7 @@
 
     <xsd:complexType name="statisticsReport">
         <xsd:sequence>
+            <xsd:element name="numTestInstances" type="xsd:integer"/>
             <xsd:element name="numCorrect" type="xsd:integer"/>
             <xsd:element name="numIncorrect" type="xsd:integer"/>
             <xsd:element name="pctCorrect" type="xsd:decimal"/>
