@@ -1,6 +1,6 @@
 package com.ecaservice.dto;
 
-import com.ecaservice.dto.json.ExperimentRequestDeserializer;
+import com.ecaservice.dto.json.InstancesDeserializer;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -14,7 +14,6 @@ import weka.core.Instances;
  * @author Roman Batygin
  */
 @Data
-@JsonDeserialize(using = ExperimentRequestDeserializer.class)
 public class ExperimentRequestDto {
 
     /**
@@ -39,6 +38,7 @@ public class ExperimentRequestDto {
      * Training data
      */
     @ApiModelProperty(notes = "Training data", required = true)
+    @JsonDeserialize(using = InstancesDeserializer.class)
     private Instances data;
 
     /**
