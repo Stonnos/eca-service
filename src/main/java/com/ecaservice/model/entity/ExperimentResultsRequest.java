@@ -1,54 +1,25 @@
 package com.ecaservice.model.entity;
 
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
-import com.ecaservice.model.experiment.ExperimentResultsRequestStatus;
 import lombok.Data;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
+import javax.persistence.Enumerated;
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
 
 /**
- * Experiment results request persistence entity.
+ * Experiment results model for ERS web - service.
  *
  * @author Roman Batygin
  */
 @Data
 @Entity
 @Table(name = "experiment_results_request")
-public class ExperimentResultsRequest {
-
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    /**
-     * Request creation date
-     */
-    @Column(name = "creation_date")
-    private LocalDateTime creationDate;
-
-    /**
-     * Date of successful results sending
-     */
-    @Column(name = "sent_date")
-    private LocalDateTime sentDate;
-
-    /**
-     * Request status
-     */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "request_status")
-    private ExperimentResultsRequestStatus requestStatus;
+public class ExperimentResultsRequest extends ErsRequest {
 
     /**
      * Request source
@@ -58,15 +29,9 @@ public class ExperimentResultsRequest {
     private ExperimentResultsRequestSource requestSource;
 
     /**
-     * Error details
+     * Experiment entity
      */
-    @Lob
-    private String details;
-
-    /**
-     * Linked experiment entity
-     */
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "experiment_id", nullable = false)
     private Experiment experiment;
 }

@@ -2,17 +2,15 @@ package com.ecaservice.service.scheduler;
 
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.model.entity.ExperimentResultsModel;
 import com.ecaservice.model.entity.ExperimentResultsRequest;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
-import com.ecaservice.model.experiment.ExperimentResultsRequestStatus;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.repository.ExperimentRepository;
-import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.service.EvaluationResultsService;
 import com.ecaservice.service.PageableCallback;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.experiment.mail.NotificationService;
+import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,9 +22,9 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Experiment scheduler.
@@ -38,7 +36,6 @@ import java.util.List;
 public class ExperimentScheduler {
 
     private final ExperimentRepository experimentRepository;
-    private final ExperimentResultsRequestRepository experimentResultsRequestRepository;
     private final ExperimentService experimentService;
     private final NotificationService notificationService;
     private final EvaluationResultsService evaluationResultsService;
@@ -48,7 +45,6 @@ public class ExperimentScheduler {
      * Constructor with dependency spring injection.
      *
      * @param experimentRepository               - experiment repository bean
-     * @param experimentResultsRequestRepository - experiment results request repository bean
      * @param experimentService                  - experiment service bean
      * @param notificationService                - notification service bean
      * @param evaluationResultsService           - evaluation results service bean
@@ -56,13 +52,11 @@ public class ExperimentScheduler {
      */
     @Inject
     public ExperimentScheduler(ExperimentRepository experimentRepository,
-                               ExperimentResultsRequestRepository experimentResultsRequestRepository,
                                ExperimentService experimentService,
                                NotificationService notificationService,
                                EvaluationResultsService evaluationResultsService,
                                ExperimentConfig experimentConfig) {
         this.experimentRepository = experimentRepository;
-        this.experimentResultsRequestRepository = experimentResultsRequestRepository;
         this.experimentService = experimentService;
         this.notificationService = notificationService;
         this.evaluationResultsService = evaluationResultsService;
@@ -79,15 +73,16 @@ public class ExperimentScheduler {
             @Override
             public void perform(List<Experiment> experiments) {
                 experiments.forEach(experiment -> {
-                    experimentService.processExperiment(experiment);
+                    ExperimentHistory experimentHistory = experimentService.processExperiment(experiment);
                     if (ExperimentStatus.FINISHED.equals(experiment.getExperimentStatus())) {
-                        ExperimentResultsRequest resultsRequest = new ExperimentResultsRequest();
-                        resultsRequest.setRequestStatus(ExperimentResultsRequestStatus.NEW);
-                        resultsRequest.setRequestSource(ExperimentResultsRequestSource.SYSTEM);
-                        resultsRequest.setCreationDate(LocalDateTime.now());
-                        resultsRequest.setExperiment(experiment);
-                        experimentResultsRequestRepository.save(resultsRequest);
-                        log.info("Experiment results request has been created for experiment: {}", experiment.getId());
+                        List<EvaluationResults> evaluationResults = experimentHistory.getExperiment();
+                        int resultsSize = Integer.min(evaluationResults.size(), experimentConfig.getResultSizeToSend());
+                        evaluationResults.stream().limit(resultsSize).forEach(results -> {
+                            ExperimentResultsRequest experimentResultsRequest = new ExperimentResultsRequest();
+                            experimentResultsRequest.setRequestSource(ExperimentResultsRequestSource.SYSTEM);
+                            experimentResultsRequest.setExperiment(experiment);
+                            evaluationResultsService.saveEvaluationResults(results, experimentResultsRequest);
+                        });
                     }
                 });
             }
@@ -142,46 +137,6 @@ public class ExperimentScheduler {
             }
         });
         log.info("Experiments data removing has been finished.");
-    }
-
-    /**
-     * Sends experiment results to ERS web - service.
-     */
-    @Scheduled(cron = "${experiment.sendResultsCron}")
-    public void processExperimentResultsRequests() {
-        log.info("Starting to send experiment results to evaluation-results-service.");
-        processExperiments(new PageableCallback<ExperimentResultsRequest>() {
-            @Override
-            public void perform(List<ExperimentResultsRequest> resultsRequests) {
-                for (ExperimentResultsRequest request : resultsRequests) {
-                    try {
-                        Collection<EvaluationResults> evaluationResults =
-                                experimentService.getEvaluationResults(request.getExperiment());
-                        int resultsSize = Integer.min(evaluationResults.size(), experimentConfig.getResultSizeToSend());
-                        evaluationResults.stream().limit(resultsSize).forEach(results -> {
-                            ExperimentResultsModel resultsModel = new ExperimentResultsModel();
-                            resultsModel.setExperimentResultsRequest(request);
-                            evaluationResultsService.saveEvaluationResults(results, resultsModel);
-                        });
-                        request.setRequestStatus(ExperimentResultsRequestStatus.COMPLETE);
-                    } catch (Exception ex) {
-                        log.error("There was an error: {}", ex.getMessage());
-                        request.setRequestStatus(ExperimentResultsRequestStatus.ERROR);
-                        request.setDetails(ex.getMessage());
-                    } finally {
-                        request.setSentDate(LocalDateTime.now());
-                        experimentResultsRequestRepository.save(request);
-                    }
-                }
-            }
-
-            @Override
-            public Page<ExperimentResultsRequest> findNextPage(Pageable pageable) {
-                return experimentResultsRequestRepository.findNotSentExperimentRequests(
-                        Collections.singletonList(ExperimentResultsRequestStatus.NEW), pageable);
-            }
-        });
-        log.info("Processing experiment results requests has been finished.");
     }
 
     /**

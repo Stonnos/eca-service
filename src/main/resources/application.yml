@@ -59,7 +59,6 @@ experiment:
   delaySeconds: 30
   pageSize: 1
   resultSizeToSend: 5
-  sendResultsCron:  0 0/5 * * * *
 
   data:
     storagePath: @data.storagePath@

@@ -10,7 +10,6 @@ import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import eca.converters.model.ExperimentHistory;
-import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -20,8 +19,6 @@ import weka.core.Instances;
 import javax.inject.Inject;
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -47,12 +44,12 @@ public class ExperimentService {
     /**
      * Constructor with dependency spring injection.
      *
-     * @param experimentRepository       {@link ExperimentRepository} bean
-     * @param executorService            {@link CalculationExecutorService} bean
-     * @param experimentMapper           {@link ExperimentMapper} bean
-     * @param dataService                {@link DataService} bean
-     * @param experimentConfig           {@link ExperimentConfig} bean
-     * @param experimentProcessorService {@link ExperimentProcessorService} bean
+     * @param experimentRepository       - experiment repository bean
+     * @param executorService            - calculation executor service bean
+     * @param experimentMapper           - experiment mapper bean
+     * @param dataService                - data service bean
+     * @param experimentConfig           - experiment config bean
+     * @param experimentProcessorService - experiment processor service bean
      */
     @Inject
     public ExperimentService(ExperimentRepository experimentRepository,
@@ -101,8 +98,9 @@ public class ExperimentService {
      * unique UUID for downloading is generated.
      *
      * @param experiment experiment to process
+     * @return experiment history
      */
-    public void processExperiment(final Experiment experiment) {
+    public ExperimentHistory processExperiment(final Experiment experiment) {
         log.info("Starting to built experiment {}.", experiment.getId());
         experiment.setStartDate(LocalDateTime.now());
         experimentRepository.save(experiment);
@@ -121,8 +119,7 @@ public class ExperimentService {
             stopWatch.start(String.format("Experiment %d processing", experiment.getId()));
             Callable<ExperimentHistory> callable = () ->
                     experimentProcessorService.processExperimentHistory(experiment, initializationParams);
-            ExperimentHistory experimentHistory = executorService.execute(callable,
-                    experimentConfig.getTimeout(), TimeUnit.HOURS);
+            ExperimentHistory experimentHistory = executorService.execute(callable, experimentConfig.getTimeout(), TimeUnit.HOURS);
             stopWatch.stop();
 
             stopWatch.start(String.format("Experiment %d saving", experiment.getId()));
@@ -137,6 +134,7 @@ public class ExperimentService {
 
             log.info("Experiment {} has been successfully finished!", experiment.getId());
             log.info(stopWatch.prettyPrint());
+            return experimentHistory;
         } catch (TimeoutException ex) {
             log.warn("There was a timeout for experiment with id = {}.", experiment.getId());
             experiment.setExperimentStatus(ExperimentStatus.TIMEOUT);
@@ -148,6 +146,7 @@ public class ExperimentService {
             experiment.setEndDate(LocalDateTime.now());
             experimentRepository.save(experiment);
         }
+        return null;
     }
 
     /**
@@ -182,26 +181,4 @@ public class ExperimentService {
         experiment.setDeletedDate(LocalDateTime.now());
         experimentRepository.save(experiment);
     }
-
-    /**
-     * Gets experiment history.
-     *
-     * @param experiment - experiment
-     * @return evaluation results list
-     */
-    public Collection<EvaluationResults> getEvaluationResults(Experiment experiment) {
-        if (!Optional.ofNullable(experiment).map(Experiment::getExperimentAbsolutePath).isPresent()) {
-            return Collections.emptyList();
-        } else {
-            try {
-                ExperimentHistory experimentHistory =
-                        dataService.readExperimentHistory(new File(experiment.getExperimentAbsolutePath()));
-                return experimentHistory.getExperiment();
-            } catch (Exception ex) {
-                log.error("There was an while loading experiment {} history: {}", experiment.getId(), ex);
-                throw new ExperimentException(ex.getMessage());
-            }
-        }
-    }
-
 }
