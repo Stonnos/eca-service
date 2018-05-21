@@ -35,7 +35,7 @@ public class EvaluationService {
     /**
      * Constructor with dependency spring injection.
      *
-     * @param config {@link CrossValidationConfig} bean
+     * @param config - cross - validation config bean
      */
     @Inject
     public EvaluationService(CrossValidationConfig config) {

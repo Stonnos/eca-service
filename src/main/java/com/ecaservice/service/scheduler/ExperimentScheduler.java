@@ -24,7 +24,6 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Experiment scheduler.
@@ -44,11 +43,11 @@ public class ExperimentScheduler {
     /**
      * Constructor with dependency spring injection.
      *
-     * @param experimentRepository               - experiment repository bean
-     * @param experimentService                  - experiment service bean
-     * @param notificationService                - notification service bean
-     * @param evaluationResultsService           - evaluation results service bean
-     * @param experimentConfig                   - experiment config bean
+     * @param experimentRepository     - experiment repository bean
+     * @param experimentService        - experiment service bean
+     * @param notificationService      - notification service bean
+     * @param evaluationResultsService - evaluation results service bean
+     * @param experimentConfig         - experiment config bean
      */
     @Inject
     public ExperimentScheduler(ExperimentRepository experimentRepository,

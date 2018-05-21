@@ -59,9 +59,8 @@ public class ExperimentSchedulerTest {
 
     @Before
     public void setUp() {
-        experimentScheduler =
-                new ExperimentScheduler(experimentRepository, experimentService, notificationService,
-                        evaluationResultsService, experimentConfig);
+        experimentScheduler = new ExperimentScheduler(experimentRepository, experimentService, notificationService,
+                evaluationResultsService, experimentConfig);
     }
 
     @After

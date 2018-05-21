@@ -119,7 +119,8 @@ public class ExperimentService {
             stopWatch.start(String.format("Experiment %d processing", experiment.getId()));
             Callable<ExperimentHistory> callable = () ->
                     experimentProcessorService.processExperimentHistory(experiment, initializationParams);
-            ExperimentHistory experimentHistory = executorService.execute(callable, experimentConfig.getTimeout(), TimeUnit.HOURS);
+            ExperimentHistory experimentHistory =
+                    executorService.execute(callable, experimentConfig.getTimeout(), TimeUnit.HOURS);
             stopWatch.stop();
 
             stopWatch.start(String.format("Experiment %d saving", experiment.getId()));
