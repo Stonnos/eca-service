@@ -29,8 +29,8 @@ public class MailSenderService {
     /**
      * Constructor with dependency spring injection.
      *
-     * @param mailSender      {@link JavaMailSender} bean
-     * @param emailRepository {@link EmailRepository} bean
+     * @param mailSender      - java mail sender bean
+     * @param emailRepository - experiment repository bean
      */
     @Inject
     public MailSenderService(JavaMailSender mailSender,

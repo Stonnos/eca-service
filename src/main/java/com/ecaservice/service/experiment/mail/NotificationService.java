@@ -34,12 +34,12 @@ public class NotificationService {
     /**
      * Constructor with dependency spring injection.
      *
-     * @param templateEngine        {@link TemplateEngine} bean
-     * @param mailSenderService     {@link MailSenderService} bean
-     * @param experimentRepository  {@link ExperimentRepository} bean
-     * @param mailConfig            {@link MailConfig} bean
-     * @param statusTemplateVisitor {@link EmailTemplateVisitor} bean
-     * @param emailRepository       {@link EmailRepository} bean
+     * @param templateEngine        - template engine bean
+     * @param mailSenderService     - mail sender service bean
+     * @param experimentRepository  - experiment repository bean
+     * @param mailConfig            - mail config bean
+     * @param statusTemplateVisitor - email template visitor bean
+     * @param emailRepository       - email repository bean
      */
     @Inject
     public NotificationService(TemplateEngine templateEngine,

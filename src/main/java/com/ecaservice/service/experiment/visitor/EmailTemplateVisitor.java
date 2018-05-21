@@ -22,7 +22,7 @@ public class EmailTemplateVisitor implements ExperimentStatusVisitor<Context, Ex
     /**
      * Constructor with dependency spring injection.
      *
-     * @param experimentConfig {@link ExperimentConfig} bean
+     * @param experimentConfig - experiment config bean
      */
     @Inject
     public EmailTemplateVisitor(ExperimentConfig experimentConfig) {

@@ -18,7 +18,7 @@ public class UpdateClassifiersService {
     /**
      * Constructor with spring dependency injection.
      *
-     * @param experimentConfigurationService {@link ExperimentConfigurationService} bean
+     * @param experimentConfigurationService - experiment configuration service bean
      */
     @Inject
     public UpdateClassifiersService(ExperimentConfigurationService experimentConfigurationService) {

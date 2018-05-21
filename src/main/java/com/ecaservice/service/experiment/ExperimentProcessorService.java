@@ -38,8 +38,8 @@ public class ExperimentProcessorService {
     /**
      * Constructor with dependency spring injection.
      *
-     * @param experimentInitializer {@link ExperimentInitializationVisitor} bean
-     * @param experimentConfig      {@link ExperimentConfig} bean
+     * @param experimentInitializer - experiment initializer bean
+     * @param experimentConfig      - experiment config bean
      */
     @Inject
     public ExperimentProcessorService(ExperimentInitializationVisitor experimentInitializer,

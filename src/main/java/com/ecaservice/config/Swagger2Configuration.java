@@ -29,6 +29,8 @@ import static springfox.documentation.schema.AlternateTypeRules.newRule;
 @Configuration
 public class Swagger2Configuration {
 
+    private static final String CONTROLLER_PACKAGE = "com.ecaservice.controller";
+
     /**
      * Returns swagger configuration bean.
      *
@@ -39,7 +41,7 @@ public class Swagger2Configuration {
     public Docket ecaServiceApi(TypeResolver typeResolver, Swagger2ApiConfig swagger2ApiConfig) {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.ecaservice.controller"))
+                .apis(RequestHandlerSelectors.basePackage(CONTROLLER_PACKAGE))
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(apiInfo(swagger2ApiConfig))

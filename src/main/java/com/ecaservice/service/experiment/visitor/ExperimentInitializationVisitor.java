@@ -47,10 +47,10 @@ public class ExperimentInitializationVisitor
     /**
      * Constructor with dependency spring injection.
      *
-     * @param experimentConfig       {@link ExperimentConfig} bean
-     * @param crossValidationConfig  {@link CrossValidationConfig} bean
-     * @param evaluationMethodMapper {@link EvaluationMethodMapper} bean
-     * @param classifiersSetSearcher {@link ClassifiersSetSearcher} bean
+     * @param experimentConfig       - experiment config bean
+     * @param crossValidationConfig  - cross validation config bean
+     * @param evaluationMethodMapper - evaluation method mapper bean
+     * @param classifiersSetSearcher - classifiers set searcher bean
      */
     @Inject
     public ExperimentInitializationVisitor(ExperimentConfig experimentConfig,

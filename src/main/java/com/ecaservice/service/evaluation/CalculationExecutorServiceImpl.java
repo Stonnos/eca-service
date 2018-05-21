@@ -26,7 +26,7 @@ public class CalculationExecutorServiceImpl implements CalculationExecutorServic
     /**
      * Constructor with spring dependency injection.
      *
-     * @param executorService {@link ExecutorService} bean
+     * @param executorService - executor service bean
      */
     @Inject
     public CalculationExecutorServiceImpl(ExecutorService executorService) {
