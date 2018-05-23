@@ -41,6 +41,7 @@
         <xmlschema.version>2.2.3</xmlschema.version>
         <jaxb2-maven-plugin.version>2.3</jaxb2-maven-plugin.version>
         <jacoco-plugin.version>0.7.7.201606060606</jacoco-plugin.version>
+        <jacoco.minCoverage>0.70</jacoco.minCoverage>
     </properties>
 
     <repositories>
@@ -132,6 +133,32 @@
                 <jdbc.ddlAuto>validate</jdbc.ddlAuto>
                 <jdbc.dialect>org.hibernate.dialect.Oracle10gDialect</jdbc.dialect>
             </properties>
+        </profile>
+
+        <profile>
+            <id>quality</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-integration-test</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
 
     </profiles>
@@ -459,7 +486,7 @@
                                         <limit>
                                             <counter>INSTRUCTION</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.70</minimum>
+                                            <minimum>${jacoco.minCoverage}</minimum>
                                         </limit>
                                     </limits>
                                 </rule>

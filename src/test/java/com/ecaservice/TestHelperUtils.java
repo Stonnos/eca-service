@@ -13,9 +13,13 @@ import com.ecaservice.model.experiment.ExperimentRequest;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
+import eca.core.evaluation.Evaluation;
+import eca.core.evaluation.EvaluationResults;
+import eca.core.evaluation.EvaluationService;
 import eca.data.file.resource.FileResource;
 import eca.data.file.xls.XLSLoader;
 import eca.metrics.KNearestNeighbours;
+import eca.trees.CART;
 import weka.core.Instances;
 
 import java.io.File;
@@ -23,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Test data helper class.
@@ -56,6 +61,21 @@ public class TestHelperUtils {
         XLSLoader dataLoader = new XLSLoader();
         dataLoader.setResource(new FileResource(new File(classLoader.getResource(DATA_PATH).getFile())));
         return dataLoader.getDataSet();
+    }
+
+    /**
+     * Evaluation classifier and returns its evaluation results.
+     *
+     * @return evaluation results
+     * @throws Exception
+     */
+    public static EvaluationResults getEvaluationResults() throws Exception {
+        CART cart = new CART();
+        Instances testInstances = loadInstances();
+        Evaluation evaluation = EvaluationService.evaluateModel(cart, testInstances,
+                eca.core.evaluation.EvaluationMethod.CROSS_VALIDATION, TestHelperUtils.NUM_FOLDS,
+                TestHelperUtils.NUM_TESTS, new Random());
+        return new EvaluationResults(cart, evaluation);
     }
 
     /**
@@ -219,5 +239,4 @@ public class TestHelperUtils {
         evaluationLog.setIpAddress(IP_ADDRESS);
         return evaluationLog;
     }
-
 }

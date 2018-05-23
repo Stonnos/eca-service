@@ -1,7 +1,16 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.dto.evaluation.*;
+import com.ecaservice.dto.evaluation.ClassificationCostsReport;
+import com.ecaservice.dto.evaluation.ClassifierReport;
+import com.ecaservice.dto.evaluation.ConfusionMatrixReport;
+import com.ecaservice.dto.evaluation.EnsembleClassifierReport;
+import com.ecaservice.dto.evaluation.EvaluationMethod;
+import com.ecaservice.dto.evaluation.EvaluationMethodReport;
+import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
+import com.ecaservice.dto.evaluation.InstancesReport;
+import com.ecaservice.dto.evaluation.RocCurveReport;
+import com.ecaservice.dto.evaluation.StatisticsReport;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.ensemble.ClassifiersSet;
@@ -23,7 +32,6 @@ import weka.core.Instances;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Unit tests fro checking {@link EvaluationResultsMapper} functionality.
@@ -41,13 +49,7 @@ public class EvaluationResultsMapperTest {
 
     @Before
     public void init() throws Exception {
-        CART cart = new CART();
-        Instances testInstances = TestHelperUtils.loadInstances();
-        cart.buildClassifier(testInstances);
-        Evaluation evaluation = new Evaluation(testInstances);
-        evaluation.kCrossValidateModel(cart, testInstances, TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS,
-                new Random());
-        evaluationResults = new EvaluationResults(cart, evaluation);
+        evaluationResults = TestHelperUtils.getEvaluationResults();
     }
 
     @Test
@@ -121,17 +123,22 @@ public class EvaluationResultsMapperTest {
 
         StatisticsReport statisticsReport = resultsRequest.getStatistics();
         Assertions.assertThat(statisticsReport).isNotNull();
-        Assertions.assertThat(statisticsReport.getNumTestInstances().doubleValue()).isEqualTo(evaluation.numInstances());
+        Assertions.assertThat(statisticsReport.getNumTestInstances().doubleValue()).isEqualTo(
+                evaluation.numInstances());
         Assertions.assertThat(statisticsReport.getNumCorrect().doubleValue()).isEqualTo(evaluation.correct());
         Assertions.assertThat(statisticsReport.getNumIncorrect().doubleValue()).isEqualTo(evaluation.incorrect());
         Assertions.assertThat(statisticsReport.getPctCorrect().doubleValue()).isEqualTo(evaluation.pctCorrect());
         Assertions.assertThat(statisticsReport.getPctIncorrect().doubleValue()).isEqualTo(evaluation.pctIncorrect());
-        Assertions.assertThat(statisticsReport.getMeanAbsoluteError().doubleValue()).isEqualTo(evaluation.meanAbsoluteError());
-        Assertions.assertThat(statisticsReport.getRootMeanSquaredError().doubleValue()).isEqualTo(evaluation.rootMeanSquaredError());
+        Assertions.assertThat(statisticsReport.getMeanAbsoluteError().doubleValue()).isEqualTo(
+                evaluation.meanAbsoluteError());
+        Assertions.assertThat(statisticsReport.getRootMeanSquaredError().doubleValue()).isEqualTo(
+                evaluation.rootMeanSquaredError());
         Assertions.assertThat(statisticsReport.getVarianceError().doubleValue()).isEqualTo(evaluation.varianceError());
         double[] confidenceInterval = evaluation.errorConfidenceInterval();
-        Assertions.assertThat(statisticsReport.getConfidenceIntervalLowerBound().doubleValue()).isEqualTo(confidenceInterval[0]);
-        Assertions.assertThat(statisticsReport.getConfidenceIntervalUpperBound().doubleValue()).isEqualTo(confidenceInterval[1]);
+        Assertions.assertThat(statisticsReport.getConfidenceIntervalLowerBound().doubleValue()).isEqualTo(
+                confidenceInterval[0]);
+        Assertions.assertThat(statisticsReport.getConfidenceIntervalUpperBound().doubleValue()).isEqualTo(
+                confidenceInterval[1]);
     }
 
     @Test
@@ -165,7 +172,8 @@ public class EvaluationResultsMapperTest {
         EnsembleClassifierReport classifierReport = (EnsembleClassifierReport) resultsRequest.getClassifierReport();
         Assertions.assertThat(classifierReport.getIndividualClassifiers().size()).isEqualTo(
                 stackingClassifier.getClassifiers().size() + 1);
-        ClassifierReport metaClassifierReport = classifierReport.getIndividualClassifiers().get(classifierReport.getIndividualClassifiers().size() - 1);
+        ClassifierReport metaClassifierReport =
+                classifierReport.getIndividualClassifiers().get(classifierReport.getIndividualClassifiers().size() - 1);
         Assertions.assertThat(metaClassifierReport.getClassifierDescription()).isNotNull();
     }
 }
