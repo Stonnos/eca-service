@@ -100,4 +100,15 @@ ECA service v2.0
          
 3. Страница с документацией swagger находится по адресу http://[host]:[port]/eca-service/swagger-ui.html, где host и port
 соответственно адрес машины и порт на котором развернуто приложение.
+
+Интеграционные тесты
+------------------------------------------------------
+Для запуска всех интеграционыых тестов необходимо выполнить команду (указав профиль quality):
+
+mvn clean install -Pquality
+
+С параметрами:
+-DevaluationResultsServiceConfig.url=http://localhost:8089/evaluation-results-service/ws/
+-DevaluationResultsServiceConfig.enabled=true
+-DevaluationResultsServiceConfig.threadPoolSize=10
     
