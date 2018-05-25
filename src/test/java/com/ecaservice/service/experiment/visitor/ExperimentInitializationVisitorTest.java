@@ -151,7 +151,7 @@ public class ExperimentInitializationVisitorTest {
         assertThat(experiment.getEvaluationMethod()).isEqualTo(eca.core.evaluation.EvaluationMethod.CROSS_VALIDATION);
         assertThat(experiment.getNumFolds()).isEqualTo(crossValidationConfig.getNumFolds().intValue());
         assertThat(experiment.getNumTests()).isEqualTo(crossValidationConfig.getNumTests().intValue());
-
+        assertThat(experiment.getSeed()).isEqualTo(crossValidationConfig.getSeed().intValue());
     }
 
     private void assertHeterogeneousEnsembleExperiment(AutomatedHeterogeneousEnsemble automatedHeterogeneousEnsemble) {

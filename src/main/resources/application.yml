@@ -29,7 +29,7 @@ spring:
 cross-validation:
   numFolds: 10
   numTests: 1
-  seed: 3
+  seed: 1
   ## Cross validation timeout in minutes
   timeout: 60
 

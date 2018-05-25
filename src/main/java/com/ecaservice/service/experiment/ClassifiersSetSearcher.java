@@ -1,5 +1,6 @@
 package com.ecaservice.service.experiment;
 
+import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.exception.ExperimentException;
 import com.ecaservice.mapping.ClassifierOptionsMapper;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
+import weka.core.Randomizable;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -43,6 +45,7 @@ public class ClassifiersSetSearcher {
     private final EvaluationService evaluationService;
     private final ExperimentConfigurationService experimentConfigurationService;
     private final ExperimentConfig experimentConfig;
+    private final CrossValidationConfig crossValidationConfig;
     private final List<ClassifierInputDataHandler> classifierInputDataHandlers;
     private final List<ClassifierOptionsMapper> classifierOptionsMappers;
 
@@ -52,6 +55,7 @@ public class ClassifiersSetSearcher {
      * @param evaluationService              - evaluation service bean
      * @param experimentConfigurationService - experiment configuration service bean
      * @param experimentConfig               - experiment config bean
+     * @param crossValidationConfig          - cross - validation config
      * @param classifierInputDataHandlers    - classifier input data handler beans
      * @param classifierOptionsMappers       - classifier options mapper bean
      */
@@ -59,11 +63,13 @@ public class ClassifiersSetSearcher {
     public ClassifiersSetSearcher(EvaluationService evaluationService,
                                   ExperimentConfigurationService experimentConfigurationService,
                                   ExperimentConfig experimentConfig,
+                                  CrossValidationConfig crossValidationConfig,
                                   List<ClassifierInputDataHandler> classifierInputDataHandlers,
                                   List<ClassifierOptionsMapper> classifierOptionsMappers) {
         this.evaluationService = evaluationService;
         this.experimentConfigurationService = experimentConfigurationService;
         this.experimentConfig = experimentConfig;
+        this.crossValidationConfig = crossValidationConfig;
         this.classifierInputDataHandlers = classifierInputDataHandlers;
         this.classifierOptionsMappers = classifierOptionsMappers;
     }
@@ -139,6 +145,9 @@ public class ClassifiersSetSearcher {
     private void initializeClassifiers(List<AbstractClassifier> classifiers, Instances data) {
         //Initialize classifiers options based on training data
         for (AbstractClassifier classifier : classifiers) {
+            if (classifier instanceof Randomizable) {
+                ((Randomizable) classifier).setSeed(crossValidationConfig.getSeed());
+            }
             for (ClassifierInputDataHandler handler : classifierInputDataHandlers) {
                 if (handler.canHandle(classifier)) {
                     handler.handle(data, classifier);

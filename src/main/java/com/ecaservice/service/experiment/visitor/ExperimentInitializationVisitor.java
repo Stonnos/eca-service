@@ -138,6 +138,7 @@ public class ExperimentInitializationVisitor
         experiment.setEvaluationMethod(evaluationMethodMapper.map(initializationParams.getEvaluationMethod()));
         experiment.setNumFolds(crossValidationConfig.getNumFolds());
         experiment.setNumTests(crossValidationConfig.getNumTests());
+        experiment.setSeed(crossValidationConfig.getSeed());
     }
 
     private AutomatedStacking createStackingExperiment(InitializationParams initializationParams,

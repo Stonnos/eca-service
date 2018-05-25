@@ -1,6 +1,7 @@
 package com.ecaservice.service.experiment;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.exception.ExperimentException;
 import com.ecaservice.mapping.ClassifierOptionsMapper;
@@ -50,6 +51,8 @@ public class ClassifiersSetSearcherTest {
     @Inject
     private ExperimentConfig experimentConfig;
     @Inject
+    private CrossValidationConfig crossValidationConfig;
+    @Inject
     private List<ClassifierInputDataHandler> classifierInputDataHandlers;
     @Inject
     private List<ClassifierOptionsMapper> classifierOptionsMappers;
@@ -66,7 +69,7 @@ public class ClassifiersSetSearcherTest {
     public void init() throws Exception {
         testInstances = TestHelperUtils.loadInstances();
         classifiersSetSearcher = new ClassifiersSetSearcher(evaluationService, experimentConfigurationService,
-                experimentConfig, classifierInputDataHandlers, classifierOptionsMappers);
+                experimentConfig, crossValidationConfig, classifierInputDataHandlers, classifierOptionsMappers);
         evaluationResults = new EvaluationResults(new KNearestNeighbours(), new Evaluation(testInstances));
     }
 
