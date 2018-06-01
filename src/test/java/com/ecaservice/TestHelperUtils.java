@@ -41,6 +41,7 @@ public class TestHelperUtils {
     public static final String IP_ADDRESS = "127.0.0.1";
     public static final String UUID = "a01ebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
 
+    private static final int SEED = 1;
     private static final String FIRST_NAME = "Roman";
     private static final String TEST_MAIL_RU = "test@mail.ru";
     private static final String TRAINING_DATA_ABSOLUTE_PATH = "/home/data";
@@ -59,8 +60,8 @@ public class TestHelperUtils {
     public static Instances loadInstances() throws Exception {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
         XLSLoader dataLoader = new XLSLoader();
-        dataLoader.setResource(new FileResource(new File(classLoader.getResource(DATA_PATH).getFile())));
-        return dataLoader.getDataSet();
+        dataLoader.setSource(new FileResource(new File(classLoader.getResource(DATA_PATH).getFile())));
+        return dataLoader.loadInstances();
     }
 
     /**
@@ -74,7 +75,7 @@ public class TestHelperUtils {
         Instances testInstances = loadInstances();
         Evaluation evaluation = EvaluationService.evaluateModel(cart, testInstances,
                 eca.core.evaluation.EvaluationMethod.CROSS_VALIDATION, TestHelperUtils.NUM_FOLDS,
-                TestHelperUtils.NUM_TESTS, new Random());
+                TestHelperUtils.NUM_TESTS, new Random(SEED));
         return new EvaluationResults(cart, evaluation);
     }
 
