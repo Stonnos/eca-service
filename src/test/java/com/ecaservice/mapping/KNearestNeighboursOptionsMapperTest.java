@@ -34,7 +34,7 @@ public class KNearestNeighboursOptionsMapperTest {
         DistanceBuilder distanceBuilder = new DistanceBuilder();
         for (DistanceType distanceType : DistanceType.values()) {
             kNearestNeighboursOptions.setDistanceType(distanceType);
-            assertThat(kNearestNeighboursOptionsMapper.map(kNearestNeighboursOptions).distance()).isInstanceOf(
+            assertThat(kNearestNeighboursOptionsMapper.map(kNearestNeighboursOptions).getDistance()).isInstanceOf(
                     distanceType.handle(distanceBuilder).getClass());
         }
         kNearestNeighboursOptions.setNumNeighbours(25);

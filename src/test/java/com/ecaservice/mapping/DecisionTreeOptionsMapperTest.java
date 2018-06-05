@@ -44,7 +44,7 @@ public class DecisionTreeOptionsMapperTest {
         DecisionTreeClassifier decisionTreeClassifier = decisionTreeOptionsMapper.map(decisionTreeOptions);
         assertThat(decisionTreeClassifier.getMaxDepth()).isEqualTo(decisionTreeOptions.getMaxDepth());
         assertThat(decisionTreeClassifier.getMinObj()).isEqualTo(decisionTreeOptions.getMinObj());
-        assertThat(decisionTreeClassifier.numRandomAttr()).isEqualTo(decisionTreeOptions.getNumRandomAttr());
+        assertThat(decisionTreeClassifier.getNumRandomAttr()).isEqualTo(decisionTreeOptions.getNumRandomAttr());
         assertThat(decisionTreeClassifier.getNumRandomSplits()).isEqualTo(decisionTreeOptions.getNumRandomSplits());
         assertThat(decisionTreeClassifier.getUseBinarySplits()).isTrue();
         assertThat(decisionTreeClassifier.isUseRandomSplits()).isFalse();

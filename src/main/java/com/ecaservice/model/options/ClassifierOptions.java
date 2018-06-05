@@ -18,6 +18,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = KNearestNeighboursOptions.class, name = "knn"),
         @JsonSubTypes.Type(value = NeuralNetworkOptions.class, name = "neural_network"),
         @JsonSubTypes.Type(value = J48Options.class, name = "j48"),
+        @JsonSubTypes.Type(value = StackingOptions.class, name = "stacking"),
+        @JsonSubTypes.Type(value = IterativeEnsembleOptions.class, name = "iterative_ensemble"),
 })
 public abstract class ClassifierOptions {
 }

@@ -156,7 +156,7 @@ public class ExperimentInitializationVisitorTest {
 
     private void assertHeterogeneousEnsembleExperiment(AutomatedHeterogeneousEnsemble automatedHeterogeneousEnsemble) {
         assertExperiment(automatedHeterogeneousEnsemble);
-        assertThat(automatedHeterogeneousEnsemble.getClassifier().getIterationsNum()).isEqualTo(
+        assertThat(automatedHeterogeneousEnsemble.getClassifier().getNumIterations()).isEqualTo(
                 experimentConfig.getEnsemble().getNumIterations().intValue());
         assertThat(automatedHeterogeneousEnsemble.getClassifier().getClassifiersSet()).isNotNull();
     }

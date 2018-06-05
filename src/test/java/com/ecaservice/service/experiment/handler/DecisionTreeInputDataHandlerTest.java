@@ -46,18 +46,18 @@ public class DecisionTreeInputDataHandlerTest {
         classifier.setRandomTree(false);
         //Case 1
         decisionTreeInputDataHandler.handle(data, classifier);
-        assertThat(classifier.numRandomAttr()).isZero();
+        assertThat(classifier.getNumRandomAttr()).isZero();
         //Case 2
         classifier.setRandomTree(true);
         when(data.numAttributes()).thenReturn(DEFAULT_NUM_ATTRIBUTES);
         decisionTreeInputDataHandler.handle(data, classifier);
-        assertThat(classifier.numRandomAttr()).isNotZero();
+        assertThat(classifier.getNumRandomAttr()).isNotZero();
         //Case 3
         classifier.setNumRandomAttr(DEFAULT_NUM_ATTRIBUTES + 1);
         decisionTreeInputDataHandler.handle(data, classifier);
-        assertThat(classifier.numRandomAttr()).isNotZero();
+        assertThat(classifier.getNumRandomAttr()).isNotZero();
         //Case 4
         classifier.setNumRandomAttr(DEFAULT_NUM_ATTRIBUTES - 1);
-        assertThat(classifier.numRandomAttr()).isEqualTo(DEFAULT_NUM_ATTRIBUTES - 1);
+        assertThat(classifier.getNumRandomAttr()).isEqualTo(DEFAULT_NUM_ATTRIBUTES - 1);
     }
 }

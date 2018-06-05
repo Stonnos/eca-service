@@ -11,6 +11,9 @@ import com.ecaservice.dto.evaluation.InputOptionsMap;
 import com.ecaservice.dto.evaluation.InstancesReport;
 import com.ecaservice.dto.evaluation.RocCurveReport;
 import com.ecaservice.dto.evaluation.StatisticsReport;
+import com.ecaservice.model.options.ClassifierOptions;
+import com.ecaservice.service.ClassifierOptionsService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.ensemble.AbstractHeterogeneousClassifier;
@@ -28,6 +31,8 @@ import weka.core.Attribute;
 import weka.core.Instances;
 import weka.core.xml.XMLInstances;
 
+import javax.inject.Inject;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
@@ -46,6 +51,10 @@ public abstract class EvaluationResultsMapper {
     private static final int CONFIDENCE_INTERVAL_LOWER_INDEX = 0;
     private static final int CONFIDENCE_INTERVAL_UPPER_INDEX = 1;
     private static final String META_CLASSIFIER_DESCRIPTION = "Meta classifier";
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    @Inject
+    private ClassifierOptionsService classifierOptionsService;
 
     /**
      * Maps evaluation results to evaluation results request model.
@@ -77,7 +86,7 @@ public abstract class EvaluationResultsMapper {
                 xmlInstances.setInstances(instances);
                 instancesReport.setXmlData(xmlInstances.toString());
             } catch (Exception ex) {
-                log.error("Can't serialize instances to xml: {}", ex.getMessage());
+                log.error("Can't serialize instances [{}] to xml: {}", instances.relationName(), ex.getMessage());
             }
             evaluationResultsRequest.setInstances(instancesReport);
         }
@@ -218,6 +227,7 @@ public abstract class EvaluationResultsMapper {
     private ClassifierReport buildClassifierReport(AbstractClassifier classifier) {
         ClassifierReport classifierReport = new ClassifierReport();
         classifierReport.setClassifierName(classifier.getClass().getSimpleName());
+        classifierReport.setConfig(getClassifierOptionsAsJsonString(classifier));
         classifierReport.setInputOptionsMap(populateInputOptionsMap(classifier));
         return classifierReport;
     }
@@ -225,6 +235,7 @@ public abstract class EvaluationResultsMapper {
     private EnsembleClassifierReport buildEnsembleClassifierReport(AbstractClassifier classifier) {
         EnsembleClassifierReport classifierReport = new EnsembleClassifierReport();
         classifierReport.setClassifierName(classifier.getClass().getSimpleName());
+        classifierReport.setConfig(getClassifierOptionsAsJsonString(classifier));
         classifierReport.setInputOptionsMap(populateInputOptionsMap(classifier));
         populateIndividualClassifiers(classifierReport.getIndividualClassifiers(), classifier);
         return classifierReport;
@@ -253,12 +264,24 @@ public abstract class EvaluationResultsMapper {
             StackingClassifier stackingClassifier = (StackingClassifier) classifier;
             stackingClassifier.getClassifiers().toList().forEach(
                     c -> classifierReportList.add(buildClassifierReport((AbstractClassifier) c)));
-            ClassifierReport metaClassifierReport = buildClassifierReport((AbstractClassifier) stackingClassifier.getMetaClassifier());
+            ClassifierReport metaClassifierReport =
+                    buildClassifierReport((AbstractClassifier) stackingClassifier.getMetaClassifier());
             metaClassifierReport.setClassifierDescription(META_CLASSIFIER_DESCRIPTION);
             classifierReportList.add(metaClassifierReport);
         } else {
             throw new IllegalArgumentException(
                     String.format("Unexpected ensemble classifier: %s!", classifier.getClass().getSimpleName()));
         }
+    }
+
+    private String getClassifierOptionsAsJsonString(AbstractClassifier classifier) {
+        ClassifierOptions classifierOptions = classifierOptionsService.convert(classifier);
+        try {
+            return objectMapper.writeValueAsString(classifierOptions);
+        } catch (IOException ex) {
+            log.error("Can't serialize classifier [{}] options to json: {}", classifier.getClass().getSimpleName(),
+                    ex.getMessage());
+        }
+        return null;
     }
 }

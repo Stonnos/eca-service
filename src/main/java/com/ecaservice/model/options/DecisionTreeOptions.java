@@ -50,4 +50,9 @@ public class DecisionTreeOptions extends ClassifierOptions {
      * Random splits number at each node split
      */
     private Integer numRandomSplits;
+
+    /**
+     * Seed value for random generator
+     */
+    private Integer seed;
 }

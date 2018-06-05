@@ -21,7 +21,7 @@ public class DecisionTreeInputDataHandler extends ClassifierInputDataHandler<Dec
     @Override
     protected void internalHandle(Instances data, DecisionTreeClassifier classifier) {
         if (classifier.isRandomTree() &&
-                (classifier.numRandomAttr() == 0 || classifier.numRandomAttr() > data.numAttributes() - 1)) {
+                (classifier.getNumRandomAttr() == 0 || classifier.getNumRandomAttr() > data.numAttributes() - 1)) {
             classifier.setNumRandomAttr((int) Math.sqrt(data.numAttributes()));
         }
     }

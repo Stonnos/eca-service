@@ -18,8 +18,15 @@ import eca.core.evaluation.EvaluationResults;
 import eca.core.evaluation.EvaluationService;
 import eca.data.file.resource.FileResource;
 import eca.data.file.xls.XLSLoader;
+import eca.ensemble.forests.DecisionTreeBuilder;
+import eca.ensemble.forests.DecisionTreeType;
 import eca.metrics.KNearestNeighbours;
+import eca.metrics.distances.Distance;
+import eca.neural.NeuralNetwork;
+import eca.neural.functions.AbstractFunction;
 import eca.trees.CART;
+import eca.trees.DecisionTreeClassifier;
+import eca.trees.J48;
 import weka.core.Instances;
 
 import java.io.File;
@@ -51,6 +58,14 @@ public class TestHelperUtils {
     private static final String RECEIVER_MAIL = "receiver@mail.tu";
     private static final String SUBJECT = "subject";
     private static final String MAIL_MESSAGE = "message";
+    private static final int NUM_OBJ = 2;
+    public static final double KNN_WEIGHT = 0.55d;
+    public static final int NUM_NEIGHBOURS = 100;
+    public static final int NUM_RANDOM_ATTR = 10;
+    public static final int NUM_RANDOM_SPLITS = 25;
+    public static final String HIDDEN_LAYER = "5,8,9";
+    public static final int IN_LAYER_NEURONS_NUM = 12;
+    public static final int OUT_LAYER_NEURONS_NUM = 7;
 
     /**
      * Generates the test data set.
@@ -239,5 +254,66 @@ public class TestHelperUtils {
         evaluationLog.setEvaluationStatus(EvaluationStatus.FINISHED);
         evaluationLog.setIpAddress(IP_ADDRESS);
         return evaluationLog;
+    }
+
+    /**
+     * Creates J48 classifier.
+     *
+     * @return J48 classifier
+     */
+    public static J48 createJ48() {
+        J48 j48 = new J48();
+        j48.setUnpruned(true);
+        j48.setNumFolds(NUM_FOLDS);
+        j48.setMinNumObj(NUM_OBJ);
+        j48.setBinarySplits(true);
+        return j48;
+    }
+
+    /**
+     * Creates KNN with specified distance function.
+     *
+     * @param distance - distance function
+     * @return KNN object
+     */
+    public static KNearestNeighbours createKNearestNeighbours(Distance distance) {
+        KNearestNeighbours kNearestNeighbours = new KNearestNeighbours();
+        kNearestNeighbours.setDistance(distance);
+        kNearestNeighbours.setWeight(KNN_WEIGHT);
+        kNearestNeighbours.setNumNeighbours(NUM_NEIGHBOURS);
+        return kNearestNeighbours;
+    }
+
+    /**
+     * Creates decision tree.
+     *
+     * @param treeType - tree type.
+     * @return decision tree object
+     */
+    public static DecisionTreeClassifier createDecisionTreeClassifier(DecisionTreeType treeType) {
+        DecisionTreeClassifier treeClassifier = treeType.handle(new DecisionTreeBuilder());
+        treeClassifier.setSeed(SEED);
+        treeClassifier.setMinObj(NUM_OBJ);
+        treeClassifier.setUseBinarySplits(true);
+        treeClassifier.setRandomTree(true);
+        treeClassifier.setNumRandomAttr(NUM_RANDOM_ATTR);
+        treeClassifier.setNumRandomSplits(NUM_RANDOM_SPLITS);
+        return treeClassifier;
+    }
+
+    /**
+     * Creates neural network with specified activation function.
+     *
+     * @param abstractFunction - activation function
+     * @return neural network object
+     */
+    public static NeuralNetwork createNeuralNetwork(AbstractFunction abstractFunction) {
+        NeuralNetwork neuralNetwork = new NeuralNetwork();
+        neuralNetwork.setSeed(SEED);
+        neuralNetwork.network().setInLayerNeuronsNum(IN_LAYER_NEURONS_NUM);
+        neuralNetwork.network().setOutLayerNeuronsNum(OUT_LAYER_NEURONS_NUM);
+        neuralNetwork.network().setHiddenLayer(HIDDEN_LAYER);
+        neuralNetwork.network().setActivationFunction(abstractFunction);
+        return neuralNetwork;
     }
 }

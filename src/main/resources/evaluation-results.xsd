@@ -38,6 +38,7 @@
         <xsd:sequence>
             <xsd:element name="classifierName" type="xsd:string"/>
             <xsd:element name="classifierDescription" type="xsd:string"/>
+            <xsd:element name="config" type="xsd:string"/>
             <xsd:element name="inputOptionsMap" type="evaluation:inputOptionsMap"/>
         </xsd:sequence>
     </xsd:complexType>
