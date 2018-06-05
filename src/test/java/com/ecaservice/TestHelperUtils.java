@@ -18,8 +18,11 @@ import eca.core.evaluation.EvaluationResults;
 import eca.core.evaluation.EvaluationService;
 import eca.data.file.resource.FileResource;
 import eca.data.file.xls.XLSLoader;
+import eca.ensemble.RandomNetworks;
 import eca.ensemble.forests.DecisionTreeBuilder;
 import eca.ensemble.forests.DecisionTreeType;
+import eca.ensemble.forests.ExtraTreesClassifier;
+import eca.ensemble.forests.RandomForests;
 import eca.metrics.KNearestNeighbours;
 import eca.metrics.distances.Distance;
 import eca.neural.NeuralNetwork;
@@ -59,13 +62,17 @@ public class TestHelperUtils {
     private static final String SUBJECT = "subject";
     private static final String MAIL_MESSAGE = "message";
     private static final int NUM_OBJ = 2;
-    public static final double KNN_WEIGHT = 0.55d;
-    public static final int NUM_NEIGHBOURS = 100;
-    public static final int NUM_RANDOM_ATTR = 10;
-    public static final int NUM_RANDOM_SPLITS = 25;
-    public static final String HIDDEN_LAYER = "5,8,9";
-    public static final int IN_LAYER_NEURONS_NUM = 12;
-    public static final int OUT_LAYER_NEURONS_NUM = 7;
+    private static final double KNN_WEIGHT = 0.55d;
+    private static final int NUM_NEIGHBOURS = 100;
+    private static final int NUM_RANDOM_ATTR = 10;
+    private static final int NUM_RANDOM_SPLITS = 25;
+    private static final String HIDDEN_LAYER = "5,8,9";
+    private static final int IN_LAYER_NEURONS_NUM = 12;
+    private static final int OUT_LAYER_NEURONS_NUM = 7;
+    private static final int MAX_DEPTH = 10;
+    private static final int NUM_ITERATIONS = 1000;
+    private static final int NUM_THREADS = 2;
+    private static final int NUM_RANDOM_SPLITS1 = 35;
 
     /**
      * Generates the test data set.
@@ -315,5 +322,57 @@ public class TestHelperUtils {
         neuralNetwork.network().setHiddenLayer(HIDDEN_LAYER);
         neuralNetwork.network().setActivationFunction(abstractFunction);
         return neuralNetwork;
+    }
+
+    /**
+     * Creates random forests classifier.
+     *
+     * @param decisionTreeType - decision tree type
+     * @return random forests classifier
+     */
+    public static RandomForests createRandomForests(DecisionTreeType decisionTreeType) {
+        RandomForests randomForests = new RandomForests();
+        randomForests.setSeed(SEED);
+        randomForests.setNumThreads(NUM_THREADS);
+        randomForests.setIterationsNum(NUM_ITERATIONS);
+        randomForests.setDecisionTreeType(decisionTreeType);
+        randomForests.setMaxDepth(MAX_DEPTH);
+        randomForests.setMinObj(NUM_OBJ);
+        randomForests.setNumRandomAttr(NUM_RANDOM_ATTR);
+        return randomForests;
+    }
+
+    /**
+     * Creates extra trees classifier.
+     *
+     * @param decisionTreeType - decision tree type
+     * @return extra trees classifier
+     */
+    public static ExtraTreesClassifier createExtraTreesClassifier(DecisionTreeType decisionTreeType) {
+        ExtraTreesClassifier treesClassifier = new ExtraTreesClassifier();
+        treesClassifier.setSeed(SEED);
+        treesClassifier.setNumThreads(NUM_THREADS);
+        treesClassifier.setIterationsNum(NUM_ITERATIONS);
+        treesClassifier.setDecisionTreeType(decisionTreeType);
+        treesClassifier.setMaxDepth(MAX_DEPTH);
+        treesClassifier.setMinObj(NUM_OBJ);
+        treesClassifier.setNumRandomAttr(NUM_RANDOM_ATTR);
+        treesClassifier.setUseBootstrapSamples(true);
+        treesClassifier.setNumRandomSplits(NUM_RANDOM_SPLITS1);
+        return treesClassifier;
+    }
+
+    /**
+     * Creates random networks object.
+     *
+     * @return random networks object
+     */
+    public static RandomNetworks createRandomNetworks() {
+        RandomNetworks randomNetworks = new RandomNetworks();
+        randomNetworks.setSeed(SEED);
+        randomNetworks.setNumThreads(NUM_THREADS);
+        randomNetworks.setUseBootstrapSamples(true);
+        randomNetworks.setIterationsNum(NUM_ITERATIONS);
+        return randomNetworks;
     }
 }

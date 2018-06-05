@@ -25,6 +25,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 public class NeuralNetworkOptionsMapperTest {
 
+    private static final double COEFFICIENT = 2.0d;
+
     @Inject
     private NeuralNetworkOptionsMapper neuralNetworkOptionsMapper;
     @Inject
@@ -41,7 +43,7 @@ public class NeuralNetworkOptionsMapperTest {
                     neuralNetworkOptions).network().getActivationFunction()).isInstanceOf(
                     activationFunctionType.handle(activationFunctionBuilder).getClass());
         }
-        neuralNetworkOptions.getActivationFunctionOptions().setCoefficient(2.0D);
+        neuralNetworkOptions.getActivationFunctionOptions().setCoefficient(COEFFICIENT);
         NeuralNetwork neuralNetwork = neuralNetworkOptionsMapper.map(neuralNetworkOptions);
         assertThat(neuralNetwork.network().getActivationFunction()).isInstanceOf(AbstractFunction.class);
         AbstractFunction activationFunction = (AbstractFunction) neuralNetwork.network().getActivationFunction();
