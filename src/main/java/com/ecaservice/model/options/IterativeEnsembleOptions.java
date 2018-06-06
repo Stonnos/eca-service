@@ -15,9 +15,10 @@ import lombok.Data;
         include = JsonTypeInfo.As.PROPERTY,
         property = "type")
 @JsonSubTypes( {
-        @JsonSubTypes.Type(value = RandomForestsOptions.class, name = "random_forests"),
-        @JsonSubTypes.Type(value = RandomNetworkOptions.class, name = "random_networks"),
-        @JsonSubTypes.Type(value = AbstractHeterogeneousClassifierOptions.class, name = "abstract_hec")
+        @JsonSubTypes.Type(value = RandomForestsOptions.class, name = ClassifierOptionsType.RANDOM_FORESTS),
+        @JsonSubTypes.Type(value = RandomNetworkOptions.class, name = ClassifierOptionsType.RANDOM_NETWORKS),
+        @JsonSubTypes.Type(value = AbstractHeterogeneousClassifierOptions.class,
+                name = ClassifierOptionsType.ABSTRACT_HEC)
 })
 public abstract class IterativeEnsembleOptions extends ClassifierOptions {
 

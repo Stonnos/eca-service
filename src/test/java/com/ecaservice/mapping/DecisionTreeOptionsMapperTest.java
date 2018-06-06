@@ -1,5 +1,6 @@
 package com.ecaservice.mapping;
 
+import com.ecaservice.TestHelperUtils;
 import com.ecaservice.model.options.DecisionTreeOptions;
 import eca.ensemble.forests.DecisionTreeBuilder;
 import eca.ensemble.forests.DecisionTreeType;
@@ -27,25 +28,19 @@ public class DecisionTreeOptionsMapperTest {
 
     @Test
     public void testMapDecisionTree() {
-        DecisionTreeOptions decisionTreeOptions = new DecisionTreeOptions();
+        DecisionTreeOptions decisionTreeOptions = TestHelperUtils.createDecisionTreeOptions();
         DecisionTreeBuilder decisionTreeBuilder = new DecisionTreeBuilder();
         for (DecisionTreeType decisionTreeType : DecisionTreeType.values()) {
             decisionTreeOptions.setDecisionTreeType(decisionTreeType);
             assertThat(decisionTreeOptionsMapper.map(decisionTreeOptions)).isInstanceOf(
                     decisionTreeType.handle(decisionTreeBuilder).getClass());
         }
-        decisionTreeOptions.setMaxDepth(25);
-        decisionTreeOptions.setMinObj(4);
-        decisionTreeOptions.setNumRandomAttr(1);
-        decisionTreeOptions.setNumRandomSplits(22);
-        decisionTreeOptions.setRandomTree(true);
-        decisionTreeOptions.setUseBinarySplits(true);
-        decisionTreeOptions.setUseRandomSplits(false);
         DecisionTreeClassifier decisionTreeClassifier = decisionTreeOptionsMapper.map(decisionTreeOptions);
         assertThat(decisionTreeClassifier.getMaxDepth()).isEqualTo(decisionTreeOptions.getMaxDepth());
         assertThat(decisionTreeClassifier.getMinObj()).isEqualTo(decisionTreeOptions.getMinObj());
         assertThat(decisionTreeClassifier.getNumRandomAttr()).isEqualTo(decisionTreeOptions.getNumRandomAttr());
         assertThat(decisionTreeClassifier.getNumRandomSplits()).isEqualTo(decisionTreeOptions.getNumRandomSplits());
+        assertThat(decisionTreeClassifier.getSeed()).isEqualTo(decisionTreeOptions.getSeed());
         assertThat(decisionTreeClassifier.getUseBinarySplits()).isTrue();
         assertThat(decisionTreeClassifier.isUseRandomSplits()).isFalse();
         assertThat(decisionTreeClassifier.isRandomTree()).isTrue();

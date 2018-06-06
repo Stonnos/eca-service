@@ -13,13 +13,13 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         include = JsonTypeInfo.As.PROPERTY,
         property = "type")
 @JsonSubTypes( {
-        @JsonSubTypes.Type(value = DecisionTreeOptions.class, name = "decision_tree"),
-        @JsonSubTypes.Type(value = LogisticOptions.class, name = "logistic"),
-        @JsonSubTypes.Type(value = KNearestNeighboursOptions.class, name = "knn"),
-        @JsonSubTypes.Type(value = NeuralNetworkOptions.class, name = "neural_network"),
-        @JsonSubTypes.Type(value = J48Options.class, name = "j48"),
-        @JsonSubTypes.Type(value = StackingOptions.class, name = "stacking"),
-        @JsonSubTypes.Type(value = IterativeEnsembleOptions.class, name = "iterative_ensemble"),
+        @JsonSubTypes.Type(value = DecisionTreeOptions.class, name = ClassifierOptionsType.DECISION_TREE),
+        @JsonSubTypes.Type(value = LogisticOptions.class, name = ClassifierOptionsType.LOGISTIC),
+        @JsonSubTypes.Type(value = KNearestNeighboursOptions.class, name = ClassifierOptionsType.KNN),
+        @JsonSubTypes.Type(value = NeuralNetworkOptions.class, name = ClassifierOptionsType.NEURAL_NETWORK),
+        @JsonSubTypes.Type(value = J48Options.class, name = ClassifierOptionsType.J48),
+        @JsonSubTypes.Type(value = StackingOptions.class, name = ClassifierOptionsType.STACKING),
+        @JsonSubTypes.Type(value = IterativeEnsembleOptions.class, name = ClassifierOptionsType.ITERATIVE_ENSEMBLE),
 })
 public abstract class ClassifierOptions {
 }

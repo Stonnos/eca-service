@@ -16,7 +16,7 @@ import lombok.Data;
         include = JsonTypeInfo.As.PROPERTY,
         property = "type")
 @JsonSubTypes( {
-        @JsonSubTypes.Type(value = ExtraTreesOptions.class, name = "extra_trees"),
+        @JsonSubTypes.Type(value = ExtraTreesOptions.class, name = ClassifierOptionsType.EXTRA_TREES),
 })
 public class RandomForestsOptions extends IterativeEnsembleOptions {
 

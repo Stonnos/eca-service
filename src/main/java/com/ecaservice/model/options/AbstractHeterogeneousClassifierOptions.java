@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * Base options model for heterogeneous ensemble.
+ *
  * @author Roman Batygin
  */
 @Data
@@ -16,8 +17,8 @@ import java.util.List;
         include = JsonTypeInfo.As.PROPERTY,
         property = "type")
 @JsonSubTypes( {
-        @JsonSubTypes.Type(value = AdaBoostOptions.class, name = "ada_boost"),
-        @JsonSubTypes.Type(value = HeterogeneousClassifierOptions.class, name = "heterogeneous_classifier")
+        @JsonSubTypes.Type(value = AdaBoostOptions.class, name = ClassifierOptionsType.ADA_BOOST),
+        @JsonSubTypes.Type(value = HeterogeneousClassifierOptions.class, name = ClassifierOptionsType.HEC)
 })
 public abstract class AbstractHeterogeneousClassifierOptions extends IterativeEnsembleOptions {
 

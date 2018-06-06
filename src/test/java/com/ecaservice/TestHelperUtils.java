@@ -13,12 +13,14 @@ import com.ecaservice.model.experiment.ExperimentRequest;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
+import com.ecaservice.model.options.DecisionTreeOptions;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.core.evaluation.EvaluationService;
 import eca.data.file.resource.FileResource;
 import eca.data.file.xls.XLSLoader;
 import eca.ensemble.RandomNetworks;
+import eca.ensemble.StackingClassifier;
 import eca.ensemble.forests.DecisionTreeBuilder;
 import eca.ensemble.forests.DecisionTreeType;
 import eca.ensemble.forests.ExtraTreesClassifier;
@@ -72,7 +74,6 @@ public class TestHelperUtils {
     private static final int MAX_DEPTH = 10;
     private static final int NUM_ITERATIONS = 1000;
     private static final int NUM_THREADS = 2;
-    private static final int NUM_RANDOM_SPLITS1 = 35;
 
     /**
      * Generates the test data set.
@@ -358,7 +359,7 @@ public class TestHelperUtils {
         treesClassifier.setMinObj(NUM_OBJ);
         treesClassifier.setNumRandomAttr(NUM_RANDOM_ATTR);
         treesClassifier.setUseBootstrapSamples(true);
-        treesClassifier.setNumRandomSplits(NUM_RANDOM_SPLITS1);
+        treesClassifier.setNumRandomSplits(NUM_RANDOM_SPLITS);
         return treesClassifier;
     }
 
@@ -374,5 +375,36 @@ public class TestHelperUtils {
         randomNetworks.setUseBootstrapSamples(true);
         randomNetworks.setIterationsNum(NUM_ITERATIONS);
         return randomNetworks;
+    }
+
+    /**
+     * Creates stacking classifier.
+     *
+     * @return stacking classifier
+     */
+    public static StackingClassifier createStackingClassifier() {
+        StackingClassifier stackingClassifier = new StackingClassifier();
+        stackingClassifier.setSeed(SEED);
+        stackingClassifier.setUseCrossValidation(true);
+        stackingClassifier.setNumFolds(NUM_FOLDS);
+        return stackingClassifier;
+    }
+
+    /**
+     * Creates decision tree options.
+     *
+     * @return decision tree options
+     */
+    public static DecisionTreeOptions createDecisionTreeOptions() {
+        DecisionTreeOptions decisionTreeOptions = new DecisionTreeOptions();
+        decisionTreeOptions.setMaxDepth(MAX_DEPTH);
+        decisionTreeOptions.setMinObj(NUM_OBJ);
+        decisionTreeOptions.setNumRandomAttr(NUM_RANDOM_ATTR);
+        decisionTreeOptions.setNumRandomSplits(NUM_RANDOM_SPLITS);
+        decisionTreeOptions.setRandomTree(true);
+        decisionTreeOptions.setUseBinarySplits(true);
+        decisionTreeOptions.setUseRandomSplits(false);
+        decisionTreeOptions.setSeed(SEED);
+        return decisionTreeOptions;
     }
 }
