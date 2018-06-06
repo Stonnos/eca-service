@@ -11,6 +11,7 @@ import com.ecaservice.util.Utils;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 import weka.classifiers.AbstractClassifier;
@@ -84,26 +85,9 @@ public class EvaluationService {
                 public void crossValidateModel() throws Exception {
                     String numFolds = evaluationOptionsMap.get(EvaluationOption.NUM_FOLDS);
                     String numTests = evaluationOptionsMap.get(EvaluationOption.NUM_TESTS);
-                    log.trace("evaluateModel: numFolds = {}, numTests = {}", numFolds, numTests);
-
-                    int folds;
-                    if (numFolds == null) {
-                        log.warn("Folds number is not defined. Default folds number = {} has been used.",
-                                config.getNumFolds());
-                        folds = config.getNumFolds();
-                    } else {
-                        folds = Integer.valueOf(numFolds);
-                    }
-
-                    int tests;
-                    if (numTests == null) {
-                        log.warn("Tests number is not defined. Default tests number = {} has been used.",
-                                config.getNumTests());
-                        tests = config.getNumTests();
-                    } else {
-                        tests = Integer.valueOf(numTests);
-                    }
-
+                    int folds = NumberUtils.toInt(numFolds, config.getNumFolds());
+                    int tests = NumberUtils.toInt(numTests, config.getNumTests());
+                    log.trace("evaluateModel: numFolds = {}, numTests = {}", folds, tests);
                     stopWatch.start(String.format("%s model evaluation", classifierName));
                     evaluation.kCrossValidateModel(AbstractClassifier.makeCopy(classifier), data, folds, tests,
                             new Random(config.getSeed()));
