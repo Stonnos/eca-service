@@ -19,8 +19,9 @@ public class NeuralNetworkInputDataHandler extends ClassifierInputDataHandler<Ne
 
     @Override
     protected void internalHandle(Instances data, NeuralNetwork classifier) {
-        classifier.network().setInLayerNeuronsNum(data.numAttributes() - 1);
-        classifier.network().setOutLayerNeuronsNum(data.numClasses());
-        classifier.network().setHiddenLayer(String.valueOf(NeuralNetworkUtil.getMinNumNeuronsInHiddenLayer(data)));
+        classifier.getMultilayerPerceptron().setNumInNeurons(data.numAttributes() - 1);
+        classifier.getMultilayerPerceptron().setNumOutNeurons(data.numClasses());
+        classifier.getMultilayerPerceptron().setHiddenLayer(
+                String.valueOf(NeuralNetworkUtil.getMinNumNeuronsInHiddenLayer(data)));
     }
 }

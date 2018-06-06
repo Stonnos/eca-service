@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
 
@@ -43,8 +42,8 @@ public class NeuralNetworkInputDataHandlerTest {
         when(data.numClasses()).thenReturn(DEFAULT_NUM_CLASSES);
         when(data.numInstances()).thenReturn(DEFAULT_NUM_INSTANCES);
         neuralNetworkInputDataHandler.handle(data, neuralNetwork);
-        assertThat(neuralNetwork.network().inLayerNeuronsNum()).isEqualTo(DEFAULT_NUM_ATTRIBUTES - 1);
-        assertThat(neuralNetwork.network().outLayerNeuronsNum()).isEqualTo(DEFAULT_NUM_CLASSES);
-        assertThat(neuralNetwork.network().getHiddenLayer()).isNotNull();
+        assertThat(neuralNetwork.getMultilayerPerceptron().getNumInNeurons()).isEqualTo(DEFAULT_NUM_ATTRIBUTES - 1);
+        assertThat(neuralNetwork.getMultilayerPerceptron().getNumOutNeurons()).isEqualTo(DEFAULT_NUM_CLASSES);
+        assertThat(neuralNetwork.getMultilayerPerceptron().getHiddenLayer()).isNotNull();
     }
 }

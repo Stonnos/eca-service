@@ -32,19 +32,24 @@ public class NeuralNetworkMapperTest {
         LogisticFunction logisticFunction = new LogisticFunction(COEFFICIENT);
         NeuralNetwork neuralNetwork = TestHelperUtils.createNeuralNetwork(logisticFunction);
         NeuralNetworkOptions options = neuralNetworkMapper.map(neuralNetwork);
-        Assertions.assertThat(options.getNumInNeurons()).isEqualTo(neuralNetwork.network().inLayerNeuronsNum());
-        Assertions.assertThat(options.getNumOutNeurons()).isEqualTo(neuralNetwork.network().outLayerNeuronsNum());
-        Assertions.assertThat(options.getHiddenLayer()).isEqualTo(neuralNetwork.network().getHiddenLayer());
+        Assertions.assertThat(options.getNumInNeurons()).isEqualTo(
+                neuralNetwork.getMultilayerPerceptron().getNumInNeurons());
+        Assertions.assertThat(options.getNumOutNeurons()).isEqualTo(
+                neuralNetwork.getMultilayerPerceptron().getNumOutNeurons());
+        Assertions.assertThat(options.getHiddenLayer()).isEqualTo(
+                neuralNetwork.getMultilayerPerceptron().getHiddenLayer());
         Assertions.assertThat(options.getSeed()).isEqualTo(neuralNetwork.getSeed());
-        Assertions.assertThat(options.getMinError()).isEqualTo(neuralNetwork.network().getMinError());
-        Assertions.assertThat(options.getNumIterations()).isEqualTo(neuralNetwork.network().getMaxIterationsNum());
+        Assertions.assertThat(options.getMinError()).isEqualTo(neuralNetwork.getMultilayerPerceptron().getMinError());
+        Assertions.assertThat(options.getNumIterations()).isEqualTo(
+                neuralNetwork.getMultilayerPerceptron().getNumIterations());
         Assertions.assertThat(options.getActivationFunctionOptions()).isNotNull();
         Assertions.assertThat(options.getActivationFunctionOptions().getActivationFunctionType()).isEqualTo(
-                neuralNetwork.network().getActivationFunction().getActivationFunctionType());
+                neuralNetwork.getMultilayerPerceptron().getActivationFunction().getActivationFunctionType());
         Assertions.assertThat(options.getActivationFunctionOptions().getCoefficient()).isEqualTo(
                 logisticFunction.getCoefficient());
         Assertions.assertThat(options.getBackPropagationOptions()).isNotNull();
-        BackPropagation backPropagation = (BackPropagation) neuralNetwork.network().getLearningAlgorithm();
+        BackPropagation backPropagation =
+                (BackPropagation) neuralNetwork.getMultilayerPerceptron().getLearningAlgorithm();
         Assertions.assertThat(options.getBackPropagationOptions().getLearningRate()).isEqualTo(
                 backPropagation.getLearningRate());
         Assertions.assertThat(options.getBackPropagationOptions().getMomentum()).isEqualTo(

@@ -9,7 +9,9 @@ import eca.neural.functions.AbstractFunction;
 import eca.neural.functions.ActivationFunction;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
 
 /**
  * Implements mapping Neural network classifier to its options model.
@@ -23,10 +25,25 @@ public abstract class NeuralNetworkMapper extends AbstractClassifierMapper<Neura
         super(NeuralNetwork.class);
     }
 
+    /**
+     * Maps neural network to its options model.
+     *
+     * @param neuralNetwork - neural network
+     * @return neural network options
+     */
+    @Mappings( {
+            @Mapping(source = "multilayerPerceptron.numInNeurons", target = "numInNeurons"),
+            @Mapping(source = "multilayerPerceptron.numOutNeurons", target = "numOutNeurons"),
+            @Mapping(source = "multilayerPerceptron.minError", target = "minError"),
+            @Mapping(source = "multilayerPerceptron.numIterations", target = "numIterations"),
+            @Mapping(source = "multilayerPerceptron.hiddenLayer", target = "hiddenLayer"),
+    })
+    public abstract NeuralNetworkOptions map(NeuralNetwork neuralNetwork);
+
     @AfterMapping
     protected void mapActivationFunction(NeuralNetwork neuralNetwork, @MappingTarget NeuralNetworkOptions options) {
         ActivationFunctionOptions activationFunctionOptions = new ActivationFunctionOptions();
-        ActivationFunction activationFunction = neuralNetwork.network().getActivationFunction();
+        ActivationFunction activationFunction = neuralNetwork.getMultilayerPerceptron().getActivationFunction();
         activationFunctionOptions.setActivationFunctionType(activationFunction.getActivationFunctionType());
         if (activationFunction instanceof AbstractFunction) {
             activationFunctionOptions.setCoefficient(((AbstractFunction) activationFunction).getCoefficient());
@@ -35,14 +52,10 @@ public abstract class NeuralNetworkMapper extends AbstractClassifierMapper<Neura
     }
 
     @AfterMapping
-    protected void postMapping(NeuralNetwork neuralNetwork, @MappingTarget NeuralNetworkOptions options) {
-        options.setNumInNeurons(neuralNetwork.network().inLayerNeuronsNum());
-        options.setNumOutNeurons(neuralNetwork.network().outLayerNeuronsNum());
-        options.setNumIterations(neuralNetwork.network().getMaxIterationsNum());
-        options.setMinError(neuralNetwork.network().getMinError());
-        options.setHiddenLayer(neuralNetwork.network().getHiddenLayer());
-        if (neuralNetwork.network().getLearningAlgorithm() instanceof BackPropagation) {
-            BackPropagation backPropagation = (BackPropagation) neuralNetwork.network().getLearningAlgorithm();
+    protected void mapLearningAlgorithm(NeuralNetwork neuralNetwork, @MappingTarget NeuralNetworkOptions options) {
+        if (neuralNetwork.getMultilayerPerceptron().getLearningAlgorithm() instanceof BackPropagation) {
+            BackPropagation backPropagation =
+                    (BackPropagation) neuralNetwork.getMultilayerPerceptron().getLearningAlgorithm();
             BackPropagationOptions backPropagationOptions = new BackPropagationOptions();
             backPropagationOptions.setLearningRate(backPropagation.getLearningRate());
             backPropagationOptions.setMomentum(backPropagation.getMomentum());

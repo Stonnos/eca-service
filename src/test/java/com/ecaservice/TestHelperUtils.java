@@ -13,7 +13,9 @@ import com.ecaservice.model.experiment.ExperimentRequest;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
+import com.ecaservice.model.options.BackPropagationOptions;
 import com.ecaservice.model.options.DecisionTreeOptions;
+import com.ecaservice.model.options.NeuralNetworkOptions;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.core.evaluation.EvaluationService;
@@ -74,6 +76,11 @@ public class TestHelperUtils {
     private static final int MAX_DEPTH = 10;
     private static final int NUM_ITERATIONS = 1000;
     private static final int NUM_THREADS = 2;
+    public static final double MIN_ERROR = 0.00001d;
+    public static final int NUM_IN_NEURONS = 10;
+    public static final int NUM_OUT_NEURONS = 12;
+    public static final double LEARNING_RATE = 0.01d;
+    public static final double MOMENTUM = 0.23d;
 
     /**
      * Generates the test data set.
@@ -318,10 +325,10 @@ public class TestHelperUtils {
     public static NeuralNetwork createNeuralNetwork(AbstractFunction abstractFunction) {
         NeuralNetwork neuralNetwork = new NeuralNetwork();
         neuralNetwork.setSeed(SEED);
-        neuralNetwork.network().setInLayerNeuronsNum(IN_LAYER_NEURONS_NUM);
-        neuralNetwork.network().setOutLayerNeuronsNum(OUT_LAYER_NEURONS_NUM);
-        neuralNetwork.network().setHiddenLayer(HIDDEN_LAYER);
-        neuralNetwork.network().setActivationFunction(abstractFunction);
+        neuralNetwork.getMultilayerPerceptron().setNumInNeurons(IN_LAYER_NEURONS_NUM);
+        neuralNetwork.getMultilayerPerceptron().setNumOutNeurons(OUT_LAYER_NEURONS_NUM);
+        neuralNetwork.getMultilayerPerceptron().setHiddenLayer(HIDDEN_LAYER);
+        neuralNetwork.getMultilayerPerceptron().setActivationFunction(abstractFunction);
         return neuralNetwork;
     }
 
@@ -406,5 +413,24 @@ public class TestHelperUtils {
         decisionTreeOptions.setUseRandomSplits(false);
         decisionTreeOptions.setSeed(SEED);
         return decisionTreeOptions;
+    }
+
+    /**
+     * Creates neural network options.
+     *
+     * @return neural network options
+     */
+    public static NeuralNetworkOptions createNeuralNetworkOptions() {
+        NeuralNetworkOptions neuralNetworkOptions = new NeuralNetworkOptions();
+        neuralNetworkOptions.setNumIterations(NUM_ITERATIONS);
+        neuralNetworkOptions.setSeed(SEED);
+        neuralNetworkOptions.setHiddenLayer(HIDDEN_LAYER);
+        neuralNetworkOptions.setMinError(MIN_ERROR);
+        neuralNetworkOptions.setNumInNeurons(NUM_IN_NEURONS);
+        neuralNetworkOptions.setNumOutNeurons(NUM_OUT_NEURONS);
+        neuralNetworkOptions.setBackPropagationOptions(new BackPropagationOptions());
+        neuralNetworkOptions.getBackPropagationOptions().setMomentum(MOMENTUM);
+        neuralNetworkOptions.getBackPropagationOptions().setLearningRate(LEARNING_RATE);
+        return neuralNetworkOptions;
     }
 }

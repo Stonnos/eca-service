@@ -2,10 +2,13 @@ package com.ecaservice.mapping;
 
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.options.ActivationFunctionOptions;
+import com.ecaservice.model.options.BackPropagationOptions;
 import com.ecaservice.model.options.NeuralNetworkOptions;
+import eca.neural.BackPropagation;
 import eca.neural.NeuralNetwork;
 import eca.neural.functions.AbstractFunction;
 import eca.neural.functions.ActivationFunctionBuilder;
+import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -39,7 +42,7 @@ public abstract class NeuralNetworkOptionsMapper extends ClassifierOptionsMapper
             if (activationFunctionOptions.getCoefficient() != null) {
                 activationFunction.setCoefficient(activationFunctionOptions.getCoefficient());
             }
-            neuralNetwork.network().setActivationFunction(activationFunction);
+            neuralNetwork.getMultilayerPerceptron().setActivationFunction(activationFunction);
         }
     }
 
@@ -48,6 +51,42 @@ public abstract class NeuralNetworkOptionsMapper extends ClassifierOptionsMapper
                                         @MappingTarget NeuralNetwork neuralNetwork) {
         if (experimentConfig.getMaximumFractionDigits() != null) {
             neuralNetwork.getDecimalFormat().setMaximumFractionDigits(experimentConfig.getMaximumFractionDigits());
+        }
+    }
+
+    @AfterMapping
+    protected void mapLearningAlgorithm(NeuralNetworkOptions networkOptions,
+                                        @MappingTarget NeuralNetwork neuralNetwork) {
+        BackPropagationOptions backPropagationOptions = networkOptions.getBackPropagationOptions();
+        if (backPropagationOptions != null) {
+            BackPropagation backPropagation = new BackPropagation(neuralNetwork.getMultilayerPerceptron());
+            if (backPropagationOptions.getLearningRate() != null) {
+                backPropagation.setLearningRate(backPropagationOptions.getLearningRate());
+            }
+            if (backPropagationOptions.getMomentum() != null) {
+                backPropagation.setMomentum(backPropagationOptions.getMomentum());
+            }
+            neuralNetwork.getMultilayerPerceptron().setLearningAlgorithm(backPropagation);
+        }
+    }
+
+    @AfterMapping
+    protected void postMapping(NeuralNetworkOptions networkOptions,
+                               @MappingTarget NeuralNetwork neuralNetwork) {
+        if (networkOptions.getNumInNeurons() != null) {
+            neuralNetwork.getMultilayerPerceptron().setNumInNeurons(networkOptions.getNumInNeurons());
+        }
+        if (networkOptions.getNumOutNeurons() != null) {
+            neuralNetwork.getMultilayerPerceptron().setNumOutNeurons(networkOptions.getNumOutNeurons());
+        }
+        if (networkOptions.getMinError() != null) {
+            neuralNetwork.getMultilayerPerceptron().setMinError(networkOptions.getMinError());
+        }
+        if (networkOptions.getNumIterations() != null) {
+            neuralNetwork.getMultilayerPerceptron().setNumIterations(networkOptions.getNumIterations());
+        }
+        if (!StringUtils.isEmpty(networkOptions.getHiddenLayer())) {
+            neuralNetwork.getMultilayerPerceptron().setHiddenLayer(networkOptions.getHiddenLayer());
         }
     }
 
