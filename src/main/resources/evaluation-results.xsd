@@ -38,7 +38,7 @@
         <xsd:sequence>
             <xsd:element name="classifierName" type="xsd:string"/>
             <xsd:element name="classifierDescription" type="xsd:string"/>
-            <xsd:element name="config" type="xsd:string"/>
+            <xsd:element name="options" type="xsd:string"/>
             <xsd:element name="inputOptionsMap" type="evaluation:inputOptionsMap"/>
         </xsd:sequence>
     </xsd:complexType>
@@ -59,12 +59,13 @@
             <xsd:element name="evaluationMethod" type="evaluation:evaluationMethod"/>
             <xsd:element name="numFolds" type="xsd:integer"/>
             <xsd:element name="numTests" type="xsd:integer"/>
+            <xsd:element name="seed" type="xsd:integer"/>
         </xsd:sequence>
     </xsd:complexType>
 
     <xsd:complexType name="instancesReport">
         <xsd:sequence>
-            <xsd:element name="xmlData" type="xsd:string"/>
+            <xsd:element name="xmlInstances" type="xsd:string"/>
             <xsd:element name="relationName" type="xsd:string"/>
             <xsd:element name="numInstances" type="xsd:integer"/>
             <xsd:element name="numAttributes" type="xsd:integer"/>

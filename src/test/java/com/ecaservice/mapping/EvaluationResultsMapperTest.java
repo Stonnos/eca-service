@@ -1,6 +1,7 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.evaluation.ClassificationCostsReport;
 import com.ecaservice.dto.evaluation.ClassifierReport;
 import com.ecaservice.dto.evaluation.ConfusionMatrixReport;
@@ -44,6 +45,8 @@ public class EvaluationResultsMapperTest {
 
     @Inject
     private EvaluationResultsMapper evaluationResultsMapper;
+    @Inject
+    private CrossValidationConfig crossValidationConfig;
 
     private EvaluationResults evaluationResults;
 
@@ -60,7 +63,7 @@ public class EvaluationResultsMapperTest {
         InstancesReport instancesReport = resultsRequest.getInstances();
         Instances instances = evaluationResults.getEvaluation().getData();
         Assertions.assertThat(instancesReport).isNotNull();
-        Assertions.assertThat(instancesReport.getXmlData()).isNotNull();
+        Assertions.assertThat(instancesReport.getXmlInstances()).isNotNull();
         Assertions.assertThat(instancesReport.getRelationName()).isEqualTo(instances.relationName());
         Assertions.assertThat(instancesReport.getClassName()).isEqualTo(instances.classAttribute().name());
         Assertions.assertThat(instancesReport.getNumInstances().intValue()).isEqualTo(instances.numInstances());
@@ -84,6 +87,7 @@ public class EvaluationResultsMapperTest {
         Assertions.assertThat(evaluationMethodReport.getNumFolds().intValue()).isEqualTo(evaluation.numFolds());
         Assertions.assertThat(evaluationMethodReport.getNumTests().intValue()).isEqualTo(
                 evaluation.getValidationsNum());
+        Assertions.assertThat(evaluationMethodReport.getSeed().intValue()).isEqualTo(crossValidationConfig.getSeed());
 
         List<ClassificationCostsReport> costsReports = resultsRequest.getClassificationCosts();
         Assertions.assertThat(costsReports).isNotNull();

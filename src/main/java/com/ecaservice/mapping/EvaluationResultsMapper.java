@@ -1,5 +1,6 @@
 package com.ecaservice.mapping;
 
+import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.evaluation.ClassificationCostsReport;
 import com.ecaservice.dto.evaluation.ClassifierReport;
 import com.ecaservice.dto.evaluation.ConfusionMatrixReport;
@@ -55,6 +56,8 @@ public abstract class EvaluationResultsMapper {
 
     @Inject
     private ClassifierOptionsService classifierOptionsService;
+    @Inject
+    private CrossValidationConfig crossValidationConfig;
 
     /**
      * Maps evaluation results to evaluation results request model.
@@ -84,7 +87,7 @@ public abstract class EvaluationResultsMapper {
             try {
                 XMLInstances xmlInstances = new XMLInstances();
                 xmlInstances.setInstances(instances);
-                instancesReport.setXmlData(xmlInstances.toString());
+                instancesReport.setXmlInstances(xmlInstances.toString());
             } catch (Exception ex) {
                 log.error("Can't serialize instances [{}] to xml: {}", instances.relationName(), ex.getMessage());
             }
@@ -110,6 +113,7 @@ public abstract class EvaluationResultsMapper {
             if (evaluation.isKCrossValidationMethod()) {
                 evaluationMethodReport.setNumFolds(BigInteger.valueOf(evaluation.numFolds()));
                 evaluationMethodReport.setNumTests(BigInteger.valueOf(evaluation.getValidationsNum()));
+                evaluationMethodReport.setSeed(BigInteger.valueOf(crossValidationConfig.getSeed()));
             }
             evaluationResultsRequest.setEvaluationMethodReport(evaluationMethodReport);
         }
@@ -227,7 +231,7 @@ public abstract class EvaluationResultsMapper {
     private ClassifierReport buildClassifierReport(AbstractClassifier classifier) {
         ClassifierReport classifierReport = new ClassifierReport();
         classifierReport.setClassifierName(classifier.getClass().getSimpleName());
-        classifierReport.setConfig(getClassifierOptionsAsJsonString(classifier));
+        classifierReport.setOptions(getClassifierOptionsAsJsonString(classifier));
         classifierReport.setInputOptionsMap(populateInputOptionsMap(classifier));
         return classifierReport;
     }
@@ -235,7 +239,7 @@ public abstract class EvaluationResultsMapper {
     private EnsembleClassifierReport buildEnsembleClassifierReport(AbstractClassifier classifier) {
         EnsembleClassifierReport classifierReport = new EnsembleClassifierReport();
         classifierReport.setClassifierName(classifier.getClass().getSimpleName());
-        classifierReport.setConfig(getClassifierOptionsAsJsonString(classifier));
+        classifierReport.setOptions(getClassifierOptionsAsJsonString(classifier));
         classifierReport.setInputOptionsMap(populateInputOptionsMap(classifier));
         populateIndividualClassifiers(classifierReport.getIndividualClassifiers(), classifier);
         return classifierReport;
