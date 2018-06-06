@@ -1,13 +1,12 @@
 package com.ecaservice.service;
 
 import com.ecaservice.mapping.AbstractClassifierMapper;
+import com.ecaservice.model.options.AbstractHeterogeneousClassifierOptions;
 import com.ecaservice.model.options.ClassifierOptions;
-import com.ecaservice.model.options.HeterogeneousClassifierOptions;
 import com.ecaservice.model.options.StackingOptions;
 import eca.ensemble.AbstractHeterogeneousClassifier;
 import eca.ensemble.ClassifiersSet;
 import eca.ensemble.EnsembleUtils;
-import eca.ensemble.HeterogeneousClassifier;
 import eca.ensemble.StackingClassifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -50,9 +49,10 @@ public class ClassifierOptionsService {
                 ClassifierOptions classifierOptions = classifierMapper.map(classifier);
                 if (EnsembleUtils.isHeterogeneousEnsembleClassifier(classifier)) {
                     if (classifier instanceof AbstractHeterogeneousClassifier) {
-                        HeterogeneousClassifier heterogeneousClassifier = (HeterogeneousClassifier) classifier;
-                        HeterogeneousClassifierOptions heterogeneousClassifierOptions =
-                                (HeterogeneousClassifierOptions) classifierOptions;
+                        AbstractHeterogeneousClassifier heterogeneousClassifier =
+                                (AbstractHeterogeneousClassifier) classifier;
+                        AbstractHeterogeneousClassifierOptions heterogeneousClassifierOptions =
+                                (AbstractHeterogeneousClassifierOptions) classifierOptions;
                         heterogeneousClassifierOptions.setClassifierOptions(
                                 convertClassifiersSet(heterogeneousClassifier.getClassifiersSet()));
                     } else if (classifier instanceof StackingClassifier) {
@@ -67,7 +67,7 @@ public class ClassifierOptionsService {
                 return classifierOptions;
             }
         }
-        throw new IllegalArgumentException(
+        throw new UnsupportedOperationException(
                 String.format("Can not convert '%s' classifier!", classifier.getClass().getSimpleName()));
     }
 
