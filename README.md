@@ -1,4 +1,4 @@
-ECA service v2.0
+ECA service v2.1
 ========================================
 
 Описание
@@ -16,7 +16,7 @@ ECA service v2.0
 ----------------------------------------
 * jdk 1.8
 * maven => 3.3.9
-* eca-core 5.2.1
+* eca-core 5.2.2
 * DB для хранения информации.
 * Контейнер сервлетов (например Tomcat 7)
 
@@ -26,37 +26,37 @@ ECA service v2.0
 1) spring.datasource - настройки БД для хранения информации
 2) cross-validation — настройки параметров для метода k * V блочной кросс - проверки
    на тестовой выборке:
-   cross-validation.numFolds - число блоков
-   cross-validation.numTests - число тестов
+   * cross-validation.numFolds - число блоков
+   * cross-validation.numTests - число тестов
 3) experiment - настройки параметров модуля Data Miner. Ниже приведено описание
    основных настроек:
-   experiment.resultSize - число наилучших конфигураций классификаторов
-   experiment.numIterations - число итераций эксперимента
-   experiment.storagePath - путь к папке на файловой системе для хранения файлов с историей экспериментов
-   experiment.individualClassifiersStoragePath - путь к папке в ресурсах для хранения json - конфигураций классификаторов,
+   * experiment.resultSize - число наилучших конфигураций классификаторов
+   * experiment.numIterations - число итераций эксперимента
+   * experiment.storagePath - путь к папке на файловой системе для хранения файлов с историей экспериментов
+   * experiment.individualClassifiersStoragePath - путь к папке в ресурсах для хранения json - конфигураций классификаторов,
    которые впоследствии будут использоваться при построении эксперимента
-   experiment.downloadUrl - url ссылки на скачивание файла с результатами эксперимента
-   experiment.maximumFractionDigits - число десятичных знаков после запятой
-   experiment.timeout - время таймаута эксперимента в часах.
-   experiment.pageSize - размер страницы для постраничной обработки экспериментов.
-   experiment.resultSizeToSend - число лучших моделей классификаторов в одном эксперименте, результаты которых впоследствии
+   * experiment.downloadUrl - url ссылки на скачивание файла с результатами эксперимента
+   * experiment.maximumFractionDigits - число десятичных знаков после запятой
+   * experiment.timeout - время таймаута эксперимента в часах.
+   * experiment.pageSize - размер страницы для постраничной обработки экспериментов.
+   * experiment.resultSizeToSend - число лучших моделей классификаторов в одном эксперименте, результаты которых впоследствии
    будут отправлены в сервис evaluation-results-service
-   experiment.delay - интервал между запусками scheduler для обработки экспериметов
-   experiment.data.storagePath - путь к папке на файловой системе для хранения файлов с исходныи данными (обучающая выборка)
-   experiment.ensemble.numIterations - число итераций для ансамблевых алгоритмов
-   experiment.ensemble.numBestClassifiers - число наилучших по точности базовых классификаторов, которые впоследствии
+   * experiment.delay - интервал между запусками scheduler для обработки экспериметов
+   * experiment.data.storagePath - путь к папке на файловой системе для хранения файлов с исходныи данными (обучающая выборка)
+   * experiment.ensemble.numIterations - число итераций для ансамблевых алгоритмов
+   * experiment.ensemble.numBestClassifiers - число наилучших по точности базовых классификаторов, которые впоследствии
    будут использоваться при построении ансамбля
-   experiment.ensemble.multiThreadModeEnabled - многопоточный режим для ансамблевых алгоритмов (вкл./выкл.)
-   experiment.ensemble.numThreads - число используемых потоков
-   experiment.ensemble.numFoldsForStacking - число блоков V - блочной кросс - проверки для алгоритма Stacking
-   experiment.mail.from - email отправителя
-   experiment.mail.subject - тема письма
-   experiment.mail.maxFailedAttemptsToSent - максимальной число попыток для отправки письма
+   * experiment.ensemble.multiThreadModeEnabled - многопоточный режим для ансамблевых алгоритмов (вкл./выкл.)
+   * experiment.ensemble.numThreads - число используемых потоков
+   * experiment.ensemble.numFoldsForStacking - число блоков V - блочной кросс - проверки для алгоритма Stacking
+   * experiment.mail.from - email отправителя
+   * experiment.mail.subject - тема письма
+   * experiment.mail.maxFailedAttemptsToSent - максимальной число попыток для отправки письма
 4) spring.mail - настройки smtp сервера для отправки результатов экспериментов по email
 5) evaluationResultsServiceConfig - настройки интеграции с сервисом evaluation-results-service
-   evaluationResultsServiceConfig.url - url конечной точки сервиса
-   evaluationResultsServiceConfig.enabled - выключатель для отправки результатов классификации (вкл./выкл.)
-   evaluationResultsServiceConfig.threadPoolSize - максимальный размер пула потоков для асинхронной отправки
+   * evaluationResultsServiceConfig.url - url конечной точки сервиса
+   * evaluationResultsServiceConfig.enabled - выключатель для отправки результатов классификации (вкл./выкл.)
+   * evaluationResultsServiceConfig.threadPoolSize - максимальный размер пула потоков для асинхронной отправки
    результатов классификации
 
 Инструкция по развертыванию
@@ -96,7 +96,7 @@ ECA service v2.0
             исходныи данными (обучающая выборка)
         * mail - настройки smtp - сервера для отправки результатов эксперимента по email
     
-2. Развернуть target/eca-service-2.0.war на одном из контейнеров сервлетов (например, Tomcat) с контекстом /eca-service.
+2. Развернуть target/eca-service-2.1.war на одном из контейнеров сервлетов (например, Tomcat) с контекстом /eca-service.
          
 3. Страница с документацией swagger находится по адресу http://[host]:[port]/eca-service/swagger-ui.html, где host и port
 соответственно адрес машины и порт на котором развернуто приложение.

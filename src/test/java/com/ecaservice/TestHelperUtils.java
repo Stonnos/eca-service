@@ -15,6 +15,8 @@ import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.model.options.BackPropagationOptions;
 import com.ecaservice.model.options.DecisionTreeOptions;
+import com.ecaservice.model.options.J48Options;
+import com.ecaservice.model.options.KNearestNeighboursOptions;
 import com.ecaservice.model.options.NeuralNetworkOptions;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
@@ -76,11 +78,11 @@ public class TestHelperUtils {
     private static final int MAX_DEPTH = 10;
     private static final int NUM_ITERATIONS = 1000;
     private static final int NUM_THREADS = 2;
-    public static final double MIN_ERROR = 0.00001d;
-    public static final int NUM_IN_NEURONS = 10;
-    public static final int NUM_OUT_NEURONS = 12;
-    public static final double LEARNING_RATE = 0.01d;
-    public static final double MOMENTUM = 0.23d;
+    private static final double MIN_ERROR = 0.00001d;
+    private static final int NUM_IN_NEURONS = 10;
+    private static final int NUM_OUT_NEURONS = 12;
+    private static final double LEARNING_RATE = 0.01d;
+    private static final double MOMENTUM = 0.23d;
 
     /**
      * Generates the test data set.
@@ -432,5 +434,31 @@ public class TestHelperUtils {
         neuralNetworkOptions.getBackPropagationOptions().setMomentum(MOMENTUM);
         neuralNetworkOptions.getBackPropagationOptions().setLearningRate(LEARNING_RATE);
         return neuralNetworkOptions;
+    }
+
+    /**
+     * Creates J48 options.
+     *
+     * @return J48 options
+     */
+    public static J48Options createJ48Options() {
+        J48Options j48Options = new J48Options();
+        j48Options.setNumFolds(NUM_FOLDS);
+        j48Options.setMinNumObj(NUM_OBJ);
+        j48Options.setBinarySplits(true);
+        j48Options.setUnpruned(false);
+        return j48Options;
+    }
+
+    /**
+     * Creates KNN options.
+     *
+     * @return KNN options
+     */
+    public static KNearestNeighboursOptions createKNearestNeighboursOptions() {
+        KNearestNeighboursOptions options = new KNearestNeighboursOptions();
+        options.setNumNeighbours(NUM_NEIGHBOURS);
+        options.setWeight(KNN_WEIGHT);
+        return options;
     }
 }

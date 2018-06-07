@@ -1,5 +1,6 @@
 package com.ecaservice.mapping;
 
+import com.ecaservice.TestHelperUtils;
 import com.ecaservice.model.options.J48Options;
 import eca.trees.J48;
 import org.junit.Test;
@@ -25,11 +26,7 @@ public class J48OptionsMapperTest {
 
     @Test
     public void testMapToJ48() {
-        J48Options j48Options = new J48Options();
-        j48Options.setBinarySplits(true);
-        j48Options.setMinNumObj(10);
-        j48Options.setUnpruned(false);
-        j48Options.setNumFolds(5);
+        J48Options j48Options = TestHelperUtils.createJ48Options();
         J48 j48 = j48OptionsMapper.map(j48Options);
         assertThat(j48.getMinNumObj()).isEqualTo(j48Options.getMinNumObj());
         assertThat(j48.getBinarySplits()).isTrue();
