@@ -2,6 +2,7 @@ package com.ecaservice.model.options;
 
 import eca.ensemble.forests.DecisionTreeType;
 import lombok.Data;
+import java.util.Map;
 
 /**
  * Decision tree input options model.
@@ -55,4 +56,9 @@ public class DecisionTreeOptions extends ClassifierOptions {
      * Seed value for random generator
      */
     private Integer seed;
+
+    /**
+     * Additional options map
+     */
+    private Map<String, String> additionalOptions;
 }

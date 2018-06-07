@@ -1,8 +1,16 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.model.options.DecisionTreeOptions;
+import com.ecaservice.model.options.OptionsVariables;
+import eca.trees.CHAID;
 import eca.trees.DecisionTreeClassifier;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.springframework.util.CollectionUtils;
+
+import java.util.Collections;
 
 /**
  * Implements decision tree input options mapping to decision tree model.
@@ -15,5 +23,15 @@ public abstract class DecisionTreeOptionsMapper
 
     protected DecisionTreeOptionsMapper() {
         super(DecisionTreeOptions.class);
+    }
+
+    @AfterMapping
+    protected void mapChaid(DecisionTreeOptions options, @MappingTarget DecisionTreeClassifier classifier) {
+        if (classifier instanceof CHAID && !CollectionUtils.isEmpty(options.getAdditionalOptions())) {
+            String alphaStr = options.getAdditionalOptions().get(OptionsVariables.ALPHA);
+            if (NumberUtils.isCreatable(alphaStr)) {
+                ((CHAID) classifier).setAlpha(Double.valueOf(alphaStr));
+            }
+        }
     }
 }

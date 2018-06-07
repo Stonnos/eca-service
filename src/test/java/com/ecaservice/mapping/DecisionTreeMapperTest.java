@@ -2,7 +2,9 @@ package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.model.options.DecisionTreeOptions;
+import com.ecaservice.model.options.OptionsVariables;
 import eca.ensemble.forests.DecisionTreeType;
+import eca.trees.CHAID;
 import eca.trees.DecisionTreeClassifier;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -37,5 +39,15 @@ public class DecisionTreeMapperTest {
         Assertions.assertThat(options.getUseBinarySplits()).isEqualTo(treeClassifier.getUseBinarySplits());
         Assertions.assertThat(options.getUseRandomSplits()).isEqualTo(treeClassifier.isUseRandomSplits());
         Assertions.assertThat(options.getDecisionTreeType()).isEqualTo(DecisionTreeType.C45);
+    }
+
+    @Test
+    public void testMapChaid() {
+        DecisionTreeClassifier treeClassifier = TestHelperUtils.createDecisionTreeClassifier(DecisionTreeType.CHAID);
+        DecisionTreeOptions options = decisionTreeMapper.map(treeClassifier);
+        Assertions.assertThat(options.getDecisionTreeType()).isEqualTo(DecisionTreeType.CHAID);
+        Assertions.assertThat(options.getAdditionalOptions()).isNotEmpty();
+        Assertions.assertThat(Double.valueOf(options.getAdditionalOptions().get(OptionsVariables.ALPHA))).isEqualTo(
+                ((CHAID) treeClassifier).getAlpha());
     }
 }
