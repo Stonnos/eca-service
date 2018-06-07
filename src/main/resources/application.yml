@@ -50,7 +50,7 @@ experiment:
   individualClassifiersStoragePath: classifiers
   downloadUrl: http://localhost:8085/eca-service/experiment/download/%s
   maximumFractionDigits: 4
-  numberOfDaysForStorage: 30
+  numberOfDaysForStorage: 14
   ## Each day at midnight
   removeExperimentCron: 0 0 0 * * *
   ## Experiment timeout in hours
