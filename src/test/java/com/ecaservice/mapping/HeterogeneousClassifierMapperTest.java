@@ -1,9 +1,8 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.model.options.AdaBoostOptions;
 import com.ecaservice.model.options.HeterogeneousClassifierOptions;
-import eca.ensemble.AdaBoostClassifier;
 import eca.ensemble.HeterogeneousClassifier;
+import eca.ensemble.ModifiedHeterogeneousClassifier;
 import eca.ensemble.sampling.SamplingMethod;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -41,5 +40,13 @@ public class HeterogeneousClassifierMapperTest {
         Assertions.assertThat(options.getUseRandomClassifier()).isEqualTo(
                 heterogeneousClassifier.getUseRandomClassifier());
         Assertions.assertThat(options.getUseWeightedVotes()).isEqualTo(heterogeneousClassifier.getUseWeightedVotes());
+        Assertions.assertThat(options.getUseRandomSubspaces()).isFalse();
+    }
+
+    @Test
+    public void testMapModifiedHec() {
+        HeterogeneousClassifierOptions options =
+                heterogeneousClassifierMapper.map(new ModifiedHeterogeneousClassifier());
+        Assertions.assertThat(options.getUseRandomSubspaces()).isTrue();
     }
 }
