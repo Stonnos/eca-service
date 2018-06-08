@@ -1,7 +1,6 @@
 package com.ecaservice.model.options;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 
 /**
@@ -10,12 +9,8 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "type")
-@JsonSubTypes( {
-        @JsonSubTypes.Type(value = RandomForestsOptions.class, name = ClassifierOptionsType.RANDOM_FORESTS),
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = RandomForestsOptions.class),
         @JsonSubTypes.Type(value = RandomNetworkOptions.class, name = ClassifierOptionsType.RANDOM_NETWORKS),
         @JsonSubTypes.Type(value = AbstractHeterogeneousClassifierOptions.class,
                 name = ClassifierOptionsType.ABSTRACT_HEC)

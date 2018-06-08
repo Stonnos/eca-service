@@ -14,7 +14,6 @@ public class ClassifierOptionsType {
     public static final String J48 = "j48";
     public static final String STACKING = "stacking";
     public static final String ITERATIVE_ENSEMBLE = "iterative_ensemble";
-    public static final String RANDOM_FORESTS = "random_forests";
     public static final String RANDOM_NETWORKS = "random_networks";
     public static final String ABSTRACT_HEC = "abstract_hec";
     public static final String EXTRA_TREES = "extra_trees";

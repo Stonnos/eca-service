@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
         property = "type")
-@JsonSubTypes( {
+@JsonSubTypes({
         @JsonSubTypes.Type(value = DecisionTreeOptions.class, name = ClassifierOptionsType.DECISION_TREE),
         @JsonSubTypes.Type(value = LogisticOptions.class, name = ClassifierOptionsType.LOGISTIC),
         @JsonSubTypes.Type(value = KNearestNeighboursOptions.class, name = ClassifierOptionsType.KNN),

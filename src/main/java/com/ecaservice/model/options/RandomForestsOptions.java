@@ -1,7 +1,6 @@
 package com.ecaservice.model.options;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import eca.ensemble.forests.DecisionTreeType;
 import lombok.Data;
 
@@ -11,11 +10,7 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "type")
-@JsonSubTypes( {
+@JsonSubTypes({
         @JsonSubTypes.Type(value = ExtraTreesOptions.class, name = ClassifierOptionsType.EXTRA_TREES),
 })
 public class RandomForestsOptions extends IterativeEnsembleOptions {
