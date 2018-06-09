@@ -18,6 +18,9 @@
             <xsd:enumeration value="INVALID_REQUEST_ID"/>
             <xsd:enumeration value="DUPLICATE_REQUEST_ID"/>
             <xsd:enumeration value="ERROR"/>
+            <xsd:enumeration value="INVALID_REQUEST_PARAMS"/>
+            <xsd:enumeration value="DATA_NOT_FOUND"/>
+            <xsd:enumeration value="RESULTS_NOT_FOUND"/>
         </xsd:restriction>
     </xsd:simpleType>
 
@@ -137,6 +140,26 @@
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:element name="requestId" type="xsd:string"/>
+                <xsd:element name="status" type="evaluation:responseStatus"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="classifierOptionsRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="instances" type="evaluation:instancesReport"/>
+                <xsd:element name="evaluationMethodReport" type="evaluation:evaluationMethodReport"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="classifierOptionsResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="requestId" type="xsd:string"/>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" name="classifierReports"
+                             type="evaluation:classifierReport"/>
                 <xsd:element name="status" type="evaluation:responseStatus"/>
             </xsd:sequence>
         </xsd:complexType>
