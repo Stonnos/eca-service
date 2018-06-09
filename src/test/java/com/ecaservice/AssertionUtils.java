@@ -1,7 +1,6 @@
 package com.ecaservice;
 
 import org.assertj.core.api.Assertions;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -22,6 +21,6 @@ public class AssertionUtils {
     public static <T> void assertSingletonList(List<T> list) {
         Assertions.assertThat(list).isNotNull();
         Assertions.assertThat(list).isNotEmpty();
-        Assertions.assertThat(list.size()).isEqualTo(1);
+        Assertions.assertThat(list.size()).isOne();
     }
 }
