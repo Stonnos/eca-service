@@ -86,6 +86,7 @@
             <xsd:element name="pctIncorrect" type="xsd:decimal"/>
             <xsd:element name="meanAbsoluteError" type="xsd:decimal"/>
             <xsd:element name="rootMeanSquaredError" type="xsd:decimal"/>
+            <xsd:element name="maxAucValue" type="xsd:decimal"/>
             <xsd:element name="varianceError" type="xsd:decimal"/>
             <xsd:element name="confidenceIntervalLowerBound" type="xsd:decimal"/>
             <xsd:element name="confidenceIntervalUpperBound" type="xsd:decimal"/>

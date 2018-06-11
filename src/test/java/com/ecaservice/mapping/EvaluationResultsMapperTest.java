@@ -137,6 +137,7 @@ public class EvaluationResultsMapperTest {
                 evaluation.meanAbsoluteError());
         Assertions.assertThat(statisticsReport.getRootMeanSquaredError().doubleValue()).isEqualTo(
                 evaluation.rootMeanSquaredError());
+        Assertions.assertThat(statisticsReport.getMaxAucValue().doubleValue()).isEqualTo(evaluation.maxAreaUnderROC());
         Assertions.assertThat(statisticsReport.getVarianceError().doubleValue()).isEqualTo(evaluation.varianceError());
         double[] confidenceInterval = evaluation.errorConfidenceInterval();
         Assertions.assertThat(statisticsReport.getConfidenceIntervalLowerBound().doubleValue()).isEqualTo(

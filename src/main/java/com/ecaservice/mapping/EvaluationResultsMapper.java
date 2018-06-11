@@ -154,6 +154,7 @@ public abstract class EvaluationResultsMapper {
             statisticsReport.setPctIncorrect(BigDecimal.valueOf(evaluation.pctIncorrect()));
             statisticsReport.setMeanAbsoluteError(BigDecimal.valueOf(evaluation.meanAbsoluteError()));
             statisticsReport.setRootMeanSquaredError(BigDecimal.valueOf(evaluation.rootMeanSquaredError()));
+            statisticsReport.setMaxAucValue(BigDecimal.valueOf(evaluation.maxAreaUnderROC()));
             if (evaluation.isKCrossValidationMethod()) {
                 statisticsReport.setVarianceError(BigDecimal.valueOf(evaluation.varianceError()));
                 double[] errorConfidenceInterval = evaluation.errorConfidenceInterval();
