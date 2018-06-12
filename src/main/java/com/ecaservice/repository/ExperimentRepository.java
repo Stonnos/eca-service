@@ -19,18 +19,19 @@ import java.util.Collection;
 public interface ExperimentRepository extends JpaRepository<Experiment, Long> {
 
     /**
-     * Finds experiment by uuid.
+     * Finds experiment by uuid and statuses.
      *
-     * @param uuid uuid
+     * @param uuid               - experiment uuid
+     * @param experimentStatuses - experiment statuses
      * @return experiment entity
      */
-    Experiment findByUuid(String uuid);
+    Experiment findByUuidAndExperimentStatusIn(String uuid, Collection<ExperimentStatus> experimentStatuses);
 
     /**
      * Finds not sent experiments by statuses
      *
-     * @param statuses {@link ExperimentStatus} collection
-     * @param pageable {@link Pageable} object
+     * @param statuses - {@link ExperimentStatus} collection
+     * @param pageable - {@link Pageable} object
      * @return experiments list
      */
     @Query("select exp from Experiment exp where exp.experimentStatus in (:statuses) and exp.sentDate is null order by exp.creationDate")

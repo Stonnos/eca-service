@@ -31,6 +31,7 @@ public abstract class EcaResponseMapper {
      * @return eca response model
      */
     @Mappings( {
+            @Mapping(source = "uuid", target = "requestId"),
             @Mapping(target = "status", ignore = true),
             @Mapping(target = "errorMessage", ignore = true)
     })

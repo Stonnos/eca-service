@@ -19,6 +19,7 @@ import weka.core.Instances;
 import javax.inject.Inject;
 import java.io.File;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -77,6 +78,7 @@ public class ExperimentService {
         Experiment experiment = experimentMapper.map(experimentRequest);
         try {
             experiment.setExperimentStatus(ExperimentStatus.NEW);
+            experiment.setUuid(UUID.randomUUID().toString());
             experiment.setCreationDate(LocalDateTime.now());
             experiment.setFailedAttemptsToSent(0);
             File dataFile = new File(experimentConfig.getData().getStoragePath(),
@@ -130,9 +132,7 @@ public class ExperimentService {
             stopWatch.stop();
 
             experiment.setExperimentAbsolutePath(experimentFile.getAbsolutePath());
-            experiment.setUuid(UUID.randomUUID().toString());
             experiment.setExperimentStatus(ExperimentStatus.FINISHED);
-
             log.info("Experiment {} has been successfully finished!", experiment.getId());
             log.info(stopWatch.prettyPrint());
             return experimentHistory;
@@ -157,7 +157,8 @@ public class ExperimentService {
      * @return experiment file object
      */
     public File findExperimentFileByUuid(String uuid) {
-        Experiment experiment = experimentRepository.findByUuid(uuid);
+        Experiment experiment = experimentRepository.findByUuidAndExperimentStatusIn(uuid,
+                Collections.singletonList(ExperimentStatus.FINISHED));
         if (Optional.ofNullable(experiment).map(Experiment::getExperimentAbsolutePath).isPresent()) {
             return new File(experiment.getExperimentAbsolutePath());
         } else {

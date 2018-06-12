@@ -13,6 +13,12 @@ import lombok.Data;
 public class EcaResponse {
 
     /**
+     * Request unique identifier
+     */
+    @ApiModelProperty(notes = "Request unique identifier", required = true)
+    private String requestId;
+
+    /**
      * Technical status
      */
     @ApiModelProperty(notes = "Technical status", required = true)

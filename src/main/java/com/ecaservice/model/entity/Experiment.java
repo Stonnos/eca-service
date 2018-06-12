@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.persistence.Index;
 import java.time.LocalDateTime;
 
 /**
@@ -21,7 +22,11 @@ import java.time.LocalDateTime;
  * @author Roman Batygin
  */
 @Entity
-@Table(name = "experiment")
+@Table(name = "experiment",
+        indexes = {
+                @Index(name = "idx_uuid", columnList = "uuid"),
+                @Index(name = "idx_experiment_status", columnList = "experiment_status")
+        })
 @Data
 public class Experiment {
 

@@ -5,19 +5,17 @@ import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.EvaluationLog;
-import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.model.evaluation.ClassificationResult;
 import com.ecaservice.model.evaluation.EvaluationRequest;
 import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
-import com.ecaservice.service.EvaluationResultsService;
-import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -34,31 +32,27 @@ public class EvaluationRequestService {
     private final CrossValidationConfig crossValidationConfig;
     private final CalculationExecutorService executorService;
     private final EvaluationService evaluationService;
-    private final EvaluationResultsService evaluationResultsService;
     private final EvaluationLogRepository evaluationLogRepository;
     private final EvaluationLogMapper evaluationLogMapper;
 
     /**
      * Constructor with dependency spring injection.
      *
-     * @param crossValidationConfig    - cross validation config bean
-     * @param executorService          - executor service bean
-     * @param evaluationService        - evaluation service bean
-     * @param evaluationResultsService - evaluation results service bean
-     * @param evaluationLogRepository  - evaluation log repository bean
-     * @param evaluationLogMapper      - evaluation log mapper bean
+     * @param crossValidationConfig   - cross validation config bean
+     * @param executorService         - executor service bean
+     * @param evaluationService       - evaluation service bean
+     * @param evaluationLogRepository - evaluation log repository bean
+     * @param evaluationLogMapper     - evaluation log mapper bean
      */
     @Inject
     public EvaluationRequestService(CrossValidationConfig crossValidationConfig,
                                     CalculationExecutorService executorService,
                                     EvaluationService evaluationService,
-                                    EvaluationResultsService evaluationResultsService,
                                     EvaluationLogRepository evaluationLogRepository,
                                     EvaluationLogMapper evaluationLogMapper) {
         this.crossValidationConfig = crossValidationConfig;
         this.executorService = executorService;
         this.evaluationService = evaluationService;
-        this.evaluationResultsService = evaluationResultsService;
         this.evaluationLogRepository = evaluationLogRepository;
         this.evaluationLogMapper = evaluationLogMapper;
     }
@@ -74,11 +68,13 @@ public class EvaluationRequestService {
 
         EvaluationLog evaluationLog = evaluationLogMapper.map(request);
         evaluationLog.setEvaluationStatus(EvaluationStatus.NEW);
+        evaluationLog.setRequestId(UUID.randomUUID().toString());
         evaluationLog.setCreationDate(LocalDateTime.now());
         evaluationLog.setStartDate(LocalDateTime.now());
         evaluationLogRepository.save(evaluationLog);
 
         EvaluationResponse evaluationResponse = new EvaluationResponse();
+        evaluationResponse.setRequestId(evaluationLog.getRequestId());
         try {
             Callable<ClassificationResult> callable = () ->
                     evaluationService.evaluateModel(request.getInputData(), request.getEvaluationMethod(),
@@ -105,16 +101,7 @@ public class EvaluationRequestService {
             evaluationLog.setEndDate(LocalDateTime.now());
             evaluationLogRepository.save(evaluationLog);
         }
-        sendEvaluationResults(evaluationResponse.getEvaluationResults(), evaluationLog);
         return evaluationResponse;
-    }
-
-    private void sendEvaluationResults(EvaluationResults evaluationResults, EvaluationLog evaluationLog) {
-        if (EvaluationStatus.FINISHED.equals(evaluationLog.getEvaluationStatus())) {
-            EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
-            requestEntity.setEvaluationLog(evaluationLog);
-            evaluationResultsService.saveEvaluationResults(evaluationResults, requestEntity);
-        }
     }
 
     private void handleError(EvaluationLog evaluationLog, EvaluationResponse evaluationResponse, String errorMessage) {

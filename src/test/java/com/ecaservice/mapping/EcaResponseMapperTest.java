@@ -11,6 +11,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -29,9 +31,11 @@ public class EcaResponseMapperTest {
     public void testExperimentToEcaResponseConversionWithSuccessStatus() {
         Experiment experiment = new Experiment();
         experiment.setExperimentStatus(ExperimentStatus.NEW);
+        experiment.setUuid(UUID.randomUUID().toString());
         EcaResponse ecaResponse = ecaResponseMapper.map(experiment);
         assertThat(ecaResponse).isNotNull();
         assertThat(ecaResponse.getStatus()).isEqualTo(TechnicalStatus.SUCCESS);
+        assertThat(ecaResponse.getRequestId()).isNotNull();
     }
 
     @Test

@@ -5,7 +5,23 @@ import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.model.evaluation.EvaluationStatus;
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.Table;
+import javax.persistence.Index;
+import javax.persistence.ElementCollection;
+import javax.persistence.MapKeyColumn;
+import javax.persistence.MapKeyEnumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.CollectionTable;
+import javax.persistence.FetchType;
+import javax.persistence.CascadeType;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -16,12 +32,23 @@ import java.util.Map;
  */
 @Data
 @Entity
-@Table(name = "evaluation_log")
+@Table(name = "evaluation_log",
+        indexes = {
+                @Index(name = "idx_request_id", columnList = "request_id"),
+                @Index(name = "idx_evaluation_status", columnList = "evaluation_status")
+        }
+)
 public class EvaluationLog {
 
     @Id
     @GeneratedValue
     private Long id;
+
+    /**
+     * Request unique identifier
+     */
+    @Column(name = "request_id")
+    private String requestId;
 
     /**
      * Request remote ip address

@@ -89,6 +89,7 @@ public class ExperimentServiceTest {
         AssertionUtils.assertSingletonList(experiments);
         Experiment experiment = experiments.get(0);
         assertThat(experiment.getExperimentStatus()).isEqualTo(ExperimentStatus.NEW);
+        assertThat(experiment.getUuid()).isNotNull();
         assertThat(experiment.getCreationDate()).isNotNull();
         assertThat(experiment.getTrainingDataAbsolutePath()).isNotNull();
     }
@@ -120,8 +121,15 @@ public class ExperimentServiceTest {
     }
 
     @Test
+    public void testFindExperimentFileByUuidWithErrorStatus() {
+        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID, ExperimentStatus.ERROR);
+        experimentRepository.save(experiment);
+        assertThat(experimentService.findExperimentFileByUuid(TestHelperUtils.UUID)).isNull();
+    }
+
+    @Test
     public void testSuccessFindExperimentFileByUuid() {
-        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID);
+        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID, ExperimentStatus.FINISHED);
         experimentRepository.save(experiment);
         File expectedFile = experimentService.findExperimentFileByUuid(TestHelperUtils.UUID);
         File actualFile = new File(experiment.getExperimentAbsolutePath());
@@ -141,13 +149,12 @@ public class ExperimentServiceTest {
         assertThat(experiment.getStartDate()).isNotNull();
         assertThat(experiment.getEndDate()).isNotNull();
         assertThat(experiment.getExperimentAbsolutePath()).isNotNull();
-        assertThat(experiment.getUuid()).isNotNull();
         assertThat(experiment.getExperimentStatus()).isEqualTo(ExperimentStatus.FINISHED);
     }
 
     @Test
     public void testProcessExperimentWithErrorStatus() throws Exception {
-        when(dataService.load(any(File.class))).thenThrow(Exception.class);
+        when(dataService.load(any(File.class))).thenThrow(new Exception());
         experimentService.processExperiment(TestHelperUtils.createExperiment(null));
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.assertSingletonList(experiments);
@@ -181,5 +188,4 @@ public class ExperimentServiceTest {
         assertThat(experiment.getTrainingDataAbsolutePath()).isNull();
         assertThat(experiment.getDeletedDate()).isNotNull();
     }
-
 }
