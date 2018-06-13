@@ -1,6 +1,8 @@
 package com.ecaservice.service;
 
 import com.ecaservice.config.EvaluationResultsServiceConfig;
+import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
+import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.EvaluationResultsResponse;
 import com.ecaservice.exception.EcaServiceException;
@@ -64,5 +66,10 @@ public class EvaluationResultsSender {
                     resultsResponse.getStatus(), serviceConfig.getUrl());
             return resultsResponse;
         }
+    }
+
+    public ClassifierOptionsResponse getClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
+        return (ClassifierOptionsResponse) webServiceTemplate.marshalSendAndReceive(serviceConfig.getUrl(),
+                classifierOptionsRequest);
     }
 }

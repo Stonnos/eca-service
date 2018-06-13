@@ -15,5 +15,10 @@ public enum EvaluationOption {
     /**
      * Number of tests in k * V cross validation method
      */
-    NUM_TESTS
+    NUM_TESTS,
+
+    /**
+     * Seed value for random generator
+     */
+    SEED
 }

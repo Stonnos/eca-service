@@ -83,14 +83,15 @@ public class EvaluationService {
 
                 @Override
                 public void crossValidateModel() throws Exception {
-                    String numFolds = evaluationOptionsMap.get(EvaluationOption.NUM_FOLDS);
-                    String numTests = evaluationOptionsMap.get(EvaluationOption.NUM_TESTS);
-                    int folds = NumberUtils.toInt(numFolds, config.getNumFolds());
-                    int tests = NumberUtils.toInt(numTests, config.getNumTests());
-                    log.trace("evaluateModel: numFolds = {}, numTests = {}", folds, tests);
+                    int folds = NumberUtils.toInt(evaluationOptionsMap.get(EvaluationOption.NUM_FOLDS),
+                            config.getNumFolds());
+                    int tests = NumberUtils.toInt(evaluationOptionsMap.get(EvaluationOption.NUM_TESTS),
+                            config.getNumTests());
+                    int seed = NumberUtils.toInt(evaluationOptionsMap.get(EvaluationOption.SEED), config.getSeed());
+                    log.trace("evaluateModel: numFolds = {}, numTests = {}, seed {}", folds, tests, seed);
                     stopWatch.start(String.format("%s model evaluation", classifierName));
                     evaluation.kCrossValidateModel(AbstractClassifier.makeCopy(classifier), data, folds, tests,
-                            new Random(config.getSeed()));
+                            new Random(seed));
                     stopWatch.stop();
 
                     stopWatch.start(String.format("%s model training", classifierName));

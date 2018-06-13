@@ -9,11 +9,12 @@ import com.ecaservice.dto.evaluation.EvaluationMethod;
 import com.ecaservice.dto.evaluation.EvaluationMethodReport;
 import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.InputOptionsMap;
-import com.ecaservice.dto.evaluation.InstancesReport;
 import com.ecaservice.dto.evaluation.RocCurveReport;
 import com.ecaservice.dto.evaluation.StatisticsReport;
+import com.ecaservice.exception.EcaServiceException;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.service.ClassifierOptionsService;
+import com.ecaservice.util.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
@@ -25,12 +26,8 @@ import eca.roc.ThresholdModel;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Attribute;
-import weka.core.Instances;
-import weka.core.xml.XMLInstances;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -46,8 +43,6 @@ import java.util.Optional;
  */
 @Mapper
 public abstract class EvaluationResultsMapper {
-
-    private static final Logger log = LoggerFactory.getLogger(EvaluationResultsMapper.class);
 
     private static final int CONFIDENCE_INTERVAL_LOWER_INDEX = 0;
     private static final int CONFIDENCE_INTERVAL_UPPER_INDEX = 1;
@@ -77,21 +72,8 @@ public abstract class EvaluationResultsMapper {
     protected void populateInstancesReport(EvaluationResults evaluationResults,
                                            @MappingTarget EvaluationResultsRequest evaluationResultsRequest) {
         if (Optional.ofNullable(evaluationResults.getEvaluation()).map(Evaluation::getData).isPresent()) {
-            Instances instances = evaluationResults.getEvaluation().getData();
-            InstancesReport instancesReport = new InstancesReport();
-            instancesReport.setRelationName(instances.relationName());
-            instancesReport.setNumInstances(BigInteger.valueOf(instances.numInstances()));
-            instancesReport.setNumAttributes(BigInteger.valueOf(instances.numAttributes()));
-            instancesReport.setNumClasses(BigInteger.valueOf(instances.numClasses()));
-            instancesReport.setClassName(instances.classAttribute().name());
-            try {
-                XMLInstances xmlInstances = new XMLInstances();
-                xmlInstances.setInstances(instances);
-                instancesReport.setXmlInstances(xmlInstances.toString());
-            } catch (Exception ex) {
-                log.error("Can't serialize instances [{}] to xml: {}", instances.relationName(), ex.getMessage());
-            }
-            evaluationResultsRequest.setInstances(instancesReport);
+            evaluationResultsRequest.setInstances(
+                    Utils.buildInstancesReport(evaluationResults.getEvaluation().getData()));
         }
     }
 
@@ -284,9 +266,8 @@ public abstract class EvaluationResultsMapper {
         try {
             return objectMapper.writeValueAsString(classifierOptions);
         } catch (IOException ex) {
-            log.error("Can't serialize classifier [{}] options to json: {}", classifier.getClass().getSimpleName(),
-                    ex.getMessage());
+            throw new EcaServiceException(String.format("Can't serialize classifier [%s] options to json: %s",
+                    classifier.getClass().getSimpleName(), ex.getMessage()));
         }
-        return null;
     }
 }

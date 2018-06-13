@@ -1,6 +1,7 @@
 package com.ecaservice.service;
 
 import com.ecaservice.mapping.AbstractClassifierMapper;
+import com.ecaservice.mapping.ClassifierOptionsMapper;
 import com.ecaservice.model.options.AbstractHeterogeneousClassifierOptions;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.model.options.StackingOptions;
@@ -26,15 +27,19 @@ import java.util.List;
 public class ClassifierOptionsService {
 
     private final List<AbstractClassifierMapper> classifierMappers;
+    private final List<ClassifierOptionsMapper> classifierOptionsMappers;
 
     /**
      * Constructor with spring dependency injection.
      *
-     * @param classifierMappers - classifier mappers beans
+     * @param classifierMappers        - classifier mappers beans
+     * @param classifierOptionsMappers - classifier options mappers beans
      */
     @Inject
-    public ClassifierOptionsService(List<AbstractClassifierMapper> classifierMappers) {
+    public ClassifierOptionsService(List<AbstractClassifierMapper> classifierMappers,
+                                    List<ClassifierOptionsMapper> classifierOptionsMappers) {
         this.classifierMappers = classifierMappers;
+        this.classifierOptionsMappers = classifierOptionsMappers;
     }
 
     /**
@@ -71,9 +76,44 @@ public class ClassifierOptionsService {
                 String.format("Can not convert '%s' classifier!", classifier.getClass().getSimpleName()));
     }
 
+    /**
+     * Converts classifier options model to classifier model.
+     *
+     * @param classifierOptions - classifier options object
+     * @return classifier model
+     */
+    public AbstractClassifier convert(ClassifierOptions classifierOptions) {
+        for (ClassifierOptionsMapper classifierOptionsMapper : classifierOptionsMappers) {
+            if (classifierOptionsMapper.canMap(classifierOptions)) {
+                AbstractClassifier classifier = classifierOptionsMapper.map(classifierOptions);
+                if (classifierOptions instanceof AbstractHeterogeneousClassifierOptions) {
+                    AbstractHeterogeneousClassifier heterogeneousClassifier =
+                            (AbstractHeterogeneousClassifier) classifier;
+                    AbstractHeterogeneousClassifierOptions heterogeneousClassifierOptions =
+                            (AbstractHeterogeneousClassifierOptions) classifierOptions;
+                    heterogeneousClassifier.setClassifiersSet(
+                            convertClassifiersOptions(heterogeneousClassifierOptions.getClassifierOptions()));
+                } else if (classifierOptions instanceof StackingOptions) {
+                    StackingOptions stackingOptions = (StackingOptions) classifierOptions;
+                    StackingClassifier stackingClassifier = (StackingClassifier) classifier;
+                    stackingClassifier.setClassifiers(
+                            convertClassifiersOptions(stackingOptions.getClassifierOptions()));
+                    stackingClassifier.setMetaClassifier(convert(stackingOptions.getMetaClassifierOptions()));
+                }
+            }
+        }
+        return null;
+    }
+
     private List<ClassifierOptions> convertClassifiersSet(ClassifiersSet classifiers) {
         List<ClassifierOptions> classifierOptions = new ArrayList<>(classifiers.size());
         classifiers.forEach(classifier -> classifierOptions.add(convert((AbstractClassifier) classifier)));
         return classifierOptions;
+    }
+
+    private ClassifiersSet convertClassifiersOptions(List<ClassifierOptions> classifierOptions) {
+        ClassifiersSet classifiers = new ClassifiersSet();
+        classifierOptions.forEach(options -> classifiers.addClassifier(convert(options)));
+        return classifiers;
     }
 }
