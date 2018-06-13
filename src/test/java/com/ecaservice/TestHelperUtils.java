@@ -1,5 +1,7 @@
 package com.ecaservice;
 
+import com.ecaservice.dto.evaluation.ClassifierReport;
+import com.ecaservice.dto.evaluation.InputOptionsMap;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.Email;
@@ -40,10 +42,7 @@ import weka.core.Instances;
 
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Test data helper class.
@@ -460,5 +459,19 @@ public class TestHelperUtils {
         options.setNumNeighbours(NUM_NEIGHBOURS);
         options.setWeight(KNN_WEIGHT);
         return options;
+    }
+
+    /**
+     * Creates classifier report.
+     *
+     * @return classifier report
+     */
+    public static ClassifierReport createClassifierReport() {
+        ClassifierReport classifierReport = new ClassifierReport();
+        classifierReport.setClassifierName(DecisionTreeType.CART.name());
+        classifierReport.setClassifierDescription(DecisionTreeType.CART.getDescription());
+        classifierReport.setInputOptionsMap(new InputOptionsMap());
+        classifierReport.setOptions(Arrays.asList(new CART().getOptions()).toString());
+        return classifierReport;
     }
 }
