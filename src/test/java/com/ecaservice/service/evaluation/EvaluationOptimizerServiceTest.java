@@ -20,6 +20,7 @@ import com.ecaservice.service.ClassifierOptionsService;
 import com.ecaservice.service.EvaluationResultsSender;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.ensemble.forests.DecisionTreeType;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +28,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.ws.client.WebServiceIOException;
 import weka.core.Instances;
 
 import javax.inject.Inject;
@@ -91,6 +93,37 @@ public class EvaluationOptimizerServiceTest {
     public void after() {
         ersRequestRepository.deleteAll();
         evaluationLogRepository.deleteAll();
+    }
+
+    @Test
+    public void testServiceUnavailable() {
+        when(evaluationResultsSender.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenThrow(
+                new WebServiceIOException("error"));
+        EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(data);
+        assertThat(evaluationResponse).isNotNull();
+        assertThat(evaluationResponse.getRequestId()).isNotNull();
+        assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
+        assertThat(evaluationResponse.getEvaluationResults()).isNull();
+        List<ClassifierOptionsRequestModel> optionsRequests = classifierOptionsRequestModelRepository.findAll();
+        AssertionUtils.assertSingletonList(optionsRequests);
+        ClassifierOptionsRequestModel requestModel = optionsRequests.get(0);
+        assertThat(requestModel.getResponseStatus()).isEqualTo(ResponseStatus.ERROR);
+        assertThat(requestModel.getClassifierOptionsResponseModels()).isNullOrEmpty();
+    }
+
+    @Test
+    public void testsInvalidClassifierOptions() {
+        ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
+                .singletonList(TestHelperUtils.createClassifierReport(StringUtils.EMPTY)), ResponseStatus.SUCCESS);
+        when(evaluationResultsSender.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
+        EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(data);
+        assertThat(evaluationResponse).isNotNull();
+        assertThat(evaluationResponse.getRequestId()).isNotNull();
+        assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
+        List<ClassifierOptionsRequestModel> optionsRequests = classifierOptionsRequestModelRepository.findAll();
+        AssertionUtils.assertSingletonList(optionsRequests);
+        ClassifierOptionsRequestModel requestModel = optionsRequests.get(0);
+        assertThat(requestModel.getResponseStatus()).isEqualTo(ResponseStatus.SUCCESS);
     }
 
     @Test
