@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ers_request"/>
+            <not>
+                <tableExists tableName="classifier_options_request_model"/>
+            </not>
+        </preConditions>
+        <createTable tableName="classifier_options_request_model">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="data_md5_hash" type="varchar(255)"/>
+            <column name="evaluation_method" type="varchar(255)"/>
+            <column name="num_folds" type="int"/>
+            <column name="num_tests" type="int"/>
+            <column name="seed" type="int"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="classifier_options_request_model" baseColumnNames="id"
+                                 constraintName="fk_classifier_options_request_id" referencedTableName="ers_request"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options_request_model"/>
+            <not>
+                <tableExists tableName="classifier_options_response_model"/>
+            </not>
+        </preConditions>
+        <createTable tableName="classifier_options_response_model">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="classifier_name" type="varchar(255)"/>
+            <column name="classifier_description" type="varchar(255)"/>
+            <column name="options" type="text"/>
+            <column name="classifier_options_request_model_id" type="bigint">
+                <constraints foreignKeyName="fk_classifier_options_request_model_id"
+                             referencedTableName="classifier_options_request_model" referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

@@ -54,7 +54,7 @@ public class ClassifierOptionsRequestModel extends ErsRequest {
      * Classifier options response
      */
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "classifier_options_response_model_id", nullable = false)
+    @JoinColumn(name = "classifier_options_request_model_id", nullable = false)
     private List<ClassifierOptionsResponseModel> classifierOptionsResponseModels;
 
 }

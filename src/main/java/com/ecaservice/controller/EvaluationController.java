@@ -110,8 +110,8 @@ public class EvaluationController {
             value = "Evaluates classifier using optimal options",
             notes = "Evaluates classifier using optimal options"
     )
-    @PostMapping(value = "/execute")
-    public ResponseEntity<EvaluationResponse> execute(@RequestParam("dataFile") MultipartFile dataFile) {
+    @PostMapping(value = "/optimize")
+    public ResponseEntity<EvaluationResponse> optimize(@RequestParam("dataFile") MultipartFile dataFile) {
         try {
             FileDataLoader fileDataLoader = new FileDataLoader();
             fileDataLoader.setSource(new MultipartFileResource(dataFile));
