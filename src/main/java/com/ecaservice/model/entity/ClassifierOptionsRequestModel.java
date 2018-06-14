@@ -6,6 +6,8 @@ import lombok.Data;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -18,7 +20,8 @@ import java.util.List;
  */
 @Data
 @Entity
-@Table(name = "classifier_options_request_model")
+@Table(name = "classifier_options_request_model",
+        indexes = @Index(name = "idx_data_md5_hash", columnList = "data_md5_hash"))
 public class ClassifierOptionsRequestModel extends ErsRequest {
 
     /**
@@ -53,7 +56,7 @@ public class ClassifierOptionsRequestModel extends ErsRequest {
     /**
      * Classifier options response
      */
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "classifier_options_request_model_id", nullable = false)
     private List<ClassifierOptionsResponseModel> classifierOptionsResponseModels;
 

@@ -32,6 +32,19 @@
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="classifier_options_request_model"/>
             <not>
+                <indexExists indexName="idx_data_md5_hash" tableName="classifier_options_request_model"
+                             columnNames="data_md5_hash"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="classifier_options_request_model" indexName="idx_data_md5_hash">
+            <column name="data_md5_hash"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options_request_model"/>
+            <not>
                 <tableExists tableName="classifier_options_response_model"/>
             </not>
         </preConditions>

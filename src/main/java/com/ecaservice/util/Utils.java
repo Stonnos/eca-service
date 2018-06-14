@@ -6,6 +6,7 @@ import com.ecaservice.dto.evaluation.InstancesReport;
 import com.ecaservice.exception.EcaServiceException;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.TechnicalStatus;
+import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
 import org.apache.commons.lang3.StringUtils;
@@ -50,6 +51,17 @@ public class Utils {
     public static boolean validateClassifierOptions(ClassifierReport classifierReport) {
         return Optional.ofNullable(classifierReport).map(ClassifierReport::getOptions).isPresent() &&
                 !StringUtils.isEmpty(classifierReport.getOptions());
+    }
+
+    /**
+     * Validates classifier options response model options.
+     *
+     * @param responseModel - classifier options response model options
+     * @return {@code true} if classifier options response model options is not empty
+     */
+    public static boolean validateClassifierOptions(ClassifierOptionsResponseModel responseModel) {
+        return Optional.ofNullable(responseModel).map(ClassifierOptionsResponseModel::getOptions).isPresent() &&
+                !StringUtils.isEmpty(responseModel.getOptions());
     }
 
     /**

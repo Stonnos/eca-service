@@ -32,6 +32,7 @@ cross-validation:
   seed: 1
   ## Cross validation timeout in minutes
   timeout: 60
+  classifierOptionsCacheDurationInDays: 2
 
 ## Swagger properties
 swagger2:
