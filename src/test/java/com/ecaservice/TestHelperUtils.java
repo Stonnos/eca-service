@@ -1,9 +1,11 @@
 package com.ecaservice;
 
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
+import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.ClassifierReport;
 import com.ecaservice.dto.evaluation.EvaluationMethodReport;
 import com.ecaservice.dto.evaluation.InputOptionsMap;
+import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.Email;
@@ -45,7 +47,12 @@ import weka.core.Instances;
 import java.io.File;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Test data helper class.
@@ -470,11 +477,21 @@ public class TestHelperUtils {
      * @return classifier report
      */
     public static ClassifierReport createClassifierReport() {
+        return createClassifierReport(Arrays.asList(new CART().getOptions()).toString());
+    }
+
+    /**
+     * Creates classifier report with specified options.
+     *
+     * @param options - classifier options
+     * @return classifier report
+     */
+    public static ClassifierReport createClassifierReport(String options) {
         ClassifierReport classifierReport = new ClassifierReport();
         classifierReport.setClassifierName(DecisionTreeType.CART.name());
         classifierReport.setClassifierDescription(DecisionTreeType.CART.getDescription());
         classifierReport.setInputOptionsMap(new InputOptionsMap());
-        classifierReport.setOptions(Arrays.asList(new CART().getOptions()).toString());
+        classifierReport.setOptions(options);
         return classifierReport;
     }
 
@@ -502,5 +519,21 @@ public class TestHelperUtils {
         classifierOptionsRequest.setEvaluationMethodReport(new EvaluationMethodReport());
         classifierOptionsRequest.setEvaluationMethodReport(createEvaluationMethodReport());
         return classifierOptionsRequest;
+    }
+
+    /**
+     * Creates classifier options response.
+     *
+     * @param classifierReports - classifier reports
+     * @param responseStatus    - response status
+     * @return classifier options response
+     */
+    public static ClassifierOptionsResponse createClassifierOptionsResponse(List<ClassifierReport> classifierReports,
+                                                                            ResponseStatus responseStatus) {
+        ClassifierOptionsResponse response = new ClassifierOptionsResponse();
+        response.setStatus(responseStatus);
+        response.setRequestId(java.util.UUID.randomUUID().toString());
+        classifierReports.forEach(classifierReport -> response.getClassifierReports().add(classifierReport));
+        return response;
     }
 }

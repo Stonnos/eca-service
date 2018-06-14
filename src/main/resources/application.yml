@@ -26,7 +26,7 @@ spring:
       spec: maximumSize=25, expireAfterWrite=7200s
 
 ## Cross - validation properties
-cross-validation:
+crossValidation:
   numFolds: 10
   numTests: 1
   seed: 1

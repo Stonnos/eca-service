@@ -100,6 +100,7 @@ public class ClassifierOptionsService {
                             convertClassifiersOptions(stackingOptions.getClassifierOptions()));
                     stackingClassifier.setMetaClassifier(convert(stackingOptions.getMetaClassifierOptions()));
                 }
+                return classifier;
             }
         }
         return null;
