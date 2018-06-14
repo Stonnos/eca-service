@@ -68,6 +68,12 @@ public class EvaluationResultsSender {
         }
     }
 
+    /**
+     * Gets optimal classifier options for specified training data.
+     *
+     * @param classifierOptionsRequest - classifier options request
+     * @return classifier options response
+     */
     public ClassifierOptionsResponse getClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
         return (ClassifierOptionsResponse) webServiceTemplate.marshalSendAndReceive(serviceConfig.getUrl(),
                 classifierOptionsRequest);

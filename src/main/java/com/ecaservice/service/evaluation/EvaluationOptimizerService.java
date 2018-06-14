@@ -7,7 +7,6 @@ import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.ClassifierReport;
 import com.ecaservice.dto.evaluation.EvaluationMethod;
 import com.ecaservice.dto.evaluation.EvaluationMethodReport;
-import com.ecaservice.dto.evaluation.InstancesReport;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.mapping.ClassifierReportMapper;
@@ -21,16 +20,14 @@ import com.ecaservice.service.EvaluationResultsSender;
 import com.ecaservice.util.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
+import javax.inject.Inject;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 /**
  * Implements classifier evaluation by searching optimal classifier options.
@@ -43,14 +40,45 @@ public class EvaluationOptimizerService {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    private CrossValidationConfig crossValidationConfig;
-    private EvaluationRequestService evaluationRequestService;
-    private EvaluationResultsSender evaluationResultsSender;
-    private ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
-    private ClassifierReportMapper classifierReportMapper;
-    private EvaluationRequestMapper evaluationRequestMapper;
-    private ClassifierOptionsService classifierOptionsService;
-    private ErsRequestRepository ersRequestRepository;
+    private final CrossValidationConfig crossValidationConfig;
+    private final EvaluationRequestService evaluationRequestService;
+    private final EvaluationResultsSender evaluationResultsSender;
+    private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
+    private final ClassifierReportMapper classifierReportMapper;
+    private final EvaluationRequestMapper evaluationRequestMapper;
+    private final ClassifierOptionsService classifierOptionsService;
+    private final ErsRequestRepository ersRequestRepository;
+
+    /**
+     * Constructor with spring dependency injection.
+     *
+     * @param crossValidationConfig               - cross - validation config bean
+     * @param evaluationRequestService            - evaluation request service bean
+     * @param evaluationResultsSender             - evaluation results sender bean
+     * @param classifierOptionsRequestModelMapper - classifier options request model mapper bean
+     * @param classifierReportMapper              - classifier report mapper bean
+     * @param evaluationRequestMapper             - evaluation request mapper bean
+     * @param classifierOptionsService            - classifier options service bean
+     * @param ersRequestRepository                - ers request repository bean
+     */
+    @Inject
+    public EvaluationOptimizerService(CrossValidationConfig crossValidationConfig,
+                                      EvaluationRequestService evaluationRequestService,
+                                      EvaluationResultsSender evaluationResultsSender,
+                                      ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper,
+                                      ClassifierReportMapper classifierReportMapper,
+                                      EvaluationRequestMapper evaluationRequestMapper,
+                                      ClassifierOptionsService classifierOptionsService,
+                                      ErsRequestRepository ersRequestRepository) {
+        this.crossValidationConfig = crossValidationConfig;
+        this.evaluationRequestService = evaluationRequestService;
+        this.evaluationResultsSender = evaluationResultsSender;
+        this.classifierOptionsRequestModelMapper = classifierOptionsRequestModelMapper;
+        this.classifierReportMapper = classifierReportMapper;
+        this.evaluationRequestMapper = evaluationRequestMapper;
+        this.classifierOptionsService = classifierOptionsService;
+        this.ersRequestRepository = ersRequestRepository;
+    }
 
     /**
      * Evaluate model with optimal classifier options.
@@ -69,12 +97,11 @@ public class EvaluationOptimizerService {
             ClassifierOptionsResponse response = evaluationResultsSender.getClassifierOptions(classifierOptionsRequest);
             requestModel.setRequestId(response.getRequestId());
             requestModel.setResponseStatus(response.getStatus());
-            if (ResponseStatus.SUCCESS.equals(response.getStatus()) &&
-                    !CollectionUtils.isEmpty(response.getClassifierReports())) {
+            if (ResponseStatus.SUCCESS.equals(response.getStatus())) {
                 requestModel.setClassifierOptionsResponseModels(
                         classifierReportMapper.map(response.getClassifierReports()));
-                ClassifierReport classifierReport = response.getClassifierReports().get(0);
-                if (!StringUtils.isEmpty(classifierReport.getOptions())) {
+                ClassifierReport classifierReport = response.getClassifierReports().stream().findFirst().orElse(null);
+                if (Utils.validateClassifierOptions(classifierReport)) {
                     ClassifierOptions classifierOptions =
                             objectMapper.readValue(classifierReport.getOptions(), ClassifierOptions.class);
                     AbstractClassifier classifier = classifierOptionsService.convert(classifierOptions);
