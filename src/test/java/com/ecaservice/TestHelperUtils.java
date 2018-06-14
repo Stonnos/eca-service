@@ -1,6 +1,8 @@
 package com.ecaservice;
 
+import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierReport;
+import com.ecaservice.dto.evaluation.EvaluationMethodReport;
 import com.ecaservice.dto.evaluation.InputOptionsMap;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
@@ -41,6 +43,7 @@ import eca.trees.J48;
 import weka.core.Instances;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -473,5 +476,31 @@ public class TestHelperUtils {
         classifierReport.setInputOptionsMap(new InputOptionsMap());
         classifierReport.setOptions(Arrays.asList(new CART().getOptions()).toString());
         return classifierReport;
+    }
+
+    /**
+     * Creates evaluation method report.
+     *
+     * @return evaluation method
+     */
+    public static EvaluationMethodReport createEvaluationMethodReport() {
+        EvaluationMethodReport evaluationMethodReport = new EvaluationMethodReport();
+        evaluationMethodReport.setEvaluationMethod(com.ecaservice.dto.evaluation.EvaluationMethod.CROSS_VALIDATION);
+        evaluationMethodReport.setNumFolds(BigInteger.valueOf(NUM_FOLDS));
+        evaluationMethodReport.setNumTests(BigInteger.valueOf(NUM_TESTS));
+        evaluationMethodReport.setSeed(BigInteger.valueOf(SEED));
+        return evaluationMethodReport;
+    }
+
+    /**
+     * Creates classifier options request.
+     *
+     * @return classifier options request
+     */
+    public static ClassifierOptionsRequest createClassifierOptionsRequest() {
+        ClassifierOptionsRequest classifierOptionsRequest = new ClassifierOptionsRequest();
+        classifierOptionsRequest.setEvaluationMethodReport(new EvaluationMethodReport());
+        classifierOptionsRequest.setEvaluationMethodReport(createEvaluationMethodReport());
+        return classifierOptionsRequest;
     }
 }

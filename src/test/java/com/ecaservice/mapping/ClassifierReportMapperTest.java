@@ -27,8 +27,10 @@ public class ClassifierReportMapperTest {
     public void testMapClassifierReport() {
         ClassifierReport classifierReport = TestHelperUtils.createClassifierReport();
         ClassifierOptionsResponseModel classifierOptionsResponseModel = classifierReportMapper.map(classifierReport);
-        Assertions.assertThat(classifierOptionsResponseModel.getClassifierName()).isEqualTo(classifierReport.getClassifierName());
-        Assertions.assertThat(classifierOptionsResponseModel.getClassifierDescription()).isEqualTo(classifierReport.getClassifierDescription());
+        Assertions.assertThat(classifierOptionsResponseModel.getClassifierName()).isEqualTo(
+                classifierReport.getClassifierName());
+        Assertions.assertThat(classifierOptionsResponseModel.getClassifierDescription()).isEqualTo(
+                classifierReport.getClassifierDescription());
         Assertions.assertThat(classifierOptionsResponseModel.getOptions()).isEqualTo(classifierReport.getOptions());
     }
 }

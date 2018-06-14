@@ -73,7 +73,7 @@ public abstract class EvaluationRequestMapper {
             Utils.putValueIfNotNull(evaluationRequest.getEvaluationOptionsMap(), EvaluationOption.NUM_TESTS,
                     classifierOptionsRequest.getEvaluationMethodReport().getNumTests());
             Utils.putValueIfNotNull(evaluationRequest.getEvaluationOptionsMap(), EvaluationOption.SEED,
-                    classifierOptionsRequest.getEvaluationMethodReport().getNumTests());
+                    classifierOptionsRequest.getEvaluationMethodReport().getSeed());
         }
     }
 }

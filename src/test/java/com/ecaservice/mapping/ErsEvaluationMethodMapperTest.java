@@ -23,11 +23,13 @@ public class ErsEvaluationMethodMapperTest {
 
     @Test
     public void testMapTrainingDataMethod() {
-        Assertions.assertThat(ersEvaluationMethodMapper.map(EvaluationMethod.TRAINING_DATA)).isEqualTo(com.ecaservice.model.evaluation.EvaluationMethod.TRAINING_DATA);
+        Assertions.assertThat(ersEvaluationMethodMapper.map(EvaluationMethod.TRAINING_DATA)).isEqualTo(
+                com.ecaservice.model.evaluation.EvaluationMethod.TRAINING_DATA);
     }
 
     @Test
     public void testMapCrossValidationMethod() {
-        Assertions.assertThat(ersEvaluationMethodMapper.map(EvaluationMethod.CROSS_VALIDATION)).isEqualTo(com.ecaservice.model.evaluation.EvaluationMethod.CROSS_VALIDATION);
+        Assertions.assertThat(ersEvaluationMethodMapper.map(EvaluationMethod.CROSS_VALIDATION)).isEqualTo(
+                com.ecaservice.model.evaluation.EvaluationMethod.CROSS_VALIDATION);
     }
 }

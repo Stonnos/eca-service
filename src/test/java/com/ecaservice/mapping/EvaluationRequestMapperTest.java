@@ -2,10 +2,14 @@ package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.EvaluationRequestDto;
+import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
+import com.ecaservice.model.InputData;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.model.evaluation.EvaluationRequest;
 import eca.metrics.KNearestNeighbours;
+import eca.trees.CART;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -73,5 +77,22 @@ public class EvaluationRequestMapperTest {
                 evaluationRequestDto.getEvaluationOptionsMap().get(EvaluationOption.NUM_FOLDS));
         assertThat(evaluationRequest.getEvaluationOptionsMap().get(EvaluationOption.NUM_TESTS)).isEqualTo(
                 evaluationRequestDto.getEvaluationOptionsMap().get(EvaluationOption.NUM_TESTS));
+    }
+
+    @Test
+    public void testMapClassifierOptionsRequest() {
+        ClassifierOptionsRequest classifierOptionsRequest = TestHelperUtils.createClassifierOptionsRequest();
+        InputData inputData = new InputData(new CART(), instances);
+        EvaluationRequest evaluationRequest =
+                evaluationRequestMapper.map(classifierOptionsRequest, inputData);
+        Assertions.assertThat(evaluationRequest.getEvaluationMethod()).isEqualTo(EvaluationMethod.CROSS_VALIDATION);
+        assertThat(evaluationRequest.getEvaluationOptionsMap().get(EvaluationOption.NUM_FOLDS)).isEqualTo(
+                classifierOptionsRequest.getEvaluationMethodReport().getNumFolds().toString());
+        assertThat(evaluationRequest.getEvaluationOptionsMap().get(EvaluationOption.NUM_TESTS)).isEqualTo(
+                classifierOptionsRequest.getEvaluationMethodReport().getNumTests().toString());
+        assertThat(evaluationRequest.getEvaluationOptionsMap().get(EvaluationOption.SEED)).isEqualTo(
+                classifierOptionsRequest.getEvaluationMethodReport().getSeed().toString());
+        assertThat(evaluationRequest.getInputData()).isNotNull();
+        assertThat(evaluationRequest.getInputData()).isEqualTo(inputData);
     }
 }
