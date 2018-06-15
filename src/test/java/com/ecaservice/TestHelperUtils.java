@@ -670,14 +670,16 @@ public class TestHelperUtils {
     /**
      * Creates classifier options request model.
      *
-     * @param dataMd5Hash    - data MD5 hash
-     * @param requestDate    - request date
-     * @param responseStatus - response status
+     * @param dataMd5Hash                     - data MD5 hash
+     * @param requestDate                     - request date
+     * @param responseStatus                  - response status
+     * @param classifierOptionsResponseModels - classifier options response models list
      * @return classifier options request model
      */
     public static ClassifierOptionsRequestModel createClassifierOptionsRequestModel(String dataMd5Hash,
                                                                                     LocalDateTime requestDate,
-                                                                                    ResponseStatus responseStatus) {
+                                                                                    ResponseStatus responseStatus,
+                                                                                    List<ClassifierOptionsResponseModel> classifierOptionsResponseModels) {
         ClassifierOptionsRequestModel requestModel = new ClassifierOptionsRequestModel();
         requestModel.setDataMd5Hash(dataMd5Hash);
         requestModel.setRequestDate(requestDate);
@@ -686,6 +688,7 @@ public class TestHelperUtils {
         requestModel.setNumFolds(NUM_FOLDS);
         requestModel.setNumTests(NUM_TESTS);
         requestModel.setSeed(SEED);
+        requestModel.setClassifierOptionsResponseModels(classifierOptionsResponseModels);
         return requestModel;
     }
 

@@ -2,8 +2,8 @@ package com.ecaservice.controller;
 
 import com.ecaservice.dto.EvaluationRequestDto;
 import com.ecaservice.dto.EvaluationResponse;
+import com.ecaservice.dto.InstancesRequest;
 import com.ecaservice.mapping.EvaluationRequestMapper;
-import com.ecaservice.model.MultipartFileResource;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.model.evaluation.EvaluationRequest;
@@ -13,7 +13,6 @@ import com.ecaservice.service.EvaluationResultsService;
 import com.ecaservice.service.evaluation.EvaluationOptimizerService;
 import com.ecaservice.service.evaluation.EvaluationRequestService;
 import com.ecaservice.util.Utils;
-import eca.data.file.FileDataLoader;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -22,10 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import weka.core.Instances;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -103,7 +99,7 @@ public class EvaluationController {
     /**
      * Evaluates classifier using optimal options.
      *
-     * @param dataFile - training data file
+     * @param instancesRequest - instances request
      * @return response entity
      */
     @ApiOperation(
@@ -111,18 +107,15 @@ public class EvaluationController {
             notes = "Evaluates classifier using optimal options"
     )
     @PostMapping(value = "/optimize")
-    public ResponseEntity<EvaluationResponse> optimize(@RequestParam("dataFile") MultipartFile dataFile) {
+    public ResponseEntity<EvaluationResponse> optimize(@RequestBody InstancesRequest instancesRequest) {
         try {
-            FileDataLoader fileDataLoader = new FileDataLoader();
-            fileDataLoader.setSource(new MultipartFileResource(dataFile));
-            Instances data = fileDataLoader.loadInstances();
             EvaluationResponse evaluationResponse =
-                    evaluationOptimizerService.evaluateWithOptimalClassifierOptions(data);
+                    evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest.getData());
             log.info("Evaluation response with status [{}] has been built.", evaluationResponse.getStatus());
             return ResponseEntity.ok(evaluationResponse);
         } catch (Exception ex) {
             log.error(ex.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     Utils.buildErrorResponse(ex.getMessage()));
         }
     }

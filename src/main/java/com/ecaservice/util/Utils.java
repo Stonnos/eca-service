@@ -1,22 +1,18 @@
 package com.ecaservice.util;
 
 import com.ecaservice.dto.EvaluationResponse;
-import com.ecaservice.dto.evaluation.ClassifierReport;
 import com.ecaservice.dto.evaluation.InstancesReport;
 import com.ecaservice.exception.EcaServiceException;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.TechnicalStatus;
-import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 import weka.core.Instances;
 import weka.core.xml.XMLInstances;
 
 import java.math.BigInteger;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -40,28 +36,6 @@ public class Utils {
         Assert.notNull(inputData.getData(), "Input data is not specified!");
         Assert.notNull(evaluationMethod, "Evaluation method is not specified!");
         Assert.notNull(evaluationOptionsMap, "Evaluation options map is not specified!");
-    }
-
-    /**
-     * Validates classifier report options.
-     *
-     * @param classifierReport - classifier report
-     * @return {@code true} if classifier report options is not empty
-     */
-    public static boolean validateClassifierOptions(ClassifierReport classifierReport) {
-        return Optional.ofNullable(classifierReport).map(ClassifierReport::getOptions).isPresent() &&
-                !StringUtils.isEmpty(classifierReport.getOptions());
-    }
-
-    /**
-     * Validates classifier options response model options.
-     *
-     * @param responseModel - classifier options response model options
-     * @return {@code true} if classifier options response model options is not empty
-     */
-    public static boolean validateClassifierOptions(ClassifierOptionsResponseModel responseModel) {
-        return Optional.ofNullable(responseModel).map(ClassifierOptionsResponseModel::getOptions).isPresent() &&
-                !StringUtils.isEmpty(responseModel.getOptions());
     }
 
     /**

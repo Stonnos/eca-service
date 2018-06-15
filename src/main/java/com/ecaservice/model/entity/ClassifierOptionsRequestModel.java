@@ -27,6 +27,12 @@ import java.util.List;
 public class ClassifierOptionsRequestModel extends ErsRequest {
 
     /**
+     * Training data name
+     */
+    @Column(name = "relation_name")
+    private String relationName;
+
+    /**
      * Training data MD5 hash
      */
     @Column(name = "data_md5_hash")
@@ -59,7 +65,8 @@ public class ClassifierOptionsRequestModel extends ErsRequest {
     /**
      * Classifier options response
      */
-    @OneToMany(mappedBy = "classifierOptionsRequestModel", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "evaluation_options_request_model_id", nullable = false)
     private List<ClassifierOptionsResponseModel> classifierOptionsResponseModels;
 
 }

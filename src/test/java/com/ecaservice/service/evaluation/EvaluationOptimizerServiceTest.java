@@ -12,7 +12,6 @@ import com.ecaservice.mapping.ClassifierReportMapper;
 import com.ecaservice.mapping.EvaluationRequestMapper;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
-import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.model.options.ActivationFunctionOptions;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.model.options.DecisionTreeOptions;
@@ -22,7 +21,6 @@ import com.ecaservice.model.options.LogisticOptions;
 import com.ecaservice.model.options.NeuralNetworkOptions;
 import com.ecaservice.model.options.RandomForestsOptions;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
-import com.ecaservice.repository.ClassifierOptionsResponseModelRepository;
 import com.ecaservice.repository.ErsRequestRepository;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.ClassifierOptionsService;
@@ -95,8 +93,6 @@ public class EvaluationOptimizerServiceTest {
     @Inject
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
     @Inject
-    private ClassifierOptionsResponseModelRepository classifierOptionsResponseModelRepository;
-    @Inject
     private ErsRequestRepository ersRequestRepository;
     @Inject
     private EvaluationLogRepository evaluationLogRepository;
@@ -115,8 +111,7 @@ public class EvaluationOptimizerServiceTest {
         evaluationOptimizerService =
                 new EvaluationOptimizerService(crossValidationConfig, evaluationRequestService, ersWebServiceClient,
                         classifierOptionsRequestModelMapper, classifierReportMapper, evaluationRequestMapper,
-                        classifierOptionsService, classifierOptionsRequestModelRepository,
-                        classifierOptionsResponseModelRepository);
+                        classifierOptionsService, classifierOptionsRequestModelRepository);
         dataMd5Hash = DigestUtils.md5DigestAsHex(Utils.toXmlInstances(data).getBytes());
         DecisionTreeOptions treeOptions = TestHelperUtils.createDecisionTreeOptions();
         treeOptions.setDecisionTreeType(DecisionTreeType.CART);
@@ -184,7 +179,7 @@ public class EvaluationOptimizerServiceTest {
         //Case 1
         ClassifierOptionsRequestModel requestModel = TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash,
                 LocalDateTime.now().minusDays(crossValidationConfig.getClassifierOptionsCacheDurationInDays() + 1),
-                ResponseStatus.SUCCESS);
+                ResponseStatus.SUCCESS, Collections.emptyList());
         classifierOptionsRequestModelRepository.save(requestModel);
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
                 .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)), ResponseStatus.SUCCESS);
@@ -197,7 +192,7 @@ public class EvaluationOptimizerServiceTest {
         deleteAll();
         //Case 2
         requestModel = TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash,
-                LocalDateTime.now(), ResponseStatus.ERROR);
+                LocalDateTime.now(), ResponseStatus.ERROR, Collections.emptyList());
         classifierOptionsRequestModelRepository.save(requestModel);
         evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(data);
         assertSuccessEvaluationResponse(evaluationResponse);
@@ -207,7 +202,7 @@ public class EvaluationOptimizerServiceTest {
         deleteAll();
         //Case 3
         requestModel = TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
-                ResponseStatus.SUCCESS);
+                ResponseStatus.SUCCESS, Collections.emptyList());
         classifierOptionsRequestModelRepository.save(requestModel);
         evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(data);
         assertSuccessEvaluationResponse(evaluationResponse);
@@ -217,7 +212,7 @@ public class EvaluationOptimizerServiceTest {
         deleteAll();
         //Case 4
         requestModel = TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash, LocalDateTime.now(),
-                ResponseStatus.SUCCESS);
+                ResponseStatus.SUCCESS, Collections.emptyList());
         classifierOptionsRequestModelRepository.save(requestModel);
         evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(data);
         assertSuccessEvaluationResponse(evaluationResponse);
@@ -230,20 +225,14 @@ public class EvaluationOptimizerServiceTest {
     public void testClassifierOptionsCache() {
         ClassifierOptionsRequestModel requestModel =
                 TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash, LocalDateTime.now().minusDays(1),
-                        ResponseStatus.SUCCESS);
-        ClassifierOptionsResponseModel responseModel = TestHelperUtils.createClassifierOptionsResponseModel
-                (decisionTreeOptions);
-        responseModel.setClassifierOptionsRequestModel(requestModel);
+                        ResponseStatus.SUCCESS, Collections.singletonList(
+                                TestHelperUtils.createClassifierOptionsResponseModel(decisionTreeOptions)));
         ClassifierOptionsRequestModel requestModel1 =
                 TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash, LocalDateTime.now(),
-                        ResponseStatus.SUCCESS);
-        ClassifierOptionsResponseModel responseModel1 =
-                TestHelperUtils.createClassifierOptionsResponseModel(j48Options);
-        responseModel1.setClassifierOptionsRequestModel(requestModel1);
+                        ResponseStatus.SUCCESS,
+                        Collections.singletonList(TestHelperUtils.createClassifierOptionsResponseModel(j48Options)));
         classifierOptionsRequestModelRepository.save(requestModel);
         classifierOptionsRequestModelRepository.save(requestModel1);
-        classifierOptionsResponseModelRepository.save(responseModel);
-        classifierOptionsResponseModelRepository.save(responseModel1);
         EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(data);
         assertSuccessEvaluationResponse(evaluationResponse);
         EvaluationResults results = evaluationResponse.getEvaluationResults();
@@ -339,7 +328,6 @@ public class EvaluationOptimizerServiceTest {
     }
 
     private void deleteAll() {
-        classifierOptionsResponseModelRepository.deleteAll();
         ersRequestRepository.deleteAll();
         evaluationLogRepository.deleteAll();
     }
