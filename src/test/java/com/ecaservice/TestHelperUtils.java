@@ -47,7 +47,6 @@ import eca.ensemble.forests.RandomForests;
 import eca.ensemble.sampling.SamplingMethod;
 import eca.metrics.KNearestNeighbours;
 import eca.metrics.distances.Distance;
-import eca.metrics.distances.DistanceType;
 import eca.neural.NeuralNetwork;
 import eca.neural.functions.AbstractFunction;
 import eca.trees.CART;
@@ -73,8 +72,8 @@ import java.util.Random;
  */
 public class TestHelperUtils {
 
-    public static final int NUM_FOLDS = 10;
-    public static final int NUM_TESTS = 10;
+    public static final int NUM_FOLDS = 3;
+    public static final int NUM_TESTS = 1;
     public static final String IP_ADDRESS = "127.0.0.1";
     public static final String UUID = "a01ebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
 
@@ -90,22 +89,22 @@ public class TestHelperUtils {
     private static final String MAIL_MESSAGE = "message";
     private static final int NUM_OBJ = 2;
     private static final double KNN_WEIGHT = 0.55d;
-    private static final int NUM_NEIGHBOURS = 100;
+    private static final int NUM_NEIGHBOURS = 25;
     private static final int NUM_RANDOM_ATTR = 10;
     private static final int NUM_RANDOM_SPLITS = 25;
     private static final String HIDDEN_LAYER = "5,8,9";
     private static final int IN_LAYER_NEURONS_NUM = 12;
     private static final int OUT_LAYER_NEURONS_NUM = 7;
     private static final int MAX_DEPTH = 10;
-    private static final int NUM_ITERATIONS = 10;
+    private static final int NUM_ITERATIONS = 5;
     private static final int NUM_THREADS = 2;
     private static final double MIN_ERROR = 0.00001d;
     private static final int NUM_IN_NEURONS = 10;
     private static final int NUM_OUT_NEURONS = 12;
     private static final double LEARNING_RATE = 0.01d;
     private static final double MOMENTUM = 0.23d;
-    public static final double MIN_ERROR_THRESHOLD = 0.0d;
-    public static final double MAX_ERROR_THRESHOLD = 0.5d;
+    private static final double MIN_ERROR_THRESHOLD = 0.0d;
+    private static final double MAX_ERROR_THRESHOLD = 0.5d;
 
     /**
      * Generates the test data set.
@@ -598,10 +597,7 @@ public class TestHelperUtils {
         classifierOptions.add(createJ48Options());
         DecisionTreeOptions treeOptions = createDecisionTreeOptions();
         treeOptions.setDecisionTreeType(DecisionTreeType.C45);
-        KNearestNeighboursOptions kNearestNeighboursOptions = createKNearestNeighboursOptions();
-        kNearestNeighboursOptions.setDistanceType(DistanceType.EUCLID);
         classifierOptions.add(treeOptions);
-        classifierOptions.add(kNearestNeighboursOptions);
         return classifierOptions;
     }
 

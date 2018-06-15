@@ -15,6 +15,7 @@ import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.options.ActivationFunctionOptions;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.model.options.DecisionTreeOptions;
+import com.ecaservice.model.options.ExtraTreesOptions;
 import com.ecaservice.model.options.KNearestNeighboursOptions;
 import com.ecaservice.model.options.LogisticOptions;
 import com.ecaservice.model.options.NeuralNetworkOptions;
@@ -27,7 +28,13 @@ import com.ecaservice.service.EvaluationResultsSender;
 import com.ecaservice.util.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.EvaluationResults;
+import eca.ensemble.AdaBoostClassifier;
+import eca.ensemble.HeterogeneousClassifier;
+import eca.ensemble.ModifiedHeterogeneousClassifier;
+import eca.ensemble.StackingClassifier;
 import eca.ensemble.forests.DecisionTreeType;
+import eca.ensemble.forests.ExtraTreesClassifier;
+import eca.ensemble.forests.RandomForests;
 import eca.metrics.KNearestNeighbours;
 import eca.metrics.distances.DistanceType;
 import eca.neural.NeuralNetwork;
@@ -241,6 +248,12 @@ public class EvaluationOptimizerServiceTest {
      * Case 3: KNN classifier
      * Case 4: Neural network
      * Case 5: Random forests
+     * Case 6: J48
+     * Case 7: Extra trees
+     * Case 8: Stacking
+     * Case 9: AdaBoost
+     * Case 10: Heterogeneous ensemble
+     * Case 11: Modified heterogeneous classifier
      *
      * @throws IOException
      */
@@ -263,7 +276,23 @@ public class EvaluationOptimizerServiceTest {
         performClassifierEvaluationTest(networkOptions, NeuralNetwork.class);
         //Case 5
         RandomForestsOptions randomForestsOptions = TestHelperUtils.createRandomForestsOptions(DecisionTreeType.C45);
-        //performClassifierEvaluationTest(randomForestsOptions, RandomForests.class);
+        performClassifierEvaluationTest(randomForestsOptions, RandomForests.class);
+        //Case 6
+        performClassifierEvaluationTest(TestHelperUtils.createJ48Options(), J48.class);
+        //Case 7
+        ExtraTreesOptions extraTreesOptions = TestHelperUtils.createExtraTreesOptions(DecisionTreeType.CART);
+        performClassifierEvaluationTest(extraTreesOptions, ExtraTreesClassifier.class);
+        //Case 8
+        performClassifierEvaluationTest(TestHelperUtils.createStackingOptions(), StackingClassifier.class);
+        //Case 9
+        performClassifierEvaluationTest(TestHelperUtils.createAdaBoostOptions(), AdaBoostClassifier.class);
+        //Case 10
+        performClassifierEvaluationTest(TestHelperUtils.createHeterogeneousClassifierOptions(false),
+                HeterogeneousClassifier.class);
+        //Case 11
+        performClassifierEvaluationTest(TestHelperUtils.createHeterogeneousClassifierOptions(true),
+                ModifiedHeterogeneousClassifier.class);
+
     }
 
     private <U extends ClassifierOptions, V extends AbstractClassifier> void performClassifierEvaluationTest(U options,
