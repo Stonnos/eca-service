@@ -54,7 +54,7 @@
             </column>
             <column name="classifier_name" type="varchar(255)"/>
             <column name="classifier_description" type="varchar(255)"/>
-            <column name="options" type="text"/>
+            <column name="classifier_options" type="text"/>
             <column name="classifier_options_request_model_id" type="bigint">
                 <constraints foreignKeyName="fk_classifier_options_request_model_id"
                              referencedTableName="classifier_options_request_model" referencedColumnNames="id"

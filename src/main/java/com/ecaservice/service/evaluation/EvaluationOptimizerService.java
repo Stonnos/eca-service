@@ -16,6 +16,7 @@ import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
+import com.ecaservice.repository.ClassifierOptionsResponseModelRepository;
 import com.ecaservice.service.ClassifierOptionsService;
 import com.ecaservice.service.ErsWebServiceClient;
 import com.ecaservice.util.Utils;
@@ -31,6 +32,7 @@ import weka.core.Instances;
 import javax.inject.Inject;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -55,18 +57,20 @@ public class EvaluationOptimizerService {
     private final EvaluationRequestMapper evaluationRequestMapper;
     private final ClassifierOptionsService classifierOptionsService;
     private final ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
+    private final ClassifierOptionsResponseModelRepository classifierOptionsResponseModelRepository;
 
     /**
      * Constructor with spring dependency injection.
      *
-     * @param crossValidationConfig                   - cross - validation config bean
-     * @param evaluationRequestService                - evaluation request service bean
-     * @param ersWebServiceClient                     - ers web service client bean
-     * @param classifierOptionsRequestModelMapper     - classifier options request model mapper bean
-     * @param classifierReportMapper                  - classifier report mapper bean
-     * @param evaluationRequestMapper                 - evaluation request mapper bean
-     * @param classifierOptionsService                - classifier options service bean
-     * @param classifierOptionsRequestModelRepository - classifier options request model repository bean
+     * @param crossValidationConfig                    - cross - validation config bean
+     * @param evaluationRequestService                 - evaluation request service bean
+     * @param ersWebServiceClient                      - ers web service client bean
+     * @param classifierOptionsRequestModelMapper      - classifier options request model mapper bean
+     * @param classifierReportMapper                   - classifier report mapper bean
+     * @param evaluationRequestMapper                  - evaluation request mapper bean
+     * @param classifierOptionsService                 - classifier options service bean
+     * @param classifierOptionsRequestModelRepository  - classifier options request model repository bean
+     * @param classifierOptionsResponseModelRepository - classifier options response model repository bean
      */
     @Inject
     public EvaluationOptimizerService(CrossValidationConfig crossValidationConfig,
@@ -76,7 +80,8 @@ public class EvaluationOptimizerService {
                                       ClassifierReportMapper classifierReportMapper,
                                       EvaluationRequestMapper evaluationRequestMapper,
                                       ClassifierOptionsService classifierOptionsService,
-                                      ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository) {
+                                      ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository,
+                                      ClassifierOptionsResponseModelRepository classifierOptionsResponseModelRepository) {
         this.crossValidationConfig = crossValidationConfig;
         this.evaluationRequestService = evaluationRequestService;
         this.ersWebServiceClient = ersWebServiceClient;
@@ -85,6 +90,7 @@ public class EvaluationOptimizerService {
         this.evaluationRequestMapper = evaluationRequestMapper;
         this.classifierOptionsService = classifierOptionsService;
         this.classifierOptionsRequestModelRepository = classifierOptionsRequestModelRepository;
+        this.classifierOptionsResponseModelRepository = classifierOptionsResponseModelRepository;
     }
 
     /**
@@ -115,8 +121,10 @@ public class EvaluationOptimizerService {
                     ClassifierReport classifierReport =
                             response.getClassifierReports().stream().findFirst().orElse(null);
                     if (Utils.validateClassifierOptions(classifierReport)) {
-                        requestModel.setClassifierOptionsResponseModels(
-                                Collections.singletonList(classifierReportMapper.map(classifierReport)));
+                        ClassifierOptionsResponseModel classifierOptionsResponseModel =
+                                classifierReportMapper.map(classifierReport);
+                        classifierOptionsResponseModel.setClassifierOptionsRequestModel(requestModel);
+                        classifierOptionsResponseModelRepository.save(classifierOptionsResponseModel);
                         return evaluateModel(classifierOptionsRequest, classifierReport.getOptions(), data);
                     }
                 }

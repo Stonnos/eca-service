@@ -6,6 +6,8 @@ import lombok.Data;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -33,6 +35,7 @@ public class ClassifierOptionsRequestModel extends ErsRequest {
     /**
      * Evaluation method
      */
+    @Enumerated(EnumType.STRING)
     @Column(name = "evaluation_method")
     private EvaluationMethod evaluationMethod;
 
@@ -56,8 +59,7 @@ public class ClassifierOptionsRequestModel extends ErsRequest {
     /**
      * Classifier options response
      */
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "classifier_options_request_model_id", nullable = false)
+    @OneToMany(mappedBy = "classifierOptionsRequestModel", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ClassifierOptionsResponseModel> classifierOptionsResponseModels;
 
 }
