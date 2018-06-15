@@ -97,6 +97,7 @@ public class EvaluationOptimizerService {
      */
     public EvaluationResponse evaluateWithOptimalClassifierOptions(Instances data) {
         Assert.notNull(data, "Instances isn't specified!");
+        log.info("Starting evaluation with optimal classifier options for data '{}'", data.relationName());
         ClassifierOptionsRequest classifierOptionsRequest = createClassifierOptionsRequest(data);
         String optimalOptions = getOptimalClassifierOptions(classifierOptionsRequest);
         return !StringUtils.isEmpty(optimalOptions) ? evaluateModel(classifierOptionsRequest, optimalOptions, data) :
@@ -108,6 +109,8 @@ public class EvaluationOptimizerService {
                 DigestUtils.md5DigestAsHex(classifierOptionsRequest.getInstances().getXmlInstances().getBytes());
         ClassifierOptionsResponseModel responseModel = findLastClassifierOptionsResponseModel(dataMd5Hash);
         if (Optional.ofNullable(responseModel).map(ClassifierOptionsResponseModel::getOptions).isPresent()) {
+            log.info("Optimal classifier options [{}] has been taken from last response for data '{}'.",
+                    responseModel.getOptions(), classifierOptionsRequest.getInstances().getRelationName());
             return responseModel.getOptions();
         } else {
             ClassifierReport classifierReport = sendClassifierOptionsRequest(classifierOptionsRequest, dataMd5Hash);
@@ -124,19 +127,25 @@ public class EvaluationOptimizerService {
         requestModel.setDataMd5Hash(dataMd5Hash);
         ClassifierReport classifierReport = null;
         try {
+            log.trace("Sending request to find classifier optimal options for data '{}'.",
+                    classifierOptionsRequest.getInstances().getRelationName());
             ClassifierOptionsResponse response =
                     ersWebServiceClient.getClassifierOptions(classifierOptionsRequest);
+            log.trace("Received response with requestId = {}, status = {}", response.getRequestId(),
+                    response.getStatus());
             requestModel.setRequestId(response.getRequestId());
             requestModel.setResponseStatus(response.getStatus());
             if (ResponseStatus.SUCCESS.equals(response.getStatus())) {
                 classifierReport = response.getClassifierReports().stream().findFirst().orElse(null);
                 if (classifierReport != null) {
+                    log.info("Optimal classifier options [{}] has been found for data '{}'.",
+                            classifierReport.getOptions(), classifierOptionsRequest.getInstances().getRelationName());
                     requestModel.setClassifierOptionsResponseModels(
                             Collections.singletonList(classifierReportMapper.map(classifierReport)));
                 }
             }
         } catch (Exception ex) {
-            log.error("There was an error while sending classifier options request: {}", ex.getMessage());
+            log.error("There was an error while sending classifier options request: {}.", ex.getMessage());
             requestModel.setResponseStatus(ResponseStatus.ERROR);
             requestModel.setDetails(ex.getMessage());
         } finally {
