@@ -8,6 +8,8 @@ import com.ecaservice.dto.evaluation.InputOptionsMap;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
+import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
+import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.model.entity.Email;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.Experiment;
@@ -24,6 +26,7 @@ import com.ecaservice.model.options.DecisionTreeOptions;
 import com.ecaservice.model.options.J48Options;
 import com.ecaservice.model.options.KNearestNeighboursOptions;
 import com.ecaservice.model.options.NeuralNetworkOptions;
+import com.ecaservice.model.options.RandomForestsOptions;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.core.evaluation.EvaluationService;
@@ -85,7 +88,7 @@ public class TestHelperUtils {
     private static final int IN_LAYER_NEURONS_NUM = 12;
     private static final int OUT_LAYER_NEURONS_NUM = 7;
     private static final int MAX_DEPTH = 10;
-    private static final int NUM_ITERATIONS = 1000;
+    private static final int NUM_ITERATIONS = 10;
     private static final int NUM_THREADS = 2;
     private static final double MIN_ERROR = 0.00001d;
     private static final int NUM_IN_NEURONS = 10;
@@ -472,6 +475,23 @@ public class TestHelperUtils {
     }
 
     /**
+     * Creates random forests options.
+     *
+     * @param decisionTreeType - decision tree type
+     * @return random forests options
+     */
+    public static RandomForestsOptions createRandomForestsOptions(DecisionTreeType decisionTreeType) {
+        RandomForestsOptions options = new RandomForestsOptions();
+        options.setDecisionTreeType(decisionTreeType);
+        options.setMinObj(NUM_OBJ);
+        options.setMaxDepth(MAX_DEPTH);
+        options.setNumRandomAttr(NUM_RANDOM_ATTR);
+        options.setNumIterations(NUM_ITERATIONS);
+        options.setSeed(SEED);
+        return options;
+    }
+
+    /**
      * Creates classifier report.
      *
      * @return classifier report
@@ -535,5 +555,44 @@ public class TestHelperUtils {
         response.setRequestId(java.util.UUID.randomUUID().toString());
         classifierReports.forEach(classifierReport -> response.getClassifierReports().add(classifierReport));
         return response;
+    }
+
+    /**
+     * Creates classifier options request model.
+     *
+     * @param dataMd5Hash    - data MD5 hash
+     * @param requestDate    - request date
+     * @param responseStatus - response status
+     * @param responseModels - response models
+     * @return classifier options request model
+     */
+    public static ClassifierOptionsRequestModel createClassifierOptionsRequestModel(String dataMd5Hash,
+                                                                                    LocalDateTime requestDate,
+                                                                                    ResponseStatus responseStatus,
+                                                                                    List<ClassifierOptionsResponseModel> responseModels) {
+        ClassifierOptionsRequestModel requestModel = new ClassifierOptionsRequestModel();
+        requestModel.setDataMd5Hash(dataMd5Hash);
+        requestModel.setRequestDate(requestDate);
+        requestModel.setResponseStatus(responseStatus);
+        requestModel.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
+        requestModel.setNumFolds(NUM_FOLDS);
+        requestModel.setNumTests(NUM_TESTS);
+        requestModel.setSeed(SEED);
+        requestModel.setClassifierOptionsResponseModels(responseModels);
+        return requestModel;
+    }
+
+    /**
+     * Creates classifier options response model.
+     *
+     * @param options - classifier options
+     * @return classifier options response model
+     */
+    public static ClassifierOptionsResponseModel createClassifierOptionsResponseModel(String options) {
+        ClassifierOptionsResponseModel responseModel = new ClassifierOptionsResponseModel();
+        responseModel.setClassifierName(DecisionTreeType.CART.name());
+        responseModel.setClassifierDescription(DecisionTreeType.CART.getDescription());
+        responseModel.setOptions(options);
+        return responseModel;
     }
 }

@@ -137,10 +137,9 @@ public class EvaluationOptimizerService {
                         Collections.singleton(ResponseStatus.SUCCESS),
                         LocalDateTime.now().minusDays(crossValidationConfig.getClassifierOptionsCacheDurationInDays()),
                         new PageRequest(0, 1));
-        return requestModels.stream().findFirst().map(
-                requestModel -> !CollectionUtils.isEmpty(requestModel.getClassifierOptionsResponseModels()) ?
-                        requestModel.getClassifierOptionsResponseModels().stream().findFirst().orElse(null) :
-                        null).orElse(null);
+        return requestModels.stream().filter(requestModel -> !CollectionUtils.isEmpty(requestModel
+                .getClassifierOptionsResponseModels())).findFirst().map(requestModel -> requestModel
+                .getClassifierOptionsResponseModels().stream().findFirst().orElse(null)).orElse(null);
     }
 
     private EvaluationResponse evaluateModel(ClassifierOptionsRequest classifierOptionsRequest, String options,

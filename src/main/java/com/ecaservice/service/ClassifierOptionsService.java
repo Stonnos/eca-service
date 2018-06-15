@@ -103,7 +103,8 @@ public class ClassifierOptionsService {
                 return classifier;
             }
         }
-        return null;
+        throw new UnsupportedOperationException(String.format("Can not convert '%s' classifier options!",
+                classifierOptions.getClass().getSimpleName()));
     }
 
     private List<ClassifierOptions> convertClassifiersSet(ClassifiersSet classifiers) {
