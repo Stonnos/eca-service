@@ -21,12 +21,18 @@ import com.ecaservice.model.experiment.ExperimentRequest;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
+import com.ecaservice.model.options.AdaBoostOptions;
 import com.ecaservice.model.options.BackPropagationOptions;
+import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.model.options.DecisionTreeOptions;
+import com.ecaservice.model.options.ExtraTreesOptions;
+import com.ecaservice.model.options.HeterogeneousClassifierOptions;
 import com.ecaservice.model.options.J48Options;
 import com.ecaservice.model.options.KNearestNeighboursOptions;
 import com.ecaservice.model.options.NeuralNetworkOptions;
 import com.ecaservice.model.options.RandomForestsOptions;
+import com.ecaservice.model.options.RandomNetworkOptions;
+import com.ecaservice.model.options.StackingOptions;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.core.evaluation.EvaluationService;
@@ -38,8 +44,10 @@ import eca.ensemble.forests.DecisionTreeBuilder;
 import eca.ensemble.forests.DecisionTreeType;
 import eca.ensemble.forests.ExtraTreesClassifier;
 import eca.ensemble.forests.RandomForests;
+import eca.ensemble.sampling.SamplingMethod;
 import eca.metrics.KNearestNeighbours;
 import eca.metrics.distances.Distance;
+import eca.metrics.distances.DistanceType;
 import eca.neural.NeuralNetwork;
 import eca.neural.functions.AbstractFunction;
 import eca.trees.CART;
@@ -50,6 +58,7 @@ import weka.core.Instances;
 import java.io.File;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -95,6 +104,8 @@ public class TestHelperUtils {
     private static final int NUM_OUT_NEURONS = 12;
     private static final double LEARNING_RATE = 0.01d;
     private static final double MOMENTUM = 0.23d;
+    public static final double MIN_ERROR_THRESHOLD = 0.0d;
+    public static final double MAX_ERROR_THRESHOLD = 0.5d;
 
     /**
      * Generates the test data set.
@@ -395,6 +406,8 @@ public class TestHelperUtils {
         randomNetworks.setNumThreads(NUM_THREADS);
         randomNetworks.setUseBootstrapSamples(true);
         randomNetworks.setNumIterations(NUM_ITERATIONS);
+        randomNetworks.setMinError(MIN_ERROR_THRESHOLD);
+        randomNetworks.setMaxError(MAX_ERROR_THRESHOLD);
         return randomNetworks;
     }
 
@@ -489,6 +502,107 @@ public class TestHelperUtils {
         options.setNumIterations(NUM_ITERATIONS);
         options.setSeed(SEED);
         return options;
+    }
+
+    /**
+     * Creates extra trees options.
+     *
+     * @param decisionTreeType - decision tree type
+     * @return extra trees options
+     */
+    public static ExtraTreesOptions createExtraTreesOptions(DecisionTreeType decisionTreeType) {
+        ExtraTreesOptions options = new ExtraTreesOptions();
+        options.setDecisionTreeType(decisionTreeType);
+        options.setMinObj(NUM_OBJ);
+        options.setMaxDepth(MAX_DEPTH);
+        options.setNumRandomAttr(NUM_RANDOM_ATTR);
+        options.setNumIterations(NUM_ITERATIONS);
+        options.setSeed(SEED);
+        options.setUseBootstrapSamples(true);
+        options.setNumRandomSplits(NUM_RANDOM_SPLITS);
+        return options;
+    }
+
+    /**
+     * Creates random networks options.
+     *
+     * @return random networks options
+     */
+    public static RandomNetworkOptions createRandomNetworkOptions() {
+        RandomNetworkOptions randomNetworkOptions = new RandomNetworkOptions();
+        randomNetworkOptions.setUseBootstrapSamples(true);
+        randomNetworkOptions.setNumIterations(NUM_ITERATIONS);
+        randomNetworkOptions.setSeed(SEED);
+        randomNetworkOptions.setMinError(MIN_ERROR_THRESHOLD);
+        randomNetworkOptions.setMaxError(MAX_ERROR_THRESHOLD);
+        return randomNetworkOptions;
+    }
+
+    /**
+     * Creates stacking options.
+     *
+     * @return stacking options
+     */
+    public static StackingOptions createStackingOptions() {
+        StackingOptions stackingOptions = new StackingOptions();
+        stackingOptions.setSeed(SEED);
+        stackingOptions.setNumFolds(NUM_FOLDS);
+        stackingOptions.setUseCrossValidation(true);
+        stackingOptions.setClassifierOptions(createClassifierOptions());
+        stackingOptions.setMetaClassifierOptions(createJ48Options());
+        return stackingOptions;
+    }
+
+    /**
+     * Creates AdaBoost options.
+     *
+     * @return AdaBoost options
+     */
+    public static AdaBoostOptions createAdaBoostOptions() {
+        AdaBoostOptions options = new AdaBoostOptions();
+        options.setNumIterations(NUM_ITERATIONS);
+        options.setSeed(SEED);
+        options.setMinError(MIN_ERROR_THRESHOLD);
+        options.setMaxError(MAX_ERROR_THRESHOLD);
+        options.setClassifierOptions(createClassifierOptions());
+        return options;
+    }
+
+    /**
+     * Creates HEC options.
+     *
+     * @param useRandomSubspaces - is use random subspaces sampling at each iteration?
+     * @return HEC options
+     */
+    public static HeterogeneousClassifierOptions createHeterogeneousClassifierOptions(boolean useRandomSubspaces) {
+        HeterogeneousClassifierOptions options = new HeterogeneousClassifierOptions();
+        options.setUseRandomSubspaces(useRandomSubspaces);
+        options.setSeed(SEED);
+        options.setNumIterations(NUM_ITERATIONS);
+        options.setUseWeightedVotes(true);
+        options.setSamplingMethod(SamplingMethod.BAGGING);
+        options.setUseRandomClassifier(true);
+        options.setMinError(MIN_ERROR_THRESHOLD);
+        options.setMaxError(MAX_ERROR_THRESHOLD);
+        options.setClassifierOptions(createClassifierOptions());
+        return options;
+    }
+
+    /**
+     * Creates classifiers options list.
+     *
+     * @return classifiers options list
+     */
+    public static List<ClassifierOptions> createClassifierOptions() {
+        List<ClassifierOptions> classifierOptions = new ArrayList<>();
+        classifierOptions.add(createJ48Options());
+        DecisionTreeOptions treeOptions = createDecisionTreeOptions();
+        treeOptions.setDecisionTreeType(DecisionTreeType.C45);
+        KNearestNeighboursOptions kNearestNeighboursOptions = createKNearestNeighboursOptions();
+        kNearestNeighboursOptions.setDistanceType(DistanceType.EUCLID);
+        classifierOptions.add(treeOptions);
+        classifierOptions.add(kNearestNeighboursOptions);
+        return classifierOptions;
     }
 
     /**
