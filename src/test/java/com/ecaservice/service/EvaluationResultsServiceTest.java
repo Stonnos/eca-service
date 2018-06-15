@@ -41,7 +41,7 @@ public class EvaluationResultsServiceTest {
     @Inject
     private EvaluationLogRepository evaluationLogRepository;
     @Mock
-    private EvaluationResultsSender evaluationResultsSender;
+    private ErsWebServiceClient ersWebServiceClient;
     @Inject
     private ErsRequestRepository ersRequestRepository;
 
@@ -51,7 +51,7 @@ public class EvaluationResultsServiceTest {
 
     @Before
     public void init() throws Exception {
-        evaluationResultsService = new EvaluationResultsService(evaluationResultsSender, ersRequestRepository);
+        evaluationResultsService = new EvaluationResultsService(ersWebServiceClient, ersRequestRepository);
         evaluationResults =
                 new EvaluationResults(new KNearestNeighbours(), new Evaluation(TestHelperUtils.loadInstances()));
     }
@@ -68,7 +68,7 @@ public class EvaluationResultsServiceTest {
         evaluationLogRepository.save(evaluationLog);
         EvaluationResultsResponse resultsResponse = new EvaluationResultsResponse();
         resultsResponse.setStatus(ResponseStatus.SUCCESS);
-        when(evaluationResultsSender.sendEvaluationResults(any(EvaluationResults.class), anyString())).thenReturn(
+        when(ersWebServiceClient.sendEvaluationResults(any(EvaluationResults.class), anyString())).thenReturn(
                 resultsResponse);
         EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
         requestEntity.setEvaluationLog(evaluationLog);
@@ -90,7 +90,7 @@ public class EvaluationResultsServiceTest {
         evaluationLogRepository.save(evaluationLog);
         EvaluationResultsResponse resultsResponse = new EvaluationResultsResponse();
         resultsResponse.setStatus(ResponseStatus.ERROR);
-        when(evaluationResultsSender.sendEvaluationResults(any(EvaluationResults.class), anyString())).thenThrow(
+        when(ersWebServiceClient.sendEvaluationResults(any(EvaluationResults.class), anyString())).thenThrow(
                 new WebServiceIOException("I/O exception"));
         EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
         requestEntity.setEvaluationLog(evaluationLog);

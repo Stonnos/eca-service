@@ -15,16 +15,16 @@ import javax.inject.Inject;
 import java.util.UUID;
 
 /**
- * Integration tests for checking {@link EvaluationResultsSender} functionality.
+ * Integration tests for checking {@link ErsWebServiceClient} functionality.
  *
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class EvaluationResultsSenderIT {
+public class ErsWebServiceClientIT {
 
     @Inject
-    private EvaluationResultsSender evaluationResultsSender;
+    private ErsWebServiceClient ersWebServiceClient;
 
     private EvaluationResults evaluationResults;
 
@@ -37,7 +37,7 @@ public class EvaluationResultsSenderIT {
     public void testEvaluationResultsSending() {
         String requestId = UUID.randomUUID().toString();
         EvaluationResultsResponse resultsResponse =
-                evaluationResultsSender.sendEvaluationResults(evaluationResults, requestId);
+                ersWebServiceClient.sendEvaluationResults(evaluationResults, requestId);
         Assertions.assertThat(resultsResponse).isNotNull();
         Assertions.assertThat(resultsResponse.getRequestId()).isEqualTo(requestId);
         Assertions.assertThat(resultsResponse.getStatus()).isEqualTo(ResponseStatus.SUCCESS);

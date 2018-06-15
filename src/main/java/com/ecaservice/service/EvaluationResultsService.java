@@ -23,19 +23,19 @@ import java.util.UUID;
 @Service
 public class EvaluationResultsService {
 
-    private final EvaluationResultsSender evaluationResultsSender;
+    private final ErsWebServiceClient ersWebServiceClient;
     private final ErsRequestRepository ersRequestRepository;
 
     /**
      * Constructor with spring dependency injection.
      *
-     * @param evaluationResultsSender - evaluation results sender bean
-     * @param ersRequestRepository    - evaluation results service request repository bean
+     * @param ersWebServiceClient  - ers web service client bean
+     * @param ersRequestRepository - evaluation results service request repository bean
      */
     @Inject
-    public EvaluationResultsService(EvaluationResultsSender evaluationResultsSender,
+    public EvaluationResultsService(ErsWebServiceClient ersWebServiceClient,
                                     ErsRequestRepository ersRequestRepository) {
-        this.evaluationResultsSender = evaluationResultsSender;
+        this.ersWebServiceClient = ersWebServiceClient;
         this.ersRequestRepository = ersRequestRepository;
     }
 
@@ -51,7 +51,7 @@ public class EvaluationResultsService {
         ersRequest.setRequestId(UUID.randomUUID().toString());
         try {
             EvaluationResultsResponse resultsResponse =
-                    evaluationResultsSender.sendEvaluationResults(evaluationResults, ersRequest.getRequestId());
+                    ersWebServiceClient.sendEvaluationResults(evaluationResults, ersRequest.getRequestId());
             ersRequest.setResponseStatus(resultsResponse.getStatus());
         } catch (Exception ex) {
             log.error("There was an error while sending evaluation results: {}", ex.getMessage());

@@ -21,7 +21,7 @@ import javax.inject.Inject;
  */
 @Slf4j
 @Service
-public class EvaluationResultsSender {
+public class ErsWebServiceClient {
 
     private static final String SERVICE_DISABLED_MESSAGE_FORMAT = "Evaluation results sending to url '%s' is disabled.";
 
@@ -37,9 +37,9 @@ public class EvaluationResultsSender {
      * @param serviceConfig           - evaluation results service config bean
      */
     @Inject
-    public EvaluationResultsSender(WebServiceTemplate webServiceTemplate,
-                                   EvaluationResultsMapper evaluationResultsMapper,
-                                   EvaluationResultsServiceConfig serviceConfig) {
+    public ErsWebServiceClient(WebServiceTemplate webServiceTemplate,
+                               EvaluationResultsMapper evaluationResultsMapper,
+                               EvaluationResultsServiceConfig serviceConfig) {
         this.webServiceTemplate = webServiceTemplate;
         this.evaluationResultsMapper = evaluationResultsMapper;
         this.serviceConfig = serviceConfig;

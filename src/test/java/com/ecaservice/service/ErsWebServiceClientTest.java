@@ -28,16 +28,16 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for checking {@link EvaluationResultsSender} functionality.
+ * Unit tests for checking {@link ErsWebServiceClient} functionality.
  *
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class EvaluationResultsSenderTest {
+public class ErsWebServiceClientTest {
 
     @InjectMocks
-    private EvaluationResultsSender evaluationResultsSender;
+    private ErsWebServiceClient ersWebServiceClient;
 
     @Mock
     private EvaluationResultsServiceConfig serviceConfig;
@@ -59,7 +59,7 @@ public class EvaluationResultsSenderTest {
     @Test(expected = EcaServiceException.class)
     public void testEvaluationResultsSendingDisabled() {
         when(serviceConfig.getEnabled()).thenReturn(false);
-        evaluationResultsSender.sendEvaluationResults(evaluationResults, UUID.randomUUID().toString());
+        ersWebServiceClient.sendEvaluationResults(evaluationResults, UUID.randomUUID().toString());
     }
 
     @Test
@@ -70,7 +70,7 @@ public class EvaluationResultsSenderTest {
         when(webServiceTemplate.marshalSendAndReceive(anyString(), any(EvaluationResultsRequest.class))).thenReturn(
                 expectedResponse);
         EvaluationResultsResponse actualResponse =
-                evaluationResultsSender.sendEvaluationResults(evaluationResults, UUID.randomUUID().toString());
+                ersWebServiceClient.sendEvaluationResults(evaluationResults, UUID.randomUUID().toString());
         Assertions.assertThat(actualResponse.getRequestId()).isEqualTo(expectedResponse.getRequestId());
         Assertions.assertThat(actualResponse.getStatus()).isEqualTo(expectedResponse.getStatus());
     }
@@ -79,6 +79,6 @@ public class EvaluationResultsSenderTest {
     public void testErrorSending() {
         when(webServiceTemplate.marshalSendAndReceive(anyString(), any(EvaluationResultsRequest.class))).thenThrow(
                 new WebServiceIOException("I/O exception"));
-        evaluationResultsSender.sendEvaluationResults(evaluationResults, UUID.randomUUID().toString());
+        ersWebServiceClient.sendEvaluationResults(evaluationResults, UUID.randomUUID().toString());
     }
 }

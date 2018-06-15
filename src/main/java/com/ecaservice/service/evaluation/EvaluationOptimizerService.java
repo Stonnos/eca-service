@@ -17,7 +17,7 @@ import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.service.ClassifierOptionsService;
-import com.ecaservice.service.EvaluationResultsSender;
+import com.ecaservice.service.ErsWebServiceClient;
 import com.ecaservice.util.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +49,7 @@ public class EvaluationOptimizerService {
 
     private final CrossValidationConfig crossValidationConfig;
     private final EvaluationRequestService evaluationRequestService;
-    private final EvaluationResultsSender evaluationResultsSender;
+    private final ErsWebServiceClient ersWebServiceClient;
     private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
     private final ClassifierReportMapper classifierReportMapper;
     private final EvaluationRequestMapper evaluationRequestMapper;
@@ -61,7 +61,7 @@ public class EvaluationOptimizerService {
      *
      * @param crossValidationConfig                   - cross - validation config bean
      * @param evaluationRequestService                - evaluation request service bean
-     * @param evaluationResultsSender                 - evaluation results sender bean
+     * @param ersWebServiceClient                     - ers web service client bean
      * @param classifierOptionsRequestModelMapper     - classifier options request model mapper bean
      * @param classifierReportMapper                  - classifier report mapper bean
      * @param evaluationRequestMapper                 - evaluation request mapper bean
@@ -71,7 +71,7 @@ public class EvaluationOptimizerService {
     @Inject
     public EvaluationOptimizerService(CrossValidationConfig crossValidationConfig,
                                       EvaluationRequestService evaluationRequestService,
-                                      EvaluationResultsSender evaluationResultsSender,
+                                      ErsWebServiceClient ersWebServiceClient,
                                       ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper,
                                       ClassifierReportMapper classifierReportMapper,
                                       EvaluationRequestMapper evaluationRequestMapper,
@@ -79,7 +79,7 @@ public class EvaluationOptimizerService {
                                       ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository) {
         this.crossValidationConfig = crossValidationConfig;
         this.evaluationRequestService = evaluationRequestService;
-        this.evaluationResultsSender = evaluationResultsSender;
+        this.ersWebServiceClient = ersWebServiceClient;
         this.classifierOptionsRequestModelMapper = classifierOptionsRequestModelMapper;
         this.classifierReportMapper = classifierReportMapper;
         this.evaluationRequestMapper = evaluationRequestMapper;
@@ -108,7 +108,7 @@ public class EvaluationOptimizerService {
             classifierOptionsRequestModelRepository.save(requestModel);
             try {
                 ClassifierOptionsResponse response =
-                        evaluationResultsSender.getClassifierOptions(classifierOptionsRequest);
+                        ersWebServiceClient.getClassifierOptions(classifierOptionsRequest);
                 requestModel.setRequestId(response.getRequestId());
                 requestModel.setResponseStatus(response.getStatus());
                 if (ResponseStatus.SUCCESS.equals(response.getStatus())) {
