@@ -1,7 +1,7 @@
 package com.ecaservice.service;
 
-import com.ecaservice.mapping.AbstractClassifierMapper;
-import com.ecaservice.mapping.ClassifierOptionsMapper;
+import com.ecaservice.mapping.options.AbstractClassifierMapper;
+import com.ecaservice.mapping.options.ClassifierOptionsMapper;
 import com.ecaservice.model.options.AbstractHeterogeneousClassifierOptions;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.model.options.StackingOptions;

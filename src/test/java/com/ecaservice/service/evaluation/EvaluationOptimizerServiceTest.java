@@ -264,7 +264,7 @@ public class EvaluationOptimizerServiceTest {
         performClassifierEvaluationTest(networkOptions, NeuralNetwork.class);
         //Case 5
         RandomForestsOptions randomForestsOptions = TestHelperUtils.createRandomForestsOptions(DecisionTreeType.C45);
-        performClassifierEvaluationTest(randomForestsOptions, RandomForests.class);
+        //performClassifierEvaluationTest(randomForestsOptions, RandomForests.class);
     }
 
     private <U extends ClassifierOptions, V extends AbstractClassifier> void performClassifierEvaluationTest(U options,

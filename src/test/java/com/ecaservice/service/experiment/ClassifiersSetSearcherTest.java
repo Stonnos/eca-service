@@ -4,7 +4,7 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.exception.ExperimentException;
-import com.ecaservice.mapping.ClassifierOptionsMapper;
+import com.ecaservice.mapping.options.ClassifierOptionsMapper;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.evaluation.ClassificationResult;
 import com.ecaservice.model.evaluation.EvaluationMethod;
