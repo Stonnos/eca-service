@@ -1,6 +1,5 @@
 package com.ecaservice.mapping.options;
 
-import com.ecaservice.mapping.options.AbstractClassifierMapper;
 import com.ecaservice.model.options.ActivationFunctionOptions;
 import com.ecaservice.model.options.BackPropagationOptions;
 import com.ecaservice.model.options.NeuralNetworkOptions;

@@ -28,7 +28,6 @@ import javax.inject.Inject;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Implements experiment parameters initialization.
@@ -79,7 +78,7 @@ public class ExperimentInitializationVisitor
                 initializationParams.getEvaluationMethod(), createEvaluationOptionsMap(initializationParams));
         HeterogeneousClassifier heterogeneousClassifier = new HeterogeneousClassifier(classifiersSet);
         heterogeneousClassifier.setNumThreads(getNumThreads());
-        heterogeneousClassifier.setIterationsNum(experimentConfig.getEnsemble().getNumIterations());
+        heterogeneousClassifier.setNumIterations(experimentConfig.getEnsemble().getNumIterations());
         return new AutomatedHeterogeneousEnsemble(heterogeneousClassifier, initializationParams.getData());
     }
 
@@ -90,7 +89,7 @@ public class ExperimentInitializationVisitor
         ModifiedHeterogeneousClassifier modifiedHeterogeneousClassifier =
                 new ModifiedHeterogeneousClassifier(classifiersSet);
         modifiedHeterogeneousClassifier.setNumThreads(getNumThreads());
-        modifiedHeterogeneousClassifier.setIterationsNum(experimentConfig.getEnsemble().getNumIterations());
+        modifiedHeterogeneousClassifier.setNumIterations(experimentConfig.getEnsemble().getNumIterations());
         return new AutomatedHeterogeneousEnsemble(modifiedHeterogeneousClassifier, initializationParams.getData());
     }
 
@@ -99,7 +98,7 @@ public class ExperimentInitializationVisitor
         ClassifiersSet classifiersSet = classifiersSetSearcher.findBestClassifiers(initializationParams.getData(),
                 initializationParams.getEvaluationMethod(), createEvaluationOptionsMap(initializationParams));
         AdaBoostClassifier adaBoostClassifier = new AdaBoostClassifier(classifiersSet);
-        adaBoostClassifier.setIterationsNum(experimentConfig.getEnsemble().getNumIterations());
+        adaBoostClassifier.setNumIterations(experimentConfig.getEnsemble().getNumIterations());
         return new AutomatedHeterogeneousEnsemble(adaBoostClassifier, initializationParams.getData());
     }
 

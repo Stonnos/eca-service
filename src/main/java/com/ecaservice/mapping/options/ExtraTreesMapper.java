@@ -1,6 +1,5 @@
 package com.ecaservice.mapping.options;
 
-import com.ecaservice.mapping.options.AbstractClassifierMapper;
 import com.ecaservice.model.options.ExtraTreesOptions;
 import eca.ensemble.forests.ExtraTreesClassifier;
 import org.mapstruct.Mapper;

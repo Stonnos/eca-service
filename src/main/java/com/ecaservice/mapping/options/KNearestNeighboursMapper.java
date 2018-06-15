@@ -1,6 +1,5 @@
 package com.ecaservice.mapping.options;
 
-import com.ecaservice.mapping.options.AbstractClassifierMapper;
 import com.ecaservice.model.options.KNearestNeighboursOptions;
 import eca.metrics.KNearestNeighbours;
 import org.mapstruct.Mapper;

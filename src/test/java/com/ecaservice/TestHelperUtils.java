@@ -356,7 +356,7 @@ public class TestHelperUtils {
         RandomForests randomForests = new RandomForests();
         randomForests.setSeed(SEED);
         randomForests.setNumThreads(NUM_THREADS);
-        randomForests.setIterationsNum(NUM_ITERATIONS);
+        randomForests.setNumIterations(NUM_ITERATIONS);
         randomForests.setDecisionTreeType(decisionTreeType);
         randomForests.setMaxDepth(MAX_DEPTH);
         randomForests.setMinObj(NUM_OBJ);
@@ -374,7 +374,7 @@ public class TestHelperUtils {
         ExtraTreesClassifier treesClassifier = new ExtraTreesClassifier();
         treesClassifier.setSeed(SEED);
         treesClassifier.setNumThreads(NUM_THREADS);
-        treesClassifier.setIterationsNum(NUM_ITERATIONS);
+        treesClassifier.setNumIterations(NUM_ITERATIONS);
         treesClassifier.setDecisionTreeType(decisionTreeType);
         treesClassifier.setMaxDepth(MAX_DEPTH);
         treesClassifier.setMinObj(NUM_OBJ);
@@ -394,7 +394,7 @@ public class TestHelperUtils {
         randomNetworks.setSeed(SEED);
         randomNetworks.setNumThreads(NUM_THREADS);
         randomNetworks.setUseBootstrapSamples(true);
-        randomNetworks.setIterationsNum(NUM_ITERATIONS);
+        randomNetworks.setNumIterations(NUM_ITERATIONS);
         return randomNetworks;
     }
 

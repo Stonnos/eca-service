@@ -1,6 +1,5 @@
 package com.ecaservice.mapping.options;
 
-import com.ecaservice.mapping.options.AbstractClassifierMapper;
 import com.ecaservice.model.options.J48Options;
 import eca.trees.J48;
 import org.mapstruct.Mapper;

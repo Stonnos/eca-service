@@ -28,7 +28,6 @@ import com.ecaservice.util.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.EvaluationResults;
 import eca.ensemble.forests.DecisionTreeType;
-import eca.ensemble.forests.RandomForests;
 import eca.metrics.KNearestNeighbours;
 import eca.metrics.distances.DistanceType;
 import eca.neural.NeuralNetwork;

@@ -1,6 +1,5 @@
 package com.ecaservice.mapping.options;
 
-import com.ecaservice.mapping.options.AbstractClassifierMapper;
 import com.ecaservice.model.options.DecisionTreeOptions;
 import com.ecaservice.model.options.OptionsVariables;
 import eca.ensemble.forests.DecisionTreeType;

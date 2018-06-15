@@ -1,6 +1,5 @@
 package com.ecaservice.mapping.options;
 
-import com.ecaservice.mapping.options.AbstractClassifierMapper;
 import com.ecaservice.model.options.HeterogeneousClassifierOptions;
 import eca.ensemble.HeterogeneousClassifier;
 import eca.ensemble.ModifiedHeterogeneousClassifier;

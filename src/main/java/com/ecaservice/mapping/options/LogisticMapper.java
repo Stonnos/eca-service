@@ -1,6 +1,5 @@
 package com.ecaservice.mapping.options;
 
-import com.ecaservice.mapping.options.AbstractClassifierMapper;
 import com.ecaservice.model.options.LogisticOptions;
 import eca.regression.Logistic;
 import org.mapstruct.Mapper;

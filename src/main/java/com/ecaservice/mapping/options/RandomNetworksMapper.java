@@ -1,6 +1,5 @@
 package com.ecaservice.mapping.options;
 
-import com.ecaservice.mapping.options.AbstractClassifierMapper;
 import com.ecaservice.model.options.RandomNetworkOptions;
 import eca.ensemble.RandomNetworks;
 import org.mapstruct.Mapper;

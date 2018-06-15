@@ -11,9 +11,9 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.Table;
-import javax.persistence.Index;
 import java.time.LocalDateTime;
 
 /**
