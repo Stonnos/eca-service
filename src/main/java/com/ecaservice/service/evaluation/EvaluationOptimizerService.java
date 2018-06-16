@@ -4,12 +4,10 @@ import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.InstancesRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
-import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.ClassifierReport;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassifierOptionsRequestMapper;
 import com.ecaservice.mapping.ClassifierOptionsRequestModelMapper;
-import com.ecaservice.mapping.ClassifierReportMapper;
 import com.ecaservice.mapping.EvaluationRequestMapper;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
@@ -17,7 +15,7 @@ import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.service.ClassifierOptionsService;
-import com.ecaservice.service.ErsWebServiceClient;
+import com.ecaservice.service.ers.ErsRequestService;
 import com.ecaservice.util.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -49,9 +47,8 @@ public class EvaluationOptimizerService {
 
     private final CrossValidationConfig crossValidationConfig;
     private final EvaluationRequestService evaluationRequestService;
-    private final ErsWebServiceClient ersWebServiceClient;
+    private final ErsRequestService ersRequestService;
     private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
-    private final ClassifierReportMapper classifierReportMapper;
     private final EvaluationRequestMapper evaluationRequestMapper;
     private final ClassifierOptionsRequestMapper classifierOptionsRequestMapper;
     private final ClassifierOptionsService classifierOptionsService;
@@ -62,9 +59,8 @@ public class EvaluationOptimizerService {
      *
      * @param crossValidationConfig                   - cross - validation config bean
      * @param evaluationRequestService                - evaluation request service bean
-     * @param ersWebServiceClient                     - ers web service client bean
      * @param classifierOptionsRequestModelMapper     - classifier options request model mapper bean
-     * @param classifierReportMapper                  - classifier report mapper bean
+     * @param ersRequestService                       - ers request service bean
      * @param evaluationRequestMapper                 - evaluation request mapper bean
      * @param classifierOptionsRequestMapper          - classifier options request mapper bean
      * @param classifierOptionsService                - classifier options service bean
@@ -73,18 +69,16 @@ public class EvaluationOptimizerService {
     @Inject
     public EvaluationOptimizerService(CrossValidationConfig crossValidationConfig,
                                       EvaluationRequestService evaluationRequestService,
-                                      ErsWebServiceClient ersWebServiceClient,
                                       ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper,
-                                      ClassifierReportMapper classifierReportMapper,
+                                      ErsRequestService ersRequestService,
                                       EvaluationRequestMapper evaluationRequestMapper,
                                       ClassifierOptionsRequestMapper classifierOptionsRequestMapper,
                                       ClassifierOptionsService classifierOptionsService,
                                       ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository) {
         this.crossValidationConfig = crossValidationConfig;
         this.evaluationRequestService = evaluationRequestService;
-        this.ersWebServiceClient = ersWebServiceClient;
+        this.ersRequestService = ersRequestService;
         this.classifierOptionsRequestModelMapper = classifierOptionsRequestModelMapper;
-        this.classifierReportMapper = classifierReportMapper;
         this.evaluationRequestMapper = evaluationRequestMapper;
         this.classifierOptionsRequestMapper = classifierOptionsRequestMapper;
         this.classifierOptionsService = classifierOptionsService;
@@ -120,45 +114,14 @@ public class EvaluationOptimizerService {
                     responseModel.getOptions(), classifierOptionsRequest.getInstances().getRelationName());
             return responseModel.getOptions();
         } else {
-            ClassifierReport classifierReport = sendClassifierOptionsRequest(classifierOptionsRequest, dataMd5Hash);
+            ClassifierOptionsRequestModel requestModel =
+                    classifierOptionsRequestModelMapper.map(classifierOptionsRequest);
+            requestModel.setRelationName(classifierOptionsRequest.getInstances().getRelationName());
+            requestModel.setDataMd5Hash(dataMd5Hash);
+            ClassifierReport classifierReport =
+                    ersRequestService.getOptimalClassifierOptions(classifierOptionsRequest, requestModel);
             return Optional.ofNullable(classifierReport).map(ClassifierReport::getOptions).orElse(null);
         }
-    }
-
-    private ClassifierReport sendClassifierOptionsRequest(ClassifierOptionsRequest classifierOptionsRequest,
-                                                          String dataMd5Hash) {
-        ClassifierOptionsRequestModel requestModel =
-                classifierOptionsRequestModelMapper.map(classifierOptionsRequest);
-        requestModel.setRequestDate(LocalDateTime.now());
-        requestModel.setRelationName(classifierOptionsRequest.getInstances().getRelationName());
-        requestModel.setDataMd5Hash(dataMd5Hash);
-        ClassifierReport classifierReport = null;
-        try {
-            log.trace("Sending request to find classifier optimal options for data '{}'.",
-                    classifierOptionsRequest.getInstances().getRelationName());
-            ClassifierOptionsResponse response =
-                    ersWebServiceClient.getClassifierOptions(classifierOptionsRequest);
-            log.trace("Received response with requestId = {}, status = {}", response.getRequestId(),
-                    response.getStatus());
-            requestModel.setRequestId(response.getRequestId());
-            requestModel.setResponseStatus(response.getStatus());
-            if (ResponseStatus.SUCCESS.equals(response.getStatus())) {
-                classifierReport = response.getClassifierReports().stream().findFirst().orElse(null);
-                if (classifierReport != null) {
-                    log.info("Optimal classifier options [{}] has been found for data '{}'.",
-                            classifierReport.getOptions(), classifierOptionsRequest.getInstances().getRelationName());
-                    requestModel.setClassifierOptionsResponseModels(
-                            Collections.singletonList(classifierReportMapper.map(classifierReport)));
-                }
-            }
-        } catch (Exception ex) {
-            log.error("There was an error while sending classifier options request: {}.", ex.getMessage());
-            requestModel.setResponseStatus(ResponseStatus.ERROR);
-            requestModel.setDetails(ex.getMessage());
-        } finally {
-            classifierOptionsRequestModelRepository.save(requestModel);
-        }
-        return classifierReport;
     }
 
     private ClassifierOptionsResponseModel findLastClassifierOptionsResponseModel(String dataMd5Hash) {

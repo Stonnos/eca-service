@@ -6,7 +6,7 @@ import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.repository.ErsRequestRepository;
 import com.ecaservice.repository.ExperimentRepository;
-import com.ecaservice.service.EvaluationResultsService;
+import com.ecaservice.service.ers.ErsRequestService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.experiment.mail.NotificationService;
 import org.junit.After;
@@ -48,7 +48,7 @@ public class ExperimentSchedulerTest {
     @Mock
     private NotificationService notificationService;
     @Mock
-    private EvaluationResultsService evaluationResultsService;
+    private ErsRequestService ersRequestService;
     @Captor
     private ArgumentCaptor<Experiment> argumentCaptor;
 
@@ -60,7 +60,7 @@ public class ExperimentSchedulerTest {
     @Before
     public void setUp() {
         experimentScheduler = new ExperimentScheduler(experimentRepository, experimentService, notificationService,
-                evaluationResultsService, experimentConfig);
+                ersRequestService, experimentConfig);
     }
 
     @After

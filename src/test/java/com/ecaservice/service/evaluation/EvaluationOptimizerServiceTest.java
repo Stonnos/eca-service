@@ -26,7 +26,8 @@ import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.repository.ErsRequestRepository;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.ClassifierOptionsService;
-import com.ecaservice.service.ErsWebServiceClient;
+import com.ecaservice.service.ers.ErsRequestService;
+import com.ecaservice.service.ers.ErsWebServiceClient;
 import com.ecaservice.util.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.EvaluationResults;
@@ -112,11 +113,11 @@ public class EvaluationOptimizerServiceTest {
     public void init() throws Exception {
         instancesRequest = new InstancesRequest();
         instancesRequest.setData(TestHelperUtils.loadInstances());
-        evaluationOptimizerService =
-                new EvaluationOptimizerService(crossValidationConfig, evaluationRequestService, ersWebServiceClient,
-                        classifierOptionsRequestModelMapper, classifierReportMapper, evaluationRequestMapper,
-                        classifierOptionsRequestMapper, classifierOptionsService,
-                        classifierOptionsRequestModelRepository);
+        ErsRequestService ersRequestService = new ErsRequestService(ersWebServiceClient, ersRequestRepository,
+                classifierOptionsRequestModelRepository, classifierReportMapper);
+        evaluationOptimizerService = new EvaluationOptimizerService(crossValidationConfig, evaluationRequestService,
+                classifierOptionsRequestModelMapper, ersRequestService, evaluationRequestMapper,
+                classifierOptionsRequestMapper, classifierOptionsService, classifierOptionsRequestModelRepository);
         dataMd5Hash = DigestUtils.md5DigestAsHex(Utils.toXmlInstances(instancesRequest.getData()).getBytes());
         DecisionTreeOptions treeOptions = TestHelperUtils.createDecisionTreeOptions();
         treeOptions.setDecisionTreeType(DecisionTreeType.CART);

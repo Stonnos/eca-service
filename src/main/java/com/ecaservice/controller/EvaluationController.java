@@ -9,7 +9,7 @@ import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.model.evaluation.EvaluationRequest;
 import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
-import com.ecaservice.service.EvaluationResultsService;
+import com.ecaservice.service.ers.ErsRequestService;
 import com.ecaservice.service.evaluation.EvaluationOptimizerService;
 import com.ecaservice.service.evaluation.EvaluationRequestService;
 import com.ecaservice.util.Utils;
@@ -40,7 +40,7 @@ public class EvaluationController {
 
     private final EvaluationRequestService evaluationRequestService;
     private final EvaluationRequestMapper evaluationRequestMapper;
-    private final EvaluationResultsService evaluationResultsService;
+    private final ErsRequestService ersRequestService;
     private final EvaluationOptimizerService evaluationOptimizerService;
     private final EvaluationLogRepository evaluationLogRepository;
 
@@ -49,19 +49,19 @@ public class EvaluationController {
      *
      * @param evaluationRequestService   - evaluation request service bean
      * @param evaluationRequestMapper    - evaluation request mapper bean
-     * @param evaluationResultsService   - evaluation results service bean
+     * @param ersRequestService          - ers request service bean
      * @param evaluationOptimizerService - evaluation optimizer service bean
      * @param evaluationLogRepository    - evaluation log repository bean
      */
     @Inject
     public EvaluationController(EvaluationRequestService evaluationRequestService,
                                 EvaluationRequestMapper evaluationRequestMapper,
-                                EvaluationResultsService evaluationResultsService,
+                                ErsRequestService ersRequestService,
                                 EvaluationOptimizerService evaluationOptimizerService,
                                 EvaluationLogRepository evaluationLogRepository) {
         this.evaluationRequestService = evaluationRequestService;
         this.evaluationRequestMapper = evaluationRequestMapper;
-        this.evaluationResultsService = evaluationResultsService;
+        this.ersRequestService = ersRequestService;
         this.evaluationOptimizerService = evaluationOptimizerService;
         this.evaluationLogRepository = evaluationLogRepository;
     }
@@ -90,7 +90,7 @@ public class EvaluationController {
         if (evaluationLog != null) {
             EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
             requestEntity.setEvaluationLog(evaluationLog);
-            evaluationResultsService.saveEvaluationResults(evaluationResponse.getEvaluationResults(), requestEntity);
+            ersRequestService.saveEvaluationResults(evaluationResponse.getEvaluationResults(), requestEntity);
         }
         log.info("Evaluation response with status [{}] has been built.", evaluationResponse.getStatus());
         return ResponseEntity.ok(evaluationResponse);

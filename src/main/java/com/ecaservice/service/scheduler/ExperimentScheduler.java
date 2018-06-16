@@ -6,7 +6,7 @@ import com.ecaservice.model.entity.ExperimentResultsRequest;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.repository.ExperimentRepository;
-import com.ecaservice.service.EvaluationResultsService;
+import com.ecaservice.service.ers.ErsRequestService;
 import com.ecaservice.service.PageableCallback;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.experiment.mail.NotificationService;
@@ -37,28 +37,28 @@ public class ExperimentScheduler {
     private final ExperimentRepository experimentRepository;
     private final ExperimentService experimentService;
     private final NotificationService notificationService;
-    private final EvaluationResultsService evaluationResultsService;
+    private final ErsRequestService ersRequestService;
     private final ExperimentConfig experimentConfig;
 
     /**
      * Constructor with dependency spring injection.
      *
-     * @param experimentRepository     - experiment repository bean
-     * @param experimentService        - experiment service bean
-     * @param notificationService      - notification service bean
-     * @param evaluationResultsService - evaluation results service bean
-     * @param experimentConfig         - experiment config bean
+     * @param experimentRepository - experiment repository bean
+     * @param experimentService    - experiment service bean
+     * @param notificationService  - notification service bean
+     * @param ersRequestService    - ers request service bean
+     * @param experimentConfig     - experiment config bean
      */
     @Inject
     public ExperimentScheduler(ExperimentRepository experimentRepository,
                                ExperimentService experimentService,
                                NotificationService notificationService,
-                               EvaluationResultsService evaluationResultsService,
+                               ErsRequestService ersRequestService,
                                ExperimentConfig experimentConfig) {
         this.experimentRepository = experimentRepository;
         this.experimentService = experimentService;
         this.notificationService = notificationService;
-        this.evaluationResultsService = evaluationResultsService;
+        this.ersRequestService = ersRequestService;
         this.experimentConfig = experimentConfig;
     }
 
@@ -80,7 +80,7 @@ public class ExperimentScheduler {
                             ExperimentResultsRequest experimentResultsRequest = new ExperimentResultsRequest();
                             experimentResultsRequest.setRequestSource(ExperimentResultsRequestSource.SYSTEM);
                             experimentResultsRequest.setExperiment(experiment);
-                            evaluationResultsService.saveEvaluationResults(results, experimentResultsRequest);
+                            ersRequestService.saveEvaluationResults(results, experimentResultsRequest);
                         });
                     }
                 });

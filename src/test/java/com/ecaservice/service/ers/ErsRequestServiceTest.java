@@ -1,12 +1,14 @@
-package com.ecaservice.service;
+package com.ecaservice.service.ers;
 
 import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.evaluation.EvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
+import com.ecaservice.mapping.ClassifierReportMapper;
 import com.ecaservice.model.entity.ErsRequest;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
+import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.repository.ErsRequestRepository;
 import com.ecaservice.repository.EvaluationLogRepository;
 import eca.core.evaluation.Evaluation;
@@ -30,28 +32,33 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for checking {@link EvaluationResultsService} functionality.
+ * Unit tests for checking {@link ErsRequestService} functionality.
  *
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class EvaluationResultsServiceTest {
+public class ErsRequestServiceTest {
 
     @Inject
     private EvaluationLogRepository evaluationLogRepository;
     @Mock
     private ErsWebServiceClient ersWebServiceClient;
     @Inject
+    private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
+    @Inject
+    private ClassifierReportMapper classifierReportMapper;
+    @Inject
     private ErsRequestRepository ersRequestRepository;
 
-    private EvaluationResultsService evaluationResultsService;
+    private ErsRequestService ersRequestService;
 
     private EvaluationResults evaluationResults;
 
     @Before
     public void init() throws Exception {
-        evaluationResultsService = new EvaluationResultsService(ersWebServiceClient, ersRequestRepository);
+        ersRequestService = new ErsRequestService(ersWebServiceClient, ersRequestRepository,
+                classifierOptionsRequestModelRepository, classifierReportMapper);
         evaluationResults =
                 new EvaluationResults(new KNearestNeighbours(), new Evaluation(TestHelperUtils.loadInstances()));
     }
@@ -72,7 +79,7 @@ public class EvaluationResultsServiceTest {
                 resultsResponse);
         EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
         requestEntity.setEvaluationLog(evaluationLog);
-        evaluationResultsService.saveEvaluationResults(evaluationResults, requestEntity);
+        ersRequestService.saveEvaluationResults(evaluationResults, requestEntity);
         List<ErsRequest> requestEntities = ersRequestRepository.findAll();
         AssertionUtils.assertSingletonList(requestEntities);
         ErsRequest ersRequest = requestEntities.stream().findFirst().orElse(null);
@@ -94,7 +101,7 @@ public class EvaluationResultsServiceTest {
                 new WebServiceIOException("I/O exception"));
         EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
         requestEntity.setEvaluationLog(evaluationLog);
-        evaluationResultsService.saveEvaluationResults(evaluationResults, requestEntity);
+        ersRequestService.saveEvaluationResults(evaluationResults, requestEntity);
         List<ErsRequest> requestEntities = ersRequestRepository.findAll();
         AssertionUtils.assertSingletonList(requestEntities);
         ErsRequest ersRequest = requestEntities.stream().findFirst().orElse(null);
