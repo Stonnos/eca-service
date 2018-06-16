@@ -4,9 +4,11 @@ import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.EvaluationResponse;
+import com.ecaservice.dto.InstancesRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
+import com.ecaservice.mapping.ClassifierOptionsRequestMapper;
 import com.ecaservice.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.mapping.ClassifierReportMapper;
 import com.ecaservice.mapping.EvaluationRequestMapper;
@@ -53,7 +55,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.DigestUtils;
 import org.springframework.ws.client.WebServiceIOException;
 import weka.classifiers.AbstractClassifier;
-import weka.core.Instances;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -89,6 +90,8 @@ public class EvaluationOptimizerServiceTest {
     @Inject
     private EvaluationRequestMapper evaluationRequestMapper;
     @Inject
+    private ClassifierOptionsRequestMapper classifierOptionsRequestMapper;
+    @Inject
     private ClassifierOptionsService classifierOptionsService;
     @Inject
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
@@ -99,7 +102,7 @@ public class EvaluationOptimizerServiceTest {
 
     private EvaluationOptimizerService evaluationOptimizerService;
 
-    private Instances data;
+    private InstancesRequest instancesRequest;
 
     private String decisionTreeOptions;
     private String j48Options;
@@ -107,12 +110,14 @@ public class EvaluationOptimizerServiceTest {
 
     @Before
     public void init() throws Exception {
-        data = TestHelperUtils.loadInstances();
+        instancesRequest = new InstancesRequest();
+        instancesRequest.setData(TestHelperUtils.loadInstances());
         evaluationOptimizerService =
                 new EvaluationOptimizerService(crossValidationConfig, evaluationRequestService, ersWebServiceClient,
                         classifierOptionsRequestModelMapper, classifierReportMapper, evaluationRequestMapper,
-                        classifierOptionsService, classifierOptionsRequestModelRepository);
-        dataMd5Hash = DigestUtils.md5DigestAsHex(Utils.toXmlInstances(data).getBytes());
+                        classifierOptionsRequestMapper, classifierOptionsService,
+                        classifierOptionsRequestModelRepository);
+        dataMd5Hash = DigestUtils.md5DigestAsHex(Utils.toXmlInstances(instancesRequest.getData()).getBytes());
         DecisionTreeOptions treeOptions = TestHelperUtils.createDecisionTreeOptions();
         treeOptions.setDecisionTreeType(DecisionTreeType.CART);
         decisionTreeOptions = objectMapper.writeValueAsString(treeOptions);
@@ -128,7 +133,8 @@ public class EvaluationOptimizerServiceTest {
     public void testServiceUnavailable() {
         when(ersWebServiceClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenThrow(
                 new WebServiceIOException("error"));
-        EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(data);
+        EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
+                instancesRequest);
         assertThat(evaluationResponse).isNotNull();
         assertThat(evaluationResponse.getRequestId()).isNotNull();
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
@@ -145,7 +151,8 @@ public class EvaluationOptimizerServiceTest {
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
                 .singletonList(TestHelperUtils.createClassifierReport(StringUtils.EMPTY)), ResponseStatus.SUCCESS);
         when(ersWebServiceClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
-        EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(data);
+        EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
+                instancesRequest);
         assertThat(evaluationResponse).isNotNull();
         assertThat(evaluationResponse.getRequestId()).isNotNull();
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
@@ -160,7 +167,8 @@ public class EvaluationOptimizerServiceTest {
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
                 .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)), ResponseStatus.SUCCESS);
         when(ersWebServiceClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
-        EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(data);
+        EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
+                instancesRequest);
         assertSuccessEvaluationResponse(evaluationResponse);
         List<ClassifierOptionsRequestModel> optionsRequests = classifierOptionsRequestModelRepository.findAll();
         AssertionUtils.assertSingletonList(optionsRequests);
@@ -184,7 +192,8 @@ public class EvaluationOptimizerServiceTest {
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
                 .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)), ResponseStatus.SUCCESS);
         when(ersWebServiceClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
-        EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(data);
+        EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
+                instancesRequest);
         assertSuccessEvaluationResponse(evaluationResponse);
         List<ClassifierOptionsRequestModel> optionsRequests = classifierOptionsRequestModelRepository.findAll();
         assertThat(optionsRequests.size()).isEqualTo(2);
@@ -194,7 +203,7 @@ public class EvaluationOptimizerServiceTest {
         requestModel = TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash,
                 LocalDateTime.now(), ResponseStatus.ERROR, Collections.emptyList());
         classifierOptionsRequestModelRepository.save(requestModel);
-        evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(data);
+        evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
         assertSuccessEvaluationResponse(evaluationResponse);
         optionsRequests = classifierOptionsRequestModelRepository.findAll();
         assertThat(optionsRequests.size()).isEqualTo(2);
@@ -204,7 +213,7 @@ public class EvaluationOptimizerServiceTest {
         requestModel = TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
                 ResponseStatus.SUCCESS, Collections.emptyList());
         classifierOptionsRequestModelRepository.save(requestModel);
-        evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(data);
+        evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
         assertSuccessEvaluationResponse(evaluationResponse);
         optionsRequests = classifierOptionsRequestModelRepository.findAll();
         assertThat(optionsRequests.size()).isEqualTo(2);
@@ -214,7 +223,7 @@ public class EvaluationOptimizerServiceTest {
         requestModel = TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash, LocalDateTime.now(),
                 ResponseStatus.SUCCESS, Collections.emptyList());
         classifierOptionsRequestModelRepository.save(requestModel);
-        evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(data);
+        evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
         assertSuccessEvaluationResponse(evaluationResponse);
         optionsRequests = classifierOptionsRequestModelRepository.findAll();
         assertThat(optionsRequests.size()).isEqualTo(2);
@@ -233,7 +242,8 @@ public class EvaluationOptimizerServiceTest {
                         Collections.singletonList(TestHelperUtils.createClassifierOptionsResponseModel(j48Options)));
         classifierOptionsRequestModelRepository.save(requestModel);
         classifierOptionsRequestModelRepository.save(requestModel1);
-        EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(data);
+        EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
+                instancesRequest);
         assertSuccessEvaluationResponse(evaluationResponse);
         EvaluationResults results = evaluationResponse.getEvaluationResults();
         assertThat(results.getClassifier()).isInstanceOf(J48.class);
@@ -302,7 +312,8 @@ public class EvaluationOptimizerServiceTest {
                 TestHelperUtils.createClassifierReport(objectMapper.writeValueAsString(options))),
                 ResponseStatus.SUCCESS);
         when(ersWebServiceClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
-        EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(data);
+        EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
+                instancesRequest);
         assertSuccessEvaluationResponse(evaluationResponse);
         assertThat(evaluationResponse.getEvaluationResults().getClassifier()).isInstanceOf(classifierClazz);
         deleteAll();

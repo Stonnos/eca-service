@@ -110,7 +110,7 @@ public class EvaluationController {
     public ResponseEntity<EvaluationResponse> optimize(@RequestBody InstancesRequest instancesRequest) {
         try {
             EvaluationResponse evaluationResponse =
-                    evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest.getData());
+                    evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
             log.info("Evaluation response with status [{}] has been built.", evaluationResponse.getStatus());
             return ResponseEntity.ok(evaluationResponse);
         } catch (Exception ex) {

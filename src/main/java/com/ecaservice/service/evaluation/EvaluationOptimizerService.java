@@ -2,12 +2,12 @@ package com.ecaservice.service.evaluation;
 
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.EvaluationResponse;
+import com.ecaservice.dto.InstancesRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.ClassifierReport;
-import com.ecaservice.dto.evaluation.EvaluationMethod;
-import com.ecaservice.dto.evaluation.EvaluationMethodReport;
 import com.ecaservice.dto.evaluation.ResponseStatus;
+import com.ecaservice.mapping.ClassifierOptionsRequestMapper;
 import com.ecaservice.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.mapping.ClassifierReportMapper;
 import com.ecaservice.mapping.EvaluationRequestMapper;
@@ -24,13 +24,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 import org.springframework.util.DigestUtils;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
 import javax.inject.Inject;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -55,6 +53,7 @@ public class EvaluationOptimizerService {
     private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
     private final ClassifierReportMapper classifierReportMapper;
     private final EvaluationRequestMapper evaluationRequestMapper;
+    private final ClassifierOptionsRequestMapper classifierOptionsRequestMapper;
     private final ClassifierOptionsService classifierOptionsService;
     private final ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
 
@@ -67,6 +66,7 @@ public class EvaluationOptimizerService {
      * @param classifierOptionsRequestModelMapper     - classifier options request model mapper bean
      * @param classifierReportMapper                  - classifier report mapper bean
      * @param evaluationRequestMapper                 - evaluation request mapper bean
+     * @param classifierOptionsRequestMapper          - classifier options request mapper bean
      * @param classifierOptionsService                - classifier options service bean
      * @param classifierOptionsRequestModelRepository - classifier options request model repository bean
      */
@@ -77,6 +77,7 @@ public class EvaluationOptimizerService {
                                       ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper,
                                       ClassifierReportMapper classifierReportMapper,
                                       EvaluationRequestMapper evaluationRequestMapper,
+                                      ClassifierOptionsRequestMapper classifierOptionsRequestMapper,
                                       ClassifierOptionsService classifierOptionsService,
                                       ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository) {
         this.crossValidationConfig = crossValidationConfig;
@@ -85,6 +86,7 @@ public class EvaluationOptimizerService {
         this.classifierOptionsRequestModelMapper = classifierOptionsRequestModelMapper;
         this.classifierReportMapper = classifierReportMapper;
         this.evaluationRequestMapper = evaluationRequestMapper;
+        this.classifierOptionsRequestMapper = classifierOptionsRequestMapper;
         this.classifierOptionsService = classifierOptionsService;
         this.classifierOptionsRequestModelRepository = classifierOptionsRequestModelRepository;
     }
@@ -92,13 +94,18 @@ public class EvaluationOptimizerService {
     /**
      * Evaluate model with optimal classifier options.
      *
-     * @param data - training data
+     * @param instancesRequest - instances request
      * @return evaluation response
      */
-    public EvaluationResponse evaluateWithOptimalClassifierOptions(Instances data) {
-        Assert.notNull(data, "Instances isn't specified!");
-        log.info("Starting evaluation with optimal classifier options for data '{}'", data.relationName());
-        ClassifierOptionsRequest classifierOptionsRequest = createClassifierOptionsRequest(data);
+    public EvaluationResponse evaluateWithOptimalClassifierOptions(InstancesRequest instancesRequest) {
+        if (!Optional.ofNullable(instancesRequest).map(InstancesRequest::getData).isPresent()) {
+            throw new IllegalArgumentException("Instances isn't specified!");
+        }
+        Instances data = instancesRequest.getData();
+        log.info("Starting evaluation with optimal classifier options for data '{}'",
+                data.relationName());
+        ClassifierOptionsRequest classifierOptionsRequest =
+                classifierOptionsRequestMapper.map(instancesRequest, crossValidationConfig);
         String optimalOptions = getOptimalClassifierOptions(classifierOptionsRequest);
         return !StringUtils.isEmpty(optimalOptions) ? evaluateModel(classifierOptionsRequest, optimalOptions, data) :
                 Utils.buildErrorResponse(String.format(RESULTS_NOT_FOUND_MESSAGE, data.relationName()));
@@ -179,19 +186,5 @@ public class EvaluationOptimizerService {
             log.error("There was an error: {}", ex.getMessage());
         }
         return Utils.buildErrorResponse(String.format(RESULTS_NOT_FOUND_MESSAGE, data.relationName()));
-    }
-
-    private ClassifierOptionsRequest createClassifierOptionsRequest(Instances data) {
-        ClassifierOptionsRequest classifierOptionsRequest = new ClassifierOptionsRequest();
-        classifierOptionsRequest.setInstances(Utils.buildInstancesReport(data));
-        classifierOptionsRequest.setEvaluationMethodReport(new EvaluationMethodReport());
-        classifierOptionsRequest.getEvaluationMethodReport().setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
-        classifierOptionsRequest.getEvaluationMethodReport().setNumFolds(
-                BigInteger.valueOf(crossValidationConfig.getNumFolds()));
-        classifierOptionsRequest.getEvaluationMethodReport().setNumTests(
-                BigInteger.valueOf(crossValidationConfig.getNumTests()));
-        classifierOptionsRequest.getEvaluationMethodReport().setSeed(
-                BigInteger.valueOf(crossValidationConfig.getSeed()));
-        return classifierOptionsRequest;
     }
 }

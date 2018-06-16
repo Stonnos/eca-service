@@ -14,7 +14,6 @@ import com.ecaservice.dto.evaluation.StatisticsReport;
 import com.ecaservice.exception.EcaServiceException;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.service.ClassifierOptionsService;
-import com.ecaservice.util.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
@@ -25,7 +24,9 @@ import eca.roc.RocCurve;
 import eca.roc.ThresholdModel;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Attribute;
 
@@ -41,7 +42,7 @@ import java.util.Optional;
  *
  * @author Roman Batygin
  */
-@Mapper
+@Mapper(uses = InstancesConverter.class)
 public abstract class EvaluationResultsMapper {
 
     private static final int CONFIDENCE_INTERVAL_LOWER_INDEX = 0;
@@ -60,22 +61,11 @@ public abstract class EvaluationResultsMapper {
      * @param evaluationResults - evaluation results
      * @return evaluation results request model
      */
+    @Mappings({
+            @Mapping(source = "evaluationResults.evaluation.data", target = "instances",
+                    qualifiedByName = "instancesToInstancesReport")
+    })
     public abstract EvaluationResultsRequest map(EvaluationResults evaluationResults);
-
-    /**
-     * Populates training data report.
-     *
-     * @param evaluationResults        - evaluation results
-     * @param evaluationResultsRequest - evaluation results request model
-     */
-    @AfterMapping
-    protected void populateInstancesReport(EvaluationResults evaluationResults,
-                                           @MappingTarget EvaluationResultsRequest evaluationResultsRequest) {
-        if (Optional.ofNullable(evaluationResults.getEvaluation()).map(Evaluation::getData).isPresent()) {
-            evaluationResultsRequest.setInstances(
-                    Utils.buildInstancesReport(evaluationResults.getEvaluation().getData()));
-        }
-    }
 
     /**
      * Populates evaluation method report.

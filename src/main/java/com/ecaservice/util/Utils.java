@@ -1,7 +1,6 @@
 package com.ecaservice.util;
 
 import com.ecaservice.dto.EvaluationResponse;
-import com.ecaservice.dto.evaluation.InstancesReport;
 import com.ecaservice.exception.EcaServiceException;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.TechnicalStatus;
@@ -11,7 +10,6 @@ import org.springframework.util.Assert;
 import weka.core.Instances;
 import weka.core.xml.XMLInstances;
 
-import java.math.BigInteger;
 import java.util.Map;
 import java.util.UUID;
 
@@ -66,22 +64,5 @@ public class Utils {
         } catch (Exception ex) {
             throw new EcaServiceException(ex.getMessage());
         }
-    }
-
-    /**
-     * Creates instances report.
-     *
-     * @param instances - training data
-     * @return instances report
-     */
-    public static InstancesReport buildInstancesReport(Instances instances) {
-        InstancesReport instancesReport = new InstancesReport();
-        instancesReport.setRelationName(instances.relationName());
-        instancesReport.setNumInstances(BigInteger.valueOf(instances.numInstances()));
-        instancesReport.setNumAttributes(BigInteger.valueOf(instances.numAttributes()));
-        instancesReport.setNumClasses(BigInteger.valueOf(instances.numClasses()));
-        instancesReport.setClassName(instances.classAttribute().name());
-        instancesReport.setXmlInstances(toXmlInstances(instances));
-        return instancesReport;
     }
 }
