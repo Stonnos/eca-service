@@ -1,12 +1,10 @@
 package com.ecaservice.controller;
 
-import com.ecaservice.dto.EvaluationRequestDto;
+import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.InstancesRequest;
-import com.ecaservice.mapping.EvaluationRequestMapper;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
-import com.ecaservice.model.evaluation.EvaluationRequest;
 import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.ers.ErsRequestService;
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 
 /**
@@ -39,7 +36,6 @@ import java.util.Collections;
 public class EvaluationController {
 
     private final EvaluationRequestService evaluationRequestService;
-    private final EvaluationRequestMapper evaluationRequestMapper;
     private final ErsRequestService ersRequestService;
     private final EvaluationOptimizerService evaluationOptimizerService;
     private final EvaluationLogRepository evaluationLogRepository;
@@ -48,19 +44,16 @@ public class EvaluationController {
      * Constructor with dependency spring injection.
      *
      * @param evaluationRequestService   - evaluation request service bean
-     * @param evaluationRequestMapper    - evaluation request mapper bean
      * @param ersRequestService          - ers request service bean
      * @param evaluationOptimizerService - evaluation optimizer service bean
      * @param evaluationLogRepository    - evaluation log repository bean
      */
     @Inject
     public EvaluationController(EvaluationRequestService evaluationRequestService,
-                                EvaluationRequestMapper evaluationRequestMapper,
                                 ErsRequestService ersRequestService,
                                 EvaluationOptimizerService evaluationOptimizerService,
                                 EvaluationLogRepository evaluationLogRepository) {
         this.evaluationRequestService = evaluationRequestService;
-        this.evaluationRequestMapper = evaluationRequestMapper;
         this.ersRequestService = ersRequestService;
         this.evaluationOptimizerService = evaluationOptimizerService;
         this.evaluationLogRepository = evaluationLogRepository;
@@ -69,8 +62,7 @@ public class EvaluationController {
     /**
      * Processed the request on classifier model evaluation.
      *
-     * @param evaluationRequestDto - evaluation request dto
-     * @param request              - http servlet request
+     * @param evaluationRequest - evaluation request dto
      * @return response entity
      */
     @ApiOperation(
@@ -78,11 +70,7 @@ public class EvaluationController {
             notes = "Evaluates classifier using specified evaluation method"
     )
     @PostMapping(value = "/execute")
-    public ResponseEntity<EvaluationResponse> execute(@RequestBody EvaluationRequestDto evaluationRequestDto,
-                                                      HttpServletRequest request) {
-        log.info("Received evaluation request for client {}", request.getRemoteAddr());
-        EvaluationRequest evaluationRequest = evaluationRequestMapper.map(evaluationRequestDto);
-        evaluationRequest.setIpAddress(request.getRemoteAddr());
+    public ResponseEntity<EvaluationResponse> execute(@RequestBody EvaluationRequest evaluationRequest) {
         EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(evaluationRequest);
         EvaluationLog evaluationLog =
                 evaluationLogRepository.findByRequestIdAndEvaluationStatusIn(evaluationResponse.getRequestId(),
@@ -119,5 +107,4 @@ public class EvaluationController {
                     Utils.buildErrorResponse(ex.getMessage()));
         }
     }
-
 }

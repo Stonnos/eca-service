@@ -14,7 +14,7 @@ import weka.core.Instances;
  * @author Roman Batygin
  */
 @Data
-public class ExperimentRequestDto {
+public class ExperimentRequest {
 
     /**
      * First name

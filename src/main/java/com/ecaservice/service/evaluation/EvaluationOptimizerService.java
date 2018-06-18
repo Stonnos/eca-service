@@ -1,6 +1,7 @@
 package com.ecaservice.service.evaluation;
 
 import com.ecaservice.config.CrossValidationConfig;
+import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.InstancesRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
@@ -143,8 +144,10 @@ public class EvaluationOptimizerService {
         try {
             ClassifierOptions classifierOptions = objectMapper.readValue(options, ClassifierOptions.class);
             AbstractClassifier classifier = classifierOptionsService.convert(classifierOptions);
-            return evaluationRequestService.processRequest(
-                    evaluationRequestMapper.map(classifierOptionsRequest, new InputData(classifier, data)));
+            EvaluationRequest evaluationRequest = evaluationRequestMapper.map(classifierOptionsRequest);
+            evaluationRequest.setData(data);
+            evaluationRequest.setClassifier(classifier);
+            return evaluationRequestService.processRequest(evaluationRequest);
         } catch (Exception ex) {
             log.error("There was an error: {}", ex.getMessage());
         }

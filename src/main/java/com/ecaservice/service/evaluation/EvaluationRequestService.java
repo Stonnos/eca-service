@@ -1,12 +1,13 @@
 package com.ecaservice.service.evaluation;
 
 import com.ecaservice.config.CrossValidationConfig;
+import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.mapping.EvaluationLogMapper;
+import com.ecaservice.model.InputData;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.evaluation.ClassificationResult;
-import com.ecaservice.model.evaluation.EvaluationRequest;
 import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -76,10 +77,9 @@ public class EvaluationRequestService {
         EvaluationResponse evaluationResponse = new EvaluationResponse();
         evaluationResponse.setRequestId(evaluationLog.getRequestId());
         try {
-            Callable<ClassificationResult> callable = () ->
-                    evaluationService.evaluateModel(request.getInputData(), request.getEvaluationMethod(),
-                            request.getEvaluationOptionsMap());
-
+            Callable<ClassificationResult> callable =
+                    () -> evaluationService.evaluateModel(new InputData(request.getClassifier(), request.getData()),
+                            request.getEvaluationMethod(), request.getEvaluationOptionsMap());
             ClassificationResult classificationResult = executorService.execute(callable,
                     crossValidationConfig.getTimeout(), TimeUnit.MINUTES);
 

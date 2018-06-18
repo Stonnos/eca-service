@@ -1,12 +1,13 @@
 package com.ecaservice;
 
+import com.ecaservice.dto.EvaluationRequest;
+import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.ClassifierReport;
 import com.ecaservice.dto.evaluation.EvaluationMethodReport;
 import com.ecaservice.dto.evaluation.InputOptionsMap;
 import com.ecaservice.dto.evaluation.ResponseStatus;
-import com.ecaservice.model.InputData;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
@@ -15,9 +16,7 @@ import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
-import com.ecaservice.model.evaluation.EvaluationRequest;
 import com.ecaservice.model.evaluation.EvaluationStatus;
-import com.ecaservice.model.experiment.ExperimentRequest;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
@@ -74,7 +73,6 @@ public class TestHelperUtils {
 
     public static final int NUM_FOLDS = 3;
     public static final int NUM_TESTS = 1;
-    public static final String IP_ADDRESS = "127.0.0.1";
     public static final String UUID = "a01ebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
 
     private static final int SEED = 1;
@@ -136,15 +134,14 @@ public class TestHelperUtils {
     /**
      * Creates evaluation request object.
      *
-     * @param ipAddress ip address
      * @return created evaluation request
      */
-    public static EvaluationRequest createEvaluationRequest(String ipAddress) throws Exception {
+    public static EvaluationRequest createEvaluationRequest() throws Exception {
         EvaluationRequest request = new EvaluationRequest();
         request.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        request.setIpAddress(ipAddress);
         request.setEvaluationOptionsMap(Collections.emptyMap());
-        request.setInputData(new InputData(new KNearestNeighbours(), loadInstances()));
+        request.setData(loadInstances());
+        request.setClassifier(new KNearestNeighbours());
         return request;
     }
 
@@ -169,7 +166,6 @@ public class TestHelperUtils {
      */
     public static ExperimentRequest createExperimentRequest() throws Exception {
         ExperimentRequest experimentRequest = new ExperimentRequest();
-        experimentRequest.setIpAddress(IP_ADDRESS);
         experimentRequest.setExperimentType(ExperimentType.KNN);
         experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         experimentRequest.setData(loadInstances());
@@ -201,7 +197,6 @@ public class TestHelperUtils {
         experiment.setEmail(TEST_MAIL_RU);
         experiment.setExperimentStatus(experimentStatus);
         experiment.setCreationDate(LocalDateTime.now());
-        experiment.setIpAddress(IP_ADDRESS);
         experiment.setExperimentType(ExperimentType.KNN);
         experiment.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         experiment.setTrainingDataAbsolutePath(TRAINING_DATA_ABSOLUTE_PATH);
@@ -291,7 +286,6 @@ public class TestHelperUtils {
         evaluationLog.setEndDate(LocalDateTime.now());
         evaluationLog.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         evaluationLog.setEvaluationStatus(EvaluationStatus.FINISHED);
-        evaluationLog.setIpAddress(IP_ADDRESS);
         return evaluationLog;
     }
 

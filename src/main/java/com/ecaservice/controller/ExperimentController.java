@@ -1,11 +1,9 @@
 package com.ecaservice.controller;
 
 import com.ecaservice.dto.EcaResponse;
-import com.ecaservice.dto.ExperimentRequestDto;
+import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.mapping.EcaResponseMapper;
-import com.ecaservice.mapping.ExperimentRequestMapper;
 import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.model.experiment.ExperimentRequest;
 import com.ecaservice.service.experiment.ExperimentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 
 /**
@@ -40,22 +37,18 @@ public class ExperimentController {
     private static final String ATTACHMENT = "attachment";
 
     private final ExperimentService experimentService;
-    private final ExperimentRequestMapper experimentRequestMapper;
     private final EcaResponseMapper ecaResponseMapper;
 
     /**
      * Constructor with dependency spring injection.
      *
-     * @param experimentService       - experiment service bean
-     * @param experimentRequestMapper - experiment request mapper bean
-     * @param ecaResponseMapper       - eca response mapper bean
+     * @param experimentService - experiment service bean
+     * @param ecaResponseMapper - eca response mapper bean
      */
     @Inject
     public ExperimentController(ExperimentService experimentService,
-                                ExperimentRequestMapper experimentRequestMapper,
                                 EcaResponseMapper ecaResponseMapper) {
         this.experimentService = experimentService;
-        this.experimentRequestMapper = experimentRequestMapper;
         this.ecaResponseMapper = ecaResponseMapper;
     }
 
@@ -87,8 +80,7 @@ public class ExperimentController {
     /**
      * Creates experiment request.
      *
-     * @param experimentRequest  experiment request dto
-     * @param httpServletRequest http servlet request
+     * @param experimentRequest experiment request dto
      * @return response entity
      */
     @ApiOperation(
@@ -96,13 +88,8 @@ public class ExperimentController {
             notes = "Creates experiment request"
     )
     @PostMapping(value = "/create")
-    public ResponseEntity<EcaResponse> createRequest(@RequestBody ExperimentRequestDto experimentRequest,
-                                                     HttpServletRequest httpServletRequest) {
-        log.info("Received request to experiment [{}] for client '{}'", experimentRequest.getExperimentType(),
-                httpServletRequest.getRemoteAddr());
-        ExperimentRequest request = experimentRequestMapper.map(experimentRequest);
-        request.setIpAddress(httpServletRequest.getRemoteAddr());
-        Experiment experiment = experimentService.createExperiment(request);
+    public ResponseEntity<EcaResponse> createRequest(@RequestBody ExperimentRequest experimentRequest) {
+        Experiment experiment = experimentService.createExperiment(experimentRequest);
         EcaResponse ecaResponse = ecaResponseMapper.map(experiment);
         log.info("Experiment request has been created with status [{}].", ecaResponse.getStatus());
         return ResponseEntity.ok(ecaResponse);

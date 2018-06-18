@@ -3,6 +3,7 @@ package com.ecaservice.service.evaluation;
 import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
+import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.exception.EcaServiceException;
 import com.ecaservice.mapping.EvaluationLogMapper;
@@ -10,7 +11,6 @@ import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
-import com.ecaservice.model.evaluation.EvaluationRequest;
 import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
 import org.junit.Before;
@@ -70,7 +70,7 @@ public class EvaluationRequestServiceTest {
 
     @Test
     public void testSuccessClassification() throws Exception {
-        EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS);
+        EvaluationRequest request = TestHelperUtils.createEvaluationRequest();
         EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.SUCCESS);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
@@ -84,7 +84,7 @@ public class EvaluationRequestServiceTest {
 
     @Test
     public void testClassificationWithException() throws Exception {
-        EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS);
+        EvaluationRequest request = TestHelperUtils.createEvaluationRequest();
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
         EvaluationRequestService service =
                 new EvaluationRequestService(crossValidationConfig, executorService, evaluationService,
@@ -102,7 +102,7 @@ public class EvaluationRequestServiceTest {
 
     @Test
     public void testClassificationWithError() throws Exception {
-        EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS);
+        EvaluationRequest request = TestHelperUtils.createEvaluationRequest();
         request.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         request.setEvaluationOptionsMap(new EnumMap<>(EvaluationOption.class));
         request.getEvaluationOptionsMap().put(EvaluationOption.NUM_FOLDS, String.valueOf(1));
@@ -117,7 +117,7 @@ public class EvaluationRequestServiceTest {
 
     @Test
     public void testTimeoutInClassification() throws Exception {
-        EvaluationRequest request = TestHelperUtils.createEvaluationRequest(TestHelperUtils.IP_ADDRESS);
+        EvaluationRequest request = TestHelperUtils.createEvaluationRequest();
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
         EvaluationRequestService service =
                 new EvaluationRequestService(crossValidationConfig, executorService, evaluationService,

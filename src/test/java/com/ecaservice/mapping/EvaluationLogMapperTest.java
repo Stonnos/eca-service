@@ -1,10 +1,9 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.model.InputData;
+import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.evaluation.EvaluationMethod;
-import com.ecaservice.model.evaluation.EvaluationRequest;
 import eca.metrics.KNearestNeighbours;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,28 +31,25 @@ public class EvaluationLogMapperTest {
     @Test
     public void testMapToEvaluationLog() throws Exception {
         EvaluationRequest evaluationRequest = new EvaluationRequest();
-        evaluationRequest.setIpAddress(TestHelperUtils.IP_ADDRESS);
         evaluationRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         evaluationRequest.setEvaluationOptionsMap(new HashMap<>());
-        InputData inputData = new InputData(new KNearestNeighbours(),
-                TestHelperUtils.loadInstances());
-        evaluationRequest.setInputData(inputData);
+        evaluationRequest.setData(TestHelperUtils.loadInstances());
+        evaluationRequest.setClassifier(new KNearestNeighbours());
         EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequest);
 
         assertThat(evaluationLog).isNotNull();
         assertThat(evaluationLog.getEvaluationMethod()).isEqualTo(evaluationRequest.getEvaluationMethod());
-        assertThat(evaluationLog.getIpAddress()).isEqualTo(evaluationRequest.getIpAddress());
         assertThat(evaluationLog.getEvaluationOptionsMap()).isNotNull();
         assertThat(evaluationLog.getInstancesInfo().getRelationName()).isEqualTo(
-                evaluationRequest.getInputData().getData().relationName());
+                evaluationRequest.getData().relationName());
         assertThat(evaluationLog.getInstancesInfo().getClassName()).isEqualTo(
-                evaluationRequest.getInputData().getData().classAttribute().name());
+                evaluationRequest.getData().classAttribute().name());
         assertThat(evaluationLog.getInstancesInfo().getNumAttributes().intValue()).isEqualTo(
-                evaluationRequest.getInputData().getData().numAttributes());
+                evaluationRequest.getData().numAttributes());
         assertThat(evaluationLog.getInstancesInfo().getNumClasses().intValue()).isEqualTo(
-                evaluationRequest.getInputData().getData().numClasses());
+                evaluationRequest.getData().numClasses());
         assertThat(evaluationLog.getInstancesInfo().getNumInstances().intValue()).isEqualTo(
-                evaluationRequest.getInputData().getData().numInstances());
+                evaluationRequest.getData().numInstances());
         assertOptions(evaluationLog, evaluationRequest);
     }
 
@@ -61,7 +57,7 @@ public class EvaluationLogMapperTest {
         Map<String, String> inputOptionsMap = evaluationLog.getInputOptionsMap();
         assertThat(inputOptionsMap).isNotNull();
         assertThat(inputOptionsMap).isNotEmpty();
-        String[] options = request.getInputData().getClassifier().getOptions();
+        String[] options = request.getClassifier().getOptions();
         assertThat(inputOptionsMap.size()).isEqualTo(options.length / 2);
         for (int i = 0; i < options.length; i += 2) {
             assertThat(options[i + 1]).isEqualTo(inputOptionsMap.get(options[i]));

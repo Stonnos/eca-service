@@ -35,12 +35,6 @@ public class Experiment {
     private Long id;
 
     /**
-     * Request remote ip address
-     */
-    @Column(name = "ip_address")
-    private String ipAddress;
-
-    /**
      * First name
      */
     @Column(name = "first_name")

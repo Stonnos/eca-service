@@ -18,7 +18,7 @@ import java.util.Map;
  * @author Roman Batygin
  */
 @Data
-public class EvaluationRequestDto {
+public class EvaluationRequest {
 
     /**
      * Classifier model

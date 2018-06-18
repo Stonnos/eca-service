@@ -51,12 +51,6 @@ public class EvaluationLog {
     private String requestId;
 
     /**
-     * Request remote ip address
-     */
-    @Column(name = "ip_address")
-    private String ipAddress;
-
-    /**
      * Request creation date
      */
     @Column(name = "creation_date")
