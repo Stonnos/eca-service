@@ -64,4 +64,25 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="4" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options_request_model"/>
+            <not>
+                <tableExists tableName="classifier_options_request"/>
+            </not>
+        </preConditions>
+        <createTable tableName="classifier_options_request">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="creation_date" type="timestamp"/>
+            <column name="source" type="varchar(255)"/>
+            <column name="classifier_options_request_model_id" type="bigint">
+                <constraints foreignKeyName="fk_options_request_model_id"
+                             referencedTableName="classifier_options_request_model" referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

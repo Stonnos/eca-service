@@ -9,11 +9,13 @@ import com.ecaservice.dto.evaluation.EvaluationMethodReport;
 import com.ecaservice.dto.evaluation.InputOptionsMap;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
+import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.model.entity.Email;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.model.evaluation.EvaluationStatus;
@@ -684,6 +686,22 @@ public class TestHelperUtils {
         requestModel.setSeed(SEED);
         requestModel.setClassifierOptionsResponseModels(classifierOptionsResponseModels);
         return requestModel;
+    }
+
+    /**
+     * Creates classifier options request entity.
+     *
+     * @param creationDate - creation date
+     * @param requestModel - classifier options request model
+     * @return classifier options request entity
+     */
+    public static ClassifierOptionsRequestEntity createClassifierOptionsRequestEntity(LocalDateTime creationDate,
+                                                                                      ClassifierOptionsRequestModel requestModel) {
+        ClassifierOptionsRequestEntity requestEntity = new ClassifierOptionsRequestEntity();
+        requestEntity.setCreationDate(creationDate);
+        requestEntity.setClassifierOptionsRequestModel(requestModel);
+        requestEntity.setSource(ClassifierOptionsRequestSource.ERS);
+        return requestEntity;
     }
 
     /**

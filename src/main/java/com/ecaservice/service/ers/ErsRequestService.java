@@ -13,13 +13,17 @@ import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.repository.ErsRequestRepository;
 import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.UUID;
+
+import static com.ecaservice.util.Utils.parseOptions;
 
 /**
  * Implements service for saving evaluation results by sending request to ERS web - service.
@@ -99,7 +103,11 @@ public class ErsRequestService {
             requestModel.setResponseStatus(response.getStatus());
             if (ResponseStatus.SUCCESS.equals(response.getStatus())) {
                 classifierReport = response.getClassifierReports().stream().findFirst().orElse(null);
-                if (classifierReport != null) {
+                if (classifierReport == null || StringUtils.isEmpty(classifierReport.getOptions())) {
+                    handleErrorRequest(requestModel, "Got empty classifier options string!");
+                } else {
+                    //Checks classifier options deserialization
+                    parseOptions(classifierReport.getOptions());
                     log.info("Optimal classifier options [{}] has been found for data '{}'.",
                             classifierReport.getOptions(), classifierOptionsRequest.getInstances().getRelationName());
                     requestModel.setClassifierOptionsResponseModels(
@@ -108,11 +116,15 @@ public class ErsRequestService {
             }
         } catch (Exception ex) {
             log.error("There was an error while sending classifier options request: {}.", ex.getMessage());
-            requestModel.setResponseStatus(ResponseStatus.ERROR);
-            requestModel.setDetails(ex.getMessage());
+            handleErrorRequest(requestModel, ex.getMessage());
         } finally {
             classifierOptionsRequestModelRepository.save(requestModel);
         }
         return classifierReport;
+    }
+
+    private void handleErrorRequest(ClassifierOptionsRequestModel requestModel, String errorMessage) {
+        requestModel.setResponseStatus(ResponseStatus.ERROR);
+        requestModel.setDetails(errorMessage);
     }
 }
