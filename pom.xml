@@ -60,6 +60,9 @@
         <!-- Experiment profile for linux operation systems-->
         <profile>
             <id>experiment-linux</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <properties>
                 <storagePath>/home/roman/experiment/</storagePath>
                 <data.storagePath>/home/roman/experiment/data/</data.storagePath>
@@ -112,6 +115,9 @@
         <!-- Profile is used to use postgres datasource -->
         <profile>
             <id>postgres</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <properties>
                 <jdbc.url>jdbc:postgresql://localhost:5432/eca</jdbc.url>
                 <jdbc.user>postgres</jdbc.user>
