@@ -10,7 +10,6 @@ import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.ers.ErsRequestService;
 import com.ecaservice.service.evaluation.EvaluationOptimizerService;
 import com.ecaservice.service.evaluation.EvaluationRequestService;
-import com.ecaservice.util.Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
 import java.util.Collections;
+
+import static com.ecaservice.util.Utils.buildErrorResponse;
 
 /**
  * Implements the main rest controller for processing input requests.
@@ -103,8 +104,7 @@ public class EvaluationController {
             return ResponseEntity.ok(evaluationResponse);
         } catch (Exception ex) {
             log.error(ex.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    Utils.buildErrorResponse(ex.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(buildErrorResponse(ex.getMessage()));
         }
     }
 }

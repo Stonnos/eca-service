@@ -17,7 +17,6 @@ import com.ecaservice.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.repository.ClassifierOptionsRequestRepository;
 import com.ecaservice.service.ClassifierOptionsService;
 import com.ecaservice.service.ers.ErsRequestService;
-import com.ecaservice.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -31,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.ecaservice.util.Utils.buildErrorResponse;
 import static com.ecaservice.util.Utils.getFirstResponseModel;
 import static com.ecaservice.util.Utils.parseOptions;
 
@@ -102,7 +102,7 @@ public class EvaluationOptimizerService {
                 classifierOptionsRequestMapper.map(instancesRequest, crossValidationConfig);
         String optimalOptions = getOptimalClassifierOptions(classifierOptionsRequest);
         return optimalOptions != null ? evaluateModel(classifierOptionsRequest, optimalOptions, data) :
-                Utils.buildErrorResponse(String.format(RESULTS_NOT_FOUND_MESSAGE, data.relationName()));
+                buildErrorResponse(String.format(RESULTS_NOT_FOUND_MESSAGE, data.relationName()));
     }
 
     private synchronized String getOptimalClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
@@ -153,6 +153,6 @@ public class EvaluationOptimizerService {
         } catch (Exception ex) {
             log.error("There was an error: {}", ex.getMessage());
         }
-        return Utils.buildErrorResponse(String.format(RESULTS_NOT_FOUND_MESSAGE, data.relationName()));
+        return buildErrorResponse(String.format(RESULTS_NOT_FOUND_MESSAGE, data.relationName()));
     }
 }

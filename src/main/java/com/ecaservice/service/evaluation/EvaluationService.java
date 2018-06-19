@@ -7,7 +7,6 @@ import com.ecaservice.model.evaluation.ClassificationResult;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationMethodVisitor;
 import com.ecaservice.model.evaluation.EvaluationOption;
-import com.ecaservice.util.Utils;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +20,8 @@ import weka.core.Instances;
 import javax.inject.Inject;
 import java.util.Map;
 import java.util.Random;
+
+import static com.ecaservice.util.Utils.validateInputData;
 
 /**
  * Implements classifier model evaluation.
@@ -58,7 +59,7 @@ public class EvaluationService {
                                               final Map<EvaluationOption, String> evaluationOptionsMap) {
         ClassificationResult classificationResult = new ClassificationResult();
         try {
-            Utils.validateInputData(inputData, evaluationMethod, evaluationOptionsMap);
+            validateInputData(inputData, evaluationMethod, evaluationOptionsMap);
 
             final Classifier classifier = AbstractClassifier.makeCopy(inputData.getClassifier());
             final Instances data = inputData.getData();

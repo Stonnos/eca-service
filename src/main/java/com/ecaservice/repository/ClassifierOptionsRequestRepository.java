@@ -23,7 +23,7 @@ public interface ClassifierOptionsRequestRepository extends JpaRepository<Classi
      * @param responseStatuses - response statuses
      * @param creationDate     - creation date bound
      * @param pageable         - pageable object
-     * @return classifier options request models
+     * @return classifier options request list
      */
     @Query("select req from ClassifierOptionsRequestEntity req join req.classifierOptionsRequestModel cm " +
             "where cm.dataMd5Hash = :dataMd5Hash and cm.responseStatus in (:responseStatuses) and " +

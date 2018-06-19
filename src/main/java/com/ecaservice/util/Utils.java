@@ -1,6 +1,7 @@
 package com.ecaservice.util;
 
 import com.ecaservice.dto.EvaluationResponse;
+import com.ecaservice.dto.evaluation.ClassifierReport;
 import com.ecaservice.exception.EcaServiceException;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.TechnicalStatus;
@@ -121,5 +122,15 @@ public class Utils {
             return requestModel.getClassifierOptionsResponseModels().stream().filter(
                     responseModel -> isParsableOptions(responseModel.getOptions())).findFirst().orElse(null);
         }
+    }
+
+    /**
+     * Checks classifier report for empty options.
+     *
+     * @param classifierReport - classifier report
+     * @return {@code true} if classifier options is not null or empty
+     */
+    public static boolean isValid(ClassifierReport classifierReport) {
+        return classifierReport != null && !StringUtils.isEmpty(classifierReport.getOptions());
     }
 }

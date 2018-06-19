@@ -13,16 +13,15 @@ import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.repository.ErsRequestRepository;
 import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.UUID;
 
+import static com.ecaservice.util.Utils.isValid;
 import static com.ecaservice.util.Utils.parseOptions;
 
 /**
@@ -103,7 +102,7 @@ public class ErsRequestService {
             requestModel.setResponseStatus(response.getStatus());
             if (ResponseStatus.SUCCESS.equals(response.getStatus())) {
                 classifierReport = response.getClassifierReports().stream().findFirst().orElse(null);
-                if (classifierReport == null || StringUtils.isEmpty(classifierReport.getOptions())) {
+                if (!isValid(classifierReport)) {
                     handleErrorRequest(requestModel, "Got empty classifier options string!");
                 } else {
                     //Checks classifier options deserialization

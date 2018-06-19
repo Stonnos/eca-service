@@ -1,12 +1,13 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.dto.evaluation.InstancesReport;
-import com.ecaservice.util.Utils;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 import weka.core.Instances;
 
 import java.math.BigInteger;
+
+import static com.ecaservice.util.Utils.toXmlInstances;
 
 /**
  * Instances converter.
@@ -30,7 +31,7 @@ public class InstancesConverter {
         instancesReport.setNumAttributes(BigInteger.valueOf(instances.numAttributes()));
         instancesReport.setNumClasses(BigInteger.valueOf(instances.numClasses()));
         instancesReport.setClassName(instances.classAttribute().name());
-        instancesReport.setXmlInstances(Utils.toXmlInstances(instances));
+        instancesReport.setXmlInstances(toXmlInstances(instances));
         return instancesReport;
     }
 }
