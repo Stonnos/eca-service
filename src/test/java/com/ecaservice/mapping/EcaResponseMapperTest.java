@@ -34,7 +34,7 @@ public class EcaResponseMapperTest {
         EcaResponse ecaResponse = ecaResponseMapper.map(experiment);
         assertThat(ecaResponse).isNotNull();
         assertThat(ecaResponse.getStatus()).isEqualTo(TechnicalStatus.SUCCESS);
-        assertThat(ecaResponse.getRequestId()).isNotNull();
+        assertThat(ecaResponse.getRequestId()).isEqualTo(experiment.getUuid());
     }
 
     @Test

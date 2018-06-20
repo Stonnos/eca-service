@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
@@ -74,7 +74,7 @@ public class Email {
     /**
      * Linked experiment
      */
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "experiment_id")
     private Experiment experiment;
 

@@ -1,7 +1,6 @@
 package com.ecaservice.repository;
 
 import com.ecaservice.model.entity.Email;
-import com.ecaservice.model.entity.Experiment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -10,12 +9,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author Roman Batygin
  */
 public interface EmailRepository extends JpaRepository<Email, Long> {
-
-    /**
-     * Finds email by specified experiment
-     *
-     * @param experiment experiment
-     * @return email object
-     */
-    Email findByExperiment(Experiment experiment);
 }

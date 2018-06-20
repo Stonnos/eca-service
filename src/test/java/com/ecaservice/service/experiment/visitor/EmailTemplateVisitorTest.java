@@ -37,11 +37,16 @@ public class EmailTemplateVisitorTest {
         emailTemplateVisitor = new EmailTemplateVisitor(experimentConfig);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testNewStatusContext() {
-        Experiment experiment = new Experiment();
+        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID);
         experiment.setExperimentStatus(ExperimentStatus.NEW);
-        experiment.getExperimentStatus().handle(emailTemplateVisitor, experiment);
+        Context context = experiment.getExperimentStatus().handle(emailTemplateVisitor, experiment);
+        assertContext(context, experiment);
+        assertThat(context.getVariable(TemplateVariablesDictionary.EMAIL_KEY).toString()).isEqualTo(
+                experiment.getEmail());
+        assertThat(context.getVariable(TemplateVariablesDictionary.UUID_KEY).toString()).isEqualTo(
+                experiment.getUuid());
     }
 
     @Test

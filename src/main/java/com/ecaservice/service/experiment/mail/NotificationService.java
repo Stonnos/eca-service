@@ -57,14 +57,15 @@ public class NotificationService {
     }
 
     /**
-     * Sends experiment downloading reference to specified email.
+     * Sends experiment to specified email. If email message hasn't been send to specified email
+     * then number of failed attempts to sent is increased by one. If number of failed
+     * attempts to sent is greater or equals to N then EXCEEDED status is assigned to experiment.
      *
      * @param experiment experiment to sent {@link Experiment}
      */
-    public void notifyByEmail(Experiment experiment) {
+    public void sendExperimentResults(Experiment experiment) {
         try {
-            Email email = createAndSaveEmail(experiment);
-            mailSenderService.sendEmail(email);
+            notifyByEmail(experiment);
             experiment.setSentDate(LocalDateTime.now());
         } catch (Exception ex) {
             log.error("There was an error: {}", ex.getMessage());
@@ -74,24 +75,31 @@ public class NotificationService {
         }
     }
 
+    /**
+     * Sends email message based on experiment status.
+     *
+     * @param experiment - experiment object
+     */
+    public void notifyByEmail(Experiment experiment) {
+        Email email = createEmail(experiment);
+        emailRepository.save(email);
+        mailSenderService.sendEmail(email);
+    }
+
     private String buildEmailMessage(Experiment experiment) {
         String template = mailConfig.getMessageTemplatesMap().get(experiment.getExperimentStatus());
         Context context = experiment.getExperimentStatus().handle(statusTemplateVisitor, experiment);
         return templateEngine.process(template, context);
     }
 
-    private Email createAndSaveEmail(Experiment experiment) {
-        Email email = emailRepository.findByExperiment(experiment);
-        if (email == null) {
-            email = new Email();
-            email.setSender(mailConfig.getFrom());
-            email.setReceiver(experiment.getEmail());
-            email.setSaveDate(LocalDateTime.now());
-            email.setExperiment(experiment);
-            email.setSubject(mailConfig.getSubject());
-            email.setMessage(buildEmailMessage(experiment));
-            emailRepository.save(email);
-        }
+    private Email createEmail(Experiment experiment) {
+        Email email = new Email();
+        email.setSender(mailConfig.getFrom());
+        email.setReceiver(experiment.getEmail());
+        email.setSaveDate(LocalDateTime.now());
+        email.setExperiment(experiment);
+        email.setSubject(mailConfig.getSubject());
+        email.setMessage(buildEmailMessage(experiment));
         return email;
     }
 

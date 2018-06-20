@@ -87,7 +87,7 @@ public class ExperimentSchedulerTest {
         experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), ExperimentStatus.TIMEOUT));
         experimentRepository.save(experiments);
         experimentScheduler.processRequestsToSent();
-        verify(notificationService, times(experiments.size())).notifyByEmail(any(Experiment.class));
+        verify(notificationService, times(experiments.size())).sendExperimentResults(any(Experiment.class));
     }
 
     @Test

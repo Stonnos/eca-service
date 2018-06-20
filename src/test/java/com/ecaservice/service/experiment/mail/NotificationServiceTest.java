@@ -88,7 +88,7 @@ public class NotificationServiceTest {
         when(statusTemplateVisitor.caseFinished(experiment)).thenReturn(new Context());
         when(templateEngine.process(any(String.class), any(Context.class))).thenReturn("message");
         doNothing().when(mailSenderService).sendEmail(any(Email.class));
-        notificationService.notifyByEmail(experiment);
+        notificationService.sendExperimentResults(experiment);
         List<Experiment> experimentList = experimentRepository.findAll();
         AssertionUtils.assertSingletonList(experimentList);
         Experiment actualExperiment = experimentList.get(0);
@@ -103,7 +103,7 @@ public class NotificationServiceTest {
         when(templateEngine.process(any(String.class), any(Context.class))).thenReturn("message");
         doThrow(new RuntimeException()).when(mailSenderService).sendEmail(any(Email.class));
         int expectedFailedAttemptsToSent = experiment.getFailedAttemptsToSent() + 1;
-        notificationService.notifyByEmail(experiment);
+        notificationService.sendExperimentResults(experiment);
         List<Experiment> experimentList = experimentRepository.findAll();
         AssertionUtils.assertSingletonList(experimentList);
         Experiment actualExperiment = experimentList.get(0);
@@ -118,7 +118,7 @@ public class NotificationServiceTest {
         when(statusTemplateVisitor.caseFinished(experiment)).thenReturn(new Context());
         when(templateEngine.process(any(String.class), any(Context.class))).thenReturn("message");
         doThrow(new RuntimeException()).when(mailSenderService).sendEmail(any(Email.class));
-        notificationService.notifyByEmail(experiment);
+        notificationService.sendExperimentResults(experiment);
         List<Experiment> experimentList = experimentRepository.findAll();
         AssertionUtils.assertSingletonList(experimentList);
         Experiment actualExperiment = experimentList.get(0);

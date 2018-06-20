@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<p>
+    Здравствуйте, <span th:text="${firstName}"></span>!
+</p>
+<p>
+    Заявка на эксперимент для автоматического подбора оптимальных параметров для классификатора
+    "<span th:text="${experimentType}"></span>" была успешно создана. Ожидайте ответное письмо на <span th:text="${email}"></span>.
+</p>
+<p>
+    Идентификатор вашей заявки: <b><span th:text="${uuid}"></span></b>
+</p>
+</body>
+</html>
