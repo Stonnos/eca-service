@@ -10,6 +10,9 @@ import org.slf4j.Logger;
  */
 public class ExperimentLogUtils {
 
+    private ExperimentLogUtils() {
+    }
+
     /**
      * Logs error message and throws exception.
      *

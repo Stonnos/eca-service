@@ -29,6 +29,9 @@ public class Utils {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
+    private Utils() {
+    }
+
     /**
      * Validates classifier input data.
      *
