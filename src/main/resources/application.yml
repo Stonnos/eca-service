@@ -82,7 +82,7 @@ experiment:
       ERROR: email-error-message-template.html
       TIMEOUT: email-timeout-message-template.html
 
-evaluationResultsServiceConfig:
+ersConfig:
   url: http://localhost:8085/evaluation-results-service/ws/
   enabled: true
   threadPoolSize: 10

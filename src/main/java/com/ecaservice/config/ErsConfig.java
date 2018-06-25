@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author Roman Batygin
  */
 @Data
-@ConfigurationProperties("evaluationResultsServiceConfig")
+@ConfigurationProperties("ersConfig")
 public class ErsConfig {
 
     /**
