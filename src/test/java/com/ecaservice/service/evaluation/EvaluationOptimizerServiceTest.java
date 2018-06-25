@@ -3,6 +3,7 @@ package com.ecaservice.service.evaluation;
 import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
+import com.ecaservice.config.ErsConfig;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.InstancesRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
@@ -96,6 +97,8 @@ public class EvaluationOptimizerServiceTest {
     @Inject
     private ClassifierOptionsRequestMapper classifierOptionsRequestMapper;
     @Inject
+    private ErsConfig ersConfig;
+    @Inject
     private ClassifierOptionsService classifierOptionsService;
     @Inject
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
@@ -119,7 +122,7 @@ public class EvaluationOptimizerServiceTest {
         instancesRequest = new InstancesRequest();
         instancesRequest.setData(TestHelperUtils.loadInstances());
         ErsRequestService ersRequestService = new ErsRequestService(ersWebServiceClient, ersRequestRepository,
-                classifierOptionsRequestModelRepository, classifierReportMapper);
+                classifierOptionsRequestModelRepository, classifierReportMapper, ersConfig);
         evaluationOptimizerService = new EvaluationOptimizerService(crossValidationConfig, evaluationRequestService,
                 classifierOptionsRequestModelMapper, ersRequestService, evaluationRequestMapper,
                 classifierOptionsRequestMapper, classifierOptionsService, classifierOptionsRequestRepository);

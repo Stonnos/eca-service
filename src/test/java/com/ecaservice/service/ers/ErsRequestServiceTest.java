@@ -2,6 +2,7 @@ package com.ecaservice.service.ers;
 
 import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.config.ErsConfig;
 import com.ecaservice.dto.evaluation.EvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassifierReportMapper;
@@ -22,6 +23,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ws.client.WebServiceIOException;
 
 import javax.inject.Inject;
@@ -50,6 +52,8 @@ public class ErsRequestServiceTest {
     private ClassifierReportMapper classifierReportMapper;
     @Inject
     private ErsRequestRepository ersRequestRepository;
+    @Inject
+    private ErsConfig ersConfig;
 
     private ErsRequestService ersRequestService;
 
@@ -58,7 +62,7 @@ public class ErsRequestServiceTest {
     @Before
     public void init() throws Exception {
         ersRequestService = new ErsRequestService(ersWebServiceClient, ersRequestRepository,
-                classifierOptionsRequestModelRepository, classifierReportMapper);
+                classifierOptionsRequestModelRepository, classifierReportMapper, ersConfig);
         evaluationResults =
                 new EvaluationResults(new KNearestNeighbours(), new Evaluation(TestHelperUtils.loadInstances()));
     }
@@ -67,6 +71,14 @@ public class ErsRequestServiceTest {
     public void after() {
         ersRequestRepository.deleteAll();
         evaluationLogRepository.deleteAll();
+    }
+
+    @Test
+    public void testErsDisabled() {
+        ReflectionTestUtils.setField(ersRequestService, "ersConfig", new ErsConfig());
+        ersRequestService.saveEvaluationResults(evaluationResults, new EvaluationResultsRequestEntity());
+        List<ErsRequest> requestEntities = ersRequestRepository.findAll();
+        Assertions.assertThat(requestEntities).isNullOrEmpty();
     }
 
     @Test

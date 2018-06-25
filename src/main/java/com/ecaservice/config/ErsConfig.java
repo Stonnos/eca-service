@@ -10,7 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @Data
 @ConfigurationProperties("evaluationResultsServiceConfig")
-public class EvaluationResultsServiceConfig {
+public class ErsConfig {
 
     /**
      * Endpoint url

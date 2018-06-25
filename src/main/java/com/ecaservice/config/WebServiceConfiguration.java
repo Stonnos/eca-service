@@ -23,22 +23,22 @@ public class WebServiceConfiguration {
      * @return evaluation results service config bea
      */
     @Bean
-    public EvaluationResultsServiceConfig evaluationResultsServiceConfig() {
-        return new EvaluationResultsServiceConfig();
+    public ErsConfig evaluationResultsServiceConfig() {
+        return new ErsConfig();
     }
 
     /**
      * Creates evaluation results thread pool task executor bean.
      *
-     * @param evaluationResultsServiceConfig - evaluation results service config
+     * @param ersConfig - evaluation results service config
      * @return evaluation results thread pool task executor
      */
     @Bean
     public Executor evaluationResultsThreadPoolTaskExecutor(
-            EvaluationResultsServiceConfig evaluationResultsServiceConfig) {
+            ErsConfig ersConfig) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(evaluationResultsServiceConfig.getThreadPoolSize());
-        executor.setMaxPoolSize(evaluationResultsServiceConfig.getThreadPoolSize());
+        executor.setCorePoolSize(ersConfig.getThreadPoolSize());
+        executor.setMaxPoolSize(ersConfig.getThreadPoolSize());
         return executor;
     }
 

@@ -1,11 +1,10 @@
 package com.ecaservice.service.ers;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.config.EvaluationResultsServiceConfig;
+import com.ecaservice.config.ErsConfig;
 import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.EvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
-import com.ecaservice.exception.EcaServiceException;
 import com.ecaservice.mapping.EvaluationResultsMapper;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
@@ -40,7 +39,7 @@ public class ErsWebServiceClientTest {
     private ErsWebServiceClient ersWebServiceClient;
 
     @Mock
-    private EvaluationResultsServiceConfig serviceConfig;
+    private ErsConfig serviceConfig;
     @Mock
     private WebServiceTemplate webServiceTemplate;
     @Mock
@@ -54,12 +53,6 @@ public class ErsWebServiceClientTest {
         evaluationResults =
                 new EvaluationResults(new KNearestNeighbours(), new Evaluation(TestHelperUtils.loadInstances()));
         when(evaluationResultsMapper.map(any(EvaluationResults.class))).thenReturn(new EvaluationResultsRequest());
-    }
-
-    @Test(expected = EcaServiceException.class)
-    public void testEvaluationResultsSendingDisabled() {
-        when(serviceConfig.getEnabled()).thenReturn(false);
-        ersWebServiceClient.sendEvaluationResults(evaluationResults, UUID.randomUUID().toString());
     }
 
     @Test

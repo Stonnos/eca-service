@@ -1,6 +1,7 @@
 package com.ecaservice.service.ers;
 
 import com.ecaservice.config.EcaServiceParam;
+import com.ecaservice.config.ErsConfig;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.ClassifierReport;
@@ -37,6 +38,7 @@ public class ErsRequestService {
     private final ErsRequestRepository ersRequestRepository;
     private final ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
     private final ClassifierReportMapper classifierReportMapper;
+    private final ErsConfig ersConfig;
 
     /**
      * Constructor with spring dependency injection.
@@ -45,16 +47,18 @@ public class ErsRequestService {
      * @param ersRequestRepository                    - evaluation results service request repository bean
      * @param classifierOptionsRequestModelRepository - classifier options request model repository bean
      * @param classifierReportMapper                  - classifier report mapper bean
+     * @param ersConfig                               - evaluation results config bean
      */
     @Inject
     public ErsRequestService(ErsWebServiceClient ersWebServiceClient,
                              ErsRequestRepository ersRequestRepository,
                              ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository,
-                             ClassifierReportMapper classifierReportMapper) {
+                             ClassifierReportMapper classifierReportMapper, ErsConfig ersConfig) {
         this.ersWebServiceClient = ersWebServiceClient;
         this.ersRequestRepository = ersRequestRepository;
         this.classifierOptionsRequestModelRepository = classifierOptionsRequestModelRepository;
         this.classifierReportMapper = classifierReportMapper;
+        this.ersConfig = ersConfig;
     }
 
     /**
@@ -65,18 +69,22 @@ public class ErsRequestService {
      */
     @Async(EcaServiceParam.EVALUATION_RESULTS_POOL_EXECUTOR)
     public void saveEvaluationResults(EvaluationResults evaluationResults, ErsRequest ersRequest) {
-        ersRequest.setRequestDate(LocalDateTime.now());
-        ersRequest.setRequestId(UUID.randomUUID().toString());
-        try {
-            EvaluationResultsResponse resultsResponse =
-                    ersWebServiceClient.sendEvaluationResults(evaluationResults, ersRequest.getRequestId());
-            ersRequest.setResponseStatus(resultsResponse.getStatus());
-        } catch (Exception ex) {
-            log.error("There was an error while sending evaluation results: {}", ex.getMessage());
-            ersRequest.setResponseStatus(ResponseStatus.ERROR);
-            ersRequest.setDetails(ex.getMessage());
-        } finally {
-            ersRequestRepository.save(ersRequest);
+        if (!Boolean.TRUE.equals(ersConfig.getEnabled())) {
+            log.warn("Evaluation results sending is disabled.");
+        } else {
+            ersRequest.setRequestDate(LocalDateTime.now());
+            ersRequest.setRequestId(UUID.randomUUID().toString());
+            try {
+                EvaluationResultsResponse resultsResponse =
+                        ersWebServiceClient.sendEvaluationResults(evaluationResults, ersRequest.getRequestId());
+                ersRequest.setResponseStatus(resultsResponse.getStatus());
+            } catch (Exception ex) {
+                log.error("There was an error while sending evaluation results: {}", ex.getMessage());
+                ersRequest.setResponseStatus(ResponseStatus.ERROR);
+                ersRequest.setDetails(ex.getMessage());
+            } finally {
+                ersRequestRepository.save(ersRequest);
+            }
         }
     }
 
