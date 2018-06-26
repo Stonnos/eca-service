@@ -15,5 +15,10 @@ public class EcaServiceParam {
     /**
      * Thread pool task executor bean name for evaluation results sending to ERS service
      */
-    public static final String EVALUATION_RESULTS_POOL_EXECUTOR = "evaluationResultsThreadPoolTaskExecutor";
+    public static final String ERS_POOL_EXECUTOR = "ersThreadPoolTaskExecutor";
+
+    /**
+     * Simple thread pool task executor bean name
+     */
+    public static final String SIMPLE_POOL_EXECUTOR = "simpleAsyncTaskExecutor";
 }

@@ -67,7 +67,7 @@ public class ErsRequestService {
      * @param evaluationResults - evaluation results
      * @param ersRequest        - evaluation results service request
      */
-    @Async(EcaServiceParam.EVALUATION_RESULTS_POOL_EXECUTOR)
+    @Async(EcaServiceParam.ERS_POOL_EXECUTOR)
     public void saveEvaluationResults(EvaluationResults evaluationResults, ErsRequest ersRequest) {
         if (!Boolean.TRUE.equals(ersConfig.getEnabled())) {
             log.warn("Evaluation results sending is disabled.");

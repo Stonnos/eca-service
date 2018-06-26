@@ -23,7 +23,7 @@ public class WebServiceConfiguration {
      * @return evaluation results service config bea
      */
     @Bean
-    public ErsConfig evaluationResultsServiceConfig() {
+    public ErsConfig ersConfig() {
         return new ErsConfig();
     }
 
@@ -34,8 +34,7 @@ public class WebServiceConfiguration {
      * @return evaluation results thread pool task executor
      */
     @Bean
-    public Executor evaluationResultsThreadPoolTaskExecutor(
-            ErsConfig ersConfig) {
+    public Executor ersThreadPoolTaskExecutor(ErsConfig ersConfig) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(ersConfig.getThreadPoolSize());
         executor.setMaxPoolSize(ersConfig.getThreadPoolSize());

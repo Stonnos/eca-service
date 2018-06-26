@@ -5,6 +5,8 @@ import eca.data.file.FileDataSaver;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -86,6 +88,16 @@ public class EcaServiceConfiguration {
         FileDataLoader dataLoader = new FileDataLoader();
         dataLoader.setDateFormat(experimentConfig.getData().getDateFormat());
         return dataLoader;
+    }
+
+    /**
+     * Creates simple asynchronous task executor bean.
+     *
+     * @return simple asynchronous task executor bean
+     */
+    @Bean
+    public TaskExecutor simpleAsyncTaskExecutor() {
+        return new SimpleAsyncTaskExecutor();
     }
 
 }

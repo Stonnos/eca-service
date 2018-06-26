@@ -1,5 +1,6 @@
 package com.ecaservice.service.async;
 
+import com.ecaservice.config.EcaServiceParam;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AsyncTaskCallbackServiceImpl implements AsyncTaskService {
 
-    @Async
+    @Async(EcaServiceParam.SIMPLE_POOL_EXECUTOR)
     @Override
     public void perform(AsyncTaskCallback asyncTaskCallback) {
         asyncTaskCallback.run();
