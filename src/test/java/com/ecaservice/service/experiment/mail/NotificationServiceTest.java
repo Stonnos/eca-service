@@ -3,10 +3,13 @@ package com.ecaservice.service.experiment.mail;
 import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.MailConfig;
-import com.ecaservice.model.entity.Email;
+import com.ecaservice.dto.mail.EmailRequest;
+import com.ecaservice.dto.mail.EmailResponse;
+import com.ecaservice.dto.mail.ResponseStatus;
+import com.ecaservice.model.entity.EmailRequestEntity;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentStatus;
-import com.ecaservice.repository.EmailRepository;
+import com.ecaservice.repository.EmailRequestRepository;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.experiment.visitor.EmailTemplateVisitor;
 import org.junit.Before;
@@ -23,17 +26,18 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.ws.client.WebServiceIOException;
+import org.springframework.ws.client.core.WebServiceTemplate;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import javax.inject.Inject;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 /**
@@ -52,10 +56,7 @@ import static org.mockito.Mockito.when;
 public class NotificationServiceTest {
 
     private static final String TEMPLATE_HTML = "test-template.html";
-    private static final int MAX_FAILED_ATTEMPTS_TO_SENT = 10;
 
-    @Mock
-    private MailSenderService mailSenderService;
     @Mock
     private MailConfig mailConfig;
     @Mock
@@ -63,7 +64,9 @@ public class NotificationServiceTest {
     @Inject
     private ExperimentRepository experimentRepository;
     @Inject
-    private EmailRepository emailRepository;
+    private EmailRequestRepository emailRequestRepository;
+    @Mock
+    private WebServiceTemplate webServiceTemplate;
 
     private TemplateEngine templateEngine;
 
@@ -71,59 +74,52 @@ public class NotificationServiceTest {
 
     @Before
     public void setUp() {
-        emailRepository.deleteAll();
+        emailRequestRepository.deleteAll();
         experimentRepository.deleteAll();
         templateEngine = PowerMockito.mock(TemplateEngine.class);
-        notificationService = new NotificationService(templateEngine, mailSenderService, experimentRepository,
-                mailConfig, statusTemplateVisitor, emailRepository);
+        notificationService = new NotificationService(templateEngine, mailConfig, statusTemplateVisitor, webServiceTemplate, emailRequestRepository, experimentRepository);
         EnumMap<ExperimentStatus, String> statusMap = new EnumMap<>(ExperimentStatus.class);
         statusMap.put(ExperimentStatus.FINISHED, TEMPLATE_HTML);
         when(mailConfig.getMessageTemplatesMap()).thenReturn(statusMap);
-        when(mailConfig.getMaxFailedAttemptsToSent()).thenReturn(MAX_FAILED_ATTEMPTS_TO_SENT);
     }
 
     @Test
-    public void testSuccessNotification() throws Exception {
+    public void testSuccessNotification() {
         Experiment experiment = createAndSaveExperiment();
+        EmailResponse emailResponse = new EmailResponse();
+        emailResponse.setStatus(ResponseStatus.SUCCESS);
+        emailResponse.setRequestId(UUID.randomUUID().toString());
         when(statusTemplateVisitor.caseFinished(experiment)).thenReturn(new Context());
         when(templateEngine.process(any(String.class), any(Context.class))).thenReturn("message");
-        doNothing().when(mailSenderService).sendEmail(any(Email.class));
-        notificationService.sendExperimentResults(experiment);
+        when(webServiceTemplate.marshalSendAndReceive(any(String.class), any(EmailRequest.class))).thenReturn(emailResponse);
+        notificationService.notifyByEmail(experiment);
         List<Experiment> experimentList = experimentRepository.findAll();
         AssertionUtils.assertSingletonList(experimentList);
         Experiment actualExperiment = experimentList.get(0);
         assertThat(actualExperiment.getSentDate()).isNotNull();
-        AssertionUtils.assertSingletonList(emailRepository.findAll());
+        EmailRequestEntity emailRequest = emailRequestRepository.findAll().stream().findFirst().orElse(null);
+        assertThat(emailRequest).isNotNull();
+        assertThat(emailRequest.getCreationDate()).isNotNull();
+        assertThat(emailRequest.getRequestId()).isEqualTo(emailResponse.getRequestId());
+        assertThat(emailRequest.getStatus()).isEqualTo(emailResponse.getStatus());
     }
 
     @Test
-    public void testErrorNotification() throws Exception {
+    public void testErrorNotification() {
         Experiment experiment = createAndSaveExperiment();
         when(statusTemplateVisitor.caseFinished(experiment)).thenReturn(new Context());
         when(templateEngine.process(any(String.class), any(Context.class))).thenReturn("message");
-        doThrow(new RuntimeException()).when(mailSenderService).sendEmail(any(Email.class));
-        int expectedFailedAttemptsToSent = experiment.getFailedAttemptsToSent() + 1;
-        notificationService.sendExperimentResults(experiment);
+        when(webServiceTemplate.marshalSendAndReceive(any(String.class), any(EmailRequest.class))).thenThrow(new WebServiceIOException("I/O"));
+        notificationService.notifyByEmail(experiment);
         List<Experiment> experimentList = experimentRepository.findAll();
         AssertionUtils.assertSingletonList(experimentList);
         Experiment actualExperiment = experimentList.get(0);
         assertThat(actualExperiment.getSentDate()).isNull();
-        assertThat(actualExperiment.getFailedAttemptsToSent()).isEqualTo(expectedFailedAttemptsToSent);
-    }
-
-    @Test
-    public void testExceededNotification() throws Exception {
-        Experiment experiment = createAndSaveExperiment();
-        experiment.setFailedAttemptsToSent(MAX_FAILED_ATTEMPTS_TO_SENT);
-        when(statusTemplateVisitor.caseFinished(experiment)).thenReturn(new Context());
-        when(templateEngine.process(any(String.class), any(Context.class))).thenReturn("message");
-        doThrow(new RuntimeException()).when(mailSenderService).sendEmail(any(Email.class));
-        notificationService.sendExperimentResults(experiment);
-        List<Experiment> experimentList = experimentRepository.findAll();
-        AssertionUtils.assertSingletonList(experimentList);
-        Experiment actualExperiment = experimentList.get(0);
-        assertThat(actualExperiment.getSentDate()).isNull();
-        assertThat(actualExperiment.getExperimentStatus()).isEqualTo(ExperimentStatus.EXCEEDED);
+        EmailRequestEntity emailRequest = emailRequestRepository.findAll().stream().findFirst().orElse(null);
+        assertThat(emailRequest).isNotNull();
+        assertThat(emailRequest.getCreationDate()).isNotNull();
+        assertThat(emailRequest.getRequestId()).isNull();
+        assertThat(emailRequest.getStatus()).isEqualTo(ResponseStatus.ERROR);
     }
 
     private Experiment createAndSaveExperiment() {

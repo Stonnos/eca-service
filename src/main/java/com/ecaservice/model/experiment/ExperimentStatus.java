@@ -45,16 +45,6 @@ public enum ExperimentStatus {
         public <T, P> T handle(ExperimentStatusVisitor<T, P> visitor, P parameter) {
             return visitor.caseError(parameter);
         }
-    },
-
-    /**
-     * Exceeded status
-     */
-    EXCEEDED {
-        @Override
-        public <T, P> T handle(ExperimentStatusVisitor<T, P> visitor, P parameter) {
-            return visitor.caseExceeded(parameter);
-        }
     };
 
     /**

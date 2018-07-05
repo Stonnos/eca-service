@@ -80,7 +80,6 @@ public class ExperimentService {
             experiment.setExperimentStatus(ExperimentStatus.NEW);
             experiment.setUuid(UUID.randomUUID().toString());
             experiment.setCreationDate(LocalDateTime.now());
-            experiment.setFailedAttemptsToSent(0);
             File dataFile = new File(experimentConfig.getData().getStoragePath(),
                     String.format(experimentConfig.getData().getFileFormat(), System.currentTimeMillis()));
             dataService.save(dataFile, experimentRequest.getData());

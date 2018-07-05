@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:notification="http://schemas.xmlsoap.org/soap/envelope/"
+            targetNamespace="http://schemas.xmlsoap.org/soap/envelope/"
+            elementFormDefault="qualified">
+
+    <xsd:simpleType name="responseStatus">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="SUCCESS"/>
+            <xsd:enumeration value="ERROR"/>
+            <xsd:enumeration value="INVALID_REQUEST_PARAMS"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="emailRequest">
+        <xsd:sequence>
+            <xsd:element name="sender" type="xsd:string"/>
+            <xsd:element name="receiver" type="xsd:string"/>
+            <xsd:element name="subject" type="xsd:string"/>
+            <xsd:element name="message" type="xsd:string"/>
+            <xsd:element name="html" type="xsd:boolean"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="emailResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="requestId" type="xsd:string"/>
+                <xsd:element name="status" type="notification:responseStatus"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>

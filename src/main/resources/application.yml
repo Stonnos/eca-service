@@ -1,15 +1,4 @@
 spring:
-  ## Email properties
-  mail:
-    host: @mail.host@
-    port: @mail.port@
-    username: @mail.username@
-    password: @mail.password@
-    properties:
-      mail.transport.protocol: smtp
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
-      mail.debug: false
   ## Datasource properties
   datasource:
     driver-class-name: @jdbc.driver@
@@ -75,7 +64,7 @@ experiment:
   mail:
     from: rbatsw@gmail.com
     subject: Experiment results from eca - service
-    maxFailedAttemptsToSent: 10
+    serviceUrl: http://localhost:8085/notification-service/ws/
     messageTemplatesMap:
       NEW: email-new-template.html
       FINISHED: email-message-template.html

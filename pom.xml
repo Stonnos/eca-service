@@ -66,10 +66,6 @@
             <properties>
                 <storagePath>/home/roman/experiment/</storagePath>
                 <data.storagePath>/home/roman/experiment/data/</data.storagePath>
-                <mail.host>smtp.gmail.com</mail.host>
-                <mail.port>25</mail.port>
-                <mail.username>rbatsw@gmail.com</mail.username>
-                <mail.password>1953s50w42i65m14015</mail.password>
             </properties>
         </profile>
 
@@ -79,10 +75,6 @@
             <properties>
                 <storagePath>D:/experiment/</storagePath>
                 <data.storagePath>D:/experiment/data/</data.storagePath>
-                <mail.host>smtp.gmail.com</mail.host>
-                <mail.port>25</mail.port>
-                <mail.username>rbatsw@gmail.com</mail.username>
-                <mail.password>1953s50w42i65m14015</mail.password>
             </properties>
         </profile>
 
@@ -97,6 +89,14 @@
                 <jdbc.user>root</jdbc.user>
                 <jdbc.password>123</jdbc.password>
             </properties>
+
+            <dependencies>
+                <dependency>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
+                    <version>${mysql.version}</version>
+                </dependency>
+            </dependencies>
         </profile>
 
         <!-- Profile is used to use embedded h2 datasource -->
@@ -126,6 +126,14 @@
                 <jdbc.ddlAuto>validate</jdbc.ddlAuto>
                 <jdbc.dialect>org.hibernate.dialect.PostgreSQL9Dialect</jdbc.dialect>
             </properties>
+
+            <dependencies>
+                <dependency>
+                    <groupId>org.postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
+                    <version>${postresql.version}</version>
+                </dependency>
+            </dependencies>
         </profile>
 
         <!-- Profile is used to use oracle datasource -->
@@ -139,6 +147,14 @@
                 <jdbc.ddlAuto>validate</jdbc.ddlAuto>
                 <jdbc.dialect>org.hibernate.dialect.Oracle10gDialect</jdbc.dialect>
             </properties>
+
+            <dependencies>
+                <dependency>
+                    <groupId>com.github.noraui</groupId>
+                    <artifactId>ojdbc7</artifactId>
+                    <version>${oracle.version}</version>
+                </dependency>
+            </dependencies>
         </profile>
 
         <profile>
@@ -208,24 +224,6 @@
         </dependency>
 
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.noraui</groupId>
-            <artifactId>ojdbc7</artifactId>
-            <version>${oracle.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postresql.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
@@ -255,11 +253,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
         <dependency>
@@ -508,18 +501,34 @@
                 <version>${jaxb2-maven-plugin.version}</version>
                 <executions>
                     <execution>
-                        <id>xjc</id>
+                        <id>ers</id>
                         <goals>
                             <goal>xjc</goal>
                         </goals>
+                        <configuration>
+                            <packageName>com.ecaservice.dto.evaluation</packageName>
+                            <sources>
+                                <source>src/main/resources/evaluation-results/evaluation-results.xsd</source>
+                            </sources>
+                            <outputDirectory>target/generated-sources/xjb</outputDirectory>
+                            <clearOutputDir>false</clearOutputDir>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>notification</id>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                        <configuration>
+                            <packageName>com.ecaservice.dto.mail</packageName>
+                            <sources>
+                                <source>src/main/resources/notification/notification.xsd</source>
+                            </sources>
+                            <outputDirectory>target/generated-sources/xjb</outputDirectory>
+                            <clearOutputDir>false</clearOutputDir>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <packageName>com.ecaservice.dto.evaluation</packageName>
-                    <sources>
-                        <source>src/main/resources/evaluation-results.xsd</source>
-                    </sources>
-                </configuration>
             </plugin>
 
         </plugins>

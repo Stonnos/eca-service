@@ -57,12 +57,6 @@ public class EmailTemplateVisitor implements ExperimentStatusVisitor<Context, Ex
         return createCommonContext(parameter);
     }
 
-    @Override
-    public Context caseExceeded(Experiment parameter) {
-        throw new UnsupportedOperationException(String.format("Can't create context for experiment: %d",
-                parameter.getId()));
-    }
-
     private Context createCommonContext(Experiment parameter) {
         Context context = new Context();
         context.setVariable(TemplateVariablesDictionary.FIRST_NAME_KEY, parameter.getFirstName());

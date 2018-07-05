@@ -15,12 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -65,7 +60,7 @@ public class ExperimentController {
     /**
      * Downloads experiment by specified uuid.
      *
-     * @param uuid experiment uuid
+     * @param uuid - experiment uuid
      */
     @ApiOperation(
             value = "Downloads experiment by specified uuid",
@@ -90,7 +85,7 @@ public class ExperimentController {
     /**
      * Creates experiment request.
      *
-     * @param experimentRequest experiment request dto
+     * @param experimentRequest - experiment request dto
      * @return response entity
      */
     @ApiOperation(
@@ -100,14 +95,7 @@ public class ExperimentController {
     @PostMapping(value = "/create")
     public ResponseEntity<EcaResponse> createRequest(@RequestBody ExperimentRequest experimentRequest) {
         Experiment experiment = experimentService.createExperiment(experimentRequest);
-        asyncTaskService.perform(() -> {
-            try {
-                notificationService.notifyByEmail(experiment);
-            } catch (Exception ex) {
-                log.error("There was an error while sending email message for experiment with id = {}: {}",
-                        experiment.getId(), ex.getMessage());
-            }
-        });
+        asyncTaskService.perform(() -> notificationService.notifyByEmail(experiment));
         EcaResponse ecaResponse = ecaResponseMapper.map(experiment);
         log.info("Experiment request has been created with status [{}].", ecaResponse.getStatus());
         return ResponseEntity.ok(ecaResponse);

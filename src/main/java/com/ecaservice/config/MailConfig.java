@@ -31,7 +31,7 @@ public class MailConfig {
     private String subject;
 
     /**
-     * Maximum number of failed attempts to sent
+     * Email web service url
      */
-    private Integer maxFailedAttemptsToSent;
+    private String serviceUrl;
 }

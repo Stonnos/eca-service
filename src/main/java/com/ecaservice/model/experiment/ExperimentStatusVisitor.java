@@ -40,13 +40,4 @@ public interface ExperimentStatusVisitor<T, P> {
      * @return generic object
      */
     T caseError(P parameter);
-
-    /**
-     * Method executed in case if experiment status is EXCEEDED.
-     *
-     * @param parameter input parameter
-     * @return generic object
-     */
-    T caseExceeded(P parameter);
-
 }

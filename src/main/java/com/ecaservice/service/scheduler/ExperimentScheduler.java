@@ -104,7 +104,7 @@ public class ExperimentScheduler {
         processExperiments(new PageableCallback<Experiment>() {
             @Override
             public void perform(List<Experiment> experiments) {
-                experiments.forEach(notificationService::sendExperimentResults);
+                experiments.forEach(notificationService::notifyByEmail);
             }
 
             @Override

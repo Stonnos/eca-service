@@ -2,19 +2,8 @@ package com.ecaservice;
 
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.ExperimentRequest;
-import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
-import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
-import com.ecaservice.dto.evaluation.ClassifierReport;
-import com.ecaservice.dto.evaluation.EvaluationMethodReport;
-import com.ecaservice.dto.evaluation.InputOptionsMap;
-import com.ecaservice.dto.evaluation.ResponseStatus;
-import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
-import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
-import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
-import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
-import com.ecaservice.model.entity.Email;
-import com.ecaservice.model.entity.EvaluationLog;
-import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.dto.evaluation.*;
+import com.ecaservice.model.entity.*;
 import com.ecaservice.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
@@ -22,18 +11,7 @@ import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
-import com.ecaservice.model.options.AdaBoostOptions;
-import com.ecaservice.model.options.BackPropagationOptions;
-import com.ecaservice.model.options.ClassifierOptions;
-import com.ecaservice.model.options.DecisionTreeOptions;
-import com.ecaservice.model.options.ExtraTreesOptions;
-import com.ecaservice.model.options.HeterogeneousClassifierOptions;
-import com.ecaservice.model.options.J48Options;
-import com.ecaservice.model.options.KNearestNeighboursOptions;
-import com.ecaservice.model.options.NeuralNetworkOptions;
-import com.ecaservice.model.options.RandomForestsOptions;
-import com.ecaservice.model.options.RandomNetworkOptions;
-import com.ecaservice.model.options.StackingOptions;
+import com.ecaservice.model.options.*;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.core.evaluation.EvaluationService;
@@ -58,13 +36,7 @@ import weka.core.Instances;
 import java.io.File;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Test data helper class.
@@ -83,10 +55,6 @@ public class TestHelperUtils {
     private static final String TRAINING_DATA_ABSOLUTE_PATH = "/home/data";
     private static final String EXPERIMENT_ABSOLUTE_PATH = "/home/experiment";
     private static final String DATA_PATH = "data/iris.xls";
-    private static final String SENDER_MAIL = "sender@mail.ru";
-    private static final String RECEIVER_MAIL = "receiver@mail.tu";
-    private static final String SUBJECT = "subject";
-    private static final String MAIL_MESSAGE = "message";
     private static final int NUM_OBJ = 2;
     private static final double KNN_WEIGHT = 0.55d;
     private static final int NUM_NEIGHBOURS = 25;
@@ -245,20 +213,6 @@ public class TestHelperUtils {
         initializationParams.setData(loadInstances());
         initializationParams.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         return initializationParams;
-    }
-
-    /**
-     * Creates mail.
-     *
-     * @return created email
-     */
-    public static Email createEmail() {
-        Email mail = new Email();
-        mail.setSender(SENDER_MAIL);
-        mail.setReceiver(RECEIVER_MAIL);
-        mail.setSubject(SUBJECT);
-        mail.setMessage(MAIL_MESSAGE);
-        return mail;
     }
 
     /**
