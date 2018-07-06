@@ -3,7 +3,14 @@ package com.ecaservice.model.entity;
 import com.ecaservice.dto.mail.ResponseStatus;
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 /**
@@ -29,13 +36,14 @@ public class EmailRequestEntity {
     /**
      * Response status
      */
-    private ResponseStatus status;
+    @Column(name = "response_status")
+    private ResponseStatus responseStatus;
 
     /**
-     * Email request creation date
+     * Email request date
      */
-    @Column(name = "creation_date")
-    private LocalDateTime creationDate;
+    @Column(name = "request_date")
+    private LocalDateTime requestDate;
 
     /**
      * Error message
@@ -48,6 +56,6 @@ public class EmailRequestEntity {
      * Linked experiment
      */
     @ManyToOne
-    @JoinColumn(name = "experiment_id")
+    @JoinColumn(name = "experiment_id", nullable = false)
     private Experiment experiment;
 }

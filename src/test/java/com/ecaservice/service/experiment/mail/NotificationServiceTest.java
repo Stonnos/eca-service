@@ -99,9 +99,9 @@ public class NotificationServiceTest {
         assertThat(actualExperiment.getSentDate()).isNotNull();
         EmailRequestEntity emailRequest = emailRequestRepository.findAll().stream().findFirst().orElse(null);
         assertThat(emailRequest).isNotNull();
-        assertThat(emailRequest.getCreationDate()).isNotNull();
+        assertThat(emailRequest.getRequestDate()).isNotNull();
         assertThat(emailRequest.getRequestId()).isEqualTo(emailResponse.getRequestId());
-        assertThat(emailRequest.getStatus()).isEqualTo(emailResponse.getStatus());
+        assertThat(emailRequest.getResponseStatus()).isEqualTo(emailResponse.getStatus());
     }
 
     @Test
@@ -117,9 +117,9 @@ public class NotificationServiceTest {
         assertThat(actualExperiment.getSentDate()).isNull();
         EmailRequestEntity emailRequest = emailRequestRepository.findAll().stream().findFirst().orElse(null);
         assertThat(emailRequest).isNotNull();
-        assertThat(emailRequest.getCreationDate()).isNotNull();
+        assertThat(emailRequest.getRequestDate()).isNotNull();
         assertThat(emailRequest.getRequestId()).isNull();
-        assertThat(emailRequest.getStatus()).isEqualTo(ResponseStatus.ERROR);
+        assertThat(emailRequest.getResponseStatus()).isEqualTo(ResponseStatus.ERROR);
     }
 
     private Experiment createAndSaveExperiment() {

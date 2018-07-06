@@ -1,4 +1,4 @@
-ECA service v3.0
+ECA service v3.1
 ========================================
 
 Описание
@@ -13,6 +13,7 @@ ECA service v3.0
 отправки результатов классификации во внешних сервис для последующего анализа, а также нахождение
 оптимальных конфигураций классификаторов для конкретной обучающей выборки на
 основе истории результатов классификации.
+4. Интеграция с внешним сервисом Notification service для отправки почты. 
 
 Необходимый софт
 ----------------------------------------
@@ -57,10 +58,9 @@ ECA service v3.0
    * experiment.ensemble.numFoldsForStacking - число блоков V - блочной кросс - проверки для алгоритма Stacking
    * experiment.mail.from - email отправителя
    * experiment.mail.subject - тема письма
-   * experiment.mail.maxFailedAttemptsToSent - максимальной число попыток для отправки письма
-4) spring.mail - настройки smtp сервера для отправки результатов экспериментов по email
-5) evaluationResultsServiceConfig - настройки интеграции с сервисом evaluation-results-service
-   * evaluationResultsServiceConfig.url - url конечной точки сервиса
+   * experiment.mail.serviceUrl - url конечной точки Notification service
+4) evaluationResultsServiceConfig - настройки интеграции с сервисом evaluation-results-service
+   * evaluationResultsServiceConfig.url - url конечной точки ERS сервиса
    * evaluationResultsServiceConfig.enabled - выключатель для отправки результатов классификации (вкл./выкл.)
    * evaluationResultsServiceConfig.threadPoolSize - максимальный размер пула потоков для асинхронной отправки
    результатов классификации
@@ -71,8 +71,7 @@ ECA service v3.0
 1. Для запуска сервиса сначала необходимо собрать проект. Ниже приведен пример команды:
     
    mvn clean install -P[experiment-profile],[db-profile] -Dexperiment.storagePath=/home/roman/experiment/
-           -Dexperiment.data.storagePath=/home/roman/experiment/data/ -Dmail.host=smtp.yandex.com
-           -Dmail.port=25 -Dmail.username=test@yandex.ru -Dmail.password=password
+           -Dexperiment.data.storagePath=/home/roman/experiment/data/ 
            -Djdbc.url=url -Djdbc.user=user -Djdbc.password=pass -Djdbc.dllAuto=update 
     
    Ниже приведен перечень основных параметров:
@@ -100,9 +99,8 @@ ECA service v3.0
         * experiment.storagePath - путь к папке на файловой системе для хранения файлов с историей экспериментов
         * experiment.data.storagePath - путь к папке на файловой системе для хранения файлов с
             исходныи данными (обучающая выборка)
-        * mail - настройки smtp - сервера для отправки результатов эксперимента по email
     
-2. Развернуть target/eca-service-3.0.war на одном из контейнеров сервлетов (например, Tomcat) с контекстом /eca-service.
+2. Развернуть target/eca-service-3.1.war на одном из контейнеров сервлетов (например, Tomcat) с контекстом /eca-service.
          
 3. Страница с документацией swagger находится по адресу http://[host]:[port]/eca-service/swagger-ui.html, где host и port
 соответственно адрес машины и порт на котором развернуто приложение.
