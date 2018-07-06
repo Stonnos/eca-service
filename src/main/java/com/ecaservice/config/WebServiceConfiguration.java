@@ -1,6 +1,7 @@
 package com.ecaservice.config;
 
 import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
+import com.ecaservice.dto.mail.EmailRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
@@ -49,7 +50,8 @@ public class WebServiceConfiguration {
     @Bean
     public Jaxb2Marshaller marshaller() {
         Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-        marshaller.setContextPath(EvaluationResultsRequest.class.getPackage().getName());
+        marshaller.setContextPaths(EvaluationResultsRequest.class.getPackage().getName(),
+                EmailRequest.class.getPackage().getName());
         return marshaller;
     }
 
