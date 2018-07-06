@@ -70,7 +70,7 @@ public class ExperimentService {
     /**
      * Creates experiment request.
      *
-     * @param experimentRequest experiment request {@link ExperimentRequest}
+     * @param experimentRequest - experiment request {@link ExperimentRequest}
      * @return created experiment entity
      */
     public Experiment createExperiment(ExperimentRequest experimentRequest) {
@@ -95,10 +95,9 @@ public class ExperimentService {
     }
 
     /**
-     * Processes new experiment. Experiments results are saved into file after processing and
-     * unique UUID for downloading is generated.
+     * Processes new experiment. Experiments results are saved into file after processing.
      *
-     * @param experiment experiment to process
+     * @param experiment - experiment to process
      * @return experiment history
      */
     public ExperimentHistory processExperiment(final Experiment experiment) {
@@ -152,7 +151,7 @@ public class ExperimentService {
     /**
      * Finds experiment file by uuid.
      *
-     * @param uuid uuid
+     * @param uuid - experiment uuid
      * @return experiment file object
      */
     public File findExperimentFileByUuid(String uuid) {
@@ -168,7 +167,7 @@ public class ExperimentService {
     /**
      * Removes experiments data files from disk.
      *
-     * @param experiment {@link Experiment} object
+     * @param experiment - experiment object
      */
     public void removeExperimentData(Experiment experiment) {
         if (Optional.ofNullable(experiment).map(Experiment::getTrainingDataAbsolutePath).isPresent()) {
