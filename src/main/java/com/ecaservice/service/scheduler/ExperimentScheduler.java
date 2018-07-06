@@ -104,7 +104,16 @@ public class ExperimentScheduler {
         processExperiments(new PageableCallback<Experiment>() {
             @Override
             public void perform(List<Experiment> experiments) {
-                experiments.forEach(notificationService::notifyByEmail);
+                for (Experiment experiment : experiments) {
+                    try {
+                        notificationService.notifyByEmail(experiment);
+                        experiment.setSentDate(LocalDateTime.now());
+                        experimentRepository.save(experiment);
+                    } catch (Exception ex) {
+                        log.error("There was an error while sending email request for experiment with id [{}]: {}",
+                                experiment.getId(), ex.getMessage());
+                    }
+                }
             }
 
             @Override

@@ -4,10 +4,10 @@ import com.ecaservice.config.MailConfig;
 import com.ecaservice.dto.mail.EmailRequest;
 import com.ecaservice.dto.mail.EmailResponse;
 import com.ecaservice.dto.mail.ResponseStatus;
+import com.ecaservice.exception.NotificationException;
 import com.ecaservice.model.entity.EmailRequestEntity;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.repository.EmailRequestRepository;
-import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.experiment.visitor.EmailTemplateVisitor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,6 @@ public class NotificationService {
     private final EmailTemplateVisitor statusTemplateVisitor;
     private final WebServiceTemplate notificationWebServiceTemplate;
     private final EmailRequestRepository emailRequestRepository;
-    private final ExperimentRepository experimentRepository;
 
     /**
      * Constructor with dependency spring injection.
@@ -42,21 +41,18 @@ public class NotificationService {
      * @param statusTemplateVisitor          - email template visitor bean
      * @param notificationWebServiceTemplate - web service template bean
      * @param emailRequestRepository         - email request repository bean
-     * @param experimentRepository           - experiment repository bean
      */
     @Inject
     public NotificationService(TemplateEngine templateEngine,
                                MailConfig mailConfig,
                                EmailTemplateVisitor statusTemplateVisitor,
                                WebServiceTemplate notificationWebServiceTemplate,
-                               EmailRequestRepository emailRequestRepository,
-                               ExperimentRepository experimentRepository) {
+                               EmailRequestRepository emailRequestRepository) {
         this.templateEngine = templateEngine;
         this.mailConfig = mailConfig;
         this.statusTemplateVisitor = statusTemplateVisitor;
         this.notificationWebServiceTemplate = notificationWebServiceTemplate;
         this.emailRequestRepository = emailRequestRepository;
-        this.experimentRepository = experimentRepository;
     }
 
     /**
@@ -78,15 +74,12 @@ public class NotificationService {
             log.trace("Received response [{}] from '{}'.", emailResponse, mailConfig.getServiceUrl());
             emailRequestEntity.setRequestId(emailResponse.getRequestId());
             emailRequestEntity.setResponseStatus(emailResponse.getStatus());
-            experiment.setSentDate(LocalDateTime.now());
-            experimentRepository.save(experiment);
             log.info("Email request has been sent for experiment [{}]  with status [{}].", experiment.getId(),
                     experiment.getExperimentStatus());
         } catch (Exception ex) {
-            log.error("There was an error while sending email request for experiment with id [{}]: {}",
-                    experiment.getId(), ex.getMessage());
             emailRequestEntity.setResponseStatus(ResponseStatus.ERROR);
             emailRequestEntity.setErrorMessage(ex.getMessage());
+            throw new NotificationException(ex.getMessage());
         } finally {
             emailRequestRepository.save(emailRequestEntity);
         }

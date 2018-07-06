@@ -95,7 +95,14 @@ public class ExperimentController {
     @PostMapping(value = "/create")
     public ResponseEntity<EcaResponse> createRequest(@RequestBody ExperimentRequest experimentRequest) {
         Experiment experiment = experimentService.createExperiment(experimentRequest);
-        asyncTaskService.perform(() -> notificationService.notifyByEmail(experiment));
+        asyncTaskService.perform(() -> {
+            try {
+                notificationService.notifyByEmail(experiment);
+            } catch (Exception ex) {
+                log.error("There was an error while sending email request for experiment with id [{}]: {}",
+                        experiment.getId(), ex.getMessage());
+            }
+        });
         EcaResponse ecaResponse = ecaResponseMapper.map(experiment);
         log.info("Experiment request has been created with status [{}].", ecaResponse.getStatus());
         return ResponseEntity.ok(ecaResponse);
