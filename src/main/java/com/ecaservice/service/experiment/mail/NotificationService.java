@@ -49,7 +49,8 @@ public class NotificationService {
                                MailConfig mailConfig,
                                EmailTemplateVisitor statusTemplateVisitor,
                                WebServiceTemplate webServiceTemplate,
-                               EmailRequestRepository emailRequestRepository, ExperimentRepository experimentRepository) {
+                               EmailRequestRepository emailRequestRepository,
+                               ExperimentRepository experimentRepository) {
         this.templateEngine = templateEngine;
         this.mailConfig = mailConfig;
         this.statusTemplateVisitor = statusTemplateVisitor;
@@ -64,21 +65,25 @@ public class NotificationService {
      * @param experiment - experiment object
      */
     public void notifyByEmail(Experiment experiment) {
-        log.info("Starting to send email request for experiment [{}] with status [{}].", experiment.getId(), experiment.getExperimentStatus());
+        log.info("Starting to send email request for experiment [{}] with status [{}].", experiment.getId(),
+                experiment.getExperimentStatus());
         EmailRequest emailRequest = createEmailRequest(experiment);
         EmailRequestEntity emailRequestEntity = new EmailRequestEntity();
         emailRequestEntity.setExperiment(experiment);
         emailRequestEntity.setRequestDate(LocalDateTime.now());
         try {
-            EmailResponse emailResponse = (EmailResponse) webServiceTemplate.marshalSendAndReceive(mailConfig.getServiceUrl(), emailRequest);
+            EmailResponse emailResponse =
+                    (EmailResponse) webServiceTemplate.marshalSendAndReceive(mailConfig.getServiceUrl(), emailRequest);
             log.trace("Received response [{}] from '{}'.", emailResponse, mailConfig.getServiceUrl());
             emailRequestEntity.setRequestId(emailResponse.getRequestId());
             emailRequestEntity.setResponseStatus(emailResponse.getStatus());
             experiment.setSentDate(LocalDateTime.now());
             experimentRepository.save(experiment);
-            log.info("Email request has been sent for experiment [{}]  with status [{}].", experiment.getId(), experiment.getExperimentStatus());
+            log.info("Email request has been sent for experiment [{}]  with status [{}].", experiment.getId(),
+                    experiment.getExperimentStatus());
         } catch (Exception ex) {
-            log.error("There was an error while sending email request for experiment with id [{}]: {}", experiment.getId(), ex.getMessage());
+            log.error("There was an error while sending email request for experiment with id [{}]: {}",
+                    experiment.getId(), ex.getMessage());
             emailRequestEntity.setResponseStatus(ResponseStatus.ERROR);
             emailRequestEntity.setErrorMessage(ex.getMessage());
         } finally {

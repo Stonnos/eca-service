@@ -77,7 +77,9 @@ public class NotificationServiceTest {
         emailRequestRepository.deleteAll();
         experimentRepository.deleteAll();
         templateEngine = PowerMockito.mock(TemplateEngine.class);
-        notificationService = new NotificationService(templateEngine, mailConfig, statusTemplateVisitor, webServiceTemplate, emailRequestRepository, experimentRepository);
+        notificationService =
+                new NotificationService(templateEngine, mailConfig, statusTemplateVisitor, webServiceTemplate,
+                        emailRequestRepository, experimentRepository);
         EnumMap<ExperimentStatus, String> statusMap = new EnumMap<>(ExperimentStatus.class);
         statusMap.put(ExperimentStatus.FINISHED, TEMPLATE_HTML);
         when(mailConfig.getMessageTemplatesMap()).thenReturn(statusMap);
@@ -91,7 +93,8 @@ public class NotificationServiceTest {
         emailResponse.setRequestId(UUID.randomUUID().toString());
         when(statusTemplateVisitor.caseFinished(experiment)).thenReturn(new Context());
         when(templateEngine.process(any(String.class), any(Context.class))).thenReturn("message");
-        when(webServiceTemplate.marshalSendAndReceive(any(String.class), any(EmailRequest.class))).thenReturn(emailResponse);
+        when(webServiceTemplate.marshalSendAndReceive(any(String.class), any(EmailRequest.class))).thenReturn(
+                emailResponse);
         notificationService.notifyByEmail(experiment);
         List<Experiment> experimentList = experimentRepository.findAll();
         AssertionUtils.assertSingletonList(experimentList);
@@ -109,7 +112,8 @@ public class NotificationServiceTest {
         Experiment experiment = createAndSaveExperiment();
         when(statusTemplateVisitor.caseFinished(experiment)).thenReturn(new Context());
         when(templateEngine.process(any(String.class), any(Context.class))).thenReturn("message");
-        when(webServiceTemplate.marshalSendAndReceive(any(String.class), any(EmailRequest.class))).thenThrow(new WebServiceIOException("I/O"));
+        when(webServiceTemplate.marshalSendAndReceive(any(String.class), any(EmailRequest.class))).thenThrow(
+                new WebServiceIOException("I/O"));
         notificationService.notifyByEmail(experiment);
         List<Experiment> experimentList = experimentRepository.findAll();
         AssertionUtils.assertSingletonList(experimentList);
