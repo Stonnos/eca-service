@@ -66,7 +66,7 @@ public class NotificationServiceTest {
     @Inject
     private EmailRequestRepository emailRequestRepository;
     @Mock
-    private WebServiceTemplate webServiceTemplate;
+    private WebServiceTemplate notificationWebServiceTemplate;
 
     private TemplateEngine templateEngine;
 
@@ -78,7 +78,8 @@ public class NotificationServiceTest {
         experimentRepository.deleteAll();
         templateEngine = PowerMockito.mock(TemplateEngine.class);
         notificationService =
-                new NotificationService(templateEngine, mailConfig, statusTemplateVisitor, webServiceTemplate,
+                new NotificationService(templateEngine, mailConfig, statusTemplateVisitor,
+                        notificationWebServiceTemplate,
                         emailRequestRepository, experimentRepository);
         EnumMap<ExperimentStatus, String> statusMap = new EnumMap<>(ExperimentStatus.class);
         statusMap.put(ExperimentStatus.FINISHED, TEMPLATE_HTML);
@@ -93,7 +94,7 @@ public class NotificationServiceTest {
         emailResponse.setRequestId(UUID.randomUUID().toString());
         when(statusTemplateVisitor.caseFinished(experiment)).thenReturn(new Context());
         when(templateEngine.process(any(String.class), any(Context.class))).thenReturn("message");
-        when(webServiceTemplate.marshalSendAndReceive(any(String.class), any(EmailRequest.class))).thenReturn(
+        when(notificationWebServiceTemplate.marshalSendAndReceive(any(String.class), any(EmailRequest.class))).thenReturn(
                 emailResponse);
         notificationService.notifyByEmail(experiment);
         List<Experiment> experimentList = experimentRepository.findAll();
@@ -112,7 +113,7 @@ public class NotificationServiceTest {
         Experiment experiment = createAndSaveExperiment();
         when(statusTemplateVisitor.caseFinished(experiment)).thenReturn(new Context());
         when(templateEngine.process(any(String.class), any(Context.class))).thenReturn("message");
-        when(webServiceTemplate.marshalSendAndReceive(any(String.class), any(EmailRequest.class))).thenThrow(
+        when(notificationWebServiceTemplate.marshalSendAndReceive(any(String.class), any(EmailRequest.class))).thenThrow(
                 new WebServiceIOException("I/O"));
         notificationService.notifyByEmail(experiment);
         List<Experiment> experimentList = experimentRepository.findAll();

@@ -30,31 +30,31 @@ public class NotificationService {
     private final TemplateEngine templateEngine;
     private final MailConfig mailConfig;
     private final EmailTemplateVisitor statusTemplateVisitor;
-    private final WebServiceTemplate webServiceTemplate;
+    private final WebServiceTemplate notificationWebServiceTemplate;
     private final EmailRequestRepository emailRequestRepository;
     private final ExperimentRepository experimentRepository;
 
     /**
      * Constructor with dependency spring injection.
      *
-     * @param templateEngine         - template engine bean
-     * @param mailConfig             - mail config bean
-     * @param statusTemplateVisitor  - email template visitor bean
-     * @param webServiceTemplate     - web service template bean
-     * @param emailRequestRepository - email request repository bean
-     * @param experimentRepository   - experiment repository bean
+     * @param templateEngine                 - template engine bean
+     * @param mailConfig                     - mail config bean
+     * @param statusTemplateVisitor          - email template visitor bean
+     * @param notificationWebServiceTemplate - web service template bean
+     * @param emailRequestRepository         - email request repository bean
+     * @param experimentRepository           - experiment repository bean
      */
     @Inject
     public NotificationService(TemplateEngine templateEngine,
                                MailConfig mailConfig,
                                EmailTemplateVisitor statusTemplateVisitor,
-                               WebServiceTemplate webServiceTemplate,
+                               WebServiceTemplate notificationWebServiceTemplate,
                                EmailRequestRepository emailRequestRepository,
                                ExperimentRepository experimentRepository) {
         this.templateEngine = templateEngine;
         this.mailConfig = mailConfig;
         this.statusTemplateVisitor = statusTemplateVisitor;
-        this.webServiceTemplate = webServiceTemplate;
+        this.notificationWebServiceTemplate = notificationWebServiceTemplate;
         this.emailRequestRepository = emailRequestRepository;
         this.experimentRepository = experimentRepository;
     }
@@ -73,7 +73,8 @@ public class NotificationService {
         emailRequestEntity.setRequestDate(LocalDateTime.now());
         try {
             EmailResponse emailResponse =
-                    (EmailResponse) webServiceTemplate.marshalSendAndReceive(mailConfig.getServiceUrl(), emailRequest);
+                    (EmailResponse) notificationWebServiceTemplate.marshalSendAndReceive(mailConfig.getServiceUrl(),
+                            emailRequest);
             log.trace("Received response [{}] from '{}'.", emailResponse, mailConfig.getServiceUrl());
             emailRequestEntity.setRequestId(emailResponse.getRequestId());
             emailRequestEntity.setResponseStatus(emailResponse.getStatus());

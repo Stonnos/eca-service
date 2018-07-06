@@ -13,15 +13,17 @@
         </xsd:restriction>
     </xsd:simpleType>
 
-    <xsd:complexType name="emailRequest">
-        <xsd:sequence>
-            <xsd:element name="sender" type="xsd:string"/>
-            <xsd:element name="receiver" type="xsd:string"/>
-            <xsd:element name="subject" type="xsd:string"/>
-            <xsd:element name="message" type="xsd:string"/>
-            <xsd:element name="html" type="xsd:boolean"/>
-        </xsd:sequence>
-    </xsd:complexType>
+    <xsd:element name="emailRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="sender" type="xsd:string"/>
+                <xsd:element name="receiver" type="xsd:string"/>
+                <xsd:element name="subject" type="xsd:string"/>
+                <xsd:element name="message" type="xsd:string"/>
+                <xsd:element name="html" type="xsd:boolean"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
 
     <xsd:element name="emailResponse">
         <xsd:complexType>

@@ -41,7 +41,7 @@ public class ErsWebServiceClientTest {
     @Mock
     private ErsConfig serviceConfig;
     @Mock
-    private WebServiceTemplate webServiceTemplate;
+    private WebServiceTemplate ersWebServiceTemplate;
     @Mock
     private EvaluationResultsMapper evaluationResultsMapper;
 
@@ -60,7 +60,7 @@ public class ErsWebServiceClientTest {
         EvaluationResultsResponse expectedResponse = new EvaluationResultsResponse();
         expectedResponse.setStatus(ResponseStatus.SUCCESS);
         expectedResponse.setRequestId(UUID.randomUUID().toString());
-        when(webServiceTemplate.marshalSendAndReceive(anyString(), any(EvaluationResultsRequest.class))).thenReturn(
+        when(ersWebServiceTemplate.marshalSendAndReceive(anyString(), any(EvaluationResultsRequest.class))).thenReturn(
                 expectedResponse);
         EvaluationResultsResponse actualResponse =
                 ersWebServiceClient.sendEvaluationResults(evaluationResults, UUID.randomUUID().toString());
@@ -70,7 +70,7 @@ public class ErsWebServiceClientTest {
 
     @Test(expected = WebServiceIOException.class)
     public void testErrorSending() {
-        when(webServiceTemplate.marshalSendAndReceive(anyString(), any(EvaluationResultsRequest.class))).thenThrow(
+        when(ersWebServiceTemplate.marshalSendAndReceive(anyString(), any(EvaluationResultsRequest.class))).thenThrow(
                 new WebServiceIOException("I/O exception"));
         ersWebServiceClient.sendEvaluationResults(evaluationResults, UUID.randomUUID().toString());
     }

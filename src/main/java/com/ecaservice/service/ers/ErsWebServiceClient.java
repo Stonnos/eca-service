@@ -22,22 +22,22 @@ import javax.inject.Inject;
 @Service
 public class ErsWebServiceClient {
 
-    private final WebServiceTemplate webServiceTemplate;
+    private final WebServiceTemplate ersWebServiceTemplate;
     private final EvaluationResultsMapper evaluationResultsMapper;
     private final ErsConfig ersConfig;
 
     /**
      * Constructor with spring dependency injection.
      *
-     * @param webServiceTemplate      - web service template bean
+     * @param ersWebServiceTemplate   - web service template bean
      * @param evaluationResultsMapper - evaluation results mapper bean
      * @param ersConfig               - evaluation results service config bean
      */
     @Inject
-    public ErsWebServiceClient(WebServiceTemplate webServiceTemplate,
+    public ErsWebServiceClient(WebServiceTemplate ersWebServiceTemplate,
                                EvaluationResultsMapper evaluationResultsMapper,
                                ErsConfig ersConfig) {
-        this.webServiceTemplate = webServiceTemplate;
+        this.ersWebServiceTemplate = ersWebServiceTemplate;
         this.evaluationResultsMapper = evaluationResultsMapper;
         this.ersConfig = ersConfig;
     }
@@ -53,7 +53,7 @@ public class ErsWebServiceClient {
         resultsRequest.setRequestId(requestId);
         log.trace("Starting to send evaluation results request '{}' to: {}.", requestId, ersConfig.getUrl());
         EvaluationResultsResponse resultsResponse =
-                (EvaluationResultsResponse) webServiceTemplate.marshalSendAndReceive(ersConfig.getUrl(),
+                (EvaluationResultsResponse) ersWebServiceTemplate.marshalSendAndReceive(ersConfig.getUrl(),
                         resultsRequest);
         log.trace("Received response with requestId = {}, status = {} from {}.", resultsResponse.getRequestId(),
                 resultsResponse.getStatus(), ersConfig.getUrl());
@@ -67,7 +67,7 @@ public class ErsWebServiceClient {
      * @return classifier options response
      */
     public ClassifierOptionsResponse getClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
-        return (ClassifierOptionsResponse) webServiceTemplate.marshalSendAndReceive(ersConfig.getUrl(),
+        return (ClassifierOptionsResponse) ersWebServiceTemplate.marshalSendAndReceive(ersConfig.getUrl(),
                 classifierOptionsRequest);
     }
 }

@@ -16,7 +16,7 @@ import java.util.concurrent.Executor;
  * @author Roman Batygin
  */
 @Configuration
-public class WebServiceConfiguration {
+public class ErsWebServiceConfiguration {
 
     /**
      * Creates evaluation results service config bean.
@@ -48,21 +48,20 @@ public class WebServiceConfiguration {
      * @return Jaxb2Marshaller bean
      */
     @Bean
-    public Jaxb2Marshaller marshaller() {
+    public Jaxb2Marshaller ersMarshaller() {
         Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-        marshaller.setContextPaths(EvaluationResultsRequest.class.getPackage().getName(),
-                EmailRequest.class.getPackage().getName());
+        marshaller.setContextPath(EvaluationResultsRequest.class.getPackage().getName());
         return marshaller;
     }
 
     /**
      * Creates web service template bean.
      *
-     * @param marshaller Jaxb2Marshaller bean
+     * @param ersMarshaller - Jaxb2Marshaller bean
      * @return web service template bean
      */
     @Bean
-    public WebServiceTemplate webServiceTemplate(Jaxb2Marshaller marshaller) {
-        return new WebServiceTemplate(marshaller, marshaller);
+    public WebServiceTemplate ersWebServiceTemplate(Jaxb2Marshaller ersMarshaller) {
+        return new WebServiceTemplate(ersMarshaller, ersMarshaller);
     }
 }
