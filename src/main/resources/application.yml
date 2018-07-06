@@ -63,7 +63,7 @@ experiment:
 
   mail:
     from: rbatsw@gmail.com
-    subject: Experiment results from eca - service
+    subject: Eca - service
     serviceUrl: http://localhost:8085/notification-service/ws/
     messageTemplatesMap:
       NEW: email-new-template.html
