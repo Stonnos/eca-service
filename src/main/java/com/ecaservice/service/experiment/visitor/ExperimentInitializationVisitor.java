@@ -10,6 +10,7 @@ import com.ecaservice.model.experiment.ExperimentTypeVisitor;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.service.experiment.ClassifiersSetSearcher;
 import eca.dataminer.AbstractExperiment;
+import eca.dataminer.AutomatedDecisionTree;
 import eca.dataminer.AutomatedHeterogeneousEnsemble;
 import eca.dataminer.AutomatedKNearestNeighbours;
 import eca.dataminer.AutomatedNeuralNetwork;
@@ -130,6 +131,13 @@ public class ExperimentInitializationVisitor
         AutomatedStacking automatedStacking = createStackingExperiment(initializationParams, true);
         automatedStacking.getClassifier().setNumFolds(experimentConfig.getEnsemble().getNumFoldsForStacking());
         return automatedStacking;
+    }
+
+    @Override
+    public AbstractExperiment caseDecisionTree(InitializationParams initializationParams) {
+        AutomatedDecisionTree automatedDecisionTree = new AutomatedDecisionTree(initializationParams.getData());
+        automatedDecisionTree.setNumIterations(experimentConfig.getNumIterations());
+        return automatedDecisionTree;
     }
 
     @Override

@@ -9,6 +9,7 @@ import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.service.experiment.ClassifiersSetSearcher;
 import eca.dataminer.AbstractExperiment;
+import eca.dataminer.AutomatedDecisionTree;
 import eca.dataminer.AutomatedHeterogeneousEnsemble;
 import eca.dataminer.AutomatedKNearestNeighbours;
 import eca.dataminer.AutomatedNeuralNetwork;
@@ -140,6 +141,17 @@ public class ExperimentInitializationVisitorTest {
         assertThat(automatedStacking.getClassifier().getUseCrossValidation()).isTrue();
         assertThat(automatedStacking.getClassifier().getNumFolds()).isEqualTo(
                 experimentConfig.getEnsemble().getNumFoldsForStacking());
+    }
+
+    @Test
+    public void testInitializeDecisionTree() throws Exception {
+        InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
+        AutomatedDecisionTree automatedDecisionTree =
+                (AutomatedDecisionTree) experimentInitializationVisitor.caseDecisionTree(
+                        initializationParams);
+        assertExperiment(automatedDecisionTree);
+        assertThat(automatedDecisionTree.getNumIterations()).isEqualTo(
+                experimentConfig.getNumIterations().intValue());
     }
 
     @Test

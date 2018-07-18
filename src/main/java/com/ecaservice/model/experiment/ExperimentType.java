@@ -88,6 +88,16 @@ public enum ExperimentType {
         public <T, P> T internalHandle(ExperimentTypeVisitor<T, P> visitor, P parameter) {
             return visitor.caseStackingCV(parameter);
         }
+    },
+
+    /**
+     * Optimal options automatic selection decision tree algorithms.
+     */
+    DECISION_TREE(ExperimentTypeDictionary.DECISION_TREE_NAME) {
+        @Override
+        public <T, P> T internalHandle(ExperimentTypeVisitor<T, P> visitor, P parameter) {
+            return visitor.caseDecisionTree(parameter);
+        }
     };
 
     private String description;

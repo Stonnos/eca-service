@@ -74,6 +74,14 @@ public interface ExperimentTypeVisitor<T, P> {
     T caseStackingCV(P parameter);
 
     /**
+     * Method executed in case if experiment type is DECISION_TREE.
+     *
+     * @param parameter input parameter
+     * @return generic object
+     */
+    T caseDecisionTree(P parameter);
+
+    /**
      * Method that calls after common handling.
      *
      * @param result    results

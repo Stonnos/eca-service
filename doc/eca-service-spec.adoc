@@ -1,4 +1,4 @@
-= Модуль ECA - SERVICE (v3.1)
+= Модуль ECA - SERVICE (v3.2)
 :toc: macro
 
 == 1. Описание модуля
