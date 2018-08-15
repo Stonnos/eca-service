@@ -122,10 +122,8 @@ public class EvaluationOptimizerService {
             requestModel = classifierOptionsRequestModelMapper.map(classifierOptionsRequest);
             requestModel.setRelationName(classifierOptionsRequest.getInstances().getRelationName());
             requestModel.setDataMd5Hash(dataMd5Hash);
-            ClassifierReport classifierReport =
-                    ersRequestService.getOptimalClassifierOptions(classifierOptionsRequest, requestModel);
             requestEntity.setSource(ClassifierOptionsRequestSource.ERS);
-            options = Optional.ofNullable(classifierReport).map(ClassifierReport::getOptions).orElse(null);
+            options = ersRequestService.getOptimalClassifierOptions(classifierOptionsRequest, requestModel);
         }
         requestEntity.setClassifierOptionsRequestModel(requestModel);
         classifierOptionsRequestRepository.save(requestEntity);

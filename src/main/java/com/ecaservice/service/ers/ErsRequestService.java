@@ -93,12 +93,12 @@ public class ErsRequestService {
      *
      * @param classifierOptionsRequest - classifier options request
      * @param requestModel             - classifier options request entity
-     * @return classifier report
+     * @return optimal classifier options json string
      */
-    public ClassifierReport getOptimalClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest,
-                                                        ClassifierOptionsRequestModel requestModel) {
+    public String getOptimalClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest,
+                                              ClassifierOptionsRequestModel requestModel) {
         requestModel.setRequestDate(LocalDateTime.now());
-        ClassifierReport classifierReport = null;
+        String classifierOptions = null;
         try {
             log.trace("Sending request to find classifier optimal options for data '{}'.",
                     classifierOptionsRequest.getInstances().getRelationName());
@@ -109,14 +109,15 @@ public class ErsRequestService {
             requestModel.setRequestId(response.getRequestId());
             requestModel.setResponseStatus(response.getStatus());
             if (ResponseStatus.SUCCESS.equals(response.getStatus())) {
-                classifierReport = response.getClassifierReports().stream().findFirst().orElse(null);
+                ClassifierReport classifierReport = response.getClassifierReports().stream().findFirst().orElse(null);
                 if (!isValid(classifierReport)) {
                     handleErrorRequest(requestModel, "Got empty classifier options string!");
                 } else {
                     //Checks classifier options deserialization
                     parseOptions(classifierReport.getOptions());
-                    log.info("Optimal classifier options [{}] has been found for data '{}'.",
-                            classifierReport.getOptions(), classifierOptionsRequest.getInstances().getRelationName());
+                    classifierOptions = classifierReport.getOptions();
+                    log.info("Optimal classifier options [{}] has been found for data '{}'.", classifierOptions,
+                            classifierOptionsRequest.getInstances().getRelationName());
                     requestModel.setClassifierOptionsResponseModels(
                             Collections.singletonList(classifierReportMapper.map(classifierReport)));
                 }
@@ -127,7 +128,7 @@ public class ErsRequestService {
         } finally {
             classifierOptionsRequestModelRepository.save(requestModel);
         }
-        return classifierReport;
+        return classifierOptions;
     }
 
     private void handleErrorRequest(ClassifierOptionsRequestModel requestModel, String errorMessage) {
