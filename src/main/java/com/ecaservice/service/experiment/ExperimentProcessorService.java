@@ -96,8 +96,7 @@ public class ExperimentProcessorService {
             throw new ExperimentException("No models has been built!");
         }
         experimentHistory.sort(new ClassifierComparator());
-        return experimentHistory.stream().limit(
-                experimentHistory.size() < experimentConfig.getResultSize() ? experimentHistory.size() :
-                        experimentConfig.getResultSize()).collect(Collectors.toList());
+        int resultsSize = Integer.min(experimentHistory.size(), experimentConfig.getResultSize());
+        return experimentHistory.stream().limit(resultsSize).collect(Collectors.toList());
     }
 }
