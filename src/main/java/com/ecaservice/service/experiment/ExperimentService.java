@@ -11,6 +11,7 @@ import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import eca.converters.model.ExperimentHistory;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StopWatch;
@@ -105,7 +106,7 @@ public class ExperimentService {
         experiment.setStartDate(LocalDateTime.now());
         experimentRepository.save(experiment);
         try {
-            if (experiment.getTrainingDataAbsolutePath() == null) {
+            if (StringUtils.isEmpty(experiment.getTrainingDataAbsolutePath())) {
                 throw new ExperimentException("Training data path is not specified!");
             }
 

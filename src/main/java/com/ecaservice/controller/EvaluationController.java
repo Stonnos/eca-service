@@ -104,7 +104,7 @@ public class EvaluationController {
             return ResponseEntity.ok(evaluationResponse);
         } catch (Exception ex) {
             log.error(ex.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(buildErrorResponse(ex.getMessage()));
+            return ResponseEntity.ok(buildErrorResponse(ex.getMessage()));
         }
     }
 }
