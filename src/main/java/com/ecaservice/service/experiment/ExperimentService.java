@@ -13,7 +13,6 @@ import eca.converters.model.ExperimentHistory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 import org.springframework.util.StopWatch;
 import weka.core.Instances;
 
@@ -75,7 +74,6 @@ public class ExperimentService {
      * @return created experiment entity
      */
     public Experiment createExperiment(ExperimentRequest experimentRequest) {
-        Assert.notNull(experimentRequest, "Experiment request is not specified!");
         Experiment experiment = experimentMapper.map(experimentRequest);
         try {
             experiment.setExperimentStatus(ExperimentStatus.NEW);

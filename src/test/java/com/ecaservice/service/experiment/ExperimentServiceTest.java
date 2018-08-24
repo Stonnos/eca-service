@@ -68,11 +68,6 @@ public class ExperimentServiceTest {
                 dataService, experimentConfig, experimentProcessorService);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testNullExperimentRequest() {
-        experimentService.createExperiment(null);
-    }
-
     @Test
     public void testNullTrainingDataPath() {
         Experiment experiment = new Experiment();

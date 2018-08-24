@@ -81,7 +81,8 @@ public class EvaluationController {
             requestEntity.setEvaluationLog(evaluationLog);
             ersRequestService.saveEvaluationResults(evaluationResponse.getEvaluationResults(), requestEntity);
         }
-        log.info("Evaluation response with status [{}] has been built.", evaluationResponse.getStatus());
+        log.info("Evaluation response [{}] with status [{}] has been built.", evaluationResponse.getRequestId(),
+                evaluationResponse.getStatus());
         return ResponseEntity.ok(evaluationResponse);
     }
 
@@ -100,7 +101,8 @@ public class EvaluationController {
         try {
             EvaluationResponse evaluationResponse =
                     evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
-            log.info("Evaluation response with status [{}] has been built.", evaluationResponse.getStatus());
+            log.info("Evaluation response [{}] with status [{}] has been built.", evaluationResponse.getRequestId(),
+                    evaluationResponse.getStatus());
             return ResponseEntity.ok(evaluationResponse);
         } catch (Exception ex) {
             log.error(ex.getMessage());
