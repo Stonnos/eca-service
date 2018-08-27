@@ -56,7 +56,7 @@ public class ExperimentRequestService {
      */
     public EcaResponse createExperimentRequest(ExperimentRequest experimentRequest) {
         Assert.notNull(experimentRequest, "Experiment request is not specified!");
-        log.info("Received experiment request for data '{}', email '{}'", experimentRequest.getData(),
+        log.info("Received experiment request for data '{}', email '{}'", experimentRequest.getData().relationName(),
                 experimentRequest.getEmail());
         if (!isValidEmail(experimentRequest.getEmail())) {
             return buildErrorResponse("Invalid email!");

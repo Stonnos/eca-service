@@ -1,9 +1,8 @@
 package com.ecaservice.mapping;
 
+import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.model.evaluation.EvaluationMethod;
-import com.ecaservice.model.experiment.ExperimentType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,12 +26,8 @@ public class ExperimentMapperTest {
     private ExperimentMapper experimentMapper;
 
     @Test
-    public void testMapExperiment() {
-        ExperimentRequest experimentRequest = new ExperimentRequest();
-        experimentRequest.setFirstName("Roman");
-        experimentRequest.setFirstName("mail@mail.ru");
-        experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        experimentRequest.setExperimentType(ExperimentType.KNN);
+    public void testMapExperiment() throws Exception {
+        ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
         Experiment experiment = experimentMapper.map(experimentRequest);
         assertThat(experiment).isNotNull();
         assertThat(experiment.getFirstName()).isEqualTo(experimentRequest.getFirstName());

@@ -8,7 +8,6 @@ import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
 import com.ecaservice.mapping.EvaluationResultsMapper;
 import com.ecaservice.model.MultipartFileResource;
 import com.ecaservice.model.TechnicalStatus;
-import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.options.ClassifierOptions;
@@ -44,7 +43,7 @@ import static com.ecaservice.util.Utils.parseOptions;
 @RestController
 @RequestMapping("/qa")
 public class QaController {
-
+    
     private final EvaluationRequestService evaluationRequestService;
     private final EvaluationResultsMapper evaluationResultsMapper;
     private final ClassifierOptionsService classifierOptionsService;
