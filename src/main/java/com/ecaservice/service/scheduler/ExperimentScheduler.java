@@ -6,8 +6,8 @@ import com.ecaservice.model.entity.ExperimentResultsRequest;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.repository.ExperimentRepository;
-import com.ecaservice.service.ers.ErsRequestService;
 import com.ecaservice.service.PageableCallback;
+import com.ecaservice.service.ers.ErsRequestService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.experiment.mail.NotificationService;
 import eca.converters.model.ExperimentHistory;
@@ -148,8 +148,7 @@ public class ExperimentScheduler {
     }
 
     /**
-     * Processes experiments using pagination. Method <code>findNextPage</code> always takes
-     * the initial page request, because experiments fields are updated at each iteration.
+     * Processes experiments using pagination.
      *
      * @param pageableCallback callback {@link PageableCallback}
      */
@@ -157,16 +156,17 @@ public class ExperimentScheduler {
         Pageable pageable = new PageRequest(0, experimentConfig.getPageSize());
         Page<T> page;
         int totalCount = 0;
-        do {
-            page = pageableCallback.findNextPage(pageable);
-            if (!page.hasContent()) {
-                break;
-            }
+        while ((page = pageableCallback.findNextPage(pageable)).hasContent()) {
             log.trace("Obtained new experiments page [{}, {}] for processing.", page.getNumber(), page.getSize());
             pageableCallback.perform(page.getContent());
-            totalCount += page.getSize();
+            totalCount += page.getTotalElements();
             log.trace("Experiments page [{}, {}] has been processed.", page.getNumber(), page.getSize());
-        } while (page.hasNext());
+            if (!page.hasNext()) {
+                log.trace("All experiments has been processed");
+                break;
+            }
+            pageable = page.nextPageable();
+        }
         log.trace("{} experiments has been processed.", totalCount);
     }
 
