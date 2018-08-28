@@ -24,6 +24,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -109,17 +110,13 @@ public class QaController {
     public void evaluate(@RequestParam MultipartFile trainingData,
                          @RequestParam String classifierOptions,
                          @RequestParam EvaluationMethod evaluationMethod,
-                         HttpServletResponse httpServletResponse) {
+                         HttpServletResponse httpServletResponse) throws Exception {
         log.info("Received evaluation request for data {}, classifier options [{}], evaluation method [{}]",
                 trainingData.getOriginalFilename(), classifierOptions, evaluationMethod);
-        try {
-            EvaluationRequest evaluationRequest =
-                    createEvaluationRequest(trainingData, classifierOptions, evaluationMethod);
-            EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(evaluationRequest);
-            processResponse(evaluationResponse, httpServletResponse);
-        } catch (Exception ex) {
-            log.error(ex.getMessage());
-        }
+        EvaluationRequest evaluationRequest =
+                createEvaluationRequest(trainingData, classifierOptions, evaluationMethod);
+        EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(evaluationRequest);
+        processResponse(evaluationResponse, httpServletResponse);
     }
 
     /**
@@ -141,21 +138,16 @@ public class QaController {
                                            @RequestParam String firstName,
                                            @RequestParam String email,
                                            @RequestParam ExperimentType experimentType,
-                                           @RequestParam EvaluationMethod evaluationMethod) {
+                                           @RequestParam EvaluationMethod evaluationMethod) throws Exception {
         log.info("Received experiment request for data '{}', email '{}'", trainingData.getOriginalFilename(), email);
-        try {
-            ExperimentRequest experimentRequest = new ExperimentRequest();
-            experimentRequest.setFirstName(firstName);
-            experimentRequest.setEmail(email);
-            experimentRequest.setData(loadInstances(trainingData));
-            experimentRequest.setExperimentType(experimentType);
-            experimentRequest.setEvaluationMethod(evaluationMethod);
-            EcaResponse ecaResponse = experimentRequestService.createExperimentRequest(experimentRequest);
-            return ResponseEntity.ok(ecaResponse);
-        } catch (Exception ex) {
-            log.error(ex.getMessage());
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        }
+        ExperimentRequest experimentRequest = new ExperimentRequest();
+        experimentRequest.setFirstName(firstName);
+        experimentRequest.setEmail(email);
+        experimentRequest.setData(loadInstances(trainingData));
+        experimentRequest.setExperimentType(experimentType);
+        experimentRequest.setEvaluationMethod(evaluationMethod);
+        EcaResponse ecaResponse = experimentRequestService.createExperimentRequest(experimentRequest);
+        return ResponseEntity.ok(ecaResponse);
     }
 
     /**
@@ -169,16 +161,25 @@ public class QaController {
             notes = "Evaluates classifier using optimal options"
     )
     @PostMapping(value = "/optimize")
-    public void optimize(@RequestParam MultipartFile trainingData, HttpServletResponse httpServletResponse) {
+    public void optimize(@RequestParam MultipartFile trainingData, HttpServletResponse httpServletResponse)
+            throws Exception {
         log.info("Received optimization request for data {}", trainingData.getOriginalFilename());
-        try {
-            Instances instances = loadInstances(trainingData);
-            EvaluationResponse evaluationResponse =
-                    evaluationOptimizerService.evaluateWithOptimalClassifierOptions(new InstancesRequest(instances));
-            processResponse(evaluationResponse, httpServletResponse);
-        } catch (Exception ex) {
-            log.error(ex.getMessage());
-        }
+        Instances instances = loadInstances(trainingData);
+        EvaluationResponse evaluationResponse =
+                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(new InstancesRequest(instances));
+        processResponse(evaluationResponse, httpServletResponse);
+    }
+
+    /**
+     * Handles error.
+     *
+     * @param ex - exception
+     * @return response entity
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity handleError(Exception ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
     private EvaluationRequest createEvaluationRequest(MultipartFile trainingData, String classifierOptions,

@@ -25,8 +25,8 @@ import static springfox.documentation.schema.AlternateTypeRules.newRule;
  *
  * @author Roman Batygin
  */
-@EnableSwagger2
 @Configuration
+@EnableSwagger2
 public class Swagger2Configuration {
 
     private static final String CONTROLLER_PACKAGE = "com.ecaservice.controller";
