@@ -98,7 +98,7 @@ public class QaController {
      * Processed the request on classifier model evaluation.
      *
      * @param trainingData        - training data file with format, such as csv, xls, xlsx, arff, json, docx, data, txt
-     * @param classifierOptions   - classifier options as json string
+     * @param classifierOptions   - classifier options json file
      * @param evaluationMethod    - evaluation method
      * @param httpServletResponse - http servlet response
      */
@@ -108,7 +108,7 @@ public class QaController {
     )
     @PostMapping(value = "/evaluate")
     public void evaluate(@RequestParam MultipartFile trainingData,
-                         @RequestParam String classifierOptions,
+                         @RequestParam MultipartFile classifierOptions,
                          @RequestParam EvaluationMethod evaluationMethod,
                          HttpServletResponse httpServletResponse) throws Exception {
         log.info("Received evaluation request for data {}, classifier options [{}], evaluation method [{}]",
@@ -182,13 +182,13 @@ public class QaController {
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
-    private EvaluationRequest createEvaluationRequest(MultipartFile trainingData, String classifierOptions,
+    private EvaluationRequest createEvaluationRequest(MultipartFile trainingData, MultipartFile classifierOptions,
                                                       EvaluationMethod evaluationMethod) throws Exception {
         EvaluationRequest evaluationRequest = new EvaluationRequest();
         evaluationRequest.setData(loadInstances(trainingData));
         evaluationRequest.setEvaluationMethod(evaluationMethod);
         evaluationRequest.setEvaluationOptionsMap(Collections.emptyMap());
-        ClassifierOptions options = parseOptions(classifierOptions);
+        ClassifierOptions options = parseOptions(classifierOptions.getInputStream());
         AbstractClassifier classifier = classifierOptionsService.convert(options);
         evaluationRequest.setClassifier(classifier);
         return evaluationRequest;

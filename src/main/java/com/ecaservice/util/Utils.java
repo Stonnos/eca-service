@@ -16,6 +16,7 @@ import org.springframework.util.Assert;
 import weka.core.Instances;
 import weka.core.xml.XMLInstances;
 
+import java.io.InputStream;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -100,6 +101,20 @@ public class Utils {
     public static ClassifierOptions parseOptions(String options) {
         try {
             return objectMapper.readValue(options, ClassifierOptions.class);
+        } catch (Exception ex) {
+            throw new EcaServiceException(ex.getMessage());
+        }
+    }
+
+    /**
+     * Parses classifier options input stream.
+     *
+     * @param inputStream - classifier options as input stream
+     * @return classifier options object
+     */
+    public static ClassifierOptions parseOptions(InputStream inputStream) {
+        try {
+            return objectMapper.readValue(inputStream, ClassifierOptions.class);
         } catch (Exception ex) {
             throw new EcaServiceException(ex.getMessage());
         }
