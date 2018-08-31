@@ -4,6 +4,7 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentStatus;
+import com.ecaservice.repository.EmailRequestRepository;
 import com.ecaservice.repository.ErsRequestRepository;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.ers.ErsRequestService;
@@ -43,6 +44,8 @@ public class ExperimentSchedulerTest {
     private ExperimentRepository experimentRepository;
     @Inject
     private ErsRequestRepository ersRequestRepository;
+    @Inject
+    private EmailRequestRepository emailRequestRepository;
     @Mock
     private ExperimentService experimentService;
     @Mock
@@ -66,6 +69,7 @@ public class ExperimentSchedulerTest {
     @After
     public void after() {
         ersRequestRepository.deleteAll();
+        emailRequestRepository.deleteAll();
         experimentRepository.deleteAll();
     }
 
