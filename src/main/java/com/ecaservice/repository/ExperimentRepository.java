@@ -45,7 +45,8 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long> {
      * @param pageable {@link Pageable} object
      * @return experiments list
      */
-    @Query("select exp from Experiment exp where exp.deletedDate is null and exp.sentDate < :dateTime order by exp.sentDate")
+    @Query("select exp from Experiment exp where exp.sentDate is not null and exp.deletedDate is null and " +
+            "exp.sentDate < :dateTime order by exp.sentDate")
     Page<Experiment> findNotDeletedExperiments(@Param("dateTime") LocalDateTime dateTime, Pageable pageable);
 
 }
