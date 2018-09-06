@@ -38,7 +38,7 @@ experiment:
   fileFormat: experiment%d.model
   storagePath: @storagePath@
   individualClassifiersStoragePath: classifiers
-  downloadUrl: http://localhost:8085/eca-service/experiment/download/%s
+  downloadUrl: http://localhost:8080/eca-service/experiment/download/%s
   maximumFractionDigits: 4
   numberOfDaysForStorage: 14
   ## Each day at midnight
@@ -64,7 +64,7 @@ experiment:
   mail:
     from: rbatsw@gmail.com
     subject: Eca - service
-    serviceUrl: http://localhost:8085/notification-service/ws/
+    serviceUrl: http://mail-api:8080/notification-service/ws/
     messageTemplatesMap:
       NEW: email-new-template.html
       FINISHED: email-message-template.html
@@ -72,7 +72,7 @@ experiment:
       TIMEOUT: email-timeout-message-template.html
 
 ersConfig:
-  url: http://localhost:8085/evaluation-results-service/ws/
+  url: http://ers-api:8080/evaluation-results-service/ws/
   enabled: true
   threadPoolSize: 10
 

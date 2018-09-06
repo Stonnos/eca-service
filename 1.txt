@@ -1,0 +1,38 @@
+FROM openjdk:8
+COPY target/eca-service-3.3.war eca-service-3.3.war
+ENTRYPOINT ["java","-jar","eca-service-3.3.war"]
+
+FROM tomcat:8-jre8
+COPY target/eca-service-3.3.war /usr/local/tomcat/webapps/
+CMD ["catalina.sh", "run"]
+
+
+version: '3'
+services:
+  nginx:
+    container_name: some-nginx
+    image: nginx:latest
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+
+  eca-db:
+    image: postgres:9.6.9
+    volumes:
+      - ./scripts/postgresinit.sql:/docker-entrypoint-initdb.d/postgresinit.sql
+    ports:
+       - "5433:5432"
+    environment:
+       POSTGRES_USER: postgres
+       POSTGRES_PASSWORD: postgres
+
+  eca-service:
+    image: eca-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - nginx
+      - eca-db

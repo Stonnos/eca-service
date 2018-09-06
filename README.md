@@ -84,6 +84,7 @@ ECA service v3.3
         * mysql - профиль для параметров СУБД MySQL
         * oracle - профиль для параметров СУБД Oracle
         * h2 - профиль для параметров СУБД H2
+        * docker-db - профиль для параметров БД docker - контейнера
    c) Параметры БД:
         * jdbc.url - url для подключения к БД
         * jdbc.user - логин
@@ -100,7 +101,7 @@ ECA service v3.3
         * experiment.data.storagePath - путь к папке на файловой системе для хранения файлов с
             исходныи данными (обучающая выборка)
     
-2. Развернуть target/eca-service-3.3.war на одном из контейнеров сервлетов (например, Tomcat) с контекстом /eca-service.
+2. Развернуть target/eca-service.war на одном из контейнеров сервлетов (например, Tomcat) с контекстом /eca-service.
          
 3. Страница с документацией swagger находится по адресу http://[host]:[port]/eca-service/swagger-ui.html, где host и port
 соответственно адрес машины и порт на котором развернуто приложение.
@@ -115,4 +116,22 @@ mvn clean install -Pquality
 -DevaluationResultsServiceConfig.url=http://localhost:8089/evaluation-results-service/ws/
 -DevaluationResultsServiceConfig.enabled=true
 -DevaluationResultsServiceConfig.threadPoolSize=10
-    
+
+Инструкция по развертыванию в Docker
+-------------------------------------------------------
+
+1. Для Windows достаточно скачать и установить дистрибутив Docker Desktop (https://www.docker.com/products/docker-desktop).
+
+2. Далее, необходимо собрать проект с помощью команды:
+
+mvn clean install dockerfile:build
+
+Для развертывания окружения на production используется команда:
+
+mvn clean install dockerfile:build -Pdocker-db,experiment-linux
+
+3. Используя пакетный менеджер docker-compose, создать docker контейнеры с помощью команды:
+
+docker-compose up
+
+ВАЖНО! Данную команду необходимо выполнять из корневой папки проекта.
