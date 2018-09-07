@@ -63,25 +63,29 @@ public class NotificationService {
     public void notifyByEmail(Experiment experiment) {
         log.info("Starting to send email request for experiment [{}] with status [{}].", experiment.getId(),
                 experiment.getExperimentStatus());
-        EmailRequest emailRequest = createEmailRequest(experiment);
-        EmailRequestEntity emailRequestEntity = new EmailRequestEntity();
-        emailRequestEntity.setExperiment(experiment);
-        emailRequestEntity.setRequestDate(LocalDateTime.now());
-        try {
-            EmailResponse emailResponse =
-                    (EmailResponse) notificationWebServiceTemplate.marshalSendAndReceive(mailConfig.getServiceUrl(),
-                            emailRequest);
-            log.trace("Received response [{}] from '{}'.", emailResponse, mailConfig.getServiceUrl());
-            emailRequestEntity.setRequestId(emailResponse.getRequestId());
-            emailRequestEntity.setResponseStatus(emailResponse.getStatus());
-            log.info("Email request has been sent for experiment [{}]  with status [{}].", experiment.getId(),
-                    experiment.getExperimentStatus());
-        } catch (Exception ex) {
-            emailRequestEntity.setResponseStatus(ResponseStatus.ERROR);
-            emailRequestEntity.setErrorMessage(ex.getMessage());
-            throw new NotificationException(ex.getMessage());
-        } finally {
-            emailRequestRepository.save(emailRequestEntity);
+        if (!Boolean.TRUE.equals(mailConfig.getEnabled())) {
+            log.warn("Notifications sending is disabled.");
+        } else {
+            EmailRequest emailRequest = createEmailRequest(experiment);
+            EmailRequestEntity emailRequestEntity = new EmailRequestEntity();
+            emailRequestEntity.setExperiment(experiment);
+            emailRequestEntity.setRequestDate(LocalDateTime.now());
+            try {
+                EmailResponse emailResponse =
+                        (EmailResponse) notificationWebServiceTemplate.marshalSendAndReceive(mailConfig.getServiceUrl(),
+                                emailRequest);
+                log.trace("Received response [{}] from '{}'.", emailResponse, mailConfig.getServiceUrl());
+                emailRequestEntity.setRequestId(emailResponse.getRequestId());
+                emailRequestEntity.setResponseStatus(emailResponse.getStatus());
+                log.info("Email request has been sent for experiment [{}]  with status [{}].", experiment.getId(),
+                        experiment.getExperimentStatus());
+            } catch (Exception ex) {
+                emailRequestEntity.setResponseStatus(ResponseStatus.ERROR);
+                emailRequestEntity.setErrorMessage(ex.getMessage());
+                throw new NotificationException(ex.getMessage());
+            } finally {
+                emailRequestRepository.save(emailRequestEntity);
+            }
         }
     }
 

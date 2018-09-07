@@ -92,6 +92,8 @@ public class EvaluationServiceTest {
         InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
         ClassificationResult result =
                 evaluationService.evaluateModel(inputData, EvaluationMethod.TRAINING_DATA, null);
+        assertThat(result.isSuccess()).isTrue();
+        result = evaluationService.evaluateModel(inputData, EvaluationMethod.CROSS_VALIDATION, null);
         assertThat(result.isSuccess()).isFalse();
     }
 
