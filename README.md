@@ -127,7 +127,7 @@ mvn clean install dockerfile:build
 
 Для развертывания окружения на production используется команда:
 
-mvn clean install dockerfile:build -Ppostgres,experiment-linux -Dspring.datasource.url=jdbc:postgresql://eca-db:5432/eca -Dspring.jpa.hibernate.ddl-auto=update
+mvn clean install dockerfile:build -Ppostgres,experiment-linux
 
 3. Используя пакетный менеджер docker-compose, создать docker контейнеры с помощью команды:
 
