@@ -26,5 +26,5 @@ services:
 
 networks:
   default:
-    name: eca_network
+    name: app-network
     driver: bridge

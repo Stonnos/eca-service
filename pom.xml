@@ -138,26 +138,6 @@
             </dependencies>
         </profile>
 
-        <profile>
-            <id>docker-db</id>
-            <properties>
-                <jdbc.url>jdbc:postgresql://eca-db:5432/eca</jdbc.url>
-                <jdbc.user>postgres</jdbc.user>
-                <jdbc.password>postgres</jdbc.password>
-                <jdbc.driver>org.postgresql.Driver</jdbc.driver>
-                <jdbc.ddlAuto>update</jdbc.ddlAuto>
-                <jdbc.dialect>org.hibernate.dialect.PostgreSQL9Dialect</jdbc.dialect>
-            </properties>
-
-            <dependencies>
-                <dependency>
-                    <groupId>org.postgresql</groupId>
-                    <artifactId>postgresql</artifactId>
-                    <version>${postresql.version}</version>
-                </dependency>
-            </dependencies>
-        </profile>
-
         <!-- Profile is used to use oracle datasource -->
         <profile>
             <id>oracle</id>

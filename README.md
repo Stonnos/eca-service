@@ -84,7 +84,6 @@ ECA service v3.3
         * mysql - профиль для параметров СУБД MySQL
         * oracle - профиль для параметров СУБД Oracle
         * h2 - профиль для параметров СУБД H2
-        * docker-db - профиль для параметров БД docker - контейнера
    c) Параметры БД:
         * jdbc.url - url для подключения к БД
         * jdbc.user - логин
@@ -128,7 +127,7 @@ mvn clean install dockerfile:build
 
 Для развертывания окружения на production используется команда:
 
-mvn clean install dockerfile:build -Pdocker-db,experiment-linux
+mvn clean install dockerfile:build -Ppostgres,experiment-linux -Dspring.datasource.url=jdbc:postgresql://eca-db:5432/eca -Dspring.jpa.hibernate.ddl-auto=update
 
 3. Используя пакетный менеджер docker-compose, создать docker контейнеры с помощью команды:
 
