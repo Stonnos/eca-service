@@ -5,7 +5,6 @@ import com.ecaservice.config.MailConfig;
 import com.ecaservice.dto.mail.EmailRequest;
 import com.ecaservice.dto.mail.EmailResponse;
 import com.ecaservice.dto.mail.ResponseStatus;
-import com.ecaservice.exception.NotificationException;
 import com.ecaservice.model.entity.EmailRequestEntity;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentStatus;
@@ -26,13 +25,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.ws.client.WebServiceIOException;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import javax.inject.Inject;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -81,6 +80,16 @@ public class NotificationServiceTest {
         EnumMap<ExperimentStatus, String> statusMap = new EnumMap<>(ExperimentStatus.class);
         statusMap.put(ExperimentStatus.FINISHED, TEMPLATE_HTML);
         when(mailConfig.getMessageTemplatesMap()).thenReturn(statusMap);
+        when(mailConfig.getEnabled()).thenReturn(true);
+    }
+
+    @Test
+    public void testNotificationDisabled() {
+        when(mailConfig.getEnabled()).thenReturn(false);
+        Experiment experiment = createAndSaveExperiment();
+        notificationService.notifyByEmail(experiment);
+        List<EmailRequestEntity> emailRequestEntities = emailRequestRepository.findAll();
+        assertThat(emailRequestEntities).isNullOrEmpty();
     }
 
     @Test
@@ -100,17 +109,6 @@ public class NotificationServiceTest {
         assertThat(emailRequest.getRequestDate()).isNotNull();
         assertThat(emailRequest.getRequestId()).isEqualTo(emailResponse.getRequestId());
         assertThat(emailRequest.getResponseStatus()).isEqualTo(emailResponse.getStatus());
-    }
-
-    @Test(expected = NotificationException.class)
-    public void testErrorNotification() {
-        Experiment experiment = createAndSaveExperiment();
-        when(statusTemplateVisitor.caseFinished(experiment)).thenReturn(new Context());
-        when(templateEngine.process(any(String.class), any(Context.class))).thenReturn("message");
-        when(notificationWebServiceTemplate.marshalSendAndReceive(any(String.class),
-                any(EmailRequest.class))).thenThrow(
-                new WebServiceIOException("I/O"));
-        notificationService.notifyByEmail(experiment);
     }
 
     private Experiment createAndSaveExperiment() {

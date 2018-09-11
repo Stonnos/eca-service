@@ -34,4 +34,9 @@ public class MailConfig {
      * Email web service url
      */
     private String serviceUrl;
+
+    /**
+     * Is service enabled?
+     */
+    private Boolean enabled;
 }

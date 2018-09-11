@@ -49,7 +49,9 @@ public class Utils {
         Assert.notNull(inputData.getClassifier(), "Classifier is not specified!");
         Assert.notNull(inputData.getData(), "Input data is not specified!");
         Assert.notNull(evaluationMethod, "Evaluation method is not specified!");
-        Assert.notNull(evaluationOptionsMap, "Evaluation options map is not specified!");
+        if (EvaluationMethod.CROSS_VALIDATION.equals(evaluationMethod)) {
+            Assert.notNull(evaluationOptionsMap, "Evaluation options map is not specified!");
+        }
     }
 
     /**
