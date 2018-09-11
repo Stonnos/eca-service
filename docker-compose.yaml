@@ -1,0 +1,30 @@
+version: '3.5'
+services:
+
+  eca-db:
+    image: postgres:9.6.9
+    container_name: eca-db
+    volumes:
+      - ./scripts/postgresinit.sql:/docker-entrypoint-initdb.d/postgresinit.sql
+    ports:
+      - "5433:5432"
+    networks:
+      - default
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  eca-service:
+    image: eca-service
+    container_name: eca-service
+    ports:
+      - "8085:8080"
+    networks:
+      - default
+    depends_on:
+      - eca-db
+
+networks:
+  default:
+    name: app-network
+    driver: bridge

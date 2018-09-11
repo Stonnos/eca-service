@@ -42,6 +42,8 @@
         <jaxb2-maven-plugin.version>2.3</jaxb2-maven-plugin.version>
         <jacoco-plugin.version>0.7.7.201606060606</jacoco-plugin.version>
         <jacoco.minCoverage>0.70</jacoco.minCoverage>
+        <docker-maven-plugin.version>1.4.3</docker-maven-plugin.version>
+        <maven-plugin.version>3.2.0</maven-plugin.version>
     </properties>
 
     <repositories>
@@ -64,8 +66,8 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <storagePath>/home/roman/experiment/</storagePath>
-                <data.storagePath>/home/roman/experiment/data/</data.storagePath>
+                <storagePath>/home/experiment/</storagePath>
+                <data.storagePath>/home/experiment/data/</data.storagePath>
             </properties>
         </profile>
 
@@ -529,6 +531,26 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>${docker-maven-plugin.version}</version>
+                <inherited>false</inherited>
+                <configuration>
+                    <skip>false</skip>
+                    <repository>${project.artifactId}</repository>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${maven-plugin.version}</version>
+                <configuration>
+                    <warName>${artifactId}</warName>
+                </configuration>
             </plugin>
 
         </plugins>
