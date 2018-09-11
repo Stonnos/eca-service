@@ -127,7 +127,7 @@ mvn clean install dockerfile:build
 
 Для развертывания окружения на production используется команда:
 
-mvn clean install dockerfile:build -Ppostgres,experiment-linux
+mvn clean install dockerfile:build -Ppostgres,experiment-linux -Djdbc.url=jdbc:postgresql://eca-db:5432/eca
 
 3. Используя пакетный менеджер docker-compose, создать docker контейнеры с помощью команды:
 
