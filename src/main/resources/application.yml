@@ -64,7 +64,7 @@ experiment:
   mail:
     from: rbatsw@gmail.com
     subject: Eca - service
-    serviceUrl: http://notification-service:8080/notification-service/ws/
+    serviceUrl: http://localhost:8085/notification-service/ws/
     messageTemplatesMap:
       NEW: email-new-template.html
       FINISHED: email-message-template.html
@@ -72,7 +72,7 @@ experiment:
       TIMEOUT: email-timeout-message-template.html
 
 ersConfig:
-  url: http://evaluation-results-service:8080/evaluation-results-service/ws/
+  url: http://localhost:8085/evaluation-results-service/ws/
   enabled: true
   threadPoolSize: 10
 

@@ -125,12 +125,17 @@ mvn clean install -Pquality
 
 mvn clean install dockerfile:build
 
-Для развертывания окружения на production используется команда:
-
-mvn clean install dockerfile:build -Ppostgres,experiment-linux -Djdbc.url=jdbc:postgresql://eca-db:5432/eca
-
 3. Используя пакетный менеджер docker-compose, создать docker контейнеры с помощью команды:
 
 docker-compose up
 
 ВАЖНО! Данную команду необходимо выполнять из корневой папки проекта.
+
+Для развертывания окружения на production используется команда:
+
+mvn clean install dockerfile:build -Ppostgres,experiment-linux -Djdbc.url=jdbc:postgresql://eca-db:5432/eca
+
+При этом в файле application.yml необходимо установить следующие параметры:
+
+  * ersConfig.url=http://evaluation-results-service:8080/evaluation-results-service/ws/
+  * experiment.mail.serviceUrl=http://notification-service:8080/notification-service/ws/
