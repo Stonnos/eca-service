@@ -45,9 +45,9 @@ public class DataService {
      *
      * @param file - file object
      * @param data - training data
-     * @throws IOException
+     * @throws Exception
      */
-    public void save(File file, Instances data) throws IOException {
+    public void save(File file, Instances data) throws Exception {
         log.info("Starting to save {} data into file {}.", data.relationName(), file.getAbsolutePath());
         dataSaver.saveData(file, data);
         log.info("{} data has been successfully saved to file {}.", data.relationName(), file.getAbsolutePath());
