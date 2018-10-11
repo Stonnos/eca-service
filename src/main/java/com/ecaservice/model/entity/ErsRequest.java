@@ -11,7 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
@@ -52,6 +51,6 @@ public class ErsRequest {
     /**
      * Error details
      */
-    @Lob
+    @Column(columnDefinition = "text")
     private String details;
 }

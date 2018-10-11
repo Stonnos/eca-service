@@ -134,7 +134,7 @@ public class EvaluationOptimizerService {
                 classifierOptionsRequestRepository.findLastRequests(dataMd5Hash,
                         Collections.singleton(ResponseStatus.SUCCESS),
                         LocalDateTime.now().minusDays(crossValidationConfig.getClassifierOptionsCacheDurationInDays()),
-                        new PageRequest(0, 1));
+                        PageRequest.of(0, 1));
         return requestModels.stream().findFirst().map(
                 ClassifierOptionsRequestEntity::getClassifierOptionsRequestModel).orElse(null);
     }

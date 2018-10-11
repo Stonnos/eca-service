@@ -7,7 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
@@ -46,6 +45,6 @@ public class ClassifierOptionsDatabaseModel {
     /**
      * Classifier options config as json
      */
-    @Lob
+    @Column(columnDefinition = "text")
     private String config;
 }

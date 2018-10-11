@@ -1,4 +1,4 @@
-ECA service v3.3
+ECA service v3.4
 ========================================
 
 Описание
@@ -21,19 +21,19 @@ ECA service v3.3
 * maven => 3.3.9
 * eca-core 6.3
 * DB для хранения информации.
-* Контейнер сервлетов (например Tomcat 7)
+* Контейнер сервлетов (например Tomcat 8)
 
 Описание ключевой конфигурации модуля
 ----------------------------------------
 Настройки для проекта eca-service находятся в application.yml. Основные параметры:
 1) spring.datasource - настройки БД для хранения информации
-2) crossValidation — настройки параметров для метода k * V блочной кросс - проверки
+2) cross-validation — настройки параметров для метода k * V блочной кросс - проверки
    на тестовой выборке:
-   * crossValidation.numFolds - число блоков
-   * crossValidation.numTests - число тестов
-   * crossValidation.seed - начальное значение для генератора псевдослучайных чисел
-   * crossValidation.timeout - таймаут в сек. для оценки точности классификатора
-   * crossValidation.classifierOptionsCacheDurationInDays - период хранения оптимальных настроек классификатора
+   * cross-validation.numFolds - число блоков
+   * cross-validation.numTests - число тестов
+   * cross-validation.seed - начальное значение для генератора псевдослучайных чисел
+   * cross-validation.timeout - таймаут в сек. для оценки точности классификатора
+   * cross-validation.classifierOptionsCacheDurationInDays - период хранения оптимальных настроек классификатора
    полученных от внешнего сервиса ERS
 3) experiment - настройки параметров модуля Data Miner. Ниже приведено описание
    основных настроек:
@@ -59,10 +59,10 @@ ECA service v3.3
    * experiment.mail.from - email отправителя
    * experiment.mail.subject - тема письма
    * experiment.mail.serviceUrl - url конечной точки Notification service
-4) evaluationResultsServiceConfig - настройки интеграции с сервисом evaluation-results-service
-   * evaluationResultsServiceConfig.url - url конечной точки ERS сервиса
-   * evaluationResultsServiceConfig.enabled - выключатель для отправки результатов классификации (вкл./выкл.)
-   * evaluationResultsServiceConfig.threadPoolSize - максимальный размер пула потоков для асинхронной отправки
+4) ers-config - настройки интеграции с сервисом evaluation-results-service
+   * ers-config.url - url конечной точки ERS сервиса
+   * ers-config.enabled - выключатель для отправки результатов классификации (вкл./выкл.)
+   * ers-config.threadPoolSize - максимальный размер пула потоков для асинхронной отправки
    результатов классификации
 
 Инструкция по развертыванию
@@ -100,7 +100,7 @@ ECA service v3.3
         * experiment.data.storagePath - путь к папке на файловой системе для хранения файлов с
             исходныи данными (обучающая выборка)
     
-2. Развернуть target/eca-service.war на одном из контейнеров сервлетов (например, Tomcat) с контекстом /eca-service.
+2. Развернуть target/eca-service.war на одном из контейнеров сервлетов (например, Tomcat 8) с контекстом /eca-service.
          
 3. Страница с документацией swagger находится по адресу http://[host]:[port]/eca-service/swagger-ui.html, где host и port
 соответственно адрес машины и порт на котором развернуто приложение.
@@ -112,9 +112,9 @@ ECA service v3.3
 mvn clean install -Pquality
 
 С параметрами:
--DevaluationResultsServiceConfig.url=http://localhost:8089/evaluation-results-service/ws/
--DevaluationResultsServiceConfig.enabled=true
--DevaluationResultsServiceConfig.threadPoolSize=10
+-Ders-config.url=http://localhost:8089/evaluation-results-service/ws/
+-Ders-config.enabled=true
+-Ders-config.threadPoolSize=10
 
 Инструкция по развертыванию в Docker
 -------------------------------------------------------

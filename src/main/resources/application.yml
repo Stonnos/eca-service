@@ -9,13 +9,21 @@ spring:
     hibernate:
       ddl-auto: @jdbc.ddlAuto@
     database-platform: @jdbc.dialect@
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
   cache:
     cache-names: classifiers
     caffeine:
       spec: maximumSize=25, expireAfterWrite=7200s
+  liquibase:
+    contexts: schema,data
+    change-log: classpath:db/liquibase-changelog.xml
 
 ## Cross - validation properties
-crossValidation:
+cross-validation:
   numFolds: 10
   numTests: 1
   seed: 1
@@ -72,13 +80,7 @@ experiment:
       ERROR: email-error-message-template.html
       TIMEOUT: email-timeout-message-template.html
 
-ersConfig:
+ers-config:
   url: http://localhost:8085/evaluation-results-service/ws/
   enabled: true
   threadPoolSize: 10
-
-
-## Liquibase properties
-liquibase:
-  contexts: schema,data
-  change-log: classpath:db/liquibase-changelog.xml

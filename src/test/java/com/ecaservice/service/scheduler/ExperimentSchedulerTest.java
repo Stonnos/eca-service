@@ -78,7 +78,7 @@ public class ExperimentSchedulerTest {
         List<Experiment> experiments = new ArrayList<>();
         experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
-        experimentRepository.save(experiments);
+        experimentRepository.saveAll(experiments);
         experimentScheduler.processNewRequests();
         verify(experimentService, times(experiments.size())).processExperiment(any(Experiment.class));
     }
@@ -89,7 +89,7 @@ public class ExperimentSchedulerTest {
         experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), ExperimentStatus.FINISHED));
         experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), ExperimentStatus.ERROR));
         experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), ExperimentStatus.TIMEOUT));
-        experimentRepository.save(experiments);
+        experimentRepository.saveAll(experiments);
         experimentScheduler.processRequestsToSent();
         verify(notificationService, times(experiments.size())).notifyByEmail(any(Experiment.class));
     }
@@ -109,7 +109,7 @@ public class ExperimentSchedulerTest {
                         LocalDateTime.now());
         experiment.setDeletedDate(LocalDateTime.now());
         experiments.add(experiment);
-        experimentRepository.save(experiments);
+        experimentRepository.saveAll(experiments);
         experimentScheduler.processRequestsToRemove();
         verify(experimentService).removeExperimentData(argumentCaptor.capture());
         assertThat(argumentCaptor.getValue()).isEqualTo(experimentToRemove);

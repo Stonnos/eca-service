@@ -70,7 +70,7 @@ public class ExperimentConfigurationService {
             if (CollectionUtils.isEmpty(latestOptions) || latestOptions.size() != newOptions.size() ||
                     !latestOptions.equals(newOptions)) {
                 log.info("Saving new classifiers input options with version {}.", version);
-                classifierOptionsDatabaseModelRepository.save(newOptions);
+                classifierOptionsDatabaseModelRepository.saveAll(newOptions);
             }
         }
     }

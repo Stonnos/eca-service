@@ -153,7 +153,7 @@ public class ExperimentScheduler {
      * @param pageableCallback callback {@link PageableCallback}
      */
     private <T> void processExperiments(PageableCallback<T> pageableCallback) {
-        Pageable pageable = new PageRequest(0, experimentConfig.getPageSize());
+        Pageable pageable = PageRequest.of(0, experimentConfig.getPageSize());
         Page<T> page;
         int totalCount = 0;
         while ((page = pageableCallback.findNextPage(pageable)).hasContent()) {
