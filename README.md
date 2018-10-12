@@ -137,5 +137,5 @@ mvn clean install dockerfile:build -Ppostgres,experiment-linux -Djdbc.url=jdbc:p
 
 При этом в файле application.yml необходимо установить следующие параметры:
 
-  * ersConfig.url=http://evaluation-results-service:8080/evaluation-results-service/ws/
+  * ers-config.url=http://evaluation-results-service:8080/evaluation-results-service/ws/
   * experiment.mail.serviceUrl=http://notification-service:8080/notification-service/ws/
