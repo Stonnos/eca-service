@@ -13,10 +13,14 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      TZ: "Asia/Novosibirsk"
+      PGTZ: "Asia/Novosibirsk"
 
   eca-service:
     image: eca-service
     container_name: eca-service
+    environment:
+      TZ: "Asia/Novosibirsk"
     ports:
       - "8085:8080"
     networks:
