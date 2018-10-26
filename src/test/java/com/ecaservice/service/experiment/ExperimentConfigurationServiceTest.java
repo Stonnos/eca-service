@@ -16,7 +16,12 @@ import eca.neural.functions.ActivationFunctionType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -34,7 +39,12 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@AutoConfigureDataJpa
+@EnableJpaRepositories(basePackageClasses = ClassifierOptionsDatabaseModelRepository.class)
+@EntityScan(basePackageClasses = ClassifierOptionsDatabaseModel.class)
+@EnableConfigurationProperties
+@TestPropertySource("classpath:application.properties")
+@Import(ExperimentConfig.class)
 public class ExperimentConfigurationServiceTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();

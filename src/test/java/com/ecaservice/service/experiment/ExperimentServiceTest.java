@@ -5,6 +5,7 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.mapping.ExperimentMapper;
+import com.ecaservice.mapping.ExperimentMapperImpl;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.InitializationParams;
@@ -16,7 +17,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
 
@@ -40,7 +46,12 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@AutoConfigureDataJpa
+@EnableJpaRepositories(basePackageClasses = ExperimentRepository.class)
+@EntityScan(basePackageClasses = Experiment.class)
+@EnableConfigurationProperties
+@TestPropertySource("classpath:application.properties")
+@Import({ExperimentMapperImpl.class, ExperimentConfig.class})
 public class ExperimentServiceTest {
 
     @Inject

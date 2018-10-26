@@ -17,7 +17,12 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
@@ -37,7 +42,12 @@ import static org.mockito.Mockito.verify;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@AutoConfigureDataJpa
+@EnableJpaRepositories(basePackageClasses = ExperimentRepository.class)
+@EntityScan(basePackageClasses = Experiment.class)
+@EnableConfigurationProperties
+@TestPropertySource("classpath:application.properties")
+@Import(ExperimentConfig.class)
 public class ExperimentSchedulerTest {
 
     @Inject

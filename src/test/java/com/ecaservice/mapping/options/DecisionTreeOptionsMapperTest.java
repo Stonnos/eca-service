@@ -9,7 +9,7 @@ import eca.trees.CHAID;
 import eca.trees.DecisionTreeClassifier;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@Import({DecisionTreeOptionsMapperImpl.class, DecisionTreeFactory.class})
 public class DecisionTreeOptionsMapperTest {
 
     private static final double ALPHA_VALUE = 0.002d;

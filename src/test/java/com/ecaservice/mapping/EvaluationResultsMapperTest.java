@@ -12,6 +12,7 @@ import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.InstancesReport;
 import com.ecaservice.dto.evaluation.RocCurveReport;
 import com.ecaservice.dto.evaluation.StatisticsReport;
+import com.ecaservice.service.ClassifierOptionsService;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.ensemble.ClassifiersSet;
@@ -25,7 +26,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Attribute;
@@ -40,7 +41,8 @@ import java.util.List;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@Import({EvaluationResultsMapperImpl.class, CrossValidationConfig.class,
+        InstancesConverter.class, ClassifierOptionsService.class})
 public class EvaluationResultsMapperTest {
 
     @Inject

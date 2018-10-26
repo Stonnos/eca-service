@@ -6,6 +6,7 @@ import com.ecaservice.config.ErsConfig;
 import com.ecaservice.dto.evaluation.EvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassifierReportMapper;
+import com.ecaservice.mapping.ClassifierReportMapperImpl;
 import com.ecaservice.model.entity.ErsRequest;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
@@ -21,7 +22,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ws.client.WebServiceIOException;
@@ -39,7 +46,12 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@AutoConfigureDataJpa
+@EnableJpaRepositories(basePackageClasses = ErsRequestRepository.class)
+@EntityScan(basePackageClasses = ErsRequest.class)
+@EnableConfigurationProperties
+@TestPropertySource("classpath:application.properties")
+@Import({ErsConfig.class, ClassifierReportMapperImpl.class})
 public class ErsRequestServiceTest {
 
     @Inject

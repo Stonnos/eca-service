@@ -7,7 +7,7 @@ import eca.ensemble.ModifiedHeterogeneousClassifier;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
@@ -18,7 +18,7 @@ import javax.inject.Inject;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@Import({HeterogeneousClassifierOptionsMapperImpl.class, HeterogeneousClassifierFactory.class})
 public class HeterogeneousClassifierOptionsMapperTest {
 
     @Inject

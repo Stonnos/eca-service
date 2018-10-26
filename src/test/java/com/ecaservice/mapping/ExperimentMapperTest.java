@@ -5,7 +5,7 @@ import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.model.entity.Experiment;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@Import(ExperimentMapperImpl.class)
 public class ExperimentMapperTest {
 
     @Inject

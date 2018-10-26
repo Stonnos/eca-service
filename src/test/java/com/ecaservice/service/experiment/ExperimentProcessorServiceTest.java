@@ -13,8 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 import weka.core.Instances;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,8 +24,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
+@RunWith(MockitoJUnitRunner.class)
 public class ExperimentProcessorServiceTest {
 
     private static final int RESULTS_SIZE = 5;

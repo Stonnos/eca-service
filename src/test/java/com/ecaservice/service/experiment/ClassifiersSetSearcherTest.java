@@ -141,6 +141,4 @@ public class ClassifiersSetSearcherTest {
                 .TRAINING_DATA, Collections.emptyMap());
         assertThat(classifiers.size()).isEqualTo(optionsList.size());
     }
-
-
 }
