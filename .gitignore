@@ -25,6 +25,12 @@ dist/
 nbdist/
 .nb-gradle/
 
+### FRONTEND ###
+node_modules/
+node/
+package-lock.json
+yarn.lock
+
 # model xsd
 model/**/resources/schema-cdm
 
