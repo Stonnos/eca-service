@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>eca-service</artifactId>
+        <groupId>eca.service</groupId>
+        <version>3.4</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>eca-server</artifactId>
+
+    <repositories>
+        <repository>
+            <id>eca-mvn-repo</id>
+            <url>https://raw.github.com/Stonnos/eca/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <logback.version>1.2.3</logback.version>
+        <slf4j.version>1.7.25</slf4j.version>
+        <mysql.version>5.1.40</mysql.version>
+        <oracle.version>12.1.0.2</oracle.version>
+        <postresql.version>9.4.1212</postresql.version>
+        <eca.version>6.4</eca.version>
+        <assertj.core.version>3.8.0</assertj.core.version>
+        <mockito.version>1.10.19</mockito.version>
+        <hibernate.version>5.3.6.Final</hibernate.version>
+        <commons.io.version>2.5</commons.io.version>
+        <org.mapstruct.version>1.2.0.Final</org.mapstruct.version>
+        <powermock.version>1.7.3</powermock.version>
+        <liquibase.version>3.5.3</liquibase.version>
+        <swagger-version>2.9.2</swagger-version>
+        <inject.version>1</inject.version>
+        <xmlschema.version>2.2.3</xmlschema.version>
+        <jaxb2-maven-plugin.version>2.3</jaxb2-maven-plugin.version>
+        <jacoco-plugin.version>0.7.7.201606060606</jacoco-plugin.version>
+        <jacoco.minCoverage>0.70</jacoco.minCoverage>
+        <docker-maven-plugin.version>1.4.3</docker-maven-plugin.version>
+        <maven-plugin.version>3.2.0</maven-plugin.version>
+        <javassist.version>3.21.0-GA</javassist.version>
+    </properties>
+
+    <profiles>
+
+        <!-- Experiment profile for linux operation systems-->
+        <profile>
+            <id>experiment-linux</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <storagePath>/home/experiment/</storagePath>
+                <data.storagePath>/home/experiment/data/</data.storagePath>
+            </properties>
+        </profile>
+
+        <!-- Experiment profile for windows operation systems-->
+        <profile>
+            <id>experiment-windows</id>
+            <properties>
+                <storagePath>D:/experiment/</storagePath>
+                <data.storagePath>D:/experiment/data/</data.storagePath>
+            </properties>
+        </profile>
+
+        <!-- Profile is used to use mysql datasource -->
+        <profile>
+            <id>mysql</id>
+            <properties>
+                <jdbc.dialect>org.hibernate.dialect.MySQLDialect</jdbc.dialect>
+                <jdbc.ddlAuto>validate</jdbc.ddlAuto>
+                <jdbc.driver>com.mysql.jdbc.Driver</jdbc.driver>
+                <jdbc.url>jdbc:mysql://localhost:3306/eca?useUnicode=true&amp;characterEncoding=UTF-8</jdbc.url>
+                <jdbc.user>root</jdbc.user>
+                <jdbc.password>123</jdbc.password>
+            </properties>
+
+            <dependencies>
+                <dependency>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
+                    <version>${mysql.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <!-- Profile is used to use embedded h2 datasource -->
+        <profile>
+            <id>h2</id>
+            <properties>
+                <jdbc.url>jdbc:h2:mem:eca;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE</jdbc.url>
+                <jdbc.user>sa</jdbc.user>
+                <jdbc.password></jdbc.password>
+                <jdbc.driver>org.h2.Driver</jdbc.driver>
+                <jdbc.ddlAuto>create-drop</jdbc.ddlAuto>
+                <jdbc.dialect>org.hibernate.dialect.H2Dialect</jdbc.dialect>
+            </properties>
+        </profile>
+
+        <!-- Profile is used to use postgres datasource -->
+        <profile>
+            <id>postgres</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <jdbc.url>jdbc:postgresql://localhost:5432/eca</jdbc.url>
+                <jdbc.user>postgres</jdbc.user>
+                <jdbc.password>postgres</jdbc.password>
+                <jdbc.driver>org.postgresql.Driver</jdbc.driver>
+                <jdbc.ddlAuto>validate</jdbc.ddlAuto>
+                <jdbc.dialect>org.hibernate.dialect.PostgreSQL9Dialect</jdbc.dialect>
+            </properties>
+
+            <dependencies>
+                <dependency>
+                    <groupId>org.postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
+                    <version>${postresql.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <!-- Profile is used to use oracle datasource -->
+        <profile>
+            <id>oracle</id>
+            <properties>
+                <jdbc.url>jdbc:oracle:thin:@localhost:1521:xe</jdbc.url>
+                <jdbc.user>SYSTEM</jdbc.user>
+                <jdbc.password>123</jdbc.password>
+                <jdbc.driver>oracle.jdbc.driver.OracleDriver</jdbc.driver>
+                <jdbc.ddlAuto>validate</jdbc.ddlAuto>
+                <jdbc.dialect>org.hibernate.dialect.Oracle10gDialect</jdbc.dialect>
+            </properties>
+
+            <dependencies>
+                <dependency>
+                    <groupId>com.github.noraui</groupId>
+                    <artifactId>ojdbc7</artifactId>
+                    <version>${oracle.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>quality</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-integration-test</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/javax.inject/javax.inject -->
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>${inject.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-java8</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+
+        <!-- Slf4j -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <!-- Spring Boot -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web-services</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.ws.xmlschema</groupId>
+            <artifactId>xmlschema-core</artifactId>
+            <version>${xmlschema.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>wsdl4j</groupId>
+            <artifactId>wsdl4j</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eca</groupId>
+            <artifactId>eca-core</artifactId>
+            <version>${eca.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+
+        <!--test dependencies-->
+        <dependency>
+            <scope>test</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+
+        <dependency>
+            <scope>test</scope>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.core.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.javassist/javassist -->
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>${javassist.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons.io.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-json -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-json</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-jdk8</artifactId>
+            <version>${org.mapstruct.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>${liquibase.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${swagger-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${swagger-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>Normal compilation (excluding mappers)</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/**/mapping/**/*</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>MapStruct mappers</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <compilerVersion>${java.version}</compilerVersion>
+                            <source>${java.version}</source>
+                            <target>${java.version}</target>
+                            <annotationProcessorPaths>
+                                <path>
+                                    <groupId>org.mapstruct</groupId>
+                                    <artifactId>mapstruct-processor</artifactId>
+                                    <version>${org.mapstruct.version}</version>
+                                </path>
+                            </annotationProcessorPaths>
+                            <compilerArgs>
+                                <compilerArg>-Amapstruct.defaultComponentModel=spring</compilerArg>
+                            </compilerArgs>
+                            <includes>
+                                <include>**/**/mapping/**/*</include>
+                                <include>${project.build.directory}/classes/**/*</include>
+                            </includes>
+                            <annotationProcessors>
+                                <processor>org.mapstruct.ap.MappingProcessor</processor>
+                            </annotationProcessors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- test coverage check with jococo -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-plugin.version}</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/model/**/*</exclude>
+                        <exclude>**/dto/**/*</exclude>
+                        <exclude>**/config/**/*</exclude>
+                        <exclude>**/dictionary/**/*</exclude>
+                        <exclude>**/exception/**/*</exclude>
+                        <exclude>**/util/**/*</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <!-- see http://automationrhapsody.com/automated-code-coverage-of-unit-tests-with-jacoco-and-maven/ for rule details-->
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>INSTRUCTION</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>${jacoco.minCoverage}</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>${jaxb2-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>ers</id>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                        <configuration>
+                            <packageName>com.ecaservice.dto.evaluation</packageName>
+                            <sources>
+                                <source>src/main/resources/evaluation-results/evaluation-results.xsd</source>
+                            </sources>
+                            <outputDirectory>target/generated-sources/xjb</outputDirectory>
+                            <clearOutputDir>false</clearOutputDir>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>notification</id>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                        <configuration>
+                            <packageName>com.ecaservice.dto.mail</packageName>
+                            <sources>
+                                <source>src/main/resources/notification/notification.xsd</source>
+                            </sources>
+                            <outputDirectory>target/generated-sources/xjb</outputDirectory>
+                            <clearOutputDir>false</clearOutputDir>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>${docker-maven-plugin.version}</version>
+                <inherited>false</inherited>
+                <configuration>
+                    <skip>false</skip>
+                    <repository>${project.artifactId}</repository>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${maven-plugin.version}</version>
+                <configuration>
+                    <warName>${project.artifactId}</warName>
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+</project>
