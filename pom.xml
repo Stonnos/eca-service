@@ -8,8 +8,9 @@
     <artifactId>eca-service</artifactId>
     <version>3.4</version>
     <modules>
-        <module>eca-web</module>
+        <module>eca-web-transport</module>
         <module>eca-server</module>
+        <module>eca-web</module>
     </modules>
 
     <parent>
@@ -40,11 +41,6 @@
 
     <build>
         <plugins>
-
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

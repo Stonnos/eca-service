@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>eca-server</artifactId>
+    <packaging>war</packaging>
 
     <repositories>
         <repository>
@@ -536,6 +537,11 @@
                 <configuration>
                     <warName>${project.artifactId}</warName>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
         </plugins>
