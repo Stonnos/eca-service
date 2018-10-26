@@ -1,4 +1,4 @@
-package com.ecaservice.dto;
+package com.ecaservice.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

@@ -1,6 +1,6 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.dto.ClassifierOptionsDto;
+import com.ecaservice.web.dto.ClassifierOptionsDto;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import org.mapstruct.Mapper;
 

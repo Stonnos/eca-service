@@ -1,6 +1,6 @@
 package com.ecaservice.controller;
 
-import com.ecaservice.dto.ClassifierOptionsDto;
+import com.ecaservice.web.dto.ClassifierOptionsDto;
 import com.ecaservice.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.options.ClassifierOptions;

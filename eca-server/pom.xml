@@ -38,7 +38,6 @@
         <org.mapstruct.version>1.2.0.Final</org.mapstruct.version>
         <powermock.version>1.7.3</powermock.version>
         <liquibase.version>3.5.3</liquibase.version>
-        <swagger-version>2.9.2</swagger-version>
         <inject.version>1</inject.version>
         <xmlschema.version>2.2.3</xmlschema.version>
         <jaxb2-maven-plugin.version>2.3</jaxb2-maven-plugin.version>
@@ -270,6 +269,12 @@
         </dependency>
 
         <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>eca-web-transport</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
         </dependency>
@@ -335,12 +340,6 @@
             <artifactId>spring-boot-devtools</artifactId>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-json -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-json</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-jdk8</artifactId>
@@ -351,17 +350,6 @@
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
             <version>${liquibase.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${swagger-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${swagger-version}</version>
         </dependency>
 
         <dependency>
