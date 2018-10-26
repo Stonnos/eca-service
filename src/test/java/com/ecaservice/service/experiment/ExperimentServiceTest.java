@@ -10,20 +10,14 @@ import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.repository.ExperimentRepository;
+import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.service.evaluation.CalculationExecutorServiceImpl;
 import eca.converters.model.ExperimentHistory;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
 
 import javax.inject.Inject;
@@ -45,14 +39,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
-@AutoConfigureDataJpa
-@EnableJpaRepositories(basePackageClasses = ExperimentRepository.class)
-@EntityScan(basePackageClasses = Experiment.class)
-@EnableConfigurationProperties
-@TestPropertySource("classpath:application.properties")
 @Import({ExperimentMapperImpl.class, ExperimentConfig.class})
-public class ExperimentServiceTest {
+public class ExperimentServiceTest extends AbstractJpaTest {
 
     @Inject
     private ExperimentRepository experimentRepository;

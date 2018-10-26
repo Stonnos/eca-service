@@ -4,7 +4,7 @@ import eca.neural.NeuralNetwork;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
 
@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@Import(NeuralNetworkInputDataHandler.class)
 public class NeuralNetworkInputDataHandlerTest {
 
     private static final int DEFAULT_NUM_CLASSES = 5;

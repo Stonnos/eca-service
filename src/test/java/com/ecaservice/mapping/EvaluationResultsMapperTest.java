@@ -2,6 +2,7 @@ package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
+import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
 import com.ecaservice.dto.evaluation.ClassificationCostsReport;
 import com.ecaservice.dto.evaluation.ClassifierReport;
 import com.ecaservice.dto.evaluation.ConfusionMatrixReport;
@@ -26,7 +27,9 @@ import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Attribute;
@@ -36,13 +39,15 @@ import javax.inject.Inject;
 import java.util.List;
 
 /**
- * Unit tests fro checking {@link EvaluationResultsMapper} functionality.
+ * Unit tests for checking {@link EvaluationResultsMapper} functionality.
  *
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
+@EnableConfigurationProperties
+@TestPropertySource("classpath:application.properties")
 @Import({EvaluationResultsMapperImpl.class, CrossValidationConfig.class,
-        InstancesConverter.class, ClassifierOptionsService.class})
+        InstancesConverter.class, ClassifierOptionsService.class, ClassifierOptionsMapperConfiguration.class})
 public class EvaluationResultsMapperTest {
 
     @Inject

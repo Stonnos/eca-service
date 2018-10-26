@@ -10,19 +10,13 @@ import com.ecaservice.model.options.DecisionTreeOptions;
 import com.ecaservice.model.options.LogisticOptions;
 import com.ecaservice.model.options.NeuralNetworkOptions;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
+import com.ecaservice.service.AbstractJpaTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.ensemble.forests.DecisionTreeType;
 import eca.neural.functions.ActivationFunctionType;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.inject.Inject;
@@ -38,14 +32,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
-@AutoConfigureDataJpa
-@EnableJpaRepositories(basePackageClasses = ClassifierOptionsDatabaseModelRepository.class)
-@EntityScan(basePackageClasses = ClassifierOptionsDatabaseModel.class)
-@EnableConfigurationProperties
-@TestPropertySource("classpath:application.properties")
 @Import(ExperimentConfig.class)
-public class ExperimentConfigurationServiceTest {
+public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final int CONFIG_VERSION = 1;

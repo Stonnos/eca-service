@@ -13,6 +13,7 @@ import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.repository.ErsRequestRepository;
 import com.ecaservice.repository.EvaluationLogRepository;
+import com.ecaservice.service.AbstractJpaTest;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.metrics.KNearestNeighbours;
@@ -20,16 +21,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ws.client.WebServiceIOException;
 
@@ -45,14 +38,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
-@AutoConfigureDataJpa
-@EnableJpaRepositories(basePackageClasses = ErsRequestRepository.class)
-@EntityScan(basePackageClasses = ErsRequest.class)
-@EnableConfigurationProperties
-@TestPropertySource("classpath:application.properties")
 @Import({ErsConfig.class, ClassifierReportMapperImpl.class})
-public class ErsRequestServiceTest {
+public class ErsRequestServiceTest extends AbstractJpaTest {
 
     @Inject
     private EvaluationLogRepository evaluationLogRepository;

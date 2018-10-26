@@ -3,6 +3,7 @@ package com.ecaservice.service.evaluation;
 import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
+import com.ecaservice.configuation.ExecutorConfiguration;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.exception.EcaServiceException;
@@ -14,21 +15,14 @@ import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
+import com.ecaservice.service.AbstractJpaTest;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -44,14 +38,9 @@ import static org.mockito.Mockito.mock;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
-@AutoConfigureDataJpa
-@EnableJpaRepositories(basePackageClasses = EvaluationLogRepository.class)
-@EntityScan(basePackageClasses = EvaluationLog.class)
-@EnableConfigurationProperties
-@TestPropertySource("classpath:application.properties")
-@Import({CrossValidationConfig.class, EvaluationLogMapperImpl.class, EvaluationService.class})
-public class EvaluationRequestServiceTest {
+@Import({ExecutorConfiguration.class, CrossValidationConfig.class,
+        EvaluationLogMapperImpl.class, EvaluationService.class})
+public class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     @Inject
     private CrossValidationConfig crossValidationConfig;
@@ -61,14 +50,14 @@ public class EvaluationRequestServiceTest {
     private EvaluationLogMapper evaluationLogMapper;
     @Inject
     private EvaluationService evaluationService;
+    @Inject
+    private CalculationExecutorService calculationExecutorService;
 
     private EvaluationRequestService evaluationRequestService;
 
     @Before
     public void setUp() {
         evaluationLogRepository.deleteAll();
-        CalculationExecutorService calculationExecutorService =
-                new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
         evaluationRequestService =
                 new EvaluationRequestService(crossValidationConfig, calculationExecutorService, evaluationService,
                         evaluationLogRepository, evaluationLogMapper);
