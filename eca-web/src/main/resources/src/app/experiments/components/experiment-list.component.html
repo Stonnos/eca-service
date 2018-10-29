@@ -1,0 +1,54 @@
+<div class="container-fluid mb-5">
+  <div class="row">
+    <div class="col-12">
+      <p-table
+        [value]="experiments"
+        [rows]="5"
+        [totalRecords]="total"
+        [paginator]="true"
+        [tableStyle]="{'table-layout':'auto'}">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Request UUID</th>
+            <th>Experiment type</th>
+            <th>Evaluation method</th>
+            <th>Request first name</th>
+            <th>Request email</th>
+            <th>Training data</th>
+            <th>Experiment results</th>
+            <th>Creation date</th>
+            <th>Start date</th>
+            <th>End date</th>
+            <th>Sent date</th>
+            <th>Delete date</th>
+            <th>Status</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-experiment>
+          <tr>
+            <td>{{ experiment.uuid }}</td>
+            <td>{{ experiment.experimentType }}</td>
+            <td>{{ experiment.evaluationMethod }}</td>
+            <td>{{ experiment.firstName }}</td>
+            <td>{{ experiment.email }}</td>
+            <td>{{ experiment.trainingDataAbsolutePath }}</td>
+            <td>{{ experiment.experimentAbsolutePath }}</td>
+            <td>{{ experiment.creationDate }}</td>
+            <td>{{ experiment.startDate }}</td>
+            <td>{{ experiment.endDate }}</td>
+            <td>{{ experiment.sentDate }}</td>
+            <td>{{ experiment.deletedDate }}</td>
+            <td>{{ experiment.experimentStatus }}</td>
+          </tr>
+        </ng-template>
+        <ng-template *ngIf="experiments.length == 0" pTemplate="emptymessage">
+          <tr>
+            <td [attr.colspan]="13" style="text-align: center;">
+              No experiments found
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
