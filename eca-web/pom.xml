@@ -48,7 +48,7 @@
 
         <resources>
             <resource>
-                <directory>target/resources</directory>
+                <directory>src/main/resources/dist/resources</directory>
                 <targetPath>static</targetPath>
             </resource>
         </resources>
