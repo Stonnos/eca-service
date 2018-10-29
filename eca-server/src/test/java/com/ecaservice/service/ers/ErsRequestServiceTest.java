@@ -6,12 +6,14 @@ import com.ecaservice.config.ErsConfig;
 import com.ecaservice.dto.evaluation.EvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassifierReportMapper;
+import com.ecaservice.mapping.ClassifierReportMapperImpl;
 import com.ecaservice.model.entity.ErsRequest;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.repository.ErsRequestRepository;
 import com.ecaservice.repository.EvaluationLogRepository;
+import com.ecaservice.service.AbstractJpaTest;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.metrics.KNearestNeighbours;
@@ -19,10 +21,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ws.client.WebServiceIOException;
 
@@ -38,9 +38,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class ErsRequestServiceTest {
+@Import({ErsConfig.class, ClassifierReportMapperImpl.class})
+public class ErsRequestServiceTest extends AbstractJpaTest {
 
     @Inject
     private EvaluationLogRepository evaluationLogRepository;

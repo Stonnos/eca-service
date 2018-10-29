@@ -4,7 +4,20 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.exception.ExperimentException;
+import com.ecaservice.mapping.options.AdaBoostOptionsMapperImpl;
 import com.ecaservice.mapping.options.ClassifierOptionsMapper;
+import com.ecaservice.mapping.options.DecisionTreeFactory;
+import com.ecaservice.mapping.options.DecisionTreeOptionsMapperImpl;
+import com.ecaservice.mapping.options.ExtraTreesOptionsMapperImpl;
+import com.ecaservice.mapping.options.HeterogeneousClassifierFactory;
+import com.ecaservice.mapping.options.HeterogeneousClassifierOptionsMapperImpl;
+import com.ecaservice.mapping.options.J48OptionsMapperImpl;
+import com.ecaservice.mapping.options.KNearestNeighboursOptionsMapperImpl;
+import com.ecaservice.mapping.options.LogisticOptionsMapperImpl;
+import com.ecaservice.mapping.options.NeuralNetworkOptionsMapperImpl;
+import com.ecaservice.mapping.options.RandomForestsOptionsMapperImpl;
+import com.ecaservice.mapping.options.RandomNetworkOptionsMapperImpl;
+import com.ecaservice.mapping.options.StackingOptionsMapperImpl;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.evaluation.ClassificationResult;
 import com.ecaservice.model.evaluation.EvaluationMethod;
@@ -12,6 +25,8 @@ import com.ecaservice.model.options.KNearestNeighboursOptions;
 import com.ecaservice.model.options.LogisticOptions;
 import com.ecaservice.service.evaluation.EvaluationService;
 import com.ecaservice.service.experiment.handler.ClassifierInputDataHandler;
+import com.ecaservice.service.experiment.handler.DecisionTreeInputDataHandler;
+import com.ecaservice.service.experiment.handler.NeuralNetworkInputDataHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
@@ -22,7 +37,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.core.Instances;
 
@@ -42,7 +59,16 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@EnableConfigurationProperties
+@TestPropertySource("classpath:application.properties")
+@Import({ExperimentConfig.class, CrossValidationConfig.class,
+        DecisionTreeInputDataHandler.class, NeuralNetworkInputDataHandler.class,
+        AdaBoostOptionsMapperImpl.class, HeterogeneousClassifierOptionsMapperImpl.class,
+        StackingOptionsMapperImpl.class, ExtraTreesOptionsMapperImpl.class,
+        RandomForestsOptionsMapperImpl.class, RandomNetworkOptionsMapperImpl.class,
+        DecisionTreeOptionsMapperImpl.class, KNearestNeighboursOptionsMapperImpl.class,
+        J48OptionsMapperImpl.class, NeuralNetworkOptionsMapperImpl.class, LogisticOptionsMapperImpl.class,
+        HeterogeneousClassifierFactory.class, DecisionTreeFactory.class})
 public class ClassifiersSetSearcherTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -141,6 +167,4 @@ public class ClassifiersSetSearcherTest {
                 .TRAINING_DATA, Collections.emptyMap());
         assertThat(classifiers.size()).isEqualTo(optionsList.size());
     }
-
-
 }

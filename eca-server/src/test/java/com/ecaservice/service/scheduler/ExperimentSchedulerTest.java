@@ -7,18 +7,17 @@ import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.repository.EmailRequestRepository;
 import com.ecaservice.repository.ErsRequestRepository;
 import com.ecaservice.repository.ExperimentRepository;
+import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.ers.ErsRequestService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.experiment.mail.NotificationService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
@@ -36,9 +35,8 @@ import static org.mockito.Mockito.verify;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class ExperimentSchedulerTest {
+@Import(ExperimentConfig.class)
+public class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @Inject
     private ExperimentRepository experimentRepository;

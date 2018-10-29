@@ -4,18 +4,18 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.EcaResponse;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.mapping.EcaResponseMapper;
+import com.ecaservice.mapping.EcaResponseMapperImpl;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.async.AsyncTaskCallback;
 import com.ecaservice.service.async.AsyncTaskService;
 import com.ecaservice.service.experiment.mail.NotificationService;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
 import java.util.UUID;
@@ -31,9 +31,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class ExperimentRequestServiceTest {
+@Import(EcaResponseMapperImpl.class)
+public class ExperimentRequestServiceTest extends AbstractJpaTest {
 
     @Mock
     private ExperimentService experimentService;

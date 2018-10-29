@@ -11,7 +11,9 @@ import eca.neural.functions.ActivationFunctionBuilder;
 import eca.neural.functions.ActivationFunctionType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
@@ -24,7 +26,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@EnableConfigurationProperties
+@TestPropertySource("classpath:application.properties")
+@Import({NeuralNetworkOptionsMapperImpl.class, ExperimentConfig.class})
 public class NeuralNetworkOptionsMapperTest {
 
     private static final double COEFFICIENT = 2.0d;

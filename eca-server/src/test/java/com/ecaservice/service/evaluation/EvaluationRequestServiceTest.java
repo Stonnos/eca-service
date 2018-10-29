@@ -3,26 +3,26 @@ package com.ecaservice.service.evaluation;
 import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
+import com.ecaservice.configuation.ExecutorConfiguration;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.exception.EcaServiceException;
 import com.ecaservice.mapping.EvaluationLogMapper;
+import com.ecaservice.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
+import com.ecaservice.service.AbstractJpaTest;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -38,9 +38,9 @@ import static org.mockito.Mockito.mock;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class EvaluationRequestServiceTest {
+@Import({ExecutorConfiguration.class, CrossValidationConfig.class,
+        EvaluationLogMapperImpl.class, EvaluationService.class})
+public class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     @Inject
     private CrossValidationConfig crossValidationConfig;
@@ -50,14 +50,14 @@ public class EvaluationRequestServiceTest {
     private EvaluationLogMapper evaluationLogMapper;
     @Inject
     private EvaluationService evaluationService;
+    @Inject
+    private CalculationExecutorService calculationExecutorService;
 
     private EvaluationRequestService evaluationRequestService;
 
     @Before
     public void setUp() {
         evaluationLogRepository.deleteAll();
-        CalculationExecutorService calculationExecutorService =
-                new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
         evaluationRequestService =
                 new EvaluationRequestService(crossValidationConfig, calculationExecutorService, evaluationService,
                         evaluationLogRepository, evaluationLogMapper);

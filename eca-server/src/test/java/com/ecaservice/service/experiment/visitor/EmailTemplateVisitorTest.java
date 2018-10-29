@@ -9,7 +9,9 @@ import com.ecaservice.service.experiment.dictionary.TemplateVariablesDictionary;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.thymeleaf.context.Context;
 
@@ -24,7 +26,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@EnableConfigurationProperties
+@TestPropertySource("classpath:application.properties")
+@Import(ExperimentConfig.class)
 public class EmailTemplateVisitorTest {
 
     @Inject

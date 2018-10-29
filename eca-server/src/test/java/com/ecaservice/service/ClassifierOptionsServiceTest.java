@@ -1,6 +1,7 @@
 package com.ecaservice.service;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
 import com.ecaservice.model.options.AdaBoostOptions;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.model.options.DecisionTreeOptions;
@@ -34,7 +35,7 @@ import eca.trees.J48;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import weka.classifiers.bayes.BayesNet;
 
@@ -46,7 +47,7 @@ import javax.inject.Inject;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@Import({ClassifierOptionsMapperConfiguration.class, ClassifierOptionsService.class})
 public class ClassifierOptionsServiceTest {
 
     @Inject
@@ -64,7 +65,7 @@ public class ClassifierOptionsServiceTest {
     }
 
     @Test
-    public void testDecisionTreeLogistic() {
+    public void testDecisionTree() {
         ClassifierOptions options = classifierOptionsService.convert(new CART());
         Assertions.assertThat(options).isInstanceOf(DecisionTreeOptions.class);
     }

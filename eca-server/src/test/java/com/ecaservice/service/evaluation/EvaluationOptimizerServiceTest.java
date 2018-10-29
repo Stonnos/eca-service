@@ -4,15 +4,24 @@ import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ErsConfig;
+import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
+import com.ecaservice.configuation.ExecutorConfiguration;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.InstancesRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassifierOptionsRequestMapper;
+import com.ecaservice.mapping.ClassifierOptionsRequestMapperImpl;
 import com.ecaservice.mapping.ClassifierOptionsRequestModelMapper;
+import com.ecaservice.mapping.ClassifierOptionsRequestModelMapperImpl;
 import com.ecaservice.mapping.ClassifierReportMapper;
+import com.ecaservice.mapping.ClassifierReportMapperImpl;
+import com.ecaservice.mapping.ErsEvaluationMethodMapperImpl;
+import com.ecaservice.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.mapping.EvaluationRequestMapper;
+import com.ecaservice.mapping.EvaluationRequestMapperImpl;
+import com.ecaservice.mapping.InstancesConverter;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
@@ -29,6 +38,7 @@ import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.repository.ClassifierOptionsRequestRepository;
 import com.ecaservice.repository.ErsRequestRepository;
 import com.ecaservice.repository.EvaluationLogRepository;
+import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.ClassifierOptionsService;
 import com.ecaservice.service.ers.ErsRequestService;
 import com.ecaservice.service.ers.ErsWebServiceClient;
@@ -53,10 +63,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.context.annotation.Import;
 import org.springframework.util.DigestUtils;
 import org.springframework.ws.client.WebServiceIOException;
 import weka.classifiers.AbstractClassifier;
@@ -76,9 +84,13 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class EvaluationOptimizerServiceTest {
+@Import({ExecutorConfiguration.class, ClassifierOptionsMapperConfiguration.class,
+        CrossValidationConfig.class, EvaluationRequestService.class,
+        ClassifierOptionsRequestModelMapperImpl.class, ClassifierReportMapperImpl.class,
+        EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class,
+        ErsConfig.class, ClassifierOptionsService.class, EvaluationLogMapperImpl.class,
+        EvaluationService.class, ErsEvaluationMethodMapperImpl.class, InstancesConverter.class})
+public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
