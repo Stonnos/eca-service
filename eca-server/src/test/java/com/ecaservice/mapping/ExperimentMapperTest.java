@@ -25,6 +25,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(ExperimentMapperImpl.class)
 public class ExperimentMapperTest {
 
+    private static final String TRAINING_DATA_ABSOLUTE_PATH = "/home/data.xls";
+    private static final String EXPERIMENT_ABSOLUTE_PATH = "/home/experiment.model";
+    private static final String DATA_XLS = "data.xls";
+    private static final String EXPERIMENT_MODEL = "experiment.model";
+
     @Inject
     private ExperimentMapper experimentMapper;
 
@@ -45,6 +50,8 @@ public class ExperimentMapperTest {
         experiment.setStartDate(LocalDateTime.now().plusHours(1L));
         experiment.setEndDate(experiment.getStartDate().minusMinutes(1L));
         experiment.setSentDate(experiment.getEndDate().plusMinutes(1L));
+        experiment.setTrainingDataAbsolutePath(TRAINING_DATA_ABSOLUTE_PATH);
+        experiment.setExperimentAbsolutePath(EXPERIMENT_ABSOLUTE_PATH);
         ExperimentDto experimentDto = experimentMapper.map(experiment);
         assertThat(experimentDto).isNotNull();
         assertThat(experimentDto.getFirstName()).isEqualTo(experiment.getFirstName());
@@ -57,8 +64,8 @@ public class ExperimentMapperTest {
         assertThat(experimentDto.getEvaluationMethod()).isEqualTo(experiment.getEvaluationMethod().name());
         assertThat(experimentDto.getExperimentStatus()).isEqualTo(experiment.getExperimentStatus().name());
         assertThat(experimentDto.getExperimentType()).isEqualTo(experiment.getExperimentType().name());
-        assertThat(experimentDto.getTrainingDataAbsolutePath()).isEqualTo(experiment.getTrainingDataAbsolutePath());
-        assertThat(experimentDto.getExperimentAbsolutePath()).isEqualTo(experiment.getExperimentAbsolutePath());
+        assertThat(experimentDto.getTrainingDataAbsolutePath()).isEqualTo(DATA_XLS);
+        assertThat(experimentDto.getExperimentAbsolutePath()).isEqualTo(EXPERIMENT_MODEL);
         assertThat(experimentDto.getUuid()).isEqualTo(experiment.getUuid());
     }
 }

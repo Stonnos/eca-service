@@ -31,13 +31,13 @@ public class ExperimentDto {
     /**
      * Experiment file absolute path
      */
-    @ApiModelProperty(notes = "Experiment results file absolute path")
+    @ApiModelProperty(notes = "Experiment results file")
     private String experimentAbsolutePath;
 
     /**
      * Training data absolute path
      */
-    @ApiModelProperty(notes = "Training data absolute path")
+    @ApiModelProperty(notes = "Training data file")
     private String trainingDataAbsolutePath;
 
     /**

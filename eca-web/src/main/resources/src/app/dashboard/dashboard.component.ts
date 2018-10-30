@@ -13,13 +13,13 @@ export class DashboardComponent implements OnInit {
   public ngOnInit() {
     this.items = [
       {
-        label: 'Classifiers',
-        routerLink: ['/dashboard/classifiers'],
+        label: 'Experiments',
+        routerLink: ['/dashboard/experiments'],
         routerLinkActiveOptions: 'ui-menuitem-active'
       },
       {
-        label: 'Experiments',
-        routerLink: ['/dashboard/experiments'],
+        label: 'Classifiers',
+        routerLink: ['/dashboard/classifiers'],
         routerLinkActiveOptions: 'ui-menuitem-active'
       }
     ];

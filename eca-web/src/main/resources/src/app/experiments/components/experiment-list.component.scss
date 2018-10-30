@@ -1,0 +1,11 @@
+.experiment-table::ng-deep {
+
+  .ui-table-tbody > tr > td {
+    word-wrap: break-word;
+    width: 275px;
+  }
+  .ui-table-thead > tr > th {
+    word-wrap: break-word;
+    width: 275px;
+  }
+}

@@ -2,48 +2,93 @@
   <div class="row">
     <div class="col-12">
       <p-table
+        class="experiment-table"
         [value]="experiments"
-        [rows]="5"
+        [rows]="pageSize"
         [totalRecords]="total"
         [paginator]="true"
-        [tableStyle]="{'table-layout':'auto'}">
+        [scrollable]="true"
+        [resizableColumns]="true"
+        [lazy]="true"
+        (onLazyLoad)="onLazyLoad($event)">
+        <!--<ng-template pTemplate="caption">
+          <div class="row">
+            <div class="col-4 col-md-2">
+              <div class="form-group">
+                <label for="experimentType">Experiment type</label>
+                <input
+                  id="experimentType"
+                  pInputText
+                  type="text"/>
+              </div>
+            </div>
+
+            <div class="col-4 col-md-2">
+              <div class="form-group">
+                <label for="evaluationMethod">Evaluation method</label>
+                <input
+                  id="evaluationMethod"
+                  pInputText
+                  type="text"/>
+              </div>
+            </div>
+
+            <div class="col-4 col-md-2">
+              <div class="form-group">
+                <label for="experimentStatus">Experiment status</label>
+                <input
+                  id="experimentStatus"
+                  pInputText
+                  type="text"/>
+              </div>
+            </div>
+
+            <div class="col-2 col-md-1">
+              <button
+                pButton
+                label="Search"
+                type="button"
+                class="text-uppercase d-flex mr-3">
+              </button>
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="col-4 col-md-2">
+              <div class="form-group">
+                <label for="creationDateFrom">Creation date from</label>
+                <p-calendar id="creationDateFrom" [showIcon]="true"></p-calendar>
+              </div>
+            </div>
+
+            <div class="col-4 col-md-2">
+              <div class="form-group">
+                <label for="creationDateTo">Creation date to</label>
+                <p-calendar id="creationDateTo" [showIcon]="true"></p-calendar>
+              </div>
+            </div>
+          </div>
+        </ng-template>-->
+
         <ng-template pTemplate="header">
           <tr>
-            <th>Request UUID</th>
-            <th>Experiment type</th>
-            <th>Evaluation method</th>
-            <th>Request first name</th>
-            <th>Request email</th>
-            <th>Training data</th>
-            <th>Experiment results</th>
-            <th>Creation date</th>
-            <th>Start date</th>
-            <th>End date</th>
-            <th>Sent date</th>
-            <th>Delete date</th>
-            <th>Status</th>
+            <th *ngFor="let column of columns" [pSortableColumn]="column.name">
+              {{ column.label }}
+              <p-sortIcon [field]="column.label"></p-sortIcon>
+            </th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-experiment>
           <tr>
-            <td>{{ experiment.uuid }}</td>
-            <td>{{ experiment.experimentType }}</td>
-            <td>{{ experiment.evaluationMethod }}</td>
-            <td>{{ experiment.firstName }}</td>
-            <td>{{ experiment.email }}</td>
-            <td>{{ experiment.trainingDataAbsolutePath }}</td>
-            <td>{{ experiment.experimentAbsolutePath }}</td>
-            <td>{{ experiment.creationDate }}</td>
-            <td>{{ experiment.startDate }}</td>
-            <td>{{ experiment.endDate }}</td>
-            <td>{{ experiment.sentDate }}</td>
-            <td>{{ experiment.deletedDate }}</td>
-            <td>{{ experiment.experimentStatus }}</td>
+            <td *ngFor="let column of columns">
+              {{ experiment[column.name] }}
+            </td>
           </tr>
         </ng-template>
-        <ng-template *ngIf="experiments.length == 0" pTemplate="emptymessage">
+        <ng-template pTemplate="emptymessage" *ngIf="experiments.length == 0">
           <tr>
-            <td [attr.colspan]="13" style="text-align: center;">
+            <td [attr.colspan]="columns.length" style="text-align: center;">
               No experiments found
             </td>
           </tr>
