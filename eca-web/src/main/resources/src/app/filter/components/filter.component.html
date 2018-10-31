@@ -1,0 +1,37 @@
+<div class="ui-g ui-fluid" style="margin-top: 30px;">
+  <div *ngFor="let filter of filters" class="ui-g-12 ui-md-12">
+    <div [ngSwitch]="filter.type">
+      <ng-container *ngSwitchCase="'REFERENCE'">
+        <div class="form-group">
+          <label class="filter-label">{{ filter.label }}</label>
+          <p-dropdown
+            [options]="filter.values"
+            [optionLabel]="label"
+            [(ngModel)]="filter.currentValue"
+            [autoWidth]="false"
+            [style]="{'width':'100%'}">
+          </p-dropdown>
+        </div>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="'DATE'">
+        <label class="filter-label">{{ filter.label }}</label>
+        <p-calendar [showIcon]="true" [(ngModel)]="filter.currentValue"></p-calendar>
+      </ng-container>
+
+      <ng-container *ngSwitchDefault>
+        <label class="filter-label">{{ filter.label }}</label>
+        <input pInputText type="text" [(ngModel)]="filter.currentValue"/>
+      </ng-container>
+    </div>
+  </div>
+
+</div>
+
+<button
+  pButton
+  label="Search"
+  type="button"
+  class="search-button text-uppercase"
+  (click)="onSearch()">
+</button>

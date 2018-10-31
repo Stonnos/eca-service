@@ -14,10 +14,17 @@ public class FilterRequestDto {
      * Column name
      */
     private String name;
+
     /**
      * Column value
      */
     private String value;
+
+    /**
+     * Field type {@link FilterType}
+     */
+    private FilterType filterType;
+
     /**
      * Filter type {@link MatchMode}
      */

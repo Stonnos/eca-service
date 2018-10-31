@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  ExperimentDto, FilterRequestDto, MatchMode,
+  ExperimentDto,
   PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ExperimentsService } from "../services/experiments.service";
 import { LazyLoadEvent, MessageService } from "primeng/api";
+import { Filter } from "../../filter/filter.model";
 
 @Component({
   selector: 'app-experiment-list',
@@ -20,7 +21,7 @@ export class ExperimentListComponent implements OnInit {
   public total: number = 0;
   public pageSize: number = 25;
 
-  public filters: FilterRequestDto[] = [];
+  public filters: Filter[] = [];
 
   private defaultSortField: string = "creationDate";
 
@@ -51,9 +52,15 @@ export class ExperimentListComponent implements OnInit {
       size: event.rows,
       sortField: sortField,
       ascending: ascending,
-      filters: this.filters
+      filters: this.filters.map((filter: Filter) => {
+        return { name: filter.name, value: filter.currentValue, filterType: filter.type, matchMode: filter.matchMode };
+      })
     };
     this.getExperiments(pageRequest);
+  }
+
+  public onSearch() {
+    console.log('Search!!');
   }
 
   private initColumns() {
@@ -75,10 +82,22 @@ export class ExperimentListComponent implements OnInit {
   }
 
   private initFilters() {
-    this.filters.push({ name: "experimentType", value: null, matchMode: "EQUALS" });
+    /*this.filters.push({ name: "experimentType", value: null, matchMode: "EQUALS" });
     this.filters.push({ name: "evaluationMethod", value: null, matchMode: "EQUALS" });
     this.filters.push({ name: "experimentStatus", value: null, matchMode: "EQUALS" });
     this.filters.push({ name: "creationDate", value: null, matchMode: "GTE" });
-    this.filters.push({ name: "creationDate", value: null, matchMode: "LTE" });
+    this.filters.push({ name: "creationDate", value: null, matchMode: "LTE" });*/
+    this.filters.push(new Filter("uuid", "Request UUID",
+      "TEXT", "EQUALS", null));
+    this.filters.push(new Filter("experimentType", "Experiment type", "REFERENCE", "EQUALS",
+      null, [{label: "KNN", value: "KNN"}, {label: "KNN1", value: "KNN1"}]));
+    this.filters.push(new Filter("evaluationMethod", "Evaluation method", "REFERENCE",
+      "EQUALS", null, [{label: "KNN2", value: "KNN3"}, {label: "KNN13", value: "KNN14"}]));
+    this.filters.push(new Filter("experimentStatus", "Experiment status", "REFERENCE",
+      "EQUALS", null, [{label: "KNN54", value: "KNN65"}, {label: "KNN17", value: "KNN17"}]));
+    this.filters.push(new Filter("creationDate", "Creation date from",
+      "DATE", "GTE", null));
+    this.filters.push(new Filter("creationDate", "Creation date to",
+      "DATE", "LTE", null));
   }
 }

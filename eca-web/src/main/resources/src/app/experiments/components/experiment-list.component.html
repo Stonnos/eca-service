@@ -1,7 +1,8 @@
 <div class="container-fluid mb-5">
   <div class="row">
     <div class="col-2">
-      <div class="ui-g ui-fluid">
+      <app-filter [filters]="filters" (search)="onSearch()"></app-filter>
+      <!--<div class="ui-g ui-fluid">
         <div class="ui-g-12 ui-md-12">
           <label for="experimentType" class="attr" style="margin-top: 50px;">Experiment type</label>
           <input id="experimentType" pInputText type="text" [(ngModel)]="filters[0].value"/>
@@ -34,7 +35,7 @@
         label="Search"
         type="button"
         class="search-button text-uppercase">
-      </button>
+      </button>-->
 
     </div>
     <div class="col-10">

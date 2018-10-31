@@ -10,6 +10,7 @@ import { UiComponentsModule } from "./ui-components.module";
 import { HttpClientModule } from "@angular/common/http";
 import { FormsModule } from "@angular/forms";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { FilterModule } from "./filter/filter.module";
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations";
     AppRoutingModule,
     ClassifiersModule,
     ExperimentsModule,
+    FilterModule,
     UiComponentsModule,
     HttpClientModule,
     NoopAnimationsModule,
