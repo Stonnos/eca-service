@@ -18,6 +18,8 @@ export class ExperimentListComponent implements OnInit {
 
   public defaultSortField: string = "creationDate";
 
+  public date: Date = new Date();
+
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService) {
   }
@@ -38,7 +40,6 @@ export class ExperimentListComponent implements OnInit {
       { name: "deletedDate", label: "Delete date" },
       { name: "experimentStatus", label: "Status" }
     ];
-    this.getExperiments(0, this.pageSize, this.defaultSortField, false);
   }
 
   public getExperiments(offset: number, size: number, sortField: string, ascending: boolean) {

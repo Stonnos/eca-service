@@ -1,75 +1,93 @@
 <div class="container-fluid mb-5">
   <div class="row">
-    <div class="col-12">
+    <div class="col-2">
+      <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-12">
+          <label for="experimentType" class="attr" style="margin-top: 50px;">Experiment type</label>
+          <input id="experimentType" pInputText type="text"/>
+        </div>
+
+        <div class="ui-g-12 ui-md-12">
+          <label for="evaluationMethod" class="attr">Evaluation method</label>
+          <input id="evaluationMethod" pInputText type="text"/>
+        </div>
+
+        <div class="ui-g-12 ui-md-12">
+          <label for="experimentStatus" class="attr">Experiment status</label>
+          <input id="experimentStatus" pInputText type="text"/>
+        </div>
+
+        <div class="ui-g-12 ui-md-12">
+          <label for="creationDateFrom" class="attr">Creation date from</label>
+          <p-calendar id="creationDateFrom" [(ngModel)]="date" [showIcon]="true"></p-calendar>
+        </div>
+
+        <div class="ui-g-12 ui-md-12">
+          <label for="creationDateTo" class="attr">Creation date to</label>
+          <p-calendar id="creationDateTo" [(ngModel)]="date" [showIcon]="true"></p-calendar>
+        </div>
+
+      </div>
+
+      <button
+        pButton
+        label="Search"
+        type="button"
+        class="search-button text-uppercase">
+      </button>
+
+    </div>
+    <div class="col-10">
       <p-table
         class="experiment-table"
+        [columns]="columns"
         [value]="experiments"
         [rows]="pageSize"
         [totalRecords]="total"
         [paginator]="true"
         [scrollable]="true"
-        [resizableColumns]="true"
         [lazy]="true"
         (onLazyLoad)="onLazyLoad($event)">
-        <!--<ng-template pTemplate="caption">
-          <div class="row">
-            <div class="col-4 col-md-2">
-              <div class="form-group">
-                <label for="experimentType">Experiment type</label>
-                <input
-                  id="experimentType"
-                  pInputText
-                  type="text"/>
+
+        <ng-template pTemplate="caption">
+          <div class="ui-g ui-fluid">
+            <div class="ui-g-12 ui-md-3">
+              <div class="panel info-panel">
+                <div class="panel-body text-center">
+                  <p class="attr">Total count</p>
+                  <p class="value">45</p>
+                </div>
               </div>
             </div>
 
-            <div class="col-4 col-md-2">
-              <div class="form-group">
-                <label for="evaluationMethod">Evaluation method</label>
-                <input
-                  id="evaluationMethod"
-                  pInputText
-                  type="text"/>
+            <div class="ui-g-12 ui-md-3">
+              <div class="panel info-panel">
+                <div class="panel-body text-center">
+                  <p class="attr">Successfully completed</p>
+                  <p class="value">23</p>
+                </div>
               </div>
             </div>
 
-            <div class="col-4 col-md-2">
-              <div class="form-group">
-                <label for="experimentStatus">Experiment status</label>
-                <input
-                  id="experimentStatus"
-                  pInputText
-                  type="text"/>
+            <div class="ui-g-12 ui-md-3">
+              <div class="panel info-panel">
+                <div class="panel-body text-center">
+                  <p class="attr">Competed with error</p>
+                  <p class="value">15</p>
+                </div>
               </div>
             </div>
 
-            <div class="col-2 col-md-1">
-              <button
-                pButton
-                label="Search"
-                type="button"
-                class="text-uppercase d-flex mr-3">
-              </button>
-            </div>
-
-          </div>
-
-          <div class="row">
-            <div class="col-4 col-md-2">
-              <div class="form-group">
-                <label for="creationDateFrom">Creation date from</label>
-                <p-calendar id="creationDateFrom" [showIcon]="true"></p-calendar>
-              </div>
-            </div>
-
-            <div class="col-4 col-md-2">
-              <div class="form-group">
-                <label for="creationDateTo">Creation date to</label>
-                <p-calendar id="creationDateTo" [showIcon]="true"></p-calendar>
+            <div class="ui-g-12 ui-md-3">
+              <div class="panel info-panel">
+                <div class="panel-body text-center">
+                  <p class="attr">Competed with timeout</p>
+                  <p class="value">4</p>
+                </div>
               </div>
             </div>
           </div>
-        </ng-template>-->
+        </ng-template>
 
         <ng-template pTemplate="header">
           <tr>

@@ -2,10 +2,35 @@
 
   .ui-table-tbody > tr > td {
     word-wrap: break-word;
-    width: 275px;
+    width: 300px;
   }
   .ui-table-thead > tr > th {
     word-wrap: break-word;
-    width: 275px;
+    width: 300px;
   }
+}
+
+.info-panel {
+  background: white;
+  border: 2px solid gray;
+}
+
+.attr {
+  margin-top: 7px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.value {
+  font-size: 22px;
+}
+
+.filter-panel {
+  margin-top: 30px;
+}
+
+.search-button {
+  margin-left: 5px;
+  margin-top: 25px;
+  margin-bottom: 25px;
 }

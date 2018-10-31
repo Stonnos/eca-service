@@ -8,6 +8,8 @@ import { ClassifiersModule } from "./classifiers/classifiers.module";
 import { ExperimentsModule } from "./experiments/experiments.module";
 import { UiComponentsModule } from "./ui-components.module";
 import { HttpClientModule } from "@angular/common/http";
+import { FormsModule } from "@angular/forms";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [
@@ -16,11 +18,13 @@ import { HttpClientModule } from "@angular/common/http";
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     AppRoutingModule,
     ClassifiersModule,
     ExperimentsModule,
     UiComponentsModule,
-    HttpClientModule
+    HttpClientModule,
+    NoopAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
