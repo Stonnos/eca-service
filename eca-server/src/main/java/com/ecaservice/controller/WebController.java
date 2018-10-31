@@ -8,6 +8,7 @@ import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.EvaluationLogDto;
 import com.ecaservice.web.dto.ExperimentDto;
 import com.ecaservice.web.dto.PageDto;
+import com.ecaservice.web.dto.PageRequestDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -15,11 +16,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -29,8 +28,6 @@ import java.util.List;
 @Slf4j
 @RestController
 public class WebController {
-
-    private static final String EXPERIMENT_DEFAULT_SORT_FIELD = "creationDate";
 
     private final ExperimentMapper experimentMapper;
     private final ExperimentRepository experimentRepository;
@@ -52,7 +49,7 @@ public class WebController {
         this.evaluationLogRepository = evaluationLogRepository;
     }
 
-    @ApiOperation(
+    /*@ApiOperation(
             value = "Finds experiments with specified options",
             notes = "Finds experiments with specified options"
     )
@@ -63,6 +60,19 @@ public class WebController {
                                                  @RequestParam boolean ascending) {
         Sort sort = SortUtils.buildSort(sortField, ascending, EXPERIMENT_DEFAULT_SORT_FIELD);
         Page<Experiment> experiments = experimentRepository.findAll(PageRequest.of(page, size, sort));
+        List<ExperimentDto> experimentDtoList = experimentMapper.map(experiments.getContent());
+        return PageDto.of(experimentDtoList, experiments.getTotalElements());
+    }*/
+
+    @ApiOperation(
+            value = "Finds experiments with specified options",
+            notes = "Finds experiments with specified options"
+    )
+    @GetMapping(value = "/experiments")
+    public PageDto<ExperimentDto> getExperiments(PageRequestDto pageRequestDto) {
+        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
+        Page<Experiment> experiments =
+                experimentRepository.findAll(PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort));
         List<ExperimentDto> experimentDtoList = experimentMapper.map(experiments.getContent());
         return PageDto.of(experimentDtoList, experiments.getTotalElements());
     }

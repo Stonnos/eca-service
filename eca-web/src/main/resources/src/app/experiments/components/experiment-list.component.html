@@ -4,27 +4,27 @@
       <div class="ui-g ui-fluid">
         <div class="ui-g-12 ui-md-12">
           <label for="experimentType" class="attr" style="margin-top: 50px;">Experiment type</label>
-          <input id="experimentType" pInputText type="text"/>
+          <input id="experimentType" pInputText type="text" [(ngModel)]="filters[0].value"/>
         </div>
 
         <div class="ui-g-12 ui-md-12">
           <label for="evaluationMethod" class="attr">Evaluation method</label>
-          <input id="evaluationMethod" pInputText type="text"/>
+          <input id="evaluationMethod" pInputText type="text" [(ngModel)]="filters[1].value"/>
         </div>
 
         <div class="ui-g-12 ui-md-12">
           <label for="experimentStatus" class="attr">Experiment status</label>
-          <input id="experimentStatus" pInputText type="text"/>
+          <input id="experimentStatus" pInputText type="text" [(ngModel)]="filters[2].value"/>
         </div>
 
         <div class="ui-g-12 ui-md-12">
           <label for="creationDateFrom" class="attr">Creation date from</label>
-          <p-calendar id="creationDateFrom" [(ngModel)]="date" [showIcon]="true"></p-calendar>
+          <p-calendar id="creationDateFrom" [showIcon]="true" [(ngModel)]="filters[3].value"></p-calendar>
         </div>
 
         <div class="ui-g-12 ui-md-12">
           <label for="creationDateTo" class="attr">Creation date to</label>
-          <p-calendar id="creationDateTo" [(ngModel)]="date" [showIcon]="true"></p-calendar>
+          <p-calendar id="creationDateTo" [showIcon]="true" [(ngModel)]="filters[4].value"></p-calendar>
         </div>
 
       </div>

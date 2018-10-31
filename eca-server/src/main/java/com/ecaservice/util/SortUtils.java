@@ -16,14 +16,13 @@ public class SortUtils {
     /**
      * Builds sort object.
      *
-     * @param field        - field name to sort
-     * @param ascending    - sort direction
-     * @param defaultField - default field in case if sort field name isn't specified
+     * @param field     - field name to sort
+     * @param ascending - sort direction
      * @return sort object
      */
-    public static Sort buildSort(String field, boolean ascending, String defaultField) {
+    public static Sort buildSort(String field, boolean ascending) {
         if (StringUtils.isEmpty(field)) {
-            return Sort.by(Sort.Order.desc(defaultField));
+            throw new IllegalArgumentException("Sort field isn't specified!");
         } else {
             if (ascending) {
                 return Sort.by(Sort.Order.asc(field));

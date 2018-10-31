@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ExperimentDto, PageDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import {
+  ExperimentDto, FilterRequestDto, MatchMode,
+  PageDto,
+  PageRequestDto
+} from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ExperimentsService } from "../services/experiments.service";
 import { LazyLoadEvent, MessageService } from "primeng/api";
 
@@ -16,15 +20,43 @@ export class ExperimentListComponent implements OnInit {
   public total: number = 0;
   public pageSize: number = 25;
 
-  public defaultSortField: string = "creationDate";
+  public filters: FilterRequestDto[] = [];
 
-  public date: Date = new Date();
+  private defaultSortField: string = "creationDate";
 
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService) {
   }
 
   public ngOnInit() {
+    this.initColumns();
+    this.initFilters();
+  }
+
+  public getExperiments(pageRequest: PageRequestDto) {
+    this.experimentsService.getExperiments(pageRequest).subscribe((pageDto: PageDto<ExperimentDto>) => {
+      this.experiments = pageDto.content;
+      this.total = pageDto.totalCount;
+    }, (error) => {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+    })
+  }
+
+  public onLazyLoad(event: LazyLoadEvent) {
+    const sortField = !!event.sortField ? event.sortField : this.defaultSortField;
+    const ascending = !!event.sortField && !!event.sortOrder && event.sortOrder == 1;
+    const page: number = Math.round(event.first / event.rows);
+    const pageRequest: PageRequestDto = {
+      page: page,
+      size: event.rows,
+      sortField: sortField,
+      ascending: ascending,
+      filters: this.filters
+    };
+    this.getExperiments(pageRequest);
+  }
+
+  private initColumns() {
     this.columns = [
       { name: "uuid", label: "Request UUID" },
       { name: "experimentType", label: "Experiment type" },
@@ -42,19 +74,11 @@ export class ExperimentListComponent implements OnInit {
     ];
   }
 
-  public getExperiments(offset: number, size: number, sortField: string, ascending: boolean) {
-    const page: number = Math.round(offset / size);
-    this.experimentsService.getExperiments(page, size, sortField, ascending).subscribe((pageDto: PageDto<ExperimentDto>) => {
-      this.experiments = pageDto.content;
-      this.total = pageDto.totalCount;
-    }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
-    })
-  }
-
-  public onLazyLoad(event: LazyLoadEvent) {
-    const sortField = !!event.sortField ? event.sortField : this.defaultSortField;
-    const ascending = !!event.sortField && !!event.sortOrder && event.sortOrder == 1;
-    this.getExperiments(event.first, event.rows, sortField, ascending);
+  private initFilters() {
+    this.filters.push({ name: "experimentType", value: null, matchMode: "EQUALS" });
+    this.filters.push({ name: "evaluationMethod", value: null, matchMode: "EQUALS" });
+    this.filters.push({ name: "experimentStatus", value: null, matchMode: "EQUALS" });
+    this.filters.push({ name: "creationDate", value: null, matchMode: "GTE" });
+    this.filters.push({ name: "creationDate", value: null, matchMode: "LTE" });
   }
 }
