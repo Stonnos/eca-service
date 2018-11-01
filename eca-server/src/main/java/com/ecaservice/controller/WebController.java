@@ -50,21 +50,6 @@ public class WebController {
         this.evaluationLogRepository = evaluationLogRepository;
     }
 
-    /*@ApiOperation(
-            value = "Finds experiments with specified options",
-            notes = "Finds experiments with specified options"
-    )
-    @GetMapping(value = "/experiments")
-    public PageDto<ExperimentDto> getExperiments(@RequestParam int page,
-                                                 @RequestParam int size,
-                                                 @RequestParam String sortField,
-                                                 @RequestParam boolean ascending) {
-        Sort sort = SortUtils.buildSort(sortField, ascending, EXPERIMENT_DEFAULT_SORT_FIELD);
-        Page<Experiment> experiments = experimentRepository.findAll(PageRequest.of(page, size, sort));
-        List<ExperimentDto> experimentDtoList = experimentMapper.map(experiments.getContent());
-        return PageDto.of(experimentDtoList, experiments.getTotalElements());
-    }*/
-
     @ApiOperation(
             value = "Finds experiments with specified options",
             notes = "Finds experiments with specified options"
@@ -72,7 +57,7 @@ public class WebController {
     @GetMapping(value = "/experiments")
     public PageDto<ExperimentDto> getExperiments(PageRequestDto pageRequestDto) {
         Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
-        Filter<Experiment> filter = new Filter<>(pageRequestDto.getFilters());
+        Filter<Experiment> filter = new Filter<>(Experiment.class, pageRequestDto.getFilters());
         Page<Experiment> experiments = experimentRepository.findAll(filter,
                 PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort));
         List<ExperimentDto> experimentDtoList = experimentMapper.map(experiments.getContent());

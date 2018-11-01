@@ -11,6 +11,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class Filter<T> implements Specification<T> {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+    private Class<T> clazz;
     private List<FilterRequestDto> filters;
 
     @Override
@@ -50,7 +52,7 @@ public class Filter<T> implements Specification<T> {
     private Predicate buildPredicate(FilterRequestDto filterRequestDto, Root<T> root, CriteriaBuilder criteriaBuilder) {
         switch (filterRequestDto.getMatchMode()) {
             case EQUALS:
-                return criteriaBuilder.equal(root.get(filterRequestDto.getName()), filterRequestDto.getValue().trim());
+                return buildEqualPredicate(filterRequestDto, root, criteriaBuilder);
             case GTE:
                 return buildGreaterThanOrEqualPredicate(filterRequestDto, root, criteriaBuilder);
             case LTE:
@@ -80,6 +82,28 @@ public class Filter<T> implements Specification<T> {
             default:
                 return criteriaBuilder.lessThanOrEqualTo(root.get(filterRequestDto.getName()),
                         filterRequestDto.getValue());
+        }
+    }
+
+    private Predicate buildEqualPredicate(FilterRequestDto filterRequestDto, Root<T> root,
+                                          CriteriaBuilder criteriaBuilder) {
+        switch (filterRequestDto.getFilterType()) {
+            case REFERENCE:
+                try {
+                    Field field = clazz.getDeclaredField(filterRequestDto.getName());
+                    if (field.isEnumConstant()) {
+                        Class enumClazz = field.getType();
+                        return criteriaBuilder.equal(root.get(filterRequestDto.getName()),
+                                Enum.valueOf(enumClazz, filterRequestDto.getValue()));
+                    } else {
+                        return criteriaBuilder.equal(root.get(filterRequestDto.getName()),
+                                filterRequestDto.getValue().trim());
+                    }
+                } catch (Exception ex) {
+                    throw new IllegalArgumentException(ex.getMessage());
+                }
+            default:
+                return criteriaBuilder.equal(root.get(filterRequestDto.getName()), filterRequestDto.getValue().trim());
         }
     }
 }
