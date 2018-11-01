@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  ExperimentDto,
-  PageDto,
+  ExperimentDto, ExperimentPageDto, FilterRequestDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ExperimentsService } from "../services/experiments.service";
-import { LazyLoadEvent, MessageService } from "primeng/api";
+import { LazyLoadEvent, MessageService, SelectItem } from "primeng/api";
 import { Filter } from "../../filter/filter.model";
 import { DatePipe } from "@angular/common";
 
@@ -20,6 +19,10 @@ export class ExperimentListComponent implements OnInit {
   public experiments: ExperimentDto[] = [];
 
   public total: number = 0;
+  public newExperimentsCount: number = 0;
+  public finishedExperimentsCount: number = 0;
+  public timeoutExperimentsCount: number = 0;
+  public errorExperimentsCount: number = 0;
   public pageSize: number = 25;
 
   public filters: Filter[] = [];
@@ -37,9 +40,13 @@ export class ExperimentListComponent implements OnInit {
   }
 
   public getExperiments(pageRequest: PageRequestDto) {
-    this.experimentsService.getExperiments(pageRequest).subscribe((pageDto: PageDto<ExperimentDto>) => {
+    this.experimentsService.getExperiments(pageRequest).subscribe((pageDto: ExperimentPageDto) => {
       this.experiments = pageDto.content;
       this.total = pageDto.totalCount;
+      this.newExperimentsCount = pageDto.newExperimentsCount;
+      this.finishedExperimentsCount = pageDto.finishedExperimentsCount;
+      this.timeoutExperimentsCount = pageDto.timeoutExperimentsCount;
+      this.errorExperimentsCount = pageDto.errorExperimentsCount;
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
     })
@@ -54,15 +61,26 @@ export class ExperimentListComponent implements OnInit {
       size: event.rows,
       sortField: sortField,
       ascending: ascending,
-      filters: this.filters.map((filter: Filter) => {
-        return { name: filter.name, value: this.transformFilterValue(filter), filterType: filter.type, matchMode: filter.matchMode };
-      })
+      filters: this.buildFilters()
     };
     this.getExperiments(pageRequest);
   }
 
   public onSearch() {
-    console.log('Search!!');
+    const pageRequest: PageRequestDto = {
+      page: 0,
+      size: this.pageSize,
+      sortField: this.defaultSortField,
+      ascending: false,
+      filters: this.buildFilters()
+    };
+    this.getExperiments(pageRequest);
+  }
+
+  private buildFilters(): FilterRequestDto[] {
+    return this.filters.map((filter: Filter) => {
+      return { name: filter.name, value: this.transformFilterValue(filter), filterType: filter.type, matchMode: filter.matchMode };
+    });
   }
 
   private transformFilterValue(filter: Filter): string {
@@ -95,14 +113,24 @@ export class ExperimentListComponent implements OnInit {
   }
 
   private initFilters() {
+    const evaluationMethods: SelectItem[] = [
+      { label: "TRAINING_DATA", value: "TRAINING_DATA" },
+      { label: "CROSS_VALIDATION", value: "CROSS_VALIDATION" }
+    ];
+    const statuses: SelectItem[] = [
+      { label: "NEW", value: "NEW" },
+      { label: "FINISHED", value: "FINISHED" },
+      { label: "TIMEOUT", value: "TIMEOUT" },
+      { label: "ERROR", value: "ERROR" }
+    ];
     this.filters.push(new Filter("uuid", "Request UUID",
       "TEXT", "EQUALS", null));
     this.filters.push(new Filter("experimentType", "Experiment type", "REFERENCE", "EQUALS",
-      null, [{label: "KNN", value: "KNN"}, {label: "KNN1", value: "KNN1"}]));
+      null, [{ label: "KNN", value: "KNN" }]));
     this.filters.push(new Filter("evaluationMethod", "Evaluation method", "REFERENCE",
-      "EQUALS", null, [{label: "KNN2", value: "KNN3"}, {label: "KNN13", value: "KNN14"}]));
+      "EQUALS", null, evaluationMethods));
     this.filters.push(new Filter("experimentStatus", "Experiment status", "REFERENCE",
-      "EQUALS", null, [{label: "SUCCESS", value: "SUCCESS"}, {label: "ERROR", value: "ERROR"}]));
+      "EQUALS", null, statuses));
     this.filters.push(new Filter("creationDate", "Creation date from",
       "DATE", "GTE", null));
     this.filters.push(new Filter("creationDate", "Creation date to",

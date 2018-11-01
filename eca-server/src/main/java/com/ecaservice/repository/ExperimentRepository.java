@@ -50,4 +50,11 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
             "exp.sentDate < :dateTime order by exp.sentDate")
     Page<Experiment> findNotDeletedExperiments(@Param("dateTime") LocalDateTime dateTime, Pageable pageable);
 
+    /**
+     * Gets experiments count with specified status.
+     *
+     * @param experimentStatus - experiment status
+     * @return experiments count
+     */
+    long countByExperimentStatus(ExperimentStatus experimentStatus);
 }

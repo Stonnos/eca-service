@@ -2,41 +2,6 @@
   <div class="row">
     <div class="col-2">
       <app-filter [filters]="filters" (search)="onSearch()"></app-filter>
-      <!--<div class="ui-g ui-fluid">
-        <div class="ui-g-12 ui-md-12">
-          <label for="experimentType" class="attr" style="margin-top: 50px;">Experiment type</label>
-          <input id="experimentType" pInputText type="text" [(ngModel)]="filters[0].value"/>
-        </div>
-
-        <div class="ui-g-12 ui-md-12">
-          <label for="evaluationMethod" class="attr">Evaluation method</label>
-          <input id="evaluationMethod" pInputText type="text" [(ngModel)]="filters[1].value"/>
-        </div>
-
-        <div class="ui-g-12 ui-md-12">
-          <label for="experimentStatus" class="attr">Experiment status</label>
-          <input id="experimentStatus" pInputText type="text" [(ngModel)]="filters[2].value"/>
-        </div>
-
-        <div class="ui-g-12 ui-md-12">
-          <label for="creationDateFrom" class="attr">Creation date from</label>
-          <p-calendar id="creationDateFrom" [showIcon]="true" [(ngModel)]="filters[3].value"></p-calendar>
-        </div>
-
-        <div class="ui-g-12 ui-md-12">
-          <label for="creationDateTo" class="attr">Creation date to</label>
-          <p-calendar id="creationDateTo" [showIcon]="true" [(ngModel)]="filters[4].value"></p-calendar>
-        </div>
-
-      </div>
-
-      <button
-        pButton
-        label="Search"
-        type="button"
-        class="search-button text-uppercase">
-      </button>-->
-
     </div>
     <div class="col-10">
       <p-table
@@ -52,41 +17,51 @@
 
         <ng-template pTemplate="caption">
           <div class="ui-g ui-fluid">
-            <div class="ui-g-12 ui-md-3">
+            <div class="ui-g-12 ui-md-4">
               <div class="panel info-panel">
                 <div class="panel-body text-center">
-                  <p class="attr">Total count</p>
-                  <p class="value">45</p>
+                  <p class="attr">Total experiments</p>
+                  <p class="value">{{ total }}</p>
                 </div>
               </div>
             </div>
 
-            <div class="ui-g-12 ui-md-3">
+            <div class="ui-g-12 ui-md-2">
               <div class="panel info-panel">
                 <div class="panel-body text-center">
-                  <p class="attr">Successfully completed</p>
-                  <p class="value">23</p>
+                  <p class="attr">New experiments</p>
+                  <p class="value">{{ newExperimentsCount }}</p>
                 </div>
               </div>
             </div>
 
-            <div class="ui-g-12 ui-md-3">
+            <div class="ui-g-12 ui-md-2">
               <div class="panel info-panel">
                 <div class="panel-body text-center">
-                  <p class="attr">Competed with error</p>
-                  <p class="value">15</p>
+                  <p class="attr">Successfully finished</p>
+                  <p class="value">{{ finishedExperimentsCount }}</p>
                 </div>
               </div>
             </div>
 
-            <div class="ui-g-12 ui-md-3">
+            <div class="ui-g-12 ui-md-2">
+              <div class="panel info-panel">
+                <div class="panel-body text-center">
+                  <p class="attr">Completed with error</p>
+                  <p class="value">{{ errorExperimentsCount }}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="ui-g-12 ui-md-2">
               <div class="panel info-panel">
                 <div class="panel-body text-center">
                   <p class="attr">Competed with timeout</p>
-                  <p class="value">4</p>
+                  <p class="value">{{ timeoutExperimentsCount }}</p>
                 </div>
               </div>
             </div>
+
           </div>
         </ng-template>
 

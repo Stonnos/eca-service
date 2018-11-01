@@ -1,8 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
-  ExperimentDto,
-  PageDto,
+  ExperimentPageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
@@ -15,7 +14,7 @@ export class ExperimentsService {
   public constructor(private http: HttpClient) {
   }
 
-  public getExperiments(pageRequest: PageRequestDto): Observable<PageDto<ExperimentDto>> {
+  public getExperiments(pageRequest: PageRequestDto): Observable<ExperimentPageDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
     });
@@ -32,6 +31,6 @@ export class ExperimentsService {
       params = params.set(`filters['${index}'].matchMode`, filter.matchMode);
     });
     const options = { headers: headers, params: params };
-    return this.http.get<PageDto<ExperimentDto>>(this.serviceUrl, options);
+    return this.http.get<ExperimentPageDto>(this.serviceUrl, options);
   }
 }

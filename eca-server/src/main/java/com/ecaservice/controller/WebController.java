@@ -2,13 +2,14 @@ package com.ecaservice.controller;
 
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.specification.Filter;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.EvaluationLogDto;
 import com.ecaservice.web.dto.ExperimentDto;
-import com.ecaservice.web.dto.PageDto;
+import com.ecaservice.web.dto.ExperimentPageDto;
 import com.ecaservice.web.dto.PageRequestDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -50,18 +51,23 @@ public class WebController {
         this.evaluationLogRepository = evaluationLogRepository;
     }
 
+    /**
+     * Finds experiments with specified options such as filter, sorting and paging.
+     *
+     * @param pageRequestDto - page request dto
+     * @return experiment page dto
+     */
     @ApiOperation(
             value = "Finds experiments with specified options",
             notes = "Finds experiments with specified options"
     )
     @GetMapping(value = "/experiments")
-    public PageDto<ExperimentDto> getExperiments(PageRequestDto pageRequestDto) {
+    public ExperimentPageDto getExperiments(PageRequestDto pageRequestDto) {
         Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
         Filter<Experiment> filter = new Filter<>(Experiment.class, pageRequestDto.getFilters());
         Page<Experiment> experiments = experimentRepository.findAll(filter,
                 PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort));
-        List<ExperimentDto> experimentDtoList = experimentMapper.map(experiments.getContent());
-        return PageDto.of(experimentDtoList, experiments.getTotalElements());
+        return buildExperimentPageDto(experiments);
     }
 
     @ApiOperation(
@@ -71,5 +77,21 @@ public class WebController {
     @GetMapping(value = "/evaluations")
     public List<EvaluationLogDto> getEvaluationLogs() {
         return null;
+    }
+
+    private ExperimentPageDto buildExperimentPageDto(Page<Experiment> experimentPage) {
+        List<Experiment> experiments = experimentPage.getContent();
+        List<ExperimentDto> experimentDtoList = experimentMapper.map(experiments);
+        ExperimentPageDto experimentPageDto = new ExperimentPageDto();
+        experimentPageDto.setContent(experimentDtoList);
+        experimentPageDto.setTotalCount(experimentPage.getTotalElements());
+        experimentPageDto.setNewExperimentsCount(experimentRepository.countByExperimentStatus(ExperimentStatus.NEW));
+        experimentPageDto.setFinishedExperimentsCount(
+                experimentRepository.countByExperimentStatus(ExperimentStatus.FINISHED));
+        experimentPageDto.setTimeoutExperimentsCount(
+                experimentRepository.countByExperimentStatus(ExperimentStatus.TIMEOUT));
+        experimentPageDto.setErrorExperimentsCount(
+                experimentRepository.countByExperimentStatus(ExperimentStatus.ERROR));
+        return experimentPageDto;
     }
 }

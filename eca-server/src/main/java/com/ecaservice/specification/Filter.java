@@ -1,6 +1,7 @@
 package com.ecaservice.specification;
 
 import com.ecaservice.web.dto.FilterRequestDto;
+import com.ecaservice.web.dto.MatchModeVisitor;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.jpa.domain.Specification;
@@ -50,15 +51,22 @@ public class Filter<T> implements Specification<T> {
     }
 
     private Predicate buildPredicate(FilterRequestDto filterRequestDto, Root<T> root, CriteriaBuilder criteriaBuilder) {
-        switch (filterRequestDto.getMatchMode()) {
-            case EQUALS:
+        return filterRequestDto.getMatchMode().handle(new MatchModeVisitor<Predicate>() {
+            @Override
+            public Predicate caseEquals() {
                 return buildEqualPredicate(filterRequestDto, root, criteriaBuilder);
-            case GTE:
+            }
+
+            @Override
+            public Predicate caseGte() {
                 return buildGreaterThanOrEqualPredicate(filterRequestDto, root, criteriaBuilder);
-            case LTE:
+            }
+
+            @Override
+            public Predicate caseLte() {
                 return buildLessThanOrEqualPredicate(filterRequestDto, root, criteriaBuilder);
-        }
-        return null;
+            }
+        });
     }
 
     private Predicate buildGreaterThanOrEqualPredicate(FilterRequestDto filterRequestDto, Root<T> root,
@@ -91,14 +99,9 @@ public class Filter<T> implements Specification<T> {
             case REFERENCE:
                 try {
                     Field field = clazz.getDeclaredField(filterRequestDto.getName());
-                    if (field.isEnumConstant()) {
-                        Class enumClazz = field.getType();
-                        return criteriaBuilder.equal(root.get(filterRequestDto.getName()),
-                                Enum.valueOf(enumClazz, filterRequestDto.getValue()));
-                    } else {
-                        return criteriaBuilder.equal(root.get(filterRequestDto.getName()),
-                                filterRequestDto.getValue().trim());
-                    }
+                    Class enumClazz = field.getType();
+                    return criteriaBuilder.equal(root.get(filterRequestDto.getName()),
+                            Enum.valueOf(enumClazz, filterRequestDto.getValue()));
                 } catch (Exception ex) {
                     throw new IllegalArgumentException(ex.getMessage());
                 }
