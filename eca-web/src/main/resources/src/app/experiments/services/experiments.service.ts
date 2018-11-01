@@ -25,7 +25,9 @@ export class ExperimentsService {
       .set('ascending', pageRequest.ascending.toString());
     pageRequest.filters.map((filter, index) => {
       params = params.set(`filters['${index}'].name`, filter.name);
-      params = params.set(`filters['${index}'].value`, filter.value);
+      if (!!filter.value) {
+        params = params.set(`filters['${index}'].value`, filter.value);
+      }
       params = params.set(`filters['${index}'].filterType`, filter.filterType);
       params = params.set(`filters['${index}'].matchMode`, filter.matchMode);
     });

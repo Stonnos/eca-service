@@ -21,12 +21,12 @@ public class FilterRequestDto {
     private String value;
 
     /**
-     * Field type {@link FilterType}
+     * Filter type {@link FilterType}
      */
     private FilterType filterType;
 
     /**
-     * Filter type {@link MatchMode}
+     * Match mode type {@link MatchMode}
      */
     private MatchMode matchMode;
 }

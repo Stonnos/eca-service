@@ -4,6 +4,7 @@ import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.repository.ExperimentRepository;
+import com.ecaservice.specification.Filter;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.EvaluationLogDto;
 import com.ecaservice.web.dto.ExperimentDto;
@@ -71,8 +72,9 @@ public class WebController {
     @GetMapping(value = "/experiments")
     public PageDto<ExperimentDto> getExperiments(PageRequestDto pageRequestDto) {
         Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
-        Page<Experiment> experiments =
-                experimentRepository.findAll(PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort));
+        Filter<Experiment> filter = new Filter<>(pageRequestDto.getFilters());
+        Page<Experiment> experiments = experimentRepository.findAll(filter,
+                PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort));
         List<ExperimentDto> experimentDtoList = experimentMapper.map(experiments.getContent());
         return PageDto.of(experimentDtoList, experiments.getTotalElements());
     }

@@ -8,7 +8,7 @@
               <label class="filter-label">{{ filter.label }}</label>
               <p-dropdown
                 [options]="filter.values"
-                [optionLabel]="label"
+                optionLabel="label"
                 placeholder="Select"
                 [(ngModel)]="filter.currentValue"
                 [autoWidth]="false"

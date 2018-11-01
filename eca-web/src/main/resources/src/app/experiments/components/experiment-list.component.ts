@@ -7,6 +7,7 @@ import {
 import { ExperimentsService } from "../services/experiments.service";
 import { LazyLoadEvent, MessageService } from "primeng/api";
 import { Filter } from "../../filter/filter.model";
+import { DatePipe } from "@angular/common";
 
 @Component({
   selector: 'app-experiment-list',
@@ -24,6 +25,7 @@ export class ExperimentListComponent implements OnInit {
   public filters: Filter[] = [];
 
   private defaultSortField: string = "creationDate";
+  private dateFormat: string = "yyyy-MM-dd HH:mm:ss";
 
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService) {
@@ -53,7 +55,7 @@ export class ExperimentListComponent implements OnInit {
       sortField: sortField,
       ascending: ascending,
       filters: this.filters.map((filter: Filter) => {
-        return { name: filter.name, value: filter.currentValue, filterType: filter.type, matchMode: filter.matchMode };
+        return { name: filter.name, value: this.transformFilterValue(filter), filterType: filter.type, matchMode: filter.matchMode };
       })
     };
     this.getExperiments(pageRequest);
@@ -61,6 +63,17 @@ export class ExperimentListComponent implements OnInit {
 
   public onSearch() {
     console.log('Search!!');
+  }
+
+  private transformFilterValue(filter: Filter): string {
+    switch (filter.type) {
+      case "DATE":
+        return filter.currentValue && new DatePipe("en-US").transform(filter.currentValue, this.dateFormat);
+      case "REFERENCE":
+        return filter.currentValue && filter.currentValue.value;
+      default:
+        return filter.currentValue;
+    }
   }
 
   private initColumns() {
@@ -82,11 +95,6 @@ export class ExperimentListComponent implements OnInit {
   }
 
   private initFilters() {
-    /*this.filters.push({ name: "experimentType", value: null, matchMode: "EQUALS" });
-    this.filters.push({ name: "evaluationMethod", value: null, matchMode: "EQUALS" });
-    this.filters.push({ name: "experimentStatus", value: null, matchMode: "EQUALS" });
-    this.filters.push({ name: "creationDate", value: null, matchMode: "GTE" });
-    this.filters.push({ name: "creationDate", value: null, matchMode: "LTE" });*/
     this.filters.push(new Filter("uuid", "Request UUID",
       "TEXT", "EQUALS", null));
     this.filters.push(new Filter("experimentType", "Experiment type", "REFERENCE", "EQUALS",
@@ -94,7 +102,7 @@ export class ExperimentListComponent implements OnInit {
     this.filters.push(new Filter("evaluationMethod", "Evaluation method", "REFERENCE",
       "EQUALS", null, [{label: "KNN2", value: "KNN3"}, {label: "KNN13", value: "KNN14"}]));
     this.filters.push(new Filter("experimentStatus", "Experiment status", "REFERENCE",
-      "EQUALS", null, [{label: "KNN54", value: "KNN65"}, {label: "KNN17", value: "KNN17"}]));
+      "EQUALS", null, [{label: "SUCCESS", value: "SUCCESS"}, {label: "ERROR", value: "ERROR"}]));
     this.filters.push(new Filter("creationDate", "Creation date from",
       "DATE", "GTE", null));
     this.filters.push(new Filter("creationDate", "Creation date to",

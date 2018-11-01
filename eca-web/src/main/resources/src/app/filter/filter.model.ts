@@ -6,7 +6,7 @@ export class Filter {
   label: string;
   type: FilterType;
   matchMode: MatchMode;
-  currentValue: string;
+  currentValue: any;
   values: SelectItem[] = [];
 
   constructor(name: string, label: string, type: FilterType, matchMode: MatchMode, currentValue: string, values?: SelectItem[]) {
