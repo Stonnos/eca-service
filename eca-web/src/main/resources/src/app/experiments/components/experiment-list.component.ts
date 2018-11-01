@@ -30,6 +30,8 @@ export class ExperimentListComponent implements OnInit {
   private defaultSortField: string = "creationDate";
   private dateFormat: string = "yyyy-MM-dd HH:mm:ss";
 
+  private linkColumns: string[] = ["trainingDataAbsolutePath", "experimentAbsolutePath"];
+
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService) {
   }
@@ -75,6 +77,21 @@ export class ExperimentListComponent implements OnInit {
       filters: this.buildFilters()
     };
     this.getExperiments(pageRequest);
+  }
+
+  public onLink(column: string) {
+    switch (column) {
+      case "experimentAbsolutePath":
+        console.log("EXP");
+        break;
+      case "trainingDataAbsolutePath":
+        console.log("TR");
+        break;
+    }
+  }
+
+  public isLink(column: string): boolean {
+    return this.linkColumns.includes(column);
   }
 
   private buildFilters(): FilterRequestDto[] {

@@ -21,7 +21,7 @@
               <div class="panel info-panel">
                 <div class="panel-body text-center">
                   <p class="attr">Total experiments</p>
-                  <p class="value">{{ total }}</p>
+                  <p class="value">{{ experiments.length }}</p>
                 </div>
               </div>
             </div>
@@ -76,7 +76,10 @@
         <ng-template pTemplate="body" let-experiment>
           <tr>
             <td *ngFor="let column of columns">
-              {{ experiment[column.name] }}
+              <a [routerLink]="" *ngIf="isLink(column.name)" (click)="onLink(column.name)">
+                {{ experiment[column.name] }}
+              </a>
+              <span *ngIf="!isLink(column.name)">{{ experiment[column.name] }}</span>
             </td>
           </tr>
         </ng-template>

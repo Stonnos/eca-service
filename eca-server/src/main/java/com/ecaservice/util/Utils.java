@@ -7,8 +7,10 @@ import com.ecaservice.model.InputData;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
+import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
+import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +19,7 @@ import weka.core.Instances;
 import weka.core.xml.XMLInstances;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -165,5 +168,17 @@ public class Utils {
      */
     public static boolean isValid(ClassifierReport classifierReport) {
         return classifierReport != null && !StringUtils.isEmpty(classifierReport.getOptions());
+    }
+
+
+    /**
+     * Gets experiments count with specified status.
+     *
+     * @param experiments - experiments list
+     * @param status      - experiment status
+     * @return experiments count
+     */
+    public static long getExperimentsCouunt(List<Experiment> experiments, ExperimentStatus status) {
+        return experiments.stream().filter(experiment -> status.equals(experiment.getExperimentStatus())).count();
     }
 }

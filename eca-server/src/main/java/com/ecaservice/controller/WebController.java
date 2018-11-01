@@ -7,6 +7,7 @@ import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.specification.Filter;
 import com.ecaservice.util.SortUtils;
+import com.ecaservice.util.Utils;
 import com.ecaservice.web.dto.EvaluationLogDto;
 import com.ecaservice.web.dto.ExperimentDto;
 import com.ecaservice.web.dto.ExperimentPageDto;
@@ -85,13 +86,11 @@ public class WebController {
         ExperimentPageDto experimentPageDto = new ExperimentPageDto();
         experimentPageDto.setContent(experimentDtoList);
         experimentPageDto.setTotalCount(experimentPage.getTotalElements());
-        experimentPageDto.setNewExperimentsCount(experimentRepository.countByExperimentStatus(ExperimentStatus.NEW));
+        experimentPageDto.setNewExperimentsCount(Utils.getExperimentsCouunt(experiments, ExperimentStatus.NEW));
         experimentPageDto.setFinishedExperimentsCount(
-                experimentRepository.countByExperimentStatus(ExperimentStatus.FINISHED));
-        experimentPageDto.setTimeoutExperimentsCount(
-                experimentRepository.countByExperimentStatus(ExperimentStatus.TIMEOUT));
-        experimentPageDto.setErrorExperimentsCount(
-                experimentRepository.countByExperimentStatus(ExperimentStatus.ERROR));
+                Utils.getExperimentsCouunt(experiments, ExperimentStatus.FINISHED));
+        experimentPageDto.setTimeoutExperimentsCount(Utils.getExperimentsCouunt(experiments, ExperimentStatus.TIMEOUT));
+        experimentPageDto.setErrorExperimentsCount(Utils.getExperimentsCouunt(experiments, ExperimentStatus.ERROR));
         return experimentPageDto;
     }
 }
