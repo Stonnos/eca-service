@@ -7,6 +7,7 @@ import { ExperimentsService } from "../services/experiments.service";
 import { LazyLoadEvent, MessageService, SelectItem } from "primeng/api";
 import { Filter } from "../../filter/filter.model";
 import { DatePipe } from "@angular/common";
+import { saveAs } from 'file-saver/dist/FileSaver';
 
 @Component({
   selector: 'app-experiment-list',
@@ -79,13 +80,17 @@ export class ExperimentListComponent implements OnInit {
     this.getExperiments(pageRequest);
   }
 
-  public onLink(column: string) {
+  public onLink(column: string, experiment: ExperimentDto) {
     switch (column) {
       case this.linkColumns[0]:
         console.log("EXP");
         break;
       case this.linkColumns[1]:
-        console.log("TR");
+        this.experimentsService.getExperimentResultsFile(experiment.uuid).subscribe((blob: Blob) => {
+          saveAs(blob, "experiment.model");
+        }, (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+        });
         break;
     }
   }
@@ -103,9 +108,9 @@ export class ExperimentListComponent implements OnInit {
   private transformFilterValue(filter: Filter): string {
     switch (filter.type) {
       case "DATE":
-        return filter.currentValue && new DatePipe("en-US").transform(filter.currentValue, this.dateFormat);
+        return new DatePipe("en-US").transform(filter.currentValue, this.dateFormat);
       case "REFERENCE":
-        return filter.currentValue && filter.currentValue.value;
+        return filter.currentValue.value;
       default:
         return filter.currentValue;
     }

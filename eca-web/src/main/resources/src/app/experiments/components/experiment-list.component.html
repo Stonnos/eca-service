@@ -76,7 +76,7 @@
         <ng-template pTemplate="body" let-experiment>
           <tr>
             <td *ngFor="let column of columns">
-              <a [routerLink]="" *ngIf="isLink(column.name)" (click)="onLink(column.name)">
+              <a [routerLink]="" *ngIf="isLink(column.name)" (click)="onLink(column.name, experiment)">
                 {{ experiment[column.name] }}
               </a>
               <span *ngIf="!isLink(column.name)">{{ experiment[column.name] }}</span>

@@ -9,7 +9,7 @@ import { Observable } from "rxjs/internal/Observable";
 @Injectable()
 export class ExperimentsService {
 
-  private serviceUrl = "http://localhost:8085/eca-server/experiments";
+  private serviceUrl = "http://localhost:8085/eca-server";
 
   public constructor(private http: HttpClient) {
   }
@@ -29,6 +29,10 @@ export class ExperimentsService {
       params = params.set(`filters['${index}'].matchMode`, filter.matchMode);
     });
     const options = { headers: headers, params: params };
-    return this.http.get<ExperimentPageDto>(this.serviceUrl, options);
+    return this.http.get<ExperimentPageDto>(this.serviceUrl + '/experiments', options);
+  }
+
+  public getExperimentResultsFile(uuid: string): Observable<Blob> {
+    return this.http.get<Blob>(this.serviceUrl + '/experiment/download/' + uuid, { responseType: 'blob' as 'json' });
   }
 }
