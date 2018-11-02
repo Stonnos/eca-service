@@ -37,8 +37,6 @@ import java.util.stream.Collectors;
 @RestController
 public class WebController {
 
-    private static final String ATTACHMENT = "attachment";
-
     private final ExperimentService experimentService;
     private final ExperimentMapper experimentMapper;
     private final ExperimentRepository experimentRepository;
@@ -92,9 +90,8 @@ public class WebController {
     )
     @GetMapping(value = "/experiment-types")
     public List<ExperimentTypeDto> getExperimentTypes() {
-        return Arrays.stream(ExperimentType.values()).map(
-                experimentType -> new ExperimentTypeDto(experimentType.name(), experimentType.name())).collect(
-                Collectors.toList());
+        return Arrays.stream(ExperimentType.values()).map(experimentType -> new ExperimentTypeDto(experimentType.name(),
+                experimentType.getDescription())).collect(Collectors.toList());
     }
 
     /**
