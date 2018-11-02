@@ -1,36 +1,36 @@
-<div class="panel" style="margin-top: 30px;">
-  <div class="panel-body">
-    <div class="ui-g ui-fluid">
-      <div *ngFor="let filter of filters" class="ui-g-12 ui-md-12">
-        <div [ngSwitch]="filter.type">
-          <ng-container *ngSwitchCase="'REFERENCE'">
-            <div class="form-group">
-              <label class="filter-label">{{ filter.label }}</label>
-              <p-dropdown
-                [options]="filter.values"
-                optionLabel="label"
-                placeholder="Select"
-                [(ngModel)]="filter.currentValue"
-                [autoWidth]="false"
-                [style]="{'width':'100%'}">
-              </p-dropdown>
-            </div>
-          </ng-container>
+<p-panel class="filter-panel" [showHeader]="false">
 
-          <ng-container *ngSwitchCase="'DATE'">
+  <div class="ui-g ui-fluid">
+    <div *ngFor="let filter of filters" class="ui-g-12 ui-md-12">
+      <div [ngSwitch]="filter.type">
+        <ng-container *ngSwitchCase="'REFERENCE'">
+          <div class="form-group">
             <label class="filter-label">{{ filter.label }}</label>
-            <p-calendar [showIcon]="true" [(ngModel)]="filter.currentValue"></p-calendar>
-          </ng-container>
+            <p-dropdown
+              [options]="filter.values"
+              optionLabel="label"
+              placeholder="Select"
+              [(ngModel)]="filter.currentValue"
+              [autoWidth]="false"
+              [style]="{'width':'100%'}">
+            </p-dropdown>
+          </div>
+        </ng-container>
 
-          <ng-container *ngSwitchDefault>
-            <label class="filter-label">{{ filter.label }}</label>
-            <input pInputText type="text" [(ngModel)]="filter.currentValue"/>
-          </ng-container>
-        </div>
+        <ng-container *ngSwitchCase="'DATE'">
+          <label class="filter-label">{{ filter.label }}</label>
+          <p-calendar [showIcon]="true" [(ngModel)]="filter.currentValue"></p-calendar>
+        </ng-container>
+
+        <ng-container *ngSwitchDefault>
+          <label class="filter-label">{{ filter.label }}</label>
+          <input pInputText type="text" [(ngModel)]="filter.currentValue"/>
+        </ng-container>
       </div>
-
     </div>
+
   </div>
+
   <div class="panel-footer">
     <button
       pButton
@@ -40,4 +40,4 @@
       (click)="onSearch()">
     </button>
   </div>
-</div>
+</p-panel>

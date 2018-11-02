@@ -17,48 +17,46 @@
 
         <ng-template pTemplate="caption">
           <div class="ui-g ui-fluid">
-            <div class="ui-g-12 ui-md-4">
-              <div class="panel info-panel">
-                <div class="panel-body text-center">
-                  <p class="attr">Total experiments</p>
-                  <p class="value">{{ experiments.length }}</p>
-                </div>
-              </div>
+            <div class="ui-g-12 ui-md-2">
+              <p-panel class="info-panel text-center" [showHeader]="false">
+                <p class="attr">Total experiments</p>
+                <p class="value">{{ experiments.length }}</p>
+              </p-panel>
             </div>
 
             <div class="ui-g-12 ui-md-2">
               <div class="panel info-panel">
-                <div class="panel-body text-center">
+                <p-panel class="info-panel text-center" [showHeader]="false">
                   <p class="attr">New experiments</p>
-                  <p class="value">{{ newExperimentsCount }}</p>
-                </div>
+                  <p class="value">{{ experiments.length }}</p>
+                </p-panel>
               </div>
             </div>
 
             <div class="ui-g-12 ui-md-2">
               <div class="panel info-panel">
-                <div class="panel-body text-center">
-                  <p class="attr">Successfully finished</p>
-                  <p class="value">{{ finishedExperimentsCount }}</p>
-                </div>
+                <p-panel class="info-panel text-center" [showHeader]="false">
+                  <p class="attr">Successfully completed</p>
+                  <p class="value">{{ experiments.length }}</p>
+                </p-panel>
               </div>
             </div>
 
             <div class="ui-g-12 ui-md-2">
               <div class="panel info-panel">
-                <div class="panel-body text-center">
+                <p-panel class="info-panel text-center" [showHeader]="false">
                   <p class="attr">Completed with error</p>
-                  <p class="value">{{ errorExperimentsCount }}</p>
-                </div>
+                  <p class="value">{{ experiments.length }}</p>
+                </p-panel>
               </div>
             </div>
 
             <div class="ui-g-12 ui-md-2">
               <div class="panel info-panel">
-                <div class="panel-body text-center">
-                  <p class="attr">Competed with timeout</p>
-                  <p class="value">{{ timeoutExperimentsCount }}</p>
-                </div>
+                <p-panel class="info-panel text-center" [showHeader]="false">
+                  <p class="attr">Completed with timeout</p>
+                  <p class="value">{{ experiments.length }}</p>
+                </p-panel>
               </div>
             </div>
 

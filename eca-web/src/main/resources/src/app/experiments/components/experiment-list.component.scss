@@ -10,17 +10,23 @@
   }
 }
 
-.info-panel {
-  background: rgba(226, 226, 226, 0.64);
-  border: 1px solid gray;
+.info-panel::ng-deep {
+
+  .ui-panel {
+    background: rgba(226, 226, 226, 0.64);
+    border: 1px solid gray;
+    border-radius: 10px;
+    height: 125px;
+    min-height: 125px;
+  }
 }
 
 .attr {
   margin-top: 7px;
   font-weight: bold;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .value {
-  font-size: 22px;
+  font-size: 26px;
 }

@@ -9,3 +9,12 @@
   margin-top: 25px;
   margin-bottom: 25px;
 }
+
+.filter-panel::ng-deep {
+
+  .ui-panel {
+    background: rgba(226, 226, 226, 0.64);
+    border: 1px solid gray;
+    margin-top: 15px;
+  }
+}
