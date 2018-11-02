@@ -104,6 +104,26 @@ export class ExperimentListComponent implements OnInit {
     return this.linkColumns.includes(column);
   }
 
+  public getNewExperimentsCount(): number {
+    return this.experimentStatistics && this.experimentStatistics.totalCount;
+  }
+
+  public getFinishedExperimentsCount(): number {
+    return this.experimentStatistics && this.experimentStatistics.finishedExperimentsCount;
+  }
+
+  public getTimeoutExperimentsCount(): number {
+    return this.experimentStatistics && this.experimentStatistics.timeoutExperimentsCount;
+  }
+
+  public getErrorExperimentsCount(): number {
+    return this.experimentStatistics && this.experimentStatistics.errorExperimentsCount;
+  }
+
+  public getExperimentsTotalCount(): number {
+    return this.experimentStatistics && this.experimentStatistics.totalCount;
+  }
+
   private buildFilters(): FilterRequestDto[] {
     return this.filters.filter((filter: Filter) => !!filter.currentValue).map((filter: Filter) => {
       return { name: filter.name, value: this.transformFilterValue(filter), filterType: filter.type, matchMode: filter.matchMode };
