@@ -109,7 +109,7 @@ export class ExperimentListComponent implements OnInit {
   }
 
   public getNewExperimentsCount(): number {
-    return this.experimentStatistics && this.experimentStatistics.totalCount;
+    return this.experimentStatistics && this.experimentStatistics.newExperimentsCount;
   }
 
   public getFinishedExperimentsCount(): number {
