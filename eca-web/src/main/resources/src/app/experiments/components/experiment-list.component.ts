@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  ExperimentDto, ExperimentPageDto, FilterRequestDto,
+  ExperimentDto, ExperimentStatisticsDto, ExperimentTypeDto, FilterRequestDto, PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ExperimentsService } from "../services/experiments.service";
@@ -18,12 +18,9 @@ export class ExperimentListComponent implements OnInit {
 
   public columns: any[] = [];
   public experiments: ExperimentDto[] = [];
+  public experimentStatistics: ExperimentStatisticsDto;
 
   public total: number = 0;
-  public newExperimentsCount: number = 0;
-  public finishedExperimentsCount: number = 0;
-  public timeoutExperimentsCount: number = 0;
-  public errorExperimentsCount: number = 0;
   public pageSize: number = 25;
 
   public filters: Filter[] = [];
@@ -40,19 +37,24 @@ export class ExperimentListComponent implements OnInit {
   public ngOnInit() {
     this.initColumns();
     this.initFilters();
+    this.getExperimentsStatistics();
   }
 
   public getExperiments(pageRequest: PageRequestDto) {
-    this.experimentsService.getExperiments(pageRequest).subscribe((pageDto: ExperimentPageDto) => {
+    this.experimentsService.getExperiments(pageRequest).subscribe((pageDto: PageDto<ExperimentDto>) => {
       this.experiments = pageDto.content;
       this.total = pageDto.totalCount;
-      this.newExperimentsCount = pageDto.newExperimentsCount;
-      this.finishedExperimentsCount = pageDto.finishedExperimentsCount;
-      this.timeoutExperimentsCount = pageDto.timeoutExperimentsCount;
-      this.errorExperimentsCount = pageDto.errorExperimentsCount;
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
-    })
+    });
+  }
+
+  public getExperimentsStatistics() {
+    this.experimentsService.getExperimentsStatistics().subscribe((experimentStatistics: ExperimentStatisticsDto) => {
+      this.experimentStatistics = experimentStatistics;
+    }, (error) => {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+    });
   }
 
   public onLazyLoad(event: LazyLoadEvent) {
@@ -83,7 +85,7 @@ export class ExperimentListComponent implements OnInit {
   public onLink(column: string, experiment: ExperimentDto) {
     switch (column) {
       case this.linkColumns[0]:
-        console.log("EXP");
+        console.log("Training data");
         break;
       case this.linkColumns[1]:
         this.experimentsService.getExperimentResultsFile(experiment.uuid).subscribe((blob: Blob) => {
@@ -147,8 +149,6 @@ export class ExperimentListComponent implements OnInit {
     ];
     this.filters.push(new Filter("uuid", "Request UUID",
       "TEXT", "EQUALS", null));
-    this.filters.push(new Filter("experimentType", "Experiment type", "REFERENCE", "EQUALS",
-      null, [{ label: "KNN", value: "KNN" }]));
     this.filters.push(new Filter("evaluationMethod", "Evaluation method", "REFERENCE",
       "EQUALS", null, evaluationMethods));
     this.filters.push(new Filter("experimentStatus", "Experiment status", "REFERENCE",
@@ -157,5 +157,20 @@ export class ExperimentListComponent implements OnInit {
       "DATE", "GTE", null));
     this.filters.push(new Filter("creationDate", "Creation date to",
       "DATE", "LTE", null));
+
+    this.addExperimentTypesFilter();
+  }
+
+  private addExperimentTypesFilter() {
+    this.experimentsService.getExperimentTypes().subscribe((experimentTypes: ExperimentTypeDto[]) => {
+      const experimentTypeItems: SelectItem[] =
+        experimentTypes.map((experimentType: ExperimentTypeDto) => {
+          return { label: experimentType.description, value: experimentType.type };
+        });
+      this.filters.push(new Filter("experimentType", "Experiment type", "REFERENCE", "EQUALS",
+        null, experimentTypeItems));
+    }, (error) => {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+    });
   }
 }

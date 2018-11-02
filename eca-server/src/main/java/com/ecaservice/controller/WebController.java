@@ -3,26 +3,27 @@ package com.ecaservice.controller;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentStatus;
+import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.repository.ExperimentRepository;
-import com.ecaservice.specification.Filter;
-import com.ecaservice.util.SortUtils;
-import com.ecaservice.util.Utils;
+import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.web.dto.EvaluationLogDto;
 import com.ecaservice.web.dto.ExperimentDto;
-import com.ecaservice.web.dto.ExperimentPageDto;
+import com.ecaservice.web.dto.ExperimentStatisticsDto;
+import com.ecaservice.web.dto.ExperimentTypeDto;
+import com.ecaservice.web.dto.PageDto;
 import com.ecaservice.web.dto.PageRequestDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Rest controller providing operations for web application.
@@ -32,6 +33,7 @@ import java.util.List;
 @RestController
 public class WebController {
 
+    private final ExperimentService experimentService;
     private final ExperimentMapper experimentMapper;
     private final ExperimentRepository experimentRepository;
     private final EvaluationLogRepository evaluationLogRepository;
@@ -39,14 +41,17 @@ public class WebController {
     /**
      * Constructor with spring dependency injection.
      *
+     * @param experimentService       - experiment service bean
      * @param experimentMapper        - experiment mapper bean
      * @param experimentRepository    - experiment repository bean
      * @param evaluationLogRepository - evaluation log repository bean
      */
     @Inject
-    public WebController(ExperimentMapper experimentMapper,
+    public WebController(ExperimentService experimentService,
+                         ExperimentMapper experimentMapper,
                          ExperimentRepository experimentRepository,
                          EvaluationLogRepository evaluationLogRepository) {
+        this.experimentService = experimentService;
         this.experimentMapper = experimentMapper;
         this.experimentRepository = experimentRepository;
         this.evaluationLogRepository = evaluationLogRepository;
@@ -63,12 +68,51 @@ public class WebController {
             notes = "Finds experiments with specified options"
     )
     @GetMapping(value = "/experiments")
-    public ExperimentPageDto getExperiments(PageRequestDto pageRequestDto) {
-        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
-        Filter<Experiment> filter = new Filter<>(Experiment.class, pageRequestDto.getFilters());
-        Page<Experiment> experiments = experimentRepository.findAll(filter,
-                PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort));
-        return buildExperimentPageDto(experiments);
+    public PageDto<ExperimentDto> getExperiments(PageRequestDto pageRequestDto) {
+        log.info("Received experiments page request: {}", pageRequestDto);
+        Page<Experiment> experimentPage = experimentService.getExperiments(pageRequestDto);
+        List<ExperimentDto> experimentDtoList = experimentMapper.map(experimentPage.getContent());
+        return PageDto.of(experimentDtoList, experimentPage.getTotalElements());
+    }
+
+    /**
+     * Gets all experiments types.
+     *
+     * @return experiments types list
+     */
+    @ApiOperation(
+            value = "Gets all experiments types",
+            notes = "Gets all experiments types"
+    )
+    @GetMapping(value = "/experiment-types")
+    public List<ExperimentTypeDto> getExperimentTypes() {
+        return Arrays.stream(ExperimentType.values()).map(
+                experimentType -> new ExperimentTypeDto(experimentType.name(), experimentType.name())).collect(
+                Collectors.toList());
+    }
+
+    /**
+     * Gets experiments statistics.
+     *
+     * @return experiments statistics dto
+     */
+    @ApiOperation(
+            value = "Gets experiments statistics",
+            notes = "Gets experiments statistics"
+    )
+    @GetMapping(value = "/experiments-statistics")
+    public ExperimentStatisticsDto getExperimentStatisticsDto() {
+        ExperimentStatisticsDto experimentStatisticsDto = new ExperimentStatisticsDto();
+        experimentStatisticsDto.setTotalCount(experimentRepository.count());
+        experimentStatisticsDto.setNewExperimentsCount(
+                experimentRepository.countByExperimentStatus(ExperimentStatus.NEW));
+        experimentStatisticsDto.setFinishedExperimentsCount(
+                experimentRepository.countByExperimentStatus(ExperimentStatus.FINISHED));
+        experimentStatisticsDto.setTimeoutExperimentsCount(
+                experimentRepository.countByExperimentStatus(ExperimentStatus.TIMEOUT));
+        experimentStatisticsDto.setErrorExperimentsCount(
+                experimentRepository.countByExperimentStatus(ExperimentStatus.ERROR));
+        return experimentStatisticsDto;
     }
 
     @ApiOperation(
@@ -78,19 +122,5 @@ public class WebController {
     @GetMapping(value = "/evaluations")
     public List<EvaluationLogDto> getEvaluationLogs() {
         return null;
-    }
-
-    private ExperimentPageDto buildExperimentPageDto(Page<Experiment> experimentPage) {
-        List<Experiment> experiments = experimentPage.getContent();
-        List<ExperimentDto> experimentDtoList = experimentMapper.map(experiments);
-        ExperimentPageDto experimentPageDto = new ExperimentPageDto();
-        experimentPageDto.setContent(experimentDtoList);
-        experimentPageDto.setTotalCount(experimentPage.getTotalElements());
-        experimentPageDto.setNewExperimentsCount(Utils.getExperimentsCouunt(experiments, ExperimentStatus.NEW));
-        experimentPageDto.setFinishedExperimentsCount(
-                Utils.getExperimentsCouunt(experiments, ExperimentStatus.FINISHED));
-        experimentPageDto.setTimeoutExperimentsCount(Utils.getExperimentsCouunt(experiments, ExperimentStatus.TIMEOUT));
-        experimentPageDto.setErrorExperimentsCount(Utils.getExperimentsCouunt(experiments, ExperimentStatus.ERROR));
-        return experimentPageDto;
     }
 }

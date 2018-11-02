@@ -49,4 +49,12 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
     @Query("select exp from Experiment exp where exp.sentDate is not null and exp.deletedDate is null and " +
             "exp.sentDate < :dateTime order by exp.sentDate")
     Page<Experiment> findNotDeletedExperiments(@Param("dateTime") LocalDateTime dateTime, Pageable pageable);
+
+    /**
+     * Calculates experiments count with specified status.
+     *
+     * @param experimentStatus - experiment status
+     * @return experiments count
+     */
+    long countByExperimentStatus(ExperimentStatus experimentStatus);
 }

@@ -1,7 +1,6 @@
 package com.ecaservice.web.dto;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 /**
  * Experiment page dto model.
@@ -9,8 +8,12 @@ import lombok.EqualsAndHashCode;
  * @author Roman Batygin
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class ExperimentPageDto extends PageDto<ExperimentDto> {
+public class ExperimentStatisticsDto {
+
+    /**
+     * Total experiments count
+     */
+    private long totalCount;
 
     /**
      * Experiments count with NEW status

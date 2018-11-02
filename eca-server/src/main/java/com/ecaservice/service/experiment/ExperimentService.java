@@ -9,9 +9,15 @@ import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
+import com.ecaservice.specification.Filter;
+import com.ecaservice.util.SortUtils;
+import com.ecaservice.web.dto.PageRequestDto;
 import eca.converters.model.ExperimentHistory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 import weka.core.Instances;
@@ -179,5 +185,18 @@ public class ExperimentService {
         }
         experiment.setDeletedDate(LocalDateTime.now());
         experimentRepository.save(experiment);
+    }
+
+    /**
+     * Finds experiments with specified options such as filter, sorting and paging.
+     *
+     * @param pageRequestDto - page request dto
+     * @return experiment page dto
+     */
+    public Page<Experiment> getExperiments(PageRequestDto pageRequestDto) {
+        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
+        Filter<Experiment> filter = new Filter<>(Experiment.class, pageRequestDto.getFilters());
+        return experimentRepository.findAll(filter,
+                PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort));
     }
 }
