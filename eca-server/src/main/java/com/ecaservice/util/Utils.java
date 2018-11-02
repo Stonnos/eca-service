@@ -7,19 +7,22 @@ import com.ecaservice.model.InputData;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
-import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
-import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import weka.core.Instances;
 import weka.core.xml.XMLInstances;
 
+import java.io.File;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,6 +36,8 @@ public class Utils {
 
     private static final String EMAIL_REGEX =
             "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+
+    private static final String ATTACHMENT = "attachment";
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
@@ -170,15 +175,17 @@ public class Utils {
         return classifierReport != null && !StringUtils.isEmpty(classifierReport.getOptions());
     }
 
-
     /**
-     * Gets experiments count with specified status.
+     * Creates response with attachment.
      *
-     * @param experiments - experiments list
-     * @param status      - experiment status
-     * @return experiments count
+     * @param file - file attachment
+     * @return response entity
      */
-    public static long getExperimentsCouunt(List<Experiment> experiments, ExperimentStatus status) {
-        return experiments.stream().filter(experiment -> status.equals(experiment.getExperimentStatus())).count();
+    public static ResponseEntity buildAttachmentResponse(File file) {
+        FileSystemResource resource = new FileSystemResource(file);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData(ATTACHMENT, resource.getFilename());
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 }

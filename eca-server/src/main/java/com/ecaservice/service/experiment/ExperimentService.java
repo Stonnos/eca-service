@@ -157,13 +157,28 @@ public class ExperimentService {
      * Finds experiment file by uuid.
      *
      * @param uuid - experiment uuid
-     * @return experiment file object
+     * @return experiment object
      */
     public File findExperimentFileByUuid(String uuid) {
         Experiment experiment = experimentRepository.findByUuidAndExperimentStatusIn(uuid,
                 Collections.singletonList(ExperimentStatus.FINISHED));
         if (Optional.ofNullable(experiment).map(Experiment::getExperimentAbsolutePath).isPresent()) {
             return new File(experiment.getExperimentAbsolutePath());
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Finds experiment training data file by uuid.
+     *
+     * @param uuid - experiment uuid
+     * @return experiment training data file
+     */
+    public File findTrainingDataFileByUuid(String uuid) {
+        Experiment experiment = experimentRepository.findByUuid(uuid);
+        if (Optional.ofNullable(experiment).map(Experiment::getTrainingDataAbsolutePath).isPresent()) {
+            return new File(experiment.getTrainingDataAbsolutePath());
         } else {
             return null;
         }

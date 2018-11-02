@@ -50,4 +50,8 @@ export class ExperimentsService {
   public getExperimentResultsFile(uuid: string): Observable<Blob> {
     return this.http.get<Blob>(this.serviceUrl + '/experiment/download/' + uuid, { responseType: 'blob' as 'json' });
   }
+
+  public getExperimentTrainingDataFile(uuid: string): Observable<Blob> {
+    return this.http.get<Blob>(this.serviceUrl + '/experiment-training-data/' + uuid, { responseType: 'blob' as 'json' });
+  }
 }

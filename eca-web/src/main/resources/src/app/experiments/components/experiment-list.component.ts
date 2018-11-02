@@ -88,11 +88,15 @@ export class ExperimentListComponent implements OnInit {
   public onLink(column: string, experiment: ExperimentDto) {
     switch (column) {
       case this.linkColumns[0]:
-        console.log("Training data");
+        this.experimentsService.getExperimentTrainingDataFile(experiment.uuid).subscribe((blob: Blob) => {
+          saveAs(blob, experiment.trainingDataAbsolutePath);
+        }, (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+        });
         break;
       case this.linkColumns[1]:
         this.experimentsService.getExperimentResultsFile(experiment.uuid).subscribe((blob: Blob) => {
-          saveAs(blob, "experiment.model");
+          saveAs(blob, experiment.experimentAbsolutePath);
         }, (error) => {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
         });

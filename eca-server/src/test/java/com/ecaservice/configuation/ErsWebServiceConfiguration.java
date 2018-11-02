@@ -1,8 +1,8 @@
 package com.ecaservice.configuation;
 
 import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.client.core.WebServiceTemplate;
 
@@ -11,7 +11,7 @@ import org.springframework.ws.client.core.WebServiceTemplate;
  *
  * @author Roman Batygin
  */
-@Configuration
+@TestConfiguration
 public class ErsWebServiceConfiguration {
 
     /**

@@ -29,6 +29,14 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
     Experiment findByUuidAndExperimentStatusIn(String uuid, Collection<ExperimentStatus> experimentStatuses);
 
     /**
+     * Finds experiment by uuid.
+     *
+     * @param uuid - experiment uuid
+     * @return experiment entity
+     */
+    Experiment findByUuid(String uuid);
+
+    /**
      * Finds not sent experiments by statuses
      *
      * @param statuses - {@link ExperimentStatus} collection

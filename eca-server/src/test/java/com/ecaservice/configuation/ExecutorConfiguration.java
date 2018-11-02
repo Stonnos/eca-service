@@ -2,8 +2,8 @@ package com.ecaservice.configuation;
 
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.service.evaluation.CalculationExecutorServiceImpl;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
  *
  * @author Roman Batygin
  */
-@Configuration
+@TestConfiguration
 public class ExecutorConfiguration {
 
     /**

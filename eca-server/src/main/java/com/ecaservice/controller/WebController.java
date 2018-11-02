@@ -7,6 +7,7 @@ import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.experiment.ExperimentService;
+import com.ecaservice.util.Utils;
 import com.ecaservice.web.dto.EvaluationLogDto;
 import com.ecaservice.web.dto.ExperimentDto;
 import com.ecaservice.web.dto.ExperimentStatisticsDto;
@@ -17,10 +18,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +36,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 public class WebController {
+
+    private static final String ATTACHMENT = "attachment";
 
     private final ExperimentService experimentService;
     private final ExperimentMapper experimentMapper;
@@ -113,6 +119,27 @@ public class WebController {
         experimentStatisticsDto.setErrorExperimentsCount(
                 experimentRepository.countByExperimentStatus(ExperimentStatus.ERROR));
         return experimentStatisticsDto;
+    }
+
+    /**
+     * Downloads experiment training data by specified uuid.
+     *
+     * @param uuid - experiment uuid
+     */
+    @ApiOperation(
+            value = "Downloads experiment training data by specified uuid",
+            notes = "Downloads experiment training data by specified uuid"
+    )
+    @GetMapping(value = "/experiment-training-data/{uuid}")
+    public ResponseEntity downloadTrainingData(@PathVariable String uuid) {
+        File trainingDataFile = experimentService.findTrainingDataFileByUuid(uuid);
+        if (trainingDataFile == null) {
+            log.error("Experiment training data file for uuid = '{}' not found!", uuid);
+            return ResponseEntity.badRequest().body(
+                    String.format("Experiment training data file for uuid = '%s' not found!", uuid));
+        }
+        log.info("Download experiment training data '{}' for uuid = '{}'", trainingDataFile.getAbsolutePath(), uuid);
+        return Utils.buildAttachmentResponse(trainingDataFile);
     }
 
     @ApiOperation(
