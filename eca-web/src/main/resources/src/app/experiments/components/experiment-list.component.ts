@@ -81,10 +81,10 @@ export class ExperimentListComponent implements OnInit {
 
   public onLink(column: string) {
     switch (column) {
-      case "experimentAbsolutePath":
+      case this.linkColumns[0]:
         console.log("EXP");
         break;
-      case "trainingDataAbsolutePath":
+      case this.linkColumns[1]:
         console.log("TR");
         break;
     }
@@ -95,7 +95,7 @@ export class ExperimentListComponent implements OnInit {
   }
 
   private buildFilters(): FilterRequestDto[] {
-    return this.filters.map((filter: Filter) => {
+    return this.filters.filter((filter: Filter) => !!filter.currentValue).map((filter: Filter) => {
       return { name: filter.name, value: this.transformFilterValue(filter), filterType: filter.type, matchMode: filter.matchMode };
     });
   }
