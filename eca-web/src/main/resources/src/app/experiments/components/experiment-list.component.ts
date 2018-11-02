@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   ExperimentDto, ExperimentStatisticsDto, ExperimentTypeDto, FilterRequestDto, PageDto,
   PageRequestDto
@@ -8,6 +8,7 @@ import { LazyLoadEvent, MessageService, SelectItem } from "primeng/api";
 import { Filter } from "../../filter/filter.model";
 import { DatePipe } from "@angular/common";
 import { saveAs } from 'file-saver/dist/FileSaver';
+import { Table } from "primeng/table";
 
 @Component({
   selector: 'app-experiment-list',
@@ -23,12 +24,15 @@ export class ExperimentListComponent implements OnInit {
   public total: number = 0;
   public pageSize: number = 25;
 
+  public defaultSortField: string = "creationDate";
   public filters: Filter[] = [];
 
-  private defaultSortField: string = "creationDate";
   private dateFormat: string = "yyyy-MM-dd HH:mm:ss";
 
   private linkColumns: string[] = ["trainingDataAbsolutePath", "experimentAbsolutePath"];
+
+  @ViewChild(Table)
+  private experimentTable: Table;
 
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService) {
@@ -58,20 +62,19 @@ export class ExperimentListComponent implements OnInit {
   }
 
   public onLazyLoad(event: LazyLoadEvent) {
-    const sortField = !!event.sortField ? event.sortField : this.defaultSortField;
-    const ascending = !!event.sortField && !!event.sortOrder && event.sortOrder == 1;
     const page: number = Math.round(event.first / event.rows);
     const pageRequest: PageRequestDto = {
       page: page,
       size: event.rows,
-      sortField: sortField,
-      ascending: ascending,
+      sortField: event.sortField,
+      ascending: event.sortOrder == 1,
       filters: this.buildFilters()
     };
     this.getExperiments(pageRequest);
   }
 
   public onSearch() {
+    this.resetSort();
     const pageRequest: PageRequestDto = {
       page: 0,
       size: this.pageSize,
@@ -172,5 +175,10 @@ export class ExperimentListComponent implements OnInit {
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
     });
+  }
+
+  private resetSort() {
+    this.experimentTable.sortField = this.defaultSortField;
+    this.experimentTable.sortOrder = -1;
   }
 }
