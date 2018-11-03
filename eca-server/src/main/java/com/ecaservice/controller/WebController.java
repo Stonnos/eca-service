@@ -104,7 +104,7 @@ public class WebController {
             notes = "Gets experiments statistics"
     )
     @GetMapping(value = "/experiments-statistics")
-    public ExperimentStatisticsDto getExperimentStatisticsDto() {
+    public ExperimentStatisticsDto getExperimentsStatisticsDto() {
         ExperimentStatisticsDto experimentStatisticsDto = new ExperimentStatisticsDto();
         experimentStatisticsDto.setTotalCount(experimentRepository.count());
         experimentStatisticsDto.setNewExperimentsCount(
