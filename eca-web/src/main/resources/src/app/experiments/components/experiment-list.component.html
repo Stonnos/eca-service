@@ -7,13 +7,13 @@
       <p-table
         class="experiment-table"
         [columns]="columns"
-        [value]="experiments"
+        [value]="items"
         [rows]="pageSize"
         [totalRecords]="total"
         [paginator]="true"
         [scrollable]="true"
         [sortField]="defaultSortField"
-        [sortOrder]="-1"
+        [sortOrder]="defaultSortOrder"
         [lazy]="true"
         (onLazyLoad)="onLazyLoad($event)">
 
@@ -73,17 +73,17 @@
             </th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-experiment>
+        <ng-template pTemplate="body" let-item>
           <tr>
             <td *ngFor="let column of columns">
-              <a [routerLink]="" *ngIf="isLink(column.name)" (click)="onLink(column.name, experiment)">
-                {{ experiment[column.name] }}
+              <a [routerLink]="" *ngIf="isLink(column.name)" (click)="onLink(column.name, item)">
+                {{ item[column.name] }}
               </a>
-              <span *ngIf="!isLink(column.name)">{{ experiment[column.name] }}</span>
+              <span *ngIf="!isLink(column.name)">{{ item[column.name] }}</span>
             </td>
           </tr>
         </ng-template>
-        <ng-template pTemplate="emptymessage" *ngIf="experiments.length == 0">
+        <ng-template pTemplate="emptymessage" *ngIf="items.length == 0">
           <tr>
             <td [attr.colspan]="columns.length" style="text-align: center;">
               No experiments found

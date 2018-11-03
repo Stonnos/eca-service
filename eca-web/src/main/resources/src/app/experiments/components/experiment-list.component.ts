@@ -1,52 +1,40 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
-  ExperimentDto, ExperimentStatisticsDto, ExperimentTypeDto, FilterRequestDto, PageDto,
+  ExperimentDto, ExperimentStatisticsDto, ExperimentTypeDto, PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ExperimentsService } from "../services/experiments.service";
-import { LazyLoadEvent, MessageService, SelectItem } from "primeng/api";
+import { MessageService, SelectItem } from "primeng/api";
 import { Filter } from "../../filter/filter.model";
-import { DatePipe } from "@angular/common";
 import { saveAs } from 'file-saver/dist/FileSaver';
-import { Table } from "primeng/table";
+import {BaseListComponent} from "../../lists/base-list.component";
 
 @Component({
   selector: 'app-experiment-list',
   templateUrl: './experiment-list.component.html',
   styleUrls: ['./experiment-list.component.scss']
 })
-export class ExperimentListComponent implements OnInit {
+export class ExperimentListComponent extends BaseListComponent<ExperimentDto> implements OnInit {
 
-  public columns: any[] = [];
-  public experiments: ExperimentDto[] = [];
-  public experimentStatistics: ExperimentStatisticsDto;
-
-  public total: number = 0;
-  public pageSize: number = 25;
-
-  public defaultSortField: string = "creationDate";
-  public filters: Filter[] = [];
-
-  private dateFormat: string = "yyyy-MM-dd HH:mm:ss";
-
-  private linkColumns: string[] = ["trainingDataAbsolutePath", "experimentAbsolutePath"];
-
-  @ViewChild(Table)
-  private experimentTable: Table;
+  private experimentStatistics: ExperimentStatisticsDto;
 
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService) {
+    super();
+    this.defaultSortField = "creationDate";
+    this.linkColumns = ["trainingDataAbsolutePath", "experimentAbsolutePath"];
+    this.initColumns();
+    this.initFilters();
   }
 
   public ngOnInit() {
-    this.initColumns();
-    this.initFilters();
+    this.addExperimentTypesFilter();
     this.getExperimentsStatistics();
   }
 
-  public getExperiments(pageRequest: PageRequestDto) {
+  public getNextPage(pageRequest: PageRequestDto) {
     this.experimentsService.getExperiments(pageRequest).subscribe((pageDto: PageDto<ExperimentDto>) => {
-      this.experiments = pageDto.content;
+      this.items = pageDto.content;
       this.total = pageDto.totalCount;
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
@@ -61,29 +49,6 @@ export class ExperimentListComponent implements OnInit {
     });
   }
 
-  public onLazyLoad(event: LazyLoadEvent) {
-    const page: number = Math.round(event.first / event.rows);
-    const pageRequest: PageRequestDto = {
-      page: page,
-      size: event.rows,
-      sortField: event.sortField,
-      ascending: event.sortOrder == 1,
-      filters: this.buildFilters()
-    };
-    this.getExperiments(pageRequest);
-  }
-
-  public onSearch() {
-    this.resetSort();
-    const pageRequest: PageRequestDto = {
-      page: 0,
-      size: this.pageSize,
-      sortField: this.defaultSortField,
-      ascending: false,
-      filters: this.buildFilters()
-    };
-    this.getExperiments(pageRequest);
-  }
 
   public onLink(column: string, experiment: ExperimentDto) {
     switch (column) {
@@ -104,10 +69,6 @@ export class ExperimentListComponent implements OnInit {
     }
   }
 
-  public isLink(column: string): boolean {
-    return this.linkColumns.includes(column);
-  }
-
   public getNewExperimentsCount(): number {
     return this.experimentStatistics && this.experimentStatistics.newExperimentsCount;
   }
@@ -126,23 +87,6 @@ export class ExperimentListComponent implements OnInit {
 
   public getExperimentsTotalCount(): number {
     return this.experimentStatistics && this.experimentStatistics.totalCount;
-  }
-
-  private buildFilters(): FilterRequestDto[] {
-    return this.filters.filter((filter: Filter) => !!filter.currentValue).map((filter: Filter) => {
-      return { name: filter.name, value: this.transformFilterValue(filter), filterType: filter.type, matchMode: filter.matchMode };
-    });
-  }
-
-  private transformFilterValue(filter: Filter): string {
-    switch (filter.type) {
-      case "DATE":
-        return new DatePipe("en-US").transform(filter.currentValue, this.dateFormat);
-      case "REFERENCE":
-        return filter.currentValue.value;
-      default:
-        return filter.currentValue;
-    }
   }
 
   private initColumns() {
@@ -184,8 +128,6 @@ export class ExperimentListComponent implements OnInit {
       "DATE", "GTE", null));
     this.filters.push(new Filter("creationDate", "Creation date to",
       "DATE", "LTE", null));
-
-    this.addExperimentTypesFilter();
   }
 
   private addExperimentTypesFilter() {
@@ -199,10 +141,5 @@ export class ExperimentListComponent implements OnInit {
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
     });
-  }
-
-  private resetSort() {
-    this.experimentTable.sortField = this.defaultSortField;
-    this.experimentTable.sortOrder = -1;
   }
 }
