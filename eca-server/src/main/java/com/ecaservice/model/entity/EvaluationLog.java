@@ -112,7 +112,7 @@ public class EvaluationLog {
     /**
      * Training data info
      */
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "instances_info_id")
     private InstancesInfo instancesInfo;
 
