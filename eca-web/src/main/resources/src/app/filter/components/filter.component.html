@@ -24,7 +24,7 @@
 
         <ng-container *ngSwitchDefault>
           <label class="filter-label">{{ filter.label }}</label>
-          <input pInputText type="text" [(ngModel)]="filter.currentValue"/>
+          <input pInputText type="text" [(ngModel)]="filter.currentValue" maxlength="255"/>
         </ng-container>
       </div>
     </div>

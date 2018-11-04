@@ -13,6 +13,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.lang.reflect.Field;
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -65,6 +66,12 @@ public class Filter<T> implements Specification<T> {
             @Override
             public Predicate caseLte() {
                 return buildLessThanOrEqualPredicate(filterRequestDto, root, criteriaBuilder);
+            }
+
+            @Override
+            public Predicate caseLike() {
+                return criteriaBuilder.like(root.get(filterRequestDto.getName()),
+                        MessageFormat.format("%{0}%", filterRequestDto.getValue().trim()));
             }
         });
     }

@@ -28,4 +28,11 @@ public interface MatchModeVisitor<T> {
      * @return generic object
      */
     T caseLte();
+
+    /**
+     * Method executed in case if match mode is LIKE.
+     *
+     * @return generic object
+     */
+    T caseLike();
 }

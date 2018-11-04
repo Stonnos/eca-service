@@ -35,6 +35,16 @@ public enum MatchMode {
         public <T> T handle(MatchModeVisitor<T> matchModeVisitor) {
             return matchModeVisitor.caseGte();
         }
+    },
+
+    /**
+     * Like match mode
+     */
+    LIKE {
+        @Override
+        public <T> T handle(MatchModeVisitor<T> matchModeVisitor) {
+            return matchModeVisitor.caseLike();
+        }
     };
 
     /**

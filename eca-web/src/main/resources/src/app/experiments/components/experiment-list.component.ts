@@ -120,6 +120,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     ];
     this.filters.push(new Filter("uuid", "Request UUID",
       "TEXT", "EQUALS", null));
+    this.filters.push(new Filter("email", "Request email",
+      "TEXT", "LIKE", null));
     this.filters.push(new Filter("evaluationMethod", "Evaluation method", "REFERENCE",
       "EQUALS", null, evaluationMethods));
     this.filters.push(new Filter("experimentStatus", "Experiment status", "REFERENCE",
