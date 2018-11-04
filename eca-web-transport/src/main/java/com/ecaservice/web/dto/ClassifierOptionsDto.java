@@ -23,6 +23,11 @@ public class ClassifierOptionsDto {
     private int version;
 
     /**
+     * Options name
+     */
+    private String optionsName;
+
+    /**
      * Creation date
      */
     @ApiModelProperty(notes = "Creation date", required = true)

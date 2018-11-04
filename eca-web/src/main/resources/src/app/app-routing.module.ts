@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from "./dashboard/dashboard.component";
 import { ClassifierListComponent } from "./classifiers/components/classifier-list.component";
 import { ExperimentListComponent } from "./experiments/components/experiment-list.component";
+import { ClassifierOptionsComponent } from "./classifier-options/components/classifier-options.component";
 
 const routes: Routes = [
   {
@@ -16,6 +17,10 @@ const routes: Routes = [
       {
         path: 'experiments',
         component: ExperimentListComponent
+      },
+      {
+        path: 'classifiers-options',
+        component: ClassifierOptionsComponent
       }
     ]
   },

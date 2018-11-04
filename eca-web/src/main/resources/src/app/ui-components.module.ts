@@ -20,12 +20,13 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { PanelModule } from 'primeng/panel';
 import { PasswordModule } from 'primeng/password';
-import { InputSwitchModule, ListboxModule, TooltipModule } from 'primeng/primeng';
+import { CodeHighlighterModule, InputSwitchModule, ListboxModule, TooltipModule } from 'primeng/primeng';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { TableModule } from 'primeng/table';
 import { TabViewModule } from 'primeng/tabview';
+import { CardModule } from "primeng/card";
 
 @NgModule({
   imports: [
@@ -48,6 +49,7 @@ import { TabViewModule } from 'primeng/tabview';
     DialogModule,
     RadioButtonModule,
     TabViewModule,
+    CardModule,
     ChartModule,
     ProgressBarModule,
     LightboxModule,
@@ -61,7 +63,8 @@ import { TabViewModule } from 'primeng/tabview';
     ProgressSpinnerModule,
     ListboxModule,
     InputSwitchModule,
-    CheckboxModule
+    CheckboxModule,
+    CodeHighlighterModule
   ]
 })
 export class UiComponentsModule {

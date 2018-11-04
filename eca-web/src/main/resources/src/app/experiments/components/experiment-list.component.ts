@@ -7,7 +7,7 @@ import { ExperimentsService } from "../services/experiments.service";
 import { MessageService, SelectItem } from "primeng/api";
 import { Filter } from "../../filter/filter.model";
 import { saveAs } from 'file-saver/dist/FileSaver';
-import {BaseListComponent} from "../../lists/base-list.component";
+import { BaseListComponent } from "../../lists/base-list.component";
 
 @Component({
   selector: 'app-experiment-list',

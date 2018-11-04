@@ -11,6 +11,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { FormsModule } from "@angular/forms";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { FilterModule } from "./filter/filter.module";
+import { ClassifierOptionsModule } from "./classifier-options/classifier-options.module";
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { FilterModule } from "./filter/filter.module";
     AppRoutingModule,
     ClassifiersModule,
     ExperimentsModule,
+    ClassifierOptionsModule,
     FilterModule,
     UiComponentsModule,
     HttpClientModule,

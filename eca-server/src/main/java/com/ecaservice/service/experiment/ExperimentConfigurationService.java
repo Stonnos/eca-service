@@ -5,11 +5,16 @@ import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
+import com.ecaservice.util.SortUtils;
+import com.ecaservice.web.dto.PageRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -103,6 +108,19 @@ public class ExperimentConfigurationService {
         log.info("{} classifiers input options configs has been successfully read from database.",
                 classifierOptionsDatabaseModelList.size());
         return classifierOptionsDatabaseModelList;
+    }
+
+    /**
+     * Finds the last classifiers options configs.
+     *
+     * @param pageRequestDto - page request dto
+     * @return {@link ClassifierOptionsDatabaseModel} list
+     */
+    public Page<ClassifierOptionsDatabaseModel> findLastClassifiersOptions(PageRequestDto pageRequestDto) {
+        int lastVersion = classifierOptionsDatabaseModelRepository.findLatestVersion();
+        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
+        return classifierOptionsDatabaseModelRepository.findAllByVersion(lastVersion,
+                PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort));
     }
 
     private List<ClassifierOptionsDatabaseModel> createClassifiersOptions(Collection<File> modelFiles, int version) {

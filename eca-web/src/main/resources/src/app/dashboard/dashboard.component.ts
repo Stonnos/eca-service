@@ -21,6 +21,11 @@ export class DashboardComponent implements OnInit {
         label: 'Classifiers',
         routerLink: ['/dashboard/classifiers'],
         routerLinkActiveOptions: 'ui-menuitem-active'
+      },
+      {
+        label: 'Classifiers options',
+        routerLink: ['/dashboard/classifiers-options'],
+        routerLinkActiveOptions: 'ui-menuitem-active'
       }
     ];
   }
