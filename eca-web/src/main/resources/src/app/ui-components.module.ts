@@ -20,7 +20,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { PanelModule } from 'primeng/panel';
 import { PasswordModule } from 'primeng/password';
-import { InputSwitchModule, ListboxModule, TooltipModule } from 'primeng/primeng';
+import { CodeHighlighterModule, InputSwitchModule, ListboxModule, TooltipModule } from 'primeng/primeng';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { RadioButtonModule } from 'primeng/radiobutton';
@@ -63,7 +63,8 @@ import { CardModule } from "primeng/card";
     ProgressSpinnerModule,
     ListboxModule,
     InputSwitchModule,
-    CheckboxModule
+    CheckboxModule,
+    CodeHighlighterModule
   ]
 })
 export class UiComponentsModule {

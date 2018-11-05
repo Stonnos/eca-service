@@ -38,7 +38,7 @@
   </p-table>
   <p-overlayPanel #configsPanel>
     <p-panel *ngIf="selectedOptions" class="config-panel">
-      <pre>{{ getFormattedJsonConfig() }}</pre>
+      <pre><code class="language-json" pCode>{{ getFormattedJsonConfig() }}</code></pre>
     </p-panel>
   </p-overlayPanel>
 </div>
