@@ -7,6 +7,7 @@ import { ClassifierOptionsService } from "../services/classifier-options.service
 import { MessageService } from "primeng/api";
 import { BaseListComponent } from "../../lists/base-list.component";
 import { OverlayPanel} from "primeng/primeng";
+import { JsonPipe } from "@angular/common";
 
 @Component({
   selector: 'app-classifier-options',
@@ -44,6 +45,11 @@ export class ClassifierOptionsComponent extends BaseListComponent<ClassifierOpti
   public onSelect(event, classifierOptionsDto: ClassifierOptionsDto, overlayPanel: OverlayPanel) {
     this.selectedOptions = classifierOptionsDto;
     overlayPanel.toggle(event);
+  }
+
+  public getFormattedJsonConfig() {
+    const configObj = JSON.parse(this.selectedOptions.config);
+    return new JsonPipe().transform(configObj);
   }
 
   private initColumns() {

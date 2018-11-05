@@ -30,15 +30,17 @@
     </ng-template>
     <ng-template pTemplate="emptymessage" *ngIf="items.length == 0">
       <tr>
-        <td [attr.colspan]="columns.length" style="text-align: center;">
+        <td [attr.colspan]="columns.length" class="text-center">
           No configs found
         </td>
       </tr>
     </ng-template>
   </p-table>
   <p-overlayPanel #configsPanel>
-    <p-card *ngIf="selectedOptions">
-      {{ selectedOptions.config }}
+    <p-card *ngIf="selectedOptions" class="config-panel">
+      <pre>
+        {{ getFormattedJsonConfig() }}
+      </pre>
     </p-card>
   </p-overlayPanel>
 </div>
