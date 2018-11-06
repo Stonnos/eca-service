@@ -31,3 +31,10 @@
 .text-wrap {
   word-wrap: break-word;
 }
+
+.info-overlay::ng-deep {
+  .ui-overlaypanel {
+    margin-left: -20%;
+    margin-top: -2%;
+  }
+}

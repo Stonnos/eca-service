@@ -45,7 +45,7 @@
         </ng-template>
       </p-table>
 
-      <p-overlayPanel #infoPanel>
+      <p-overlayPanel #infoPanel class="info-overlay">
         <p-panel *ngIf="selectedEvaluationLog && selectedColumn" class="info-panel">
           <ng-container [ngSwitch]="selectedColumn">
             <ng-container *ngSwitchCase="'classifierName'">
