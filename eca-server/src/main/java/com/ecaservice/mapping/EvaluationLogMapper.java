@@ -5,14 +5,18 @@ import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.InstancesInfo;
 import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.web.dto.EvaluationLogDto;
+import com.ecaservice.web.dto.InputOptionDto;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
+import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Implements evaluation request to evaluation log mapping.
@@ -84,5 +88,13 @@ public abstract class EvaluationLogMapper {
         evaluationLogDto.setSeed(
                 Optional.ofNullable(evaluationLog.getEvaluationOptionsMap().get(EvaluationOption.SEED)).map(
                         Integer::valueOf).orElse(null));
+    }
+
+    @AfterMapping
+    protected void mapInputOptions(EvaluationLog evaluationLog, @MappingTarget EvaluationLogDto evaluationLogDto) {
+        if (!CollectionUtils.isEmpty(evaluationLog.getInputOptionsMap())) {
+            evaluationLogDto.setInputOptions(evaluationLog.getInputOptionsMap().entrySet().stream().map(
+                    entry -> new InputOptionDto(entry.getKey(), entry.getValue())).collect(Collectors.toList()));
+        }
     }
 }

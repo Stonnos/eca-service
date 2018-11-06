@@ -24,11 +24,8 @@ public class SortUtils {
         if (StringUtils.isEmpty(field)) {
             throw new IllegalArgumentException("Sort field isn't specified!");
         } else {
-            if (ascending) {
-                return Sort.by(Sort.Order.asc(field));
-            } else {
-                return Sort.by(Sort.Order.desc(field));
-            }
+            Sort sort = Sort.by(field);
+            return ascending ? sort.ascending() : sort.descending();
         }
     }
 }

@@ -71,8 +71,8 @@ public class EvaluationLogMapperTest {
         assertThat(evaluationLogDto.getEvaluationMethod()).isEqualTo(evaluationLog.getEvaluationMethod().name());
         assertThat(evaluationLogDto.getEvaluationStatus()).isEqualTo(evaluationLog.getEvaluationStatus().name());
         assertThat(evaluationLogDto.getRequestId()).isEqualTo(evaluationLog.getRequestId());
-        assertThat(evaluationLogDto.getInputOptionsMap()).isNotNull();
-        assertThat(evaluationLogDto.getInputOptionsMap().size()).isOne();
+        assertThat(evaluationLogDto.getInputOptions()).isNotNull();
+        assertThat(evaluationLogDto.getInputOptions().size()).isOne();
         assertThat(evaluationLogDto.getNumFolds()).isNotNull();
         assertThat(evaluationLogDto.getNumTests()).isNotNull();
         assertThat(evaluationLogDto.getSeed()).isNull();

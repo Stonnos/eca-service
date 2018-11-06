@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Experiment dto model.
@@ -84,7 +84,7 @@ public class EvaluationLogDto {
      * Classifier input options map
      */
     @ApiModelProperty(notes = "Classifier input options map")
-    private Map<String, String> inputOptionsMap;
+    private List<InputOptionDto> inputOptions;
 
     /**
      * Training data info
