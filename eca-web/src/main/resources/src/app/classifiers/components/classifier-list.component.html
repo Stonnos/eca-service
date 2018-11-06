@@ -44,92 +44,92 @@
           </tr>
         </ng-template>
       </p-table>
-
-      <p-overlayPanel #infoPanel class="info-overlay">
-        <p-panel *ngIf="selectedEvaluationLog && selectedColumn" class="info-panel">
-          <ng-container [ngSwitch]="selectedColumn">
-            <ng-container *ngSwitchCase="'classifierName'">
-              <ng-container *ngFor="let option of selectedEvaluationLog.inputOptions">
-                <div class="ui-g">
-                  <div class="ui-g-6 text-right text-bold text-wrap">
-                    {{ option.optionName }}
-                  </div>
-                  <div class="ui-g-6 text-left text-wrap">
-                    {{ option.optionValue }}
-                  </div>
-                </div>
-              </ng-container>
-            </ng-container>
-            <ng-container *ngSwitchCase="'evaluationMethod'">
-              <div class="ui-g" *ngIf="selectedEvaluationLog.numFolds">
-                <div class="ui-g-6 text-right text-bold text-wrap">
-                  Number of folds:
-                </div>
-                <div class="ui-g-6 text-left text-wrap">
-                  {{ selectedEvaluationLog.numFolds }}
-                </div>
-              </div>
-
-              <div class="ui-g" *ngIf="selectedEvaluationLog.numTests">
-                <div class="ui-g-6 text-right text-bold text-wrap">
-                  Number of tests:
-                </div>
-                <div class="ui-g-6 text-left text-wrap">
-                  {{ selectedEvaluationLog.numTests }}
-                </div>
-              </div>
-
-              <div class="ui-g" *ngIf="selectedEvaluationLog.seed">
-                <div class="ui-g-6 text-right text-bold text-wrap">
-                  Seed:
-                </div>
-                <div class="ui-g-6 text-left text-wrap">
-                  {{ selectedEvaluationLog.seed }}
-                </div>
-              </div>
-            </ng-container>
-            <ng-container *ngSwitchCase="instancesInfoColumn">
-              <div class="ui-g">
-                <div class="ui-g-6 text-right text-bold text-wrap">
-                  Instances number:
-                </div>
-                <div class="ui-g-6 text-left text-wrap">
-                  {{ selectedEvaluationLog.instancesInfo.numInstances }}
-                </div>
-              </div>
-
-              <div class="ui-g">
-                <div class="ui-g-6 text-right text-bold text-wrap">
-                  Attributes number:
-                </div>
-                <div class="ui-g-6 text-left text-wrap">
-                  {{ selectedEvaluationLog.instancesInfo.numAttributes }}
-                </div>
-              </div>
-
-              <div class="ui-g">
-                <div class="ui-g-6 text-right text-bold text-wrap">
-                  Classes number:
-                </div>
-                <div class="ui-g-6 text-left text-wrap">
-                  {{ selectedEvaluationLog.instancesInfo.numClasses }}
-                </div>
-              </div>
-
-              <div class="ui-g">
-                <div class="ui-g-6 text-right text-bold text-wrap">
-                  Class name:
-                </div>
-                <div class="ui-g-6 text-left text-wrap">
-                  {{ selectedEvaluationLog.instancesInfo.className }}
-                </div>
-              </div>
-            </ng-container>
-            <ng-container *ngSwitchDefault>
-            </ng-container>
-          </ng-container>
-        </p-panel>
-      </p-overlayPanel>
     </div>
   </div>
+
+  <p-overlayPanel #infoPanel [showCloseIcon]="true">
+    <p-panel *ngIf="selectedEvaluationLog && selectedColumn" class="info-panel">
+      <ng-container [ngSwitch]="selectedColumn">
+        <ng-container *ngSwitchCase="'classifierName'">
+          <ng-container *ngFor="let option of selectedEvaluationLog.inputOptions">
+            <div class="ui-g">
+              <div class="ui-g-6 text-right text-bold text-wrap">
+                {{ option.optionName }}
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ option.optionValue }}
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngSwitchCase="'evaluationMethod'">
+          <div class="ui-g" *ngIf="selectedEvaluationLog.numFolds">
+            <div class="ui-g-6 text-right text-bold text-wrap">
+              Number of folds:
+            </div>
+            <div class="ui-g-6 text-left text-wrap">
+              {{ selectedEvaluationLog.numFolds }}
+            </div>
+          </div>
+
+          <div class="ui-g" *ngIf="selectedEvaluationLog.numTests">
+            <div class="ui-g-6 text-right text-bold text-wrap">
+              Number of tests:
+            </div>
+            <div class="ui-g-6 text-left text-wrap">
+              {{ selectedEvaluationLog.numTests }}
+            </div>
+          </div>
+
+          <div class="ui-g" *ngIf="selectedEvaluationLog.seed">
+            <div class="ui-g-6 text-right text-bold text-wrap">
+              Seed:
+            </div>
+            <div class="ui-g-6 text-left text-wrap">
+              {{ selectedEvaluationLog.seed }}
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="instancesInfoColumn">
+          <div class="ui-g">
+            <div class="ui-g-6 text-right text-bold text-wrap">
+              Instances number:
+            </div>
+            <div class="ui-g-6 text-left text-wrap">
+              {{ selectedEvaluationLog.instancesInfo.numInstances }}
+            </div>
+          </div>
+
+          <div class="ui-g">
+            <div class="ui-g-6 text-right text-bold text-wrap">
+              Attributes number:
+            </div>
+            <div class="ui-g-6 text-left text-wrap">
+              {{ selectedEvaluationLog.instancesInfo.numAttributes }}
+            </div>
+          </div>
+
+          <div class="ui-g">
+            <div class="ui-g-6 text-right text-bold text-wrap">
+              Classes number:
+            </div>
+            <div class="ui-g-6 text-left text-wrap">
+              {{ selectedEvaluationLog.instancesInfo.numClasses }}
+            </div>
+          </div>
+
+          <div class="ui-g">
+            <div class="ui-g-6 text-right text-bold text-wrap">
+              Class name:
+            </div>
+            <div class="ui-g-6 text-left text-wrap">
+              {{ selectedEvaluationLog.instancesInfo.className }}
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+        </ng-container>
+      </ng-container>
+    </p-panel>
+  </p-overlayPanel>
 </div>
