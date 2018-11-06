@@ -1,5 +1,6 @@
 package com.ecaservice.mapping;
 
+import com.ecaservice.model.options.DecisionTreeOptions;
 import com.ecaservice.web.dto.ClassifierOptionsDto;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import org.junit.Test;
@@ -30,10 +31,12 @@ public class ClassifierOptionsDatabaseModelMapperTest {
         classifierOptionsDatabaseModel.setConfig("config");
         classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
         classifierOptionsDatabaseModel.setVersion(0);
+        classifierOptionsDatabaseModel.setOptionsName(DecisionTreeOptions.class.getSimpleName());
         ClassifierOptionsDto classifierOptionsDto =
                 classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModel);
         assertThat(classifierOptionsDto.getConfig()).isEqualTo(classifierOptionsDatabaseModel.getConfig());
         assertThat(classifierOptionsDto.getCreationDate()).isEqualTo(classifierOptionsDatabaseModel.getCreationDate());
         assertThat(classifierOptionsDto.getVersion()).isEqualTo(classifierOptionsDatabaseModel.getVersion());
+        assertThat(classifierOptionsDto.getOptionsName()).isEqualTo(classifierOptionsDatabaseModel.getOptionsName());
     }
 }

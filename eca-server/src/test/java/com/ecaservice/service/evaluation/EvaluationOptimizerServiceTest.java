@@ -22,6 +22,7 @@ import com.ecaservice.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.mapping.EvaluationRequestMapper;
 import com.ecaservice.mapping.EvaluationRequestMapperImpl;
 import com.ecaservice.mapping.InstancesConverter;
+import com.ecaservice.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
@@ -85,7 +86,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({ExecutorConfiguration.class, ClassifierOptionsMapperConfiguration.class,
-        CrossValidationConfig.class, EvaluationRequestService.class,
+        CrossValidationConfig.class, EvaluationRequestService.class, InstancesInfoMapperImpl.class,
         ClassifierOptionsRequestModelMapperImpl.class, ClassifierReportMapperImpl.class,
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class,
         ErsConfig.class, ClassifierOptionsService.class, EvaluationLogMapperImpl.class,

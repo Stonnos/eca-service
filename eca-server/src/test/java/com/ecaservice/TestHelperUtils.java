@@ -73,6 +73,11 @@ public class TestHelperUtils {
     private static final double MOMENTUM = 0.23d;
     private static final double MIN_ERROR_THRESHOLD = 0.0d;
     private static final double MAX_ERROR_THRESHOLD = 0.5d;
+    private static final String RELATION_NAME = "Relation";
+    private static final String CLASS_NAME = "Class";
+    private static final int NUM_INSTANCES = 100;
+    private static final int NUM_ATTRIBUTES = 10;
+    private static final int NUM_CLASSES = 2;
 
     /**
      * Generates the test data set.
@@ -240,9 +245,25 @@ public class TestHelperUtils {
         evaluationLog.setCreationDate(LocalDateTime.now());
         evaluationLog.setStartDate(LocalDateTime.now());
         evaluationLog.setEndDate(LocalDateTime.now());
+        evaluationLog.setClassifierName(CART.class.getSimpleName());
         evaluationLog.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         evaluationLog.setEvaluationStatus(EvaluationStatus.FINISHED);
         return evaluationLog;
+    }
+
+    /**
+     * Creates instances info.
+     *
+     * @return instances info
+     */
+    public static InstancesInfo createInstancesInfo() {
+        InstancesInfo instancesInfo = new InstancesInfo();
+        instancesInfo.setRelationName(RELATION_NAME);
+        instancesInfo.setClassName(CLASS_NAME);
+        instancesInfo.setNumInstances(NUM_INSTANCES);
+        instancesInfo.setNumAttributes(NUM_ATTRIBUTES);
+        instancesInfo.setNumClasses(NUM_CLASSES);
+        return instancesInfo;
     }
 
     /**

@@ -19,6 +19,9 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.MapKeyEnumerated;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
@@ -31,6 +34,11 @@ import java.util.Map;
  */
 @Data
 @Entity
+@NamedEntityGraph(name = "evaluationLogs",
+        attributeNodes = {
+            @NamedAttributeNode(value = "inputOptionsMap"),
+            @NamedAttributeNode(value = "evaluationOptionsMap")
+        })
 @Table(name = "evaluation_log",
         indexes = {
                 @Index(name = "idx_request_id", columnList = "request_id"),

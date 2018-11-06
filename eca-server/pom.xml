@@ -112,7 +112,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <jdbc.url>jdbc:postgresql://localhost:5432/eca-test</jdbc.url>
+                <jdbc.url>jdbc:postgresql://localhost:5432/eca</jdbc.url>
                 <jdbc.user>postgres</jdbc.user>
                 <jdbc.password>postgres</jdbc.password>
                 <jdbc.driver>org.postgresql.Driver</jdbc.driver>

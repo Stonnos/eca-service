@@ -4,6 +4,7 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.evaluation.EvaluationMethod;
+import com.ecaservice.web.dto.EvaluationLogDto;
 import eca.metrics.KNearestNeighbours;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import(EvaluationLogMapperImpl.class)
+@Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class})
 public class EvaluationLogMapperTest {
 
     @Inject
@@ -51,6 +53,30 @@ public class EvaluationLogMapperTest {
         assertThat(evaluationLog.getInstancesInfo().getNumInstances().intValue()).isEqualTo(
                 evaluationRequest.getData().numInstances());
         assertOptions(evaluationLog, evaluationRequest);
+    }
+
+    @Test
+    public void testMapToEvaluationLogDto() {
+        EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
+        evaluationLog.setEvaluationOptionsMap(
+                TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
+        evaluationLog.setInputOptionsMap(Collections.singletonMap("Key", "Value"));
+        evaluationLog.setInstancesInfo(TestHelperUtils.createInstancesInfo());
+        EvaluationLogDto evaluationLogDto = evaluationLogMapper.map(evaluationLog);
+        assertThat(evaluationLogDto).isNotNull();
+        assertThat(evaluationLogDto.getClassifierName()).isEqualTo(evaluationLog.getClassifierName());
+        assertThat(evaluationLogDto.getCreationDate()).isEqualTo(evaluationLog.getCreationDate());
+        assertThat(evaluationLogDto.getStartDate()).isEqualTo(evaluationLog.getStartDate());
+        assertThat(evaluationLogDto.getEndDate()).isEqualTo(evaluationLog.getEndDate());
+        assertThat(evaluationLogDto.getEvaluationMethod()).isEqualTo(evaluationLog.getEvaluationMethod().name());
+        assertThat(evaluationLogDto.getEvaluationStatus()).isEqualTo(evaluationLog.getEvaluationStatus().name());
+        assertThat(evaluationLogDto.getRequestId()).isEqualTo(evaluationLog.getRequestId());
+        assertThat(evaluationLogDto.getInputOptionsMap()).isNotNull();
+        assertThat(evaluationLogDto.getInputOptionsMap().size()).isOne();
+        assertThat(evaluationLogDto.getNumFolds()).isNotNull();
+        assertThat(evaluationLogDto.getNumTests()).isNotNull();
+        assertThat(evaluationLogDto.getSeed()).isNull();
+        assertThat(evaluationLogDto.getInstancesInfo()).isNotNull();
     }
 
     private void assertOptions(EvaluationLog evaluationLog, EvaluationRequest request) {

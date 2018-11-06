@@ -17,9 +17,6 @@ import java.util.Map;
 @Data
 public class EvaluationLogDto {
 
-    @ApiModelProperty(notes = "Evaluation log id")
-    private Long id;
-
     /**
      * Request unique identifier
      */
@@ -69,16 +66,25 @@ public class EvaluationLogDto {
     private String evaluationMethod;
 
     /**
+     * Folds number for k * V cross - validation method
+     */
+    private Integer numFolds;
+
+    /**
+     * Tests number for k * V cross - validation method
+     */
+    private Integer numTests;
+
+    /**
+     * Seed value for k * V cross - validation method
+     */
+    private Integer seed;
+
+    /**
      * Classifier input options map
      */
     @ApiModelProperty(notes = "Classifier input options map")
     private Map<String, String> inputOptionsMap;
-
-    /**
-     * Evaluation options map
-     */
-    @ApiModelProperty(notes = "Evaluation options map")
-    private Map<String, String> evaluationOptionsMap;
 
     /**
      * Training data info
