@@ -80,7 +80,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
       { label: "TIMEOUT", value: "TIMEOUT" },
       { label: "ERROR", value: "ERROR" }
     ];
-    this.filters.push(new Filter("uuid", "Request UUID",
+    this.filters.push(new Filter("requestId", "Request UUID",
       "TEXT", "EQUALS", null));
     this.filters.push(new Filter("classifierName", "Classifier name",
       "TEXT", "LIKE", null));
