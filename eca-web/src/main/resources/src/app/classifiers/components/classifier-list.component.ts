@@ -8,6 +8,7 @@ import { BaseListComponent } from "../../lists/base-list.component";
 import { MessageService, SelectItem } from "primeng/api";
 import { ClassifiersService } from "../services/classifiers.service";
 import { Filter } from "../../filter/filter.model";
+import { OverlayPanel } from "primeng/primeng";
 
 @Component({
   selector: 'app-classifier-list',
@@ -16,7 +17,10 @@ import { Filter } from "../../filter/filter.model";
 })
 export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto> {
 
-  private instancesInfoColumn: string = "instancesInfo.relationName";
+  public instancesInfoColumn: string = "instancesInfo.relationName";
+
+  public selectedEvaluationLog: EvaluationLogDto;
+  public selectedColumn: string;
 
   public constructor(private classifiersService: ClassifiersService,
                      private messageService: MessageService) {
@@ -30,7 +34,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   public ngOnInit() {
   }
 
-  getNextPage(pageRequest: PageRequestDto) {
+  public getNextPage(pageRequest: PageRequestDto) {
     this.classifiersService.getEvaluations(pageRequest).subscribe((pageDto: PageDto<EvaluationLogDto>) => {
       this.items = pageDto.content;
       this.total = pageDto.totalCount;
@@ -42,7 +46,13 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   onLink(column: string, item: EvaluationLogDto) {
   }
 
-  getColumnValue(column: string, item: EvaluationLogDto) {
+  public onSelect(event, evaluationLog: EvaluationLogDto, column: string, overlayPanel: OverlayPanel) {
+    this.selectedEvaluationLog = evaluationLog;
+    this.selectedColumn = column;
+    overlayPanel.toggle(event);
+  }
+
+  public getColumnValue(column: string, item: EvaluationLogDto) {
     return column == this.instancesInfoColumn ? item.instancesInfo.relationName : item[column];
   }
 

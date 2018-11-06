@@ -16,3 +16,18 @@
     }
   }
 }
+
+.info-panel::ng-deep {
+
+  .ui-panel {
+    width: 450px;
+  }
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+.text-wrap {
+  word-wrap: break-word;
+}

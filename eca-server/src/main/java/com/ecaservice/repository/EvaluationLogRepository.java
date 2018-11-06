@@ -2,10 +2,6 @@ package com.ecaservice.repository;
 
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.evaluation.EvaluationStatus;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -28,14 +24,4 @@ public interface EvaluationLogRepository
      */
     EvaluationLog findByRequestIdAndEvaluationStatusIn(String requestId,
                                                        Collection<EvaluationStatus> evaluationStatuses);
-
-    /**
-     * Gets evaluation logs by specification.
-     *
-     * @param specification - specification object
-     * @param pageable      - pageable object
-     * @return evaluation logs page
-     */
-    @EntityGraph(value = "evaluationLogs", type = EntityGraph.EntityGraphType.FETCH)
-    Page<EvaluationLog> findAll(Specification<EvaluationLog> specification, Pageable pageable);
 }
