@@ -10,7 +10,7 @@ import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.model.projections.RequestStatusStatistics;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
-import com.ecaservice.specification.ExperimentFilter;
+import com.ecaservice.filter.ExperimentFilter;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.PageRequestDto;
 import eca.converters.model.ExperimentHistory;

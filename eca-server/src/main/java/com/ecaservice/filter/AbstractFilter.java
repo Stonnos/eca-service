@@ -1,4 +1,4 @@
-package com.ecaservice.specification;
+package com.ecaservice.filter;
 
 import com.ecaservice.web.dto.FilterRequestDto;
 import com.ecaservice.web.dto.MatchModeVisitor;

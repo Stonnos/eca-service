@@ -1,4 +1,4 @@
-package com.ecaservice.specification;
+package com.ecaservice.filter;
 
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.web.dto.FilterRequestDto;

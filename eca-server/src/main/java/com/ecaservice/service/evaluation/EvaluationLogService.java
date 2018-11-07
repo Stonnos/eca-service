@@ -4,7 +4,7 @@ import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.projections.RequestStatusStatistics;
 import com.ecaservice.repository.EvaluationLogRepository;
-import com.ecaservice.specification.EvaluationLogFilter;
+import com.ecaservice.filter.EvaluationLogFilter;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.PageRequestDto;
 import lombok.extern.slf4j.Slf4j;
