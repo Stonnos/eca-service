@@ -3,7 +3,7 @@ package com.ecaservice.mapping;
 import com.ecaservice.dto.EcaResponse;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.model.experiment.ExperimentStatus;
+import com.ecaservice.model.entity.RequestStatus;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -21,8 +21,8 @@ import java.util.Collection;
 @Mapper
 public abstract class EcaResponseMapper {
 
-    private static final Collection<ExperimentStatus> SUCCESS_STATUSES =
-            Arrays.asList(ExperimentStatus.NEW, ExperimentStatus.FINISHED);
+    private static final Collection<RequestStatus> SUCCESS_STATUSES =
+            Arrays.asList(RequestStatus.NEW, RequestStatus.FINISHED);
 
     /**
      * Maps experiment to eca response object.

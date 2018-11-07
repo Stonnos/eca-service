@@ -2,16 +2,37 @@ package com.ecaservice;
 
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.ExperimentRequest;
-import com.ecaservice.dto.evaluation.*;
-import com.ecaservice.model.entity.*;
+import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
+import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
+import com.ecaservice.dto.evaluation.ClassifierReport;
+import com.ecaservice.dto.evaluation.EvaluationMethodReport;
+import com.ecaservice.dto.evaluation.InputOptionsMap;
+import com.ecaservice.dto.evaluation.ResponseStatus;
+import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
+import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
+import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
+import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
+import com.ecaservice.model.entity.EvaluationLog;
+import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.model.entity.InstancesInfo;
+import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
-import com.ecaservice.model.evaluation.EvaluationStatus;
-import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
-import com.ecaservice.model.options.*;
+import com.ecaservice.model.options.AdaBoostOptions;
+import com.ecaservice.model.options.BackPropagationOptions;
+import com.ecaservice.model.options.ClassifierOptions;
+import com.ecaservice.model.options.DecisionTreeOptions;
+import com.ecaservice.model.options.ExtraTreesOptions;
+import com.ecaservice.model.options.HeterogeneousClassifierOptions;
+import com.ecaservice.model.options.J48Options;
+import com.ecaservice.model.options.KNearestNeighboursOptions;
+import com.ecaservice.model.options.NeuralNetworkOptions;
+import com.ecaservice.model.options.RandomForestsOptions;
+import com.ecaservice.model.options.RandomNetworkOptions;
+import com.ecaservice.model.options.StackingOptions;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.core.evaluation.EvaluationService;
@@ -36,7 +57,13 @@ import weka.core.Instances;
 import java.io.File;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Test data helper class.
@@ -156,7 +183,7 @@ public class TestHelperUtils {
      * @return created experiment
      */
     public static Experiment createExperiment(String uuid) {
-        return createExperiment(uuid, ExperimentStatus.NEW);
+        return createExperiment(uuid, RequestStatus.NEW);
     }
 
     /**
@@ -166,7 +193,7 @@ public class TestHelperUtils {
      * @param experimentStatus experiment status
      * @return created experiment
      */
-    public static Experiment createExperiment(String uuid, ExperimentStatus experimentStatus) {
+    public static Experiment createExperiment(String uuid, RequestStatus experimentStatus) {
         Experiment experiment = new Experiment();
         experiment.setFirstName(FIRST_NAME);
         experiment.setEmail(TEST_MAIL_RU);
@@ -188,7 +215,7 @@ public class TestHelperUtils {
      * @param sentDate         sent date
      * @return created experiment
      */
-    public static Experiment createSentExperiment(String uuid, ExperimentStatus experimentStatus,
+    public static Experiment createSentExperiment(String uuid, RequestStatus experimentStatus,
                                                   LocalDateTime sentDate) {
         Experiment experiment = createExperiment(uuid, experimentStatus);
         experiment.setSentDate(sentDate);
@@ -247,7 +274,7 @@ public class TestHelperUtils {
         evaluationLog.setEndDate(LocalDateTime.now());
         evaluationLog.setClassifierName(CART.class.getSimpleName());
         evaluationLog.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
-        evaluationLog.setEvaluationStatus(EvaluationStatus.FINISHED);
+        evaluationLog.setEvaluationStatus(RequestStatus.FINISHED);
         return evaluationLog;
     }
 

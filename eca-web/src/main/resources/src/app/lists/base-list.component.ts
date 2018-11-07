@@ -1,9 +1,9 @@
-import {LazyLoadEvent} from "primeng/api";
-import {FilterRequestDto, PageRequestDto} from "../../../../../../target/generated-sources/typescript/eca-web-dto";
-import {Filter} from "../filter/filter.model";
-import {DatePipe} from "@angular/common";
-import {Table} from "primeng/table";
-import {ViewChild} from "@angular/core";
+import { LazyLoadEvent } from "primeng/api";
+import { FilterRequestDto, PageRequestDto } from "../../../../../../target/generated-sources/typescript/eca-web-dto";
+import { Filter } from "../filter/filter.model";
+import { DatePipe } from "@angular/common";
+import { Table } from "primeng/table";
+import { ViewChild } from "@angular/core";
 
 export abstract class BaseListComponent<T> {
 
@@ -23,8 +23,6 @@ export abstract class BaseListComponent<T> {
   private dateFormat: string = "yyyy-MM-dd HH:mm:ss";
 
   public abstract getNextPage(pageRequest: PageRequestDto);
-
-  public abstract onLink(column: string, item: T);
 
   public onLazyLoad(event: LazyLoadEvent) {
     const page: number = Math.round(event.first / event.rows);

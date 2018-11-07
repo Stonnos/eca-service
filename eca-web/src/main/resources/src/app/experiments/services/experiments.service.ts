@@ -1,9 +1,9 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
-  ExperimentDto, ExperimentStatisticsDto, ExperimentTypeDto,
+  ExperimentDto, ExperimentTypeDto,
   PageDto,
-  PageRequestDto
+  PageRequestDto, RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 
@@ -40,11 +40,11 @@ export class ExperimentsService {
     return this.http.get<ExperimentTypeDto[]>(this.serviceUrl + '/experiment-types', { headers: headers });
   }
 
-  public getExperimentsStatistics(): Observable<ExperimentStatisticsDto> {
+  public getRequestStatusesStatistics(): Observable<RequestStatusStatisticsDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
     });
-    return this.http.get<ExperimentStatisticsDto>(this.serviceUrl + '/experiments-statistics', { headers: headers });
+    return this.http.get<RequestStatusStatisticsDto>(this.serviceUrl + '/experiment/request-statuses-statistics', { headers: headers });
   }
 
   public getExperimentResultsFile(uuid: string): Observable<Blob> {

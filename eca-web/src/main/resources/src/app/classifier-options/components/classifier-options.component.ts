@@ -38,10 +38,6 @@ export class ClassifierOptionsComponent extends BaseListComponent<ClassifierOpti
     });
   }
 
-  public onLink(column: string, classifierOptionsDto: ClassifierOptionsDto) {
-
-  }
-
   public onSelect(event, classifierOptionsDto: ClassifierOptionsDto, overlayPanel: OverlayPanel) {
     this.selectedOptions = classifierOptionsDto;
     overlayPanel.toggle(event);

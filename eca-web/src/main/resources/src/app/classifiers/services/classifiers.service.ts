@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import {
   EvaluationLogDto,
   PageDto,
-  PageRequestDto
+  PageRequestDto, RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 
@@ -31,5 +31,12 @@ export class ClassifiersService {
     });
     const options = { headers: headers, params: params };
     return this.http.get<PageDto<EvaluationLogDto>>(this.serviceUrl + '/evaluations', options);
+  }
+
+  public getRequestStatusesStatistics(): Observable<RequestStatusStatisticsDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+    });
+    return this.http.get<RequestStatusStatisticsDto>(this.serviceUrl + '/evaluation/request-statuses-statistics', { headers: headers });
   }
 }

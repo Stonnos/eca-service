@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  ExperimentDto, ExperimentStatisticsDto, ExperimentTypeDto, PageDto,
-  PageRequestDto
+  ExperimentDto, ExperimentTypeDto, PageDto,
+  PageRequestDto, RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ExperimentsService } from "../services/experiments.service";
 import { MessageService, SelectItem } from "primeng/api";
@@ -16,7 +16,7 @@ import { BaseListComponent } from "../../lists/base-list.component";
 })
 export class ExperimentListComponent extends BaseListComponent<ExperimentDto> implements OnInit {
 
-  private experimentStatistics: ExperimentStatisticsDto;
+  public requestStatusStatisticsDto: RequestStatusStatisticsDto;
 
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService) {
@@ -29,7 +29,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public ngOnInit() {
     this.addExperimentTypesFilter();
-    this.getExperimentsStatistics();
+    this.getRequestStatusesStatistics();
   }
 
   public getNextPage(pageRequest: PageRequestDto) {
@@ -41,14 +41,13 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     });
   }
 
-  public getExperimentsStatistics() {
-    this.experimentsService.getExperimentsStatistics().subscribe((experimentStatistics: ExperimentStatisticsDto) => {
-      this.experimentStatistics = experimentStatistics;
+  public getRequestStatusesStatistics() {
+    this.experimentsService.getRequestStatusesStatistics().subscribe((requestStatusStatisticsDto: RequestStatusStatisticsDto) => {
+      this.requestStatusStatisticsDto = requestStatusStatisticsDto;
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
     });
   }
-
 
   public onLink(column: string, experiment: ExperimentDto) {
     switch (column) {
@@ -67,26 +66,6 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
         });
         break;
     }
-  }
-
-  public getNewExperimentsCount(): number {
-    return this.experimentStatistics && this.experimentStatistics.newExperimentsCount;
-  }
-
-  public getFinishedExperimentsCount(): number {
-    return this.experimentStatistics && this.experimentStatistics.finishedExperimentsCount;
-  }
-
-  public getTimeoutExperimentsCount(): number {
-    return this.experimentStatistics && this.experimentStatistics.timeoutExperimentsCount;
-  }
-
-  public getErrorExperimentsCount(): number {
-    return this.experimentStatistics && this.experimentStatistics.errorExperimentsCount;
-  }
-
-  public getExperimentsTotalCount(): number {
-    return this.experimentStatistics && this.experimentStatistics.totalCount;
   }
 
   private initColumns() {

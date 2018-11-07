@@ -1,0 +1,44 @@
+<div class="ui-g ui-fluid">
+  <div class="ui-g-12 ui-md-2 ui-md-offset-1">
+    <p-panel class="info-panel text-center" [showHeader]="false">
+      <p class="attr">Total requests</p>
+      <p class="value">{{ getTotalRequestsCount() }}</p>
+    </p-panel>
+  </div>
+
+  <div class="ui-g-12 ui-md-2">
+    <div class="panel info-panel">
+      <p-panel class="info-panel text-center" [showHeader]="false">
+        <p class="attr">New requests</p>
+        <p class="value">{{ getNewRequestsCount() }}</p>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12 ui-md-2">
+    <div class="panel info-panel">
+      <p-panel class="info-panel text-center" [showHeader]="false">
+        <p class="attr">Successfully completed</p>
+        <p class="value">{{ getFinishedRequestsCount() }}</p>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12 ui-md-2">
+    <div class="panel info-panel">
+      <p-panel class="info-panel text-center" [showHeader]="false">
+        <p class="attr">Completed with error</p>
+        <p class="value">{{ getErrorRequestsCount() }}</p>
+      </p-panel>
+    </div>
+  </div>
+
+  <div class="ui-g-12 ui-md-2">
+    <div class="panel info-panel">
+      <p-panel class="info-panel text-center" [showHeader]="false">
+        <p class="attr">Completed with timeout</p>
+        <p class="value">{{ getTimeoutRequestsCount() }}</p>
+      </p-panel>
+    </div>
+  </div>
+</div>

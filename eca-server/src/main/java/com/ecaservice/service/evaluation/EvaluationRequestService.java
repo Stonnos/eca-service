@@ -7,8 +7,8 @@ import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.EvaluationLog;
+import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.evaluation.ClassificationResult;
-import com.ecaservice.model.evaluation.EvaluationStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -68,7 +68,7 @@ public class EvaluationRequestService {
         Assert.notNull(request, "Evaluation request is not specified!");
 
         EvaluationLog evaluationLog = evaluationLogMapper.map(request);
-        evaluationLog.setEvaluationStatus(EvaluationStatus.NEW);
+        evaluationLog.setEvaluationStatus(RequestStatus.NEW);
         evaluationLog.setRequestId(UUID.randomUUID().toString());
         evaluationLog.setCreationDate(LocalDateTime.now());
         evaluationLog.setStartDate(LocalDateTime.now());
@@ -84,7 +84,7 @@ public class EvaluationRequestService {
                     crossValidationConfig.getTimeout(), TimeUnit.MINUTES);
 
             if (classificationResult.isSuccess()) {
-                evaluationLog.setEvaluationStatus(EvaluationStatus.FINISHED);
+                evaluationLog.setEvaluationStatus(RequestStatus.FINISHED);
                 evaluationResponse.setEvaluationResults(classificationResult.getEvaluationResults());
                 evaluationResponse.setStatus(TechnicalStatus.SUCCESS);
             } else {
@@ -92,7 +92,7 @@ public class EvaluationRequestService {
             }
         } catch (TimeoutException ex) {
             log.warn("There was a timeout for evaluation with id = {}.", evaluationLog.getId());
-            evaluationLog.setEvaluationStatus(EvaluationStatus.TIMEOUT);
+            evaluationLog.setEvaluationStatus(RequestStatus.TIMEOUT);
             evaluationResponse.setStatus(TechnicalStatus.TIMEOUT);
         } catch (Exception ex) {
             log.error("There was an error occurred for evaluation with id = {}: {}", evaluationLog.getId(), ex);
@@ -105,7 +105,7 @@ public class EvaluationRequestService {
     }
 
     private void handleError(EvaluationLog evaluationLog, EvaluationResponse evaluationResponse, String errorMessage) {
-        evaluationLog.setEvaluationStatus(EvaluationStatus.ERROR);
+        evaluationLog.setEvaluationStatus(RequestStatus.ERROR);
         evaluationLog.setErrorMessage(errorMessage);
         evaluationResponse.setStatus(TechnicalStatus.ERROR);
         evaluationResponse.setErrorMessage(errorMessage);

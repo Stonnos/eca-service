@@ -1,18 +1,18 @@
-package com.ecaservice.model.experiment;
+package com.ecaservice.model.entity;
 
 /**
- * Experiment status enum.
+ * Request status enum.
  *
  * @author Roman Batygin
  */
-public enum ExperimentStatus {
+public enum RequestStatus {
 
     /**
      * New status
      */
     NEW {
         @Override
-        public <T, P> T handle(ExperimentStatusVisitor<T, P> visitor, P parameter) {
+        public <T, P> T handle(RequestStatusVisitor<T, P> visitor, P parameter) {
             return visitor.caseNew(parameter);
         }
     },
@@ -22,7 +22,7 @@ public enum ExperimentStatus {
      */
     FINISHED {
         @Override
-        public <T, P> T handle(ExperimentStatusVisitor<T, P> visitor, P parameter) {
+        public <T, P> T handle(RequestStatusVisitor<T, P> visitor, P parameter) {
             return visitor.caseFinished(parameter);
         }
     },
@@ -32,7 +32,7 @@ public enum ExperimentStatus {
      */
     TIMEOUT {
         @Override
-        public <T, P> T handle(ExperimentStatusVisitor<T, P> visitor, P parameter) {
+        public <T, P> T handle(RequestStatusVisitor<T, P> visitor, P parameter) {
             return visitor.caseTimeout(parameter);
         }
     },
@@ -42,7 +42,7 @@ public enum ExperimentStatus {
      */
     ERROR {
         @Override
-        public <T, P> T handle(ExperimentStatusVisitor<T, P> visitor, P parameter) {
+        public <T, P> T handle(RequestStatusVisitor<T, P> visitor, P parameter) {
             return visitor.caseError(parameter);
         }
     };
@@ -50,11 +50,11 @@ public enum ExperimentStatus {
     /**
      * Visitor pattern common method.
      *
-     * @param visitor   {@link ExperimentStatusVisitor} object
-     * @param parameter param
+     * @param visitor   - {@link RequestStatusVisitor} object
+     * @param parameter - param object
      * @param <T>       - result generic type
      * @param <P>       - param generic type
      * @return result generic class
      */
-    public abstract <T, P> T handle(ExperimentStatusVisitor<T, P> visitor, P parameter);
+    public abstract <T, P> T handle(RequestStatusVisitor<T, P> visitor, P parameter);
 }

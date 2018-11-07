@@ -3,7 +3,7 @@ package com.ecaservice.service.experiment.visitor;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.model.experiment.ExperimentStatus;
+import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.service.experiment.dictionary.TemplateVariablesDictionary;
 import org.junit.Before;
@@ -44,7 +44,7 @@ public class EmailTemplateVisitorTest {
     @Test
     public void testNewStatusContext() {
         Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID);
-        experiment.setExperimentStatus(ExperimentStatus.NEW);
+        experiment.setExperimentStatus(RequestStatus.NEW);
         Context context = experiment.getExperimentStatus().handle(emailTemplateVisitor, experiment);
         assertContext(context, experiment);
         assertThat(context.getVariable(TemplateVariablesDictionary.EMAIL_KEY).toString()).isEqualTo(
@@ -56,7 +56,7 @@ public class EmailTemplateVisitorTest {
     @Test
     public void testErrorStatusContext() {
         Experiment experiment = TestHelperUtils.createExperiment(null);
-        experiment.setExperimentStatus(ExperimentStatus.ERROR);
+        experiment.setExperimentStatus(RequestStatus.ERROR);
         Context context = experiment.getExperimentStatus().handle(emailTemplateVisitor, experiment);
         assertContext(context, experiment);
     }
@@ -64,7 +64,7 @@ public class EmailTemplateVisitorTest {
     @Test
     public void testTimeoutStatusContext() {
         Experiment experiment = TestHelperUtils.createExperiment(null);
-        experiment.setExperimentStatus(ExperimentStatus.TIMEOUT);
+        experiment.setExperimentStatus(RequestStatus.TIMEOUT);
         Context context = experiment.getExperimentStatus().handle(emailTemplateVisitor, experiment);
         assertContext(context, experiment);
         assertThat(Integer.valueOf(context.getVariable(TemplateVariablesDictionary.TIMEOUT_KEY).toString())).isEqualTo(
@@ -74,7 +74,7 @@ public class EmailTemplateVisitorTest {
     @Test
     public void testFinishedStatusContext() {
         Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID);
-        experiment.setExperimentStatus(ExperimentStatus.FINISHED);
+        experiment.setExperimentStatus(RequestStatus.FINISHED);
         Context context = experiment.getExperimentStatus().handle(emailTemplateVisitor, experiment);
         assertContext(context, experiment);
         String actualUrl = context.getVariable(TemplateVariablesDictionary.DOWNLOAD_URL_KEY).toString();

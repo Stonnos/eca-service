@@ -7,9 +7,11 @@ import com.ecaservice.model.InputData;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
+import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.model.options.ClassifierOptions;
+import com.ecaservice.web.dto.RequestStatusStatisticsDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.FileSystemResource;
@@ -187,5 +189,23 @@ public class Utils {
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData(ATTACHMENT, resource.getFilename());
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+    }
+
+    /**
+     * Creates request status statistics dto.
+     *
+     * @param statusStatisticsMap - request status statistics map
+     * @return request status statistics dto
+     */
+    public static RequestStatusStatisticsDto createRequestStatusesStatistics(
+            Map<RequestStatus, Long> statusStatisticsMap) {
+        RequestStatusStatisticsDto requestStatusStatisticsDto = new RequestStatusStatisticsDto();
+        requestStatusStatisticsDto.setNewRequestsCount(statusStatisticsMap.get(RequestStatus.NEW));
+        requestStatusStatisticsDto.setFinishedRequestsCount(statusStatisticsMap.get(RequestStatus.FINISHED));
+        requestStatusStatisticsDto.setTimeoutRequestsCount(statusStatisticsMap.get(RequestStatus.TIMEOUT));
+        requestStatusStatisticsDto.setErrorRequestsCount(statusStatisticsMap.get(RequestStatus.ERROR));
+        requestStatusStatisticsDto.setTotalCount(
+                statusStatisticsMap.values().stream().mapToLong(Long::longValue).sum());
+        return requestStatusStatisticsDto;
     }
 }

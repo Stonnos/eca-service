@@ -7,7 +7,7 @@ import com.ecaservice.dto.mail.EmailResponse;
 import com.ecaservice.dto.mail.ResponseStatus;
 import com.ecaservice.model.entity.EmailRequestEntity;
 import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.model.experiment.ExperimentStatus;
+import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.EmailRequestRepository;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.experiment.visitor.EmailTemplateVisitor;
@@ -77,8 +77,8 @@ public class NotificationServiceTest {
         templateEngine = PowerMockito.mock(TemplateEngine.class);
         notificationService = new NotificationService(templateEngine, mailConfig, statusTemplateVisitor,
                 notificationWebServiceTemplate, emailRequestRepository);
-        EnumMap<ExperimentStatus, String> statusMap = new EnumMap<>(ExperimentStatus.class);
-        statusMap.put(ExperimentStatus.FINISHED, TEMPLATE_HTML);
+        EnumMap<RequestStatus, String> statusMap = new EnumMap<>(RequestStatus.class);
+        statusMap.put(RequestStatus.FINISHED, TEMPLATE_HTML);
         when(mailConfig.getMessageTemplatesMap()).thenReturn(statusMap);
         when(mailConfig.getEnabled()).thenReturn(true);
     }
@@ -113,7 +113,7 @@ public class NotificationServiceTest {
 
     private Experiment createAndSaveExperiment() {
         Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID);
-        experiment.setExperimentStatus(ExperimentStatus.FINISHED);
+        experiment.setExperimentStatus(RequestStatus.FINISHED);
         experimentRepository.save(experiment);
         return experiment;
     }

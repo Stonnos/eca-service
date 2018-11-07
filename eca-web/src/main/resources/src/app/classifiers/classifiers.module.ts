@@ -5,13 +5,15 @@ import { ClassifierListComponent } from "./components/classifier-list.component"
 import { UiComponentsModule } from "../ui-components.module";
 import { ClassifiersService } from "./services/classifiers.service";
 import { FilterModule } from "../filter/filter.module";
+import { RequestStatusesStatisticsModule } from "../request-statuses-statistics/request-statuses-statistics.module";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     UiComponentsModule,
-    FilterModule
+    FilterModule,
+    RequestStatusesStatisticsModule
   ],
   declarations: [
     ClassifierListComponent

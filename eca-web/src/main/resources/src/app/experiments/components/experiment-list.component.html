@@ -18,51 +18,9 @@
         (onLazyLoad)="onLazyLoad($event)">
 
         <ng-template pTemplate="caption">
-          <div class="ui-g ui-fluid">
-            <div class="ui-g-12 ui-md-2 ui-md-offset-1">
-              <p-panel class="info-panel text-center" [showHeader]="false">
-                <p class="attr">Total experiments</p>
-                <p class="value">{{ getExperimentsTotalCount() }}</p>
-              </p-panel>
-            </div>
-
-            <div class="ui-g-12 ui-md-2">
-              <div class="panel info-panel">
-                <p-panel class="info-panel text-center" [showHeader]="false">
-                  <p class="attr">New experiments</p>
-                  <p class="value">{{ getNewExperimentsCount() }}</p>
-                </p-panel>
-              </div>
-            </div>
-
-            <div class="ui-g-12 ui-md-2">
-              <div class="panel info-panel">
-                <p-panel class="info-panel text-center" [showHeader]="false">
-                  <p class="attr">Successfully completed</p>
-                  <p class="value">{{ getFinishedExperimentsCount() }}</p>
-                </p-panel>
-              </div>
-            </div>
-
-            <div class="ui-g-12 ui-md-2">
-              <div class="panel info-panel">
-                <p-panel class="info-panel text-center" [showHeader]="false">
-                  <p class="attr">Completed with error</p>
-                  <p class="value">{{ getErrorExperimentsCount() }}</p>
-                </p-panel>
-              </div>
-            </div>
-
-            <div class="ui-g-12 ui-md-2">
-              <div class="panel info-panel">
-                <p-panel class="info-panel text-center" [showHeader]="false">
-                  <p class="attr">Completed with timeout</p>
-                  <p class="value">{{ getTimeoutExperimentsCount() }}</p>
-                </p-panel>
-              </div>
-            </div>
-
-          </div>
+          <app-request-statuses-statistics
+            [requestStatusStatisticsDto]="requestStatusStatisticsDto">
+          </app-request-statuses-statistics>
         </ng-template>
 
         <ng-template pTemplate="header">

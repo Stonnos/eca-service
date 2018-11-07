@@ -5,8 +5,9 @@ import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.exception.ExperimentException;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.model.experiment.ExperimentStatus;
+import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.InitializationParams;
+import com.ecaservice.model.projections.RequestStatusStatistics;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.specification.Filter;
@@ -25,12 +26,15 @@ import weka.core.Instances;
 import javax.inject.Inject;
 import java.io.File;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 /**
  * Experiment service.
@@ -82,7 +86,7 @@ public class ExperimentService {
     public Experiment createExperiment(ExperimentRequest experimentRequest) {
         Experiment experiment = experimentMapper.map(experimentRequest);
         try {
-            experiment.setExperimentStatus(ExperimentStatus.NEW);
+            experiment.setExperimentStatus(RequestStatus.NEW);
             experiment.setUuid(UUID.randomUUID().toString());
             experiment.setCreationDate(LocalDateTime.now());
             File dataFile = new File(experimentConfig.getData().getStoragePath(),
@@ -91,7 +95,7 @@ public class ExperimentService {
             experiment.setTrainingDataAbsolutePath(dataFile.getAbsolutePath());
         } catch (Exception ex) {
             log.error(ex.getMessage());
-            experiment.setExperimentStatus(ExperimentStatus.ERROR);
+            experiment.setExperimentStatus(RequestStatus.ERROR);
             experiment.setErrorMessage(ex.getMessage());
         } finally {
             experimentRepository.save(experiment);
@@ -135,16 +139,16 @@ public class ExperimentService {
             stopWatch.stop();
 
             experiment.setExperimentAbsolutePath(experimentFile.getAbsolutePath());
-            experiment.setExperimentStatus(ExperimentStatus.FINISHED);
+            experiment.setExperimentStatus(RequestStatus.FINISHED);
             log.info("Experiment {} has been successfully finished!", experiment.getId());
             log.info(stopWatch.prettyPrint());
             return experimentHistory;
         } catch (TimeoutException ex) {
             log.warn("There was a timeout for experiment with id = {}.", experiment.getId());
-            experiment.setExperimentStatus(ExperimentStatus.TIMEOUT);
+            experiment.setExperimentStatus(RequestStatus.TIMEOUT);
         } catch (Exception ex) {
             log.error("There was an error occurred for experiment with id = {}: {}", experiment.getId(), ex);
-            experiment.setExperimentStatus(ExperimentStatus.ERROR);
+            experiment.setExperimentStatus(RequestStatus.ERROR);
             experiment.setErrorMessage(ex.getMessage());
         } finally {
             experiment.setEndDate(LocalDateTime.now());
@@ -161,7 +165,7 @@ public class ExperimentService {
      */
     public File findExperimentFileByUuid(String uuid) {
         Experiment experiment = experimentRepository.findByUuidAndExperimentStatusIn(uuid,
-                Collections.singletonList(ExperimentStatus.FINISHED));
+                Collections.singletonList(RequestStatus.FINISHED));
         if (Optional.ofNullable(experiment).map(Experiment::getExperimentAbsolutePath).isPresent()) {
             return new File(experiment.getExperimentAbsolutePath());
         } else {
@@ -213,5 +217,21 @@ public class ExperimentService {
         Filter<Experiment> filter = new Filter<>(Experiment.class, pageRequestDto.getFilters());
         return experimentRepository.findAll(filter,
                 PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort));
+    }
+
+    /**
+     * Calculates requests status counting statistics.
+     *
+     * @return requests status counting statistics list
+     */
+    public Map<RequestStatus, Long> getRequestStatusesStatistics() {
+        Map<RequestStatus, Long> requestStatusesMap =
+                experimentRepository.getRequestStatusesStatistics().stream().collect(
+                        Collectors.toMap(RequestStatusStatistics::getRequestStatus,
+                                RequestStatusStatistics::getRequestsCount));
+        Arrays.stream(RequestStatus.values()).filter(
+                requestStatus -> !requestStatusesMap.containsKey(requestStatus)).forEach(
+                requestStatus -> requestStatusesMap.put(requestStatus, 0L));
+        return requestStatusesMap;
     }
 }

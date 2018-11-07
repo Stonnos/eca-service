@@ -4,7 +4,7 @@ import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsRequest;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
-import com.ecaservice.model.experiment.ExperimentStatus;
+import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.PageableCallback;
 import com.ecaservice.service.ers.ErsRequestService;
@@ -73,7 +73,7 @@ public class ExperimentScheduler {
             public void perform(List<Experiment> experiments) {
                 experiments.forEach(experiment -> {
                     ExperimentHistory experimentHistory = experimentService.processExperiment(experiment);
-                    if (ExperimentStatus.FINISHED.equals(experiment.getExperimentStatus())) {
+                    if (RequestStatus.FINISHED.equals(experiment.getExperimentStatus())) {
                         List<EvaluationResults> evaluationResults = experimentHistory.getExperiment();
                         int resultsSize = Integer.min(evaluationResults.size(), experimentConfig.getResultSizeToSend());
                         evaluationResults.stream().limit(resultsSize).forEach(results -> {
@@ -88,7 +88,7 @@ public class ExperimentScheduler {
 
             @Override
             public Page<Experiment> findNextPage(Pageable pageable) {
-                return experimentRepository.findNotSentExperiments(Collections.singletonList(ExperimentStatus.NEW),
+                return experimentRepository.findNotSentExperiments(Collections.singletonList(RequestStatus.NEW),
                         pageable);
             }
         });
@@ -119,7 +119,7 @@ public class ExperimentScheduler {
             @Override
             public Page<Experiment> findNextPage(Pageable pageable) {
                 return experimentRepository.findNotSentExperiments(
-                        Arrays.asList(ExperimentStatus.FINISHED, ExperimentStatus.ERROR, ExperimentStatus.TIMEOUT),
+                        Arrays.asList(RequestStatus.FINISHED, RequestStatus.ERROR, RequestStatus.TIMEOUT),
                         pageable);
             }
         });

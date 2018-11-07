@@ -1,7 +1,8 @@
 package com.ecaservice.repository;
 
 import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.model.experiment.ExperimentStatus;
+import com.ecaservice.model.entity.RequestStatus;
+import com.ecaservice.model.projections.RequestStatusStatistics;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Implements repository that manages with {@link Experiment} entities.
@@ -26,7 +28,7 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
      * @param experimentStatuses - experiment statuses
      * @return experiment entity
      */
-    Experiment findByUuidAndExperimentStatusIn(String uuid, Collection<ExperimentStatus> experimentStatuses);
+    Experiment findByUuidAndExperimentStatusIn(String uuid, Collection<RequestStatus> experimentStatuses);
 
     /**
      * Finds experiment by uuid.
@@ -39,12 +41,12 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
     /**
      * Finds not sent experiments by statuses
      *
-     * @param statuses - {@link ExperimentStatus} collection
+     * @param statuses - {@link RequestStatus} collection
      * @param pageable - {@link Pageable} object
      * @return experiments list
      */
     @Query("select exp from Experiment exp where exp.experimentStatus in (:statuses) and exp.sentDate is null order by exp.creationDate")
-    Page<Experiment> findNotSentExperiments(@Param("statuses") Collection<ExperimentStatus> statuses,
+    Page<Experiment> findNotSentExperiments(@Param("statuses") Collection<RequestStatus> statuses,
                                             Pageable pageable);
 
     /**
@@ -59,10 +61,11 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
     Page<Experiment> findNotDeletedExperiments(@Param("dateTime") LocalDateTime dateTime, Pageable pageable);
 
     /**
-     * Calculates experiments count with specified status.
+     * Calculates requests status counting statistics.
      *
-     * @param experimentStatus - experiment status
-     * @return experiments count
+     * @return requests status counting statistics list
      */
-    long countByExperimentStatus(ExperimentStatus experimentStatus);
+    @Query("select e.experimentStatus as requestStatus, count(e.experimentStatus) as requestsCount from " +
+            "Experiment e group by e.experimentStatus")
+    List<RequestStatusStatistics> getRequestStatusesStatistics();
 }

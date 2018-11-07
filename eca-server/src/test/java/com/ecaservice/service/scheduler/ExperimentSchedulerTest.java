@@ -3,7 +3,7 @@ package com.ecaservice.service.scheduler;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.model.experiment.ExperimentStatus;
+import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.EmailRequestRepository;
 import com.ecaservice.repository.ErsRequestRepository;
 import com.ecaservice.repository.ExperimentRepository;
@@ -84,9 +84,9 @@ public class ExperimentSchedulerTest extends AbstractJpaTest {
     @Test
     public void testSentExperiments() {
         List<Experiment> experiments = new ArrayList<>();
-        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), ExperimentStatus.FINISHED));
-        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), ExperimentStatus.ERROR));
-        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), ExperimentStatus.TIMEOUT));
+        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
+        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
+        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT));
         experimentRepository.saveAll(experiments);
         experimentScheduler.processRequestsToSent();
         verify(notificationService, times(experiments.size())).notifyByEmail(any(Experiment.class));
@@ -95,15 +95,15 @@ public class ExperimentSchedulerTest extends AbstractJpaTest {
     @Test
     public void testRemoveExperiments() {
         List<Experiment> experiments = new ArrayList<>();
-        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), ExperimentStatus.FINISHED));
+        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
         Experiment experimentToRemove =
-                TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), ExperimentStatus.ERROR,
+                TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR,
                         LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage() + 1));
         experiments.add(experimentToRemove);
-        experiments.add(TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), ExperimentStatus.FINISHED,
+        experiments.add(TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED,
                 LocalDateTime.now()));
         Experiment experiment =
-                TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), ExperimentStatus.TIMEOUT,
+                TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT,
                         LocalDateTime.now());
         experiment.setDeletedDate(LocalDateTime.now());
         experiments.add(experiment);

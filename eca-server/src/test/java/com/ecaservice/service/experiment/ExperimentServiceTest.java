@@ -7,7 +7,7 @@ import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentMapperImpl;
 import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.model.experiment.ExperimentStatus;
+import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.AbstractJpaTest;
@@ -71,7 +71,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
     public void testNullTrainingDataPath() {
         Experiment experiment = new Experiment();
         experimentService.processExperiment(experiment);
-        assertThat(experiment.getExperimentStatus()).isEqualTo(ExperimentStatus.ERROR);
+        assertThat(experiment.getExperimentStatus()).isEqualTo(RequestStatus.ERROR);
     }
 
     @Test
@@ -82,7 +82,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.assertSingletonList(experiments);
         Experiment experiment = experiments.get(0);
-        assertThat(experiment.getExperimentStatus()).isEqualTo(ExperimentStatus.NEW);
+        assertThat(experiment.getExperimentStatus()).isEqualTo(RequestStatus.NEW);
         assertThat(experiment.getUuid()).isNotNull();
         assertThat(experiment.getCreationDate()).isNotNull();
         assertThat(experiment.getTrainingDataAbsolutePath()).isNotNull();
@@ -96,7 +96,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.assertSingletonList(experiments);
         Experiment experiment = experiments.get(0);
-        assertThat(experiment.getExperimentStatus()).isEqualTo(ExperimentStatus.ERROR);
+        assertThat(experiment.getExperimentStatus()).isEqualTo(RequestStatus.ERROR);
         assertThat(experiment.getCreationDate()).isNotNull();
         assertThat(experiment.getTrainingDataAbsolutePath()).isNull();
     }
@@ -116,14 +116,14 @@ public class ExperimentServiceTest extends AbstractJpaTest {
 
     @Test
     public void testFindExperimentFileByUuidWithErrorStatus() {
-        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID, ExperimentStatus.ERROR);
+        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID, RequestStatus.ERROR);
         experimentRepository.save(experiment);
         assertThat(experimentService.findExperimentFileByUuid(TestHelperUtils.UUID)).isNull();
     }
 
     @Test
     public void testSuccessFindExperimentFileByUuid() {
-        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID, ExperimentStatus.FINISHED);
+        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID, RequestStatus.FINISHED);
         experimentRepository.save(experiment);
         File expectedFile = experimentService.findExperimentFileByUuid(TestHelperUtils.UUID);
         File actualFile = new File(experiment.getExperimentAbsolutePath());
@@ -143,7 +143,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         assertThat(experiment.getStartDate()).isNotNull();
         assertThat(experiment.getEndDate()).isNotNull();
         assertThat(experiment.getExperimentAbsolutePath()).isNotNull();
-        assertThat(experiment.getExperimentStatus()).isEqualTo(ExperimentStatus.FINISHED);
+        assertThat(experiment.getExperimentStatus()).isEqualTo(RequestStatus.FINISHED);
     }
 
     @Test
@@ -155,7 +155,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         Experiment experiment = experiments.get(0);
         assertThat(experiment.getStartDate()).isNotNull();
         assertThat(experiment.getEndDate()).isNotNull();
-        assertThat(experiment.getExperimentStatus()).isEqualTo(ExperimentStatus.ERROR);
+        assertThat(experiment.getExperimentStatus()).isEqualTo(RequestStatus.ERROR);
     }
 
     @Test
@@ -171,7 +171,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         Experiment experiment = experiments.get(0);
         assertThat(experiment.getStartDate()).isNotNull();
         assertThat(experiment.getEndDate()).isNotNull();
-        assertThat(experiment.getExperimentStatus()).isEqualTo(ExperimentStatus.TIMEOUT);
+        assertThat(experiment.getExperimentStatus()).isEqualTo(RequestStatus.TIMEOUT);
     }
 
     @Test

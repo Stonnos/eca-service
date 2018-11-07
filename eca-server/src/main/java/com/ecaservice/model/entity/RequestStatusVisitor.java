@@ -1,4 +1,4 @@
-package com.ecaservice.model.experiment;
+package com.ecaservice.model.entity;
 
 /**
  * Interface for visitor pattern.
@@ -7,7 +7,7 @@ package com.ecaservice.model.experiment;
  * @param <P> - params generic type
  * @author Roman Batygin
  */
-public interface ExperimentStatusVisitor<T, P> {
+public interface RequestStatusVisitor<T, P> {
 
     /**
      * Method executed in case if experiment status is NEW.

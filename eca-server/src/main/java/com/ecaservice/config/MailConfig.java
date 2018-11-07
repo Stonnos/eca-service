@@ -1,6 +1,6 @@
 package com.ecaservice.config;
 
-import com.ecaservice.model.experiment.ExperimentStatus;
+import com.ecaservice.model.entity.RequestStatus;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -18,7 +18,7 @@ public class MailConfig {
     /**
      * Message templates map
      */
-    private Map<ExperimentStatus, String> messageTemplatesMap;
+    private Map<RequestStatus, String> messageTemplatesMap;
 
     /**
      * Source email

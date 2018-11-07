@@ -4,26 +4,20 @@ import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.ExperimentType;
-import com.ecaservice.repository.EvaluationLogRepository;
-import com.ecaservice.repository.ExperimentRepository;
+import com.ecaservice.service.evaluation.EvaluationLogService;
 import com.ecaservice.service.experiment.ExperimentService;
-import com.ecaservice.specification.Filter;
-import com.ecaservice.util.SortUtils;
 import com.ecaservice.util.Utils;
 import com.ecaservice.web.dto.EvaluationLogDto;
 import com.ecaservice.web.dto.ExperimentDto;
-import com.ecaservice.web.dto.ExperimentStatisticsDto;
 import com.ecaservice.web.dto.ExperimentTypeDto;
 import com.ecaservice.web.dto.PageDto;
 import com.ecaservice.web.dto.PageRequestDto;
+import com.ecaservice.web.dto.RequestStatusStatisticsDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,31 +38,27 @@ import java.util.stream.Collectors;
 public class WebController {
 
     private final ExperimentService experimentService;
+    private final EvaluationLogService evaluationLogService;
     private final ExperimentMapper experimentMapper;
     private final EvaluationLogMapper evaluationLogMapper;
-    private final ExperimentRepository experimentRepository;
-    private final EvaluationLogRepository evaluationLogRepository;
 
     /**
      * Constructor with spring dependency injection.
      *
-     * @param experimentService       - experiment service bean
-     * @param experimentMapper        - experiment mapper bean
-     * @param evaluationLogMapper     - evaluation log mapper bean
-     * @param experimentRepository    - experiment repository bean
-     * @param evaluationLogRepository - evaluation log repository bean
+     * @param experimentService    - experiment service bean
+     * @param evaluationLogService - evaluation log service bean
+     * @param experimentMapper     - experiment mapper bean
+     * @param evaluationLogMapper  - evaluation log mapper bean
      */
     @Inject
     public WebController(ExperimentService experimentService,
+                         EvaluationLogService evaluationLogService,
                          ExperimentMapper experimentMapper,
-                         EvaluationLogMapper evaluationLogMapper,
-                         ExperimentRepository experimentRepository,
-                         EvaluationLogRepository evaluationLogRepository) {
+                         EvaluationLogMapper evaluationLogMapper) {
         this.experimentService = experimentService;
+        this.evaluationLogService = evaluationLogService;
         this.experimentMapper = experimentMapper;
         this.evaluationLogMapper = evaluationLogMapper;
-        this.experimentRepository = experimentRepository;
-        this.evaluationLogRepository = evaluationLogRepository;
     }
 
     /**
@@ -113,19 +103,9 @@ public class WebController {
             value = "Gets experiments statistics",
             notes = "Gets experiments statistics"
     )
-    @GetMapping(value = "/experiments-statistics")
-    public ExperimentStatisticsDto getExperimentsStatisticsDto() {
-        ExperimentStatisticsDto experimentStatisticsDto = new ExperimentStatisticsDto();
-        experimentStatisticsDto.setTotalCount(experimentRepository.count());
-        experimentStatisticsDto.setNewExperimentsCount(
-                experimentRepository.countByExperimentStatus(ExperimentStatus.NEW));
-        experimentStatisticsDto.setFinishedExperimentsCount(
-                experimentRepository.countByExperimentStatus(ExperimentStatus.FINISHED));
-        experimentStatisticsDto.setTimeoutExperimentsCount(
-                experimentRepository.countByExperimentStatus(ExperimentStatus.TIMEOUT));
-        experimentStatisticsDto.setErrorExperimentsCount(
-                experimentRepository.countByExperimentStatus(ExperimentStatus.ERROR));
-        return experimentStatisticsDto;
+    @GetMapping(value = "/experiment/request-statuses-statistics")
+    public RequestStatusStatisticsDto getExperimentsRequestStatusesStatistics() {
+        return Utils.createRequestStatusesStatistics(experimentService.getRequestStatusesStatistics());
     }
 
     /**
@@ -161,11 +141,23 @@ public class WebController {
     )
     @GetMapping(value = "/evaluations")
     public PageDto<EvaluationLogDto> getEvaluationLogs(PageRequestDto pageRequestDto) {
-        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
-        Filter<EvaluationLog> filter = new Filter<>(EvaluationLog.class, pageRequestDto.getFilters());
-        Page<EvaluationLog> evaluationLogs = evaluationLogRepository.findAll(filter,
-                PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort));
+        log.info("Received evaluation logs page request: {}", pageRequestDto);
+        Page<EvaluationLog> evaluationLogs = evaluationLogService.getEvaluationLogs(pageRequestDto);
         List<EvaluationLogDto> evaluationLogDtoList = evaluationLogMapper.map(evaluationLogs.getContent());
         return PageDto.of(evaluationLogDtoList, evaluationLogs.getTotalElements());
+    }
+
+    /**
+     * Gets experiments statistics.
+     *
+     * @return experiments statistics dto
+     */
+    @ApiOperation(
+            value = "Gets experiments statistics",
+            notes = "Gets experiments statistics"
+    )
+    @GetMapping(value = "/evaluation/request-statuses-statistics")
+    public RequestStatusStatisticsDto getEvaluationRequestStatusesStatistics() {
+        return Utils.createRequestStatusesStatistics(evaluationLogService.getRequestStatusesStatistics());
     }
 }

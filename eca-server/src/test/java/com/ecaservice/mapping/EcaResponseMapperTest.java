@@ -3,7 +3,7 @@ package com.ecaservice.mapping;
 import com.ecaservice.dto.EcaResponse;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.model.experiment.ExperimentStatus;
+import com.ecaservice.model.entity.RequestStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.context.annotation.Import;
@@ -29,7 +29,7 @@ public class EcaResponseMapperTest {
     @Test
     public void testExperimentToEcaResponseConversionWithSuccessStatus() {
         Experiment experiment = new Experiment();
-        experiment.setExperimentStatus(ExperimentStatus.NEW);
+        experiment.setExperimentStatus(RequestStatus.NEW);
         experiment.setUuid(UUID.randomUUID().toString());
         EcaResponse ecaResponse = ecaResponseMapper.map(experiment);
         assertThat(ecaResponse).isNotNull();
@@ -40,7 +40,7 @@ public class EcaResponseMapperTest {
     @Test
     public void testExperimentToEcaResponseConversionWithErrorStatus() throws Exception {
         Experiment experiment = new Experiment();
-        experiment.setExperimentStatus(ExperimentStatus.ERROR);
+        experiment.setExperimentStatus(RequestStatus.ERROR);
         EcaResponse ecaResponse = ecaResponseMapper.map(experiment);
         assertThat(ecaResponse).isNotNull();
         assertThat(ecaResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);

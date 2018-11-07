@@ -2,7 +2,7 @@ package com.ecaservice.service.experiment.visitor;
 
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.model.experiment.ExperimentStatusVisitor;
+import com.ecaservice.model.entity.RequestStatusVisitor;
 import com.ecaservice.service.experiment.dictionary.TemplateVariablesDictionary;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
@@ -15,7 +15,7 @@ import javax.inject.Inject;
  * @author Roman Batygin
  */
 @Component
-public class EmailTemplateVisitor implements ExperimentStatusVisitor<Context, Experiment> {
+public class EmailTemplateVisitor implements RequestStatusVisitor<Context, Experiment> {
 
     private final ExperimentConfig experimentConfig;
 

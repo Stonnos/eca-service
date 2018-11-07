@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {
   EvaluationLogDto,
   PageDto,
-  PageRequestDto
+  PageRequestDto, RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { BaseListComponent } from "../../lists/base-list.component";
 import { MessageService, SelectItem } from "primeng/api";
@@ -16,6 +16,8 @@ import { OverlayPanel } from "primeng/primeng";
   styleUrls: ['./classifier-list.component.scss']
 })
 export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto> {
+
+  public requestStatusStatisticsDto: RequestStatusStatisticsDto;
 
   public instancesInfoColumn: string = "instancesInfo.relationName";
 
@@ -32,6 +34,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   }
 
   public ngOnInit() {
+    this.getRequestStatusesStatistics();
   }
 
   public getNextPage(pageRequest: PageRequestDto) {
@@ -43,7 +46,12 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     });
   }
 
-  onLink(column: string, item: EvaluationLogDto) {
+  public getRequestStatusesStatistics() {
+    this.classifiersService.getRequestStatusesStatistics().subscribe((requestStatusStatisticsDto: RequestStatusStatisticsDto) => {
+      this.requestStatusStatisticsDto = requestStatusStatisticsDto;
+    }, (error) => {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+    });
   }
 
   public onSelect(event, evaluationLog: EvaluationLogDto, column: string, overlayPanel: OverlayPanel) {

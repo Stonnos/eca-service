@@ -1,7 +1,6 @@
 package com.ecaservice.model.entity;
 
 import com.ecaservice.model.evaluation.EvaluationMethod;
-import com.ecaservice.model.experiment.ExperimentStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import lombok.Data;
 
@@ -105,7 +104,7 @@ public class Experiment {
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "experiment_status")
-    private ExperimentStatus experimentStatus;
+    private RequestStatus experimentStatus;
 
     @Column(name = "error_message", columnDefinition = "text")
     private String errorMessage;

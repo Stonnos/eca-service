@@ -1,11 +1,14 @@
 package com.ecaservice.repository;
 
 import com.ecaservice.model.entity.EvaluationLog;
-import com.ecaservice.model.evaluation.EvaluationStatus;
+import com.ecaservice.model.entity.RequestStatus;
+import com.ecaservice.model.projections.RequestStatusStatistics;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Implements repository that manages with {@link EvaluationLog} entities.
@@ -22,6 +25,14 @@ public interface EvaluationLogRepository
      * @param evaluationStatuses - evaluation log statuses
      * @return evaluation log entity
      */
-    EvaluationLog findByRequestIdAndEvaluationStatusIn(String requestId,
-                                                       Collection<EvaluationStatus> evaluationStatuses);
+    EvaluationLog findByRequestIdAndEvaluationStatusIn(String requestId, Collection<RequestStatus> evaluationStatuses);
+
+    /**
+     * Calculates requests status counting statistics.
+     *
+     * @return requests status counting statistics list
+     */
+    @Query("select el.evaluationStatus as requestStatus, count(el.evaluationStatus) as requestsCount from " +
+            "EvaluationLog el group by el.evaluationStatus")
+    List<RequestStatusStatistics> getRequestStatusesStatistics();
 }

@@ -17,6 +17,12 @@
         [lazy]="true"
         (onLazyLoad)="onLazyLoad($event)">
 
+        <ng-template pTemplate="caption">
+          <app-request-statuses-statistics
+            [requestStatusStatisticsDto]="requestStatusStatisticsDto">
+          </app-request-statuses-statistics>
+        </ng-template>
+
         <ng-template pTemplate="header">
           <tr>
             <th *ngFor="let column of columns" [pSortableColumn]="column.name">

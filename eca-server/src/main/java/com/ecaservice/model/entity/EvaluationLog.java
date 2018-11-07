@@ -2,7 +2,6 @@ package com.ecaservice.model.entity;
 
 import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
-import com.ecaservice.model.evaluation.EvaluationStatus;
 import lombok.Data;
 
 import javax.persistence.CascadeType;
@@ -77,7 +76,7 @@ public class EvaluationLog {
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "evaluation_status")
-    private EvaluationStatus evaluationStatus;
+    private RequestStatus evaluationStatus;
 
     @Column(name = "error_message", columnDefinition = "text")
     private String errorMessage;

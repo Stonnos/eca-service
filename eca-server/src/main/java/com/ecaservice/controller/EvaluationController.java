@@ -5,7 +5,7 @@ import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.InstancesRequest;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
-import com.ecaservice.model.evaluation.EvaluationStatus;
+import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.ers.ErsRequestService;
 import com.ecaservice.service.evaluation.EvaluationOptimizerService;
@@ -13,7 +13,6 @@ import com.ecaservice.service.evaluation.EvaluationRequestService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -75,7 +74,7 @@ public class EvaluationController {
         EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(evaluationRequest);
         EvaluationLog evaluationLog =
                 evaluationLogRepository.findByRequestIdAndEvaluationStatusIn(evaluationResponse.getRequestId(),
-                        Collections.singletonList(EvaluationStatus.FINISHED));
+                        Collections.singletonList(RequestStatus.FINISHED));
         if (evaluationLog != null) {
             EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
             requestEntity.setEvaluationLog(evaluationLog);
