@@ -9,6 +9,8 @@ import { BaseListComponent } from "../../lists/base-list.component";
 import { OverlayPanel} from "primeng/primeng";
 import { JsonPipe } from "@angular/common";
 
+declare var Prism: any;
+
 @Component({
   selector: 'app-classifier-options',
   templateUrl: './classifier-options.component.html',
@@ -43,9 +45,10 @@ export class ClassifierOptionsComponent extends BaseListComponent<ClassifierOpti
     overlayPanel.toggle(event);
   }
 
-  public getFormattedJsonConfig() {
+  public getFormattedJsonConfig(): string {
     const configObj = JSON.parse(this.selectedOptions.config);
-    return new JsonPipe().transform(configObj);
+    const json = new JsonPipe().transform(configObj);
+    return Prism.highlight(json, Prism.languages['json']);
   }
 
   private initColumns() {
