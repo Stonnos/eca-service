@@ -10,7 +10,7 @@ import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.model.projections.RequestStatusStatistics;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
-import com.ecaservice.specification.Filter;
+import com.ecaservice.specification.ExperimentFilter;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.PageRequestDto;
 import eca.converters.model.ExperimentHistory;
@@ -214,7 +214,7 @@ public class ExperimentService {
      */
     public Page<Experiment> getExperiments(PageRequestDto pageRequestDto) {
         Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
-        Filter<Experiment> filter = new Filter<>(Experiment.class, pageRequestDto.getFilters());
+        ExperimentFilter filter = new ExperimentFilter(pageRequestDto.getFilters());
         return experimentRepository.findAll(filter,
                 PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort));
     }

@@ -2,8 +2,8 @@ package com.ecaservice.specification;
 
 import com.ecaservice.web.dto.FilterRequestDto;
 import com.ecaservice.web.dto.MatchModeVisitor;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -24,14 +24,26 @@ import java.util.List;
  *
  * @author Roman Batygin
  */
-@Data
-@AllArgsConstructor
-public class Filter<T> implements Specification<T> {
+public abstract class AbstractFilter<T> implements Specification<T> {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+    /**
+     * Entity class
+     */
     private Class<T> clazz;
+
+    /**
+     * Filters requests
+     */
+    @Setter
+    @Getter
     private List<FilterRequestDto> filters;
+
+    protected AbstractFilter(Class<T> clazz, List<FilterRequestDto> filters) {
+        this.clazz = clazz;
+        this.filters = filters;
+    }
 
     @Override
     public Predicate toPredicate(Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
