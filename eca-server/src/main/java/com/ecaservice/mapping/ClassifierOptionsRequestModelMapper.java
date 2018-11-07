@@ -7,6 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
+import java.util.List;
+
 /**
  * Implements mapping classifier options request to classifier options request entity.
  *
@@ -21,7 +23,7 @@ public interface ClassifierOptionsRequestModelMapper {
      * @param classifierOptionsRequest - classifier options request
      * @return classifier options request entity
      */
-    @Mappings( {
+    @Mappings({
             @Mapping(source = "evaluationMethodReport.evaluationMethod", target = "evaluationMethod"),
             @Mapping(source = "evaluationMethodReport.numFolds", target = "numFolds"),
             @Mapping(source = "evaluationMethodReport.numTests", target = "numTests"),
@@ -36,4 +38,12 @@ public interface ClassifierOptionsRequestModelMapper {
      * @return classifier options request dto model
      */
     ClassifierOptionsRequestDto map(ClassifierOptionsRequestModel classifierOptionsRequestModel);
+
+    /**
+     * Maps classifiers options requests models entities to its dto models.
+     *
+     * @param classifierOptionsRequestModels - classifiers options requests models entities
+     * @return classifiers options requests dto models
+     */
+    List<ClassifierOptionsRequestDto> map(List<ClassifierOptionsRequestModel> classifierOptionsRequestModels);
 }

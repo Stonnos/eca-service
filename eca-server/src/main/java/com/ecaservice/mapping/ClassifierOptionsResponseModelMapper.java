@@ -23,10 +23,10 @@ public interface ClassifierOptionsResponseModelMapper {
     ClassifierOptionsResponseDto map(ClassifierOptionsResponseModel classifierOptionsResponseModel);
 
     /**
-     * Maps classifier options response models to its dto models.
+     * Maps classifiers options responses models to its dto models.
      *
-     * @param classifierOptionsResponseModels - classifier options response models entities
-     * @return classifier options response dto list
+     * @param classifierOptionsResponseModels - classifiers options responses models entities
+     * @return classifiers options responses dto list
      */
     List<ClassifierOptionsResponseDto> map(List<ClassifierOptionsResponseModel> classifierOptionsResponseModels);
 }

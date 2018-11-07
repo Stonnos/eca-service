@@ -210,7 +210,7 @@ public class ExperimentService {
      * Finds experiments with specified options such as filter, sorting and paging.
      *
      * @param pageRequestDto - page request dto
-     * @return experiment page dto
+     * @return experiments page dto
      */
     public Page<Experiment> getExperiments(PageRequestDto pageRequestDto) {
         Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());

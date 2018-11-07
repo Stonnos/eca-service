@@ -40,10 +40,10 @@ public class EvaluationLogService {
     }
 
     /**
-     * Finds evaluation logs with specified options such as filter, sorting and paging.
+     * Finds evaluations logs with specified options such as filter, sorting and paging.
      *
      * @param pageRequestDto - page request dto
-     * @return evaluation logs page dto
+     * @return evaluations logs page dto
      */
     public Page<EvaluationLog> getEvaluationLogs(PageRequestDto pageRequestDto) {
         Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());

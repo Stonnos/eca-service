@@ -43,10 +43,10 @@ public abstract class ExperimentMapper {
     public abstract ExperimentDto map(Experiment experiment);
 
     /**
-     * Maps experiment entities to experiment dto models.
+     * Maps experiments entities to experiments dto models.
      *
-     * @param experiments - experiment entities list
-     * @return experiment dto models list
+     * @param experiments - experiments entities list
+     * @return experiments dto models list
      */
     public abstract List<ExperimentDto> map(List<Experiment> experiments);
 

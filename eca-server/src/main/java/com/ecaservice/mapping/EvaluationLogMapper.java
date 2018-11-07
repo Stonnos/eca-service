@@ -43,10 +43,10 @@ public abstract class EvaluationLogMapper {
     public abstract EvaluationLogDto map(EvaluationLog evaluationLog);
 
     /**
-     * Maps evaluation log entities to dto models.
+     * Maps evaluations logs entities to dto models.
      *
-     * @param evaluationLogs - evaluation log entities list
-     * @return evaluation logs dto list
+     * @param evaluationLogs - evaluations logs entities list
+     * @return evaluations logs dto list
      */
     public abstract List<EvaluationLogDto> map(List<EvaluationLog> evaluationLogs);
 
