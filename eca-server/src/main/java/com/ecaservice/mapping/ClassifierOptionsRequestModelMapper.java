@@ -2,6 +2,7 @@ package com.ecaservice.mapping;
 
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
+import com.ecaservice.web.dto.ClassifierOptionsRequestDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -11,7 +12,7 @@ import org.mapstruct.Mappings;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = ErsEvaluationMethodMapper.class)
+@Mapper(uses = {ErsEvaluationMethodMapper.class, ClassifierOptionsResponseModelMapper.class})
 public interface ClassifierOptionsRequestModelMapper {
 
     /**
@@ -27,4 +28,12 @@ public interface ClassifierOptionsRequestModelMapper {
             @Mapping(source = "evaluationMethodReport.seed", target = "seed"),
     })
     ClassifierOptionsRequestModel map(ClassifierOptionsRequest classifierOptionsRequest);
+
+    /**
+     * Maps classifier options request model entity to its dto model.
+     *
+     * @param classifierOptionsRequestModel - classifier options request model entity
+     * @return classifier options request dto model
+     */
+    ClassifierOptionsRequestDto map(ClassifierOptionsRequestModel classifierOptionsRequestModel);
 }

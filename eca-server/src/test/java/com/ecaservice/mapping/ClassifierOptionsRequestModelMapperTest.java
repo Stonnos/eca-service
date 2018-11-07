@@ -3,8 +3,10 @@ package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
+import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.evaluation.EvaluationMethod;
+import com.ecaservice.web.dto.ClassifierOptionsRequestDto;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +14,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
+import java.time.LocalDateTime;
+import java.util.Collections;
 
 /**
  * Unit tests for checking {@link ClassifierOptionsRequestModelMapper} functionality.
@@ -19,7 +23,8 @@ import javax.inject.Inject;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import({ClassifierOptionsRequestModelMapperImpl.class, ErsEvaluationMethodMapperImpl.class})
+@Import({ClassifierOptionsRequestModelMapperImpl.class, ErsEvaluationMethodMapperImpl.class,
+        ClassifierOptionsResponseModelMapperImpl.class})
 public class ClassifierOptionsRequestModelMapperTest {
 
     @Inject
@@ -33,5 +38,26 @@ public class ClassifierOptionsRequestModelMapperTest {
         Assertions.assertThat(requestModel.getNumFolds()).isEqualTo(requestModel.getNumFolds());
         Assertions.assertThat(requestModel.getNumTests()).isEqualTo(requestModel.getNumTests());
         Assertions.assertThat(requestModel.getSeed()).isEqualTo(requestModel.getSeed());
+    }
+
+    @Test
+    public void testMapClassifierOptionsRequestModel() {
+        ClassifierOptionsRequestModel requestModel =
+                TestHelperUtils.createClassifierOptionsRequestModel("hash", LocalDateTime.now(), ResponseStatus.SUCCESS,
+                        Collections.singletonList(TestHelperUtils.createClassifierOptionsResponseModel("options")));
+        ClassifierOptionsRequestDto classifierOptionsRequestDto = classifierOptionsRequestModelMapper.map(requestModel);
+        Assertions.assertThat(classifierOptionsRequestDto).isNotNull();
+        Assertions.assertThat(classifierOptionsRequestDto.getRequestDate()).isEqualTo(requestModel.getRequestDate());
+        Assertions.assertThat(classifierOptionsRequestDto.getRequestId()).isEqualTo(requestModel.getRequestId());
+        Assertions.assertThat(classifierOptionsRequestDto.getResponseStatus()).isEqualTo(
+                requestModel.getResponseStatus().name());
+        Assertions.assertThat(classifierOptionsRequestDto.getRelationName()).isEqualTo(requestModel.getRelationName());
+        Assertions.assertThat(classifierOptionsRequestDto.getNumFolds()).isEqualTo(requestModel.getNumFolds());
+        Assertions.assertThat(classifierOptionsRequestDto.getNumTests()).isEqualTo(requestModel.getNumTests());
+        Assertions.assertThat(classifierOptionsRequestDto.getSeed()).isEqualTo(requestModel.getSeed());
+        Assertions.assertThat(classifierOptionsRequestDto.getEvaluationMethod()).isEqualTo(
+                requestModel.getEvaluationMethod().name());
+        Assertions.assertThat(classifierOptionsRequestDto.getClassifierOptionsResponseModels()).isNotNull();
+        Assertions.assertThat(classifierOptionsRequestDto.getClassifierOptionsResponseModels().size()).isOne();
     }
 }

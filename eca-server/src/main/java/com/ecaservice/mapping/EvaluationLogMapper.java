@@ -45,10 +45,10 @@ public abstract class EvaluationLogMapper {
     /**
      * Maps evaluation log entities to dto models.
      *
-     * @param evaluationLog - evaluation log entities list
+     * @param evaluationLogs - evaluation log entities list
      * @return evaluation logs dto list
      */
-    public abstract List<EvaluationLogDto> map(List<EvaluationLog> evaluationLog);
+    public abstract List<EvaluationLogDto> map(List<EvaluationLog> evaluationLogs);
 
     @AfterMapping
     protected void mapClassifier(EvaluationRequest evaluationRequest, @MappingTarget EvaluationLog evaluationLog) {

@@ -41,7 +41,7 @@ public class ClassifierOptionsRequestMapperTest {
     }
 
     @Test
-    public void testMapping() {
+    public void testMappingInstancesRequest() {
         ClassifierOptionsRequest request = classifierOptionsRequestMapper.map(instancesRequest, crossValidationConfig);
         Assertions.assertThat(request.getEvaluationMethodReport()).isNotNull();
         Assertions.assertThat(request.getEvaluationMethodReport().getEvaluationMethod()).isEqualTo(
