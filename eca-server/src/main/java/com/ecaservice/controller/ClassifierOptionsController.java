@@ -92,7 +92,7 @@ public class ClassifierOptionsController {
     @GetMapping(value = "/configs-page")
     public PageDto<ClassifierOptionsDto> getConfigsPage(PageRequestDto pageRequestDto) {
         Page<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
-                experimentConfigurationService.findLastClassifiersOptions(pageRequestDto);
+                experimentConfigurationService.getNextPage(pageRequestDto);
         List<ClassifierOptionsDto> classifierOptionsDtoList =
                 classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModels.getContent());
         return PageDto.of(classifierOptionsDtoList, classifierOptionsDatabaseModels.getTotalElements());

@@ -48,7 +48,7 @@ public class WebController {
     private final ClassifierOptionsRequestService classifierOptionsRequestService;
     private final ExperimentMapper experimentMapper;
     private final EvaluationLogMapper evaluationLogMapper;
-    private ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
+    private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
 
     /**
      * Constructor with spring dependency injection.
@@ -88,7 +88,7 @@ public class WebController {
     @GetMapping(value = "/experiments")
     public PageDto<ExperimentDto> getExperiments(PageRequestDto pageRequestDto) {
         log.info("Received experiments page request: {}", pageRequestDto);
-        Page<Experiment> experimentPage = experimentService.getExperiments(pageRequestDto);
+        Page<Experiment> experimentPage = experimentService.getNextPage(pageRequestDto);
         List<ExperimentDto> experimentDtoList = experimentMapper.map(experimentPage.getContent());
         return PageDto.of(experimentDtoList, experimentPage.getTotalElements());
     }
@@ -156,7 +156,7 @@ public class WebController {
     @GetMapping(value = "/evaluations")
     public PageDto<EvaluationLogDto> getEvaluationLogs(PageRequestDto pageRequestDto) {
         log.info("Received evaluation logs page request: {}", pageRequestDto);
-        Page<EvaluationLog> evaluationLogs = evaluationLogService.getEvaluationLogs(pageRequestDto);
+        Page<EvaluationLog> evaluationLogs = evaluationLogService.getNextPage(pageRequestDto);
         List<EvaluationLogDto> evaluationLogDtoList = evaluationLogMapper.map(evaluationLogs.getContent());
         return PageDto.of(evaluationLogDtoList, evaluationLogs.getTotalElements());
     }
@@ -189,7 +189,7 @@ public class WebController {
     public PageDto<ClassifierOptionsRequestDto> getClassifierOptionsRequestModels(PageRequestDto pageRequestDto) {
         log.info("Received classifiers options requests models page request: {}", pageRequestDto);
         Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
-                classifierOptionsRequestService.getClassifierOptionsRequestModels(pageRequestDto);
+                classifierOptionsRequestService.getNextPage(pageRequestDto);
         List<ClassifierOptionsRequestDto> classifierOptionsRequestDtoList =
                 classifierOptionsRequestModelMapper.map(classifierOptionsRequestModelPage.getContent());
         return PageDto.of(classifierOptionsRequestDtoList, classifierOptionsRequestModelPage.getTotalElements());

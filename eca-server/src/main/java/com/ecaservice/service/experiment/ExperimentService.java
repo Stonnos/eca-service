@@ -3,14 +3,15 @@ package com.ecaservice.service.experiment;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.exception.ExperimentException;
+import com.ecaservice.filter.ExperimentFilter;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.model.projections.RequestStatusStatistics;
 import com.ecaservice.repository.ExperimentRepository;
+import com.ecaservice.service.PageRequestService;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
-import com.ecaservice.filter.ExperimentFilter;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.PageRequestDto;
 import eca.converters.model.ExperimentHistory;
@@ -43,7 +44,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class ExperimentService {
+public class ExperimentService implements PageRequestService<Experiment> {
 
     private final ExperimentRepository experimentRepository;
     private final CalculationExecutorService executorService;
@@ -206,13 +207,8 @@ public class ExperimentService {
         experimentRepository.save(experiment);
     }
 
-    /**
-     * Finds experiments with specified options such as filter, sorting and paging.
-     *
-     * @param pageRequestDto - page request dto
-     * @return experiments page dto
-     */
-    public Page<Experiment> getExperiments(PageRequestDto pageRequestDto) {
+    @Override
+    public Page<Experiment> getNextPage(PageRequestDto pageRequestDto) {
         Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
         ExperimentFilter filter = new ExperimentFilter(pageRequestDto.getFilters());
         return experimentRepository.findAll(filter,

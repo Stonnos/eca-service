@@ -5,6 +5,7 @@ import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
+import com.ecaservice.service.PageRequestService;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.PageRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,7 +36,7 @@ import static com.ecaservice.util.ExperimentLogUtils.error;
  */
 @Slf4j
 @Service
-public class ExperimentConfigurationService {
+public class ExperimentConfigurationService implements PageRequestService<ClassifierOptionsDatabaseModel> {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
@@ -110,13 +111,8 @@ public class ExperimentConfigurationService {
         return classifierOptionsDatabaseModelList;
     }
 
-    /**
-     * Finds the last classifiers options configs.
-     *
-     * @param pageRequestDto - page request dto
-     * @return {@link ClassifierOptionsDatabaseModel} list
-     */
-    public Page<ClassifierOptionsDatabaseModel> findLastClassifiersOptions(PageRequestDto pageRequestDto) {
+    @Override
+    public Page<ClassifierOptionsDatabaseModel> getNextPage(PageRequestDto pageRequestDto) {
         int lastVersion = classifierOptionsDatabaseModelRepository.findLatestVersion();
         Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
         return classifierOptionsDatabaseModelRepository.findAllByVersion(lastVersion,
