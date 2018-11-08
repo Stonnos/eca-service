@@ -15,6 +15,7 @@ export abstract class BaseListComponent<T> {
   public filters: Filter[] = [];
   public columns: any[] = [];
   public linkColumns: string[] = [];
+  public notSortableColumns: string[] = [];
   public items: T[] = [];
 
   @ViewChild(Table)
@@ -50,6 +51,10 @@ export abstract class BaseListComponent<T> {
 
   public isLink(column: string): boolean {
     return this.linkColumns.includes(column);
+  }
+
+  public notSortable(column: string): boolean {
+    return this.notSortableColumns.includes(column);
   }
 
   private buildFilters(): FilterRequestDto[] {

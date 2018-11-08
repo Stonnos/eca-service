@@ -1,4 +1,4 @@
-.evaluations-table::ng-deep {
+.requests-table::ng-deep {
 
   .ui-table-tbody > tr > td {
     word-wrap: break-word;
@@ -17,9 +17,11 @@
   }
 }
 
-.info-panel::ng-deep {
+.overlay-panel::ng-deep {
 
   .ui-panel {
-    width: 450px;
+    width: 475px;
+    max-height: 600px;
+    overflow-y: scroll;
   }
 }

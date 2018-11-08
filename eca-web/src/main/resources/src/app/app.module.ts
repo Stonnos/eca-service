@@ -13,6 +13,7 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { FilterModule } from "./filter/filter.module";
 import { ClassifierOptionsModule } from "./classifier-options/classifier-options.module";
 import { RequestStatusesStatisticsModule } from "./request-statuses-statistics/request-statuses-statistics.module";
+import { ClassifierOptionsRequestsModule } from "./classifier-options-requests/classifier-options-requests.module";
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { RequestStatusesStatisticsModule } from "./request-statuses-statistics/r
     ClassifiersModule,
     ExperimentsModule,
     ClassifierOptionsModule,
+    ClassifierOptionsRequestsModule,
     RequestStatusesStatisticsModule,
     FilterModule,
     UiComponentsModule,
