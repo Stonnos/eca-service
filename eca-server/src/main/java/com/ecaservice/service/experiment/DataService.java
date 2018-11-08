@@ -86,10 +86,11 @@ public class DataService {
      *
      * @param file - file object
      */
-    public void delete(File file) {
+    public boolean delete(File file) {
         Assert.notNull(file, "File isn't specified!");
         if (!file.exists()) {
             log.warn("File with name '{}' doesn't exists.", file.getAbsolutePath());
+            return false;
         } else {
             boolean deleted = FileUtils.deleteQuietly(file);
             if (deleted) {
@@ -97,6 +98,7 @@ public class DataService {
             } else {
                 log.warn("There was an error while deleting '{}' file from disk.", file.getAbsolutePath());
             }
+            return deleted;
         }
     }
 }

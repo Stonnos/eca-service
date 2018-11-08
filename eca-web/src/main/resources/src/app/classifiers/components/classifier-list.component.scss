@@ -1,5 +1,9 @@
 .evaluations-table::ng-deep {
 
+  .ui-table {
+    margin-top: 15px;
+  }
+
   .ui-table-tbody > tr > td {
     word-wrap: break-word;
     width: 300px;
