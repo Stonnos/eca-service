@@ -1,3 +1,10 @@
+.options-table::ng-deep {
+
+  .ui-table {
+    margin-top: 15px;
+  }
+}
+
 .config-panel::ng-deep {
 
   .ui-panel {

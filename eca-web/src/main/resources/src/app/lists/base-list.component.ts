@@ -38,12 +38,11 @@ export abstract class BaseListComponent<T> {
   }
 
   public onSearch() {
-    this.resetSort();
     const pageRequest: PageRequestDto = {
       page: 0,
       size: this.pageSize,
-      sortField: this.defaultSortField,
-      ascending: this.defaultSortOrder == 1,
+      sortField: this.table.sortField,
+      ascending: this.table.sortOrder == 1,
       filters: this.buildFilters()
     };
     this.getNextPage(pageRequest);
@@ -72,10 +71,5 @@ export abstract class BaseListComponent<T> {
       default:
         return filter.currentValue;
     }
-  }
-
-  private resetSort() {
-    this.table.sortField = this.defaultSortField;
-    this.table.sortOrder = this.defaultSortOrder;
   }
 }
