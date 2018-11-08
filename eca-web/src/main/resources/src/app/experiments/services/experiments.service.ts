@@ -6,11 +6,12 @@ import {
   PageRequestDto, RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
+import { ConfigService } from "../../config.service";
 
 @Injectable()
 export class ExperimentsService {
 
-  private serviceUrl = "http://localhost:8085/eca-server";
+  private serviceUrl = ConfigService.appConfig.apiUrl;
 
   public constructor(private http: HttpClient) {
   }

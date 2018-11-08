@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from "./app-routing.module";
@@ -14,6 +14,11 @@ import { FilterModule } from "./filter/filter.module";
 import { ClassifierOptionsModule } from "./classifier-options/classifier-options.module";
 import { RequestStatusesStatisticsModule } from "./request-statuses-statistics/request-statuses-statistics.module";
 import { ClassifierOptionsRequestsModule } from "./classifier-options-requests/classifier-options-requests.module";
+import { ConfigService } from "./config.service";
+
+export function initializeApp(configService: ConfigService) {
+  return () => configService.getConfigs();
+}
 
 @NgModule({
   declarations: [
@@ -34,7 +39,10 @@ import { ClassifierOptionsRequestsModule } from "./classifier-options-requests/c
     HttpClientModule,
     NoopAnimationsModule,
   ],
-  providers: [],
+  providers: [
+    ConfigService,
+    { provide: APP_INITIALIZER, useFactory: initializeApp, deps: [ConfigService], multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
