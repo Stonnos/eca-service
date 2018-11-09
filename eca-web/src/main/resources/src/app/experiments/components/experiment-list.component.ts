@@ -34,8 +34,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public getNextPage(pageRequest: PageRequestDto) {
     this.experimentsService.getExperiments(pageRequest).subscribe((pageDto: PageDto<ExperimentDto>) => {
-      this.items = pageDto.content;
-      this.total = pageDto.totalCount;
+      this.setPage(pageDto, pageRequest);
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
     });
@@ -88,10 +87,12 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   private initFilters() {
     const evaluationMethods: SelectItem[] = [
+      { label: "All", value: null },
       { label: "TRAINING_DATA", value: "TRAINING_DATA" },
       { label: "CROSS_VALIDATION", value: "CROSS_VALIDATION" }
     ];
     const statuses: SelectItem[] = [
+      { label: "All", value: null },
       { label: "NEW", value: "NEW" },
       { label: "FINISHED", value: "FINISHED" },
       { label: "TIMEOUT", value: "TIMEOUT" },
@@ -117,6 +118,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
         experimentTypes.map((experimentType: ExperimentTypeDto) => {
           return { label: experimentType.description, value: experimentType.type };
         });
+      experimentTypeItems.unshift({ label: "All", value: null });
       this.filters.push(new Filter("experimentType", "Experiment type", "REFERENCE", "EQUALS",
         null, experimentTypeItems));
     }, (error) => {

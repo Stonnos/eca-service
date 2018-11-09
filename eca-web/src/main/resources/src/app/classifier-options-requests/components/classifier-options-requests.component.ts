@@ -38,8 +38,7 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
   public getNextPage(pageRequest: PageRequestDto) {
     this.classifierOptionsService.getClassifiersOptionsRequests(pageRequest)
       .subscribe((pageDto: PageDto<ClassifierOptionsRequestDto>) => {
-      this.items = pageDto.content;
-      this.total = pageDto.totalCount;
+      this.setPage(pageDto, pageRequest);
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
     });
@@ -88,10 +87,12 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
 
   private initFilters() {
     const evaluationMethods: SelectItem[] = [
+      { label: "All", value: null },
       { label: "TRAINING_DATA", value: "TRAINING_DATA" },
       { label: "CROSS_VALIDATION", value: "CROSS_VALIDATION" }
     ];
     const statuses: SelectItem[] = [
+      { label: "All", value: null },
       { label: "SUCCESS", value: "SUCCESS" },
       { label: "INVALID_REQUEST_PARAMS", value: "INVALID_REQUEST_PARAMS" },
       { label: "DATA_NOT_FOUND", value: "DATA_NOT_FOUND" },

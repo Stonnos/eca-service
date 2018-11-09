@@ -1,5 +1,9 @@
 import { LazyLoadEvent } from "primeng/api";
-import { FilterRequestDto, PageRequestDto } from "../../../../../../target/generated-sources/typescript/eca-web-dto";
+import {
+  FilterRequestDto,
+  PageDto,
+  PageRequestDto
+} from "../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Filter } from "../filter/filter.model";
 import { DatePipe } from "@angular/common";
 import { Table } from "primeng/table";
@@ -48,6 +52,14 @@ export abstract class BaseListComponent<T> {
     this.getNextPage(pageRequest);
   }
 
+  public setPage(pageDto: PageDto<T>, pageRequest: PageRequestDto) {
+    this.items = pageDto.content;
+    this.total = pageDto.totalCount;
+    if (pageRequest.page == 0) {
+      this.table.first = 0;
+    }
+  }
+
   public isLink(column: string): boolean {
     return this.linkColumns.includes(column);
   }
@@ -57,9 +69,18 @@ export abstract class BaseListComponent<T> {
   }
 
   private buildFilters(): FilterRequestDto[] {
-    return this.filters.filter((filter: Filter) => !!filter.currentValue).map((filter: Filter) => {
+    return this.filters.filter((filter: Filter) => this.hasValue(filter)).map((filter: Filter) => {
       return { name: filter.name, value: this.transformFilterValue(filter), filterType: filter.type, matchMode: filter.matchMode };
     });
+  }
+
+  private hasValue(filter: Filter): boolean {
+    switch (filter.type) {
+      case "REFERENCE":
+        return !!filter.currentValue && !!filter.currentValue.value;
+      default:
+        return !!filter.currentValue;
+    }
   }
 
   private transformFilterValue(filter: Filter): string {

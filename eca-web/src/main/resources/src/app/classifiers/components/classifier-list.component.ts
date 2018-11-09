@@ -39,8 +39,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
 
   public getNextPage(pageRequest: PageRequestDto) {
     this.classifiersService.getEvaluations(pageRequest).subscribe((pageDto: PageDto<EvaluationLogDto>) => {
-      this.items = pageDto.content;
-      this.total = pageDto.totalCount;
+      this.setPage(pageDto, pageRequest);
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
     });
@@ -79,10 +78,12 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
 
   private initFilters() {
     const evaluationMethods: SelectItem[] = [
+      { label: "All", value: null },
       { label: "TRAINING_DATA", value: "TRAINING_DATA" },
       { label: "CROSS_VALIDATION", value: "CROSS_VALIDATION" }
     ];
     const statuses: SelectItem[] = [
+      { label: "All", value: null },
       { label: "NEW", value: "NEW" },
       { label: "FINISHED", value: "FINISHED" },
       { label: "TIMEOUT", value: "TIMEOUT" },

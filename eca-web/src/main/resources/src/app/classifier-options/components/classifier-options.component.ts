@@ -33,8 +33,7 @@ export class ClassifierOptionsComponent extends BaseListComponent<ClassifierOpti
 
   public getNextPage(pageRequest: PageRequestDto) {
     this.classifierOptionsService.getClassifiersOptions(pageRequest).subscribe((pageDto: PageDto<ClassifierOptionsDto>) => {
-      this.items = pageDto.content;
-      this.total = pageDto.totalCount;
+      this.setPage(pageDto, pageRequest);
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
     });

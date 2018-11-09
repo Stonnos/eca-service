@@ -12,7 +12,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.lang.reflect.Field;
+import java.beans.PropertyDescriptor;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -117,8 +117,9 @@ public abstract class AbstractFilter<T> implements Specification<T> {
         switch (filterRequestDto.getFilterType()) {
             case REFERENCE:
                 try {
-                    Field field = clazz.getDeclaredField(filterRequestDto.getName());
-                    Class enumClazz = field.getType();
+                    PropertyDescriptor propertyDescriptor = new PropertyDescriptor(filterRequestDto.getName(), clazz);
+                    String getter = propertyDescriptor.getReadMethod().getName();
+                    Class enumClazz = clazz.getMethod(getter).getReturnType();
                     return criteriaBuilder.equal(root.get(filterRequestDto.getName()),
                             Enum.valueOf(enumClazz, filterRequestDto.getValue()));
                 } catch (Exception ex) {
