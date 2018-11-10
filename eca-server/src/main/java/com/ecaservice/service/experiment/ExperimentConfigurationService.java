@@ -82,20 +82,6 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
     }
 
     /**
-     * Saves classifier input options config into database.
-     *
-     * @param classifierOptions {@link ClassifierOptions} object
-     */
-    public ClassifierOptionsDatabaseModel saveClassifierOptions(ClassifierOptions classifierOptions) {
-        int version = classifierOptionsDatabaseModelRepository.findLatestVersion();
-        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
-                createClassifierOptions(classifierOptions, version == 0 ? version + 1 : version);
-        classifierOptionsDatabaseModelRepository.save(classifierOptionsDatabaseModel);
-        log.info("New classifier options {} has been saved.", classifierOptions);
-        return classifierOptionsDatabaseModel;
-    }
-
-    /**
      * Finds the last classifiers options configs.
      *
      * @return {@link ClassifierOptionsDatabaseModel} list

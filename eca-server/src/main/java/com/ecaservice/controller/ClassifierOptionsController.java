@@ -2,7 +2,6 @@ package com.ecaservice.controller;
 
 import com.ecaservice.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
-import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.service.experiment.ExperimentConfigurationService;
 import com.ecaservice.web.dto.ClassifierOptionsDto;
 import com.ecaservice.web.dto.PageDto;
@@ -12,8 +11,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,23 +41,6 @@ public class ClassifierOptionsController {
                                        ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper) {
         this.experimentConfigurationService = experimentConfigurationService;
         this.classifierOptionsDatabaseModelMapper = classifierOptionsDatabaseModelMapper;
-    }
-
-    /**
-     * Saves classifier input options config into database.
-     *
-     * @param classifierOptions - classifiers options for saving
-     * @return response entity
-     */
-    @ApiOperation(
-            value = "Saves classifier input options config into database",
-            notes = "Saves classifier input options config into database"
-    )
-    @PostMapping(value = "/save")
-    public ResponseEntity<ClassifierOptionsDto> save(@RequestBody ClassifierOptions classifierOptions) {
-        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
-                experimentConfigurationService.saveClassifierOptions(classifierOptions);
-        return ResponseEntity.ok(classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModel));
     }
 
     /**

@@ -5,7 +5,6 @@ import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.exception.ExperimentException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.options.ActivationFunctionOptions;
-import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.model.options.DecisionTreeOptions;
 import com.ecaservice.model.options.LogisticOptions;
 import com.ecaservice.model.options.NeuralNetworkOptions;
@@ -78,7 +77,8 @@ public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
         ClassifierOptionsDatabaseModel treeOptionsDatabaseModel = TestHelperUtils.createClassifierOptionsDatabaseModel(
                 objectMapper.writeValueAsString(decisionTreeOptions), CONFIG_VERSION);
         classifierOptionsDatabaseModelRepository.save(treeOptionsDatabaseModel);
-        List<ClassifierOptionsDatabaseModel> classifierList = experimentConfigurationService.findLastClassifiersOptions();
+        List<ClassifierOptionsDatabaseModel> classifierList =
+                experimentConfigurationService.findLastClassifiersOptions();
         assertThat(classifierList.size()).isEqualTo(3);
     }
 
@@ -101,19 +101,14 @@ public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testSaveSameConfigs() throws IOException {
+    public void testSaveSameConfigs() {
         URL modelsUrl = getClass().getClassLoader().getResource(experimentConfig.getIndividualClassifiersStoragePath());
         File classifiersOptionsDir = new File(modelsUrl.getPath());
         File[] modelFiles = classifiersOptionsDir.listFiles();
-        for (File modelFile : modelFiles) {
-            ClassifierOptions classifierOptions = objectMapper.readValue(modelFile, ClassifierOptions.class);
-            experimentConfigurationService.saveClassifierOptions(classifierOptions);
-        }
+        experimentConfigurationService.saveClassifiersOptions();
+        experimentConfigurationService.saveClassifiersOptions();
         List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
                 classifierOptionsDatabaseModelRepository.findAll();
-        assertThat(classifierOptionsDatabaseModels.size()).isEqualTo(modelFiles.length);
-        experimentConfigurationService.saveClassifiersOptions();
-        classifierOptionsDatabaseModels = classifierOptionsDatabaseModelRepository.findAll();
         assertThat(classifierOptionsDatabaseModels.size()).isEqualTo(modelFiles.length);
     }
 }
