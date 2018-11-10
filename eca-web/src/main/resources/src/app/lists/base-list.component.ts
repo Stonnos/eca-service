@@ -13,7 +13,6 @@ export abstract class BaseListComponent<T> {
 
   public defaultSortField: string;
   public defaultSortOrder: number = -1;
-  public total: number = 0;
   public pageSize: number = 25;
 
   public filters: Filter[] = [];
@@ -52,10 +51,10 @@ export abstract class BaseListComponent<T> {
     this.getNextPage(pageRequest);
   }
 
-  public setPage(pageDto: PageDto<T>, pageRequest: PageRequestDto) {
+  public setPage(pageDto: PageDto<T>) {
     this.items = pageDto.content;
-    this.total = pageDto.totalCount;
-    if (pageRequest.page == 0) {
+    this.table.totalRecords = pageDto.totalCount;
+    if (pageDto.page == 0) {
       this.table.first = 0;
     }
   }

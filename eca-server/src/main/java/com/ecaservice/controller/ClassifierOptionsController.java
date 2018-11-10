@@ -95,6 +95,7 @@ public class ClassifierOptionsController {
                 experimentConfigurationService.getNextPage(pageRequestDto);
         List<ClassifierOptionsDto> classifierOptionsDtoList =
                 classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModels.getContent());
-        return PageDto.of(classifierOptionsDtoList, classifierOptionsDatabaseModels.getTotalElements());
+        return PageDto.of(classifierOptionsDtoList, pageRequestDto.getPage(),
+                classifierOptionsDatabaseModels.getTotalElements());
     }
 }

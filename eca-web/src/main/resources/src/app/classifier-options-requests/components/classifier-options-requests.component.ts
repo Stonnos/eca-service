@@ -38,7 +38,7 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
   public getNextPage(pageRequest: PageRequestDto) {
     this.classifierOptionsService.getClassifiersOptionsRequests(pageRequest)
       .subscribe((pageDto: PageDto<ClassifierOptionsRequestDto>) => {
-      this.setPage(pageDto, pageRequest);
+      this.setPage(pageDto);
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
     });

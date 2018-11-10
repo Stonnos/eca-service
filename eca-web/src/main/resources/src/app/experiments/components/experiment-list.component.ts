@@ -34,7 +34,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public getNextPage(pageRequest: PageRequestDto) {
     this.experimentsService.getExperiments(pageRequest).subscribe((pageDto: PageDto<ExperimentDto>) => {
-      this.setPage(pageDto, pageRequest);
+      this.setPage(pageDto);
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
     });

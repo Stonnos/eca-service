@@ -90,7 +90,7 @@ public class WebController {
         log.info("Received experiments page request: {}", pageRequestDto);
         Page<Experiment> experimentPage = experimentService.getNextPage(pageRequestDto);
         List<ExperimentDto> experimentDtoList = experimentMapper.map(experimentPage.getContent());
-        return PageDto.of(experimentDtoList, experimentPage.getTotalElements());
+        return PageDto.of(experimentDtoList, pageRequestDto.getPage(), experimentPage.getTotalElements());
     }
 
     /**
@@ -158,7 +158,7 @@ public class WebController {
         log.info("Received evaluation logs page request: {}", pageRequestDto);
         Page<EvaluationLog> evaluationLogs = evaluationLogService.getNextPage(pageRequestDto);
         List<EvaluationLogDto> evaluationLogDtoList = evaluationLogMapper.map(evaluationLogs.getContent());
-        return PageDto.of(evaluationLogDtoList, evaluationLogs.getTotalElements());
+        return PageDto.of(evaluationLogDtoList, pageRequestDto.getPage(), evaluationLogs.getTotalElements());
     }
 
     /**
@@ -192,7 +192,8 @@ public class WebController {
                 classifierOptionsRequestService.getNextPage(pageRequestDto);
         List<ClassifierOptionsRequestDto> classifierOptionsRequestDtoList =
                 classifierOptionsRequestModelMapper.map(classifierOptionsRequestModelPage.getContent());
-        return PageDto.of(classifierOptionsRequestDtoList, classifierOptionsRequestModelPage.getTotalElements());
+        return PageDto.of(classifierOptionsRequestDtoList, pageRequestDto.getPage(),
+                classifierOptionsRequestModelPage.getTotalElements());
     }
 
     private RequestStatusStatisticsDto createRequestStatusesStatistics(Map<RequestStatus, Long> statusStatisticsMap) {

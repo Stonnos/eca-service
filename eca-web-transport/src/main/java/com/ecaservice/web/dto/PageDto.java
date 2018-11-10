@@ -20,6 +20,11 @@ public class PageDto<T> {
     private List<T> content;
 
     /**
+     * Page number
+     */
+    private int page;
+
+    /**
      * Total elements count for page number calculation
      */
     private long totalCount;
@@ -28,11 +33,12 @@ public class PageDto<T> {
      * Creates page dto.
      *
      * @param content    - content list
+     * @param page       - page number
      * @param totalCount - total elements count for page number calculation
      * @param <T>        - generic type
      * @return page dto
      */
-    public static <T> PageDto<T> of(List<T> content, long totalCount) {
-        return new PageDto<>(content, totalCount);
+    public static <T> PageDto<T> of(List<T> content, int page, long totalCount) {
+        return new PageDto<>(content, page, totalCount);
     }
 }

@@ -39,7 +39,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
 
   public getNextPage(pageRequest: PageRequestDto) {
     this.classifiersService.getEvaluations(pageRequest).subscribe((pageDto: PageDto<EvaluationLogDto>) => {
-      this.setPage(pageDto, pageRequest);
+      this.setPage(pageDto);
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
     });
