@@ -16,9 +16,9 @@ services:
       TZ: "Asia/Novosibirsk"
       PGTZ: "Asia/Novosibirsk"
 
-  eca-service:
-    image: eca-service
-    container_name: eca-service
+  eca-server:
+    image: eca-server
+    container_name: eca-server
     environment:
       TZ: "Asia/Novosibirsk"
     ports:
@@ -27,6 +27,18 @@ services:
       - default
     depends_on:
       - eca-db
+
+   eca-web:
+    image: eca-web
+    container_name: eca-web
+    environment:
+      TZ: "Asia/Novosibirsk"
+    ports:
+      - "8083:8080"
+    networks:
+      - default
+    depends_on:
+      - eca-server
 
 networks:
   default:
