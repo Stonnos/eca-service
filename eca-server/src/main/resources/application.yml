@@ -84,3 +84,8 @@ ers-config:
   url: http://localhost:8085/evaluation-results-service/ws/
   enabled: true
   threadPoolSize: 10
+
+oauth2-resource:
+  clientId: eca
+  secret: web_secret
+  oauthUrl: http://localhost:8085/eca-oauth

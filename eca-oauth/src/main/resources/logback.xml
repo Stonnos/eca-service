@@ -10,9 +10,9 @@
     </appender>
 
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>eca-server.log</file>
+        <file>eca-oauth.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>eca-server.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>eca-oauth.%d{yyyy-MM-dd}.log</fileNamePattern>
             <!-- 21 days keep logs -->
             <maxHistory>21</maxHistory>
             <totalSizeCap>100mb</totalSizeCap>

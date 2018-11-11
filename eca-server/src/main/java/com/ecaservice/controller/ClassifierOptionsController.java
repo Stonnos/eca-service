@@ -10,6 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,6 +49,7 @@ public class ClassifierOptionsController {
      *
      * @return response entity
      */
+    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Finds the last classifiers options configs",
             notes = "Finds the last classifiers options configs"

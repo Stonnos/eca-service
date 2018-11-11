@@ -11,6 +11,7 @@
         <module>eca-web-transport</module>
         <module>eca-server</module>
         <module>eca-web</module>
+        <module>eca-oauth</module>
     </modules>
 
     <parent>

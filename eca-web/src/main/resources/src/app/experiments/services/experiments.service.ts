@@ -7,16 +7,24 @@ import {
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { ConfigService } from "../../config.service";
+import {AuthService} from "../../auth.service";
 
 @Injectable()
 export class ExperimentsService {
 
   private serviceUrl = ConfigService.appConfig.apiUrl;
 
-  public constructor(private http: HttpClient) {
+  public constructor(private http: HttpClient, private authService: AuthService) {
   }
 
   public getExperiments(pageRequest: PageRequestDto): Observable<PageDto<ExperimentDto>> {
+    this.authService.obtainAccessToken("admin", "secret").subscribe(
+      (token) => {
+        console.log(token);
+      }, (error) => {
+        console.log(error);
+
+      });
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
     });

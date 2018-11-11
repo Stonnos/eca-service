@@ -15,6 +15,7 @@ import { ClassifierOptionsModule } from "./classifier-options/classifier-options
 import { RequestStatusesStatisticsModule } from "./request-statuses-statistics/request-statuses-statistics.module";
 import { ClassifierOptionsRequestsModule } from "./classifier-options-requests/classifier-options-requests.module";
 import { ConfigService } from "./config.service";
+import { AuthService } from "./auth.service";
 
 export function initializeApp(configService: ConfigService) {
   return () => configService.getConfigs();
@@ -41,6 +42,7 @@ export function initializeApp(configService: ConfigService) {
   ],
   providers: [
     ConfigService,
+    AuthService,
     { provide: APP_INITIALIZER, useFactory: initializeApp, deps: [ConfigService], multi: true }
   ],
   bootstrap: [AppComponent]
