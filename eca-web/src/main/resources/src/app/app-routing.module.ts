@@ -36,7 +36,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: '/dashboard/experiments',
+    redirectTo: '/login',
     pathMatch: 'full'
   }
 ];

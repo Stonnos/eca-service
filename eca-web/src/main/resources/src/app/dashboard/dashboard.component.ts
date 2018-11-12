@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import {AuthService} from "../auth/services/auth.service";
+import { AuthService } from "../auth/services/auth.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -16,7 +16,6 @@ export class DashboardComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.authService.checkCredentials();
     this.items = [
       {
         label: 'Experiments',

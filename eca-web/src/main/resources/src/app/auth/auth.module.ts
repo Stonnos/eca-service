@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { UiComponentsModule } from "../ui-components.module";
 import { LoginComponent } from "./components/login.component";
 import { AuthService } from "./services/auth.service";
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { AuthInterceptor } from "./interceptors/auth-interceptor";
 
 @NgModule({
   imports: [
@@ -15,7 +17,12 @@ import { AuthService } from "./services/auth.service";
     LoginComponent
   ],
   providers: [
-    AuthService
+    AuthService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
   ]
 })
 export class AuthModule {

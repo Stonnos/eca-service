@@ -16,7 +16,7 @@ export class AuthService {
   constructor(private router: Router, private http: HttpClient, private cookieService: CookieService) {
   }
 
-  obtainAccessToken(user: UserModel): Observable<any> {
+  public obtainAccessToken(user: UserModel): Observable<any> {
     const params = new URLSearchParams();
     params.append('username', user.login);
     params.append('password', user.password);
@@ -30,20 +30,16 @@ export class AuthService {
     return this.http.post(this.serviceUrl, params.toString(), options);
   }
 
-  saveToken(token){
+  public saveToken(token){
     const expireDate = new Date().getTime() + (1000 * token.expires_in);
     this.cookieService.set('access_token', token.access_token, expireDate);
-    this.router.navigate(['/']);
   }
 
-  checkCredentials(){
-    if (!this.cookieService.check('access_token')){
-      console.log("NAV");
-      this.router.navigate(['/login']);
-    }
+  public hasAccessToken(): boolean {
+    return this.cookieService.check('access_token');
   }
 
-  logout() {
+  public logout() {
     this.cookieService.delete('access_token');
     this.router.navigate(['/login']);
   }
