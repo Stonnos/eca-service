@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from "rxjs/internal/Observable";
 import { CookieService } from "ngx-cookie-service";
-import { ConfigService } from "./config.service";
+import { ConfigService } from "../../config.service";
 
 @Injectable()
 export class AuthService {
