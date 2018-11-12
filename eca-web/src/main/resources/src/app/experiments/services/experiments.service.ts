@@ -7,18 +7,20 @@ import {
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { ConfigService } from "../../config.service";
+import { CookieService } from "ngx-cookie-service";
 
 @Injectable()
 export class ExperimentsService {
 
   private serviceUrl = ConfigService.appConfig.apiUrl;
 
-  public constructor(private http: HttpClient) {
+  public constructor(private http: HttpClient, private cookieService: CookieService) {
   }
 
   public getExperiments(pageRequest: PageRequestDto): Observable<PageDto<ExperimentDto>> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
+      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
     });
     let params = new HttpParams().set('page', pageRequest.page.toString())
       .set('size', pageRequest.size.toString())
@@ -37,6 +39,7 @@ export class ExperimentsService {
   public getExperimentTypes(): Observable<ExperimentTypeDto[]> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
+      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
     });
     return this.http.get<ExperimentTypeDto[]>(this.serviceUrl + '/experiment-types', { headers: headers });
   }
@@ -44,6 +47,7 @@ export class ExperimentsService {
   public getRequestStatusesStatistics(): Observable<RequestStatusStatisticsDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
+      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
     });
     return this.http.get<RequestStatusStatisticsDto>(this.serviceUrl + '/experiment/request-statuses-statistics', { headers: headers });
   }
@@ -53,6 +57,10 @@ export class ExperimentsService {
   }
 
   public getExperimentTrainingDataFile(uuid: string): Observable<Blob> {
-    return this.http.get<Blob>(this.serviceUrl + '/experiment-training-data/' + uuid, { responseType: 'blob' as 'json' });
+    const headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
+    });
+    const options = { headers: headers, responseType: 'blob' as 'json' };
+    return this.http.get<Blob>(this.serviceUrl + '/experiment-training-data/' + uuid, options);
   }
 }

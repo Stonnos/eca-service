@@ -7,18 +7,20 @@ import {
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { ConfigService } from "../../config.service";
+import { CookieService } from "ngx-cookie-service";
 
 @Injectable()
 export class ClassifierOptionsRequestService {
 
   private serviceUrl = ConfigService.appConfig.apiUrl;
 
-  public constructor(private http: HttpClient) {
+  public constructor(private http: HttpClient, private cookieService: CookieService) {
   }
 
   public getClassifiersOptionsRequests(pageRequest: PageRequestDto): Observable<PageDto<ClassifierOptionsRequestDto>> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
+      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
     });
     let params = new HttpParams().set('page', pageRequest.page.toString())
       .set('size', pageRequest.size.toString())

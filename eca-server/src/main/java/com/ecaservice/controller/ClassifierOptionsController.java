@@ -67,6 +67,7 @@ public class ClassifierOptionsController {
      * @param pageRequestDto - page request dto
      * @return response entity
      */
+    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Finds the last classifiers options configs",
             notes = "Finds the last classifiers options configs"

@@ -24,6 +24,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -81,6 +82,7 @@ public class WebController {
      * @param pageRequestDto - page request dto
      * @return experiments page dto
      */
+    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Finds experiments with specified options",
             notes = "Finds experiments with specified options"
@@ -98,6 +100,7 @@ public class WebController {
      *
      * @return experiments types list
      */
+    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Gets all experiments types",
             notes = "Gets all experiments types"
@@ -113,6 +116,7 @@ public class WebController {
      *
      * @return experiments statistics dto
      */
+    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Gets experiments statistics",
             notes = "Gets experiments statistics"
@@ -127,6 +131,7 @@ public class WebController {
      *
      * @param uuid - experiment uuid
      */
+    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Downloads experiment training data by specified uuid",
             notes = "Downloads experiment training data by specified uuid"
@@ -149,6 +154,7 @@ public class WebController {
      * @param pageRequestDto - page request dto
      * @return evaluations logs page
      */
+    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Finds evaluation logs with specified options",
             notes = "Finds evaluation logs with specified options"
@@ -166,6 +172,7 @@ public class WebController {
      *
      * @return experiments statistics dto
      */
+    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Gets experiments statistics",
             notes = "Gets experiments statistics"
@@ -181,6 +188,7 @@ public class WebController {
      * @param pageRequestDto - page request dto
      * @return classifiers options requests models page
      */
+    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Finds classifiers options requests models with specified options",
             notes = "Finds classifiers options requests models with specified options"
