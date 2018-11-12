@@ -37,13 +37,12 @@ public class AuthServerOauth2Configuration extends AuthorizationServerConfigurer
     }
 
     @Override
-    public void configure(final AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
+    public void configure(final AuthorizationServerSecurityConfigurer oauthServer) {
         oauthServer.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
     }
 
     @Override
-    public void configure(ClientDetailsServiceConfigurer clients)
-            throws Exception {
+    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
                 .withClient(oauth2Config().getClientId())
                 .secret(String.format("{noop}%s", oauth2Config().getSecret()))
@@ -53,7 +52,7 @@ public class AuthServerOauth2Configuration extends AuthorizationServerConfigurer
     }
 
     @Override
-    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
         endpoints.authenticationManager(authenticationManager).userDetailsService(userDetailsService);
     }
 }

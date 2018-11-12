@@ -40,7 +40,7 @@ services:
     depends_on:
       - eca-db
 
-   eca-web:
+  eca-web:
     image: eca-web
     container_name: eca-web
     environment:
