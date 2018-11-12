@@ -6,3 +6,7 @@
 .text-wrap {
   word-wrap: break-word;
 }
+
+.h-30 {
+  height: 30px;
+}

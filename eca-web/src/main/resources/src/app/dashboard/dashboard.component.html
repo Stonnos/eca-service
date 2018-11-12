@@ -1,2 +1,4 @@
-<p-menubar [model]="items"></p-menubar>
+<p-menubar [model]="items">
+  <button pButton label="admin" icon="fa fa-sign-out" (click)="logout()"></button>
+</p-menubar>
 <router-outlet></router-outlet>

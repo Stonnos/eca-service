@@ -1,1 +1,58 @@
+<p-panel class="auth-panel">
+  <p-header class="text-center text-bold">
+    <h3>Authentication</h3>
+  </p-header>
+  <form novalidate class="form d-flex justify-sm-content-center m-auto" (submit)="onSubmit($event)">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-12 h-30">
+        <div *ngIf="form.valid && errorMessage" class="text-danger text-center mb-5">{{ errorMessage }}</div>
+      </div>
+      <div class="ui-g-12 text-center">
+        <label class="text-bold">Login</label>
+        <input
+          required
+          pInputText
+          id="login"
+          name="login"
+          type="text"
+          placeholder="Enter login"
+          [ngModel]="userModel.login"
+          #login="ngModel"
+          class="form-control d-block w-100 text-center">
+        <div class="text-danger text-center h-30" *ngIf="login.invalid && (login.dirty || login.touched || submitted)">
+          <div *ngIf="login?.errors?.required">
+            Enter login
+          </div>
+        </div>
+      </div>
+      <div class="ui-g-12 text-center">
+        <label class="text-bold">Password</label>
+        <input
+          required
+          pPassword
+          id="password"
+          name="password"
+          type="password"
+          placeholder="Enter password"
+          [ngModel]="userModel.password"
+          #password="ngModel"
+          class="form-control d-block w-100 text-center"
+          [feedback]="false">
+        <div class="text-danger text-center h-30" *ngIf="password.invalid && (password.dirty || password.touched || submitted)">
+          <div *ngIf="password?.errors?.required">
+            Enter password
+          </div>
+        </div>
+      </div>
+      <div class="ui-g-3 mx-auto">
+        <button
+          pButton
+          type="submit"
+          class="auth-button w-100 mb-2 mb-sm-3"
+          label="Log In">
+        </button>
+      </div>
 
+    </div>
+  </form>
+</p-panel>

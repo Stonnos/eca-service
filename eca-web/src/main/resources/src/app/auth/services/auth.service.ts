@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Observable } from "rxjs/internal/Observable";
 import { CookieService } from "ngx-cookie-service";
 import { ConfigService } from "../../config.service";
+import { UserModel } from "../components/user.model";
 
 @Injectable()
 export class AuthService {
@@ -15,10 +16,10 @@ export class AuthService {
   constructor(private router: Router, private http: HttpClient, private cookieService: CookieService) {
   }
 
-  obtainAccessToken(username: string, password: string): Observable<any> {
+  obtainAccessToken(user: UserModel): Observable<any> {
     const params = new URLSearchParams();
-    params.append('username', username);
-    params.append('password', password);
+    params.append('username', user.login);
+    params.append('password', user.password);
     params.append('grant_type', 'password');
     params.append('client_id', this.clientId);
     const headers = new HttpHeaders({
@@ -31,12 +32,13 @@ export class AuthService {
 
   saveToken(token){
     const expireDate = new Date().getTime() + (1000 * token.expires_in);
-    this.cookieService.set("access_token", token.access_token, expireDate);
+    this.cookieService.set('access_token', token.access_token, expireDate);
     this.router.navigate(['/']);
   }
 
   checkCredentials(){
     if (!this.cookieService.check('access_token')){
+      console.log("NAV");
       this.router.navigate(['/login']);
     }
   }

@@ -5,6 +5,7 @@ import { ClassifierListComponent } from "./classifiers/components/classifier-lis
 import { ExperimentListComponent } from "./experiments/components/experiment-list.component";
 import { ClassifierOptionsComponent } from "./classifier-options/components/classifier-options.component";
 import { ClassifierOptionsRequestsComponent } from "./classifier-options-requests/components/classifier-options-requests.component";
+import { LoginComponent } from "./auth/components/login.component";
 
 const routes: Routes = [
   {
@@ -28,6 +29,10 @@ const routes: Routes = [
         component: ClassifierOptionsRequestsComponent
       }
     ]
+  },
+  {
+    path: 'login',
+    component: LoginComponent
   },
   {
     path: '',

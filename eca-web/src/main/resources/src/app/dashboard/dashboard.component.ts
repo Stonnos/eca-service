@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
+import {AuthService} from "../auth/services/auth.service";
 
 @Component({
   selector: 'app-dashboard',
+  providers: [AuthService],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
@@ -10,7 +12,11 @@ export class DashboardComponent implements OnInit {
 
   items: MenuItem[];
 
+  constructor(private authService: AuthService) {
+  }
+
   public ngOnInit() {
+    this.authService.checkCredentials();
     this.items = [
       {
         label: 'Experiments',
@@ -33,5 +39,9 @@ export class DashboardComponent implements OnInit {
         routerLinkActiveOptions: 'ui-menuitem-active'
       }
     ];
+  }
+
+  public logout() {
+    this.authService.logout();
   }
 }
