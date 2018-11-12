@@ -16,7 +16,7 @@
           name="login"
           type="text"
           placeholder="Enter login"
-          [ngModel]="userModel.login"
+          [(ngModel)]="userModel.login"
           #login="ngModel"
           class="form-control d-block w-100 text-center">
         <div class="text-danger text-center h-30" *ngIf="login.invalid && (login.dirty || login.touched || submitted)">
@@ -34,7 +34,7 @@
           name="password"
           type="password"
           placeholder="Enter password"
-          [ngModel]="userModel.password"
+          [(ngModel)]="userModel.password"
           #password="ngModel"
           class="form-control d-block w-100 text-center"
           [feedback]="false">
