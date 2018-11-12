@@ -25,6 +25,7 @@
     "file-saver": "^2.0.0-rc.4",
     "font-awesome": "^4.7.0",
     "jquery": "^3.3.1",
+    "ngx-cookie-service": "^2.0.0",
     "popper.js": "^1.14.4",
     "primeicons": "^1.0.0",
     "primeng": "^6.1.5",
