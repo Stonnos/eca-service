@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Injector, OnInit } from '@angular/core';
 import {
   ClassifierOptionsDto, PageDto,
   PageRequestDto
@@ -8,6 +8,7 @@ import { MessageService } from "primeng/api";
 import { BaseListComponent } from "../../lists/base-list.component";
 import { OverlayPanel} from "primeng/primeng";
 import { JsonPipe } from "@angular/common";
+import { Observable } from "rxjs/internal/Observable";
 
 declare var Prism: any;
 
@@ -20,9 +21,9 @@ export class ClassifierOptionsComponent extends BaseListComponent<ClassifierOpti
 
   public selectedOptions: ClassifierOptionsDto;
 
-  public constructor(private classifierOptionsService: ClassifierOptionsService,
-                     private messageService: MessageService) {
-    super();
+  public constructor(private injector: Injector,
+                     private classifierOptionsService: ClassifierOptionsService) {
+    super(injector.get(MessageService));
     this.defaultSortField = "creationDate";
     this.linkColumns = ["optionsName"];
     this.initColumns();
@@ -31,12 +32,8 @@ export class ClassifierOptionsComponent extends BaseListComponent<ClassifierOpti
   public ngOnInit() {
   }
 
-  public getNextPage(pageRequest: PageRequestDto) {
-    this.classifierOptionsService.getClassifiersOptions(pageRequest).subscribe((pageDto: PageDto<ClassifierOptionsDto>) => {
-      this.setPage(pageDto);
-    }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
-    });
+  public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<ClassifierOptionsDto>> {
+    return this.classifierOptionsService.getClassifiersOptions(pageRequest);
   }
 
   public onSelect(event, classifierOptionsDto: ClassifierOptionsDto, overlayPanel: OverlayPanel) {

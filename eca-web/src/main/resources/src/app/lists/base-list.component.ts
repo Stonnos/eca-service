@@ -1,4 +1,4 @@
-import { LazyLoadEvent } from "primeng/api";
+import { LazyLoadEvent, MessageService } from "primeng/api";
 import {
   FilterRequestDto,
   PageDto,
@@ -8,6 +8,7 @@ import { Filter } from "../filter/filter.model";
 import { DatePipe } from "@angular/common";
 import { Table } from "primeng/table";
 import { ViewChild } from "@angular/core";
+import { Observable } from "rxjs/internal/Observable";
 
 export abstract class BaseListComponent<T> {
 
@@ -20,13 +21,28 @@ export abstract class BaseListComponent<T> {
   public linkColumns: string[] = [];
   public notSortableColumns: string[] = [];
   public items: T[] = [];
+  public loading: boolean = false;
 
   @ViewChild(Table)
   private table: Table;
 
   private dateFormat: string = "yyyy-MM-dd HH:mm:ss";
 
-  public abstract getNextPage(pageRequest: PageRequestDto);
+  protected constructor(public messageService: MessageService) {
+  }
+
+  public getNextPage(pageRequest: PageRequestDto) {
+    this.loading = true;
+    this.getNextPageAsObservable(pageRequest).subscribe((pageDto: PageDto<T>) => {
+      this.setPage(pageDto);
+      this.loading = false;
+    }, (error) => {
+      this.loading = false;
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+    });
+  }
+
+  public abstract getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<T>>;
 
   public onLazyLoad(event: LazyLoadEvent) {
     const page: number = Math.round(event.first / event.rows);

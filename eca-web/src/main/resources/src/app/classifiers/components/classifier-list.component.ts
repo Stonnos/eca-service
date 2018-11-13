@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import {
   EvaluationLogDto,
   PageDto,
@@ -9,6 +9,7 @@ import { MessageService, SelectItem } from "primeng/api";
 import { ClassifiersService } from "../services/classifiers.service";
 import { Filter } from "../../filter/filter.model";
 import { OverlayPanel } from "primeng/primeng";
+import { Observable } from "rxjs/internal/Observable";
 
 @Component({
   selector: 'app-classifier-list',
@@ -24,9 +25,9 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   public selectedEvaluationLog: EvaluationLogDto;
   public selectedColumn: string;
 
-  public constructor(private classifiersService: ClassifiersService,
-                     private messageService: MessageService) {
-    super();
+  public constructor(private injector: Injector,
+                     private classifiersService: ClassifiersService) {
+    super(injector.get(MessageService));
     this.defaultSortField = "creationDate";
     this.linkColumns = ["classifierName", "evaluationMethod", this.instancesInfoColumn];
     this.initColumns();
@@ -37,12 +38,8 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     this.getRequestStatusesStatistics();
   }
 
-  public getNextPage(pageRequest: PageRequestDto) {
-    this.classifiersService.getEvaluations(pageRequest).subscribe((pageDto: PageDto<EvaluationLogDto>) => {
-      this.setPage(pageDto);
-    }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
-    });
+  public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<EvaluationLogDto>> {
+    return this.classifiersService.getEvaluations(pageRequest);
   }
 
   public getRequestStatusesStatistics() {
@@ -102,5 +99,4 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     this.filters.push(new Filter("creationDate", "Creation date to",
       "DATE", "LTE", null));
   }
-
 }

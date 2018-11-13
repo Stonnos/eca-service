@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Injector, OnInit } from '@angular/core';
 import {
   ExperimentDto, ExperimentTypeDto, PageDto,
   PageRequestDto, RequestStatusStatisticsDto
@@ -8,6 +8,7 @@ import { MessageService, SelectItem } from "primeng/api";
 import { Filter } from "../../filter/filter.model";
 import { saveAs } from 'file-saver/dist/FileSaver';
 import { BaseListComponent } from "../../lists/base-list.component";
+import { Observable } from "rxjs/internal/Observable";
 
 @Component({
   selector: 'app-experiment-list',
@@ -18,9 +19,9 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
 
-  public constructor(private experimentsService: ExperimentsService,
-                     private messageService: MessageService) {
-    super();
+  public constructor(private injector: Injector,
+                     private experimentsService: ExperimentsService) {
+    super(injector.get(MessageService));
     this.defaultSortField = "creationDate";
     this.linkColumns = ["trainingDataAbsolutePath", "experimentAbsolutePath"];
     this.initColumns();
@@ -32,12 +33,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     this.getRequestStatusesStatistics();
   }
 
-  public getNextPage(pageRequest: PageRequestDto) {
-    this.experimentsService.getExperiments(pageRequest).subscribe((pageDto: PageDto<ExperimentDto>) => {
-      this.setPage(pageDto);
-    }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
-    });
+  public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<ExperimentDto>> {
+    return this.experimentsService.getExperiments(pageRequest);
   }
 
   public getRequestStatusesStatistics() {

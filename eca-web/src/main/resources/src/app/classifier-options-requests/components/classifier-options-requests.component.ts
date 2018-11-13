@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Injector, OnInit } from '@angular/core';
 import {
   ClassifierOptionsRequestDto, PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
-import {MessageService, SelectItem} from "primeng/api";
+import { MessageService, SelectItem } from "primeng/api";
 import { BaseListComponent } from "../../lists/base-list.component";
 import { OverlayPanel} from "primeng/primeng";
 import { JsonPipe } from "@angular/common";
 import { ClassifierOptionsRequestService } from "../services/classifier-options-request.service";
-import {Filter} from "../../filter/filter.model";
+import { Filter } from "../../filter/filter.model";
+import { Observable } from "rxjs/internal/Observable";
 
 declare var Prism: any;
 
@@ -22,9 +23,9 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
   public selectedRequest: ClassifierOptionsRequestDto;
   public selectedColumn: string;
 
-  public constructor(private classifierOptionsService: ClassifierOptionsRequestService,
-                     private messageService: MessageService) {
-    super();
+  public constructor(private injector: Injector,
+                     private classifierOptionsService: ClassifierOptionsRequestService) {
+    super(injector.get(MessageService));
     this.defaultSortField = "requestDate";
     this.linkColumns = ["classifierName", "evaluationMethod"];
     this.notSortableColumns = ["classifierName"];
@@ -35,13 +36,8 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
   public ngOnInit() {
   }
 
-  public getNextPage(pageRequest: PageRequestDto) {
-    this.classifierOptionsService.getClassifiersOptionsRequests(pageRequest)
-      .subscribe((pageDto: PageDto<ClassifierOptionsRequestDto>) => {
-      this.setPage(pageDto);
-    }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
-    });
+  public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<ClassifierOptionsRequestDto>> {
+    return this.classifierOptionsService.getClassifiersOptionsRequests(pageRequest);
   }
 
   public getColumnValue(column: string, item: ClassifierOptionsRequestDto) {
