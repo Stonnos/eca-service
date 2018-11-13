@@ -19,12 +19,14 @@ import com.ecaservice.web.dto.ExperimentTypeDto;
 import com.ecaservice.web.dto.PageDto;
 import com.ecaservice.web.dto.PageRequestDto;
 import com.ecaservice.web.dto.RequestStatusStatisticsDto;
+import com.ecaservice.web.dto.UserDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -202,6 +204,23 @@ public class WebController {
                 classifierOptionsRequestModelMapper.map(classifierOptionsRequestModelPage.getContent());
         return PageDto.of(classifierOptionsRequestDtoList, pageRequestDto.getPage(),
                 classifierOptionsRequestModelPage.getTotalElements());
+    }
+
+
+    /**
+     * Gets current user.
+     *
+     * @return current user
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Gets current user info",
+            notes = "Gets current user info"
+    )
+    @GetMapping(value = "/current-user")
+    public UserDto getCurrentUser() {
+        String principal = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return new UserDto(principal);
     }
 
     private RequestStatusStatisticsDto createRequestStatusesStatistics(Map<RequestStatus, Long> statusStatisticsMap) {

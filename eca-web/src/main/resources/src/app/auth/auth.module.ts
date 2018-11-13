@@ -6,6 +6,7 @@ import { LoginComponent } from "./components/login.component";
 import { AuthService } from "./services/auth.service";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { AuthInterceptor } from "./interceptors/auth-interceptor";
+import { UserService } from "./services/user.service";
 
 @NgModule({
   imports: [
@@ -18,6 +19,7 @@ import { AuthInterceptor } from "./interceptors/auth-interceptor";
   ],
   providers: [
     AuthService,
+    UserService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
