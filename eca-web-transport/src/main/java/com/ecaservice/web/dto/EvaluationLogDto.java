@@ -68,16 +68,19 @@ public class EvaluationLogDto {
     /**
      * Folds number for k * V cross - validation method
      */
+    @ApiModelProperty(notes = "Folds number for k * V cross - validation method")
     private Integer numFolds;
 
     /**
      * Tests number for k * V cross - validation method
      */
+    @ApiModelProperty(notes = "Tests number for k * V cross - validation method")
     private Integer numTests;
 
     /**
      * Seed value for k * V cross - validation method
      */
+    @ApiModelProperty(notes = "Seed value for k * V cross - validation method")
     private Integer seed;
 
     /**

@@ -1,5 +1,6 @@
 package com.ecaservice.web.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -15,5 +16,6 @@ public class UserDto {
     /**
      * User login
      */
+    @ApiModelProperty(notes = "User login")
     private String login;
 }
