@@ -4,11 +4,10 @@
   </p-header>
   <form novalidate class="form d-flex justify-sm-content-center m-auto" (submit)="onSubmit($event)">
     <div class="ui-g ui-fluid">
-      <div class="ui-g-12 h-30">
+      <div class="ui-g-12 auth-error">
         <div *ngIf="form.valid && errorMessage" class="text-danger text-center mb-5">{{ errorMessage }}</div>
       </div>
-      <div class="ui-g-12 text-center">
-        <label class="text-bold">Login</label>
+      <div class="ui-g-12">
         <input
           required
           pInputText
@@ -18,15 +17,14 @@
           placeholder="Enter login"
           [(ngModel)]="userModel.login"
           #login="ngModel"
-          class="form-control d-block w-100 text-center">
-        <div class="text-danger text-center h-30" *ngIf="login.invalid && (login.dirty || login.touched || submitted)">
+          class="form-control d-block w-100">
+        <div class="text-danger error-message" *ngIf="login.invalid && (login.dirty || login.touched || submitted)">
           <div *ngIf="login?.errors?.required">
             Enter login
           </div>
         </div>
       </div>
-      <div class="ui-g-12 text-center">
-        <label class="text-bold">Password</label>
+      <div class="ui-g-12">
         <input
           required
           pPassword
@@ -36,15 +34,15 @@
           placeholder="Enter password"
           [(ngModel)]="userModel.password"
           #password="ngModel"
-          class="form-control d-block w-100 text-center"
+          class="form-control d-block w-100"
           [feedback]="false">
-        <div class="text-danger text-center h-30" *ngIf="password.invalid && (password.dirty || password.touched || submitted)">
+        <div class="text-danger error-message" *ngIf="password.invalid && (password.dirty || password.touched || submitted)">
           <div *ngIf="password?.errors?.required">
             Enter password
           </div>
         </div>
       </div>
-      <div class="ui-g-3 mx-auto">
+      <div class="ui-g-4 mx-auto">
         <button
           pButton
           type="submit"
