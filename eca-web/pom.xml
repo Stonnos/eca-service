@@ -18,6 +18,7 @@
         <node.version>v8.11.3</node.version>
         <npm.version>5.6.0</npm.version>
         <docker-maven-plugin.version>1.4.3</docker-maven-plugin.version>
+        <maven-plugin.version>3.2.0</maven-plugin.version>
     </properties>
 
     <dependencies>
@@ -146,6 +147,15 @@
                 <configuration>
                     <skip>false</skip>
                     <repository>${project.artifactId}</repository>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${maven-plugin.version}</version>
+                <configuration>
+                    <warName>${project.artifactId}</warName>
                 </configuration>
             </plugin>
 
