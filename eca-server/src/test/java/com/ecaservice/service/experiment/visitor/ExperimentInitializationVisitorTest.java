@@ -3,12 +3,10 @@ package com.ecaservice.service.experiment.visitor;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.mapping.EvaluationMethodMapper;
-import com.ecaservice.mapping.EvaluationMethodMapperImpl;
-import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.service.experiment.ClassifiersSetSearcher;
+import eca.core.evaluation.EvaluationMethod;
 import eca.dataminer.AbstractExperiment;
 import eca.dataminer.AutomatedDecisionTree;
 import eca.dataminer.AutomatedHeterogeneousEnsemble;
@@ -42,15 +40,13 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({ExperimentConfig.class, CrossValidationConfig.class, EvaluationMethodMapperImpl.class})
+@Import({ExperimentConfig.class, CrossValidationConfig.class})
 public class ExperimentInitializationVisitorTest {
 
     @Inject
     private ExperimentConfig experimentConfig;
     @Inject
     private CrossValidationConfig crossValidationConfig;
-    @Inject
-    private EvaluationMethodMapper evaluationMethodMapper;
     @Mock
     private ClassifiersSetSearcher classifiersSetSearcher;
 
@@ -59,7 +55,7 @@ public class ExperimentInitializationVisitorTest {
     @Before
     public void setUp() {
         experimentInitializationVisitor = new ExperimentInitializationVisitor(experimentConfig,
-                crossValidationConfig, evaluationMethodMapper, classifiersSetSearcher);
+                crossValidationConfig, classifiersSetSearcher);
         when(classifiersSetSearcher.findBestClassifiers(any(Instances.class), any(EvaluationMethod.class),
                 anyMap())).thenReturn(new ClassifiersSet());
     }

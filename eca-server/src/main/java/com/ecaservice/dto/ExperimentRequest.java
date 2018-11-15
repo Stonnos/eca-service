@@ -1,9 +1,9 @@
 package com.ecaservice.dto;
 
 import com.ecaservice.dto.json.InstancesDeserializer;
-import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import eca.core.evaluation.EvaluationMethod;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import weka.core.Instances;

@@ -3,8 +3,8 @@ package com.ecaservice.mapping;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.model.entity.EvaluationLog;
-import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.web.dto.EvaluationLogDto;
+import eca.core.evaluation.EvaluationMethod;
 import eca.metrics.KNearestNeighbours;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,7 +68,8 @@ public class EvaluationLogMapperTest {
         assertThat(evaluationLogDto.getCreationDate()).isEqualTo(evaluationLog.getCreationDate());
         assertThat(evaluationLogDto.getStartDate()).isEqualTo(evaluationLog.getStartDate());
         assertThat(evaluationLogDto.getEndDate()).isEqualTo(evaluationLog.getEndDate());
-        assertThat(evaluationLogDto.getEvaluationMethod()).isEqualTo(evaluationLog.getEvaluationMethod().name());
+        assertThat(evaluationLogDto.getEvaluationMethod()).isEqualTo(
+                evaluationLog.getEvaluationMethod().getDescription());
         assertThat(evaluationLogDto.getEvaluationStatus()).isEqualTo(evaluationLog.getEvaluationStatus().name());
         assertThat(evaluationLogDto.getRequestId()).isEqualTo(evaluationLog.getRequestId());
         assertThat(evaluationLogDto.getInputOptions()).isNotNull();

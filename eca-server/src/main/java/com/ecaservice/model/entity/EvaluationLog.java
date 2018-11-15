@@ -1,7 +1,7 @@
 package com.ecaservice.model.entity;
 
-import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
+import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
 
 import javax.persistence.CascadeType;

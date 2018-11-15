@@ -3,12 +3,11 @@ package com.ecaservice.service.experiment.visitor;
 
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.mapping.EvaluationMethodMapper;
-import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.model.experiment.ExperimentTypeVisitor;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.service.experiment.ClassifiersSetSearcher;
+import eca.core.evaluation.EvaluationMethod;
 import eca.dataminer.AbstractExperiment;
 import eca.dataminer.AutomatedDecisionTree;
 import eca.dataminer.AutomatedHeterogeneousEnsemble;
@@ -41,7 +40,6 @@ public class ExperimentInitializationVisitor
 
     private final ExperimentConfig experimentConfig;
     private final CrossValidationConfig crossValidationConfig;
-    private final EvaluationMethodMapper evaluationMethodMapper;
     private final ClassifiersSetSearcher classifiersSetSearcher;
 
     /**
@@ -49,17 +47,14 @@ public class ExperimentInitializationVisitor
      *
      * @param experimentConfig       - experiment config bean
      * @param crossValidationConfig  - cross validation config bean
-     * @param evaluationMethodMapper - evaluation method mapper bean
      * @param classifiersSetSearcher - classifiers set searcher bean
      */
     @Inject
     public ExperimentInitializationVisitor(ExperimentConfig experimentConfig,
                                            CrossValidationConfig crossValidationConfig,
-                                           EvaluationMethodMapper evaluationMethodMapper,
                                            ClassifiersSetSearcher classifiersSetSearcher) {
         this.experimentConfig = experimentConfig;
         this.crossValidationConfig = crossValidationConfig;
-        this.evaluationMethodMapper = evaluationMethodMapper;
         this.classifiersSetSearcher = classifiersSetSearcher;
     }
 
@@ -142,7 +137,7 @@ public class ExperimentInitializationVisitor
 
     @Override
     public void afterHandle(AbstractExperiment experiment, InitializationParams initializationParams) {
-        experiment.setEvaluationMethod(evaluationMethodMapper.map(initializationParams.getEvaluationMethod()));
+        experiment.setEvaluationMethod(initializationParams.getEvaluationMethod());
         experiment.setNumFolds(crossValidationConfig.getNumFolds());
         experiment.setNumTests(crossValidationConfig.getNumTests());
         experiment.setSeed(crossValidationConfig.getSeed());

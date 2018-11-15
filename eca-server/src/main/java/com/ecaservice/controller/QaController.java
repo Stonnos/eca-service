@@ -9,13 +9,13 @@ import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
 import com.ecaservice.mapping.EvaluationResultsMapper;
 import com.ecaservice.model.MultipartFileResource;
 import com.ecaservice.model.TechnicalStatus;
-import com.ecaservice.model.evaluation.EvaluationMethod;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.service.ClassifierOptionsService;
 import com.ecaservice.service.evaluation.EvaluationOptimizerService;
 import com.ecaservice.service.evaluation.EvaluationRequestService;
 import com.ecaservice.service.experiment.ExperimentRequestService;
+import eca.core.evaluation.EvaluationMethod;
 import eca.data.file.FileDataLoader;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -112,7 +112,7 @@ public class QaController {
                          @RequestParam EvaluationMethod evaluationMethod,
                          HttpServletResponse httpServletResponse) throws Exception {
         log.info("Received evaluation request for data {}, classifier options [{}], evaluation method [{}]",
-                trainingData.getOriginalFilename(), classifierOptions, evaluationMethod);
+                trainingData.getOriginalFilename(), classifierOptions.getOriginalFilename(), evaluationMethod);
         EvaluationRequest evaluationRequest =
                 createEvaluationRequest(trainingData, classifierOptions, evaluationMethod);
         EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(evaluationRequest);

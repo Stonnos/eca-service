@@ -4,10 +4,10 @@ package com.ecaservice.service.evaluation;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.evaluation.ClassificationResult;
-import com.ecaservice.model.evaluation.EvaluationMethod;
-import com.ecaservice.model.evaluation.EvaluationMethodVisitor;
 import com.ecaservice.model.evaluation.EvaluationOption;
 import eca.core.evaluation.Evaluation;
+import eca.core.evaluation.EvaluationMethod;
+import eca.core.evaluation.EvaluationMethodVisitor;
 import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -71,7 +71,7 @@ public class EvaluationService {
             final Evaluation evaluation = new Evaluation(data);
             final StopWatch stopWatch = new StopWatch(String.format("Stop watching for %s", classifierName));
 
-            evaluationMethod.handle(new EvaluationMethodVisitor() {
+            evaluationMethod.accept(new EvaluationMethodVisitor() {
                 @Override
                 public void evaluateModel() throws Exception {
                     stopWatch.start(String.format("%s model training", classifierName));

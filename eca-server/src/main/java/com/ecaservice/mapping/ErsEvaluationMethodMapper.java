@@ -17,5 +17,5 @@ public interface ErsEvaluationMethodMapper {
      * @param evaluationMethod - ERS evaluation method
      * @return model evaluation method
      */
-    com.ecaservice.model.evaluation.EvaluationMethod map(EvaluationMethod evaluationMethod);
+    eca.core.evaluation.EvaluationMethod map(EvaluationMethod evaluationMethod);
 }

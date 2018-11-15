@@ -38,7 +38,9 @@ public abstract class ExperimentMapper {
             @Mapping(source = "experimentAbsolutePath", target = "experimentAbsolutePath",
                     qualifiedByName = "toFileName"),
             @Mapping(source = "trainingDataAbsolutePath", target = "trainingDataAbsolutePath",
-                    qualifiedByName = "toFileName")
+                    qualifiedByName = "toFileName"),
+            @Mapping(source = "evaluationMethod.description", target = "evaluationMethod"),
+            @Mapping(source = "experimentType.description", target = "experimentType")
     })
     public abstract ExperimentDto map(Experiment experiment);
 

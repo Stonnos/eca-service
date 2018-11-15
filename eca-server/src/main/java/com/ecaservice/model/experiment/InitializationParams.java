@@ -1,6 +1,6 @@
 package com.ecaservice.model.experiment;
 
-import com.ecaservice.model.evaluation.EvaluationMethod;
+import eca.core.evaluation.EvaluationMethod;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

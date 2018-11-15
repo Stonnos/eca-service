@@ -6,17 +6,17 @@ import com.ecaservice.model.entity.InstancesInfo;
 import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.web.dto.EvaluationLogDto;
 import com.ecaservice.web.dto.InputOptionDto;
+import eca.util.Utils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
 import org.springframework.util.CollectionUtils;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Implements evaluation request to evaluation log mapping.
@@ -40,6 +40,9 @@ public abstract class EvaluationLogMapper {
      * @param evaluationLog - evaluation log entity
      * @return evaluation log dto
      */
+    @Mappings({
+            @Mapping(source = "evaluationMethod.description", target = "evaluationMethod")
+    })
     public abstract EvaluationLogDto map(EvaluationLog evaluationLog);
 
     /**
@@ -54,12 +57,7 @@ public abstract class EvaluationLogMapper {
     protected void mapClassifier(EvaluationRequest evaluationRequest, @MappingTarget EvaluationLog evaluationLog) {
         if (evaluationRequest.getClassifier() != null) {
             evaluationLog.setClassifierName(evaluationRequest.getClassifier().getClass().getSimpleName());
-            String[] options = evaluationRequest.getClassifier().getOptions();
-            Map<String, String> optionsMap = new HashMap<>();
-            for (int i = 0; i < options.length; i += 2) {
-                optionsMap.put(options[i], options[i + 1]);
-            }
-            evaluationLog.setInputOptionsMap(optionsMap);
+            evaluationLog.setInputOptionsMap(Utils.getClassifierInputOptionsMap(evaluationRequest.getClassifier()));
         }
     }
 
