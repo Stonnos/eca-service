@@ -13,7 +13,6 @@ import eca.metrics.KNearestNeighbours;
 import eca.neural.NeuralNetwork;
 import eca.trees.C45;
 import eca.trees.CART;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.annotation.Import;
@@ -42,11 +41,6 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
 
     @Before
     public void init() {
-        evaluationLogRepository.deleteAll();
-    }
-
-    @After
-    public void after() {
         evaluationLogRepository.deleteAll();
     }
 
