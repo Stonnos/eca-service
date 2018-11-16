@@ -31,9 +31,4 @@ public class Oauth2Config {
      * Scopes
      */
     private String[] scopes;
-
-    /**
-     * Is auto approve?
-     */
-    private Boolean autoApprove;
 }

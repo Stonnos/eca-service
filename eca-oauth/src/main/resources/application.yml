@@ -23,4 +23,3 @@ oauth2:
   secret: web_secret
   grantTypes: password,refresh_token
   scopes: web
-  autoApprove: true
