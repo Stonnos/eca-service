@@ -10,18 +10,21 @@ import com.ecaservice.model.options.LogisticOptions;
 import com.ecaservice.model.options.NeuralNetworkOptions;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.service.AbstractJpaTest;
+import com.ecaservice.web.dto.PageRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.ensemble.forests.DecisionTreeType;
 import eca.neural.functions.ActivationFunctionType;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -110,5 +113,20 @@ public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
         List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
                 classifierOptionsDatabaseModelRepository.findAll();
         assertThat(classifierOptionsDatabaseModels.size()).isEqualTo(modelFiles.length);
+    }
+
+    @Test
+    public void testGetConfigsPage() {
+        URL modelsUrl = getClass().getClassLoader().getResource(experimentConfig.getIndividualClassifiersStoragePath());
+        File classifiersOptionsDir = new File(modelsUrl.getPath());
+        File[] modelFiles = classifiersOptionsDir.listFiles();
+        experimentConfigurationService.saveClassifiersOptions();
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(0, modelFiles.length / 2, "creationDate", false, Collections.emptyList());
+        Page<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModelPage =
+                experimentConfigurationService.getNextPage(pageRequestDto);
+        assertThat(classifierOptionsDatabaseModelPage).isNotNull();
+        assertThat(classifierOptionsDatabaseModelPage.getTotalElements()).isEqualTo(modelFiles.length);
+        assertThat(classifierOptionsDatabaseModelPage.getContent().size()).isEqualTo(pageRequestDto.getSize());
     }
 }
