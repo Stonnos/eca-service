@@ -8,21 +8,30 @@ import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentMapperImpl;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
+import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.service.evaluation.CalculationExecutorServiceImpl;
+import com.ecaservice.web.dto.FilterRequestDto;
+import com.ecaservice.web.dto.FilterType;
+import com.ecaservice.web.dto.MatchMode;
+import com.ecaservice.web.dto.PageRequestDto;
 import eca.converters.model.ExperimentHistory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
 import weka.core.Instances;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
@@ -218,5 +227,100 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         assertThat(expectedExperiment.getExperimentAbsolutePath()).isNotNull();
         assertThat(expectedExperiment.getTrainingDataAbsolutePath()).isNotNull();
         assertThat(expectedExperiment.getDeletedDate()).isNull();
+    }
+
+    @Test
+    public void testRequestsStatusesStatisticsCalculation() {
+        experimentRepository.save(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW));
+        experimentRepository.save(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW));
+        experimentRepository.save(
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
+        experimentRepository.save(
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
+        experimentRepository.save(
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
+        experimentRepository.save(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
+        experimentRepository.save(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
+        experimentRepository.save(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
+        experimentRepository.save(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
+        Map<RequestStatus, Long> requestStatusesMap = experimentService.getRequestStatusesStatistics();
+        assertThat(requestStatusesMap).isNotNull();
+        assertThat(requestStatusesMap.size()).isEqualTo(RequestStatus.values().length);
+        assertThat(requestStatusesMap.get(RequestStatus.NEW)).isEqualTo(2L);
+        assertThat(requestStatusesMap.get(RequestStatus.FINISHED)).isEqualTo(3L);
+        assertThat(requestStatusesMap.get(RequestStatus.ERROR)).isEqualTo(4L);
+        assertThat(requestStatusesMap.get(RequestStatus.TIMEOUT)).isZero();
+    }
+
+    /**
+     * Test filter by experiment type and experiment status order by creation date.
+     */
+    @Test
+    public void testExperimentsFilterByTypeAndStatusOrderByCreationDate() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment.setExperimentType(ExperimentType.ADA_BOOST);
+        experiment.setExperimentStatus(RequestStatus.NEW);
+        experiment.setCreationDate(LocalDateTime.of(2018, 2, 1, 0, 0, 0));
+        experimentRepository.save(experiment);
+        Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment1.setExperimentType(ExperimentType.ADA_BOOST);
+        experiment1.setExperimentStatus(RequestStatus.NEW);
+        experiment1.setCreationDate(LocalDateTime.of(2018, 3, 1, 0, 0, 0));
+        experimentRepository.save(experiment1);
+        Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment2.setExperimentType(ExperimentType.ADA_BOOST);
+        experiment2.setExperimentStatus(RequestStatus.FINISHED);
+        experiment2.setCreationDate(LocalDateTime.of(2018, 1, 1, 12, 0, 0));
+        experimentRepository.save(experiment2);
+        Experiment experiment3 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment3.setExperimentType(ExperimentType.KNN);
+        experiment3.setExperimentStatus(RequestStatus.NEW);
+        experiment3.setCreationDate(LocalDateTime.of(2018, 1, 1, 9, 0, 0));
+        experimentRepository.save(experiment3);
+        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, "creationDate", false, new ArrayList<>());
+        pageRequestDto.getFilters().add(
+                new FilterRequestDto("experimentStatus", RequestStatus.NEW.name(), FilterType.REFERENCE,
+                        MatchMode.EQUALS));
+        pageRequestDto.getFilters().add(
+                new FilterRequestDto("experimentType", ExperimentType.ADA_BOOST.name(), FilterType.REFERENCE,
+                        MatchMode.EQUALS));
+        Page<Experiment> experiments = experimentService.getNextPage(pageRequestDto);
+        List<Experiment> experimentList = experiments.getContent();
+        assertThat(experiments).isNotNull();
+        assertThat(experiments.getTotalElements()).isEqualTo(2);
+        assertThat(experimentList.size()).isEqualTo(2);
+        assertThat(experimentList.get(0).getUuid()).isEqualTo(experiment1.getUuid());
+        assertThat(experimentList.get(1).getUuid()).isEqualTo(experiment.getUuid());
+    }
+
+    /**
+     * Test filter by creation date between order by creation date.
+     */
+    @Test
+    public void testExperimentsFilterByCreationDateBetween() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment.setCreationDate(LocalDateTime.of(2018, 2, 1, 0, 0, 0));
+        experimentRepository.save(experiment);
+        Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment1.setCreationDate(LocalDateTime.of(2018, 3, 1, 0, 0, 0));
+        experimentRepository.save(experiment1);
+        Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment2.setCreationDate(LocalDateTime.of(2018, 6, 1, 12, 0, 0));
+        experimentRepository.save(experiment2);
+        Experiment experiment3 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment3.setCreationDate(LocalDateTime.of(2018, 7, 1, 9, 0, 0));
+        experimentRepository.save(experiment3);
+        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, "creationDate", false, new ArrayList<>());
+        pageRequestDto.getFilters().add(
+                new FilterRequestDto("creationDate", "2018-01-01 00:00:00", FilterType.DATE, MatchMode.GTE));
+        pageRequestDto.getFilters().add(
+                new FilterRequestDto("creationDate", "2018-05-01 00:00:00", FilterType.DATE, MatchMode.LTE));
+        Page<Experiment> experiments = experimentService.getNextPage(pageRequestDto);
+        List<Experiment> experimentList = experiments.getContent();
+        assertThat(experiments).isNotNull();
+        assertThat(experiments.getTotalElements()).isEqualTo(2);
+        assertThat(experimentList.size()).isEqualTo(2);
+        assertThat(experimentList.get(0).getUuid()).isEqualTo(experiment1.getUuid());
+        assertThat(experimentList.get(1).getUuid()).isEqualTo(experiment.getUuid());
     }
 }

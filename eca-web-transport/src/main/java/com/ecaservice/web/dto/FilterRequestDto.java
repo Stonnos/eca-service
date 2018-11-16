@@ -1,6 +1,8 @@
 package com.ecaservice.web.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Filter request model.
@@ -8,6 +10,8 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class FilterRequestDto {
 
     /**

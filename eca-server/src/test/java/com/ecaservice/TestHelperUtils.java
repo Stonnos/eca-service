@@ -279,6 +279,20 @@ public class TestHelperUtils {
     }
 
     /**
+     * Creates evaluation log with specified uuid and status.
+     *
+     * @param uuid          - request id
+     * @param requestStatus - request status
+     * @return evaluation log
+     */
+    public static EvaluationLog createEvaluationLog(String uuid, RequestStatus requestStatus) {
+        EvaluationLog evaluationLog = createEvaluationLog();
+        evaluationLog.setEvaluationStatus(requestStatus);
+        evaluationLog.setRequestId(uuid);
+        return evaluationLog;
+    }
+
+    /**
      * Creates instances info.
      *
      * @return instances info
