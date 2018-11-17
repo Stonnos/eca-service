@@ -14,6 +14,8 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
+        order_by:
+          default_null_ordering: last
   cache:
     cache-names: classifiers
     caffeine:

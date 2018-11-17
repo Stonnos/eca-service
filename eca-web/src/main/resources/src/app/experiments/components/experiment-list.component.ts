@@ -24,6 +24,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     super(injector.get(MessageService));
     this.defaultSortField = "creationDate";
     this.linkColumns = ["trainingDataAbsolutePath", "experimentAbsolutePath"];
+    this.notSortableColumns = ["trainingDataAbsolutePath", "experimentAbsolutePath"];
     this.initColumns();
     this.initFilters();
   }
