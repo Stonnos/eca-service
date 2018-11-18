@@ -20,13 +20,12 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   public intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return next.handle(request).pipe(catchError(err => {
-      if (err instanceof HttpErrorResponse && err.status === 401) {
+    return next.handle(request).pipe(catchError(error => {
+      if (error instanceof HttpErrorResponse && error.status === 401) {
         this.cookieService.delete('access_token');
         this.router.navigate(['/login']);
         return EMPTY;
       }
-      const error = err.error.message || err.statusText;
       return throwError(error);
     }));
   }

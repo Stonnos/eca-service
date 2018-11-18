@@ -25,22 +25,22 @@ export class DashboardComponent implements OnInit {
     this.getCurrentUser();
     this.items = [
       {
-        label: 'Experiments',
+        label: 'Эксперименты',
         routerLink: ['/dashboard/experiments'],
         routerLinkActiveOptions: 'ui-menuitem-active'
       },
       {
-        label: 'Classifiers',
+        label: 'Классификаторы',
         routerLink: ['/dashboard/classifiers'],
         routerLinkActiveOptions: 'ui-menuitem-active'
       },
       {
-        label: 'Classifiers options',
+        label: 'Настройки классификаторов',
         routerLink: ['/dashboard/classifiers-options'],
         routerLinkActiveOptions: 'ui-menuitem-active'
       },
       {
-        label: 'Classifiers options requests',
+        label: 'Оптимальные настройки классификаторов',
         routerLink: ['/dashboard/classifiers-options-requests'],
         routerLinkActiveOptions: 'ui-menuitem-active'
       }

@@ -72,40 +72,40 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
 
   private initColumns() {
     this.columns = [
-      { name: "requestId", label: "Request UUID" },
-      { name: "relationName", label: "Relation name" },
-      { name: "classifierName", label: "Classifier name" },
-      { name: "evaluationMethod", label: "Evaluation method" },
-      { name: "requestDate", label: "Request date" },
-      { name: "responseStatus", label: "Response status" }
+      { name: "requestId", label: "UUID заявки" },
+      { name: "relationName", label: "Обучающая выборка" },
+      { name: "classifierName", label: "Классификатор" },
+      { name: "evaluationMethod", label: "Метод оценки точности" },
+      { name: "requestDate", label: "Дата отправки заявки" },
+      { name: "responseStatus", label: "Статус ответа" }
     ];
   }
 
   private initFilters() {
     const evaluationMethods: SelectItem[] = [
-      { label: "All", value: null },
+      { label: "Все", value: null },
       { label: "TRAINING_DATA", value: "TRAINING_DATA" },
       { label: "CROSS_VALIDATION", value: "CROSS_VALIDATION" }
     ];
     const statuses: SelectItem[] = [
-      { label: "All", value: null },
+      { label: "Все", value: null },
       { label: "SUCCESS", value: "SUCCESS" },
       { label: "INVALID_REQUEST_PARAMS", value: "INVALID_REQUEST_PARAMS" },
       { label: "DATA_NOT_FOUND", value: "DATA_NOT_FOUND" },
       { label: "RESULTS_NOT_FOUND", value: "RESULTS_NOT_FOUND" },
       { label: "ERROR", value: "ERROR" }
     ];
-    this.filters.push(new Filter("requestId", "Request UUID",
+    this.filters.push(new Filter("requestId", "UUID заявки",
       "TEXT", "EQUALS", null));
-    this.filters.push(new Filter("relationName", "Training data",
+    this.filters.push(new Filter("relationName", "Обучающая выборка",
       "TEXT", "LIKE", null));
-    this.filters.push(new Filter("evaluationMethod", "Evaluation method", "REFERENCE",
+    this.filters.push(new Filter("evaluationMethod", "Метод оценки точности", "REFERENCE",
       "EQUALS", null, evaluationMethods));
-    this.filters.push(new Filter("responseStatus", "Response status", "REFERENCE",
+    this.filters.push(new Filter("responseStatus", "Статус ответа", "REFERENCE",
       "EQUALS", null, statuses));
-    this.filters.push(new Filter("requestDate", "Request date from",
+    this.filters.push(new Filter("requestDate", "Дата отправки заявки с",
       "DATE", "GTE", null));
-    this.filters.push(new Filter("requestDate", "Request date to",
+    this.filters.push(new Filter("requestDate", "Дата отправки заявки по",
       "DATE", "LTE", null));
   }
 }

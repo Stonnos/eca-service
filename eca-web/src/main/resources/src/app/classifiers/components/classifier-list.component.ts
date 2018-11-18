@@ -62,41 +62,41 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
 
   private initColumns() {
     this.columns = [
-      { name: "requestId", label: "Request UUID" },
-      { name: "classifierName", label: "Classifier name" },
-      { name: this.instancesInfoColumn, label: "Training data" },
-      { name: "evaluationMethod", label: "Evaluation method" },
-      { name: "creationDate", label: "Creation date" },
-      { name: "startDate", label: "Start date" },
-      { name: "endDate", label: "End date" },
-      { name: "evaluationStatus", label: "Status" }
+      { name: "requestId", label: "UUID заявки" },
+      { name: "classifierName", label: "Классификатор" },
+      { name: this.instancesInfoColumn, label: "Обучающая выборка" },
+      { name: "evaluationMethod", label: "Метод оценки точности" },
+      { name: "creationDate", label: "Дата создания заявки" },
+      { name: "startDate", label: "Дата начала построения модели" },
+      { name: "endDate", label: "Дата окончания построения модели" },
+      { name: "evaluationStatus", label: "Статус заявки" }
     ];
   }
 
   private initFilters() {
     const evaluationMethods: SelectItem[] = [
-      { label: "All", value: null },
+      { label: "Все", value: null },
       { label: "TRAINING_DATA", value: "TRAINING_DATA" },
       { label: "CROSS_VALIDATION", value: "CROSS_VALIDATION" }
     ];
     const statuses: SelectItem[] = [
-      { label: "All", value: null },
+      { label: "Все", value: null },
       { label: "NEW", value: "NEW" },
       { label: "FINISHED", value: "FINISHED" },
       { label: "TIMEOUT", value: "TIMEOUT" },
       { label: "ERROR", value: "ERROR" }
     ];
-    this.filters.push(new Filter("requestId", "Request UUID",
+    this.filters.push(new Filter("requestId", "UUID заявки",
       "TEXT", "EQUALS", null));
-    this.filters.push(new Filter("classifierName", "Classifier name",
+    this.filters.push(new Filter("classifierName", "Классификатор",
       "TEXT", "LIKE", null));
-    this.filters.push(new Filter("evaluationMethod", "Evaluation method", "REFERENCE",
+    this.filters.push(new Filter("evaluationMethod", "Метод оценки точности", "REFERENCE",
       "EQUALS", null, evaluationMethods));
-    this.filters.push(new Filter("evaluationStatus", "Evaluation status", "REFERENCE",
+    this.filters.push(new Filter("evaluationStatus", "Статус заявки", "REFERENCE",
       "EQUALS", null, statuses));
-    this.filters.push(new Filter("creationDate", "Creation date from",
+    this.filters.push(new Filter("creationDate", "Дата создания заявки с",
       "DATE", "GTE", null));
-    this.filters.push(new Filter("creationDate", "Creation date to",
+    this.filters.push(new Filter("creationDate", "Дата создания заявки по",
       "DATE", "LTE", null));
   }
 }

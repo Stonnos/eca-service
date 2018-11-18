@@ -49,9 +49,9 @@ export class ClassifierOptionsComponent extends BaseListComponent<ClassifierOpti
 
   private initColumns() {
     this.columns = [
-      { name: "optionsName", label: "Options name" },
-      { name: "version", label: "Options version" },
-      { name: "creationDate", label: "Creation date" }
+      { name: "optionsName", label: "Настройки классификатора" },
+      { name: "version", label: "Версия настроек" },
+      { name: "creationDate", label: "Дата создания настроек" }
     ];
   }
 }

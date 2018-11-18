@@ -88,7 +88,7 @@ public class DataService {
      */
     public boolean delete(File file) {
         Assert.notNull(file, "File isn't specified!");
-        if (!file.exists()) {
+        if (!file.isFile()) {
             log.warn("File with name '{}' doesn't exists.", file.getAbsolutePath());
             return false;
         } else {

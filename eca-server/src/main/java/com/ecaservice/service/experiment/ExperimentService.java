@@ -35,6 +35,8 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -195,8 +197,10 @@ public class ExperimentService implements PageRequestService<Experiment> {
      * @param experiment - experiment object
      */
     public void removeExperimentData(Experiment experiment) {
-        boolean trainingDataDeleted = removeTrainingData(experiment);
-        boolean experimentResultsDeleted = removeExperimentResults(experiment);
+        boolean trainingDataDeleted = removeExperimentFile(experiment, Experiment::getTrainingDataAbsolutePath,
+                exp -> exp.setTrainingDataAbsolutePath(null));
+        boolean experimentResultsDeleted = removeExperimentFile(experiment, Experiment::getExperimentAbsolutePath,
+                exp -> exp.setExperimentAbsolutePath(null));
         if (trainingDataDeleted && experimentResultsDeleted) {
             experiment.setDeletedDate(LocalDateTime.now());
         }
@@ -227,22 +231,12 @@ public class ExperimentService implements PageRequestService<Experiment> {
         return requestStatusesMap;
     }
 
-    private boolean removeTrainingData(Experiment experiment) {
-        if (Optional.ofNullable(experiment).map(Experiment::getTrainingDataAbsolutePath).isPresent()) {
-            boolean deleted = dataService.delete(new File(experiment.getTrainingDataAbsolutePath()));
+    private boolean removeExperimentFile(Experiment experiment, Function<Experiment, String> filePathFunction,
+                                         Consumer<Experiment> callback) {
+        if (Optional.ofNullable(experiment).map(filePathFunction).isPresent()) {
+            boolean deleted = dataService.delete(new File(filePathFunction.apply(experiment)));
             if (deleted) {
-                experiment.setTrainingDataAbsolutePath(null);
-            }
-            return deleted;
-        }
-        return false;
-    }
-
-    private boolean removeExperimentResults(Experiment experiment) {
-        if (Optional.ofNullable(experiment).map(Experiment::getExperimentAbsolutePath).isPresent()) {
-            boolean deleted = dataService.delete(new File(experiment.getExperimentAbsolutePath()));
-            if (deleted) {
-                experiment.setExperimentAbsolutePath(null);
+                callback.accept(experiment);
             }
             return deleted;
         }

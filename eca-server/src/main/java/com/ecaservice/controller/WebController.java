@@ -141,7 +141,7 @@ public class WebController {
     @GetMapping(value = "/experiment-training-data/{uuid}")
     public ResponseEntity downloadTrainingData(@PathVariable String uuid) {
         File trainingDataFile = experimentService.findTrainingDataFileByUuid(uuid);
-        if (trainingDataFile == null) {
+        if (trainingDataFile == null || !trainingDataFile.isFile()) {
             log.error("Experiment training data file for uuid = '{}' not found!", uuid);
             return ResponseEntity.badRequest().body(
                     String.format("Experiment training data file for uuid = '%s' not found!", uuid));

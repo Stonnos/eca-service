@@ -59,7 +59,7 @@
         <ng-container *ngSwitchCase="'evaluationMethod'">
           <div class="ui-g" *ngIf="selectedRequest.numFolds">
             <div class="ui-g-6 text-right text-bold text-wrap">
-              Number of folds:
+              Число блоков:
             </div>
             <div class="ui-g-6 text-left text-wrap">
               {{ selectedRequest.numFolds }}
@@ -68,7 +68,7 @@
 
           <div class="ui-g" *ngIf="selectedRequest.numTests">
             <div class="ui-g-6 text-right text-bold text-wrap">
-              Number of tests:
+              Число проверок:
             </div>
             <div class="ui-g-6 text-left text-wrap">
               {{ selectedRequest.numTests }}
@@ -77,7 +77,7 @@
 
           <div class="ui-g" *ngIf="selectedRequest.seed">
             <div class="ui-g-6 text-right text-bold text-wrap">
-              Seed:
+              Начальное значение (seed):
             </div>
             <div class="ui-g-6 text-left text-wrap">
               {{ selectedRequest.seed }}

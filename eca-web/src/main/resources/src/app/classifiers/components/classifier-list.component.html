@@ -71,7 +71,7 @@
         <ng-container *ngSwitchCase="'evaluationMethod'">
           <div class="ui-g" *ngIf="selectedEvaluationLog.numFolds">
             <div class="ui-g-6 text-right text-bold text-wrap">
-              Number of folds:
+              Число блоков:
             </div>
             <div class="ui-g-6 text-left text-wrap">
               {{ selectedEvaluationLog.numFolds }}
@@ -80,7 +80,7 @@
 
           <div class="ui-g" *ngIf="selectedEvaluationLog.numTests">
             <div class="ui-g-6 text-right text-bold text-wrap">
-              Number of tests:
+              Число проверок:
             </div>
             <div class="ui-g-6 text-left text-wrap">
               {{ selectedEvaluationLog.numTests }}
@@ -89,7 +89,7 @@
 
           <div class="ui-g" *ngIf="selectedEvaluationLog.seed">
             <div class="ui-g-6 text-right text-bold text-wrap">
-              Seed:
+              Начальное значение (seed):
             </div>
             <div class="ui-g-6 text-left text-wrap">
               {{ selectedEvaluationLog.seed }}
@@ -99,7 +99,7 @@
         <ng-container *ngSwitchCase="instancesInfoColumn">
           <div class="ui-g">
             <div class="ui-g-6 text-right text-bold text-wrap">
-              Instances number:
+              Число объектов:
             </div>
             <div class="ui-g-6 text-left text-wrap">
               {{ selectedEvaluationLog.instancesInfo.numInstances }}
@@ -108,7 +108,7 @@
 
           <div class="ui-g">
             <div class="ui-g-6 text-right text-bold text-wrap">
-              Attributes number:
+              Число атрибутов:
             </div>
             <div class="ui-g-6 text-left text-wrap">
               {{ selectedEvaluationLog.instancesInfo.numAttributes }}
@@ -117,7 +117,7 @@
 
           <div class="ui-g">
             <div class="ui-g-6 text-right text-bold text-wrap">
-              Classes number:
+              Число классов:
             </div>
             <div class="ui-g-6 text-left text-wrap">
               {{ selectedEvaluationLog.instancesInfo.numClasses }}
@@ -126,7 +126,7 @@
 
           <div class="ui-g">
             <div class="ui-g-6 text-right text-bold text-wrap">
-              Class name:
+              Атрибут класса:
             </div>
             <div class="ui-g-6 text-left text-wrap">
               {{ selectedEvaluationLog.instancesInfo.className }}

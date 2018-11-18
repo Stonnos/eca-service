@@ -49,17 +49,23 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   public onLink(column: string, experiment: ExperimentDto) {
     switch (column) {
       case this.linkColumns[0]:
+        this.loading = true;
         this.experimentsService.getExperimentTrainingDataFile(experiment.uuid).subscribe((blob: Blob) => {
           saveAs(blob, experiment.trainingDataAbsolutePath);
+          this.loading = false;
         }, (error) => {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+          this.loading = false;
         });
         break;
       case this.linkColumns[1]:
+        this.loading = true;
         this.experimentsService.getExperimentResultsFile(experiment.uuid).subscribe((blob: Blob) => {
           saveAs(blob, experiment.experimentAbsolutePath);
+          this.loading = false;
         }, (error) => {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+          this.loading = false;
         });
         break;
     }
@@ -67,46 +73,46 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   private initColumns() {
     this.columns = [
-      { name: "uuid", label: "Request UUID" },
-      { name: "experimentType", label: "Experiment type" },
-      { name: "evaluationMethod", label: "Evaluation method" },
-      { name: "firstName", label: "Request first name" },
-      { name: "email", label: "Request email" },
-      { name: "trainingDataAbsolutePath", label: "Training data" },
-      { name: "experimentAbsolutePath", label: "Experiment results" },
-      { name: "creationDate", label: "Creation date" },
-      { name: "startDate", label: "Start date" },
-      { name: "endDate", label: "End date" },
-      { name: "sentDate", label: "Sent date" },
-      { name: "deletedDate", label: "Delete date" },
-      { name: "experimentStatus", label: "Status" }
+      { name: "uuid", label: "UUID заявки" },
+      { name: "experimentType", label: "Тип эксперимента" },
+      { name: "evaluationMethod", label: "Метод оценки точности" },
+      { name: "firstName", label: "Имя заявки" },
+      { name: "email", label: "Email заявки" },
+      { name: "trainingDataAbsolutePath", label: "Обучающая выборка" },
+      { name: "experimentAbsolutePath", label: "Результаты эксперимента" },
+      { name: "creationDate", label: "Дата создания заявки" },
+      { name: "startDate", label: "Дата начала эксперимента" },
+      { name: "endDate", label: "Дата окончания эксперимента" },
+      { name: "sentDate", label: "Дата отправки результатов" },
+      { name: "deletedDate", label: "Дата удаления результатов" },
+      { name: "experimentStatus", label: "Статус заявки" }
     ];
   }
 
   private initFilters() {
     const evaluationMethods: SelectItem[] = [
-      { label: "All", value: null },
+      { label: "Все", value: null },
       { label: "TRAINING_DATA", value: "TRAINING_DATA" },
       { label: "CROSS_VALIDATION", value: "CROSS_VALIDATION" }
     ];
     const statuses: SelectItem[] = [
-      { label: "All", value: null },
+      { label: "Все", value: null },
       { label: "NEW", value: "NEW" },
       { label: "FINISHED", value: "FINISHED" },
       { label: "TIMEOUT", value: "TIMEOUT" },
       { label: "ERROR", value: "ERROR" }
     ];
-    this.filters.push(new Filter("uuid", "Request UUID",
+    this.filters.push(new Filter("uuid", "UUID заявки",
       "TEXT", "EQUALS", null));
-    this.filters.push(new Filter("email", "Request email",
+    this.filters.push(new Filter("email", "Email заявки",
       "TEXT", "LIKE", null));
-    this.filters.push(new Filter("evaluationMethod", "Evaluation method", "REFERENCE",
+    this.filters.push(new Filter("evaluationMethod", "Метод оценки точности", "REFERENCE",
       "EQUALS", null, evaluationMethods));
-    this.filters.push(new Filter("experimentStatus", "Experiment status", "REFERENCE",
+    this.filters.push(new Filter("experimentStatus", "Статус заявки", "REFERENCE",
       "EQUALS", null, statuses));
-    this.filters.push(new Filter("creationDate", "Creation date from",
+    this.filters.push(new Filter("creationDate", "Дата создани заявки с",
       "DATE", "GTE", null));
-    this.filters.push(new Filter("creationDate", "Creation date to",
+    this.filters.push(new Filter("creationDate", "Дата создани заявки по",
       "DATE", "LTE", null));
   }
 
@@ -116,8 +122,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
         experimentTypes.map((experimentType: ExperimentTypeDto) => {
           return { label: experimentType.description, value: experimentType.type };
         });
-      experimentTypeItems.unshift({ label: "All", value: null });
-      this.filters.push(new Filter("experimentType", "Experiment type", "REFERENCE", "EQUALS",
+      experimentTypeItems.unshift({ label: "Все", value: null });
+      this.filters.push(new Filter("experimentType", "Тип эксперимента", "REFERENCE", "EQUALS",
         null, experimentTypeItems));
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });

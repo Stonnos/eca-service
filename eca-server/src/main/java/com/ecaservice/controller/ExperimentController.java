@@ -58,7 +58,7 @@ public class ExperimentController {
     @GetMapping(value = "/download/{uuid}")
     public ResponseEntity downloadExperiment(@PathVariable String uuid) {
         File experimentFile = experimentService.findExperimentFileByUuid(uuid);
-        if (experimentFile == null) {
+        if (experimentFile == null || !experimentFile.isFile()) {
             log.error("Experiment results file for uuid = '{}' not found!", uuid);
             return ResponseEntity.badRequest().body(
                     String.format("Experiment results file for uuid = '%s' not found!", uuid));

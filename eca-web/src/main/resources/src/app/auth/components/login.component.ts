@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
           this.giveAccess();
         }, (error) => {
           console.log(error);
-          this.errorMessage = "Login failed.";
+          this.errorMessage = "Неправильный логин или пароль";
         });
       this.submitted = false;
     }

@@ -1,6 +1,6 @@
 <p-panel class="auth-panel">
   <p-header class="text-center text-bold">
-    <h3>Authentication</h3>
+    <h3>Авторизация</h3>
   </p-header>
   <form novalidate class="form d-flex justify-sm-content-center m-auto" (submit)="onSubmit($event)">
     <div class="ui-g ui-fluid">
@@ -8,39 +8,39 @@
         <div *ngIf="form.valid && errorMessage" class="text-danger text-center mb-5">{{ errorMessage }}</div>
       </div>
       <div class="ui-g-12">
-        <label class="text-bold">Login</label>
+        <label class="text-bold">Логин</label>
         <input
           required
           pInputText
           id="login"
           name="login"
           type="text"
-          placeholder="Enter login"
+          placeholder="Введите логин"
           [(ngModel)]="userModel.login"
           #login="ngModel"
           class="form-control d-block w-100">
         <div class="text-danger error-message" *ngIf="login.invalid && (login.dirty || login.touched || submitted)">
           <div *ngIf="login?.errors?.required">
-            Enter login
+            Заполните логин
           </div>
         </div>
       </div>
-      <div class="ui-g-12">
-        <label class="text-bold">Password</label>
+      <div class="ui-g-12 mt-3">
+        <label class="text-bold">Пароль</label>
         <input
           required
           pPassword
           id="password"
           name="password"
           type="password"
-          placeholder="Enter password"
+          placeholder="Введите пароль"
           [(ngModel)]="userModel.password"
           #password="ngModel"
           class="form-control d-block w-100"
           [feedback]="false">
         <div class="text-danger error-message" *ngIf="password.invalid && (password.dirty || password.touched || submitted)">
           <div *ngIf="password?.errors?.required">
-            Enter password
+            Заполните пароль
           </div>
         </div>
       </div>
@@ -49,7 +49,7 @@
           pButton
           type="submit"
           class="auth-button w-100 mb-2 mb-sm-3"
-          label="Log In">
+          label="Войти">
         </button>
       </div>
 
