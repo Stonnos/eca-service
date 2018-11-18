@@ -21,7 +21,7 @@ export abstract class BaseListComponent<T> {
   public linkColumns: string[] = [];
   public notSortableColumns: string[] = [];
   public items: T[] = [];
-  public loading: boolean = false;
+  public loading: boolean = true;
 
   @ViewChild(Table)
   private table: Table;
