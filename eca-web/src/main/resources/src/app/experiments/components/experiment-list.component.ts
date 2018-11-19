@@ -110,9 +110,13 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       "EQUALS", null, evaluationMethods));
     this.filters.push(new Filter("experimentStatus", "Статус заявки", "REFERENCE",
       "EQUALS", null, statuses));
-    this.filters.push(new Filter("creationDate", "Дата создани заявки с",
+    this.filters.push(new Filter("creationDate", "Дата создания заявки с",
       "DATE", "GTE", null));
-    this.filters.push(new Filter("creationDate", "Дата создани заявки по",
+    this.filters.push(new Filter("creationDate", "Дата создания заявки по",
+      "DATE", "LTE", null));
+    this.filters.push(new Filter("sentDate", "Дата отправки результатов с",
+      "DATE", "GTE", null));
+    this.filters.push(new Filter("sentDate", "Дата отправки результатов по",
       "DATE", "LTE", null));
   }
 
