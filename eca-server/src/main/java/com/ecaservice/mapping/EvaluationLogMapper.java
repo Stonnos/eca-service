@@ -41,7 +41,8 @@ public abstract class EvaluationLogMapper {
      * @return evaluation log dto
      */
     @Mappings({
-            @Mapping(source = "evaluationMethod.description", target = "evaluationMethod")
+            @Mapping(source = "evaluationMethod.description", target = "evaluationMethod"),
+            @Mapping(source = "evaluationStatus.description", target = "evaluationStatus")
     })
     public abstract EvaluationLogDto map(EvaluationLog evaluationLog);
 

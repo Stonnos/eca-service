@@ -56,7 +56,7 @@ public class ClassifierOptionsRequestModelMapperTest {
         Assertions.assertThat(classifierOptionsRequestDto.getNumTests()).isEqualTo(requestModel.getNumTests());
         Assertions.assertThat(classifierOptionsRequestDto.getSeed()).isEqualTo(requestModel.getSeed());
         Assertions.assertThat(classifierOptionsRequestDto.getEvaluationMethod()).isEqualTo(
-                requestModel.getEvaluationMethod().name());
+                requestModel.getEvaluationMethod().getDescription());
         Assertions.assertThat(classifierOptionsRequestDto.getClassifierOptionsResponseModels()).isNotNull();
         Assertions.assertThat(classifierOptionsRequestDto.getClassifierOptionsResponseModels().size()).isOne();
     }

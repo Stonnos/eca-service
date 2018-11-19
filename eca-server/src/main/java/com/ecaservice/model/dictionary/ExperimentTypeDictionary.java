@@ -5,8 +5,10 @@ package com.ecaservice.model.dictionary;
  *
  * @author Roman Batygin
  */
-
 public class ExperimentTypeDictionary {
+
+    private ExperimentTypeDictionary() {
+    }
 
     public static final String NEURAL_NETWORKS_NAME = "Нейронные сети";
     public static final String HETEROGENEOUS_ENSEMBLE_NAME = "Неоднородный ансамблевый алгоритм";

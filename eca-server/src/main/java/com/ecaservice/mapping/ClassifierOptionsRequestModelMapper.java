@@ -37,6 +37,9 @@ public interface ClassifierOptionsRequestModelMapper {
      * @param classifierOptionsRequestModel - classifier options request model entity
      * @return classifier options request dto model
      */
+    @Mappings({
+            @Mapping(source = "evaluationMethod.description", target = "evaluationMethod")
+    })
     ClassifierOptionsRequestDto map(ClassifierOptionsRequestModel classifierOptionsRequestModel);
 
     /**

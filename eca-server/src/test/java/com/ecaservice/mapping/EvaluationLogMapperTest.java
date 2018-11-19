@@ -70,7 +70,8 @@ public class EvaluationLogMapperTest {
         assertThat(evaluationLogDto.getEndDate()).isEqualTo(evaluationLog.getEndDate());
         assertThat(evaluationLogDto.getEvaluationMethod()).isEqualTo(
                 evaluationLog.getEvaluationMethod().getDescription());
-        assertThat(evaluationLogDto.getEvaluationStatus()).isEqualTo(evaluationLog.getEvaluationStatus().name());
+        assertThat(evaluationLogDto.getEvaluationStatus()).isEqualTo(
+                evaluationLog.getEvaluationStatus().getDescription());
         assertThat(evaluationLogDto.getRequestId()).isEqualTo(evaluationLog.getRequestId());
         assertThat(evaluationLogDto.getInputOptions()).isNotNull();
         assertThat(evaluationLogDto.getInputOptions().size()).isOne();

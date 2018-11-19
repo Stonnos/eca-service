@@ -92,15 +92,15 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   private initFilters() {
     const evaluationMethods: SelectItem[] = [
       { label: "Все", value: null },
-      { label: "TRAINING_DATA", value: "TRAINING_DATA" },
-      { label: "CROSS_VALIDATION", value: "CROSS_VALIDATION" }
+      { label: "Использование обучающего множества", value: "TRAINING_DATA" },
+      { label: "V-блочная кросс-проверка", value: "CROSS_VALIDATION" }
     ];
     const statuses: SelectItem[] = [
       { label: "Все", value: null },
-      { label: "NEW", value: "NEW" },
-      { label: "FINISHED", value: "FINISHED" },
-      { label: "TIMEOUT", value: "TIMEOUT" },
-      { label: "ERROR", value: "ERROR" }
+      { label: "Новая", value: "NEW" },
+      { label: "Завершена", value: "FINISHED" },
+      { label: "Таймаут", value: "TIMEOUT" },
+      { label: "Ошибка", value: "ERROR" }
     ];
     this.filters.push(new Filter("uuid", "UUID заявки",
       "TEXT", "EQUALS", null));

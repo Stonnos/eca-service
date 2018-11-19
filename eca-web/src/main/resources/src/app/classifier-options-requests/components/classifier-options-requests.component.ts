@@ -84,8 +84,8 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
   private initFilters() {
     const evaluationMethods: SelectItem[] = [
       { label: "Все", value: null },
-      { label: "TRAINING_DATA", value: "TRAINING_DATA" },
-      { label: "CROSS_VALIDATION", value: "CROSS_VALIDATION" }
+      { label: "Использование обучающего множества", value: "TRAINING_DATA" },
+      { label: "V-блочная кросс-проверка", value: "CROSS_VALIDATION" }
     ];
     const statuses: SelectItem[] = [
       { label: "Все", value: null },

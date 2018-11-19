@@ -62,7 +62,7 @@ public class ExperimentMapperTest {
         assertThat(experimentDto.getSentDate()).isEqualTo(experiment.getSentDate());
         assertThat(experimentDto.getDeletedDate()).isEqualTo(experiment.getDeletedDate());
         assertThat(experimentDto.getEvaluationMethod()).isEqualTo(experiment.getEvaluationMethod().getDescription());
-        assertThat(experimentDto.getExperimentStatus()).isEqualTo(experiment.getExperimentStatus().name());
+        assertThat(experimentDto.getExperimentStatus()).isEqualTo(experiment.getExperimentStatus().getDescription());
         assertThat(experimentDto.getExperimentType()).isEqualTo(experiment.getExperimentType().getDescription());
         assertThat(experimentDto.getTrainingDataAbsolutePath()).isEqualTo(DATA_XLS);
         assertThat(experimentDto.getExperimentAbsolutePath()).isEqualTo(EXPERIMENT_MODEL);
