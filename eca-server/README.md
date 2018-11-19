@@ -139,3 +139,4 @@ mvn clean install dockerfile:build -Ppostgres,experiment-linux -Djdbc.url=jdbc:p
 
   * ers-config.url=http://evaluation-results-service:8080/evaluation-results-service/ws/
   * experiment.mail.serviceUrl=http://notification-service:8080/notification-service/ws/
+  * oauth2-resource.oauthUrl=http://eca-oauth:8080/eca-oauth

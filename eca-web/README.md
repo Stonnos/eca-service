@@ -41,4 +41,4 @@ docker-compose up
 При этом в файле scr/main/resources/src/assets/configs/config.json необходимо установить следующие параметры:
 
 * apiUrl - http://eca-server:8080/eca-server
-* oauthUrl - "http://eca-oauth:8080/eca-oauth/oauth/token
+* oauthUrl - http://eca-oauth:8080/eca-oauth/oauth/token
