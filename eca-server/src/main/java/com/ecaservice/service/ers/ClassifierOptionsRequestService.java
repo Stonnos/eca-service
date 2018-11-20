@@ -5,7 +5,7 @@ import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.service.PageRequestService;
 import com.ecaservice.util.SortUtils;
-import com.ecaservice.web.dto.PageRequestDto;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

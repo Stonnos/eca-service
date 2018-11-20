@@ -2,8 +2,8 @@ package com.ecaservice.mapping;
 
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
-import com.ecaservice.web.dto.ClassifierOptionsRequestDto;
-import com.ecaservice.web.dto.ErsResponseStatus;
+import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
+import com.ecaservice.web.dto.model.ErsResponseStatus;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

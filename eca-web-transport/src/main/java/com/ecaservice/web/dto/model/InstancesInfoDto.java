@@ -1,4 +1,4 @@
-package com.ecaservice.web.dto;
+package com.ecaservice.web.dto.model;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

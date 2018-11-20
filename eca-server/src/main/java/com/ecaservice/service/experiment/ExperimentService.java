@@ -13,7 +13,7 @@ import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.PageRequestService;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.util.SortUtils;
-import com.ecaservice.web.dto.PageRequestDto;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.converters.model.ExperimentHistory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

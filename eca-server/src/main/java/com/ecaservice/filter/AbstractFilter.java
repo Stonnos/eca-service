@@ -1,6 +1,6 @@
 package com.ecaservice.filter;
 
-import com.ecaservice.web.dto.FilterRequestDto;
+import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.MatchModeVisitor;
 import lombok.Getter;
 import lombok.Setter;

@@ -3,7 +3,7 @@ package com.ecaservice.mapping;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.model.entity.EvaluationLog;
-import com.ecaservice.web.dto.EvaluationLogDto;
+import com.ecaservice.web.dto.model.EvaluationLogDto;
 import eca.core.evaluation.EvaluationMethod;
 import eca.metrics.KNearestNeighbours;
 import org.junit.Test;

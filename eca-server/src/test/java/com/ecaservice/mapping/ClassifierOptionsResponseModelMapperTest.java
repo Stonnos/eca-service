@@ -2,7 +2,7 @@ package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
-import com.ecaservice.web.dto.ClassifierOptionsResponseDto;
+import com.ecaservice.web.dto.model.ClassifierOptionsResponseDto;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;

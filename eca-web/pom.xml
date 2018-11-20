@@ -131,7 +131,7 @@
                 <configuration>
                     <jsonLibrary>jackson2</jsonLibrary>
                     <classPatterns>
-                        <pattern>com.ecaservice.web.dto.**</pattern>
+                        <pattern>com.ecaservice.web.dto.model.**</pattern>
                     </classPatterns>
                     <outputFile>${project.build.directory}/generated-sources/typescript/eca-web-dto.ts</outputFile>
                     <outputFileType>implementationFile</outputFileType>

@@ -1,7 +1,7 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.dto.evaluation.ResponseStatus;
-import com.ecaservice.web.dto.ErsResponseStatus;
+import com.ecaservice.web.dto.model.ErsResponseStatus;
 import org.mapstruct.Mapper;
 
 /**

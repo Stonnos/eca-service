@@ -1,7 +1,7 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.model.options.DecisionTreeOptions;
-import com.ecaservice.web.dto.ClassifierOptionsDto;
+import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import org.junit.Test;
 import org.junit.runner.RunWith;

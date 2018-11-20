@@ -1,7 +1,7 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.model.entity.InstancesInfo;
-import com.ecaservice.web.dto.InstancesInfoDto;
+import com.ecaservice.web.dto.model.InstancesInfoDto;
 import org.mapstruct.Mapper;
 
 /**

@@ -2,7 +2,7 @@ package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.model.entity.InstancesInfo;
-import com.ecaservice.web.dto.InstancesInfoDto;
+import com.ecaservice.web.dto.model.InstancesInfoDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.context.annotation.Import;

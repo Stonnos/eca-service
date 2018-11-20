@@ -7,7 +7,7 @@ import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.service.PageRequestService;
 import com.ecaservice.util.SortUtils;
-import com.ecaservice.web.dto.PageRequestDto;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;

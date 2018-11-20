@@ -7,7 +7,7 @@ import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.filter.EvaluationLogFilter;
 import com.ecaservice.service.PageRequestService;
 import com.ecaservice.util.SortUtils;
-import com.ecaservice.web.dto.PageRequestDto;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

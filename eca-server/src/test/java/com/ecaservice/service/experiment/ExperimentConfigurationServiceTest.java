@@ -10,7 +10,7 @@ import com.ecaservice.model.options.LogisticOptions;
 import com.ecaservice.model.options.NeuralNetworkOptions;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.service.AbstractJpaTest;
-import com.ecaservice.web.dto.PageRequestDto;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.ensemble.forests.DecisionTreeType;
 import eca.neural.functions.ActivationFunctionType;

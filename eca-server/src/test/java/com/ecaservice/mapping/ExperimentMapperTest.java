@@ -3,7 +3,7 @@ package com.ecaservice.mapping;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.web.dto.ExperimentDto;
+import com.ecaservice.web.dto.model.ExperimentDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.context.annotation.Import;

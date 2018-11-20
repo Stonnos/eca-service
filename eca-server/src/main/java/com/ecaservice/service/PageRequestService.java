@@ -1,6 +1,6 @@
 package com.ecaservice.service;
 
-import com.ecaservice.web.dto.PageRequestDto;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import org.springframework.data.domain.Page;
 
 /**

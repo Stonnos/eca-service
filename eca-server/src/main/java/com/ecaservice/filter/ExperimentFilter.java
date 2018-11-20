@@ -1,7 +1,7 @@
 package com.ecaservice.filter;
 
 import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.web.dto.FilterRequestDto;
+import com.ecaservice.web.dto.model.FilterRequestDto;
 
 import java.util.List;
 

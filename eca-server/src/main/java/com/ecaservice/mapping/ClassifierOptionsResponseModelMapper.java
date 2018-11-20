@@ -1,7 +1,7 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
-import com.ecaservice.web.dto.ClassifierOptionsResponseDto;
+import com.ecaservice.web.dto.model.ClassifierOptionsResponseDto;
 import org.mapstruct.Mapper;
 
 import java.util.List;

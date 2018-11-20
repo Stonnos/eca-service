@@ -2,7 +2,7 @@ package com.ecaservice.mapping;
 
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.web.dto.ExperimentDto;
+import com.ecaservice.web.dto.model.ExperimentDto;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;

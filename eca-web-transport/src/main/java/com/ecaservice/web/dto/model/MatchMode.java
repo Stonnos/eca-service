@@ -1,4 +1,6 @@
-package com.ecaservice.web.dto;
+package com.ecaservice.web.dto.model;
+
+import com.ecaservice.web.dto.MatchModeVisitor;
 
 /**
  * Filter match mode type.
