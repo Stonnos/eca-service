@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
-  ClassifierOptionsRequestDto,
+  ClassifierOptionsRequestDto, EnumDto,
   PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -34,5 +34,13 @@ export class ClassifierOptionsRequestService {
     });
     const options = { headers: headers, params: params };
     return this.http.get<PageDto<ClassifierOptionsRequestDto>>(this.serviceUrl + '/classifiers-options-requests', options);
+  }
+
+  public getErsResponsesStatuses(): Observable<EnumDto[]> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
+    });
+    return this.http.get<EnumDto[]>(this.serviceUrl + '/ers-responses-types', { headers: headers });
   }
 }

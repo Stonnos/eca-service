@@ -1,6 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { Observable } from "rxjs/internal/Observable";
 import { CookieService } from "ngx-cookie-service";
 import { ConfigService } from "../../config.service";
@@ -13,7 +12,7 @@ export class AuthService {
   private clientId = ConfigService.appConfig.clientId;
   private secret = ConfigService.appConfig.secret;
 
-  constructor(private router: Router, private http: HttpClient, private cookieService: CookieService) {
+  constructor(private http: HttpClient, private cookieService: CookieService) {
   }
 
   public obtainAccessToken(user: UserModel): Observable<any> {
@@ -37,10 +36,5 @@ export class AuthService {
 
   public hasAccessToken(): boolean {
     return this.cookieService.check('access_token');
-  }
-
-  public logout() {
-    this.cookieService.delete('access_token');
-    this.router.navigate(['/login']);
   }
 }

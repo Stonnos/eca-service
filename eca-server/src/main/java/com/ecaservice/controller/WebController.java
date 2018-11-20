@@ -1,6 +1,8 @@
 package com.ecaservice.controller;
 
+import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassifierOptionsRequestModelMapper;
+import com.ecaservice.mapping.ErsResponseStatusMapper;
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
@@ -13,9 +15,10 @@ import com.ecaservice.service.evaluation.EvaluationLogService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.util.Utils;
 import com.ecaservice.web.dto.ClassifierOptionsRequestDto;
+import com.ecaservice.web.dto.EnumDto;
+import com.ecaservice.web.dto.ErsResponseStatus;
 import com.ecaservice.web.dto.EvaluationLogDto;
 import com.ecaservice.web.dto.ExperimentDto;
-import com.ecaservice.web.dto.ExperimentTypeDto;
 import com.ecaservice.web.dto.PageDto;
 import com.ecaservice.web.dto.PageRequestDto;
 import com.ecaservice.web.dto.RequestStatusStatisticsDto;
@@ -52,6 +55,7 @@ public class WebController {
     private final ExperimentMapper experimentMapper;
     private final EvaluationLogMapper evaluationLogMapper;
     private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
+    private final ErsResponseStatusMapper ersResponseStatusMapper;
 
     /**
      * Constructor with spring dependency injection.
@@ -62,6 +66,7 @@ public class WebController {
      * @param experimentMapper                    - experiment mapper bean
      * @param evaluationLogMapper                 - evaluation log mapper bean
      * @param classifierOptionsRequestModelMapper - classifier options request mapper bean
+     * @param ersResponseStatusMapper             - ers response status mapper bean
      */
     @Inject
     public WebController(ExperimentService experimentService,
@@ -69,13 +74,15 @@ public class WebController {
                          ClassifierOptionsRequestService classifierOptionsRequestService,
                          ExperimentMapper experimentMapper,
                          EvaluationLogMapper evaluationLogMapper,
-                         ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper) {
+                         ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper,
+                         ErsResponseStatusMapper ersResponseStatusMapper) {
         this.experimentService = experimentService;
         this.evaluationLogService = evaluationLogService;
         this.classifierOptionsRequestService = classifierOptionsRequestService;
         this.experimentMapper = experimentMapper;
         this.evaluationLogMapper = evaluationLogMapper;
         this.classifierOptionsRequestModelMapper = classifierOptionsRequestModelMapper;
+        this.ersResponseStatusMapper = ersResponseStatusMapper;
     }
 
     /**
@@ -108,9 +115,27 @@ public class WebController {
             notes = "Gets all experiments types"
     )
     @GetMapping(value = "/experiment-types")
-    public List<ExperimentTypeDto> getExperimentTypes() {
-        return Arrays.stream(ExperimentType.values()).map(experimentType -> new ExperimentTypeDto(experimentType.name(),
+    public List<EnumDto> getExperimentTypes() {
+        return Arrays.stream(ExperimentType.values()).map(experimentType -> new EnumDto(experimentType.name(),
                 experimentType.getDescription())).collect(Collectors.toList());
+    }
+
+    /**
+     * Gets all ERS responses types
+     *
+     * @return ERS responses list
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Gets all ERS responses types",
+            notes = "Gets all ERS responses types"
+    )
+    @GetMapping(value = "/ers-responses-types")
+    public List<EnumDto> getErsResponsesTypes() {
+        return Arrays.stream(ResponseStatus.values()).map(responseStatus -> {
+            ErsResponseStatus ersResponseStatus = ersResponseStatusMapper.map(responseStatus);
+            return new EnumDto(ersResponseStatus.name(), ersResponseStatus.getDescription());
+        }).collect(Collectors.toList());
     }
 
     /**

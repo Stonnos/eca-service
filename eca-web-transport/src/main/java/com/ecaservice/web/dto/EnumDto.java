@@ -5,23 +5,23 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Experiment type dto.
+ * Enum dto.
  *
  * @author Roman Batygin
  */
 @Data
 @AllArgsConstructor
-public class ExperimentTypeDto {
+public class EnumDto {
 
     /**
-     * Experiment type
+     * Enum value
      */
-    @ApiModelProperty(notes = "Experiment algorithm type")
-    private String type;
+    @ApiModelProperty(notes = "Enum value")
+    private String value;
 
     /**
-     * Experiment type description
+     * Enum description
      */
-    @ApiModelProperty(notes = "Experiment description")
+    @ApiModelProperty(notes = "Enum value description")
     private String description;
 }

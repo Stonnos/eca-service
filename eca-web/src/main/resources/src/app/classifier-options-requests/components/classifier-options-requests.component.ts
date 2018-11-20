@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import {
-  ClassifierOptionsRequestDto, PageDto,
+  ClassifierOptionsRequestDto, EnumDto, PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { MessageService, SelectItem } from "primeng/api";
@@ -34,6 +34,7 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
   }
 
   public ngOnInit() {
+    this.addErsResponsesStatusesFilter();
   }
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<ClassifierOptionsRequestDto>> {
@@ -87,25 +88,29 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
       { label: "Использование обучающего множества", value: "TRAINING_DATA" },
       { label: "V-блочная кросс-проверка", value: "CROSS_VALIDATION" }
     ];
-    const statuses: SelectItem[] = [
-      { label: "Все", value: null },
-      { label: "SUCCESS", value: "SUCCESS" },
-      { label: "INVALID_REQUEST_PARAMS", value: "INVALID_REQUEST_PARAMS" },
-      { label: "DATA_NOT_FOUND", value: "DATA_NOT_FOUND" },
-      { label: "RESULTS_NOT_FOUND", value: "RESULTS_NOT_FOUND" },
-      { label: "ERROR", value: "ERROR" }
-    ];
     this.filters.push(new Filter("requestId", "UUID заявки",
       "TEXT", "EQUALS", null));
     this.filters.push(new Filter("relationName", "Обучающая выборка",
       "TEXT", "LIKE", null));
     this.filters.push(new Filter("evaluationMethod", "Метод оценки точности", "REFERENCE",
       "EQUALS", null, evaluationMethods));
-    this.filters.push(new Filter("responseStatus", "Статус ответа", "REFERENCE",
-      "EQUALS", null, statuses));
     this.filters.push(new Filter("requestDate", "Дата отправки заявки с",
       "DATE", "GTE", null));
     this.filters.push(new Filter("requestDate", "Дата отправки заявки по",
       "DATE", "LTE", null));
+  }
+
+  private addErsResponsesStatusesFilter() {
+    this.classifierOptionsService.getErsResponsesStatuses().subscribe((enumDtos: EnumDto[]) => {
+      const ersResponseStatusesItems: SelectItem[] =
+        enumDtos.map((enumDto: EnumDto) => {
+          return { label: enumDto.description, value: enumDto.value };
+        });
+      ersResponseStatusesItems.unshift({ label: "Все", value: null });
+      this.filters.push(new Filter("responseStatus", "Статус ответа", "REFERENCE", "EQUALS",
+        null, ersResponseStatusesItems));
+    }, (error) => {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+    });
   }
 }

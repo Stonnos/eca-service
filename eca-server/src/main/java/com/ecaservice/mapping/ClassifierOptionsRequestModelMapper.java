@@ -3,10 +3,14 @@ package com.ecaservice.mapping;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.web.dto.ClassifierOptionsRequestDto;
+import com.ecaservice.web.dto.ErsResponseStatus;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 
+import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -15,7 +19,10 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Mapper(uses = {ErsEvaluationMethodMapper.class, ClassifierOptionsResponseModelMapper.class})
-public interface ClassifierOptionsRequestModelMapper {
+public abstract class ClassifierOptionsRequestModelMapper {
+
+    @Inject
+    private ErsResponseStatusMapper ersResponseStatusMapper;
 
     /**
      * Maps classifier options request to classifier options request entity.
@@ -29,7 +36,7 @@ public interface ClassifierOptionsRequestModelMapper {
             @Mapping(source = "evaluationMethodReport.numTests", target = "numTests"),
             @Mapping(source = "evaluationMethodReport.seed", target = "seed"),
     })
-    ClassifierOptionsRequestModel map(ClassifierOptionsRequest classifierOptionsRequest);
+    public abstract ClassifierOptionsRequestModel map(ClassifierOptionsRequest classifierOptionsRequest);
 
     /**
      * Maps classifier options request model entity to its dto model.
@@ -40,7 +47,7 @@ public interface ClassifierOptionsRequestModelMapper {
     @Mappings({
             @Mapping(source = "evaluationMethod.description", target = "evaluationMethod")
     })
-    ClassifierOptionsRequestDto map(ClassifierOptionsRequestModel classifierOptionsRequestModel);
+    public abstract ClassifierOptionsRequestDto map(ClassifierOptionsRequestModel classifierOptionsRequestModel);
 
     /**
      * Maps classifiers options requests models entities to its dto models.
@@ -48,5 +55,14 @@ public interface ClassifierOptionsRequestModelMapper {
      * @param classifierOptionsRequestModels - classifiers options requests models entities
      * @return classifiers options requests dto models
      */
-    List<ClassifierOptionsRequestDto> map(List<ClassifierOptionsRequestModel> classifierOptionsRequestModels);
+    public abstract List<ClassifierOptionsRequestDto> map(
+            List<ClassifierOptionsRequestModel> classifierOptionsRequestModels);
+
+    @AfterMapping
+    protected void mapResponseStatus(ClassifierOptionsRequestModel classifierOptionsRequestModel,
+                                     @MappingTarget ClassifierOptionsRequestDto classifierOptionsRequestDto) {
+        ErsResponseStatus ersResponseStatus =
+                ersResponseStatusMapper.map(classifierOptionsRequestModel.getResponseStatus());
+        classifierOptionsRequestDto.setResponseStatus(ersResponseStatus.getDescription());
+    }
 }

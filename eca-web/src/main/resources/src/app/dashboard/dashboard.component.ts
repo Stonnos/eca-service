@@ -3,10 +3,11 @@ import { MenuItem, MessageService } from 'primeng/api';
 import { AuthService } from "../auth/services/auth.service";
 import { UserService } from "../auth/services/user.service";
 import { UserDto } from "../../../../../../target/generated-sources/typescript/eca-web-dto";
+import { LogoutService } from "../auth/services/logout.service";
 
 @Component({
   selector: 'app-dashboard',
-  providers: [ AuthService, UserService ],
+  providers: [ AuthService, UserService, LogoutService ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
@@ -18,6 +19,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(private authService: AuthService,
               private userService: UserService,
+              private logoutService: LogoutService,
               private messageService: MessageService) {
   }
 
@@ -60,6 +62,6 @@ export class DashboardComponent implements OnInit {
   }
 
   public logout() {
-    this.authService.logout();
+    this.logoutService.logout();
   }
 }

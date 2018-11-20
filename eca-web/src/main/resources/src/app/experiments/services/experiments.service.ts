@@ -1,7 +1,8 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
-  ExperimentDto, ExperimentTypeDto,
+  EnumDto,
+  ExperimentDto,
   PageDto,
   PageRequestDto, RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -36,12 +37,12 @@ export class ExperimentsService {
     return this.http.get<PageDto<ExperimentDto>>(this.serviceUrl + '/experiments', options);
   }
 
-  public getExperimentTypes(): Observable<ExperimentTypeDto[]> {
+  public getExperimentTypes(): Observable<EnumDto[]> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': 'Bearer ' + this.cookieService.get('access_token')
     });
-    return this.http.get<ExperimentTypeDto[]>(this.serviceUrl + '/experiment-types', { headers: headers });
+    return this.http.get<EnumDto[]>(this.serviceUrl + '/experiment-types', { headers: headers });
   }
 
   public getRequestStatusesStatistics(): Observable<RequestStatusStatisticsDto> {

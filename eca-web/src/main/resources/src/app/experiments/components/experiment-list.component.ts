@@ -1,6 +1,7 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import {
-  ExperimentDto, ExperimentTypeDto, PageDto,
+  EnumDto,
+  ExperimentDto, PageDto,
   PageRequestDto, RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ExperimentsService } from "../services/experiments.service";
@@ -121,10 +122,10 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   }
 
   private addExperimentTypesFilter() {
-    this.experimentsService.getExperimentTypes().subscribe((experimentTypes: ExperimentTypeDto[]) => {
+    this.experimentsService.getExperimentTypes().subscribe((experimentTypes: EnumDto[]) => {
       const experimentTypeItems: SelectItem[] =
-        experimentTypes.map((experimentType: ExperimentTypeDto) => {
-          return { label: experimentType.description, value: experimentType.type };
+        experimentTypes.map((experimentType: EnumDto) => {
+          return { label: experimentType.description, value: experimentType.value };
         });
       experimentTypeItems.unshift({ label: "Все", value: null });
       this.filters.push(new Filter("experimentType", "Тип эксперимента", "REFERENCE", "EQUALS",

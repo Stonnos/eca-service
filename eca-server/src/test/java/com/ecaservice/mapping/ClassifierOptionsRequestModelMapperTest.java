@@ -6,6 +6,7 @@ import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.web.dto.ClassifierOptionsRequestDto;
+import com.ecaservice.web.dto.ErsResponseStatus;
 import eca.core.evaluation.EvaluationMethod;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -24,9 +25,11 @@ import java.util.Collections;
  */
 @RunWith(SpringRunner.class)
 @Import({ClassifierOptionsRequestModelMapperImpl.class, ErsEvaluationMethodMapperImpl.class,
-        ClassifierOptionsResponseModelMapperImpl.class})
+        ClassifierOptionsResponseModelMapperImpl.class, ErsResponseStatusMapperImpl.class})
 public class ClassifierOptionsRequestModelMapperTest {
 
+    @Inject
+    private ErsResponseStatusMapper ersResponseStatusMapper;
     @Inject
     private ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
 
@@ -49,8 +52,9 @@ public class ClassifierOptionsRequestModelMapperTest {
         Assertions.assertThat(classifierOptionsRequestDto).isNotNull();
         Assertions.assertThat(classifierOptionsRequestDto.getRequestDate()).isEqualTo(requestModel.getRequestDate());
         Assertions.assertThat(classifierOptionsRequestDto.getRequestId()).isEqualTo(requestModel.getRequestId());
+        ErsResponseStatus ersResponseStatus = ersResponseStatusMapper.map(requestModel.getResponseStatus());
         Assertions.assertThat(classifierOptionsRequestDto.getResponseStatus()).isEqualTo(
-                requestModel.getResponseStatus().name());
+                ersResponseStatus.getDescription());
         Assertions.assertThat(classifierOptionsRequestDto.getRelationName()).isEqualTo(requestModel.getRelationName());
         Assertions.assertThat(classifierOptionsRequestDto.getNumFolds()).isEqualTo(requestModel.getNumFolds());
         Assertions.assertThat(classifierOptionsRequestDto.getNumTests()).isEqualTo(requestModel.getNumTests());
