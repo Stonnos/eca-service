@@ -140,3 +140,44 @@ mvn clean install dockerfile:build -Ppostgres,experiment-linux -Djdbc.url=jdbc:p
   * ers-config.url=http://evaluation-results-service:8080/evaluation-results-service/ws/
   * experiment.mail.serviceUrl=http://notification-service:8080/notification-service/ws/
   * oauth2-resource.oauthUrl=http://eca-oauth:8080/eca-oauth
+  * swagger2.oauthUrl=http://localhost:8083/eca-oauth
+
+ВАЖНО! В конфиге swagger2.oauthUrl необходимо указывать внешний url docker контейнера
+
+Для удаления всех контейнеров и image-ов необходимо выполнить команду:
+
+docker-compose down --rmi all
+
+Основные команды Docker
+-------------------------------------------------------
+
+Для просмотра image-ов, необходимо выполнить команду:
+
+docker images
+
+Для просмотра запущенных контейнеров, необходимо выполнить команду:
+
+docker ps
+
+Для удаления контейнера, необходимо выполнить команду:
+
+docker rm container_name
+
+Для удаления image, необходимо выполнить команду:
+
+docker image rm image_id
+
+Для просотра доступных сетей, необходимо выполнить команду:
+
+docker network ls
+
+Для того чтобы подключится к контейнеру, необходимо выполнить команду:
+
+docker exec -it container_name bash
+
+Для копирования новой версии war файла в контейнер (container_name), необходимо выполнить команду:
+
+docker cp application.war container_name:/usr/local/tomcat/webapps/
+
+ВАЖНО! Данную команду необходимо выполнять из директории, в которой лежит war файл.
+Либо можно указать абсолютный путь к war - файлу.

@@ -5,7 +5,7 @@ import { AppConfig } from "./config.model";
 @Injectable()
 export class ConfigService {
 
-  private configUrl: string = '/assets/configs/config.json';
+  private configUrl: string = './assets/configs/config.json';
 
   public static appConfig: AppConfig;
 

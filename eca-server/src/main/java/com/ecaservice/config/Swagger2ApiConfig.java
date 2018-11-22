@@ -36,4 +36,19 @@ public class Swagger2ApiConfig {
      * Api email
      */
     private String email;
+
+    /**
+     * Application id
+     */
+    private String clientId;
+
+    /**
+     * Application secret
+     */
+    private String secret;
+
+    /**
+     * Oauth2 server url
+     */
+    private String oauthUrl;
 }

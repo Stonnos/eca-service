@@ -1,6 +1,5 @@
 package com.ecaservice.config;
 
-import com.ecaservice.config.oauth2.Oauth2ResourceConfig;
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +23,6 @@ import springfox.documentation.swagger.web.SecurityConfiguration;
 import springfox.documentation.swagger.web.SecurityConfigurationBuilder;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -45,9 +43,6 @@ public class Swagger2Configuration {
     private static final String RETRIEVE_TOKEN_URL = "%s/oauth/token";
     private static final String SCOPE = "web";
     private static final String SCOPE_DESCRIPTION = "for web operations";
-
-    @Inject
-    private Oauth2ResourceConfig oauth2ResourceConfig;
 
     /**
      * Returns swagger configuration bean.
@@ -76,20 +71,20 @@ public class Swagger2Configuration {
     @Bean
     public SecurityConfiguration security() {
         return SecurityConfigurationBuilder.builder()
-                .clientId(oauth2ResourceConfig.getClientId())
-                .clientSecret(oauth2ResourceConfig.getSecret())
+                .clientId(swagger2ApiConfig().getClientId())
+                .clientSecret(swagger2ApiConfig().getSecret())
                 .useBasicAuthenticationWithAccessCodeGrant(false)
                 .build();
     }
 
     @Bean
-    protected Swagger2ApiConfig swagger2ApiConfig() {
+    public Swagger2ApiConfig swagger2ApiConfig() {
         return new Swagger2ApiConfig();
     }
 
     private SecurityScheme buildSecurityScheme() {
         GrantType grantType = new ResourceOwnerPasswordCredentialsGrant(String.format(RETRIEVE_TOKEN_URL,
-                oauth2ResourceConfig.getOauthUrl()));
+                swagger2ApiConfig().getOauthUrl()));
         return new OAuthBuilder().name(SECURITY_SCHEMA_OAUTH2).grantTypes(Collections.singletonList(grantType)).scopes(
                 getScopes()).build();
     }
