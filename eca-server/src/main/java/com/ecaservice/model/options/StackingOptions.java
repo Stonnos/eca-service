@@ -1,6 +1,7 @@
 package com.ecaservice.model.options;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class StackingOptions extends ClassifierOptions {
 
     /**

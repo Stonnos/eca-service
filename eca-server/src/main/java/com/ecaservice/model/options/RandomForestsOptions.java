@@ -3,6 +3,7 @@ package com.ecaservice.model.options;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import eca.ensemble.forests.DecisionTreeType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Random forests options model.
@@ -10,6 +11,7 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = ExtraTreesOptions.class, name = ClassifierOptionsType.EXTRA_TREES),
 })

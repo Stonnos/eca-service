@@ -2,6 +2,7 @@ package com.ecaservice.model.options;
 
 import eca.metrics.distances.DistanceType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * K - nearest neighbours input options.
@@ -9,6 +10,7 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class KNearestNeighboursOptions extends ClassifierOptions {
 
     /**

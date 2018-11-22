@@ -2,6 +2,7 @@ package com.ecaservice.model.options;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Iterative ensemble classifier options model.
@@ -9,6 +10,7 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = RandomForestsOptions.class),
         @JsonSubTypes.Type(value = RandomNetworkOptions.class, name = ClassifierOptionsType.RANDOM_NETWORKS),

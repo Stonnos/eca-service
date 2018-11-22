@@ -2,6 +2,7 @@ package com.ecaservice.model.entity;
 
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +18,7 @@ import javax.persistence.Table;
  * @author Roman Batygin
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "experiment_results_request")
 public class ExperimentResultsRequest extends ErsRequest {

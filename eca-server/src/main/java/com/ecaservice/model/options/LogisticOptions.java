@@ -1,6 +1,7 @@
 package com.ecaservice.model.options;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Logistic regression input options model.
@@ -8,6 +9,7 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class LogisticOptions extends ClassifierOptions {
 
     /**

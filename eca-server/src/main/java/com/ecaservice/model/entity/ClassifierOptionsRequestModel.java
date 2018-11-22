@@ -2,6 +2,7 @@ package com.ecaservice.model.entity;
 
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,6 +22,7 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "classifier_options_request_model",
         indexes = @Index(name = "idx_data_md5_hash", columnList = "data_md5_hash"))

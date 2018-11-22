@@ -2,6 +2,7 @@ package com.ecaservice.model.options;
 
 import eca.ensemble.sampling.SamplingMethod;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Heterogeneous classifier options model.
@@ -9,6 +10,7 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class HeterogeneousClassifierOptions extends AbstractHeterogeneousClassifierOptions {
 
     /**

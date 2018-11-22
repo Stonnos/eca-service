@@ -2,6 +2,7 @@ package com.ecaservice.model.options;
 
 import eca.ensemble.forests.DecisionTreeType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import java.util.Map;
  * @author Roman Batygin
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class DecisionTreeOptions extends ClassifierOptions {
 
     /**
