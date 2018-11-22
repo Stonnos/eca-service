@@ -1,2 +1,2 @@
 create database eca;
-create database eca-oauth;
+create database "eca-oauth";
