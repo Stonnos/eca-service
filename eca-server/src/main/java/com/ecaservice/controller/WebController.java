@@ -41,6 +41,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.util.Utils.existsFile;
+
 /**
  * Rest controller providing operations for web application.
  */
@@ -166,7 +168,7 @@ public class WebController {
     @GetMapping(value = "/experiment-training-data/{uuid}")
     public ResponseEntity downloadTrainingData(@PathVariable String uuid) {
         File trainingDataFile = experimentService.findTrainingDataFileByUuid(uuid);
-        if (trainingDataFile == null || !trainingDataFile.isFile()) {
+        if (!existsFile(trainingDataFile)) {
             log.error("Experiment training data file for uuid = '{}' not found!", uuid);
             return ResponseEntity.badRequest().body(
                     String.format("Experiment training data file for uuid = '%s' not found!", uuid));

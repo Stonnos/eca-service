@@ -188,4 +188,14 @@ public class Utils {
         headers.setContentDispositionFormData(ATTACHMENT, resource.getFilename());
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
+
+    /**
+     * Checks file existing.
+     *
+     * @param file - file
+     * @return {@code true} if file is existing
+     */
+    public static boolean existsFile(File file) {
+        return file != null && file.isFile();
+    }
 }

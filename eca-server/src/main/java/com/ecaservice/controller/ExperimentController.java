@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.inject.Inject;
 import java.io.File;
 
+import static com.ecaservice.util.Utils.existsFile;
+
 /**
  * Experiment controller.
  *
@@ -58,7 +60,7 @@ public class ExperimentController {
     @GetMapping(value = "/download/{uuid}")
     public ResponseEntity downloadExperiment(@PathVariable String uuid) {
         File experimentFile = experimentService.findExperimentFileByUuid(uuid);
-        if (experimentFile == null || !experimentFile.isFile()) {
+        if (!existsFile(experimentFile)) {
             log.error("Experiment results file for uuid = '{}' not found!", uuid);
             return ResponseEntity.badRequest().body(
                     String.format("Experiment results file for uuid = '%s' not found!", uuid));
