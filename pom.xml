@@ -6,12 +6,12 @@
 
     <groupId>eca.service</groupId>
     <artifactId>eca-service</artifactId>
-    <version>3.4</version>
+    <version>4.0</version>
     <modules>
         <module>eca-web-transport</module>
+        <module>eca-oauth</module>
         <module>eca-server</module>
         <module>eca-web</module>
-        <module>eca-oauth</module>
     </modules>
 
     <parent>
