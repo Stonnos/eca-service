@@ -7,9 +7,12 @@
   .ui-table-tbody > tr > td {
     word-wrap: break-word;
     width: 300px;
-    &:first-child, &:nth-child(7) {
+    &:first-child {
       width: 330px;
       font-weight: bold;
+    }
+    &:nth-child(7) {
+      width: 330px;
     }
   }
   .ui-table-thead > tr > th {
