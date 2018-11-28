@@ -10,6 +10,7 @@ import { JsonPipe } from "@angular/common";
 import { ClassifierOptionsRequestService } from "../services/classifier-options-request.service";
 import { Filter } from "../../filter/filter.model";
 import { Observable } from "rxjs/internal/Observable";
+import { saveAs } from 'file-saver/dist/FileSaver';
 
 declare var Prism: any;
 
@@ -46,6 +47,16 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
       return item.classifierOptionsResponseModels[0].classifierName;
     } else {
       return item[column];
+    }
+  }
+
+  public saveClassifierOptions() {
+    if (!!this.selectedRequest) {
+      const classifierConfig = this.selectedRequest.classifierOptionsResponseModels[0].options;
+      if (!!classifierConfig) {
+        let blob: Blob = new Blob([classifierConfig], {type: 'application/json'});
+        saveAs(blob, `${this.selectedRequest.classifierOptionsResponseModels[0].classifierName}_${this.selectedRequest.requestId}.json`);
+      }
     }
   }
 
