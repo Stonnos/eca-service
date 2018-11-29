@@ -16,6 +16,7 @@ import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.util.Utils;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
 import com.ecaservice.web.dto.model.EnumDto;
+import com.ecaservice.web.dto.model.ErsReportDto;
 import com.ecaservice.web.dto.model.ErsResponseStatus;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
@@ -32,6 +33,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
@@ -248,6 +251,37 @@ public class WebController {
     public UserDto getCurrentUser() {
         String principal = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return new UserDto(principal);
+    }
+
+    /**
+     * Gets ERS report for specified experiment.
+     *
+     * @param uuid - experiment uuid
+     * @return ers report dto
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Gets experiment ERS report",
+            notes = "Gets experiment ERS report"
+    )
+    @GetMapping(value = "/experiment-ers-report/{uuid}")
+    public ErsReportDto getExperimentErsReport(@PathVariable String uuid) {
+        return new ErsReportDto();
+    }
+
+    /**
+     * Sent evaluation results to ERS for experiment.
+     *
+     * @param uuid - experiment uuid
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Sent evaluation results to ERS for experiment",
+            notes = "Sent evaluation results to ERS for experiment"
+    )
+    @PostMapping(value = "/sent-experiment-evaluation-results")
+    public void sentExperimentEvaluationResults(@RequestParam String uuid) {
+        log.info("Received request to send evaluation results to ERS for experiment {}", uuid);
     }
 
     private RequestStatusStatisticsDto createRequestStatusesStatistics(Map<RequestStatus, Long> statusStatisticsMap) {

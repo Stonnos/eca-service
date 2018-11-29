@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import {
-  EnumDto,
+  EnumDto, ErsReportDto,
   ExperimentDto, PageDto,
   PageRequestDto, RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -19,12 +19,14 @@ import { Observable } from "rxjs/internal/Observable";
 export class ExperimentListComponent extends BaseListComponent<ExperimentDto> implements OnInit {
 
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
+  public ersReport: ErsReportDto;
+  public ersReportVisibility: boolean = false;
 
   public constructor(private injector: Injector,
                      private experimentsService: ExperimentsService) {
     super(injector.get(MessageService));
     this.defaultSortField = "creationDate";
-    this.linkColumns = ["trainingDataAbsolutePath", "experimentAbsolutePath"];
+    this.linkColumns = ["trainingDataAbsolutePath", "experimentAbsolutePath", "uuid"];
     this.notSortableColumns = ["trainingDataAbsolutePath", "experimentAbsolutePath"];
     this.initColumns();
     this.initFilters();
@@ -69,7 +71,34 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
           this.loading = false;
         });
         break;
+      case this.linkColumns[2]:
+        this.loading = true;
+        this.experimentsService.getErsReport(experiment.uuid).subscribe((ersReport: ErsReportDto) => {
+          this.ersReport = ersReport;
+          this.loading = false;
+          this.ersReportVisibility = true;
+        }, (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+          this.loading = false;
+        });
+        break;
     }
+  }
+
+  public onErsReportVisibilityChange(visible) {
+    this.ersReportVisibility = visible;
+  }
+
+  public onEvaluationResultsSent(experimentUuid: string) {
+    this.loading = true;
+    this.experimentsService.sentEvaluationResults(experimentUuid).subscribe(() => {
+      this.messageService.add({ severity: 'success',
+        summary: `Запрос в ERS на сохранение классификаторов для эксперимента ${experimentUuid} был успешно создан`, detail: '' });
+      this.loading = false;
+    }, (error) => {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+      this.loading = false;
+    });
   }
 
   private initColumns() {

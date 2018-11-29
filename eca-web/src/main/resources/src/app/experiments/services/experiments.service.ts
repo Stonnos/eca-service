@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
-  EnumDto,
+  EnumDto, ErsReportDto,
   ExperimentDto,
   PageDto,
   PageRequestDto, RequestStatusStatisticsDto
@@ -63,5 +63,23 @@ export class ExperimentsService {
     });
     const options = { headers: headers, responseType: 'blob' as 'json' };
     return this.http.get<Blob>(this.serviceUrl + '/experiment-training-data/' + uuid, options);
+  }
+
+  public getErsReport(uuid: string): Observable<ErsReportDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
+    });
+    return this.http.get<ErsReportDto>(this.serviceUrl + '/experiment-ers-report/' + uuid, { headers: headers });
+  }
+
+  public sentEvaluationResults(uuid: string) {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
+    });
+    let params = new HttpParams().set('uuid', uuid.toString());
+    const options = { headers: headers, params: params };
+    return this.http.post(this.serviceUrl + '/sent-experiment-evaluation-results', options);
   }
 }
