@@ -8,8 +8,11 @@ import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.model.entity.ExperimentResultsRequest;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentType;
+import com.ecaservice.repository.ExperimentRepository;
+import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.service.ers.ClassifierOptionsRequestService;
 import com.ecaservice.service.evaluation.EvaluationLogService;
 import com.ecaservice.service.experiment.ExperimentService;
@@ -31,6 +34,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,6 +65,8 @@ public class WebController {
     private final EvaluationLogMapper evaluationLogMapper;
     private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
     private final ErsResponseStatusMapper ersResponseStatusMapper;
+    private final ExperimentRepository experimentRepository;
+    private final ExperimentResultsRequestRepository experimentResultsRequestRepository;
 
     /**
      * Constructor with spring dependency injection.
@@ -72,6 +78,8 @@ public class WebController {
      * @param evaluationLogMapper                 - evaluation log mapper bean
      * @param classifierOptionsRequestModelMapper - classifier options request mapper bean
      * @param ersResponseStatusMapper             - ers response status mapper bean
+     * @param experimentRepository                - experiment repository bean
+     * @param experimentResultsRequestRepository  - experiment results requests repository bean
      */
     @Inject
     public WebController(ExperimentService experimentService,
@@ -80,7 +88,9 @@ public class WebController {
                          ExperimentMapper experimentMapper,
                          EvaluationLogMapper evaluationLogMapper,
                          ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper,
-                         ErsResponseStatusMapper ersResponseStatusMapper) {
+                         ErsResponseStatusMapper ersResponseStatusMapper,
+                         ExperimentRepository experimentRepository,
+                         ExperimentResultsRequestRepository experimentResultsRequestRepository) {
         this.experimentService = experimentService;
         this.evaluationLogService = evaluationLogService;
         this.classifierOptionsRequestService = classifierOptionsRequestService;
@@ -88,6 +98,8 @@ public class WebController {
         this.evaluationLogMapper = evaluationLogMapper;
         this.classifierOptionsRequestModelMapper = classifierOptionsRequestModelMapper;
         this.ersResponseStatusMapper = ersResponseStatusMapper;
+        this.experimentRepository = experimentRepository;
+        this.experimentResultsRequestRepository = experimentResultsRequestRepository;
     }
 
     /**
@@ -236,7 +248,6 @@ public class WebController {
                 classifierOptionsRequestModelPage.getTotalElements());
     }
 
-
     /**
      * Gets current user.
      *
@@ -265,8 +276,27 @@ public class WebController {
             notes = "Gets experiment ERS report"
     )
     @GetMapping(value = "/experiment-ers-report/{uuid}")
-    public ErsReportDto getExperimentErsReport(@PathVariable String uuid) {
-        return new ErsReportDto();
+    public ResponseEntity<ErsReportDto> getExperimentErsReport(@PathVariable String uuid) {
+        log.info("Received request for ERS report for experiment [{}]", uuid);
+        Experiment experiment = experimentRepository.findByUuid(uuid);
+        if (experiment == null) {
+            log.error("Experiment with uuid [{}] not found", uuid);
+            return ResponseEntity.badRequest().build();
+        }
+        List<ExperimentResultsRequest> experimentResultsRequests =
+                experimentResultsRequestRepository.findAllByExperiment(experiment);
+        ErsReportDto ersReportDto = new ErsReportDto();
+        ersReportDto.setExperimentUuid(experiment.getUuid());
+        if (!CollectionUtils.isEmpty(experimentResultsRequests)) {
+            ersReportDto.setRequestsCount(experimentResultsRequests.size());
+            ersReportDto.setSuccessfullySavedClassifiers(experimentResultsRequests.stream().filter(
+                    experimentResultsRequest -> ResponseStatus.SUCCESS.equals(
+                            experimentResultsRequest.getResponseStatus())).count());
+            ersReportDto.setFailedRequestsCount(experimentResultsRequests.stream().filter(
+                    experimentResultsRequest -> !ResponseStatus.SUCCESS.equals(
+                            experimentResultsRequest.getResponseStatus())).count());
+        }
+        return ResponseEntity.ok(ersReportDto);
     }
 
     /**
@@ -280,8 +310,9 @@ public class WebController {
             notes = "Sent evaluation results to ERS for experiment"
     )
     @PostMapping(value = "/sent-experiment-evaluation-results")
-    public void sentExperimentEvaluationResults(@RequestParam String uuid) {
-        log.info("Received request to send evaluation results to ERS for experiment {}", uuid);
+    public ResponseEntity sentExperimentEvaluationResults(@RequestParam String uuid) {
+        log.info("Received request to send evaluation results to ERS for experiment [{}]", uuid);
+        return ResponseEntity.ok().build();
     }
 
     private RequestStatusStatisticsDto createRequestStatusesStatistics(Map<RequestStatus, Long> statusStatisticsMap) {

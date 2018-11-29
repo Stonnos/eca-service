@@ -1,7 +1,7 @@
 <p-dialog
   [(visible)]="visible"
   header="Статистика запросов в ERS"
-  width="600"
+  width="700"
   appendTo="body"
   [modal]="true"
   [blockScroll]="false"
@@ -10,37 +10,37 @@
   (onHide)="hide()">
 
   <div class="ui-g">
-    <div class="ui-g-8 text-right text-bold text-wrap">
+    <div class="ui-g-6 text-right text-bold text-wrap">
       UUID эксперимента:
     </div>
-    <div class="ui-g-4 text-left text-wrap text-bold">
+    <div class="ui-g-6 text-left text-wrap text-bold">
       {{ getExperimentUuid() }}
     </div>
   </div>
 
   <div class="ui-g">
-    <div class="ui-g-8 text-right text-bold text-wrap">
+    <div class="ui-g-6 text-right text-bold text-wrap">
       Число запросов в ERS на сохранение классификаторов:
     </div>
-    <div class="ui-g-4 text-left text-wrap">
+    <div class="ui-g-6 text-left text-wrap">
       {{ getRequestsCount() }}
     </div>
   </div>
 
   <div class="ui-g">
-    <div class="ui-g-8 text-right text-bold text-wrap">
+    <div class="ui-g-6 text-right text-bold text-wrap">
       Число успешно сохраненных классификаторов:
     </div>
-    <div class="ui-g-4 text-left text-wrap">
+    <div class="ui-g-6 text-left text-wrap">
       {{ getSuccessfullySavedClassifiers() }}
     </div>
   </div>
 
   <div class="ui-g">
-    <div class="ui-g-8 text-right text-bold text-wrap">
+    <div class="ui-g-6 text-right text-bold text-wrap">
       Число неудачных запросов:
     </div>
-    <div class="ui-g-4 text-left text-wrap">
+    <div class="ui-g-6 text-left text-wrap">
       {{ getFailedRequestsCount() }}
     </div>
   </div>
