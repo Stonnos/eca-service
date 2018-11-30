@@ -39,6 +39,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.util.Utils.existsFile;
+
 /**
  * Experiment service.
  *
@@ -158,6 +160,24 @@ public class ExperimentService implements PageRequestService<Experiment> {
             experimentRepository.save(experiment);
         }
         return null;
+    }
+
+    /**
+     * Gets experiment history.
+     *
+     * @param uuid - experiment uuid
+     * @return experiment history
+     */
+    public ExperimentHistory getExperimentResults(String uuid) {
+        File experimentFile = findExperimentFileByUuid(uuid);
+        if (!existsFile(experimentFile)) {
+            throw new ExperimentException(String.format("Experiment results file for uuid = [%s] not found!", uuid));
+        }
+        try {
+            return dataService.loadExperimentHistory(experimentFile);
+        } catch (Exception ex) {
+            throw new ExperimentException(ex.getMessage());
+        }
     }
 
     /**

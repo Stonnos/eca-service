@@ -8,12 +8,12 @@ import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.model.entity.ExperimentResultsRequest;
 import com.ecaservice.model.entity.RequestStatus;
+import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.repository.ExperimentRepository;
-import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.service.ers.ClassifierOptionsRequestService;
+import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.evaluation.EvaluationLogService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.util.Utils;
@@ -27,6 +27,7 @@ import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.ecaservice.web.dto.model.UserDto;
+import eca.converters.model.ExperimentHistory;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +35,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,12 +61,12 @@ public class WebController {
     private final ExperimentService experimentService;
     private final EvaluationLogService evaluationLogService;
     private final ClassifierOptionsRequestService classifierOptionsRequestService;
+    private final ErsService ersService;
     private final ExperimentMapper experimentMapper;
     private final EvaluationLogMapper evaluationLogMapper;
     private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
     private final ErsResponseStatusMapper ersResponseStatusMapper;
     private final ExperimentRepository experimentRepository;
-    private final ExperimentResultsRequestRepository experimentResultsRequestRepository;
 
     /**
      * Constructor with spring dependency injection.
@@ -74,32 +74,31 @@ public class WebController {
      * @param experimentService                   - experiment service bean
      * @param evaluationLogService                - evaluation log service bean
      * @param classifierOptionsRequestService     - classifier options request service bean
+     * @param ersService                          - ers service bean
      * @param experimentMapper                    - experiment mapper bean
      * @param evaluationLogMapper                 - evaluation log mapper bean
      * @param classifierOptionsRequestModelMapper - classifier options request mapper bean
      * @param ersResponseStatusMapper             - ers response status mapper bean
      * @param experimentRepository                - experiment repository bean
-     * @param experimentResultsRequestRepository  - experiment results requests repository bean
      */
     @Inject
     public WebController(ExperimentService experimentService,
                          EvaluationLogService evaluationLogService,
                          ClassifierOptionsRequestService classifierOptionsRequestService,
-                         ExperimentMapper experimentMapper,
+                         ErsService ersService, ExperimentMapper experimentMapper,
                          EvaluationLogMapper evaluationLogMapper,
                          ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper,
                          ErsResponseStatusMapper ersResponseStatusMapper,
-                         ExperimentRepository experimentRepository,
-                         ExperimentResultsRequestRepository experimentResultsRequestRepository) {
+                         ExperimentRepository experimentRepository) {
         this.experimentService = experimentService;
         this.evaluationLogService = evaluationLogService;
         this.classifierOptionsRequestService = classifierOptionsRequestService;
+        this.ersService = ersService;
         this.experimentMapper = experimentMapper;
         this.evaluationLogMapper = evaluationLogMapper;
         this.classifierOptionsRequestModelMapper = classifierOptionsRequestModelMapper;
         this.ersResponseStatusMapper = ersResponseStatusMapper;
         this.experimentRepository = experimentRepository;
-        this.experimentResultsRequestRepository = experimentResultsRequestRepository;
     }
 
     /**
@@ -283,20 +282,7 @@ public class WebController {
             log.error("Experiment with uuid [{}] not found", uuid);
             return ResponseEntity.badRequest().build();
         }
-        List<ExperimentResultsRequest> experimentResultsRequests =
-                experimentResultsRequestRepository.findAllByExperiment(experiment);
-        ErsReportDto ersReportDto = new ErsReportDto();
-        ersReportDto.setExperimentUuid(experiment.getUuid());
-        if (!CollectionUtils.isEmpty(experimentResultsRequests)) {
-            ersReportDto.setRequestsCount(experimentResultsRequests.size());
-            ersReportDto.setSuccessfullySavedClassifiers(experimentResultsRequests.stream().filter(
-                    experimentResultsRequest -> ResponseStatus.SUCCESS.equals(
-                            experimentResultsRequest.getResponseStatus())).count());
-            ersReportDto.setFailedRequestsCount(experimentResultsRequests.stream().filter(
-                    experimentResultsRequest -> !ResponseStatus.SUCCESS.equals(
-                            experimentResultsRequest.getResponseStatus())).count());
-        }
-        return ResponseEntity.ok(ersReportDto);
+        return ResponseEntity.ok(ersService.getErsReport(experiment));
     }
 
     /**
@@ -312,6 +298,18 @@ public class WebController {
     @PostMapping(value = "/sent-experiment-evaluation-results")
     public ResponseEntity sentExperimentEvaluationResults(@RequestParam String uuid) {
         log.info("Received request to send evaluation results to ERS for experiment [{}]", uuid);
+        Experiment experiment = experimentRepository.findByUuid(uuid);
+        if (experiment == null) {
+            log.error("Experiment with uuid [{}] not found", uuid);
+            return ResponseEntity.badRequest().build();
+        }
+        try {
+            ExperimentHistory experimentHistory = experimentService.getExperimentResults(uuid);
+            ersService.sentExperimentHistory(experiment, experimentHistory, ExperimentResultsRequestSource.MANUAL);
+        } catch (Exception ex) {
+            log.error("There was an error while sending experiment history [{}]: {}", uuid, ex.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok().build();
     }
 

@@ -91,7 +91,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public onEvaluationResultsSent(experimentUuid: string) {
     this.loading = true;
-    this.experimentsService.sentEvaluationResults(experimentUuid).subscribe(() => {
+    this.experimentsService.sentEvaluationResults(experimentUuid).subscribe(data => {
       this.messageService.add({ severity: 'success',
         summary: `Запрос в ERS на сохранение классификаторов для эксперимента ${experimentUuid} был успешно создан`, detail: '' });
       this.loading = false;

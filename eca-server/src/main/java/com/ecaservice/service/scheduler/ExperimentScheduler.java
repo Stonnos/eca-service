@@ -3,11 +3,11 @@ package com.ecaservice.service.scheduler;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsRequest;
-import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.model.entity.RequestStatus;
+import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.PageableCallback;
-import com.ecaservice.service.ers.ErsRequestService;
+import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.experiment.mail.NotificationService;
 import eca.converters.model.ExperimentHistory;
@@ -37,7 +37,7 @@ public class ExperimentScheduler {
     private final ExperimentRepository experimentRepository;
     private final ExperimentService experimentService;
     private final NotificationService notificationService;
-    private final ErsRequestService ersRequestService;
+    private final ErsService ersService;
     private final ExperimentConfig experimentConfig;
 
     /**
@@ -46,19 +46,19 @@ public class ExperimentScheduler {
      * @param experimentRepository - experiment repository bean
      * @param experimentService    - experiment service bean
      * @param notificationService  - notification service bean
-     * @param ersRequestService    - ers request service bean
+     * @param ersService           - ers service bean
      * @param experimentConfig     - experiment config bean
      */
     @Inject
     public ExperimentScheduler(ExperimentRepository experimentRepository,
                                ExperimentService experimentService,
                                NotificationService notificationService,
-                               ErsRequestService ersRequestService,
+                               ErsService ersService,
                                ExperimentConfig experimentConfig) {
         this.experimentRepository = experimentRepository;
         this.experimentService = experimentService;
         this.notificationService = notificationService;
-        this.ersRequestService = ersRequestService;
+        this.ersService = ersService;
         this.experimentConfig = experimentConfig;
     }
 
@@ -74,14 +74,8 @@ public class ExperimentScheduler {
                 experiments.forEach(experiment -> {
                     ExperimentHistory experimentHistory = experimentService.processExperiment(experiment);
                     if (RequestStatus.FINISHED.equals(experiment.getExperimentStatus())) {
-                        List<EvaluationResults> evaluationResults = experimentHistory.getExperiment();
-                        int resultsSize = Integer.min(evaluationResults.size(), experimentConfig.getResultSizeToSend());
-                        evaluationResults.stream().limit(resultsSize).forEach(results -> {
-                            ExperimentResultsRequest experimentResultsRequest = new ExperimentResultsRequest();
-                            experimentResultsRequest.setRequestSource(ExperimentResultsRequestSource.SYSTEM);
-                            experimentResultsRequest.setExperiment(experiment);
-                            ersRequestService.saveEvaluationResults(results, experimentResultsRequest);
-                        });
+                        ersService.sentExperimentHistory(experiment, experimentHistory,
+                                ExperimentResultsRequestSource.SYSTEM);
                     }
                 });
             }

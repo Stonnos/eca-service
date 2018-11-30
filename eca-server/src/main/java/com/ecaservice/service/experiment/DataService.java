@@ -14,7 +14,6 @@ import weka.core.Instances;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Data service interface.
@@ -45,7 +44,7 @@ public class DataService {
      *
      * @param file - file object
      * @param data - training data
-     * @throws Exception
+     * @throws Exception in case of I/O error
      */
     public void save(File file, Instances data) throws Exception {
         log.info("Starting to save {} data into file {}.", data.relationName(), file.getAbsolutePath());
@@ -58,7 +57,7 @@ public class DataService {
      *
      * @param file - file object
      * @return training data
-     * @throws Exception
+     * @throws Exception in case of I/O error
      */
     public Instances load(File file) throws Exception {
         log.info("Starting to load data from file {}", file.getAbsolutePath());
@@ -73,12 +72,26 @@ public class DataService {
      *
      * @param file              - file object
      * @param experimentHistory - experiment history
-     * @throws Exception
+     * @throws Exception in case of I/O error
      */
     public void saveExperimentHistory(File file, ExperimentHistory experimentHistory) throws Exception {
         log.info("Starting to save experiment history to file {}", file.getAbsolutePath());
         ModelConverter.saveModel(file, experimentHistory);
         log.info("Experiment history has been successfully saved to file {}", file.getAbsolutePath());
+    }
+
+    /**
+     * Loads experiment history from file.
+     *
+     * @param file - file object
+     * @return experiment history
+     * @throws Exception in case of I/O error
+     */
+    public ExperimentHistory loadExperimentHistory(File file) throws Exception {
+        log.info("Starting to load experiment history from file {}", file.getAbsolutePath());
+        ExperimentHistory experimentHistory = (ExperimentHistory) ModelConverter.loadModel(file);
+        log.info("Experiment history has been loaded from file {}", file.getAbsolutePath());
+        return experimentHistory;
     }
 
     /**
