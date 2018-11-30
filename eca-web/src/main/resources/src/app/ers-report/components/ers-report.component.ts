@@ -39,6 +39,14 @@ export class ErsReportComponent implements OnInit {
     return this.ersReport && this.ersReport.failedRequestsCount;
   }
 
+  public getErsReportStatus(): string {
+    return this.ersReport && this.ersReport.ersReportStatus;
+  }
+
+  public canSent(): boolean {
+    return this.ersReport && this.ersReport.ersReportStatus == "NEED_SENT";
+  }
+
   public hide(): void {
     this.visibilityChange.emit(false);
   }

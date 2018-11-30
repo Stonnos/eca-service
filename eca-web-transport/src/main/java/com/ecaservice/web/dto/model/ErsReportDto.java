@@ -29,4 +29,9 @@ public class ErsReportDto {
      * Failed requests count
      */
     private long failedRequestsCount;
+
+    /**
+     * Ers report status
+     */
+    private ErsReportStatus ersReportStatus;
 }

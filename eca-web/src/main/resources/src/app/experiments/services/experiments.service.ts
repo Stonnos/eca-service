@@ -80,7 +80,6 @@ export class ExperimentsService {
     });
     let params = new HttpParams().set('uuid', uuid);
     const options = { headers: headers, params: params };
-    console.log(options);
     return this.http.post(this.serviceUrl + '/sent-experiment-evaluation-results', options);
   }
 }

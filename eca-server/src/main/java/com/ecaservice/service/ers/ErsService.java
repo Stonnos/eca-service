@@ -4,9 +4,11 @@ import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsRequest;
+import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.web.dto.model.ErsReportDto;
+import com.ecaservice.web.dto.model.ErsReportStatus;
 import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
@@ -65,6 +67,7 @@ public class ErsService {
                     experimentResultsRequest -> !ResponseStatus.SUCCESS.equals(
                             experimentResultsRequest.getResponseStatus())).count());
         }
+        setErsReportStatus(experiment, ersReportDto);
         return ersReportDto;
     }
 
@@ -85,5 +88,19 @@ public class ErsService {
             experimentResultsRequest.setExperiment(experiment);
             ersRequestService.saveEvaluationResults(results, experimentResultsRequest);
         });
+    }
+
+    private void setErsReportStatus(Experiment experiment, ErsReportDto ersReportDto) {
+        ErsReportStatus ersReportStatus;
+        if (!RequestStatus.FINISHED.equals(experiment.getExperimentStatus())) {
+            ersReportStatus = ErsReportStatus.EXPERIMENT_ERROR;
+        } else if (ersReportDto.getSuccessfullySavedClassifiers() > 0) {
+            ersReportStatus = ErsReportStatus.SUCCESS_SENT;
+        } else if (experiment.getDeletedDate() != null) {
+            ersReportStatus = ErsReportStatus.EXPERIMENT_DELETED;
+        } else {
+            ersReportStatus = ErsReportStatus.NEED_SENT;
+        }
+        ersReportDto.setErsReportStatus(ersReportStatus);
     }
 }
