@@ -53,6 +53,11 @@
             Результаты эксперимента были успешно отправлены в ERS сервис
           </div>
         </ng-container>
+        <ng-container *ngSwitchCase="'EXPERIMENT_IN_PROGRESS'">
+          <div class="text-info">
+            Эксперимент еще находится в обработке
+          </div>
+        </ng-container>
         <ng-container *ngSwitchCase="'EXPERIMENT_ERROR'">
           <div class="text-danger">
             Невозможно отправить результаты эксперимента в ERS сервис. В ходе построения эксперимента возникла ошибка
@@ -77,7 +82,7 @@
       pButton
       label="Отправить запрос"
       type="button"
-      [disabled]="canSent()"
+      [disabled]="!canSent()"
       (click)="sentEvaluationResults()"
       class="ml-auto">
     </button>

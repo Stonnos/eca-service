@@ -13,6 +13,11 @@ public enum ErsReportStatus {
     SUCCESS_SENT,
 
     /**
+     * Experiment is building
+     */
+    EXPERIMENT_IN_PROGRESS,
+
+    /**
      * Experiment finished with error or timeout
      */
     EXPERIMENT_ERROR,

@@ -38,7 +38,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
@@ -296,7 +296,7 @@ public class WebController {
             notes = "Sent evaluation results to ERS for experiment"
     )
     @PostMapping(value = "/sent-experiment-evaluation-results")
-    public ResponseEntity sentExperimentEvaluationResults(@RequestParam String uuid) {
+    public ResponseEntity sentExperimentEvaluationResults(@RequestBody String uuid) {
         log.info("Received request to send evaluation results to ERS for experiment [{}]", uuid);
         Experiment experiment = experimentRepository.findByUuid(uuid);
         if (experiment == null) {

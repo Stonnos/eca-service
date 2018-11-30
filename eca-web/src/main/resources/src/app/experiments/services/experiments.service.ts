@@ -75,11 +75,9 @@ export class ExperimentsService {
 
   public sentEvaluationResults(uuid: string) {
     const headers = new HttpHeaders({
-      'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
+      'Content-type': 'application/json',
       'Authorization': 'Bearer ' + this.cookieService.get('access_token')
     });
-    let params = new HttpParams().set('uuid', uuid);
-    const options = { headers: headers, params: params };
-    return this.http.post(this.serviceUrl + '/sent-experiment-evaluation-results', options);
+    return this.http.post(this.serviceUrl + '/sent-experiment-evaluation-results', uuid, { headers: headers });
   }
 }

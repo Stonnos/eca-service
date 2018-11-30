@@ -93,7 +93,8 @@ public class ErsService {
     private void setErsReportStatus(Experiment experiment, ErsReportDto ersReportDto) {
         ErsReportStatus ersReportStatus;
         if (!RequestStatus.FINISHED.equals(experiment.getExperimentStatus())) {
-            ersReportStatus = ErsReportStatus.EXPERIMENT_ERROR;
+            ersReportStatus = RequestStatus.NEW.equals(experiment.getExperimentStatus()) ?
+                    ErsReportStatus.EXPERIMENT_IN_PROGRESS : ErsReportStatus.EXPERIMENT_ERROR;
         } else if (ersReportDto.getSuccessfullySavedClassifiers() > 0) {
             ersReportStatus = ErsReportStatus.SUCCESS_SENT;
         } else if (experiment.getDeletedDate() != null) {
