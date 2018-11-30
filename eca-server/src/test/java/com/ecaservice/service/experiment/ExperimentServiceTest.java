@@ -112,29 +112,29 @@ public class ExperimentServiceTest extends AbstractJpaTest {
 
     @Test
     public void testFindExperimentFileByUuidWithNullExperiment() {
-        assertThat(experimentService.findExperimentFileByUuid(TestHelperUtils.UUID)).isNull();
+        assertThat(experimentService.findExperimentFileByUuid(TestHelperUtils.TEST_UUID)).isNull();
     }
 
     @Test
     public void testFindExperimentFileByUuidWithNullFile() {
-        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID);
+        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
         experiment.setExperimentAbsolutePath(null);
         experimentRepository.save(experiment);
-        assertThat(experimentService.findExperimentFileByUuid(TestHelperUtils.UUID)).isNull();
+        assertThat(experimentService.findExperimentFileByUuid(TestHelperUtils.TEST_UUID)).isNull();
     }
 
     @Test
     public void testFindExperimentFileByUuidWithErrorStatus() {
-        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID, RequestStatus.ERROR);
+        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID, RequestStatus.ERROR);
         experimentRepository.save(experiment);
-        assertThat(experimentService.findExperimentFileByUuid(TestHelperUtils.UUID)).isNull();
+        assertThat(experimentService.findExperimentFileByUuid(TestHelperUtils.TEST_UUID)).isNull();
     }
 
     @Test
     public void testSuccessFindExperimentFileByUuid() {
-        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID, RequestStatus.FINISHED);
+        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID, RequestStatus.FINISHED);
         experimentRepository.save(experiment);
-        File expectedFile = experimentService.findExperimentFileByUuid(TestHelperUtils.UUID);
+        File expectedFile = experimentService.findExperimentFileByUuid(TestHelperUtils.TEST_UUID);
         File actualFile = new File(experiment.getExperimentAbsolutePath());
         assertThat(actualFile.getAbsolutePath()).isEqualTo(expectedFile.getAbsolutePath());
     }

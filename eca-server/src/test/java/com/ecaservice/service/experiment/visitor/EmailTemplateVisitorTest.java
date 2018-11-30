@@ -43,7 +43,7 @@ public class EmailTemplateVisitorTest {
 
     @Test
     public void testNewStatusContext() {
-        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID);
+        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
         experiment.setExperimentStatus(RequestStatus.NEW);
         Context context = experiment.getExperimentStatus().handle(emailTemplateVisitor, experiment);
         assertContext(context, experiment);
@@ -73,7 +73,7 @@ public class EmailTemplateVisitorTest {
 
     @Test
     public void testFinishedStatusContext() {
-        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID);
+        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
         experiment.setExperimentStatus(RequestStatus.FINISHED);
         Context context = experiment.getExperimentStatus().handle(emailTemplateVisitor, experiment);
         assertContext(context, experiment);

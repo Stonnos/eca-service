@@ -112,7 +112,7 @@ public class NotificationServiceTest {
     }
 
     private Experiment createAndSaveExperiment() {
-        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.UUID);
+        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
         experiment.setExperimentStatus(RequestStatus.FINISHED);
         experimentRepository.save(experiment);
         return experiment;

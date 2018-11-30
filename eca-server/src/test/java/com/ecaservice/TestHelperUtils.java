@@ -14,10 +14,12 @@ import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.model.entity.ExperimentResultsRequest;
 import com.ecaservice.model.entity.InstancesInfo;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.model.evaluation.EvaluationOption;
+import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.model.options.AdaBoostOptions;
@@ -64,6 +66,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * Test data helper class.
@@ -74,7 +77,7 @@ public class TestHelperUtils {
 
     public static final int NUM_FOLDS = 3;
     public static final int NUM_TESTS = 1;
-    public static final String UUID = "a01ebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
+    public static final String TEST_UUID = "a01ebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
 
     private static final int SEED = 1;
     private static final String FIRST_NAME = "Roman";
@@ -732,5 +735,23 @@ public class TestHelperUtils {
         responseModel.setClassifierDescription(DecisionTreeType.CART.getDescription());
         responseModel.setOptions(options);
         return responseModel;
+    }
+
+    /**
+     * Creates experiment results request.
+     *
+     * @param experiment     - experiment
+     * @param responseStatus - response status
+     * @return experiment results request
+     */
+    public static ExperimentResultsRequest createExperimentResultsRequest(Experiment experiment,
+                                                                          ResponseStatus responseStatus) {
+        ExperimentResultsRequest experimentResultsRequest = new ExperimentResultsRequest();
+        experimentResultsRequest.setExperiment(experiment);
+        experimentResultsRequest.setResponseStatus(responseStatus);
+        experimentResultsRequest.setRequestDate(LocalDateTime.now());
+        experimentResultsRequest.setRequestId(UUID.randomUUID().toString());
+        experimentResultsRequest.setRequestSource(ExperimentResultsRequestSource.SYSTEM);
+        return experimentResultsRequest;
     }
 }
