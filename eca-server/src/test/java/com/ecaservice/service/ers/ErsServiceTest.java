@@ -3,13 +3,17 @@ package com.ecaservice.service.ers;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.dto.evaluation.ResponseStatus;
+import com.ecaservice.model.entity.ErsRequest;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
+import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.web.dto.model.ErsReportDto;
 import com.ecaservice.web.dto.model.ErsReportStatus;
+import eca.converters.model.ExperimentHistory;
+import eca.core.evaluation.EvaluationResults;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +22,13 @@ import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.UUID;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * Unit tests for checking {@link ErsService} functionality.
@@ -122,5 +132,17 @@ public class ErsServiceTest extends AbstractJpaTest {
         Assertions.assertThat(ersReportDto.getRequestsCount()).isEqualTo(5);
         Assertions.assertThat(ersReportDto.getSuccessfullySavedClassifiers()).isEqualTo(2);
         Assertions.assertThat(ersReportDto.getFailedRequestsCount()).isEqualTo(3);
+    }
+
+    @Test
+    public void testSentExperimentHistory() throws Exception {
+        ExperimentHistory experimentHistory = new ExperimentHistory();
+        experimentHistory.setExperiment(new ArrayList<>());
+        experimentHistory.getExperiment().add(TestHelperUtils.getEvaluationResults());
+        experimentHistory.getExperiment().add(TestHelperUtils.getEvaluationResults());
+        doNothing().when(ersRequestService).saveEvaluationResults(any(EvaluationResults.class), any(ErsRequest.class));
+        ersService.sentExperimentHistory(new Experiment(), experimentHistory, ExperimentResultsRequestSource.MANUAL);
+        verify(ersRequestService, times(experimentHistory.getExperiment().size())).saveEvaluationResults(
+                any(EvaluationResults.class), any(ErsRequest.class));
     }
 }
