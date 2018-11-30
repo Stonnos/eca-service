@@ -26,7 +26,7 @@ export abstract class BaseListComponent<T> {
   @ViewChild(Table)
   private table: Table;
 
-  private dateFormat: string = "yyyy-MM-dd HH:mm:ss";
+  private dateFormat: string = "yyyy-MM-dd";
 
   protected constructor(public messageService: MessageService) {
   }

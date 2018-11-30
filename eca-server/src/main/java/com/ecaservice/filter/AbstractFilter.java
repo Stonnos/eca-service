@@ -14,7 +14,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.beans.PropertyDescriptor;
 import java.text.MessageFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +27,6 @@ import java.util.List;
  * @author Roman Batygin
  */
 public abstract class AbstractFilter<T> implements Specification<T> {
-
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Entity class
@@ -92,8 +92,9 @@ public abstract class AbstractFilter<T> implements Specification<T> {
                                                        CriteriaBuilder criteriaBuilder) {
         switch (filterRequestDto.getFilterType()) {
             case DATE:
-                LocalDateTime localDateTime = LocalDateTime.parse(filterRequestDto.getValue(), DATE_TIME_FORMATTER);
-                return criteriaBuilder.greaterThanOrEqualTo(root.get(filterRequestDto.getName()), localDateTime);
+                LocalDate localDate = LocalDate.parse(filterRequestDto.getValue(), DateTimeFormatter.ISO_LOCAL_DATE);
+                return criteriaBuilder.greaterThanOrEqualTo(root.get(filterRequestDto.getName()),
+                        localDate.atStartOfDay());
             default:
                 return criteriaBuilder.greaterThanOrEqualTo(root.get(filterRequestDto.getName()),
                         filterRequestDto.getValue());
@@ -104,8 +105,9 @@ public abstract class AbstractFilter<T> implements Specification<T> {
                                                     CriteriaBuilder criteriaBuilder) {
         switch (filterRequestDto.getFilterType()) {
             case DATE:
-                LocalDateTime localDateTime = LocalDateTime.parse(filterRequestDto.getValue(), DATE_TIME_FORMATTER);
-                return criteriaBuilder.lessThanOrEqualTo(root.get(filterRequestDto.getName()), localDateTime);
+                LocalDate localDate = LocalDate.parse(filterRequestDto.getValue(), DateTimeFormatter.ISO_LOCAL_DATE);
+                return criteriaBuilder.lessThanOrEqualTo(root.get(filterRequestDto.getName()),
+                        localDate.atStartOfDay().with(LocalTime.MAX));
             default:
                 return criteriaBuilder.lessThanOrEqualTo(root.get(filterRequestDto.getName()),
                         filterRequestDto.getValue());

@@ -312,9 +312,9 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         experimentRepository.save(experiment3);
         PageRequestDto pageRequestDto = new PageRequestDto(0, 10, "creationDate", false, new ArrayList<>());
         pageRequestDto.getFilters().add(
-                new FilterRequestDto("creationDate", "2018-01-01 00:00:00", FilterType.DATE, MatchMode.GTE));
+                new FilterRequestDto("creationDate", "2018-01-01", FilterType.DATE, MatchMode.GTE));
         pageRequestDto.getFilters().add(
-                new FilterRequestDto("creationDate", "2018-05-01 00:00:00", FilterType.DATE, MatchMode.LTE));
+                new FilterRequestDto("creationDate", "2018-05-01", FilterType.DATE, MatchMode.LTE));
         Page<Experiment> experiments = experimentService.getNextPage(pageRequestDto);
         List<Experiment> experimentList = experiments.getContent();
         assertThat(experiments).isNotNull();
