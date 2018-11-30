@@ -323,4 +323,51 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         assertThat(experimentList.get(0).getUuid()).isEqualTo(experiment1.getUuid());
         assertThat(experimentList.get(1).getUuid()).isEqualTo(experiment.getUuid());
     }
+
+    /**
+     * Test filter by creation date between order by creation date.
+     * Case 1: Two days interval
+     * Case 2: One day interval
+     */
+    @Test
+    public void testExperimentFilterByCreationDateSmallInterval() {
+        //Case 1
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment.setCreationDate(LocalDateTime.of(2018, 1, 1, 0, 0, 0));
+        experimentRepository.save(experiment);
+        Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment1.setCreationDate(LocalDateTime.of(2018, 1, 1, 12, 0, 0));
+        experimentRepository.save(experiment1);
+        Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment2.setCreationDate(LocalDateTime.of(2018, 1, 2, 23, 59, 59));
+        experimentRepository.save(experiment2);
+        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, "creationDate", false, new ArrayList<>());
+        pageRequestDto.getFilters().add(
+                new FilterRequestDto("creationDate", "2018-01-01", FilterType.DATE, MatchMode.GTE));
+        pageRequestDto.getFilters().add(
+                new FilterRequestDto("creationDate", "2018-01-02", FilterType.DATE, MatchMode.LTE));
+        Page<Experiment> experiments = experimentService.getNextPage(pageRequestDto);
+        List<Experiment> experimentList = experiments.getContent();
+        assertThat(experiments).isNotNull();
+        assertThat(experiments.getTotalElements()).isEqualTo(3);
+        assertThat(experimentList.size()).isEqualTo(3);
+        experimentRepository.deleteAll();
+        //Case 2
+        experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment.setCreationDate(LocalDateTime.of(2018, 1, 1, 0, 0, 0));
+        experimentRepository.save(experiment);
+        experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment1.setCreationDate(LocalDateTime.of(2018, 1, 1, 23, 59, 59));
+        experimentRepository.save(experiment1);
+        pageRequestDto = new PageRequestDto(0, 10, "creationDate", false, new ArrayList<>());
+        pageRequestDto.getFilters().add(
+                new FilterRequestDto("creationDate", "2018-01-01", FilterType.DATE, MatchMode.GTE));
+        pageRequestDto.getFilters().add(
+                new FilterRequestDto("creationDate", "2018-01-01", FilterType.DATE, MatchMode.LTE));
+        experiments = experimentService.getNextPage(pageRequestDto);
+        experimentList = experiments.getContent();
+        assertThat(experiments).isNotNull();
+        assertThat(experiments.getTotalElements()).isEqualTo(2);
+        assertThat(experimentList.size()).isEqualTo(2);
+    }
 }

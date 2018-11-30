@@ -18,7 +18,7 @@ public enum FilterType {
     REFERENCE,
 
     /**
-     * Date field filter
+     * Date field filter in interval yyyy-MM-dd
      */
     DATE
 }
