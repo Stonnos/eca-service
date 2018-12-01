@@ -1,14 +1,10 @@
 package com.ecaservice.config;
 
 import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
-import com.ecaservice.dto.mail.EmailRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.ws.client.core.WebServiceTemplate;
-
-import java.util.concurrent.Executor;
 
 /**
  * Web - service configuration.
@@ -26,20 +22,6 @@ public class ErsWebServiceConfiguration {
     @Bean
     public ErsConfig ersConfig() {
         return new ErsConfig();
-    }
-
-    /**
-     * Creates evaluation results thread pool task executor bean.
-     *
-     * @param ersConfig - evaluation results service config
-     * @return evaluation results thread pool task executor
-     */
-    @Bean
-    public Executor ersThreadPoolTaskExecutor(ErsConfig ersConfig) {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(ersConfig.getThreadPoolSize());
-        executor.setMaxPoolSize(ersConfig.getThreadPoolSize());
-        return executor;
     }
 
     /**

@@ -21,9 +21,4 @@ public class ErsConfig {
      * Is results sending enabled?
      */
     private Boolean enabled;
-
-    /**
-     * Maximum threads number for thread pool executor
-     */
-    private Integer threadPoolSize;
 }

@@ -32,6 +32,7 @@ cross-validation:
   ## Cross validation timeout in minutes
   timeout: 60
   classifierOptionsCacheDurationInDays: 2
+  threadPoolSize: 10
 
 ## Swagger properties
 swagger2:
@@ -88,7 +89,6 @@ experiment:
 ers-config:
   url: http://localhost:8085/evaluation-results-service/ws/
   enabled: true
-  threadPoolSize: 10
 
 oauth2-resource:
   clientId: eca

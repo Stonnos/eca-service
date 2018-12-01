@@ -1,6 +1,5 @@
 package com.ecaservice.service.ers;
 
-import com.ecaservice.config.EcaServiceParam;
 import com.ecaservice.config.ErsConfig;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
@@ -14,7 +13,6 @@ import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.repository.ErsRequestRepository;
 import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -67,7 +65,6 @@ public class ErsRequestService {
      * @param evaluationResults - evaluation results
      * @param ersRequest        - evaluation results service request
      */
-    @Async(EcaServiceParam.ERS_POOL_EXECUTOR)
     public void saveEvaluationResults(EvaluationResults evaluationResults, ErsRequest ersRequest) {
         if (!Boolean.TRUE.equals(ersConfig.getEnabled())) {
             log.warn("Evaluation results sending is disabled.");

@@ -13,12 +13,7 @@ public class EcaServiceParam {
     public static final String CLASSIFIERS_CACHE_NAME = "classifiers";
 
     /**
-     * Thread pool task executor bean name for evaluation results sending to ERS service
+     * Thread pool task executor bean name for async tasks
      */
-    public static final String ERS_POOL_EXECUTOR = "ersThreadPoolTaskExecutor";
-
-    /**
-     * Simple thread pool task executor bean name
-     */
-    public static final String SIMPLE_POOL_EXECUTOR = "simpleAsyncTaskExecutor";
+    public static final String ECA_POOL_EXECUTOR = "ecaThreadPoolTaskExecutor";
 }

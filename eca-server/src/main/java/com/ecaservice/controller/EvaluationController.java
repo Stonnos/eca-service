@@ -7,6 +7,7 @@ import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
+import com.ecaservice.service.async.AsyncTaskService;
 import com.ecaservice.service.ers.ErsRequestService;
 import com.ecaservice.service.evaluation.EvaluationOptimizerService;
 import com.ecaservice.service.evaluation.EvaluationRequestService;
@@ -38,6 +39,7 @@ public class EvaluationController {
     private final EvaluationRequestService evaluationRequestService;
     private final ErsRequestService ersRequestService;
     private final EvaluationOptimizerService evaluationOptimizerService;
+    private final AsyncTaskService asyncTaskService;
     private final EvaluationLogRepository evaluationLogRepository;
 
     /**
@@ -46,16 +48,19 @@ public class EvaluationController {
      * @param evaluationRequestService   - evaluation request service bean
      * @param ersRequestService          - ers request service bean
      * @param evaluationOptimizerService - evaluation optimizer service bean
+     * @param asyncTaskService           - async task service bean
      * @param evaluationLogRepository    - evaluation log repository bean
      */
     @Inject
     public EvaluationController(EvaluationRequestService evaluationRequestService,
                                 ErsRequestService ersRequestService,
                                 EvaluationOptimizerService evaluationOptimizerService,
+                                AsyncTaskService asyncTaskService,
                                 EvaluationLogRepository evaluationLogRepository) {
         this.evaluationRequestService = evaluationRequestService;
         this.ersRequestService = ersRequestService;
         this.evaluationOptimizerService = evaluationOptimizerService;
+        this.asyncTaskService = asyncTaskService;
         this.evaluationLogRepository = evaluationLogRepository;
     }
 
@@ -72,14 +77,16 @@ public class EvaluationController {
     @PostMapping(value = "/execute")
     public ResponseEntity<EvaluationResponse> execute(@RequestBody EvaluationRequest evaluationRequest) {
         EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(evaluationRequest);
-        EvaluationLog evaluationLog =
-                evaluationLogRepository.findByRequestIdAndEvaluationStatusIn(evaluationResponse.getRequestId(),
-                        Collections.singletonList(RequestStatus.FINISHED));
-        if (evaluationLog != null) {
-            EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
-            requestEntity.setEvaluationLog(evaluationLog);
-            ersRequestService.saveEvaluationResults(evaluationResponse.getEvaluationResults(), requestEntity);
-        }
+        asyncTaskService.perform(() -> {
+            EvaluationLog evaluationLog =
+                    evaluationLogRepository.findByRequestIdAndEvaluationStatusIn(evaluationResponse.getRequestId(),
+                            Collections.singletonList(RequestStatus.FINISHED));
+            if (evaluationLog != null) {
+                EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
+                requestEntity.setEvaluationLog(evaluationLog);
+                ersRequestService.saveEvaluationResults(evaluationResponse.getEvaluationResults(), requestEntity);
+            }
+        });
         log.info("Evaluation response [{}] with status [{}] has been built.", evaluationResponse.getRequestId(),
                 evaluationResponse.getStatus());
         return ResponseEntity.ok(evaluationResponse);

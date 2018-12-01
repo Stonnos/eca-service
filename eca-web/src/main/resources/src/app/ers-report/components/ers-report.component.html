@@ -64,7 +64,9 @@
           </div>
         </ng-container>
         <ng-container *ngSwitchCase="'EXPERIMENT_DELETED'">
-          Невозможно отправить результаты эксперимента в ERS сервис. Результаты эксперимента были удалены
+          <div class="text-danger">
+            Невозможно отправить результаты эксперимента в ERS сервис. Результаты эксперимента были удалены
+          </div>
         </ng-container>
         <ng-container *ngSwitchCase="'NEED_SENT'">
           <div class="text-info">
