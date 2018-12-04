@@ -35,6 +35,7 @@ ECA service v4.0
    * cross-validation.timeout - таймаут в сек. для оценки точности классификатора
    * cross-validation.classifierOptionsCacheDurationInDays - период хранения оптимальных настроек классификатора
    полученных от внешнего сервиса ERS
+   * cross-validation.threadPoolSize - число потоков для асинхронных задач
 3) experiment - настройки параметров модуля Data Miner. Ниже приведено описание
    основных настроек:
    * experiment.resultSize - число наилучших конфигураций классификаторов
@@ -44,6 +45,9 @@ ECA service v4.0
    которые впоследствии будут использоваться при построении эксперимента
    * experiment.downloadUrl - url ссылки на скачивание файла с результатами эксперимента
    * experiment.maximumFractionDigits - число десятичных знаков после запятой
+   * experiment.numberOfDaysForStorage - кол-во дней для хранения файлов с результатами экспериментов
+   * experiment.removeExperimentCron - крон выражение для удаления файлов с результатами экспериментов
+   * experiment.ersSendingCron - крон выражение для отправки результатов экспериментов в ERS - сервис
    * experiment.timeout - время таймаута эксперимента в часах.
    * experiment.pageSize - размер страницы для постраничной обработки экспериментов.
    * experiment.resultSizeToSend - число лучших моделей классификаторов в одном эксперименте, результаты которых впоследствии
@@ -59,11 +63,14 @@ ECA service v4.0
    * experiment.mail.from - email отправителя
    * experiment.mail.subject - тема письма
    * experiment.mail.serviceUrl - url конечной точки Notification service
+   * experiment.mail.enabled - выключатель для отправки нотификаций во внешний сервис
 4) ers-config - настройки интеграции с сервисом evaluation-results-service
    * ers-config.url - url конечной точки ERS сервиса
    * ers-config.enabled - выключатель для отправки результатов классификации (вкл./выкл.)
-   * ers-config.threadPoolSize - максимальный размер пула потоков для асинхронной отправки
-   результатов классификации
+5) oauth2-resource - настройки сервера ресурсов
+   * oauth2-resource.clientId - идентификатор клиента приложения  
+   * oauth2-resource.secret - секретный ключ или пароль клиента
+   * oauth2-resource.oauthUrl - url сервера авторизации
 
 Инструкция по развертыванию
 ----------------------------------------
@@ -114,7 +121,6 @@ mvn clean install -Pquality
 С параметрами:
 -Ders-config.url=http://localhost:8089/evaluation-results-service/ws/
 -Ders-config.enabled=true
--Ders-config.threadPoolSize=10
 
 Инструкция по развертыванию в Docker
 -------------------------------------------------------

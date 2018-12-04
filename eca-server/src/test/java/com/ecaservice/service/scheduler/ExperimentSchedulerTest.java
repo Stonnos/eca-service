@@ -2,15 +2,19 @@ package com.ecaservice.service.scheduler;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
+import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
+import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.repository.EmailRequestRepository;
 import com.ecaservice.repository.ErsRequestRepository;
 import com.ecaservice.repository.ExperimentRepository;
+import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.experiment.mail.NotificationService;
+import eca.converters.model.ExperimentHistory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,6 +26,7 @@ import org.springframework.context.annotation.Import;
 import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests that checks ExperimentScheduler functionality {@see ExperimentScheduler}.
@@ -44,6 +50,8 @@ public class ExperimentSchedulerTest extends AbstractJpaTest {
     private ErsRequestRepository ersRequestRepository;
     @Inject
     private EmailRequestRepository emailRequestRepository;
+    @Inject
+    private ExperimentResultsRequestRepository experimentResultsRequestRepository;
     @Mock
     private ExperimentService experimentService;
     @Mock
@@ -111,5 +119,38 @@ public class ExperimentSchedulerTest extends AbstractJpaTest {
         experimentScheduler.processRequestsToRemove();
         verify(experimentService).removeExperimentData(argumentCaptor.capture());
         assertThat(argumentCaptor.getValue()).isEqualTo(experimentToRemove);
+    }
+
+    @Test
+    public void testSentExperimentsToErs() {
+        Experiment finishedExperiment =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        Experiment removedExperiment =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        removedExperiment.setDeletedDate(LocalDateTime.now());
+        Experiment errorExperiment =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT);
+        Experiment finishedExperimentWithNoOneRequests =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        Experiment finishedExperimentWithErrorRequests =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        experimentRepository.saveAll(Arrays.asList(finishedExperiment, removedExperiment, errorExperiment,
+                finishedExperimentWithNoOneRequests, finishedExperimentWithErrorRequests));
+
+        experimentResultsRequestRepository.save(
+                TestHelperUtils.createExperimentResultsRequest(finishedExperiment, ResponseStatus.SUCCESS));
+        experimentResultsRequestRepository.save(
+                TestHelperUtils.createExperimentResultsRequest(finishedExperiment, ResponseStatus.SUCCESS));
+        experimentResultsRequestRepository.save(
+                TestHelperUtils.createExperimentResultsRequest(finishedExperimentWithErrorRequests,
+                        ResponseStatus.ERROR));
+        experimentResultsRequestRepository.save(
+                TestHelperUtils.createExperimentResultsRequest(finishedExperimentWithErrorRequests,
+                        ResponseStatus.DUPLICATE_REQUEST_ID));
+
+        when(experimentService.getExperimentResults(any(String.class))).thenReturn(new ExperimentHistory());
+        experimentScheduler.processRequestsToErs();
+        verify(ersService, times(2)).sentExperimentHistory(any(Experiment.class), any(ExperimentHistory.class),
+                any(ExperimentResultsRequestSource.class));
     }
 }

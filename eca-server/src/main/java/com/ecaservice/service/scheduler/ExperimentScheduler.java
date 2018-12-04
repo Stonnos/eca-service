@@ -142,6 +142,36 @@ public class ExperimentScheduler {
     }
 
     /**
+     * Try to sent experiments results to ERS service.
+     */
+    @Scheduled(cron = "${experiment.ersSendingCron}")
+    public void processRequestsToErs() {
+        log.info("Starting to sent experiment results to ERS service");
+        processExperiments(new PageableCallback<Experiment>() {
+            @Override
+            public void perform(List<Experiment> experiments) {
+                experiments.forEach(experiment -> {
+                    try {
+                        ExperimentHistory experimentHistory =
+                                experimentService.getExperimentResults(experiment.getUuid());
+                        ersService.sentExperimentHistory(experiment, experimentHistory,
+                                ExperimentResultsRequestSource.SYSTEM);
+                    } catch (Exception ex) {
+                        log.error("There was an error while sending experiment history [{}]: {}", experiment.getId(),
+                                ex.getMessage());
+                    }
+                });
+            }
+
+            @Override
+            public Page<Experiment> findNextPage(Pageable pageable) {
+                return experimentRepository.findExperimentsToErsSent(pageable);
+            }
+        });
+        log.info("Finished to sent experiment results to ERS service");
+    }
+
+    /**
      * Processes experiments using pagination.
      *
      * @param pageableCallback callback {@link PageableCallback}
