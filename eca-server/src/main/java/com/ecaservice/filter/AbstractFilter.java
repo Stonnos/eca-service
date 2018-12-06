@@ -1,7 +1,7 @@
 package com.ecaservice.filter;
 
-import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.MatchModeVisitor;
+import com.ecaservice.web.dto.model.FilterRequestDto;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.Specification;
@@ -15,7 +15,6 @@ import javax.persistence.criteria.Root;
 import java.beans.PropertyDescriptor;
 import java.text.MessageFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -107,7 +106,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
             case DATE:
                 LocalDate localDate = LocalDate.parse(filterRequestDto.getValue(), DateTimeFormatter.ISO_LOCAL_DATE);
                 return criteriaBuilder.lessThanOrEqualTo(root.get(filterRequestDto.getName()),
-                        localDate.atStartOfDay().with(LocalTime.MAX));
+                        localDate.atTime(LocalTime.MAX));
             default:
                 return criteriaBuilder.lessThanOrEqualTo(root.get(filterRequestDto.getName()),
                         filterRequestDto.getValue());

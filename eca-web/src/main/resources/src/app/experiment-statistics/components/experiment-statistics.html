@@ -1,0 +1,39 @@
+<div class="ui-g">
+  <div class="ui-g-10 ui-g-offset-1">
+    <p-panel class="statistics">
+      <p-header>
+        <div class="ui-g">
+          <div class="ui-g-4 ui-g-offset-1">
+            <label class="filter-label">Дата создания заявки с:</label>
+            <p-calendar [showIcon]="true" [(ngModel)]="createdDateFrom"></p-calendar>
+          </div>
+          <div class="ui-g-4">
+            <label class="filter-label">Дата создания заявки по:</label>
+            <p-calendar [showIcon]="true" [(ngModel)]="createdDateTo"></p-calendar>
+          </div>
+          <div class="ui-g-2">
+            <button
+              pButton
+              label="Показать"
+              type="button"
+              (click)="onShow()">
+            </button>
+          </div>
+        </div>
+      </p-header>
+
+      <div class="ui-g">
+        <div class="ui-g-12">
+          <p-chart type="horizontalBar" height="750px" [data]="dataSet" [options]="barOptions"></p-chart>
+        </div>
+        <!--
+        <div class="ui-g-12">
+          <p-chart type="pie" height="750px" [data]="dataSet" [options]="pieOptions"></p-chart>
+        </div>
+        -->
+      </div>
+
+    </p-panel>
+  </div>
+</div>
+

@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
+  ChartDataDto,
   EnumDto, ErsReportDto,
   ExperimentDto,
   PageDto,
@@ -79,5 +80,15 @@ export class ExperimentsService {
       'Authorization': 'Bearer ' + this.cookieService.get('access_token')
     });
     return this.http.post(this.serviceUrl + '/sent-experiment-evaluation-results', uuid, { headers: headers });
+  }
+
+  public getExperimentTypesStatistics(createdDateFrom: string, createdDateTo: string): Observable<ChartDataDto[]> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
+      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
+    });
+    let params = new HttpParams().set('createdDateFrom', createdDateFrom).set('createdDateTo', createdDateTo);
+    const options = { headers: headers, params: params };
+    return this.http.get<ChartDataDto[]>(this.serviceUrl + '/experiment/statistics', options);
   }
 }

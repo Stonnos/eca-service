@@ -17,6 +17,7 @@ import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.evaluation.EvaluationLogService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.util.Utils;
+import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.ErsReportDto;
@@ -32,6 +33,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,10 +41,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -311,6 +315,31 @@ public class WebController {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Calculates experiments types counting statistics.
+     *
+     * @param createdDateFrom - experiment created date from
+     * @param createdDateTo   - experiment created date to
+     * @return chart data list
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Gets experiment types statistics",
+            notes = "Gets experiment types statistics"
+    )
+    @GetMapping(value = "/experiment/statistics")
+    public List<ChartDataDto> getExperimentTypesStatistics(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDateFrom,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDateTo) {
+        log.info("Received request for experiment types statistics calculation with creation date from [{}] to [{}]",
+                createdDateFrom, createdDateTo);
+        Map<ExperimentType, Long> experimentTypesMap =
+                experimentService.getExperimentTypesStatistics(createdDateFrom, createdDateTo);
+        return experimentTypesMap.entrySet().stream().map(
+                entry -> new ChartDataDto(entry.getKey().getDescription(), entry.getValue())).collect(
+                Collectors.toList());
     }
 
     private RequestStatusStatisticsDto createRequestStatusesStatistics(Map<RequestStatus, Long> statusStatisticsMap) {

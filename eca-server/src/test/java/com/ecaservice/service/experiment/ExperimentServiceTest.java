@@ -27,6 +27,7 @@ import org.springframework.data.domain.Page;
 import weka.core.Instances;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -59,6 +60,8 @@ public class ExperimentServiceTest extends AbstractJpaTest {
     private DataService dataService;
     @Inject
     private ExperimentConfig experimentConfig;
+    @Inject
+    private EntityManager entityManager;
     @Mock
     private ExperimentProcessorService experimentProcessorService;
 
@@ -73,7 +76,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         CalculationExecutorService executorService =
                 new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
         experimentService = new ExperimentService(experimentRepository, executorService, experimentMapper,
-                dataService, experimentConfig, experimentProcessorService);
+                dataService, experimentConfig, experimentProcessorService, entityManager);
     }
 
     @Test

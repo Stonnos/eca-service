@@ -6,7 +6,9 @@ import com.ecaservice.exception.ExperimentException;
 import com.ecaservice.filter.ExperimentFilter;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.model.entity.Experiment_;
 import com.ecaservice.model.entity.RequestStatus;
+import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.model.projections.RequestStatusStatistics;
 import com.ecaservice.repository.ExperimentRepository;
@@ -25,10 +27,19 @@ import org.springframework.util.StopWatch;
 import weka.core.Instances;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.io.File;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -39,6 +50,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.util.Utils.atEndOfDay;
+import static com.ecaservice.util.Utils.atStartOfDay;
 import static com.ecaservice.util.Utils.existsFile;
 
 /**
@@ -56,6 +69,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
     private final DataService dataService;
     private final ExperimentConfig experimentConfig;
     private final ExperimentProcessorService experimentProcessorService;
+    private final EntityManager entityManager;
 
     /**
      * Constructor with dependency spring injection.
@@ -66,6 +80,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
      * @param dataService                - data service bean
      * @param experimentConfig           - experiment config bean
      * @param experimentProcessorService - experiment processor service bean
+     * @param entityManager              - entity manager bean
      */
     @Inject
     public ExperimentService(ExperimentRepository experimentRepository,
@@ -73,13 +88,15 @@ public class ExperimentService implements PageRequestService<Experiment> {
                              ExperimentMapper experimentMapper,
                              DataService dataService,
                              ExperimentConfig experimentConfig,
-                             ExperimentProcessorService experimentProcessorService) {
+                             ExperimentProcessorService experimentProcessorService,
+                             EntityManager entityManager) {
         this.experimentRepository = experimentRepository;
         this.executorService = executorService;
         this.experimentMapper = experimentMapper;
         this.dataService = dataService;
         this.experimentConfig = experimentConfig;
         this.experimentProcessorService = experimentProcessorService;
+        this.entityManager = entityManager;
     }
 
     /**
@@ -249,6 +266,38 @@ public class ExperimentService implements PageRequestService<Experiment> {
                 requestStatus -> !requestStatusesMap.containsKey(requestStatus)).forEach(
                 requestStatus -> requestStatusesMap.put(requestStatus, 0L));
         return requestStatusesMap;
+    }
+
+    /**
+     * Calculates experiments types counting statistics.
+     *
+     * @param createdDateFrom - experiment created date from
+     * @param createdDateTo   - experiment created date to
+     * @return experiments types counting statistics
+     */
+    public Map<ExperimentType, Long> getExperimentTypesStatistics(LocalDate createdDateFrom, LocalDate createdDateTo) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tuple> criteria = builder.createQuery(Tuple.class);
+        Root<Experiment> root = criteria.from(Experiment.class);
+        List<Predicate> predicates = new ArrayList<>();
+        if (createdDateFrom != null) {
+            predicates.add(
+                    builder.greaterThanOrEqualTo(root.get(Experiment_.CREATION_DATE), atStartOfDay(createdDateFrom)));
+        }
+        if (createdDateTo != null) {
+            predicates.add(builder.lessThanOrEqualTo(root.get(Experiment_.CREATION_DATE), atEndOfDay(createdDateTo)));
+        }
+        criteria.groupBy(root.get(Experiment_.EXPERIMENT_TYPE));
+        criteria.multiselect(root.get(Experiment_.EXPERIMENT_TYPE), builder.count(root)).where(
+                builder.and(predicates.toArray(new Predicate[0])));
+        Map<ExperimentType, Long> experimentTypesMap =
+                entityManager.createQuery(criteria).getResultList().stream().collect(
+                        Collectors.toMap(tuple -> tuple.get(0, ExperimentType.class),
+                                tuple -> tuple.get(1, Long.class)));
+        Arrays.stream(ExperimentType.values()).filter(
+                requestStatus -> !experimentTypesMap.containsKey(requestStatus)).forEach(
+                requestStatus -> experimentTypesMap.put(requestStatus, 0L));
+        return experimentTypesMap;
     }
 
     private boolean removeExperimentFile(Experiment experiment, Function<Experiment, String> filePathFunction,

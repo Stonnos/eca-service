@@ -23,6 +23,9 @@ import weka.core.xml.XMLInstances;
 
 import java.io.File;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -197,5 +200,25 @@ public class Utils {
      */
     public static boolean existsFile(File file) {
         return file != null && file.isFile();
+    }
+
+    /**
+     * Gets start time of specified local date.
+     *
+     * @param localDate - local date
+     * @return local date time
+     */
+    public static LocalDateTime atStartOfDay(LocalDate localDate) {
+        return localDate != null ? localDate.atStartOfDay() : null;
+    }
+
+    /**
+     * Gets end time of specified local date.
+     *
+     * @param localDate - local date
+     * @return local date time
+     */
+    public static LocalDateTime atEndOfDay(LocalDate localDate) {
+        return localDate != null ? localDate.atTime(LocalTime.MAX) : null;
     }
 }

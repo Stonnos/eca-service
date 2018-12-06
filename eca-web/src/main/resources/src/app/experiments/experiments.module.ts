@@ -7,6 +7,7 @@ import { ExperimentsService } from "./services/experiments.service";
 import { FilterModule } from "../filter/filter.module";
 import { RequestStatusesStatisticsModule } from "../request-statuses-statistics/request-statuses-statistics.module";
 import { ErsReportModule } from "../ers-report/ers-report.module";
+import { ExperimentStatisticsModule } from "../experiment-statistics/experiment-statistics.module";
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { ErsReportModule } from "../ers-report/ers-report.module";
     UiComponentsModule,
     FilterModule,
     RequestStatusesStatisticsModule,
-    ErsReportModule
+    ErsReportModule,
+    ExperimentStatisticsModule
   ],
   declarations: [
     ExperimentListComponent
