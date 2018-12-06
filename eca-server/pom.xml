@@ -45,6 +45,7 @@
         <docker-maven-plugin.version>1.4.3</docker-maven-plugin.version>
         <maven-plugin.version>3.2.0</maven-plugin.version>
         <javassist.version>3.21.0-GA</javassist.version>
+        <maven-processor-plugin.version>3.3.3</maven-processor-plugin.version>
     </properties>
 
     <profiles>
@@ -515,7 +516,7 @@
             <plugin>
                 <groupId>org.bsc.maven</groupId>
                 <artifactId>maven-processor-plugin</artifactId>
-                <version>3.3.3</version>
+                <version>${maven-processor-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>process</id>

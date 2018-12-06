@@ -45,7 +45,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     this.experimentsService.getRequestStatusesStatistics().subscribe((requestStatusStatisticsDto: RequestStatusStatisticsDto) => {
       this.requestStatusStatisticsDto = requestStatusStatisticsDto;
     }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     });
   }
 
@@ -57,7 +57,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
           saveAs(blob, experiment.trainingDataAbsolutePath);
           this.loading = false;
         }, (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
           this.loading = false;
         });
         break;
@@ -67,7 +67,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
           saveAs(blob, experiment.experimentAbsolutePath);
           this.loading = false;
         }, (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
           this.loading = false;
         });
         break;
@@ -78,7 +78,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
           this.loading = false;
           this.ersReportVisibility = true;
         }, (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
           this.loading = false;
         });
         break;
@@ -96,7 +96,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
         summary: `Запрос в ERS на сохранение классификаторов для эксперимента ${experimentUuid} был успешно создан`, detail: '' });
       this.loading = false;
     }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
       this.loading = false;
     });
   }
@@ -133,7 +133,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       { label: "Ошибка", value: "ERROR" }
     ];
     this.filters.push(new Filter("uuid", "UUID заявки",
-      "TEXT", "EQUALS", null));
+      "TEXT", "LIKE", null));
     this.filters.push(new Filter("email", "Email заявки",
       "TEXT", "LIKE", null));
     this.filters.push(new Filter("evaluationMethod", "Метод оценки точности", "REFERENCE",
@@ -160,7 +160,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       this.filters.push(new Filter("experimentType", "Тип эксперимента", "REFERENCE", "EQUALS",
         null, experimentTypeItems));
     }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     });
   }
 }

@@ -100,7 +100,7 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
       { label: "V-блочная кросс-проверка", value: "CROSS_VALIDATION" }
     ];
     this.filters.push(new Filter("requestId", "UUID заявки",
-      "TEXT", "EQUALS", null));
+      "TEXT", "LIKE", null));
     this.filters.push(new Filter("relationName", "Обучающая выборка",
       "TEXT", "LIKE", null));
     this.filters.push(new Filter("evaluationMethod", "Метод оценки точности", "REFERENCE",
@@ -121,7 +121,7 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
       this.filters.push(new Filter("responseStatus", "Статус ответа", "REFERENCE", "EQUALS",
         null, ersResponseStatusesItems));
     }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     });
   }
 }

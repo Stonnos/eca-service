@@ -38,7 +38,7 @@ export abstract class BaseListComponent<T> {
       this.loading = false;
     }, (error) => {
       this.loading = false;
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     });
   }
 

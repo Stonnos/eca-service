@@ -46,7 +46,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     this.classifiersService.getRequestStatusesStatistics().subscribe((requestStatusStatisticsDto: RequestStatusStatisticsDto) => {
       this.requestStatusStatisticsDto = requestStatusStatisticsDto;
     }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     });
   }
 
@@ -87,7 +87,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
       { label: "Ошибка", value: "ERROR" }
     ];
     this.filters.push(new Filter("requestId", "UUID заявки",
-      "TEXT", "EQUALS", null));
+      "TEXT", "LIKE", null));
     this.filters.push(new Filter("classifierName", "Классификатор",
       "TEXT", "LIKE", null));
     this.filters.push(new Filter("evaluationMethod", "Метод оценки точности", "REFERENCE",

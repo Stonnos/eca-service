@@ -13,6 +13,8 @@ export class ExperimentStatisticsComponent implements OnInit {
 
   public dataSet: any;
 
+  public total: number = 0;
+
   public createdDateFrom: Date;
 
   public createdDateTo: Date;
@@ -44,6 +46,7 @@ export class ExperimentStatisticsComponent implements OnInit {
   public onShow() {
     this.experimentsService.getExperimentTypesStatistics(this.transformDate(this.createdDateFrom), this.transformDate(this.createdDateTo))
       .subscribe((chartData: ChartDataDto[]) => {
+      this.total = chartData.map((chartData: ChartDataDto) => chartData.count).reduce((sum, current) => sum + current);
         this.dataSet = {
           labels: chartData.map((chartData: ChartDataDto) => `${chartData.label} (${chartData.count})`),
           datasets: [
@@ -55,7 +58,7 @@ export class ExperimentStatisticsComponent implements OnInit {
           ]
         };
     }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     });
   }
 

@@ -88,13 +88,17 @@
         </ng-container>
       </ng-container>
       <p-footer>
-        <button
-          pButton
-          label="Скачать"
-          type="button"
-          class="load-button"
-          (click)="saveClassifierOptions()">
-        </button>
+        <div class="ui-g">
+          <div class="ui-g-3 ui-g-offset-9">
+            <button
+              pButton
+              label="Скачать"
+              type="button"
+              class="load-button"
+              (click)="saveClassifierOptions()">
+            </button>
+          </div>
+        </div>
       </p-footer>
     </p-panel>
   </p-overlayPanel>

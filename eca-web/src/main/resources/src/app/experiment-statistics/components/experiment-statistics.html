@@ -1,5 +1,5 @@
 <div class="ui-g">
-  <div class="ui-g-10 ui-g-offset-1">
+  <div class="ui-g-12">
     <p-panel class="statistics">
       <p-header>
         <div class="ui-g">
@@ -26,12 +26,16 @@
         <div class="ui-g-12">
           <p-chart type="horizontalBar" height="750px" [data]="dataSet" [options]="barOptions"></p-chart>
         </div>
-        <!--
-        <div class="ui-g-12">
-          <p-chart type="pie" height="750px" [data]="dataSet" [options]="pieOptions"></p-chart>
-        </div>
-        -->
       </div>
+
+      <p-footer>
+        <div class="ui-g">
+          <div class="ui-g-2 ui-g-offset-5">
+            <label class="total-label">Всего экспериментов:</label>
+            {{ total }}
+          </div>
+        </div>
+      </p-footer>
 
     </p-panel>
   </div>

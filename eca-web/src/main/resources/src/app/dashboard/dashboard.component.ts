@@ -57,7 +57,7 @@ export class DashboardComponent implements OnInit {
     this.userService.getCurrentUser().subscribe((userDto: UserDto) => {
       this.currentUser = userDto;
     }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     });
   }
 
