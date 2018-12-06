@@ -280,13 +280,10 @@ public class ExperimentService implements PageRequestService<Experiment> {
         CriteriaQuery<Tuple> criteria = builder.createQuery(Tuple.class);
         Root<Experiment> root = criteria.from(Experiment.class);
         List<Predicate> predicates = new ArrayList<>();
-        if (createdDateFrom != null) {
-            predicates.add(
-                    builder.greaterThanOrEqualTo(root.get(Experiment_.CREATION_DATE), atStartOfDay(createdDateFrom)));
-        }
-        if (createdDateTo != null) {
-            predicates.add(builder.lessThanOrEqualTo(root.get(Experiment_.CREATION_DATE), atEndOfDay(createdDateTo)));
-        }
+        Optional.ofNullable(createdDateFrom).ifPresent(value -> predicates.add(
+                builder.greaterThanOrEqualTo(root.get(Experiment_.CREATION_DATE), atStartOfDay(value))));
+        Optional.ofNullable(createdDateTo).ifPresent(value -> predicates.add(
+                builder.lessThanOrEqualTo(root.get(Experiment_.CREATION_DATE), atEndOfDay(value))));
         criteria.groupBy(root.get(Experiment_.EXPERIMENT_TYPE));
         criteria.multiselect(root.get(Experiment_.EXPERIMENT_TYPE), builder.count(root)).where(
                 builder.and(predicates.toArray(new Predicate[0])));
