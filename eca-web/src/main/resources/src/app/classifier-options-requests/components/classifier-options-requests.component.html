@@ -55,6 +55,19 @@
       <ng-container [ngSwitch]="selectedColumn">
         <ng-container *ngSwitchCase="'classifierName'">
           <pre><code class="language-json" [innerHTML]="getFormattedJsonConfig()"></code></pre>
+          <p-footer>
+            <div class="ui-g">
+              <div class="ui-g-3 ui-g-offset-9">
+                <button
+                  pButton
+                  label="Скачать"
+                  type="button"
+                  class="load-button"
+                  (click)="saveClassifierOptions()">
+                </button>
+              </div>
+            </div>
+          </p-footer>
         </ng-container>
         <ng-container *ngSwitchCase="'evaluationMethod'">
           <div class="ui-g" *ngIf="selectedRequest.numFolds">
@@ -87,19 +100,6 @@
         <ng-container *ngSwitchDefault>
         </ng-container>
       </ng-container>
-      <p-footer>
-        <div class="ui-g">
-          <div class="ui-g-3 ui-g-offset-9">
-            <button
-              pButton
-              label="Скачать"
-              type="button"
-              class="load-button"
-              (click)="saveClassifierOptions()">
-            </button>
-          </div>
-        </div>
-      </p-footer>
     </p-panel>
   </p-overlayPanel>
 </div>
