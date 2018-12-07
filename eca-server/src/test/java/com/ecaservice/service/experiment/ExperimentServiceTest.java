@@ -19,6 +19,7 @@ import com.ecaservice.web.dto.model.FilterType;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.converters.model.ExperimentHistory;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -29,6 +30,7 @@ import weka.core.Instances;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.io.File;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -372,5 +374,31 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         assertThat(experiments).isNotNull();
         assertThat(experiments.getTotalElements()).isEqualTo(2);
         assertThat(experimentList.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void testGetExperimentTypesStatistics() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment.setCreationDate(LocalDateTime.of(2018, 1, 1, 0, 0, 0));
+        experiment.setExperimentType(ExperimentType.ADA_BOOST);
+        experimentRepository.save(experiment);
+        Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment1.setCreationDate(LocalDateTime.of(2018, 1, 2, 12, 0, 0));
+        experiment1.setExperimentType(ExperimentType.ADA_BOOST);
+        experimentRepository.save(experiment1);
+        Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment2.setCreationDate(LocalDateTime.of(2018, 1, 3, 23, 59, 59));
+        experimentRepository.save(experiment2);
+        Experiment experiment3 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment3.setCreationDate(LocalDateTime.of(2018, 1, 4, 0, 0, 0));
+        experiment3.setExperimentType(ExperimentType.DECISION_TREE);
+        experimentRepository.save(experiment3);
+        Map<ExperimentType, Long> experimentTypesMap =
+                experimentService.getExperimentTypesStatistics(LocalDate.of(2018, 1, 1), LocalDate.of(2018, 1, 3));
+        Assertions.assertThat(experimentTypesMap).isNotNull();
+        Assertions.assertThat(experimentTypesMap.size()).isEqualTo(ExperimentType.values().length);
+        Assertions.assertThat(experimentTypesMap.get(ExperimentType.ADA_BOOST)).isEqualTo(2L);
+        Assertions.assertThat(experimentTypesMap.get(ExperimentType.KNN)).isOne();
+        Assertions.assertThat(experimentTypesMap.get(ExperimentType.DECISION_TREE)).isZero();
     }
 }
