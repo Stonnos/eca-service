@@ -6,6 +6,7 @@ import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.dto.InstancesRequest;
 import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
+import com.ecaservice.exception.EcaServiceException;
 import com.ecaservice.mapping.EvaluationResultsMapper;
 import com.ecaservice.model.MultipartFileResource;
 import com.ecaservice.model.TechnicalStatus;
@@ -30,21 +31,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.xml.transform.StringResult;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.OutputStream;
-import java.io.StringReader;
 import java.util.Collections;
 
 import static com.ecaservice.util.Utils.parseOptions;
@@ -200,28 +193,25 @@ public class QaController {
         return fileDataLoader.loadInstances();
     }
 
-    private void writeXmlResult(HttpServletResponse response, String xml) throws Exception {
-        try (StringReader reader = new StringReader(xml); OutputStream outputStream = response.getOutputStream()) {
-            Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
-                    new InputSource(reader));
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.transform(new DOMSource(document), new StreamResult(outputStream));
+    private void writeXmlResult(HttpServletResponse response, Object xmlObject) throws Exception {
+        try (OutputStream outputStream = response.getOutputStream()) {
+            ersMarshaller.marshal(xmlObject, new StreamResult(outputStream));
         }
     }
 
     private void processResponse(EvaluationResponse evaluationResponse, HttpServletResponse response) throws Exception {
         log.info("Evaluation response [{}] with status [{}] has been built.", evaluationResponse.getRequestId(),
                 evaluationResponse.getStatus());
-        if (TechnicalStatus.SUCCESS.equals(evaluationResponse.getStatus())) {
+        if (!TechnicalStatus.SUCCESS.equals(evaluationResponse.getStatus())) {
+            throw new EcaServiceException(evaluationResponse.getErrorMessage());
+        } else {
             EvaluationResultsRequest evaluationResultsRequest =
                     evaluationResultsMapper.map(evaluationResponse.getEvaluationResults());
-            StringResult stringResult = new StringResult();
-            ersMarshaller.marshal(evaluationResultsRequest, stringResult);
             response.setContentType(MediaType.APPLICATION_XML_VALUE);
             response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(ATTACHMENT_FORMAT,
                     evaluationResponse.getEvaluationResults().getClassifier().getClass().getSimpleName(),
                     System.currentTimeMillis()));
-            writeXmlResult(response, stringResult.toString());
+            writeXmlResult(response, evaluationResultsRequest);
         }
     }
 }

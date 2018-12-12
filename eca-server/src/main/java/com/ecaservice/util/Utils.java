@@ -11,6 +11,7 @@ import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.EvaluationMethod;
+import eca.data.file.xml.converter.XmlInstancesConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import weka.core.Instances;
-import weka.core.xml.XMLInstances;
 
 import java.io.File;
 import java.io.InputStream;
@@ -97,9 +97,8 @@ public class Utils {
      */
     public static String toXmlInstances(Instances data) {
         try {
-            XMLInstances xmlInstances = new XMLInstances();
-            xmlInstances.setInstances(data);
-            return xmlInstances.toString();
+            XmlInstancesConverter xmlInstancesConverter = new XmlInstancesConverter();
+            return xmlInstancesConverter.toXmlString(data);
         } catch (Exception ex) {
             throw new EcaServiceException(ex.getMessage());
         }
