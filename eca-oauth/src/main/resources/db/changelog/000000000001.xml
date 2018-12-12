@@ -20,7 +20,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+    <changeSet id="2" author="roman.batygin@mail.ru" context="data">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 select count(*) from user_entity where login = 'admin'
