@@ -56,6 +56,8 @@ import static com.ecaservice.util.Utils.existsFile;
 
 /**
  * Rest controller providing operations for web application.
+ *
+ * @author Roman Batygin
  */
 @Api(tags = "Operations for web application")
 @Slf4j
