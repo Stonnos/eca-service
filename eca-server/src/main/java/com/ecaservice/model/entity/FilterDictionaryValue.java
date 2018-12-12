@@ -14,8 +14,8 @@ import javax.persistence.Table;
  */
 @Data
 @Entity
-@Table(name = "filter_field_value")
-public class FilterFieldValue {
+@Table(name = "filter_dictionary_value")
+public class FilterDictionaryValue {
 
     @Id
     @GeneratedValue

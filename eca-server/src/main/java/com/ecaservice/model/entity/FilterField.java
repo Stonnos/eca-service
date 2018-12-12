@@ -12,6 +12,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
@@ -43,7 +44,7 @@ public class FilterField {
     /**
      * Field order
      */
-    @Column(name = "field_order")
+    @Column(name = "field_order", nullable = false)
     private int fieldOrder;
 
     /**
@@ -61,9 +62,9 @@ public class FilterField {
     private MatchMode matchMode;
 
     /**
-     * Values list for reference filter type
+     * Filter dictionary
      */
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "filter_field_id", nullable = false)
-    private List<FilterFieldValue> values;
+    @ManyToOne
+    @JoinColumn(name = "filter_dictionary_id")
+    private FilterDictionary dictionary;
 }

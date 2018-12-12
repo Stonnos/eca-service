@@ -1,16 +1,16 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import {
-  ClassifierOptionsRequestDto, EnumDto, PageDto,
+  ClassifierOptionsRequestDto, FilterFieldDto, PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
-import { MessageService, SelectItem } from "primeng/api";
+import { MessageService } from "primeng/api";
 import { BaseListComponent } from "../../lists/base-list.component";
 import { OverlayPanel} from "primeng/primeng";
 import { JsonPipe } from "@angular/common";
 import { ClassifierOptionsRequestService } from "../services/classifier-options-request.service";
-import { Filter } from "../../filter/filter.model";
 import { Observable } from "rxjs/internal/Observable";
 import { saveAs } from 'file-saver/dist/FileSaver';
+import { FilterService } from "../../filter/services/filter.service";
 
 declare var Prism: any;
 
@@ -25,17 +25,27 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
   public selectedColumn: string;
 
   public constructor(private injector: Injector,
-                     private classifierOptionsService: ClassifierOptionsRequestService) {
+                     private classifierOptionsService: ClassifierOptionsRequestService,
+                     private filterService: FilterService) {
     super(injector.get(MessageService));
     this.defaultSortField = "requestDate";
     this.linkColumns = ["classifierName", "evaluationMethod"];
     this.notSortableColumns = ["classifierName"];
     this.initColumns();
-    this.initFilters();
+    //this.initFilters();
   }
 
   public ngOnInit() {
-    this.addErsResponsesStatusesFilter();
+    //this.addErsResponsesStatusesFilter();
+    this.getFilterFields();
+  }
+
+  public getFilterFields() {
+    this.filterService.getFilterFields('CLASSIFIER_OPTIONS_REQUEST').subscribe((filterFields: FilterFieldDto[]) => {
+      this.filters = this.filterService.mapToFilters(filterFields);
+    }, (error) => {
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+    });
   }
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<ClassifierOptionsRequestDto>> {
@@ -88,12 +98,12 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
       { name: "relationName", label: "Обучающая выборка" },
       { name: "classifierName", label: "Классификатор" },
       { name: "evaluationMethod", label: "Метод оценки точности" },
-      { name: "requestDate", label: "Дата отправки заявки" },
+      { name: "requestDate", label: "Дата отправки запроса" },
       { name: "responseStatus", label: "Статус ответа" }
     ];
   }
 
-  private initFilters() {
+  /*private initFilters() {
     const evaluationMethods: SelectItem[] = [
       { label: "Все", value: null },
       { label: "Использование обучающего множества", value: "TRAINING_DATA" },
@@ -123,5 +133,5 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     });
-  }
+  }*/
 }

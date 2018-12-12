@@ -1,15 +1,15 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import {
-  EnumDto, ErsReportDto,
-  ExperimentDto, PageDto,
+  ErsReportDto,
+  ExperimentDto, FilterFieldDto, PageDto,
   PageRequestDto, RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ExperimentsService } from "../services/experiments.service";
-import { MessageService, SelectItem } from "primeng/api";
-import { Filter } from "../../filter/filter.model";
+import { MessageService } from "primeng/api";
 import { saveAs } from 'file-saver/dist/FileSaver';
 import { BaseListComponent } from "../../lists/base-list.component";
 import { Observable } from "rxjs/internal/Observable";
+import { FilterService } from "../../filter/services/filter.service";
 
 @Component({
   selector: 'app-experiment-list',
@@ -23,17 +23,19 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   public ersReportVisibility: boolean = false;
 
   public constructor(private injector: Injector,
-                     private experimentsService: ExperimentsService) {
+                     private experimentsService: ExperimentsService,
+                     private filterService: FilterService) {
     super(injector.get(MessageService));
     this.defaultSortField = "creationDate";
     this.linkColumns = ["trainingDataAbsolutePath", "experimentAbsolutePath", "uuid"];
     this.notSortableColumns = ["trainingDataAbsolutePath", "experimentAbsolutePath"];
     this.initColumns();
-    this.initFilters();
+    //this.initFilters();
   }
 
   public ngOnInit() {
-    this.addExperimentTypesFilter();
+    //this.addExperimentTypesFilter();
+    this.getFilterFields();
     this.getRequestStatusesStatistics();
   }
 
@@ -101,6 +103,14 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     });
   }
 
+  public getFilterFields() {
+    this.filterService.getFilterFields('EXPERIMENT').subscribe((filterFields: FilterFieldDto[]) => {
+      this.filters = this.filterService.mapToFilters(filterFields);
+    }, (error) => {
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+    });
+  }
+
   private initColumns() {
     this.columns = [
       { name: "uuid", label: "UUID заявки" },
@@ -119,7 +129,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     ];
   }
 
-  private initFilters() {
+  /*private initFilters() {
     const evaluationMethods: SelectItem[] = [
       { label: "Все", value: null },
       { label: "Использование обучающего множества", value: "TRAINING_DATA" },
@@ -162,5 +172,5 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     });
-  }
+  }*/
 }

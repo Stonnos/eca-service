@@ -3,8 +3,6 @@ package com.ecaservice.web.dto.model;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * Filter field dto model.
  *
@@ -44,8 +42,8 @@ public class FilterFieldDto {
     private MatchMode matchMode;
 
     /**
-     * Filter filed values list
+     * Filter dictionary
      */
-    @ApiModelProperty(notes = "Filter filed values list")
-    private List<FilterFieldValueDto> values;
+    @ApiModelProperty(notes = "Filter dictionary")
+    private FilterDictionaryDto dictionary;
 }

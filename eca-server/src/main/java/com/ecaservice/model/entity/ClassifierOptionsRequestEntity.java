@@ -44,6 +44,6 @@ public class ClassifierOptionsRequestEntity {
      * Classifier options request model
      */
     @ManyToOne
-    @JoinColumn(name = "classifier_options_request_model_id")
+    @JoinColumn(name = "classifier_options_request_model_id", nullable = false)
     private ClassifierOptionsRequestModel classifierOptionsRequestModel;
 }

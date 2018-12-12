@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="filter_template"/>
+            </not>
+        </preConditions>
+        <createTable tableName="filter_template">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+            <column name="template_type" type="varchar(255)"/>
+            <column name="created" type="timestamp"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="filter_dictionary"/>
+            </not>
+        </preConditions>
+        <createTable tableName="filter_dictionary">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_template"/>
+            <tableExists tableName="filter_dictionary"/>
+            <not>
+                <tableExists tableName="filter_field"/>
+            </not>
+        </preConditions>
+        <createTable tableName="filter_field">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+            <column name="description" type="varchar(255)"/>
+            <column name="field_order" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="filter_type" type="varchar(255)"/>
+            <column name="match_mode" type="varchar(255)"/>
+            <column name="filter_template_id" type="bigint">
+                <constraints foreignKeyName="fk_filter_template_id"
+                             referencedTableName="filter_template" referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+            <column name="filter_dictionary_id" type="bigint">
+                <constraints foreignKeyName="fk_filter_field_dictionary_id"
+                             referencedTableName="filter_dictionary" referencedColumnNames="id"
+                             nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_dictionary"/>
+            <not>
+                <tableExists tableName="filter_dictionary_value"/>
+            </not>
+        </preConditions>
+        <createTable tableName="filter_dictionary_value">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="label" type="varchar(255)"/>
+            <column name="value" type="varchar(255)"/>
+            <column name="filter_dictionary_id" type="bigint">
+                <constraints foreignKeyName="fk_filter_dictionary_id"
+                             referencedTableName="filter_dictionary" referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Insert evaluation method dictionary-->
+    <changeSet id="5" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from filter_dictionary where id = 1
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="filter_dictionary">
+            <column name="id" valueNumeric="1"/>
+            <column name="name" value="Метод оценки точности"/>
+        </insert>
+        
+        <!-- Insert evaluation methods values -->
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Все"/>
+            <column name="filter_dictionary_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Использование обучающего множества"/>
+            <column name="value" value="TRAINING_DATA"/>
+            <column name="filter_dictionary_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="V-блочная кросс-проверка"/>
+            <column name="value" value="CROSS_VALIDATION"/>
+            <column name="filter_dictionary_id" valueNumeric="1"/>
+        </insert>
+        
+    </changeSet>
+
+    <!-- Insert requests statuses dictionary-->
+    <changeSet id="6" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from filter_dictionary where id = 2
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="filter_dictionary">
+            <column name="id" valueNumeric="2"/>
+            <column name="name" value="Статус заявки"/>
+        </insert>
+
+        <!-- Insert requests status values -->
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Все"/>
+            <column name="filter_dictionary_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Новая"/>
+            <column name="value" value="NEW"/>
+            <column name="filter_dictionary_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Завершена"/>
+            <column name="value" value="FINISHED"/>
+            <column name="filter_dictionary_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Ошибка"/>
+            <column name="value" value="ERROR"/>
+            <column name="filter_dictionary_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Таймаут"/>
+            <column name="value" value="TIMEOUT"/>
+            <column name="filter_dictionary_id" valueNumeric="2"/>
+        </insert>
+
+    </changeSet>
+
+    <!-- Insert experiment types dictionary-->
+    <changeSet id="7" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from filter_dictionary where id = 3
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="filter_dictionary">
+            <column name="id" valueNumeric="3"/>
+            <column name="name" value="Тип эксперимента"/>
+        </insert>
+
+        <!-- Insert experiment types values -->
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Все"/>
+            <column name="filter_dictionary_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Нейронные сети"/>
+            <column name="value" value="NEURAL_NETWORKS"/>
+            <column name="filter_dictionary_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Неоднородный ансамблевый алгоритм"/>
+            <column name="value" value="HETEROGENEOUS_ENSEMBLE"/>
+            <column name="filter_dictionary_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Модифицированный неоднородный ансамблевый алгоритм"/>
+            <column name="value" value="MODIFIED_HETEROGENEOUS_ENSEMBLE"/>
+            <column name="filter_dictionary_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Алгоритм AdaBoost"/>
+            <column name="value" value="ADA_BOOST"/>
+            <column name="filter_dictionary_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Алгоритм Stacking"/>
+            <column name="value" value="STACKING"/>
+            <column name="filter_dictionary_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Алгоритм k - взвешенных ближайших соседей"/>
+            <column name="value" value="KNN"/>
+            <column name="filter_dictionary_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Случайные леса"/>
+            <column name="value" value="RANDOM_FORESTS"/>
+            <column name="filter_dictionary_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Алгоритм Stacking CV"/>
+            <column name="value" value="STACKING_CV"/>
+            <column name="filter_dictionary_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Деревья решений"/>
+            <column name="value" value="DECISION_TREE"/>
+            <column name="filter_dictionary_id" valueNumeric="3"/>
+        </insert>
+    </changeSet>
+
+    <!-- Insert ERS response status dictionary-->
+    <changeSet id="8" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from filter_dictionary where id = 4
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="filter_dictionary">
+            <column name="id" valueNumeric="4"/>
+            <column name="name" value="Статус ответа от ERS"/>
+        </insert>
+
+        <!-- Insert ERS response status values -->
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Все"/>
+            <column name="filter_dictionary_id" valueNumeric="4"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Успешно"/>
+            <column name="value" value="SUCCESS"/>
+            <column name="filter_dictionary_id" valueNumeric="4"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Не задан UUID заявки"/>
+            <column name="value" value="INVALID_REQUEST_ID"/>
+            <column name="filter_dictionary_id" valueNumeric="4"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Заявка с таким UUID уже существует"/>
+            <column name="value" value="DUPLICATE_REQUEST_ID"/>
+            <column name="filter_dictionary_id" valueNumeric="4"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Ошибка"/>
+            <column name="value" value="ERROR"/>
+            <column name="filter_dictionary_id" valueNumeric="4"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Не заданы обязательные параметры запроса"/>
+            <column name="value" value="INVALID_REQUEST_PARAMS"/>
+            <column name="filter_dictionary_id" valueNumeric="4"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Не найдена обучающая выборка"/>
+            <column name="value" value="DATA_NOT_FOUND"/>
+            <column name="filter_dictionary_id" valueNumeric="4"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Не найдены оптимальные конфигурации моделей"/>
+            <column name="value" value="RESULTS_NOT_FOUND"/>
+            <column name="filter_dictionary_id" valueNumeric="4"/>
+        </insert>
+    </changeSet>
+
+    <!-- Insert experiment filter template -->
+    <changeSet id="9" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from filter_template where id = 1
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="filter_template">
+            <column name="id" valueNumeric="1"/>
+            <column name="name" value="Фильтр экспериментов"/>
+            <column name="template_type" value="EXPERIMENT"/>
+            <column name="created" valueDate="now()"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="uuid"/>
+            <column name="description" value="UUID заявки"/>
+            <column name="field_order" valueNumeric="0"/>
+            <column name="filter_type" value="TEXT"/>
+            <column name="match_mode" value="LIKE"/>
+            <column name="filter_template_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="email"/>
+            <column name="description" value="Email заявки"/>
+            <column name="field_order" valueNumeric="1"/>
+            <column name="filter_type" value="TEXT"/>
+            <column name="match_mode" value="LIKE"/>
+            <column name="filter_template_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="evaluationMethod"/>
+            <column name="description" value="Метод оценки точности"/>
+            <column name="field_order" valueNumeric="2"/>
+            <column name="filter_type" value="REFERENCE"/>
+            <column name="match_mode" value="EQUALS"/>
+            <column name="filter_template_id" valueNumeric="1"/>
+            <column name="filter_dictionary_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="experimentStatus"/>
+            <column name="description" value="Статус заявки"/>
+            <column name="field_order" valueNumeric="3"/>
+            <column name="filter_type" value="REFERENCE"/>
+            <column name="match_mode" value="EQUALS"/>
+            <column name="filter_template_id" valueNumeric="1"/>
+            <column name="filter_dictionary_id" valueNumeric="2"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="experimentType"/>
+            <column name="description" value="Тип эксперимента"/>
+            <column name="field_order" valueNumeric="4"/>
+            <column name="filter_type" value="REFERENCE"/>
+            <column name="match_mode" value="EQUALS"/>
+            <column name="filter_template_id" valueNumeric="1"/>
+            <column name="filter_dictionary_id" valueNumeric="3"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="creationDate"/>
+            <column name="description" value="Дата создания заявки с"/>
+            <column name="field_order" valueNumeric="5"/>
+            <column name="filter_type" value="DATE"/>
+            <column name="match_mode" value="GTE"/>
+            <column name="filter_template_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="creationDate"/>
+            <column name="description" value="Дата создания заявки по"/>
+            <column name="field_order" valueNumeric="6"/>
+            <column name="filter_type" value="DATE"/>
+            <column name="match_mode" value="LTE"/>
+            <column name="filter_template_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="sentDate"/>
+            <column name="description" value="Дата отправки результатов с"/>
+            <column name="field_order" valueNumeric="7"/>
+            <column name="filter_type" value="DATE"/>
+            <column name="match_mode" value="GTE"/>
+            <column name="filter_template_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="sentDate"/>
+            <column name="description" value="Дата отправки результатов по"/>
+            <column name="field_order" valueNumeric="8"/>
+            <column name="filter_type" value="DATE"/>
+            <column name="match_mode" value="LTE"/>
+            <column name="filter_template_id" valueNumeric="1"/>
+        </insert>
+        
+    </changeSet>
+
+    <!-- Insert evaluation log filter template -->
+    <changeSet id="10" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from filter_template where id = 2
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="filter_template">
+            <column name="id" valueNumeric="2"/>
+            <column name="name" value="Фильтр классификаторов"/>
+            <column name="template_type" value="EVALUATION_LOG"/>
+            <column name="created" valueDate="now()"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="requestId"/>
+            <column name="description" value="UUID заявки"/>
+            <column name="field_order" valueNumeric="0"/>
+            <column name="filter_type" value="TEXT"/>
+            <column name="match_mode" value="LIKE"/>
+            <column name="filter_template_id" valueNumeric="2"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="classifierName"/>
+            <column name="description" value="Классификатор"/>
+            <column name="field_order" valueNumeric="1"/>
+            <column name="filter_type" value="TEXT"/>
+            <column name="match_mode" value="LIKE"/>
+            <column name="filter_template_id" valueNumeric="2"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="evaluationMethod"/>
+            <column name="description" value="Метод оценки точности"/>
+            <column name="field_order" valueNumeric="2"/>
+            <column name="filter_type" value="REFERENCE"/>
+            <column name="match_mode" value="EQUALS"/>
+            <column name="filter_template_id" valueNumeric="2"/>
+            <column name="filter_dictionary_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="evaluationStatus"/>
+            <column name="description" value="Статус заявки"/>
+            <column name="field_order" valueNumeric="3"/>
+            <column name="filter_type" value="REFERENCE"/>
+            <column name="match_mode" value="EQUALS"/>
+            <column name="filter_template_id" valueNumeric="2"/>
+            <column name="filter_dictionary_id" valueNumeric="2"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="creationDate"/>
+            <column name="description" value="Дата создания заявки с"/>
+            <column name="field_order" valueNumeric="4"/>
+            <column name="filter_type" value="DATE"/>
+            <column name="match_mode" value="GTE"/>
+            <column name="filter_template_id" valueNumeric="2"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="creationDate"/>
+            <column name="description" value="Дата создания заявки по"/>
+            <column name="field_order" valueNumeric="5"/>
+            <column name="filter_type" value="DATE"/>
+            <column name="match_mode" value="LTE"/>
+            <column name="filter_template_id" valueNumeric="2"/>
+        </insert>
+
+    </changeSet>
+
+    <!-- Insert classifier options request filter template -->
+    <changeSet id="11" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from filter_template where id = 3
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="filter_template">
+            <column name="id" valueNumeric="3"/>
+            <column name="name" value="Фильтр оптимальных настроек классификаторов"/>
+            <column name="template_type" value="CLASSIFIER_OPTIONS_REQUEST"/>
+            <column name="created" valueDate="now()"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="requestId"/>
+            <column name="description" value="UUID заявки"/>
+            <column name="field_order" valueNumeric="0"/>
+            <column name="filter_type" value="TEXT"/>
+            <column name="match_mode" value="LIKE"/>
+            <column name="filter_template_id" valueNumeric="3"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="relationName"/>
+            <column name="description" value="Обучающая выборка"/>
+            <column name="field_order" valueNumeric="1"/>
+            <column name="filter_type" value="TEXT"/>
+            <column name="match_mode" value="LIKE"/>
+            <column name="filter_template_id" valueNumeric="3"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="evaluationMethod"/>
+            <column name="description" value="Метод оценки точности"/>
+            <column name="field_order" valueNumeric="2"/>
+            <column name="filter_type" value="REFERENCE"/>
+            <column name="match_mode" value="EQUALS"/>
+            <column name="filter_template_id" valueNumeric="3"/>
+            <column name="filter_dictionary_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="responseStatus"/>
+            <column name="description" value="Статус ответа от ERS"/>
+            <column name="field_order" valueNumeric="3"/>
+            <column name="filter_type" value="REFERENCE"/>
+            <column name="match_mode" value="EQUALS"/>
+            <column name="filter_template_id" valueNumeric="3"/>
+            <column name="filter_dictionary_id" valueNumeric="4"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="requestDate"/>
+            <column name="description" value="Дата отправки запроса в ERS с"/>
+            <column name="field_order" valueNumeric="4"/>
+            <column name="filter_type" value="DATE"/>
+            <column name="match_mode" value="GTE"/>
+            <column name="filter_template_id" valueNumeric="3"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="requestDate"/>
+            <column name="description" value="Дата отправки запроса в ERS по"/>
+            <column name="field_order" valueNumeric="5"/>
+            <column name="filter_type" value="DATE"/>
+            <column name="match_mode" value="LTE"/>
+            <column name="filter_template_id" valueNumeric="3"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

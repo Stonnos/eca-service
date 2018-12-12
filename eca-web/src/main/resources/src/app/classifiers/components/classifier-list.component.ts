@@ -1,15 +1,15 @@
 import { Component, Injector } from '@angular/core';
 import {
-  EvaluationLogDto,
+  EvaluationLogDto, FilterFieldDto,
   PageDto,
   PageRequestDto, RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { BaseListComponent } from "../../lists/base-list.component";
-import { MessageService, SelectItem } from "primeng/api";
+import { MessageService } from "primeng/api";
 import { ClassifiersService } from "../services/classifiers.service";
-import { Filter } from "../../filter/filter.model";
 import { OverlayPanel } from "primeng/primeng";
 import { Observable } from "rxjs/internal/Observable";
+import { FilterService } from "../../filter/services/filter.service";
 
 @Component({
   selector: 'app-classifier-list',
@@ -26,16 +26,26 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   public selectedColumn: string;
 
   public constructor(private injector: Injector,
-                     private classifiersService: ClassifiersService) {
+                     private classifiersService: ClassifiersService,
+                     private filterService: FilterService) {
     super(injector.get(MessageService));
     this.defaultSortField = "creationDate";
     this.linkColumns = ["classifierName", "evaluationMethod", this.instancesInfoColumn];
     this.initColumns();
-    this.initFilters();
+    //this.initFilters();
   }
 
   public ngOnInit() {
-    this.getRequestStatusesStatistics();
+    //this.getRequestStatusesStatistics();
+    this.getFilterFields();
+  }
+
+  public getFilterFields() {
+    this.filterService.getFilterFields('EVALUATION_LOG').subscribe((filterFields: FilterFieldDto[]) => {
+      this.filters = this.filterService.mapToFilters(filterFields);
+    }, (error) => {
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+    });
   }
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<EvaluationLogDto>> {
@@ -73,7 +83,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     ];
   }
 
-  private initFilters() {
+  /*private initFilters() {
     const evaluationMethods: SelectItem[] = [
       { label: "Все", value: null },
       { label: "Использование обучающего множества", value: "TRAINING_DATA" },
@@ -98,5 +108,5 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
       "DATE", "GTE", null));
     this.filters.push(new Filter("creationDate", "Дата создания заявки по",
       "DATE", "LTE", null));
-  }
+  }*/
 }

@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = FilterFieldValueMapper.class)
+@Mapper(uses = FilterDictionaryMapper.class)
 public interface FilterFieldMapper {
 
     /**
