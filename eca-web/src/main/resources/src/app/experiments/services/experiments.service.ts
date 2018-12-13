@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   ChartDataDto,
-  EnumDto, ErsReportDto,
+  ErsReportDto,
   ExperimentDto,
   PageDto,
   PageRequestDto, RequestStatusStatisticsDto
@@ -36,14 +36,6 @@ export class ExperimentsService {
     });
     const options = { headers: headers, params: params };
     return this.http.get<PageDto<ExperimentDto>>(this.serviceUrl + '/experiments', options);
-  }
-
-  public getExperimentTypes(): Observable<EnumDto[]> {
-    const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
-    });
-    return this.http.get<EnumDto[]>(this.serviceUrl + '/experiment-types', { headers: headers });
   }
 
   public getRequestStatusesStatistics(): Observable<RequestStatusStatisticsDto> {

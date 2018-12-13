@@ -4,9 +4,9 @@ import com.ecaservice.web.dto.MatchModeVisitor;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -54,7 +54,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
         List<Predicate> predicates = new ArrayList<>();
         if (!CollectionUtils.isEmpty(filters)) {
             filters.forEach(filterRequestDto -> {
-                if (!StringUtils.isEmpty(filterRequestDto.getValue())) {
+                if (StringUtils.isNotBlank(filterRequestDto.getValue())) {
                     predicates.add(buildPredicate(filterRequestDto, root, criteriaBuilder));
                 }
             });

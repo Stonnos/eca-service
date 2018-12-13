@@ -1,8 +1,6 @@
 package com.ecaservice.controller;
 
-import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassifierOptionsRequestModelMapper;
-import com.ecaservice.mapping.ErsResponseStatusMapper;
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
@@ -19,9 +17,7 @@ import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.util.Utils;
 import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
-import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.ErsReportDto;
-import com.ecaservice.web.dto.model.ErsResponseStatus;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -47,7 +43,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.inject.Inject;
 import java.io.File;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -71,7 +66,6 @@ public class WebController {
     private final ExperimentMapper experimentMapper;
     private final EvaluationLogMapper evaluationLogMapper;
     private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
-    private final ErsResponseStatusMapper ersResponseStatusMapper;
     private final ExperimentRepository experimentRepository;
 
     /**
@@ -84,7 +78,6 @@ public class WebController {
      * @param experimentMapper                    - experiment mapper bean
      * @param evaluationLogMapper                 - evaluation log mapper bean
      * @param classifierOptionsRequestModelMapper - classifier options request mapper bean
-     * @param ersResponseStatusMapper             - ers response status mapper bean
      * @param experimentRepository                - experiment repository bean
      */
     @Inject
@@ -94,7 +87,6 @@ public class WebController {
                          ErsService ersService, ExperimentMapper experimentMapper,
                          EvaluationLogMapper evaluationLogMapper,
                          ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper,
-                         ErsResponseStatusMapper ersResponseStatusMapper,
                          ExperimentRepository experimentRepository) {
         this.experimentService = experimentService;
         this.evaluationLogService = evaluationLogService;
@@ -103,7 +95,6 @@ public class WebController {
         this.experimentMapper = experimentMapper;
         this.evaluationLogMapper = evaluationLogMapper;
         this.classifierOptionsRequestModelMapper = classifierOptionsRequestModelMapper;
-        this.ersResponseStatusMapper = ersResponseStatusMapper;
         this.experimentRepository = experimentRepository;
     }
 
@@ -124,40 +115,6 @@ public class WebController {
         Page<Experiment> experimentPage = experimentService.getNextPage(pageRequestDto);
         List<ExperimentDto> experimentDtoList = experimentMapper.map(experimentPage.getContent());
         return PageDto.of(experimentDtoList, pageRequestDto.getPage(), experimentPage.getTotalElements());
-    }
-
-    /**
-     * Gets all experiments types.
-     *
-     * @return experiments types list
-     */
-    @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Gets all experiments types",
-            notes = "Gets all experiments types"
-    )
-    @GetMapping(value = "/experiment-types")
-    public List<EnumDto> getExperimentTypes() {
-        return Arrays.stream(ExperimentType.values()).map(experimentType -> new EnumDto(experimentType.name(),
-                experimentType.getDescription())).collect(Collectors.toList());
-    }
-
-    /**
-     * Gets all ERS responses types
-     *
-     * @return ERS responses list
-     */
-    @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Gets all ERS responses types",
-            notes = "Gets all ERS responses types"
-    )
-    @GetMapping(value = "/ers-responses-types")
-    public List<EnumDto> getErsResponsesTypes() {
-        return Arrays.stream(ResponseStatus.values()).map(responseStatus -> {
-            ErsResponseStatus ersResponseStatus = ersResponseStatusMapper.map(responseStatus);
-            return new EnumDto(ersResponseStatus.name(), ersResponseStatus.getDescription());
-        }).collect(Collectors.toList());
     }
 
     /**
