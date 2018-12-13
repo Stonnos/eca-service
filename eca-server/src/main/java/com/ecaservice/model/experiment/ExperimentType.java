@@ -83,7 +83,7 @@ public enum ExperimentType {
      * Optimal options automatic selection for stacking algorithm using cross - validation method for
      * creation meta data set.
      */
-    STACKING_CV(ExperimentTypeDictionary.STACKING_NAME) {
+    STACKING_CV(ExperimentTypeDictionary.STACKING_CV_NAME) {
         @Override
         public <T, P> T internalHandle(ExperimentTypeVisitor<T, P> visitor, P parameter) {
             return visitor.caseStackingCV(parameter);

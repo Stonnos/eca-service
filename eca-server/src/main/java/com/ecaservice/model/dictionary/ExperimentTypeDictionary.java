@@ -18,5 +18,6 @@ public class ExperimentTypeDictionary {
     public static final String STACKING_NAME = "Алгоритм Stacking";
     public static final String KNN_NAME = "Алгоритм k - взвешенных ближайших соседей";
     public static final String RANDOM_FORESTS_NAME = "Случайные леса";
+    public static final String STACKING_CV_NAME = "Алгоритм Stacking CV";
     public static final String DECISION_TREE_NAME = "Деревья решений";
 }

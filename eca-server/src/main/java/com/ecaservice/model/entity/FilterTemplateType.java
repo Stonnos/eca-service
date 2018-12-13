@@ -1,4 +1,4 @@
-package com.ecaservice.web.dto.model;
+package com.ecaservice.model.entity;
 
 /**
  * Filter template type enum.

@@ -1,6 +1,5 @@
 package com.ecaservice.model.entity;
 
-import com.ecaservice.web.dto.model.FilterTemplateType;
 import lombok.Data;
 
 import javax.persistence.CascadeType;
@@ -12,9 +11,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.NamedAttributeNode;
-import javax.persistence.NamedEntityGraph;
-import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;

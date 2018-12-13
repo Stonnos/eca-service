@@ -41,7 +41,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   }
 
   public getFilterFields() {
-    this.filterService.getFilterFields('EVALUATION_LOG').subscribe((filterFields: FilterFieldDto[]) => {
+    this.filterService.getEvaluationLogFilterFields().subscribe((filterFields: FilterFieldDto[]) => {
       this.filters = this.filterService.mapToFilters(filterFields);
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });

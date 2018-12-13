@@ -1,8 +1,7 @@
 package com.ecaservice.repository;
 
 import com.ecaservice.model.entity.FilterTemplate;
-import com.ecaservice.web.dto.model.FilterTemplateType;
-import org.springframework.data.jpa.repository.EntityGraph;
+import com.ecaservice.model.entity.FilterTemplateType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

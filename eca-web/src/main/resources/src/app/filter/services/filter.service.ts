@@ -1,9 +1,8 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   FilterDictionaryValueDto,
   FilterFieldDto,
-  FilterTemplateType
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { ConfigService } from "../../config.service";
@@ -19,14 +18,28 @@ export class FilterService {
   public constructor(private http: HttpClient, private cookieService: CookieService) {
   }
 
-  public getFilterFields(templateType: FilterTemplateType): Observable<FilterFieldDto[]> {
+  public getExperimentFilterFields(): Observable<FilterFieldDto[]> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': 'Bearer ' + this.cookieService.get('access_token')
     });
-    let params = new HttpParams().set('templateType', templateType);
-    const options = { headers: headers, params: params };
-    return this.http.get<FilterFieldDto[]>(this.serviceUrl + '/filters/template', options);
+    return this.http.get<FilterFieldDto[]>(this.serviceUrl + '/filter-templates/experiment', { headers: headers });
+  }
+
+  public getEvaluationLogFilterFields(): Observable<FilterFieldDto[]> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
+    });
+    return this.http.get<FilterFieldDto[]>(this.serviceUrl + '/filter-templates/evaluation', { headers: headers });
+  }
+
+  public getClassifierOptionsRequestFilterFields(): Observable<FilterFieldDto[]> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
+    });
+    return this.http.get<FilterFieldDto[]>(this.serviceUrl + '/filter-templates/classifier-options-request', { headers: headers });
   }
 
   public mapToFilters(filterFields: FilterFieldDto[]): Filter[] {

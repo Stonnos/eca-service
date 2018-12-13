@@ -41,7 +41,7 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
   }
 
   public getFilterFields() {
-    this.filterService.getFilterFields('CLASSIFIER_OPTIONS_REQUEST').subscribe((filterFields: FilterFieldDto[]) => {
+    this.filterService.getClassifierOptionsRequestFilterFields().subscribe((filterFields: FilterFieldDto[]) => {
       this.filters = this.filterService.mapToFilters(filterFields);
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });

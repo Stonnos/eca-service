@@ -104,7 +104,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   }
 
   public getFilterFields() {
-    this.filterService.getFilterFields('EXPERIMENT').subscribe((filterFields: FilterFieldDto[]) => {
+    this.filterService.getExperimentFilterFields().subscribe((filterFields: FilterFieldDto[]) => {
       this.filters = this.filterService.mapToFilters(filterFields);
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
