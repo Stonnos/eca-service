@@ -15,6 +15,7 @@ import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsRequest;
+import com.ecaservice.model.entity.FilterDictionaryValue;
 import com.ecaservice.model.entity.InstancesInfo;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.evaluation.ClassifierOptionsRequestSource;
@@ -108,6 +109,8 @@ public class TestHelperUtils {
     private static final int NUM_INSTANCES = 100;
     private static final int NUM_ATTRIBUTES = 10;
     private static final int NUM_CLASSES = 2;
+    private static final String LABEL = "label";
+    private static final String VALUE = "value";
 
     /**
      * Generates the test data set.
@@ -753,5 +756,17 @@ public class TestHelperUtils {
         experimentResultsRequest.setRequestId(UUID.randomUUID().toString());
         experimentResultsRequest.setRequestSource(ExperimentResultsRequestSource.SYSTEM);
         return experimentResultsRequest;
+    }
+
+    /**
+     * Creates filter dictionary value.
+     *
+     * @return filter dictionary value
+     */
+    public static FilterDictionaryValue createFilterDictionaryValue() {
+        FilterDictionaryValue filterDictionaryValue = new FilterDictionaryValue();
+        filterDictionaryValue.setLabel(LABEL);
+        filterDictionaryValue.setValue(VALUE);
+        return filterDictionaryValue;
     }
 }
