@@ -32,11 +32,9 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     this.defaultSortField = "creationDate";
     this.linkColumns = ["classifierName", "evaluationMethod", this.instancesInfoColumn];
     this.initColumns();
-    //this.initFilters();
   }
 
   public ngOnInit() {
-    //this.getRequestStatusesStatistics();
     this.getFilterFields();
   }
 
@@ -82,31 +80,4 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
       { name: "evaluationStatus", label: "Статус заявки" }
     ];
   }
-
-  /*private initFilters() {
-    const evaluationMethods: SelectItem[] = [
-      { label: "Все", value: null },
-      { label: "Использование обучающего множества", value: "TRAINING_DATA" },
-      { label: "V-блочная кросс-проверка", value: "CROSS_VALIDATION" }
-    ];
-    const statuses: SelectItem[] = [
-      { label: "Все", value: null },
-      { label: "Новая", value: "NEW" },
-      { label: "Завершена", value: "FINISHED" },
-      { label: "Таймаут", value: "TIMEOUT" },
-      { label: "Ошибка", value: "ERROR" }
-    ];
-    this.filters.push(new Filter("requestId", "UUID заявки",
-      "TEXT", "LIKE", null));
-    this.filters.push(new Filter("classifierName", "Классификатор",
-      "TEXT", "LIKE", null));
-    this.filters.push(new Filter("evaluationMethod", "Метод оценки точности", "REFERENCE",
-      "EQUALS", null, evaluationMethods));
-    this.filters.push(new Filter("evaluationStatus", "Статус заявки", "REFERENCE",
-      "EQUALS", null, statuses));
-    this.filters.push(new Filter("creationDate", "Дата создания заявки с",
-      "DATE", "GTE", null));
-    this.filters.push(new Filter("creationDate", "Дата создания заявки по",
-      "DATE", "LTE", null));
-  }*/
 }

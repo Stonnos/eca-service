@@ -25,25 +25,6 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "filter_template")
-/*@NamedEntityGraph(name = "filterFields",
-        attributeNodes = {@NamedAttributeNode(value = "fields", subgraph = "fieldValues")},
-        subgraphs = {
-                @NamedSubgraph(
-                        name = "fieldValues", attributeNodes = {@NamedAttributeNode("values")}
-                )
-        })*/
-/*@NamedEntityGraph(name = "filterFields",
-        attributeNodes = {@NamedAttributeNode(value = "fields", subgraph = "dictionaries")},
-        subgraphs = {
-                @NamedSubgraph(
-                        name = "dictionaries",
-                        attributeNodes = {@NamedAttributeNode(value = "dictionary", subgraph = "dictionaryValues")}
-                ),
-                @NamedSubgraph(
-                        name = "dictionaryValues",
-                        attributeNodes = {@NamedAttributeNode(value = "values")}
-                )
-        })*/
 public class FilterTemplate {
 
     @Id

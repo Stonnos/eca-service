@@ -32,11 +32,9 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
     this.linkColumns = ["classifierName", "evaluationMethod"];
     this.notSortableColumns = ["classifierName"];
     this.initColumns();
-    //this.initFilters();
   }
 
   public ngOnInit() {
-    //this.addErsResponsesStatusesFilter();
     this.getFilterFields();
   }
 
@@ -98,40 +96,8 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
       { name: "relationName", label: "Обучающая выборка" },
       { name: "classifierName", label: "Классификатор" },
       { name: "evaluationMethod", label: "Метод оценки точности" },
-      { name: "requestDate", label: "Дата отправки запроса" },
-      { name: "responseStatus", label: "Статус ответа" }
+      { name: "requestDate", label: "Дата отправки запроса в ERS" },
+      { name: "responseStatus", label: "Статус ответа от ERS" }
     ];
   }
-
-  /*private initFilters() {
-    const evaluationMethods: SelectItem[] = [
-      { label: "Все", value: null },
-      { label: "Использование обучающего множества", value: "TRAINING_DATA" },
-      { label: "V-блочная кросс-проверка", value: "CROSS_VALIDATION" }
-    ];
-    this.filters.push(new Filter("requestId", "UUID заявки",
-      "TEXT", "LIKE", null));
-    this.filters.push(new Filter("relationName", "Обучающая выборка",
-      "TEXT", "LIKE", null));
-    this.filters.push(new Filter("evaluationMethod", "Метод оценки точности", "REFERENCE",
-      "EQUALS", null, evaluationMethods));
-    this.filters.push(new Filter("requestDate", "Дата отправки заявки с",
-      "DATE", "GTE", null));
-    this.filters.push(new Filter("requestDate", "Дата отправки заявки по",
-      "DATE", "LTE", null));
-  }
-
-  private addErsResponsesStatusesFilter() {
-    this.classifierOptionsService.getErsResponsesStatuses().subscribe((enumDtos: EnumDto[]) => {
-      const ersResponseStatusesItems: SelectItem[] =
-        enumDtos.map((enumDto: EnumDto) => {
-          return { label: enumDto.description, value: enumDto.value };
-        });
-      ersResponseStatusesItems.unshift({ label: "Все", value: null });
-      this.filters.push(new Filter("responseStatus", "Статус ответа", "REFERENCE", "EQUALS",
-        null, ersResponseStatusesItems));
-    }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-    });
-  }*/
 }

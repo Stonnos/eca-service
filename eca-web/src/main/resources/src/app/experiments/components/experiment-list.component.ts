@@ -30,11 +30,9 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     this.linkColumns = ["trainingDataAbsolutePath", "experimentAbsolutePath", "uuid"];
     this.notSortableColumns = ["trainingDataAbsolutePath", "experimentAbsolutePath"];
     this.initColumns();
-    //this.initFilters();
   }
 
   public ngOnInit() {
-    //this.addExperimentTypesFilter();
     this.getFilterFields();
     this.getRequestStatusesStatistics();
   }
@@ -128,49 +126,4 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       { name: "experimentStatus", label: "Статус заявки" }
     ];
   }
-
-  /*private initFilters() {
-    const evaluationMethods: SelectItem[] = [
-      { label: "Все", value: null },
-      { label: "Использование обучающего множества", value: "TRAINING_DATA" },
-      { label: "V-блочная кросс-проверка", value: "CROSS_VALIDATION" }
-    ];
-    const statuses: SelectItem[] = [
-      { label: "Все", value: null },
-      { label: "Новая", value: "NEW" },
-      { label: "Завершена", value: "FINISHED" },
-      { label: "Таймаут", value: "TIMEOUT" },
-      { label: "Ошибка", value: "ERROR" }
-    ];
-    this.filters.push(new Filter("uuid", "UUID заявки",
-      "TEXT", "LIKE", null));
-    this.filters.push(new Filter("email", "Email заявки",
-      "TEXT", "LIKE", null));
-    this.filters.push(new Filter("evaluationMethod", "Метод оценки точности", "REFERENCE",
-      "EQUALS", null, evaluationMethods));
-    this.filters.push(new Filter("experimentStatus", "Статус заявки", "REFERENCE",
-      "EQUALS", null, statuses));
-    this.filters.push(new Filter("creationDate", "Дата создания заявки с",
-      "DATE", "GTE", null));
-    this.filters.push(new Filter("creationDate", "Дата создания заявки по",
-      "DATE", "LTE", null));
-    this.filters.push(new Filter("sentDate", "Дата отправки результатов с",
-      "DATE", "GTE", null));
-    this.filters.push(new Filter("sentDate", "Дата отправки результатов по",
-      "DATE", "LTE", null));
-  }
-
-  private addExperimentTypesFilter() {
-    this.experimentsService.getExperimentTypes().subscribe((experimentTypes: EnumDto[]) => {
-      const experimentTypeItems: SelectItem[] =
-        experimentTypes.map((experimentType: EnumDto) => {
-          return { label: experimentType.description, value: experimentType.value };
-        });
-      experimentTypeItems.unshift({ label: "Все", value: null });
-      this.filters.push(new Filter("experimentType", "Тип эксперимента", "REFERENCE", "EQUALS",
-        null, experimentTypeItems));
-    }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-    });
-  }*/
 }
