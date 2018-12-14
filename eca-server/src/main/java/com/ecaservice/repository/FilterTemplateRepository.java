@@ -17,6 +17,5 @@ public interface FilterTemplateRepository extends JpaRepository<FilterTemplate, 
      * @param templateType - template type
      * @return filter template entity
      */
-    //@EntityGraph(value = "filterFields", type = EntityGraph.EntityGraphType.FETCH)
     FilterTemplate findFirstByTemplateType(FilterTemplateType templateType);
 }
