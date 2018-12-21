@@ -47,3 +47,7 @@ mvn clean install dockerfile:build
 docker-compose up
 
 ВАЖНО! Данную команду необходимо выполнять из корневой папки проекта.
+
+Для production используется следующая команда:
+
+docker-compose -f docker-compose.yaml -f docker-compose.production.yaml

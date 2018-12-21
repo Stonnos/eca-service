@@ -38,9 +38,6 @@ docker-compose up
 
 ВАЖНО! Данную команду необходимо выполнять из корневой папки проекта.
 
-При этом в файле scr/main/resources/src/assets/configs/config.json необходимо установить следующие параметры:
+Для production используется следующая команда:
 
-* apiUrl - http://localhost:8085/eca-server
-* oauthUrl - http://localhost:8083/eca-oauth/oauth/token
-
-ВАЖНО! Необходимо указывать внешние url-ы соответствующих docker контейнеров
+docker-compose -f docker-compose.yaml -f docker-compose.production.yaml

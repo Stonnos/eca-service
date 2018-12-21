@@ -36,6 +36,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
 
   public ngOnInit() {
     this.getFilterFields();
+    this.getRequestStatusesStatistics();
   }
 
   public getFilterFields() {
