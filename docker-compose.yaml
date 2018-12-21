@@ -24,6 +24,7 @@ services:
     command: ["/wait-for-it.sh", "eca-db:5432", "--timeout=45", "--", "catalina.sh", "run"]
     environment:
       TZ: "Asia/Novosibirsk"
+      SPRING_PROFILES_ACTIVE: "docker"
     ports:
       - "8085:8080"
     networks:
@@ -39,6 +40,7 @@ services:
     command: ["/wait-for-it.sh", "eca-db:5432", "--timeout=45", "--", "catalina.sh", "run"]
     environment:
       TZ: "Asia/Novosibirsk"
+      SPRING_PROFILES_ACTIVE: "docker"
     ports:
       - "8083:8080"
     networks:
@@ -51,6 +53,7 @@ services:
     container_name: eca-web
     environment:
       TZ: "Asia/Novosibirsk"
+      SPRING_PROFILES_ACTIVE: "docker"
     ports:
       - "8084:8080"
     networks:

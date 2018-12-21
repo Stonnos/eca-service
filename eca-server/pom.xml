@@ -26,8 +26,6 @@
     <properties>
         <logback.version>1.2.3</logback.version>
         <slf4j.version>1.7.25</slf4j.version>
-        <mysql.version>5.1.40</mysql.version>
-        <oracle.version>12.1.0.2</oracle.version>
         <postresql.version>9.4.1212</postresql.version>
         <eca.version>6.4</eca.version>
         <assertj.core.version>3.8.0</assertj.core.version>
@@ -37,118 +35,16 @@
         <org.mapstruct.version>1.2.0.Final</org.mapstruct.version>
         <powermock.version>1.7.3</powermock.version>
         <liquibase.version>3.5.3</liquibase.version>
-        <inject.version>1</inject.version>
         <xmlschema.version>2.2.3</xmlschema.version>
         <jaxb2-maven-plugin.version>2.3</jaxb2-maven-plugin.version>
         <jacoco-plugin.version>0.7.7.201606060606</jacoco-plugin.version>
         <jacoco.minCoverage>0.70</jacoco.minCoverage>
-        <docker-maven-plugin.version>1.4.3</docker-maven-plugin.version>
         <maven-plugin.version>3.2.0</maven-plugin.version>
         <javassist.version>3.21.0-GA</javassist.version>
         <maven-processor-plugin.version>3.3.3</maven-processor-plugin.version>
     </properties>
 
     <profiles>
-
-        <!-- Experiment profile for linux operation systems-->
-        <profile>
-            <id>experiment-linux</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <storagePath>/home/experiment/</storagePath>
-                <data.storagePath>/home/experiment/data/</data.storagePath>
-            </properties>
-        </profile>
-
-        <!-- Experiment profile for windows operation systems-->
-        <profile>
-            <id>experiment-windows</id>
-            <properties>
-                <storagePath>D:/experiment/</storagePath>
-                <data.storagePath>D:/experiment/data/</data.storagePath>
-            </properties>
-        </profile>
-
-        <!-- Profile is used to use mysql datasource -->
-        <profile>
-            <id>mysql</id>
-            <properties>
-                <jdbc.dialect>org.hibernate.dialect.MySQLDialect</jdbc.dialect>
-                <jdbc.ddlAuto>validate</jdbc.ddlAuto>
-                <jdbc.driver>com.mysql.jdbc.Driver</jdbc.driver>
-                <jdbc.url>jdbc:mysql://localhost:3306/eca?useUnicode=true&amp;characterEncoding=UTF-8</jdbc.url>
-                <jdbc.user>root</jdbc.user>
-                <jdbc.password>123</jdbc.password>
-            </properties>
-
-            <dependencies>
-                <dependency>
-                    <groupId>mysql</groupId>
-                    <artifactId>mysql-connector-java</artifactId>
-                    <version>${mysql.version}</version>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <!-- Profile is used to use embedded h2 datasource -->
-        <profile>
-            <id>h2</id>
-            <properties>
-                <jdbc.url>jdbc:h2:mem:eca;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE</jdbc.url>
-                <jdbc.user>sa</jdbc.user>
-                <jdbc.password></jdbc.password>
-                <jdbc.driver>org.h2.Driver</jdbc.driver>
-                <jdbc.ddlAuto>create-drop</jdbc.ddlAuto>
-                <jdbc.dialect>org.hibernate.dialect.H2Dialect</jdbc.dialect>
-            </properties>
-        </profile>
-
-        <!-- Profile is used to use postgres datasource -->
-        <profile>
-            <id>postgres</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <jdbc.url>jdbc:postgresql://localhost:5432/eca</jdbc.url>
-                <jdbc.user>postgres</jdbc.user>
-                <jdbc.password>postgres</jdbc.password>
-                <jdbc.driver>org.postgresql.Driver</jdbc.driver>
-                <jdbc.ddlAuto>validate</jdbc.ddlAuto>
-                <jdbc.dialect>org.hibernate.dialect.PostgreSQL9Dialect</jdbc.dialect>
-            </properties>
-
-            <dependencies>
-                <dependency>
-                    <groupId>org.postgresql</groupId>
-                    <artifactId>postgresql</artifactId>
-                    <version>${postresql.version}</version>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <!-- Profile is used to use oracle datasource -->
-        <profile>
-            <id>oracle</id>
-            <properties>
-                <jdbc.url>jdbc:oracle:thin:@localhost:1521:xe</jdbc.url>
-                <jdbc.user>SYSTEM</jdbc.user>
-                <jdbc.password>123</jdbc.password>
-                <jdbc.driver>oracle.jdbc.driver.OracleDriver</jdbc.driver>
-                <jdbc.ddlAuto>validate</jdbc.ddlAuto>
-                <jdbc.dialect>org.hibernate.dialect.Oracle10gDialect</jdbc.dialect>
-            </properties>
-
-            <dependencies>
-                <dependency>
-                    <groupId>com.github.noraui</groupId>
-                    <artifactId>ojdbc7</artifactId>
-                    <version>${oracle.version}</version>
-                </dependency>
-            </dependencies>
-        </profile>
 
         <profile>
             <id>quality</id>
@@ -179,12 +75,6 @@
     </profiles>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/javax.inject/javax.inject -->
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-            <version>${inject.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -214,6 +104,12 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <version>${logback.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postresql.version}</version>
         </dependency>
 
         <!-- Spring Boot -->

@@ -1,14 +1,14 @@
 spring:
   ## Datasource properties
   datasource:
-    driver-class-name: @jdbc.driver@
-    url: @jdbc.url@
-    username: @jdbc.user@
-    password: @jdbc.password@
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/eca
+    username: postgres
+    password: postgres
   jpa:
     hibernate:
-      ddl-auto: @jdbc.ddlAuto@
-    database-platform: @jdbc.dialect@
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     properties:
       hibernate:
         jdbc:
@@ -50,7 +50,7 @@ experiment:
   resultSize: 25
   numIterations: 100
   fileFormat: experiment%d.model
-  storagePath: @storagePath@
+  storagePath: D:/experiment/
   individualClassifiersStoragePath: classifiers
   downloadUrl: http://localhost:8085/eca-service/experiment/download/%s
   maximumFractionDigits: 4
@@ -67,7 +67,7 @@ experiment:
   resultSizeToSend: 5
 
   data:
-    storagePath: @data.storagePath@
+    storagePath: D:/experiment/data/
     fileFormat: data%d.arff
     dateFormat: yyyy-MM-dd HH:mm:ss
   ensemble:

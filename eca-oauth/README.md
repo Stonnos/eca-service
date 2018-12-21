@@ -47,7 +47,3 @@ mvn clean install dockerfile:build
 docker-compose up
 
 ВАЖНО! Данную команду необходимо выполнять из корневой папки проекта.
-
-При этом в файле application.yml необходимо установить следующие параметры:
-
-* spring.datasource.url=jdbc:postgresql://eca-db:5432/eca-oauth

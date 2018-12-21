@@ -77,35 +77,7 @@ ECA service v4.0
 
 1. Для запуска сервиса сначала необходимо собрать проект. Ниже приведен пример команды:
     
-   mvn clean install -P[experiment-profile],[db-profile] -Dexperiment.storagePath=/home/roman/experiment/
-           -Dexperiment.data.storagePath=/home/roman/experiment/data/ 
-           -Djdbc.url=url -Djdbc.user=user -Djdbc.password=pass -Djdbc.dllAuto=update 
-    
-   Ниже приведен перечень основных параметров:
-   
-   a) experiment-profile - профиль для параметров модуля Data Miner. Может принимать одно из следующих значений:
-        * experiment-linux - используется для машин с ОС семейства Linux.
-        * experiment-windows - используется для машин с ОС семейства Windows.
-   b) db-profile - профиль для настройки параметров конкретной БД. Может принимать одно из следующих значений:
-        * postgres - профиль для параметров СУБД PostgreSQL
-        * mysql - профиль для параметров СУБД MySQL
-        * oracle - профиль для параметров СУБД Oracle
-        * h2 - профиль для параметров СУБД H2
-   c) Параметры БД:
-        * jdbc.url - url для подключения к БД
-        * jdbc.user - логин
-        * jdbc.password - пароль
-        * jdbc.ddlAuto - параметр, который может принимать одно из четырех значений:
-   
-            validate - не вносить изменения в базу данных.
-            update - обновить схему базы данных.
-            create - создать базу данных, уничтожив предыдущие данные.
-            create-drop - создать базу данных. После завершения работы приложения, созданная
-                        база данных будет удалена.
-   d) Параметры модуля Data Miner:
-        * experiment.storagePath - путь к папке на файловой системе для хранения файлов с историей экспериментов
-        * experiment.data.storagePath - путь к папке на файловой системе для хранения файлов с
-            исходныи данными (обучающая выборка)
+   mvn clean install
     
 2. Развернуть target/eca-service.war на одном из контейнеров сервлетов (например, Tomcat 8) с контекстом /eca-service.
          
@@ -129,26 +101,13 @@ mvn clean install -Pquality
 
 2. Далее для сборки проекта и создания образа проекта нужно выполнить команду:
 
-mvn clean install dockerfile:build
+mvn clean install dockerfile:build -Pprod
 
 3. Используя пакетный менеджер docker-compose, создать docker контейнеры с помощью команды:
 
 docker-compose up
 
 ВАЖНО! Данную команду необходимо выполнять из корневой папки проекта.
-
-Для развертывания окружения на production используется команда:
-
-mvn clean install dockerfile:build -Ppostgres,experiment-linux -Djdbc.url=jdbc:postgresql://eca-db:5432/eca
-
-При этом в файле application.yml необходимо установить следующие параметры:
-
-  * ers-config.url=http://evaluation-results-service:8080/evaluation-results-service/ws/
-  * experiment.mail.serviceUrl=http://notification-service:8080/notification-service/ws/
-  * oauth2-resource.oauthUrl=http://eca-oauth:8080/eca-oauth
-  * swagger2.oauthUrl=http://localhost:8083/eca-oauth
-
-ВАЖНО! В конфиге swagger2.oauthUrl необходимо указывать внешний url docker контейнера
 
 Для удаления всех контейнеров и image-ов необходимо выполнить команду:
 
