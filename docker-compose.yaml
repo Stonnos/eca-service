@@ -19,8 +19,6 @@ services:
   eca-server:
     image: eca-server
     container_name: eca-server
-    volumes:
-      - ./eca-server/wait-for-it.sh:/usr/local/bin/wait-for-it.sh
     command: ["/wait-for-it.sh", "eca-db:5432", "--timeout=45", "--", "catalina.sh", "run"]
     environment:
       TZ: "Asia/Novosibirsk"
@@ -35,8 +33,6 @@ services:
   eca-oauth:
     image: eca-oauth
     container_name: eca-oauth
-    volumes:
-      - ./eca-oauth/wait-for-it.sh:/usr/local/bin/wait-for-it.sh
     command: ["/wait-for-it.sh", "eca-db:5432", "--timeout=45", "--", "catalina.sh", "run"]
     environment:
       TZ: "Asia/Novosibirsk"
