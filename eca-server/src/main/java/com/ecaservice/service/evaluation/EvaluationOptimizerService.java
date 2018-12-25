@@ -16,6 +16,7 @@ import com.ecaservice.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.repository.ClassifierOptionsRequestRepository;
 import com.ecaservice.service.ClassifierOptionsService;
 import com.ecaservice.service.ers.ErsRequestService;
+import com.google.common.base.Charsets;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -105,8 +106,8 @@ public class EvaluationOptimizerService {
     }
 
     private synchronized String getOptimalClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
-        String dataMd5Hash =
-                DigestUtils.md5DigestAsHex(classifierOptionsRequest.getInstances().getXmlInstances().getBytes());
+        String dataMd5Hash = DigestUtils.md5DigestAsHex(
+                classifierOptionsRequest.getInstances().getXmlInstances().getBytes(Charsets.UTF_8));
         ClassifierOptionsRequestEntity requestEntity = new ClassifierOptionsRequestEntity();
         requestEntity.setCreationDate(LocalDateTime.now());
         ClassifierOptionsRequestModel requestModel = getLastClassifierOptionsRequestModel(dataMd5Hash);
