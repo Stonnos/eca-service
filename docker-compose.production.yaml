@@ -1,0 +1,14 @@
+version: '3.5'
+services:
+
+  eca-server:
+    environment:
+      SPRING_PROFILES_ACTIVE: "prod"
+
+  eca-oauth:
+    environment:
+      SPRING_PROFILES_ACTIVE: "prod"
+
+  eca-web:
+    environment:
+      SPRING_PROFILES_ACTIVE: "prod"

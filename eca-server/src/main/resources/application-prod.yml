@@ -1,0 +1,34 @@
+spring:
+  ## Datasource properties
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://eca-db:5432/eca
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+
+## Swagger properties
+swagger2:
+  oauthUrl: http://192.168.99.100:8083/eca-oauth
+
+## Experiment properties
+experiment:
+  storagePath: /home/experiment/
+  downloadUrl: http://192.168.99.100:8085/eca-server/experiment/download/%s
+  data:
+    storagePath: /home/experiment/data/
+  mail:
+    from: rbatsw@gmail.com
+    subject: Eca - service
+    serviceUrl: http://notification-service:8080/notification-service/ws/
+    enabled: true
+
+ers-config:
+  url: http://evaluation-results-service:8080/evaluation-results-service/ws/
+  enabled: true
+
+oauth2-resource:
+  oauthUrl: http://eca-oauth:8080/eca-oauth

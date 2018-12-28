@@ -40,10 +40,14 @@
 
 2. Далее для сборки проекта и создания образа проекта нужно выполнить команду:
 
-mvn clean install dockerfile:build
+mvn clean install dockerfile:build -Pprod
 
 3. Используя пакетный менеджер docker-compose, создать docker контейнеры с помощью команды:
 
 docker-compose up
 
 ВАЖНО! Данную команду необходимо выполнять из корневой папки проекта.
+
+Для production используется следующая команда:
+
+docker-compose -f docker-compose.yaml -f docker-compose.production.yaml up
