@@ -17,4 +17,8 @@ export class FilterComponent {
   public onSearch() {
     this.search.emit();
   }
+
+  public resetFilter() {
+    this.filters.forEach(filter => filter.currentValue = null);
+  }
 }
