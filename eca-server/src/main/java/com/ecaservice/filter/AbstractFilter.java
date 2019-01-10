@@ -81,8 +81,8 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
             @Override
             public Predicate caseLike() {
-                return criteriaBuilder.like(root.get(filterRequestDto.getName()),
-                        MessageFormat.format("%{0}%", filterRequestDto.getValue().trim()));
+                return criteriaBuilder.like(criteriaBuilder.lower(root.get(filterRequestDto.getName())),
+                        MessageFormat.format("%{0}%", filterRequestDto.getValue().trim().toLowerCase()));
             }
         });
     }
