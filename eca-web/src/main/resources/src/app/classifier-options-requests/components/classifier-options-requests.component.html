@@ -51,10 +51,10 @@
   </div>
 
   <p-overlayPanel #infoPanel [showCloseIcon]="true">
-    <p-panel *ngIf="selectedRequest && selectedColumn" class="overlay-panel">
+    <p-panel *ngIf="selectedRequest && selectedColumn">
       <ng-container [ngSwitch]="selectedColumn">
         <ng-container *ngSwitchCase="'classifierName'">
-          <pre><code class="language-json" [innerHTML]="getFormattedJsonConfig()"></code></pre>
+          <pre class="json-config"><code class="language-json" [innerHTML]="getFormattedJsonConfig()"></code></pre>
           <p-footer>
             <div class="ui-g">
               <div class="ui-g-3 ui-g-offset-9">

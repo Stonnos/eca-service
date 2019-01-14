@@ -21,13 +21,11 @@
   }
 }
 
-.overlay-panel::ng-deep {
-
-  .ui-panel {
-    width: 475px;
-    max-height: 600px;
-    overflow-y: scroll;
-  }
+.json-config {
+  background-color: #e6e6e6;
+  width: 475px;
+  max-height: 600px;
+  overflow-y: scroll;
 }
 
 .load-button {
