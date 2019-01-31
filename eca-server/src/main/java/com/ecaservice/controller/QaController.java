@@ -53,7 +53,7 @@ import static com.ecaservice.util.Utils.parseOptions;
 @RequestMapping("/qa")
 public class QaController {
 
-    private static final String ATTACHMENT_FORMAT = "attachment;filename=%s_%d.xml";
+    private static final String ATTACHMENT_FORMAT = "attachment;filename=%s%s.xml";
 
     private final EvaluationRequestService evaluationRequestService;
     private final EvaluationResultsMapper evaluationResultsMapper;
@@ -210,7 +210,7 @@ public class QaController {
             response.setContentType(MediaType.APPLICATION_XML_VALUE);
             response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(ATTACHMENT_FORMAT,
                     evaluationResponse.getEvaluationResults().getClassifier().getClass().getSimpleName(),
-                    System.currentTimeMillis()));
+                    evaluationResponse.getRequestId()));
             writeXmlResult(response, evaluationResultsRequest);
         }
     }
