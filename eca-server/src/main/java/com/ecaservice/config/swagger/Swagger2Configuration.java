@@ -1,4 +1,4 @@
-package com.ecaservice.config;
+package com.ecaservice.config.swagger;
 
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;

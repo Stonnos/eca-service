@@ -1,4 +1,4 @@
-package com.ecaservice.config;
+package com.ecaservice.config.swagger;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
