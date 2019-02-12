@@ -1,7 +1,7 @@
-FROM tomcat:8-jre8
+FROM openjdk:8
 RUN mkdir -p /home/experiment
 RUN mkdir -p /home/experiment/data
 ADD wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
-COPY target/eca-server.war /usr/local/tomcat/webapps/
-CMD ["catalina.sh", "run"]
+COPY target/eca-server.war eca-server.war
+ENTRYPOINT ["java", "-jar", "eca-server.war"]

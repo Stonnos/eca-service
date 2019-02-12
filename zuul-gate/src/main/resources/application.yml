@@ -1,0 +1,11 @@
+zuul:
+  routes:
+      server:
+        path: /eca-server/**
+        url: http://eca-server:8080
+      oauth:
+        path: /auth-server/**
+        url: http://eca-oauth:8080
+      frontend:
+        path: /**
+        url: http://eca-web:8080

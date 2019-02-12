@@ -24,8 +24,6 @@
     </repositories>
 
     <properties>
-        <logback.version>1.2.3</logback.version>
-        <slf4j.version>1.7.25</slf4j.version>
         <postresql.version>9.4.1212</postresql.version>
         <eca.version>6.5</eca.version>
         <assertj.core.version>3.8.0</assertj.core.version>
@@ -39,7 +37,6 @@
         <jaxb2-maven-plugin.version>2.3</jaxb2-maven-plugin.version>
         <jacoco-plugin.version>0.7.7.201606060606</jacoco-plugin.version>
         <jacoco.minCoverage>0.70</jacoco.minCoverage>
-        <maven-plugin.version>3.2.0</maven-plugin.version>
         <javassist.version>3.21.0-GA</javassist.version>
         <maven-processor-plugin.version>3.3.3</maven-processor-plugin.version>
     </properties>
@@ -85,25 +82,6 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-java8</artifactId>
             <version>${hibernate.version}</version>
-        </dependency>
-
-        <!-- Slf4j -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>${logback.version}</version>
         </dependency>
 
         <dependency>
@@ -263,6 +241,7 @@
     </dependencies>
 
     <build>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
 
             <plugin>
@@ -440,6 +419,11 @@
             </plugin>
 
             <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>dockerfile-maven-plugin</artifactId>
                 <version>${docker-maven-plugin.version}</version>
@@ -448,20 +432,6 @@
                     <skip>false</skip>
                     <repository>${project.artifactId}</repository>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>${maven-plugin.version}</version>
-                <configuration>
-                    <warName>${project.artifactId}</warName>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
         </plugins>

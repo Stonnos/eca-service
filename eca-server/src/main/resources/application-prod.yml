@@ -12,12 +12,12 @@ spring:
 
 ## Swagger properties
 swagger2:
-  oauthUrl: http://192.168.99.100:8083/eca-oauth
+  oauthUrl: http://192.168.99.100:8080/auth-server
 
 ## Experiment properties
 experiment:
   storagePath: /home/experiment/
-  downloadUrl: http://192.168.99.100:8085/eca-server/experiment/download/%s
+  downloadUrl: http://192.168.99.100:8080/eca-server/experiment/download/%s
   data:
     storagePath: /home/experiment/data/
   mail:

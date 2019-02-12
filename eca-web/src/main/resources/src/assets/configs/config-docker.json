@@ -1,6 +1,6 @@
 {
-	"apiUrl": "http://localhost:8085/eca-server",
-  "oauthUrl": "http://localhost:8083/eca-oauth/oauth/token",
+	"apiUrl": "http://localhost:8080/eca-server",
+  "oauthUrl": "http://localhost:8080/auth-server/oauth/token",
   "clientId": "eca",
   "secret": "web_secret"
 }

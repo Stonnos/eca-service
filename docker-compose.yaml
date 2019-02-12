@@ -57,6 +57,16 @@ services:
     depends_on:
       - eca-server
 
+  zuul-gate:
+    image: zuul-gate
+    container_name: zuul-gate
+    environment:
+      TZ: "Asia/Novosibirsk"
+    ports:
+      - "8080:8080"
+    networks:
+      - default
+
 networks:
   default:
     name: app-network

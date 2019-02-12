@@ -12,6 +12,7 @@
         <module>eca-oauth</module>
         <module>eca-server</module>
         <module>eca-web</module>
+        <module>zuul-gate</module>
     </modules>
 
     <parent>
@@ -27,6 +28,8 @@
         <java.version>1.8</java.version>
         <lombok.version>1.18.4</lombok.version>
         <inject.version>1</inject.version>
+        <logback.version>1.2.3</logback.version>
+        <slf4j.version>1.7.25</slf4j.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <docker-maven-plugin.version>1.4.3</docker-maven-plugin.version>
     </properties>
@@ -44,6 +47,25 @@
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- Slf4j -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
         </dependency>
 
     </dependencies>

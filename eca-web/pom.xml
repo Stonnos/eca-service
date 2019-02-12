@@ -17,7 +17,6 @@
         <typescript-generator-maven-plugin.version>2.5.423</typescript-generator-maven-plugin.version>
         <node.version>v8.11.3</node.version>
         <npm.version>5.6.0</npm.version>
-        <maven-plugin.version>3.2.0</maven-plugin.version>
         <commons.io.version>2.5</commons.io.version>
     </properties>
 
@@ -74,7 +73,7 @@
     </dependencies>
 
     <build>
-
+        <finalName>${project.artifactId}</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources/dist/resources</directory>
@@ -172,15 +171,6 @@
                 <configuration>
                     <skip>false</skip>
                     <repository>${project.artifactId}</repository>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>${maven-plugin.version}</version>
-                <configuration>
-                    <warName>${project.artifactId}</warName>
                 </configuration>
             </plugin>
 
