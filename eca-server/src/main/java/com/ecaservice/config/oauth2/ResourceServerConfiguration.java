@@ -37,6 +37,11 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
         return new Oauth2ResourceConfig();
     }
 
+    /**
+     * Creates remote token service.
+     *
+     * @return remote token service bean
+     */
     @Bean
     @Primary
     public RemoteTokenServices tokenServices() {
