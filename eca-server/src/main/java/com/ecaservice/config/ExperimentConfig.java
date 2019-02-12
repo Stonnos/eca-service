@@ -73,11 +73,6 @@ public class ExperimentConfig {
     private Integer delaySeconds;
 
     /**
-     * Page size for processing experiments
-     */
-    private Integer pageSize;
-
-    /**
      * Experiment result models size for sending to ERS web - service
      */
     private Integer resultSizeToSend;

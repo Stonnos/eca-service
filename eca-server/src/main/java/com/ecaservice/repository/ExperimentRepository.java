@@ -3,8 +3,6 @@ package com.ecaservice.repository;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.projections.RequestStatusStatistics;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -42,23 +40,20 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
      * Finds not sent experiments by statuses
      *
      * @param statuses - {@link RequestStatus} collection
-     * @param pageable - {@link Pageable} object
      * @return experiments list
      */
     @Query("select exp from Experiment exp where exp.experimentStatus in (:statuses) and exp.sentDate is null order by exp.creationDate")
-    Page<Experiment> findNotSentExperiments(@Param("statuses") Collection<RequestStatus> statuses,
-                                            Pageable pageable);
+    List<Experiment> findNotSentExperiments(@Param("statuses") Collection<RequestStatus> statuses);
 
     /**
      * Finds experiments which sent date is after N days.
      *
      * @param dateTime date time threshold value
-     * @param pageable {@link Pageable} object
      * @return experiments list
      */
     @Query("select exp from Experiment exp where exp.sentDate is not null and exp.deletedDate is null and " +
             "exp.sentDate < :dateTime order by exp.sentDate")
-    Page<Experiment> findNotDeletedExperiments(@Param("dateTime") LocalDateTime dateTime, Pageable pageable);
+    List<Experiment> findNotDeletedExperiments(@Param("dateTime") LocalDateTime dateTime);
 
     /**
      * Calculates requests status counting statistics.
@@ -72,11 +67,10 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
     /**
      * Finds experiments for sending to ERS service.
      *
-     * @param pageable - pageable object
      * @return experiments page
      */
     @Query("select exp from Experiment exp where exp.experimentStatus = 'FINISHED' and exp.deletedDate is null " +
             "and (select count(err) from ExperimentResultsRequest err where " +
             "err.experiment = exp and err.responseStatus = 'SUCCESS') = 0 order by exp.creationDate desc")
-    Page<Experiment> findExperimentsToErsSent(Pageable pageable);
+    List<Experiment> findExperimentsToErsSent();
 }

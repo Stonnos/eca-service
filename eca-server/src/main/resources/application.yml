@@ -63,7 +63,6 @@ experiment:
   timeout: 5
   ## Scheduler delay in seconds
   delaySeconds: 30
-  pageSize: 10
   resultSizeToSend: 5
 
   data:

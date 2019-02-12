@@ -49,7 +49,6 @@ ECA server v4.0
    * experiment.removeExperimentCron - крон выражение для удаления файлов с результатами экспериментов
    * experiment.ersSendingCron - крон выражение для отправки результатов экспериментов в ERS - сервис
    * experiment.timeout - время таймаута эксперимента в часах.
-   * experiment.pageSize - размер страницы для постраничной обработки экспериментов.
    * experiment.resultSizeToSend - число лучших моделей классификаторов в одном эксперименте, результаты которых впоследствии
    будут отправлены в сервис evaluation-results-service
    * experiment.delay - интервал между запусками scheduler для обработки экспериметов
