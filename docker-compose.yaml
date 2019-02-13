@@ -23,8 +23,6 @@ services:
     environment:
       TZ: "Asia/Novosibirsk"
       SPRING_PROFILES_ACTIVE: "docker"
-    ports:
-      - "8085:8080"
     networks:
       - default
     depends_on:
@@ -37,8 +35,6 @@ services:
     environment:
       TZ: "Asia/Novosibirsk"
       SPRING_PROFILES_ACTIVE: "docker"
-    ports:
-      - "8083:8080"
     networks:
       - default
     depends_on:
@@ -50,8 +46,6 @@ services:
     environment:
       TZ: "Asia/Novosibirsk"
       SPRING_PROFILES_ACTIVE: "docker"
-    ports:
-      - "8084:8080"
     networks:
       - default
     depends_on:
