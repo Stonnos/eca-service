@@ -297,15 +297,24 @@ public class ExperimentService implements PageRequestService<Experiment> {
         return experimentTypesMap;
     }
 
+    /**
+     * Removes experiment associated file.
+     *
+     * @param experiment       - experiment entity
+     * @param filePathFunction - file path function
+     * @param callback         - callback
+     * @return {@code true} if file has been successfully removed or file path is empty
+     */
     private boolean removeExperimentFile(Experiment experiment, Function<Experiment, String> filePathFunction,
                                          Consumer<Experiment> callback) {
-        if (Optional.ofNullable(experiment).map(filePathFunction).isPresent()) {
-            boolean deleted = dataService.delete(new File(filePathFunction.apply(experiment)));
+        String filePath = filePathFunction.apply(experiment);
+        if (!StringUtils.isEmpty(filePath)) {
+            boolean deleted = dataService.delete(new File(filePath));
             if (deleted) {
                 callback.accept(experiment);
             }
             return deleted;
         }
-        return false;
+        return true;
     }
 }
