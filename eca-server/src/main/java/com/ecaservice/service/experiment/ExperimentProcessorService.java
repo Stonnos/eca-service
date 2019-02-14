@@ -70,8 +70,8 @@ public class ExperimentProcessorService {
                 int percent = iterativeExperiment.getPercent();
                 if (percent != currentPercent && percent % PROGRESS_STEP == 0) {
                     log.info("Experiment {} progress: {} %.", experiment.getId(), percent);
+                    currentPercent = percent;
                 }
-                currentPercent = percent;
             } catch (Exception ex) {
                 log.warn("Warning for experiment {}: {}", experiment.getId(), ex.getMessage());
             }
