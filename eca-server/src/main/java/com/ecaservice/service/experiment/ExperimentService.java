@@ -112,7 +112,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
             experiment.setUuid(UUID.randomUUID().toString());
             experiment.setCreationDate(LocalDateTime.now());
             File dataFile = new File(experimentConfig.getData().getStoragePath(),
-                    String.format(experimentConfig.getData().getFileFormat(), System.currentTimeMillis()));
+                    String.format(experimentConfig.getData().getFileFormat(), experiment.getUuid()));
             dataService.save(dataFile, experimentRequest.getData());
             experiment.setTrainingDataAbsolutePath(dataFile.getAbsolutePath());
         } catch (Exception ex) {
@@ -132,44 +132,46 @@ public class ExperimentService implements PageRequestService<Experiment> {
      * @return experiment history
      */
     public ExperimentHistory processExperiment(final Experiment experiment) {
-        log.info("Starting to built experiment {}.", experiment.getId());
+        log.info("Starting to built experiment [{}].", experiment.getUuid());
         experiment.setStartDate(LocalDateTime.now());
         experimentRepository.save(experiment);
         try {
             if (StringUtils.isEmpty(experiment.getTrainingDataAbsolutePath())) {
-                throw new ExperimentException("Training data path is not specified!");
+                throw new ExperimentException(String.format("Training data path is not specified for experiment [%s]!",
+                        experiment.getUuid()));
             }
 
-            StopWatch stopWatch = new StopWatch(String.format("Stop watching for experiment %d", experiment.getId()));
-            stopWatch.start(String.format("Loading data for experiment %d", experiment.getId()));
+            StopWatch stopWatch =
+                    new StopWatch(String.format("Stop watching for experiment [%s]", experiment.getUuid()));
+            stopWatch.start(String.format("Loading data for experiment [%s]", experiment.getUuid()));
             Instances data = dataService.load(new File(experiment.getTrainingDataAbsolutePath()));
             stopWatch.stop();
 
             final InitializationParams initializationParams =
                     new InitializationParams(data, experiment.getEvaluationMethod());
-            stopWatch.start(String.format("Experiment %d processing", experiment.getId()));
+            stopWatch.start(String.format("Experiment [%s] processing", experiment.getUuid()));
             Callable<ExperimentHistory> callable = () ->
                     experimentProcessorService.processExperimentHistory(experiment, initializationParams);
             ExperimentHistory experimentHistory =
                     executorService.execute(callable, experimentConfig.getTimeout(), TimeUnit.HOURS);
             stopWatch.stop();
 
-            stopWatch.start(String.format("Experiment %d saving", experiment.getId()));
+            stopWatch.start(String.format("Experiment [%s] saving", experiment.getUuid()));
             File experimentFile = new File(experimentConfig.getStoragePath(),
-                    String.format(experimentConfig.getFileFormat(), System.currentTimeMillis()));
+                    String.format(experimentConfig.getFileFormat(), experiment.getUuid()));
             dataService.saveExperimentHistory(experimentFile, experimentHistory);
             stopWatch.stop();
 
             experiment.setExperimentAbsolutePath(experimentFile.getAbsolutePath());
             experiment.setExperimentStatus(RequestStatus.FINISHED);
-            log.info("Experiment {} has been successfully finished!", experiment.getId());
+            log.info("Experiment [{}] has been successfully finished!", experiment.getUuid());
             log.info(stopWatch.prettyPrint());
             return experimentHistory;
         } catch (TimeoutException ex) {
-            log.warn("There was a timeout for experiment with id = {}.", experiment.getId());
+            log.warn("There was a timeout for experiment [%s].", experiment.getUuid());
             experiment.setExperimentStatus(RequestStatus.TIMEOUT);
         } catch (Exception ex) {
-            log.error("There was an error occurred for experiment with id = {}: {}", experiment.getId(), ex);
+            log.error("There was an error occurred for experiment [{}]: {}", experiment.getUuid(), ex);
             experiment.setExperimentStatus(RequestStatus.ERROR);
             experiment.setErrorMessage(ex.getMessage());
         } finally {

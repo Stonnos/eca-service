@@ -61,7 +61,7 @@ public class EvaluationRequestService {
     /**
      * Processes input request and returns classification results.
      *
-     * @param request evaluation request {@link EvaluationRequest}
+     * @param request - evaluation request {@link EvaluationRequest}
      * @return evaluation response {@link EvaluationResponse}
      */
     public EvaluationResponse processRequest(final EvaluationRequest request) {
@@ -91,11 +91,11 @@ public class EvaluationRequestService {
                 handleError(evaluationLog, evaluationResponse, classificationResult.getErrorMessage());
             }
         } catch (TimeoutException ex) {
-            log.warn("There was a timeout for evaluation with id = {}.", evaluationLog.getId());
+            log.warn("There was a timeout for evaluation [{}].", evaluationLog.getRequestId());
             evaluationLog.setEvaluationStatus(RequestStatus.TIMEOUT);
             evaluationResponse.setStatus(TechnicalStatus.TIMEOUT);
         } catch (Exception ex) {
-            log.error("There was an error occurred for evaluation with id = {}: {}", evaluationLog.getId(), ex);
+            log.error("There was an error occurred for evaluation [{}]: {}", evaluationLog.getRequestId(), ex);
             handleError(evaluationLog, evaluationResponse, ex.getMessage());
         } finally {
             evaluationLog.setEndDate(LocalDateTime.now());

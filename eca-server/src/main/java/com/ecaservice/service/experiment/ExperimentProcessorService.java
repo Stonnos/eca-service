@@ -63,22 +63,22 @@ public class ExperimentProcessorService {
         IterativeExperiment iterativeExperiment = abstractExperiment.getIterativeExperiment();
         int currentPercent = 0;
 
-        log.info("Starting to process experiment {}.", experiment.getId());
+        log.info("Starting to process experiment [{}].", experiment.getUuid());
         while (iterativeExperiment.hasNext()) {
             try {
                 iterativeExperiment.next();
                 int percent = iterativeExperiment.getPercent();
                 if (percent != currentPercent && percent % PROGRESS_STEP == 0) {
-                    log.info("Experiment {} progress: {} %.", experiment.getId(), percent);
+                    log.info("Experiment [{}] progress: {} %.", experiment.getUuid(), percent);
                     currentPercent = percent;
                 }
             } catch (Exception ex) {
-                log.warn("Warning for experiment {}: {}", experiment.getId(), ex.getMessage());
+                log.warn("Warning for experiment [{}]: {}", experiment.getUuid(), ex.getMessage());
             }
         }
         List<EvaluationResults> evaluationResults = findBestResults(abstractExperiment.getHistory());
-        log.info("Experiment {} processing has been finished with {} best models!",
-                experiment.getId(), evaluationResults.size());
+        log.info("Experiment [{}] processing has been finished with {} best models!",
+                experiment.getUuid(), evaluationResults.size());
         return buildExperimentHistory(evaluationResults, abstractExperiment);
     }
 

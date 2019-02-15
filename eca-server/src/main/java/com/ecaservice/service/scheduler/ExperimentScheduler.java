@@ -90,8 +90,8 @@ public class ExperimentScheduler {
                 experiment.setSentDate(LocalDateTime.now());
                 experimentRepository.save(experiment);
             } catch (Exception ex) {
-                log.error("There was an error while sending email request for experiment with id [{}]: {}",
-                        experiment.getId(), ex.getMessage());
+                log.error("There was an error while sending email request for experiment [{}]: {}",
+                        experiment.getUuid(), ex.getMessage());
             }
         }
         log.trace("Sending experiments has been successfully finished.");
@@ -125,7 +125,7 @@ public class ExperimentScheduler {
                 ersService.sentExperimentHistory(experiment, experimentHistory,
                         ExperimentResultsRequestSource.SYSTEM);
             } catch (Exception ex) {
-                log.error("There was an error while sending experiment history [{}]: {}", experiment.getId(),
+                log.error("There was an error while sending experiment [{}] history: {}", experiment.getUuid(),
                         ex.getMessage());
             }
         });

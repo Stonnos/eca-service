@@ -61,7 +61,7 @@ public class NotificationService {
      * @param experiment - experiment object
      */
     public void notifyByEmail(Experiment experiment) {
-        log.info("Starting to send email request for experiment [{}] with status [{}].", experiment.getId(),
+        log.info("Starting to send email request for experiment [{}] with status [{}].", experiment.getUuid(),
                 experiment.getExperimentStatus());
         if (!Boolean.TRUE.equals(mailConfig.getEnabled())) {
             log.warn("Notifications sending is disabled.");
@@ -77,7 +77,7 @@ public class NotificationService {
                 log.trace("Received response [{}] from '{}'.", emailResponse, mailConfig.getServiceUrl());
                 emailRequestEntity.setRequestId(emailResponse.getRequestId());
                 emailRequestEntity.setResponseStatus(emailResponse.getStatus());
-                log.info("Email request has been sent for experiment [{}]  with status [{}].", experiment.getId(),
+                log.info("Email request has been sent for experiment [{}]  with status [{}].", experiment.getUuid(),
                         experiment.getExperimentStatus());
             } catch (Exception ex) {
                 emailRequestEntity.setResponseStatus(ResponseStatus.ERROR);

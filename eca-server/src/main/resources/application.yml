@@ -49,7 +49,7 @@ swagger2:
 experiment:
   resultSize: 25
   numIterations: 100
-  fileFormat: experiment%d.model
+  fileFormat: experiment%s.model
   storagePath: D:/experiment/
   individualClassifiersStoragePath: classifiers
   downloadUrl: http://localhost:8085/eca-server/experiment/download/%s
@@ -67,7 +67,7 @@ experiment:
 
   data:
     storagePath: D:/experiment/data/
-    fileFormat: data%d.arff
+    fileFormat: data%s.arff
     dateFormat: yyyy-MM-dd HH:mm:ss
   ensemble:
     numIterations: 25
