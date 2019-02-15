@@ -20,6 +20,7 @@ import eca.core.evaluation.EvaluationMethod;
 import eca.data.file.FileDataLoader;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -100,10 +101,12 @@ public class QaController {
             notes = "Evaluates classifier with specified options"
     )
     @PostMapping(value = "/evaluate")
-    public void evaluate(@RequestParam MultipartFile trainingData,
-                         @RequestParam MultipartFile classifierOptions,
-                         @RequestParam EvaluationMethod evaluationMethod,
-                         HttpServletResponse httpServletResponse) throws Exception {
+    public void evaluate(
+            @ApiParam(value = "Training data file", required = true) @RequestParam MultipartFile trainingData,
+            @ApiParam(value = "Classifier input options json file", required = true) @RequestParam
+                    MultipartFile classifierOptions,
+            @ApiParam(value = "Evaluation method", required = true) @RequestParam EvaluationMethod evaluationMethod,
+            HttpServletResponse httpServletResponse) throws Exception {
         log.info("Received evaluation request for data {}, classifier options [{}], evaluation method [{}]",
                 trainingData.getOriginalFilename(), classifierOptions.getOriginalFilename(), evaluationMethod);
         EvaluationRequest evaluationRequest =
@@ -127,11 +130,13 @@ public class QaController {
             notes = "Creates experiment request with specified options"
     )
     @PostMapping(value = "/experiment")
-    public ResponseEntity createExperiment(@RequestParam MultipartFile trainingData,
-                                           @RequestParam String firstName,
-                                           @RequestParam String email,
-                                           @RequestParam ExperimentType experimentType,
-                                           @RequestParam EvaluationMethod evaluationMethod) throws Exception {
+    public ResponseEntity createExperiment(
+            @ApiParam(value = "Training data file", required = true) @RequestParam MultipartFile trainingData,
+            @ApiParam(value = "Request first name", required = true) @RequestParam String firstName,
+            @ApiParam(value = "Email", required = true) @RequestParam String email,
+            @ApiParam(value = "Experiment type", required = true) @RequestParam ExperimentType experimentType,
+            @ApiParam(value = "Evaluation method", required = true) @RequestParam EvaluationMethod evaluationMethod)
+            throws Exception {
         log.info("Received experiment request for data '{}', email '{}'", trainingData.getOriginalFilename(), email);
         ExperimentRequest experimentRequest = new ExperimentRequest();
         experimentRequest.setFirstName(firstName);
@@ -154,8 +159,9 @@ public class QaController {
             notes = "Evaluates classifier using optimal options"
     )
     @PostMapping(value = "/optimize")
-    public void optimize(@RequestParam MultipartFile trainingData, HttpServletResponse httpServletResponse)
-            throws Exception {
+    public void optimize(
+            @ApiParam(value = "Training data file", required = true) @RequestParam MultipartFile trainingData,
+            HttpServletResponse httpServletResponse) throws Exception {
         log.info("Received optimization request for data {}", trainingData.getOriginalFilename());
         Instances instances = loadInstances(trainingData);
         EvaluationResponse evaluationResponse =

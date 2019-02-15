@@ -3,6 +3,7 @@ package com.ecaservice.web.dto.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -14,42 +15,43 @@ import java.time.LocalDateTime;
  * @author Roman Batygin
  */
 @Data
+@ApiModel(description = "Experiment model")
 public class ExperimentDto {
 
     /**
      * First name
      */
-    @ApiModelProperty(notes = "Request creator first name")
+    @ApiModelProperty(value = "Request creator first name")
     private String firstName;
 
     /**
      * Email
      */
-    @ApiModelProperty(notes = "Request creator email")
+    @ApiModelProperty(value = "Request creator email")
     private String email;
 
     /**
      * Experiment file absolute path
      */
-    @ApiModelProperty(notes = "Experiment results file")
+    @ApiModelProperty(value = "Experiment results file")
     private String experimentAbsolutePath;
 
     /**
      * Training data absolute path
      */
-    @ApiModelProperty(notes = "Training data file")
+    @ApiModelProperty(value = "Training data file")
     private String trainingDataAbsolutePath;
 
     /**
      * Experiment uuid
      */
-    @ApiModelProperty(notes = "Experiment uuid")
+    @ApiModelProperty(value = "Experiment uuid")
     private String uuid;
 
     /**
      * Request creation date
      */
-    @ApiModelProperty(notes = "Experiment creation date")
+    @ApiModelProperty(value = "Experiment creation date")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime creationDate;
@@ -57,7 +59,7 @@ public class ExperimentDto {
     /**
      * Experiment processing start date
      */
-    @ApiModelProperty(notes = "Experiment processing start date")
+    @ApiModelProperty(value = "Experiment processing start date")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime startDate;
@@ -65,7 +67,7 @@ public class ExperimentDto {
     /**
      * Experiment processing end date
      */
-    @ApiModelProperty(notes = "Experiment processing end date")
+    @ApiModelProperty(value = "Experiment processing end date")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime endDate;
@@ -73,7 +75,7 @@ public class ExperimentDto {
     /**
      * Date when experiment results is sent
      */
-    @ApiModelProperty(notes = "Experiment results sent date")
+    @ApiModelProperty(value = "Experiment results sent date")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime sentDate;
@@ -81,7 +83,7 @@ public class ExperimentDto {
     /**
      * Experiment files deleted date
      */
-    @ApiModelProperty(notes = "Experiment files delete date")
+    @ApiModelProperty(value = "Experiment files delete date")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime deletedDate;
@@ -89,18 +91,18 @@ public class ExperimentDto {
     /**
      * Experiment type
      */
-    @ApiModelProperty(notes = "Experiment type")
+    @ApiModelProperty(value = "Experiment type")
     private String experimentType;
 
     /**
      * Experiment status
      */
-    @ApiModelProperty(notes = "Experiment status")
+    @ApiModelProperty(value = "Experiment status")
     private String experimentStatus;
 
     /**
      * Evaluation method
      */
-    @ApiModelProperty(notes = "Evaluation method")
+    @ApiModelProperty(value = "Evaluation method")
     private String evaluationMethod;
 }

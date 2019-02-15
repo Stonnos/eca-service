@@ -7,6 +7,7 @@ import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.util.Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,7 +59,8 @@ public class ExperimentController {
             notes = "Downloads experiment by specified uuid"
     )
     @GetMapping(value = "/download/{uuid}")
-    public ResponseEntity downloadExperiment(@PathVariable String uuid) {
+    public ResponseEntity downloadExperiment(
+            @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
         File experimentFile = experimentService.findExperimentFileByUuid(uuid);
         if (!existsFile(experimentFile)) {
             log.error("Experiment results file for uuid = '{}' not found!", uuid);

@@ -27,6 +27,7 @@ import com.ecaservice.web.dto.model.UserDto;
 import eca.converters.model.ExperimentHistory;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -143,7 +144,8 @@ public class WebController {
             notes = "Downloads experiment training data by specified uuid"
     )
     @GetMapping(value = "/experiment-training-data/{uuid}")
-    public ResponseEntity downloadTrainingData(@PathVariable String uuid) {
+    public ResponseEntity downloadTrainingData(
+            @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
         File trainingDataFile = experimentService.findTrainingDataFileByUuid(uuid);
         if (!existsFile(trainingDataFile)) {
             log.error("Experiment training data file for uuid = '{}' not found!", uuid);
@@ -238,7 +240,8 @@ public class WebController {
             notes = "Gets experiment ERS report"
     )
     @GetMapping(value = "/experiment-ers-report/{uuid}")
-    public ResponseEntity<ErsReportDto> getExperimentErsReport(@PathVariable String uuid) {
+    public ResponseEntity<ErsReportDto> getExperimentErsReport(
+            @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
         log.info("Received request for ERS report for experiment [{}]", uuid);
         Experiment experiment = experimentRepository.findByUuid(uuid);
         if (experiment == null) {
@@ -290,8 +293,10 @@ public class WebController {
     )
     @GetMapping(value = "/experiment/statistics")
     public List<ChartDataDto> getExperimentTypesStatistics(
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDateFrom,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDateTo) {
+            @ApiParam(value = "Experiment created date from") @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDateFrom,
+            @ApiParam(value = "Experiment created date to") @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDateTo) {
         log.info("Received request for experiment types statistics calculation with creation date from [{}] to [{}]",
                 createdDateFrom, createdDateTo);
         Map<ExperimentType, Long> experimentTypesMap =
