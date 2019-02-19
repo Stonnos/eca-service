@@ -6,6 +6,7 @@ services:
     container_name: eca-db
     volumes:
       - ./scripts/postgresinit.sql:/docker-entrypoint-initdb.d/postgresinit.sql
+      - /home/eca-pgdata:/var/lib/postgresql/data
     ports:
       - "5433:5432"
     networks:
@@ -20,6 +21,9 @@ services:
     image: eca-server
     container_name: eca-server
     command: ["/wait-for-it.sh", "eca-db:5432", "--timeout=45", "--", "catalina.sh", "run"]
+    volumes:
+      - /home/experiment:/home/experiment
+      - /home/experiment/data:/home/experiment/data
     environment:
       TZ: "Asia/Novosibirsk"
       SPRING_PROFILES_ACTIVE: "docker"
