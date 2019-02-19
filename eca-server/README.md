@@ -96,7 +96,7 @@ mvn clean install -Pquality
 Инструкция по развертыванию в Docker
 -------------------------------------------------------
 
-1. Для Windows достаточно скачать и установить дистрибутив Docker Desktop (https://www.docker.com/products/docker-desktop).
+1. Для Windows 10 достаточно скачать и установить дистрибутив Docker Desktop (https://www.docker.com/products/docker-desktop).
    Для Linux сначала необходимо установить Docker CE (https://docs.docker.com/install/linux/docker-ce/ubuntu/),
    затем Docker compose (https://docs.docker.com/compose/install/).
 
