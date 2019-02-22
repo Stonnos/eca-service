@@ -85,7 +85,7 @@ ECA server v4.0
 
 Интеграционные тесты
 ------------------------------------------------------
-Для запуска всех интеграционыых тестов необходимо выполнить команду (указав профиль quality):
+Для запуска всех интеграционых тестов необходимо выполнить команду (указав профиль quality):
 
 mvn clean install -Pquality
 
@@ -107,7 +107,8 @@ mvn clean install dockerfile:build
 3. Используя пакетный менеджер docker-compose, создать docker контейнеры с помощью команды:
 
 docker-compose up (для ОС семейства Linux)
-docker-compose -f docker-compose.yaml -f docker-compose.win10.yaml (для Windows 10)
+
+docker-compose -f docker-compose.yaml -f docker-compose.win10.yaml up (для Windows 10)
 
 ВАЖНО! Данную команду необходимо выполнять из корневой папки проекта.
 
