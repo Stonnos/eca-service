@@ -9,3 +9,6 @@ zuul:
       frontend:
         path: /**
         url: http://eca-web:8080
+  host:
+    connect-timeout-millis: -1
+    socket-timeout-millis: -1
