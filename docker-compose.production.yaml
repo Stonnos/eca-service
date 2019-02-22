@@ -1,7 +1,12 @@
 version: '3.5'
 services:
 
+  eca-db:
+    volumes:
+      - ./scripts/postgresinit.sql:/docker-entrypoint-initdb.d/postgresinit.sql
+
   eca-server:
+    volumes:
     environment:
       SPRING_PROFILES_ACTIVE: "prod"
 
