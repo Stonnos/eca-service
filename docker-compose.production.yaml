@@ -6,7 +6,6 @@ services:
       - ./scripts/postgresinit.sql:/docker-entrypoint-initdb.d/postgresinit.sql
 
   eca-server:
-    volumes:
     environment:
       SPRING_PROFILES_ACTIVE: "prod"
 
