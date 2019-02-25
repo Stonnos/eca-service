@@ -2,7 +2,6 @@ package com.ecaservice.web.dto.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -11,7 +10,6 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
-@AllArgsConstructor
 @ApiModel(description = "Classifier input option model")
 public class InputOptionDto {
 

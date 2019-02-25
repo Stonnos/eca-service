@@ -11,6 +11,7 @@ import eca.ensemble.ModifiedHeterogeneousClassifier;
 import eca.ensemble.RandomNetworks;
 import eca.ensemble.StackingClassifier;
 import eca.ensemble.forests.ExtraTreesClassifier;
+import eca.ensemble.forests.RandomForests;
 import eca.metrics.KNearestNeighbours;
 import eca.neural.NeuralNetwork;
 import eca.regression.Logistic;
@@ -21,12 +22,9 @@ import eca.trees.ID3;
 import eca.trees.J48;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import weka.classifiers.AbstractClassifier;
-import weka.classifiers.trees.RandomForest;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -48,32 +46,40 @@ public class ClassifierInputOptionsService {
         this.evaluationLogRepository = evaluationLogRepository;
     }
 
-    @PostConstruct
-    @Transactional
-    public void migrateInputOptions() throws Exception {
-        for (EvaluationLog evaluationLog : evaluationLogRepository.findAll()) {
+    //@PostConstruct
+    //@Transactional
+    public void migrateInputOptions() {
+        List<EvaluationLog> evaluationLogs = evaluationLogRepository.findLogs();
+        for (EvaluationLog evaluationLog : evaluationLogs) {
             if (!CollectionUtils.isEmpty(evaluationLog.getInputOptionsMap())) {
-                // try {
                 AbstractClassifier classifier = null;
-
-                // } catch (Exception ex) {
-                //    log.error("Error for classifier {}: {}", evaluationLog.getClassifierName(), ex.getMessage());
-                //}
                 switch (evaluationLog.getClassifierName()) {
                     case "Logistic":
                         classifier = new Logistic();
                         break;
                     case "CART":
-                        classifier = new CART();
+                        CART tree = new CART();
+                        tree.setRandomTree(true);
+                        tree.setUseRandomSplits(true);
+                        classifier = tree;
                         break;
                     case "C45":
-                        classifier = new C45();
+                        C45 c45 = new C45();
+                        c45.setRandomTree(true);
+                        c45.setUseRandomSplits(true);
+                        classifier = c45;
                         break;
                     case "ID3":
-                        classifier = new ID3();
+                        ID3 id3 = new ID3();
+                        id3.setRandomTree(true);
+                        id3.setUseRandomSplits(true);
+                        classifier = id3;
                         break;
                     case "CHAID":
-                        classifier = new CHAID();
+                        CHAID chaid = new CHAID();
+                        chaid.setRandomTree(true);
+                        chaid.setUseRandomSplits(true);
+                        classifier = chaid;
                         break;
                     case "J48":
                         classifier = new J48();
@@ -94,7 +100,7 @@ public class ClassifierInputOptionsService {
                         classifier = new ModifiedHeterogeneousClassifier();
                         break;
                     case "RandomForests":
-                        classifier = new RandomForest();
+                        classifier = new RandomForests();
                         break;
                     case "RandomNetworks":
                         classifier = new RandomNetworks();
@@ -131,21 +137,26 @@ public class ClassifierInputOptionsService {
                     optionKeys.add(options[i]);
                 }
 
-                evaluationLog.setClassifierInputOptions(newArrayList());
+                List<ClassifierInputOptions> classifierInputOptionsList = newArrayList();
                 evaluationLog.getInputOptionsMap().forEach((k, v) -> {
                     ClassifierInputOptions classifierInputOptions = new ClassifierInputOptions();
                     classifierInputOptions.setOptionName(k);
                     classifierInputOptions.setOptionValue(v);
                     int optionIdx = optionKeys.indexOf(k);
+                    if (optionIdx < 0) {
+                        log.warn("Warn");
+                    }
                     if (optionIdx >= 0) {
                         classifierInputOptions.setOptionOrder(optionIdx);
                     }
-                    evaluationLog.getClassifierInputOptions().add(classifierInputOptions);
+                    classifierInputOptionsList.add(classifierInputOptions);
                 });
-                orderOptions(evaluationLog.getClassifierInputOptions());
+                orderOptions(classifierInputOptionsList);
+                evaluationLog.setClassifierInputOptions(classifierInputOptionsList);
                 evaluationLogRepository.save(evaluationLog);
             }
         }
+        log.info("Classifier input options migration has been finished!");
     }
 
     private void orderOptions(List<ClassifierInputOptions> inputOptions) {

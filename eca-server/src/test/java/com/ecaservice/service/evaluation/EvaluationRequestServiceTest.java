@@ -7,9 +7,11 @@ import com.ecaservice.configuation.ExecutorConfiguration;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.exception.EcaServiceException;
+import com.ecaservice.mapping.EvaluationLogInputOptionsMapper;
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.mapping.InstancesInfoMapperImpl;
+import com.ecaservice.mapping.EvaluationLogInputOptionsMapperImpl;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.RequestStatus;
@@ -40,7 +42,8 @@ import static org.mockito.Mockito.mock;
  * @author Roman Batygin
  */
 @Import({ExecutorConfiguration.class, CrossValidationConfig.class,
-        EvaluationLogMapperImpl.class, EvaluationService.class, InstancesInfoMapperImpl.class})
+        EvaluationLogMapperImpl.class, EvaluationService.class,
+        InstancesInfoMapperImpl.class, EvaluationLogInputOptionsMapperImpl.class})
 public class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     @Inject

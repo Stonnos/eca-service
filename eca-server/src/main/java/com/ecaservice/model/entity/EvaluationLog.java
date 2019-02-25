@@ -11,15 +11,12 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.MapKeyEnumerated;
-import javax.persistence.NamedAttributeNode;
-import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
@@ -35,11 +32,6 @@ import java.util.Map;
  */
 @Data
 @Entity
-@NamedEntityGraph(name = "inputOptions",
-        attributeNodes = {
-            @NamedAttributeNode(value = "classifierInputOptions")
-        }
-)
 @Table(name = "evaluation_log",
         indexes = {
                 @Index(name = "idx_request_id", columnList = "request_id"),

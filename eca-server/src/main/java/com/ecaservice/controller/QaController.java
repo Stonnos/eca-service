@@ -12,6 +12,7 @@ import com.ecaservice.model.MultipartFileResource;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.options.ClassifierOptions;
+import com.ecaservice.service.ClassifierInputOptionsService;
 import com.ecaservice.service.ClassifierOptionsService;
 import com.ecaservice.service.evaluation.EvaluationOptimizerService;
 import com.ecaservice.service.evaluation.EvaluationRequestService;
@@ -27,6 +28,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -62,6 +64,9 @@ public class QaController {
     private final ExperimentRequestService experimentRequestService;
     private final EvaluationOptimizerService evaluationOptimizerService;
     private final Jaxb2Marshaller ersMarshaller;
+
+    @Inject
+    private ClassifierInputOptionsService classifierInputOptionsService;
 
     /**
      * Constructor with spring dependency injection.
@@ -167,6 +172,11 @@ public class QaController {
         EvaluationResponse evaluationResponse =
                 evaluationOptimizerService.evaluateWithOptimalClassifierOptions(new InstancesRequest(instances));
         processResponse(evaluationResponse, httpServletResponse);
+    }
+
+    @PostMapping(value = "/migrate")
+    public void migrate() {
+        classifierInputOptionsService.migrateInputOptions();
     }
 
     /**

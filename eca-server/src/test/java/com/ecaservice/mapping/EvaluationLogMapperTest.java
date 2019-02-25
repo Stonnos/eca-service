@@ -2,6 +2,7 @@ package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.EvaluationRequest;
+import com.ecaservice.model.entity.ClassifierInputOptions;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
 import eca.core.evaluation.EvaluationMethod;
@@ -14,7 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class})
+@Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class, EvaluationLogInputOptionsMapperImpl.class})
 public class EvaluationLogMapperTest {
 
     @Inject
@@ -41,7 +42,7 @@ public class EvaluationLogMapperTest {
 
         assertThat(evaluationLog).isNotNull();
         assertThat(evaluationLog.getEvaluationMethod()).isEqualTo(evaluationRequest.getEvaluationMethod());
-        assertThat(evaluationLog.getEvaluationOptionsMap()).isNotNull();
+        assertThat(evaluationLog.getClassifierInputOptions()).isNotNull();
         assertThat(evaluationLog.getInstancesInfo().getRelationName()).isEqualTo(
                 evaluationRequest.getData().relationName());
         assertThat(evaluationLog.getInstancesInfo().getClassName()).isEqualTo(
@@ -60,8 +61,8 @@ public class EvaluationLogMapperTest {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
         evaluationLog.setEvaluationOptionsMap(
                 TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
-        evaluationLog.setInputOptionsMap(Collections.singletonMap("Key", "Value"));
         evaluationLog.setInstancesInfo(TestHelperUtils.createInstancesInfo());
+        evaluationLog.setClassifierInputOptions(Collections.singletonList(new ClassifierInputOptions()));
         EvaluationLogDto evaluationLogDto = evaluationLogMapper.map(evaluationLog);
         assertThat(evaluationLogDto).isNotNull();
         assertThat(evaluationLogDto.getClassifierName()).isEqualTo(evaluationLog.getClassifierName());
@@ -82,13 +83,16 @@ public class EvaluationLogMapperTest {
     }
 
     private void assertOptions(EvaluationLog evaluationLog, EvaluationRequest request) {
-        Map<String, String> inputOptionsMap = evaluationLog.getInputOptionsMap();
-        assertThat(inputOptionsMap).isNotNull();
-        assertThat(inputOptionsMap).isNotEmpty();
+        List<ClassifierInputOptions> classifierInputOptions = evaluationLog.getClassifierInputOptions();
+        assertThat(classifierInputOptions).isNotNull();
+        assertThat(classifierInputOptions).isNotEmpty();
         String[] options = request.getClassifier().getOptions();
-        assertThat(inputOptionsMap.size()).isEqualTo(options.length / 2);
+        assertThat(classifierInputOptions.size()).isEqualTo(options.length / 2);
         for (int i = 0; i < options.length; i += 2) {
-            assertThat(options[i + 1]).isEqualTo(inputOptionsMap.get(options[i]));
+            ClassifierInputOptions inputOptions = classifierInputOptions.get(i / 2);
+            assertThat(inputOptions.getOptionName()).isEqualTo(options[i]);
+            assertThat(inputOptions.getOptionValue()).isEqualTo(options[i + 1]);
+            assertThat(inputOptions.getOptionOrder()).isEqualTo(i / 2);
         }
     }
 }

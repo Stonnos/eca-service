@@ -20,6 +20,7 @@ import com.ecaservice.mapping.ClassifierReportMapper;
 import com.ecaservice.mapping.ClassifierReportMapperImpl;
 import com.ecaservice.mapping.ErsEvaluationMethodMapperImpl;
 import com.ecaservice.mapping.ErsResponseStatusMapperImpl;
+import com.ecaservice.mapping.EvaluationLogInputOptionsMapperImpl;
 import com.ecaservice.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.mapping.EvaluationRequestMapper;
 import com.ecaservice.mapping.EvaluationRequestMapperImpl;
@@ -93,7 +94,8 @@ import static org.mockito.Mockito.when;
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class,
         ErsConfig.class, ClassifierOptionsService.class, EvaluationLogMapperImpl.class,
         EvaluationService.class, ErsEvaluationMethodMapperImpl.class, ErsResponseStatusMapperImpl.class,
-        InstancesConverter.class, ClassifierOptionsResponseModelMapperImpl.class})
+        InstancesConverter.class, ClassifierOptionsResponseModelMapperImpl.class,
+        EvaluationLogInputOptionsMapperImpl.class})
 public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();

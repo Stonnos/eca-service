@@ -1,29 +1,28 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.dto.EvaluationRequest;
+import com.ecaservice.model.entity.ClassifierInputOptions;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.InstancesInfo;
 import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
-import com.ecaservice.web.dto.model.InputOptionDto;
-import eca.util.Utils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Implements evaluation request to evaluation log mapping.
  *
  * @author Roman Batygin
  */
-@Mapper(uses = InstancesInfoMapper.class)
+@Mapper(uses = {InstancesInfoMapper.class, EvaluationLogInputOptionsMapper.class})
 public abstract class EvaluationLogMapper {
 
     /**
@@ -42,7 +41,8 @@ public abstract class EvaluationLogMapper {
      */
     @Mappings({
             @Mapping(source = "evaluationMethod.description", target = "evaluationMethod"),
-            @Mapping(source = "evaluationStatus.description", target = "evaluationStatus")
+            @Mapping(source = "evaluationStatus.description", target = "evaluationStatus"),
+            @Mapping(source = "classifierInputOptions", target = "inputOptions")
     })
     public abstract EvaluationLogDto map(EvaluationLog evaluationLog);
 
@@ -58,7 +58,15 @@ public abstract class EvaluationLogMapper {
     protected void mapClassifier(EvaluationRequest evaluationRequest, @MappingTarget EvaluationLog evaluationLog) {
         if (evaluationRequest.getClassifier() != null) {
             evaluationLog.setClassifierName(evaluationRequest.getClassifier().getClass().getSimpleName());
-            evaluationLog.setInputOptionsMap(Utils.getClassifierInputOptionsMap(evaluationRequest.getClassifier()));
+            evaluationLog.setClassifierInputOptions(newArrayList());
+            String[] options = evaluationRequest.getClassifier().getOptions();
+            for (int i = 0; i < options.length; i += 2) {
+                ClassifierInputOptions classifierInputOptions = new ClassifierInputOptions();
+                classifierInputOptions.setOptionName(options[i]);
+                classifierInputOptions.setOptionValue(options[i + 1]);
+                classifierInputOptions.setOptionOrder(i / 2);
+                evaluationLog.getClassifierInputOptions().add(classifierInputOptions);
+            }
         }
     }
 
@@ -87,13 +95,5 @@ public abstract class EvaluationLogMapper {
         evaluationLogDto.setSeed(
                 Optional.ofNullable(evaluationLog.getEvaluationOptionsMap().get(EvaluationOption.SEED)).map(
                         Integer::valueOf).orElse(null));
-    }
-
-    @AfterMapping
-    protected void mapInputOptions(EvaluationLog evaluationLog, @MappingTarget EvaluationLogDto evaluationLogDto) {
-        if (!CollectionUtils.isEmpty(evaluationLog.getInputOptionsMap())) {
-            evaluationLogDto.setInputOptions(evaluationLog.getInputOptionsMap().entrySet().stream().map(
-                    entry -> new InputOptionDto(entry.getKey(), entry.getValue())).collect(Collectors.toList()));
-        }
     }
 }

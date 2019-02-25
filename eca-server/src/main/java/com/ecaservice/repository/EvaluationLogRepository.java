@@ -3,10 +3,6 @@ package com.ecaservice.repository;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.projections.RequestStatusStatistics;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -40,6 +36,6 @@ public interface EvaluationLogRepository
             "EvaluationLog el group by el.evaluationStatus")
     List<RequestStatusStatistics> getRequestStatusesStatistics();
 
-    @EntityGraph(value = "inputOptions", type = EntityGraph.EntityGraphType.FETCH)
-    Page<EvaluationLog> findAll(Specification<EvaluationLog> specification, Pageable pageable);
+    @Query("select distinct e from EvaluationLog e join fetch e.inputOptionsMap")
+    List<EvaluationLog> findLogs();
 }
