@@ -92,15 +92,6 @@ public class EvaluationLog {
     private EvaluationMethod evaluationMethod;
 
     /**
-     * Classifier input options map
-     */
-    @ElementCollection
-    @CollectionTable(name = "input_options")
-    @MapKeyColumn(name = "option_name")
-    @Column(name = "option_value")
-    private Map<String, String> inputOptionsMap;
-
-    /**
      * Classifier input options list
      */
     @OneToMany(cascade = CascadeType.ALL)

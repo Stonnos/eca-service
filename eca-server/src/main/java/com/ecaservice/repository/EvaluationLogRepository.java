@@ -35,7 +35,4 @@ public interface EvaluationLogRepository
     @Query("select el.evaluationStatus as requestStatus, count(el.evaluationStatus) as requestsCount from " +
             "EvaluationLog el group by el.evaluationStatus")
     List<RequestStatusStatistics> getRequestStatusesStatistics();
-
-    @Query("select distinct e from EvaluationLog e join fetch e.inputOptionsMap")
-    List<EvaluationLog> findLogs();
 }
