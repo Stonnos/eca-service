@@ -25,10 +25,22 @@ import javax.inject.Inject;
 @EnableAuthorizationServer
 public class AuthServerOauth2Configuration extends AuthorizationServerConfigurerAdapter {
 
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailsServiceImpl userDetailsService;
+
+    /**
+     * Constructor with spring dependency injection.
+     *
+     * @param authenticationManager - authentication manager bean
+     * @param userDetailsService    - user details service bean
+     */
     @Inject
-    private AuthenticationManager authenticationManager;
-    @Inject
-    private UserDetailsServiceImpl userDetailsService;
+    public AuthServerOauth2Configuration(
+            AuthenticationManager authenticationManager,
+            UserDetailsServiceImpl userDetailsService) {
+        this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
+    }
 
     /**
      * Creates oauth2 config bean.

@@ -36,8 +36,17 @@ public class OauthDatabaseConfiguration {
     private static final String SPRING_DATASOURCE_USERNAME = "spring.datasource.username";
     private static final String SPRING_DATASOURCE_PASSWORD = "spring.datasource.password";
 
+    private final Environment environment;
+
+    /**
+     * Constructor with spring dependency injection.
+     *
+     * @param environment - environment bean
+     */
     @Inject
-    private Environment environment;
+    public OauthDatabaseConfiguration(Environment environment) {
+        this.environment = environment;
+    }
 
     /**
      * Creates datasource bean.

@@ -22,8 +22,17 @@ import javax.inject.Inject;
 @EnableWebSecurity
 public class ServerSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final UserDetailsServiceImpl userDetailsService;
+
+    /**
+     * Constructor with spring dependency injection.
+     *
+     * @param userDetailsService - user details service bean
+     */
     @Inject
-    private UserDetailsServiceImpl userDetailsService;
+    public ServerSecurityConfig(UserDetailsServiceImpl userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

@@ -14,7 +14,6 @@ import org.springframework.ws.client.core.WebServiceTemplate;
 @Configuration
 public class NotificationServiceConfiguration {
 
-
     /**
      * Creates Jax2Marshaller bean.
      *
