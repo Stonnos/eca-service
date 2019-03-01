@@ -49,8 +49,14 @@
         <button
           pButton
           type="submit"
-          class="auth-button w-100 mb-2 mb-sm-3"
-          label="Войти">
+          class="auth-button w-100 mb-2 mb-sm-3">
+          <span class="login-text" *ngIf="!loading">Войти</span>
+          <p-progressSpinner
+            *ngIf="loading"
+            class="login-progress-spinner"
+            strokeWidth="4"
+            animationDuration=".5s">
+          </p-progressSpinner>
         </button>
       </div>
 

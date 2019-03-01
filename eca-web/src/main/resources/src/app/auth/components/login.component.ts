@@ -13,6 +13,7 @@ export class LoginComponent implements OnInit {
 
   public errorMessage: string;
   public submitted: boolean = false;
+  public loading: boolean = false;
 
   public userModel: UserModel = new UserModel();
 
@@ -32,11 +33,14 @@ export class LoginComponent implements OnInit {
   public onSubmit(event) {
     this.submitted = true;
     if (this.form.valid) {
+      this.loading = true;
       this.authService.obtainAccessToken(this.userModel).subscribe((token) => {
           this.authService.saveToken(token);
+          this.loading = false;
           this.giveAccess();
         }, (error) => {
           console.log(error);
+          this.loading = false;
           this.errorMessage = "Неправильный логин или пароль";
         });
       this.submitted = false;
