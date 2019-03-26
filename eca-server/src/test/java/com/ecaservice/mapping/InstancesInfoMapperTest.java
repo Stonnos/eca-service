@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests that checks EvaluationLogMapper functionality {@see InstancesInfoMapper}.
+ * Unit tests that checks {@link InstancesInfoMapper} functionality.
  *
  * @author Roman Batygin
  */

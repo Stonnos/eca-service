@@ -3,10 +3,16 @@ package com.ecaservice.service.ers;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.dto.evaluation.ResponseStatus;
+import com.ecaservice.mapping.EvaluationLogDetailsMapper;
+import com.ecaservice.mapping.EvaluationLogDetailsMapperImpl;
+import com.ecaservice.mapping.EvaluationLogInputOptionsMapperImpl;
+import com.ecaservice.mapping.InstancesInfoMapperImpl;
+import com.ecaservice.mapping.StatisticsReportMapperImpl;
 import com.ecaservice.model.entity.ErsRequest;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
+import com.ecaservice.repository.EvaluationResultsRequestEntityRepository;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.service.AbstractJpaTest;
@@ -35,7 +41,8 @@ import static org.mockito.Mockito.verify;
  *
  * @author Roman Batygin
  */
-@Import(ExperimentConfig.class)
+@Import({ExperimentConfig.class, EvaluationLogDetailsMapperImpl.class, InstancesInfoMapperImpl.class,
+        EvaluationLogInputOptionsMapperImpl.class, StatisticsReportMapperImpl.class})
 public class ErsServiceTest extends AbstractJpaTest {
 
     @Mock
@@ -44,6 +51,10 @@ public class ErsServiceTest extends AbstractJpaTest {
     private ExperimentConfig experimentConfig;
     @Inject
     private ExperimentResultsRequestRepository experimentResultsRequestRepository;
+    @Inject
+    private EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository;
+    @Inject
+    private EvaluationLogDetailsMapper evaluationLogDetailsMapper;
     @Inject
     private ExperimentRepository experimentRepository;
 

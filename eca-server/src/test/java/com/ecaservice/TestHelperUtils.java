@@ -8,6 +8,7 @@ import com.ecaservice.dto.evaluation.ClassifierReport;
 import com.ecaservice.dto.evaluation.EvaluationMethodReport;
 import com.ecaservice.dto.evaluation.InputOptionsMap;
 import com.ecaservice.dto.evaluation.ResponseStatus;
+import com.ecaservice.dto.evaluation.StatisticsReport;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
@@ -58,6 +59,7 @@ import eca.trees.J48;
 import weka.core.Instances;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -768,5 +770,26 @@ public class TestHelperUtils {
         filterDictionaryValue.setLabel(LABEL);
         filterDictionaryValue.setValue(VALUE);
         return filterDictionaryValue;
+    }
+
+    /**
+     * Creates statistics report.
+     *
+     * @return statistics report
+     */
+    public static StatisticsReport createStatisticsReport() {
+        StatisticsReport statisticsReport = new StatisticsReport();
+        statisticsReport.setNumCorrect(BigInteger.TEN);
+        statisticsReport.setNumIncorrect(BigInteger.ONE);
+        statisticsReport.setNumTestInstances(BigInteger.TEN);
+        statisticsReport.setMaxAucValue(BigDecimal.ONE);
+        statisticsReport.setVarianceError(BigDecimal.ZERO);
+        statisticsReport.setPctCorrect(BigDecimal.ONE);
+        statisticsReport.setPctIncorrect(BigDecimal.TEN);
+        statisticsReport.setMeanAbsoluteError(BigDecimal.ONE);
+        statisticsReport.setRootMeanSquaredError(BigDecimal.TEN);
+        statisticsReport.setConfidenceIntervalLowerBound(BigDecimal.ZERO);
+        statisticsReport.setConfidenceIntervalUpperBound(BigDecimal.ONE);
+        return statisticsReport;
     }
 }
