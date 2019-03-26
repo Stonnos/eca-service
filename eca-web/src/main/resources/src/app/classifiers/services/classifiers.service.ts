@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
+  EvaluationLogDetailsDto,
   EvaluationLogDto,
   PageDto,
   PageRequestDto, RequestStatusStatisticsDto
@@ -42,5 +43,13 @@ export class ClassifiersService {
       'Authorization': 'Bearer ' + this.cookieService.get('access_token')
     });
     return this.http.get<RequestStatusStatisticsDto>(this.serviceUrl + '/evaluation/request-statuses-statistics', { headers: headers });
+  }
+
+  public getEvaluationLogDetailsDto(requestId: string): Observable<EvaluationLogDetailsDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
+    });
+    return this.http.get<EvaluationLogDetailsDto>(this.serviceUrl + '/details/' + requestId, { headers: headers });
   }
 }
