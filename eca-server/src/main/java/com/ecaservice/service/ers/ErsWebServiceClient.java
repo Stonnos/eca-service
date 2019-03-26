@@ -5,6 +5,8 @@ import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.EvaluationResultsResponse;
+import com.ecaservice.dto.evaluation.GetEvaluationResultsSimpleRequest;
+import com.ecaservice.dto.evaluation.GetEvaluationResultsSimpleResponse;
 import com.ecaservice.mapping.EvaluationResultsMapper;
 import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +60,18 @@ public class ErsWebServiceClient {
         log.trace("Received response with requestId = {}, status = {} from {}.", resultsResponse.getRequestId(),
                 resultsResponse.getStatus(), ersConfig.getUrl());
         return resultsResponse;
+    }
+
+    /**
+     * Gets evaluation results simple response.
+     *
+     * @param request - evaluation results request
+     * @return evaluation results simple response
+     */
+    public GetEvaluationResultsSimpleResponse getEvaluationResultsSimpleResponse(
+            GetEvaluationResultsSimpleRequest request) {
+        return (GetEvaluationResultsSimpleResponse) ersWebServiceTemplate.marshalSendAndReceive(ersConfig.getUrl(),
+                request);
     }
 
     /**

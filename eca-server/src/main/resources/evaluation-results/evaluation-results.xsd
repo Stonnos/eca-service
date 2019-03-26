@@ -166,4 +166,24 @@
         </xsd:complexType>
     </xsd:element>
 
+    <xsd:element name="getEvaluationResultsSimpleRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="requestId" type="xsd:string"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="getEvaluationResultsSimpleResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="requestId" type="xsd:string"/>
+                <xsd:element name="status" type="evaluation:responseStatus"/>
+                <xsd:element name="classifierReport" type="evaluation:classifierReport"/>
+                <xsd:element name="evaluationMethodReport" type="evaluation:evaluationMethodReport"/>
+                <xsd:element name="statistics" type="evaluation:statisticsReport"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
 </xsd:schema>

@@ -9,6 +9,7 @@ import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.model.experiment.ExperimentType;
+import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.ers.ClassifierOptionsRequestService;
 import com.ecaservice.service.ers.ErsService;
@@ -18,6 +19,7 @@ import com.ecaservice.util.Utils;
 import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
 import com.ecaservice.web.dto.model.ErsReportDto;
+import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -68,6 +70,7 @@ public class WebController {
     private final EvaluationLogMapper evaluationLogMapper;
     private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
     private final ExperimentRepository experimentRepository;
+    private final EvaluationLogRepository evaluationLogRepository;
 
     /**
      * Constructor with spring dependency injection.
@@ -80,6 +83,7 @@ public class WebController {
      * @param evaluationLogMapper                 - evaluation log mapper bean
      * @param classifierOptionsRequestModelMapper - classifier options request mapper bean
      * @param experimentRepository                - experiment repository bean
+     * @param evaluationLogRepository             - evaluation log repository bean
      */
     @Inject
     public WebController(ExperimentService experimentService,
@@ -88,7 +92,8 @@ public class WebController {
                          ErsService ersService, ExperimentMapper experimentMapper,
                          EvaluationLogMapper evaluationLogMapper,
                          ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper,
-                         ExperimentRepository experimentRepository) {
+                         ExperimentRepository experimentRepository,
+                         EvaluationLogRepository evaluationLogRepository) {
         this.experimentService = experimentService;
         this.evaluationLogService = evaluationLogService;
         this.classifierOptionsRequestService = classifierOptionsRequestService;
@@ -97,6 +102,7 @@ public class WebController {
         this.evaluationLogMapper = evaluationLogMapper;
         this.classifierOptionsRequestModelMapper = classifierOptionsRequestModelMapper;
         this.experimentRepository = experimentRepository;
+        this.evaluationLogRepository = evaluationLogRepository;
     }
 
     /**
@@ -249,6 +255,29 @@ public class WebController {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(ersService.getErsReport(experiment));
+    }
+
+    /**
+     * Gets evaluation log details.
+     *
+     * @param requestId - evaluation log request id
+     * @return evaluation log details report
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Gets evaluation log details",
+            notes = "Gets evaluation log details"
+    )
+    @GetMapping(value = "/evaluation/details/{requestId}")
+    public ResponseEntity<EvaluationLogDetailsDto> getEvaluationLogDetails(
+            @ApiParam(value = "Evaluation log request id", required = true) @PathVariable String requestId) {
+        log.info("Received request for evaluation log details for request id [{}]", requestId);
+        EvaluationLog evaluationLog = evaluationLogRepository.findByRequestId(requestId);
+        if (evaluationLog == null) {
+            log.error("Evaluation log with request id [{}] not found", requestId);
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(ersService.getEvaluationLogDetails(evaluationLog));
     }
 
     /**

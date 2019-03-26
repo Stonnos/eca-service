@@ -1,19 +1,27 @@
 package com.ecaservice.service.ers;
 
 import com.ecaservice.config.ExperimentConfig;
+import com.ecaservice.dto.evaluation.GetEvaluationResultsSimpleResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
+import com.ecaservice.mapping.EvaluationLogDetailsMapper;
+import com.ecaservice.model.entity.EvaluationLog;
+import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsRequest;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
+import com.ecaservice.repository.EvaluationResultsRequestEntityRepository;
 import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.web.dto.model.ErsReportDto;
 import com.ecaservice.web.dto.model.ErsReportStatus;
+import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
+import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.ws.client.WebServiceIOException;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -29,22 +37,30 @@ public class ErsService {
 
     private final ErsRequestService ersRequestService;
     private final ExperimentConfig experimentConfig;
+    private final EvaluationLogDetailsMapper evaluationLogDetailsMapper;
     private final ExperimentResultsRequestRepository experimentResultsRequestRepository;
+    private final EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository;
 
     /**
      * Constructor with spring dependency injection.
      *
-     * @param ersRequestService                  - ers request service bean
-     * @param experimentConfig                   - experiment config bean
-     * @param experimentResultsRequestRepository - experiment results requests repository bean
+     * @param ersRequestService                        - ers request service bean
+     * @param experimentConfig                         - experiment config bean
+     * @param evaluationLogDetailsMapper               - evaluation log details mapper bean
+     * @param experimentResultsRequestRepository       - experiment results request repository bean
+     * @param evaluationResultsRequestEntityRepository - evaluation results request repository bean
      */
     @Inject
     public ErsService(ErsRequestService ersRequestService,
                       ExperimentConfig experimentConfig,
-                      ExperimentResultsRequestRepository experimentResultsRequestRepository) {
+                      EvaluationLogDetailsMapper evaluationLogDetailsMapper,
+                      ExperimentResultsRequestRepository experimentResultsRequestRepository,
+                      EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository) {
         this.ersRequestService = ersRequestService;
         this.experimentConfig = experimentConfig;
+        this.evaluationLogDetailsMapper = evaluationLogDetailsMapper;
         this.experimentResultsRequestRepository = experimentResultsRequestRepository;
+        this.evaluationResultsRequestEntityRepository = evaluationResultsRequestEntityRepository;
     }
 
     /**
@@ -67,8 +83,48 @@ public class ErsService {
                     experimentResultsRequest -> !ResponseStatus.SUCCESS.equals(
                             experimentResultsRequest.getResponseStatus())).count());
         }
-        setErsReportStatus(experiment, ersReportDto);
+        populateErsReportStatus(experiment, ersReportDto);
         return ersReportDto;
+    }
+
+    /**
+     * Gets evaluation log report.
+     *
+     * @param evaluationLog - evaluation log entity
+     * @return evaluation log details dto
+     */
+    public EvaluationLogDetailsDto getEvaluationLogDetails(EvaluationLog evaluationLog) {
+        EvaluationLogDetailsDto evaluationLogDetailsDto = evaluationLogDetailsMapper.map(evaluationLog);
+        EvaluationResultsStatus evaluationResultsStatus;
+        if (!RequestStatus.FINISHED.equals(evaluationLog.getEvaluationStatus())) {
+            evaluationResultsStatus = RequestStatus.NEW.equals(evaluationLog.getEvaluationStatus()) ?
+                    EvaluationResultsStatus.EVALUATION_IN_PROGRESS : EvaluationResultsStatus.EVALUATION_ERROR;
+        } else {
+            EvaluationResultsRequestEntity evaluationResultsRequestEntity =
+                    evaluationResultsRequestEntityRepository.findByEvaluationLog(evaluationLog);
+            if (evaluationResultsRequestEntity == null ||
+                    !ResponseStatus.SUCCESS.equals(evaluationResultsRequestEntity.getResponseStatus())) {
+                evaluationResultsStatus = EvaluationResultsStatus.RESULTS_NOT_SENT;
+            } else {
+                try {
+                    GetEvaluationResultsSimpleResponse evaluationResultsSimpleResponse =
+                            ersRequestService.getEvaluationResults(evaluationResultsRequestEntity.getRequestId());
+                    if (ResponseStatus.SUCCESS.equals(evaluationResultsSimpleResponse.getStatus())) {
+                        evaluationLogDetailsMapper.update(evaluationResultsSimpleResponse, evaluationLogDetailsDto);
+                    }
+                    evaluationResultsStatus = handleEvaluationResultsStatus(evaluationResultsSimpleResponse);
+                } catch (WebServiceIOException ex) {
+                    log.error(ex.getMessage());
+                    evaluationResultsStatus = EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE;
+                } catch (Exception ex) {
+                    log.error("There was an error while fetching evaluation results for evaluation log [{}]: {}",
+                            evaluationLog.getRequestId(), ex.getMessage());
+                    evaluationResultsStatus = EvaluationResultsStatus.ERROR;
+                }
+            }
+        }
+        evaluationLogDetailsDto.setEvaluationResultsStatus(evaluationResultsStatus);
+        return evaluationLogDetailsDto;
     }
 
     /**
@@ -90,7 +146,7 @@ public class ErsService {
         });
     }
 
-    private void setErsReportStatus(Experiment experiment, ErsReportDto ersReportDto) {
+    private void populateErsReportStatus(Experiment experiment, ErsReportDto ersReportDto) {
         ErsReportStatus ersReportStatus;
         if (!RequestStatus.FINISHED.equals(experiment.getExperimentStatus())) {
             ersReportStatus = RequestStatus.NEW.equals(experiment.getExperimentStatus()) ?
@@ -103,5 +159,15 @@ public class ErsService {
             ersReportStatus = ErsReportStatus.NEED_SENT;
         }
         ersReportDto.setErsReportStatus(ersReportStatus);
+    }
+
+    private EvaluationResultsStatus handleEvaluationResultsStatus(GetEvaluationResultsSimpleResponse response) {
+        if (ResponseStatus.SUCCESS.equals(response.getStatus())) {
+            return EvaluationResultsStatus.RESULTS_RECEIVED;
+        } else if (ResponseStatus.RESULTS_NOT_FOUND.equals(response.getStatus())) {
+            return EvaluationResultsStatus.EVALUATION_RESULTS_NOT_FOUND;
+        } else {
+            return EvaluationResultsStatus.ERROR;
+        }
     }
 }

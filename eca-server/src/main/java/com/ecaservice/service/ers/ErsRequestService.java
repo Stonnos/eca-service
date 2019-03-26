@@ -5,6 +5,8 @@ import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.ClassifierReport;
 import com.ecaservice.dto.evaluation.EvaluationResultsResponse;
+import com.ecaservice.dto.evaluation.GetEvaluationResultsSimpleRequest;
+import com.ecaservice.dto.evaluation.GetEvaluationResultsSimpleResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassifierReportMapper;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
@@ -83,6 +85,21 @@ public class ErsRequestService {
                 ersRequestRepository.save(ersRequest);
             }
         }
+    }
+
+    /**
+     * Gets evaluation results simple response.
+     *
+     * @param requestId - ERS request id
+     * @return evaluation results simple response
+     */
+    public GetEvaluationResultsSimpleResponse getEvaluationResults(String requestId) {
+        log.trace("Starting to get evaluation results simple response for request id [{}]", requestId);
+        GetEvaluationResultsSimpleRequest request = new GetEvaluationResultsSimpleRequest();
+        request.setRequestId(requestId);
+        GetEvaluationResultsSimpleResponse response = ersWebServiceClient.getEvaluationResultsSimpleResponse(request);
+        log.trace("Evaluation results simple response with request id [{}] has been fetched", requestId);
+        return response;
     }
 
     /**

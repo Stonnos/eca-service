@@ -53,7 +53,9 @@ public class ErsServiceTest extends AbstractJpaTest {
     public void init() {
         experimentResultsRequestRepository.deleteAll();
         experimentRepository.deleteAll();
-        ersService = new ErsService(ersRequestService, experimentConfig, experimentResultsRequestRepository);
+        ersService = new ErsService(ersRequestService, experimentConfig, evaluationLogDetailsMapper,
+                experimentResultsRequestRepository,
+                evaluationResultsRequestEntityRepository);
     }
 
     @Test

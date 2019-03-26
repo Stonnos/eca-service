@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Experiment dto model.
+ * Evaluation log dto model.
  *
  * @author Roman Batygin
  */

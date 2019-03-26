@@ -28,6 +28,14 @@ public interface EvaluationLogRepository
     EvaluationLog findByRequestIdAndEvaluationStatusIn(String requestId, Collection<RequestStatus> evaluationStatuses);
 
     /**
+     * Finds evaluation log by request id.
+     *
+     * @param requestId - evaluation log request id
+     * @return evaluation log entity
+     */
+    EvaluationLog findByRequestId(String requestId);
+
+    /**
      * Calculates requests status counting statistics.
      *
      * @return requests status counting statistics list
