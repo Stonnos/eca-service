@@ -14,7 +14,7 @@ import { CookieService } from "ngx-cookie-service";
 @Injectable()
 export class ExperimentsService {
 
-  private serviceUrl = ConfigService.appConfig.apiUrl;
+  private serviceUrl = ConfigService.appConfig.apiUrl + '/experiment';
 
   public constructor(private http: HttpClient, private cookieService: CookieService) {
   }
@@ -35,7 +35,7 @@ export class ExperimentsService {
       params = params.set(`filters['${index}'].matchMode`, filter.matchMode);
     });
     const options = { headers: headers, params: params };
-    return this.http.get<PageDto<ExperimentDto>>(this.serviceUrl + '/experiments', options);
+    return this.http.get<PageDto<ExperimentDto>>(this.serviceUrl + '/list', options);
   }
 
   public getRequestStatusesStatistics(): Observable<RequestStatusStatisticsDto> {
@@ -43,11 +43,11 @@ export class ExperimentsService {
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': 'Bearer ' + this.cookieService.get('access_token')
     });
-    return this.http.get<RequestStatusStatisticsDto>(this.serviceUrl + '/experiment/request-statuses-statistics', { headers: headers });
+    return this.http.get<RequestStatusStatisticsDto>(this.serviceUrl + '/request-statuses-statistics', { headers: headers });
   }
 
   public getExperimentResultsFile(uuid: string): Observable<Blob> {
-    return this.http.get<Blob>(this.serviceUrl + '/experiment/download/' + uuid, { responseType: 'blob' as 'json' });
+    return this.http.get<Blob>(this.serviceUrl + '/download/' + uuid, { responseType: 'blob' as 'json' });
   }
 
   public getExperimentTrainingDataFile(uuid: string): Observable<Blob> {
@@ -55,7 +55,7 @@ export class ExperimentsService {
       'Authorization': 'Bearer ' + this.cookieService.get('access_token')
     });
     const options = { headers: headers, responseType: 'blob' as 'json' };
-    return this.http.get<Blob>(this.serviceUrl + '/experiment-training-data/' + uuid, options);
+    return this.http.get<Blob>(this.serviceUrl + '/training-data/' + uuid, options);
   }
 
   public getErsReport(uuid: string): Observable<ErsReportDto> {
@@ -63,7 +63,7 @@ export class ExperimentsService {
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': 'Bearer ' + this.cookieService.get('access_token')
     });
-    return this.http.get<ErsReportDto>(this.serviceUrl + '/experiment-ers-report/' + uuid, { headers: headers });
+    return this.http.get<ErsReportDto>(this.serviceUrl + '/ers-report/' + uuid, { headers: headers });
   }
 
   public sentEvaluationResults(uuid: string) {
@@ -71,7 +71,7 @@ export class ExperimentsService {
       'Content-type': 'application/json',
       'Authorization': 'Bearer ' + this.cookieService.get('access_token')
     });
-    return this.http.post(this.serviceUrl + '/sent-experiment-evaluation-results', uuid, { headers: headers });
+    return this.http.post(this.serviceUrl + '/sent-evaluation-results', uuid, { headers: headers });
   }
 
   public getExperimentTypesStatistics(createdDateFrom: string, createdDateTo: string): Observable<ChartDataDto[]> {
@@ -81,6 +81,6 @@ export class ExperimentsService {
     });
     let params = new HttpParams().set('createdDateFrom', createdDateFrom).set('createdDateTo', createdDateTo);
     const options = { headers: headers, params: params };
-    return this.http.get<ChartDataDto[]>(this.serviceUrl + '/experiment/statistics', options);
+    return this.http.get<ChartDataDto[]>(this.serviceUrl + '/statistics', options);
   }
 }

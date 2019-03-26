@@ -116,7 +116,7 @@ public class WebController {
             value = "Finds experiments with specified options",
             notes = "Finds experiments with specified options"
     )
-    @GetMapping(value = "/experiments")
+    @GetMapping(value = "/experiment/list")
     public PageDto<ExperimentDto> getExperiments(PageRequestDto pageRequestDto) {
         log.info("Received experiments page request: {}", pageRequestDto);
         Page<Experiment> experimentPage = experimentService.getNextPage(pageRequestDto);
@@ -149,7 +149,7 @@ public class WebController {
             value = "Downloads experiment training data by specified uuid",
             notes = "Downloads experiment training data by specified uuid"
     )
-    @GetMapping(value = "/experiment-training-data/{uuid}")
+    @GetMapping(value = "/experiment/training-data/{uuid}")
     public ResponseEntity downloadTrainingData(
             @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
         File trainingDataFile = experimentService.findTrainingDataFileByUuid(uuid);
@@ -173,7 +173,7 @@ public class WebController {
             value = "Finds evaluation logs with specified options",
             notes = "Finds evaluation logs with specified options"
     )
-    @GetMapping(value = "/evaluations")
+    @GetMapping(value = "/evaluation/list")
     public PageDto<EvaluationLogDto> getEvaluationLogs(PageRequestDto pageRequestDto) {
         log.info("Received evaluation logs page request: {}", pageRequestDto);
         Page<EvaluationLog> evaluationLogs = evaluationLogService.getNextPage(pageRequestDto);
@@ -245,7 +245,7 @@ public class WebController {
             value = "Gets experiment ERS report",
             notes = "Gets experiment ERS report"
     )
-    @GetMapping(value = "/experiment-ers-report/{uuid}")
+    @GetMapping(value = "/experiment/ers-report/{uuid}")
     public ResponseEntity<ErsReportDto> getExperimentErsReport(
             @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
         log.info("Received request for ERS report for experiment [{}]", uuid);
@@ -290,7 +290,7 @@ public class WebController {
             value = "Sent evaluation results to ERS for experiment",
             notes = "Sent evaluation results to ERS for experiment"
     )
-    @PostMapping(value = "/sent-experiment-evaluation-results")
+    @PostMapping(value = "/experiment/sent-evaluation-results")
     public ResponseEntity sentExperimentEvaluationResults(@RequestBody String uuid) {
         log.info("Received request to send evaluation results to ERS for experiment [{}]", uuid);
         Experiment experiment = experimentRepository.findByUuid(uuid);

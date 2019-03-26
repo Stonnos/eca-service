@@ -12,7 +12,7 @@ import { CookieService } from "ngx-cookie-service";
 @Injectable()
 export class ClassifiersService {
 
-  private serviceUrl = ConfigService.appConfig.apiUrl;
+  private serviceUrl = ConfigService.appConfig.apiUrl + '/evaluation';
 
   public constructor(private http: HttpClient, private cookieService: CookieService) {
   }
@@ -33,7 +33,7 @@ export class ClassifiersService {
       params = params.set(`filters['${index}'].matchMode`, filter.matchMode);
     });
     const options = { headers: headers, params: params };
-    return this.http.get<PageDto<EvaluationLogDto>>(this.serviceUrl + '/evaluations', options);
+    return this.http.get<PageDto<EvaluationLogDto>>(this.serviceUrl + '/list', options);
   }
 
   public getRequestStatusesStatistics(): Observable<RequestStatusStatisticsDto> {
