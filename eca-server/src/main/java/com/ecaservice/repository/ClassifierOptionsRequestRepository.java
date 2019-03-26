@@ -21,16 +21,16 @@ public interface ClassifierOptionsRequestRepository extends JpaRepository<Classi
      *
      * @param dataMd5Hash      - training data MD5 hash
      * @param responseStatuses - response statuses
-     * @param creationDate     - creation date bound
+     * @param requestDate      - request date bound
      * @param pageable         - pageable object
      * @return classifier options request list
      */
     @Query("select req from ClassifierOptionsRequestEntity req join req.classifierOptionsRequestModel cm " +
             "where cm.dataMd5Hash = :dataMd5Hash and cm.responseStatus in (:responseStatuses) and " +
-            "req.creationDate > :creationDate order by req.creationDate desc")
+            "cm.requestDate > :requestDate order by req.creationDate desc")
     List<ClassifierOptionsRequestEntity> findLastRequests(@Param("dataMd5Hash") String dataMd5Hash,
                                                           @Param("responseStatuses")
                                                                   Collection<ResponseStatus> responseStatuses,
-                                                          @Param("creationDate") LocalDateTime creationDate,
+                                                          @Param("requestDate") LocalDateTime requestDate,
                                                           Pageable pageable);
 }
