@@ -75,6 +75,7 @@ import weka.classifiers.AbstractClassifier;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -144,7 +145,8 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         evaluationOptimizerService = new EvaluationOptimizerService(crossValidationConfig, evaluationRequestService,
                 classifierOptionsRequestModelMapper, ersRequestService, evaluationRequestMapper,
                 classifierOptionsRequestMapper, classifierOptionsService, classifierOptionsRequestRepository);
-        dataMd5Hash = DigestUtils.md5DigestAsHex(Utils.toXmlInstances(instancesRequest.getData()).getBytes());
+        dataMd5Hash = DigestUtils.md5DigestAsHex(
+                Utils.toXmlInstances(instancesRequest.getData()).getBytes(StandardCharsets.UTF_8));
         DecisionTreeOptions treeOptions = TestHelperUtils.createDecisionTreeOptions();
         treeOptions.setDecisionTreeType(DecisionTreeType.CART);
         decisionTreeOptions = objectMapper.writeValueAsString(treeOptions);

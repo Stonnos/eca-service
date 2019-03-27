@@ -95,35 +95,7 @@ public class ErsService {
      */
     public EvaluationLogDetailsDto getEvaluationLogDetails(EvaluationLog evaluationLog) {
         EvaluationLogDetailsDto evaluationLogDetailsDto = evaluationLogDetailsMapper.map(evaluationLog);
-        EvaluationResultsStatus evaluationResultsStatus;
-        if (!RequestStatus.FINISHED.equals(evaluationLog.getEvaluationStatus())) {
-            evaluationResultsStatus = RequestStatus.NEW.equals(evaluationLog.getEvaluationStatus()) ?
-                    EvaluationResultsStatus.EVALUATION_IN_PROGRESS : EvaluationResultsStatus.EVALUATION_ERROR;
-        } else {
-            EvaluationResultsRequestEntity evaluationResultsRequestEntity =
-                    evaluationResultsRequestEntityRepository.findByEvaluationLog(evaluationLog);
-            if (evaluationResultsRequestEntity == null ||
-                    !ResponseStatus.SUCCESS.equals(evaluationResultsRequestEntity.getResponseStatus())) {
-                evaluationResultsStatus = EvaluationResultsStatus.RESULTS_NOT_SENT;
-            } else {
-                try {
-                    GetEvaluationResultsSimpleResponse evaluationResultsSimpleResponse =
-                            ersRequestService.getEvaluationResults(evaluationResultsRequestEntity.getRequestId());
-                    if (ResponseStatus.SUCCESS.equals(evaluationResultsSimpleResponse.getStatus())) {
-                        evaluationLogDetailsMapper.update(evaluationResultsSimpleResponse, evaluationLogDetailsDto);
-                    }
-                    evaluationResultsStatus = handleEvaluationResultsStatus(evaluationResultsSimpleResponse);
-                } catch (WebServiceIOException ex) {
-                    log.error(ex.getMessage());
-                    evaluationResultsStatus = EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE;
-                } catch (Exception ex) {
-                    log.error("There was an error while fetching evaluation results for evaluation log [{}]: {}",
-                            evaluationLog.getRequestId(), ex.getMessage());
-                    evaluationResultsStatus = EvaluationResultsStatus.ERROR;
-                }
-            }
-        }
-        evaluationLogDetailsDto.setEvaluationResultsStatus(evaluationResultsStatus);
+        populateEvaluationResults(evaluationLogDetailsDto, evaluationLog);
         return evaluationLogDetailsDto;
     }
 
@@ -159,6 +131,39 @@ public class ErsService {
             ersReportStatus = ErsReportStatus.NEED_SENT;
         }
         ersReportDto.setErsReportStatus(ersReportStatus);
+    }
+
+    private void populateEvaluationResults(EvaluationLogDetailsDto evaluationLogDetailsDto,
+                                           EvaluationLog evaluationLog) {
+        EvaluationResultsStatus evaluationResultsStatus;
+        if (!RequestStatus.FINISHED.equals(evaluationLog.getEvaluationStatus())) {
+            evaluationResultsStatus = RequestStatus.NEW.equals(evaluationLog.getEvaluationStatus()) ?
+                    EvaluationResultsStatus.EVALUATION_IN_PROGRESS : EvaluationResultsStatus.EVALUATION_ERROR;
+        } else {
+            EvaluationResultsRequestEntity evaluationResultsRequestEntity =
+                    evaluationResultsRequestEntityRepository.findByEvaluationLog(evaluationLog);
+            if (evaluationResultsRequestEntity == null ||
+                    !ResponseStatus.SUCCESS.equals(evaluationResultsRequestEntity.getResponseStatus())) {
+                evaluationResultsStatus = EvaluationResultsStatus.RESULTS_NOT_SENT;
+            } else {
+                try {
+                    GetEvaluationResultsSimpleResponse evaluationResultsSimpleResponse =
+                            ersRequestService.getEvaluationResults(evaluationResultsRequestEntity.getRequestId());
+                    if (ResponseStatus.SUCCESS.equals(evaluationResultsSimpleResponse.getStatus())) {
+                        evaluationLogDetailsMapper.update(evaluationResultsSimpleResponse, evaluationLogDetailsDto);
+                    }
+                    evaluationResultsStatus = handleEvaluationResultsStatus(evaluationResultsSimpleResponse);
+                } catch (WebServiceIOException ex) {
+                    log.error(ex.getMessage());
+                    evaluationResultsStatus = EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE;
+                } catch (Exception ex) {
+                    log.error("There was an error while fetching evaluation results for evaluation log [{}]: {}",
+                            evaluationLog.getRequestId(), ex.getMessage());
+                    evaluationResultsStatus = EvaluationResultsStatus.ERROR;
+                }
+            }
+        }
+        evaluationLogDetailsDto.setEvaluationResultsStatus(evaluationResultsStatus);
     }
 
     private EvaluationResultsStatus handleEvaluationResultsStatus(GetEvaluationResultsSimpleResponse response) {

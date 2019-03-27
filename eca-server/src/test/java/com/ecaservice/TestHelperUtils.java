@@ -80,9 +80,9 @@ public class TestHelperUtils {
 
     public static final int NUM_FOLDS = 3;
     public static final int NUM_TESTS = 1;
+    public static final int SEED = 1;
     public static final String TEST_UUID = "a01ebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
 
-    private static final int SEED = 1;
     private static final String FIRST_NAME = "Roman";
     private static final String TEST_MAIL_RU = "test@mail.ru";
     private static final String TRAINING_DATA_ABSOLUTE_PATH = "/home/data";
@@ -130,7 +130,7 @@ public class TestHelperUtils {
      * Evaluation classifier and returns its evaluation results.
      *
      * @return evaluation results
-     * @throws Exception
+     * @throws Exception in case of error
      */
     public static EvaluationResults getEvaluationResults() throws Exception {
         CART cart = new CART();
@@ -283,6 +283,7 @@ public class TestHelperUtils {
         evaluationLog.setClassifierName(CART.class.getSimpleName());
         evaluationLog.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         evaluationLog.setEvaluationStatus(RequestStatus.FINISHED);
+        evaluationLog.setEvaluationOptionsMap(Collections.emptyMap());
         return evaluationLog;
     }
 

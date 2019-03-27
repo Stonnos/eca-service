@@ -2,6 +2,7 @@ package com.ecaservice.service.ers;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
+import com.ecaservice.dto.evaluation.GetEvaluationResultsSimpleResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.EvaluationLogDetailsMapper;
 import com.ecaservice.mapping.EvaluationLogDetailsMapperImpl;
@@ -9,22 +10,29 @@ import com.ecaservice.mapping.EvaluationLogInputOptionsMapperImpl;
 import com.ecaservice.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.mapping.StatisticsReportMapperImpl;
 import com.ecaservice.model.entity.ErsRequest;
+import com.ecaservice.model.entity.EvaluationLog;
+import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
+import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.repository.EvaluationResultsRequestEntityRepository;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.web.dto.model.ErsReportDto;
 import com.ecaservice.web.dto.model.ErsReportStatus;
+import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
+import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationResults;
 import org.assertj.core.api.Assertions;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
+import org.springframework.ws.client.WebServiceIOException;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
@@ -35,6 +43,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for checking {@link ErsService} functionality.
@@ -57,16 +66,22 @@ public class ErsServiceTest extends AbstractJpaTest {
     private EvaluationLogDetailsMapper evaluationLogDetailsMapper;
     @Inject
     private ExperimentRepository experimentRepository;
+    @Inject
+    private EvaluationLogRepository evaluationLogRepository;
 
     private ErsService ersService;
 
     @Before
     public void init() {
-        experimentResultsRequestRepository.deleteAll();
-        experimentRepository.deleteAll();
+        clearAll();
         ersService = new ErsService(ersRequestService, experimentConfig, evaluationLogDetailsMapper,
                 experimentResultsRequestRepository,
                 evaluationResultsRequestEntityRepository);
+    }
+
+    @After
+    public void after() {
+        clearAll();
     }
 
     @Test
@@ -157,5 +172,138 @@ public class ErsServiceTest extends AbstractJpaTest {
         ersService.sentExperimentHistory(new Experiment(), experimentHistory, ExperimentResultsRequestSource.MANUAL);
         verify(ersRequestService, times(experimentHistory.getExperiment().size())).saveEvaluationResults(
                 any(EvaluationResults.class), any(ErsRequest.class));
+    }
+
+    @Test
+    public void testGetEvaluationLogDetailsWithInProgressStatus() {
+        EvaluationLog evaluationLog =
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.NEW);
+        EvaluationLogDetailsDto evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
+        Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsStatus()).isEqualTo(
+                EvaluationResultsStatus.EVALUATION_IN_PROGRESS);
+    }
+
+    @Test
+    public void testGetEvaluationLogDetailsWithEvaluationErrorStatus() {
+        EvaluationLog evaluationLog =
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR);
+        EvaluationLogDetailsDto evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
+        Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsStatus()).isEqualTo(
+                EvaluationResultsStatus.EVALUATION_ERROR);
+    }
+
+    /**
+     * Case 1: There is no one request to ERS
+     * Case 2: There is no one ERS request with status SUCCESS
+     */
+    @Test
+    public void testGetEvaluationLogDetailsWithNotSentStatus() {
+        //Case 1
+        EvaluationLog evaluationLog =
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        evaluationLogRepository.save(evaluationLog);
+        EvaluationLogDetailsDto evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
+        Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsStatus()).isEqualTo(
+                EvaluationResultsStatus.RESULTS_NOT_SENT);
+        //Case 2
+        EvaluationResultsRequestEntity evaluationResultsRequestEntity = new EvaluationResultsRequestEntity();
+        evaluationResultsRequestEntity.setRequestDate(LocalDateTime.now().minusDays(1L));
+        evaluationResultsRequestEntity.setRequestId(UUID.randomUUID().toString());
+        evaluationResultsRequestEntity.setResponseStatus(ResponseStatus.ERROR);
+        evaluationResultsRequestEntity.setEvaluationLog(evaluationLog);
+        evaluationResultsRequestEntityRepository.save(evaluationResultsRequestEntity);
+        evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
+        Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsStatus()).isEqualTo(
+                EvaluationResultsStatus.RESULTS_NOT_SENT);
+    }
+
+    @Test
+    public void testGetEvaluationResultsNotFound() {
+        EvaluationLog evaluationLog = createAndSaveFinishedEvaluationLog();
+        GetEvaluationResultsSimpleResponse response = new GetEvaluationResultsSimpleResponse();
+        response.setStatus(ResponseStatus.RESULTS_NOT_FOUND);
+        when(ersRequestService.getEvaluationResults(any(String.class))).thenReturn(response);
+        EvaluationLogDetailsDto evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
+        Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsStatus()).isEqualTo(
+                EvaluationResultsStatus.EVALUATION_RESULTS_NOT_FOUND);
+    }
+
+    @Test
+    public void testGetEvaluationResultsWithResponseErrorStatus() {
+        EvaluationLog evaluationLog = createAndSaveFinishedEvaluationLog();
+        GetEvaluationResultsSimpleResponse response = new GetEvaluationResultsSimpleResponse();
+        response.setStatus(ResponseStatus.ERROR);
+        when(ersRequestService.getEvaluationResults(any(String.class))).thenReturn(response);
+        EvaluationLogDetailsDto evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
+        Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsStatus()).isEqualTo(
+                EvaluationResultsStatus.ERROR);
+    }
+
+    @Test
+    public void testGetEvaluationResultsWithServiceUnavailable() {
+        EvaluationLog evaluationLog = createAndSaveFinishedEvaluationLog();
+        when(ersRequestService.getEvaluationResults(any(String.class))).thenThrow(new WebServiceIOException("I/O"));
+        EvaluationLogDetailsDto evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
+        Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsStatus()).isEqualTo(
+                EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE);
+    }
+
+    @Test
+    public void testGetEvaluationResultsWithUnknownError() {
+        EvaluationLog evaluationLog = createAndSaveFinishedEvaluationLog();
+        when(ersRequestService.getEvaluationResults(any(String.class))).thenThrow(new RuntimeException());
+        EvaluationLogDetailsDto evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
+        Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsStatus()).isEqualTo(
+                EvaluationResultsStatus.ERROR);
+    }
+
+    @Test
+    public void testSuccessGetEvaluationLogDetails() {
+        EvaluationLog evaluationLog = createAndSaveFinishedEvaluationLog();
+        GetEvaluationResultsSimpleResponse response = new GetEvaluationResultsSimpleResponse();
+        response.setStatus(ResponseStatus.SUCCESS);
+        response.setStatistics(TestHelperUtils.createStatisticsReport());
+        when(ersRequestService.getEvaluationResults(any(String.class))).thenReturn(response);
+        EvaluationLogDetailsDto evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
+        Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNotNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsStatus()).isEqualTo(
+                EvaluationResultsStatus.RESULTS_RECEIVED);
+    }
+
+    private EvaluationLog createAndSaveFinishedEvaluationLog() {
+        EvaluationLog evaluationLog =
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        EvaluationResultsRequestEntity evaluationResultsRequestEntity = new EvaluationResultsRequestEntity();
+        evaluationResultsRequestEntity.setRequestDate(LocalDateTime.now().minusDays(1L));
+        evaluationResultsRequestEntity.setRequestId(UUID.randomUUID().toString());
+        evaluationResultsRequestEntity.setResponseStatus(ResponseStatus.SUCCESS);
+        evaluationResultsRequestEntity.setEvaluationLog(evaluationLog);
+        evaluationLogRepository.save(evaluationLog);
+        evaluationResultsRequestEntityRepository.save(evaluationResultsRequestEntity);
+        return evaluationLog;
+    }
+
+    private void clearAll() {
+        experimentResultsRequestRepository.deleteAll();
+        experimentRepository.deleteAll();
+        evaluationResultsRequestEntityRepository.deleteAll();
+        evaluationLogRepository.deleteAll();
     }
 }

@@ -4,6 +4,8 @@ import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ErsConfig;
 import com.ecaservice.dto.evaluation.EvaluationResultsResponse;
+import com.ecaservice.dto.evaluation.GetEvaluationResultsSimpleRequest;
+import com.ecaservice.dto.evaluation.GetEvaluationResultsSimpleResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassifierReportMapper;
 import com.ecaservice.mapping.ClassifierReportMapperImpl;
@@ -28,6 +30,7 @@ import org.springframework.ws.client.WebServiceIOException;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.UUID;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -122,5 +125,14 @@ public class ErsRequestServiceTest extends AbstractJpaTest {
         EvaluationResultsRequestEntity actual = (EvaluationResultsRequestEntity) ersRequest;
         Assertions.assertThat(actual.getEvaluationLog()).isNotNull();
         Assertions.assertThat(actual.getEvaluationLog().getId()).isEqualTo(evaluationLog.getId());
+    }
+
+    @Test
+    public void testGetEvaluationResults() {
+        when(ersWebServiceClient.getEvaluationResultsSimpleResponse(
+                any(GetEvaluationResultsSimpleRequest.class))).thenReturn(new GetEvaluationResultsSimpleResponse());
+        GetEvaluationResultsSimpleResponse response =
+                ersRequestService.getEvaluationResults(UUID.randomUUID().toString());
+        Assertions.assertThat(response).isNotNull();
     }
 }
