@@ -42,7 +42,7 @@ export class ClassifiersService {
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': 'Bearer ' + this.cookieService.get('access_token')
     });
-    return this.http.get<RequestStatusStatisticsDto>(this.serviceUrl + '/evaluation/request-statuses-statistics', { headers: headers });
+    return this.http.get<RequestStatusStatisticsDto>(this.serviceUrl + '/request-statuses-statistics', { headers: headers });
   }
 
   public getEvaluationLogDetailsDto(requestId: string): Observable<EvaluationLogDetailsDto> {
