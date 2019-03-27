@@ -15,8 +15,6 @@ import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.experiment.mail.NotificationService;
 import eca.converters.model.ExperimentHistory;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -66,14 +64,14 @@ public class ExperimentSchedulerTest extends AbstractJpaTest {
 
     private ExperimentScheduler experimentScheduler;
 
-    @Before
-    public void setUp() {
+    @Override
+    public void init() {
         experimentScheduler = new ExperimentScheduler(experimentRepository, experimentService, notificationService,
                 ersService, experimentConfig);
     }
 
-    @After
-    public void after() {
+    @Override
+    public void deleteAll() {
         ersRequestRepository.deleteAll();
         emailRequestRepository.deleteAll();
         experimentRepository.deleteAll();

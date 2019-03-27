@@ -20,8 +20,6 @@ import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.metrics.KNearestNeighbours;
 import org.assertj.core.api.Assertions;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
@@ -61,7 +59,7 @@ public class ErsRequestServiceTest extends AbstractJpaTest {
 
     private EvaluationResults evaluationResults;
 
-    @Before
+    @Override
     public void init() throws Exception {
         ersRequestService = new ErsRequestService(ersWebServiceClient, ersRequestRepository,
                 classifierOptionsRequestModelRepository, classifierReportMapper, ersConfig);
@@ -69,8 +67,8 @@ public class ErsRequestServiceTest extends AbstractJpaTest {
                 new EvaluationResults(new KNearestNeighbours(), new Evaluation(TestHelperUtils.loadInstances()));
     }
 
-    @After
-    public void after() {
+    @Override
+    public void deleteAll() {
         ersRequestRepository.deleteAll();
         evaluationLogRepository.deleteAll();
     }

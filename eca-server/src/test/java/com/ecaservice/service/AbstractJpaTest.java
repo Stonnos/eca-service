@@ -2,6 +2,8 @@ package com.ecaservice.service;
 
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.repository.EvaluationLogRepository;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -22,4 +24,21 @@ import org.springframework.test.context.junit4.SpringRunner;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 public abstract class AbstractJpaTest {
+
+    @Before
+    public void before() throws Exception {
+        deleteAll();
+        init();
+    }
+
+    @After
+    public void after() {
+        deleteAll();
+    }
+
+    public void init() throws Exception {
+    }
+
+    public void deleteAll() {
+    }
 }

@@ -20,7 +20,6 @@ import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.converters.model.ExperimentHistory;
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
@@ -71,14 +70,18 @@ public class ExperimentServiceTest extends AbstractJpaTest {
 
     private Instances data;
 
-    @Before
-    public void setUp() throws Exception {
-        experimentRepository.deleteAll();
+    @Override
+    public void init() throws Exception {
         data = TestHelperUtils.loadInstances();
         CalculationExecutorService executorService =
                 new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
         experimentService = new ExperimentService(experimentRepository, executorService, experimentMapper,
                 dataService, experimentConfig, experimentProcessorService, entityManager);
+    }
+
+    @Override
+    public void deleteAll() {
+        experimentRepository.deleteAll();
     }
 
     @Test

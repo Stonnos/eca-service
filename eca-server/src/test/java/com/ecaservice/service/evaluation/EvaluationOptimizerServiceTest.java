@@ -64,8 +64,6 @@ import eca.regression.Logistic;
 import eca.trees.CART;
 import eca.trees.J48;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
@@ -136,7 +134,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     private String j48Options;
     private String dataMd5Hash;
 
-    @Before
+    @Override
     public void init() throws Exception {
         instancesRequest = new InstancesRequest();
         instancesRequest.setData(TestHelperUtils.loadInstances());
@@ -153,9 +151,11 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         j48Options = objectMapper.writeValueAsString(TestHelperUtils.createJ48Options());
     }
 
-    @After
-    public void after() {
-        deleteAll();
+    @Override
+    public void deleteAll() {
+        classifierOptionsRequestRepository.deleteAll();
+        ersRequestRepository.deleteAll();
+        evaluationLogRepository.deleteAll();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -430,11 +430,5 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         List<ClassifierOptionsRequestEntity> requestEntities = classifierOptionsRequestRepository.findAll();
         AssertionUtils.assertSingletonList(requestEntities);
         assertThat(requestEntities.get(0).getSource()).isEqualTo(ClassifierOptionsRequestSource.ERS);
-    }
-
-    private void deleteAll() {
-        classifierOptionsRequestRepository.deleteAll();
-        ersRequestRepository.deleteAll();
-        evaluationLogRepository.deleteAll();
     }
 }

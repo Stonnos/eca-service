@@ -27,8 +27,6 @@ import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationResults;
 import org.assertj.core.api.Assertions;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
@@ -71,17 +69,19 @@ public class ErsServiceTest extends AbstractJpaTest {
 
     private ErsService ersService;
 
-    @Before
+    @Override
     public void init() {
-        clearAll();
         ersService = new ErsService(ersRequestService, experimentConfig, evaluationLogDetailsMapper,
                 experimentResultsRequestRepository,
                 evaluationResultsRequestEntityRepository);
     }
 
-    @After
-    public void after() {
-        clearAll();
+    @Override
+    public void deleteAll() {
+        experimentResultsRequestRepository.deleteAll();
+        experimentRepository.deleteAll();
+        evaluationResultsRequestEntityRepository.deleteAll();
+        evaluationLogRepository.deleteAll();
     }
 
     @Test
@@ -298,12 +298,5 @@ public class ErsServiceTest extends AbstractJpaTest {
         evaluationLogRepository.save(evaluationLog);
         evaluationResultsRequestEntityRepository.save(evaluationResultsRequestEntity);
         return evaluationLog;
-    }
-
-    private void clearAll() {
-        experimentResultsRequestRepository.deleteAll();
-        experimentRepository.deleteAll();
-        evaluationResultsRequestEntityRepository.deleteAll();
-        evaluationLogRepository.deleteAll();
     }
 }

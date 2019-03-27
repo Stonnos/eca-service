@@ -14,7 +14,6 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.ensemble.forests.DecisionTreeType;
 import eca.neural.functions.ActivationFunctionType;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
@@ -47,10 +46,14 @@ public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
 
     private ExperimentConfigurationService experimentConfigurationService;
 
-    @Before
+    @Override
     public void init() {
         experimentConfigurationService =
                 new ExperimentConfigurationService(experimentConfig, classifierOptionsDatabaseModelRepository);
+    }
+
+    @Override
+    public void deleteAll() {
         classifierOptionsDatabaseModelRepository.deleteAll();
     }
 

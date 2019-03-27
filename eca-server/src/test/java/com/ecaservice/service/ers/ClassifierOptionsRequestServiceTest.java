@@ -7,7 +7,6 @@ import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.FilterType;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
@@ -32,8 +31,8 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
     @Inject
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
 
-    @Before
-    public void init() {
+    @Override
+    public void deleteAll() {
         classifierOptionsRequestModelRepository.deleteAll();
     }
 

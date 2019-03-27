@@ -12,7 +12,6 @@ import com.ecaservice.service.async.AsyncTaskCallback;
 import com.ecaservice.service.async.AsyncTaskService;
 import com.ecaservice.service.experiment.mail.NotificationService;
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
@@ -45,7 +44,7 @@ public class ExperimentRequestServiceTest extends AbstractJpaTest {
 
     private ExperimentRequestService experimentRequestService;
 
-    @Before
+    @Override
     public void init() {
         experimentRequestService =
                 new ExperimentRequestService(experimentService, notificationService, asyncTaskService,

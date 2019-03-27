@@ -7,11 +7,10 @@ import com.ecaservice.configuation.ExecutorConfiguration;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.exception.EcaServiceException;
-import com.ecaservice.mapping.EvaluationLogInputOptionsMapper;
+import com.ecaservice.mapping.EvaluationLogInputOptionsMapperImpl;
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.mapping.InstancesInfoMapperImpl;
-import com.ecaservice.mapping.EvaluationLogInputOptionsMapperImpl;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.RequestStatus;
@@ -19,7 +18,6 @@ import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import eca.core.evaluation.EvaluationMethod;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.annotation.Import;
 
@@ -59,12 +57,16 @@ public class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     private EvaluationRequestService evaluationRequestService;
 
-    @Before
-    public void setUp() {
-        evaluationLogRepository.deleteAll();
+    @Override
+    public void init() {
         evaluationRequestService =
                 new EvaluationRequestService(crossValidationConfig, calculationExecutorService, evaluationService,
                         evaluationLogRepository, evaluationLogMapper);
+    }
+
+    @Override
+    public void deleteAll() {
+        evaluationLogRepository.deleteAll();
     }
 
     @Test(expected = IllegalArgumentException.class)
