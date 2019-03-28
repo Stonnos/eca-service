@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
+  EnumDto,
   EvaluationLogDetailsDto, EvaluationResultsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { EvaluationResultsStatusEnum } from "../model/evaluation-results-status.enum";
@@ -60,7 +61,19 @@ export class EvaluationResultsComponent implements OnInit {
   }
 
   public getEvaluationMethod(): string {
-    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationMethod.description;
+    if (!!this.evaluationLogDetails) {
+      const evaluationMethod: EnumDto = this.evaluationLogDetails.evaluationMethod;
+      if (evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION) {
+        if (this.evaluationLogDetails.numTests == 1) {
+          return `${this.evaluationLogDetails.evaluationMethod.description} (${this.evaluationLogDetails.numFolds} блочная)`;
+        } else {
+          return `${this.evaluationLogDetails.evaluationMethod.description} (${this.evaluationLogDetails.numTests}×${this.evaluationLogDetails.numFolds} блочная)`;
+        }
+      } else {
+        return this.evaluationLogDetails.evaluationMethod.description;
+      }
+    }
+    return null;
   }
 
   public getInstancesName(): string {
