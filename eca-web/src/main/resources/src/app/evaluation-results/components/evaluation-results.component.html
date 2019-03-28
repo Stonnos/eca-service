@@ -1,0 +1,173 @@
+<p-dialog
+  [(visible)]="visible"
+  header="Информация о классификаторе"
+  width="800"
+  appendTo="body"
+  [modal]="true"
+  [blockScroll]="false"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="hide()">
+
+  <h5 class="text-bold mb-3">Основная информация</h5>
+
+  <div class="ui-g">
+    <div class="ui-g-6 text-left text-bold text-wrap">
+      UUID заявки:
+    </div>
+    <div class="ui-g-6 text-left text-wrap">
+      {{ getRequestId() }}
+    </div>
+  </div>
+
+  <div class="ui-g">
+    <div class="ui-g-6 text-left text-bold text-wrap">
+      Классификатор:
+    </div>
+    <div class="ui-g-6 text-left text-wrap">
+      {{ getClassifierName() }}
+    </div>
+  </div>
+
+  <div class="ui-g">
+    <div class="ui-g-6 text-left text-bold text-wrap">
+      Обучающая выборка:
+    </div>
+    <div class="ui-g-6 text-left text-wrap">
+      {{ getInstancesName() }}
+    </div>
+  </div>
+  <div class="ui-g">
+    <div class="ui-g-6 text-left text-bold text-wrap">
+      Число объектов:
+    </div>
+    <div class="ui-g-6 text-left text-wrap">
+      {{ getNumInstances() }}
+    </div>
+  </div>
+  <div class="ui-g">
+    <div class="ui-g-6 text-left text-bold text-wrap">
+      Число атрибутов:
+    </div>
+    <div class="ui-g-6 text-left text-wrap">
+      {{ getNumAttributes() }}
+    </div>
+  </div>
+  <div class="ui-g">
+    <div class="ui-g-6 text-left text-bold text-wrap">
+      Число классов:
+    </div>
+    <div class="ui-g-6 text-left text-wrap">
+      {{ getNumClasses() }}
+    </div>
+  </div>
+  <div class="ui-g">
+    <div class="ui-g-6 text-left text-bold text-wrap">
+      Атрибут класса:
+    </div>
+    <div class="ui-g-6 text-left text-wrap">
+      {{ getClassName() }}
+    </div>
+  </div>
+
+  <div class="ui-g">
+    <div class="ui-g-6 text-left text-bold text-wrap">
+      Метод оценки точности:
+    </div>
+    <div class="ui-g-6 text-left text-wrap">
+      {{ getEvaluationMethod() }}
+    </div>
+  </div>
+
+  <h5 class="text-bold mb-3 mt-3">Результаты классификации</h5>
+
+  <div *ngIf="isEvaluationInProgress()" class="ui-g">
+    <div class="ui-g-12 text-center text-wrap">
+      <div class="text-info">
+        Идет построение модели классификатора...
+      </div>
+    </div>
+    <div *ngIf="isEvaluationResultsErrorStatus()" class="ui-g-12 text-center text-wrap">
+      <div class="text-danger">
+        {{ getEvaluationResultsStatusErrorMessage() }}
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isEvaluationResultsErrorStatus()" class="ui-g">
+    <div class="ui-g-12 text-center text-wrap">
+      <div class="text-danger">
+        {{ getEvaluationResultsStatusErrorMessage() }}
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="isEvaluationResultsReceived()">
+    <div class="ui-g">
+      <div class="ui-g-6 text-left text-bold text-wrap">
+        Число объектов тестовых данных:
+      </div>
+      <div class="ui-g-6 text-left text-wrap">
+        {{ getNumTestInstances() }}
+      </div>
+    </div>
+    <div class="ui-g">
+      <div class="ui-g-6 text-left text-bold text-wrap">
+        Число правильно классифицированных объектов:
+      </div>
+      <div class="ui-g-6 text-left text-wrap">
+        {{ getNumCorrect() }}
+      </div>
+    </div>
+    <div class="ui-g">
+      <div class="ui-g-6 text-left text-bold text-wrap">
+        Число неправильно классифицированных объектов:
+      </div>
+      <div class="ui-g-6 text-left text-wrap">
+        {{ getNumInCorrect() }}
+      </div>
+    </div>
+    <div class="ui-g">
+      <div class="ui-g-6 text-left text-bold text-wrap">
+        Точность классификатора, %:
+      </div>
+      <div class="ui-g-6 text-left text-wrap">
+        {{ getPctCorrect() }}
+      </div>
+    </div>
+    <div class="ui-g">
+      <div class="ui-g-6 text-left text-bold text-wrap">
+        Ошибка классификатора, %:
+      </div>
+      <div class="ui-g-6 text-left text-wrap">
+        {{ getPctIncorrect() }}
+      </div>
+    </div>
+    <div class="ui-g">
+      <div class="ui-g-6 text-left text-bold text-wrap">
+        Средняя абсолютная ошибка классификатора:
+      </div>
+      <div class="ui-g-6 text-left text-wrap">
+        {{ getMeanAbsoluteError() }}
+      </div>
+    </div>
+    <div class="ui-g">
+      <div class="ui-g-6 text-left text-bold text-wrap">
+        Среднеквадратическая ошибка классификатора:
+      </div>
+      <div class="ui-g-6 text-left text-wrap">
+        {{ getRootMeanSquaredError() }}
+      </div>
+    </div>
+  </ng-container>
+
+  <p-footer>
+    <button
+      pButton
+      label="Закрыть"
+      type="button"
+      (click)="hide()"
+      class="ml-auto">
+    </button>
+  </p-footer>
+</p-dialog>

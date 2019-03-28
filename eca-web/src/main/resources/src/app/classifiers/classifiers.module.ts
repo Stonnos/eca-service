@@ -6,6 +6,7 @@ import { UiComponentsModule } from "../ui-components.module";
 import { ClassifiersService } from "./services/classifiers.service";
 import { FilterModule } from "../filter/filter.module";
 import { RequestStatusesStatisticsModule } from "../request-statuses-statistics/request-statuses-statistics.module";
+import { EvaluationResultsModule } from "../evaluation-results/evaluation-results.module";
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import { RequestStatusesStatisticsModule } from "../request-statuses-statistics/
     FormsModule,
     UiComponentsModule,
     FilterModule,
-    RequestStatusesStatisticsModule
+    RequestStatusesStatisticsModule,
+    EvaluationResultsModule
   ],
   declarations: [
     ClassifierListComponent

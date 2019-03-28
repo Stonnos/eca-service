@@ -19,6 +19,7 @@ import { CookieService } from "ngx-cookie-service";
 import { AuthModule } from "./auth/auth.module";
 import { ErsReportModule } from "./ers-report/ers-report.module";
 import { ExperimentStatisticsModule } from "./experiment-statistics/experiment-statistics.module";
+import { EvaluationResultsModule } from "./evaluation-results/evaluation-results.module";
 
 export function initializeApp(configService: ConfigService) {
   return () => configService.getConfigs();
@@ -40,6 +41,7 @@ export function initializeApp(configService: ConfigService) {
     RequestStatusesStatisticsModule,
     FilterModule,
     ErsReportModule,
+    EvaluationResultsModule,
     AuthModule,
     ExperimentStatisticsModule,
     UiComponentsModule,

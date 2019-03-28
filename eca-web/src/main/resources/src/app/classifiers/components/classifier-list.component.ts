@@ -1,5 +1,6 @@
 import { Component, Injector } from '@angular/core';
 import {
+  EvaluationLogDetailsDto,
   EvaluationLogDto, FilterFieldDto,
   PageDto,
   PageRequestDto, RequestStatusStatisticsDto
@@ -19,8 +20,11 @@ import { FilterService } from "../../filter/services/filter.service";
 export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto> {
 
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
+  public evaluationLogDetails: EvaluationLogDetailsDto;
+  public evaluationResultsVisibility: boolean = false;
 
   public instancesInfoColumn: string = "instancesInfo.relationName";
+  public requestIdColumn: string = "requestId";
 
   public selectedEvaluationLog: EvaluationLogDto;
   public selectedColumn: string;
@@ -30,7 +34,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
                      private filterService: FilterService) {
     super(injector.get(MessageService));
     this.defaultSortField = "creationDate";
-    this.linkColumns = ["classifierName", "evaluationMethod", this.instancesInfoColumn];
+    this.linkColumns = ["classifierName", "evaluationMethod", this.instancesInfoColumn, this.requestIdColumn];
     this.initColumns();
   }
 
@@ -59,14 +63,34 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     });
   }
 
-  public onSelect(event, evaluationLog: EvaluationLogDto, column: string, overlayPanel: OverlayPanel) {
-    this.selectedEvaluationLog = evaluationLog;
-    this.selectedColumn = column;
-    overlayPanel.toggle(event);
+  public onSelect(event, evaluationLog: EvaluationLogDto, column: string, overlayPanel: OverlayPanel): void {
+    if (column == this.requestIdColumn) {
+      this.getEvaluationResults(evaluationLog.requestId);
+    } else {
+      this.selectedEvaluationLog = evaluationLog;
+      this.selectedColumn = column;
+      overlayPanel.toggle(event);
+    }
   }
 
   public getColumnValue(column: string, item: EvaluationLogDto) {
     return column == this.instancesInfoColumn ? item.instancesInfo.relationName : item[column];
+  }
+
+  public onEvaluationResultsVisibilityChange(visible): void {
+    this.evaluationResultsVisibility = visible;
+  }
+
+  private getEvaluationResults(requestId: string): void {
+    this.loading = true;
+    this.classifiersService.getEvaluationLogDetailsDto(requestId).subscribe((evaluationLogDetails: EvaluationLogDetailsDto) => {
+      this.evaluationLogDetails = evaluationLogDetails;
+      this.loading = false;
+      this.evaluationResultsVisibility = true;
+    }, (error) => {
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      this.loading = false;
+    });
   }
 
   private initColumns() {

@@ -139,3 +139,9 @@
     </p-panel>
   </p-overlayPanel>
 </div>
+
+<app-evaluation-results
+  [visible]="evaluationResultsVisibility"
+  [evaluationLogDetails]="evaluationLogDetails"
+  (visibilityChange)="onEvaluationResultsVisibilityChange($event)">
+</app-evaluation-results>

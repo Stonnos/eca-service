@@ -85,7 +85,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     }
   }
 
-  public onErsReportVisibilityChange(visible) {
+  public onErsReportVisibilityChange(visible): void {
     this.ersReportVisibility = visible;
   }
 
