@@ -3,6 +3,7 @@ package com.ecaservice.mapping;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
+import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.ErsResponseStatus;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -45,7 +46,7 @@ public abstract class ClassifierOptionsRequestModelMapper {
      * @return classifier options request dto model
      */
     @Mappings({
-            @Mapping(source = "evaluationMethod.description", target = "evaluationMethod")
+            @Mapping(target = "evaluationMethod", ignore = true)
     })
     public abstract ClassifierOptionsRequestDto map(ClassifierOptionsRequestModel classifierOptionsRequestModel);
 
@@ -63,6 +64,15 @@ public abstract class ClassifierOptionsRequestModelMapper {
                                      @MappingTarget ClassifierOptionsRequestDto classifierOptionsRequestDto) {
         ErsResponseStatus ersResponseStatus =
                 ersResponseStatusMapper.map(classifierOptionsRequestModel.getResponseStatus());
-        classifierOptionsRequestDto.setResponseStatus(ersResponseStatus.getDescription());
+        classifierOptionsRequestDto.setResponseStatus(
+                new EnumDto(ersResponseStatus.name(), ersResponseStatus.getDescription()));
+    }
+
+    @AfterMapping
+    protected void mapEvaluationMethod(ClassifierOptionsRequestModel classifierOptionsRequestModel,
+                                       @MappingTarget ClassifierOptionsRequestDto classifierOptionsRequestDto) {
+        classifierOptionsRequestDto.setEvaluationMethod(
+                new EnumDto(classifierOptionsRequestModel.getEvaluationMethod().name(),
+                        classifierOptionsRequestModel.getEvaluationMethod().getDescription()));
     }
 }

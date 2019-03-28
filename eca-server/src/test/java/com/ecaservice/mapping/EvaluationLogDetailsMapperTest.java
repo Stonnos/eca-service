@@ -42,10 +42,14 @@ public class EvaluationLogDetailsMapperTest {
         assertThat(evaluationLogDetailsDto.getCreationDate()).isEqualTo(evaluationLog.getCreationDate());
         assertThat(evaluationLogDetailsDto.getStartDate()).isEqualTo(evaluationLog.getStartDate());
         assertThat(evaluationLogDetailsDto.getEndDate()).isEqualTo(evaluationLog.getEndDate());
-        assertThat(evaluationLogDetailsDto.getEvaluationMethod()).isEqualTo(
+        assertThat(evaluationLogDetailsDto.getEvaluationMethod().getDescription()).isEqualTo(
                 evaluationLog.getEvaluationMethod().getDescription());
-        assertThat(evaluationLogDetailsDto.getEvaluationStatus()).isEqualTo(
+        assertThat(evaluationLogDetailsDto.getEvaluationMethod().getValue()).isEqualTo(
+                evaluationLog.getEvaluationMethod().name());
+        assertThat(evaluationLogDetailsDto.getEvaluationStatus().getDescription()).isEqualTo(
                 evaluationLog.getEvaluationStatus().getDescription());
+        assertThat(evaluationLogDetailsDto.getEvaluationStatus().getValue()).isEqualTo(
+                evaluationLog.getEvaluationStatus().name());
         assertThat(evaluationLogDetailsDto.getRequestId()).isEqualTo(evaluationLog.getRequestId());
         assertThat(evaluationLogDetailsDto.getInputOptions()).isNotNull();
         assertThat(evaluationLogDetailsDto.getInputOptions().size()).isOne();

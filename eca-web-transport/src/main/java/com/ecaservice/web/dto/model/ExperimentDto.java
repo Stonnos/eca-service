@@ -92,17 +92,17 @@ public class ExperimentDto {
      * Experiment type
      */
     @ApiModelProperty(value = "Experiment type")
-    private String experimentType;
+    private EnumDto experimentType;
 
     /**
      * Experiment status
      */
     @ApiModelProperty(value = "Experiment status")
-    private String experimentStatus;
+    private EnumDto experimentStatus;
 
     /**
      * Evaluation method
      */
     @ApiModelProperty(value = "Evaluation method")
-    private String evaluationMethod;
+    private EnumDto evaluationMethod;
 }

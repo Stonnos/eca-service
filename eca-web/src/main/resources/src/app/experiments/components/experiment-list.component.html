@@ -40,9 +40,9 @@
               <tr>
                 <td *ngFor="let column of columns">
                   <a class="link" [routerLink]="" *ngIf="isLink(column.name)" (click)="onLink(column.name, item)">
-                    {{ item[column.name] }}
+                    {{ getColumnValue(column.name, item) }}
                   </a>
-                  <span *ngIf="!isLink(column.name)">{{ item[column.name] }}</span>
+                  <span *ngIf="!isLink(column.name)">{{ getColumnValue(column.name, item) }}</span>
                 </td>
               </tr>
             </ng-template>

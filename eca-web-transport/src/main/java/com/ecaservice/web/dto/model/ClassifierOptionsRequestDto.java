@@ -43,7 +43,7 @@ public class ClassifierOptionsRequestDto {
      * Evaluation method
      */
     @ApiModelProperty(value = "Evaluation method")
-    private String evaluationMethod;
+    private EnumDto evaluationMethod;
 
     /**
      * Folds number for k * V cross - validation method
@@ -67,7 +67,7 @@ public class ClassifierOptionsRequestDto {
      * Response status from ERS - service
      */
     @ApiModelProperty(value = "Response status from ERS - service")
-    private String responseStatus;
+    private EnumDto responseStatus;
 
     /**
      * Classifiers options response models.

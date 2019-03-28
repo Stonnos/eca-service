@@ -5,6 +5,7 @@ import com.ecaservice.model.entity.ClassifierInputOptions;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.InstancesInfo;
 import com.ecaservice.model.evaluation.EvaluationOption;
+import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -40,9 +41,9 @@ public abstract class EvaluationLogMapper {
      * @return evaluation log dto
      */
     @Mappings({
-            @Mapping(source = "evaluationMethod.description", target = "evaluationMethod"),
-            @Mapping(source = "evaluationStatus.description", target = "evaluationStatus"),
-            @Mapping(source = "classifierInputOptions", target = "inputOptions")
+            @Mapping(source = "classifierInputOptions", target = "inputOptions"),
+            @Mapping(target = "evaluationMethod", ignore = true),
+            @Mapping(target = "evaluationStatus", ignore = true)
     })
     public abstract EvaluationLogDto map(EvaluationLog evaluationLog);
 
@@ -86,6 +87,8 @@ public abstract class EvaluationLogMapper {
     @AfterMapping
     protected void mapEvaluationMethodOptions(EvaluationLog evaluationLog,
                                               @MappingTarget EvaluationLogDto evaluationLogDto) {
+        evaluationLogDto.setEvaluationMethod(new EnumDto(evaluationLog.getEvaluationMethod().name(),
+                evaluationLog.getEvaluationMethod().getDescription()));
         evaluationLogDto.setNumFolds(
                 Optional.ofNullable(evaluationLog.getEvaluationOptionsMap().get(EvaluationOption.NUM_FOLDS)).map(
                         Integer::valueOf).orElse(null));
@@ -95,5 +98,12 @@ public abstract class EvaluationLogMapper {
         evaluationLogDto.setSeed(
                 Optional.ofNullable(evaluationLog.getEvaluationOptionsMap().get(EvaluationOption.SEED)).map(
                         Integer::valueOf).orElse(null));
+    }
+
+    @AfterMapping
+    protected void mapEvaluationStatus(EvaluationLog evaluationLog,
+                                              @MappingTarget EvaluationLogDto evaluationLogDto) {
+        evaluationLogDto.setEvaluationStatus(new EnumDto(evaluationLog.getEvaluationStatus().name(),
+                evaluationLog.getEvaluationStatus().getDescription()));
     }
 }

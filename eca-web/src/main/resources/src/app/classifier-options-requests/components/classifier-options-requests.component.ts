@@ -51,10 +51,15 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
   }
 
   public getColumnValue(column: string, item: ClassifierOptionsRequestDto) {
-    if (column == "classifierName" && this.hasClassifierOptionsResponse(item)) {
-      return item.classifierOptionsResponseModels[0].classifierName;
-    } else {
-      return item[column];
+    switch (column) {
+      case "classifierName":
+        return this.hasClassifierOptionsResponse(item) ? item.classifierOptionsResponseModels[0].classifierName : null;
+      case "evaluationMethod":
+        return item.evaluationMethod.description;
+      case "responseStatus":
+        return item.responseStatus.description;
+      default:
+        return item[column];
     }
   }
 

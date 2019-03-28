@@ -7,25 +7,25 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Dto model for charts.
+ * Enum dto model.
  *
  * @author Roman Batygin
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "Model for chart")
-public class ChartDataDto {
+@ApiModel(description = "Enum dto model")
+public class EnumDto {
 
     /**
-     * Chart item label
+     * Enum value
      */
-    @ApiModelProperty(value = "Chart item label", required = true)
-    private String label;
+    @ApiModelProperty(value = "Enum value", required = true)
+    private String value;
 
     /**
-     * Chart item value
+     * Enum value description
      */
-    @ApiModelProperty(value = "Chart item value", required = true)
-    private Long count;
+    @ApiModelProperty(value = "Enum value description", required = true)
+    private String description;
 }

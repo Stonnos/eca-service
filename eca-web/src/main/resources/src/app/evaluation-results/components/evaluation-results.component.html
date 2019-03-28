@@ -159,6 +159,23 @@
         {{ getRootMeanSquaredError() }}
       </div>
     </div>
+    <div *ngIf="isCrossValidationMethod()" class="ui-g">
+      <div class="ui-g-6 text-left text-bold text-wrap">
+        Дисперсия ошибки классификатора:
+      </div>
+      <div class="ui-g-6 text-left text-wrap">
+        {{ getVarianceError() }}
+      </div>
+    </div>
+    <div *ngIf="isCrossValidationMethod()" class="ui-g">
+      <div class="ui-g-6 text-left text-bold text-wrap">
+        95% доверительный интервал ошибки классификатора:
+      </div>
+      <div class="ui-g-6 text-left text-wrap">
+        {{ getConfidenceInterval() }}
+      </div>
+    </div>
+
   </ng-container>
 
   <p-footer>

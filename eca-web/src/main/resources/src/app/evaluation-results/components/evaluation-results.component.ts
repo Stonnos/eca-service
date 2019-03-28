@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
-  EvaluationLogDetailsDto
+  EvaluationLogDetailsDto, EvaluationResultsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { EvaluationResultsStatusEnum } from "../model/evaluation-results-status.enum";
+import { EvaluationMethod } from "../../model/evaluation-method.enum";
 
 @Component({
   selector: 'app-evaluation-results',
@@ -31,15 +32,19 @@ export class EvaluationResultsComponent implements OnInit {
   }
 
   public isEvaluationResultsReceived(): boolean {
-    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsStatus == 'RESULTS_RECEIVED';
+    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsStatus == EvaluationResultsStatusEnum.RESULTS_RECEIVED;
   }
 
   public isEvaluationInProgress(): boolean {
-    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsStatus == 'EVALUATION_IN_PROGRESS';
+    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsStatus == EvaluationResultsStatusEnum.EVALUATION_IN_PROGRESS;
   }
 
   public isEvaluationResultsErrorStatus(): boolean {
     return !this.isEvaluationInProgress() && !this.isEvaluationResultsReceived();
+  }
+
+  public isCrossValidationMethod(): boolean {
+    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION;
   }
 
   public getEvaluationResultsStatusErrorMessage(): string {
@@ -55,11 +60,7 @@ export class EvaluationResultsComponent implements OnInit {
   }
 
   public getEvaluationMethod(): string {
-    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationMethod;
-  }
-
-  public getEvaluationStatus(): string {
-    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationStatus;
+    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationMethod.description;
   }
 
   public getInstancesName(): string {
@@ -108,6 +109,18 @@ export class EvaluationResultsComponent implements OnInit {
 
   public getRootMeanSquaredError(): number {
     return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsDto.rootMeanSquaredError;
+  }
+
+  public getVarianceError(): number {
+    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsDto.varianceError;
+  }
+
+  public getConfidenceInterval(): string {
+    if (!!this.evaluationLogDetails) {
+      const evaluationResults: EvaluationResultsDto = this.evaluationLogDetails.evaluationResultsDto;
+      return `[${evaluationResults.confidenceIntervalLowerBound}; ${evaluationResults.confidenceIntervalUpperBound}]`;
+    }
+    return null;
   }
 
   public hide(): void {

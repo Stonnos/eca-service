@@ -2,11 +2,14 @@ package com.ecaservice.mapping;
 
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 
@@ -39,9 +42,9 @@ public abstract class ExperimentMapper {
                     qualifiedByName = "toFileName"),
             @Mapping(source = "trainingDataAbsolutePath", target = "trainingDataAbsolutePath",
                     qualifiedByName = "toFileName"),
-            @Mapping(source = "evaluationMethod.description", target = "evaluationMethod"),
-            @Mapping(source = "experimentType.description", target = "experimentType"),
-            @Mapping(source = "experimentStatus.description", target = "experimentStatus")
+            @Mapping(target = "evaluationMethod", ignore = true),
+            @Mapping(target = "experimentType", ignore = true),
+            @Mapping(target = "experimentStatus", ignore = true)
     })
     public abstract ExperimentDto map(Experiment experiment);
 
@@ -52,6 +55,16 @@ public abstract class ExperimentMapper {
      * @return experiments dto models list
      */
     public abstract List<ExperimentDto> map(List<Experiment> experiments);
+
+    @AfterMapping
+    protected void postMapping(Experiment experiment, @MappingTarget ExperimentDto experimentDto) {
+        experimentDto.setEvaluationMethod(new EnumDto(experiment.getEvaluationMethod().name(),
+                experiment.getEvaluationMethod().getDescription()));
+        experimentDto.setExperimentStatus(new EnumDto(experiment.getExperimentStatus().name(),
+                experiment.getExperimentStatus().getDescription()));
+        experimentDto.setExperimentType(new EnumDto(experiment.getExperimentType().name(),
+                experiment.getExperimentType().getDescription()));
+    }
 
     @Named("toFileName")
     protected String toFileName(String path) {

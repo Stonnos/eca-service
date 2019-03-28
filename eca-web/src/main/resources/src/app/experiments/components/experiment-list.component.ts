@@ -49,6 +49,19 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     });
   }
 
+  public getColumnValue(column: string, item: ExperimentDto) {
+    switch (column) {
+      case "evaluationMethod":
+        return item.evaluationMethod.description;
+      case "experimentStatus":
+        return item.experimentStatus.description;
+      case "experimentType":
+        return item.experimentType.description;
+      default:
+        return item[column];
+    }
+  }
+
   public onLink(column: string, experiment: ExperimentDto) {
     switch (column) {
       case this.linkColumns[0]:

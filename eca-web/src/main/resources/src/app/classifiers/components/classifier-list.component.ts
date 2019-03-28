@@ -11,6 +11,7 @@ import { ClassifiersService } from "../services/classifiers.service";
 import { OverlayPanel } from "primeng/primeng";
 import { Observable } from "rxjs/internal/Observable";
 import { FilterService } from "../../filter/services/filter.service";
+import { EvaluationMethod } from "../../model/evaluation-method.enum";
 
 @Component({
   selector: 'app-classifier-list',
@@ -25,6 +26,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
 
   public instancesInfoColumn: string = "instancesInfo.relationName";
   public requestIdColumn: string = "requestId";
+  public evaluationMethodColumn: string = "evaluationMethod";
 
   public selectedEvaluationLog: EvaluationLogDto;
   public selectedColumn: string;
@@ -34,7 +36,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
                      private filterService: FilterService) {
     super(injector.get(MessageService));
     this.defaultSortField = "creationDate";
-    this.linkColumns = ["classifierName", "evaluationMethod", this.instancesInfoColumn, this.requestIdColumn];
+    this.linkColumns = ["classifierName", this.evaluationMethodColumn, this.instancesInfoColumn, this.requestIdColumn];
     this.initColumns();
   }
 
@@ -64,17 +66,31 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   }
 
   public onSelect(event, evaluationLog: EvaluationLogDto, column: string, overlayPanel: OverlayPanel): void {
-    if (column == this.requestIdColumn) {
-      this.getEvaluationResults(evaluationLog.requestId);
-    } else {
-      this.selectedEvaluationLog = evaluationLog;
-      this.selectedColumn = column;
-      overlayPanel.toggle(event);
+    switch (column) {
+      case this.requestIdColumn:
+        this.getEvaluationResults(evaluationLog.requestId);
+        break;
+      case this.evaluationMethodColumn:
+        if (evaluationLog.evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION) {
+          this.toggleOverlayPanel(event, evaluationLog, column, overlayPanel);
+        }
+        break;
+      default:
+        this.toggleOverlayPanel(event, evaluationLog, column, overlayPanel);
     }
   }
 
   public getColumnValue(column: string, item: EvaluationLogDto) {
-    return column == this.instancesInfoColumn ? item.instancesInfo.relationName : item[column];
+    switch (column) {
+      case this.instancesInfoColumn:
+        return item.instancesInfo.relationName;
+      case this.evaluationMethodColumn:
+        return item.evaluationMethod.description;
+      case "evaluationStatus":
+        return item.evaluationStatus.description;
+      default:
+        return item[column];
+    }
   }
 
   public onEvaluationResultsVisibilityChange(visible): void {
@@ -93,12 +109,18 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     });
   }
 
+  private toggleOverlayPanel(event, evaluationLog: EvaluationLogDto, column: string, overlayPanel: OverlayPanel): void {
+    this.selectedEvaluationLog = evaluationLog;
+    this.selectedColumn = column;
+    overlayPanel.toggle(event);
+  }
+
   private initColumns() {
     this.columns = [
       { name: "requestId", label: "UUID заявки" },
       { name: "classifierName", label: "Классификатор" },
       { name: this.instancesInfoColumn, label: "Обучающая выборка" },
-      { name: "evaluationMethod", label: "Метод оценки точности" },
+      { name: this.evaluationMethodColumn, label: "Метод оценки точности" },
       { name: "creationDate", label: "Дата создания заявки" },
       { name: "startDate", label: "Дата начала построения модели" },
       { name: "endDate", label: "Дата окончания построения модели" },

@@ -59,13 +59,13 @@ public class EvaluationLogDto {
      * Evaluation status
      */
     @ApiModelProperty(value = "Evaluation status")
-    private String evaluationStatus;
+    private EnumDto evaluationStatus;
 
     /**
      * Evaluation method
      */
     @ApiModelProperty(value = "Evaluation method")
-    private String evaluationMethod;
+    private EnumDto evaluationMethod;
 
     /**
      * Folds number for k * V cross - validation method

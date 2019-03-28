@@ -53,14 +53,18 @@ public class ClassifierOptionsRequestModelMapperTest {
         Assertions.assertThat(classifierOptionsRequestDto.getRequestDate()).isEqualTo(requestModel.getRequestDate());
         Assertions.assertThat(classifierOptionsRequestDto.getRequestId()).isEqualTo(requestModel.getRequestId());
         ErsResponseStatus ersResponseStatus = ersResponseStatusMapper.map(requestModel.getResponseStatus());
-        Assertions.assertThat(classifierOptionsRequestDto.getResponseStatus()).isEqualTo(
+        Assertions.assertThat(classifierOptionsRequestDto.getResponseStatus().getDescription()).isEqualTo(
                 ersResponseStatus.getDescription());
+        Assertions.assertThat(classifierOptionsRequestDto.getResponseStatus().getValue()).isEqualTo(
+                ersResponseStatus.name());
         Assertions.assertThat(classifierOptionsRequestDto.getRelationName()).isEqualTo(requestModel.getRelationName());
         Assertions.assertThat(classifierOptionsRequestDto.getNumFolds()).isEqualTo(requestModel.getNumFolds());
         Assertions.assertThat(classifierOptionsRequestDto.getNumTests()).isEqualTo(requestModel.getNumTests());
         Assertions.assertThat(classifierOptionsRequestDto.getSeed()).isEqualTo(requestModel.getSeed());
-        Assertions.assertThat(classifierOptionsRequestDto.getEvaluationMethod()).isEqualTo(
+        Assertions.assertThat(classifierOptionsRequestDto.getEvaluationMethod().getDescription()).isEqualTo(
                 requestModel.getEvaluationMethod().getDescription());
+        Assertions.assertThat(classifierOptionsRequestDto.getEvaluationMethod().getValue()).isEqualTo(
+                requestModel.getEvaluationMethod().name());
         Assertions.assertThat(classifierOptionsRequestDto.getClassifierOptionsResponseModels()).isNotNull();
         Assertions.assertThat(classifierOptionsRequestDto.getClassifierOptionsResponseModels().size()).isOne();
     }

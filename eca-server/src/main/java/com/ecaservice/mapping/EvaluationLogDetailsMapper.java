@@ -3,8 +3,8 @@ package com.ecaservice.mapping;
 import com.ecaservice.dto.evaluation.GetEvaluationResultsSimpleResponse;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.evaluation.EvaluationOption;
+import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
-import com.ecaservice.web.dto.model.EvaluationLogDto;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -28,9 +28,9 @@ public abstract class EvaluationLogDetailsMapper {
      * @return evaluation log details dto
      */
     @Mappings({
-            @Mapping(source = "evaluationMethod.description", target = "evaluationMethod"),
-            @Mapping(source = "evaluationStatus.description", target = "evaluationStatus"),
-            @Mapping(source = "classifierInputOptions", target = "inputOptions")
+            @Mapping(source = "classifierInputOptions", target = "inputOptions"),
+            @Mapping(target = "evaluationMethod", ignore = true),
+            @Mapping(target = "evaluationStatus", ignore = true)
     })
     public abstract EvaluationLogDetailsDto map(EvaluationLog evaluationLog);
 
@@ -49,15 +49,24 @@ public abstract class EvaluationLogDetailsMapper {
 
     @AfterMapping
     protected void mapEvaluationMethodOptions(EvaluationLog evaluationLog,
-                                              @MappingTarget EvaluationLogDto evaluationLogDto) {
-        evaluationLogDto.setNumFolds(
+                                              @MappingTarget EvaluationLogDetailsDto evaluationLogDetailsDto) {
+        evaluationLogDetailsDto.setEvaluationMethod(new EnumDto(evaluationLog.getEvaluationMethod().name(),
+                evaluationLog.getEvaluationMethod().getDescription()));
+        evaluationLogDetailsDto.setNumFolds(
                 Optional.ofNullable(evaluationLog.getEvaluationOptionsMap().get(EvaluationOption.NUM_FOLDS)).map(
                         Integer::valueOf).orElse(null));
-        evaluationLogDto.setNumTests(
+        evaluationLogDetailsDto.setNumTests(
                 Optional.ofNullable(evaluationLog.getEvaluationOptionsMap().get(EvaluationOption.NUM_TESTS)).map(
                         Integer::valueOf).orElse(null));
-        evaluationLogDto.setSeed(
+        evaluationLogDetailsDto.setSeed(
                 Optional.ofNullable(evaluationLog.getEvaluationOptionsMap().get(EvaluationOption.SEED)).map(
                         Integer::valueOf).orElse(null));
+    }
+
+    @AfterMapping
+    protected void mapEvaluationStatus(EvaluationLog evaluationLog,
+                                       @MappingTarget EvaluationLogDetailsDto evaluationLogDetailsDto) {
+        evaluationLogDetailsDto.setEvaluationStatus(new EnumDto(evaluationLog.getEvaluationStatus().name(),
+                evaluationLog.getEvaluationStatus().getDescription()));
     }
 }

@@ -16,7 +16,7 @@ import lombok.EqualsAndHashCode;
 public class EvaluationLogDetailsDto extends EvaluationLogDto {
 
     /**
-     * Evaluation log report status
+     * Evaluation log results status
      */
     @ApiModelProperty(value = "Evaluation results status")
     private EvaluationResultsStatus evaluationResultsStatus;
