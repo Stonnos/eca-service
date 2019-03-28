@@ -71,30 +71,32 @@
           </p-footer>
         </ng-container>
         <ng-container *ngSwitchCase="'evaluationMethod'">
-          <div class="ui-g" *ngIf="selectedRequest.numFolds">
-            <div class="ui-g-6 text-right text-bold text-wrap">
-              Число блоков:
+          <div class="evaluation-method-content">
+            <div class="ui-g" *ngIf="selectedRequest.numFolds">
+              <div class="ui-g-6 text-right text-bold text-wrap">
+                Число блоков:
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ selectedRequest.numFolds }}
+              </div>
             </div>
-            <div class="ui-g-6 text-left text-wrap">
-              {{ selectedRequest.numFolds }}
-            </div>
-          </div>
 
-          <div class="ui-g" *ngIf="selectedRequest.numTests">
-            <div class="ui-g-6 text-right text-bold text-wrap">
-              Число проверок:
+            <div class="ui-g" *ngIf="selectedRequest.numTests">
+              <div class="ui-g-6 text-right text-bold text-wrap">
+                Число проверок:
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ selectedRequest.numTests }}
+              </div>
             </div>
-            <div class="ui-g-6 text-left text-wrap">
-              {{ selectedRequest.numTests }}
-            </div>
-          </div>
 
-          <div class="ui-g" *ngIf="selectedRequest.seed">
-            <div class="ui-g-6 text-right text-bold text-wrap">
-              Начальное значение (seed):
-            </div>
-            <div class="ui-g-6 text-left text-wrap">
-              {{ selectedRequest.seed }}
+            <div class="ui-g" *ngIf="selectedRequest.seed">
+              <div class="ui-g-6 text-right text-bold text-wrap">
+                Начальное значение (seed):
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ selectedRequest.seed }}
+              </div>
             </div>
           </div>
         </ng-container>
