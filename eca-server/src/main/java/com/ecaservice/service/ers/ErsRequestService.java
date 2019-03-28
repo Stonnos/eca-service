@@ -1,5 +1,6 @@
 package com.ecaservice.service.ers;
 
+import com.ecaservice.config.EcaServiceParam;
 import com.ecaservice.config.ErsConfig;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
@@ -15,6 +16,7 @@ import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.repository.ErsRequestRepository;
 import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -93,12 +95,13 @@ public class ErsRequestService {
      * @param requestId - ERS request id
      * @return evaluation results simple response
      */
+    @Cacheable(EcaServiceParam.EVALUATION_RESULTS_CACHE_NAME)
     public GetEvaluationResultsSimpleResponse getEvaluationResults(String requestId) {
-        log.trace("Starting to get evaluation results simple response for request id [{}]", requestId);
+        log.info("Starting to get evaluation results simple response for request id [{}]", requestId);
         GetEvaluationResultsSimpleRequest request = new GetEvaluationResultsSimpleRequest();
         request.setRequestId(requestId);
         GetEvaluationResultsSimpleResponse response = ersWebServiceClient.getEvaluationResultsSimpleResponse(request);
-        log.trace("Evaluation results simple response with request id [{}] has been fetched", requestId);
+        log.info("Evaluation results simple response with request id [{}] has been fetched", requestId);
         return response;
     }
 
@@ -114,12 +117,12 @@ public class ErsRequestService {
         requestModel.setRequestDate(LocalDateTime.now());
         String classifierOptions = null;
         try {
-            log.trace("Sending request to find classifier optimal options for data '{}'.",
+            log.info("Sending request to find classifier optimal options for data '{}'.",
                     classifierOptionsRequest.getInstances().getRelationName());
             ClassifierOptionsResponse response =
                     ersWebServiceClient.getClassifierOptions(classifierOptionsRequest);
-            log.trace("Received response with requestId = {}, status = {}", response.getRequestId(),
-                    response.getStatus());
+            log.info("Received response with requestId = {}, status = {} for data '{}'", response.getRequestId(),
+                    response.getStatus(), classifierOptionsRequest.getInstances().getRelationName());
             requestModel.setRequestId(response.getRequestId());
             requestModel.setResponseStatus(response.getStatus());
             if (ResponseStatus.SUCCESS.equals(response.getStatus())) {
