@@ -95,7 +95,7 @@ public class ErsRequestService {
      * @param requestId - ERS request id
      * @return evaluation results simple response
      */
-    @Cacheable(EcaServiceParam.EVALUATION_RESULTS_CACHE_NAME)
+    @Cacheable(value = EcaServiceParam.EVALUATION_RESULTS_CACHE_NAME, unless = "#result.status.name() != 'SUCCESS'")
     public GetEvaluationResultsSimpleResponse getEvaluationResults(String requestId) {
         log.info("Starting to get evaluation results simple response for request id [{}]", requestId);
         GetEvaluationResultsSimpleRequest request = new GetEvaluationResultsSimpleRequest();
