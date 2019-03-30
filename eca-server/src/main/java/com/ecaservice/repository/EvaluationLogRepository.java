@@ -35,4 +35,8 @@ public interface EvaluationLogRepository
     @Query("select el.evaluationStatus as requestStatus, count(el.evaluationStatus) as requestsCount from " +
             "EvaluationLog el group by el.evaluationStatus")
     List<RequestStatusStatistics> getRequestStatusesStatistics();
+
+    boolean existsByRequestId(String requestId);
+
+    List<EvaluationLog> findAllByRequestIdIsNull();
 }
