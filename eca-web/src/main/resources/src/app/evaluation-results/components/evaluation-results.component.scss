@@ -1,0 +1,11 @@
+.details-fieldset::ng-deep {
+
+  .ui-fieldset {
+    margin-top: 10px;
+  }
+
+  .ui-fieldset-legend {
+    font-weight: bold;
+    font-size: 16px;
+  }
+}

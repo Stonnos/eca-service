@@ -27,6 +27,8 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { TableModule } from 'primeng/table';
 import { TabViewModule } from 'primeng/tabview';
 import { CardModule } from "primeng/card";
+import { FieldsetModule } from 'primeng/fieldset';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
 
 @NgModule({
   imports: [
@@ -63,7 +65,9 @@ import { CardModule } from "primeng/card";
     ProgressSpinnerModule,
     ListboxModule,
     InputSwitchModule,
-    CheckboxModule
+    CheckboxModule,
+    FieldsetModule,
+    ScrollPanelModule
   ]
 })
 export class UiComponentsModule {

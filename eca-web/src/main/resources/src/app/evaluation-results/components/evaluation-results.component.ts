@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import {
   EnumDto,
   EvaluationLogDetailsDto, EvaluationResultsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { EvaluationResultsStatusEnum } from "../model/evaluation-results-status.enum";
 import { EvaluationMethod } from "../../model/evaluation-method.enum";
+import { Fieldset } from "primeng/primeng";
 
 @Component({
   selector: 'app-evaluation-results',
@@ -19,6 +20,9 @@ export class EvaluationResultsComponent implements OnInit {
     .set(EvaluationResultsStatusEnum.ERS_SERVICE_UNAVAILABLE, 'Не удалось получить результаты классификации, т.к. ERS сервис не доступен')
     .set(EvaluationResultsStatusEnum.EVALUATION_RESULTS_NOT_FOUND, 'Результаты классификации не были найдены в ERS')
     .set(EvaluationResultsStatusEnum.RESULTS_NOT_SENT, 'Не удалось получить результаты классификации, т.к. они не были отправлены в ERS сервис');
+
+  @ViewChild('inputOptions')
+  private inputOptionsFieldSet: Fieldset;
 
   @Input()
   public visible: boolean = false;
@@ -137,6 +141,7 @@ export class EvaluationResultsComponent implements OnInit {
   }
 
   public hide(): void {
+    this.inputOptionsFieldSet.collapsed = true;
     this.visibilityChange.emit(false);
   }
 }
