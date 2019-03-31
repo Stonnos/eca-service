@@ -49,13 +49,11 @@ public class EmailTemplateVisitorTest {
         assertContext(context, experiment);
         assertThat(context.getVariable(TemplateVariablesDictionary.EMAIL_KEY).toString()).isEqualTo(
                 experiment.getEmail());
-        assertThat(context.getVariable(TemplateVariablesDictionary.UUID_KEY).toString()).isEqualTo(
-                experiment.getUuid());
     }
 
     @Test
     public void testErrorStatusContext() {
-        Experiment experiment = TestHelperUtils.createExperiment(null);
+        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
         experiment.setExperimentStatus(RequestStatus.ERROR);
         Context context = experiment.getExperimentStatus().handle(emailTemplateVisitor, experiment);
         assertContext(context, experiment);
@@ -63,7 +61,7 @@ public class EmailTemplateVisitorTest {
 
     @Test
     public void testTimeoutStatusContext() {
-        Experiment experiment = TestHelperUtils.createExperiment(null);
+        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
         experiment.setExperimentStatus(RequestStatus.TIMEOUT);
         Context context = experiment.getExperimentStatus().handle(emailTemplateVisitor, experiment);
         assertContext(context, experiment);
@@ -88,5 +86,7 @@ public class EmailTemplateVisitorTest {
                 ExperimentType.findByDescription(
                         context.getVariable(TemplateVariablesDictionary.EXPERIMENT_TYPE_KEY).toString());
         assertThat(actualExperimentType).isEqualTo(experiment.getExperimentType());
+        assertThat(context.getVariable(TemplateVariablesDictionary.UUID_KEY).toString()).isEqualTo(
+                experiment.getUuid());
     }
 }

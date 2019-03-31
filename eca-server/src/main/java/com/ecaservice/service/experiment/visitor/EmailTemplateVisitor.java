@@ -33,7 +33,6 @@ public class EmailTemplateVisitor implements RequestStatusVisitor<Context, Exper
     public Context caseNew(Experiment parameter) {
         Context context = createCommonContext(parameter);
         context.setVariable(TemplateVariablesDictionary.EMAIL_KEY, parameter.getEmail());
-        context.setVariable(TemplateVariablesDictionary.UUID_KEY, parameter.getUuid());
         return context;
     }
 
@@ -62,6 +61,7 @@ public class EmailTemplateVisitor implements RequestStatusVisitor<Context, Exper
         context.setVariable(TemplateVariablesDictionary.FIRST_NAME_KEY, parameter.getFirstName());
         context.setVariable(TemplateVariablesDictionary.EXPERIMENT_TYPE_KEY,
                 parameter.getExperimentType().getDescription());
+        context.setVariable(TemplateVariablesDictionary.UUID_KEY, parameter.getUuid());
         return context;
     }
 }
