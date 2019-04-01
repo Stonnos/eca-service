@@ -73,8 +73,4 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
             "and (select count(err) from ExperimentResultsRequest err where " +
             "err.experiment = exp and err.responseStatus = 'SUCCESS') = 0 order by exp.creationDate desc")
     List<Experiment> findExperimentsToErsSent();
-
-    boolean existsByUuid(String uuid);
-
-    List<Experiment> findAllByUuidIsNull();
 }
