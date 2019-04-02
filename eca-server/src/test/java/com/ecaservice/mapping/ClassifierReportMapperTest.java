@@ -3,13 +3,16 @@ package com.ecaservice.mapping;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.evaluation.ClassifierReport;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit tests for checking {@link ClassifierReportMapper} functionality.
@@ -27,10 +30,21 @@ public class ClassifierReportMapperTest {
     public void testMapClassifierReport() {
         ClassifierReport classifierReport = TestHelperUtils.createClassifierReport();
         ClassifierOptionsResponseModel classifierOptionsResponseModel = classifierReportMapper.map(classifierReport);
-        Assertions.assertThat(classifierOptionsResponseModel.getClassifierName()).isEqualTo(
+        assertThat(classifierOptionsResponseModel.getClassifierName()).isEqualTo(
                 classifierReport.getClassifierName());
-        Assertions.assertThat(classifierOptionsResponseModel.getClassifierDescription()).isEqualTo(
+        assertThat(classifierOptionsResponseModel.getClassifierDescription()).isEqualTo(
                 classifierReport.getClassifierDescription());
-        Assertions.assertThat(classifierOptionsResponseModel.getOptions()).isEqualTo(classifierReport.getOptions());
+        assertThat(classifierOptionsResponseModel.getOptions()).isEqualTo(classifierReport.getOptions());
+    }
+
+    @Test
+    public void testMapClassifierReportList() {
+        ClassifierReport classifierReport = TestHelperUtils.createClassifierReport();
+        ClassifierReport classifierReport1 = TestHelperUtils.createClassifierReport();
+        List<ClassifierOptionsResponseModel> classifierOptionsRequestModelList =
+                classifierReportMapper.map(Arrays.asList
+                        (classifierReport, classifierReport1));
+        assertThat(classifierOptionsRequestModelList).isNotNull();
+        assertThat(classifierOptionsRequestModelList).hasSize(2);
     }
 }

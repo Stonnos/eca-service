@@ -10,6 +10,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,5 +40,17 @@ public class ClassifierOptionsDatabaseModelMapperTest {
         assertThat(classifierOptionsDto.getCreationDate()).isEqualTo(classifierOptionsDatabaseModel.getCreationDate());
         assertThat(classifierOptionsDto.getVersion()).isEqualTo(classifierOptionsDatabaseModel.getVersion());
         assertThat(classifierOptionsDto.getOptionsName()).isEqualTo(classifierOptionsDatabaseModel.getOptionsName());
+    }
+
+    @Test
+    public void testMapClassifierOptionsDatabaseModelsList() {
+        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
+        classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
+        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel1 = new ClassifierOptionsDatabaseModel();
+        classifierOptionsDatabaseModel1.setCreationDate(LocalDateTime.now().plusDays(1L));
+        List<ClassifierOptionsDto> classifierOptionsDtoList = classifierOptionsDatabaseModelMapper.map(
+                Arrays.asList(classifierOptionsDatabaseModel, classifierOptionsDatabaseModel1));
+        assertThat(classifierOptionsDtoList).isNotNull();
+        assertThat(classifierOptionsDtoList).hasSize(2);
     }
 }

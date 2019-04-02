@@ -11,6 +11,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -76,5 +78,14 @@ public class ExperimentMapperTest {
         assertThat(experimentDto.getTrainingDataAbsolutePath()).isEqualTo(DATA_XLS);
         assertThat(experimentDto.getExperimentAbsolutePath()).isEqualTo(EXPERIMENT_MODEL);
         assertThat(experimentDto.getUuid()).isEqualTo(experiment.getUuid());
+    }
+
+    @Test
+    public void testMapExperimentDtoList() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        List<ExperimentDto> experimentDtoList = experimentMapper.map(Arrays.asList(experiment, experiment1));
+        assertThat(experimentDtoList).isNotNull();
+        assertThat(experimentDtoList).hasSize(2);
     }
 }

@@ -4,6 +4,7 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.model.entity.ClassifierInputOptions;
 import com.ecaservice.model.entity.EvaluationLog;
+import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
 import eca.core.evaluation.EvaluationMethod;
 import eca.metrics.KNearestNeighbours;
@@ -13,9 +14,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -84,6 +87,18 @@ public class EvaluationLogMapperTest {
         assertThat(evaluationLogDto.getNumTests()).isNotNull();
         assertThat(evaluationLogDto.getSeed()).isNull();
         assertThat(evaluationLogDto.getInstancesInfo()).isNotNull();
+    }
+
+    @Test
+    public void testMapToEvaluationLogDtoList() {
+        EvaluationLog evaluationLog =
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.NEW);
+        EvaluationLog evaluationLog1 =
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        List<EvaluationLogDto> evaluationLogDtoList =
+                evaluationLogMapper.map(Arrays.asList(evaluationLog, evaluationLog1));
+        assertThat(evaluationLogDtoList).isNotNull();
+        assertThat(evaluationLogDtoList).hasSize(2);
     }
 
     private void assertOptions(EvaluationLog evaluationLog, EvaluationRequest request) {

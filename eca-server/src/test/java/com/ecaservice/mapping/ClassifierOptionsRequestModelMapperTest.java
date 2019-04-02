@@ -8,6 +8,7 @@ import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
 import com.ecaservice.web.dto.model.ErsResponseStatus;
 import eca.core.evaluation.EvaluationMethod;
+import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +17,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Unit tests for checking {@link ClassifierOptionsRequestModelMapper} functionality.
@@ -67,5 +70,19 @@ public class ClassifierOptionsRequestModelMapperTest {
                 requestModel.getEvaluationMethod().name());
         Assertions.assertThat(classifierOptionsRequestDto.getClassifierOptionsResponseModels()).isNotNull();
         Assertions.assertThat(classifierOptionsRequestDto.getClassifierOptionsResponseModels().size()).isOne();
+    }
+
+    @Test
+    public void testMapClassifierOptionsRequestModels() {
+        ClassifierOptionsRequestModel requestModel =
+                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
+                        ResponseStatus.SUCCESS, Collections.emptyList());
+        ClassifierOptionsRequestModel requestModel1 =
+                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
+                        ResponseStatus.SUCCESS, Collections.emptyList());
+        List<ClassifierOptionsRequestDto> classifierOptionsRequestDtoList = classifierOptionsRequestModelMapper.map
+                (Arrays.asList(requestModel, requestModel1));
+        Assertions.assertThat(classifierOptionsRequestDtoList).isNotNull();
+        Assertions.assertThat(classifierOptionsRequestDtoList).hasSize(2);
     }
 }

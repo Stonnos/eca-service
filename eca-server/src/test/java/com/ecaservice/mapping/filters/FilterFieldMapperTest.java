@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Unit test for checking {@link FilterFieldMapper} functionality.
@@ -45,5 +47,20 @@ public class FilterFieldMapperTest {
         Assertions.assertThat(filterFieldDto.getFilterType()).isEqualTo(filterField.getFilterType());
         Assertions.assertThat(filterFieldDto.getMatchMode()).isEqualTo(filterField.getMatchMode());
         Assertions.assertThat(filterFieldDto.getDictionary()).isNotNull();
+    }
+
+    @Test
+    public void testMapFilterFieldsList() {
+        FilterField filterField = new FilterField();
+        filterField.setFilterType(FilterType.REFERENCE);
+        filterField.setMatchMode(MatchMode.EQUALS);
+        filterField.setDictionary(new FilterDictionary());
+        FilterField filterField1 = new FilterField();
+        filterField1.setFilterType(FilterType.REFERENCE);
+        filterField1.setMatchMode(MatchMode.LIKE);
+        filterField1.setDictionary(new FilterDictionary());
+        List<FilterFieldDto> filterFieldDtoList = filterFieldMapper.map(Arrays.asList(filterField, filterField1));
+        Assertions.assertThat(filterFieldDtoList).isNotNull();
+        Assertions.assertThat(filterFieldDtoList).hasSize(2);
     }
 }
