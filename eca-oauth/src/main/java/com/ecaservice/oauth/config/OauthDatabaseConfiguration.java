@@ -1,13 +1,14 @@
 package com.ecaservice.oauth.config;
 
 import com.ecaservice.oauth.model.entity.UserEntity;
+import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -56,12 +57,12 @@ public class OauthDatabaseConfiguration {
     @Primary
     @Bean
     public DataSource oauthDataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(environment.getProperty(SPRING_DATASOURCE_DRIVER_CLASS_NAME));
-        dataSource.setUrl(environment.getProperty(SPRING_DATASOURCE_URL));
-        dataSource.setUsername(environment.getProperty(SPRING_DATASOURCE_USERNAME));
-        dataSource.setPassword(environment.getProperty(SPRING_DATASOURCE_PASSWORD));
-        return dataSource;
+        return DataSourceBuilder.create().type(HikariDataSource.class)
+                .driverClassName(environment.getProperty(SPRING_DATASOURCE_DRIVER_CLASS_NAME))
+                .url(environment.getProperty(SPRING_DATASOURCE_URL))
+                .username(environment.getProperty(SPRING_DATASOURCE_USERNAME))
+                .password(environment.getProperty(SPRING_DATASOURCE_PASSWORD))
+                .build();
     }
 
     /**
