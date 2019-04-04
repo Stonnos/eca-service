@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { CookieService } from "ngx-cookie-service";
+import { AuthenticationKeys } from "../model/auth.keys";
 
 @Injectable()
 export class LogoutService {
 
-  constructor(private router: Router, private cookieService: CookieService) {
+  constructor(private router: Router) {
   }
 
   public logout() {
-    this.cookieService.delete('access_token');
+    localStorage.removeItem(AuthenticationKeys.USER_NAME);
+    localStorage.removeItem(AuthenticationKeys.ACCESS_TOKEN);
+    localStorage.removeItem(AuthenticationKeys.EXPIRE_DATE);
     this.router.navigate(['/login']);
   }
 }

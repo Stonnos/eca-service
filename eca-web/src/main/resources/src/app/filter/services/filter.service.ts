@@ -6,22 +6,22 @@ import {
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { ConfigService } from "../../config.service";
-import { CookieService } from "ngx-cookie-service";
 import { Filter } from "../filter.model";
 import { SelectItem } from "primeng/api";
+import { AuthenticationKeys } from "../../auth/model/auth.keys";
 
 @Injectable()
 export class FilterService {
 
   private serviceUrl = ConfigService.appConfig.apiUrl;
 
-  public constructor(private http: HttpClient, private cookieService: CookieService) {
+  public constructor(private http: HttpClient) {
   }
 
   public getExperimentFilterFields(): Observable<FilterFieldDto[]> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
     return this.http.get<FilterFieldDto[]>(this.serviceUrl + '/filter-templates/experiment', { headers: headers });
   }
@@ -29,7 +29,7 @@ export class FilterService {
   public getEvaluationLogFilterFields(): Observable<FilterFieldDto[]> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
     return this.http.get<FilterFieldDto[]>(this.serviceUrl + '/filter-templates/evaluation', { headers: headers });
   }
@@ -37,7 +37,7 @@ export class FilterService {
   public getClassifierOptionsRequestFilterFields(): Observable<FilterFieldDto[]> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
     return this.http.get<FilterFieldDto[]>(this.serviceUrl + '/filter-templates/classifier-options-request', { headers: headers });
   }

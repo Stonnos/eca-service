@@ -1,9 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from "rxjs/internal/Observable";
-import { CookieService } from "ngx-cookie-service";
 import { ConfigService } from "../../config.service";
 import { UserModel } from "../components/user.model";
+import { AuthenticationKeys } from "../model/auth.keys";
 
 @Injectable()
 export class AuthService {
@@ -12,7 +12,7 @@ export class AuthService {
   private clientId = ConfigService.appConfig.clientId;
   private secret = ConfigService.appConfig.secret;
 
-  constructor(private http: HttpClient, private cookieService: CookieService) {
+  constructor(private http: HttpClient) {
   }
 
   public obtainAccessToken(user: UserModel): Observable<any> {
@@ -31,10 +31,12 @@ export class AuthService {
 
   public saveToken(token){
     const expireDate = new Date().getTime() + (1000 * token.expires_in);
-    this.cookieService.set('access_token', token.access_token, expireDate);
+    localStorage.setItem(AuthenticationKeys.ACCESS_TOKEN, token.access_token);
+    localStorage.setItem(AuthenticationKeys.EXPIRE_DATE, expireDate.toString());
   }
 
   public hasAccessToken(): boolean {
-    return this.cookieService.check('access_token');
+    const expireDate = localStorage.getItem(AuthenticationKeys.EXPIRE_DATE);
+    return expireDate && new Date().getTime() > Number(expireDate);
   }
 }

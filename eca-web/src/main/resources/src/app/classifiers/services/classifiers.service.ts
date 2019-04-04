@@ -8,20 +8,20 @@ import {
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { ConfigService } from "../../config.service";
-import { CookieService } from "ngx-cookie-service";
+import { AuthenticationKeys } from "../../auth/model/auth.keys";
 
 @Injectable()
 export class ClassifiersService {
 
   private serviceUrl = ConfigService.appConfig.apiUrl + '/evaluation';
 
-  public constructor(private http: HttpClient, private cookieService: CookieService) {
+  public constructor(private http: HttpClient) {
   }
 
   public getEvaluations(pageRequest: PageRequestDto): Observable<PageDto<EvaluationLogDto>> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
     let params = new HttpParams().set('page', pageRequest.page.toString())
       .set('size', pageRequest.size.toString())
@@ -40,7 +40,7 @@ export class ClassifiersService {
   public getRequestStatusesStatistics(): Observable<RequestStatusStatisticsDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
     return this.http.get<RequestStatusStatisticsDto>(this.serviceUrl + '/request-statuses-statistics', { headers: headers });
   }
@@ -48,7 +48,7 @@ export class ClassifiersService {
   public getEvaluationLogDetailsDto(requestId: string): Observable<EvaluationLogDetailsDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
     return this.http.get<EvaluationLogDetailsDto>(this.serviceUrl + '/details/' + requestId, { headers: headers });
   }

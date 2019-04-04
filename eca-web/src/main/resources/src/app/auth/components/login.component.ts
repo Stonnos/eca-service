@@ -3,6 +3,7 @@ import { AuthService } from "../services/auth.service";
 import { UserModel } from "./user.model";
 import { NgForm } from "@angular/forms";
 import { Router } from "@angular/router";
+import { AuthenticationKeys } from "../model/auth.keys";
 
 @Component({
   selector: 'app-login',
@@ -36,6 +37,7 @@ export class LoginComponent implements OnInit {
       this.loading = true;
       this.authService.obtainAccessToken(this.userModel).subscribe((token) => {
           this.authService.saveToken(token);
+          this.saveUser();
           this.loading = false;
           this.giveAccess();
         }, (error) => {
@@ -47,8 +49,12 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  public giveAccess() {
+  public giveAccess(): void {
     this.router.navigate(['/dashboard/experiments']);
+  }
+
+  private saveUser(): void {
+    localStorage.setItem(AuthenticationKeys.USER_NAME, this.userModel.login);
   }
 
 }

@@ -9,20 +9,20 @@ import {
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { ConfigService } from "../../config.service";
-import { CookieService } from "ngx-cookie-service";
+import { AuthenticationKeys } from "../../auth/model/auth.keys";
 
 @Injectable()
 export class ExperimentsService {
 
   private serviceUrl = ConfigService.appConfig.apiUrl + '/experiment';
 
-  public constructor(private http: HttpClient, private cookieService: CookieService) {
+  public constructor(private http: HttpClient) {
   }
 
   public getExperiments(pageRequest: PageRequestDto): Observable<PageDto<ExperimentDto>> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
     let params = new HttpParams().set('page', pageRequest.page.toString())
       .set('size', pageRequest.size.toString())
@@ -41,7 +41,7 @@ export class ExperimentsService {
   public getRequestStatusesStatistics(): Observable<RequestStatusStatisticsDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
     return this.http.get<RequestStatusStatisticsDto>(this.serviceUrl + '/request-statuses-statistics', { headers: headers });
   }
@@ -52,7 +52,7 @@ export class ExperimentsService {
 
   public getExperimentTrainingDataFile(uuid: string): Observable<Blob> {
     const headers = new HttpHeaders({
-      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
     const options = { headers: headers, responseType: 'blob' as 'json' };
     return this.http.get<Blob>(this.serviceUrl + '/training-data/' + uuid, options);
@@ -61,7 +61,7 @@ export class ExperimentsService {
   public getErsReport(uuid: string): Observable<ErsReportDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
     return this.http.get<ErsReportDto>(this.serviceUrl + '/ers-report/' + uuid, { headers: headers });
   }
@@ -69,7 +69,7 @@ export class ExperimentsService {
   public sentEvaluationResults(uuid: string) {
     const headers = new HttpHeaders({
       'Content-type': 'application/json',
-      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
     return this.http.post(this.serviceUrl + '/sent-evaluation-results', uuid, { headers: headers });
   }
@@ -77,7 +77,7 @@ export class ExperimentsService {
   public getExperimentTypesStatistics(createdDateFrom: string, createdDateTo: string): Observable<ChartDataDto[]> {
     const headers = new HttpHeaders({
       'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
-      'Authorization': 'Bearer ' + this.cookieService.get('access_token')
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
     let params = new HttpParams().set('createdDateFrom', createdDateFrom).set('createdDateTo', createdDateTo);
     const options = { headers: headers, params: params };
