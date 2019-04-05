@@ -1,20 +1,18 @@
 package com.ecaservice.oauth.config;
 
 import com.ecaservice.oauth.model.entity.UserEntity;
-import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
@@ -32,23 +30,6 @@ import javax.sql.DataSource;
 )
 public class OauthDatabaseConfiguration {
 
-    private static final String SPRING_DATASOURCE_DRIVER_CLASS_NAME = "spring.datasource.driver-class-name";
-    private static final String SPRING_DATASOURCE_URL = "spring.datasource.url";
-    private static final String SPRING_DATASOURCE_USERNAME = "spring.datasource.username";
-    private static final String SPRING_DATASOURCE_PASSWORD = "spring.datasource.password";
-
-    private final Environment environment;
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param environment - environment bean
-     */
-    @Inject
-    public OauthDatabaseConfiguration(Environment environment) {
-        this.environment = environment;
-    }
-
     /**
      * Creates datasource bean.
      *
@@ -56,13 +37,9 @@ public class OauthDatabaseConfiguration {
      */
     @Primary
     @Bean
+    @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource oauthDataSource() {
-        return DataSourceBuilder.create().type(HikariDataSource.class)
-                .driverClassName(environment.getProperty(SPRING_DATASOURCE_DRIVER_CLASS_NAME))
-                .url(environment.getProperty(SPRING_DATASOURCE_URL))
-                .username(environment.getProperty(SPRING_DATASOURCE_USERNAME))
-                .password(environment.getProperty(SPRING_DATASOURCE_PASSWORD))
-                .build();
+        return DataSourceBuilder.create().build();
     }
 
     /**
