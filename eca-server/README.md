@@ -113,10 +113,6 @@ docker-compose -f docker-compose.yaml -f docker-compose.win10.yaml up (для Wi
 
 ВАЖНО! Данную команду необходимо выполнять из корневой папки проекта.
 
-Для production используется следующая команда:
-
-docker-compose -f docker-compose.yaml -f docker-compose.production.yaml up
-
 Для удаления всех контейнеров и image-ов необходимо выполнить команду:
 
 docker-compose down --rmi all
