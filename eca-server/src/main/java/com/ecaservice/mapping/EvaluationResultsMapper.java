@@ -29,6 +29,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Attribute;
+import weka.core.Instances;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -192,7 +193,8 @@ public abstract class EvaluationResultsMapper {
     private RocCurveReport populateRocCurveReport(RocCurve rocCurve, int classIndex) {
         RocCurveReport rocCurveReport = new RocCurveReport();
         rocCurveReport.setAucValue(BigDecimal.valueOf(rocCurve.evaluation().areaUnderROC(classIndex)));
-        ThresholdModel thresholdModel = rocCurve.findOptimalThreshold(classIndex);
+        Instances rocCurveData = rocCurve.getROCCurve(classIndex);
+        ThresholdModel thresholdModel = rocCurve.findOptimalThreshold(rocCurveData);
         if (thresholdModel != null) {
             rocCurveReport.setSpecificity(BigDecimal.valueOf(1.0 - thresholdModel.getSpecificity()));
             rocCurveReport.setSensitivity(BigDecimal.valueOf(thresholdModel.getSensitivity()));
