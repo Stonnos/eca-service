@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -230,7 +231,7 @@ public class ErsServiceTest extends AbstractJpaTest {
         EvaluationLog evaluationLog = createAndSaveFinishedEvaluationLog();
         GetEvaluationResultsSimpleResponse response = new GetEvaluationResultsSimpleResponse();
         response.setStatus(ResponseStatus.RESULTS_NOT_FOUND);
-        when(ersRequestService.getEvaluationResults(any(String.class))).thenReturn(response);
+        when(ersRequestService.getEvaluationResults(anyString())).thenReturn(response);
         EvaluationLogDetailsDto evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
         Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
         Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNull();
@@ -243,7 +244,7 @@ public class ErsServiceTest extends AbstractJpaTest {
         EvaluationLog evaluationLog = createAndSaveFinishedEvaluationLog();
         GetEvaluationResultsSimpleResponse response = new GetEvaluationResultsSimpleResponse();
         response.setStatus(ResponseStatus.ERROR);
-        when(ersRequestService.getEvaluationResults(any(String.class))).thenReturn(response);
+        when(ersRequestService.getEvaluationResults(anyString())).thenReturn(response);
         EvaluationLogDetailsDto evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
         Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
         Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNull();
@@ -254,7 +255,7 @@ public class ErsServiceTest extends AbstractJpaTest {
     @Test
     public void testGetEvaluationResultsWithServiceUnavailable() {
         EvaluationLog evaluationLog = createAndSaveFinishedEvaluationLog();
-        when(ersRequestService.getEvaluationResults(any(String.class))).thenThrow(new WebServiceIOException("I/O"));
+        when(ersRequestService.getEvaluationResults(anyString())).thenThrow(new WebServiceIOException("I/O"));
         EvaluationLogDetailsDto evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
         Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
         Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNull();
@@ -265,7 +266,7 @@ public class ErsServiceTest extends AbstractJpaTest {
     @Test
     public void testGetEvaluationResultsWithUnknownError() {
         EvaluationLog evaluationLog = createAndSaveFinishedEvaluationLog();
-        when(ersRequestService.getEvaluationResults(any(String.class))).thenThrow(new RuntimeException());
+        when(ersRequestService.getEvaluationResults(anyString())).thenThrow(new RuntimeException());
         EvaluationLogDetailsDto evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
         Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
         Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNull();
@@ -279,7 +280,7 @@ public class ErsServiceTest extends AbstractJpaTest {
         GetEvaluationResultsSimpleResponse response = new GetEvaluationResultsSimpleResponse();
         response.setStatus(ResponseStatus.SUCCESS);
         response.setStatistics(TestHelperUtils.createStatisticsReport());
-        when(ersRequestService.getEvaluationResults(any(String.class))).thenReturn(response);
+        when(ersRequestService.getEvaluationResults(anyString())).thenReturn(response);
         EvaluationLogDetailsDto evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
         Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
         Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNotNull();

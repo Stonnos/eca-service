@@ -36,6 +36,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
@@ -99,8 +100,8 @@ public class NotificationServiceTest {
         emailResponse.setStatus(ResponseStatus.SUCCESS);
         emailResponse.setRequestId(UUID.randomUUID().toString());
         when(statusTemplateVisitor.caseFinished(experiment)).thenReturn(new Context());
-        when(templateEngine.process(any(String.class), any(Context.class))).thenReturn("message");
-        when(notificationWebServiceTemplate.marshalSendAndReceive(any(String.class),
+        when(templateEngine.process(anyString(), any(Context.class))).thenReturn("message");
+        when(notificationWebServiceTemplate.marshalSendAndReceive(anyString(),
                 any(EmailRequest.class))).thenReturn(
                 emailResponse);
         notificationService.notifyByEmail(experiment);
