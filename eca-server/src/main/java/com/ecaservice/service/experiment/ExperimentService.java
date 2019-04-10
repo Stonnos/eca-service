@@ -238,12 +238,14 @@ public class ExperimentService implements PageRequestService<Experiment> {
     public void removeExperimentData(Experiment experiment) {
         boolean trainingDataDeleted = removeExperimentFile(experiment, Experiment::getTrainingDataAbsolutePath,
                 exp -> exp.setTrainingDataAbsolutePath(null));
-        boolean experimentResultsDeleted = removeExperimentFile(experiment, Experiment::getExperimentAbsolutePath,
-                exp -> exp.setExperimentAbsolutePath(null));
-        if (trainingDataDeleted && experimentResultsDeleted) {
-            experiment.setDeletedDate(LocalDateTime.now());
+        if (trainingDataDeleted) {
+            boolean experimentResultsDeleted = removeExperimentFile(experiment, Experiment::getExperimentAbsolutePath,
+                    exp -> exp.setExperimentAbsolutePath(null));
+            if (experimentResultsDeleted) {
+                experiment.setDeletedDate(LocalDateTime.now());
+            }
+            experimentRepository.save(experiment);
         }
-        experimentRepository.save(experiment);
     }
 
     @Override

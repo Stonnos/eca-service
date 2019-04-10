@@ -98,19 +98,6 @@ public class ExperimentScheduler {
     }
 
     /**
-     * Removes experiments data files from disk. Schedules by cron.
-     */
-    @Scheduled(cron = "${experiment.removeExperimentCron}")
-    public void processRequestsToRemove() {
-        log.info("Starting to remove experiments data.");
-        LocalDateTime dateTime = LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage());
-        List<Experiment> experiments = experimentRepository.findNotDeletedExperiments(dateTime);
-        log.trace("Obtained {} experiments to remove data", experiments.size());
-        experiments.forEach(experimentService::removeExperimentData);
-        log.info("Experiments data removing has been finished.");
-    }
-
-    /**
      * Try to sent experiments results to ERS service.
      */
     @Scheduled(cron = "${experiment.ersSendingCron}")
@@ -130,5 +117,18 @@ public class ExperimentScheduler {
             }
         });
         log.info("Finished to sent experiment results to ERS service");
+    }
+
+    /**
+     * Removes experiments data files from disk. Schedules by cron.
+     */
+    @Scheduled(cron = "${experiment.removeExperimentCron}")
+    public void processRequestsToRemove() {
+        log.info("Starting to remove experiments data.");
+        LocalDateTime dateTime = LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage());
+        List<Experiment> experiments = experimentRepository.findNotDeletedExperiments(dateTime);
+        log.trace("Obtained {} experiments to remove data", experiments.size());
+        experiments.forEach(experimentService::removeExperimentData);
+        log.info("Experiments data removing has been finished.");
     }
 }

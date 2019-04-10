@@ -194,27 +194,30 @@ public class ExperimentServiceTest extends AbstractJpaTest {
     @Test
     public void testSuccessRemoveExperiment() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        experimentRepository.save(experiment);
         when(dataService.delete(any(File.class))).thenReturn(true);
         experimentService.removeExperimentData(experiment);
+        experiment = experimentRepository.findById(experiment.getId()).orElse(null);
         assertThat(experiment.getExperimentAbsolutePath()).isNull();
         assertThat(experiment.getTrainingDataAbsolutePath()).isNull();
         assertThat(experiment.getDeletedDate()).isNotNull();
     }
 
     /**
-     * Case 1: Experiment training data isn't removed.
-     * Case 2: experiment results file isn't removed.
-     * Case 3: All files isn't removed.
+     * Case 1: Experiment training data isn't removed. Expected -> experiment results isn't removed
+     * and deleted date is null
+     * Case 2: experiment results file isn't removed. Expected -> Deleted date is null
      */
     @Test
     public void testRemoveExperimentFailed() {
         //Case 1
         Experiment createdExperiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        experimentRepository.save(createdExperiment);
         when(dataService.delete(any(File.class))).thenReturn(false).thenReturn(true);
         experimentService.removeExperimentData(createdExperiment);
         Experiment expectedExperiment = experimentRepository.findById(createdExperiment.getId()).orElse(null);
         assertThat(expectedExperiment).isNotNull();
-        assertThat(expectedExperiment.getExperimentAbsolutePath()).isNull();
+        assertThat(expectedExperiment.getExperimentAbsolutePath()).isNotNull();
         assertThat(expectedExperiment.getTrainingDataAbsolutePath()).isNotNull();
         assertThat(expectedExperiment.getDeletedDate()).isNull();
         //Case 2
@@ -225,15 +228,6 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         assertThat(expectedExperiment).isNotNull();
         assertThat(expectedExperiment.getExperimentAbsolutePath()).isNotNull();
         assertThat(expectedExperiment.getTrainingDataAbsolutePath()).isNull();
-        assertThat(expectedExperiment.getDeletedDate()).isNull();
-        //Case 3
-        createdExperiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
-        when(dataService.delete(any(File.class))).thenReturn(false).thenReturn(false);
-        experimentService.removeExperimentData(createdExperiment);
-        expectedExperiment = experimentRepository.findById(createdExperiment.getId()).orElse(null);
-        assertThat(expectedExperiment).isNotNull();
-        assertThat(expectedExperiment.getExperimentAbsolutePath()).isNotNull();
-        assertThat(expectedExperiment.getTrainingDataAbsolutePath()).isNotNull();
         assertThat(expectedExperiment.getDeletedDate()).isNull();
     }
 

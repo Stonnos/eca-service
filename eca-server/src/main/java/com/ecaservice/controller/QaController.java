@@ -26,6 +26,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -96,6 +97,7 @@ public class QaController {
      * @param evaluationMethod    - evaluation method
      * @param httpServletResponse - http servlet response
      */
+    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Evaluates classifier with specified options",
             notes = "Evaluates classifier with specified options"
@@ -125,6 +127,7 @@ public class QaController {
      * @param evaluationMethod - evaluation method
      * @return response entity
      */
+    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Creates experiment request with specified options",
             notes = "Creates experiment request with specified options"
@@ -154,6 +157,7 @@ public class QaController {
      * @param trainingData        - training data file with format, such as csv, xls, xlsx, arff, json, docx, data, txt
      * @param httpServletResponse - http servlet response
      */
+    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Evaluates classifier using optimal options",
             notes = "Evaluates classifier using optimal options"
