@@ -38,7 +38,21 @@
                  (click)="onSelect($event, item, column.name, infoPanel)">
                 {{ getColumnValue(column.name, item) }}
               </a>
-              <span *ngIf="!isLink(column.name)">{{ getColumnValue(column.name, item) }}</span>
+              <div *ngIf="!isLink(column.name)">
+                <ng-container [ngSwitch]="column.name">
+                  <ng-container *ngSwitchCase="'evaluationStatus'">
+                    <span [class.text-info]="item.evaluationStatus.value == 'NEW'"
+                          [class.text-success]="item.evaluationStatus.value == 'FINISHED'"
+                          [class.text-warning]="item.evaluationStatus.value == 'TIMEOUT'"
+                          [class.text-danger]="item.evaluationStatus.value == 'ERROR'">
+                      {{ getColumnValue(column.name, item) }}
+                    </span>
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    <span>{{ getColumnValue(column.name, item) }}</span>
+                  </ng-container>
+                </ng-container>
+              </div>
             </td>
           </tr>
         </ng-template>

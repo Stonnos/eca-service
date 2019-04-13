@@ -119,12 +119,12 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     this.columns = [
       { name: "requestId", label: "UUID заявки" },
       { name: "classifierName", label: "Классификатор" },
+      { name: "evaluationStatus", label: "Статус заявки" },
       { name: this.instancesInfoColumn, label: "Обучающая выборка" },
       { name: this.evaluationMethodColumn, label: "Метод оценки точности" },
       { name: "creationDate", label: "Дата создания заявки" },
       { name: "startDate", label: "Дата начала построения модели" },
-      { name: "endDate", label: "Дата окончания построения модели" },
-      { name: "evaluationStatus", label: "Статус заявки" }
+      { name: "endDate", label: "Дата окончания построения модели" }
     ];
   }
 }

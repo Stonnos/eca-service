@@ -126,6 +126,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     this.columns = [
       { name: "uuid", label: "UUID заявки" },
       { name: "experimentType", label: "Тип эксперимента" },
+      { name: "experimentStatus", label: "Статус заявки" },
       { name: "evaluationMethod", label: "Метод оценки точности" },
       { name: "firstName", label: "Имя заявки" },
       { name: "email", label: "Email заявки" },
@@ -135,8 +136,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       { name: "startDate", label: "Дата начала эксперимента" },
       { name: "endDate", label: "Дата окончания эксперимента" },
       { name: "sentDate", label: "Дата отправки результатов" },
-      { name: "deletedDate", label: "Дата удаления результатов" },
-      { name: "experimentStatus", label: "Статус заявки" }
+      { name: "deletedDate", label: "Дата удаления результатов" }
     ];
   }
 }

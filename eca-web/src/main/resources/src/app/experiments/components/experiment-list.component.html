@@ -42,7 +42,21 @@
                   <a class="link" [routerLink]="" *ngIf="isLink(column.name)" (click)="onLink(column.name, item)">
                     {{ getColumnValue(column.name, item) }}
                   </a>
-                  <span *ngIf="!isLink(column.name)">{{ getColumnValue(column.name, item) }}</span>
+                  <div *ngIf="!isLink(column.name)">
+                    <ng-container [ngSwitch]="column.name">
+                      <ng-container *ngSwitchCase="'experimentStatus'">
+                        <span [class.text-info]="item.experimentStatus.value == 'NEW'"
+                              [class.text-success]="item.experimentStatus.value == 'FINISHED'"
+                              [class.text-warning]="item.experimentStatus.value == 'TIMEOUT'"
+                              [class.text-danger]="item.experimentStatus.value == 'ERROR'">
+                          {{ getColumnValue(column.name, item) }}
+                        </span>
+                      </ng-container>
+                      <ng-container *ngSwitchDefault>
+                        <span>{{ getColumnValue(column.name, item) }}</span>
+                      </ng-container>
+                    </ng-container>
+                  </div>
                 </td>
               </tr>
             </ng-template>
