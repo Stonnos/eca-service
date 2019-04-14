@@ -77,6 +77,9 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -98,6 +101,7 @@ import static org.mockito.Mockito.when;
 public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final int NUM_THREADS = 2;
 
     @Inject
     private CrossValidationConfig crossValidationConfig;
@@ -339,6 +343,28 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         assertThat(requestEntities.get(2).getSource()).isEqualTo(ClassifierOptionsRequestSource.CACHE);
     }
 
+    @Test
+    public void testClassifierOptionsCacheInMultiThreadEnvironment() throws Exception {
+        ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
+                .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)), ResponseStatus.SUCCESS);
+        when(ersWebServiceClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
+        final CountDownLatch finishedLatch = new CountDownLatch(NUM_THREADS);
+        ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);
+        for (int i = 0; i < NUM_THREADS; i++) {
+            executorService.submit(() -> {
+                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
+                        instancesRequest);
+                finishedLatch.countDown();
+            });
+        }
+        finishedLatch.await();
+        executorService.shutdownNow();
+        List<ClassifierOptionsRequestEntity> requestEntities = classifierOptionsRequestRepository.findAll();
+        assertThat(requestEntities.size()).isEqualTo(2);
+        assertThat(requestEntities.get(0).getSource()).isEqualTo(ClassifierOptionsRequestSource.ERS);
+        assertThat(requestEntities.get(1).getSource()).isEqualTo(ClassifierOptionsRequestSource.CACHE);
+    }
+
     /**
      * Tests all classifiers evaluation.
      * Case 1: Decision tree CART
@@ -353,7 +379,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
      * Case 10: Heterogeneous ensemble
      * Case 11: Modified heterogeneous classifier
      *
-     * @throws IOException
+     * @throws IOException in case of error
      */
     @Test
     public void testClassifiersEvaluation() throws IOException {

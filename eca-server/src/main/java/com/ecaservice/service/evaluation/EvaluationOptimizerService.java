@@ -29,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.ecaservice.util.Utils.buildErrorResponse;
 import static com.ecaservice.util.Utils.getFirstResponseModel;
@@ -53,6 +54,8 @@ public class EvaluationOptimizerService {
     private final ClassifierOptionsRequestMapper classifierOptionsRequestMapper;
     private final ClassifierOptionsService classifierOptionsService;
     private final ClassifierOptionsRequestRepository classifierOptionsRequestRepository;
+
+    private ConcurrentHashMap<String, Object> dataMd5Hashes = new ConcurrentHashMap<>();
 
     /**
      * Constructor with spring dependency injection.
@@ -105,28 +108,32 @@ public class EvaluationOptimizerService {
                 buildErrorResponse(String.format(RESULTS_NOT_FOUND_MESSAGE, data.relationName()));
     }
 
-    private synchronized String getOptimalClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
+    private String getOptimalClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
+        String options;
         String dataMd5Hash = DigestUtils.md5DigestAsHex(
                 classifierOptionsRequest.getInstances().getXmlInstances().getBytes(Charsets.UTF_8));
-        ClassifierOptionsRequestEntity requestEntity = new ClassifierOptionsRequestEntity();
-        requestEntity.setCreationDate(LocalDateTime.now());
-        ClassifierOptionsRequestModel requestModel = getLastClassifierOptionsRequestModel(dataMd5Hash);
-        ClassifierOptionsResponseModel responseModel = getFirstResponseModel(requestModel);
-        String options;
-        if (responseModel != null) {
-            log.info("Optimal classifier options [{}] has been taken from last response for data '{}'.",
-                    responseModel.getOptions(), classifierOptionsRequest.getInstances().getRelationName());
-            requestEntity.setSource(ClassifierOptionsRequestSource.CACHE);
-            options = responseModel.getOptions();
-        } else {
-            requestModel = classifierOptionsRequestModelMapper.map(classifierOptionsRequest);
-            requestModel.setRelationName(classifierOptionsRequest.getInstances().getRelationName());
-            requestModel.setDataMd5Hash(dataMd5Hash);
-            requestEntity.setSource(ClassifierOptionsRequestSource.ERS);
-            options = ersRequestService.getOptimalClassifierOptions(classifierOptionsRequest, requestModel);
+        dataMd5Hashes.putIfAbsent(dataMd5Hash, new Object());
+        synchronized (dataMd5Hashes.get(dataMd5Hash)) {
+            ClassifierOptionsRequestEntity requestEntity = new ClassifierOptionsRequestEntity();
+            requestEntity.setCreationDate(LocalDateTime.now());
+            ClassifierOptionsRequestModel requestModel = getLastClassifierOptionsRequestModel(dataMd5Hash);
+            ClassifierOptionsResponseModel responseModel = getFirstResponseModel(requestModel);
+            if (responseModel != null) {
+                log.info("Optimal classifier options [{}] has been taken from last response for data '{}'.",
+                        responseModel.getOptions(), classifierOptionsRequest.getInstances().getRelationName());
+                requestEntity.setSource(ClassifierOptionsRequestSource.CACHE);
+                options = responseModel.getOptions();
+            } else {
+                requestModel = classifierOptionsRequestModelMapper.map(classifierOptionsRequest);
+                requestModel.setRelationName(classifierOptionsRequest.getInstances().getRelationName());
+                requestModel.setDataMd5Hash(dataMd5Hash);
+                requestEntity.setSource(ClassifierOptionsRequestSource.ERS);
+                options = ersRequestService.getOptimalClassifierOptions(classifierOptionsRequest, requestModel);
+            }
+            requestEntity.setClassifierOptionsRequestModel(requestModel);
+            classifierOptionsRequestRepository.save(requestEntity);
         }
-        requestEntity.setClassifierOptionsRequestModel(requestModel);
-        classifierOptionsRequestRepository.save(requestEntity);
+        dataMd5Hashes.remove(dataMd5Hash);
         return options;
     }
 
