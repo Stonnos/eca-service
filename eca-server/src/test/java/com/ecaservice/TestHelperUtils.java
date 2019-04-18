@@ -6,6 +6,7 @@ import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.ClassifierReport;
 import com.ecaservice.dto.evaluation.EvaluationMethodReport;
+import com.ecaservice.dto.evaluation.GetEvaluationResultsSimpleResponse;
 import com.ecaservice.dto.evaluation.InputOptionsMap;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.dto.evaluation.StatisticsReport;
@@ -792,5 +793,20 @@ public class TestHelperUtils {
         statisticsReport.setConfidenceIntervalLowerBound(BigDecimal.ZERO);
         statisticsReport.setConfidenceIntervalUpperBound(BigDecimal.ONE);
         return statisticsReport;
+    }
+
+    /**
+     * Creates get evaluation results response.
+     *
+     * @param requestId      - request id
+     * @param responseStatus - response status
+     * @return get evaluation results response
+     */
+    public static GetEvaluationResultsSimpleResponse createGetEvaluationResultsSimpleResponse(String requestId,
+                                                                                              ResponseStatus responseStatus) {
+        GetEvaluationResultsSimpleResponse resultsSimpleResponse = new GetEvaluationResultsSimpleResponse();
+        resultsSimpleResponse.setRequestId(requestId);
+        resultsSimpleResponse.setStatus(responseStatus);
+        return resultsSimpleResponse;
     }
 }
