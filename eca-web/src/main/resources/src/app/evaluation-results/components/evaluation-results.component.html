@@ -81,9 +81,6 @@
     </p-fieldset>
 
     <p-fieldset legend="Входные параметры классификатора"
-                #inputOptions
-                [toggleable]="true"
-                [collapsed]="true"
                 class="details-fieldset">
       <ng-container *ngIf="evaluationLogDetails">
         <ng-container *ngFor="let option of evaluationLogDetails.inputOptions">
