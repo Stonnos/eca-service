@@ -38,8 +38,8 @@
     </ng-template>
   </p-table>
   <p-overlayPanel #configsPanel [showCloseIcon]="true">
-    <p-panel *ngIf="selectedOptions" class="config-panel">
-      <pre><code class="language-json" [innerHTML]="getFormattedJsonConfig()"></code></pre>
+    <p-panel *ngIf="selectedOptions">
+      <pre class="json-config"><code class="language-json" [innerHTML]="getFormattedJsonConfig()"></code></pre>
     </p-panel>
   </p-overlayPanel>
 </div>
