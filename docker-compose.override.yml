@@ -1,0 +1,7 @@
+version: '3.5'
+services:       
+  eca-server:
+    environment:
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"
+    ports:
+      - "5005:5005"
