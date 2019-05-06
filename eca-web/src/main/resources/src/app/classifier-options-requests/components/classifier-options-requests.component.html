@@ -55,20 +55,18 @@
       <ng-container [ngSwitch]="selectedColumn">
         <ng-container *ngSwitchCase="'classifierName'">
           <pre class="json-config"><code class="language-json" [innerHTML]="getFormattedJsonConfig()"></code></pre>
-          <p-footer>
-            <div class="ui-g">
-              <div class="ui-g-3 ui-g-offset-9">
-                <button
-                  pButton
-                  label="Скачать"
-                  icon="pi pi-download"
-                  type="button"
-                  class="load-button"
-                  (click)="saveClassifierOptions()">
-                </button>
-              </div>
+          <div class="ui-g">
+            <div class="ui-g-3 ui-g-offset-9">
+              <button
+                pButton
+                label="Скачать"
+                icon="pi pi-download"
+                type="button"
+                class="load-button"
+                (click)="saveClassifierOptions()">
+              </button>
             </div>
-          </p-footer>
+          </div>
         </ng-container>
         <ng-container *ngSwitchCase="'evaluationMethod'">
           <div class="evaluation-method-content">
