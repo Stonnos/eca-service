@@ -2,10 +2,10 @@
   <p-tabView class="experiment-tab">
     <p-tabPanel header="Таблица экспериментов" leftIcon="pi pi-table">
       <div class="row">
-        <div class="col-2">
+        <div class="filter-sidebar">
           <app-filter [filters]="filters" (search)="onSearch()"></app-filter>
         </div>
-        <div class="col-10">
+        <div class="data-table">
           <p-table
             class="experiments-table"
             [columns]="columns"

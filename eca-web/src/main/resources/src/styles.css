@@ -6,3 +6,16 @@
 .text-wrap {
   word-wrap: break-word;
 }
+
+.filter-sidebar {
+  width: 320px;
+  min-width: 320px;
+  max-width: 320px;
+  display: inline-block;
+}
+
+.data-table {
+  margin-left: 15px;
+  width: calc(100% - 335px);
+  display: inline-block;
+}
