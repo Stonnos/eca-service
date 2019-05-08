@@ -52,6 +52,7 @@
             <button
               pButton
               type="submit"
+              [disabled]="loading"
               class="auth-button w-100 mb-2 mb-sm-3">
               <span class="login-text" *ngIf="!loading">Войти</span>
               <p-progressSpinner
