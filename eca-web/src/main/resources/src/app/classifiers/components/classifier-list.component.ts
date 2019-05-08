@@ -12,6 +12,7 @@ import { OverlayPanel } from "primeng/primeng";
 import { Observable } from "rxjs/internal/Observable";
 import { FilterService } from "../../filter/services/filter.service";
 import { EvaluationMethod } from "../../model/evaluation-method.enum";
+import { finalize } from "rxjs/internal/operators";
 
 @Component({
   selector: 'app-classifier-list',
@@ -99,13 +100,17 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
 
   private getEvaluationResults(requestId: string): void {
     this.loading = true;
-    this.classifiersService.getEvaluationLogDetailsDto(requestId).subscribe((evaluationLogDetails: EvaluationLogDetailsDto) => {
-      this.evaluationLogDetails = evaluationLogDetails;
-      this.loading = false;
-      this.evaluationResultsVisibility = true;
-    }, (error) => {
+    this.classifiersService.getEvaluationLogDetailsDto(requestId)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe((evaluationLogDetails: EvaluationLogDetailsDto) => {
+        this.evaluationLogDetails = evaluationLogDetails;
+        this.evaluationResultsVisibility = true;
+      }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-      this.loading = false;
     });
   }
 

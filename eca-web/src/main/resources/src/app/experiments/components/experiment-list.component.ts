@@ -10,6 +10,7 @@ import { saveAs } from 'file-saver/dist/FileSaver';
 import { BaseListComponent } from "../../lists/base-list.component";
 import { Observable } from "rxjs/internal/Observable";
 import { FilterService } from "../../filter/services/filter.service";
+import { finalize } from "rxjs/internal/operators";
 
 @Component({
   selector: 'app-experiment-list',
@@ -66,33 +67,45 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     switch (column) {
       case this.linkColumns[0]:
         this.loading = true;
-        this.experimentsService.getExperimentTrainingDataFile(experiment.uuid).subscribe((blob: Blob) => {
-          saveAs(blob, experiment.trainingDataAbsolutePath);
-          this.loading = false;
-        }, (error) => {
+        this.experimentsService.getExperimentTrainingDataFile(experiment.uuid)
+          .pipe(
+            finalize(() => {
+              this.loading = false;
+            })
+          )
+          .subscribe((blob: Blob) => {
+            saveAs(blob, experiment.trainingDataAbsolutePath);
+          }, (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-          this.loading = false;
         });
         break;
       case this.linkColumns[1]:
         this.loading = true;
-        this.experimentsService.getExperimentResultsFile(experiment.uuid).subscribe((blob: Blob) => {
-          saveAs(blob, experiment.experimentAbsolutePath);
-          this.loading = false;
-        }, (error) => {
+        this.experimentsService.getExperimentResultsFile(experiment.uuid)
+          .pipe(
+            finalize(() => {
+              this.loading = false;
+            })
+          )
+          .subscribe((blob: Blob) => {
+            saveAs(blob, experiment.experimentAbsolutePath);
+          }, (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-          this.loading = false;
         });
         break;
       case this.linkColumns[2]:
         this.loading = true;
-        this.experimentsService.getErsReport(experiment.uuid).subscribe((ersReport: ErsReportDto) => {
-          this.ersReport = ersReport;
-          this.loading = false;
-          this.ersReportVisibility = true;
-        }, (error) => {
+        this.experimentsService.getErsReport(experiment.uuid)
+          .pipe(
+            finalize(() => {
+              this.loading = false;
+            })
+          )
+          .subscribe((ersReport: ErsReportDto) => {
+            this.ersReport = ersReport;
+            this.ersReportVisibility = true;
+          }, (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-          this.loading = false;
         });
         break;
     }
@@ -104,13 +117,17 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public onEvaluationResultsSent(experimentUuid: string) {
     this.loading = true;
-    this.experimentsService.sentEvaluationResults(experimentUuid).subscribe(data => {
-      this.messageService.add({ severity: 'success',
-        summary: `Запрос в ERS на сохранение классификаторов для эксперимента ${experimentUuid} был успешно создан`, detail: '' });
-      this.loading = false;
-    }, (error) => {
+    this.experimentsService.sentEvaluationResults(experimentUuid)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe(data => {
+        this.messageService.add({ severity: 'success',
+          summary: `Запрос в ERS на сохранение классификаторов для эксперимента ${experimentUuid} был успешно создан`, detail: '' });
+      }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-      this.loading = false;
     });
   }
 

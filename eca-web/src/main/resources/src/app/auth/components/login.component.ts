@@ -4,6 +4,7 @@ import { UserModel } from "./user.model";
 import { NgForm } from "@angular/forms";
 import { Router } from "@angular/router";
 import { AuthenticationKeys } from "../model/auth.keys";
+import { finalize } from "rxjs/internal/operators";
 
 @Component({
   selector: 'app-login',
@@ -35,14 +36,17 @@ export class LoginComponent implements OnInit {
     this.submitted = true;
     if (this.form.valid) {
       this.loading = true;
-      this.authService.obtainAccessToken(this.userModel).subscribe((token) => {
+      this.authService.obtainAccessToken(this.userModel)
+        .pipe(
+          finalize(() => {
+            this.loading = false;
+          })
+        )
+        .subscribe((token) => {
           this.authService.saveToken(token);
           this.saveUser();
-          this.loading = false;
           this.giveAccess();
         }, (error) => {
-          console.log(error);
-          this.loading = false;
           this.errorMessage = "Неправильный логин или пароль";
         });
       this.submitted = false;

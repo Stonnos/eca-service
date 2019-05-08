@@ -9,6 +9,7 @@ import { DatePipe } from "@angular/common";
 import { Table } from "primeng/table";
 import { ViewChild } from "@angular/core";
 import { Observable } from "rxjs/internal/Observable";
+import { finalize } from "rxjs/internal/operators";
 
 export abstract class BaseListComponent<T> {
 
@@ -33,11 +34,15 @@ export abstract class BaseListComponent<T> {
 
   public getNextPage(pageRequest: PageRequestDto) {
     this.loading = true;
-    this.getNextPageAsObservable(pageRequest).subscribe((pageDto: PageDto<T>) => {
-      this.setPage(pageDto);
-      this.loading = false;
-    }, (error) => {
-      this.loading = false;
+    this.getNextPageAsObservable(pageRequest)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe((pageDto: PageDto<T>) => {
+        this.setPage(pageDto);
+      }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     });
   }
