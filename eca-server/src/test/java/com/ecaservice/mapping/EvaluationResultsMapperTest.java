@@ -11,6 +11,7 @@ import com.ecaservice.dto.evaluation.EvaluationMethod;
 import com.ecaservice.dto.evaluation.EvaluationMethodReport;
 import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.InstancesReport;
+import com.ecaservice.dto.evaluation.RocCurveData;
 import com.ecaservice.dto.evaluation.RocCurveReport;
 import com.ecaservice.dto.evaluation.StatisticsReport;
 import com.ecaservice.service.ClassifierOptionsService;
@@ -63,10 +64,10 @@ public class EvaluationResultsMapperTest {
     }
 
     @Test
-    public void testMapEvaluationResults() throws Exception {
+    public void testMapEvaluationResults() {
         EvaluationResultsRequest resultsRequest = evaluationResultsMapper.map(evaluationResults);
         Assertions.assertThat(resultsRequest).isNotNull();
-
+        //Instances report assertion
         InstancesReport instancesReport = resultsRequest.getInstances();
         Instances instances = evaluationResults.getEvaluation().getData();
         Assertions.assertThat(instancesReport).isNotNull();
@@ -76,7 +77,7 @@ public class EvaluationResultsMapperTest {
         Assertions.assertThat(instancesReport.getNumInstances().intValue()).isEqualTo(instances.numInstances());
         Assertions.assertThat(instancesReport.getNumAttributes().intValue()).isEqualTo(instances.numAttributes());
         Assertions.assertThat(instancesReport.getNumClasses().intValue()).isEqualTo(instances.numClasses());
-
+        //Classifier report assertion
         ClassifierReport classifierReport = resultsRequest.getClassifierReport();
         AbstractClassifier classifier = (AbstractClassifier) evaluationResults.getClassifier();
         Assertions.assertThat(classifierReport).isNotNull();
@@ -85,7 +86,7 @@ public class EvaluationResultsMapperTest {
         Assertions.assertThat(classifierReport.getInputOptionsMap().getEntry()).isNotNull();
         Assertions.assertThat(classifierReport.getInputOptionsMap().getEntry().size()).isEqualTo(
                 classifier.getOptions().length / 2);
-
+        //Evaluation method report assertion
         EvaluationMethodReport evaluationMethodReport = resultsRequest.getEvaluationMethodReport();
         Assertions.assertThat(evaluationMethodReport).isNotNull();
         Evaluation evaluation = evaluationResults.getEvaluation();
@@ -95,7 +96,7 @@ public class EvaluationResultsMapperTest {
         Assertions.assertThat(evaluationMethodReport.getNumTests().intValue()).isEqualTo(
                 evaluation.getValidationsNum());
         Assertions.assertThat(evaluationMethodReport.getSeed().intValue()).isEqualTo(crossValidationConfig.getSeed());
-
+        //Classification costs report assertion
         List<ClassificationCostsReport> costsReports = resultsRequest.getClassificationCosts();
         Assertions.assertThat(costsReports).isNotNull();
         Assertions.assertThat(costsReports.size()).isEqualTo(instances.numClasses());
@@ -117,7 +118,7 @@ public class EvaluationResultsMapperTest {
             Assertions.assertThat(rocCurveReport.getSensitivity().doubleValue()).isNotNull();
             Assertions.assertThat(rocCurveReport.getThresholdValue().doubleValue()).isNotNull();
         }
-
+        //Confusion matrix report assertion
         List<ConfusionMatrixReport> confusionMatrixReports = resultsRequest.getConfusionMatrix();
         Assertions.assertThat(confusionMatrixReports).isNotNull();
         double[][] confusionMatrix = evaluation.confusionMatrix();
@@ -131,7 +132,11 @@ public class EvaluationResultsMapperTest {
                         confusionMatrix[i][j]);
             }
         }
-
+        //Roc curve data report assertion
+        List<RocCurveData> rocCurveDataList = resultsRequest.getRocCurveData();
+        Assertions.assertThat(rocCurveDataList).isNotNull();
+        Assertions.assertThat(rocCurveDataList).hasSize(evaluationResults.getEvaluation().getData().numClasses());
+        //Statistics report assertion
         StatisticsReport statisticsReport = resultsRequest.getStatistics();
         Assertions.assertThat(statisticsReport).isNotNull();
         Assertions.assertThat(statisticsReport.getNumTestInstances().doubleValue()).isEqualTo(
