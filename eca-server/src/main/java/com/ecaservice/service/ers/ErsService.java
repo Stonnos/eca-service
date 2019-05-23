@@ -1,7 +1,7 @@
 package com.ecaservice.service.ers;
 
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.dto.evaluation.GetEvaluationResultsSimpleResponse;
+import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.EvaluationLogDetailsMapper;
 import com.ecaservice.model.entity.EvaluationLog;
@@ -148,7 +148,7 @@ public class ErsService {
                 evaluationResultsStatus = EvaluationResultsStatus.RESULTS_NOT_SENT;
             } else {
                 try {
-                    GetEvaluationResultsSimpleResponse evaluationResultsSimpleResponse =
+                    GetEvaluationResultsResponse evaluationResultsSimpleResponse =
                             ersRequestService.getEvaluationResults(evaluationResultsRequestEntity.getRequestId());
                     if (ResponseStatus.SUCCESS.equals(evaluationResultsSimpleResponse.getStatus())) {
                         evaluationLogDetailsMapper.update(evaluationResultsSimpleResponse, evaluationLogDetailsDto);
@@ -167,7 +167,7 @@ public class ErsService {
         evaluationLogDetailsDto.setEvaluationResultsStatus(evaluationResultsStatus);
     }
 
-    private EvaluationResultsStatus handleEvaluationResultsStatus(GetEvaluationResultsSimpleResponse response) {
+    private EvaluationResultsStatus handleEvaluationResultsStatus(GetEvaluationResultsResponse response) {
         if (ResponseStatus.SUCCESS.equals(response.getStatus())) {
             return EvaluationResultsStatus.RESULTS_RECEIVED;
         } else if (ResponseStatus.RESULTS_NOT_FOUND.equals(response.getStatus())) {

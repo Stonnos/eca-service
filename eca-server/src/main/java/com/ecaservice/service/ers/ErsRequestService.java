@@ -6,8 +6,8 @@ import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.ClassifierReport;
 import com.ecaservice.dto.evaluation.EvaluationResultsResponse;
-import com.ecaservice.dto.evaluation.GetEvaluationResultsSimpleRequest;
-import com.ecaservice.dto.evaluation.GetEvaluationResultsSimpleResponse;
+import com.ecaservice.dto.evaluation.GetEvaluationResultsRequest;
+import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassifierReportMapper;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
@@ -96,11 +96,11 @@ public class ErsRequestService {
      * @return evaluation results simple response
      */
     @Cacheable(value = EcaServiceParam.EVALUATION_RESULTS_CACHE_NAME, unless = "#result.status.name() != 'SUCCESS'")
-    public GetEvaluationResultsSimpleResponse getEvaluationResults(String requestId) {
+    public GetEvaluationResultsResponse getEvaluationResults(String requestId) {
         log.info("Starting to get evaluation results simple response for request id [{}]", requestId);
-        GetEvaluationResultsSimpleRequest request = new GetEvaluationResultsSimpleRequest();
+        GetEvaluationResultsRequest request = new GetEvaluationResultsRequest();
         request.setRequestId(requestId);
-        GetEvaluationResultsSimpleResponse response = ersWebServiceClient.getEvaluationResultsSimpleResponse(request);
+        GetEvaluationResultsResponse response = ersWebServiceClient.getEvaluationResultsSimpleResponse(request);
         log.info("Evaluation results simple response with request id [{}] has been fetched", requestId);
         return response;
     }

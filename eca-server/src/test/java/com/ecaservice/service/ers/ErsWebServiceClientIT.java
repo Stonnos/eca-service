@@ -10,8 +10,8 @@ import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.EvaluationMethod;
 import com.ecaservice.dto.evaluation.EvaluationMethodReport;
 import com.ecaservice.dto.evaluation.EvaluationResultsResponse;
-import com.ecaservice.dto.evaluation.GetEvaluationResultsSimpleRequest;
-import com.ecaservice.dto.evaluation.GetEvaluationResultsSimpleResponse;
+import com.ecaservice.dto.evaluation.GetEvaluationResultsRequest;
+import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.InstancesReport;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.EvaluationResultsMapperImpl;
@@ -71,9 +71,9 @@ public class ErsWebServiceClientIT {
         EvaluationResultsResponse resultsResponse =
                 ersWebServiceClient.sendEvaluationResults(evaluationResults, requestId);
         Assertions.assertThat(resultsResponse).isNotNull();
-        GetEvaluationResultsSimpleRequest request = new GetEvaluationResultsSimpleRequest();
+        GetEvaluationResultsRequest request = new GetEvaluationResultsRequest();
         request.setRequestId(requestId);
-        GetEvaluationResultsSimpleResponse response = ersWebServiceClient.getEvaluationResultsSimpleResponse(request);
+        GetEvaluationResultsResponse response = ersWebServiceClient.getEvaluationResultsSimpleResponse(request);
         Assertions.assertThat(response).isNotNull();
         Assertions.assertThat(response.getStatus()).isEqualTo(ResponseStatus.SUCCESS);
         Assertions.assertThat(response.getRequestId()).isEqualTo(requestId);

@@ -6,7 +6,7 @@ import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.ClassifierReport;
 import com.ecaservice.dto.evaluation.EvaluationMethodReport;
-import com.ecaservice.dto.evaluation.GetEvaluationResultsSimpleResponse;
+import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.InputOptionsMap;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.dto.evaluation.StatisticsReport;
@@ -802,9 +802,9 @@ public class TestHelperUtils {
      * @param responseStatus - response status
      * @return get evaluation results response
      */
-    public static GetEvaluationResultsSimpleResponse createGetEvaluationResultsSimpleResponse(String requestId,
-                                                                                              ResponseStatus responseStatus) {
-        GetEvaluationResultsSimpleResponse resultsSimpleResponse = new GetEvaluationResultsSimpleResponse();
+    public static GetEvaluationResultsResponse createGetEvaluationResultsSimpleResponse(String requestId,
+                                                                                        ResponseStatus responseStatus) {
+        GetEvaluationResultsResponse resultsSimpleResponse = new GetEvaluationResultsResponse();
         resultsSimpleResponse.setRequestId(requestId);
         resultsSimpleResponse.setStatus(responseStatus);
         return resultsSimpleResponse;

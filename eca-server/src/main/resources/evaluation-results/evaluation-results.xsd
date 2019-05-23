@@ -184,7 +184,7 @@
         </xsd:complexType>
     </xsd:element>
 
-    <xsd:element name="getEvaluationResultsSimpleRequest">
+    <xsd:element name="getEvaluationResultsRequest">
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:element name="requestId" type="xsd:string"/>
@@ -192,14 +192,21 @@
         </xsd:complexType>
     </xsd:element>
 
-    <xsd:element name="getEvaluationResultsSimpleResponse">
+    <xsd:element name="getEvaluationResultsResponse">
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:element name="requestId" type="xsd:string"/>
                 <xsd:element name="status" type="evaluation:responseStatus"/>
+                <xsd:element name="instances" type="evaluation:instancesReport"/>
                 <xsd:element name="classifierReport" type="evaluation:classifierReport"/>
                 <xsd:element name="evaluationMethodReport" type="evaluation:evaluationMethodReport"/>
                 <xsd:element name="statistics" type="evaluation:statisticsReport"/>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" name="classificationCosts"
+                             type="evaluation:classificationCostsReport"/>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" name="confusionMatrix"
+                             type="evaluation:confusionMatrixReport"/>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" name="rocCurveData"
+                             type="evaluation:rocCurveData"/>
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>

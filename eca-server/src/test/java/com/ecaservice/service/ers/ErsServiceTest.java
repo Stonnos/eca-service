@@ -2,7 +2,7 @@ package com.ecaservice.service.ers;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.dto.evaluation.GetEvaluationResultsSimpleResponse;
+import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.EvaluationLogDetailsMapper;
 import com.ecaservice.mapping.EvaluationLogDetailsMapperImpl;
@@ -229,7 +229,7 @@ public class ErsServiceTest extends AbstractJpaTest {
     @Test
     public void testGetEvaluationResultsNotFound() {
         EvaluationLog evaluationLog = createAndSaveFinishedEvaluationLog();
-        GetEvaluationResultsSimpleResponse response = new GetEvaluationResultsSimpleResponse();
+        GetEvaluationResultsResponse response = new GetEvaluationResultsResponse();
         response.setStatus(ResponseStatus.RESULTS_NOT_FOUND);
         when(ersRequestService.getEvaluationResults(anyString())).thenReturn(response);
         EvaluationLogDetailsDto evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
@@ -242,7 +242,7 @@ public class ErsServiceTest extends AbstractJpaTest {
     @Test
     public void testGetEvaluationResultsWithResponseErrorStatus() {
         EvaluationLog evaluationLog = createAndSaveFinishedEvaluationLog();
-        GetEvaluationResultsSimpleResponse response = new GetEvaluationResultsSimpleResponse();
+        GetEvaluationResultsResponse response = new GetEvaluationResultsResponse();
         response.setStatus(ResponseStatus.ERROR);
         when(ersRequestService.getEvaluationResults(anyString())).thenReturn(response);
         EvaluationLogDetailsDto evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
@@ -277,7 +277,7 @@ public class ErsServiceTest extends AbstractJpaTest {
     @Test
     public void testSuccessGetEvaluationLogDetails() {
         EvaluationLog evaluationLog = createAndSaveFinishedEvaluationLog();
-        GetEvaluationResultsSimpleResponse response = new GetEvaluationResultsSimpleResponse();
+        GetEvaluationResultsResponse response = new GetEvaluationResultsResponse();
         response.setStatus(ResponseStatus.SUCCESS);
         response.setStatistics(TestHelperUtils.createStatisticsReport());
         when(ersRequestService.getEvaluationResults(anyString())).thenReturn(response);

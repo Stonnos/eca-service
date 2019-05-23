@@ -7,8 +7,8 @@ import com.ecaservice.config.ErsConfig;
 import com.ecaservice.configuation.CacheConfiguration;
 import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
 import com.ecaservice.configuation.ErsWebServiceConfiguration;
-import com.ecaservice.dto.evaluation.GetEvaluationResultsSimpleRequest;
-import com.ecaservice.dto.evaluation.GetEvaluationResultsSimpleResponse;
+import com.ecaservice.dto.evaluation.GetEvaluationResultsRequest;
+import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassifierReportMapperImpl;
 import com.ecaservice.mapping.EvaluationResultsMapperImpl;
@@ -52,16 +52,16 @@ public class GetEvaluationResultsCacheTest extends AbstractJpaTest {
     public void testGetEvaluationResultsCache() {
         ReflectionTestUtils.setField(ersRequestService, "ersWebServiceClient", ersWebServiceClient);
         String requestId = UUID.randomUUID().toString();
-        GetEvaluationResultsSimpleResponse first =
+        GetEvaluationResultsResponse first =
                 TestHelperUtils.createGetEvaluationResultsSimpleResponse(requestId, ResponseStatus.ERROR);
-        GetEvaluationResultsSimpleResponse second =
+        GetEvaluationResultsResponse second =
                 TestHelperUtils.createGetEvaluationResultsSimpleResponse(requestId, ResponseStatus.SUCCESS);
-        GetEvaluationResultsSimpleResponse third =
+        GetEvaluationResultsResponse third =
                 TestHelperUtils.createGetEvaluationResultsSimpleResponse(requestId, ResponseStatus.SUCCESS);
         when(ersWebServiceClient.getEvaluationResultsSimpleResponse(
-                any(GetEvaluationResultsSimpleRequest.class))).thenReturn(first).thenReturn(second).thenReturn(third);
+                any(GetEvaluationResultsRequest.class))).thenReturn(first).thenReturn(second).thenReturn(third);
         //Checks first call with ERROR status (Results shouldn't save in cache)
-        GetEvaluationResultsSimpleResponse actual =
+        GetEvaluationResultsResponse actual =
                 ersRequestService.getEvaluationResults(requestId);
         Assertions.assertThat(actual).isNotNull();
         Assertions.assertThat(actual.getRequestId()).isEqualTo(first.getRequestId());
@@ -78,7 +78,7 @@ public class GetEvaluationResultsCacheTest extends AbstractJpaTest {
         Assertions.assertThat(actual.getStatus()).isEqualTo(second.getStatus());
         //Method must calls 2 times because of cache
         verify(ersWebServiceClient, times(2)).getEvaluationResultsSimpleResponse(any
-                (GetEvaluationResultsSimpleRequest.class));
+                (GetEvaluationResultsRequest.class));
         Assertions.assertThat(
                 cacheManager.getCache(EcaServiceParam.EVALUATION_RESULTS_CACHE_NAME).get(requestId)).isNotNull();
     }

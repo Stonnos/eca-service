@@ -1,7 +1,7 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.dto.evaluation.GetEvaluationResultsSimpleResponse;
+import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.model.entity.ClassifierInputOptions;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
@@ -62,7 +62,7 @@ public class EvaluationLogDetailsMapperTest {
     @Test
     public void testUpdateEvaluationLogDetailsDto() {
         EvaluationLogDetailsDto evaluationLogDetailsDto = new EvaluationLogDetailsDto();
-        GetEvaluationResultsSimpleResponse response = new GetEvaluationResultsSimpleResponse();
+        GetEvaluationResultsResponse response = new GetEvaluationResultsResponse();
         response.setStatistics(TestHelperUtils.createStatisticsReport());
         evaluationLogDetailsMapper.update(response, evaluationLogDetailsDto);
         Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNotNull();

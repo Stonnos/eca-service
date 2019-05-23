@@ -4,8 +4,8 @@ import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ErsConfig;
 import com.ecaservice.dto.evaluation.EvaluationResultsResponse;
-import com.ecaservice.dto.evaluation.GetEvaluationResultsSimpleRequest;
-import com.ecaservice.dto.evaluation.GetEvaluationResultsSimpleResponse;
+import com.ecaservice.dto.evaluation.GetEvaluationResultsRequest;
+import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassifierReportMapper;
 import com.ecaservice.mapping.ClassifierReportMapperImpl;
@@ -128,8 +128,8 @@ public class ErsRequestServiceTest extends AbstractJpaTest {
     @Test
     public void testGetEvaluationResults() {
         when(ersWebServiceClient.getEvaluationResultsSimpleResponse(
-                any(GetEvaluationResultsSimpleRequest.class))).thenReturn(new GetEvaluationResultsSimpleResponse());
-        GetEvaluationResultsSimpleResponse response =
+                any(GetEvaluationResultsRequest.class))).thenReturn(new GetEvaluationResultsResponse());
+        GetEvaluationResultsResponse response =
                 ersRequestService.getEvaluationResults(UUID.randomUUID().toString());
         Assertions.assertThat(response).isNotNull();
     }
