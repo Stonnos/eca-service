@@ -65,7 +65,14 @@ public class EvaluationLogDetailsMapperTest {
         EvaluationLogDetailsDto evaluationLogDetailsDto = new EvaluationLogDetailsDto();
         GetEvaluationResultsResponse response = new GetEvaluationResultsResponse();
         response.setStatistics(TestHelperUtils.createStatisticsReport());
+        response.getClassificationCosts().add(TestHelperUtils.createClassificationCostsReport());
+        response.getClassificationCosts().add(TestHelperUtils.createClassificationCostsReport());
+        response.getRocCurveData().add(TestHelperUtils.createRocCurveData());
+        response.getRocCurveData().add(TestHelperUtils.createRocCurveData());
         evaluationLogDetailsMapper.update(response, evaluationLogDetailsDto);
         Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNotNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getClassificationCosts()).hasSameSizeAs(
+                response.getClassificationCosts());
+        Assertions.assertThat(evaluationLogDetailsDto.getRocCurveData()).hasSameSizeAs(response.getRocCurveData());
     }
 }

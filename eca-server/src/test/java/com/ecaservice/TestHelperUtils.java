@@ -2,6 +2,7 @@ package com.ecaservice;
 
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.ExperimentRequest;
+import com.ecaservice.dto.evaluation.ClassificationCostsReport;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.ClassifierReport;
@@ -9,6 +10,9 @@ import com.ecaservice.dto.evaluation.EvaluationMethodReport;
 import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.InputOptionsMap;
 import com.ecaservice.dto.evaluation.ResponseStatus;
+import com.ecaservice.dto.evaluation.RocCurveData;
+import com.ecaservice.dto.evaluation.RocCurvePoint;
+import com.ecaservice.dto.evaluation.RocCurveReport;
 import com.ecaservice.dto.evaluation.StatisticsReport;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
@@ -793,6 +797,62 @@ public class TestHelperUtils {
         statisticsReport.setConfidenceIntervalLowerBound(BigDecimal.ZERO);
         statisticsReport.setConfidenceIntervalUpperBound(BigDecimal.ONE);
         return statisticsReport;
+    }
+
+    /**
+     * Creates roc - curve point.
+     *
+     * @return roc - curve point
+     */
+    public static RocCurvePoint createRocCurvePoint() {
+        RocCurvePoint rocCurvePoint = new RocCurvePoint();
+        rocCurvePoint.setXValue(BigDecimal.ONE);
+        rocCurvePoint.setYValue(BigDecimal.TEN);
+        return rocCurvePoint;
+    }
+
+    /**
+     * Creates roc - curve data.
+     *
+     * @return roc - curve data
+     */
+    public static RocCurveData createRocCurveData() {
+        RocCurveData rocCurveData = new RocCurveData();
+        rocCurveData.setClassValue(VALUE);
+        for (int i = 0; i < NUM_ITERATIONS; i++) {
+            rocCurveData.getPoints().add(createRocCurvePoint());
+        }
+        return rocCurveData;
+    }
+
+    /**
+     * Creates roc - curve report.
+     *
+     * @return roc - curve report
+     */
+    public static RocCurveReport createRocCurveReport() {
+        RocCurveReport rocCurveReport = new RocCurveReport();
+        rocCurveReport.setAucValue(BigDecimal.ONE);
+        rocCurveReport.setSensitivity(BigDecimal.TEN);
+        rocCurveReport.setSpecificity(BigDecimal.ZERO);
+        rocCurveReport.setThresholdValue(BigDecimal.ONE);
+        return rocCurveReport;
+    }
+
+    /**
+     * Creates classification costs report.
+     *
+     * @return classification costs report
+     */
+    public static ClassificationCostsReport createClassificationCostsReport() {
+        ClassificationCostsReport classificationCostsReport = new ClassificationCostsReport();
+        classificationCostsReport.setClassValue(VALUE);
+        classificationCostsReport.setFalseNegativeRate(BigDecimal.ONE);
+        classificationCostsReport.setFalsePositiveRate(BigDecimal.ZERO);
+        classificationCostsReport.setTrueNegativeRate(BigDecimal.ONE);
+        classificationCostsReport.setTruePositiveRate(BigDecimal.ZERO);
+        classificationCostsReport.setRocCurve(createRocCurveReport());
+        return classificationCostsReport;
     }
 
     /**
