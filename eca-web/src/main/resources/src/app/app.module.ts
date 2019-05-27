@@ -20,6 +20,7 @@ import { AuthModule } from "./auth/auth.module";
 import { ErsReportModule } from "./ers-report/ers-report.module";
 import { ExperimentStatisticsModule } from "./experiment-statistics/experiment-statistics.module";
 import { EvaluationResultsModule } from "./evaluation-results/evaluation-results.module";
+import { ClassificationCostsModule } from "./classification-costs/classification-costs.module";
 
 export function initializeApp(configService: ConfigService) {
   return () => configService.getConfigs();
@@ -42,6 +43,7 @@ export function initializeApp(configService: ConfigService) {
     FilterModule,
     ErsReportModule,
     EvaluationResultsModule,
+    ClassificationCostsModule,
     AuthModule,
     ExperimentStatisticsModule,
     UiComponentsModule,
