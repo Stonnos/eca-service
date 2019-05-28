@@ -51,6 +51,10 @@ export class EvaluationResultsComponent implements OnInit {
     return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsStatus == EvaluationResultsStatusEnum.RESULTS_RECEIVED;
   }
 
+  public isEvaluationResultsNotReceived(): boolean {
+    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsStatus != EvaluationResultsStatusEnum.RESULTS_RECEIVED;
+  }
+
   public isEvaluationInProgress(): boolean {
     return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsStatus == EvaluationResultsStatusEnum.EVALUATION_IN_PROGRESS;
   }
