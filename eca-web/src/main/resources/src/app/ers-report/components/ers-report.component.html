@@ -14,7 +14,7 @@
       UUID эксперимента:
     </div>
     <div class="ui-g-6 text-left text-wrap text-bold">
-      {{ getExperimentUuid() }}
+      {{ ersReport?.experimentUuid }}
     </div>
   </div>
 
@@ -23,7 +23,7 @@
       Число запросов в ERS на сохранение классификаторов:
     </div>
     <div class="ui-g-6 text-left text-wrap">
-      {{ getRequestsCount() }}
+      {{ ersReport?.requestsCount }}
     </div>
   </div>
 
@@ -32,7 +32,7 @@
       Число успешно сохраненных классификаторов:
     </div>
     <div class="ui-g-6 text-left text-wrap">
-      {{ getSuccessfullySavedClassifiers() }}
+      {{ ersReport?.successfullySavedClassifiers }}
     </div>
   </div>
 
@@ -41,13 +41,13 @@
       Число неудачных запросов:
     </div>
     <div class="ui-g-6 text-left text-wrap">
-      {{ getFailedRequestsCount() }}
+      {{ ersReport?.failedRequestsCount }}
     </div>
   </div>
 
   <div class="ui-g">
     <div class="ui-g-12 text-center text-wrap">
-      <ng-container [ngSwitch]="getErsReportStatus()">
+      <ng-container [ngSwitch]="ersReport?.ersReportStatus">
         <ng-container *ngSwitchCase="'SUCCESS_SENT'">
           <div class="text-success">
             Результаты эксперимента были успешно отправлены в ERS сервис

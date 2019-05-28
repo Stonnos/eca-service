@@ -23,26 +23,6 @@ export class ErsReportComponent implements OnInit {
   public ngOnInit(): void {
   }
 
-  public getExperimentUuid(): string {
-    return this.ersReport && this.ersReport.experimentUuid;
-  }
-
-  public getRequestsCount(): number {
-    return this.ersReport && this.ersReport.requestsCount;
-  }
-
-  public getSuccessfullySavedClassifiers(): number {
-    return this.ersReport && this.ersReport.successfullySavedClassifiers;
-  }
-
-  public getFailedRequestsCount(): number {
-    return this.ersReport && this.ersReport.failedRequestsCount;
-  }
-
-  public getErsReportStatus(): string {
-    return this.ersReport && this.ersReport.ersReportStatus;
-  }
-
   public canSent(): boolean {
     return this.ersReport && this.ersReport.ersReportStatus == "NEED_SENT";
   }

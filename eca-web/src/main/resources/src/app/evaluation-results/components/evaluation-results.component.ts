@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  ClassificationCostsDto,
   EnumDto,
   EvaluationLogDetailsDto, EvaluationResultsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -68,14 +67,6 @@ export class EvaluationResultsComponent implements OnInit {
     return this.evaluationLogDetails && this.evaluationResultsStatusErrorMessageMap.get(this.evaluationLogDetails.evaluationResultsStatus);
   }
 
-  public getRequestId(): string {
-    return this.evaluationLogDetails && this.evaluationLogDetails.requestId;
-  }
-
-  public getClassifierName(): string {
-    return this.evaluationLogDetails && this.evaluationLogDetails.classifierName;
-  }
-
   public getEvaluationMethod(): string {
     if (!!this.evaluationLogDetails) {
       const evaluationMethod: EnumDto = this.evaluationLogDetails.evaluationMethod;
@@ -90,58 +81,6 @@ export class EvaluationResultsComponent implements OnInit {
       }
     }
     return null;
-  }
-
-  public getInstancesName(): string {
-    return this.evaluationLogDetails && this.evaluationLogDetails.instancesInfo.relationName;
-  }
-
-  public getNumInstances(): number {
-    return this.evaluationLogDetails && this.evaluationLogDetails.instancesInfo.numInstances;
-  }
-
-  public getNumAttributes(): number {
-    return this.evaluationLogDetails && this.evaluationLogDetails.instancesInfo.numAttributes;
-  }
-
-  public getNumClasses(): number {
-    return this.evaluationLogDetails && this.evaluationLogDetails.instancesInfo.numClasses;
-  }
-
-  public getClassName(): string {
-    return this.evaluationLogDetails && this.evaluationLogDetails.instancesInfo.className;
-  }
-
-  public getNumTestInstances(): number {
-    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsDto.numTestInstances;
-  }
-
-  public getNumCorrect(): number {
-    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsDto.numCorrect;
-  }
-
-  public getNumInCorrect(): number {
-    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsDto.numIncorrect;
-  }
-
-  public getPctCorrect(): number {
-    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsDto.pctCorrect;
-  }
-
-  public getPctIncorrect(): number {
-    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsDto.pctIncorrect;
-  }
-
-  public getMeanAbsoluteError(): number {
-    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsDto.meanAbsoluteError;
-  }
-
-  public getRootMeanSquaredError(): number {
-    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsDto.rootMeanSquaredError;
-  }
-
-  public getVarianceError(): number {
-    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsDto.varianceError;
   }
 
   public getConfidenceInterval(): string {
