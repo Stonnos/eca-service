@@ -6,6 +6,7 @@ import { ExperimentListComponent } from "./experiments/components/experiment-lis
 import { ClassifierOptionsComponent } from "./classifier-options/components/classifier-options.component";
 import { ClassifierOptionsRequestsComponent } from "./classifier-options-requests/components/classifier-options-requests.component";
 import { LoginComponent } from "./auth/components/login.component";
+import { EvaluationResultsComponent } from "./evaluation-results/components/evaluation-results.component";
 
 const routes: Routes = [
   {
@@ -27,7 +28,11 @@ const routes: Routes = [
       {
         path: 'classifiers-options-requests',
         component: ClassifierOptionsRequestsComponent
-      }
+      },
+      {
+        path: 'classifiers/evaluation-results/:id',
+        component: EvaluationResultsComponent
+      },
     ]
   },
   {

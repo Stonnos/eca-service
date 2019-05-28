@@ -5,21 +5,25 @@
   [paginator]="true"
   [scrollable]="true">
 
+  <ng-template pTemplate="caption">
+    <span class="text-bold">{{ caption }}</span>
+  </ng-template>
+
   <ng-template pTemplate="header">
     <tr>
       <ng-container *ngFor="let column of columns">
-        {{ column.label }}
+        <th>{{ column.label }}</th>
       </ng-container>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-item>
     <tr>
       <td *ngFor="let column of columns">
-        {{ item[column] }}
+        {{ item[column.name] }}
       </td>
     </tr>
   </ng-template>
-  <ng-template pTemplate="emptymessage" *ngIf="items.length == 0">
+  <ng-template pTemplate="emptymessage" *ngIf="items?.length == 0">
     <tr>
       <td [attr.colspan]="columns.length" class="text-center">
         Результатов не найдено

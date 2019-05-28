@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {
   ClassificationCostsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -11,8 +11,11 @@ import {
 export class ClassificationCostsComponent implements OnInit {
 
   public columns: any[] = [];
-  public items: ClassificationCostsDto[] = [];
   public pageSize: number = 5;
+  public caption: string = 'Результаты классификации';
+
+  @Input()
+  public items: ClassificationCostsDto[] = [];
 
   public constructor() {
     this.initColumns();

@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { UiComponentsModule } from "../ui-components.module";
-import { ClassificationCostsComponent } from "./components/classification-costs.component";
+import { RocCurveChartComponent } from "./components/roc-curve-chart.component";
 
 @NgModule({
   imports: [
@@ -11,12 +11,12 @@ import { ClassificationCostsComponent } from "./components/classification-costs.
     UiComponentsModule
   ],
   declarations: [
-    ClassificationCostsComponent
+    RocCurveChartComponent
   ],
   exports: [
-    ClassificationCostsComponent
+    RocCurveChartComponent
   ],
   providers: []
 })
-export class ClassificationCostsModule {
+export class RocCurveChartModule {
 }

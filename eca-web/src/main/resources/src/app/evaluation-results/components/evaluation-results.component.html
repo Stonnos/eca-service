@@ -1,208 +1,327 @@
-<p-dialog
-  [(visible)]="visible"
-  header="Информация о классификаторе"
-  width="800"
-  appendTo="body"
-  [modal]="true"
-  [blockScroll]="false"
-  [draggable]="false"
-  [resizable]="false"
-  (onHide)="hide()">
-
-  <p-scrollPanel [style]="{ width: '100%', height: '600px', border: 'none' }">
-    <p-fieldset legend="Основная информация" class="details-fieldset">
-      <div class="ui-g">
-        <div class="ui-g-6 text-left text-bold text-wrap">
-          UUID заявки:
-        </div>
-        <div class="ui-g-6 text-left text-bold text-wrap">
-          {{ getRequestId() }}
-        </div>
-      </div>
-
-      <div class="ui-g">
-        <div class="ui-g-6 text-left text-bold text-wrap">
-          Классификатор:
-        </div>
-        <div class="ui-g-6 text-left text-wrap">
-          {{ getClassifierName() }}
-        </div>
-      </div>
-
-      <div class="ui-g">
-        <div class="ui-g-6 text-left text-bold text-wrap">
-          Обучающая выборка:
-        </div>
-        <div class="ui-g-6 text-left text-wrap">
-          {{ getInstancesName() }}
-        </div>
-      </div>
-      <div class="ui-g">
-        <div class="ui-g-6 text-left text-bold text-wrap">
-          Число объектов:
-        </div>
-        <div class="ui-g-6 text-left text-wrap">
-          {{ getNumInstances() }}
-        </div>
-      </div>
-      <div class="ui-g">
-        <div class="ui-g-6 text-left text-bold text-wrap">
-          Число атрибутов:
-        </div>
-        <div class="ui-g-6 text-left text-wrap">
-          {{ getNumAttributes() }}
-        </div>
-      </div>
-      <div class="ui-g">
-        <div class="ui-g-6 text-left text-bold text-wrap">
-          Число классов:
-        </div>
-        <div class="ui-g-6 text-left text-wrap">
-          {{ getNumClasses() }}
-        </div>
-      </div>
-      <div class="ui-g">
-        <div class="ui-g-6 text-left text-bold text-wrap">
-          Атрибут класса:
-        </div>
-        <div class="ui-g-6 text-left text-wrap">
-          {{ getClassName() }}
-        </div>
-      </div>
-
-      <div class="ui-g">
-        <div class="ui-g-6 text-left text-bold text-wrap">
-          Метод оценки точности:
-        </div>
-        <div class="ui-g-6 text-left text-wrap">
-          {{ getEvaluationMethod() }}
-        </div>
-      </div>
-    </p-fieldset>
-
-    <p-fieldset legend="Входные параметры классификатора"
-                class="details-fieldset">
-      <ng-container *ngIf="evaluationLogDetails">
-        <ng-container *ngFor="let option of evaluationLogDetails.inputOptions">
+<div class="container-fluid">
+  <div class="row mt-2">
+    <div class="col-5">
+      <div class="h-100 details-panel">
+        <p-fieldset legend="Основная информация" class="details-fieldset">
           <div class="ui-g">
             <div class="ui-g-6 text-left text-bold text-wrap">
-              {{ option.optionName }}
+              UUID заявки:
+            </div>
+            <div class="ui-g-6 text-left text-bold text-wrap">
+              {{ getRequestId() }}
+            </div>
+          </div>
+
+          <div class="ui-g">
+            <div class="ui-g-6 text-left text-bold text-wrap">
+              Классификатор:
             </div>
             <div class="ui-g-6 text-left text-wrap">
-              {{ option.optionValue }}
+              <a class="link" [routerLink]="" (click)="inputOptionsPanel.toggle($event, inputOptionsTarget)">{{ getClassifierName() }}</a>
+              <div #inputOptionsTarget></div>
             </div>
           </div>
-        </ng-container>
-      </ng-container>
-    </p-fieldset>
 
-    <p-fieldset legend="Результаты классификации" class="details-fieldset">
-      <div *ngIf="isEvaluationInProgress()" class="ui-g">
-        <div class="ui-g-12 text-center text-wrap">
-          <div class="text-info">
-            Идет построение модели классификатора...
+          <div class="ui-g">
+            <div class="ui-g-6 text-left text-bold text-wrap">
+              Обучающая выборка:
+            </div>
+            <div class="ui-g-6 text-left text-wrap">
+              {{ getInstancesName() }}
+            </div>
           </div>
-        </div>
-        <div *ngIf="isEvaluationResultsErrorStatus()" class="ui-g-12 text-center text-wrap">
-          <div class="text-danger">
-            {{ getEvaluationResultsStatusErrorMessage() }}
+          <div class="ui-g">
+            <div class="ui-g-6 text-left text-bold text-wrap">
+              Число объектов:
+            </div>
+            <div class="ui-g-6 text-left text-wrap">
+              {{ getNumInstances() }}
+            </div>
+          </div>
+          <div class="ui-g">
+            <div class="ui-g-6 text-left text-bold text-wrap">
+              Число атрибутов:
+            </div>
+            <div class="ui-g-6 text-left text-wrap">
+              {{ getNumAttributes() }}
+            </div>
+          </div>
+          <div class="ui-g">
+            <div class="ui-g-6 text-left text-bold text-wrap">
+              Число классов:
+            </div>
+            <div class="ui-g-6 text-left text-wrap">
+              {{ getNumClasses() }}
+            </div>
+          </div>
+          <div class="ui-g">
+            <div class="ui-g-6 text-left text-bold text-wrap">
+              Атрибут класса:
+            </div>
+            <div class="ui-g-6 text-left text-wrap">
+              {{ getClassName() }}
+            </div>
+          </div>
+
+          <div class="ui-g">
+            <div class="ui-g-6 text-left text-bold text-wrap">
+              Метод оценки точности:
+            </div>
+            <div class="ui-g-6 text-left text-wrap">
+              {{ getEvaluationMethod() }}
+            </div>
+          </div>
+        </p-fieldset>
+
+        <p-fieldset legend="Статистика" class="details-fieldset">
+          <div *ngIf="isEvaluationInProgress()" class="ui-g">
+            <div class="ui-g-12 text-center text-wrap">
+              <div class="text-info">
+                Идет построение модели классификатора...
+              </div>
+            </div>
+            <div *ngIf="isEvaluationResultsErrorStatus()" class="ui-g-12 text-center text-wrap">
+              <div class="text-danger">
+                {{ getEvaluationResultsStatusErrorMessage() }}
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="isEvaluationResultsErrorStatus()" class="ui-g">
+            <div class="ui-g-12 text-center text-wrap">
+              <div class="text-danger">
+                {{ getEvaluationResultsStatusErrorMessage() }}
+              </div>
+            </div>
+          </div>
+
+          <ng-container *ngIf="isEvaluationResultsReceived()">
+            <div class="ui-g">
+              <div class="ui-g-6 text-left text-bold text-wrap">
+                Число объектов тестовых данных:
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ getNumTestInstances() }}
+              </div>
+            </div>
+            <div class="ui-g">
+              <div class="ui-g-6 text-left text-bold text-wrap">
+                Число правильно классифицированных объектов:
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ getNumCorrect() }}
+              </div>
+            </div>
+            <div class="ui-g">
+              <div class="ui-g-6 text-left text-bold text-wrap">
+                Число неправильно классифицированных объектов:
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ getNumInCorrect() }}
+              </div>
+            </div>
+            <div class="ui-g">
+              <div class="ui-g-6 text-left text-bold text-wrap">
+                Точность классификатора, %:
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ getPctCorrect() }}
+              </div>
+            </div>
+            <div class="ui-g">
+              <div class="ui-g-6 text-left text-bold text-wrap">
+                Ошибка классификатора, %:
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ getPctIncorrect() }}
+              </div>
+            </div>
+            <div class="ui-g">
+              <div class="ui-g-6 text-left text-bold text-wrap">
+                Средняя абсолютная ошибка классификатора:
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ getMeanAbsoluteError() }}
+              </div>
+            </div>
+            <div class="ui-g">
+              <div class="ui-g-6 text-left text-bold text-wrap">
+                Среднеквадратическая ошибка классификатора:
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ getRootMeanSquaredError() }}
+              </div>
+            </div>
+            <div *ngIf="isCrossValidationMethod()" class="ui-g">
+              <div class="ui-g-6 text-left text-bold text-wrap">
+                Дисперсия ошибки классификатора:
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ getVarianceError() }}
+              </div>
+            </div>
+            <div *ngIf="isCrossValidationMethod()" class="ui-g">
+              <div class="ui-g-6 text-left text-bold text-wrap">
+                95% доверительный интервал ошибки классификатора:
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ getConfidenceInterval() }}
+              </div>
+            </div>
+
+          </ng-container>
+        </p-fieldset>
+
+        <!--<p-fieldset legend="Входные параметры классификатора"
+                    class="details-fieldset">
+          <ng-container *ngIf="evaluationLogDetails">
+            <ng-container *ngFor="let option of evaluationLogDetails.inputOptions">
+              <div class="ui-g">
+                <div class="ui-g-6 text-left text-bold text-wrap">
+                  {{ option.optionName }}
+                </div>
+                <div class="ui-g-6 text-left text-wrap">
+                  {{ option.optionValue }}
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </p-fieldset>-->
+      </div>
+    </div>
+    <!--<div class="col-4">
+      <div class="h-100 details-panel">
+        <p-fieldset legend="Результаты классификации" class="details-fieldset">
+          <div *ngIf="isEvaluationInProgress()" class="ui-g">
+            <div class="ui-g-12 text-center text-wrap">
+              <div class="text-info">
+                Идет построение модели классификатора...
+              </div>
+            </div>
+            <div *ngIf="isEvaluationResultsErrorStatus()" class="ui-g-12 text-center text-wrap">
+              <div class="text-danger">
+                {{ getEvaluationResultsStatusErrorMessage() }}
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="isEvaluationResultsErrorStatus()" class="ui-g">
+            <div class="ui-g-12 text-center text-wrap">
+              <div class="text-danger">
+                {{ getEvaluationResultsStatusErrorMessage() }}
+              </div>
+            </div>
+          </div>
+
+          <ng-container *ngIf="isEvaluationResultsReceived()">
+            <div class="ui-g">
+              <div class="ui-g-6 text-left text-bold text-wrap">
+                Число объектов тестовых данных:
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ getNumTestInstances() }}
+              </div>
+            </div>
+            <div class="ui-g">
+              <div class="ui-g-6 text-left text-bold text-wrap">
+                Число правильно классифицированных объектов:
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ getNumCorrect() }}
+              </div>
+            </div>
+            <div class="ui-g">
+              <div class="ui-g-6 text-left text-bold text-wrap">
+                Число неправильно классифицированных объектов:
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ getNumInCorrect() }}
+              </div>
+            </div>
+            <div class="ui-g">
+              <div class="ui-g-6 text-left text-bold text-wrap">
+                Точность классификатора, %:
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ getPctCorrect() }}
+              </div>
+            </div>
+            <div class="ui-g">
+              <div class="ui-g-6 text-left text-bold text-wrap">
+                Ошибка классификатора, %:
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ getPctIncorrect() }}
+              </div>
+            </div>
+            <div class="ui-g">
+              <div class="ui-g-6 text-left text-bold text-wrap">
+                Средняя абсолютная ошибка классификатора:
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ getMeanAbsoluteError() }}
+              </div>
+            </div>
+            <div class="ui-g">
+              <div class="ui-g-6 text-left text-bold text-wrap">
+                Среднеквадратическая ошибка классификатора:
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ getRootMeanSquaredError() }}
+              </div>
+            </div>
+            <div *ngIf="isCrossValidationMethod()" class="ui-g">
+              <div class="ui-g-6 text-left text-bold text-wrap">
+                Дисперсия ошибки классификатора:
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ getVarianceError() }}
+              </div>
+            </div>
+            <div *ngIf="isCrossValidationMethod()" class="ui-g">
+              <div class="ui-g-6 text-left text-bold text-wrap">
+                95% доверительный интервал ошибки классификатора:
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ getConfidenceInterval() }}
+              </div>
+            </div>
+
+          </ng-container>
+        </p-fieldset>
+      </div>
+    </div>-->
+
+    <div class="col-7">
+      <div class="h-100 details-panel">
+        <div class="row">
+          <div class="col-12">
+            <app-roc-curve-chart
+              [rocCurveData]="evaluationLogDetails?.rocCurveData || []">
+            </app-roc-curve-chart>
+          </div>
+          <div class="col-12 mt-5">
+            <app-classification-costs-list
+              [items]="evaluationLogDetails?.classificationCosts || []">
+            </app-classification-costs-list>
           </div>
         </div>
       </div>
+    </div>
+  </div>
 
-      <div *ngIf="isEvaluationResultsErrorStatus()" class="ui-g">
-        <div class="ui-g-12 text-center text-wrap">
-          <div class="text-danger">
-            {{ getEvaluationResultsStatusErrorMessage() }}
-          </div>
-        </div>
-      </div>
-
-      <ng-container *ngIf="isEvaluationResultsReceived()">
+  <p-overlayPanel #inputOptionsPanel [showCloseIcon]="true">
+    <p-panel class="input-options-panel">
+      <ng-container *ngFor="let option of evaluationLogDetails?.inputOptions">
         <div class="ui-g">
           <div class="ui-g-6 text-left text-bold text-wrap">
-            Число объектов тестовых данных:
+            {{ option.optionName }}
           </div>
           <div class="ui-g-6 text-left text-wrap">
-            {{ getNumTestInstances() }}
+            {{ option.optionValue }}
           </div>
         </div>
-        <div class="ui-g">
-          <div class="ui-g-6 text-left text-bold text-wrap">
-            Число правильно классифицированных объектов:
-          </div>
-          <div class="ui-g-6 text-left text-wrap">
-            {{ getNumCorrect() }}
-          </div>
-        </div>
-        <div class="ui-g">
-          <div class="ui-g-6 text-left text-bold text-wrap">
-            Число неправильно классифицированных объектов:
-          </div>
-          <div class="ui-g-6 text-left text-wrap">
-            {{ getNumInCorrect() }}
-          </div>
-        </div>
-        <div class="ui-g">
-          <div class="ui-g-6 text-left text-bold text-wrap">
-            Точность классификатора, %:
-          </div>
-          <div class="ui-g-6 text-left text-wrap">
-            {{ getPctCorrect() }}
-          </div>
-        </div>
-        <div class="ui-g">
-          <div class="ui-g-6 text-left text-bold text-wrap">
-            Ошибка классификатора, %:
-          </div>
-          <div class="ui-g-6 text-left text-wrap">
-            {{ getPctIncorrect() }}
-          </div>
-        </div>
-        <div class="ui-g">
-          <div class="ui-g-6 text-left text-bold text-wrap">
-            Средняя абсолютная ошибка классификатора:
-          </div>
-          <div class="ui-g-6 text-left text-wrap">
-            {{ getMeanAbsoluteError() }}
-          </div>
-        </div>
-        <div class="ui-g">
-          <div class="ui-g-6 text-left text-bold text-wrap">
-            Среднеквадратическая ошибка классификатора:
-          </div>
-          <div class="ui-g-6 text-left text-wrap">
-            {{ getRootMeanSquaredError() }}
-          </div>
-        </div>
-        <div *ngIf="isCrossValidationMethod()" class="ui-g">
-          <div class="ui-g-6 text-left text-bold text-wrap">
-            Дисперсия ошибки классификатора:
-          </div>
-          <div class="ui-g-6 text-left text-wrap">
-            {{ getVarianceError() }}
-          </div>
-        </div>
-        <div *ngIf="isCrossValidationMethod()" class="ui-g">
-          <div class="ui-g-6 text-left text-bold text-wrap">
-            95% доверительный интервал ошибки классификатора:
-          </div>
-          <div class="ui-g-6 text-left text-wrap">
-            {{ getConfidenceInterval() }}
-          </div>
-        </div>
-
       </ng-container>
-    </p-fieldset>
-  </p-scrollPanel>
-
-  <p-footer>
-    <button
-      pButton
-      label="Закрыть"
-      type="button"
-      (click)="hide()"
-      class="ml-auto">
-    </button>
-  </p-footer>
-</p-dialog>
+    </p-panel>
+  </p-overlayPanel>
+</div>

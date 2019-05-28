@@ -1,3 +1,21 @@
+.details-panel {
+  background: white;
+  padding: 8px;
+}
+
+.link {
+  color: #3397ff;
+}
+
+.input-options-panel::ng-deep {
+
+  .ui-panel {
+    width: 450px;
+    max-height: 600px;
+    overflow-y: scroll;
+  }
+}
+
 .details-fieldset::ng-deep {
 
   .ui-fieldset {

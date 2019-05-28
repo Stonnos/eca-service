@@ -1,6 +1,5 @@
 import { Component, Injector } from '@angular/core';
 import {
-  EvaluationLogDetailsDto,
   EvaluationLogDto, FilterFieldDto,
   PageDto,
   PageRequestDto, RequestStatusStatisticsDto
@@ -12,7 +11,7 @@ import { OverlayPanel } from "primeng/primeng";
 import { Observable } from "rxjs/internal/Observable";
 import { FilterService } from "../../filter/services/filter.service";
 import { EvaluationMethod } from "../../model/evaluation-method.enum";
-import { finalize } from "rxjs/internal/operators";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-classifier-list',
@@ -21,9 +20,9 @@ import { finalize } from "rxjs/internal/operators";
 })
 export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto> {
 
+  private evaluationDetailsUrl: string = '/dashboard/classifiers/evaluation-results';
+
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
-  public evaluationLogDetails: EvaluationLogDetailsDto;
-  public evaluationResultsVisibility: boolean = false;
 
   public instancesInfoColumn: string = "instancesInfo.relationName";
   public requestIdColumn: string = "requestId";
@@ -34,7 +33,8 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
 
   public constructor(private injector: Injector,
                      private classifiersService: ClassifiersService,
-                     private filterService: FilterService) {
+                     private filterService: FilterService,
+                     private router: Router) {
     super(injector.get(MessageService));
     this.defaultSortField = "creationDate";
     this.linkColumns = ["classifierName", this.evaluationMethodColumn, this.instancesInfoColumn, this.requestIdColumn];
@@ -69,7 +69,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   public onSelect(event, evaluationLog: EvaluationLogDto, column: string, overlayPanel: OverlayPanel): void {
     switch (column) {
       case this.requestIdColumn:
-        this.getEvaluationResults(evaluationLog.requestId);
+        this.router.navigate([this.evaluationDetailsUrl, evaluationLog.requestId]);
         break;
       case this.evaluationMethodColumn:
         if (evaluationLog.evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION) {
@@ -92,26 +92,6 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
       default:
         return item[column];
     }
-  }
-
-  public onEvaluationResultsVisibilityChange(visible): void {
-    this.evaluationResultsVisibility = visible;
-  }
-
-  private getEvaluationResults(requestId: string): void {
-    this.loading = true;
-    this.classifiersService.getEvaluationLogDetailsDto(requestId)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
-      .subscribe((evaluationLogDetails: EvaluationLogDetailsDto) => {
-        this.evaluationLogDetails = evaluationLogDetails;
-        this.evaluationResultsVisibility = true;
-      }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-    });
   }
 
   private toggleOverlayPanel(event, evaluationLog: EvaluationLogDto, column: string, overlayPanel: OverlayPanel): void {

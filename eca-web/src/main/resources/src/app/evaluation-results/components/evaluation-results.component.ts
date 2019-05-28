@@ -1,10 +1,14 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
+  ClassificationCostsDto,
   EnumDto,
   EvaluationLogDetailsDto, EvaluationResultsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { EvaluationResultsStatusEnum } from "../model/evaluation-results-status.enum";
 import { EvaluationMethod } from "../../model/evaluation-method.enum";
+import { ClassifiersService } from "../../classifiers/services/classifiers.service";
+import { MessageService } from "primeng/api";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: 'app-evaluation-results',
@@ -20,16 +24,28 @@ export class EvaluationResultsComponent implements OnInit {
     .set(EvaluationResultsStatusEnum.EVALUATION_RESULTS_NOT_FOUND, 'Результаты классификации не были найдены в ERS')
     .set(EvaluationResultsStatusEnum.RESULTS_NOT_SENT, 'Не удалось получить результаты классификации, т.к. они не были отправлены в ERS сервис');
 
-  @Input()
-  public visible: boolean = false;
+  private readonly requestId: string;
 
-  @Input()
   public evaluationLogDetails: EvaluationLogDetailsDto;
 
-  @Output()
-  public visibilityChange: EventEmitter<boolean> = new EventEmitter();
+  public constructor(private classifiersService: ClassifiersService,
+                     private messageService: MessageService,
+                     private route: ActivatedRoute) {
+    this.requestId = this.route.snapshot.params.id;
+  }
 
   public ngOnInit(): void {
+    this.getEvaluationResults(this.requestId);
+  }
+
+  public getEvaluationResults(requestId: string): void {
+    this.classifiersService.getEvaluationLogDetailsDto(requestId)
+      .subscribe((evaluationLogDetails: EvaluationLogDetailsDto) => {
+        this.evaluationLogDetails = evaluationLogDetails;
+        console.log(evaluationLogDetails);
+      }, (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      });
   }
 
   public isEvaluationResultsReceived(): boolean {
@@ -134,9 +150,5 @@ export class EvaluationResultsComponent implements OnInit {
       return `[${evaluationResults.confidenceIntervalLowerBound}; ${evaluationResults.confidenceIntervalUpperBound}]`;
     }
     return null;
-  }
-
-  public hide(): void {
-    this.visibilityChange.emit(false);
   }
 }
