@@ -24,24 +24,36 @@ export class RocCurveChartComponent implements OnInit, OnChanges {
     },
     legend: {
       position: 'bottom'
+    },
+    scales: {
+      xAxes: [{
+        type: 'linear',
+        ticks: {
+          min: 0,
+          beginAtZero: true
+        }
+      }]
     }
   };
 
   public constructor() {
+    //let xAxis = [1,2,20,40,50];
     this.dataSet = {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      //labels: xAxis,
       datasets: [
         {
           label: 'First Dataset',
-          data: [65, 59, 80, 81, 56, 55, 40],
+          data: [{x: 1, y: 12}, {x: 1, y: 12}, {x: 4, y: 6}, {x: 5, y: 16}],
           fill: false,
-          borderColor: '#4bc0c0'
+          borderColor: '#4bc0c0',
+          lineTension: 0
         },
         {
           label: 'Second Dataset',
-          data: [28, 48, 40, 19, 86, 27, 90],
+          data: [{x: 4, y: 2}, {x: 7, y: 18}, {x: 22, y: 61}, {x: 32, y: 14}],
           fill: false,
-          borderColor: '#565656'
+          borderColor: '#565656',
+          lineTension: 0
         }
       ]
     };
