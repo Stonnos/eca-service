@@ -16,7 +16,7 @@
           UUID заявки:
         </div>
         <div class="ui-g-6 text-left text-bold text-wrap">
-          {{ getRequestId() }}
+          {{ evaluationLogDetails?.requestId }}
         </div>
       </div>
 
@@ -25,7 +25,7 @@
           Классификатор:
         </div>
         <div class="ui-g-6 text-left text-wrap">
-          {{ getClassifierName() }}
+          {{ evaluationLogDetails?.classifierName }}
         </div>
       </div>
 
@@ -34,7 +34,7 @@
           Обучающая выборка:
         </div>
         <div class="ui-g-6 text-left text-wrap">
-          {{ getInstancesName() }}
+          {{ evaluationLogDetails?.instancesInfo?.relationName }}
         </div>
       </div>
       <div class="ui-g">
@@ -42,7 +42,7 @@
           Число объектов:
         </div>
         <div class="ui-g-6 text-left text-wrap">
-          {{ getNumInstances() }}
+          {{ evaluationLogDetails?.instancesInfo?.numInstances }}
         </div>
       </div>
       <div class="ui-g">
@@ -50,7 +50,7 @@
           Число атрибутов:
         </div>
         <div class="ui-g-6 text-left text-wrap">
-          {{ getNumAttributes() }}
+          {{ evaluationLogDetails?.instancesInfo?.numAttributes }}
         </div>
       </div>
       <div class="ui-g">
@@ -58,7 +58,7 @@
           Число классов:
         </div>
         <div class="ui-g-6 text-left text-wrap">
-          {{ getNumClasses() }}
+          {{ evaluationLogDetails?.instancesInfo?.numClasses }}
         </div>
       </div>
       <div class="ui-g">
@@ -66,7 +66,7 @@
           Атрибут класса:
         </div>
         <div class="ui-g-6 text-left text-wrap">
-          {{ getClassName() }}
+          {{ evaluationLogDetails?.instancesInfo?.className }}
         </div>
       </div>
 
@@ -82,17 +82,15 @@
 
     <p-fieldset legend="Входные параметры классификатора"
                 class="details-fieldset">
-      <ng-container *ngIf="evaluationLogDetails">
-        <ng-container *ngFor="let option of evaluationLogDetails.inputOptions">
-          <div class="ui-g">
-            <div class="ui-g-6 text-left text-bold text-wrap">
-              {{ option.optionName }}
-            </div>
-            <div class="ui-g-6 text-left text-wrap">
-              {{ option.optionValue }}
-            </div>
+      <ng-container *ngFor="let option of evaluationLogDetails?.inputOptions">
+        <div class="ui-g">
+          <div class="ui-g-6 text-left text-bold text-wrap">
+            {{ option.optionName }}
           </div>
-        </ng-container>
+          <div class="ui-g-6 text-left text-wrap">
+            {{ option.optionValue }}
+          </div>
+        </div>
       </ng-container>
     </p-fieldset>
 
@@ -101,11 +99,6 @@
         <div class="ui-g-12 text-center text-wrap">
           <div class="text-info">
             Идет построение модели классификатора...
-          </div>
-        </div>
-        <div *ngIf="isEvaluationResultsErrorStatus()" class="ui-g-12 text-center text-wrap">
-          <div class="text-danger">
-            {{ getEvaluationResultsStatusErrorMessage() }}
           </div>
         </div>
       </div>
@@ -124,7 +117,7 @@
             Число объектов тестовых данных:
           </div>
           <div class="ui-g-6 text-left text-wrap">
-            {{ getNumTestInstances() }}
+            {{ evaluationLogDetails?.evaluationResultsDto?.numTestInstances }}
           </div>
         </div>
         <div class="ui-g">
@@ -132,7 +125,7 @@
             Число правильно классифицированных объектов:
           </div>
           <div class="ui-g-6 text-left text-wrap">
-            {{ getNumCorrect() }}
+            {{ evaluationLogDetails?.evaluationResultsDto?.numCorrect }}
           </div>
         </div>
         <div class="ui-g">
@@ -140,7 +133,7 @@
             Число неправильно классифицированных объектов:
           </div>
           <div class="ui-g-6 text-left text-wrap">
-            {{ getNumInCorrect() }}
+            {{ evaluationLogDetails?.evaluationResultsDto?.numIncorrect }}
           </div>
         </div>
         <div class="ui-g">
@@ -148,7 +141,7 @@
             Точность классификатора, %:
           </div>
           <div class="ui-g-6 text-left text-wrap">
-            {{ getPctCorrect() }}
+            {{ evaluationLogDetails?.evaluationResultsDto?.pctCorrect }}
           </div>
         </div>
         <div class="ui-g">
@@ -156,7 +149,7 @@
             Ошибка классификатора, %:
           </div>
           <div class="ui-g-6 text-left text-wrap">
-            {{ getPctIncorrect() }}
+            {{ evaluationLogDetails?.evaluationResultsDto?.pctIncorrect }}
           </div>
         </div>
         <div class="ui-g">
@@ -164,7 +157,7 @@
             Средняя абсолютная ошибка классификатора:
           </div>
           <div class="ui-g-6 text-left text-wrap">
-            {{ getMeanAbsoluteError() }}
+            {{ evaluationLogDetails?.evaluationResultsDto?.meanAbsoluteError }}
           </div>
         </div>
         <div class="ui-g">
@@ -172,7 +165,7 @@
             Среднеквадратическая ошибка классификатора:
           </div>
           <div class="ui-g-6 text-left text-wrap">
-            {{ getRootMeanSquaredError() }}
+            {{ evaluationLogDetails?.evaluationResultsDto?.rootMeanSquaredError }}
           </div>
         </div>
         <div *ngIf="isCrossValidationMethod()" class="ui-g">
@@ -180,7 +173,7 @@
             Дисперсия ошибки классификатора:
           </div>
           <div class="ui-g-6 text-left text-wrap">
-            {{ getVarianceError() }}
+            {{ evaluationLogDetails?.evaluationResultsDto?.varianceError }}
           </div>
         </div>
         <div *ngIf="isCrossValidationMethod()" class="ui-g">

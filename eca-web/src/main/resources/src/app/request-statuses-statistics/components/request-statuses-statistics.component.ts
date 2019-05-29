@@ -10,24 +10,4 @@ export class RequestStatusesStatisticsComponent {
 
   @Input()
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
-
-  public getNewRequestsCount(): number {
-    return this.requestStatusStatisticsDto && this.requestStatusStatisticsDto.newRequestsCount;
-  }
-
-  public getFinishedRequestsCount(): number {
-    return this.requestStatusStatisticsDto && this.requestStatusStatisticsDto.finishedRequestsCount;
-  }
-
-  public getTimeoutRequestsCount(): number {
-    return this.requestStatusStatisticsDto && this.requestStatusStatisticsDto.timeoutRequestsCount;
-  }
-
-  public getErrorRequestsCount(): number {
-    return this.requestStatusStatisticsDto && this.requestStatusStatisticsDto.errorRequestsCount;
-  }
-
-  public getTotalRequestsCount(): number {
-    return this.requestStatusStatisticsDto && this.requestStatusStatisticsDto.totalCount;
-  }
 }

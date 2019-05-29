@@ -2,35 +2,35 @@
   <div class="ui-g-12 ui-md-2 ui-md-offset-1">
     <p-panel class="statistics-panel text-center" [showHeader]="false">
       <p class="attr">Всего заявок</p>
-      <p class="value">{{ getTotalRequestsCount() }}</p>
+      <p class="value">{{ requestStatusStatisticsDto?.totalCount }}</p>
     </p-panel>
   </div>
 
   <div class="ui-g-12 ui-md-2">
     <p-panel class="statistics-panel text-center" [showHeader]="false">
       <p class="attr">Новые заявки</p>
-      <p class="value">{{ getNewRequestsCount() }}</p>
+      <p class="value">{{ requestStatusStatisticsDto?.newRequestsCount }}</p>
     </p-panel>
   </div>
 
   <div class="ui-g-12 ui-md-2">
     <p-panel class="statistics-panel text-center" [showHeader]="false">
       <p class="attr">Успешно завершено</p>
-      <p class="value">{{ getFinishedRequestsCount() }}</p>
+      <p class="value">{{ requestStatusStatisticsDto?.finishedRequestsCount }}</p>
     </p-panel>
   </div>
 
   <div class="ui-g-12 ui-md-2">
     <p-panel class="statistics-panel text-center" [showHeader]="false">
       <p class="attr">Завершено с ошибкой</p>
-      <p class="value">{{ getErrorRequestsCount() }}</p>
+      <p class="value">{{ requestStatusStatisticsDto?.errorRequestsCount }}</p>
     </p-panel>
   </div>
 
   <div class="ui-g-12 ui-md-2">
     <p-panel class="statistics-panel text-center" [showHeader]="false">
       <p class="attr">Завешено с таймаутом</p>
-      <p class="value">{{ getTimeoutRequestsCount() }}</p>
+      <p class="value">{{ requestStatusStatisticsDto?.timeoutRequestsCount }}</p>
     </p-panel>
   </div>
 </div>
