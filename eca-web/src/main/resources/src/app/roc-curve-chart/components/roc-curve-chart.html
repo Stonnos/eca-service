@@ -9,8 +9,8 @@
       class="mt-5"
       [options]="classValues"
       optionLabel="label"
-      [(ngModel)]="selectedClassValue"
       [autoWidth]="false"
+      (onChange)="onChangeClass($event)"
       [style]="{'width':'100%'}">
     </p-dropdown>
   </div>

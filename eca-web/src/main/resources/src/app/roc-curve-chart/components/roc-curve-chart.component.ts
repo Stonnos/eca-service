@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { RocCurveDataDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import { RocCurveDataDto, RocCurvePointDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { SelectItem } from "primeng/api";
+import { Point } from "../model/point.model";
 
 @Component({
   selector: 'app-roc-curve-chart',
@@ -14,7 +15,6 @@ export class RocCurveChartComponent implements OnInit, OnChanges {
 
   public dataSet: any;
   public classValues: SelectItem[] = [];
-  public selectedClassValue: any;
 
   public options: any = {
     title: {
@@ -36,43 +36,64 @@ export class RocCurveChartComponent implements OnInit, OnChanges {
     }
   };
 
-  public constructor() {
-    //let xAxis = [1,2,20,40,50];
-    this.dataSet = {
-      //labels: xAxis,
-      datasets: [
-        {
-          label: 'First Dataset',
-          data: [{x: 1, y: 12}, {x: 1, y: 12}, {x: 4, y: 6}, {x: 5, y: 16}],
-          fill: false,
-          borderColor: '#4bc0c0',
-          lineTension: 0
-        },
-        {
-          label: 'Second Dataset',
-          data: [{x: 4, y: 2}, {x: 7, y: 18}, {x: 22, y: 61}, {x: 32, y: 14}],
-          fill: false,
-          borderColor: '#565656',
-          lineTension: 0
-        }
-      ]
-    };
-  }
-
   public ngOnInit(): void {
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
     this.initClassValues();
+    this.createRocCurveChart(null);
+  }
+
+  public onChangeClass(event): void {
+    console.log(event.value);
+    this.createRocCurveChart(event.value.value);
   }
 
   private initClassValues(): void {
     this.classValues = [];
-    this.classValues.push({label: 'Все классы', value: 'all'});
+    this.classValues.push({label: 'Все классы', value: null});
     if (!!this.rocCurveData && this.rocCurveData.length > 0) {
       this.rocCurveData.forEach((data: RocCurveDataDto) => {
         this.classValues.push({ label: data.classValue, value: data.classValue });
       });
     }
+  }
+
+  private createRocCurveChart(classValue: string): void {
+    let dataSets = [];
+    if (!!this.rocCurveData && this.rocCurveData.length > 0) {
+      if (classValue == null) {
+        this.rocCurveData.forEach((data: RocCurveDataDto) => {
+          dataSets.push(this.createDataSet(data));
+        });
+      } else {
+        let found: RocCurveDataDto[] = this.rocCurveData.filter((data: RocCurveDataDto) => data.classValue == classValue);
+        if (!!found && found.length > 0) {
+          dataSets.push(this.createDataSet(found[0]));
+        }
+      }
+    }
+    this.dataSet = {
+      datasets: dataSets
+    };
+  }
+
+  private createRocCurvePoints(rocCurveData: RocCurveDataDto): Point[] {
+    if (!!rocCurveData.points && rocCurveData.points.length > 0) {
+      return rocCurveData.points.map((point: RocCurvePointDto) => {
+        return new Point(point.xvalue, point.yvalue);
+      });
+    }
+    return [];
+  }
+
+  private createDataSet(data: RocCurveDataDto): any {
+    return {
+      label: data.classValue,
+      data: this.createRocCurvePoints(data),
+      fill: false,
+      borderColor: '#4bc0c0',
+      lineTension: 0
+    };
   }
 }
