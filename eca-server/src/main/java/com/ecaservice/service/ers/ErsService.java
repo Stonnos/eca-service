@@ -148,12 +148,12 @@ public class ErsService {
                 evaluationResultsStatus = EvaluationResultsStatus.RESULTS_NOT_SENT;
             } else {
                 try {
-                    GetEvaluationResultsResponse evaluationResultsSimpleResponse =
+                    GetEvaluationResultsResponse evaluationResultsResponse =
                             ersRequestService.getEvaluationResults(evaluationResultsRequestEntity.getRequestId());
-                    if (ResponseStatus.SUCCESS.equals(evaluationResultsSimpleResponse.getStatus())) {
-                        evaluationLogDetailsMapper.update(evaluationResultsSimpleResponse, evaluationLogDetailsDto);
+                    if (ResponseStatus.SUCCESS.equals(evaluationResultsResponse.getStatus())) {
+                        evaluationLogDetailsMapper.update(evaluationResultsResponse, evaluationLogDetailsDto);
                     }
-                    evaluationResultsStatus = handleEvaluationResultsStatus(evaluationResultsSimpleResponse);
+                    evaluationResultsStatus = handleEvaluationResultsStatus(evaluationResultsResponse);
                 } catch (WebServiceIOException ex) {
                     log.error(ex.getMessage());
                     evaluationResultsStatus = EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE;

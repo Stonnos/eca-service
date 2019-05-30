@@ -11,7 +11,6 @@ import {
 export class ClassificationCostsComponent implements OnInit {
 
   public columns: any[] = [];
-  public pageSize: number = 5;
   public caption: string = 'Результаты классификации';
 
   @Input()
