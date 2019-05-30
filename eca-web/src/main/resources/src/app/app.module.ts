@@ -21,7 +21,6 @@ import { ErsReportModule } from "./ers-report/ers-report.module";
 import { ExperimentStatisticsModule } from "./experiment-statistics/experiment-statistics.module";
 import { EvaluationResultsModule } from "./evaluation-results/evaluation-results.module";
 import { ClassificationCostsModule } from "./classification-costs/classification-costs.module";
-import { RocCurveChartModule } from "./roc-curve-chart/roc-curve-chart.module";
 
 export function initializeApp(configService: ConfigService) {
   return () => configService.getConfigs();
@@ -45,7 +44,6 @@ export function initializeApp(configService: ConfigService) {
     ErsReportModule,
     EvaluationResultsModule,
     ClassificationCostsModule,
-    RocCurveChartModule,
     AuthModule,
     ExperimentStatisticsModule,
     UiComponentsModule,

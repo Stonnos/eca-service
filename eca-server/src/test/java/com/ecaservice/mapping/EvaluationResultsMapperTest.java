@@ -11,7 +11,6 @@ import com.ecaservice.dto.evaluation.EvaluationMethod;
 import com.ecaservice.dto.evaluation.EvaluationMethodReport;
 import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.InstancesReport;
-import com.ecaservice.dto.evaluation.RocCurveData;
 import com.ecaservice.dto.evaluation.RocCurveReport;
 import com.ecaservice.dto.evaluation.StatisticsReport;
 import com.ecaservice.service.ClassifierOptionsService;
@@ -132,10 +131,6 @@ public class EvaluationResultsMapperTest {
                         confusionMatrix[i][j]);
             }
         }
-        //Roc curve data report assertion
-        List<RocCurveData> rocCurveDataList = resultsRequest.getRocCurveData();
-        Assertions.assertThat(rocCurveDataList).isNotNull();
-        Assertions.assertThat(rocCurveDataList).hasSize(evaluationResults.getEvaluation().getData().numClasses());
         //Statistics report assertion
         StatisticsReport statisticsReport = resultsRequest.getStatistics();
         Assertions.assertThat(statisticsReport).isNotNull();

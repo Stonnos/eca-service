@@ -19,7 +19,7 @@ spring:
   cache:
     cache-names: classifiers, evaluation-results
     caffeine:
-      spec: maximumSize=100, expireAfterWrite=7200s
+      spec: maximumSize=100, expireAfterWrite=600s
   liquibase:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml

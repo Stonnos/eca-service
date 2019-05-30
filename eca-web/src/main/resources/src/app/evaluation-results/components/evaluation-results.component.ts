@@ -8,6 +8,7 @@ import { EvaluationMethod } from "../../model/evaluation-method.enum";
 import { ClassifiersService } from "../../classifiers/services/classifiers.service";
 import { MessageService } from "primeng/api";
 import { ActivatedRoute } from "@angular/router";
+import { finalize } from "rxjs/internal/operators";
 
 @Component({
   selector: 'app-evaluation-results',
@@ -25,6 +26,8 @@ export class EvaluationResultsComponent implements OnInit {
 
   private readonly requestId: string;
 
+  public loading: boolean = false;
+
   public evaluationLogDetails: EvaluationLogDetailsDto;
 
   public constructor(private classifiersService: ClassifiersService,
@@ -38,10 +41,15 @@ export class EvaluationResultsComponent implements OnInit {
   }
 
   public getEvaluationResults(requestId: string): void {
+    this.loading = true;
     this.classifiersService.getEvaluationLogDetailsDto(requestId)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
       .subscribe((evaluationLogDetails: EvaluationLogDetailsDto) => {
         this.evaluationLogDetails = evaluationLogDetails;
-        console.log(evaluationLogDetails);
       }, (error) => {
         this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
       });
@@ -49,10 +57,6 @@ export class EvaluationResultsComponent implements OnInit {
 
   public isEvaluationResultsReceived(): boolean {
     return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsStatus == EvaluationResultsStatusEnum.RESULTS_RECEIVED;
-  }
-
-  public isEvaluationResultsNotReceived(): boolean {
-    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsStatus != EvaluationResultsStatusEnum.RESULTS_RECEIVED;
   }
 
   public isEvaluationInProgress(): boolean {

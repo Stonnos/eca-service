@@ -18,8 +18,8 @@ import java.util.Optional;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = {InstancesInfoMapper.class, EvaluationLogInputOptionsMapper.class, StatisticsReportMapper.class,
-        RocCurveDataMapper.class, ClassificationCostsMapper.class})
+@Mapper(uses = {InstancesInfoMapper.class, EvaluationLogInputOptionsMapper.class,
+        StatisticsReportMapper.class, ClassificationCostsMapper.class})
 public abstract class EvaluationLogDetailsMapper {
 
     /**

@@ -31,3 +31,32 @@
     font-size: 16px;
   }
 }
+
+.app-progress-spinner::ng-deep {
+  .ui-progress-spinner {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    margin-top: -200px;
+    width: 200px;
+    height: 200px;
+    z-index: 100000;
+  }
+
+  @keyframes ui-progress-spinner-color {
+    100%,
+    0% {
+      stroke: #416ee7;
+    }
+    40% {
+      stroke: #416ee7;
+    }
+    66% {
+      stroke: #416ee7;
+    }
+    80%,
+    90% {
+      stroke: #416ee7;
+    }
+  }
+}

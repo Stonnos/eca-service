@@ -34,10 +34,4 @@ public class EvaluationLogDetailsDto extends EvaluationLogDto {
      */
     @ApiModelProperty(value = "Classification costs results")
     private List<ClassificationCostsDto> classificationCosts;
-
-    /**
-     * Roc - curves data
-     */
-    @ApiModelProperty(value = "Roc - curves data")
-    private List<RocCurveDataDto> rocCurveData;
 }

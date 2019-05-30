@@ -1,1 +1,16 @@
+.classification-costs-table::ng-deep {
 
+  .ui-table {
+    margin-top: 5px;
+  }
+
+  .ui-table-tbody > tr > td {
+    word-wrap: break-word;
+    &:first-child {
+      font-weight: bold;
+    }
+  }
+  .ui-table-thead > tr > th {
+    word-wrap: break-word;
+  }
+}

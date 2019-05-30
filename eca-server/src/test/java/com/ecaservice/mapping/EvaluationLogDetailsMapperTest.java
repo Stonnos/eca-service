@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @Import({EvaluationLogDetailsMapperImpl.class, InstancesInfoMapperImpl.class,
         EvaluationLogInputOptionsMapperImpl.class, StatisticsReportMapperImpl.class,
-        RocCurveDataMapperImpl.class, RocCurvePointMapperImpl.class, ClassificationCostsMapperImpl.class})
+        ClassificationCostsMapperImpl.class})
 public class EvaluationLogDetailsMapperTest {
 
     @Inject
@@ -67,12 +67,9 @@ public class EvaluationLogDetailsMapperTest {
         response.setStatistics(TestHelperUtils.createStatisticsReport());
         response.getClassificationCosts().add(TestHelperUtils.createClassificationCostsReport());
         response.getClassificationCosts().add(TestHelperUtils.createClassificationCostsReport());
-        response.getRocCurveData().add(TestHelperUtils.createRocCurveData());
-        response.getRocCurveData().add(TestHelperUtils.createRocCurveData());
         evaluationLogDetailsMapper.update(response, evaluationLogDetailsDto);
         Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNotNull();
         Assertions.assertThat(evaluationLogDetailsDto.getClassificationCosts()).hasSameSizeAs(
                 response.getClassificationCosts());
-        Assertions.assertThat(evaluationLogDetailsDto.getRocCurveData()).hasSameSizeAs(response.getRocCurveData());
     }
 }

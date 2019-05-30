@@ -10,8 +10,6 @@ import com.ecaservice.dto.evaluation.EvaluationMethodReport;
 import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.InputOptionsMap;
 import com.ecaservice.dto.evaluation.ResponseStatus;
-import com.ecaservice.dto.evaluation.RocCurveData;
-import com.ecaservice.dto.evaluation.RocCurvePoint;
 import com.ecaservice.dto.evaluation.RocCurveReport;
 import com.ecaservice.dto.evaluation.StatisticsReport;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
@@ -797,32 +795,6 @@ public class TestHelperUtils {
         statisticsReport.setConfidenceIntervalLowerBound(BigDecimal.ZERO);
         statisticsReport.setConfidenceIntervalUpperBound(BigDecimal.ONE);
         return statisticsReport;
-    }
-
-    /**
-     * Creates roc - curve point.
-     *
-     * @return roc - curve point
-     */
-    public static RocCurvePoint createRocCurvePoint() {
-        RocCurvePoint rocCurvePoint = new RocCurvePoint();
-        rocCurvePoint.setXValue(BigDecimal.ONE);
-        rocCurvePoint.setYValue(BigDecimal.TEN);
-        return rocCurvePoint;
-    }
-
-    /**
-     * Creates roc - curve data.
-     *
-     * @return roc - curve data
-     */
-    public static RocCurveData createRocCurveData() {
-        RocCurveData rocCurveData = new RocCurveData();
-        rocCurveData.setClassValue(VALUE);
-        for (int i = 0; i < NUM_ITERATIONS; i++) {
-            rocCurveData.getPoints().add(createRocCurvePoint());
-        }
-        return rocCurveData;
     }
 
     /**

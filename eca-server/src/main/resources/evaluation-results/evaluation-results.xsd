@@ -102,22 +102,6 @@
         </xsd:sequence>
     </xsd:complexType>
 
-    <xsd:complexType name="rocCurvePoint">
-        <xsd:sequence>
-            <xsd:element name="xValue" type="xsd:decimal"/>
-            <xsd:element name="yValue" type="xsd:decimal"/>
-            <xsd:element name="thresholdValue" type="xsd:decimal"/>
-        </xsd:sequence>
-    </xsd:complexType>
-
-    <xsd:complexType name="rocCurveData">
-        <xsd:sequence>
-            <xsd:element name="classValue" type="xsd:string"/>
-            <xsd:element maxOccurs="unbounded" minOccurs="0" name="points"
-                         type="evaluation:rocCurvePoint"/>
-        </xsd:sequence>
-    </xsd:complexType>
-
     <xsd:complexType name="classificationCostsReport">
         <xsd:sequence>
             <xsd:element name="classValue" type="xsd:string"/>
@@ -149,8 +133,6 @@
                              type="evaluation:classificationCostsReport"/>
                 <xsd:element maxOccurs="unbounded" minOccurs="0" name="confusionMatrix"
                              type="evaluation:confusionMatrixReport"/>
-                <xsd:element maxOccurs="unbounded" minOccurs="0" name="rocCurveData"
-                             type="evaluation:rocCurveData"/>
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>
@@ -205,8 +187,6 @@
                              type="evaluation:classificationCostsReport"/>
                 <xsd:element maxOccurs="unbounded" minOccurs="0" name="confusionMatrix"
                              type="evaluation:confusionMatrixReport"/>
-                <xsd:element maxOccurs="unbounded" minOccurs="0" name="rocCurveData"
-                             type="evaluation:rocCurveData"/>
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>

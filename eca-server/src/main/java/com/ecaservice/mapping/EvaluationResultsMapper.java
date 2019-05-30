@@ -9,8 +9,6 @@ import com.ecaservice.dto.evaluation.EvaluationMethod;
 import com.ecaservice.dto.evaluation.EvaluationMethodReport;
 import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.InputOptionsMap;
-import com.ecaservice.dto.evaluation.RocCurveData;
-import com.ecaservice.dto.evaluation.RocCurvePoint;
 import com.ecaservice.dto.evaluation.RocCurveReport;
 import com.ecaservice.dto.evaluation.StatisticsReport;
 import com.ecaservice.exception.EcaServiceException;
@@ -180,41 +178,22 @@ public abstract class EvaluationResultsMapper {
             Attribute classAttribute = evaluationResults.getEvaluation().getData().classAttribute();
             RocCurve rocCurve = new RocCurve(evaluation);
             for (int i = 0; i < classAttribute.numValues(); i++) {
-                //Calculate roc curve data for specified class index
-                Instances rocCurveData = rocCurve.getROCCurve(i);
-                //Populate classification costs
                 ClassificationCostsReport classificationCostsReport = new ClassificationCostsReport();
                 classificationCostsReport.setClassValue(classAttribute.value(i));
                 classificationCostsReport.setFalseNegativeRate(BigDecimal.valueOf(evaluation.falseNegativeRate(i)));
                 classificationCostsReport.setFalsePositiveRate(BigDecimal.valueOf(evaluation.falsePositiveRate(i)));
                 classificationCostsReport.setTrueNegativeRate(BigDecimal.valueOf(evaluation.trueNegativeRate(i)));
                 classificationCostsReport.setTruePositiveRate(BigDecimal.valueOf(evaluation.truePositiveRate(i)));
-                RocCurveReport rocCurveReport = populateRocCurveReport(rocCurve, rocCurveData, i);
-                classificationCostsReport.setRocCurve(rocCurveReport);
+                classificationCostsReport.setRocCurve(populateRocCurveReport(rocCurve, i));
                 evaluationResultsRequest.getClassificationCosts().add(classificationCostsReport);
-                //Populate roc curve points
-                RocCurveData curveData = populateRocCurveData(classAttribute.value(i), rocCurveData);
-                evaluationResultsRequest.getRocCurveData().add(curveData);
             }
         }
     }
 
-    private RocCurveData populateRocCurveData(String classValue, Instances rocCurveData) {
-        RocCurveData curveData = new RocCurveData();
-        curveData.setClassValue(classValue);
-        rocCurveData.forEach(instance -> {
-            RocCurvePoint point = new RocCurvePoint();
-            point.setXValue(BigDecimal.valueOf(instance.value(RocCurve.SPECIFICITY_INDEX) * 100));
-            point.setYValue(BigDecimal.valueOf(instance.value(RocCurve.SENSITIVITY_INDEX) * 100));
-            point.setThresholdValue(BigDecimal.valueOf(instance.value(RocCurve.THRESHOLD_INDEX)));
-            curveData.getPoints().add(point);
-        });
-        return curveData;
-    }
-
-    private RocCurveReport populateRocCurveReport(RocCurve rocCurve, Instances rocCurveData, int classIndex) {
+    private RocCurveReport populateRocCurveReport(RocCurve rocCurve, int classIndex) {
         RocCurveReport rocCurveReport = new RocCurveReport();
         rocCurveReport.setAucValue(BigDecimal.valueOf(rocCurve.evaluation().areaUnderROC(classIndex)));
+        Instances rocCurveData = rocCurve.getROCCurve(classIndex);
         ThresholdModel thresholdModel = rocCurve.findOptimalThreshold(rocCurveData);
         if (thresholdModel != null) {
             rocCurveReport.setSpecificity(BigDecimal.valueOf(1.0 - thresholdModel.getSpecificity()));
