@@ -77,18 +77,9 @@ public class EvaluationController {
     @PostMapping(value = "/execute")
     public ResponseEntity<EvaluationResponse> execute(@RequestBody EvaluationRequest evaluationRequest) {
         EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(evaluationRequest);
-        asyncTaskService.perform(() -> {
-            EvaluationLog evaluationLog =
-                    evaluationLogRepository.findByRequestIdAndEvaluationStatusIn(evaluationResponse.getRequestId(),
-                            Collections.singletonList(RequestStatus.FINISHED));
-            if (evaluationLog != null) {
-                EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
-                requestEntity.setEvaluationLog(evaluationLog);
-                ersRequestService.saveEvaluationResults(evaluationResponse.getEvaluationResults(), requestEntity);
-            }
-        });
         log.info("Evaluation response [{}] with status [{}] has been built.", evaluationResponse.getRequestId(),
                 evaluationResponse.getStatus());
+        sendEvaluationResultsToErs(evaluationResponse);
         return ResponseEntity.ok(evaluationResponse);
     }
 
@@ -109,10 +100,24 @@ public class EvaluationController {
                     evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
             log.info("Evaluation response [{}] with status [{}] has been built.", evaluationResponse.getRequestId(),
                     evaluationResponse.getStatus());
+            sendEvaluationResultsToErs(evaluationResponse);
             return ResponseEntity.ok(evaluationResponse);
         } catch (Exception ex) {
             log.error(ex.getMessage());
             return ResponseEntity.badRequest().body(buildErrorResponse(ex.getMessage()));
         }
+    }
+
+    private void sendEvaluationResultsToErs(EvaluationResponse evaluationResponse) {
+        asyncTaskService.perform(() -> {
+            EvaluationLog evaluationLog =
+                    evaluationLogRepository.findByRequestIdAndEvaluationStatusIn(evaluationResponse.getRequestId(),
+                            Collections.singletonList(RequestStatus.FINISHED));
+            if (evaluationLog != null) {
+                EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
+                requestEntity.setEvaluationLog(evaluationLog);
+                ersRequestService.saveEvaluationResults(evaluationResponse.getEvaluationResults(), requestEntity);
+            }
+        });
     }
 }
