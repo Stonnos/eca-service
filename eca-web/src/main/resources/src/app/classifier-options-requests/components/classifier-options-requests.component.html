@@ -22,7 +22,7 @@
             <ng-container *ngFor="let column of columns">
               <th *ngIf="!notSortable(column.name)" [pSortableColumn]="column.name">
                 {{ column.label }}
-                <p-sortIcon [field]="column.label"></p-sortIcon>
+                <p-sortIcon [field]="column.name"></p-sortIcon>
               </th>
               <th *ngIf="notSortable(column.name)">{{ column.label }}</th>
             </ng-container>

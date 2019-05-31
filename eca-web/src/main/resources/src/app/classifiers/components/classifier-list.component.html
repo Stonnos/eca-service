@@ -27,7 +27,7 @@
           <tr>
             <th *ngFor="let column of columns" [pSortableColumn]="column.name">
               {{ column.label }}
-              <p-sortIcon [field]="column.label"></p-sortIcon>
+              <p-sortIcon [field]="column.name"></p-sortIcon>
             </th>
           </tr>
         </ng-template>
