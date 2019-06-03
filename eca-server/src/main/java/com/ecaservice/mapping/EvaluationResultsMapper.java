@@ -30,6 +30,7 @@ import org.mapstruct.Mappings;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Attribute;
 import weka.core.Instances;
+import weka.core.Utils;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -127,7 +128,9 @@ public abstract class EvaluationResultsMapper {
             statisticsReport.setPctIncorrect(BigDecimal.valueOf(evaluation.pctIncorrect()));
             statisticsReport.setMeanAbsoluteError(BigDecimal.valueOf(evaluation.meanAbsoluteError()));
             statisticsReport.setRootMeanSquaredError(BigDecimal.valueOf(evaluation.rootMeanSquaredError()));
-            statisticsReport.setMaxAucValue(BigDecimal.valueOf(evaluation.maxAreaUnderROC()));
+            double maxAucValue = evaluation.maxAreaUnderROC();
+            statisticsReport.setMaxAucValue(
+                    !Utils.isMissingValue(maxAucValue) ? BigDecimal.valueOf(maxAucValue) : null);
             if (evaluation.isKCrossValidationMethod()) {
                 statisticsReport.setVarianceError(BigDecimal.valueOf(evaluation.varianceError()));
                 double[] errorConfidenceInterval = evaluation.errorConfidenceInterval();
@@ -192,7 +195,8 @@ public abstract class EvaluationResultsMapper {
 
     private RocCurveReport populateRocCurveReport(RocCurve rocCurve, int classIndex) {
         RocCurveReport rocCurveReport = new RocCurveReport();
-        rocCurveReport.setAucValue(BigDecimal.valueOf(rocCurve.evaluation().areaUnderROC(classIndex)));
+        double aucValue = rocCurve.evaluation().areaUnderROC(classIndex);
+        rocCurveReport.setAucValue(!Utils.isMissingValue(aucValue) ? BigDecimal.valueOf(aucValue) : null);
         Instances rocCurveData = rocCurve.getROCCurve(classIndex);
         ThresholdModel thresholdModel = rocCurve.findOptimalThreshold(rocCurveData);
         if (thresholdModel != null) {
