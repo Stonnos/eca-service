@@ -37,6 +37,6 @@ mvn clean install dockerfile:build
 
 3. Используя пакетный менеджер docker-compose, создать docker контейнеры с помощью команды:
 
-docker-compose up
+docker-compose up -d
 
 ВАЖНО! Данную команду необходимо выполнять из корневой папки проекта.

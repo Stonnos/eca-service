@@ -130,6 +130,7 @@ public class ClassifiersSetSearcher {
                 for (ClassifierOptionsMapper optionsMapper : classifierOptionsMappers) {
                     if (optionsMapper.canMap(classifierOptions)) {
                         classifierList.add(optionsMapper.map(classifierOptions));
+                        break;
                     }
                 }
             }
@@ -151,6 +152,7 @@ public class ClassifiersSetSearcher {
             for (ClassifierInputDataHandler handler : classifierInputDataHandlers) {
                 if (handler.canHandle(classifier)) {
                     handler.handle(data, classifier);
+                    break;
                 }
             }
         }

@@ -25,7 +25,7 @@ ECA server v4.0
 
 Описание ключевой конфигурации модуля
 ----------------------------------------
-Настройки для проекта eca-service находятся в application.yml. Основные параметры:
+Настройки для проекта eca-server находятся в application.yml. Основные параметры:
 1) spring.datasource - настройки БД для хранения информации
 2) cross-validation — настройки параметров для метода k * V блочной кросс - проверки
    на тестовой выборке:
@@ -80,7 +80,7 @@ ECA server v4.0
     
    mvn clean install
     
-3. Развернуть target/eca-service.war на одном из контейнеров сервлетов (например, Tomcat 8) с контекстом /eca-service.
+3. Развернуть target/eca-server.war на одном из контейнеров сервлетов (например, Tomcat 8) с контекстом /eca-server.
          
 4. Страница с документацией swagger находится по адресу http://[host]:[port]/eca-server/swagger-ui.html, где host и port
 соответственно адрес машины и порт на котором развернуто приложение.
@@ -109,7 +109,7 @@ mvn clean install dockerfile:build
 
 3. Используя пакетный менеджер docker-compose, создать docker контейнеры с помощью команды:
 
-docker-compose up (для ОС семейства Linux)
+docker-compose up -d (для ОС семейства Linux)
 
 docker-compose -f docker-compose.yaml -f docker-compose.win10.yaml up (для Windows 10)
 
