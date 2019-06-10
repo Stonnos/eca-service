@@ -10,15 +10,20 @@ import org.springframework.util.CollectionUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.beans.PropertyDescriptor;
 import java.text.MessageFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.ecaservice.util.Utils.splitByPointSeparator;
 
 /**
  * Implements filter based on JPA specification.
@@ -86,53 +91,65 @@ public abstract class AbstractFilter<T> implements Specification<T> {
         });
     }
 
-    protected Predicate buildGreaterThanOrEqualPredicate(FilterRequestDto filterRequestDto, Root<T> root,
-                                                         CriteriaBuilder criteriaBuilder) {
+    private Predicate buildGreaterThanOrEqualPredicate(FilterRequestDto filterRequestDto, Root<T> root,
+                                                       CriteriaBuilder criteriaBuilder) {
         String value = filterRequestDto.getValue().trim();
         switch (filterRequestDto.getFilterType()) {
             case DATE:
+                Expression<LocalDateTime> expression = buildExpression(root, filterRequestDto);
                 LocalDate localDate = LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE);
-                return criteriaBuilder.greaterThanOrEqualTo(root.get(filterRequestDto.getName()),
-                        localDate.atStartOfDay());
+                return criteriaBuilder.greaterThanOrEqualTo(expression, localDate.atStartOfDay());
             default:
-                return criteriaBuilder.greaterThanOrEqualTo(root.get(filterRequestDto.getName()), value);
+                return criteriaBuilder.greaterThanOrEqualTo(buildExpression(root, filterRequestDto), value);
         }
     }
 
-    protected Predicate buildLessThanOrEqualPredicate(FilterRequestDto filterRequestDto, Root<T> root,
-                                                      CriteriaBuilder criteriaBuilder) {
+    private Predicate buildLessThanOrEqualPredicate(FilterRequestDto filterRequestDto, Root<T> root,
+                                                    CriteriaBuilder criteriaBuilder) {
         String value = filterRequestDto.getValue().trim();
         switch (filterRequestDto.getFilterType()) {
             case DATE:
+                Expression<LocalDateTime> expression = buildExpression(root, filterRequestDto);
                 LocalDate localDate = LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE);
-                return criteriaBuilder.lessThanOrEqualTo(root.get(filterRequestDto.getName()),
-                        localDate.atTime(LocalTime.MAX));
+                return criteriaBuilder.lessThanOrEqualTo(expression, localDate.atTime(LocalTime.MAX));
             default:
-                return criteriaBuilder.lessThanOrEqualTo(root.get(filterRequestDto.getName()), value);
+                return criteriaBuilder.lessThanOrEqualTo(buildExpression(root, filterRequestDto), value);
         }
     }
 
-    protected Predicate buildEqualPredicate(FilterRequestDto filterRequestDto, Root<T> root,
-                                            CriteriaBuilder criteriaBuilder) {
+    private Predicate buildEqualPredicate(FilterRequestDto filterRequestDto, Root<T> root,
+                                          CriteriaBuilder criteriaBuilder) {
         String value = filterRequestDto.getValue().trim();
+        Expression<?> expression = buildExpression(root, filterRequestDto);
         switch (filterRequestDto.getFilterType()) {
             case REFERENCE:
                 try {
                     PropertyDescriptor propertyDescriptor = new PropertyDescriptor(filterRequestDto.getName(), clazz);
                     String getter = propertyDescriptor.getReadMethod().getName();
                     Class enumClazz = clazz.getMethod(getter).getReturnType();
-                    return criteriaBuilder.equal(root.get(filterRequestDto.getName()), Enum.valueOf(enumClazz, value));
+                    return criteriaBuilder.equal(expression, Enum.valueOf(enumClazz, value));
                 } catch (Exception ex) {
                     throw new IllegalArgumentException(ex.getMessage());
                 }
             default:
-                return criteriaBuilder.equal(root.get(filterRequestDto.getName()), value);
+                return criteriaBuilder.equal(expression, value);
         }
     }
 
-    protected Predicate buildLikePredicate(FilterRequestDto filterRequestDto, Root<T> root,
-                                           CriteriaBuilder criteriaBuilder) {
-        return criteriaBuilder.like(criteriaBuilder.lower(root.get(filterRequestDto.getName())),
+    private Predicate buildLikePredicate(FilterRequestDto filterRequestDto, Root<T> root,
+                                         CriteriaBuilder criteriaBuilder) {
+        Expression<String> expression = buildExpression(root, filterRequestDto);
+        return criteriaBuilder.like(criteriaBuilder.lower(expression),
                 MessageFormat.format("%{0}%", filterRequestDto.getValue().trim().toLowerCase()));
+    }
+
+    private <E> Expression<E> buildExpression(Root<T> root, FilterRequestDto filterRequestDto) {
+        String[] fieldLevels = splitByPointSeparator(filterRequestDto.getName());
+        if (fieldLevels.length > 1) {
+            Join<T, ?> join = root.join(fieldLevels[0]);
+            return join.get(fieldLevels[1]);
+        } else {
+            return root.get(filterRequestDto.getName());
+        }
     }
 }
