@@ -107,4 +107,25 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
         assertThat(evaluationLogs.get(0).getRequestId()).isEqualTo(evaluationLog.getRequestId());
         assertThat(evaluationLogs.get(1).getRequestId()).isEqualTo(evaluationLog1.getRequestId());
     }
+
+    @Test
+    public void testFilterByRelationName() {
+        EvaluationLog evaluationLog =
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        evaluationLog.setInstancesInfo(TestHelperUtils.createInstancesInfo());
+        evaluationLog.getInstancesInfo().setRelationName("Data");
+        evaluationLogRepository.save(evaluationLog);
+        EvaluationLog evaluationLog1 =
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        evaluationLog1.setInstancesInfo(TestHelperUtils.createInstancesInfo());
+        evaluationLog1.getInstancesInfo().setRelationName("Relation");
+        evaluationLogRepository.save(evaluationLog1);
+        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, "classifierName", false, new ArrayList<>());
+        pageRequestDto.getFilters().add(
+                new FilterRequestDto("instancesInfo.relationName", "Dat", FilterType.TEXT,
+                        MatchMode.LIKE));
+        Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);
+        assertThat(evaluationLogPage).isNotNull();
+        assertThat(evaluationLogPage.getTotalElements()).isOne();
+    }
 }

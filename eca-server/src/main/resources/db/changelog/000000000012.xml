@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Insert instances info column -->
+    <changeSet id="1" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_template where id = 2
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="filter_field">
+            <column name="name" value="instancesInfo.relationName"/>
+            <column name="description" value="Обучающая выборка"/>
+            <column name="field_order" valueNumeric="2"/>
+            <column name="filter_type" value="TEXT"/>
+            <column name="match_mode" value="LIKE"/>
+            <column name="filter_template_id" valueNumeric="2"/>
+        </insert>
+
+        <update tableName="filter_field">
+            <column name="field_order" value="3"/>
+            <where>filter_template_id = 2 AND name = 'evaluationMethod'</where>
+        </update>
+
+        <update tableName="filter_field">
+            <column name="field_order" value="4"/>
+            <where>filter_template_id = 2 AND name = 'evaluationStatus'</where>
+        </update>
+
+        <update tableName="filter_field">
+            <column name="field_order" value="5"/>
+            <where>filter_template_id = 2 AND name = 'creationDate' AND match_mode = 'GTE'</where>
+        </update>
+
+        <update tableName="filter_field">
+            <column name="field_order" value="6"/>
+            <where>filter_template_id = 2 AND name = 'creationDate' AND match_mode = 'LTE'</where>
+        </update>
+
+    </changeSet>
+</databaseChangeLog>

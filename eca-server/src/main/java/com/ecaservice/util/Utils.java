@@ -42,6 +42,8 @@ public class Utils {
 
     private static final String ATTACHMENT = "attachment";
 
+    private static final String POINT_SEPARATOR = ".";
+
     private static ObjectMapper objectMapper = new ObjectMapper();
 
     private Utils() {
@@ -219,5 +221,15 @@ public class Utils {
      */
     public static LocalDateTime atEndOfDay(LocalDate localDate) {
         return localDate != null ? localDate.atTime(LocalTime.MAX) : null;
+    }
+
+    /**
+     * Splits string by "." separator.
+     *
+     * @param str - string value
+     * @return tokens array
+     */
+    public static String[] splitByPointSeparator(String str) {
+        return StringUtils.split(str, POINT_SEPARATOR);
     }
 }

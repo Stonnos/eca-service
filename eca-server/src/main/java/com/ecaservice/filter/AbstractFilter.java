@@ -81,14 +81,13 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
             @Override
             public Predicate caseLike() {
-                return criteriaBuilder.like(criteriaBuilder.lower(root.get(filterRequestDto.getName())),
-                        MessageFormat.format("%{0}%", filterRequestDto.getValue().trim().toLowerCase()));
+                return buildLikePredicate(filterRequestDto, root, criteriaBuilder);
             }
         });
     }
 
-    private Predicate buildGreaterThanOrEqualPredicate(FilterRequestDto filterRequestDto, Root<T> root,
-                                                       CriteriaBuilder criteriaBuilder) {
+    protected Predicate buildGreaterThanOrEqualPredicate(FilterRequestDto filterRequestDto, Root<T> root,
+                                                         CriteriaBuilder criteriaBuilder) {
         String value = filterRequestDto.getValue().trim();
         switch (filterRequestDto.getFilterType()) {
             case DATE:
@@ -100,8 +99,8 @@ public abstract class AbstractFilter<T> implements Specification<T> {
         }
     }
 
-    private Predicate buildLessThanOrEqualPredicate(FilterRequestDto filterRequestDto, Root<T> root,
-                                                    CriteriaBuilder criteriaBuilder) {
+    protected Predicate buildLessThanOrEqualPredicate(FilterRequestDto filterRequestDto, Root<T> root,
+                                                      CriteriaBuilder criteriaBuilder) {
         String value = filterRequestDto.getValue().trim();
         switch (filterRequestDto.getFilterType()) {
             case DATE:
@@ -113,8 +112,8 @@ public abstract class AbstractFilter<T> implements Specification<T> {
         }
     }
 
-    private Predicate buildEqualPredicate(FilterRequestDto filterRequestDto, Root<T> root,
-                                          CriteriaBuilder criteriaBuilder) {
+    protected Predicate buildEqualPredicate(FilterRequestDto filterRequestDto, Root<T> root,
+                                            CriteriaBuilder criteriaBuilder) {
         String value = filterRequestDto.getValue().trim();
         switch (filterRequestDto.getFilterType()) {
             case REFERENCE:
@@ -129,5 +128,11 @@ public abstract class AbstractFilter<T> implements Specification<T> {
             default:
                 return criteriaBuilder.equal(root.get(filterRequestDto.getName()), value);
         }
+    }
+
+    protected Predicate buildLikePredicate(FilterRequestDto filterRequestDto, Root<T> root,
+                                           CriteriaBuilder criteriaBuilder) {
+        return criteriaBuilder.like(criteriaBuilder.lower(root.get(filterRequestDto.getName())),
+                MessageFormat.format("%{0}%", filterRequestDto.getValue().trim().toLowerCase()));
     }
 }
