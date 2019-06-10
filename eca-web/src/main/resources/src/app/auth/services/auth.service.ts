@@ -37,6 +37,6 @@ export class AuthService {
 
   public hasAccessToken(): boolean {
     const expireDate = localStorage.getItem(AuthenticationKeys.EXPIRE_DATE);
-    return expireDate && new Date().getTime() > Number(expireDate);
+    return expireDate && new Date().getTime() < Number(expireDate);
   }
 }

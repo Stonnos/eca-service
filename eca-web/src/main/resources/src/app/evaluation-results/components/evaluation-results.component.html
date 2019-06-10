@@ -29,6 +29,20 @@
 
           <div class="ui-g">
             <div class="ui-g-6 text-left text-bold text-wrap">
+              Статус заявки:
+            </div>
+            <div class="ui-g-6 text-left text-wrap">
+              <span [class.text-info]="evaluationLogDetails?.evaluationStatus.value == 'NEW'"
+                    [class.text-success]="evaluationLogDetails?.evaluationStatus.value == 'FINISHED'"
+                    [class.text-warning]="evaluationLogDetails?.evaluationStatus.value == 'TIMEOUT'"
+                    [class.text-danger]="evaluationLogDetails?.evaluationStatus.value == 'ERROR'">
+                      {{ evaluationLogDetails?.evaluationStatus.description }}
+              </span>
+            </div>
+          </div>
+
+          <div class="ui-g">
+            <div class="ui-g-6 text-left text-bold text-wrap">
               Обучающая выборка:
             </div>
             <div class="ui-g-6 text-left text-wrap">
