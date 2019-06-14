@@ -1,7 +1,7 @@
 <div class="container-fluid mb-5">
   <div class="row">
     <div class="filter-sidebar">
-      <app-filter [filters]="filters" (search)="onSearch()"></app-filter>
+      <app-filter [filters]="filters" (apply)="onApplyFilter()"></app-filter>
     </div>
     <div class="data-table">
       <p-table

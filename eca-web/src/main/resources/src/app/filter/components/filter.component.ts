@@ -12,10 +12,10 @@ export class FilterComponent {
   public filters: Filter[];
 
   @Output()
-  public search: EventEmitter<void> = new EventEmitter();
+  public apply: EventEmitter<void> = new EventEmitter();
 
-  public onSearch() {
-    this.search.emit();
+  public onApply() {
+    this.apply.emit();
   }
 
   public resetFilter() {

@@ -61,7 +61,7 @@ export abstract class BaseListComponent<T> {
     this.getNextPage(pageRequest);
   }
 
-  public onSearch() {
+  public onApplyFilter() {
     const pageRequest: PageRequestDto = {
       page: 0,
       size: this.pageSize,
