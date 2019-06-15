@@ -1,4 +1,18 @@
 <div class="container-fluid mb-5">
+  <div class="row search-content mt-2">
+    <div class="col-6 offset-6">
+      <div class="ui-inputgroup mr-2 mt-2 mb-2">
+        <span class="ui-inputgroup-addon">
+          <i class="fa fa-search"></i>
+        </span>
+        <input
+          type="text"
+          pInputText
+          placeholder="Поиск"
+          class="w-100">
+      </div>
+    </div>
+  </div>
   <div class="row">
     <div class="filter-sidebar">
       <app-filter [filters]="filters" (apply)="onApplyFilter()"></app-filter>

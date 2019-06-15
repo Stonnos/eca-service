@@ -19,3 +19,8 @@
   width: calc(100% - 335px);
   display: inline-block;
 }
+
+.search-content {
+  background: rgba(226, 226, 226, 0.64);
+  border: 1px solid #d5d5d5;
+}
