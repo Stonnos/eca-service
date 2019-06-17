@@ -91,6 +91,10 @@ export abstract class BaseListComponent<T> {
     return this.notSortableColumns.includes(column);
   }
 
+  public clearSearchQuery(): void {
+    this.searchQuery = null;
+  }
+
   private buildFilters(): FilterRequestDto[] {
     return this.filters.filter((filter: Filter) => this.hasValue(filter)).map((filter: Filter) => {
       return { name: filter.name, value: this.transformFilterValue(filter), filterType: filter.type, matchMode: filter.matchMode };

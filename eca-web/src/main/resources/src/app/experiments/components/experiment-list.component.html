@@ -13,9 +13,11 @@
               placeholder="Поиск"
               [(ngModel)]="searchQuery"
               class="w-100">
-            <span *ngIf="searchQuery?.length > 0" class="ui-inputgroup-addon">
-              <i class="fa fa-close"></i>
-            </span>
+            <a *ngIf="searchQuery?.length > 0" [routerLink]="" (click)="clearSearchQuery()">
+              <span class="ui-inputgroup-addon">
+                <i class="fa fa-close"></i>
+              </span>
+            </a>
           </div>
         </div>
       </div>
