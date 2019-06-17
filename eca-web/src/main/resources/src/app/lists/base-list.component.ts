@@ -17,7 +17,7 @@ export abstract class BaseListComponent<T> {
   public defaultSortOrder: number = -1;
   public pageSize: number = 25;
 
-  public searchQuery: string;
+  public searchQuery: string = '';
   public filters: Filter[] = [];
   public columns: any[] = [];
   public linkColumns: string[] = [];
@@ -92,7 +92,7 @@ export abstract class BaseListComponent<T> {
   }
 
   public clearSearchQuery(): void {
-    this.searchQuery = null;
+    this.searchQuery = '';
   }
 
   private buildFilters(): FilterRequestDto[] {

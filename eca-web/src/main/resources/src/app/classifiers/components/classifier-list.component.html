@@ -10,6 +10,7 @@
           pInputText
           placeholder="Поиск"
           [(ngModel)]="searchQuery"
+          (input)="onApplyFilter()"
           class="w-100">
         <a *ngIf="searchQuery?.length > 0" [routerLink]="" (click)="clearSearchQuery()">
           <span class="ui-inputgroup-addon">
