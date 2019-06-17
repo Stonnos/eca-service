@@ -251,7 +251,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
     @Override
     public Page<Experiment> getNextPage(PageRequestDto pageRequestDto) {
         Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
-        ExperimentFilter filter = new ExperimentFilter(pageRequestDto.getFilters());
+        ExperimentFilter filter = new ExperimentFilter(pageRequestDto.getSearchQuery(), pageRequestDto.getFilters());
         return experimentRepository.findAll(filter,
                 PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort));
     }

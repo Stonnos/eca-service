@@ -40,7 +40,7 @@ public class ClassifierOptionsRequestService implements PageRequestService<Class
     public Page<ClassifierOptionsRequestModel> getNextPage(PageRequestDto pageRequestDto) {
         Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
         ClassifierOptionsRequestModelFilter filter =
-                new ClassifierOptionsRequestModelFilter(pageRequestDto.getFilters());
+                new ClassifierOptionsRequestModelFilter(pageRequestDto.getSearchQuery(), pageRequestDto.getFilters());
         return classifierOptionsRequestModelRepository.findAll(filter,
                 PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort));
     }

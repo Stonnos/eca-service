@@ -93,7 +93,7 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR);
         evaluationLog4.setClassifierName(NeuralNetwork.class.getSimpleName());
         evaluationLogRepository.save(evaluationLog4);
-        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, "classifierName", false, new ArrayList<>());
+        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, "classifierName", false, null, new ArrayList<>());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto("evaluationStatus", RequestStatus.FINISHED.name(), FilterType.REFERENCE,
                         MatchMode.EQUALS));
@@ -120,7 +120,7 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
         evaluationLog1.setInstancesInfo(TestHelperUtils.createInstancesInfo());
         evaluationLog1.getInstancesInfo().setRelationName("Relation");
         evaluationLogRepository.save(evaluationLog1);
-        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, "classifierName", false, new ArrayList<>());
+        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, "classifierName", false, null, new ArrayList<>());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto("instancesInfo.relationName", "Dat", FilterType.TEXT,
                         MatchMode.LIKE));

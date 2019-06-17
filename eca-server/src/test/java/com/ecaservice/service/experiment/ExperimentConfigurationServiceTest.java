@@ -125,7 +125,7 @@ public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
         File[] modelFiles = classifiersOptionsDir.listFiles();
         experimentConfigurationService.saveClassifiersOptions();
         PageRequestDto pageRequestDto =
-                new PageRequestDto(0, modelFiles.length / 2, "creationDate", false, Collections.emptyList());
+                new PageRequestDto(0, modelFiles.length / 2, "creationDate", false, null, Collections.emptyList());
         Page<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModelPage =
                 experimentConfigurationService.getNextPage(pageRequestDto);
         assertThat(classifierOptionsDatabaseModelPage).isNotNull();

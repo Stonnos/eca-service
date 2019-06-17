@@ -15,9 +15,10 @@ public class EvaluationLogFilter extends AbstractFilter<EvaluationLog> {
     /**
      * Constructor with filters requests.
      *
-     * @param filters - filters requests list
+     * @param searchQuery - search query string
+     * @param filters     - filters requests list
      */
-    public EvaluationLogFilter(List<FilterRequestDto> filters) {
-        super(EvaluationLog.class, filters);
+    public EvaluationLogFilter(String searchQuery, List<FilterRequestDto> filters) {
+        super(EvaluationLog.class, searchQuery, filters);
     }
 }

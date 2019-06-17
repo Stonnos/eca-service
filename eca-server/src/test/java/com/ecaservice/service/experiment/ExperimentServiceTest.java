@@ -279,7 +279,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         experiment3.setExperimentStatus(RequestStatus.NEW);
         experiment3.setCreationDate(LocalDateTime.of(2018, 1, 1, 9, 0, 0));
         experimentRepository.save(experiment3);
-        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, "creationDate", false, new ArrayList<>());
+        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, "creationDate", false, null, new ArrayList<>());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto("experimentStatus", RequestStatus.NEW.name(), FilterType.REFERENCE,
                         MatchMode.EQUALS));
@@ -312,7 +312,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         Experiment experiment3 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
         experiment3.setCreationDate(LocalDateTime.of(2018, 7, 1, 9, 0, 0));
         experimentRepository.save(experiment3);
-        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, "creationDate", false, new ArrayList<>());
+        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, "creationDate", false, null, new ArrayList<>());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto("creationDate", "2018-01-01", FilterType.DATE, MatchMode.GTE));
         pageRequestDto.getFilters().add(
@@ -343,7 +343,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
         experiment2.setCreationDate(LocalDateTime.of(2018, 1, 2, 23, 59, 59));
         experimentRepository.save(experiment2);
-        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, "creationDate", false, new ArrayList<>());
+        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, "creationDate", false, null, new ArrayList<>());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto("creationDate", "2018-01-01", FilterType.DATE, MatchMode.GTE));
         pageRequestDto.getFilters().add(
@@ -361,7 +361,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
         experiment1.setCreationDate(LocalDateTime.of(2018, 1, 1, 23, 59, 59));
         experimentRepository.save(experiment1);
-        pageRequestDto = new PageRequestDto(0, 10, "creationDate", false, new ArrayList<>());
+        pageRequestDto = new PageRequestDto(0, 10, "creationDate", false, null, new ArrayList<>());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto("creationDate", "2018-01-01", FilterType.DATE, MatchMode.GTE));
         pageRequestDto.getFilters().add(

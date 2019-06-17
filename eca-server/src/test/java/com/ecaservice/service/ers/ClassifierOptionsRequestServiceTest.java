@@ -47,7 +47,7 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
         ClassifierOptionsRequestModel requestModel3 = new ClassifierOptionsRequestModel();
         requestModel3.setRequestId(UUID.randomUUID().toString());
         classifierOptionsRequestModelRepository.save(requestModel3);
-        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, "requestId", false, new ArrayList<>());
+        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, "requestId", false, null, new ArrayList<>());
         pageRequestDto.getFilters().add(new FilterRequestDto("requestId", requestModel2.getRequestId(), FilterType.TEXT,
                 MatchMode.EQUALS));
         Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =

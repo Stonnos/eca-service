@@ -43,7 +43,8 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
     @Override
     public Page<EvaluationLog> getNextPage(PageRequestDto pageRequestDto) {
         Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
-        EvaluationLogFilter filter = new EvaluationLogFilter(pageRequestDto.getFilters());
+        EvaluationLogFilter filter =
+                new EvaluationLogFilter(pageRequestDto.getSearchQuery(), pageRequestDto.getFilters());
         return evaluationLogRepository.findAll(filter,
                 PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort));
     }

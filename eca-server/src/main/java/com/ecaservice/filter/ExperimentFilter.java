@@ -15,9 +15,10 @@ public class ExperimentFilter extends AbstractFilter<Experiment> {
     /**
      * Constructor with filters requests.
      *
-     * @param filters - filters requests list
+     * @param searchQuery - search query string
+     * @param filters     - filters requests list
      */
-    public ExperimentFilter(List<FilterRequestDto> filters) {
-        super(Experiment.class, filters);
+    public ExperimentFilter(String searchQuery, List<FilterRequestDto> filters) {
+        super(Experiment.class, searchQuery, filters);
     }
 }

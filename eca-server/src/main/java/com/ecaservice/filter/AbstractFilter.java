@@ -38,14 +38,22 @@ public abstract class AbstractFilter<T> implements Specification<T> {
     private Class<T> clazz;
 
     /**
+     * Search query string for global filter
+     */
+    @Setter
+    @Getter
+    private String searchQuery;
+
+    /**
      * Filters requests
      */
     @Setter
     @Getter
     private List<FilterRequestDto> filters;
 
-    protected AbstractFilter(Class<T> clazz, List<FilterRequestDto> filters) {
+    protected AbstractFilter(Class<T> clazz, String searchQuery, List<FilterRequestDto> filters) {
         this.clazz = clazz;
+        this.searchQuery = searchQuery;
         this.filters = filters;
     }
 
@@ -57,13 +65,26 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     private List<Predicate> buildPredicates(Root<T> root, CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(filters)) {
-            filters.forEach(filterRequestDto -> {
-                if (StringUtils.isNotBlank(filterRequestDto.getValue())) {
-                    predicates.add(buildPredicate(filterRequestDto, root, criteriaBuilder));
-                }
-            });
+        if (StringUtils.isNotBlank(searchQuery)) {
+            predicates.add(buildPredicateForGlobalFilter(root, criteriaBuilder));
         }
+        if (!CollectionUtils.isEmpty(filters)) {
+            predicates.addAll(buildPredicatesForFilters(root, criteriaBuilder));
+        }
+        return predicates;
+    }
+
+    private Predicate buildPredicateForGlobalFilter(Root<T> root, CriteriaBuilder criteriaBuilder) {
+        return null;
+    }
+
+    private List<Predicate> buildPredicatesForFilters(Root<T> root, CriteriaBuilder criteriaBuilder) {
+        List<Predicate> predicates = new ArrayList<>();
+        filters.forEach(filterRequestDto -> {
+            if (StringUtils.isNotBlank(filterRequestDto.getValue())) {
+                predicates.add(buildPredicate(filterRequestDto, root, criteriaBuilder));
+            }
+        });
         return predicates;
     }
 
