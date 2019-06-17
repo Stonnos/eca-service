@@ -1,6 +1,7 @@
 package com.ecaservice.service.experiment;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.exception.ExperimentException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
@@ -33,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@Import(ExperimentConfig.class)
+@Import({ExperimentConfig.class, CommonConfig.class})
 public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -42,6 +43,8 @@ public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
     @Inject
     private ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
     @Inject
+    private CommonConfig commonConfig;
+    @Inject
     private ExperimentConfig experimentConfig;
 
     private ExperimentConfigurationService experimentConfigurationService;
@@ -49,7 +52,7 @@ public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         experimentConfigurationService =
-                new ExperimentConfigurationService(experimentConfig, classifierOptionsDatabaseModelRepository);
+                new ExperimentConfigurationService(commonConfig, experimentConfig, classifierOptionsDatabaseModelRepository);
     }
 
     @Override

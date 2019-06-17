@@ -1,6 +1,7 @@
 package com.ecaservice.service.evaluation;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.config.CommonConfig;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
@@ -30,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@Import(EvaluationLogService.class)
+@Import({EvaluationLogService.class, CommonConfig.class})
 public class EvaluationLogServiceTest extends AbstractJpaTest {
 
     @Inject

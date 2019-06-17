@@ -1,5 +1,6 @@
 package com.ecaservice.service.experiment;
 
+import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.EcaServiceParam;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
@@ -40,18 +41,22 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
+    private final CommonConfig commonConfig;
     private final ExperimentConfig experimentConfig;
     private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
 
     /**
      * Constructor with dependency spring injection.
      *
+     * @param commonConfig                             - common config bean
      * @param experimentConfig                         - experiment config bean
      * @param classifierOptionsDatabaseModelRepository - classifier options database model repository bean
      */
     @Inject
-    public ExperimentConfigurationService(ExperimentConfig experimentConfig,
+    public ExperimentConfigurationService(CommonConfig commonConfig,
+                                          ExperimentConfig experimentConfig,
                                           ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository) {
+        this.commonConfig = commonConfig;
         this.experimentConfig = experimentConfig;
         this.classifierOptionsDatabaseModelRepository = classifierOptionsDatabaseModelRepository;
     }
@@ -101,8 +106,9 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
     public Page<ClassifierOptionsDatabaseModel> getNextPage(PageRequestDto pageRequestDto) {
         int lastVersion = classifierOptionsDatabaseModelRepository.findLatestVersion();
         Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
+        int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
         return classifierOptionsDatabaseModelRepository.findAllByVersion(lastVersion,
-                PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort));
+                PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
     }
 
     private List<ClassifierOptionsDatabaseModel> createClassifiersOptions(Collection<File> modelFiles, int version) {

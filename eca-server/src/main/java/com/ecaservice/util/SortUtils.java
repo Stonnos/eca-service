@@ -21,7 +21,7 @@ public class SortUtils {
      * @return sort object
      */
     public static Sort buildSort(String field, boolean ascending) {
-        if (StringUtils.isEmpty(field)) {
+        if (StringUtils.isBlank(field)) {
             throw new IllegalArgumentException("Sort field isn't specified!");
         } else {
             Sort sort = Sort.by(field);
