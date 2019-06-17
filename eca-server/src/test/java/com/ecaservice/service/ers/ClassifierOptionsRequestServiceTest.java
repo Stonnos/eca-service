@@ -1,6 +1,7 @@
 package com.ecaservice.service.ers;
 
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
+import com.ecaservice.model.entity.ClassifierOptionsRequestModel_;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.web.dto.model.FilterRequestDto;
@@ -12,10 +13,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -47,9 +48,11 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
         ClassifierOptionsRequestModel requestModel3 = new ClassifierOptionsRequestModel();
         requestModel3.setRequestId(UUID.randomUUID().toString());
         classifierOptionsRequestModelRepository.save(requestModel3);
-        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, "requestId", false, null, new ArrayList<>());
-        pageRequestDto.getFilters().add(new FilterRequestDto("requestId", requestModel2.getRequestId(), FilterType.TEXT,
-                MatchMode.EQUALS));
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(0, 10, ClassifierOptionsRequestModel_.REQUEST_ID, false, null, newArrayList());
+        pageRequestDto.getFilters().add(
+                new FilterRequestDto(ClassifierOptionsRequestModel_.REQUEST_ID, requestModel2.getRequestId(),
+                        FilterType.TEXT, MatchMode.EQUALS));
         Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
                 classifierOptionsRequestService.getNextPage(pageRequestDto);
         List<ClassifierOptionsRequestModel> classifierOptionsRequestModels =

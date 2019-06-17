@@ -2,6 +2,7 @@ package com.ecaservice.service.evaluation;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.model.entity.EvaluationLog;
+import com.ecaservice.model.entity.EvaluationLog_;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.AbstractJpaTest;
@@ -18,11 +19,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -93,12 +94,13 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR);
         evaluationLog4.setClassifierName(NeuralNetwork.class.getSimpleName());
         evaluationLogRepository.save(evaluationLog4);
-        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, "classifierName", false, null, new ArrayList<>());
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(0, 10, EvaluationLog_.CLASSIFIER_NAME, false, null, newArrayList());
         pageRequestDto.getFilters().add(
-                new FilterRequestDto("evaluationStatus", RequestStatus.FINISHED.name(), FilterType.REFERENCE,
-                        MatchMode.EQUALS));
-        pageRequestDto.getFilters().add(new FilterRequestDto("classifierName", "C", FilterType.TEXT,
-                MatchMode.LIKE));
+                new FilterRequestDto(EvaluationLog_.EVALUATION_STATUS, RequestStatus.FINISHED.name(),
+                        FilterType.REFERENCE, MatchMode.EQUALS));
+        pageRequestDto.getFilters().add(
+                new FilterRequestDto(EvaluationLog_.CLASSIFIER_NAME, "C", FilterType.TEXT, MatchMode.LIKE));
         Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);
         List<EvaluationLog> evaluationLogs = evaluationLogPage.getContent();
         assertThat(evaluationLogPage).isNotNull();
@@ -120,7 +122,8 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
         evaluationLog1.setInstancesInfo(TestHelperUtils.createInstancesInfo());
         evaluationLog1.getInstancesInfo().setRelationName("Relation");
         evaluationLogRepository.save(evaluationLog1);
-        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, "classifierName", false, null, new ArrayList<>());
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(0, 10, EvaluationLog_.CLASSIFIER_NAME, false, null, newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto("instancesInfo.relationName", "Dat", FilterType.TEXT,
                         MatchMode.LIKE));

@@ -4,6 +4,7 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.exception.ExperimentException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
+import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_;
 import com.ecaservice.model.options.ActivationFunctionOptions;
 import com.ecaservice.model.options.DecisionTreeOptions;
 import com.ecaservice.model.options.LogisticOptions;
@@ -125,7 +126,8 @@ public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
         File[] modelFiles = classifiersOptionsDir.listFiles();
         experimentConfigurationService.saveClassifiersOptions();
         PageRequestDto pageRequestDto =
-                new PageRequestDto(0, modelFiles.length / 2, "creationDate", false, null, Collections.emptyList());
+                new PageRequestDto(0, modelFiles.length / 2, ClassifierOptionsDatabaseModel_.CREATION_DATE, false, null,
+                        Collections.emptyList());
         Page<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModelPage =
                 experimentConfigurationService.getNextPage(pageRequestDto);
         assertThat(classifierOptionsDatabaseModelPage).isNotNull();
