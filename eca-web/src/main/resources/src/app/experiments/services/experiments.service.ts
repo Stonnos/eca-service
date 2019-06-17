@@ -27,7 +27,8 @@ export class ExperimentsService {
     let params = new HttpParams().set('page', pageRequest.page.toString())
       .set('size', pageRequest.size.toString())
       .set('sortField', pageRequest.sortField)
-      .set('ascending', pageRequest.ascending.toString());
+      .set('ascending', pageRequest.ascending.toString())
+      .set('searchQuery', pageRequest.searchQuery);
     pageRequest.filters.map((filter, index) => {
       params = params.set(`filters['${index}'].name`, filter.name);
       params = params.set(`filters['${index}'].value`, filter.value);
