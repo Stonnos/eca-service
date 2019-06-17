@@ -3,7 +3,6 @@ package com.ecaservice.filter;
 import com.ecaservice.web.dto.MatchModeVisitor;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import lombok.Getter;
-import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.CollectionUtils;
@@ -32,6 +31,8 @@ import static com.ecaservice.util.Utils.splitByPointSeparator;
  */
 public abstract class AbstractFilter<T> implements Specification<T> {
 
+    private static final String LIKE_FORMAT = "%{0}%";
+
     /**
      * Entity class
      */
@@ -40,20 +41,26 @@ public abstract class AbstractFilter<T> implements Specification<T> {
     /**
      * Search query string for global filter
      */
-    @Setter
     @Getter
     private String searchQuery;
 
     /**
+     * Global filter fields list
+     */
+    @Getter
+    private List<String> globalFilterFields;
+
+    /**
      * Filters requests
      */
-    @Setter
     @Getter
     private List<FilterRequestDto> filters;
 
-    protected AbstractFilter(Class<T> clazz, String searchQuery, List<FilterRequestDto> filters) {
+    protected AbstractFilter(Class<T> clazz, String searchQuery, List<String> globalFilterFields,
+                             List<FilterRequestDto> filters) {
         this.clazz = clazz;
         this.searchQuery = searchQuery;
+        this.globalFilterFields = globalFilterFields;
         this.filters = filters;
     }
 
@@ -65,7 +72,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     private List<Predicate> buildPredicates(Root<T> root, CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
-        if (StringUtils.isNotBlank(searchQuery)) {
+        if (StringUtils.isNotBlank(searchQuery) && !CollectionUtils.isEmpty(globalFilterFields)) {
             predicates.add(buildPredicateForGlobalFilter(root, criteriaBuilder));
         }
         if (!CollectionUtils.isEmpty(filters)) {
@@ -75,7 +82,12 @@ public abstract class AbstractFilter<T> implements Specification<T> {
     }
 
     private Predicate buildPredicateForGlobalFilter(Root<T> root, CriteriaBuilder criteriaBuilder) {
-        return null;
+        Predicate[] predicates = globalFilterFields.stream().map(field -> {
+            Expression<String> expression = buildExpression(root, field);
+            return criteriaBuilder.like(criteriaBuilder.lower(expression),
+                    MessageFormat.format(LIKE_FORMAT, searchQuery.trim().toLowerCase()));
+        }).toArray(Predicate[]::new);
+        return criteriaBuilder.or(predicates);
     }
 
     private List<Predicate> buildPredicatesForFilters(Root<T> root, CriteriaBuilder criteriaBuilder) {
@@ -117,11 +129,11 @@ public abstract class AbstractFilter<T> implements Specification<T> {
         String value = filterRequestDto.getValue().trim();
         switch (filterRequestDto.getFilterType()) {
             case DATE:
-                Expression<LocalDateTime> expression = buildExpression(root, filterRequestDto);
+                Expression<LocalDateTime> expression = buildExpression(root, filterRequestDto.getName());
                 LocalDate localDate = LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE);
                 return criteriaBuilder.greaterThanOrEqualTo(expression, localDate.atStartOfDay());
             default:
-                return criteriaBuilder.greaterThanOrEqualTo(buildExpression(root, filterRequestDto), value);
+                return criteriaBuilder.greaterThanOrEqualTo(buildExpression(root, filterRequestDto.getName()), value);
         }
     }
 
@@ -130,18 +142,18 @@ public abstract class AbstractFilter<T> implements Specification<T> {
         String value = filterRequestDto.getValue().trim();
         switch (filterRequestDto.getFilterType()) {
             case DATE:
-                Expression<LocalDateTime> expression = buildExpression(root, filterRequestDto);
+                Expression<LocalDateTime> expression = buildExpression(root, filterRequestDto.getName());
                 LocalDate localDate = LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE);
                 return criteriaBuilder.lessThanOrEqualTo(expression, localDate.atTime(LocalTime.MAX));
             default:
-                return criteriaBuilder.lessThanOrEqualTo(buildExpression(root, filterRequestDto), value);
+                return criteriaBuilder.lessThanOrEqualTo(buildExpression(root, filterRequestDto.getName()), value);
         }
     }
 
     private Predicate buildEqualPredicate(FilterRequestDto filterRequestDto, Root<T> root,
                                           CriteriaBuilder criteriaBuilder) {
         String value = filterRequestDto.getValue().trim();
-        Expression<?> expression = buildExpression(root, filterRequestDto);
+        Expression<?> expression = buildExpression(root, filterRequestDto.getName());
         switch (filterRequestDto.getFilterType()) {
             case REFERENCE:
                 try {
@@ -159,18 +171,18 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     private Predicate buildLikePredicate(FilterRequestDto filterRequestDto, Root<T> root,
                                          CriteriaBuilder criteriaBuilder) {
-        Expression<String> expression = buildExpression(root, filterRequestDto);
+        Expression<String> expression = buildExpression(root, filterRequestDto.getName());
         return criteriaBuilder.like(criteriaBuilder.lower(expression),
-                MessageFormat.format("%{0}%", filterRequestDto.getValue().trim().toLowerCase()));
+                MessageFormat.format(LIKE_FORMAT, filterRequestDto.getValue().trim().toLowerCase()));
     }
 
-    private <E> Expression<E> buildExpression(Root<T> root, FilterRequestDto filterRequestDto) {
-        String[] fieldLevels = splitByPointSeparator(filterRequestDto.getName());
+    private <E> Expression<E> buildExpression(Root<T> root, String fieldName) {
+        String[] fieldLevels = splitByPointSeparator(fieldName);
         if (fieldLevels.length > 1) {
             Join<T, ?> join = root.join(fieldLevels[0]);
             return join.get(fieldLevels[1]);
         } else {
-            return root.get(filterRequestDto.getName());
+            return root.get(fieldName);
         }
     }
 }

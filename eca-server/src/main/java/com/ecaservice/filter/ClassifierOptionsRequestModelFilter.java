@@ -15,10 +15,12 @@ public class ClassifierOptionsRequestModelFilter extends AbstractFilter<Classifi
     /**
      * Constructor with filters requests.
      *
-     * @param searchQuery - search query string
-     * @param filters     - filters requests list
+     * @param globalFilterFields - global filter fields list
+     * @param searchQuery        - search query string
+     * @param filters            - filters requests list
      */
-    public ClassifierOptionsRequestModelFilter(String searchQuery, List<FilterRequestDto> filters) {
-        super(ClassifierOptionsRequestModel.class, searchQuery, filters);
+    public ClassifierOptionsRequestModelFilter(String searchQuery, List<String> globalFilterFields,
+                                               List<FilterRequestDto> filters) {
+        super(ClassifierOptionsRequestModel.class, searchQuery, globalFilterFields, filters);
     }
 }

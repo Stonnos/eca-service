@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -43,8 +44,8 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
     @Override
     public Page<EvaluationLog> getNextPage(PageRequestDto pageRequestDto) {
         Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
-        EvaluationLogFilter filter =
-                new EvaluationLogFilter(pageRequestDto.getSearchQuery(), pageRequestDto.getFilters());
+        EvaluationLogFilter filter = new EvaluationLogFilter(pageRequestDto.getSearchQuery(), Collections.emptyList(),
+                pageRequestDto.getFilters());
         return evaluationLogRepository.findAll(filter,
                 PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort));
     }
