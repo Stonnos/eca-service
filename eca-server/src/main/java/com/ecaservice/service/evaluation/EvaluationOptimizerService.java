@@ -1,5 +1,6 @@
 package com.ecaservice.service.evaluation;
 
+import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
@@ -47,6 +48,7 @@ public class EvaluationOptimizerService {
     private static final String RESULTS_NOT_FOUND_MESSAGE = "Can't find classifiers options for data '%s'";
 
     private final CrossValidationConfig crossValidationConfig;
+    private final CommonConfig commonConfig;
     private final EvaluationRequestService evaluationRequestService;
     private final ErsRequestService ersRequestService;
     private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
@@ -61,6 +63,7 @@ public class EvaluationOptimizerService {
      * Constructor with spring dependency injection.
      *
      * @param crossValidationConfig               - cross - validation config bean
+     * @param commonConfig                        - common config bean
      * @param evaluationRequestService            - evaluation request service bean
      * @param classifierOptionsRequestModelMapper - classifier options request model mapper bean
      * @param ersRequestService                   - ers request service bean
@@ -71,6 +74,7 @@ public class EvaluationOptimizerService {
      */
     @Inject
     public EvaluationOptimizerService(CrossValidationConfig crossValidationConfig,
+                                      CommonConfig commonConfig,
                                       EvaluationRequestService evaluationRequestService,
                                       ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper,
                                       ErsRequestService ersRequestService,
@@ -79,6 +83,7 @@ public class EvaluationOptimizerService {
                                       ClassifierOptionsService classifierOptionsService,
                                       ClassifierOptionsRequestRepository classifierOptionsRequestRepository) {
         this.crossValidationConfig = crossValidationConfig;
+        this.commonConfig = commonConfig;
         this.evaluationRequestService = evaluationRequestService;
         this.ersRequestService = ersRequestService;
         this.classifierOptionsRequestModelMapper = classifierOptionsRequestModelMapper;
@@ -141,7 +146,7 @@ public class EvaluationOptimizerService {
         List<ClassifierOptionsRequestEntity> requestModels =
                 classifierOptionsRequestRepository.findLastRequests(dataMd5Hash,
                         Collections.singleton(ResponseStatus.SUCCESS),
-                        LocalDateTime.now().minusDays(crossValidationConfig.getClassifierOptionsCacheDurationInDays()),
+                        LocalDateTime.now().minusDays(commonConfig.getClassifierOptionsCacheDurationInDays()),
                         PageRequest.of(0, 1));
         return requestModels.stream().findFirst().map(
                 ClassifierOptionsRequestEntity::getClassifierOptionsRequestModel).orElse(null);
