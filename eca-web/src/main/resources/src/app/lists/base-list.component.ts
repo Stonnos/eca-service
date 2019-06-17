@@ -57,6 +57,7 @@ export abstract class BaseListComponent<T> {
       size: event.rows,
       sortField: event.sortField,
       ascending: event.sortOrder == 1,
+      searchQuery: this.searchQuery,
       filters: this.buildFilters()
     };
     this.getNextPage(pageRequest);
@@ -68,6 +69,7 @@ export abstract class BaseListComponent<T> {
       size: this.pageSize,
       sortField: this.table.sortField,
       ascending: this.table.sortOrder == 1,
+      searchQuery: this.searchQuery,
       filters: this.buildFilters()
     };
     this.getNextPage(pageRequest);

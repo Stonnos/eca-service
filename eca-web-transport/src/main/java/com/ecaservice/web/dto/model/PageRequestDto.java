@@ -37,6 +37,11 @@ public class PageRequestDto {
     private boolean ascending;
 
     /**
+     * Search query string
+     */
+    private String searchQuery;
+
+    /**
      * Filters list
      */
     private List<FilterRequestDto> filters;
