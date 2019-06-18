@@ -3,6 +3,7 @@ import { ChartDataDto } from "../../../../../../../target/generated-sources/type
 import { ExperimentsService } from "../../experiments/services/experiments.service";
 import { MessageService } from "primeng/api";
 import { DatePipe } from "@angular/common";
+import { RandomColor } from "angular-randomcolor";
 
 @Component({
   selector: 'app-experiment-statistics',
@@ -51,7 +52,7 @@ export class ExperimentStatisticsComponent implements OnInit {
           labels: chartData.map((chartData: ChartDataDto) => `${chartData.label} (${chartData.count})`),
           datasets: [
             {
-              backgroundColor: ['#f5191e', '#471cf5', '#20f55a', '#f20df5', '#f5aa17', '#f5eb4a', '#670ff5', '#083e17', '#601813'],
+              backgroundColor: chartData.map((chartData: ChartDataDto) => RandomColor.generateColor()),
               borderColor: '#a5a5a5',
               data: chartData.map((chartData: ChartDataDto) => chartData.count)
             }

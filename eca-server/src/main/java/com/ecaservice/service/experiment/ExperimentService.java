@@ -1,5 +1,6 @@
 package com.ecaservice.service.experiment;
 
+import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.exception.ExperimentException;
@@ -70,6 +71,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
     private final ExperimentConfig experimentConfig;
     private final ExperimentProcessorService experimentProcessorService;
     private final EntityManager entityManager;
+    private final CommonConfig commonConfig;
 
     /**
      * Constructor with dependency spring injection.
@@ -81,6 +83,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
      * @param experimentConfig           - experiment config bean
      * @param experimentProcessorService - experiment processor service bean
      * @param entityManager              - entity manager bean
+     * @param commonConfig               - common config bean
      */
     @Inject
     public ExperimentService(ExperimentRepository experimentRepository,
@@ -89,7 +92,8 @@ public class ExperimentService implements PageRequestService<Experiment> {
                              DataService dataService,
                              ExperimentConfig experimentConfig,
                              ExperimentProcessorService experimentProcessorService,
-                             EntityManager entityManager) {
+                             EntityManager entityManager,
+                             CommonConfig commonConfig) {
         this.experimentRepository = experimentRepository;
         this.executorService = executorService;
         this.experimentMapper = experimentMapper;
@@ -97,6 +101,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
         this.experimentConfig = experimentConfig;
         this.experimentProcessorService = experimentProcessorService;
         this.entityManager = entityManager;
+        this.commonConfig = commonConfig;
     }
 
     /**
@@ -252,8 +257,8 @@ public class ExperimentService implements PageRequestService<Experiment> {
     public Page<Experiment> getNextPage(PageRequestDto pageRequestDto) {
         Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
         ExperimentFilter filter = new ExperimentFilter(pageRequestDto.getFilters());
-        return experimentRepository.findAll(filter,
-                PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort));
+        int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
+        return experimentRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
     }
 
     /**
