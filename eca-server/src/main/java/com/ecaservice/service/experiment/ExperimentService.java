@@ -92,7 +92,8 @@ public class ExperimentService implements PageRequestService<Experiment> {
                              DataService dataService,
                              ExperimentConfig experimentConfig,
                              ExperimentProcessorService experimentProcessorService,
-                             EntityManager entityManager, CommonConfig commonConfig) {
+                             EntityManager entityManager,
+                             CommonConfig commonConfig) {
         this.experimentRepository = experimentRepository;
         this.executorService = executorService;
         this.experimentMapper = experimentMapper;
