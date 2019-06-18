@@ -35,6 +35,16 @@ public class EcaServiceConfiguration {
     }
 
     /**
+     * Creates common config bean.
+     *
+     * @return common config bean
+     */
+    @Bean
+    public CommonConfig commonConfig() {
+        return new CommonConfig();
+    }
+
+    /**
      * Creates cross - validation config bean.
      *
      * @return cross - validation config bean
@@ -93,14 +103,14 @@ public class EcaServiceConfiguration {
     /**
      * Creates thread pool task executor bean.
      *
-     * @param crossValidationConfig - cross validation config
+     * @param commonConfig - common config bean
      * @return thread pool task executor
      */
     @Bean
-    public Executor ecaThreadPoolTaskExecutor(CrossValidationConfig crossValidationConfig) {
+    public Executor ecaThreadPoolTaskExecutor(CommonConfig commonConfig) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(crossValidationConfig.getThreadPoolSize());
-        executor.setMaxPoolSize(crossValidationConfig.getThreadPoolSize());
+        executor.setCorePoolSize(commonConfig.getThreadPoolSize());
+        executor.setMaxPoolSize(commonConfig.getThreadPoolSize());
         return executor;
     }
 }

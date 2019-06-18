@@ -31,14 +31,4 @@ public class CrossValidationConfig {
      * Timeout value in minutes
      */
     private Integer timeout;
-
-    /**
-     * Classifier options cache duration in days
-     */
-    private Integer classifierOptionsCacheDurationInDays;
-
-    /**
-     * Thread pool size for async tasks
-     */
-    private Integer threadPoolSize;
 }
