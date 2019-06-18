@@ -28,6 +28,8 @@ export abstract class BaseListComponent<T> {
   @ViewChild(Table)
   private table: Table;
 
+  private filterRequests: FilterRequestDto[] = [];
+
   private dateFormat: string = "yyyy-MM-dd";
 
   protected constructor(public messageService: MessageService) {
@@ -58,19 +60,20 @@ export abstract class BaseListComponent<T> {
       sortField: event.sortField,
       ascending: event.sortOrder == 1,
       searchQuery: this.searchQuery,
-      filters: this.buildFilters()
+      filters: this.filterRequests
     };
     this.getNextPage(pageRequest);
   }
 
   public onApplyFilter() {
+    this.rebuildFilterRequests();
     const pageRequest: PageRequestDto = {
       page: 0,
       size: this.pageSize,
       sortField: this.table.sortField,
       ascending: this.table.sortOrder == 1,
       searchQuery: this.searchQuery,
-      filters: this.buildFilters()
+      filters: this.filterRequests
     };
     this.getNextPage(pageRequest);
   }
@@ -78,9 +81,6 @@ export abstract class BaseListComponent<T> {
   public setPage(pageDto: PageDto<T>) {
     this.items = pageDto.content;
     this.table.totalRecords = pageDto.totalCount;
-    if (pageDto.page == 0) {
-      this.table.first = 0;
-    }
   }
 
   public isLink(column: string): boolean {
@@ -95,8 +95,8 @@ export abstract class BaseListComponent<T> {
     this.searchQuery = '';
   }
 
-  private buildFilters(): FilterRequestDto[] {
-    return this.filters.filter((filter: Filter) => this.hasValue(filter)).map((filter: Filter) => {
+  private rebuildFilterRequests(): void {
+    this.filterRequests = this.filters.filter((filter: Filter) => this.hasValue(filter)).map((filter: Filter) => {
       return { name: filter.name, value: this.transformFilterValue(filter), filterType: filter.type, matchMode: filter.matchMode };
     });
   }
