@@ -24,7 +24,7 @@ export class ErsReportComponent implements OnInit {
   }
 
   public canSent(): boolean {
-    return this.ersReport && this.ersReport.ersReportStatus == "NEED_SENT";
+    return this.ersReport && this.ersReport.ersReportStatus.value == "NEED_SENT";
   }
 
   public hide(): void {

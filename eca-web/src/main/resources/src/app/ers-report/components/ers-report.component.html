@@ -47,35 +47,11 @@
 
   <div class="ui-g">
     <div class="ui-g-12 text-center text-wrap">
-      <ng-container [ngSwitch]="ersReport?.ersReportStatus">
-        <ng-container *ngSwitchCase="'SUCCESS_SENT'">
-          <div class="text-success">
-            Результаты эксперимента были успешно отправлены в ERS сервис
-          </div>
-        </ng-container>
-        <ng-container *ngSwitchCase="'EXPERIMENT_IN_PROGRESS'">
-          <div class="text-info">
-            Эксперимент находится в обработке...
-          </div>
-        </ng-container>
-        <ng-container *ngSwitchCase="'EXPERIMENT_ERROR'">
-          <div class="text-danger">
-            Невозможно отправить результаты эксперимента в ERS сервис. В ходе построения эксперимента возникла ошибка
-          </div>
-        </ng-container>
-        <ng-container *ngSwitchCase="'EXPERIMENT_DELETED'">
-          <div class="text-danger">
-            Невозможно отправить результаты эксперимента в ERS сервис. Результаты эксперимента были удалены
-          </div>
-        </ng-container>
-        <ng-container *ngSwitchCase="'NEED_SENT'">
-          <div class="text-info">
-            Необходимо отправить результаты эксперимента в ERS сервис
-          </div>
-        </ng-container>
-        <ng-container *ngSwitchDefault>
-        </ng-container>
-      </ng-container>
+      <div [class.text-success]="ersReport?.ersReportStatus.value == 'SUCCESS_SENT'"
+           [class.text-info]="ersReport?.ersReportStatus.value == 'EXPERIMENT_IN_PROGRESS' || ersReport?.ersReportStatus.value == 'NEED_SENT'"
+           [class.text-danger]="ersReport?.ersReportStatus.value == 'EXPERIMENT_ERROR' || ersReport?.ersReportStatus.value == 'EXPERIMENT_DELETED'">
+        {{ ersReport?.ersReportStatus.description }}
+      </div>
     </div>
   </div>
 

@@ -41,5 +41,5 @@ public class ErsReportDto {
      * Ers report status
      */
     @ApiModelProperty(value = "Ers report status")
-    private ErsReportStatus ersReportStatus;
+    private EnumDto ersReportStatus;
 }

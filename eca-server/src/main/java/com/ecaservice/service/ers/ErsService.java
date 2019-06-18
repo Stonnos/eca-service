@@ -12,6 +12,7 @@ import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.repository.EvaluationResultsRequestEntityRepository;
 import com.ecaservice.repository.ExperimentResultsRequestRepository;
+import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.ErsReportDto;
 import com.ecaservice.web.dto.model.ErsReportStatus;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
@@ -131,7 +132,7 @@ public class ErsService {
         } else {
             ersReportStatus = ErsReportStatus.NEED_SENT;
         }
-        ersReportDto.setErsReportStatus(ersReportStatus);
+        ersReportDto.setErsReportStatus(new EnumDto(ersReportStatus.name(), ersReportStatus.getDescription()));
     }
 
     private void populateEvaluationResults(EvaluationLogDetailsDto evaluationLogDetailsDto,
