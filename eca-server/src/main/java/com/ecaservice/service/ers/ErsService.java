@@ -165,7 +165,8 @@ public class ErsService {
                 }
             }
         }
-        evaluationLogDetailsDto.setEvaluationResultsStatus(evaluationResultsStatus);
+        evaluationLogDetailsDto.setEvaluationResultsStatus(
+                new EnumDto(evaluationResultsStatus.name(), evaluationResultsStatus.getDescription()));
     }
 
     private EvaluationResultsStatus handleEvaluationResultsStatus(GetEvaluationResultsResponse response) {

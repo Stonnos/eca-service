@@ -17,13 +17,6 @@ import { finalize } from "rxjs/internal/operators";
 })
 export class EvaluationResultsComponent implements OnInit {
 
-  private evaluationResultsStatusErrorMessageMap = new Map<string, string>()
-    .set(EvaluationResultsStatusEnum.EVALUATION_ERROR, 'Невозможно получить результаты классификации, т.к. произошла ошибка при построении модели классификатора')
-    .set(EvaluationResultsStatusEnum.ERROR, 'Не удалось получить результаты классификации, т.к. произошла неизвестная ошибка')
-    .set(EvaluationResultsStatusEnum.ERS_SERVICE_UNAVAILABLE, 'Не удалось получить результаты классификации, т.к. ERS сервис не доступен')
-    .set(EvaluationResultsStatusEnum.EVALUATION_RESULTS_NOT_FOUND, 'Результаты классификации не были найдены в ERS')
-    .set(EvaluationResultsStatusEnum.RESULTS_NOT_SENT, 'Не удалось получить результаты классификации, т.к. они не были отправлены в ERS сервис');
-
   private readonly requestId: string;
 
   public loading: boolean = false;
@@ -56,11 +49,11 @@ export class EvaluationResultsComponent implements OnInit {
   }
 
   public isEvaluationResultsReceived(): boolean {
-    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsStatus == EvaluationResultsStatusEnum.RESULTS_RECEIVED;
+    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsStatus.value == EvaluationResultsStatusEnum.RESULTS_RECEIVED;
   }
 
   public isEvaluationInProgress(): boolean {
-    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsStatus == EvaluationResultsStatusEnum.EVALUATION_IN_PROGRESS;
+    return this.evaluationLogDetails && this.evaluationLogDetails.evaluationResultsStatus.value == EvaluationResultsStatusEnum.EVALUATION_IN_PROGRESS;
   }
 
   public isEvaluationResultsErrorStatus(): boolean {
@@ -69,10 +62,6 @@ export class EvaluationResultsComponent implements OnInit {
 
   public isCrossValidationMethod(): boolean {
     return this.evaluationLogDetails && this.evaluationLogDetails.evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION;
-  }
-
-  public getEvaluationResultsStatusErrorMessage(): string {
-    return this.evaluationLogDetails && this.evaluationResultsStatusErrorMessageMap.get(this.evaluationLogDetails.evaluationResultsStatus);
   }
 
   public getEvaluationMethod(): string {

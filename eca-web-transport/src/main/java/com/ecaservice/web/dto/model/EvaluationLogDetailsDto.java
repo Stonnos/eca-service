@@ -21,7 +21,7 @@ public class EvaluationLogDetailsDto extends EvaluationLogDto {
      * Evaluation log results status
      */
     @ApiModelProperty(value = "Evaluation results status")
-    private EvaluationResultsStatus evaluationResultsStatus;
+    private EnumDto evaluationResultsStatus;
 
     /**
      * Evaluation results dto (main factors)
