@@ -24,6 +24,12 @@ spring:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
 
+## Application common configs
+common:
+  maxPageSize: 50
+  classifierOptionsCacheDurationInDays: 2
+  threadPoolSize: 10
+
 ## Cross - validation properties
 cross-validation:
   numFolds: 10
@@ -31,8 +37,6 @@ cross-validation:
   seed: 1
   ## Cross validation timeout in minutes
   timeout: 60
-  classifierOptionsCacheDurationInDays: 2
-  threadPoolSize: 10
 
 ## Swagger properties
 swagger2:

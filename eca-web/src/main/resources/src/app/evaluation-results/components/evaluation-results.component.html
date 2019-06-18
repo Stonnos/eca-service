@@ -9,89 +9,27 @@
     <div class="col-5">
       <div class="h-100 details-panel">
         <p-fieldset legend="Основная информация" class="details-fieldset">
-          <div class="ui-g">
+          <div class="ui-g" *ngFor="let row of metaInfoRows">
             <div class="ui-g-6 text-left text-bold text-wrap">
-              UUID заявки:
-            </div>
-            <div class="ui-g-6 text-left text-bold text-wrap">
-              {{ evaluationLogDetails?.requestId }}
-            </div>
-          </div>
-
-          <div class="ui-g">
-            <div class="ui-g-6 text-left text-bold text-wrap">
-              Классификатор:
+              {{ row.label }}
             </div>
             <div class="ui-g-6 text-left text-wrap">
-              {{ evaluationLogDetails?.classifierName }}
-            </div>
-          </div>
-
-          <div class="ui-g">
-            <div class="ui-g-6 text-left text-bold text-wrap">
-              Статус заявки:
-            </div>
-            <div class="ui-g-6 text-left text-wrap">
-              <span [class.text-info]="evaluationLogDetails?.evaluationStatus.value == 'NEW'"
-                    [class.text-success]="evaluationLogDetails?.evaluationStatus.value == 'FINISHED'"
-                    [class.text-warning]="evaluationLogDetails?.evaluationStatus.value == 'TIMEOUT'"
-                    [class.text-danger]="evaluationLogDetails?.evaluationStatus.value == 'ERROR'">
+              <ng-container [ngSwitch]="row.name">
+                <ng-container *ngSwitchCase="'requestId'">
+                  <span class="text-bold">{{ evaluationLogDetails?.requestId }}</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="'evaluationStatus'">
+                  <span [class.text-info]="evaluationLogDetails?.evaluationStatus.value == 'NEW'"
+                        [class.text-success]="evaluationLogDetails?.evaluationStatus.value == 'FINISHED'"
+                        [class.text-warning]="evaluationLogDetails?.evaluationStatus.value == 'TIMEOUT'"
+                        [class.text-danger]="evaluationLogDetails?.evaluationStatus.value == 'ERROR'">
                       {{ evaluationLogDetails?.evaluationStatus.description }}
-              </span>
-            </div>
-          </div>
-
-          <div class="ui-g">
-            <div class="ui-g-6 text-left text-bold text-wrap">
-              Обучающая выборка:
-            </div>
-            <div class="ui-g-6 text-left text-wrap">
-              {{ evaluationLogDetails?.instancesInfo?.relationName }}
-            </div>
-          </div>
-
-          <div class="ui-g">
-            <div class="ui-g-6 text-left text-bold text-wrap">
-              Число объектов:
-            </div>
-            <div class="ui-g-6 text-left text-wrap">
-              {{ evaluationLogDetails?.instancesInfo?.numInstances }}
-            </div>
-          </div>
-
-          <div class="ui-g">
-            <div class="ui-g-6 text-left text-bold text-wrap">
-              Число атрибутов:
-            </div>
-            <div class="ui-g-6 text-left text-wrap">
-              {{ evaluationLogDetails?.instancesInfo?.numAttributes }}
-            </div>
-          </div>
-
-          <div class="ui-g">
-            <div class="ui-g-6 text-left text-bold text-wrap">
-              Число классов:
-            </div>
-            <div class="ui-g-6 text-left text-wrap">
-              {{ evaluationLogDetails?.instancesInfo?.numClasses }}
-            </div>
-          </div>
-
-          <div class="ui-g">
-            <div class="ui-g-6 text-left text-bold text-wrap">
-              Атрибут класса:
-            </div>
-            <div class="ui-g-6 text-left text-wrap">
-              {{ evaluationLogDetails?.instancesInfo?.className }}
-            </div>
-          </div>
-
-          <div class="ui-g">
-            <div class="ui-g-6 text-left text-bold text-wrap">
-              Метод оценки точности:
-            </div>
-            <div class="ui-g-6 text-left text-wrap">
-              {{ getEvaluationMethod() }}
+                  </span>
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                  {{ getMetaInfoRowValue(row.name) }}
+                </ng-container>
+              </ng-container>
             </div>
           </div>
         </p-fieldset>
@@ -119,7 +57,7 @@
           <div *ngIf="isEvaluationInProgress()" class="ui-g">
             <div class="ui-g-12 text-center text-wrap">
               <div class="text-info">
-                Идет построение модели классификатора...
+                {{ evaluationLogDetails?.evaluationResultsStatus.description }}
               </div>
             </div>
           </div>
@@ -127,85 +65,20 @@
           <div *ngIf="isEvaluationResultsErrorStatus()" class="ui-g">
             <div class="ui-g-12 text-center text-wrap">
               <div class="text-danger">
-                {{ getEvaluationResultsStatusErrorMessage() }}
+                {{ evaluationLogDetails?.evaluationResultsStatus.description }}
               </div>
             </div>
           </div>
 
           <ng-container *ngIf="isEvaluationResultsReceived()">
-            <div class="ui-g">
+            <div class="ui-g" *ngFor="let row of evaluationResultsRows">
               <div class="ui-g-6 text-left text-bold text-wrap">
-                Число объектов тестовых данных:
+                {{ row.label }}
               </div>
               <div class="ui-g-6 text-left text-wrap">
-                {{ evaluationLogDetails?.evaluationResultsDto?.numTestInstances }}
+                {{ getEvaluationResultsRowValue(row.name) }}
               </div>
             </div>
-            <div class="ui-g">
-              <div class="ui-g-6 text-left text-bold text-wrap">
-                Число правильно классифицированных объектов:
-              </div>
-              <div class="ui-g-6 text-left text-wrap">
-                {{ evaluationLogDetails?.evaluationResultsDto?.numCorrect }}
-              </div>
-            </div>
-            <div class="ui-g">
-              <div class="ui-g-6 text-left text-bold text-wrap">
-                Число неправильно классифицированных объектов:
-              </div>
-              <div class="ui-g-6 text-left text-wrap">
-                {{ evaluationLogDetails?.evaluationResultsDto?.numIncorrect }}
-              </div>
-            </div>
-            <div class="ui-g">
-              <div class="ui-g-6 text-left text-bold text-wrap">
-                Точность классификатора, %:
-              </div>
-              <div class="ui-g-6 text-left text-wrap">
-                {{ evaluationLogDetails?.evaluationResultsDto?.pctCorrect }}
-              </div>
-            </div>
-            <div class="ui-g">
-              <div class="ui-g-6 text-left text-bold text-wrap">
-                Ошибка классификатора, %:
-              </div>
-              <div class="ui-g-6 text-left text-wrap">
-                {{ evaluationLogDetails?.evaluationResultsDto?.pctIncorrect }}
-              </div>
-            </div>
-            <div class="ui-g">
-              <div class="ui-g-6 text-left text-bold text-wrap">
-                Средняя абсолютная ошибка классификатора:
-              </div>
-              <div class="ui-g-6 text-left text-wrap">
-                {{ evaluationLogDetails?.evaluationResultsDto?.meanAbsoluteError }}
-              </div>
-            </div>
-            <div class="ui-g">
-              <div class="ui-g-6 text-left text-bold text-wrap">
-                Среднеквадратическая ошибка классификатора:
-              </div>
-              <div class="ui-g-6 text-left text-wrap">
-                {{ evaluationLogDetails?.evaluationResultsDto?.rootMeanSquaredError }}
-              </div>
-            </div>
-            <div *ngIf="isCrossValidationMethod()" class="ui-g">
-              <div class="ui-g-6 text-left text-bold text-wrap">
-                Дисперсия ошибки классификатора:
-              </div>
-              <div class="ui-g-6 text-left text-wrap">
-                {{ evaluationLogDetails?.evaluationResultsDto?.varianceError }}
-              </div>
-            </div>
-            <div *ngIf="isCrossValidationMethod()" class="ui-g">
-              <div class="ui-g-6 text-left text-bold text-wrap">
-                95% доверительный интервал ошибки классификатора:
-              </div>
-              <div class="ui-g-6 text-left text-wrap">
-                {{ getConfidenceInterval() }}
-              </div>
-            </div>
-
             <app-classification-costs-list
               [items]="evaluationLogDetails?.classificationCosts || []">
             </app-classification-costs-list>

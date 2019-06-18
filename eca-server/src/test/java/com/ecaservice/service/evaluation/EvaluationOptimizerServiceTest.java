@@ -2,6 +2,7 @@ package com.ecaservice.service.evaluation;
 
 import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ErsConfig;
 import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
@@ -97,7 +98,7 @@ import static org.mockito.Mockito.when;
         ErsConfig.class, ClassifierOptionsService.class, EvaluationLogMapperImpl.class,
         EvaluationService.class, ErsEvaluationMethodMapperImpl.class, ErsResponseStatusMapperImpl.class,
         InstancesConverter.class, ClassifierOptionsResponseModelMapperImpl.class,
-        EvaluationLogInputOptionsMapperImpl.class})
+        EvaluationLogInputOptionsMapperImpl.class, CommonConfig.class})
 public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -105,6 +106,8 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     @Inject
     private CrossValidationConfig crossValidationConfig;
+    @Inject
+    private CommonConfig commonConfig;
     @Inject
     private EvaluationRequestService evaluationRequestService;
     @Mock
@@ -144,7 +147,8 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         instancesRequest.setData(TestHelperUtils.loadInstances());
         ErsRequestService ersRequestService = new ErsRequestService(ersWebServiceClient, ersRequestRepository,
                 classifierOptionsRequestModelRepository, classifierReportMapper, ersConfig);
-        evaluationOptimizerService = new EvaluationOptimizerService(crossValidationConfig, evaluationRequestService,
+        evaluationOptimizerService = new EvaluationOptimizerService(crossValidationConfig, commonConfig,
+                evaluationRequestService,
                 classifierOptionsRequestModelMapper, ersRequestService, evaluationRequestMapper,
                 classifierOptionsRequestMapper, classifierOptionsService, classifierOptionsRequestRepository);
         dataMd5Hash = DigestUtils.md5DigestAsHex(
@@ -227,7 +231,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     public void testExceededClassifierOptionsCache() {
         //Case 1
         ClassifierOptionsRequestModel requestModel = TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash,
-                LocalDateTime.now().minusDays(crossValidationConfig.getClassifierOptionsCacheDurationInDays() + 1),
+                LocalDateTime.now().minusDays(commonConfig.getClassifierOptionsCacheDurationInDays() + 1),
                 ResponseStatus.SUCCESS, Collections.emptyList());
         ClassifierOptionsRequestEntity requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
                 (requestModel.getRequestDate(), requestModel);

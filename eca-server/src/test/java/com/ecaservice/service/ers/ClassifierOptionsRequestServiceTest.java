@@ -1,5 +1,6 @@
 package com.ecaservice.service.ers;
 
+import com.ecaservice.config.CommonConfig;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel_;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
@@ -24,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@Import(ClassifierOptionsRequestService.class)
+@Import({ClassifierOptionsRequestService.class, CommonConfig.class})
 public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
 
     @Inject

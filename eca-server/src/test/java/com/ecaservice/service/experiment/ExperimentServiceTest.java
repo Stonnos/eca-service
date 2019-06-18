@@ -2,6 +2,7 @@ package com.ecaservice.service.experiment;
 
 import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.mapping.ExperimentMapper;
@@ -51,7 +52,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentMapperImpl.class, ExperimentConfig.class})
+@Import({ExperimentMapperImpl.class, ExperimentConfig.class, CommonConfig.class})
 public class ExperimentServiceTest extends AbstractJpaTest {
 
     @Inject
@@ -64,6 +65,8 @@ public class ExperimentServiceTest extends AbstractJpaTest {
     private ExperimentConfig experimentConfig;
     @Inject
     private EntityManager entityManager;
+    @Inject
+    private CommonConfig commonConfig;
     @Mock
     private ExperimentProcessorService experimentProcessorService;
 
@@ -77,7 +80,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         CalculationExecutorService executorService =
                 new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
         experimentService = new ExperimentService(experimentRepository, executorService, experimentMapper,
-                dataService, experimentConfig, experimentProcessorService, entityManager);
+                dataService, experimentConfig, experimentProcessorService, entityManager, commonConfig);
     }
 
     @Override

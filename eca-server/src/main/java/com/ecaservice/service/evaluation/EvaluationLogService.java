@@ -1,5 +1,6 @@
 package com.ecaservice.service.evaluation;
 
+import com.ecaservice.config.CommonConfig;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.projections.RequestStatusStatistics;
@@ -29,15 +30,19 @@ import java.util.stream.Collectors;
 @Service
 public class EvaluationLogService implements PageRequestService<EvaluationLog> {
 
+    private final CommonConfig commonConfig;
     private final EvaluationLogRepository evaluationLogRepository;
 
     /**
      * Constructor with spring dependency injection.
      *
+     * @param commonConfig            - common config bean
      * @param evaluationLogRepository - evaluation log repository bean
      */
     @Inject
-    public EvaluationLogService(EvaluationLogRepository evaluationLogRepository) {
+    public EvaluationLogService(CommonConfig commonConfig,
+                                EvaluationLogRepository evaluationLogRepository) {
+        this.commonConfig = commonConfig;
         this.evaluationLogRepository = evaluationLogRepository;
     }
 
@@ -46,8 +51,8 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
         Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
         EvaluationLogFilter filter = new EvaluationLogFilter(pageRequestDto.getSearchQuery(), Collections.emptyList(),
                 pageRequestDto.getFilters());
-        return evaluationLogRepository.findAll(filter,
-                PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort));
+        int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
+        return evaluationLogRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
     }
 
     /**

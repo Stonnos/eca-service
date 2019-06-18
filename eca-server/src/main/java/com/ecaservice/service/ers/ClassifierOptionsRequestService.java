@@ -1,5 +1,6 @@
 package com.ecaservice.service.ers;
 
+import com.ecaservice.config.CommonConfig;
 import com.ecaservice.filter.ClassifierOptionsRequestModelFilter;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
@@ -24,16 +25,20 @@ import java.util.Collections;
 @Service
 public class ClassifierOptionsRequestService implements PageRequestService<ClassifierOptionsRequestModel> {
 
+    private final CommonConfig commonConfig;
     private final ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
 
     /**
      * Constructor with spring dependency injection.
      *
+     * @param commonConfig                            - common config bean
      * @param classifierOptionsRequestModelRepository - classifier options request model repository bean
      */
     @Inject
     public ClassifierOptionsRequestService(
+            CommonConfig commonConfig,
             ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository) {
+        this.commonConfig = commonConfig;
         this.classifierOptionsRequestModelRepository = classifierOptionsRequestModelRepository;
     }
 
@@ -43,7 +48,8 @@ public class ClassifierOptionsRequestService implements PageRequestService<Class
         ClassifierOptionsRequestModelFilter filter =
                 new ClassifierOptionsRequestModelFilter(pageRequestDto.getSearchQuery(), Collections.emptyList(),
                         pageRequestDto.getFilters());
+        int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
         return classifierOptionsRequestModelRepository.findAll(filter,
-                PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort));
+                PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
     }
 }
