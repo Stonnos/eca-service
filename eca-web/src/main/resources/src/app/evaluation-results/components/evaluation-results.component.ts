@@ -19,6 +19,8 @@ export class EvaluationResultsComponent implements OnInit {
 
   private readonly requestId: string;
 
+  public metaInfoRows: any[] = [];
+  public evaluationResultsRows: any[] = [];
   public loading: boolean = false;
 
   public evaluationLogDetails: EvaluationLogDetailsDto;
@@ -27,6 +29,8 @@ export class EvaluationResultsComponent implements OnInit {
                      private messageService: MessageService,
                      private route: ActivatedRoute) {
     this.requestId = this.route.snapshot.params.id;
+    this.initMetaInfoRows();
+    this.initEvaluationResultsRows();
   }
 
   public ngOnInit(): void {
@@ -65,26 +69,70 @@ export class EvaluationResultsComponent implements OnInit {
   }
 
   public getEvaluationMethod(): string {
-    if (!!this.evaluationLogDetails) {
-      const evaluationMethod: EnumDto = this.evaluationLogDetails.evaluationMethod;
-      if (evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION) {
-        if (this.evaluationLogDetails.numTests == 1) {
-          return `${this.evaluationLogDetails.evaluationMethod.description} (${this.evaluationLogDetails.numFolds} блочная)`;
-        } else {
-          return `${this.evaluationLogDetails.evaluationMethod.description} (${this.evaluationLogDetails.numTests}×${this.evaluationLogDetails.numFolds} блочная)`;
-        }
+    const evaluationMethod: EnumDto = this.evaluationLogDetails.evaluationMethod;
+    if (evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION) {
+      if (this.evaluationLogDetails.numTests == 1) {
+        return `${this.evaluationLogDetails.evaluationMethod.description} (${this.evaluationLogDetails.numFolds} блочная)`;
       } else {
-        return this.evaluationLogDetails.evaluationMethod.description;
+        return `${this.evaluationLogDetails.evaluationMethod.description} (${this.evaluationLogDetails.numTests}×${this.evaluationLogDetails.numFolds} блочная)`;
       }
+    } else {
+      return this.evaluationLogDetails.evaluationMethod.description;
     }
-    return null;
   }
 
   public getConfidenceInterval(): string {
-    if (!!this.evaluationLogDetails) {
-      const evaluationResults: EvaluationResultsDto = this.evaluationLogDetails.evaluationResultsDto;
-      return `[${evaluationResults.confidenceIntervalLowerBound}; ${evaluationResults.confidenceIntervalUpperBound}]`;
+    const evaluationResults: EvaluationResultsDto = this.evaluationLogDetails.evaluationResultsDto;
+    return `[${evaluationResults.confidenceIntervalLowerBound}; ${evaluationResults.confidenceIntervalUpperBound}]`;
+  }
+
+  public getMetaInfoRowValue(rowName: string) {
+    switch (rowName) {
+      case "evaluationMethod":
+        return this.getEvaluationMethod();
+      case "evaluationStatus":
+        return this.evaluationLogDetails.evaluationStatus.description;
+      default:
+        const tokens: string[] = rowName.split(".");
+        return tokens.length == 2 ? this.evaluationLogDetails[tokens[0]][tokens[1]] : this.evaluationLogDetails[tokens[0]];
     }
-    return null;
+  }
+
+  public getEvaluationResultsRowValue(rowName: string) {
+    const evaluationResults: EvaluationResultsDto = this.evaluationLogDetails.evaluationResultsDto;
+    switch (rowName) {
+      case "confidenceInterval":
+        return this.getConfidenceInterval();
+      default:
+        return evaluationResults[rowName];
+    }
+  }
+
+  private initMetaInfoRows(): void {
+    this.metaInfoRows = [
+      { name: "requestId", label: "UUID заявки:" },
+      { name: "classifierName", label: "Классификатор:" },
+      { name: "evaluationStatus", label: "Статус заявки:" },
+      { name: "instancesInfo.relationName", label: "Обучающая выборка:" },
+      { name: "instancesInfo.numInstances", label: "Число объектов:" },
+      { name: "instancesInfo.numAttributes", label: "Число атрибутов:" },
+      { name: "instancesInfo.numClasses", label: "Число классов:" },
+      { name: "instancesInfo.className", label: "Атрибут класса:" },
+      { name: "evaluationMethod", label: "Метод оценки точности:" }
+    ];
+  }
+
+  private initEvaluationResultsRows(): void {
+    this.evaluationResultsRows = [
+      { name: "numTestInstances", label: "Число объектов тестовых данных:" },
+      { name: "numCorrect", label: "Число правильно классифицированных объектов:" },
+      { name: "numIncorrect", label: "Число неправильно классифицированных объектов:" },
+      { name: "pctCorrect", label: "Точность классификатора, %:" },
+      { name: "pctIncorrect", label: "Ошибка классификатора, %:" },
+      { name: "meanAbsoluteError", label: "Средняя абсолютная ошибка классификатора:" },
+      { name: "rootMeanSquaredError", label: "Среднеквадратическая ошибка классификатора:" },
+      { name: "varianceError", label: "Дисперсия ошибки классификатора:" },
+      { name: "confidenceInterval", label: "95% доверительный интервал ошибки классификатора:" },
+    ];
   }
 }
