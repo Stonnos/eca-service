@@ -34,8 +34,8 @@ public class FilterFieldDto {
     /**
      * Filter type
      */
-    @ApiModelProperty(value = "Filter type")
-    private FilterType filterType;
+    @ApiModelProperty(value = "Filter field type")
+    private FilterFieldType filterFieldType;
 
     /**
      * Filter match mode

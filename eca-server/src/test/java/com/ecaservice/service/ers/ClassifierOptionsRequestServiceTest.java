@@ -6,8 +6,8 @@ import com.ecaservice.model.entity.ClassifierOptionsRequestModel_;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.filter.GlobalFilterService;
+import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.FilterRequestDto;
-import com.ecaservice.web.dto.model.FilterType;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.junit.Test;
@@ -54,7 +54,7 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
                 new PageRequestDto(0, 10, ClassifierOptionsRequestModel_.REQUEST_ID, false, null, newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(ClassifierOptionsRequestModel_.REQUEST_ID, requestModel2.getRequestId(),
-                        FilterType.TEXT, MatchMode.EQUALS));
+                        FilterFieldType.TEXT, MatchMode.EQUALS));
         Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
                 classifierOptionsRequestService.getNextPage(pageRequestDto);
         List<ClassifierOptionsRequestModel> classifierOptionsRequestModels =

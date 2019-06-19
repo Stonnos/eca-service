@@ -1,6 +1,6 @@
 package com.ecaservice.model.entity;
 
-import com.ecaservice.web.dto.model.FilterType;
+import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.MatchMode;
 import lombok.Data;
 
@@ -52,7 +52,7 @@ public class FilterField {
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "filter_type")
-    private FilterType filterType;
+    private FilterFieldType filterFieldType;
 
     /**
      * Filter match mode

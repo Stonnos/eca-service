@@ -3,7 +3,7 @@ package com.ecaservice.mapping.filters;
 import com.ecaservice.model.entity.FilterDictionary;
 import com.ecaservice.model.entity.FilterField;
 import com.ecaservice.web.dto.model.FilterFieldDto;
-import com.ecaservice.web.dto.model.FilterType;
+import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.MatchMode;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -36,7 +36,7 @@ public class FilterFieldMapperTest {
         filterField.setDescription(DESCRIPTION);
         filterField.setFieldOrder(1);
         filterField.setName(NAME);
-        filterField.setFilterType(FilterType.REFERENCE);
+        filterField.setFilterFieldType(FilterFieldType.REFERENCE);
         filterField.setMatchMode(MatchMode.EQUALS);
         filterField.setDictionary(new FilterDictionary());
         FilterFieldDto filterFieldDto = filterFieldMapper.map(filterField);
@@ -44,7 +44,7 @@ public class FilterFieldMapperTest {
         Assertions.assertThat(filterFieldDto.getDescription()).isEqualTo(filterField.getDescription());
         Assertions.assertThat(filterFieldDto.getName()).isEqualTo(filterField.getName());
         Assertions.assertThat(filterFieldDto.getFieldOrder()).isEqualTo(filterField.getFieldOrder());
-        Assertions.assertThat(filterFieldDto.getFilterType()).isEqualTo(filterField.getFilterType());
+        Assertions.assertThat(filterFieldDto.getFilterFieldType()).isEqualTo(filterField.getFilterFieldType());
         Assertions.assertThat(filterFieldDto.getMatchMode()).isEqualTo(filterField.getMatchMode());
         Assertions.assertThat(filterFieldDto.getDictionary()).isNotNull();
     }
@@ -52,11 +52,11 @@ public class FilterFieldMapperTest {
     @Test
     public void testMapFilterFieldsList() {
         FilterField filterField = new FilterField();
-        filterField.setFilterType(FilterType.REFERENCE);
+        filterField.setFilterFieldType(FilterFieldType.REFERENCE);
         filterField.setMatchMode(MatchMode.EQUALS);
         filterField.setDictionary(new FilterDictionary());
         FilterField filterField1 = new FilterField();
-        filterField1.setFilterType(FilterType.REFERENCE);
+        filterField1.setFilterFieldType(FilterFieldType.REFERENCE);
         filterField1.setMatchMode(MatchMode.LIKE);
         filterField1.setDictionary(new FilterDictionary());
         List<FilterFieldDto> filterFieldDtoList = filterFieldMapper.map(Arrays.asList(filterField, filterField1));

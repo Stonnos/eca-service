@@ -5,7 +5,7 @@ package com.ecaservice.web.dto.model;
  *
  * @author Roman Batygin
  */
-public enum FilterType {
+public enum FilterFieldType {
 
     /**
      * Text field filter

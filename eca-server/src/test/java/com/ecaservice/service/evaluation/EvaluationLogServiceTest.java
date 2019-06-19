@@ -8,8 +8,8 @@ import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.filter.GlobalFilterService;
+import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.FilterRequestDto;
-import com.ecaservice.web.dto.model.FilterType;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.metrics.KNearestNeighbours;
@@ -100,9 +100,9 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
                 new PageRequestDto(0, 10, EvaluationLog_.CLASSIFIER_NAME, false, null, newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(EvaluationLog_.EVALUATION_STATUS, RequestStatus.FINISHED.name(),
-                        FilterType.REFERENCE, MatchMode.EQUALS));
+                        FilterFieldType.REFERENCE, MatchMode.EQUALS));
         pageRequestDto.getFilters().add(
-                new FilterRequestDto(EvaluationLog_.CLASSIFIER_NAME, "C", FilterType.TEXT, MatchMode.LIKE));
+                new FilterRequestDto(EvaluationLog_.CLASSIFIER_NAME, "C", FilterFieldType.TEXT, MatchMode.LIKE));
         Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);
         List<EvaluationLog> evaluationLogs = evaluationLogPage.getContent();
         assertThat(evaluationLogPage).isNotNull();
@@ -127,7 +127,7 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
         PageRequestDto pageRequestDto =
                 new PageRequestDto(0, 10, EvaluationLog_.CLASSIFIER_NAME, false, null, newArrayList());
         pageRequestDto.getFilters().add(
-                new FilterRequestDto("instancesInfo.relationName", "Dat", FilterType.TEXT,
+                new FilterRequestDto("instancesInfo.relationName", "Dat", FilterFieldType.TEXT,
                         MatchMode.LIKE));
         Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();
