@@ -52,7 +52,7 @@ public class FilterField {
      * Filter field type
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "filter_type")
+    @Column(name = "filter_field_type")
     private FilterFieldType filterFieldType;
 
     /**
