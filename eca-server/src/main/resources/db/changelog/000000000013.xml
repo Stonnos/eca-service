@@ -26,7 +26,7 @@
                 <tableExists tableName="global_filter_field"/>
             </not>
         </preConditions>
-        <createTable tableName="filter_field">
+        <createTable tableName="global_filter_field">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -42,6 +42,8 @@
     <!-- Insert experiment global filter template -->
     <changeSet id="3" author="roman.batygin@mail.ru" context="data">
         <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_template"/>
+            <tableExists tableName="global_filter_field"/>
             <sqlCheck expectedResult="0">
                 select count(*) from global_filter_template where id = 1
             </sqlCheck>
@@ -72,6 +74,8 @@
     <!-- Insert evaluation log global filter template -->
     <changeSet id="4" author="roman.batygin@mail.ru" context="data">
         <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_template"/>
+            <tableExists tableName="global_filter_field"/>
             <sqlCheck expectedResult="0">
                 select count(*) from global_filter_template where id = 2
             </sqlCheck>
@@ -102,6 +106,8 @@
     <!-- Insert classifier options request global filter template -->
     <changeSet id="11" author="roman.batygin@mail.ru" context="data">
         <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_template"/>
+            <tableExists tableName="global_filter_field"/>
             <sqlCheck expectedResult="0">
                 select count(*) from global_filter_template where id = 3
             </sqlCheck>
