@@ -5,6 +5,7 @@ import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel_;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.service.AbstractJpaTest;
+import com.ecaservice.service.filter.GlobalFilterService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.FilterType;
 import com.ecaservice.web.dto.model.MatchMode;
@@ -25,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@Import({ClassifierOptionsRequestService.class, CommonConfig.class})
+@Import({ClassifierOptionsRequestService.class, CommonConfig.class, GlobalFilterService.class})
 public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
 
     @Inject

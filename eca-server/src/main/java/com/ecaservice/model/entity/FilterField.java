@@ -48,7 +48,7 @@ public class FilterField {
     private int fieldOrder;
 
     /**
-     * Filter type
+     * Filter field type
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "filter_type")

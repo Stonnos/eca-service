@@ -17,7 +17,7 @@ spring:
         order_by:
           default_null_ordering: last
   cache:
-    cache-names: classifiers, evaluation-results
+    cache-names: classifiers, evaluation-results, global-filters
     caffeine:
       spec: maximumSize=100, expireAfterWrite=600s
   liquibase:

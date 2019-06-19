@@ -7,6 +7,7 @@ import com.ecaservice.model.entity.EvaluationLog_;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.AbstractJpaTest;
+import com.ecaservice.service.filter.GlobalFilterService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.FilterType;
 import com.ecaservice.web.dto.model.MatchMode;
@@ -32,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@Import({EvaluationLogService.class, CommonConfig.class})
+@Import({EvaluationLogService.class, CommonConfig.class, GlobalFilterService.class})
 public class EvaluationLogServiceTest extends AbstractJpaTest {
 
     @Inject

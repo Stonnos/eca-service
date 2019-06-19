@@ -1,7 +1,7 @@
 package com.ecaservice.web.dto.model;
 
 /**
- * Field type.
+ * Field field type.
  *
  * @author Roman Batygin
  */
@@ -18,7 +18,7 @@ public enum FilterType {
     REFERENCE,
 
     /**
-     * Date field filter in interval yyyy-MM-dd
+     * Date field filter in format yyyy-MM-dd
      */
     DATE
 }

@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface FilterTemplateRepository extends JpaRepository<FilterTemplate, Long> {
 
     /**
-     * Finds filter template be type.
+     * Finds filter template by type.
      *
      * @param templateType - template type
      * @return filter template entity

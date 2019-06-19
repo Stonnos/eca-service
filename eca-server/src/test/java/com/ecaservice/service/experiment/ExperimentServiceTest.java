@@ -16,6 +16,7 @@ import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.service.evaluation.CalculationExecutorServiceImpl;
+import com.ecaservice.service.filter.GlobalFilterService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.FilterType;
 import com.ecaservice.web.dto.model.MatchMode;
@@ -52,7 +53,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentMapperImpl.class, ExperimentConfig.class, CommonConfig.class})
+@Import({ExperimentMapperImpl.class, ExperimentConfig.class, CommonConfig.class, GlobalFilterService.class})
 public class ExperimentServiceTest extends AbstractJpaTest {
 
     @Inject
@@ -65,6 +66,8 @@ public class ExperimentServiceTest extends AbstractJpaTest {
     private ExperimentConfig experimentConfig;
     @Inject
     private EntityManager entityManager;
+    @Inject
+    private GlobalFilterService globalFilterService;
     @Inject
     private CommonConfig commonConfig;
     @Mock
@@ -80,7 +83,8 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         CalculationExecutorService executorService =
                 new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
         experimentService = new ExperimentService(experimentRepository, executorService, experimentMapper,
-                dataService, experimentConfig, experimentProcessorService, entityManager, commonConfig);
+                dataService, experimentConfig, experimentProcessorService, entityManager, commonConfig,
+                globalFilterService);
     }
 
     @Override

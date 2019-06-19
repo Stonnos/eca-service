@@ -8,6 +8,7 @@ import com.ecaservice.filter.ExperimentFilter;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.Experiment_;
+import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
@@ -15,6 +16,7 @@ import com.ecaservice.model.projections.RequestStatusStatistics;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.PageRequestService;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
+import com.ecaservice.service.filter.GlobalFilterService;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.converters.model.ExperimentHistory;
@@ -72,6 +74,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
     private final ExperimentProcessorService experimentProcessorService;
     private final EntityManager entityManager;
     private final CommonConfig commonConfig;
+    private final GlobalFilterService globalFilterService;
 
     /**
      * Constructor with dependency spring injection.
@@ -84,6 +87,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
      * @param experimentProcessorService - experiment processor service bean
      * @param entityManager              - entity manager bean
      * @param commonConfig               - common config bean
+     * @param globalFilterService        - global filter service bean
      */
     @Inject
     public ExperimentService(ExperimentRepository experimentRepository,
@@ -93,7 +97,8 @@ public class ExperimentService implements PageRequestService<Experiment> {
                              ExperimentConfig experimentConfig,
                              ExperimentProcessorService experimentProcessorService,
                              EntityManager entityManager,
-                             CommonConfig commonConfig) {
+                             CommonConfig commonConfig,
+                             GlobalFilterService globalFilterService) {
         this.experimentRepository = experimentRepository;
         this.executorService = executorService;
         this.experimentMapper = experimentMapper;
@@ -102,6 +107,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
         this.experimentProcessorService = experimentProcessorService;
         this.entityManager = entityManager;
         this.commonConfig = commonConfig;
+        this.globalFilterService = globalFilterService;
     }
 
     /**
@@ -256,8 +262,8 @@ public class ExperimentService implements PageRequestService<Experiment> {
     @Override
     public Page<Experiment> getNextPage(PageRequestDto pageRequestDto) {
         Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
-        ExperimentFilter filter = new ExperimentFilter(pageRequestDto.getSearchQuery(), Collections.emptyList(),
-                pageRequestDto.getFilters());
+        List<String> globalFilterFields = globalFilterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT);
+        ExperimentFilter filter = new ExperimentFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
         int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
         return experimentRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
     }
