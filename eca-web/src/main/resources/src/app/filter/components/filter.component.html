@@ -2,7 +2,7 @@
 
   <div class="ui-g ui-fluid">
     <div *ngFor="let filter of filters" class="ui-g-12 ui-md-12">
-      <div [ngSwitch]="filter.type">
+      <div [ngSwitch]="filter.filterFieldType">
         <ng-container *ngSwitchCase="'REFERENCE'">
           <div class="form-group">
             <label class="filter-label">{{ filter.label }}</label>

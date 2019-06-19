@@ -30,7 +30,7 @@ export class ClassifierOptionsRequestService {
     pageRequest.filters.map((filter, index) => {
       params = params.set(`filters['${index}'].name`, filter.name);
       params = params.set(`filters['${index}'].value`, filter.value);
-      params = params.set(`filters['${index}'].filterType`, filter.filterType);
+      params = params.set(`filters['${index}'].filterFieldType`, filter.filterFieldType);
       params = params.set(`filters['${index}'].matchMode`, filter.matchMode);
     });
     const options = { headers: headers, params: params };

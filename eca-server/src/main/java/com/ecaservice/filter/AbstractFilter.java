@@ -127,7 +127,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
     private Predicate buildGreaterThanOrEqualPredicate(FilterRequestDto filterRequestDto, Root<T> root,
                                                        CriteriaBuilder criteriaBuilder) {
         String value = filterRequestDto.getValue().trim();
-        switch (filterRequestDto.getFilterType()) {
+        switch (filterRequestDto.getFilterFieldType()) {
             case DATE:
                 Expression<LocalDateTime> expression = buildExpression(root, filterRequestDto.getName());
                 LocalDate localDate = LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE);
@@ -140,7 +140,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
     private Predicate buildLessThanOrEqualPredicate(FilterRequestDto filterRequestDto, Root<T> root,
                                                     CriteriaBuilder criteriaBuilder) {
         String value = filterRequestDto.getValue().trim();
-        switch (filterRequestDto.getFilterType()) {
+        switch (filterRequestDto.getFilterFieldType()) {
             case DATE:
                 Expression<LocalDateTime> expression = buildExpression(root, filterRequestDto.getName());
                 LocalDate localDate = LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE);
@@ -154,7 +154,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
                                           CriteriaBuilder criteriaBuilder) {
         String value = filterRequestDto.getValue().trim();
         Expression<?> expression = buildExpression(root, filterRequestDto.getName());
-        switch (filterRequestDto.getFilterType()) {
+        switch (filterRequestDto.getFilterFieldType()) {
             case REFERENCE:
                 try {
                     PropertyDescriptor propertyDescriptor = new PropertyDescriptor(filterRequestDto.getName(), clazz);

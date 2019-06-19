@@ -45,12 +45,12 @@ export class FilterService {
   public mapToFilters(filterFields: FilterFieldDto[]): Filter[] {
     return filterFields.map((filter: FilterFieldDto) => {
       let values: SelectItem[] = [];
-      if (filter.filterType == 'REFERENCE' && !!filter.dictionary && !!filter.dictionary.values && filter.dictionary.values.length > 0) {
+      if (filter.filterFieldType == 'REFERENCE' && !!filter.dictionary && !!filter.dictionary.values && filter.dictionary.values.length > 0) {
         values = filter.dictionary.values.map((filterValue: FilterDictionaryValueDto) => {
           return { label: filterValue.label, value: filterValue.value };
         });
       }
-      return new Filter(filter.name, filter.description, filter.filterType, filter.matchMode, null, values);
+      return new Filter(filter.fieldName, filter.description, filter.filterFieldType, filter.matchMode, null, values);
     });
   }
 }

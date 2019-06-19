@@ -34,7 +34,8 @@ public class FilterField {
     /**
      * Field name
      */
-    private String name;
+    @Column(name = "field_name")
+    private String fieldName;
 
     /**
      * Field description

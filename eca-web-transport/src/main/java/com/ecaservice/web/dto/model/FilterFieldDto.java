@@ -17,7 +17,7 @@ public class FilterFieldDto {
      * Field name
      */
     @ApiModelProperty(value = "Field name")
-    private String name;
+    private String fieldName;
 
     /**
      * Field description

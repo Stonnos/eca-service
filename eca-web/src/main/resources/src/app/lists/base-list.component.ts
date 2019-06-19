@@ -97,12 +97,12 @@ export abstract class BaseListComponent<T> {
 
   private rebuildFilterRequests(): void {
     this.filterRequests = this.filters.filter((filter: Filter) => this.hasValue(filter)).map((filter: Filter) => {
-      return { name: filter.name, value: this.transformFilterValue(filter), filterType: filter.type, matchMode: filter.matchMode };
+      return { name: filter.name, value: this.transformFilterValue(filter), filterFieldType: filter.filterFieldType, matchMode: filter.matchMode };
     });
   }
 
   private hasValue(filter: Filter): boolean {
-    switch (filter.type) {
+    switch (filter.filterFieldType) {
       case "REFERENCE":
         return !!filter.currentValue && !!filter.currentValue.value;
       default:
@@ -111,7 +111,7 @@ export abstract class BaseListComponent<T> {
   }
 
   private transformFilterValue(filter: Filter): string {
-    switch (filter.type) {
+    switch (filter.filterFieldType) {
       case "DATE":
         return new DatePipe("en-US").transform(filter.currentValue, this.dateFormat);
       case "REFERENCE":
