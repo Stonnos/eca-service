@@ -9,6 +9,7 @@ import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentMapperImpl;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.Experiment_;
+import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
@@ -34,6 +35,7 @@ import javax.persistence.EntityManager;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -53,7 +55,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentMapperImpl.class, ExperimentConfig.class, CommonConfig.class, GlobalFilterService.class})
+@Import({ExperimentMapperImpl.class, ExperimentConfig.class, CommonConfig.class})
 public class ExperimentServiceTest extends AbstractJpaTest {
 
     @Inject
@@ -67,9 +69,9 @@ public class ExperimentServiceTest extends AbstractJpaTest {
     @Inject
     private EntityManager entityManager;
     @Inject
-    private GlobalFilterService globalFilterService;
-    @Inject
     private CommonConfig commonConfig;
+    @Mock
+    private GlobalFilterService globalFilterService;
     @Mock
     private ExperimentProcessorService experimentProcessorService;
 
@@ -264,6 +266,29 @@ public class ExperimentServiceTest extends AbstractJpaTest {
     }
 
     /**
+     * Tests global filtering by search query and experiment status equals to FINISHED.
+     */
+    @Test
+    public void testGlobalFilter() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        Experiment experiment3 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR);
+        experimentRepository.saveAll(Arrays.asList(experiment, experiment1, experiment2, experiment3));
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(0, 10, Experiment_.CREATION_DATE, false, experiment1.getUuid().substring(4, 10),
+                        newArrayList());
+        pageRequestDto.getFilters().add(
+                new FilterRequestDto(Experiment_.EXPERIMENT_STATUS, RequestStatus.FINISHED.name(),
+                        FilterFieldType.REFERENCE, MatchMode.EQUALS));
+        when(globalFilterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT)).thenReturn(
+                Arrays.asList(Experiment_.EMAIL, Experiment_.FIRST_NAME, Experiment_.UUID));
+        Page<Experiment> evaluationLogPage = experimentService.getNextPage(pageRequestDto);
+        assertThat(evaluationLogPage).isNotNull();
+        assertThat(evaluationLogPage.getTotalElements()).isOne();
+    }
+
+    /**
      * Test filter by experiment type and experiment status order by creation date.
      */
     @Test
@@ -294,7 +319,8 @@ public class ExperimentServiceTest extends AbstractJpaTest {
                 new FilterRequestDto(Experiment_.EXPERIMENT_STATUS, RequestStatus.NEW.name(), FilterFieldType.REFERENCE,
                         MatchMode.EQUALS));
         pageRequestDto.getFilters().add(
-                new FilterRequestDto(Experiment_.EXPERIMENT_TYPE, ExperimentType.ADA_BOOST.name(), FilterFieldType.REFERENCE,
+                new FilterRequestDto(Experiment_.EXPERIMENT_TYPE, ExperimentType.ADA_BOOST.name(),
+                        FilterFieldType.REFERENCE,
                         MatchMode.EQUALS));
         Page<Experiment> experiments = experimentService.getNextPage(pageRequestDto);
         List<Experiment> experimentList = experiments.getContent();
