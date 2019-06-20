@@ -4,6 +4,7 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationLog_;
+import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.AbstractJpaTest;
@@ -16,30 +17,44 @@ import eca.metrics.KNearestNeighbours;
 import eca.neural.NeuralNetwork;
 import eca.trees.C45;
 import eca.trees.CART;
+import eca.trees.ID3;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 
 import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for checking {@link EvaluationLogService} functionality.
  *
  * @author Roman Batygin
  */
-@Import({EvaluationLogService.class, CommonConfig.class, GlobalFilterService.class})
+@Import(CommonConfig.class)
 public class EvaluationLogServiceTest extends AbstractJpaTest {
 
     @Inject
-    private EvaluationLogService evaluationLogService;
-    @Inject
     private EvaluationLogRepository evaluationLogRepository;
+    @Inject
+    private CommonConfig commonConfig;
+
+    @Mock
+    private GlobalFilterService globalFilterService;
+
+    private EvaluationLogService evaluationLogService;
+
+    @Override
+    public void init() {
+        evaluationLogService = new EvaluationLogService(commonConfig, globalFilterService, evaluationLogRepository);
+    }
 
     @Override
     public void deleteAll() {
@@ -129,6 +144,37 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
         pageRequestDto.getFilters().add(
                 new FilterRequestDto("instancesInfo.relationName", "Dat", FilterFieldType.TEXT,
                         MatchMode.LIKE));
+        Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);
+        assertThat(evaluationLogPage).isNotNull();
+        assertThat(evaluationLogPage.getTotalElements()).isOne();
+    }
+
+    /**
+     * Tests global filtering by "car" search query and evaluation status equals to FINISHED.
+     */
+    @Test
+    public void testGlobalFilter() {
+        EvaluationLog evaluationLog =
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        evaluationLog.setClassifierName(CART.class.getSimpleName());
+        evaluationLog.setInstancesInfo(TestHelperUtils.createInstancesInfo());
+        EvaluationLog evaluationLog1 =
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR);
+        evaluationLog1.setClassifierName(CART.class.getSimpleName());
+        evaluationLog1.setInstancesInfo(TestHelperUtils.createInstancesInfo());
+        EvaluationLog evaluationLog2 =
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        evaluationLog2.setClassifierName(ID3.class.getSimpleName());
+        evaluationLog2.setInstancesInfo(TestHelperUtils.createInstancesInfo());
+        evaluationLogRepository.saveAll(Arrays.asList(evaluationLog, evaluationLog1, evaluationLog2));
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(0, 10, EvaluationLog_.CREATION_DATE, false, "car", newArrayList());
+        pageRequestDto.getFilters().add(
+                new FilterRequestDto(EvaluationLog_.EVALUATION_STATUS, RequestStatus.FINISHED.name(),
+                        FilterFieldType.REFERENCE,
+                        MatchMode.EQUALS));
+        when(globalFilterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG)).thenReturn(
+                Arrays.asList(EvaluationLog_.CLASSIFIER_NAME, EvaluationLog_.REQUEST_ID, "instancesInfo.relationName"));
         Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();
         assertThat(evaluationLogPage.getTotalElements()).isOne();
