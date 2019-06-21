@@ -81,6 +81,9 @@ export abstract class BaseListComponent<T> {
   public setPage(pageDto: PageDto<T>) {
     this.items = pageDto.content;
     this.table.totalRecords = pageDto.totalCount;
+    if (pageDto.page == 0) {
+      this.table.first = 0;
+    }
   }
 
   public isLink(column: string): boolean {
