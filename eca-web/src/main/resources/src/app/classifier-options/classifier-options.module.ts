@@ -14,6 +14,9 @@ import { ClassifierOptionsComponent } from "./components/classifier-options.comp
   declarations: [
     ClassifierOptionsComponent
   ],
+  exports: [
+    ClassifierOptionsComponent
+  ],
   providers: [
     ClassifierOptionsService
   ]

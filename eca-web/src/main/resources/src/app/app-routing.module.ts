@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from "./dashboard/dashboard.component";
 import { ClassifierListComponent } from "./classifiers/components/classifier-list.component";
 import { ExperimentListComponent } from "./experiments/components/experiment-list.component";
-import { ClassifierOptionsComponent } from "./classifier-options/components/classifier-options.component";
 import { ClassifierOptionsRequestsComponent } from "./classifier-options-requests/components/classifier-options-requests.component";
 import { LoginComponent } from "./auth/components/login.component";
 import { EvaluationResultsComponent } from "./evaluation-results/components/evaluation-results.component";
@@ -20,10 +19,6 @@ const routes: Routes = [
       {
         path: 'experiments',
         component: ExperimentListComponent
-      },
-      {
-        path: 'classifiers-options',
-        component: ClassifierOptionsComponent
       },
       {
         path: 'classifiers-options-requests',
