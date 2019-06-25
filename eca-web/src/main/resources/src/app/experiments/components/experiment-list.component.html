@@ -13,7 +13,7 @@
               placeholder="Поиск"
               maxlength="255"
               [(ngModel)]="searchQuery"
-              (input)="onApplyFilter()"
+              (input)="onSearch()"
               class="w-100">
             <a *ngIf="searchQuery?.length > 0" [routerLink]="" (click)="clearSearchQuery()">
               <span class="ui-inputgroup-addon">
