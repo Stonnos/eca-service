@@ -60,7 +60,7 @@ export abstract class BaseListComponent<T> {
   }
 
   public onSearch() {
-    if (this.searchQuery && this.searchQuery.length > 0 && this.searchQuery.length % BaseListComponent.SEARCH_STEP == 0) {
+    if (this.searchQuery.length == 0 || this.searchQuery.length % BaseListComponent.SEARCH_STEP == 0) {
       this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1);
     }
   }
