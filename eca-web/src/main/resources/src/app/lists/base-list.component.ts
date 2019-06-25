@@ -13,7 +13,7 @@ import { finalize } from "rxjs/internal/operators";
 
 export abstract class BaseListComponent<T> {
 
-  private static readonly SEARCH_STEP: number = 3;
+  private static readonly MIN_QUERY_SIZE: number = 3;
 
   public defaultSortField: string;
   public defaultSortOrder: number = -1;
@@ -60,7 +60,7 @@ export abstract class BaseListComponent<T> {
   }
 
   public onSearch() {
-    if (this.searchQuery.length == 0 || this.searchQuery.length % BaseListComponent.SEARCH_STEP == 0) {
+    if (this.searchQuery.length == 0 || this.searchQuery.length >= BaseListComponent.MIN_QUERY_SIZE) {
       this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1);
     }
   }
@@ -88,6 +88,7 @@ export abstract class BaseListComponent<T> {
 
   public clearSearchQuery(): void {
     this.searchQuery = '';
+    this.onSearch();
   }
 
   private performPageRequest(page: number, size: number, sortField: string, ascending: boolean) {
