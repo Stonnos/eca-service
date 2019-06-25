@@ -8,7 +8,6 @@ import com.ecaservice.mapping.EcaResponseMapperImpl;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.service.AbstractJpaTest;
-import com.ecaservice.service.async.AsyncTaskCallback;
 import com.ecaservice.service.async.AsyncTaskService;
 import com.ecaservice.service.experiment.mail.NotificationService;
 import org.assertj.core.api.Assertions;
@@ -67,7 +66,7 @@ public class ExperimentRequestServiceTest extends AbstractJpaTest {
         when(experimentService.createExperiment(experimentRequest)).thenReturn(experiment);
         doNothing().when(notificationService).notifyByEmail(any(Experiment.class));
         EcaResponse ecaResponse = experimentRequestService.createExperimentRequest(experimentRequest);
-        verify(asyncTaskService, atLeastOnce()).perform(any(AsyncTaskCallback.class));
+        verify(asyncTaskService, atLeastOnce()).perform(any(Runnable.class));
         Assertions.assertThat(ecaResponse).isNotNull();
         Assertions.assertThat(ecaResponse.getStatus()).isEqualTo(TechnicalStatus.SUCCESS);
     }

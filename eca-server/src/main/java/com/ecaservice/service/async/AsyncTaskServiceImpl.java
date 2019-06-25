@@ -11,11 +11,11 @@ import static com.ecaservice.config.EcaServiceParam.ECA_POOL_EXECUTOR;
  * @author Roman Batygin
  */
 @Component
-public class AsyncTaskCallbackServiceImpl implements AsyncTaskService {
+public class AsyncTaskServiceImpl implements AsyncTaskService {
 
     @Async(ECA_POOL_EXECUTOR)
     @Override
-    public void perform(AsyncTaskCallback asyncTaskCallback) {
-        asyncTaskCallback.run();
+    public void perform(Runnable runnable) {
+        runnable.run();
     }
 }
