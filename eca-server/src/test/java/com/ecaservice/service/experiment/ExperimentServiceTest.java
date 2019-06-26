@@ -84,9 +84,8 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         data = TestHelperUtils.loadInstances();
         CalculationExecutorService executorService =
                 new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
-        experimentService = new ExperimentService(experimentRepository, executorService, experimentMapper,
-                dataService, experimentConfig, experimentProcessorService, entityManager, commonConfig,
-                filterService);
+        experimentService = new ExperimentService(experimentRepository, executorService, experimentMapper, dataService,
+                experimentConfig, experimentProcessorService, entityManager, commonConfig, filterService);
     }
 
     @Override
