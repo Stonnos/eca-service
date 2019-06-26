@@ -9,6 +9,7 @@ import { RequestStatusesStatisticsModule } from "../request-statuses-statistics/
 import { ErsReportModule } from "../ers-report/ers-report.module";
 import { ExperimentStatisticsModule } from "../experiment-statistics/experiment-statistics.module";
 import { ClassifierOptionsModule } from "../classifier-options/classifier-options.module";
+import { CreateExperimentModule } from "../create-experiment/create-experiment.module";
 
 @NgModule({
   imports: [
@@ -19,7 +20,8 @@ import { ClassifierOptionsModule } from "../classifier-options/classifier-option
     RequestStatusesStatisticsModule,
     ErsReportModule,
     ExperimentStatisticsModule,
-    ClassifierOptionsModule
+    ClassifierOptionsModule,
+    CreateExperimentModule
   ],
   declarations: [
     ExperimentListComponent
