@@ -1,15 +1,14 @@
 package com.ecaservice.controller;
 
-import com.ecaservice.mapping.filters.FilterFieldMapper;
-import com.ecaservice.model.entity.FilterTemplate;
 import com.ecaservice.model.entity.FilterTemplateType;
-import com.ecaservice.repository.FilterTemplateRepository;
+import com.ecaservice.service.filter.FilterService;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,20 +27,16 @@ import java.util.List;
 @RequestMapping("/filter-templates")
 public class FilterTemplateController {
 
-    private final FilterFieldMapper filterFieldMapper;
-    private final FilterTemplateRepository filterTemplateRepository;
+    private final FilterService filterService;
 
     /**
      * Constructor with spring dependency injection.
      *
-     * @param filterFieldMapper        - filter field mapper bean
-     * @param filterTemplateRepository - filter template repository bean
+     * @param filterService - filter service bean
      */
     @Inject
-    public FilterTemplateController(FilterFieldMapper filterFieldMapper,
-                                    FilterTemplateRepository filterTemplateRepository) {
-        this.filterFieldMapper = filterFieldMapper;
-        this.filterTemplateRepository = filterTemplateRepository;
+    public FilterTemplateController(FilterService filterService) {
+        this.filterService = filterService;
     }
 
     /**
@@ -56,7 +51,7 @@ public class FilterTemplateController {
     )
     @GetMapping(value = "/experiment")
     public ResponseEntity<List<FilterFieldDto>> getExperimentFilter() {
-        return getFilterFields(FilterTemplateType.EXPERIMENT);
+        return ResponseEntity.ok(filterService.getFilterFields(FilterTemplateType.EXPERIMENT));
     }
 
     /**
@@ -71,7 +66,7 @@ public class FilterTemplateController {
     )
     @GetMapping(value = "/evaluation")
     public ResponseEntity<List<FilterFieldDto>> getEvaluationLogFilter() {
-        return getFilterFields(FilterTemplateType.EVALUATION_LOG);
+        return ResponseEntity.ok(filterService.getFilterFields(FilterTemplateType.EVALUATION_LOG));
     }
 
     /**
@@ -86,16 +81,18 @@ public class FilterTemplateController {
     )
     @GetMapping(value = "/classifier-options-request")
     public ResponseEntity<List<FilterFieldDto>> getClassifierOptionsRequestFilter() {
-        return getFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST);
+        return ResponseEntity.ok(filterService.getFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST));
     }
 
-    private ResponseEntity<List<FilterFieldDto>> getFilterFields(FilterTemplateType templateType) {
-        log.info("Received request for filter fields for template type [{}]", templateType);
-        FilterTemplate filterTemplate = filterTemplateRepository.findFirstByTemplateType(templateType);
-        if (filterTemplate == null) {
-            log.error("Can't find filter template with type [{}]", templateType);
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(filterFieldMapper.map(filterTemplate.getFields()));
+    /**
+     * Handles bad request error.
+     *
+     * @param ex - illegal argument exception
+     * @return response entity
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity handleBadRequest(IllegalArgumentException ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 }
