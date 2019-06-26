@@ -8,7 +8,7 @@ import com.ecaservice.model.entity.ClassifierOptionsRequestModel_;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.service.AbstractJpaTest;
-import com.ecaservice.service.filter.GlobalFilterService;
+import com.ecaservice.service.filter.FilterService;
 import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
@@ -43,14 +43,14 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
     @Inject
     private CommonConfig commonConfig;
     @Mock
-    private GlobalFilterService globalFilterService;
+    private FilterService filterService;
 
 
     private ClassifierOptionsRequestService classifierOptionsRequestService;
 
     @Override
     public void init() {
-        classifierOptionsRequestService = new ClassifierOptionsRequestService(commonConfig, globalFilterService,
+        classifierOptionsRequestService = new ClassifierOptionsRequestService(commonConfig, filterService,
                 classifierOptionsRequestModelRepository);
     }
 
@@ -87,7 +87,7 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(ClassifierOptionsRequestModel_.RESPONSE_STATUS, ResponseStatus.SUCCESS.name(),
                         FilterFieldType.REFERENCE, MatchMode.EQUALS));
-        when(globalFilterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST)).thenReturn(
+        when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST)).thenReturn(
                 Arrays.asList(ClassifierOptionsRequestModel_.RELATION_NAME, ClassifierOptionsRequestModel_.REQUEST_ID));
         Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
                 classifierOptionsRequestService.getNextPage(pageRequestDto);

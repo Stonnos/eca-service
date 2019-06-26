@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * @author Roman Batygin
  */
 @Service
-public class GlobalFilterService {
+public class FilterService {
 
     private final GlobalFilterTemplateRepository globalFilterTemplateRepository;
 
@@ -30,7 +30,7 @@ public class GlobalFilterService {
      * @param globalFilterTemplateRepository - global filter template repository bean
      */
     @Inject
-    public GlobalFilterService(GlobalFilterTemplateRepository globalFilterTemplateRepository) {
+    public FilterService(GlobalFilterTemplateRepository globalFilterTemplateRepository) {
         this.globalFilterTemplateRepository = globalFilterTemplateRepository;
     }
 
