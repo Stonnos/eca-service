@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Updates evaluation method dictionary name-->
+    <changeSet id="1" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_dictionary"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_dictionary where id = 1
+            </sqlCheck>
+        </preConditions>
+
+        <update tableName="filter_dictionary">
+            <column name="name" value="evaluationMethod"/>
+            <where>id = 1</where>
+        </update>
+    </changeSet>
+
+    <!-- Updates request status dictionary name-->
+    <changeSet id="2" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_dictionary"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_dictionary where id = 2
+            </sqlCheck>
+        </preConditions>
+
+        <update tableName="filter_dictionary">
+            <column name="name" value="requestStatus"/>
+            <where>id = 2</where>
+        </update>
+    </changeSet>
+
+    <!-- Updates experiment types dictionary name-->
+    <changeSet id="3" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_dictionary"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_dictionary where id = 3
+            </sqlCheck>
+        </preConditions>
+
+        <update tableName="filter_dictionary">
+            <column name="name" value="experimentType"/>
+            <where>id = 3</where>
+        </update>
+    </changeSet>
+
+    <!-- Updates ERS response status dictionary name-->
+    <changeSet id="4" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_dictionary"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_dictionary where id = 4
+            </sqlCheck>
+        </preConditions>
+
+        <update tableName="filter_dictionary">
+            <column name="name" value="ersResponseStatus"/>
+            <where>id = 4</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>
