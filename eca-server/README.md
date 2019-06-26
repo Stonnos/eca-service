@@ -33,9 +33,6 @@ ECA server v4.0
    * cross-validation.numTests - число тестов
    * cross-validation.seed - начальное значение для генератора псевдослучайных чисел
    * cross-validation.timeout - таймаут в сек. для оценки точности классификатора
-   * cross-validation.classifierOptionsCacheDurationInDays - период хранения оптимальных настроек классификатора
-   полученных от внешнего сервиса ERS
-   * cross-validation.threadPoolSize - число потоков для асинхронных задач
 3) experiment - настройки параметров модуля Data Miner. Ниже приведено описание
    основных настроек:
    * experiment.resultSize - число наилучших конфигураций классификаторов
@@ -70,6 +67,11 @@ ECA server v4.0
    * oauth2-resource.clientId - идентификатор клиента приложения  
    * oauth2-resource.secret - секретный ключ или пароль клиента
    * oauth2-resource.oauthUrl - url сервера авторизации
+6) common - общие настройки
+   * common.classifierOptionsCacheDurationInDays - период хранения оптимальных настроек классификатора
+      полученных от внешнего сервиса ERS
+   * common.threadPoolSize - число потоков для асинхронных задач
+   * common.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
 
 Инструкция по развертыванию
 ----------------------------------------
