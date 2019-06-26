@@ -6,7 +6,7 @@ import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.service.PageRequestService;
-import com.ecaservice.service.filter.GlobalFilterService;
+import com.ecaservice.service.filter.FilterService;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.extern.slf4j.Slf4j;
@@ -28,23 +28,23 @@ import java.util.List;
 public class ClassifierOptionsRequestService implements PageRequestService<ClassifierOptionsRequestModel> {
 
     private final CommonConfig commonConfig;
-    private final GlobalFilterService globalFilterService;
+    private final FilterService filterService;
     private final ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
 
     /**
      * Constructor with spring dependency injection.
      *
      * @param commonConfig                            - common config bean
-     * @param globalFilterService                     - global filter service bean
+     * @param filterService                           - filter service bean
      * @param classifierOptionsRequestModelRepository - classifier options request model repository bean
      */
     @Inject
     public ClassifierOptionsRequestService(
             CommonConfig commonConfig,
-            GlobalFilterService globalFilterService,
+            FilterService filterService,
             ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository) {
         this.commonConfig = commonConfig;
-        this.globalFilterService = globalFilterService;
+        this.filterService = filterService;
         this.classifierOptionsRequestModelRepository = classifierOptionsRequestModelRepository;
     }
 
@@ -52,7 +52,7 @@ public class ClassifierOptionsRequestService implements PageRequestService<Class
     public Page<ClassifierOptionsRequestModel> getNextPage(PageRequestDto pageRequestDto) {
         Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
         List<String> globalFilterFields =
-                globalFilterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST);
+                filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST);
         ClassifierOptionsRequestModelFilter filter =
                 new ClassifierOptionsRequestModelFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                         pageRequestDto.getFilters());

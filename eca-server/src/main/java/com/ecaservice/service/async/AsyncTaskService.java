@@ -10,7 +10,7 @@ public interface AsyncTaskService {
     /**
      * Performs asynchronous task.
      *
-     * @param asyncTaskCallback - asynchronous task callback
+     * @param runnable - runnable object
      */
-    void perform(AsyncTaskCallback asyncTaskCallback);
+    void perform(Runnable runnable);
 }

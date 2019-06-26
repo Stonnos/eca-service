@@ -13,6 +13,8 @@ import { finalize } from "rxjs/internal/operators";
 
 export abstract class BaseListComponent<T> {
 
+  private static readonly MIN_QUERY_SIZE: number = 3;
+
   public defaultSortField: string;
   public defaultSortOrder: number = -1;
   public pageSize: number = 25;
@@ -54,28 +56,18 @@ export abstract class BaseListComponent<T> {
 
   public onLazyLoad(event: LazyLoadEvent) {
     const page: number = Math.round(event.first / event.rows);
-    const pageRequest: PageRequestDto = {
-      page: page,
-      size: event.rows,
-      sortField: event.sortField,
-      ascending: event.sortOrder == 1,
-      searchQuery: this.searchQuery,
-      filters: this.filterRequests
-    };
-    this.getNextPage(pageRequest);
+    this.performPageRequest(page, event.rows, event.sortField, event.sortOrder == 1);
+  }
+
+  public onSearch() {
+    if (this.searchQuery.length == 0 || this.searchQuery.length >= BaseListComponent.MIN_QUERY_SIZE) {
+      this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1);
+    }
   }
 
   public onApplyFilter() {
     this.rebuildFilterRequests();
-    const pageRequest: PageRequestDto = {
-      page: 0,
-      size: this.pageSize,
-      sortField: this.table.sortField,
-      ascending: this.table.sortOrder == 1,
-      searchQuery: this.searchQuery,
-      filters: this.filterRequests
-    };
-    this.getNextPage(pageRequest);
+    this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1);
   }
 
   public setPage(pageDto: PageDto<T>) {
@@ -96,6 +88,19 @@ export abstract class BaseListComponent<T> {
 
   public clearSearchQuery(): void {
     this.searchQuery = '';
+    this.onSearch();
+  }
+
+  private performPageRequest(page: number, size: number, sortField: string, ascending: boolean) {
+    const pageRequest: PageRequestDto = {
+      page: page,
+      size: size,
+      sortField: sortField,
+      ascending: ascending,
+      searchQuery: this.searchQuery,
+      filters: this.filterRequests
+    };
+    this.getNextPage(pageRequest);
   }
 
   private rebuildFilterRequests(): void {

@@ -8,7 +8,7 @@ import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.projections.RequestStatusStatistics;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.PageRequestService;
-import com.ecaservice.service.filter.GlobalFilterService;
+import com.ecaservice.service.filter.FilterService;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.extern.slf4j.Slf4j;
@@ -33,29 +33,29 @@ import java.util.stream.Collectors;
 public class EvaluationLogService implements PageRequestService<EvaluationLog> {
 
     private final CommonConfig commonConfig;
-    private final GlobalFilterService globalFilterService;
+    private final FilterService filterService;
     private final EvaluationLogRepository evaluationLogRepository;
 
     /**
      * Constructor with spring dependency injection.
      *
      * @param commonConfig            - common config bean
-     * @param globalFilterService     - global filter service bean
+     * @param filterService           - filter service bean
      * @param evaluationLogRepository - evaluation log repository bean
      */
     @Inject
     public EvaluationLogService(CommonConfig commonConfig,
-                                GlobalFilterService globalFilterService,
+                                FilterService filterService,
                                 EvaluationLogRepository evaluationLogRepository) {
         this.commonConfig = commonConfig;
-        this.globalFilterService = globalFilterService;
+        this.filterService = filterService;
         this.evaluationLogRepository = evaluationLogRepository;
     }
 
     @Override
     public Page<EvaluationLog> getNextPage(PageRequestDto pageRequestDto) {
         Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
-        List<String> globalFilterFields = globalFilterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG);
+        List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG);
         EvaluationLogFilter filter = new EvaluationLogFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());
         int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());

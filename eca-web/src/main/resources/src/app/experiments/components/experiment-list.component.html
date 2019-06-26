@@ -23,7 +23,7 @@
               placeholder="Поиск"
               maxlength="255"
               [(ngModel)]="searchQuery"
-              (input)="onApplyFilter()"
+              (input)="onSearch()"
               class="w-100">
             <a *ngIf="searchQuery?.length > 0" [routerLink]="" (click)="clearSearchQuery()">
               <span class="ui-inputgroup-addon">
@@ -106,6 +106,11 @@
 
     <p-tabPanel header="Статистика" leftIcon="pi pi-chart-bar">
       <app-experiment-statistics></app-experiment-statistics>
+    </p-tabPanel>
+
+    <p-tabPanel header="Настройки классификаторов" leftIcon="pi pi-cog">
+      <app-classifier-options>
+      </app-classifier-options>
     </p-tabPanel>
 
   </p-tabView>

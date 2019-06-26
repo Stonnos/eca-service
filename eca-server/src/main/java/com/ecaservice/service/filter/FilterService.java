@@ -1,10 +1,15 @@
 package com.ecaservice.service.filter;
 
 import com.ecaservice.config.EcaServiceParam;
+import com.ecaservice.mapping.filters.FilterFieldMapper;
+import com.ecaservice.model.entity.FilterTemplate;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.model.entity.GlobalFilterField;
 import com.ecaservice.model.entity.GlobalFilterTemplate;
+import com.ecaservice.repository.FilterTemplateRepository;
 import com.ecaservice.repository.GlobalFilterTemplateRepository;
+import com.ecaservice.web.dto.model.FilterFieldDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -19,19 +24,28 @@ import java.util.stream.Collectors;
  *
  * @author Roman Batygin
  */
+@Slf4j
 @Service
-public class GlobalFilterService {
+public class FilterService {
 
+    private final FilterFieldMapper filterFieldMapper;
     private final GlobalFilterTemplateRepository globalFilterTemplateRepository;
+    private final FilterTemplateRepository filterTemplateRepository;
 
     /**
      * Constructor with spring dependency injection.
      *
+     * @param filterFieldMapper              - filter field mapper bean
      * @param globalFilterTemplateRepository - global filter template repository bean
+     * @param filterTemplateRepository       - filter template repository bean
      */
     @Inject
-    public GlobalFilterService(GlobalFilterTemplateRepository globalFilterTemplateRepository) {
+    public FilterService(FilterFieldMapper filterFieldMapper,
+                         GlobalFilterTemplateRepository globalFilterTemplateRepository,
+                         FilterTemplateRepository filterTemplateRepository) {
+        this.filterFieldMapper = filterFieldMapper;
         this.globalFilterTemplateRepository = globalFilterTemplateRepository;
+        this.filterTemplateRepository = filterTemplateRepository;
     }
 
     /**
@@ -47,5 +61,22 @@ public class GlobalFilterService {
         return Optional.ofNullable(globalFilterTemplate).map(GlobalFilterTemplate::getFields).map(
                 globalFilterFields -> globalFilterFields.stream().map(GlobalFilterField::getFieldName).collect(
                         Collectors.toList())).orElse(Collections.emptyList());
+    }
+
+    /**
+     * Gets filter template fields by template type.
+     *
+     * @param templateType - filter template type
+     * @return filter field dto list
+     */
+    @Cacheable(EcaServiceParam.FILTER_TEMPLATES_CACHE_NAME)
+    public List<FilterFieldDto> getFilterFields(FilterTemplateType templateType) {
+        log.info("Fetch filter fields for template type [{}]", templateType);
+        FilterTemplate filterTemplate = filterTemplateRepository.findFirstByTemplateType(templateType);
+        if (filterTemplate == null) {
+            throw new IllegalArgumentException(
+                    String.format("Can't find filter template with type [%s]", templateType));
+        }
+        return filterFieldMapper.map(filterTemplate.getFields());
     }
 }

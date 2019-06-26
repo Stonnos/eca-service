@@ -23,6 +23,11 @@ public class EcaServiceParam {
     public static final String GLOBAL_FILTERS_CACHE_NAME = "global-filters";
 
     /**
+     * Filter templates cache name
+     */
+    public static final String FILTER_TEMPLATES_CACHE_NAME = "filter-templates";
+
+    /**
      * Thread pool task executor bean name for async tasks
      */
     public static final String ECA_POOL_EXECUTOR = "ecaThreadPoolTaskExecutor";

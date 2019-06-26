@@ -8,7 +8,7 @@ import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.AbstractJpaTest;
-import com.ecaservice.service.filter.GlobalFilterService;
+import com.ecaservice.service.filter.FilterService;
 import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
@@ -47,13 +47,13 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
     private CommonConfig commonConfig;
 
     @Mock
-    private GlobalFilterService globalFilterService;
+    private FilterService filterService;
 
     private EvaluationLogService evaluationLogService;
 
     @Override
     public void init() {
-        evaluationLogService = new EvaluationLogService(commonConfig, globalFilterService, evaluationLogRepository);
+        evaluationLogService = new EvaluationLogService(commonConfig, filterService, evaluationLogRepository);
     }
 
     @Override
@@ -173,7 +173,7 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
                 new FilterRequestDto(EvaluationLog_.EVALUATION_STATUS, RequestStatus.FINISHED.name(),
                         FilterFieldType.REFERENCE,
                         MatchMode.EQUALS));
-        when(globalFilterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG)).thenReturn(
+        when(filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG)).thenReturn(
                 Arrays.asList(EvaluationLog_.CLASSIFIER_NAME, EvaluationLog_.REQUEST_ID, "instancesInfo.relationName"));
         Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();

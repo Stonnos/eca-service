@@ -17,7 +17,7 @@ import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.service.evaluation.CalculationExecutorServiceImpl;
-import com.ecaservice.service.filter.GlobalFilterService;
+import com.ecaservice.service.filter.FilterService;
 import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
@@ -71,7 +71,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
     @Inject
     private CommonConfig commonConfig;
     @Mock
-    private GlobalFilterService globalFilterService;
+    private FilterService filterService;
     @Mock
     private ExperimentProcessorService experimentProcessorService;
 
@@ -84,9 +84,8 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         data = TestHelperUtils.loadInstances();
         CalculationExecutorService executorService =
                 new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
-        experimentService = new ExperimentService(experimentRepository, executorService, experimentMapper,
-                dataService, experimentConfig, experimentProcessorService, entityManager, commonConfig,
-                globalFilterService);
+        experimentService = new ExperimentService(experimentRepository, executorService, experimentMapper, dataService,
+                experimentConfig, experimentProcessorService, entityManager, commonConfig, filterService);
     }
 
     @Override
@@ -281,7 +280,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(Experiment_.EXPERIMENT_STATUS, RequestStatus.FINISHED.name(),
                         FilterFieldType.REFERENCE, MatchMode.EQUALS));
-        when(globalFilterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT)).thenReturn(
+        when(filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT)).thenReturn(
                 Arrays.asList(Experiment_.EMAIL, Experiment_.FIRST_NAME, Experiment_.UUID));
         Page<Experiment> evaluationLogPage = experimentService.getNextPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();
