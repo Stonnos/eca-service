@@ -11,6 +11,7 @@ import { BaseListComponent } from "../../lists/base-list.component";
 import { Observable } from "rxjs/internal/Observable";
 import { FilterService } from "../../filter/services/filter.service";
 import { finalize } from "rxjs/internal/operators";
+import { ExperimentRequest } from "../../create-experiment/model/experiment-request.model";
 
 @Component({
   selector: 'app-experiment-list',
@@ -22,6 +23,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
   public ersReport: ErsReportDto;
   public ersReportVisibility: boolean = false;
+  public createExperimentDialogVisibility: boolean = false;
 
   public constructor(private injector: Injector,
                      private experimentsService: ExperimentsService,
@@ -113,6 +115,18 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public onErsReportVisibilityChange(visible): void {
     this.ersReportVisibility = visible;
+  }
+
+  public onCreateExperimentDialogVisibility(visible): void {
+    this.createExperimentDialogVisibility = visible;
+  }
+
+  public onCreateExperiment(experimentRequest: ExperimentRequest): void {
+    console.log(experimentRequest.trainingDataFile);
+  }
+
+  public showCreateExperimentDialog(): void {
+    this.createExperimentDialogVisibility = true;
   }
 
   public onEvaluationResultsSent(experimentUuid: string) {

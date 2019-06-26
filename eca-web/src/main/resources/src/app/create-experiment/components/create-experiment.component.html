@@ -1,0 +1,85 @@
+<p-dialog
+  [(visible)]="visible"
+  header="Новый эксперимент"
+  width="600"
+  appendTo="body"
+  [modal]="true"
+  [blockScroll]="false"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="hide()">
+
+  <form novalidate class="form d-flex flex-column justify-content-center m-auto">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-10 mx-auto">
+        <label class="text-bold">Обучающая выборка</label>
+        <p-fileUpload #fileUpload
+                      name="trainingData"
+                      mode="basic"
+                      chooseLabel="{{ experimentRequest.trainingDataFile?.name || 'Выбрать'}}"
+                      [auto]="true"
+                      [customUpload]="true"
+                      (uploadHandler)="onUpload($event, fileUpload)"
+                      accept=".csv,.xls,.xlsx,.arff,.xml,.json,.txt,.data,.docx">
+        </p-fileUpload>
+      </div>
+      <div class="ui-g-10 mx-auto">
+        <label class="text-bold">Тип эксперимента</label>
+        <p-dropdown
+          name="experimentType"
+          [autoWidth]="false"
+          [style]="{'width':'100%'}">
+        </p-dropdown>
+      </div>
+      <div class="ui-g-10 mx-auto">
+        <label class="text-bold">Метод оценки точности</label>
+        <p-dropdown
+          name="evaluationMethod"
+          [autoWidth]="false"
+          [style]="{'width':'100%'}">
+        </p-dropdown>
+      </div>
+    </div>
+  </form>
+
+  <!--<div class="ui-g ui-fluid">
+
+    <div class="ui-g-12 ui-md-12">
+      <div class="form-group">
+        <label class="text-bold">Обучающая выборка</label>
+        <p-fileUpload mode="basic"></p-fileUpload>
+      </div>
+    </div>
+
+    <div class="ui-g-12 ui-md-12">
+      <div class="form-group">
+        <label class="text-bold">Тип эксперимента</label>
+        <p-dropdown
+          [autoWidth]="false"
+          [style]="{'width':'100%'}">
+        </p-dropdown>
+      </div>
+    </div>
+
+    <div class="ui-g-12 ui-md-12">
+      <div class="form-group">
+        <label class="text-bold">Метод оценки точности</label>
+        <p-dropdown
+          [autoWidth]="false"
+          [style]="{'width':'100%'}">
+        </p-dropdown>
+      </div>
+    </div>
+
+  </div>-->
+
+  <p-footer>
+    <button
+      pButton
+      label="Создать заявку"
+      type="button"
+      (click)="onCreate()"
+      class="ml-auto">
+    </button>
+  </p-footer>
+</p-dialog>
