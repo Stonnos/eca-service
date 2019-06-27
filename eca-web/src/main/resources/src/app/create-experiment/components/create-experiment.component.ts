@@ -10,11 +10,13 @@ import { BaseCreateDialogComponent } from "../../common/dialog/base-create-dialo
 })
 export class CreateExperimentComponent extends BaseCreateDialogComponent<ExperimentRequest> implements OnInit {
 
-  // Max file size: 10MB
-  public maxFileSize: number = 10485760;
-  public invalidFileSizeMessageSummary: string = '{0}: недопустимый размер файла,';
-  public invalidFileSizeMessageDetail: string = 'максимальный допустимый размер {0}.';
-  public invalidFileTypeMessageSummary: string = '{0}: некорректный тип файла,';
+  //Max file size: 10MB
+  public maxFileSize: number = 10000000;
+  //Files formats
+  public accept: string = '.csv,.xls,.xlsx,.arff,.xml,.json,.txt,.data,.docx';
+  public invalidFileSizeMessageSummary: string = 'Недопустимый размер файла,';
+  public invalidFileSizeMessageDetail: string = 'максимальный допустимый размер: {0}.';
+  public invalidFileTypeMessageSummary: string = 'Некорректный тип файла,';
   public invalidFileTypeMessageDetail: string = 'допускаются только файлы форматов: {0}.';
 
   @Input()

@@ -25,7 +25,7 @@
                       [auto]="true"
                       [customUpload]="true"
                       (uploadHandler)="onUpload($event, fileUpload)"
-                      accept=".csv,.xls,.xlsx,.arff,.xml,.json,.txt,.data,.docx"
+                      [accept]="accept"
                       [maxFileSize]="maxFileSize">
         </p-fileUpload>
         <div class="text-danger error-message" *ngIf="submitted && !isTrainingDataSelected()">
