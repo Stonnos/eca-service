@@ -1,11 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ExperimentRequest } from "../model/experiment-request.model";
-import { FilterService } from "../../filter/services/filter.service";
-import { MessageService, SelectItem } from "primeng/api";
-import {
-  FilterDictionaryDto,
-  FilterDictionaryValueDto
-} from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import { FilterDictionaryValueDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 
 @Component({
   selector: 'app-create-experiment',
@@ -16,8 +11,11 @@ export class CreateExperimentComponent implements OnInit {
 
   public experimentRequest: ExperimentRequest = new ExperimentRequest();
 
-  public experimentTypes: SelectItem[] = [];
-  public evaluationMethods: SelectItem[] = [];
+  @Input()
+  public experimentTypes: FilterDictionaryValueDto[] = [];
+
+  @Input()
+  public evaluationMethods: FilterDictionaryValueDto[] = [];
 
   @Input()
   public visible: boolean = false;
@@ -27,10 +25,6 @@ export class CreateExperimentComponent implements OnInit {
 
   @Output()
   public createEvent: EventEmitter<ExperimentRequest> = new EventEmitter();
-
-  public constructor(private filterService: FilterService,
-                     private messageService: MessageService) {
-  }
 
   public ngOnInit(): void {
   }
@@ -48,25 +42,5 @@ export class CreateExperimentComponent implements OnInit {
     console.log('On upload');
     this.experimentRequest.trainingDataFile = event.files[0];
     fileUpload.clear();
-  }
-
-  public getExperimentTypes(): void {
-    this.filterService.getExperimentTypeDictionary().subscribe((filterDictionary: FilterDictionaryDto) => {
-      this.experimentTypes = filterDictionary.values.filter(value => !!value).map((filterValue: FilterDictionaryValueDto) => {
-        return { label: filterValue.label, value: filterValue.value };
-      });
-    }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-    });
-  }
-
-  public getEvaluationMethods(): void {
-    this.filterService.getEvaluationMethodDictionary().subscribe((filterDictionary: FilterDictionaryDto) => {
-      this.evaluationMethods = filterDictionary.values.filter(value => !!value).map((filterValue: FilterDictionaryValueDto) => {
-        return { label: filterValue.label, value: filterValue.value };
-      });
-    }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-    });
   }
 }

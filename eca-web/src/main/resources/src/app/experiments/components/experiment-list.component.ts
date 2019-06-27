@@ -1,7 +1,7 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import {
   ErsReportDto,
-  ExperimentDto, FilterFieldDto, PageDto,
+  ExperimentDto, FilterDictionaryDto, FilterDictionaryValueDto, FilterFieldDto, PageDto,
   PageRequestDto, RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ExperimentsService } from "../services/experiments.service";
@@ -25,6 +25,9 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   public ersReportVisibility: boolean = false;
   public createExperimentDialogVisibility: boolean = false;
 
+  public experimentTypes: FilterDictionaryValueDto[] = [];
+  public evaluationMethods: FilterDictionaryValueDto[] = [];
+
   public constructor(private injector: Injector,
                      private experimentsService: ExperimentsService,
                      private filterService: FilterService) {
@@ -38,6 +41,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   public ngOnInit() {
     this.getFilterFields();
     this.getRequestStatusesStatistics();
+    this.getEvaluationMethods();
+    this.getExperimentTypes();
   }
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<ExperimentDto>> {
@@ -148,6 +153,22 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   public getFilterFields() {
     this.filterService.getExperimentFilterFields().subscribe((filterFields: FilterFieldDto[]) => {
       this.filters = this.filterService.mapToFilters(filterFields);
+    }, (error) => {
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+    });
+  }
+
+  public getExperimentTypes(): void {
+    this.filterService.getExperimentTypeDictionary().subscribe((filterDictionary: FilterDictionaryDto) => {
+      this.experimentTypes = filterDictionary.values.filter(value => !!value);
+    }, (error) => {
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+    });
+  }
+
+  public getEvaluationMethods(): void {
+    this.filterService.getEvaluationMethodDictionary().subscribe((filterDictionary: FilterDictionaryDto) => {
+      this.evaluationMethods = filterDictionary.values.filter(value => !!value);
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     });

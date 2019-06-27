@@ -117,6 +117,8 @@
 </div>
 
 <app-create-experiment
+  [experimentTypes]="experimentTypes"
+  [evaluationMethods]="evaluationMethods"
   [visible]="createExperimentDialogVisibility"
   (visibilityChange)="onCreateExperimentDialogVisibility($event)"
   (createEvent)="onCreateExperiment($event)">
