@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import java.util.Collections;
 
 import static com.ecaservice.util.Utils.buildErrorResponse;
@@ -82,7 +83,7 @@ public class EcaController {
             notes = "Creates experiment request"
     )
     @PostMapping(value = "/experiment/create")
-    public ResponseEntity<EcaResponse> createRequest(@RequestBody ExperimentRequest experimentRequest) {
+    public ResponseEntity<EcaResponse> createRequest(@RequestBody @Valid ExperimentRequest experimentRequest) {
         EcaResponse ecaResponse = experimentRequestService.createExperimentRequest(experimentRequest);
         return ResponseEntity.ok(ecaResponse);
     }
@@ -98,7 +99,7 @@ public class EcaController {
             notes = "Evaluates classifier using specified evaluation method"
     )
     @PostMapping(value = "/evaluation/execute")
-    public ResponseEntity<EvaluationResponse> execute(@RequestBody EvaluationRequest evaluationRequest) {
+    public ResponseEntity<EvaluationResponse> execute(@RequestBody @Valid EvaluationRequest evaluationRequest) {
         EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(evaluationRequest);
         log.info("Evaluation response [{}] with status [{}] has been built.", evaluationResponse.getRequestId(),
                 evaluationResponse.getStatus());
@@ -117,7 +118,7 @@ public class EcaController {
             notes = "Evaluates classifier using optimal options"
     )
     @PostMapping(value = "/evaluation/optimize")
-    public ResponseEntity<EvaluationResponse> optimize(@RequestBody InstancesRequest instancesRequest) {
+    public ResponseEntity<EvaluationResponse> optimize(@RequestBody @Valid InstancesRequest instancesRequest) {
         try {
             EvaluationResponse evaluationResponse =
                     evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);

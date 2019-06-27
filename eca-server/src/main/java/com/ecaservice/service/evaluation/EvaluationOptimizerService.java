@@ -29,7 +29,6 @@ import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.ecaservice.util.Utils.buildErrorResponse;
@@ -100,9 +99,6 @@ public class EvaluationOptimizerService {
      * @return evaluation response
      */
     public EvaluationResponse evaluateWithOptimalClassifierOptions(InstancesRequest instancesRequest) {
-        if (!Optional.ofNullable(instancesRequest).map(InstancesRequest::getData).isPresent()) {
-            throw new IllegalArgumentException("Instances isn't specified!");
-        }
         Instances data = instancesRequest.getData();
         log.info("Starting evaluation with optimal classifier options for data '{}'",
                 data.relationName());

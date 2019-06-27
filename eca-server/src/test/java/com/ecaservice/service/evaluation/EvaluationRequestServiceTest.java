@@ -69,11 +69,6 @@ public class EvaluationRequestServiceTest extends AbstractJpaTest {
         evaluationLogRepository.deleteAll();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testNullEvaluationRequest() {
-        evaluationRequestService.processRequest(null);
-    }
-
     @Test
     public void testSuccessClassification() throws Exception {
         EvaluationRequest request = TestHelperUtils.createEvaluationRequest();

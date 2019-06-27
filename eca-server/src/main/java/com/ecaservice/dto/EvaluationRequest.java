@@ -11,6 +11,7 @@ import lombok.Data;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
+import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 /**
@@ -25,6 +26,7 @@ public class EvaluationRequest {
     /**
      * Classifier model
      */
+    @NotNull
     @ApiModelProperty(value = "Classifier with specified options", required = true)
     @JsonDeserialize(using = ClassifierDeserializer.class)
     private AbstractClassifier classifier;
@@ -32,6 +34,7 @@ public class EvaluationRequest {
     /**
      * Training data
      */
+    @NotNull
     @ApiModelProperty(value = "Training data", required = true)
     @JsonDeserialize(using = InstancesDeserializer.class)
     private Instances data;
@@ -39,6 +42,7 @@ public class EvaluationRequest {
     /**
      * Evaluation method
      */
+    @NotNull
     @ApiModelProperty(value = "Evaluation method", required = true)
     private EvaluationMethod evaluationMethod;
 

@@ -51,15 +51,6 @@ public class ExperimentRequestServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testInvalidEmail() throws Exception {
-        ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
-        experimentRequest.setEmail("#443@de.cdcd32");
-        EcaResponse ecaResponse = experimentRequestService.createExperimentRequest(experimentRequest);
-        Assertions.assertThat(ecaResponse).isNotNull();
-        Assertions.assertThat(ecaResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
-    }
-
-    @Test
     public void testSuccessCreation() throws Exception {
         ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());

@@ -39,9 +39,6 @@ import java.util.UUID;
  */
 public class Utils {
 
-    private static final String EMAIL_REGEX =
-            "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-
     private static final String ATTACHMENT = "attachment";
 
     private static final String POINT_SEPARATOR = ".";
@@ -67,16 +64,6 @@ public class Utils {
         if (EvaluationMethod.CROSS_VALIDATION.equals(evaluationMethod)) {
             Assert.notNull(evaluationOptionsMap, "Evaluation options map is not specified!");
         }
-    }
-
-    /**
-     * Validate email.
-     *
-     * @param email - email
-     * @return {@code true} is email valid
-     */
-    public static boolean isValidEmail(String email) {
-        return !StringUtils.isEmpty(email) && email.matches(EMAIL_REGEX);
     }
 
     /**

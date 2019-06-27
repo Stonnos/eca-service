@@ -166,11 +166,6 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         evaluationLogRepository.deleteAll();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testInvalidRequest() {
-        evaluationOptimizerService.evaluateWithOptimalClassifierOptions(new InstancesRequest());
-    }
-
     @Test
     public void testServiceUnavailable() {
         when(ersWebServiceClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenThrow(

@@ -12,7 +12,6 @@ import com.ecaservice.model.evaluation.ClassificationResult;
 import com.ecaservice.repository.EvaluationLogRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
@@ -65,8 +64,6 @@ public class EvaluationRequestService {
      * @return evaluation response {@link EvaluationResponse}
      */
     public EvaluationResponse processRequest(final EvaluationRequest request) {
-        Assert.notNull(request, "Evaluation request is not specified!");
-
         EvaluationLog evaluationLog = evaluationLogMapper.map(request);
         evaluationLog.setEvaluationStatus(RequestStatus.NEW);
         evaluationLog.setRequestId(UUID.randomUUID().toString());

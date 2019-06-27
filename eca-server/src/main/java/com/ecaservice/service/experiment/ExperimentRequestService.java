@@ -8,12 +8,8 @@ import com.ecaservice.service.async.AsyncTaskService;
 import com.ecaservice.service.experiment.mail.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import javax.inject.Inject;
-
-import static com.ecaservice.util.Utils.buildErrorResponse;
-import static com.ecaservice.util.Utils.isValidEmail;
 
 /**
  * Experiment request service.
@@ -55,12 +51,8 @@ public class ExperimentRequestService {
      * @return eca response
      */
     public EcaResponse createExperimentRequest(ExperimentRequest experimentRequest) {
-        Assert.notNull(experimentRequest, "Experiment request is not specified!");
         log.info("Received experiment request for data '{}', email '{}'", experimentRequest.getData().relationName(),
                 experimentRequest.getEmail());
-        if (!isValidEmail(experimentRequest.getEmail())) {
-            return buildErrorResponse("Invalid email!");
-        }
         Experiment experiment = experimentService.createExperiment(experimentRequest);
         asyncTaskService.perform(() -> {
             try {
