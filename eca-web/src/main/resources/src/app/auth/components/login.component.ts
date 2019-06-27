@@ -5,13 +5,14 @@ import { NgForm } from "@angular/forms";
 import { Router } from "@angular/router";
 import { AuthenticationKeys } from "../model/auth.keys";
 import { finalize } from "rxjs/internal/operators";
+import { BaseForm } from "../../common/form/base-form";
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements BaseForm, OnInit {
 
   public errorMessage: string;
   public submitted: boolean = false;
@@ -22,8 +23,7 @@ export class LoginComponent implements OnInit {
   @ViewChild(NgForm)
   public form: NgForm;
 
-  constructor(private router: Router, private authService: AuthService) {
-
+  public constructor(private router: Router, private authService: AuthService) {
   }
 
   public ngOnInit() {
@@ -32,9 +32,25 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  public onSubmit(event) {
+  public giveAccess(): void {
+    this.router.navigate(['/dashboard/experiments']);
+  }
+
+  private saveUser(): void {
+    localStorage.setItem(AuthenticationKeys.USER_NAME, this.userModel.login);
+  }
+
+  public clear(): void {
+    this.submitted = false;
+  }
+
+  public isValid(): boolean {
+    return this.form.valid;
+  }
+
+  public submit(): void {
     this.submitted = true;
-    if (this.form.valid) {
+    if (this.isValid()) {
       this.loading = true;
       this.authService.obtainAccessToken(this.userModel)
         .pipe(
@@ -49,16 +65,7 @@ export class LoginComponent implements OnInit {
         }, (error) => {
           this.errorMessage = "Неправильный логин или пароль";
         });
-      this.submitted = false;
+      this.clear();
     }
   }
-
-  public giveAccess(): void {
-    this.router.navigate(['/dashboard/experiments']);
-  }
-
-  private saveUser(): void {
-    localStorage.setItem(AuthenticationKeys.USER_NAME, this.userModel.login);
-  }
-
 }

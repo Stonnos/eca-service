@@ -28,6 +28,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   public experimentTypes: FilterDictionaryValueDto[] = [];
   public evaluationMethods: FilterDictionaryValueDto[] = [];
 
+  public experimentRequest: ExperimentRequest = new ExperimentRequest();
+
   public constructor(private injector: Injector,
                      private experimentsService: ExperimentsService,
                      private filterService: FilterService) {
@@ -160,7 +162,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public getExperimentTypes(): void {
     this.filterService.getExperimentTypeDictionary().subscribe((filterDictionary: FilterDictionaryDto) => {
-      this.experimentTypes = filterDictionary.values.filter(value => !!value);
+      this.experimentTypes = filterDictionary.values.filter(value => value != null);
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     });
@@ -168,7 +170,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public getEvaluationMethods(): void {
     this.filterService.getEvaluationMethodDictionary().subscribe((filterDictionary: FilterDictionaryDto) => {
-      this.evaluationMethods = filterDictionary.values.filter(value => !!value);
+      this.evaluationMethods = filterDictionary.values.filter(value => value != null);
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     });

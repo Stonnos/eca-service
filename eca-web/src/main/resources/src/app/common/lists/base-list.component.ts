@@ -1,15 +1,15 @@
 import { LazyLoadEvent, MessageService } from "primeng/api";
-import {
-  FilterRequestDto,
-  PageDto,
-  PageRequestDto
-} from "../../../../../../target/generated-sources/typescript/eca-web-dto";
-import { Filter } from "../filter/filter.model";
 import { DatePipe } from "@angular/common";
 import { Table } from "primeng/table";
 import { ViewChild } from "@angular/core";
 import { Observable } from "rxjs/internal/Observable";
 import { finalize } from "rxjs/internal/operators";
+import { Filter } from "../../filter/filter.model";
+import {
+  FilterRequestDto,
+  PageDto,
+  PageRequestDto
+} from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 
 export abstract class BaseListComponent<T> {
 

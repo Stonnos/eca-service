@@ -16,7 +16,7 @@
         <p-fileUpload #fileUpload
                       name="trainingData"
                       mode="basic"
-                      chooseLabel="{{ experimentRequest.trainingDataFile?.name || 'Выбрать'}}"
+                      chooseLabel="{{ item?.trainingDataFile?.name || 'Выбрать'}}"
                       [auto]="true"
                       [customUpload]="true"
                       (uploadHandler)="onUpload($event, fileUpload)"
@@ -29,7 +29,7 @@
           name="experimentType"
           [options]="experimentTypes"
           optionLabel="label"
-          [(ngModel)]="experimentRequest.experimentType"
+          [(ngModel)]="item.experimentType"
           [autoWidth]="false"
           [style]="{'width':'100%'}">
         </p-dropdown>
@@ -40,7 +40,7 @@
           name="evaluationMethod"
           [options]="evaluationMethods"
           optionLabel="label"
-          [(ngModel)]="experimentRequest.evaluationMethod"
+          [(ngModel)]="item.evaluationMethod"
           [autoWidth]="false"
           [style]="{'width':'100%'}">
         </p-dropdown>
@@ -48,43 +48,12 @@
     </div>
   </form>
 
-  <!--<div class="ui-g ui-fluid">
-
-    <div class="ui-g-12 ui-md-12">
-      <div class="form-group">
-        <label class="text-bold">Обучающая выборка</label>
-        <p-fileUpload mode="basic"></p-fileUpload>
-      </div>
-    </div>
-
-    <div class="ui-g-12 ui-md-12">
-      <div class="form-group">
-        <label class="text-bold">Тип эксперимента</label>
-        <p-dropdown
-          [autoWidth]="false"
-          [style]="{'width':'100%'}">
-        </p-dropdown>
-      </div>
-    </div>
-
-    <div class="ui-g-12 ui-md-12">
-      <div class="form-group">
-        <label class="text-bold">Метод оценки точности</label>
-        <p-dropdown
-          [autoWidth]="false"
-          [style]="{'width':'100%'}">
-        </p-dropdown>
-      </div>
-    </div>
-
-  </div>-->
-
   <p-footer>
     <button
       pButton
       label="Создать заявку"
       type="button"
-      (click)="onCreate()"
+      (click)="submit()"
       class="ml-auto">
     </button>
   </p-footer>

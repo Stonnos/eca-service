@@ -117,11 +117,12 @@
 </div>
 
 <app-create-experiment
+  [item]="experimentRequest"
   [experimentTypes]="experimentTypes"
   [evaluationMethods]="evaluationMethods"
   [visible]="createExperimentDialogVisibility"
   (visibilityChange)="onCreateExperimentDialogVisibility($event)"
-  (createEvent)="onCreateExperiment($event)">
+  (itemEvent)="onCreateExperiment($event)">
 </app-create-experiment>
 
 <app-ers-report
