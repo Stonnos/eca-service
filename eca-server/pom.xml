@@ -309,7 +309,6 @@
                         <exclude>**/model/**/*</exclude>
                         <exclude>**/dto/**/*</exclude>
                         <exclude>**/config/**/*</exclude>
-                        <exclude>**/dictionary/**/*</exclude>
                         <exclude>**/exception/**/*</exclude>
                         <exclude>**/util/**/*</exclude>
                     </excludes>
