@@ -31,7 +31,7 @@ export class CreateExperimentComponent extends BaseCreateDialogComponent<Experim
     super.clear();
   }
 
-  public isTrainingDataChosen(): boolean {
+  public isTrainingDataSelected(): boolean {
     return this.item.trainingDataFile != null;
   }
 

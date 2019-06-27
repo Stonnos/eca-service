@@ -24,7 +24,7 @@
                       accept=".csv,.xls,.xlsx,.arff,.xml,.json,.txt,.data,.docx"
                       [maxFileSize]="maxFileSize">
         </p-fileUpload>
-        <div class="text-danger error-message" *ngIf="!isTrainingDataChosen() && submitted">
+        <div class="text-danger error-message" *ngIf="!isTrainingDataSelected() && submitted">
             Выберите файл
         </div>
       </div>
