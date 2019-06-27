@@ -49,11 +49,11 @@ import static com.ecaservice.util.Utils.existsFile;
 import static com.ecaservice.util.Utils.toRequestStatusesStatistics;
 
 /**
- * Experiment controller.
+ * Experiments API for web application.
  *
  * @author Roman Batygin
  */
-@Api(tags = "Operations for experiment processing")
+@Api(tags = "Experiments API for web application")
 @Slf4j
 @RestController
 @RequestMapping("/experiment")
@@ -87,16 +87,40 @@ public class ExperimentController {
     }
 
     /**
+     * Downloads experiment training data by specified uuid.
+     *
+     * @param uuid - experiment uuid
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Downloads experiment training data by specified uuid",
+            notes = "Downloads experiment training data by specified uuid"
+    )
+    @GetMapping(value = "/training-data/{uuid}")
+    public ResponseEntity downloadTrainingData(
+            @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
+        File trainingDataFile = experimentService.findTrainingDataFileByUuid(uuid);
+        if (!existsFile(trainingDataFile)) {
+            log.error("Experiment training data file for uuid = '{}' not found!", uuid);
+            return ResponseEntity.badRequest().body(
+                    String.format("Experiment training data file for uuid = '%s' not found!", uuid));
+        }
+        log.info("Download experiment training data '{}' for uuid = '{}'", trainingDataFile.getAbsolutePath(), uuid);
+        return Utils.buildAttachmentResponse(trainingDataFile);
+    }
+
+    /**
      * Downloads experiment by specified uuid.
      *
      * @param uuid - experiment uuid
      */
+    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Downloads experiment by specified uuid",
             notes = "Downloads experiment by specified uuid"
     )
-    @GetMapping(value = "/download/{uuid}")
-    public ResponseEntity downloadExperiment(
+    @GetMapping(value = "/results/{uuid}")
+    public ResponseEntity downloadExperimentResults(
             @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
         File experimentFile = experimentService.findExperimentFileByUuid(uuid);
         if (!existsFile(experimentFile)) {
@@ -106,22 +130,6 @@ public class ExperimentController {
         }
         log.info("Download experiment file '{}' for uuid = '{}'", experimentFile.getAbsolutePath(), uuid);
         return Utils.buildAttachmentResponse(experimentFile);
-    }
-
-    /**
-     * Creates experiment request.
-     *
-     * @param experimentRequest - experiment request dto
-     * @return response entity
-     */
-    @ApiOperation(
-            value = "Creates experiment request",
-            notes = "Creates experiment request"
-    )
-    @PostMapping(value = "/create")
-    public ResponseEntity<EcaResponse> createRequest(@RequestBody ExperimentRequest experimentRequest) {
-        EcaResponse ecaResponse = experimentRequestService.createExperimentRequest(experimentRequest);
-        return ResponseEntity.ok(ecaResponse);
     }
 
     /**
@@ -188,29 +196,6 @@ public class ExperimentController {
     @GetMapping(value = "/request-statuses-statistics")
     public RequestStatusStatisticsDto getExperimentsRequestStatusesStatistics() {
         return toRequestStatusesStatistics(experimentService.getRequestStatusesStatistics());
-    }
-
-    /**
-     * Downloads experiment training data by specified uuid.
-     *
-     * @param uuid - experiment uuid
-     */
-    @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Downloads experiment training data by specified uuid",
-            notes = "Downloads experiment training data by specified uuid"
-    )
-    @GetMapping(value = "/training-data/{uuid}")
-    public ResponseEntity downloadTrainingData(
-            @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
-        File trainingDataFile = experimentService.findTrainingDataFileByUuid(uuid);
-        if (!existsFile(trainingDataFile)) {
-            log.error("Experiment training data file for uuid = '{}' not found!", uuid);
-            return ResponseEntity.badRequest().body(
-                    String.format("Experiment training data file for uuid = '%s' not found!", uuid));
-        }
-        log.info("Download experiment training data '{}' for uuid = '{}'", trainingDataFile.getAbsolutePath(), uuid);
-        return Utils.buildAttachmentResponse(trainingDataFile);
     }
 
     /**

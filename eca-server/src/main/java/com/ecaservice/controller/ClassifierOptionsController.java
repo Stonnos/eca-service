@@ -19,11 +19,11 @@ import javax.inject.Inject;
 import java.util.List;
 
 /**
- * Rest controller for managing with classifiers input options config.
+ * Implements experiment classifiers configs API for web application.
  *
  * @author Roman Batygin
  */
-@Api(tags = "Operations for experiment classifiers configs")
+@Api(tags = "Experiment classifiers configs API for web application")
 @RestController
 @RequestMapping("/experiment/classifiers-config")
 public class ClassifierOptionsController {
@@ -54,7 +54,7 @@ public class ClassifierOptionsController {
             value = "Finds the last classifiers options configs",
             notes = "Finds the last classifiers options configs"
     )
-    @GetMapping(value = "/configs")
+    @GetMapping(value = "/list")
     public ResponseEntity<List<ClassifierOptionsDto>> configs() {
         List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
                 experimentConfigurationService.findLastClassifiersOptions();
@@ -72,7 +72,7 @@ public class ClassifierOptionsController {
             value = "Finds the last classifiers options configs",
             notes = "Finds the last classifiers options configs"
     )
-    @GetMapping(value = "/configs-page")
+    @GetMapping(value = "/page")
     public PageDto<ClassifierOptionsDto> getConfigsPage(PageRequestDto pageRequestDto) {
         Page<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
                 experimentConfigurationService.getNextPage(pageRequestDto);
