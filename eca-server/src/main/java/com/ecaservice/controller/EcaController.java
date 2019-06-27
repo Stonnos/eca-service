@@ -14,26 +14,19 @@ import com.ecaservice.service.ers.ErsRequestService;
 import com.ecaservice.service.evaluation.EvaluationOptimizerService;
 import com.ecaservice.service.evaluation.EvaluationRequestService;
 import com.ecaservice.service.experiment.ExperimentRequestService;
-import com.ecaservice.service.experiment.ExperimentService;
-import com.ecaservice.util.Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
-import java.io.File;
 import java.util.Collections;
 
 import static com.ecaservice.util.Utils.buildErrorResponse;
-import static com.ecaservice.util.Utils.existsFile;
 
 /**
  * Implements REST API for ECA application.
@@ -43,10 +36,9 @@ import static com.ecaservice.util.Utils.existsFile;
 @Api(tags = "Operations for ECA application")
 @Slf4j
 @RestController
-@RequestMapping("/eca/api")
+@RequestMapping("/eca-api")
 public class EcaController {
 
-    private final ExperimentService experimentService;
     private final ExperimentRequestService experimentRequestService;
     private final EvaluationRequestService evaluationRequestService;
     private final EvaluationOptimizerService evaluationOptimizerService;
@@ -57,7 +49,6 @@ public class EcaController {
     /**
      * Constructor with spring dependency injection.
      *
-     * @param experimentService          - experiment service bean
      * @param experimentRequestService   - experiment request service bean
      * @param evaluationRequestService   - evaluation request service bean
      * @param evaluationOptimizerService - evaluation optimizer service bean
@@ -66,42 +57,18 @@ public class EcaController {
      * @param evaluationLogRepository    - evaluation log repository bean
      */
     @Inject
-    public EcaController(ExperimentService experimentService,
-                         ExperimentRequestService experimentRequestService,
+    public EcaController(ExperimentRequestService experimentRequestService,
                          EvaluationRequestService evaluationRequestService,
                          EvaluationOptimizerService evaluationOptimizerService,
                          ErsRequestService ersRequestService,
                          AsyncTaskService asyncTaskService,
                          EvaluationLogRepository evaluationLogRepository) {
-        this.experimentService = experimentService;
         this.experimentRequestService = experimentRequestService;
         this.evaluationRequestService = evaluationRequestService;
         this.evaluationOptimizerService = evaluationOptimizerService;
         this.ersRequestService = ersRequestService;
         this.asyncTaskService = asyncTaskService;
         this.evaluationLogRepository = evaluationLogRepository;
-    }
-
-    /**
-     * Downloads experiment by specified uuid.
-     *
-     * @param uuid - experiment uuid
-     */
-    @ApiOperation(
-            value = "Downloads experiment by specified uuid",
-            notes = "Downloads experiment by specified uuid"
-    )
-    @GetMapping(value = "/experiment/download/{uuid}")
-    public ResponseEntity downloadExperiment(
-            @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
-        File experimentFile = experimentService.findExperimentFileByUuid(uuid);
-        if (!existsFile(experimentFile)) {
-            log.error("Experiment results file for uuid = '{}' not found!", uuid);
-            return ResponseEntity.badRequest().body(
-                    String.format("Experiment results file for uuid = '%s' not found!", uuid));
-        }
-        log.info("Download experiment file '{}' for uuid = '{}'", experimentFile.getAbsolutePath(), uuid);
-        return Utils.buildAttachmentResponse(experimentFile);
     }
 
     /**

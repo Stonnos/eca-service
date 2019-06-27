@@ -110,29 +110,6 @@ public class ExperimentController {
     }
 
     /**
-     * Downloads experiment by specified uuid.
-     *
-     * @param uuid - experiment uuid
-     */
-    @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Downloads experiment by specified uuid",
-            notes = "Downloads experiment by specified uuid"
-    )
-    @GetMapping(value = "/results/{uuid}")
-    public ResponseEntity downloadExperimentResults(
-            @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
-        File experimentFile = experimentService.findExperimentFileByUuid(uuid);
-        if (!existsFile(experimentFile)) {
-            log.error("Experiment results file for uuid = '{}' not found!", uuid);
-            return ResponseEntity.badRequest().body(
-                    String.format("Experiment results file for uuid = '%s' not found!", uuid));
-        }
-        log.info("Download experiment file '{}' for uuid = '{}'", experimentFile.getAbsolutePath(), uuid);
-        return Utils.buildAttachmentResponse(experimentFile);
-    }
-
-    /**
      * Creates experiment request.
      *
      * @param trainingData     - training data file with format, such as csv, xls, xlsx, arff, json, docx, data, txt
