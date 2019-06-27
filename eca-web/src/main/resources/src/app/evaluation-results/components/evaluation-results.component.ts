@@ -4,7 +4,7 @@ import {
   EvaluationLogDetailsDto, EvaluationResultsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { EvaluationResultsStatusEnum } from "../model/evaluation-results-status.enum";
-import { EvaluationMethod } from "../../model/evaluation-method.enum";
+import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
 import { ClassifiersService } from "../../classifiers/services/classifiers.service";
 import { MessageService } from "primeng/api";
 import { ActivatedRoute } from "@angular/router";

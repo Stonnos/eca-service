@@ -4,13 +4,13 @@ import {
   PageDto,
   PageRequestDto, RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
-import { BaseListComponent } from "../../lists/base-list.component";
+import { BaseListComponent } from "../../common/lists/base-list.component";
 import { MessageService } from "primeng/api";
 import { ClassifiersService } from "../services/classifiers.service";
 import { OverlayPanel } from "primeng/primeng";
 import { Observable } from "rxjs/internal/Observable";
 import { FilterService } from "../../filter/services/filter.service";
-import { EvaluationMethod } from "../../model/evaluation-method.enum";
+import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
 import { Router } from "@angular/router";
 
 @Component({

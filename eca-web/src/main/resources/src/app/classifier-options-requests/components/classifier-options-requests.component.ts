@@ -4,7 +4,7 @@ import {
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { MessageService } from "primeng/api";
-import { BaseListComponent } from "../../lists/base-list.component";
+import { BaseListComponent } from "../../common/lists/base-list.component";
 import { OverlayPanel} from "primeng/primeng";
 import { JsonPipe } from "@angular/common";
 import { ClassifierOptionsRequestService } from "../services/classifier-options-request.service";
