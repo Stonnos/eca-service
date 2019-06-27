@@ -42,7 +42,6 @@ export class CreateExperimentComponent extends BaseCreateDialogComponent<Experim
   }
 
   public onUpload(event: any, fileUpload: any): void {
-    console.log('On upload');
     this.item.trainingDataFile = event.files[0];
     fileUpload.clear();
   }

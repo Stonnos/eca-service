@@ -129,7 +129,19 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   }
 
   public onCreateExperiment(experimentRequest: ExperimentRequest): void {
-    console.log(experimentRequest.trainingDataFile);
+    this.loading = true;
+    this.experimentsService.createExperiment(experimentRequest)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe(data => {
+        this.messageService.add({ severity: 'success', summary: `Эксперимент был успешно создан`, detail: '' });
+        this.performPageRequest(0, this.pageSize, "creationDate", false);
+      }, (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      });
   }
 
   public showCreateExperimentDialog(): void {

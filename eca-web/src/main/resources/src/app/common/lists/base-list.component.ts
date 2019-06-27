@@ -91,7 +91,7 @@ export abstract class BaseListComponent<T> {
     this.onSearch();
   }
 
-  private performPageRequest(page: number, size: number, sortField: string, ascending: boolean) {
+  public performPageRequest(page: number, size: number, sortField: string, ascending: boolean) {
     const pageRequest: PageRequestDto = {
       page: page,
       size: size,

@@ -10,6 +10,7 @@ import {
 import { Observable } from "rxjs/internal/Observable";
 import { ConfigService } from "../../config.service";
 import { AuthenticationKeys } from "../../auth/model/auth.keys";
+import { ExperimentRequest } from "../../create-experiment/model/experiment-request.model";
 
 @Injectable()
 export class ExperimentsService {
@@ -83,5 +84,17 @@ export class ExperimentsService {
     let params = new HttpParams().set('createdDateFrom', createdDateFrom).set('createdDateTo', createdDateTo);
     const options = { headers: headers, params: params };
     return this.http.get<ChartDataDto[]>(this.serviceUrl + '/statistics', options);
+  }
+
+  public createExperiment(experimentRequest: ExperimentRequest) {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+    });
+    const formData = new FormData();
+    formData.append('trainingData', experimentRequest.trainingDataFile, experimentRequest.trainingDataFile.name);
+    formData.append('experimentType', experimentRequest.experimentType);
+    formData.append('evaluationMethod', experimentRequest.evaluationMethod);
+    return this.http.post(this.serviceUrl + '/create', formData, { headers });
   }
 }
