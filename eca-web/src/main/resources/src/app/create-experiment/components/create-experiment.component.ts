@@ -12,6 +12,10 @@ export class CreateExperimentComponent extends BaseCreateDialogComponent<Experim
 
   // Max file size: 10MB
   public maxFileSize: number = 10485760;
+  public invalidFileSizeMessageSummary: string = '{0}: недопустимый размер файла,';
+  public invalidFileSizeMessageDetail: string = 'максимальный допустимый размер {0}.';
+  public invalidFileTypeMessageSummary: string = '{0}: некорректный тип файла,';
+  public invalidFileTypeMessageDetail: string = 'допускаются только файлы форматов: {0}.';
 
   @Input()
   public experimentTypes: FilterDictionaryValueDto[] = [];
@@ -23,7 +27,7 @@ export class CreateExperimentComponent extends BaseCreateDialogComponent<Experim
   }
 
   public isValid(): boolean {
-    return super.isValid() && this.isTrainingDataChosen();
+    return super.isValid() && this.isTrainingDataSelected();
   }
 
   public clear(): void {

@@ -18,14 +18,23 @@
                       name="trainingData"
                       mode="basic"
                       chooseLabel="{{ item?.trainingDataFile?.name || 'Выбрать'}}"
+                      [invalidFileSizeMessageSummary]="invalidFileSizeMessageSummary"
+                      [invalidFileSizeMessageDetail]="invalidFileSizeMessageDetail"
+                      [invalidFileTypeMessageSummary]="invalidFileTypeMessageSummary"
+                      [invalidFileTypeMessageDetail]="invalidFileTypeMessageDetail"
                       [auto]="true"
                       [customUpload]="true"
                       (uploadHandler)="onUpload($event, fileUpload)"
                       accept=".csv,.xls,.xlsx,.arff,.xml,.json,.txt,.data,.docx"
                       [maxFileSize]="maxFileSize">
         </p-fileUpload>
-        <div class="text-danger error-message" *ngIf="!isTrainingDataSelected() && submitted">
-            Выберите файл
+        <div class="text-danger error-message" *ngIf="submitted && !isTrainingDataSelected()">
+          Выберите файл
+        </div>
+        <div class="text-danger error-message" *ngIf="fileUpload.msgs?.length > 0">
+          <div *ngFor="let msg of fileUpload.msgs">
+            {{ msg.summary }} {{ msg.detail }}
+          </div>
         </div>
       </div>
       <div class="ui-g-10 mx-auto">
