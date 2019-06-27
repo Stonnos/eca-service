@@ -1,16 +1,17 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {Injectable} from '@angular/core';
 import {
   ChartDataDto,
   ErsReportDto,
   ExperimentDto,
   PageDto,
-  PageRequestDto, RequestStatusStatisticsDto
+  PageRequestDto,
+  RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
-import { Observable } from "rxjs/internal/Observable";
-import { ConfigService } from "../../config.service";
-import { AuthenticationKeys } from "../../auth/model/auth.keys";
-import { ExperimentRequest } from "../../create-experiment/model/experiment-request.model";
+import {Observable} from "rxjs/internal/Observable";
+import {ConfigService} from "../../config.service";
+import {AuthenticationKeys} from "../../auth/model/auth.keys";
+import {ExperimentRequest} from "../../create-experiment/model/experiment-request.model";
 
 @Injectable()
 export class ExperimentsService {
@@ -88,7 +89,6 @@ export class ExperimentsService {
 
   public createExperiment(experimentRequest: ExperimentRequest) {
     const headers = new HttpHeaders({
-      'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
       'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
     const formData = new FormData();
