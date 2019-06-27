@@ -10,6 +10,9 @@ import { BaseCreateDialogComponent } from "../../common/dialog/base-create-dialo
 })
 export class CreateExperimentComponent extends BaseCreateDialogComponent<ExperimentRequest> implements OnInit {
 
+  // Max file size: 10MB
+  public maxFileSize: number = 10485760;
+
   @Input()
   public experimentTypes: FilterDictionaryValueDto[] = [];
 
@@ -17,6 +20,19 @@ export class CreateExperimentComponent extends BaseCreateDialogComponent<Experim
   public evaluationMethods: FilterDictionaryValueDto[] = [];
 
   public ngOnInit(): void {
+  }
+
+  public isValid(): boolean {
+    return super.isValid() && this.isTrainingDataChosen();
+  }
+
+  public clear(): void {
+    this.item.trainingDataFile = null;
+    super.clear();
+  }
+
+  public isTrainingDataChosen(): boolean {
+    return this.item.trainingDataFile != null;
   }
 
   public onUpload(event: any, fileUpload: any): void {

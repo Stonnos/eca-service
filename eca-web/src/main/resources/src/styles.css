@@ -24,3 +24,8 @@
   background: rgba(226, 226, 226, 0.64);
   border: 1px solid #d5d5d5;
 }
+
+.error-message {
+  position: absolute;
+  margin-top: 5px;
+}

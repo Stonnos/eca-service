@@ -12,7 +12,7 @@
 
   <form novalidate class="form d-flex flex-column justify-content-center m-auto">
     <div class="ui-g ui-fluid">
-      <div class="ui-g-10 mx-auto">
+      <div class="ui-g-10 mx-auto mb-5">
         <label class="text-bold">Обучающая выборка</label>
         <p-fileUpload #fileUpload
                       name="trainingData"
@@ -21,8 +21,12 @@
                       [auto]="true"
                       [customUpload]="true"
                       (uploadHandler)="onUpload($event, fileUpload)"
-                      accept=".csv,.xls,.xlsx,.arff,.xml,.json,.txt,.data,.docx">
+                      accept=".csv,.xls,.xlsx,.arff,.xml,.json,.txt,.data,.docx"
+                      [maxFileSize]="maxFileSize">
         </p-fileUpload>
+        <div class="text-danger error-message" *ngIf="!isTrainingDataChosen() && submitted">
+            Выберите файл
+        </div>
       </div>
       <div class="ui-g-10 mx-auto">
         <label class="text-bold">Тип эксперимента</label>
