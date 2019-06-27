@@ -22,7 +22,7 @@ import static com.ecaservice.util.Utils.existsFile;
  *
  * @author Roman Batygin
  */
-@Api(tags = "Operations for experiment results downloading")
+@Api(tags = "API for experiment results downloading")
 @Slf4j
 @RestController
 @RequestMapping("/experiment")

@@ -33,7 +33,7 @@ import static com.ecaservice.util.Utils.buildErrorResponse;
  *
  * @author Roman Batygin
  */
-@Api(tags = "Operations for ECA application")
+@Api(tags = "API for ECA application")
 @Slf4j
 @RestController
 @RequestMapping("/eca-api")
