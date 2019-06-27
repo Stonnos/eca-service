@@ -93,8 +93,8 @@ export class ExperimentsService {
     });
     const formData = new FormData();
     formData.append('trainingData', experimentRequest.trainingDataFile, experimentRequest.trainingDataFile.name);
-    formData.append('experimentType', experimentRequest.experimentType);
-    formData.append('evaluationMethod', experimentRequest.evaluationMethod);
+    formData.append('experimentType', experimentRequest.experimentType.value);
+    formData.append('evaluationMethod', experimentRequest.evaluationMethod.value);
     return this.http.post(this.serviceUrl + '/create', formData, { headers });
   }
 }

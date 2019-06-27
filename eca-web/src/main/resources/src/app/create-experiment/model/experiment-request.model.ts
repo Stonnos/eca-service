@@ -1,5 +1,5 @@
 export class ExperimentRequest {
   trainingDataFile: File;
-  experimentType: string;
-  evaluationMethod: string;
+  experimentType: any;
+  evaluationMethod: any;
 }

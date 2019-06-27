@@ -12,7 +12,7 @@
 
   <form novalidate class="form d-flex flex-column justify-content-center m-auto">
     <div class="ui-g ui-fluid">
-      <div class="ui-g-10 mx-auto mb-5">
+      <div class="ui-g-10 mx-auto mb-4">
         <label class="text-bold">Обучающая выборка</label>
         <p-fileUpload #fileUpload
                       name="trainingData"
@@ -37,29 +37,47 @@
           </div>
         </div>
       </div>
-      <div class="ui-g-10 mx-auto">
+      <div class="ui-g-10 mx-auto mb-3">
         <label class="text-bold">Тип эксперимента</label>
         <p-dropdown
+          required
+          id="experimentType"
           name="experimentType"
+          placeholder="Выбрать"
           [appendTo]="dialog"
           [options]="experimentTypes"
           optionLabel="label"
           [(ngModel)]="item.experimentType"
+          #experimentType="ngModel"
           [autoWidth]="false"
           [style]="{'width':'100%'}">
         </p-dropdown>
+        <div class="text-danger error-message" *ngIf="submitted && experimentType.invalid">
+          <div *ngIf="experimentType?.errors?.required">
+            Выберите тип эксперимента
+          </div>
+        </div>
       </div>
-      <div class="ui-g-10 mx-auto">
+      <div class="ui-g-10 mx-auto mb-3">
         <label class="text-bold">Метод оценки точности</label>
         <p-dropdown
+          required
           name="evaluationMethod"
+          name="evaluationMethod"
+          placeholder="Выбрать"
           [appendTo]="dialog"
           [options]="evaluationMethods"
           optionLabel="label"
           [(ngModel)]="item.evaluationMethod"
+          #evaluationMethod="ngModel"
           [autoWidth]="false"
           [style]="{'width':'100%'}">
         </p-dropdown>
+        <div class="text-danger error-message" *ngIf="submitted && evaluationMethod.invalid">
+          <div *ngIf="evaluationMethod?.errors?.required">
+            Выберите метод оценки точности
+          </div>
+        </div>
       </div>
     </div>
   </form>
