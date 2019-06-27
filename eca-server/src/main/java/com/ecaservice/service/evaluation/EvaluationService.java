@@ -18,10 +18,10 @@ import weka.classifiers.Classifier;
 import weka.core.Instances;
 
 import javax.inject.Inject;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
-
-import static com.ecaservice.util.Utils.validateInputData;
 
 /**
  * Implements classifier model evaluation.
@@ -59,15 +59,13 @@ public class EvaluationService {
                                               final Map<EvaluationOption, String> evaluationOptionsMap) {
         ClassificationResult classificationResult = new ClassificationResult();
         try {
-            validateInputData(inputData, evaluationMethod, evaluationOptionsMap);
-
             final Classifier classifier = AbstractClassifier.makeCopy(inputData.getClassifier());
             final Instances data = inputData.getData();
             final String classifierName = classifier.getClass().getSimpleName();
-
+            final Map<EvaluationOption, String> optionsMap =
+                    Optional.ofNullable(evaluationOptionsMap).orElse(Collections.emptyMap());
             log.info("Model evaluation starting for classifier = {}, data = {}, evaluationMethod = {}",
                     classifierName, data.relationName(), evaluationMethod);
-
             final Evaluation evaluation = new Evaluation(data);
             final StopWatch stopWatch = new StopWatch(String.format("Stop watching for %s", classifierName));
 
@@ -84,11 +82,9 @@ public class EvaluationService {
 
                 @Override
                 public void crossValidateModel() throws Exception {
-                    int folds = NumberUtils.toInt(evaluationOptionsMap.get(EvaluationOption.NUM_FOLDS),
-                            config.getNumFolds());
-                    int tests = NumberUtils.toInt(evaluationOptionsMap.get(EvaluationOption.NUM_TESTS),
-                            config.getNumTests());
-                    int seed = NumberUtils.toInt(evaluationOptionsMap.get(EvaluationOption.SEED), config.getSeed());
+                    int folds = NumberUtils.toInt(optionsMap.get(EvaluationOption.NUM_FOLDS), config.getNumFolds());
+                    int tests = NumberUtils.toInt(optionsMap.get(EvaluationOption.NUM_TESTS), config.getNumTests());
+                    int seed = NumberUtils.toInt(optionsMap.get(EvaluationOption.SEED), config.getSeed());
                     log.trace("evaluateModel: numFolds = {}, numTests = {}, seed {}", folds, tests, seed);
                     stopWatch.start(String.format("%s model evaluation", classifierName));
                     evaluation.kCrossValidateModel(AbstractClassifier.makeCopy(classifier), data, folds, tests,

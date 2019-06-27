@@ -56,48 +56,6 @@ public class EvaluationServiceTest {
     }
 
     @Test
-    public void testForNullInputData() {
-        ClassificationResult result = evaluationService.evaluateModel(null, EvaluationMethod.TRAINING_DATA,
-                TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
-        assertThat(result.isSuccess()).isFalse();
-    }
-
-    @Test
-    public void testForNullClassifier() {
-        InputData inputData = new InputData(null, testInstances);
-        ClassificationResult result = evaluationService.evaluateModel(inputData, EvaluationMethod.TRAINING_DATA,
-                TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
-        assertThat(result.isSuccess()).isFalse();
-    }
-
-    @Test
-    public void testForNullData() {
-        InputData inputData = new InputData(new KNearestNeighbours(), null);
-        ClassificationResult result = evaluationService.evaluateModel(inputData,
-                EvaluationMethod.TRAINING_DATA, TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS,
-                        TestHelperUtils.NUM_TESTS));
-        assertThat(result.isSuccess()).isFalse();
-    }
-
-    @Test
-    public void testForNullEvaluationMethod() {
-        InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
-        ClassificationResult result = evaluationService.evaluateModel(inputData, null,
-                TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
-        assertThat(result.isSuccess()).isFalse();
-    }
-
-    @Test
-    public void testForNullEvaluationOptionsMap() {
-        InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
-        ClassificationResult result =
-                evaluationService.evaluateModel(inputData, EvaluationMethod.TRAINING_DATA, null);
-        assertThat(result.isSuccess()).isTrue();
-        result = evaluationService.evaluateModel(inputData, EvaluationMethod.CROSS_VALIDATION, null);
-        assertThat(result.isSuccess()).isFalse();
-    }
-
-    @Test
     public void testTrainingDataMethod() {
         InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
         ClassificationResult result = evaluationService.evaluateModel(inputData,

@@ -3,16 +3,13 @@ package com.ecaservice.util;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.evaluation.ClassifierReport;
 import com.ecaservice.exception.EcaServiceException;
-import com.ecaservice.model.InputData;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.model.entity.RequestStatus;
-import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eca.core.evaluation.EvaluationMethod;
 import eca.data.file.xml.converter.XmlInstancesConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.FileSystemResource;
@@ -20,7 +17,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.Assert;
 import weka.core.Instances;
 
 import java.io.File;
@@ -46,24 +42,6 @@ public class Utils {
     private static ObjectMapper objectMapper = new ObjectMapper();
 
     private Utils() {
-    }
-
-    /**
-     * Validates classifier input data.
-     *
-     * @param inputData            - input data
-     * @param evaluationMethod     - evaluation method
-     * @param evaluationOptionsMap - evaluation options map
-     */
-    public static void validateInputData(InputData inputData, EvaluationMethod evaluationMethod,
-                                         Map<EvaluationOption, String> evaluationOptionsMap) {
-        Assert.notNull(inputData, "Input data is not specified!");
-        Assert.notNull(inputData.getClassifier(), "Classifier is not specified!");
-        Assert.notNull(inputData.getData(), "Input data is not specified!");
-        Assert.notNull(evaluationMethod, "Evaluation method is not specified!");
-        if (EvaluationMethod.CROSS_VALIDATION.equals(evaluationMethod)) {
-            Assert.notNull(evaluationOptionsMap, "Evaluation options map is not specified!");
-        }
     }
 
     /**
