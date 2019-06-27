@@ -1,4 +1,5 @@
 <p-dialog
+  #dialog
   [(visible)]="visible"
   header="Новый эксперимент"
   width="600"
@@ -27,6 +28,7 @@
         <label class="text-bold">Тип эксперимента</label>
         <p-dropdown
           name="experimentType"
+          [appendTo]="dialog"
           [options]="experimentTypes"
           optionLabel="label"
           [(ngModel)]="item.experimentType"
@@ -38,6 +40,7 @@
         <label class="text-bold">Метод оценки точности</label>
         <p-dropdown
           name="evaluationMethod"
+          [appendTo]="dialog"
           [options]="evaluationMethods"
           optionLabel="label"
           [(ngModel)]="item.evaluationMethod"
