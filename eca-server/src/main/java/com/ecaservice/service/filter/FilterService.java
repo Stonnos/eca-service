@@ -1,13 +1,17 @@
 package com.ecaservice.service.filter;
 
 import com.ecaservice.config.EcaServiceParam;
+import com.ecaservice.mapping.filters.FilterDictionaryMapper;
 import com.ecaservice.mapping.filters.FilterFieldMapper;
+import com.ecaservice.model.entity.FilterDictionary;
 import com.ecaservice.model.entity.FilterTemplate;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.model.entity.GlobalFilterField;
 import com.ecaservice.model.entity.GlobalFilterTemplate;
+import com.ecaservice.repository.FilterDictionaryRepository;
 import com.ecaservice.repository.FilterTemplateRepository;
 import com.ecaservice.repository.GlobalFilterTemplateRepository;
+import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -20,7 +24,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Global filter service.
+ * Filter service.
  *
  * @author Roman Batygin
  */
@@ -29,23 +33,31 @@ import java.util.stream.Collectors;
 public class FilterService {
 
     private final FilterFieldMapper filterFieldMapper;
+    private final FilterDictionaryMapper filterDictionaryMapper;
     private final GlobalFilterTemplateRepository globalFilterTemplateRepository;
     private final FilterTemplateRepository filterTemplateRepository;
+    private final FilterDictionaryRepository filterDictionaryRepository;
 
     /**
      * Constructor with spring dependency injection.
      *
      * @param filterFieldMapper              - filter field mapper bean
+     * @param filterDictionaryMapper         - filter dictionary mapper bean
      * @param globalFilterTemplateRepository - global filter template repository bean
      * @param filterTemplateRepository       - filter template repository bean
+     * @param filterDictionaryRepository     - filter dictionary repository bean
      */
     @Inject
     public FilterService(FilterFieldMapper filterFieldMapper,
+                         FilterDictionaryMapper filterDictionaryMapper,
                          GlobalFilterTemplateRepository globalFilterTemplateRepository,
-                         FilterTemplateRepository filterTemplateRepository) {
+                         FilterTemplateRepository filterTemplateRepository,
+                         FilterDictionaryRepository filterDictionaryRepository) {
         this.filterFieldMapper = filterFieldMapper;
+        this.filterDictionaryMapper = filterDictionaryMapper;
         this.globalFilterTemplateRepository = globalFilterTemplateRepository;
         this.filterTemplateRepository = filterTemplateRepository;
+        this.filterDictionaryRepository = filterDictionaryRepository;
     }
 
     /**
@@ -78,5 +90,21 @@ public class FilterService {
                     String.format("Can't find filter template with type [%s]", templateType));
         }
         return filterFieldMapper.map(filterTemplate.getFields());
+    }
+
+    /**
+     * Gets filter dictionary by name.
+     *
+     * @param name - filter dictionary name
+     * @return filter dictionary dto
+     */
+    @Cacheable(EcaServiceParam.FILTER_DICTIONARIES_CACHE_NAME)
+    public FilterDictionaryDto getFilterDictionary(String name) {
+        log.info("Fetch filter dictionary with name [{}]", name);
+        FilterDictionary filterDictionary = filterDictionaryRepository.findByName(name);
+        if (filterDictionary == null) {
+            throw new IllegalArgumentException(String.format("Can't find filter dictionary with name  [%s]", name));
+        }
+        return filterDictionaryMapper.map(filterDictionary);
     }
 }

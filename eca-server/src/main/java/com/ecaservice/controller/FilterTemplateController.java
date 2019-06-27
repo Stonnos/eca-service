@@ -2,6 +2,8 @@ package com.ecaservice.controller;
 
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.service.filter.FilterService;
+import com.ecaservice.service.filter.dictionary.FilterDictionaries;
+import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -50,8 +52,8 @@ public class FilterTemplateController {
             notes = "Gets experiment filter fields"
     )
     @GetMapping(value = "/experiment")
-    public ResponseEntity<List<FilterFieldDto>> getExperimentFilter() {
-        return ResponseEntity.ok(filterService.getFilterFields(FilterTemplateType.EXPERIMENT));
+    public List<FilterFieldDto> getExperimentFilter() {
+        return filterService.getFilterFields(FilterTemplateType.EXPERIMENT);
     }
 
     /**
@@ -65,8 +67,8 @@ public class FilterTemplateController {
             notes = "Gets evaluation log filter fields"
     )
     @GetMapping(value = "/evaluation")
-    public ResponseEntity<List<FilterFieldDto>> getEvaluationLogFilter() {
-        return ResponseEntity.ok(filterService.getFilterFields(FilterTemplateType.EVALUATION_LOG));
+    public List<FilterFieldDto> getEvaluationLogFilter() {
+        return filterService.getFilterFields(FilterTemplateType.EVALUATION_LOG);
     }
 
     /**
@@ -80,8 +82,38 @@ public class FilterTemplateController {
             notes = "Gets classifier options request filter fields"
     )
     @GetMapping(value = "/classifier-options-request")
-    public ResponseEntity<List<FilterFieldDto>> getClassifierOptionsRequestFilter() {
-        return ResponseEntity.ok(filterService.getFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST));
+    public List<FilterFieldDto> getClassifierOptionsRequestFilter() {
+        return filterService.getFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST);
+    }
+
+    /**
+     * Gets experiment types filter dictionary.
+     *
+     * @return filter fields list
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Gets experiment types filter dictionary",
+            notes = "Gets experiment types filter dictionary"
+    )
+    @GetMapping(value = "/experiment-types-dictionary")
+    public FilterDictionaryDto getExperimentTypeDictionary() {
+        return filterService.getFilterDictionary(FilterDictionaries.EXPERIMENT_TYPE);
+    }
+
+    /**
+     * Gets evaluation method filter dictionary.
+     *
+     * @return filter fields list
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Gets evaluation method filter dictionary",
+            notes = "Gets evaluation method filter dictionary"
+    )
+    @GetMapping(value = "/evaluation-method-dictionary")
+    public FilterDictionaryDto getEvaluationMethodDictionary() {
+        return filterService.getFilterDictionary(FilterDictionaries.EVALUATION_METHOD);
     }
 
     /**

@@ -28,6 +28,11 @@ public class EcaServiceParam {
     public static final String FILTER_TEMPLATES_CACHE_NAME = "filter-templates";
 
     /**
+     * Filter dictionaries cache name
+     */
+    public static final String FILTER_DICTIONARIES_CACHE_NAME = "filter-dictionaries";
+
+    /**
      * Thread pool task executor bean name for async tasks
      */
     public static final String ECA_POOL_EXECUTOR = "ecaThreadPoolTaskExecutor";
