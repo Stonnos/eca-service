@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
+  FilterDictionaryDto,
   FilterDictionaryValueDto,
   FilterFieldDto,
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -13,7 +14,7 @@ import { AuthenticationKeys } from "../../auth/model/auth.keys";
 @Injectable()
 export class FilterService {
 
-  private serviceUrl = ConfigService.appConfig.apiUrl;
+  private serviceUrl = ConfigService.appConfig.apiUrl + '/filter-templates';
 
   public constructor(private http: HttpClient) {
   }
@@ -23,7 +24,7 @@ export class FilterService {
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
-    return this.http.get<FilterFieldDto[]>(this.serviceUrl + '/filter-templates/experiment', { headers: headers });
+    return this.http.get<FilterFieldDto[]>(this.serviceUrl + '/experiment', { headers: headers });
   }
 
   public getEvaluationLogFilterFields(): Observable<FilterFieldDto[]> {
@@ -31,7 +32,7 @@ export class FilterService {
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
-    return this.http.get<FilterFieldDto[]>(this.serviceUrl + '/filter-templates/evaluation', { headers: headers });
+    return this.http.get<FilterFieldDto[]>(this.serviceUrl + '/evaluation', { headers: headers });
   }
 
   public getClassifierOptionsRequestFilterFields(): Observable<FilterFieldDto[]> {
@@ -39,7 +40,23 @@ export class FilterService {
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
-    return this.http.get<FilterFieldDto[]>(this.serviceUrl + '/filter-templates/classifier-options-request', { headers: headers });
+    return this.http.get<FilterFieldDto[]>(this.serviceUrl + '/classifier-options-request', { headers: headers });
+  }
+
+  public getExperimentTypeDictionary(): Observable<FilterDictionaryDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+    });
+    return this.http.get<FilterDictionaryDto>(this.serviceUrl + '/experiment-types', { headers: headers });
+  }
+
+  public getEvaluationMethodDictionary(): Observable<FilterDictionaryDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+    });
+    return this.http.get<FilterDictionaryDto>(this.serviceUrl + '/evaluation-methods', { headers: headers });
   }
 
   public mapToFilters(filterFields: FilterFieldDto[]): Filter[] {

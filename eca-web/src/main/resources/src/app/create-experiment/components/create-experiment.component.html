@@ -27,6 +27,9 @@
         <label class="text-bold">Тип эксперимента</label>
         <p-dropdown
           name="experimentType"
+          [options]="experimentTypes"
+          optionLabel="label"
+          [(ngModel)]="experimentRequest.experimentType"
           [autoWidth]="false"
           [style]="{'width':'100%'}">
         </p-dropdown>
@@ -35,6 +38,9 @@
         <label class="text-bold">Метод оценки точности</label>
         <p-dropdown
           name="evaluationMethod"
+          [options]="evaluationMethods"
+          optionLabel="label"
+          [(ngModel)]="experimentRequest.evaluationMethod"
           [autoWidth]="false"
           [style]="{'width':'100%'}">
         </p-dropdown>

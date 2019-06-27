@@ -96,7 +96,7 @@ public class FilterTemplateController {
             value = "Gets experiment types filter dictionary",
             notes = "Gets experiment types filter dictionary"
     )
-    @GetMapping(value = "/experiment-types-dictionary")
+    @GetMapping(value = "/experiment-types")
     public FilterDictionaryDto getExperimentTypeDictionary() {
         return filterService.getFilterDictionary(FilterDictionaries.EXPERIMENT_TYPE);
     }
@@ -111,7 +111,7 @@ public class FilterTemplateController {
             value = "Gets evaluation method filter dictionary",
             notes = "Gets evaluation method filter dictionary"
     )
-    @GetMapping(value = "/evaluation-method-dictionary")
+    @GetMapping(value = "/evaluation-methods")
     public FilterDictionaryDto getEvaluationMethodDictionary() {
         return filterService.getFilterDictionary(FilterDictionaries.EVALUATION_METHOD);
     }
