@@ -5,6 +5,7 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.dto.ExperimentRequest;
+import com.ecaservice.exception.ExperimentException;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentMapperImpl;
 import com.ecaservice.model.entity.Experiment;
@@ -114,17 +115,11 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         assertThat(experiment.getTrainingDataAbsolutePath()).isNotNull();
     }
 
-    @Test
+    @Test(expected = ExperimentException.class)
     public void testExperimentRequestCreationWithError() throws Exception {
         ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
         doThrow(Exception.class).when(dataService).save(any(File.class), any(Instances.class));
         experimentService.createExperiment(experimentRequest);
-        List<Experiment> experiments = experimentRepository.findAll();
-        AssertionUtils.assertSingletonList(experiments);
-        Experiment experiment = experiments.get(0);
-        assertThat(experiment.getExperimentStatus()).isEqualTo(RequestStatus.ERROR);
-        assertThat(experiment.getCreationDate()).isNotNull();
-        assertThat(experiment.getTrainingDataAbsolutePath()).isNull();
     }
 
     @Test

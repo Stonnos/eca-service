@@ -19,6 +19,8 @@ import com.ecaservice.service.experiment.ExperimentRequestService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import java.util.Collections;
+
+import static com.ecaservice.util.Utils.buildErrorResponse;
 
 /**
  * Implements REST API for ECA application.
@@ -128,6 +132,17 @@ public class EcaController {
                 evaluationResponse.getStatus());
         sendEvaluationResultsToErs(evaluationResponse);
         return evaluationResponse;
+    }
+
+    /**
+     * Handles error.
+     *
+     * @param ex - exception
+     * @return response entity
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<EcaResponse> handleError(Exception ex) {
+        return ResponseEntity.ok(buildErrorResponse(ex.getMessage()));
     }
 
     private void sendEvaluationResultsToErs(EvaluationResponse evaluationResponse) {

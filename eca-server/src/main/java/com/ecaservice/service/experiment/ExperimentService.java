@@ -126,12 +126,10 @@ public class ExperimentService implements PageRequestService<Experiment> {
                     String.format(experimentConfig.getData().getFileFormat(), experiment.getUuid()));
             dataService.save(dataFile, experimentRequest.getData());
             experiment.setTrainingDataAbsolutePath(dataFile.getAbsolutePath());
+            experimentRepository.save(experiment);
         } catch (Exception ex) {
             log.error(ex.getMessage());
-            experiment.setExperimentStatus(RequestStatus.ERROR);
-            experiment.setErrorMessage(ex.getMessage());
-        } finally {
-            experimentRepository.save(experiment);
+            throw new ExperimentException(ex.getMessage());
         }
         return experiment;
     }
