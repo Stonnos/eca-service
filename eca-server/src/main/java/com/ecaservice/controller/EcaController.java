@@ -5,8 +5,10 @@ import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.dto.InstancesRequest;
+import com.ecaservice.mapping.EcaResponseMapper;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
+import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.async.AsyncTaskService;
@@ -17,7 +19,6 @@ import com.ecaservice.service.experiment.ExperimentRequestService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,8 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import java.util.Collections;
-
-import static com.ecaservice.util.Utils.buildErrorResponse;
 
 /**
  * Implements REST API for ECA application.
@@ -45,6 +44,7 @@ public class EcaController {
     private final EvaluationOptimizerService evaluationOptimizerService;
     private final ErsRequestService ersRequestService;
     private final AsyncTaskService asyncTaskService;
+    private final EcaResponseMapper ecaResponseMapper;
     private final EvaluationLogRepository evaluationLogRepository;
 
     /**
@@ -55,6 +55,7 @@ public class EcaController {
      * @param evaluationOptimizerService - evaluation optimizer service bean
      * @param ersRequestService          - ers request service bean
      * @param asyncTaskService           - async task service bean
+     * @param ecaResponseMapper          - eca response mapper bean
      * @param evaluationLogRepository    - evaluation log repository bean
      */
     @Inject
@@ -63,12 +64,14 @@ public class EcaController {
                          EvaluationOptimizerService evaluationOptimizerService,
                          ErsRequestService ersRequestService,
                          AsyncTaskService asyncTaskService,
+                         EcaResponseMapper ecaResponseMapper,
                          EvaluationLogRepository evaluationLogRepository) {
         this.experimentRequestService = experimentRequestService;
         this.evaluationRequestService = evaluationRequestService;
         this.evaluationOptimizerService = evaluationOptimizerService;
         this.ersRequestService = ersRequestService;
         this.asyncTaskService = asyncTaskService;
+        this.ecaResponseMapper = ecaResponseMapper;
         this.evaluationLogRepository = evaluationLogRepository;
     }
 
@@ -83,9 +86,9 @@ public class EcaController {
             notes = "Creates experiment request"
     )
     @PostMapping(value = "/experiment/create")
-    public ResponseEntity<EcaResponse> createRequest(@RequestBody @Valid ExperimentRequest experimentRequest) {
-        EcaResponse ecaResponse = experimentRequestService.createExperimentRequest(experimentRequest);
-        return ResponseEntity.ok(ecaResponse);
+    public EcaResponse createRequest(@RequestBody @Valid ExperimentRequest experimentRequest) {
+        Experiment experiment = experimentRequestService.createExperimentRequest(experimentRequest);
+        return ecaResponseMapper.map(experiment);
     }
 
     /**
@@ -99,12 +102,12 @@ public class EcaController {
             notes = "Evaluates classifier using specified evaluation method"
     )
     @PostMapping(value = "/evaluation/execute")
-    public ResponseEntity<EvaluationResponse> execute(@RequestBody @Valid EvaluationRequest evaluationRequest) {
+    public EvaluationResponse execute(@RequestBody @Valid EvaluationRequest evaluationRequest) {
         EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(evaluationRequest);
         log.info("Evaluation response [{}] with status [{}] has been built.", evaluationResponse.getRequestId(),
                 evaluationResponse.getStatus());
         sendEvaluationResultsToErs(evaluationResponse);
-        return ResponseEntity.ok(evaluationResponse);
+        return evaluationResponse;
     }
 
     /**
@@ -118,18 +121,13 @@ public class EcaController {
             notes = "Evaluates classifier using optimal options"
     )
     @PostMapping(value = "/evaluation/optimize")
-    public ResponseEntity<EvaluationResponse> optimize(@RequestBody @Valid InstancesRequest instancesRequest) {
-        try {
-            EvaluationResponse evaluationResponse =
-                    evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
-            log.info("Evaluation response [{}] with status [{}] has been built.", evaluationResponse.getRequestId(),
-                    evaluationResponse.getStatus());
-            sendEvaluationResultsToErs(evaluationResponse);
-            return ResponseEntity.ok(evaluationResponse);
-        } catch (Exception ex) {
-            log.error(ex.getMessage());
-            return ResponseEntity.badRequest().body(buildErrorResponse(ex.getMessage()));
-        }
+    public EvaluationResponse optimize(@RequestBody @Valid InstancesRequest instancesRequest) {
+        EvaluationResponse evaluationResponse =
+                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
+        log.info("Evaluation response [{}] with status [{}] has been built.", evaluationResponse.getRequestId(),
+                evaluationResponse.getStatus());
+        sendEvaluationResultsToErs(evaluationResponse);
+        return evaluationResponse;
     }
 
     private void sendEvaluationResultsToErs(EvaluationResponse evaluationResponse) {

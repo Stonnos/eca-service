@@ -1,6 +1,5 @@
 package com.ecaservice.controller;
 
-import com.ecaservice.dto.EcaResponse;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.ExperimentRequest;
@@ -10,6 +9,7 @@ import com.ecaservice.exception.EcaServiceException;
 import com.ecaservice.mapping.EvaluationResultsMapper;
 import com.ecaservice.model.MultipartFileResource;
 import com.ecaservice.model.TechnicalStatus;
+import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.service.ClassifierOptionsService;
@@ -125,7 +125,7 @@ public class QaController {
      * @param email            - email
      * @param experimentType   - experiment type
      * @param evaluationMethod - evaluation method
-     * @return response entity
+     * @return experiment uuid
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
@@ -133,7 +133,7 @@ public class QaController {
             notes = "Creates experiment request with specified options"
     )
     @PostMapping(value = "/experiment")
-    public ResponseEntity createExperiment(
+    public String createExperiment(
             @ApiParam(value = "Training data file", required = true) @RequestParam MultipartFile trainingData,
             @ApiParam(value = "Request first name", required = true) @RequestParam String firstName,
             @ApiParam(value = "Email", required = true) @RequestParam String email,
@@ -147,8 +147,8 @@ public class QaController {
         experimentRequest.setData(loadInstances(trainingData));
         experimentRequest.setExperimentType(experimentType);
         experimentRequest.setEvaluationMethod(evaluationMethod);
-        EcaResponse ecaResponse = experimentRequestService.createExperimentRequest(experimentRequest);
-        return ResponseEntity.ok(ecaResponse);
+        Experiment experiment = experimentRequestService.createExperimentRequest(experimentRequest);
+        return experiment.getUuid();
     }
 
     /**

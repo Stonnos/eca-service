@@ -115,7 +115,7 @@ public class ExperimentController {
      * @param trainingData     - training data file with format, such as csv, xls, xlsx, arff, json, docx, data, txt
      * @param experimentType   - experiment type
      * @param evaluationMethod - evaluation method
-     * @return response entity
+     * @return experiment uuid
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
@@ -123,7 +123,7 @@ public class ExperimentController {
             notes = "Creates experiment request with specified options"
     )
     @PostMapping(value = "/create")
-    public ResponseEntity createRequest(
+    public String createRequest(
             @ApiParam(value = "Training data file", required = true) @RequestParam MultipartFile trainingData,
             @ApiParam(value = "Experiment type", required = true) @RequestParam ExperimentType experimentType,
             @ApiParam(value = "Evaluation method", required = true) @RequestParam EvaluationMethod evaluationMethod)
@@ -137,8 +137,8 @@ public class ExperimentController {
         experimentRequest.setData(fileDataLoader.loadInstances());
         experimentRequest.setExperimentType(experimentType);
         experimentRequest.setEvaluationMethod(evaluationMethod);
-        EcaResponse ecaResponse = experimentRequestService.createExperimentRequest(experimentRequest);
-        return ResponseEntity.ok(ecaResponse);
+        Experiment experiment = experimentRequestService.createExperimentRequest(experimentRequest);
+        return experiment.getUuid();
     }
 
     /**

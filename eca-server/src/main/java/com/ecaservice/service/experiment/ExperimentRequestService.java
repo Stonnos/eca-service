@@ -1,8 +1,6 @@
 package com.ecaservice.service.experiment;
 
-import com.ecaservice.dto.EcaResponse;
 import com.ecaservice.dto.ExperimentRequest;
-import com.ecaservice.mapping.EcaResponseMapper;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.service.async.AsyncTaskService;
 import com.ecaservice.service.experiment.mail.NotificationService;
@@ -23,7 +21,6 @@ public class ExperimentRequestService {
     private final ExperimentService experimentService;
     private final NotificationService notificationService;
     private final AsyncTaskService asyncTaskService;
-    private final EcaResponseMapper ecaResponseMapper;
 
     /**
      * Constructor with spring dependency injection.
@@ -31,26 +28,23 @@ public class ExperimentRequestService {
      * @param experimentService   - experiment service bean
      * @param notificationService - notification service bean
      * @param asyncTaskService    - async task service bean
-     * @param ecaResponseMapper   - eca response mapper bean
      */
     @Inject
     public ExperimentRequestService(ExperimentService experimentService,
                                     NotificationService notificationService,
-                                    AsyncTaskService asyncTaskService,
-                                    EcaResponseMapper ecaResponseMapper) {
+                                    AsyncTaskService asyncTaskService) {
         this.experimentService = experimentService;
         this.notificationService = notificationService;
         this.asyncTaskService = asyncTaskService;
-        this.ecaResponseMapper = ecaResponseMapper;
     }
 
     /**
-     * Creates experiment and save email with experiment unique uuid.
+     * Creates experiment and send email notification.
      *
      * @param experimentRequest - experiment request
-     * @return eca response
+     * @return experiment entity
      */
-    public EcaResponse createExperimentRequest(ExperimentRequest experimentRequest) {
+    public Experiment createExperimentRequest(ExperimentRequest experimentRequest) {
         log.info("Received experiment request for data '{}', email '{}'", experimentRequest.getData().relationName(),
                 experimentRequest.getEmail());
         Experiment experiment = experimentService.createExperiment(experimentRequest);
@@ -62,9 +56,7 @@ public class ExperimentRequestService {
                         experiment.getUuid(), ex.getMessage());
             }
         });
-        EcaResponse ecaResponse = ecaResponseMapper.map(experiment);
-        log.info("Experiment request [{}] has been created with status [{}].", ecaResponse.getRequestId(),
-                ecaResponse.getStatus());
-        return ecaResponse;
+        log.info("Experiment request [{}] has been created.", experiment.getUuid());
+        return experiment;
     }
 }

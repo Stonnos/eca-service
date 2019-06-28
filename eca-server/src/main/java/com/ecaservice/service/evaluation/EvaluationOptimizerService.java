@@ -150,15 +150,10 @@ public class EvaluationOptimizerService {
 
     private EvaluationResponse evaluateModel(ClassifierOptionsRequest classifierOptionsRequest, String options,
                                              Instances data) {
-        try {
-            AbstractClassifier classifier = classifierOptionsService.convert(parseOptions(options));
-            EvaluationRequest evaluationRequest = evaluationRequestMapper.map(classifierOptionsRequest);
-            evaluationRequest.setData(data);
-            evaluationRequest.setClassifier(classifier);
-            return evaluationRequestService.processRequest(evaluationRequest);
-        } catch (Exception ex) {
-            log.error("There was an error: {}", ex.getMessage());
-        }
-        return buildErrorResponse(String.format(RESULTS_NOT_FOUND_MESSAGE, data.relationName()));
+        AbstractClassifier classifier = classifierOptionsService.convert(parseOptions(options));
+        EvaluationRequest evaluationRequest = evaluationRequestMapper.map(classifierOptionsRequest);
+        evaluationRequest.setData(data);
+        evaluationRequest.setClassifier(classifier);
+        return evaluationRequestService.processRequest(evaluationRequest);
     }
 }
