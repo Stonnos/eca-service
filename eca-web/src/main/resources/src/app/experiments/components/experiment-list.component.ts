@@ -27,7 +27,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   public createExperimentDialogVisibility: boolean = false;
 
   public lastCreatedExperimentUuid: string;
-  public blinkedExperimentUuid: string;
+  public blinkUuid: string;
 
   public experimentTypes: FilterDictionaryValueDto[] = [];
   public evaluationMethods: FilterDictionaryValueDto[] = [];
@@ -56,7 +56,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   }
 
   public setPage(pageDto: PageDto<ExperimentDto>) {
-    this.blinkedExperimentUuid = this.lastCreatedExperimentUuid;
+    this.blinkUuid = this.lastCreatedExperimentUuid;
     this.lastCreatedExperimentUuid = null;
     super.setPage(pageDto);
   }
@@ -85,49 +85,61 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   public onLink(column: string, experiment: ExperimentDto) {
     switch (column) {
       case this.linkColumns[0]:
-        this.loading = true;
-        this.experimentsService.getExperimentTrainingDataFile(experiment.uuid)
-          .pipe(
-            finalize(() => {
-              this.loading = false;
-            })
-          )
-          .subscribe((blob: Blob) => {
-            saveAs(blob, experiment.trainingDataAbsolutePath);
-          }, (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-        });
+        this.getExperimentTrainingDataFile(experiment);
         break;
       case this.linkColumns[1]:
-        this.loading = true;
-        this.experimentsService.getExperimentResultsFile(experiment.uuid)
-          .pipe(
-            finalize(() => {
-              this.loading = false;
-            })
-          )
-          .subscribe((blob: Blob) => {
-            saveAs(blob, experiment.experimentAbsolutePath);
-          }, (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-        });
+        this.getExperimentResultsFile(experiment);
         break;
       case this.linkColumns[2]:
-        this.loading = true;
-        this.experimentsService.getErsReport(experiment.uuid)
-          .pipe(
-            finalize(() => {
-              this.loading = false;
-            })
-          )
-          .subscribe((ersReport: ErsReportDto) => {
-            this.ersReport = ersReport;
-            this.ersReportVisibility = true;
-          }, (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-        });
+        this.getErsReport(experiment);
         break;
     }
+  }
+
+  public getExperimentTrainingDataFile(experiment: ExperimentDto): void {
+    this.loading = true;
+    this.experimentsService.getExperimentTrainingDataFile(experiment.uuid)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe((blob: Blob) => {
+        saveAs(blob, experiment.trainingDataAbsolutePath);
+      }, (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      });
+  }
+
+  public getExperimentResultsFile(experiment: ExperimentDto): void {
+    this.loading = true;
+    this.experimentsService.getExperimentResultsFile(experiment.uuid)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe((blob: Blob) => {
+        saveAs(blob, experiment.experimentAbsolutePath);
+      }, (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      });
+  }
+
+  public getErsReport(experiment: ExperimentDto): void {
+    this.loading = true;
+    this.experimentsService.getErsReport(experiment.uuid)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe((ersReport: ErsReportDto) => {
+        this.ersReport = ersReport;
+        this.ersReportVisibility = true;
+      }, (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      });
   }
 
   public onErsReportVisibilityChange(visible): void {
@@ -147,7 +159,6 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
         })
       )
       .subscribe((result: CreateExperimentResultDto) => {
-        console.log(result);
         if (result.created) {
           this.messageService.add({ severity: 'success', summary: `Эксперимент был успешно создан`, detail: '' });
           this.lastCreatedExperimentUuid = result.uuid;
@@ -160,8 +171,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       });
   }
 
-  public isBlinkedExperiment(item: ExperimentDto): boolean {
-    return this.blinkedExperimentUuid == item.uuid;
+  public isBlink(item: ExperimentDto): boolean {
+    return this.blinkUuid == item.uuid;
   }
 
   public showCreateExperimentDialog(): void {
