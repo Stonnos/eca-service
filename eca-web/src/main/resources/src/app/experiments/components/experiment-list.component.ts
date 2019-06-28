@@ -1,5 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import {
+  CreateExperimentResultDto,
   ErsReportDto,
   ExperimentDto, FilterDictionaryDto, FilterDictionaryValueDto, FilterFieldDto, PageDto,
   PageRequestDto, RequestStatusStatisticsDto
@@ -24,6 +25,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   public ersReport: ErsReportDto;
   public ersReportVisibility: boolean = false;
   public createExperimentDialogVisibility: boolean = false;
+
+  public lastCreatedExperimentUuid: string;
 
   public experimentTypes: FilterDictionaryValueDto[] = [];
   public evaluationMethods: FilterDictionaryValueDto[] = [];
@@ -136,9 +139,15 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
           this.loading = false;
         })
       )
-      .subscribe(data => {
-        this.messageService.add({ severity: 'success', summary: `Эксперимент был успешно создан`, detail: '' });
-        this.performPageRequest(0, this.pageSize, "creationDate", false);
+      .subscribe((result: CreateExperimentResultDto) => {
+        console.log(result);
+        if (result.created) {
+          this.messageService.add({ severity: 'success', summary: `Эксперимент был успешно создан`, detail: '' });
+          this.lastCreatedExperimentUuid = result.uuid;
+          this.performPageRequest(0, this.pageSize, "creationDate", false);
+        } else {
+          this.messageService.add({ severity: 'error', summary: 'Не удалось создать эксперимент', detail: result.errorMessage });
+        }
       }, (error) => {
         this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
       });

@@ -1,6 +1,5 @@
 package com.ecaservice.controller;
 
-import com.ecaservice.dto.EcaResponse;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.MultipartFileResource;
@@ -13,6 +12,7 @@ import com.ecaservice.service.experiment.ExperimentRequestService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.util.Utils;
 import com.ecaservice.web.dto.model.ChartDataDto;
+import com.ecaservice.web.dto.model.CreateExperimentResultDto;
 import com.ecaservice.web.dto.model.ErsReportDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -123,22 +123,29 @@ public class ExperimentController {
             notes = "Creates experiment request with specified options"
     )
     @PostMapping(value = "/create")
-    public String createRequest(
+    public CreateExperimentResultDto createRequest(
             @ApiParam(value = "Training data file", required = true) @RequestParam MultipartFile trainingData,
             @ApiParam(value = "Experiment type", required = true) @RequestParam ExperimentType experimentType,
-            @ApiParam(value = "Evaluation method", required = true) @RequestParam EvaluationMethod evaluationMethod)
-            throws Exception {
+            @ApiParam(value = "Evaluation method", required = true) @RequestParam EvaluationMethod evaluationMethod) {
         log.info("Received experiment request for data '{}'", trainingData.getOriginalFilename());
-        ExperimentRequest experimentRequest = new ExperimentRequest();
-        experimentRequest.setFirstName("Роман");
-        experimentRequest.setEmail("roman.batygin@mail.ru");
-        FileDataLoader fileDataLoader = new FileDataLoader();
-        fileDataLoader.setSource(new MultipartFileResource(trainingData));
-        experimentRequest.setData(fileDataLoader.loadInstances());
-        experimentRequest.setExperimentType(experimentType);
-        experimentRequest.setEvaluationMethod(evaluationMethod);
-        Experiment experiment = experimentRequestService.createExperimentRequest(experimentRequest);
-        return experiment.getUuid();
+        CreateExperimentResultDto resultDto = new CreateExperimentResultDto();
+        try {
+            ExperimentRequest experimentRequest = new ExperimentRequest();
+            experimentRequest.setFirstName("Роман");
+            experimentRequest.setEmail("roman.batygin@mail.ru");
+            FileDataLoader fileDataLoader = new FileDataLoader();
+            fileDataLoader.setSource(new MultipartFileResource(trainingData));
+            experimentRequest.setData(fileDataLoader.loadInstances());
+            experimentRequest.setExperimentType(experimentType);
+            experimentRequest.setEvaluationMethod(evaluationMethod);
+            Experiment experiment = experimentRequestService.createExperimentRequest(experimentRequest);
+            resultDto.setUuid(experiment.getUuid());
+            resultDto.setCreated(true);
+        } catch (Exception ex) {
+            log.error("There was an error while experiment creation for data '{}'", trainingData.getOriginalFilename());
+            resultDto.setErrorMessage(ex.getMessage());
+        }
+        return resultDto;
     }
 
     /**

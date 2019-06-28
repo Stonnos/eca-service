@@ -69,7 +69,7 @@
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-item>
-              <tr>
+              <tr [ngClass]="{'last-created-experiment': item.uuid == lastCreatedExperimentUuid}">
                 <td *ngFor="let column of columns">
                   <a class="link" [routerLink]="" *ngIf="isLink(column.name)" (click)="onLink(column.name, item)">
                     {{ getColumnValue(column.name, item) }}

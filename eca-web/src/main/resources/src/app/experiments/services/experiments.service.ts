@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
-  ChartDataDto,
+  ChartDataDto, CreateExperimentResultDto,
   ErsReportDto,
   ExperimentDto,
   PageDto,
@@ -87,7 +87,7 @@ export class ExperimentsService {
     return this.http.get<ChartDataDto[]>(this.serviceUrl + '/statistics', options);
   }
 
-  public createExperiment(experimentRequest: ExperimentRequest) {
+  public createExperiment(experimentRequest: ExperimentRequest): Observable<CreateExperimentResultDto> {
     const headers = new HttpHeaders({
       'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
@@ -95,6 +95,6 @@ export class ExperimentsService {
     formData.append('trainingData', experimentRequest.trainingDataFile, experimentRequest.trainingDataFile.name);
     formData.append('experimentType', experimentRequest.experimentType.value);
     formData.append('evaluationMethod', experimentRequest.evaluationMethod.value);
-    return this.http.post(this.serviceUrl + '/create', formData, { headers });
+    return this.http.post<CreateExperimentResultDto>(this.serviceUrl + '/create', formData, { headers });
   }
 }

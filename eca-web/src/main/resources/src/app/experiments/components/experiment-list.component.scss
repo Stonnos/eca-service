@@ -34,3 +34,16 @@
     background-color: #f5f5f5;
   }
 }
+
+.last-created-experiment {
+  animation: 0.5s blink 100ms 2;
+}
+
+@keyframes blink {
+  from {
+    background: #4eb1ff;
+  }
+  to {
+    background: white;
+  }
+}
