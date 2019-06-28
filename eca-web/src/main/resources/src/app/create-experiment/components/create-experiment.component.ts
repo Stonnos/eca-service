@@ -1,7 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ExperimentRequest } from "../model/experiment-request.model";
 import { FilterDictionaryValueDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { BaseCreateDialogComponent } from "../../common/dialog/base-create-dialog.component";
+import { FileUpload } from "primeng/primeng";
 
 @Component({
   selector: 'app-create-experiment',
@@ -19,6 +20,9 @@ export class CreateExperimentComponent extends BaseCreateDialogComponent<Experim
   public invalidFileTypeMessageSummary: string = 'Некорректный тип файла,';
   public invalidFileTypeMessageDetail: string = 'допускаются только файлы форматов: {0}.';
 
+  @ViewChild(FileUpload)
+  public fileUpload: FileUpload;
+
   @Input()
   public experimentTypes: FilterDictionaryValueDto[] = [];
 
@@ -34,6 +38,8 @@ export class CreateExperimentComponent extends BaseCreateDialogComponent<Experim
 
   public clear(): void {
     this.item.trainingDataFile = null;
+    this.fileUpload.msgs = [];
+    this.fileUpload.clear();
     super.clear();
   }
 
@@ -41,8 +47,8 @@ export class CreateExperimentComponent extends BaseCreateDialogComponent<Experim
     return this.item.trainingDataFile != null;
   }
 
-  public onUpload(event: any, fileUpload: any): void {
+  public onUpload(event: any): void {
     this.item.trainingDataFile = event.files[0];
-    fileUpload.clear();
+    this.fileUpload.clear();
   }
 }

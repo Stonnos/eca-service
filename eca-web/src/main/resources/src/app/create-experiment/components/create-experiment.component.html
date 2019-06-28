@@ -24,14 +24,13 @@
                       [invalidFileTypeMessageDetail]="invalidFileTypeMessageDetail"
                       [auto]="true"
                       [customUpload]="true"
-                      (uploadHandler)="onUpload($event, fileUpload)"
-                      [accept]="accept"
+                      (uploadHandler)="onUpload($event)"
                       [maxFileSize]="maxFileSize">
         </p-fileUpload>
         <div class="text-danger error-message" *ngIf="submitted && !isTrainingDataSelected()">
           Выберите файл
         </div>
-        <div class="text-danger error-message" *ngIf="fileUpload.msgs?.length > 0">
+        <div class="text-danger error-message" *ngIf="!submitted && fileUpload.msgs?.length > 0">
           <div *ngFor="let msg of fileUpload.msgs">
             {{ msg.summary }} {{ msg.detail }}
           </div>
