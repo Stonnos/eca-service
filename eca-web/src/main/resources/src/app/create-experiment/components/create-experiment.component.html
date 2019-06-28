@@ -12,7 +12,7 @@
 
   <form novalidate class="form d-flex flex-column justify-content-center m-auto">
     <div class="ui-g ui-fluid">
-      <div class="ui-g-10 mx-auto mb-4">
+      <div class="ui-g-10 mx-auto mb-5">
         <label class="text-bold">Обучающая выборка</label>
         <p-fileUpload #fileUpload
                       name="trainingData"
@@ -25,14 +25,17 @@
                       [auto]="true"
                       [customUpload]="true"
                       (uploadHandler)="onUpload($event)"
+                      [accept]="accept"
                       [maxFileSize]="maxFileSize">
         </p-fileUpload>
-        <div class="text-danger error-message" *ngIf="submitted && !isTrainingDataSelected()">
-          Выберите файл
-        </div>
-        <div class="text-danger error-message" *ngIf="!submitted && fileUpload.msgs?.length > 0">
-          <div *ngFor="let msg of fileUpload.msgs">
-            {{ msg.summary }} {{ msg.detail }}
+        <div class="text-danger error-message">
+          <div *ngIf="submitted && !isTrainingDataSelected()">
+            Выберите файл
+          </div>
+          <div *ngIf="fileUpload.msgs?.length > 0">
+            <div *ngFor="let msg of fileUpload.msgs">
+              {{ msg.summary }} {{ msg.detail }}
+            </div>
           </div>
         </div>
       </div>
@@ -61,7 +64,7 @@
         <label class="text-bold">Метод оценки точности</label>
         <p-dropdown
           required
-          name="evaluationMethod"
+          id="evaluationMethod"
           name="evaluationMethod"
           placeholder="Выбрать"
           [appendTo]="dialog"
