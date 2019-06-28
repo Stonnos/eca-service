@@ -1,7 +1,7 @@
 import {
   FilterFieldType,
   MatchMode
-} from "../../../../../../target/generated-sources/typescript/eca-web-dto";
+} from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { SelectItem } from "primeng/api";
 
 export class Filter {

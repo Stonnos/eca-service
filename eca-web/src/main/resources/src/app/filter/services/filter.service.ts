@@ -7,7 +7,7 @@ import {
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { ConfigService } from "../../config.service";
-import { Filter } from "../filter.model";
+import { Filter } from "../model/filter.model";
 import { SelectItem } from "primeng/api";
 import { AuthenticationKeys } from "../../auth/model/auth.keys";
 

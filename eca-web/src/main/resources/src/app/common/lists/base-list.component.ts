@@ -4,7 +4,7 @@ import { Table } from "primeng/table";
 import { ViewChild } from "@angular/core";
 import { Observable } from "rxjs/internal/Observable";
 import { finalize } from "rxjs/internal/operators";
-import { Filter } from "../../filter/filter.model";
+import { Filter } from "../../filter/model/filter.model";
 import {
   FilterRequestDto,
   PageDto,
