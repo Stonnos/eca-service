@@ -7,8 +7,6 @@ import { ExperimentsService } from "./services/experiments.service";
 import { FilterModule } from "../filter/filter.module";
 import { RequestStatusesStatisticsModule } from "../request-statuses-statistics/request-statuses-statistics.module";
 import { ErsReportModule } from "../ers-report/ers-report.module";
-import { ExperimentStatisticsModule } from "../experiment-statistics/experiment-statistics.module";
-import { ClassifierOptionsModule } from "../classifier-options/classifier-options.module";
 import { CreateExperimentModule } from "../create-experiment/create-experiment.module";
 
 @NgModule({
@@ -19,11 +17,12 @@ import { CreateExperimentModule } from "../create-experiment/create-experiment.m
     FilterModule,
     RequestStatusesStatisticsModule,
     ErsReportModule,
-    ExperimentStatisticsModule,
-    ClassifierOptionsModule,
     CreateExperimentModule
   ],
   declarations: [
+    ExperimentListComponent
+  ],
+  exports: [
     ExperimentListComponent
   ],
   providers: [

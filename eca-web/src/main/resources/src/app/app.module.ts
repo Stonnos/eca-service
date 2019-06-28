@@ -22,6 +22,7 @@ import { ExperimentStatisticsModule } from "./experiment-statistics/experiment-s
 import { EvaluationResultsModule } from "./evaluation-results/evaluation-results.module";
 import { ClassificationCostsModule } from "./classification-costs/classification-costs.module";
 import { CreateExperimentModule } from "./create-experiment/create-experiment.module";
+import { ExperimentsTabsModule } from "./experiments-tabs/experiments-tabs.module";
 
 export function initializeApp(configService: ConfigService) {
   return () => configService.getConfigs();
@@ -36,6 +37,7 @@ export function initializeApp(configService: ConfigService) {
     BrowserModule,
     FormsModule,
     AppRoutingModule,
+    ExperimentsTabsModule,
     ClassifiersModule,
     ExperimentsModule,
     ClassifierOptionsModule,

@@ -1,0 +1,24 @@
+<div class="container-fluid mb-5">
+  <p-tabView class="experiment-tab">
+    <p-tabPanel header="Таблица экспериментов" leftIcon="pi pi-table" [cache]="false">
+      <ng-template pTemplate="content">
+        <app-experiment-list>
+        </app-experiment-list>
+      </ng-template>
+    </p-tabPanel>
+
+    <p-tabPanel header="Статистика" leftIcon="pi pi-chart-bar" [cache]="false">
+      <ng-template pTemplate="content">
+        <app-experiment-statistics></app-experiment-statistics>
+      </ng-template>
+    </p-tabPanel>
+
+    <p-tabPanel header="Настройки классификаторов" leftIcon="pi pi-cog" [cache]="false">
+      <ng-template pTemplate="content">
+        <app-classifier-options>
+        </app-classifier-options>
+      </ng-template>
+    </p-tabPanel>
+
+  </p-tabView>
+</div>

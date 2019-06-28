@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from "./dashboard/dashboard.component";
 import { ClassifierListComponent } from "./classifiers/components/classifier-list.component";
-import { ExperimentListComponent } from "./experiments/components/experiment-list.component";
 import { ClassifierOptionsRequestsComponent } from "./classifier-options-requests/components/classifier-options-requests.component";
 import { LoginComponent } from "./auth/components/login.component";
 import { EvaluationResultsComponent } from "./evaluation-results/components/evaluation-results.component";
+import { ExperimentTabsComponent } from "./experiments-tabs/components/experiment-tabs.component";
 
 const routes: Routes = [
   {
@@ -18,7 +18,7 @@ const routes: Routes = [
       },
       {
         path: 'experiments',
-        component: ExperimentListComponent
+        component: ExperimentTabsComponent
       },
       {
         path: 'classifiers-options-requests',
