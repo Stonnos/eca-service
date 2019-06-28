@@ -162,6 +162,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
         if (result.created) {
           this.messageService.add({ severity: 'success', summary: `Эксперимент был успешно создан`, detail: '' });
           this.lastCreatedExperimentUuid = result.uuid;
+          this.getRequestStatusesStatistics();
           this.performPageRequest(0, this.pageSize, "creationDate", false);
         } else {
           this.messageService.add({ severity: 'error', summary: 'Не удалось создать эксперимент', detail: result.errorMessage });
