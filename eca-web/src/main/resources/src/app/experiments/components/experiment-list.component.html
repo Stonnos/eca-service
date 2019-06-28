@@ -1,116 +1,122 @@
 <div class="container-fluid mb-5">
   <p-tabView class="experiment-tab">
-    <p-tabPanel header="Таблица экспериментов" leftIcon="pi pi-table">
-      <div class="row search-content mt-2">
-        <div class="col-6 justify-content-start">
-          <button
-            pButton
-            label="Новый эксперимент"
-            icon="pi pi-plus"
-            type="button"
-            (click)="showCreateExperimentDialog()"
-            class="ml-2 mt-2 mb-2">
-          </button>
-        </div>
-        <div class="col-6">
-          <div class="ui-inputgroup mr-2 mt-2 mb-2">
+    <p-tabPanel header="Таблица экспериментов" leftIcon="pi pi-table" [cache]="false">
+      <ng-template pTemplate="content">
+        <div class="row search-content mt-2">
+          <div class="col-6 justify-content-start">
+            <button
+              pButton
+              label="Новый эксперимент"
+              icon="pi pi-plus"
+              type="button"
+              (click)="showCreateExperimentDialog()"
+              class="ml-2 mt-2 mb-2">
+            </button>
+          </div>
+          <div class="col-6">
+            <div class="ui-inputgroup mr-2 mt-2 mb-2">
             <span class="ui-inputgroup-addon">
               <i class="fa fa-search"></i>
             </span>
-            <input
-              type="text"
-              pInputText
-              placeholder="Поиск"
-              maxlength="255"
-              [(ngModel)]="searchQuery"
-              (input)="onSearch()"
-              class="w-100">
-            <a *ngIf="searchQuery?.length > 0" [routerLink]="" (click)="clearSearchQuery()">
+              <input
+                type="text"
+                pInputText
+                placeholder="Поиск"
+                maxlength="255"
+                [(ngModel)]="searchQuery"
+                (input)="onSearch()"
+                class="w-100">
+              <a *ngIf="searchQuery?.length > 0" [routerLink]="" (click)="clearSearchQuery()">
               <span class="ui-inputgroup-addon">
                 <i class="fa fa-close"></i>
               </span>
-            </a>
+              </a>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="filter-sidebar">
-          <app-filter [filters]="filters" (apply)="onApplyFilter()"></app-filter>
-        </div>
-        <div class="data-table">
-          <p-table
-            class="experiments-table"
-            [columns]="columns"
-            [value]="items"
-            [rows]="pageSize"
-            [paginator]="true"
-            [scrollable]="true"
-            [sortField]="defaultSortField"
-            [sortOrder]="defaultSortOrder"
-            [lazy]="true"
-            [loading]="loading"
-            (onLazyLoad)="onLazyLoad($event)">
+        <div class="row">
+          <div class="filter-sidebar">
+            <app-filter [filters]="filters" (apply)="onApplyFilter()"></app-filter>
+          </div>
+          <div class="data-table">
+            <p-table
+              class="experiments-table"
+              [columns]="columns"
+              [value]="items"
+              [rows]="pageSize"
+              [paginator]="true"
+              [scrollable]="true"
+              [sortField]="defaultSortField"
+              [sortOrder]="defaultSortOrder"
+              [lazy]="true"
+              [loading]="loading"
+              (onLazyLoad)="onLazyLoad($event)">
 
-            <ng-template pTemplate="caption">
-              <app-request-statuses-statistics
-                [requestStatusStatisticsDto]="requestStatusStatisticsDto">
-              </app-request-statuses-statistics>
-            </ng-template>
+              <ng-template pTemplate="caption">
+                <app-request-statuses-statistics
+                  [requestStatusStatisticsDto]="requestStatusStatisticsDto">
+                </app-request-statuses-statistics>
+              </ng-template>
 
-            <ng-template pTemplate="header">
-              <tr>
-                <ng-container *ngFor="let column of columns">
-                  <th *ngIf="!notSortable(column.name)" [pSortableColumn]="column.name">
-                    {{ column.label }}
-                    <p-sortIcon [field]="column.name"></p-sortIcon>
-                  </th>
-                  <th *ngIf="notSortable(column.name)">{{ column.label }}</th>
-                </ng-container>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-item>
-              <tr [ngClass]="{'experiment-blink': isBlink(item)}">
-                <td *ngFor="let column of columns">
-                  <a class="link" [routerLink]="" *ngIf="isLink(column.name)" (click)="onLink(column.name, item)">
-                    {{ getColumnValue(column.name, item) }}
-                  </a>
-                  <div *ngIf="!isLink(column.name)">
-                    <ng-container [ngSwitch]="column.name">
-                      <ng-container *ngSwitchCase="'experimentStatus'">
+              <ng-template pTemplate="header">
+                <tr>
+                  <ng-container *ngFor="let column of columns">
+                    <th *ngIf="!notSortable(column.name)" [pSortableColumn]="column.name">
+                      {{ column.label }}
+                      <p-sortIcon [field]="column.name"></p-sortIcon>
+                    </th>
+                    <th *ngIf="notSortable(column.name)">{{ column.label }}</th>
+                  </ng-container>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                <tr [ngClass]="{'experiment-blink': isBlink(item)}">
+                  <td *ngFor="let column of columns">
+                    <a class="link" [routerLink]="" *ngIf="isLink(column.name)" (click)="onLink(column.name, item)">
+                      {{ getColumnValue(column.name, item) }}
+                    </a>
+                    <div *ngIf="!isLink(column.name)">
+                      <ng-container [ngSwitch]="column.name">
+                        <ng-container *ngSwitchCase="'experimentStatus'">
                         <span [class.text-info]="item.experimentStatus.value == 'NEW'"
                               [class.text-success]="item.experimentStatus.value == 'FINISHED'"
                               [class.text-warning]="item.experimentStatus.value == 'TIMEOUT'"
                               [class.text-danger]="item.experimentStatus.value == 'ERROR'">
                           {{ getColumnValue(column.name, item) }}
                         </span>
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                          <span>{{ getColumnValue(column.name, item) }}</span>
+                        </ng-container>
                       </ng-container>
-                      <ng-container *ngSwitchDefault>
-                        <span>{{ getColumnValue(column.name, item) }}</span>
-                      </ng-container>
-                    </ng-container>
-                  </div>
-                </td>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="emptymessage" *ngIf="items.length == 0">
-              <tr>
-                <td [attr.colspan]="columns.length" class="text-center">
-                  Не найдено ни одного эксперимента
-                </td>
-              </tr>
-            </ng-template>
-          </p-table>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage" *ngIf="items.length == 0">
+                <tr>
+                  <td [attr.colspan]="columns.length" class="text-center">
+                    Не найдено ни одного эксперимента
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
         </div>
-      </div>
+      </ng-template>
     </p-tabPanel>
 
-    <p-tabPanel header="Статистика" leftIcon="pi pi-chart-bar">
-      <app-experiment-statistics></app-experiment-statistics>
+    <p-tabPanel header="Статистика" leftIcon="pi pi-chart-bar" [cache]="false">
+      <ng-template pTemplate="content">
+        <app-experiment-statistics></app-experiment-statistics>
+      </ng-template>
     </p-tabPanel>
 
-    <p-tabPanel header="Настройки классификаторов" leftIcon="pi pi-cog">
-      <app-classifier-options>
-      </app-classifier-options>
+    <p-tabPanel header="Настройки классификаторов" leftIcon="pi pi-cog" [cache]="false">
+      <ng-template pTemplate="content">
+        <app-classifier-options>
+        </app-classifier-options>
+      </ng-template>
     </p-tabPanel>
 
   </p-tabView>
