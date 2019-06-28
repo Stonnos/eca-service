@@ -173,7 +173,6 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
                 instancesRequest);
         assertThat(evaluationResponse).isNotNull();
-        assertThat(evaluationResponse.getRequestId()).isNotNull();
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         assertThat(evaluationResponse.getEvaluationResults()).isNull();
         List<ClassifierOptionsRequestModel> optionsRequests = classifierOptionsRequestModelRepository.findAll();
@@ -191,7 +190,6 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
                 instancesRequest);
         assertThat(evaluationResponse).isNotNull();
-        assertThat(evaluationResponse.getRequestId()).isNotNull();
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         List<ClassifierOptionsRequestModel> optionsRequests = classifierOptionsRequestModelRepository.findAll();
         AssertionUtils.assertSingletonList(optionsRequests);

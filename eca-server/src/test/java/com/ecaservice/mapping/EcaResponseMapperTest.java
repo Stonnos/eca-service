@@ -27,7 +27,7 @@ public class EcaResponseMapperTest {
     private EcaResponseMapper ecaResponseMapper;
 
     @Test
-    public void testExperimentToEcaResponseConversionWithSuccessStatus() {
+    public void testMapExperimentToEcaResponse() {
         Experiment experiment = new Experiment();
         experiment.setExperimentStatus(RequestStatus.NEW);
         experiment.setUuid(UUID.randomUUID().toString());
@@ -35,14 +35,5 @@ public class EcaResponseMapperTest {
         assertThat(ecaResponse).isNotNull();
         assertThat(ecaResponse.getStatus()).isEqualTo(TechnicalStatus.SUCCESS);
         assertThat(ecaResponse.getRequestId()).isEqualTo(experiment.getUuid());
-    }
-
-    @Test
-    public void testExperimentToEcaResponseConversionWithErrorStatus() throws Exception {
-        Experiment experiment = new Experiment();
-        experiment.setExperimentStatus(RequestStatus.ERROR);
-        EcaResponse ecaResponse = ecaResponseMapper.map(experiment);
-        assertThat(ecaResponse).isNotNull();
-        assertThat(ecaResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
     }
 }
