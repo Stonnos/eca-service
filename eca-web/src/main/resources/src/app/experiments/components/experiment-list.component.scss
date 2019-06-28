@@ -35,8 +35,8 @@
   }
 }
 
-.last-created-experiment {
-  animation: 1s blink 100ms 3;
+.experiment-blink {
+  animation: 1.5s blink 100ms 1;
 }
 
 @keyframes blink {

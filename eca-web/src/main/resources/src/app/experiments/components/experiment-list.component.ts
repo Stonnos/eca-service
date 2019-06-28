@@ -27,6 +27,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   public createExperimentDialogVisibility: boolean = false;
 
   public lastCreatedExperimentUuid: string;
+  public blinkedExperimentUuid: string;
 
   public experimentTypes: FilterDictionaryValueDto[] = [];
   public evaluationMethods: FilterDictionaryValueDto[] = [];
@@ -52,6 +53,12 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<ExperimentDto>> {
     return this.experimentsService.getExperiments(pageRequest);
+  }
+
+  public setPage(pageDto: PageDto<ExperimentDto>) {
+    this.blinkedExperimentUuid = this.lastCreatedExperimentUuid;
+    this.lastCreatedExperimentUuid = null;
+    super.setPage(pageDto);
   }
 
   public getRequestStatusesStatistics() {
@@ -151,6 +158,10 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       }, (error) => {
         this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
       });
+  }
+
+  public isBlinkedExperiment(item: ExperimentDto): boolean {
+    return this.blinkedExperimentUuid == item.uuid;
   }
 
   public showCreateExperimentDialog(): void {
