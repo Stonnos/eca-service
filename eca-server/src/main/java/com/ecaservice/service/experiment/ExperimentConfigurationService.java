@@ -1,7 +1,7 @@
 package com.ecaservice.service.experiment;
 
 import com.ecaservice.config.CommonConfig;
-import com.ecaservice.config.EcaServiceParam;
+import com.ecaservice.config.CacheNames;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.options.ClassifierOptions;
@@ -91,7 +91,7 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
      *
      * @return {@link ClassifierOptionsDatabaseModel} list
      */
-    @Cacheable(EcaServiceParam.CLASSIFIERS_CACHE_NAME)
+    @Cacheable(CacheNames.CLASSIFIERS_CACHE_NAME)
     public List<ClassifierOptionsDatabaseModel> findLastClassifiersOptions() {
         log.info("Starting to read classifiers input options configs from database");
         List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModelList =

@@ -1,4 +1,4 @@
-package com.ecaservice.config;
+package com.ecaservice.config.ers;
 
 import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
 import org.springframework.context.annotation.Bean;

@@ -2,7 +2,7 @@ package com.ecaservice.service.ers;
 
 import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.config.ErsConfig;
+import com.ecaservice.config.ers.ErsConfig;
 import com.ecaservice.dto.evaluation.EvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.GetEvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;

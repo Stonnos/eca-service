@@ -1,4 +1,4 @@
-package com.ecaservice.config;
+package com.ecaservice.config.notification;
 
 import com.ecaservice.dto.mail.EmailRequest;
 import org.springframework.context.annotation.Bean;

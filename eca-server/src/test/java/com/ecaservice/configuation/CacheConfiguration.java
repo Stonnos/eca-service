@@ -1,6 +1,6 @@
 package com.ecaservice.configuation;
 
-import com.ecaservice.config.EcaServiceParam;
+import com.ecaservice.config.CacheNames;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Ticker;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -49,7 +49,7 @@ public class CacheConfiguration {
                 .maximumSize(CACHE_MAXIMUM_SIZE)
                 .ticker(ticker);
         manager.setCaches(Collections.singletonList(
-                new CaffeineCache(EcaServiceParam.EVALUATION_RESULTS_CACHE_NAME, caffeineBuilder.build())));
+                new CaffeineCache(CacheNames.EVALUATION_RESULTS_CACHE_NAME, caffeineBuilder.build())));
         return manager;
     }
 }

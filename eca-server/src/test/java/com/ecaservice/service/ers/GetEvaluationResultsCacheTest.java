@@ -2,8 +2,8 @@ package com.ecaservice.service.ers;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
-import com.ecaservice.config.EcaServiceParam;
-import com.ecaservice.config.ErsConfig;
+import com.ecaservice.config.CacheNames;
+import com.ecaservice.config.ers.ErsConfig;
 import com.ecaservice.configuation.CacheConfiguration;
 import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
 import com.ecaservice.configuation.ErsWebServiceConfiguration;
@@ -80,6 +80,6 @@ public class GetEvaluationResultsCacheTest extends AbstractJpaTest {
         verify(ersWebServiceClient, times(2)).getEvaluationResultsSimpleResponse(any
                 (GetEvaluationResultsRequest.class));
         Assertions.assertThat(
-                cacheManager.getCache(EcaServiceParam.EVALUATION_RESULTS_CACHE_NAME).get(requestId)).isNotNull();
+                cacheManager.getCache(CacheNames.EVALUATION_RESULTS_CACHE_NAME).get(requestId)).isNotNull();
     }
 }

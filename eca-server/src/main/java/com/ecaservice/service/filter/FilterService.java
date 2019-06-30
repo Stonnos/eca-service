@@ -1,6 +1,6 @@
 package com.ecaservice.service.filter;
 
-import com.ecaservice.config.EcaServiceParam;
+import com.ecaservice.config.CacheNames;
 import com.ecaservice.mapping.filters.FilterDictionaryMapper;
 import com.ecaservice.mapping.filters.FilterFieldMapper;
 import com.ecaservice.model.entity.FilterDictionary;
@@ -66,7 +66,7 @@ public class FilterService {
      * @param filterTemplateType - filter template type
      * @return global filter fields list
      */
-    @Cacheable(EcaServiceParam.GLOBAL_FILTERS_CACHE_NAME)
+    @Cacheable(CacheNames.GLOBAL_FILTERS_CACHE_NAME)
     public List<String> getGlobalFilterFields(FilterTemplateType filterTemplateType) {
         GlobalFilterTemplate globalFilterTemplate =
                 globalFilterTemplateRepository.findFirstByTemplateType(filterTemplateType);
@@ -81,7 +81,7 @@ public class FilterService {
      * @param templateType - filter template type
      * @return filter field dto list
      */
-    @Cacheable(EcaServiceParam.FILTER_TEMPLATES_CACHE_NAME)
+    @Cacheable(CacheNames.FILTER_TEMPLATES_CACHE_NAME)
     public List<FilterFieldDto> getFilterFields(FilterTemplateType templateType) {
         log.info("Fetch filter fields for template type [{}]", templateType);
         FilterTemplate filterTemplate = filterTemplateRepository.findFirstByTemplateType(templateType);
@@ -98,7 +98,7 @@ public class FilterService {
      * @param name - filter dictionary name
      * @return filter dictionary dto
      */
-    @Cacheable(EcaServiceParam.FILTER_DICTIONARIES_CACHE_NAME)
+    @Cacheable(CacheNames.FILTER_DICTIONARIES_CACHE_NAME)
     public FilterDictionaryDto getFilterDictionary(String name) {
         log.info("Fetch filter dictionary with name [{}]", name);
         FilterDictionary filterDictionary = filterDictionaryRepository.findByName(name);

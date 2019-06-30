@@ -1,7 +1,7 @@
 package com.ecaservice.service.ers;
 
-import com.ecaservice.config.EcaServiceParam;
-import com.ecaservice.config.ErsConfig;
+import com.ecaservice.config.CacheNames;
+import com.ecaservice.config.ers.ErsConfig;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.ClassifierReport;
@@ -95,7 +95,7 @@ public class ErsRequestService {
      * @param requestId - ERS request id
      * @return evaluation results simple response
      */
-    @Cacheable(value = EcaServiceParam.EVALUATION_RESULTS_CACHE_NAME, unless = "#result.status.name() != 'SUCCESS'")
+    @Cacheable(value = CacheNames.EVALUATION_RESULTS_CACHE_NAME, unless = "#result.status.name() != 'SUCCESS'")
     public GetEvaluationResultsResponse getEvaluationResults(String requestId) {
         log.info("Starting to get evaluation results simple response for request id [{}]", requestId);
         GetEvaluationResultsRequest request = new GetEvaluationResultsRequest();

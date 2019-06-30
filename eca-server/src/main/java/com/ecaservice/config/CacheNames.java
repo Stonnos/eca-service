@@ -1,11 +1,11 @@
 package com.ecaservice.config;
 
 /**
- * Eca - service parameters class.
+ * Cache names utility class.
  *
  * @author Roman Batygin
  */
-public class EcaServiceParam {
+public class CacheNames {
 
     /**
      * Classifiers cache name
@@ -32,8 +32,6 @@ public class EcaServiceParam {
      */
     public static final String FILTER_DICTIONARIES_CACHE_NAME = "filter-dictionaries";
 
-    /**
-     * Thread pool task executor bean name for async tasks
-     */
-    public static final String ECA_POOL_EXECUTOR = "ecaThreadPoolTaskExecutor";
+    private CacheNames() {
+    }
 }
