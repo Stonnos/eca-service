@@ -1,5 +1,7 @@
 package com.ecaservice.config.oauth2;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -24,16 +26,15 @@ import javax.sql.DataSource;
 @EnableResourceServer
 public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
-    private final DataSource tokenDatasource;
-
     /**
-     * Constructor with spring dependency injection.
+     * Creates token datasource bean.
      *
-     * @param tokenDatasource - token datasource bean
+     * @return token datasource bean
      */
-    @Inject
-    public ResourceServerConfiguration(DataSource tokenDatasource) {
-        this.tokenDatasource = tokenDatasource;
+    @Bean
+    @ConfigurationProperties(prefix = "spring.tokendatasource")
+    public DataSource tokenDatasource() {
+        return DataSourceBuilder.create().build();
     }
 
     @Override
@@ -54,7 +55,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
      */
     @Bean
     public TokenStore tokenStore() {
-        return new JdbcTokenStore(tokenDatasource);
+        return new JdbcTokenStore(tokenDatasource());
     }
 
     /**
