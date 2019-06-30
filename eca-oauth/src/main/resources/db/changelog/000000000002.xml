@@ -116,7 +116,7 @@
 
         <insert tableName="oauth_client_details">
             <column name="client_id" value="eca"/>
-            <column name="client_secret" value="web_secret"/>
+            <column name="client_secret" value="{noop}web_secret"/>
             <column name="scope" value="web"/>
             <column name="authorized_grant_types" value="password,refresh_token"/>
             <column name="refresh_token_validity" valueNumeric="36000"/>
