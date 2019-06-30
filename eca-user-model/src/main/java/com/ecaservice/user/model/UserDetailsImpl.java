@@ -1,16 +1,18 @@
 package com.ecaservice.user.model;
 
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 /**
  * Implements user details model.
  *
  * @author Roman Batygin
  */
+@AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
     /**
@@ -34,23 +36,13 @@ public class UserDetailsImpl implements UserDetails {
     private String firstName;
 
     /**
-     * Creates user details with specified user name and password.
-     *
-     * @param userName  - user name
-     * @param password  - password
-     * @param email     - user email
-     * @param firstName - first name
+     * Roles list
      */
-    public UserDetailsImpl(String userName, String password, String email, String firstName) {
-        this.userName = userName;
-        this.password = password;
-        this.email = email;
-        this.firstName = firstName;
-    }
+    private List<Role> authorities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+        return authorities;
     }
 
     @Override
