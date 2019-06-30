@@ -8,7 +8,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
+
+import javax.inject.Inject;
+import javax.sql.DataSource;
 
 /**
  * Resource server configuration.
@@ -19,7 +24,17 @@ import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 @EnableResourceServer
 public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
-    private static final String CHECK_TOKEN_URL_FORMAT = "%s/oauth/check_token";
+    private final DataSource tokenDatasource;
+
+    /**
+     * Constructor with spring dependency injection.
+     *
+     * @param tokenDatasource - token datasource bean
+     */
+    @Inject
+    public ResourceServerConfiguration(DataSource tokenDatasource) {
+        this.tokenDatasource = tokenDatasource;
+    }
 
     @Override
     public void configure(final HttpSecurity http) throws Exception {
@@ -33,29 +48,25 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     }
 
     /**
-     * Creates oauth2 config bean.
+     * Creates token store bean.
      *
-     * @return oauth2 config bean
+     * @return token store bean
      */
     @Bean
-    public Oauth2Config oauth2Config() {
-        return new Oauth2Config();
+    public TokenStore tokenStore() {
+        return new JdbcTokenStore(tokenDatasource);
     }
 
     /**
-     * Creates remote token service.
+     * Creates default token service bean.
      *
-     * @return remote token service bean
+     * @return default remote token service bean
      */
-    @Bean
     @Primary
-    public RemoteTokenServices tokenServices() {
-        RemoteTokenServices tokenService = new RemoteTokenServices();
-        tokenService.setClientId(oauth2Config().getClientId());
-        tokenService.setClientSecret(oauth2Config().getSecret());
-        tokenService.setCheckTokenEndpointUrl(
-                String.format(CHECK_TOKEN_URL_FORMAT, oauth2Config().getOauthUrl()));
-        return tokenService;
+    @Bean
+    public DefaultTokenServices tokenServices() {
+        DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
+        defaultTokenServices.setTokenStore(tokenStore());
+        return defaultTokenServices;
     }
-
 }

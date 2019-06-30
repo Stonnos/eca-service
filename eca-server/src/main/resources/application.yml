@@ -100,8 +100,3 @@ experiment:
 ers-config:
   url: http://localhost:8085/evaluation-results-service/ws/
   enabled: true
-
-oauth2:
-  clientId: eca
-  secret: web_secret
-  oauthUrl: http://localhost:8085/eca-oauth

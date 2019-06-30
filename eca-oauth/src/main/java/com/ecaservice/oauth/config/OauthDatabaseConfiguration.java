@@ -38,7 +38,7 @@ public class OauthDatabaseConfiguration {
     @Primary
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource")
-    public DataSource oauthDataSource() {
+    public DataSource oauthDatasource() {
         return DataSourceBuilder.create().build();
     }
 
@@ -46,14 +46,14 @@ public class OauthDatabaseConfiguration {
      * Creates entity manager factory bean.
      *
      * @param builder         - entity manager factory builder
-     * @param oauthDataSource - data source
+     * @param oauthDatasource - data source
      * @return entity manager factory bean
      */
     @Primary
     @Bean
     public LocalContainerEntityManagerFactoryBean oauthEntityManagerFactory(EntityManagerFactoryBuilder builder,
-                                                                            DataSource oauthDataSource) {
-        return builder.dataSource(oauthDataSource).packages(UserEntity.class.getPackage().getName()).build();
+                                                                            DataSource oauthDatasource) {
+        return builder.dataSource(oauthDatasource).packages(UserEntity.class.getPackage().getName()).build();
     }
 
     /**

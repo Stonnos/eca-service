@@ -40,7 +40,7 @@ public class EcaDatabaseConfiguration {
     @Bean
     @LiquibaseDataSource
     @ConfigurationProperties(prefix = "spring.datasource")
-    public DataSource ecaDataSource() {
+    public DataSource ecaDatasource() {
         return DataSourceBuilder.create().build();
     }
 
@@ -48,14 +48,14 @@ public class EcaDatabaseConfiguration {
      * Creates entity manager factory bean.
      *
      * @param builder       - entity manager factory builder
-     * @param ecaDataSource - eca data source
+     * @param ecaDatasource - eca datasource
      * @return entity manager factory bean
      */
     @Primary
     @Bean
     public LocalContainerEntityManagerFactoryBean ecaEntityManagerFactory(EntityManagerFactoryBuilder builder,
-                                                                          DataSource ecaDataSource) {
-        return builder.dataSource(ecaDataSource).packages(EvaluationLog.class.getPackage().getName()).build();
+                                                                          DataSource ecaDatasource) {
+        return builder.dataSource(ecaDatasource).packages(EvaluationLog.class.getPackage().getName()).build();
     }
 
     /**

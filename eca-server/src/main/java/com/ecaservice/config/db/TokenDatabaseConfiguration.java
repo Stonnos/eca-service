@@ -22,7 +22,7 @@ public class TokenDatabaseConfiguration {
      */
     @Bean
     @ConfigurationProperties(prefix = "spring.tokendatasource")
-    public DataSource tokenDataSource() {
+    public DataSource tokenDatasource() {
         return DataSourceBuilder.create().build();
     }
 }
