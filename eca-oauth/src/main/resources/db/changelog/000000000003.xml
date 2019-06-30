@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Add email column to user table -->
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_entity"/>
+            <not>
+                <columnExists tableName="user_entity" columnName="email"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="user_entity">
+            <column name="email" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <!-- Add first name column to user table -->
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_entity"/>
+            <not>
+                <columnExists tableName="user_entity" columnName="first_name"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="user_entity">
+            <column name="first_name" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <!-- Set user email and first name -->
+    <changeSet id="3" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_entity"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from user_entity where login = 'admin'
+            </sqlCheck>
+        </preConditions>
+
+        <update tableName="user_entity">
+            <column name="email" value="roman.batygin@mail.ru"/>
+            <column name="first_name" value="Роман"/>
+            <where>login = 'admin'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

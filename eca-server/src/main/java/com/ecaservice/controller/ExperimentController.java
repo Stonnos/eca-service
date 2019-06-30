@@ -7,9 +7,11 @@ import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.repository.ExperimentRepository;
+import com.ecaservice.service.UserService;
 import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.experiment.ExperimentRequestService;
 import com.ecaservice.service.experiment.ExperimentService;
+import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.util.Utils;
 import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
@@ -63,6 +65,7 @@ public class ExperimentController {
     private final ExperimentRequestService experimentRequestService;
     private final ErsService ersService;
     private final ExperimentMapper experimentMapper;
+    private final UserService userService;
     private final ExperimentRepository experimentRepository;
 
     /**
@@ -72,17 +75,21 @@ public class ExperimentController {
      * @param experimentRequestService - experiment request service bean
      * @param ersService               - ers service bean
      * @param experimentMapper         - experiment mapper bean
+     * @param userService              - user service bean
      * @param experimentRepository     - experiment repository bean
      */
     @Inject
     public ExperimentController(ExperimentService experimentService,
                                 ExperimentRequestService experimentRequestService,
-                                ErsService ersService, ExperimentMapper experimentMapper,
+                                ErsService ersService,
+                                ExperimentMapper experimentMapper,
+                                UserService userService,
                                 ExperimentRepository experimentRepository) {
         this.experimentService = experimentService;
         this.experimentRequestService = experimentRequestService;
         this.ersService = ersService;
         this.experimentMapper = experimentMapper;
+        this.userService = userService;
         this.experimentRepository = experimentRepository;
     }
 
@@ -130,14 +137,8 @@ public class ExperimentController {
         log.info("Received experiment request for data '{}'", trainingData.getOriginalFilename());
         CreateExperimentResultDto resultDto = new CreateExperimentResultDto();
         try {
-            ExperimentRequest experimentRequest = new ExperimentRequest();
-            experimentRequest.setFirstName("Роман");
-            experimentRequest.setEmail("roman.batygin@mail.ru");
-            FileDataLoader fileDataLoader = new FileDataLoader();
-            fileDataLoader.setSource(new MultipartFileResource(trainingData));
-            experimentRequest.setData(fileDataLoader.loadInstances());
-            experimentRequest.setExperimentType(experimentType);
-            experimentRequest.setEvaluationMethod(evaluationMethod);
+            ExperimentRequest experimentRequest =
+                    createExperimentRequest(trainingData, experimentType, evaluationMethod);
             Experiment experiment = experimentRequestService.createExperimentRequest(experimentRequest);
             resultDto.setUuid(experiment.getUuid());
             resultDto.setCreated(true);
@@ -260,4 +261,18 @@ public class ExperimentController {
                 Collectors.toList());
     }
 
+
+    private ExperimentRequest createExperimentRequest(MultipartFile trainingData, ExperimentType experimentType,
+                                                      EvaluationMethod evaluationMethod) throws Exception {
+        ExperimentRequest experimentRequest = new ExperimentRequest();
+        UserDetailsImpl userDetails = userService.getCurrentUser();
+        experimentRequest.setFirstName(userDetails.getFirstName());
+        experimentRequest.setEmail(userDetails.getEmail());
+        FileDataLoader fileDataLoader = new FileDataLoader();
+        fileDataLoader.setSource(new MultipartFileResource(trainingData));
+        experimentRequest.setData(fileDataLoader.loadInstances());
+        experimentRequest.setExperimentType(experimentType);
+        experimentRequest.setEvaluationMethod(evaluationMethod);
+        return experimentRequest;
+    }
 }

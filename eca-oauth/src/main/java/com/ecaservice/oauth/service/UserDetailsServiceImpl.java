@@ -36,6 +36,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (userEntity == null) {
             throw new UsernameNotFoundException(String.format("User with login %s doesn't exists!", username));
         }
-        return new UserDetailsImpl(userEntity.getLogin(), userEntity.getPassword());
+        return new UserDetailsImpl(userEntity.getLogin(), userEntity.getPassword(), userEntity.getEmail(),
+                userEntity.getFirstName());
     }
 }

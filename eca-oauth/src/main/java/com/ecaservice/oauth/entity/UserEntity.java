@@ -38,4 +38,15 @@ public class UserEntity {
      */
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
+
+    /**
+     * User email
+     */
+    private String email;
+
+    /**
+     * User first name
+     */
+    @Column(name = "first_name")
+    private String firstName;
 }

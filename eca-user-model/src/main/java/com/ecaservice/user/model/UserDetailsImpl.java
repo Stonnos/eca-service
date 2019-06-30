@@ -13,19 +13,39 @@ import java.util.Collections;
  */
 public class UserDetailsImpl implements UserDetails {
 
+    /**
+     * User login
+     */
     private String userName;
 
+    /**
+     * User password
+     */
     private String password;
+
+    /**
+     * User email
+     */
+    private String email;
+
+    /**
+     * User first name
+     */
+    private String firstName;
 
     /**
      * Creates user details with specified user name and password.
      *
-     * @param userName - user name
-     * @param password - password
+     * @param userName  - user name
+     * @param password  - password
+     * @param email     - user email
+     * @param firstName - first name
      */
-    public UserDetailsImpl(String userName, String password) {
+    public UserDetailsImpl(String userName, String password, String email, String firstName) {
         this.userName = userName;
         this.password = password;
+        this.email = email;
+        this.firstName = firstName;
     }
 
     @Override
@@ -61,5 +81,13 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getFirstName() {
+        return firstName;
     }
 }
