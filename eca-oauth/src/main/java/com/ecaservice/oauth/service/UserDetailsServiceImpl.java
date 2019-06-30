@@ -1,8 +1,8 @@
 package com.ecaservice.oauth.service;
 
-import com.ecaservice.oauth.model.UserDetailsImpl;
-import com.ecaservice.oauth.model.entity.UserEntity;
+import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.repository.UserEntityRepository;
+import com.ecaservice.user.model.UserDetailsImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

@@ -9,8 +9,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author Roman Batygin
  */
 @Data
-@ConfigurationProperties("oauth2-resource")
-public class Oauth2ResourceConfig {
+@ConfigurationProperties("oauth2")
+public class Oauth2Config {
 
     /**
      * Application id

@@ -1,4 +1,4 @@
-package com.ecaservice.oauth.model;
+package com.ecaservice.user.model;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -30,5 +30,5 @@ ers-config:
   url: http://evaluation-results-service:8080/evaluation-results-service/ws/
   enabled: true
 
-oauth2-resource:
+oauth2:
   oauthUrl: http://eca-oauth:8080/eca-oauth

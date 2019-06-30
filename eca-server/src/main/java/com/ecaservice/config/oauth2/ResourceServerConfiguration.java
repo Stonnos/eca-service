@@ -33,13 +33,13 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     }
 
     /**
-     * Creates oauth2 resource config bean.
+     * Creates oauth2 config bean.
      *
-     * @return oauth2 resource config bean
+     * @return oauth2 config bean
      */
     @Bean
-    public Oauth2ResourceConfig oauth2ResourceConfig() {
-        return new Oauth2ResourceConfig();
+    public Oauth2Config oauth2Config() {
+        return new Oauth2Config();
     }
 
     /**
@@ -51,10 +51,10 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     @Primary
     public RemoteTokenServices tokenServices() {
         RemoteTokenServices tokenService = new RemoteTokenServices();
-        tokenService.setClientId(oauth2ResourceConfig().getClientId());
-        tokenService.setClientSecret(oauth2ResourceConfig().getSecret());
+        tokenService.setClientId(oauth2Config().getClientId());
+        tokenService.setClientSecret(oauth2Config().getSecret());
         tokenService.setCheckTokenEndpointUrl(
-                String.format(CHECK_TOKEN_URL_FORMAT, oauth2ResourceConfig().getOauthUrl()));
+                String.format(CHECK_TOKEN_URL_FORMAT, oauth2Config().getOauthUrl()));
         return tokenService;
     }
 

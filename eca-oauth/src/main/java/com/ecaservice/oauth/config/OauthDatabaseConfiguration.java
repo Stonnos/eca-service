@@ -1,6 +1,6 @@
 package com.ecaservice.oauth.config;
 
-import com.ecaservice.oauth.model.entity.UserEntity;
+import com.ecaservice.oauth.entity.UserEntity;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;

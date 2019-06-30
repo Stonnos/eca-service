@@ -1,6 +1,6 @@
 package com.ecaservice.oauth.repository;
 
-import com.ecaservice.oauth.model.entity.UserEntity;
+import com.ecaservice.oauth.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
