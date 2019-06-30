@@ -101,6 +101,12 @@
     <changeSet id="7" author="roman.batygin@mail.ru" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="user_role"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from user_entity where login = 'admin'
+            </sqlCheck>
+            <sqlCheck expectedResult="1">
+                select count(*) from role_entity where id = 1
+            </sqlCheck>
             <sqlCheck expectedResult="0">
                 select count(*) from user_role where user_id = (select id from user_entity where login = 'admin') and role_id = 1
             </sqlCheck>
