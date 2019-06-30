@@ -12,9 +12,10 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
 import javax.inject.Inject;
+import javax.sql.DataSource;
 
 /**
  * Oauth2 authorization server configuration.
@@ -27,29 +28,22 @@ public class AuthServerOauth2Configuration extends AuthorizationServerConfigurer
 
     private final AuthenticationManager authenticationManager;
     private final UserDetailsServiceImpl userDetailsService;
+    private final DataSource oauthDataSource;
 
     /**
      * Constructor with spring dependency injection.
      *
      * @param authenticationManager - authentication manager bean
      * @param userDetailsService    - user details service bean
+     * @param oauthDataSource       - oauth data source bean
      */
     @Inject
-    public AuthServerOauth2Configuration(
-            AuthenticationManager authenticationManager,
-            UserDetailsServiceImpl userDetailsService) {
+    public AuthServerOauth2Configuration(AuthenticationManager authenticationManager,
+                                         UserDetailsServiceImpl userDetailsService,
+                                         DataSource oauthDataSource) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
-    }
-
-    /**
-     * Creates oauth2 config bean.
-     *
-     * @return oauth2 config bean
-     */
-    @Bean
-    public Oauth2Config oauth2Config() {
-        return new Oauth2Config();
+        this.oauthDataSource = oauthDataSource;
     }
 
     @Override
@@ -59,12 +53,7 @@ public class AuthServerOauth2Configuration extends AuthorizationServerConfigurer
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.inMemory()
-                .withClient(oauth2Config().getClientId())
-                .secret(String.format("{noop}%s", oauth2Config().getSecret()))
-                .authorizedGrantTypes(oauth2Config().getGrantTypes())
-                .scopes(oauth2Config().getScopes())
-                .autoApprove(true);
+        clients.jdbc(oauthDataSource);
     }
 
     @Override
@@ -80,7 +69,7 @@ public class AuthServerOauth2Configuration extends AuthorizationServerConfigurer
      */
     @Bean
     public TokenStore tokenStore() {
-        return new InMemoryTokenStore();
+        return new JdbcTokenStore(oauthDataSource);
     }
 
     /**

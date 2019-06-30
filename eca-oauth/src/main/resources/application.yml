@@ -17,9 +17,3 @@ spring:
   liquibase:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
-
-oauth2:
-  clientId: eca
-  secret: web_secret
-  grantTypes: password,refresh_token
-  scopes: web

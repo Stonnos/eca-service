@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Creates oauth2 tables -->
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="oauth_client_details"/>
+            </not>
+        </preConditions>
+        <createTable tableName="oauth_client_details">
+            <column name="client_id" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="resource_ids" type="varchar(255)"/>
+            <column name="client_secret" type="varchar(255)"/>
+            <column name="scope" type="varchar(255)"/>
+            <column name="authorized_grant_types" type="varchar(255)"/>
+            <column name="web_server_redirect_uri" type="varchar(255)"/>
+            <column name="authorities" type="varchar(255)"/>
+            <column name="access_token_validity" type="integer"/>
+            <column name="refresh_token_validity" type="integer"/>
+            <column name="additional_information" type="varchar(4096)"/>
+            <column name="autoapprove" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="oauth_client_token"/>
+            </not>
+        </preConditions>
+        <createTable tableName="oauth_client_token">
+            <column name="token_id" type="varchar(255)"/>
+            <column name="token" type="bytea"/>
+            <column name="authentication_id" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_name" type="varchar(255)"/>
+            <column name="client_id" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="oauth_access_token"/>
+            </not>
+        </preConditions>
+        <createTable tableName="oauth_access_token">
+            <column name="token_id" type="varchar(255)"/>
+            <column name="token" type="bytea"/>
+            <column name="authentication_id" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_name" type="varchar(255)"/>
+            <column name="client_id" type="varchar(255)"/>
+            <column name="authentication" type="bytea"/>
+            <column name="refresh_token" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="oauth_refresh_token"/>
+            </not>
+        </preConditions>
+        <createTable tableName="oauth_refresh_token">
+            <column name="token_id" type="varchar(255)"/>
+            <column name="token" type="bytea"/>
+            <column name="authentication" type="bytea"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="oauth_code"/>
+            </not>
+        </preConditions>
+        <createTable tableName="oauth_code">
+            <column name="code" type="varchar(255)"/>
+            <column name="authentication" type="bytea"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="6" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="oauth_approvals"/>
+            </not>
+        </preConditions>
+        <createTable tableName="oauth_approvals">
+            <column name="userid" type="varchar(255)"/>
+            <column name="clientid" type="varchar(255)"/>
+            <column name="scope" type="varchar(255)"/>
+            <column name="status" type="varchar(10)"/>
+            <column name="expiresat" type="timestamp"/>
+            <column name="lastmodifiedat" type="timestamp"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Insert eca client data -->
+    <changeSet id="7" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="oauth_client_details"/>
+            <sqlCheck expectedResult="0">
+                select count(*) from oauth_client_details where client_id = 'eca'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="oauth_client_details">
+            <column name="client_id" value="eca"/>
+            <column name="client_secret" value="web_secret"/>
+            <column name="scope" value="web"/>
+            <column name="authorized_grant_types" value="password,refresh_token"/>
+            <column name="refresh_token_validity" valueNumeric="36000"/>
+            <column name="access_token_validity" valueNumeric="14400"/>
+            <column name="autoapprove" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
