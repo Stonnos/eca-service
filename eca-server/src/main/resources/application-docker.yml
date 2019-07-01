@@ -2,7 +2,7 @@ spring:
   ## Eca datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://eca-db:5432/eca
+    jdbc-url: jdbc:postgresql://eca-db:5432/eca
     username: postgres
     password: postgres
   ## Token datasource properties
@@ -13,7 +13,7 @@ spring:
     password: postgres
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
 
 ## Swagger properties
