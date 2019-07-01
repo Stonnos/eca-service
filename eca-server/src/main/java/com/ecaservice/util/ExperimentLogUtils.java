@@ -4,7 +4,7 @@ import com.ecaservice.exception.ExperimentException;
 import org.slf4j.Logger;
 
 /**
- * Utility class for logging.
+ * Utility class for experiment logging.
  *
  * @author Roman Batygin
  */
@@ -19,8 +19,10 @@ public class ExperimentLogUtils {
      * @param message error message
      * @param logger  logger
      */
-    public static void error(String message, Logger logger) {
-        logger.error(message);
+    public static void logAndThrowError(String message, Logger logger) {
+        if (logger.isErrorEnabled()) {
+            logger.error(message);
+        }
         throw new ExperimentException(message);
     }
 }

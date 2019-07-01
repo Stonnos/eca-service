@@ -82,10 +82,11 @@ public abstract class AbstractFilter<T> implements Specification<T> {
     }
 
     private Predicate buildPredicateForGlobalFilter(Root<T> root, CriteriaBuilder criteriaBuilder) {
+        String trimQuery = searchQuery.trim().toLowerCase();
         Predicate[] predicates = globalFilterFields.stream().map(field -> {
             Expression<String> expression = buildExpression(root, field);
             return criteriaBuilder.like(criteriaBuilder.lower(expression),
-                    MessageFormat.format(LIKE_FORMAT, searchQuery.trim().toLowerCase()));
+                    MessageFormat.format(LIKE_FORMAT, trimQuery));
         }).toArray(Predicate[]::new);
         return criteriaBuilder.or(predicates);
     }

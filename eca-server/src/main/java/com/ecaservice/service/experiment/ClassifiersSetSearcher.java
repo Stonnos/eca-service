@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.ecaservice.util.ExperimentLogUtils.error;
+import static com.ecaservice.util.ExperimentLogUtils.logAndThrowError;
 
 /**
  * Service for searching the best individual classifiers set by the criterion of accuracy maximization.
@@ -135,7 +135,7 @@ public class ClassifiersSetSearcher {
                 }
             }
         } catch (Exception ex) {
-            error(String.format("There was an error while creating individual classifiers: %s",
+            logAndThrowError(String.format("There was an error while creating individual classifiers: %s",
                     ex.getMessage()), log);
         }
         log.info("{} individual classifiers has been successfully created.",

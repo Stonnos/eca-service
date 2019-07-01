@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.ecaservice.util.ExperimentLogUtils.error;
+import static com.ecaservice.util.ExperimentLogUtils.logAndThrowError;
 
 /**
  * Service for saving individual classifiers input options into database.
@@ -66,13 +66,13 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
      */
     public void saveClassifiersOptions() {
         if (StringUtils.isEmpty(experimentConfig.getIndividualClassifiersStoragePath())) {
-            error("Classifiers input options directory doesn't specified.", log);
+            logAndThrowError("Classifiers input options directory doesn't specified.", log);
         }
         File classifiersOptionsDir = new File(getClass().getClassLoader().getResource(
                 experimentConfig.getIndividualClassifiersStoragePath()).getFile());
         Collection<File> modelFiles = FileUtils.listFiles(classifiersOptionsDir, null, true);
         if (CollectionUtils.isEmpty(modelFiles)) {
-            error("Classifiers input options directory is empty.", log);
+            logAndThrowError("Classifiers input options directory is empty.", log);
         } else {
             int version = classifierOptionsDatabaseModelRepository.findLatestVersion();
             List<ClassifierOptionsDatabaseModel> latestOptions =
@@ -118,7 +118,7 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
                 classifierOptionsDatabaseModels.add(
                         createClassifierOptions(objectMapper.readValue(modelFile, ClassifierOptions.class), version));
             } catch (IOException ex) {
-                error(String.format("There was an error while parsing json file '%s': %s", modelFile.getAbsolutePath(),
+                logAndThrowError(String.format("There was an error while parsing json file '%s': %s", modelFile.getAbsolutePath(),
                         ex.getMessage()), log);
             }
         }
@@ -135,7 +135,7 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
             classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
             return classifierOptionsDatabaseModel;
         } catch (IOException ex) {
-            error(String.format("There was an error while parsing object [%s]: %s", classifierOptions, ex.getMessage()),
+            logAndThrowError(String.format("There was an error while parsing object [%s]: %s", classifierOptions, ex.getMessage()),
                     log);
         }
         return classifierOptionsDatabaseModel;
