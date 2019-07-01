@@ -63,11 +63,7 @@ ECA server v4.0
 4) ers-config - настройки интеграции с сервисом evaluation-results-service
    * ers-config.url - url конечной точки ERS сервиса
    * ers-config.enabled - выключатель для отправки результатов классификации (вкл./выкл.)
-5) oauth2-resource - настройки сервера ресурсов
-   * oauth2-resource.clientId - идентификатор клиента приложения  
-   * oauth2-resource.secret - секретный ключ или пароль клиента
-   * oauth2-resource.oauthUrl - url сервера авторизации
-6) common - общие настройки
+5) common - общие настройки
    * common.classifierOptionsCacheDurationInDays - период хранения оптимальных настроек классификатора
       полученных от внешнего сервиса ERS
    * common.threadPoolSize - число потоков для асинхронных задач
@@ -107,13 +103,13 @@ mvn clean install -Pquality
 
 2. Далее для сборки проекта и создания образа проекта нужно выполнить команду:
 
-mvn clean install dockerfile:build
+    mvn clean install dockerfile:build
 
 3. Используя пакетный менеджер docker-compose, создать docker контейнеры с помощью команды:
 
-docker-compose up -d (для ОС семейства Linux)
+    docker-compose up -d (для ОС семейства Linux)
 
-docker-compose -f docker-compose.yaml -f docker-compose.win10.yaml up (для Windows 10)
+    docker-compose -f docker-compose.yaml -f docker-compose.win10.yaml up (для Windows 10)
 
 ВАЖНО! Данную команду необходимо выполнять из корневой папки проекта.
 
