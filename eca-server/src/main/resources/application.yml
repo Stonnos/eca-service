@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: eca-server
   ## Eca datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -29,6 +31,12 @@ spring:
   liquibase:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
+  boot:
+    admin:
+      client:
+        instance:
+          service-url: http://localhost:8085/eca-server
+        url: http://localhost:8085/monitoring
 
 ## Application common configs
 common:
@@ -100,3 +108,12 @@ experiment:
 ers-config:
   url: http://localhost:8085/evaluation-results-service/ws/
   enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
