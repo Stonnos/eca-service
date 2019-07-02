@@ -71,6 +71,8 @@ services:
     container_name: monitoring
     environment:
       TZ: "Asia/Novosibirsk"
+    ports:
+      - "8085:8080"
     networks:
       - default
 
