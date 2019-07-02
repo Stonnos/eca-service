@@ -15,6 +15,12 @@ spring:
     hibernate:
       ddl-auto: validate
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+  boot:
+    admin:
+      client:
+        instance:
+          service-url: http://eca-server:8080/eca-server
+        url: http://monitoring:8080
 
 ## Swagger properties
 swagger2:

@@ -31,6 +31,7 @@ services:
       - default
     depends_on:
       - eca-db
+      - monitoring
 
   eca-oauth:
     image: eca-oauth
@@ -62,6 +63,14 @@ services:
       TZ: "Asia/Novosibirsk"
     ports:
       - "8080:8080"
+    networks:
+      - default
+
+  monitoring:
+    image: monitoring
+    container_name: monitoring
+    environment:
+      TZ: "Asia/Novosibirsk"
     networks:
       - default
 

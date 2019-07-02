@@ -6,6 +6,9 @@ zuul:
       oauth:
         path: /auth-server/**
         url: http://eca-oauth:8080/eca-oauth
+      monitoring:
+        path: /monitoring/**
+        url: http://monitoring:8080
       frontend:
         path: /**
         url: http://eca-web:8080
