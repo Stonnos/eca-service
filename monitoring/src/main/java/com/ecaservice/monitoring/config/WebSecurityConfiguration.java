@@ -23,13 +23,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         successHandler.setTargetUrlParameter(TARGET_URL_PARAMETER);
         successHandler.setDefaultTargetUrl(DEFAULT_TARGET_URL);
         http.authorizeRequests()
-                .antMatchers("/assets/**").permitAll()
-                .antMatchers("/login.html").permitAll()
+                .antMatchers("/assets/**", "/login.html").permitAll()
                 .anyRequest().authenticated().and()
                 .formLogin().loginPage("/login.html")
                 .successHandler(successHandler).and()
                 .logout().logoutUrl("/logout").and()
-                .httpBasic().and()
-                .csrf().disable();
+                .httpBasic().and().csrf().disable();
     }
 }
