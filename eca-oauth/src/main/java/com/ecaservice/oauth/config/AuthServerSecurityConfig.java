@@ -20,7 +20,7 @@ import javax.inject.Inject;
  */
 @Configuration
 @EnableWebSecurity
-public class ServerSecurityConfig extends WebSecurityConfigurerAdapter {
+public class AuthServerSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsServiceImpl userDetailsService;
 
@@ -30,7 +30,7 @@ public class ServerSecurityConfig extends WebSecurityConfigurerAdapter {
      * @param userDetailsService - user details service bean
      */
     @Inject
-    public ServerSecurityConfig(UserDetailsServiceImpl userDetailsService) {
+    public AuthServerSecurityConfig(UserDetailsServiceImpl userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
