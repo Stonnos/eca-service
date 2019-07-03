@@ -40,6 +40,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     @Override
     public void configure(final HttpSecurity http) throws Exception {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .and().authorizeRequests().antMatchers("/actuator/**").authenticated().and().httpBasic()
                 .and().authorizeRequests().anyRequest().permitAll();
     }
 

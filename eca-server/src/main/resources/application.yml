@@ -31,15 +31,23 @@ spring:
   liquibase:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
+  security:
+    user:
+      name: admin
+      password: secret
   boot:
     admin:
       client:
         instance:
           service-url: http://localhost:8085/eca-server
+          metadata:
+            user:
+              name: ${spring.security.user.name}
+              password: ${spring.security.user.password}
         url: http://localhost:8085/monitoring
         username: admin
         password: secret
-        read-timeout: -1
+        read-timeout: 1m
 
 ## Application common configs
 common:
@@ -119,4 +127,4 @@ management:
         include: '*'
   endpoint:
     health:
-      show-details: always
+      show-details: when_authorized
