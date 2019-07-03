@@ -9,3 +9,9 @@ spring:
     hibernate:
       ddl-auto: validate
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+  boot:
+    admin:
+      client:
+        instance:
+          service-url: http://eca-oauth:8080/eca-oauth
+        url: http://monitoring:8080
