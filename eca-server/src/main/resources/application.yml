@@ -96,7 +96,7 @@ experiment:
 
   data:
     storagePath: D:/experiment/data/
-    fileFormat: data_%s.arff
+    fileFormat: data_%s.xlsx
     dateFormat: yyyy-MM-dd HH:mm:ss
   ensemble:
     numIterations: 25
