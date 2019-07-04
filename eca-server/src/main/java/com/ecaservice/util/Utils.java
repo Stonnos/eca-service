@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Utility class.
@@ -51,6 +52,7 @@ public class Utils {
      */
     public static EvaluationResponse buildErrorResponse(String errorMessage) {
         EvaluationResponse evaluationResponse = new EvaluationResponse();
+        evaluationResponse.setRequestId(UUID.randomUUID().toString());
         evaluationResponse.setStatus(TechnicalStatus.ERROR);
         evaluationResponse.setErrorMessage(errorMessage);
         return evaluationResponse;
