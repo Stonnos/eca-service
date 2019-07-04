@@ -3,13 +3,14 @@
     <p-panel class="statistics">
       <p-header>
         <div class="ui-g">
-          <div class="ui-g-4 ui-g-offset-1">
-            <label class="filter-label">Дата создания заявки с:</label>
-            <p-calendar [showIcon]="true" [showButtonBar]="true" [(ngModel)]="createdDateFrom"></p-calendar>
-          </div>
-          <div class="ui-g-4">
-            <label class="filter-label">Дата создания заявки по:</label>
-            <p-calendar [showIcon]="true" [showButtonBar]="true" [(ngModel)]="createdDateTo"></p-calendar>
+          <div class="ui-g-4 ui-g-offset-3">
+            <label class="filter-label">Дата создания заявки:</label>
+            <p-calendar selectionMode="range"
+                        [showIcon]="true"
+                        [showButtonBar]="true"
+                        [(ngModel)]="createdDateRange"
+                        [maxDate]="now">
+            </p-calendar>
           </div>
           <div class="ui-g-2">
             <button

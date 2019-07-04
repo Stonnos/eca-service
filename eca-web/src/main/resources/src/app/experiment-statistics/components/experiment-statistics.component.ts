@@ -12,13 +12,13 @@ import { RandomColor } from "angular-randomcolor";
 })
 export class ExperimentStatisticsComponent implements OnInit {
 
+  public now: Date = new Date();
+
   public dataSet: any;
 
   public total: number = 0;
 
-  public createdDateFrom: Date;
-
-  public createdDateTo: Date;
+  public createdDateRange: Date[];
 
   public dateFormat: string = "yyyy-MM-dd";
 
@@ -45,7 +45,9 @@ export class ExperimentStatisticsComponent implements OnInit {
   }
 
   public onShow() {
-    this.experimentsService.getExperimentTypesStatistics(this.transformDate(this.createdDateFrom), this.transformDate(this.createdDateTo))
+    const createdFrom: Date = this.createdDateRange && this.createdDateRange[0];
+    const createdTo: Date = this.createdDateRange && this.createdDateRange[1];
+    this.experimentsService.getExperimentTypesStatistics(this.transformDate(createdFrom), this.transformDate(createdTo))
       .subscribe((chartData: ChartDataDto[]) => {
       this.total = chartData.map((chartData: ChartDataDto) => chartData.count).reduce((sum, current) => sum + current);
         this.dataSet = {
