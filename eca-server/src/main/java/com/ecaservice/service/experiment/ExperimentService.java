@@ -45,6 +45,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -276,7 +277,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
         Map<RequestStatus, Long> requestStatusesMap =
                 experimentRepository.getRequestStatusesStatistics().stream().collect(
                         Collectors.toMap(RequestStatusStatistics::getRequestStatus,
-                                RequestStatusStatistics::getRequestsCount));
+                                RequestStatusStatistics::getRequestsCount, (v1, v2) -> v1, TreeMap::new));
         Arrays.stream(RequestStatus.values()).filter(
                 requestStatus -> !requestStatusesMap.containsKey(requestStatus)).forEach(
                 requestStatus -> requestStatusesMap.put(requestStatus, 0L));
@@ -305,7 +306,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
         Map<ExperimentType, Long> experimentTypesMap =
                 entityManager.createQuery(criteria).getResultList().stream().collect(
                         Collectors.toMap(tuple -> tuple.get(0, ExperimentType.class),
-                                tuple -> tuple.get(1, Long.class)));
+                                tuple -> tuple.get(1, Long.class), (v1, v2) -> v1, TreeMap::new));
         Arrays.stream(ExperimentType.values()).filter(
                 requestStatus -> !experimentTypesMap.containsKey(requestStatus)).forEach(
                 requestStatus -> experimentTypesMap.put(requestStatus, 0L));

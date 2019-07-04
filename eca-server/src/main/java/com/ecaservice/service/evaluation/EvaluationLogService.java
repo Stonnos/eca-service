@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 /**
@@ -71,7 +72,7 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
         Map<RequestStatus, Long> requestStatusesMap =
                 evaluationLogRepository.getRequestStatusesStatistics().stream().collect(
                         Collectors.toMap(RequestStatusStatistics::getRequestStatus,
-                                RequestStatusStatistics::getRequestsCount));
+                                RequestStatusStatistics::getRequestsCount, (v1, v2) -> v1, TreeMap::new));
         Arrays.stream(RequestStatus.values()).filter(
                 requestStatus -> !requestStatusesMap.containsKey(requestStatus)).forEach(
                 requestStatus -> requestStatusesMap.put(requestStatus, 0L));
