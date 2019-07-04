@@ -9,8 +9,8 @@
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="filter_dictionary_value"/>
         </preConditions>
-        <sql>
-            DELETE FROM filter_dictionary_value WHERE value IS NULL;
-        </sql>
+        <delete tableName="filter_dictionary_value">
+            <where>value IS NULL</where>
+        </delete>
     </changeSet>
 </databaseChangeLog>
