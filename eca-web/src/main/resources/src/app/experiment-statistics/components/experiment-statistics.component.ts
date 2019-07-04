@@ -34,6 +34,7 @@ export class ExperimentStatisticsComponent implements OnInit {
     scales: {
       xAxes: [{
         ticks: {
+          stepSize: 10,
           min: 0,
           beginAtZero: true
         }
