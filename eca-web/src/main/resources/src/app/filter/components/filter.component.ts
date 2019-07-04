@@ -8,6 +8,8 @@ import { Filter } from "../model/filter.model";
 })
 export class FilterComponent {
 
+  private maxDate: Date = new Date();
+
   @Input()
   public filters: Filter[];
 

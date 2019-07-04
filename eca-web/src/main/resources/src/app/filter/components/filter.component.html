@@ -20,7 +20,11 @@
 
         <ng-container *ngSwitchCase="'DATE'">
           <label class="filter-label">{{ filter.label }}</label>
-          <p-calendar [showIcon]="true" [showButtonBar]="true" [(ngModel)]="filter.currentValue"></p-calendar>
+          <p-calendar [showIcon]="true"
+                      [showButtonBar]="true"
+                      [(ngModel)]="filter.currentValue"
+                      [maxDate]="maxDate">
+          </p-calendar>
         </ng-container>
 
         <ng-container *ngSwitchDefault>
