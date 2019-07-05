@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * Filter request model.
  *
@@ -20,9 +22,9 @@ public class FilterRequestDto {
     private String name;
 
     /**
-     * Column value
+     * Column values
      */
-    private String value;
+    private List<String> values;
 
     /**
      * Filter field type {@link FilterFieldType}

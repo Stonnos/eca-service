@@ -16,23 +16,16 @@ public interface MatchModeVisitor<T> {
     T caseEquals();
 
     /**
-     * Method executed in case if match mode is GTE.
-     *
-     * @return generic object
-     */
-    T caseGte();
-
-    /**
-     * Method executed in case if match mode is LTE.
-     *
-     * @return generic object
-     */
-    T caseLte();
-
-    /**
      * Method executed in case if match mode is LIKE.
      *
      * @return generic object
      */
     T caseLike();
+
+    /**
+     * Method executed in case if match mode is RANGE.
+     *
+     * @return generic object
+     */
+    T caseRange();
 }

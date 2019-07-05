@@ -20,32 +20,22 @@ public enum MatchMode {
     },
 
     /**
-     * Less or equals than match mode
-     */
-    LTE {
-        @Override
-        public <T> T handle(MatchModeVisitor<T> matchModeVisitor) {
-            return matchModeVisitor.caseLte();
-        }
-    },
-
-    /**
-     * Greater or equals than match mode
-     */
-    GTE {
-        @Override
-        public <T> T handle(MatchModeVisitor<T> matchModeVisitor) {
-            return matchModeVisitor.caseGte();
-        }
-    },
-
-    /**
      * Like match mode
      */
     LIKE {
         @Override
         public <T> T handle(MatchModeVisitor<T> matchModeVisitor) {
             return matchModeVisitor.caseLike();
+        }
+    },
+
+    /**
+     * Range match mode
+     */
+    RANGE {
+        @Override
+        public <T> T handle(MatchModeVisitor<T> matchModeVisitor) {
+            return matchModeVisitor.caseRange();
         }
     };
 
