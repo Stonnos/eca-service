@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 
 import javax.inject.Inject;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -113,11 +114,11 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
         evaluationLogRepository.save(evaluationLog4);
         PageRequestDto pageRequestDto =
                 new PageRequestDto(0, 10, EvaluationLog_.CLASSIFIER_NAME, false, null, newArrayList());
+        pageRequestDto.getFilters().add(new FilterRequestDto(EvaluationLog_.EVALUATION_STATUS,
+                Collections.singletonList(RequestStatus.FINISHED.name()), FilterFieldType.REFERENCE, MatchMode.EQUALS));
         pageRequestDto.getFilters().add(
-                new FilterRequestDto(EvaluationLog_.EVALUATION_STATUS, RequestStatus.FINISHED.name(),
-                        FilterFieldType.REFERENCE, MatchMode.EQUALS));
-        pageRequestDto.getFilters().add(
-                new FilterRequestDto(EvaluationLog_.CLASSIFIER_NAME, "C", FilterFieldType.TEXT, MatchMode.LIKE));
+                new FilterRequestDto(EvaluationLog_.CLASSIFIER_NAME, Collections.singletonList("C"),
+                        FilterFieldType.TEXT, MatchMode.LIKE));
         Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);
         List<EvaluationLog> evaluationLogs = evaluationLogPage.getContent();
         assertThat(evaluationLogPage).isNotNull();
@@ -142,8 +143,8 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
         PageRequestDto pageRequestDto =
                 new PageRequestDto(0, 10, EvaluationLog_.CLASSIFIER_NAME, false, null, newArrayList());
         pageRequestDto.getFilters().add(
-                new FilterRequestDto("instancesInfo.relationName", "Dat", FilterFieldType.TEXT,
-                        MatchMode.LIKE));
+                new FilterRequestDto("instancesInfo.relationName", Collections.singletonList("Dat"),
+                        FilterFieldType.TEXT, MatchMode.LIKE));
         Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();
         assertThat(evaluationLogPage.getTotalElements()).isOne();
@@ -169,10 +170,8 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
         evaluationLogRepository.saveAll(Arrays.asList(evaluationLog, evaluationLog1, evaluationLog2));
         PageRequestDto pageRequestDto =
                 new PageRequestDto(0, 10, EvaluationLog_.CREATION_DATE, false, "car", newArrayList());
-        pageRequestDto.getFilters().add(
-                new FilterRequestDto(EvaluationLog_.EVALUATION_STATUS, RequestStatus.FINISHED.name(),
-                        FilterFieldType.REFERENCE,
-                        MatchMode.EQUALS));
+        pageRequestDto.getFilters().add(new FilterRequestDto(EvaluationLog_.EVALUATION_STATUS,
+                Collections.singletonList(RequestStatus.FINISHED.name()), FilterFieldType.REFERENCE, MatchMode.EQUALS));
         when(filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG)).thenReturn(
                 Arrays.asList(EvaluationLog_.CLASSIFIER_NAME, EvaluationLog_.REQUEST_ID, "instancesInfo.relationName"));
         Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);

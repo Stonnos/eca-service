@@ -84,9 +84,8 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
                 Arrays.asList(requestModel, requestModel1, requestModel2, requestModel3));
         PageRequestDto pageRequestDto =
                 new PageRequestDto(0, 10, ClassifierOptionsRequestModel_.REQUEST_DATE, false, "gla", newArrayList());
-        pageRequestDto.getFilters().add(
-                new FilterRequestDto(ClassifierOptionsRequestModel_.RESPONSE_STATUS, ResponseStatus.SUCCESS.name(),
-                        FilterFieldType.REFERENCE, MatchMode.EQUALS));
+        pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.RESPONSE_STATUS,
+                Collections.singletonList(ResponseStatus.SUCCESS.name()), FilterFieldType.REFERENCE, MatchMode.EQUALS));
         when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST)).thenReturn(
                 Arrays.asList(ClassifierOptionsRequestModel_.RELATION_NAME, ClassifierOptionsRequestModel_.REQUEST_ID));
         Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
@@ -108,9 +107,8 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
         classifierOptionsRequestModelRepository.save(requestModel3);
         PageRequestDto pageRequestDto =
                 new PageRequestDto(0, 10, ClassifierOptionsRequestModel_.REQUEST_ID, false, null, newArrayList());
-        pageRequestDto.getFilters().add(
-                new FilterRequestDto(ClassifierOptionsRequestModel_.REQUEST_ID, requestModel2.getRequestId(),
-                        FilterFieldType.TEXT, MatchMode.EQUALS));
+        pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.REQUEST_ID,
+                Collections.singletonList(requestModel2.getRequestId()), FilterFieldType.TEXT, MatchMode.EQUALS));
         Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
                 classifierOptionsRequestService.getNextPage(pageRequestDto);
         List<ClassifierOptionsRequestModel> classifierOptionsRequestModels =
