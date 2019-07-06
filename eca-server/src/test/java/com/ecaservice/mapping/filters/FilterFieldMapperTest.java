@@ -38,6 +38,7 @@ public class FilterFieldMapperTest {
         filterField.setFieldName(NAME);
         filterField.setFilterFieldType(FilterFieldType.REFERENCE);
         filterField.setMatchMode(MatchMode.EQUALS);
+        filterField.setMultiple(true);
         filterField.setDictionary(new FilterDictionary());
         FilterFieldDto filterFieldDto = filterFieldMapper.map(filterField);
         Assertions.assertThat(filterFieldDto).isNotNull();
@@ -46,6 +47,7 @@ public class FilterFieldMapperTest {
         Assertions.assertThat(filterFieldDto.getFieldOrder()).isEqualTo(filterField.getFieldOrder());
         Assertions.assertThat(filterFieldDto.getFilterFieldType()).isEqualTo(filterField.getFilterFieldType());
         Assertions.assertThat(filterFieldDto.getMatchMode()).isEqualTo(filterField.getMatchMode());
+        Assertions.assertThat(filterFieldDto.isMultiple()).isEqualTo(filterField.isMultiple());
         Assertions.assertThat(filterFieldDto.getDictionary()).isNotNull();
     }
 

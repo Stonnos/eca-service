@@ -63,6 +63,11 @@ public class FilterField {
     private MatchMode matchMode;
 
     /**
+     * Allow multiple values
+     */
+    private boolean multiple;
+
+    /**
      * Filter dictionary
      */
     @ManyToOne

@@ -44,6 +44,12 @@ public class FilterFieldDto {
     private MatchMode matchMode;
 
     /**
+     * Allow multiple values
+     */
+    @ApiModelProperty(value = "Allow multiple values")
+    private boolean multiple;
+
+    /**
      * Filter dictionary
      */
     @ApiModelProperty(value = "Filter dictionary")
