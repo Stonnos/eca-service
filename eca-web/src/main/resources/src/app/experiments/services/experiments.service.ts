@@ -12,13 +12,14 @@ import { Observable } from "rxjs/internal/Observable";
 import { ConfigService } from "../../config.service";
 import { AuthenticationKeys } from "../../auth/model/auth.keys";
 import { ExperimentRequest } from "../../create-experiment/model/experiment-request.model";
+import { PageRequestService } from "../../common/services/page-request.service";
 
 @Injectable()
 export class ExperimentsService {
 
   private serviceUrl = ConfigService.appConfig.apiUrl + '/experiment';
 
-  public constructor(private http: HttpClient) {
+  public constructor(private http: HttpClient, private pageRequestService: PageRequestService) {
   }
 
   public getExperiments(pageRequest: PageRequestDto): Observable<PageDto<ExperimentDto>> {
@@ -26,17 +27,7 @@ export class ExperimentsService {
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
-    let params = new HttpParams().set('page', pageRequest.page.toString())
-      .set('size', pageRequest.size.toString())
-      .set('sortField', pageRequest.sortField)
-      .set('ascending', pageRequest.ascending.toString())
-      .set('searchQuery', pageRequest.searchQuery);
-    pageRequest.filters.map((filter, index) => {
-      params = params.set(`filters['${index}'].name`, filter.name);
-      params = params.set(`filters['${index}'].value`, filter.value);
-      params = params.set(`filters['${index}'].filterFieldType`, filter.filterFieldType);
-      params = params.set(`filters['${index}'].matchMode`, filter.matchMode);
-    });
+    const params: HttpParams = this.pageRequestService.convertToHttpRequestParams(pageRequest);
     const options = { headers: headers, params: params };
     return this.http.get<PageDto<ExperimentDto>>(this.serviceUrl + '/list', options);
   }

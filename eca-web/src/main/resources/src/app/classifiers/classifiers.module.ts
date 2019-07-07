@@ -7,10 +7,12 @@ import { ClassifiersService } from "./services/classifiers.service";
 import { FilterModule } from "../filter/filter.module";
 import { RequestStatusesStatisticsModule } from "../request-statuses-statistics/request-statuses-statistics.module";
 import { EvaluationResultsModule } from "../evaluation-results/evaluation-results.module";
+import { SharedModule } from "../common/shared.module";
 
 @NgModule({
   imports: [
     CommonModule,
+    SharedModule,
     FormsModule,
     UiComponentsModule,
     FilterModule,

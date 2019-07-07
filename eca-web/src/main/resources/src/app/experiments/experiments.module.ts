@@ -8,10 +8,12 @@ import { FilterModule } from "../filter/filter.module";
 import { RequestStatusesStatisticsModule } from "../request-statuses-statistics/request-statuses-statistics.module";
 import { ErsReportModule } from "../ers-report/ers-report.module";
 import { CreateExperimentModule } from "../create-experiment/create-experiment.module";
+import { SharedModule } from "../common/shared.module";
 
 @NgModule({
   imports: [
     CommonModule,
+    SharedModule,
     FormsModule,
     UiComponentsModule,
     FilterModule,
