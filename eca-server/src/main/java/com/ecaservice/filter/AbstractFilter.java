@@ -181,7 +181,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
         return filterRequestDto.getFilterFieldType().handle(new FilterFieldTypeVisitor<Predicate>() {
             @Override
             public Predicate caseText() {
-                return criteriaBuilder.in(expression).in(values);
+                return expression.in(values);
             }
 
             @Override
@@ -197,8 +197,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
                     PropertyDescriptor propertyDescriptor = new PropertyDescriptor(filterRequestDto.getName(), clazz);
                     String getter = propertyDescriptor.getReadMethod().getName();
                     Class enumClazz = clazz.getMethod(getter).getReturnType();
-                    return criteriaBuilder.in(expression).in(
-                            values.stream().map(value -> Enum.valueOf(enumClazz, value)).collect(Collectors.toList()));
+                    return expression.in(values.stream().map(value -> Enum.valueOf(enumClazz, value)).collect(Collectors.toList()));
                 } catch (Exception ex) {
                     throw new IllegalStateException(ex.getMessage());
                 }
