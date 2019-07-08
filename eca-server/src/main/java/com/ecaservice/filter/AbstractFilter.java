@@ -112,7 +112,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
         return filterRequestDto.getMatchMode().handle(new MatchModeVisitor<Predicate>() {
             @Override
             public Predicate caseEquals() {
-                return buildEqualPredicate(filterRequestDto, values, root, criteriaBuilder);
+                return buildEqualPredicate(filterRequestDto, values, root);
             }
 
             @Override
@@ -175,8 +175,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
         });
     }
 
-    private Predicate buildEqualPredicate(FilterRequestDto filterRequestDto, List<String> values, Root<T> root,
-                                          CriteriaBuilder criteriaBuilder) {
+    private Predicate buildEqualPredicate(FilterRequestDto filterRequestDto, List<String> values, Root<T> root) {
         Expression<?> expression = buildExpression(root, filterRequestDto.getName());
         return filterRequestDto.getFilterFieldType().handle(new FilterFieldTypeVisitor<Predicate>() {
             @Override
