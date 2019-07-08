@@ -117,32 +117,17 @@ export abstract class BaseListComponent<T> {
   }
 
   private transformFilterValues(filter: Filter): string[] {
-    if (filter.multiple) {
-      return this.transformMultipleValues(filter);
-    } else {
-      return [this.transformSingleValue(filter)];
-    }
+    return filter.multiple ? this.transformValues(filter, filter.currentValues) : this.transformValues(filter, filter.currentValue);
   }
 
-  private transformSingleValue(filter: Filter): string {
+  private transformValues(filter: Filter, ...values: any[]): string[] {
     switch (filter.filterFieldType) {
       case FilterFieldType.DATE:
-        return this.datePipe.transform(filter.currentValue, this.dateFormat);
+        return values.map((item) => this.datePipe.transform(item, this.dateFormat));
       case FilterFieldType.REFERENCE:
-        return filter.currentValue.value;
+        return values.map((item) => item.value);
       default:
-        return filter.currentValue;
-    }
-  }
-
-  private transformMultipleValues(filter: Filter): string[] {
-    switch (filter.filterFieldType) {
-      case FilterFieldType.DATE:
-        return filter.currentValues.map((item) => this.datePipe.transform(item, this.dateFormat));
-      case FilterFieldType.REFERENCE:
-        return filter.currentValues.map((item) => item.value);
-      default:
-        return filter.currentValues;
+        return values;
     }
   }
 }
