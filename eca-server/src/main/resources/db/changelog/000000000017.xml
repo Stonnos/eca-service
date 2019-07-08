@@ -129,4 +129,18 @@
             <where>filter_template_id = 3 and field_name = 'requestDate' and match_mode = 'GTE'</where>
         </update>
     </changeSet>
+
+    <!-- Set experiment type support multiple values -->
+    <changeSet id="10" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 1 and field_name = 'experimentType'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="filter_field">
+            <column name="multiple" valueBoolean="true"/>
+            <where>filter_template_id = 1 and field_name = 'experimentType'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>
