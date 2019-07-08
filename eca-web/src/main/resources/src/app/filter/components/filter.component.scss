@@ -18,3 +18,18 @@
     margin-top: 15px;
   }
 }
+
+.multi-select::ng-deep {
+
+  .ui-multiselect-label {
+    margin-bottom: 0;
+  }
+
+  .ui-multiselect-item {
+    align-items: center;
+
+    label {
+      margin-bottom: 0;
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Filter } from "../model/filter.model";
+import { MatchMode } from "../../common/model/match-mode.enum";
 
 @Component({
   selector: 'app-filter',
@@ -22,5 +23,16 @@ export class FilterComponent {
 
   public resetFilter() {
     this.filters.forEach(filter => filter.currentValue = null);
+  }
+
+  public getDateSelectionMode(filter: Filter): string {
+    if (filter.multiple) {
+      if (filter.matchMode == MatchMode.RANGE) {
+        return 'range';
+      } else if (filter.matchMode == MatchMode.EQUALS) {
+        return 'multiple';
+      }
+    }
+    return 'single';
   }
 }

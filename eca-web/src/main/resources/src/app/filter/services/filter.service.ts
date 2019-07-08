@@ -67,7 +67,7 @@ export class FilterService {
           return { label: filterValue.label, value: filterValue.value };
         });
       }
-      return new Filter(filter.fieldName, filter.description, filter.filterFieldType, filter.matchMode, null, values);
+      return new Filter(filter.fieldName, filter.description, filter.filterFieldType, filter.matchMode, values);
     });
   }
 }

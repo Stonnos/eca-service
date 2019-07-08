@@ -6,23 +6,37 @@
         <ng-container *ngSwitchCase="'REFERENCE'">
           <div class="form-group">
             <label class="filter-label">{{ filter.label }}</label>
-            <p-dropdown
-              [options]="filter.values"
-              placeholder="Выбрать"
-              optionLabel="label"
-              [showClear]="true"
-              [(ngModel)]="filter.currentValue"
-              [autoWidth]="false"
-              [style]="{'width':'100%'}">
-            </p-dropdown>
+            <div *ngIf="filter.multiple">
+              <p-multiSelect
+                class="multi-select"
+                [options]="filter.values"
+                optionLabel="label"
+                defaultLabel="Выбрать"
+                [maxSelectedLabels]="0"
+                selectedItemsLabel="{0} выбрано"
+                [(ngModel)]="filter.currentValues">
+              </p-multiSelect>
+            </div>
+            <div *ngIf="!filter.multiple">
+              <p-dropdown
+                [options]="filter.values"
+                placeholder="Выбрать"
+                optionLabel="label"
+                [showClear]="true"
+                [(ngModel)]="filter.currentValue"
+                [autoWidth]="false"
+                [style]="{'width':'100%'}">
+              </p-dropdown>
+            </div>
           </div>
         </ng-container>
 
         <ng-container *ngSwitchCase="'DATE'">
           <label class="filter-label">{{ filter.label }}</label>
-          <p-calendar [showIcon]="true"
+          <p-calendar selectionMode="{{ getDateSelectionMode(filter) }}"
+                      [showIcon]="true"
                       [showButtonBar]="true"
-                      [(ngModel)]="filter.currentValue"
+                      [(ngModel)]="filter.multiple ? filter.currentValues : filter.currentValue"
                       [maxDate]="now">
           </p-calendar>
         </ng-container>

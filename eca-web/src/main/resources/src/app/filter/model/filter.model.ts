@@ -9,15 +9,16 @@ export class Filter {
   label: string;
   filterFieldType: FilterFieldType;
   matchMode: MatchMode;
+  multiple: boolean;
   currentValue: any;
+  currentValues: any[];
   values: SelectItem[] = [];
 
-  constructor(name: string, label: string, filterFieldType: FilterFieldType, matchMode: MatchMode, currentValue: string, values?: SelectItem[]) {
+  constructor(name: string, label: string, filterFieldType: FilterFieldType, matchMode: MatchMode, values?: SelectItem[]) {
     this.name = name;
     this.label = label;
     this.filterFieldType = filterFieldType;
     this.matchMode = matchMode;
-    this.currentValue = currentValue;
     this.values = values;
   }
 }
