@@ -187,11 +187,10 @@ public abstract class AbstractFilter<T> implements Specification<T> {
             @Override
             public Predicate caseDate() {
                 Predicate[] predicates = values.stream().map(value -> {
-                    Predicate lowerBoundPredicate =
-                            buildGreaterThanOrEqualPredicate(filterRequestDto, value, root, criteriaBuilder);
-                    Predicate upperBoundPredicate =
-                            buildLessThanOrEqualPredicate(filterRequestDto, value, root, criteriaBuilder);
-                    return criteriaBuilder.and(lowerBoundPredicate, upperBoundPredicate);
+                    Expression<LocalDateTime> expression = buildExpression(root, filterRequestDto.getName());
+                    LocalDate localDate = LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE);
+                    return criteriaBuilder.between(expression, localDate.atStartOfDay(),
+                            localDate.atTime(LocalTime.MAX));
                 }).toArray(Predicate[]::new);
                 return criteriaBuilder.or(predicates);
             }
