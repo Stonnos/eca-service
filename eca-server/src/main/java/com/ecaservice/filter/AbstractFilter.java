@@ -112,7 +112,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
         return filterRequestDto.getMatchMode().handle(new MatchModeVisitor<Predicate>() {
             @Override
             public Predicate caseEquals() {
-                return buildEqualPredicate(filterRequestDto, values, root);
+                return buildEqualPredicate(filterRequestDto, values, root, criteriaBuilder);
             }
 
             @Override
@@ -175,7 +175,8 @@ public abstract class AbstractFilter<T> implements Specification<T> {
         });
     }
 
-    private Predicate buildEqualPredicate(FilterRequestDto filterRequestDto, List<String> values, Root<T> root) {
+    private Predicate buildEqualPredicate(FilterRequestDto filterRequestDto, List<String> values, Root<T> root,
+                                          CriteriaBuilder criteriaBuilder) {
         Expression<?> expression = buildExpression(root, filterRequestDto.getName());
         return filterRequestDto.getFilterFieldType().handle(new FilterFieldTypeVisitor<Predicate>() {
             @Override
@@ -185,9 +186,14 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
             @Override
             public Predicate caseDate() {
-                throw new UnsupportedOperationException(
-                        String.format("Can't build EQ predicate for filter field with type: %s",
-                                filterRequestDto.getFilterFieldType()));
+                Predicate[] predicates = values.stream().map(value -> {
+                    Predicate lowerBoundPredicate =
+                            buildGreaterThanOrEqualPredicate(filterRequestDto, value, root, criteriaBuilder);
+                    Predicate upperBoundPredicate =
+                            buildLessThanOrEqualPredicate(filterRequestDto, value, root, criteriaBuilder);
+                    return criteriaBuilder.and(lowerBoundPredicate, upperBoundPredicate);
+                }).toArray(Predicate[]::new);
+                return criteriaBuilder.or(predicates);
             }
 
             @Override
@@ -196,7 +202,8 @@ public abstract class AbstractFilter<T> implements Specification<T> {
                     PropertyDescriptor propertyDescriptor = new PropertyDescriptor(filterRequestDto.getName(), clazz);
                     String getter = propertyDescriptor.getReadMethod().getName();
                     Class enumClazz = clazz.getMethod(getter).getReturnType();
-                    return expression.in(values.stream().map(value -> Enum.valueOf(enumClazz, value)).collect(Collectors.toList()));
+                    return expression.in(
+                            values.stream().map(value -> Enum.valueOf(enumClazz, value)).collect(Collectors.toList()));
                 } catch (Exception ex) {
                     throw new IllegalStateException(ex.getMessage());
                 }
