@@ -10,6 +10,7 @@ import {
   PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import { FilterFieldType } from "../model/filter-field-type.enum";
 
 export abstract class BaseListComponent<T> {
 
@@ -31,6 +32,8 @@ export abstract class BaseListComponent<T> {
   private table: Table;
 
   private filterRequests: FilterRequestDto[] = [];
+
+  private datePipe: DatePipe = new DatePipe("en-US");
 
   private dateFormat: string = "yyyy-MM-dd";
 
@@ -105,27 +108,41 @@ export abstract class BaseListComponent<T> {
 
   private rebuildFilterRequests(): void {
     this.filterRequests = this.filters.filter((filter: Filter) => this.hasValue(filter)).map((filter: Filter) => {
-      return { name: filter.name, value: this.transformFilterValue(filter), filterFieldType: filter.filterFieldType, matchMode: filter.matchMode };
+      return { name: filter.name, values: this.transformFilterValues(filter), filterFieldType: filter.filterFieldType, matchMode: filter.matchMode };
     });
   }
 
   private hasValue(filter: Filter): boolean {
-    switch (filter.filterFieldType) {
-      case "REFERENCE":
-        return !!filter.currentValue && !!filter.currentValue.value;
-      default:
-        return !!filter.currentValue;
+    return filter.multiple ? !!filter.currentValues && filter.currentValues.length > 0 : !!filter.currentValue;
+  }
+
+  private transformFilterValues(filter: Filter): string[] {
+    if (filter.multiple) {
+      return this.transformMultipleValues(filter);
+    } else {
+      return [this.transformSingleValue(filter)];
     }
   }
 
-  private transformFilterValue(filter: Filter): string {
+  private transformSingleValue(filter: Filter): string {
     switch (filter.filterFieldType) {
-      case "DATE":
-        return new DatePipe("en-US").transform(filter.currentValue, this.dateFormat);
-      case "REFERENCE":
+      case FilterFieldType.DATE:
+        return this.datePipe.transform(filter.currentValue, this.dateFormat);
+      case FilterFieldType.REFERENCE:
         return filter.currentValue.value;
       default:
         return filter.currentValue;
+    }
+  }
+
+  private transformMultipleValues(filter: Filter): string[] {
+    switch (filter.filterFieldType) {
+      case FilterFieldType.DATE:
+        return filter.currentValues.map((item) => this.datePipe.transform(item, this.dateFormat));
+      case FilterFieldType.REFERENCE:
+        return filter.currentValues.map((item) => item.value);
+      default:
+        return filter.currentValues;
     }
   }
 }

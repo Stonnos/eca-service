@@ -20,7 +20,9 @@ export class ExperimentStatisticsComponent implements OnInit {
 
   public createdDateRange: Date[];
 
-  public dateFormat: string = "yyyy-MM-dd";
+  private datePipe: DatePipe = new DatePipe("en-US");
+
+  private dateFormat: string = "yyyy-MM-dd";
 
   public barOptions: any = {
     title: {
@@ -71,6 +73,6 @@ export class ExperimentStatisticsComponent implements OnInit {
   }
 
   private transformDate(date: Date): string {
-    return !!date ? new DatePipe("en-US").transform(date, this.dateFormat) : '';
+    return !!date ? this.datePipe.transform(date, this.dateFormat) : '';
   }
 }
