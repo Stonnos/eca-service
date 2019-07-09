@@ -222,7 +222,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
                                           CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
         predicates.add(buildGreaterThanOrEqualPredicate(filterRequestDto, values.get(0), root, criteriaBuilder));
-        if (values.size() >= 1) {
+        if (values.size() > 1) {
             predicates.add(buildLessThanOrEqualPredicate(filterRequestDto, values.get(1), root, criteriaBuilder));
         }
         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
