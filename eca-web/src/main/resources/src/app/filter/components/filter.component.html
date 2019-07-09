@@ -33,12 +33,21 @@
 
         <ng-container *ngSwitchCase="'DATE'">
           <label class="filter-label">{{ filter.label }}</label>
-          <p-calendar selectionMode="{{ getDateSelectionMode(filter) }}"
-                      [showIcon]="true"
-                      [showButtonBar]="true"
-                      [(ngModel)]="filter.multiple ? filter.currentValues : filter.currentValue"
-                      [maxDate]="now">
-          </p-calendar>
+          <div *ngIf="!filter.multiple">
+            <p-calendar [showIcon]="true"
+                        [showButtonBar]="true"
+                        [(ngModel)]="filter.currentValue"
+                        [maxDate]="now">
+            </p-calendar>
+          </div>
+          <div *ngIf="filter.multiple">
+            <p-calendar selectionMode="range"
+                        [showIcon]="true"
+                        [showButtonBar]="true"
+                        [(ngModel)]="filter.currentValues"
+                        [maxDate]="now">
+            </p-calendar>
+          </div>
         </ng-container>
 
         <ng-container *ngSwitchDefault>

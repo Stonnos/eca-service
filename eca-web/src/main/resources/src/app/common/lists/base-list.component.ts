@@ -117,10 +117,10 @@ export abstract class BaseListComponent<T> {
   }
 
   private transformFilterValues(filter: Filter): string[] {
-    return filter.multiple ? this.transformValues(filter, filter.currentValues) : this.transformValues(filter, filter.currentValue);
+    return filter.multiple ? this.transformValues(filter, filter.currentValues) : this.transformValues(filter, [filter.currentValue]);
   }
 
-  private transformValues(filter: Filter, ...values: any[]): string[] {
+  private transformValues(filter: Filter, values: any[]): string[] {
     switch (filter.filterFieldType) {
       case FilterFieldType.DATE:
         return values.map((item) => this.datePipe.transform(item, this.dateFormat));
