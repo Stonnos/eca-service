@@ -14,11 +14,12 @@ export class Filter {
   currentValues: any[];
   values: SelectItem[] = [];
 
-  constructor(name: string, label: string, filterFieldType: FilterFieldType, matchMode: MatchMode, values?: SelectItem[]) {
+  constructor(name: string, label: string, filterFieldType: FilterFieldType, matchMode: MatchMode, multiple: boolean, values?: SelectItem[]) {
     this.name = name;
     this.label = label;
     this.filterFieldType = filterFieldType;
     this.matchMode = matchMode;
+    this.multiple = multiple;
     this.values = values;
   }
 }

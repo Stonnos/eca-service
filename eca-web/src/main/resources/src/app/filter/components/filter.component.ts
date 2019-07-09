@@ -22,7 +22,10 @@ export class FilterComponent {
   }
 
   public resetFilter() {
-    this.filters.forEach(filter => filter.currentValue = null);
+    this.filters.forEach(filter => {
+      filter.currentValue = null;
+      filter.currentValues = null;
+    });
   }
 
   public getDateSelectionMode(filter: Filter): string {
