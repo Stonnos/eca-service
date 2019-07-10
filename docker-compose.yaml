@@ -44,6 +44,7 @@ services:
       - default
     depends_on:
       - eca-db
+      - monitoring
 
   eca-web:
     image: eca-web
