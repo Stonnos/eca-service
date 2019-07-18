@@ -20,6 +20,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -85,6 +86,7 @@ public class EcaController {
      * @param experimentRequest - experiment request dto
      * @return response entity
      */
+    @PreAuthorize("#oauth2.hasScope('eca')")
     @ApiOperation(
             value = "Creates experiment request",
             notes = "Creates experiment request"
@@ -101,6 +103,7 @@ public class EcaController {
      * @param evaluationRequest - evaluation request dto
      * @return response entity
      */
+    @PreAuthorize("#oauth2.hasScope('eca')")
     @ApiOperation(
             value = "Evaluates classifier using specified evaluation method",
             notes = "Evaluates classifier using specified evaluation method"
@@ -120,6 +123,7 @@ public class EcaController {
      * @param instancesRequest - instances request
      * @return response entity
      */
+    @PreAuthorize("#oauth2.hasScope('eca')")
     @ApiOperation(
             value = "Evaluates classifier using optimal options",
             notes = "Evaluates classifier using optimal options"
