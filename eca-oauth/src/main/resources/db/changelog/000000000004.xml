@@ -32,58 +32,10 @@
             <column name="client_id" value="eca"/>
             <column name="client_secret" value="{noop}eca_secret"/>
             <column name="scope" value="eca"/>
-            <column name="authorized_grant_types" value="password,refresh_token"/>
+            <column name="authorized_grant_types" value="client_credentials,refresh_token"/>
             <column name="refresh_token_validity" valueNumeric="36000"/>
             <column name="access_token_validity" valueNumeric="14400"/>
             <column name="autoapprove" valueBoolean="true"/>
-        </insert>
-    </changeSet>
-
-    <!-- Set ROLE_USER -->
-    <changeSet id="3" author="roman.batygin@mail.ru" context="data">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="role_entity"/>
-            <sqlCheck expectedResult="0">
-                select count(*) from role_entity where id = 2
-            </sqlCheck>
-        </preConditions>
-        <insert tableName="role_entity">
-            <column name="id" valueNumeric="2"/>
-            <column name="role_name" value="ROLE_USER"/>
-        </insert>
-    </changeSet>
-
-    <changeSet id="4" author="roman.batygin@mail.ru" context="data">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">
-                select count(*) from user_entity where login = 'eca'
-            </sqlCheck>
-        </preConditions>
-        <insert tableName="user_entity">
-            <column name="login" value="eca"/>
-            <column name="password" value="{bcrypt}$2a$10$umFyTUBMeD3xoxEtPCA2bO8efrGu3VMEk.Vt5PwVL1X/bQ8itOWSq"/>
-            <column name="creation_date" valueDate="now()"/>
-            <column name="email" value="bat1238@yandex.ru"/>
-            <column name="first_name" value="Роман"/>
-        </insert>
-    </changeSet>
-
-    <changeSet id="5" author="roman.batygin@mail.ru" context="data">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="user_role"/>
-            <sqlCheck expectedResult="1">
-                select count(*) from user_entity where login = 'eca'
-            </sqlCheck>
-            <sqlCheck expectedResult="1">
-                select count(*) from role_entity where id = 2
-            </sqlCheck>
-            <sqlCheck expectedResult="0">
-                select count(*) from user_role where user_id = (select id from user_entity where login = 'eca') and role_id = 2
-            </sqlCheck>
-        </preConditions>
-        <insert tableName="user_role">
-            <column name="user_id" valueComputed="(select id from user_entity where login = 'eca')"/>
-            <column name="role_id" valueNumeric="2"/>
         </insert>
     </changeSet>
 
