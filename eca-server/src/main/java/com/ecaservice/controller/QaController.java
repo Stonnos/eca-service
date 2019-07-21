@@ -24,10 +24,8 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -171,18 +169,6 @@ public class QaController {
         EvaluationResponse evaluationResponse =
                 evaluationOptimizerService.evaluateWithOptimalClassifierOptions(new InstancesRequest(instances));
         processResponse(evaluationResponse, httpServletResponse);
-    }
-
-    /**
-     * Handles error.
-     *
-     * @param ex - exception
-     * @return response entity
-     */
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity handleError(Exception ex) {
-        log.error(ex.getMessage());
-        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
     private EvaluationRequest createEvaluationRequest(MultipartFile trainingData, MultipartFile classifierOptions,

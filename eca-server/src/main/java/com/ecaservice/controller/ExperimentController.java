@@ -2,6 +2,7 @@ package com.ecaservice.controller;
 
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.dto.evaluation.ResponseStatus;
+import com.ecaservice.exception.ExperimentException;
 import com.ecaservice.exception.ResultsNotFoundException;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.MultipartFileResource;
@@ -277,7 +278,7 @@ public class ExperimentController {
     /**
      * Handles experiment results not found exception.
      *
-     * @param ex - exception
+     * @param ex - results not found exception
      * @return response entity
      */
     @ExceptionHandler(ResultsNotFoundException.class)
@@ -287,13 +288,13 @@ public class ExperimentController {
     }
 
     /**
-     * Handles error.
+     * Handles experiments error.
      *
-     * @param ex - exception
+     * @param ex - experiment exception
      * @return response entity
      */
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity handleError(Exception ex) {
+    @ExceptionHandler(ExperimentException.class)
+    public ResponseEntity handleError(ExperimentException ex) {
         log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }

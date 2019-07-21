@@ -5,6 +5,7 @@ import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.dto.InstancesRequest;
+import com.ecaservice.exception.ExperimentException;
 import com.ecaservice.mapping.EcaResponseMapper;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
@@ -22,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -117,6 +119,13 @@ public class EcaController {
         return evaluationResponse;
     }
 
+
+    @PreAuthorize("#oauth2.hasScope('eca')")
+    @GetMapping(value = "/hello")
+    public String hello() {
+        return "4343";
+    }
+
     /**
      * Evaluates classifier using optimal options.
      *
@@ -139,13 +148,13 @@ public class EcaController {
     }
 
     /**
-     * Handles error.
+     * Handles experiments error.
      *
-     * @param ex - exception
+     * @param ex - experiment exception
      * @return response entity
      */
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<EcaResponse> handleError(Exception ex) {
+    @ExceptionHandler(ExperimentException.class)
+    public ResponseEntity<EcaResponse> handleError(ExperimentException ex) {
         return ResponseEntity.ok(buildErrorResponse(ex.getMessage()));
     }
 
