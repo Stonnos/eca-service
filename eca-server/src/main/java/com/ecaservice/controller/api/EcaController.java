@@ -1,4 +1,4 @@
-package com.ecaservice.controller;
+package com.ecaservice.controller.api;
 
 import com.ecaservice.dto.EcaResponse;
 import com.ecaservice.dto.EvaluationRequest;

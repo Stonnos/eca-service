@@ -1,4 +1,4 @@
-package com.ecaservice.controller;
+package com.ecaservice.controller.web;
 
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.model.entity.EvaluationLog;

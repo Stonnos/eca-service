@@ -1,4 +1,4 @@
-package com.ecaservice.controller;
+package com.ecaservice.controller.web;
 
 import com.ecaservice.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;

@@ -1,4 +1,4 @@
-package com.ecaservice.controller;
+package com.ecaservice.controller.web;
 
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.service.filter.FilterService;

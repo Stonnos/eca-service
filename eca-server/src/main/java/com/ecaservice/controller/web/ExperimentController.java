@@ -1,4 +1,4 @@
-package com.ecaservice.controller;
+package com.ecaservice.controller.web;
 
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.dto.evaluation.ResponseStatus;
