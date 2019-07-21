@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Insert swagger client data -->
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="oauth_client_details"/>
+            <sqlCheck expectedResult="0">
+                select count(*) from oauth_client_details where client_id = 'swagger'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="oauth_client_details">
+            <column name="client_id" value="swagger"/>
+            <column name="client_secret" value="{noop}swagger_secret"/>
+            <column name="scope" value="eca,web"/>
+            <column name="authorized_grant_types" value="client_credentials,password,refresh_token"/>
+            <column name="refresh_token_validity" valueNumeric="36000"/>
+            <column name="access_token_validity" valueNumeric="14400"/>
+            <column name="autoapprove" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
