@@ -57,7 +57,7 @@ public class AuthServerSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/actuator/**").authenticated().and().httpBasic()
+        http.authorizeRequests().antMatchers("/actuator/**").permitAll()
                 .and().authorizeRequests().anyRequest().authenticated().and().csrf().disable();
     }
 }
