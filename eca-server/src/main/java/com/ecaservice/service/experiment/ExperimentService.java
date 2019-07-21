@@ -178,7 +178,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
             log.info(stopWatch.prettyPrint());
             return experimentHistory;
         } catch (TimeoutException ex) {
-            log.warn("There was a timeout for experiment [%s].", experiment.getUuid());
+            log.warn("There was a timeout for experiment [{}].", experiment.getUuid());
             experiment.setExperimentStatus(RequestStatus.TIMEOUT);
         } catch (Exception ex) {
             log.error("There was an error occurred for experiment [{}]: {}", experiment.getUuid(), ex);
