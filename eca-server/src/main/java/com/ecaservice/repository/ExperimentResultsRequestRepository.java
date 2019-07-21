@@ -1,9 +1,11 @@
 package com.ecaservice.repository;
 
+import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -20,4 +22,13 @@ public interface ExperimentResultsRequestRepository extends JpaRepository<Experi
      * @return experiment results requests list
      */
     List<ExperimentResultsRequest> findAllByExperiment(Experiment experiment);
+
+    /**
+     * Checks existing experiment results requests with specified statuses.
+     *
+     * @param experiment       - experiment entity
+     * @param responseStatuses - ERS response statuses
+     * @return {@code true} if any requests exists
+     */
+    boolean existsByExperimentAndResponseStatusIn(Experiment experiment, Collection<ResponseStatus> responseStatuses);
 }

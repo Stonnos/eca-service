@@ -30,7 +30,6 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -147,7 +146,7 @@ public class ExperimentSchedulerTest extends AbstractJpaTest {
                 TestHelperUtils.createExperimentResultsRequest(finishedExperimentWithErrorRequests,
                         ResponseStatus.DUPLICATE_REQUEST_ID));
 
-        when(experimentService.getExperimentResults(anyString())).thenReturn(new ExperimentHistory());
+        when(experimentService.getExperimentResults(any(Experiment.class))).thenReturn(new ExperimentHistory());
         experimentScheduler.processRequestsToErs();
         verify(ersService, times(2)).sentExperimentHistory(any(Experiment.class), any(ExperimentHistory.class),
                 any(ExperimentResultsRequestSource.class));

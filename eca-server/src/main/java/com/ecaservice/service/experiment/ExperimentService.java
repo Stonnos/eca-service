@@ -4,6 +4,7 @@ import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.exception.ExperimentException;
+import com.ecaservice.exception.ResultsNotFoundException;
 import com.ecaservice.filter.ExperimentFilter;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.entity.Experiment;
@@ -194,13 +195,14 @@ public class ExperimentService implements PageRequestService<Experiment> {
     /**
      * Gets experiment history.
      *
-     * @param uuid - experiment uuid
+     * @param experiment - experiment entity
      * @return experiment history
      */
-    public ExperimentHistory getExperimentResults(String uuid) {
-        File experimentFile = findExperimentFileByUuid(uuid);
+    public ExperimentHistory getExperimentResults(Experiment experiment) {
+        File experimentFile = getExperimentFile(experiment, Experiment::getExperimentAbsolutePath);
         if (!existsFile(experimentFile)) {
-            throw new ExperimentException(String.format("Experiment results file for uuid = [%s] not found!", uuid));
+            throw new ResultsNotFoundException(
+                    String.format("Experiment results file not found for experiment [%s]!", experiment.getUuid()));
         }
         try {
             return dataService.loadExperimentHistory(experimentFile);
@@ -218,11 +220,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
     public File findExperimentFileByUuid(String uuid) {
         Experiment experiment = experimentRepository.findByUuidAndExperimentStatusIn(uuid,
                 Collections.singletonList(RequestStatus.FINISHED));
-        if (Optional.ofNullable(experiment).map(Experiment::getExperimentAbsolutePath).isPresent()) {
-            return new File(experiment.getExperimentAbsolutePath());
-        } else {
-            return null;
-        }
+        return getExperimentFile(experiment, Experiment::getExperimentAbsolutePath);
     }
 
     /**
@@ -233,11 +231,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
      */
     public File findTrainingDataFileByUuid(String uuid) {
         Experiment experiment = experimentRepository.findByUuid(uuid);
-        if (Optional.ofNullable(experiment).map(Experiment::getTrainingDataAbsolutePath).isPresent()) {
-            return new File(experiment.getTrainingDataAbsolutePath());
-        } else {
-            return null;
-        }
+        return getExperimentFile(experiment, Experiment::getTrainingDataAbsolutePath);
     }
 
     /**
@@ -332,5 +326,9 @@ public class ExperimentService implements PageRequestService<Experiment> {
             return deleted;
         }
         return true;
+    }
+
+    private File getExperimentFile(Experiment experiment, Function<Experiment, String> filePathFunction) {
+        return Optional.ofNullable(experiment).map(filePathFunction).map(File::new).orElse(null);
     }
 }

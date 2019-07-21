@@ -107,8 +107,7 @@ public class ExperimentScheduler {
         log.trace("Obtained {} experiments sending to ERS service", experiments.size());
         experiments.forEach(experiment -> {
             try {
-                ExperimentHistory experimentHistory =
-                        experimentService.getExperimentResults(experiment.getUuid());
+                ExperimentHistory experimentHistory = experimentService.getExperimentResults(experiment);
                 ersService.sentExperimentHistory(experiment, experimentHistory,
                         ExperimentResultsRequestSource.SYSTEM);
             } catch (Exception ex) {

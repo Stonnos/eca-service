@@ -1,12 +1,16 @@
 package com.ecaservice.controller;
 
 import com.ecaservice.dto.ExperimentRequest;
+import com.ecaservice.dto.evaluation.ResponseStatus;
+import com.ecaservice.exception.ResultsNotFoundException;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.MultipartFileResource;
 import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.repository.ExperimentRepository;
+import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.service.UserService;
 import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.experiment.ExperimentRequestService;
@@ -29,8 +33,10 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,8 +49,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.inject.Inject;
 import java.io.File;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.util.Utils.existsFile;
@@ -67,16 +75,20 @@ public class ExperimentController {
     private final ExperimentMapper experimentMapper;
     private final UserService userService;
     private final ExperimentRepository experimentRepository;
+    private final ExperimentResultsRequestRepository experimentResultsRequestRepository;
+
+    private final ConcurrentHashMap<String, Object> experimentMap = new ConcurrentHashMap<>();
 
     /**
      * Constructor with spring dependency injection.
      *
-     * @param experimentService        - experiment service bean
-     * @param experimentRequestService - experiment request service bean
-     * @param ersService               - ers service bean
-     * @param experimentMapper         - experiment mapper bean
-     * @param userService              - user service bean
-     * @param experimentRepository     - experiment repository bean
+     * @param experimentService                  - experiment service bean
+     * @param experimentRequestService           - experiment request service bean
+     * @param ersService                         - ers service bean
+     * @param experimentMapper                   - experiment mapper bean
+     * @param userService                        - user service bean
+     * @param experimentRepository               - experiment repository bean
+     * @param experimentResultsRequestRepository - experiment results request repository bean
      */
     @Inject
     public ExperimentController(ExperimentService experimentService,
@@ -84,13 +96,15 @@ public class ExperimentController {
                                 ErsService ersService,
                                 ExperimentMapper experimentMapper,
                                 UserService userService,
-                                ExperimentRepository experimentRepository) {
+                                ExperimentRepository experimentRepository,
+                                ExperimentResultsRequestRepository experimentResultsRequestRepository) {
         this.experimentService = experimentService;
         this.experimentRequestService = experimentRequestService;
         this.ersService = ersService;
         this.experimentMapper = experimentMapper;
         this.userService = userService;
         this.experimentRepository = experimentRepository;
+        this.experimentResultsRequestRepository = experimentResultsRequestRepository;
     }
 
     /**
@@ -222,16 +236,15 @@ public class ExperimentController {
         Experiment experiment = experimentRepository.findByUuid(uuid);
         if (experiment == null) {
             log.error("Experiment with uuid [{}] not found", uuid);
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(String.format("Experiment with uuid [%s] not found", uuid));
         }
-        try {
-            ExperimentHistory experimentHistory = experimentService.getExperimentResults(uuid);
-            ersService.sentExperimentHistory(experiment, experimentHistory, ExperimentResultsRequestSource.MANUAL);
-        } catch (Exception ex) {
-            log.error("There was an error while sending experiment history [{}]: {}", uuid, ex.getMessage());
-            return ResponseEntity.badRequest().build();
+        if (!RequestStatus.FINISHED.equals(experiment.getExperimentStatus())) {
+            log.error("Can't sent experiment [{}] results to ERS, because experiment status isn't FINISHED", uuid);
+            return ResponseEntity.badRequest().body(
+                    String.format("Can't sent experiment [%s] results to ERS, because experiment status isn't FINISHED",
+                            uuid));
         }
-        return ResponseEntity.ok().build();
+        return handleExperimentResultsSending(experiment);
     }
 
     /**
@@ -261,6 +274,29 @@ public class ExperimentController {
                 Collectors.toList());
     }
 
+    /**
+     * Handles experiment results not found exception.
+     *
+     * @param ex - exception
+     * @return response entity
+     */
+    @ExceptionHandler(ResultsNotFoundException.class)
+    public ResponseEntity handleResultsNotFound(ResultsNotFoundException ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
+    /**
+     * Handles error.
+     *
+     * @param ex - exception
+     * @return response entity
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity handleError(Exception ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
 
     private ExperimentRequest createExperimentRequest(MultipartFile trainingData, ExperimentType experimentType,
                                                       EvaluationMethod evaluationMethod) throws Exception {
@@ -274,5 +310,32 @@ public class ExperimentController {
         experimentRequest.setExperimentType(experimentType);
         experimentRequest.setEvaluationMethod(evaluationMethod);
         return experimentRequest;
+    }
+
+    private boolean isResultsSentToErs(Experiment experiment) {
+        return experimentResultsRequestRepository.existsByExperimentAndResponseStatusIn(experiment,
+                Collections.singletonList(ResponseStatus.SUCCESS));
+    }
+
+    private ResponseEntity handleExperimentResultsSending(Experiment experiment) {
+        ResponseEntity responseEntity;
+        experimentMap.putIfAbsent(experiment.getUuid(), new Object());
+        synchronized (experimentMap.get(experiment.getUuid())) {
+            if (isResultsSentToErs(experiment)) {
+                responseEntity = ResponseEntity.ok(
+                        String.format("Experiment [%s] results is already sent to ERS", experiment.getUuid()));
+            } else if (experiment.getDeletedDate() != null) {
+                log.error("Experiment [{}] results has been deleted", experiment.getUuid());
+                responseEntity = ResponseEntity.badRequest().body(
+                        String.format("Experiment [%s] results has been deleted", experiment.getUuid()));
+            } else {
+                ExperimentHistory experimentHistory = experimentService.getExperimentResults(experiment);
+                ersService.sentExperimentHistory(experiment, experimentHistory,
+                        ExperimentResultsRequestSource.MANUAL);
+                responseEntity = ResponseEntity.ok().build();
+            }
+        }
+        experimentMap.remove(experiment.getUuid());
+        return responseEntity;
     }
 }
