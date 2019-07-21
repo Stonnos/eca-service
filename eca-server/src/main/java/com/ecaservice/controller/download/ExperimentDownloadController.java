@@ -1,4 +1,4 @@
-package com.ecaservice.controller.web;
+package com.ecaservice.controller.download;
 
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.util.Utils;

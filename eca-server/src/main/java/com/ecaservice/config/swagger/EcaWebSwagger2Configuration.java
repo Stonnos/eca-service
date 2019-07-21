@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Configuration for swagger.
+ * Swagger configuration for eca - web.
  *
  * @author Roman Batygin
  */
