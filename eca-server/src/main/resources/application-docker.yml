@@ -24,7 +24,7 @@ spring:
 
 ## Swagger properties
 swagger2:
-  oauthUrl: http://localhost:8080/auth-server
+  tokenUrl: http://localhost:8080/auth-server/oauth/token
 
 ## Experiment properties
 experiment:

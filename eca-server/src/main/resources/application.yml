@@ -70,7 +70,7 @@ swagger2:
   description: API for individual and ensemble classification models learning
   author: Roman Batygin
   email: roman.batygin@mail.ru
-  oauthUrl: http://localhost:8085/eca-oauth
+  tokenUrl: http://localhost:8085/eca-oauth/oauth/token
   clientId: eca_web
   secret: web_secret
 
