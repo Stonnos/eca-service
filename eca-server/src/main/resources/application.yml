@@ -66,10 +66,22 @@ cross-validation:
 ## Swagger properties
 swagger2:
   projectVersion: @project.version@
-  title: Eca service REST API
-  description: API for individual and ensemble classification models learning
-  author: Roman Batygin
-  email: roman.batygin@mail.ru
+  groups:
+    eca:
+      title: REST API for ECA application
+      description: API for individual and ensemble classification models learning
+      author: Roman Batygin
+      email: roman.batygin@mail.ru
+    eca-web:
+      title: REST API for web application
+      description: Operations for ECA web application
+      author: Roman Batygin
+      email: roman.batygin@mail.ru
+    experiment-download:
+      title: Download experiment REST API
+      description: API for experiment results downloading
+      author: Roman Batygin
+      email: roman.batygin@mail.ru
   tokenUrl: http://localhost:8085/eca-oauth/oauth/token
   clientId: swagger
   secret: swagger_secret

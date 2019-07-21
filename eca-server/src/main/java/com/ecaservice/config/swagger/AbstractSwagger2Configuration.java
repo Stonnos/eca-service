@@ -102,10 +102,11 @@ public abstract class AbstractSwagger2Configuration {
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfo(swagger2ApiConfig.getTitle(),
-                swagger2ApiConfig.getDescription(),
+        SwaggerApiInfo apiInfo = swagger2ApiConfig.getGroups().get(getGroupName());
+        return new ApiInfo(apiInfo.getTitle(),
+                apiInfo.getDescription(),
                 swagger2ApiConfig.getProjectVersion(), null,
-                new Contact(swagger2ApiConfig.getAuthor(), null, swagger2ApiConfig.getEmail()), null, null,
+                new Contact(apiInfo.getAuthor(), null, apiInfo.getEmail()), null, null,
                 Collections.emptyList());
     }
 }

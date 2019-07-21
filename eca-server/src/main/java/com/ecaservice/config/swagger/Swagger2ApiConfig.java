@@ -3,6 +3,8 @@ package com.ecaservice.config.swagger;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.Map;
+
 /**
  * Swagger2 api info config.
  *
@@ -18,24 +20,9 @@ public class Swagger2ApiConfig {
     private String projectVersion;
 
     /**
-     * Api title
+     * Swagger apis info
      */
-    private String title;
-
-    /**
-     * Api description
-     */
-    private String description;
-
-    /**
-     * Api author full name
-     */
-    private String author;
-
-    /**
-     * Api email
-     */
-    private String email;
+    private Map<String, SwaggerApiInfo> groups;
 
     /**
      * Application id
