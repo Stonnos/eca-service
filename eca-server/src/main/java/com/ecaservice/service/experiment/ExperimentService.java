@@ -42,7 +42,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -55,6 +54,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.util.ExperimentUtils.getExperimentFile;
 import static com.ecaservice.util.Utils.atEndOfDay;
 import static com.ecaservice.util.Utils.atStartOfDay;
 import static com.ecaservice.util.Utils.existsFile;
@@ -212,29 +212,6 @@ public class ExperimentService implements PageRequestService<Experiment> {
     }
 
     /**
-     * Finds experiment file by uuid.
-     *
-     * @param uuid - experiment uuid
-     * @return experiment object
-     */
-    public File findExperimentFileByUuid(String uuid) {
-        Experiment experiment = experimentRepository.findByUuidAndExperimentStatusIn(uuid,
-                Collections.singletonList(RequestStatus.FINISHED));
-        return getExperimentFile(experiment, Experiment::getExperimentAbsolutePath);
-    }
-
-    /**
-     * Finds experiment training data file by uuid.
-     *
-     * @param uuid - experiment uuid
-     * @return experiment training data file
-     */
-    public File findTrainingDataFileByUuid(String uuid) {
-        Experiment experiment = experimentRepository.findByUuid(uuid);
-        return getExperimentFile(experiment, Experiment::getTrainingDataAbsolutePath);
-    }
-
-    /**
      * Removes experiments data files from disk.
      *
      * @param experiment - experiment object
@@ -326,9 +303,5 @@ public class ExperimentService implements PageRequestService<Experiment> {
             return deleted;
         }
         return true;
-    }
-
-    private File getExperimentFile(Experiment experiment, Function<Experiment, String> filePathFunction) {
-        return Optional.ofNullable(experiment).map(filePathFunction).map(File::new).orElse(null);
     }
 }

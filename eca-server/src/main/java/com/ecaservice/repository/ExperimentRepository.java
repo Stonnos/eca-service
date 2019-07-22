@@ -20,15 +20,6 @@ import java.util.List;
 public interface ExperimentRepository extends JpaRepository<Experiment, Long>, JpaSpecificationExecutor<Experiment> {
 
     /**
-     * Finds experiment by uuid and statuses.
-     *
-     * @param uuid               - experiment uuid
-     * @param experimentStatuses - experiment statuses
-     * @return experiment entity
-     */
-    Experiment findByUuidAndExperimentStatusIn(String uuid, Collection<RequestStatus> experimentStatuses);
-
-    /**
      * Finds experiment by uuid.
      *
      * @param uuid - experiment uuid

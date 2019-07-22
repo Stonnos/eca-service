@@ -115,4 +115,9 @@ public class Experiment {
     @Enumerated(EnumType.STRING)
     @Column(name = "evaluation_method")
     private EvaluationMethod evaluationMethod;
+
+    /**
+     * Unique token used to download experiment results for external API
+     */
+    private String token;
 }

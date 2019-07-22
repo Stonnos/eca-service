@@ -124,35 +124,6 @@ public class ExperimentServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testFindExperimentFileByUuidWithNullExperiment() {
-        assertThat(experimentService.findExperimentFileByUuid(TestHelperUtils.TEST_UUID)).isNull();
-    }
-
-    @Test
-    public void testFindExperimentFileByUuidWithNullFile() {
-        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
-        experiment.setExperimentAbsolutePath(null);
-        experimentRepository.save(experiment);
-        assertThat(experimentService.findExperimentFileByUuid(TestHelperUtils.TEST_UUID)).isNull();
-    }
-
-    @Test
-    public void testFindExperimentFileByUuidWithErrorStatus() {
-        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID, RequestStatus.ERROR);
-        experimentRepository.save(experiment);
-        assertThat(experimentService.findExperimentFileByUuid(TestHelperUtils.TEST_UUID)).isNull();
-    }
-
-    @Test
-    public void testSuccessFindExperimentFileByUuid() {
-        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID, RequestStatus.FINISHED);
-        experimentRepository.save(experiment);
-        File expectedFile = experimentService.findExperimentFileByUuid(TestHelperUtils.TEST_UUID);
-        File actualFile = new File(experiment.getExperimentAbsolutePath());
-        assertThat(actualFile.getAbsolutePath()).isEqualTo(expectedFile.getAbsolutePath());
-    }
-
-    @Test
     public void testProcessExperimentWithSuccessStatus() throws Exception {
         when(dataService.load(any(File.class))).thenReturn(data);
         when(experimentProcessorService.processExperimentHistory(any(Experiment.class),

@@ -56,6 +56,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.util.ExperimentUtils.getExperimentFile;
 import static com.ecaservice.util.Utils.existsFile;
 import static com.ecaservice.util.Utils.toRequestStatusesStatistics;
 
@@ -121,7 +122,12 @@ public class ExperimentController {
     @GetMapping(value = "/training-data/{uuid}")
     public ResponseEntity downloadTrainingData(
             @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
-        File trainingDataFile = experimentService.findTrainingDataFileByUuid(uuid);
+        Experiment experiment = experimentRepository.findByUuid(uuid);
+        if (experiment == null) {
+            log.error("Experiment with uuid [{}] not found", uuid);
+            return ResponseEntity.badRequest().build();
+        }
+        File trainingDataFile = getExperimentFile(experiment, Experiment::getTrainingDataAbsolutePath);
         if (!existsFile(trainingDataFile)) {
             log.error("Experiment training data file for uuid = '{}' not found!", uuid);
             return ResponseEntity.badRequest().body(
@@ -129,6 +135,33 @@ public class ExperimentController {
         }
         log.info("Download experiment training data '{}' for uuid = '{}'", trainingDataFile.getAbsolutePath(), uuid);
         return Utils.buildAttachmentResponse(trainingDataFile);
+    }
+
+    /**
+     * Downloads experiment by specified uuid.
+     *
+     * @param uuid - experiment uuid
+     */
+    @ApiOperation(
+            value = "Downloads experiment results by specified uuid",
+            notes = "Downloads experiment results by specified uuid"
+    )
+    @GetMapping(value = "/download/{uuid}")
+    public ResponseEntity downloadExperiment(
+            @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
+        Experiment experiment = experimentRepository.findByUuid(uuid);
+        if (experiment == null) {
+            log.error("Experiment with uuid [{}] not found", uuid);
+            return ResponseEntity.badRequest().build();
+        }
+        File experimentFile = getExperimentFile(experiment, Experiment::getExperimentAbsolutePath);
+        if (!existsFile(experimentFile)) {
+            log.error("Experiment results file for uuid = '{}' not found!", uuid);
+            return ResponseEntity.badRequest().body(
+                    String.format("Experiment results file for uuid = '%s' not found!", uuid));
+        }
+        log.info("Download experiment file '{}' for uuid = '{}'", experimentFile.getAbsolutePath(), uuid);
+        return Utils.buildAttachmentResponse(experimentFile);
     }
 
     /**
