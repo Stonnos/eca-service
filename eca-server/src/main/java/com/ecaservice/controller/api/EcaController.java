@@ -12,17 +12,22 @@ import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
+import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.async.AsyncTaskService;
 import com.ecaservice.service.ers.ErsRequestService;
 import com.ecaservice.service.evaluation.EvaluationOptimizerService;
 import com.ecaservice.service.evaluation.EvaluationRequestService;
 import com.ecaservice.service.experiment.ExperimentRequestService;
+import com.ecaservice.util.Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,9 +35,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
+import java.io.File;
 import java.util.Collections;
 
+import static com.ecaservice.util.ExperimentUtils.getExperimentFile;
 import static com.ecaservice.util.Utils.buildErrorResponse;
+import static com.ecaservice.util.Utils.existsFile;
 
 /**
  * Implements REST API for ECA application.
@@ -52,6 +60,7 @@ public class EcaController {
     private final AsyncTaskService asyncTaskService;
     private final EcaResponseMapper ecaResponseMapper;
     private final EvaluationLogRepository evaluationLogRepository;
+    private final ExperimentRepository experimentRepository;
 
     /**
      * Constructor with spring dependency injection.
@@ -63,6 +72,7 @@ public class EcaController {
      * @param asyncTaskService           - async task service bean
      * @param ecaResponseMapper          - eca response mapper bean
      * @param evaluationLogRepository    - evaluation log repository bean
+     * @param experimentRepository       - experiment repository bean
      */
     @Inject
     public EcaController(ExperimentRequestService experimentRequestService,
@@ -71,7 +81,8 @@ public class EcaController {
                          ErsRequestService ersRequestService,
                          AsyncTaskService asyncTaskService,
                          EcaResponseMapper ecaResponseMapper,
-                         EvaluationLogRepository evaluationLogRepository) {
+                         EvaluationLogRepository evaluationLogRepository,
+                         ExperimentRepository experimentRepository) {
         this.experimentRequestService = experimentRequestService;
         this.evaluationRequestService = evaluationRequestService;
         this.evaluationOptimizerService = evaluationOptimizerService;
@@ -79,6 +90,7 @@ public class EcaController {
         this.asyncTaskService = asyncTaskService;
         this.ecaResponseMapper = ecaResponseMapper;
         this.evaluationLogRepository = evaluationLogRepository;
+        this.experimentRepository = experimentRepository;
     }
 
     /**
@@ -96,6 +108,32 @@ public class EcaController {
     public EcaResponse createRequest(@RequestBody @Valid ExperimentRequest experimentRequest) {
         Experiment experiment = experimentRequestService.createExperimentRequest(experimentRequest);
         return ecaResponseMapper.map(experiment);
+    }
+
+    /**
+     * Downloads experiment results by token.
+     *
+     * @param token - experiment token
+     */
+    @ApiOperation(
+            value = "Downloads experiment results by token",
+            notes = "Downloads experiment results by token"
+    )
+    @GetMapping(value = "/download/{token}")
+    public ResponseEntity downloadExperiment(
+            @ApiParam(value = "Experiment token", required = true) @PathVariable String token) {
+        Experiment experiment = experimentRepository.findByToken(token);
+        if (experiment == null) {
+            log.error("Experiment with token [{}] not found", token);
+            return ResponseEntity.badRequest().build();
+        }
+        File experimentFile = getExperimentFile(experiment, Experiment::getExperimentAbsolutePath);
+        if (!existsFile(experimentFile)) {
+            log.error("Experiment results file not found for token [{}]", token);
+            return ResponseEntity.badRequest().body("Experiment results file not found");
+        }
+        log.info("Downloads experiment file '{}' for token = '{}'", experiment.getExperimentAbsolutePath(), token);
+        return Utils.buildAttachmentResponse(experimentFile);
     }
 
     /**

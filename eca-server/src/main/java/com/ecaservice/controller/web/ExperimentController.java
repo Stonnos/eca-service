@@ -128,10 +128,11 @@ public class ExperimentController {
     }
 
     /**
-     * Downloads experiment by specified uuid.
+     * Downloads experiment results by specified uuid.
      *
      * @param uuid - experiment uuid
      */
+    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Downloads experiment results by specified uuid",
             notes = "Downloads experiment results by specified uuid"
@@ -364,7 +365,7 @@ public class ExperimentController {
             log.error(errorMessage);
             return ResponseEntity.badRequest().body(errorMessage);
         }
-        log.info("Download experiment file '{}' for uuid = '{}'", filePathFunction.apply(experiment), uuid);
+        log.info("Downloads experiment file '{}' for uuid = '{}'", filePathFunction.apply(experiment), uuid);
         return Utils.buildAttachmentResponse(experimentFile);
     }
 }
