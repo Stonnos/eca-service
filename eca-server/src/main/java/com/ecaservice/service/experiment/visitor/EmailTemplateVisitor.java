@@ -31,9 +31,7 @@ public class EmailTemplateVisitor implements RequestStatusVisitor<Context, Exper
 
     @Override
     public Context caseNew(Experiment parameter) {
-        Context context = createCommonContext(parameter);
-        context.setVariable(TemplateVariablesDictionary.EMAIL_KEY, parameter.getEmail());
-        return context;
+        return createCommonContext(parameter);
     }
 
     @Override

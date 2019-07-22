@@ -47,8 +47,6 @@ public class EmailTemplateVisitorTest {
         experiment.setExperimentStatus(RequestStatus.NEW);
         Context context = experiment.getExperimentStatus().handle(emailTemplateVisitor, experiment);
         assertContext(context, experiment);
-        assertThat(context.getVariable(TemplateVariablesDictionary.EMAIL_KEY).toString()).isEqualTo(
-                experiment.getEmail());
     }
 
     @Test
