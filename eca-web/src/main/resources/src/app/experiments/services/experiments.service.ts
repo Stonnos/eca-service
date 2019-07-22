@@ -41,7 +41,11 @@ export class ExperimentsService {
   }
 
   public getExperimentResultsFile(uuid: string): Observable<Blob> {
-    return this.http.get<Blob>(this.serviceUrl + '/download/' + uuid, { responseType: 'blob' as 'json' });
+    const headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+    });
+    const options = { headers: headers, responseType: 'blob' as 'json' };
+    return this.http.get<Blob>(this.serviceUrl + '/results/' + uuid, options);
   }
 
   public getExperimentTrainingDataFile(uuid: string): Observable<Blob> {

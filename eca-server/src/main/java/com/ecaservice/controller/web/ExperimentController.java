@@ -137,7 +137,7 @@ public class ExperimentController {
             value = "Downloads experiment results by specified uuid",
             notes = "Downloads experiment results by specified uuid"
     )
-    @GetMapping(value = "/download/{uuid}")
+    @GetMapping(value = "/results/{uuid}")
     public ResponseEntity downloadExperiment(
             @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
         return downloadExperimentFile(uuid, Experiment::getExperimentAbsolutePath,
