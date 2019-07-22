@@ -85,7 +85,7 @@ experiment:
   fileFormat: experiment_%s.model
   storagePath: D:/experiment/
   individualClassifiersStoragePath: classifiers
-  downloadUrl: http://localhost:8085/eca-server/experiment/download/%s
+  downloadUrl: http://localhost:8085/eca-server/eca-api/experiment/download/%s
   maximumFractionDigits: 4
   numberOfDaysForStorage: 14
   ## Each day at midnight

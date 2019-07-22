@@ -119,7 +119,7 @@ public class EcaController {
             value = "Downloads experiment results by token",
             notes = "Downloads experiment results by token"
     )
-    @GetMapping(value = "/download/{token}")
+    @GetMapping(value = "/experiment/download/{token}")
     public ResponseEntity downloadExperiment(
             @ApiParam(value = "Experiment token", required = true) @PathVariable String token) {
         Experiment experiment = experimentRepository.findByToken(token);
