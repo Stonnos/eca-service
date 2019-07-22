@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -188,6 +189,16 @@ public class Utils {
      */
     public static LocalDateTime atEndOfDay(LocalDate localDate) {
         return localDate != null ? localDate.atTime(LocalTime.MAX) : null;
+    }
+
+    /**
+     * Gets local date time in milliseconds.
+     *
+     * @param localDateTime - local date time
+     * @return ocal date time in milliseconds
+     */
+    public static long toMillis(LocalDateTime localDateTime) {
+        return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
     }
 
     /**
