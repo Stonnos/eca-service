@@ -87,8 +87,8 @@ public class ExperimentProcessorService {
         EvaluationParams evaluationParams = EvaluationMethod.TRAINING_DATA.equals(abstractExperiment
                 .getEvaluationMethod()) ? null : new EvaluationParams(abstractExperiment.getNumFolds(),
                 abstractExperiment.getNumTests());
-        return new ExperimentHistory(evaluationResults, abstractExperiment.getData(), abstractExperiment
-                .getEvaluationMethod(), evaluationParams);
+        return new ExperimentHistory(abstractExperiment.getExperimentType(), evaluationResults,
+                abstractExperiment.getData(), abstractExperiment.getEvaluationMethod(), evaluationParams);
     }
 
     private List<EvaluationResults> findBestResults(List<EvaluationResults> experimentHistory) {
