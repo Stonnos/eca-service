@@ -54,6 +54,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.util.ExperimentUtils.generateToken;
 import static com.ecaservice.util.ExperimentUtils.getExperimentFile;
 import static com.ecaservice.util.Utils.atEndOfDay;
 import static com.ecaservice.util.Utils.atStartOfDay;
@@ -174,6 +175,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
             stopWatch.stop();
 
             experiment.setExperimentAbsolutePath(experimentFile.getAbsolutePath());
+            experiment.setToken(generateToken(experiment));
             experiment.setExperimentStatus(RequestStatus.FINISHED);
             log.info("Experiment [{}] has been successfully finished!", experiment.getUuid());
             log.info(stopWatch.prettyPrint());

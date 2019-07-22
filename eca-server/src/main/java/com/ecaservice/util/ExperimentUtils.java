@@ -19,7 +19,6 @@ import static com.ecaservice.util.Utils.toMillis;
 public class ExperimentUtils {
 
     private static final String SALT_FORMAT = "%s:%d";
-    private static final String STRING_TO_ENCODE_FORMAT = "%s:%d:%d";
 
     private ExperimentUtils() {
     }
@@ -37,19 +36,18 @@ public class ExperimentUtils {
 
     /**
      * Generate unique token for experiment by algorithm:
-     * 1. Creates salt in format creation_date_millis:uuid
-     * 2. Gets md5_salt = MD5(salt) hash
-     * 3. Creates string to encode: stringToEncode = md5_salt:start_date_millis:end_date_millis
+     * 1. Creates salt in format uuid:creation_date_millis
+     * 2. Gets md5_salt = MD5(salt)
+     * 3. Creates string to encode: stringToEncode = md5_salt:start_date_millis
      * 4. Gets results = base64(stringToEncode)
      *
      * @param experiment - experiment entity
-     * @return token
+     * @return experiment token
      */
     public static String generateToken(Experiment experiment) {
         String salt = String.format(SALT_FORMAT, experiment.getUuid(), toMillis(experiment.getCreationDate()));
         String md5Salt = DigestUtils.md5DigestAsHex(salt.getBytes(Charsets.UTF_8));
-        String stringToEncode = String.format(STRING_TO_ENCODE_FORMAT, md5Salt, toMillis(experiment.getStartDate()),
-                toMillis(experiment.getEndDate()));
+        String stringToEncode = String.format(SALT_FORMAT, md5Salt, toMillis(experiment.getStartDate()));
         return Base64Utils.encodeToString(stringToEncode.getBytes(Charsets.UTF_8));
     }
 }

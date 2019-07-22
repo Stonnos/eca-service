@@ -136,6 +136,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         assertThat(experiment.getStartDate()).isNotNull();
         assertThat(experiment.getEndDate()).isNotNull();
         assertThat(experiment.getExperimentAbsolutePath()).isNotNull();
+        assertThat(experiment.getToken()).isNotNull();
         assertThat(experiment.getExperimentStatus()).isEqualTo(RequestStatus.FINISHED);
     }
 

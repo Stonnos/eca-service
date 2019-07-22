@@ -40,7 +40,7 @@ public class EmailTemplateVisitor implements RequestStatusVisitor<Context, Exper
     public Context caseFinished(Experiment parameter) {
         Context context = createCommonContext(parameter);
         context.setVariable(TemplateVariablesDictionary.DOWNLOAD_URL_KEY,
-                String.format(experimentConfig.getDownloadUrl(), parameter.getUuid()));
+                String.format(experimentConfig.getDownloadUrl(), parameter.getToken()));
         return context;
     }
 
