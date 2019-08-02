@@ -6,12 +6,12 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
- * Application configuration initializer.
+ * Implements service for updating experiment configs.
  *
  * @author Roman Batygin
  */
 @Service
-public class UpdateClassifiersService {
+public class UpdateExperimentConfigsService {
 
     private final ExperimentConfigurationService experimentConfigurationService;
 
@@ -21,15 +21,15 @@ public class UpdateClassifiersService {
      * @param experimentConfigurationService - experiment configuration service bean
      */
     @Inject
-    public UpdateClassifiersService(ExperimentConfigurationService experimentConfigurationService) {
+    public UpdateExperimentConfigsService(ExperimentConfigurationService experimentConfigurationService) {
         this.experimentConfigurationService = experimentConfigurationService;
     }
 
     /**
-     * Initialize application configurations.
+     * Updates experiment configs.
      */
     @PostConstruct
-    public void initialize() {
+    public void updateExperimentConfigs() {
         experimentConfigurationService.saveClassifiersOptions();
     }
 }
