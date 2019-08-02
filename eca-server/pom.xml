@@ -24,21 +24,22 @@
     </repositories>
 
     <properties>
-        <postresql.version>9.4.1212</postresql.version>
+        <postresql.version>42.2.6</postresql.version>
         <eca.version>6.5.1</eca.version>
         <assertj.core.version>3.8.0</assertj.core.version>
         <mockito.version>1.10.19</mockito.version>
-        <hibernate.version>5.3.6.Final</hibernate.version>
+        <hibernate.version>5.4.3.Final</hibernate.version>
         <commons.io.version>2.5</commons.io.version>
         <org.mapstruct.version>1.2.0.Final</org.mapstruct.version>
         <powermock.version>1.7.3</powermock.version>
-        <liquibase.version>3.5.3</liquibase.version>
+        <liquibase.version>3.7.0</liquibase.version>
         <xmlschema.version>2.2.3</xmlschema.version>
         <jaxb2-maven-plugin.version>2.3</jaxb2-maven-plugin.version>
         <jacoco-plugin.version>0.7.7.201606060606</jacoco-plugin.version>
         <jacoco.minCoverage>0.70</jacoco.minCoverage>
         <javassist.version>3.21.0-GA</javassist.version>
         <maven-processor-plugin.version>3.3.3</maven-processor-plugin.version>
+        <spring.security.oauth2.version>2.1.6.RELEASE</spring.security.oauth2.version>
     </properties>
 
     <profiles>
@@ -128,7 +129,7 @@
         <dependency>
             <groupId>org.springframework.security.oauth.boot</groupId>
             <artifactId>spring-security-oauth2-autoconfigure</artifactId>
-            <version>2.0.4.RELEASE</version>
+            <version>${spring.security.oauth2.version}</version>
         </dependency>
 
         <dependency>
@@ -213,11 +214,11 @@
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.javassist/javassist -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
             <version>${javassist.version}</version>
-        </dependency>
+        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
         <dependency>

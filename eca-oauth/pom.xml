@@ -13,10 +13,11 @@
     <packaging>war</packaging>
 
     <properties>
-        <postresql.version>9.4.1212</postresql.version>
-        <hibernate.version>5.3.6.Final</hibernate.version>
+        <postresql.version>42.2.6</postresql.version>
+        <hibernate.version>5.4.3.Final</hibernate.version>
         <javassist.version>3.21.0-GA</javassist.version>
-        <liquibase.version>3.5.3</liquibase.version>
+        <liquibase.version>3.7.0</liquibase.version>
+        <spring.security.oauth2.version>2.1.6.RELEASE</spring.security.oauth2.version>
     </properties>
 
     <dependencies>
@@ -78,7 +79,7 @@
         <dependency>
             <groupId>org.springframework.security.oauth.boot</groupId>
             <artifactId>spring-security-oauth2-autoconfigure</artifactId>
-            <version>2.0.4.RELEASE</version>
+            <version>${spring.security.oauth2.version}</version>
         </dependency>
 
         <dependency>
@@ -100,11 +101,11 @@
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.javassist/javassist -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
             <version>${javassist.version}</version>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
