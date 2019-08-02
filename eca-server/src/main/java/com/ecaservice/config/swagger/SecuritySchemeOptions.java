@@ -26,7 +26,7 @@ public class SecuritySchemeOptions {
     /**
      * Grant type
      */
-    private List<GrantType> grantType;
+    private List<GrantType> grantTypes;
 
     /**
      * Authorization scopes

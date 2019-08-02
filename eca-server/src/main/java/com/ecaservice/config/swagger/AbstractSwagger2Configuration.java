@@ -83,7 +83,7 @@ public abstract class AbstractSwagger2Configuration {
     private SecurityScheme buildSecurityScheme(SecuritySchemeOptions securitySchemeOptions) {
         return new OAuthBuilder()
                 .name(securitySchemeOptions.getName())
-                .grantTypes(securitySchemeOptions.getGrantType())
+                .grantTypes(securitySchemeOptions.getGrantTypes())
                 .scopes(securitySchemeOptions.getScopes()).build();
     }
 
