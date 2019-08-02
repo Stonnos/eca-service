@@ -28,7 +28,6 @@
         <eca.version>6.5.1</eca.version>
         <assertj.core.version>3.8.0</assertj.core.version>
         <mockito.version>1.10.19</mockito.version>
-        <hibernate.version>5.4.3.Final</hibernate.version>
         <commons.io.version>2.5</commons.io.version>
         <org.mapstruct.version>1.2.0.Final</org.mapstruct.version>
         <powermock.version>1.7.3</powermock.version>
@@ -37,7 +36,6 @@
         <jaxb2-maven-plugin.version>2.3</jaxb2-maven-plugin.version>
         <jacoco-plugin.version>0.7.7.201606060606</jacoco-plugin.version>
         <jacoco.minCoverage>0.70</jacoco.minCoverage>
-        <javassist.version>3.21.0-GA</javassist.version>
         <maven-processor-plugin.version>3.3.3</maven-processor-plugin.version>
         <spring.security.oauth2.version>2.1.6.RELEASE</spring.security.oauth2.version>
     </properties>
@@ -73,17 +71,6 @@
     </profiles>
 
     <dependencies>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-java8</artifactId>
-            <version>${hibernate.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -212,13 +199,6 @@
             <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.javassist/javassist -->
-        <!--<dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <version>${javassist.version}</version>
-        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
         <dependency>
