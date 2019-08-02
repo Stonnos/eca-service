@@ -32,7 +32,7 @@
         <inject.version>1</inject.version>
         <logback.version>1.2.3</logback.version>
         <slf4j.version>1.7.25</slf4j.version>
-        <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <docker-maven-plugin.version>1.4.3</docker-maven-plugin.version>
         <spring.boot.admin.version>2.1.6</spring.boot.admin.version>
     </properties>
