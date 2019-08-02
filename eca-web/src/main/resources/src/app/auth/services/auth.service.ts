@@ -20,7 +20,6 @@ export class AuthService {
     params.append('username', user.login);
     params.append('password', user.password);
     params.append('grant_type', 'password');
-    params.append('client_id', this.clientId);
     const headers = new HttpHeaders({
       'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
       'Authorization': 'Basic ' + btoa(this.clientId + ':' + this.secret)
