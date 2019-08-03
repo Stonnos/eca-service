@@ -177,10 +177,10 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     private Predicate buildEqualPredicate(FilterRequestDto filterRequestDto, List<String> values, Root<T> root,
                                           CriteriaBuilder criteriaBuilder) {
-        Expression<?> expression = buildExpression(root, filterRequestDto.getName());
         return filterRequestDto.getFilterFieldType().handle(new FilterFieldTypeVisitor<Predicate>() {
             @Override
             public Predicate caseText() {
+                Expression<String> expression = buildExpression(root, filterRequestDto.getName());
                 return expression.in(values);
             }
 
@@ -197,6 +197,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
             @Override
             public Predicate caseReference() {
+                Expression<?> expression = buildExpression(root, filterRequestDto.getName());
                 try {
                     PropertyDescriptor propertyDescriptor = new PropertyDescriptor(filterRequestDto.getName(), clazz);
                     String getter = propertyDescriptor.getReadMethod().getName();
