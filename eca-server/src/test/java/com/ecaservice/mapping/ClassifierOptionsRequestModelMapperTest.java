@@ -6,7 +6,6 @@ import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
-import com.ecaservice.web.dto.model.ErsResponseStatus;
 import eca.core.evaluation.EvaluationMethod;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.Assertions;
@@ -28,11 +27,9 @@ import java.util.List;
  */
 @RunWith(SpringRunner.class)
 @Import({ClassifierOptionsRequestModelMapperImpl.class, ErsEvaluationMethodMapperImpl.class,
-        ClassifierOptionsResponseModelMapperImpl.class, ErsResponseStatusMapperImpl.class})
+        ClassifierOptionsResponseModelMapperImpl.class})
 public class ClassifierOptionsRequestModelMapperTest {
 
-    @Inject
-    private ErsResponseStatusMapper ersResponseStatusMapper;
     @Inject
     private ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
 
@@ -55,11 +52,10 @@ public class ClassifierOptionsRequestModelMapperTest {
         Assertions.assertThat(classifierOptionsRequestDto).isNotNull();
         Assertions.assertThat(classifierOptionsRequestDto.getRequestDate()).isEqualTo(requestModel.getRequestDate());
         Assertions.assertThat(classifierOptionsRequestDto.getRequestId()).isEqualTo(requestModel.getRequestId());
-        ErsResponseStatus ersResponseStatus = ersResponseStatusMapper.map(requestModel.getResponseStatus());
         Assertions.assertThat(classifierOptionsRequestDto.getResponseStatus().getDescription()).isEqualTo(
-                ersResponseStatus.getDescription());
+                requestModel.getResponseStatus().getDescription());
         Assertions.assertThat(classifierOptionsRequestDto.getResponseStatus().getValue()).isEqualTo(
-                ersResponseStatus.name());
+                requestModel.getResponseStatus().name());
         Assertions.assertThat(classifierOptionsRequestDto.getRelationName()).isEqualTo(requestModel.getRelationName());
         Assertions.assertThat(classifierOptionsRequestDto.getNumFolds()).isEqualTo(requestModel.getNumFolds());
         Assertions.assertThat(classifierOptionsRequestDto.getNumTests()).isEqualTo(requestModel.getNumTests());

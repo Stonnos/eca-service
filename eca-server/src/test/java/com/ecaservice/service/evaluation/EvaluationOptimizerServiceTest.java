@@ -20,6 +20,7 @@ import com.ecaservice.mapping.ClassifierOptionsResponseModelMapperImpl;
 import com.ecaservice.mapping.ClassifierReportMapper;
 import com.ecaservice.mapping.ClassifierReportMapperImpl;
 import com.ecaservice.mapping.ErsEvaluationMethodMapperImpl;
+import com.ecaservice.mapping.ErsResponseStatusMapper;
 import com.ecaservice.mapping.ErsResponseStatusMapperImpl;
 import com.ecaservice.mapping.EvaluationLogInputOptionsMapperImpl;
 import com.ecaservice.mapping.EvaluationLogMapperImpl;
@@ -121,6 +122,8 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     @Inject
     private ClassifierOptionsRequestMapper classifierOptionsRequestMapper;
     @Inject
+    private ErsResponseStatusMapper ersResponseStatusMapper;
+    @Inject
     private ErsConfig ersConfig;
     @Inject
     private ClassifierOptionsService classifierOptionsService;
@@ -146,7 +149,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         instancesRequest = new InstancesRequest();
         instancesRequest.setData(TestHelperUtils.loadInstances());
         ErsRequestService ersRequestService = new ErsRequestService(ersWebServiceClient, ersRequestRepository,
-                classifierOptionsRequestModelRepository, classifierReportMapper, ersConfig);
+                classifierOptionsRequestModelRepository, classifierReportMapper, ersResponseStatusMapper, ersConfig);
         evaluationOptimizerService = new EvaluationOptimizerService(crossValidationConfig, commonConfig,
                 evaluationRequestService,
                 classifierOptionsRequestModelMapper, ersRequestService, evaluationRequestMapper,

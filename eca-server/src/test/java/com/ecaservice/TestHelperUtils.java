@@ -16,6 +16,7 @@ import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
+import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsRequest;
@@ -702,7 +703,7 @@ public class TestHelperUtils {
      */
     public static ClassifierOptionsRequestModel createClassifierOptionsRequestModel(String dataMd5Hash,
                                                                                     LocalDateTime requestDate,
-                                                                                    ResponseStatus responseStatus,
+                                                                                    ErsResponseStatus responseStatus,
                                                                                     List<ClassifierOptionsResponseModel> classifierOptionsResponseModels) {
         ClassifierOptionsRequestModel requestModel = new ClassifierOptionsRequestModel();
         requestModel.setDataMd5Hash(dataMd5Hash);
@@ -754,7 +755,7 @@ public class TestHelperUtils {
      * @return experiment results request
      */
     public static ExperimentResultsRequest createExperimentResultsRequest(Experiment experiment,
-                                                                          ResponseStatus responseStatus) {
+                                                                          ErsResponseStatus responseStatus) {
         ExperimentResultsRequest experimentResultsRequest = new ExperimentResultsRequest();
         experimentResultsRequest.setExperiment(experiment);
         experimentResultsRequest.setResponseStatus(responseStatus);

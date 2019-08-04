@@ -10,8 +10,10 @@ import com.ecaservice.dto.evaluation.GetEvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassifierReportMapper;
+import com.ecaservice.mapping.ErsResponseStatusMapper;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ErsRequest;
+import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.repository.ErsRequestRepository;
 import eca.core.evaluation.EvaluationResults;
@@ -40,6 +42,7 @@ public class ErsRequestService {
     private final ErsRequestRepository ersRequestRepository;
     private final ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
     private final ClassifierReportMapper classifierReportMapper;
+    private final ErsResponseStatusMapper ersResponseStatusMapper;
     private final ErsConfig ersConfig;
 
     /**
@@ -49,17 +52,21 @@ public class ErsRequestService {
      * @param ersRequestRepository                    - evaluation results service request repository bean
      * @param classifierOptionsRequestModelRepository - classifier options request model repository bean
      * @param classifierReportMapper                  - classifier report mapper bean
+     * @param ersResponseStatusMapper                 - ers response status mapper bean
      * @param ersConfig                               - evaluation results config bean
      */
     @Inject
     public ErsRequestService(ErsWebServiceClient ersWebServiceClient,
                              ErsRequestRepository ersRequestRepository,
                              ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository,
-                             ClassifierReportMapper classifierReportMapper, ErsConfig ersConfig) {
+                             ClassifierReportMapper classifierReportMapper,
+                             ErsResponseStatusMapper ersResponseStatusMapper,
+                             ErsConfig ersConfig) {
         this.ersWebServiceClient = ersWebServiceClient;
         this.ersRequestRepository = ersRequestRepository;
         this.classifierOptionsRequestModelRepository = classifierOptionsRequestModelRepository;
         this.classifierReportMapper = classifierReportMapper;
+        this.ersResponseStatusMapper = ersResponseStatusMapper;
         this.ersConfig = ersConfig;
     }
 
@@ -78,10 +85,10 @@ public class ErsRequestService {
             try {
                 EvaluationResultsResponse resultsResponse =
                         ersWebServiceClient.sendEvaluationResults(evaluationResults, ersRequest.getRequestId());
-                ersRequest.setResponseStatus(resultsResponse.getStatus());
+                ersRequest.setResponseStatus(ersResponseStatusMapper.map(resultsResponse.getStatus()));
             } catch (Exception ex) {
                 log.error("There was an error while sending evaluation results: {}", ex.getMessage());
-                ersRequest.setResponseStatus(ResponseStatus.ERROR);
+                ersRequest.setResponseStatus(ErsResponseStatus.ERROR);
                 ersRequest.setDetails(ex.getMessage());
             } finally {
                 ersRequestRepository.save(ersRequest);
@@ -124,7 +131,7 @@ public class ErsRequestService {
             log.info("Received response with requestId = {}, status = {} for data '{}'", response.getRequestId(),
                     response.getStatus(), classifierOptionsRequest.getInstances().getRelationName());
             requestModel.setRequestId(response.getRequestId());
-            requestModel.setResponseStatus(response.getStatus());
+            requestModel.setResponseStatus(ersResponseStatusMapper.map(response.getStatus()));
             if (ResponseStatus.SUCCESS.equals(response.getStatus())) {
                 ClassifierReport classifierReport = response.getClassifierReports().stream().findFirst().orElse(null);
                 if (!isValid(classifierReport)) {
@@ -149,7 +156,7 @@ public class ErsRequestService {
     }
 
     private void handleErrorRequest(ClassifierOptionsRequestModel requestModel, String errorMessage) {
-        requestModel.setResponseStatus(ResponseStatus.ERROR);
+        requestModel.setResponseStatus(ErsResponseStatus.ERROR);
         requestModel.setDetails(errorMessage);
     }
 }

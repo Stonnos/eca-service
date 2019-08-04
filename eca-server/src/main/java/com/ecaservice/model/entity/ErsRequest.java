@@ -46,7 +46,7 @@ public class ErsRequest {
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "response_status")
-    private ResponseStatus responseStatus;
+    private ErsResponseStatus responseStatus;
 
     /**
      * Error details

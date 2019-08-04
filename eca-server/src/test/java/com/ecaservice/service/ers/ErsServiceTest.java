@@ -11,6 +11,7 @@ import com.ecaservice.mapping.EvaluationLogInputOptionsMapperImpl;
 import com.ecaservice.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.mapping.StatisticsReportMapperImpl;
 import com.ecaservice.model.entity.ErsRequest;
+import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.model.entity.Experiment;
@@ -51,7 +52,8 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({ExperimentConfig.class, EvaluationLogDetailsMapperImpl.class, InstancesInfoMapperImpl.class,
-        EvaluationLogInputOptionsMapperImpl.class, StatisticsReportMapperImpl.class, ClassificationCostsMapperImpl.class})
+        EvaluationLogInputOptionsMapperImpl.class, StatisticsReportMapperImpl.class,
+        ClassificationCostsMapperImpl.class})
 public class ErsServiceTest extends AbstractJpaTest {
 
     @Mock
@@ -92,7 +94,8 @@ public class ErsServiceTest extends AbstractJpaTest {
         experimentRepository.save(experiment);
         ErsReportDto ersReportDto = ersService.getErsReport(experiment);
         Assertions.assertThat(ersReportDto).isNotNull();
-        Assertions.assertThat(ersReportDto.getErsReportStatus().getValue()).isEqualTo(ErsReportStatus.EXPERIMENT_IN_PROGRESS.name());
+        Assertions.assertThat(ersReportDto.getErsReportStatus().getValue()).isEqualTo(
+                ErsReportStatus.EXPERIMENT_IN_PROGRESS.name());
     }
 
     @Test
@@ -101,7 +104,8 @@ public class ErsServiceTest extends AbstractJpaTest {
         experimentRepository.save(experiment);
         ErsReportDto ersReportDto = ersService.getErsReport(experiment);
         Assertions.assertThat(ersReportDto).isNotNull();
-        Assertions.assertThat(ersReportDto.getErsReportStatus().getValue()).isEqualTo(ErsReportStatus.EXPERIMENT_ERROR.name());
+        Assertions.assertThat(ersReportDto.getErsReportStatus().getValue()).isEqualTo(
+                ErsReportStatus.EXPERIMENT_ERROR.name());
     }
 
     /**
@@ -116,7 +120,8 @@ public class ErsServiceTest extends AbstractJpaTest {
         experimentRepository.save(experiment);
         ErsReportDto ersReportDto = ersService.getErsReport(experiment);
         Assertions.assertThat(ersReportDto).isNotNull();
-        Assertions.assertThat(ersReportDto.getErsReportStatus().getValue()).isEqualTo(ErsReportStatus.EXPERIMENT_DELETED.name());
+        Assertions.assertThat(ersReportDto.getErsReportStatus().getValue()).isEqualTo(
+                ErsReportStatus.EXPERIMENT_DELETED.name());
         experimentRepository.deleteAll();
         //Case 2
         experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
@@ -126,7 +131,8 @@ public class ErsServiceTest extends AbstractJpaTest {
                 TestHelperUtils.createExperimentResultsRequest(experiment, ResponseStatus.SUCCESS));
         ersReportDto = ersService.getErsReport(experiment);
         Assertions.assertThat(ersReportDto).isNotNull();
-        Assertions.assertThat(ersReportDto.getErsReportStatus().getValue()).isEqualTo(ErsReportStatus.SUCCESS_SENT.name());
+        Assertions.assertThat(ersReportDto.getErsReportStatus().getValue()).isEqualTo(
+                ErsReportStatus.SUCCESS_SENT.name());
     }
 
     @Test
@@ -158,7 +164,8 @@ public class ErsServiceTest extends AbstractJpaTest {
                 TestHelperUtils.createExperimentResultsRequest(experiment, ResponseStatus.SUCCESS));
         ErsReportDto ersReportDto = ersService.getErsReport(experiment);
         Assertions.assertThat(ersReportDto).isNotNull();
-        Assertions.assertThat(ersReportDto.getErsReportStatus().getValue()).isEqualTo(ErsReportStatus.SUCCESS_SENT.name());
+        Assertions.assertThat(ersReportDto.getErsReportStatus().getValue()).isEqualTo(
+                ErsReportStatus.SUCCESS_SENT.name());
         Assertions.assertThat(ersReportDto.getRequestsCount()).isEqualTo(5);
         Assertions.assertThat(ersReportDto.getSuccessfullySavedClassifiers()).isEqualTo(2);
         Assertions.assertThat(ersReportDto.getFailedRequestsCount()).isEqualTo(3);
@@ -217,7 +224,7 @@ public class ErsServiceTest extends AbstractJpaTest {
         EvaluationResultsRequestEntity evaluationResultsRequestEntity = new EvaluationResultsRequestEntity();
         evaluationResultsRequestEntity.setRequestDate(LocalDateTime.now().minusDays(1L));
         evaluationResultsRequestEntity.setRequestId(UUID.randomUUID().toString());
-        evaluationResultsRequestEntity.setResponseStatus(ResponseStatus.ERROR);
+        evaluationResultsRequestEntity.setResponseStatus(ErsResponseStatus.ERROR);
         evaluationResultsRequestEntity.setEvaluationLog(evaluationLog);
         evaluationResultsRequestEntityRepository.save(evaluationResultsRequestEntity);
         evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
@@ -295,7 +302,7 @@ public class ErsServiceTest extends AbstractJpaTest {
         EvaluationResultsRequestEntity evaluationResultsRequestEntity = new EvaluationResultsRequestEntity();
         evaluationResultsRequestEntity.setRequestDate(LocalDateTime.now().minusDays(1L));
         evaluationResultsRequestEntity.setRequestId(UUID.randomUUID().toString());
-        evaluationResultsRequestEntity.setResponseStatus(ResponseStatus.SUCCESS);
+        evaluationResultsRequestEntity.setResponseStatus(ErsResponseStatus.SUCCESS);
         evaluationResultsRequestEntity.setEvaluationLog(evaluationLog);
         evaluationLogRepository.save(evaluationLog);
         evaluationResultsRequestEntityRepository.save(evaluationResultsRequestEntity);

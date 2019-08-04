@@ -9,6 +9,8 @@ import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassifierReportMapper;
 import com.ecaservice.mapping.ClassifierReportMapperImpl;
+import com.ecaservice.mapping.ErsResponseStatusMapper;
+import com.ecaservice.mapping.ErsResponseStatusMapperImpl;
 import com.ecaservice.model.entity.ErsRequest;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
@@ -39,7 +41,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ErsConfig.class, ClassifierReportMapperImpl.class})
+@Import({ErsConfig.class, ClassifierReportMapperImpl.class, ErsResponseStatusMapperImpl.class})
 public class ErsRequestServiceTest extends AbstractJpaTest {
 
     @Inject
@@ -50,6 +52,8 @@ public class ErsRequestServiceTest extends AbstractJpaTest {
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
     @Inject
     private ClassifierReportMapper classifierReportMapper;
+    @Inject
+    private ErsResponseStatusMapper ersResponseStatusMapper;
     @Inject
     private ErsRequestRepository ersRequestRepository;
     @Inject
@@ -62,7 +66,7 @@ public class ErsRequestServiceTest extends AbstractJpaTest {
     @Override
     public void init() throws Exception {
         ersRequestService = new ErsRequestService(ersWebServiceClient, ersRequestRepository,
-                classifierOptionsRequestModelRepository, classifierReportMapper, ersConfig);
+                classifierOptionsRequestModelRepository, classifierReportMapper, ersResponseStatusMapper, ersConfig);
         evaluationResults =
                 new EvaluationResults(new KNearestNeighbours(), new Evaluation(TestHelperUtils.loadInstances()));
     }
