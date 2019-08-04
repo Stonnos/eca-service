@@ -2,7 +2,7 @@ package com.ecaservice.service.scheduler;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.dto.evaluation.ResponseStatus;
+import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
@@ -136,15 +136,15 @@ public class ExperimentSchedulerTest extends AbstractJpaTest {
                 finishedExperimentWithNoOneRequests, finishedExperimentWithErrorRequests));
 
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(finishedExperiment, ResponseStatus.SUCCESS));
+                TestHelperUtils.createExperimentResultsRequest(finishedExperiment, ErsResponseStatus.SUCCESS));
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(finishedExperiment, ResponseStatus.SUCCESS));
-        experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(finishedExperimentWithErrorRequests,
-                        ResponseStatus.ERROR));
+                TestHelperUtils.createExperimentResultsRequest(finishedExperiment, ErsResponseStatus.SUCCESS));
         experimentResultsRequestRepository.save(
                 TestHelperUtils.createExperimentResultsRequest(finishedExperimentWithErrorRequests,
-                        ResponseStatus.DUPLICATE_REQUEST_ID));
+                        ErsResponseStatus.ERROR));
+        experimentResultsRequestRepository.save(
+                TestHelperUtils.createExperimentResultsRequest(finishedExperimentWithErrorRequests,
+                        ErsResponseStatus.DUPLICATE_REQUEST_ID));
 
         when(experimentService.getExperimentResults(any(Experiment.class))).thenReturn(new ExperimentHistory());
         experimentScheduler.processRequestsToErs();

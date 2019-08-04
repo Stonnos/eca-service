@@ -5,6 +5,7 @@ import com.ecaservice.config.CommonConfig;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel_;
+import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.service.AbstractJpaTest;
@@ -66,19 +67,19 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
     public void testGlobalFilter() {
         ClassifierOptionsRequestModel requestModel =
                 TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
-                        ResponseStatus.ERROR, Collections.emptyList());
+                        ErsResponseStatus.ERROR, Collections.emptyList());
         requestModel.setRelationName("relation1");
         ClassifierOptionsRequestModel requestModel1 =
                 TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
-                        ResponseStatus.SUCCESS, Collections.emptyList());
+                        ErsResponseStatus.SUCCESS, Collections.emptyList());
         requestModel1.setRelationName("relation2");
         ClassifierOptionsRequestModel requestModel2 =
                 TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
-                        ResponseStatus.SUCCESS, Collections.emptyList());
+                        ErsResponseStatus.SUCCESS, Collections.emptyList());
         requestModel2.setRelationName("glass");
         ClassifierOptionsRequestModel requestModel3 =
                 TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
-                        ResponseStatus.RESULTS_NOT_FOUND, Collections.emptyList());
+                        ErsResponseStatus.RESULTS_NOT_FOUND, Collections.emptyList());
         requestModel3.setRelationName("glass");
         classifierOptionsRequestModelRepository.saveAll(
                 Arrays.asList(requestModel, requestModel1, requestModel2, requestModel3));

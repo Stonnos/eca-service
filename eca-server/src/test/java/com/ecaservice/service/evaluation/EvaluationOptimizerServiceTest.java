@@ -31,6 +31,7 @@ import com.ecaservice.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
+import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.model.options.ActivationFunctionOptions;
 import com.ecaservice.model.options.ClassifierOptions;
@@ -230,7 +231,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         //Case 1
         ClassifierOptionsRequestModel requestModel = TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash,
                 LocalDateTime.now().minusDays(commonConfig.getClassifierOptionsCacheDurationInDays() + 1),
-                ResponseStatus.SUCCESS, Collections.emptyList());
+                ErsResponseStatus.SUCCESS, Collections.emptyList());
         ClassifierOptionsRequestEntity requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
                 (requestModel.getRequestDate(), requestModel);
         classifierOptionsRequestModelRepository.save(requestModel);
@@ -250,7 +251,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         deleteAll();
         //Case 2
         requestModel = TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash,
-                LocalDateTime.now(), ResponseStatus.ERROR, Collections.emptyList());
+                LocalDateTime.now(), ErsResponseStatus.ERROR, Collections.emptyList());
         requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
                 (requestModel.getRequestDate(), requestModel);
         classifierOptionsRequestModelRepository.save(requestModel);
@@ -266,7 +267,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         deleteAll();
         //Case 3
         requestModel = TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
-                ResponseStatus.SUCCESS, Collections.emptyList());
+                ErsResponseStatus.SUCCESS, Collections.emptyList());
         requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
                 (requestModel.getRequestDate(), requestModel);
         classifierOptionsRequestModelRepository.save(requestModel);
@@ -282,7 +283,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         deleteAll();
         //Case 4
         requestModel = TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash, LocalDateTime.now(),
-                ResponseStatus.SUCCESS, Collections.emptyList());
+                ErsResponseStatus.SUCCESS, Collections.emptyList());
         requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
                 (requestModel.getRequestDate(), requestModel);
         classifierOptionsRequestModelRepository.save(requestModel);
@@ -298,7 +299,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         deleteAll();
         //Case 5
         requestModel = TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash, LocalDateTime.now(),
-                ResponseStatus.SUCCESS,
+                ErsResponseStatus.SUCCESS,
                 Collections.singletonList(TestHelperUtils.createClassifierOptionsResponseModel("OPTIONS")));
         requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
                 (requestModel.getRequestDate(), requestModel);
@@ -318,11 +319,11 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     public void testClassifierOptionsCache() {
         ClassifierOptionsRequestModel requestModel =
                 TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash, LocalDateTime.now().minusDays(1),
-                        ResponseStatus.SUCCESS, Collections.singletonList(
+                        ErsResponseStatus.SUCCESS, Collections.singletonList(
                                 TestHelperUtils.createClassifierOptionsResponseModel(decisionTreeOptions)));
         ClassifierOptionsRequestModel requestModel1 =
                 TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash, LocalDateTime.now(),
-                        ResponseStatus.SUCCESS,
+                        ErsResponseStatus.SUCCESS,
                         Collections.singletonList(TestHelperUtils.createClassifierOptionsResponseModel(j48Options)));
         classifierOptionsRequestModelRepository.save(requestModel);
         classifierOptionsRequestModelRepository.save(requestModel1);

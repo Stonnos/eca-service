@@ -3,8 +3,8 @@ package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
-import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
+import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
 import eca.core.evaluation.EvaluationMethod;
 import org.apache.commons.lang3.StringUtils;
@@ -46,7 +46,7 @@ public class ClassifierOptionsRequestModelMapperTest {
     @Test
     public void testMapClassifierOptionsRequestModel() {
         ClassifierOptionsRequestModel requestModel =
-                TestHelperUtils.createClassifierOptionsRequestModel("hash", LocalDateTime.now(), ResponseStatus.SUCCESS,
+                TestHelperUtils.createClassifierOptionsRequestModel("hash", LocalDateTime.now(), ErsResponseStatus.SUCCESS,
                         Collections.singletonList(TestHelperUtils.createClassifierOptionsResponseModel("options")));
         ClassifierOptionsRequestDto classifierOptionsRequestDto = classifierOptionsRequestModelMapper.map(requestModel);
         Assertions.assertThat(classifierOptionsRequestDto).isNotNull();
@@ -72,10 +72,10 @@ public class ClassifierOptionsRequestModelMapperTest {
     public void testMapClassifierOptionsRequestModels() {
         ClassifierOptionsRequestModel requestModel =
                 TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
-                        ResponseStatus.SUCCESS, Collections.emptyList());
+                        ErsResponseStatus.SUCCESS, Collections.emptyList());
         ClassifierOptionsRequestModel requestModel1 =
                 TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
-                        ResponseStatus.SUCCESS, Collections.emptyList());
+                        ErsResponseStatus.SUCCESS, Collections.emptyList());
         List<ClassifierOptionsRequestDto> classifierOptionsRequestDtoList = classifierOptionsRequestModelMapper.map
                 (Arrays.asList(requestModel, requestModel1));
         Assertions.assertThat(classifierOptionsRequestDtoList).isNotNull();

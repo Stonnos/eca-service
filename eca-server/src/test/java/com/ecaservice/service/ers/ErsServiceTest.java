@@ -128,7 +128,7 @@ public class ErsServiceTest extends AbstractJpaTest {
         experiment.setDeletedDate(LocalDateTime.now());
         experimentRepository.save(experiment);
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experiment, ResponseStatus.SUCCESS));
+                TestHelperUtils.createExperimentResultsRequest(experiment, ErsResponseStatus.SUCCESS));
         ersReportDto = ersService.getErsReport(experiment);
         Assertions.assertThat(ersReportDto).isNotNull();
         Assertions.assertThat(ersReportDto.getErsReportStatus().getValue()).isEqualTo(
@@ -140,9 +140,9 @@ public class ErsServiceTest extends AbstractJpaTest {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experimentRepository.save(experiment);
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experiment, ResponseStatus.ERROR));
+                TestHelperUtils.createExperimentResultsRequest(experiment, ErsResponseStatus.ERROR));
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experiment, ResponseStatus.INVALID_REQUEST_PARAMS));
+                TestHelperUtils.createExperimentResultsRequest(experiment, ErsResponseStatus.INVALID_REQUEST_PARAMS));
         ErsReportDto ersReportDto = ersService.getErsReport(experiment);
         Assertions.assertThat(ersReportDto).isNotNull();
         Assertions.assertThat(ersReportDto.getErsReportStatus().getValue()).isEqualTo(ErsReportStatus.NEED_SENT.name());
@@ -153,15 +153,15 @@ public class ErsServiceTest extends AbstractJpaTest {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experimentRepository.save(experiment);
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experiment, ResponseStatus.ERROR));
+                TestHelperUtils.createExperimentResultsRequest(experiment, ErsResponseStatus.ERROR));
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experiment, ResponseStatus.INVALID_REQUEST_PARAMS));
+                TestHelperUtils.createExperimentResultsRequest(experiment, ErsResponseStatus.INVALID_REQUEST_PARAMS));
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experiment, ResponseStatus.DUPLICATE_REQUEST_ID));
+                TestHelperUtils.createExperimentResultsRequest(experiment, ErsResponseStatus.DUPLICATE_REQUEST_ID));
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experiment, ResponseStatus.SUCCESS));
+                TestHelperUtils.createExperimentResultsRequest(experiment, ErsResponseStatus.SUCCESS));
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experiment, ResponseStatus.SUCCESS));
+                TestHelperUtils.createExperimentResultsRequest(experiment, ErsResponseStatus.SUCCESS));
         ErsReportDto ersReportDto = ersService.getErsReport(experiment);
         Assertions.assertThat(ersReportDto).isNotNull();
         Assertions.assertThat(ersReportDto.getErsReportStatus().getValue()).isEqualTo(
