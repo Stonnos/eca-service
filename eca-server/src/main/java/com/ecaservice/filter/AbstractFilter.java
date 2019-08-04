@@ -245,8 +245,9 @@ public abstract class AbstractFilter<T> implements Specification<T> {
             Class<?> fieldClazz = getGetterReturnType(field, clazz);
             if (fieldClazz.isEnum()) {
                 if (!DescriptiveEnum.class.isAssignableFrom(fieldClazz)) {
-                    throw new IllegalStateException(String.format("Enum class must implements [%s] interface!",
-                            DescriptiveEnum.class.getSimpleName()));
+                    throw new IllegalStateException(
+                            String.format("Enum class [%s] must implements [%s] interface!", fieldClazz.getSimpleName(),
+                                    DescriptiveEnum.class.getSimpleName()));
                 }
                 DescriptiveEnum descriptiveEnum =
                         Stream.of(fieldClazz.getEnumConstants()).map(DescriptiveEnum.class::cast).filter(
