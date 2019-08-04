@@ -3,6 +3,7 @@ package com.ecaservice.filter;
 import com.ecaservice.web.dto.FilterFieldTypeVisitor;
 import com.ecaservice.web.dto.MatchModeVisitor;
 import com.ecaservice.web.dto.model.FilterRequestDto;
+import eca.core.DescriptiveEnum;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
@@ -14,7 +15,6 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.beans.PropertyDescriptor;
 import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,8 +22,12 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static com.ecaservice.util.ReflectionUtils.getGetterReturnType;
 import static com.ecaservice.util.Utils.splitByPointSeparator;
 
 /**
@@ -85,11 +89,9 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     private Predicate buildPredicateForGlobalFilter(Root<T> root, CriteriaBuilder criteriaBuilder) {
         String trimQuery = searchQuery.trim().toLowerCase();
-        Predicate[] predicates = globalFilterFields.stream().map(field -> {
-            Expression<String> expression = buildExpression(root, field);
-            return criteriaBuilder.like(criteriaBuilder.lower(expression),
-                    MessageFormat.format(LIKE_FORMAT, trimQuery));
-        }).toArray(Predicate[]::new);
+        Predicate[] predicates = globalFilterFields.stream().map(
+                field -> buildSinglePredicateForGlobalFilter(root, criteriaBuilder, field, trimQuery)).filter(
+                Objects::nonNull).toArray(Predicate[]::new);
         return criteriaBuilder.or(predicates);
     }
 
@@ -199,9 +201,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
             public Predicate caseReference() {
                 Expression<?> expression = buildExpression(root, filterRequestDto.getName());
                 try {
-                    PropertyDescriptor propertyDescriptor = new PropertyDescriptor(filterRequestDto.getName(), clazz);
-                    String getter = propertyDescriptor.getReadMethod().getName();
-                    Class enumClazz = clazz.getMethod(getter).getReturnType();
+                    Class enumClazz = getGetterReturnType(filterRequestDto.getName(), clazz);
                     return expression.in(
                             values.stream().map(value -> Enum.valueOf(enumClazz, value)).collect(Collectors.toList()));
                 } catch (Exception ex) {
@@ -236,6 +236,32 @@ public abstract class AbstractFilter<T> implements Specification<T> {
             return join.get(fieldLevels[1]);
         } else {
             return root.get(fieldName);
+        }
+    }
+
+    private Predicate buildSinglePredicateForGlobalFilter(Root<T> root, CriteriaBuilder criteriaBuilder, String field,
+                                                          String value) {
+        try {
+            Class<?> fieldClazz = getGetterReturnType(field, clazz);
+            if (fieldClazz.isEnum()) {
+                if (!DescriptiveEnum.class.isAssignableFrom(fieldClazz)) {
+                    throw new IllegalStateException(String.format("Enum class must implements [%s] interface!",
+                            DescriptiveEnum.class.getSimpleName()));
+                }
+                DescriptiveEnum descriptiveEnum =
+                        Stream.of(fieldClazz.getEnumConstants()).map(DescriptiveEnum.class::cast).filter(
+                                val -> val.getDescription().toLowerCase().contains(value)).findFirst().orElse(null);
+                return Optional.ofNullable(descriptiveEnum).map(e -> {
+                    Expression<?> expression = buildExpression(root, field);
+                    return criteriaBuilder.equal(expression, e);
+                }).orElse(null);
+            } else {
+                Expression<String> expression = buildExpression(root, field);
+                return criteriaBuilder.like(criteriaBuilder.lower(expression),
+                        MessageFormat.format(LIKE_FORMAT, value));
+            }
+        } catch (Exception ex) {
+            throw new IllegalStateException(ex.getMessage());
         }
     }
 }
