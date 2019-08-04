@@ -19,32 +19,30 @@ public class ReflectionUtils {
     /**
      * Gets getter method return type by field property. Note: Property can be composite, for example:
      * <pre>
-     *  entity.value1
+     *  entity.entity1.prop1
      * </pre>
-     * If the field is composite, then the last property value is taken. In our case the last value is value1.
+     * If the field is composite, then the last property name is taken. In our case the last name is prop1.
      *
      * @param fieldName - field name
      * @param clazz     - entity class
-     * @return getter name
+     * @return getter return type
      * @throws IntrospectionException in case of errors
      * @throws NoSuchMethodException  in case if method is not exists
      */
     public static Class<?> getGetterReturnType(String fieldName, Class<?> clazz)
             throws IntrospectionException, NoSuchMethodException {
         String[] fieldLevels = splitByPointSeparator(fieldName);
-        String targetField = getTargetField(fieldLevels);
-        Class<?> targetClazz = getTargetClazz(fieldLevels, clazz);
-        String getter = getGetterForField(targetField, targetClazz);
-        return targetClazz.getMethod(getter).getReturnType();
+        return getTargetClazz(fieldLevels, clazz);
     }
 
     private static Class<?> getTargetClazz(String[] fieldLevels, Class<?> clazz)
             throws IntrospectionException, NoSuchMethodException {
-        return fieldLevels.length > 1 ? getGetterReturnType(fieldLevels[0], clazz) : clazz;
-    }
-
-    private static String getTargetField(String[] fieldLevels) {
-        return fieldLevels.length > 1 ? fieldLevels[1] : fieldLevels[0];
+        Class<?> currentClazz = clazz;
+        for (int i = 0; i < fieldLevels.length; i++) {
+            String getter = getGetterForField(fieldLevels[i], currentClazz);
+            currentClazz = currentClazz.getMethod(getter).getReturnType();
+        }
+        return currentClazz;
     }
 
     private static String getGetterForField(String fieldName, Class<?> clazz) throws IntrospectionException {
