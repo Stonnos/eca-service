@@ -146,7 +146,7 @@ public class ErsService {
             EvaluationResultsRequestEntity evaluationResultsRequestEntity =
                     evaluationResultsRequestEntityRepository.findByEvaluationLog(evaluationLog);
             if (evaluationResultsRequestEntity == null ||
-                    !ResponseStatus.SUCCESS.equals(evaluationResultsRequestEntity.getResponseStatus())) {
+                    !ErsResponseStatus.SUCCESS.equals(evaluationResultsRequestEntity.getResponseStatus())) {
                 evaluationResultsStatus = EvaluationResultsStatus.RESULTS_NOT_SENT;
             } else {
                 try {

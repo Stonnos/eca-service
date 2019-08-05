@@ -101,7 +101,8 @@ public class ErsRequestServiceTest extends AbstractJpaTest {
         AssertionUtils.assertSingletonList(requestEntities);
         ErsRequest ersRequest = requestEntities.stream().findFirst().orElse(null);
         Assertions.assertThat(ersRequest).isNotNull();
-        Assertions.assertThat(ersRequest.getResponseStatus()).isEqualTo(resultsResponse.getStatus());
+        Assertions.assertThat(ersRequest.getResponseStatus()).isEqualTo(
+                ersResponseStatusMapper.map(resultsResponse.getStatus()));
         Assertions.assertThat(ersRequest).isInstanceOf(EvaluationResultsRequestEntity.class);
         EvaluationResultsRequestEntity actual = (EvaluationResultsRequestEntity) ersRequest;
         Assertions.assertThat(actual.getEvaluationLog()).isNotNull();
