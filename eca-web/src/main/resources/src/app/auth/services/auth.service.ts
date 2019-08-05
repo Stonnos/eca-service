@@ -28,7 +28,7 @@ export class AuthService {
     return this.http.post(this.serviceUrl, params.toString(), options);
   }
 
-  public saveToken(token){
+  public saveToken(token): void {
     const expireDate = new Date().getTime() + (1000 * token.expires_in);
     localStorage.setItem(AuthenticationKeys.ACCESS_TOKEN, token.access_token);
     localStorage.setItem(AuthenticationKeys.EXPIRE_DATE, expireDate.toString());
