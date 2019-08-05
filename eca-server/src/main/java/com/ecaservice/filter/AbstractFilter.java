@@ -22,8 +22,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -90,8 +88,8 @@ public abstract class AbstractFilter<T> implements Specification<T> {
     private Predicate buildPredicateForGlobalFilter(Root<T> root, CriteriaBuilder criteriaBuilder) {
         String trimQuery = searchQuery.trim().toLowerCase();
         Predicate[] predicates = globalFilterFields.stream().map(
-                field -> buildSinglePredicateForGlobalFilter(root, criteriaBuilder, field, trimQuery)).filter(
-                Objects::nonNull).toArray(Predicate[]::new);
+                field -> buildSinglePredicateForGlobalFilter(root, criteriaBuilder, field, trimQuery)).toArray(
+                Predicate[]::new);
         return criteriaBuilder.or(predicates);
     }
 
@@ -249,13 +247,11 @@ public abstract class AbstractFilter<T> implements Specification<T> {
                             String.format("Enum class [%s] must implements [%s] interface!", fieldClazz.getSimpleName(),
                                     DescriptiveEnum.class.getSimpleName()));
                 }
-                DescriptiveEnum descriptiveEnum =
+                List<DescriptiveEnum> descriptiveEnums =
                         Stream.of(fieldClazz.getEnumConstants()).map(DescriptiveEnum.class::cast).filter(
-                                val -> val.getDescription().toLowerCase().contains(value)).findFirst().orElse(null);
-                return Optional.ofNullable(descriptiveEnum).map(e -> {
-                    Expression<?> expression = buildExpression(root, field);
-                    return criteriaBuilder.equal(expression, e);
-                }).orElse(null);
+                                val -> val.getDescription().toLowerCase().contains(value)).collect(Collectors.toList());
+                Expression<?> expression = buildExpression(root, field);
+                return expression.in(descriptiveEnums);
             } else {
                 Expression<String> expression = buildExpression(root, field);
                 return criteriaBuilder.like(criteriaBuilder.lower(expression),
