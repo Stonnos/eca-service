@@ -2,7 +2,6 @@ package com.ecaservice.service.ers;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CommonConfig;
-import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel_;
 import com.ecaservice.model.entity.ErsResponseStatus;
@@ -86,7 +85,8 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
         PageRequestDto pageRequestDto =
                 new PageRequestDto(0, 10, ClassifierOptionsRequestModel_.REQUEST_DATE, false, "gla", newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.RESPONSE_STATUS,
-                Collections.singletonList(ResponseStatus.SUCCESS.name()), FilterFieldType.REFERENCE, MatchMode.EQUALS));
+                Collections.singletonList(ErsResponseStatus.SUCCESS.name()), FilterFieldType.REFERENCE,
+                MatchMode.EQUALS));
         when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST)).thenReturn(
                 Arrays.asList(ClassifierOptionsRequestModel_.RELATION_NAME, ClassifierOptionsRequestModel_.REQUEST_ID));
         Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =

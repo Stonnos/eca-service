@@ -1,6 +1,6 @@
 package com.ecaservice.repository;
 
-import com.ecaservice.dto.evaluation.ResponseStatus;
+import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,5 +30,6 @@ public interface ExperimentResultsRequestRepository extends JpaRepository<Experi
      * @param responseStatuses - ERS response statuses
      * @return {@code true} if any requests exists
      */
-    boolean existsByExperimentAndResponseStatusIn(Experiment experiment, Collection<ResponseStatus> responseStatuses);
+    boolean existsByExperimentAndResponseStatusIn(Experiment experiment,
+                                                  Collection<ErsResponseStatus> responseStatuses);
 }

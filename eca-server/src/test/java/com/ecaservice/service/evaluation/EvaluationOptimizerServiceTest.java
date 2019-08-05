@@ -183,7 +183,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         AssertionUtils.assertSingletonList(optionsRequests);
         ClassifierOptionsRequestModel requestModel = optionsRequests.get(0);
         assertThat(evaluationResponse.getRequestId()).isNotNull();
-        assertThat(requestModel.getResponseStatus()).isEqualTo(ResponseStatus.ERROR);
+        assertThat(requestModel.getResponseStatus()).isEqualTo(ErsResponseStatus.ERROR);
         assertThat(requestModel.getClassifierOptionsResponseModels()).isNullOrEmpty();
     }
 
@@ -200,7 +200,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         AssertionUtils.assertSingletonList(optionsRequests);
         ClassifierOptionsRequestModel requestModel = optionsRequests.get(0);
         assertThat(evaluationResponse.getRequestId()).isNotNull();
-        assertThat(requestModel.getResponseStatus()).isEqualTo(ResponseStatus.ERROR);
+        assertThat(requestModel.getResponseStatus()).isEqualTo(ErsResponseStatus.ERROR);
         assertErsSource();
     }
 
@@ -448,7 +448,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     private void assertSuccessClassifierOptionsRequestModel(ClassifierOptionsRequestModel requestModel) {
         assertThat(requestModel.getDataMd5Hash()).isNotNull();
-        assertThat(requestModel.getResponseStatus()).isEqualTo(ResponseStatus.SUCCESS);
+        assertThat(requestModel.getResponseStatus()).isEqualTo(ErsResponseStatus.SUCCESS);
         assertThat(requestModel.getRequestId()).isNotNull();
         assertThat(requestModel.getNumFolds()).isNotNull();
         assertThat(requestModel.getNumTests()).isNotNull();

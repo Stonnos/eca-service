@@ -4,6 +4,7 @@ import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.EvaluationLogDetailsMapper;
+import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.model.entity.Experiment;
@@ -78,10 +79,10 @@ public class ErsService {
         if (!CollectionUtils.isEmpty(experimentResultsRequests)) {
             ersReportDto.setRequestsCount(experimentResultsRequests.size());
             ersReportDto.setSuccessfullySavedClassifiers(experimentResultsRequests.stream().filter(
-                    experimentResultsRequest -> ResponseStatus.SUCCESS.equals(
+                    experimentResultsRequest -> ErsResponseStatus.SUCCESS.equals(
                             experimentResultsRequest.getResponseStatus())).count());
             ersReportDto.setFailedRequestsCount(experimentResultsRequests.stream().filter(
-                    experimentResultsRequest -> !ResponseStatus.SUCCESS.equals(
+                    experimentResultsRequest -> !ErsResponseStatus.SUCCESS.equals(
                             experimentResultsRequest.getResponseStatus())).count());
         }
         populateErsReportStatus(experiment, ersReportDto);

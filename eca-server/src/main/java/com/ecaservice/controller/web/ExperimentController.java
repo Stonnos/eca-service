@@ -1,11 +1,11 @@
 package com.ecaservice.controller.web;
 
 import com.ecaservice.dto.ExperimentRequest;
-import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.exception.ExperimentException;
 import com.ecaservice.exception.ResultsNotFoundException;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.MultipartFileResource;
+import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
@@ -328,7 +328,7 @@ public class ExperimentController {
 
     private boolean isResultsSentToErs(Experiment experiment) {
         return experimentResultsRequestRepository.existsByExperimentAndResponseStatusIn(experiment,
-                Collections.singletonList(ResponseStatus.SUCCESS));
+                Collections.singletonList(ErsResponseStatus.SUCCESS));
     }
 
     private ResponseEntity handleExperimentResultsSending(Experiment experiment) {

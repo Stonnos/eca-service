@@ -1,7 +1,7 @@
 package com.ecaservice.repository;
 
-import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
+import com.ecaservice.model.entity.ErsResponseStatus;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,7 +30,7 @@ public interface ClassifierOptionsRequestRepository extends JpaRepository<Classi
             "cm.requestDate > :requestDate order by req.creationDate desc")
     List<ClassifierOptionsRequestEntity> findLastRequests(@Param("dataMd5Hash") String dataMd5Hash,
                                                           @Param("responseStatuses")
-                                                                  Collection<ResponseStatus> responseStatuses,
+                                                                  Collection<ErsResponseStatus> responseStatuses,
                                                           @Param("requestDate") LocalDateTime requestDate,
                                                           Pageable pageable);
 }
