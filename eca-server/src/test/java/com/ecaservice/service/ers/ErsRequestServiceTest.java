@@ -9,7 +9,10 @@ import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassifierReportMapper;
 import com.ecaservice.mapping.ClassifierReportMapperImpl;
+import com.ecaservice.mapping.ErsResponseStatusMapper;
+import com.ecaservice.mapping.ErsResponseStatusMapperImpl;
 import com.ecaservice.model.entity.ErsRequest;
+import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
@@ -39,7 +42,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ErsConfig.class, ClassifierReportMapperImpl.class})
+@Import({ErsConfig.class, ClassifierReportMapperImpl.class, ErsResponseStatusMapperImpl.class})
 public class ErsRequestServiceTest extends AbstractJpaTest {
 
     @Inject
@@ -50,6 +53,8 @@ public class ErsRequestServiceTest extends AbstractJpaTest {
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
     @Inject
     private ClassifierReportMapper classifierReportMapper;
+    @Inject
+    private ErsResponseStatusMapper ersResponseStatusMapper;
     @Inject
     private ErsRequestRepository ersRequestRepository;
     @Inject
@@ -62,7 +67,7 @@ public class ErsRequestServiceTest extends AbstractJpaTest {
     @Override
     public void init() throws Exception {
         ersRequestService = new ErsRequestService(ersWebServiceClient, ersRequestRepository,
-                classifierOptionsRequestModelRepository, classifierReportMapper, ersConfig);
+                classifierOptionsRequestModelRepository, classifierReportMapper, ersResponseStatusMapper, ersConfig);
         evaluationResults =
                 new EvaluationResults(new KNearestNeighbours(), new Evaluation(TestHelperUtils.loadInstances()));
     }
@@ -96,7 +101,8 @@ public class ErsRequestServiceTest extends AbstractJpaTest {
         AssertionUtils.assertSingletonList(requestEntities);
         ErsRequest ersRequest = requestEntities.stream().findFirst().orElse(null);
         Assertions.assertThat(ersRequest).isNotNull();
-        Assertions.assertThat(ersRequest.getResponseStatus()).isEqualTo(resultsResponse.getStatus());
+        Assertions.assertThat(ersRequest.getResponseStatus()).isEqualTo(
+                ersResponseStatusMapper.map(resultsResponse.getStatus()));
         Assertions.assertThat(ersRequest).isInstanceOf(EvaluationResultsRequestEntity.class);
         EvaluationResultsRequestEntity actual = (EvaluationResultsRequestEntity) ersRequest;
         Assertions.assertThat(actual.getEvaluationLog()).isNotNull();
@@ -118,7 +124,7 @@ public class ErsRequestServiceTest extends AbstractJpaTest {
         AssertionUtils.assertSingletonList(requestEntities);
         ErsRequest ersRequest = requestEntities.stream().findFirst().orElse(null);
         Assertions.assertThat(ersRequest).isNotNull();
-        Assertions.assertThat(ersRequest.getResponseStatus()).isEqualTo(ResponseStatus.ERROR);
+        Assertions.assertThat(ersRequest.getResponseStatus()).isEqualTo(ErsResponseStatus.ERROR);
         Assertions.assertThat(ersRequest).isInstanceOf(EvaluationResultsRequestEntity.class);
         EvaluationResultsRequestEntity actual = (EvaluationResultsRequestEntity) ersRequest;
         Assertions.assertThat(actual.getEvaluationLog()).isNotNull();

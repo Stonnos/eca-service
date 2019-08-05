@@ -1,13 +1,14 @@
-package com.ecaservice.web.dto.model;
+package com.ecaservice.model.entity;
 
-import com.ecaservice.web.dto.dictionary.ErsResponseStatusDictionary;
+import com.ecaservice.model.dictionary.ErsResponseStatusDictionary;
+import eca.core.DescriptiveEnum;
 
 /**
  * ERS response status enum.
  *
  * @author Roman batygin
  */
-public enum ErsResponseStatus {
+public enum ErsResponseStatus implements DescriptiveEnum {
 
     SUCCESS(ErsResponseStatusDictionary.SUCCESS_DESCRIPTION),
     INVALID_REQUEST_ID(ErsResponseStatusDictionary.INVALID_REQUEST_ID_DESCRIPTION),
@@ -28,6 +29,7 @@ public enum ErsResponseStatus {
      *
      * @return ERS response status status description
      */
+    @Override
     public String getDescription() {
         return description;
     }

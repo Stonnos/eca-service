@@ -6,13 +6,13 @@ import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.InstancesRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
-import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassifierOptionsRequestMapper;
 import com.ecaservice.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.mapping.EvaluationRequestMapper;
 import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
+import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.repository.ClassifierOptionsRequestRepository;
 import com.ecaservice.service.ClassifierOptionsService;
@@ -141,7 +141,7 @@ public class EvaluationOptimizerService {
     private ClassifierOptionsRequestModel getLastClassifierOptionsRequestModel(String dataMd5Hash) {
         List<ClassifierOptionsRequestEntity> requestModels =
                 classifierOptionsRequestRepository.findLastRequests(dataMd5Hash,
-                        Collections.singleton(ResponseStatus.SUCCESS),
+                        Collections.singletonList(ErsResponseStatus.SUCCESS),
                         LocalDateTime.now().minusDays(commonConfig.getClassifierOptionsCacheDurationInDays()),
                         PageRequest.of(0, 1));
         return requestModels.stream().findFirst().map(

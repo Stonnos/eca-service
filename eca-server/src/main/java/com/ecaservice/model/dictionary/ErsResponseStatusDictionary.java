@@ -1,4 +1,4 @@
-package com.ecaservice.web.dto.dictionary;
+package com.ecaservice.model.dictionary;
 
 /**
  * ERS response status dictionary.

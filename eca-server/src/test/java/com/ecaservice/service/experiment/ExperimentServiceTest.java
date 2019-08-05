@@ -255,6 +255,43 @@ public class ExperimentServiceTest extends AbstractJpaTest {
     }
 
     /**
+     * Tests global filtering by requests status field
+     */
+    @Test
+    public void testGlobalFilterByRequestStatus() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT);
+        Experiment experiment3 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR);
+        experimentRepository.saveAll(Arrays.asList(experiment, experiment1, experiment2, experiment3));
+        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, Experiment_.CREATION_DATE, false,
+                RequestStatus.FINISHED.getDescription().substring(0, 2), newArrayList());
+        when(filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT)).thenReturn(
+                Collections.singletonList(Experiment_.EXPERIMENT_STATUS));
+        Page<Experiment> evaluationLogPage = experimentService.getNextPage(pageRequestDto);
+        assertThat(evaluationLogPage).isNotNull();
+        assertThat(evaluationLogPage.getTotalElements()).isOne();
+    }
+
+    /**
+     * Tests global filtering by requests status field with empty data result.
+     */
+    @Test
+    public void testGlobalFilterByRequestStatusWithEmptyData() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        experimentRepository.saveAll(Arrays.asList(experiment, experiment1, experiment2));
+        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, Experiment_.CREATION_DATE, false,
+                "query", newArrayList());
+        when(filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT)).thenReturn(
+                Collections.singletonList(Experiment_.EXPERIMENT_STATUS));
+        Page<Experiment> evaluationLogPage = experimentService.getNextPage(pageRequestDto);
+        assertThat(evaluationLogPage).isNotNull();
+        assertThat(evaluationLogPage).isEmpty();
+    }
+
+    /**
      * Test filter by experiment type and experiment status order by creation date.
      */
     @Test

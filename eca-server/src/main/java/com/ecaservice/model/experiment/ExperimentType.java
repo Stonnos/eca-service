@@ -1,13 +1,14 @@
 package com.ecaservice.model.experiment;
 
 import com.ecaservice.model.dictionary.ExperimentTypeDictionary;
+import eca.core.DescriptiveEnum;
 
 /**
  * Experiment type.
  *
  * @author Roman Batygin
  */
-public enum ExperimentType {
+public enum ExperimentType implements DescriptiveEnum {
 
     /**
      * Optimal options automatic selection for neural networks.
@@ -111,6 +112,7 @@ public enum ExperimentType {
      *
      * @return experiment description
      */
+    @Override
     public String getDescription() {
         return description;
     }

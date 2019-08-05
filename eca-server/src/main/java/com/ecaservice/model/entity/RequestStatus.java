@@ -1,13 +1,14 @@
 package com.ecaservice.model.entity;
 
 import com.ecaservice.model.dictionary.RequestStatusDictionary;
+import eca.core.DescriptiveEnum;
 
 /**
  * Request status enum.
  *
  * @author Roman Batygin
  */
-public enum RequestStatus {
+public enum RequestStatus implements DescriptiveEnum {
 
     /**
      * New status
@@ -60,6 +61,7 @@ public enum RequestStatus {
      *
      * @return request status description
      */
+    @Override
     public String getDescription() {
         return description;
     }

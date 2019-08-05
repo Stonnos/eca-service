@@ -11,6 +11,7 @@ import com.ecaservice.dto.evaluation.GetEvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassifierReportMapperImpl;
+import com.ecaservice.mapping.ErsResponseStatusMapperImpl;
 import com.ecaservice.mapping.EvaluationResultsMapperImpl;
 import com.ecaservice.mapping.InstancesConverter;
 import com.ecaservice.service.AbstractJpaTest;
@@ -36,7 +37,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({ErsConfig.class, ClassifierReportMapperImpl.class, ErsWebServiceClient.class,
-        EvaluationResultsMapperImpl.class, ErsWebServiceConfiguration.class,
+        EvaluationResultsMapperImpl.class, ErsWebServiceConfiguration.class, ErsResponseStatusMapperImpl.class,
         CacheConfiguration.class, CrossValidationConfig.class, ErsRequestService.class,
         ClassifierOptionsService.class, ClassifierOptionsMapperConfiguration.class, InstancesConverter.class})
 public class GetEvaluationResultsCacheTest extends AbstractJpaTest {
