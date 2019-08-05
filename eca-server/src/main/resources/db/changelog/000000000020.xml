@@ -13,7 +13,7 @@
                 select count(*) from global_filter_template where id = 2
             </sqlCheck>
             <sqlCheck expectedResult="0">
-                select count(*) from global_filter_field where field_name = 'evaluationStatus'
+                select count(*) from global_filter_field where global_filter_template_id = 2 and field_name = 'evaluationStatus'
             </sqlCheck>
         </preConditions>
 
@@ -32,7 +32,7 @@
                 select count(*) from global_filter_template where id = 2
             </sqlCheck>
             <sqlCheck expectedResult="0">
-                select count(*) from global_filter_field where field_name = 'evaluationMethod'
+                select count(*) from global_filter_field where global_filter_template_id = 2 and field_name = 'evaluationMethod'
             </sqlCheck>
         </preConditions>
 
@@ -51,7 +51,7 @@
                 select count(*) from global_filter_template where id = 1
             </sqlCheck>
             <sqlCheck expectedResult="0">
-                select count(*) from global_filter_field where field_name = 'evaluationMethod'
+                select count(*) from global_filter_field where global_filter_template_id = 1 and field_name = 'evaluationMethod'
             </sqlCheck>
         </preConditions>
 
@@ -70,7 +70,7 @@
                 select count(*) from global_filter_template where id = 1
             </sqlCheck>
             <sqlCheck expectedResult="0">
-                select count(*) from global_filter_field where field_name = 'experimentStatus'
+                select count(*) from global_filter_field where global_filter_template_id = 1 and field_name = 'experimentStatus'
             </sqlCheck>
         </preConditions>
 
@@ -89,7 +89,7 @@
                 select count(*) from global_filter_template where id = 1
             </sqlCheck>
             <sqlCheck expectedResult="0">
-                select count(*) from global_filter_field where field_name = 'experimentType'
+                select count(*) from global_filter_field where global_filter_template_id = 1 and field_name = 'experimentType'
             </sqlCheck>
         </preConditions>
 
@@ -108,7 +108,7 @@
                 select count(*) from global_filter_template where id = 3
             </sqlCheck>
             <sqlCheck expectedResult="0">
-                select count(*) from global_filter_field where field_name = 'evaluationMethod'
+                select count(*) from global_filter_field where global_filter_template_id = 3 and field_name = 'evaluationMethod'
             </sqlCheck>
         </preConditions>
 
@@ -127,7 +127,7 @@
                 select count(*) from global_filter_template where id = 3
             </sqlCheck>
             <sqlCheck expectedResult="0">
-                select count(*) from global_filter_field where field_name = 'responseStatus'
+                select count(*) from global_filter_field where global_filter_template_id = 3 and field_name = 'responseStatus'
             </sqlCheck>
         </preConditions>
 
