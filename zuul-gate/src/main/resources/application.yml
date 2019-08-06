@@ -12,3 +12,4 @@ zuul:
   host:
     connect-timeout-millis: -1
     socket-timeout-millis: -1
+  sensitiveHeaders: Cookie, Set-Cookie

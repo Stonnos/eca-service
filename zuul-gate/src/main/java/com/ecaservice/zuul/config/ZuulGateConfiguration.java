@@ -1,6 +1,5 @@
 package com.ecaservice.zuul.config;
 
-import com.ecaservice.zuul.config.filters.AuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -38,15 +37,5 @@ public class ZuulGateConfiguration {
         config.setAllowedMethods(Arrays.stream(HttpMethod.values()).map(HttpMethod::name).collect(Collectors.toList()));
         source.registerCorsConfiguration(PATH, config);
         return new CorsFilter(source);
-    }
-
-    /**
-     * Creates authentication filter bean.
-     *
-     * @return authentication filter bean
-     */
-    @Bean
-    public AuthFilter authFilter() {
-        return new AuthFilter();
     }
 }

@@ -13,7 +13,7 @@
     <packaging>war</packaging>
 
     <properties>
-        <spring.cloud.zuul.version>2.0.0.RELEASE</spring.cloud.zuul.version>
+        <spring.cloud.zuul.version>2.1.2.RELEASE</spring.cloud.zuul.version>
     </properties>
 
     <dependencies>
