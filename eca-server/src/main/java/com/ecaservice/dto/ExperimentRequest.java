@@ -12,6 +12,11 @@ import weka.core.Instances;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import static com.ecaservice.dto.FieldConstraints.EMAIL_REGEX;
+import static com.ecaservice.dto.FieldConstraints.EMAIL_MAX_SIZE;
+import static com.ecaservice.dto.FieldConstraints.FIRST_NAME_MAX_SIZE;
 
 /**
  * Experiment request transport model.
@@ -26,13 +31,15 @@ public class ExperimentRequest {
      * First name
      */
     @NotBlank
+    @Size(max = FIRST_NAME_MAX_SIZE)
     @ApiModelProperty(value = "Clients first name", required = true)
     private String firstName;
 
     /**
      * Email
      */
-    @Email(regexp = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
+    @Email(regexp = EMAIL_REGEX)
+    @Size(max = EMAIL_MAX_SIZE)
     @ApiModelProperty(value = "Clients email", required = true)
     private String email;
 
