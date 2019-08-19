@@ -1,4 +1,4 @@
-package com.ecaservice.dto;
+package com.ecaservice.util;
 
 /**
  * Dto field constraints utility class.
@@ -22,6 +22,16 @@ public class FieldConstraints {
      */
     public static final String EMAIL_REGEX =
             "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+
+    /**
+     * Precision length
+     */
+    public static final int PRECISION = 19;
+
+    /**
+     * Scale length
+     */
+    public static final int SCALE = 4;
 
     private FieldConstraints() {
     }
