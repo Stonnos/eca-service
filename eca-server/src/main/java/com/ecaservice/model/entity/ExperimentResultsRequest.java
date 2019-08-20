@@ -36,4 +36,11 @@ public class ExperimentResultsRequest extends ErsRequest {
     @ManyToOne
     @JoinColumn(name = "experiment_id", nullable = false)
     private Experiment experiment;
+
+    /**
+     * Experiment results entity
+     */
+    @ManyToOne
+    @JoinColumn(name = "experiment_results_id", nullable = false)
+    private ExperimentResultsEntity experimentResultsEntity;
 }

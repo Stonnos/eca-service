@@ -21,8 +21,8 @@ import static com.ecaservice.util.FieldConstraints.SCALE;
  */
 @Data
 @Entity
-@Table(name = "experiment_details")
-public class ExperimentDetailsEntity {
+@Table(name = "experiment_results")
+public class ExperimentResultsEntity {
 
     @Id
     @GeneratedValue
