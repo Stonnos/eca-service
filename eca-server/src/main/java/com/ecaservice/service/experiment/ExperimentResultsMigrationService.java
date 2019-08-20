@@ -2,19 +2,25 @@ package com.ecaservice.service.experiment;
 
 import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
+import com.ecaservice.dto.evaluation.StatisticsReport;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.ExperimentResultsRequest;
-import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.repository.ExperimentRepository;
+import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.service.ers.ErsRequestService;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.stream.IntStream;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * @author Roman Batygin
@@ -39,6 +45,13 @@ public class ExperimentResultsMigrationService {
         this.ersRequestService = ersRequestService;
     }
 
+    @Data
+    @AllArgsConstructor
+    private static class ExperimentResultsWrapper {
+        ExperimentResultsRequest experimentResultsRequest;
+        GetEvaluationResultsResponse evaluationResultsResponse;
+    }
+
     public void migrate() {
         List<Experiment> experiments = experimentRepository.findAll();
         for (Experiment experiment : experiments) {
@@ -49,32 +62,61 @@ public class ExperimentResultsMigrationService {
             } else {
                 log.info("Found {} results requests for experiment {}", experimentResultsRequests.size(),
                         experiment.getUuid());
-                for (ExperimentResultsRequest experimentResultsRequest : experimentResultsRequests) {
-                    GetEvaluationResultsResponse evaluationResultsResponse =
-                            ersRequestService.getEvaluationResults(experimentResultsRequest.getRequestId());
-                    if (!ResponseStatus.SUCCESS.equals(evaluationResultsResponse.getStatus())) {
-                        log.warn("Evaluation results not found for results request {}",
-                                experimentResultsRequest.getRequestId());
-                    } else {
-                        log.info("Fetched evaluation results for results request {}",
-                                experimentResultsRequest.getRequestId());
-                        saveExperimentDetails(experiment, experimentResultsRequest, evaluationResultsResponse);
-                        log.info("Migrated experiment details for results request {}",
-                                experimentResultsRequest.getRequestId());
-                    }
-                }
+                List<ExperimentResultsWrapper> experimentResultsWrappers =
+                        getExperimentResultsFromErs(experimentResultsRequests);
+                //Sorts results
+                experimentResultsWrappers.sort((o1, o2) -> {
+                    StatisticsReport statisticsReport1 = o1.getEvaluationResultsResponse().getStatistics();
+                    StatisticsReport statisticsReport2 = o2.getEvaluationResultsResponse().getStatistics();
+                    int compare = -statisticsReport1.getPctCorrect().compareTo(statisticsReport2.getPctCorrect());
+                    return compare == 0 ?
+                            -statisticsReport1.getMaxAucValue().compareTo(statisticsReport2.getMaxAucValue()) : compare;
+                });
+
+                IntStream.range(0, experimentResultsWrappers.size()).forEach(i -> {
+                    saveExperimentDetails(experiment, experimentResultsWrappers.get(i), i);
+                });
             }
         }
     }
 
-    private void saveExperimentDetails(Experiment experiment, ExperimentResultsRequest experimentResultsRequest,
-                                       GetEvaluationResultsResponse evaluationResultsResponse) {
+    private List<ExperimentResultsWrapper> getExperimentResultsFromErs(
+            List<ExperimentResultsRequest> experimentResultsRequests) {
+        List<ExperimentResultsWrapper> experimentResultsWrappers = newArrayList();
+        for (ExperimentResultsRequest experimentResultsRequest : experimentResultsRequests) {
+            try {
+                GetEvaluationResultsResponse evaluationResultsResponse =
+                        ersRequestService.getEvaluationResults(experimentResultsRequest.getRequestId());
+                if (!ResponseStatus.SUCCESS.equals(evaluationResultsResponse.getStatus())) {
+                    log.warn("Evaluation results not found for results request {}",
+                            experimentResultsRequest.getRequestId());
+                } else {
+                    log.info("Fetched evaluation results for results request {}",
+                            experimentResultsRequest.getRequestId());
+                    experimentResultsWrappers.add(new ExperimentResultsWrapper(experimentResultsRequest,
+                            evaluationResultsResponse));
+                }
+            } catch (Exception ex) {
+                log.error("There was an error while fetching evaluation results for request {}",
+                        experimentResultsRequest.getRequestId());
+            }
+        }
+        return experimentResultsWrappers;
+    }
+
+    private void saveExperimentDetails(Experiment experiment, ExperimentResultsWrapper experimentResultsWrapper,
+                                       int resultsIndex) {
         ExperimentResultsEntity experimentResultsEntity = new ExperimentResultsEntity();
+        GetEvaluationResultsResponse evaluationResultsResponse = experimentResultsWrapper
+                .getEvaluationResultsResponse();
         experimentResultsEntity.setClassifierName(evaluationResultsResponse.getClassifierReport().getClassifierName());
         experimentResultsEntity.setPctCorrect(evaluationResultsResponse.getStatistics().getPctCorrect());
         experimentResultsEntity.setExperiment(experiment);
-        experimentResultsRequest.setExperimentResultsEntity(experimentResultsEntity);
+        experimentResultsEntity.setResultsIndex(resultsIndex);
         experimentResultsEntityRepository.save(experimentResultsEntity);
+        ExperimentResultsRequest experimentResultsRequest = experimentResultsWrapper.getExperimentResultsRequest();
+        experimentResultsRequest.setExperimentResultsEntity(experimentResultsEntity);
         experimentResultsRequestRepository.save(experimentResultsRequest);
+        log.info("Migrated experiment details for results request {}", experimentResultsRequest.getRequestId());
     }
 }
