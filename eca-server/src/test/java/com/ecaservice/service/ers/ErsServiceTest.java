@@ -8,6 +8,8 @@ import com.ecaservice.mapping.ClassificationCostsMapperImpl;
 import com.ecaservice.mapping.EvaluationLogDetailsMapper;
 import com.ecaservice.mapping.EvaluationLogDetailsMapperImpl;
 import com.ecaservice.mapping.EvaluationLogInputOptionsMapperImpl;
+import com.ecaservice.mapping.ExperimentResultsMapper;
+import com.ecaservice.mapping.ExperimentResultsMapperImpl;
 import com.ecaservice.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.mapping.StatisticsReportMapperImpl;
 import com.ecaservice.model.entity.ErsRequest;
@@ -20,6 +22,7 @@ import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.repository.EvaluationResultsRequestEntityRepository;
 import com.ecaservice.repository.ExperimentRepository;
+import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.web.dto.model.ErsReportDto;
@@ -53,7 +56,7 @@ import static org.mockito.Mockito.when;
  */
 @Import({ExperimentConfig.class, EvaluationLogDetailsMapperImpl.class, InstancesInfoMapperImpl.class,
         EvaluationLogInputOptionsMapperImpl.class, StatisticsReportMapperImpl.class,
-        ClassificationCostsMapperImpl.class})
+        ClassificationCostsMapperImpl.class, ExperimentResultsMapperImpl.class})
 public class ErsServiceTest extends AbstractJpaTest {
 
     @Mock
@@ -67,17 +70,21 @@ public class ErsServiceTest extends AbstractJpaTest {
     @Inject
     private EvaluationLogDetailsMapper evaluationLogDetailsMapper;
     @Inject
+    private ExperimentResultsMapper experimentResultsMapper;
+    @Inject
     private ExperimentRepository experimentRepository;
     @Inject
     private EvaluationLogRepository evaluationLogRepository;
+    @Inject
+    private ExperimentResultsEntityRepository experimentResultsEntityRepository;
 
     private ErsService ersService;
 
     @Override
     public void init() {
         ersService = new ErsService(ersRequestService, experimentConfig, evaluationLogDetailsMapper,
-                experimentResultsRequestRepository,
-                evaluationResultsRequestEntityRepository);
+                experimentResultsMapper, experimentResultsRequestRepository,
+                evaluationResultsRequestEntityRepository, experimentResultsEntityRepository);
     }
 
     @Override

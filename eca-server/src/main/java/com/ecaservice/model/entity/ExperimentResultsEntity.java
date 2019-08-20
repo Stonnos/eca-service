@@ -15,7 +15,7 @@ import static com.ecaservice.util.FieldConstraints.PRECISION;
 import static com.ecaservice.util.FieldConstraints.SCALE;
 
 /**
- * Experiment details persistence entity.
+ * Experiment results persistence entity.
  *
  * @author Roman Batygin
  */
@@ -27,6 +27,12 @@ public class ExperimentResultsEntity {
     @Id
     @GeneratedValue
     private Long id;
+
+    /**
+     * Experiment results index
+     */
+    @Column(name = "results_index")
+    private Integer resultsIndex;
 
     /**
      * Classifier name
