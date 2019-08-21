@@ -36,7 +36,6 @@ public class EvaluationLogDetailsMapperTest {
         evaluationLog.setEvaluationOptionsMap(
                 TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
         evaluationLog.setInstancesInfo(TestHelperUtils.createInstancesInfo());
-        evaluationLog.setClassifierInputOptions(Collections.singletonList(new ClassifierInputOptions()));
         EvaluationLogDetailsDto evaluationLogDetailsDto = evaluationLogDetailsMapper.map(evaluationLog);
         assertThat(evaluationLogDetailsDto).isNotNull();
         assertThat(evaluationLogDetailsDto.getClassifierName()).isEqualTo(evaluationLog.getClassifierName());

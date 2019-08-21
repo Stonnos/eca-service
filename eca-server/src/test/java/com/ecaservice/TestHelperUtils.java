@@ -12,6 +12,8 @@ import com.ecaservice.dto.evaluation.InputOptionsMap;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.dto.evaluation.RocCurveReport;
 import com.ecaservice.dto.evaluation.StatisticsReport;
+import com.ecaservice.model.entity.ClassifierInfo;
+import com.ecaservice.model.entity.ClassifierInputOptions;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
@@ -275,6 +277,18 @@ public class TestHelperUtils {
     }
 
     /**
+     * Create classifier info.
+     *
+     * @return classifier info
+     */
+    public static ClassifierInfo createClassifierInfo() {
+        ClassifierInfo classifierInfo = new ClassifierInfo();
+        classifierInfo.setClassifierName(CART.class.getSimpleName());
+        classifierInfo.setClassifierInputOptions(Collections.singletonList(new ClassifierInputOptions()));
+        return classifierInfo;
+    }
+
+    /**
      * Creates evaluation log.
      *
      * @return evaluation log
@@ -284,7 +298,7 @@ public class TestHelperUtils {
         evaluationLog.setCreationDate(LocalDateTime.now());
         evaluationLog.setStartDate(LocalDateTime.now());
         evaluationLog.setEndDate(LocalDateTime.now());
-        evaluationLog.setClassifierName(CART.class.getSimpleName());
+        evaluationLog.setClassifierInfo(createClassifierInfo());
         evaluationLog.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         evaluationLog.setEvaluationStatus(RequestStatus.FINISHED);
         evaluationLog.setEvaluationOptionsMap(Collections.emptyMap());

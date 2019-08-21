@@ -28,7 +28,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class, EvaluationLogInputOptionsMapperImpl.class})
+@Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class,
+        EvaluationLogInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class})
 public class EvaluationLogMapperTest {
 
     @Inject
@@ -45,7 +46,8 @@ public class EvaluationLogMapperTest {
 
         assertThat(evaluationLog).isNotNull();
         assertThat(evaluationLog.getEvaluationMethod()).isEqualTo(evaluationRequest.getEvaluationMethod());
-        assertThat(evaluationLog.getClassifierInputOptions()).isNotNull();
+        assertThat(evaluationLog.getClassifierInfo()).isNotNull();
+        assertThat(evaluationLog.getClassifierInfo().getClassifierInputOptions()).isNotNull();
         assertThat(evaluationLog.getInstancesInfo().getRelationName()).isEqualTo(
                 evaluationRequest.getData().relationName());
         assertThat(evaluationLog.getInstancesInfo().getClassName()).isEqualTo(
@@ -65,7 +67,6 @@ public class EvaluationLogMapperTest {
         evaluationLog.setEvaluationOptionsMap(
                 TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
         evaluationLog.setInstancesInfo(TestHelperUtils.createInstancesInfo());
-        evaluationLog.setClassifierInputOptions(Collections.singletonList(new ClassifierInputOptions()));
         EvaluationLogDto evaluationLogDto = evaluationLogMapper.map(evaluationLog);
         assertThat(evaluationLogDto).isNotNull();
         assertThat(evaluationLogDto.getClassifierName()).isEqualTo(evaluationLog.getClassifierName());
@@ -102,7 +103,8 @@ public class EvaluationLogMapperTest {
     }
 
     private void assertOptions(EvaluationLog evaluationLog, EvaluationRequest request) {
-        List<ClassifierInputOptions> classifierInputOptions = evaluationLog.getClassifierInputOptions();
+        List<ClassifierInputOptions> classifierInputOptions =
+                evaluationLog.getClassifierInfo().getClassifierInputOptions();
         assertThat(classifierInputOptions).isNotNull();
         assertThat(classifierInputOptions).isNotEmpty();
         String[] options = request.getClassifier().getOptions();
