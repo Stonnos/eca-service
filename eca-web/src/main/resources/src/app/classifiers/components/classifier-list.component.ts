@@ -25,6 +25,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
 
   public instancesInfoColumn: string = "instancesInfo.relationName";
+  public classifierNameColumn: string = "classifierInfo.classifierName";
   public requestIdColumn: string = "requestId";
   public evaluationMethodColumn: string = "evaluationMethod";
 
@@ -37,7 +38,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
                      private router: Router) {
     super(injector.get(MessageService));
     this.defaultSortField = "creationDate";
-    this.linkColumns = ["classifierName", this.evaluationMethodColumn, this.instancesInfoColumn, this.requestIdColumn];
+    this.linkColumns = [this.classifierNameColumn, this.evaluationMethodColumn, this.instancesInfoColumn, this.requestIdColumn];
     this.initColumns();
   }
 
@@ -85,6 +86,8 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     switch (column) {
       case this.instancesInfoColumn:
         return item.instancesInfo.relationName;
+      case this.classifierNameColumn:
+        return item.classifierInfo.classifierName;
       case this.evaluationMethodColumn:
         return item.evaluationMethod.description;
       case "evaluationStatus":
@@ -103,7 +106,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   private initColumns() {
     this.columns = [
       { name: "requestId", label: "UUID заявки" },
-      { name: "classifierName", label: "Классификатор" },
+      { name: this.classifierNameColumn, label: "Классификатор" },
       { name: "evaluationStatus", label: "Статус заявки" },
       { name: this.instancesInfoColumn, label: "Обучающая выборка" },
       { name: this.evaluationMethodColumn, label: "Метод оценки точности" },
