@@ -30,7 +30,7 @@
             <column name="classifier_info_id" type="bigint">
                 <constraints foreignKeyName="fk_classifier_input_options_classifier_info_id"
                              referencedTableName="classifier_info"
-                             referencedColumnNames="id" nullable="false"/>
+                             referencedColumnNames="id" nullable="true"/>
             </column>
         </addColumn>
     </changeSet>
@@ -47,8 +47,64 @@
             <column name="classifier_info_id" type="bigint">
                 <constraints foreignKeyName="fk_evaluation_log_classifier_info_id"
                              referencedTableName="classifier_info"
-                             referencedColumnNames="id" nullable="false"/>
+                             referencedColumnNames="id" nullable="true"/>
             </column>
         </addColumn>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <tableExists tableName="classifier_info"/>
+            <tableExists tableName="classifier_input_options"/>
+        </preConditions>
+        <sqlFile path="sql/migrate-classifiers-info.sql"
+                 dbms="postgresql"
+                 relativeToChangelogFile="true"
+                 splitStatements="false"
+                 stripComments="false"/>
+    </changeSet>
+
+    <changeSet id="5" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <columnExists tableName="evaluation_log" columnName="classifier_name"/>
+        </preConditions>
+        <dropColumn tableName="evaluation_log" columnName="classifier_name"/>
+    </changeSet>
+
+    <changeSet id="6" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_input_options"/>
+            <columnExists tableName="classifier_input_options" columnName="evaluation_log_id"/>
+        </preConditions>
+        <dropColumn tableName="classifier_input_options" columnName="evaluation_log_id"/>
+    </changeSet>
+
+    <!-- Changed classifier name field in filter template -->
+    <changeSet id="7" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 2 and field_name = 'classifierName'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="filter_field">
+            <column name="field_name" value="classifierInfo.classifierName"/>
+            <where>filter_template_id = 2 and field_name = 'classifierName'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="8" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from global_filter_field where global_filter_template_id = 2 and field_name = 'classifierName'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="global_filter_field">
+            <column name="field_name" value="classifierInfo.classifierName"/>
+            <where>global_filter_template_id = 2 and field_name = 'classifierName'</where>
+        </update>
     </changeSet>
 </databaseChangeLog>
