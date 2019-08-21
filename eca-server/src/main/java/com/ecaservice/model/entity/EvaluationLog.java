@@ -69,10 +69,11 @@ public class EvaluationLog {
     private LocalDateTime endDate;
 
     /**
-     * Classifier name
+     * Classifier info
      */
-    @Column(name = "classifier_name")
-    private String classifierName;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "classifier_info_id")
+    private ClassifierInfo classifierInfo;
 
     /**
      * Evaluation status
@@ -90,14 +91,6 @@ public class EvaluationLog {
     @Enumerated(EnumType.STRING)
     @Column(name = "evaluation_method")
     private EvaluationMethod evaluationMethod;
-
-    /**
-     * Classifier input options list
-     */
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "evaluation_log_id", nullable = false)
-    @OrderBy("optionOrder")
-    private List<ClassifierInputOptions> classifierInputOptions;
 
     /**
      * Evaluation options map
