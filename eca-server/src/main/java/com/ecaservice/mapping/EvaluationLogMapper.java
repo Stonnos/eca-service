@@ -1,7 +1,6 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.dto.EvaluationRequest;
-import com.ecaservice.model.entity.ClassifierInputOptions;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.InstancesInfo;
 import com.ecaservice.model.evaluation.EvaluationOption;
@@ -23,7 +22,7 @@ import static com.google.common.collect.Lists.newArrayList;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = {InstancesInfoMapper.class, EvaluationLogInputOptionsMapper.class, ClassifierInfoMapper.class})
+@Mapper(uses = {InstancesInfoMapper.class, ClassifierInputOptionsMapper.class, ClassifierInfoMapper.class})
 public abstract class EvaluationLogMapper {
 
     /**

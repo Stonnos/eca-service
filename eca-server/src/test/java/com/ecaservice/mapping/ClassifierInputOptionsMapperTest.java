@@ -11,23 +11,23 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.inject.Inject;
 
 /**
- * Unit tests for checking {@link EvaluationLogInputOptionsMapper} functionality.
+ * Unit tests for checking {@link ClassifierInputOptionsMapper} functionality.
  *
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import(EvaluationLogInputOptionsMapperImpl.class)
-public class EvaluationLogInputOptionsMapperTest {
+@Import(ClassifierInputOptionsMapperImpl.class)
+public class ClassifierInputOptionsMapperTest {
 
     @Inject
-    private EvaluationLogInputOptionsMapper evaluationLogInputOptionsMapper;
+    private ClassifierInputOptionsMapper classifierInputOptionsMapper;
 
     @Test
     public void testMapInputOptions() {
         ClassifierInputOptions classifierInputOptions = new ClassifierInputOptions();
         classifierInputOptions.setOptionName("option");
         classifierInputOptions.setOptionValue("value");
-        InputOptionDto inputOptionDto = evaluationLogInputOptionsMapper.map(classifierInputOptions);
+        InputOptionDto inputOptionDto = classifierInputOptionsMapper.map(classifierInputOptions);
         Assertions.assertThat(inputOptionDto).isNotNull();
         Assertions.assertThat(inputOptionDto.getOptionName()).isEqualTo(classifierInputOptions.getOptionName());
         Assertions.assertThat(inputOptionDto.getOptionValue()).isEqualTo(classifierInputOptions.getOptionValue());

@@ -7,7 +7,7 @@ import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassificationCostsMapperImpl;
 import com.ecaservice.mapping.EvaluationLogDetailsMapper;
 import com.ecaservice.mapping.EvaluationLogDetailsMapperImpl;
-import com.ecaservice.mapping.EvaluationLogInputOptionsMapperImpl;
+import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
 import com.ecaservice.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.mapping.StatisticsReportMapperImpl;
 import com.ecaservice.model.entity.ErsRequest;
@@ -52,7 +52,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({ExperimentConfig.class, EvaluationLogDetailsMapperImpl.class, InstancesInfoMapperImpl.class,
-        EvaluationLogInputOptionsMapperImpl.class, StatisticsReportMapperImpl.class,
+        ClassifierInputOptionsMapperImpl.class, StatisticsReportMapperImpl.class,
         ClassificationCostsMapperImpl.class})
 public class ErsServiceTest extends AbstractJpaTest {
 

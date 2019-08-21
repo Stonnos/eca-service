@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -29,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @RunWith(SpringRunner.class)
 @Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class,
-        EvaluationLogInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class})
+        ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class})
 public class EvaluationLogMapperTest {
 
     @Inject

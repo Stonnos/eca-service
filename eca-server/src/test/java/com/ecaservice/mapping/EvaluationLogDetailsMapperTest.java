@@ -2,7 +2,6 @@ package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
-import com.ecaservice.model.entity.ClassifierInputOptions;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import org.assertj.core.api.Assertions;
@@ -12,7 +11,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
-import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @RunWith(SpringRunner.class)
 @Import({EvaluationLogDetailsMapperImpl.class, InstancesInfoMapperImpl.class,
-        EvaluationLogInputOptionsMapperImpl.class, StatisticsReportMapperImpl.class,
+        ClassifierInputOptionsMapperImpl.class, StatisticsReportMapperImpl.class,
         ClassificationCostsMapperImpl.class})
 public class EvaluationLogDetailsMapperTest {
 
