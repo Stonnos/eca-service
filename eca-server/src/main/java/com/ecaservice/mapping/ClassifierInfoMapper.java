@@ -2,6 +2,7 @@ package com.ecaservice.mapping;
 
 import com.ecaservice.model.entity.ClassifierInfo;
 import com.ecaservice.model.entity.ClassifierInputOptions;
+import com.ecaservice.web.dto.model.ClassifierInfoDto;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -24,6 +25,14 @@ public abstract class ClassifierInfoMapper {
      * @return classifier info entity
      */
     public abstract ClassifierInfo map(AbstractClassifier classifier);
+
+    /**
+     * Maps classifier info to its dto model.
+     *
+     * @param classifierInfo - classifier info
+     * @return classifier info dto
+     */
+    public abstract ClassifierInfoDto map(ClassifierInfo classifierInfo);
 
     @AfterMapping
     protected void postMapping(AbstractClassifier classifier, @MappingTarget ClassifierInfo classifierInfo) {
