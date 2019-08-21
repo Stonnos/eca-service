@@ -35,7 +35,7 @@
         </p-fieldset>
 
         <p-fieldset legend="Входные параметры классификатора" class="details-fieldset">
-          <ng-container *ngFor="let option of evaluationLogDetails?.inputOptions">
+          <ng-container *ngFor="let option of evaluationLogDetails?.classifierInfo?.inputOptions">
             <div class="ui-g">
               <div class="ui-g-6 text-left text-bold text-wrap">
                 {{ option.optionName }}
