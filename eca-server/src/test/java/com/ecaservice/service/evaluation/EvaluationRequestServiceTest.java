@@ -7,6 +7,7 @@ import com.ecaservice.configuation.ExecutorConfiguration;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.exception.EcaServiceException;
+import com.ecaservice.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.mapping.EvaluationLogMapperImpl;
@@ -41,7 +42,7 @@ import static org.mockito.Mockito.mock;
  */
 @Import({ExecutorConfiguration.class, CrossValidationConfig.class,
         EvaluationLogMapperImpl.class, EvaluationService.class,
-        InstancesInfoMapperImpl.class, ClassifierInputOptionsMapperImpl.class})
+        InstancesInfoMapperImpl.class, ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class})
 public class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     @Inject

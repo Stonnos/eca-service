@@ -42,6 +42,9 @@ import static org.mockito.Mockito.when;
 @Import(CommonConfig.class)
 public class EvaluationLogServiceTest extends AbstractJpaTest {
 
+    private static final String INSTANCES_INFO_RELATION_NAME = "instancesInfo.relationName";
+    private static final String CLASSIFIER_INFO_CLASSIFIER_NAME = "classifierInfo.classifierName";
+
     @Inject
     private EvaluationLogRepository evaluationLogRepository;
     @Inject
@@ -94,30 +97,30 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
     public void testFilterByStatusAndClassifierNameLikeOrderByClassifierName() {
         EvaluationLog evaluationLog =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        evaluationLog.setClassifierName(CART.class.getSimpleName());
+        evaluationLog.getClassifierInfo().setClassifierName(CART.class.getSimpleName());
         evaluationLogRepository.save(evaluationLog);
         EvaluationLog evaluationLog1 =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        evaluationLog1.setClassifierName(C45.class.getSimpleName());
+        evaluationLog1.getClassifierInfo().setClassifierName(C45.class.getSimpleName());
         evaluationLogRepository.save(evaluationLog1);
         EvaluationLog evaluationLog2 =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR);
-        evaluationLog2.setClassifierName(CART.class.getSimpleName());
+        evaluationLog2.getClassifierInfo().setClassifierName(CART.class.getSimpleName());
         evaluationLogRepository.save(evaluationLog2);
         EvaluationLog evaluationLog3 =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        evaluationLog3.setClassifierName(KNearestNeighbours.class.getSimpleName());
+        evaluationLog3.getClassifierInfo().setClassifierName(KNearestNeighbours.class.getSimpleName());
         evaluationLogRepository.save(evaluationLog3);
         EvaluationLog evaluationLog4 =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR);
-        evaluationLog4.setClassifierName(NeuralNetwork.class.getSimpleName());
+        evaluationLog4.getClassifierInfo().setClassifierName(NeuralNetwork.class.getSimpleName());
         evaluationLogRepository.save(evaluationLog4);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(0, 10, EvaluationLog_.CLASSIFIER_NAME, false, null, newArrayList());
+                new PageRequestDto(0, 10, CLASSIFIER_INFO_CLASSIFIER_NAME, false, null, newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(EvaluationLog_.EVALUATION_STATUS,
                 Collections.singletonList(RequestStatus.FINISHED.name()), FilterFieldType.REFERENCE, MatchMode.EQUALS));
         pageRequestDto.getFilters().add(
-                new FilterRequestDto(EvaluationLog_.CLASSIFIER_NAME, Collections.singletonList("C"),
+                new FilterRequestDto(CLASSIFIER_INFO_CLASSIFIER_NAME, Collections.singletonList("C"),
                         FilterFieldType.TEXT, MatchMode.LIKE));
         Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);
         List<EvaluationLog> evaluationLogs = evaluationLogPage.getContent();
@@ -141,9 +144,9 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
         evaluationLog1.getInstancesInfo().setRelationName("Relation");
         evaluationLogRepository.save(evaluationLog1);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(0, 10, EvaluationLog_.CLASSIFIER_NAME, false, null, newArrayList());
+                new PageRequestDto(0, 10, CLASSIFIER_INFO_CLASSIFIER_NAME, false, null, newArrayList());
         pageRequestDto.getFilters().add(
-                new FilterRequestDto("instancesInfo.relationName", Collections.singletonList("Dat"),
+                new FilterRequestDto(INSTANCES_INFO_RELATION_NAME, Collections.singletonList("Dat"),
                         FilterFieldType.TEXT, MatchMode.LIKE));
         Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();
@@ -157,15 +160,15 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
     public void testGlobalFilter() {
         EvaluationLog evaluationLog =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        evaluationLog.setClassifierName(CART.class.getSimpleName());
+        evaluationLog.getClassifierInfo().setClassifierName(CART.class.getSimpleName());
         evaluationLog.setInstancesInfo(TestHelperUtils.createInstancesInfo());
         EvaluationLog evaluationLog1 =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR);
-        evaluationLog1.setClassifierName(CART.class.getSimpleName());
+        evaluationLog1.getClassifierInfo().setClassifierName(CART.class.getSimpleName());
         evaluationLog1.setInstancesInfo(TestHelperUtils.createInstancesInfo());
         EvaluationLog evaluationLog2 =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        evaluationLog2.setClassifierName(ID3.class.getSimpleName());
+        evaluationLog2.getClassifierInfo().setClassifierName(ID3.class.getSimpleName());
         evaluationLog2.setInstancesInfo(TestHelperUtils.createInstancesInfo());
         evaluationLogRepository.saveAll(Arrays.asList(evaluationLog, evaluationLog1, evaluationLog2));
         PageRequestDto pageRequestDto =
@@ -173,7 +176,8 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
         pageRequestDto.getFilters().add(new FilterRequestDto(EvaluationLog_.EVALUATION_STATUS,
                 Collections.singletonList(RequestStatus.FINISHED.name()), FilterFieldType.REFERENCE, MatchMode.EQUALS));
         when(filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG)).thenReturn(
-                Arrays.asList(EvaluationLog_.CLASSIFIER_NAME, EvaluationLog_.REQUEST_ID, "instancesInfo.relationName"));
+                Arrays.asList(CLASSIFIER_INFO_CLASSIFIER_NAME, EvaluationLog_.REQUEST_ID,
+                        INSTANCES_INFO_RELATION_NAME));
         Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();
         assertThat(evaluationLogPage.getTotalElements()).isOne();

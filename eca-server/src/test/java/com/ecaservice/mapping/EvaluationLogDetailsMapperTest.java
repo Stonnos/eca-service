@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @Import({EvaluationLogDetailsMapperImpl.class, InstancesInfoMapperImpl.class,
         ClassifierInputOptionsMapperImpl.class, StatisticsReportMapperImpl.class,
-        ClassificationCostsMapperImpl.class})
+        ClassificationCostsMapperImpl.class, ClassifierInfoMapperImpl.class})
 public class EvaluationLogDetailsMapperTest {
 
     @Inject
