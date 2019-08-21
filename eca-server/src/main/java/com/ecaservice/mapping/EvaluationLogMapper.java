@@ -23,7 +23,7 @@ import static com.google.common.collect.Lists.newArrayList;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = {InstancesInfoMapper.class, EvaluationLogInputOptionsMapper.class})
+@Mapper(uses = {InstancesInfoMapper.class, EvaluationLogInputOptionsMapper.class, ClassifierInfoMapper.class})
 public abstract class EvaluationLogMapper {
 
     /**
@@ -32,6 +32,9 @@ public abstract class EvaluationLogMapper {
      * @param evaluationRequest evaluation request
      * @return evaluation log entity
      */
+    @Mappings({
+            @Mapping(source = "classifier", target = "classifierInfo")
+    })
     public abstract EvaluationLog map(EvaluationRequest evaluationRequest);
 
     /**
@@ -41,7 +44,7 @@ public abstract class EvaluationLogMapper {
      * @return evaluation log dto
      */
     @Mappings({
-            @Mapping(source = "classifierInputOptions", target = "inputOptions"),
+            //@Mapping(source = "classifierInputOptions", target = "inputOptions"),
             @Mapping(target = "evaluationMethod", ignore = true),
             @Mapping(target = "evaluationStatus", ignore = true)
     })
@@ -54,22 +57,6 @@ public abstract class EvaluationLogMapper {
      * @return evaluations logs dto list
      */
     public abstract List<EvaluationLogDto> map(List<EvaluationLog> evaluationLogs);
-
-    @AfterMapping
-    protected void mapClassifier(EvaluationRequest evaluationRequest, @MappingTarget EvaluationLog evaluationLog) {
-        if (evaluationRequest.getClassifier() != null) {
-            evaluationLog.setClassifierName(evaluationRequest.getClassifier().getClass().getSimpleName());
-            evaluationLog.setClassifierInputOptions(newArrayList());
-            String[] options = evaluationRequest.getClassifier().getOptions();
-            for (int i = 0; i < options.length; i += 2) {
-                ClassifierInputOptions classifierInputOptions = new ClassifierInputOptions();
-                classifierInputOptions.setOptionName(options[i]);
-                classifierInputOptions.setOptionValue(options[i + 1]);
-                classifierInputOptions.setOptionOrder(i / 2);
-                evaluationLog.getClassifierInputOptions().add(classifierInputOptions);
-            }
-        }
-    }
 
     @AfterMapping
     protected void mapData(EvaluationRequest evaluationRequest, @MappingTarget EvaluationLog evaluationLog) {

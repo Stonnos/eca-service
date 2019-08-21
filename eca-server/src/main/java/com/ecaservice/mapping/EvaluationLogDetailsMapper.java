@@ -29,7 +29,7 @@ public abstract class EvaluationLogDetailsMapper {
      * @return evaluation log details dto
      */
     @Mappings({
-            @Mapping(source = "classifierInputOptions", target = "inputOptions"),
+            //@Mapping(source = "classifierInputOptions", target = "inputOptions"),
             @Mapping(target = "evaluationMethod", ignore = true),
             @Mapping(target = "evaluationStatus", ignore = true)
     })
