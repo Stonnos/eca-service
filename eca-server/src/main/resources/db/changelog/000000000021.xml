@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="classifier_info"/>
+            </not>
+        </preConditions>
+        <createTable tableName="classifier_info">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="classifier_name" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_input_options"/>
+            <tableExists tableName="classifier_info"/>
+            <not>
+                <columnExists tableName="classifier_input_options" columnName="classifier_info_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="classifier_input_options">
+            <column name="classifier_info_id" type="bigint">
+                <constraints foreignKeyName="fk_classifier_input_options_classifier_info_id"
+                             referencedTableName="classifier_info"
+                             referencedColumnNames="id" nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <tableExists tableName="classifier_info"/>
+            <not>
+                <columnExists tableName="evaluation_log" columnName="classifier_info_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_log">
+            <column name="classifier_info_id" type="bigint">
+                <constraints foreignKeyName="fk_evaluation_log_classifier_info_id"
+                             referencedTableName="classifier_info"
+                             referencedColumnNames="id" nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>
