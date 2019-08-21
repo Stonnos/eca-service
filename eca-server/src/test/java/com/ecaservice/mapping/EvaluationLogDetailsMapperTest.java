@@ -36,7 +36,9 @@ public class EvaluationLogDetailsMapperTest {
         evaluationLog.setInstancesInfo(TestHelperUtils.createInstancesInfo());
         EvaluationLogDetailsDto evaluationLogDetailsDto = evaluationLogDetailsMapper.map(evaluationLog);
         assertThat(evaluationLogDetailsDto).isNotNull();
-        assertThat(evaluationLogDetailsDto.getClassifierName()).isEqualTo(evaluationLog.getClassifierName());
+        assertThat(evaluationLogDetailsDto.getClassifierInfo()).isNotNull();
+        assertThat(evaluationLogDetailsDto.getClassifierInfo().getClassifierName()).isEqualTo(
+                evaluationLog.getClassifierInfo().getClassifierName());
         assertThat(evaluationLogDetailsDto.getCreationDate()).isEqualTo(evaluationLog.getCreationDate());
         assertThat(evaluationLogDetailsDto.getStartDate()).isEqualTo(evaluationLog.getStartDate());
         assertThat(evaluationLogDetailsDto.getEndDate()).isEqualTo(evaluationLog.getEndDate());
@@ -49,8 +51,9 @@ public class EvaluationLogDetailsMapperTest {
         assertThat(evaluationLogDetailsDto.getEvaluationStatus().getValue()).isEqualTo(
                 evaluationLog.getEvaluationStatus().name());
         assertThat(evaluationLogDetailsDto.getRequestId()).isEqualTo(evaluationLog.getRequestId());
-        assertThat(evaluationLogDetailsDto.getInputOptions()).isNotNull();
-        assertThat(evaluationLogDetailsDto.getInputOptions().size()).isOne();
+        assertThat(evaluationLogDetailsDto.getClassifierInfo().getInputOptions()).isNotNull();
+        assertThat(evaluationLogDetailsDto.getClassifierInfo().getInputOptions()).hasSameSizeAs(
+                evaluationLog.getClassifierInfo().getClassifierInputOptions());
         assertThat(evaluationLogDetailsDto.getNumFolds()).isNotNull();
         assertThat(evaluationLogDetailsDto.getNumTests()).isNotNull();
         assertThat(evaluationLogDetailsDto.getSeed()).isNull();

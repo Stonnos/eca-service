@@ -5,7 +5,9 @@ import com.ecaservice.model.entity.ClassifierInputOptions;
 import com.ecaservice.web.dto.model.ClassifierInfoDto;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
 import weka.classifiers.AbstractClassifier;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -15,7 +17,7 @@ import static com.google.common.collect.Lists.newArrayList;
  *
  * @author Roman Batygin
  */
-@Mapper
+@Mapper(uses = ClassifierInputOptionsMapper.class)
 public abstract class ClassifierInfoMapper {
 
     /**
@@ -32,6 +34,9 @@ public abstract class ClassifierInfoMapper {
      * @param classifierInfo - classifier info
      * @return classifier info dto
      */
+    @Mappings({
+            @Mapping(source = "classifierInputOptions", target = "inputOptions")
+    })
     public abstract ClassifierInfoDto map(ClassifierInfo classifierInfo);
 
     @AfterMapping

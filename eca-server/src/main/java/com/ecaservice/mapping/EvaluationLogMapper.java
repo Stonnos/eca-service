@@ -15,14 +15,12 @@ import org.mapstruct.Mappings;
 import java.util.List;
 import java.util.Optional;
 
-import static com.google.common.collect.Lists.newArrayList;
-
 /**
  * Implements evaluation request to evaluation log mapping.
  *
  * @author Roman Batygin
  */
-@Mapper(uses = {InstancesInfoMapper.class, ClassifierInputOptionsMapper.class, ClassifierInfoMapper.class})
+@Mapper(uses = {InstancesInfoMapper.class, ClassifierInfoMapper.class})
 public abstract class EvaluationLogMapper {
 
     /**
@@ -43,7 +41,6 @@ public abstract class EvaluationLogMapper {
      * @return evaluation log dto
      */
     @Mappings({
-            //@Mapping(source = "classifierInputOptions", target = "inputOptions"),
             @Mapping(target = "evaluationMethod", ignore = true),
             @Mapping(target = "evaluationStatus", ignore = true)
     })
@@ -88,7 +85,7 @@ public abstract class EvaluationLogMapper {
 
     @AfterMapping
     protected void mapEvaluationStatus(EvaluationLog evaluationLog,
-                                              @MappingTarget EvaluationLogDto evaluationLogDto) {
+                                       @MappingTarget EvaluationLogDto evaluationLogDto) {
         evaluationLogDto.setEvaluationStatus(new EnumDto(evaluationLog.getEvaluationStatus().name(),
                 evaluationLog.getEvaluationStatus().getDescription()));
     }
