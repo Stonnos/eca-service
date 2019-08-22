@@ -133,15 +133,25 @@ public class ErsService {
         });*/
         List<ExperimentResultsEntity> experimentResultsEntities =
                 getOrSaveExperimentResults(experiment, experimentHistory);
-        IntStream.range(0, experimentResultsEntities.size()).forEach(i -> {
-            ExperimentResultsRequest experimentResultsRequest = new ExperimentResultsRequest();
-            experimentResultsRequest.setRequestSource(source);
-            ExperimentResultsEntity experimentResultsEntity = experimentResultsEntities.get(i);
-            experimentResultsRequest.setExperimentResultsEntity(experimentResultsEntity);
-            EvaluationResults evaluationResults =
-                    experimentHistory.getExperiment().get(experimentResultsEntity.getResultsIndex());
-            ersRequestService.saveEvaluationResults(evaluationResults, experimentResultsRequest);
-        });
+        IntStream.range(0, experimentResultsEntities.size()).forEach(
+                i -> sentExperimentResults(experimentResultsEntities.get(i), experimentHistory, source));
+    }
+
+    /**
+     * Sent single experiment results to ERS service.
+     *
+     * @param experimentResultsEntity - experiment entity
+     * @param experimentHistory       - experiment history
+     * @param source                  - experiment results request source
+     */
+    public void sentExperimentResults(ExperimentResultsEntity experimentResultsEntity,
+                                      ExperimentHistory experimentHistory, ExperimentResultsRequestSource source) {
+        ExperimentResultsRequest experimentResultsRequest = new ExperimentResultsRequest();
+        experimentResultsRequest.setRequestSource(source);
+        experimentResultsRequest.setExperimentResultsEntity(experimentResultsEntity);
+        EvaluationResults evaluationResults =
+                experimentHistory.getExperiment().get(experimentResultsEntity.getResultsIndex());
+        ersRequestService.saveEvaluationResults(evaluationResults, experimentResultsRequest);
     }
 
     private List<ExperimentResultsEntity> getOrSaveExperimentResults(Experiment experiment,

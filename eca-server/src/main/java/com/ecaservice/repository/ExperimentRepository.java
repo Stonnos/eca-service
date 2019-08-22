@@ -62,14 +62,4 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
     @Query("select e.experimentStatus as requestStatus, count(e.experimentStatus) as requestsCount from " +
             "Experiment e group by e.experimentStatus")
     List<RequestStatusStatistics> getRequestStatusesStatistics();
-
-    /**
-     * Finds experiments for sending to ERS service.
-     *
-     * @return experiments page
-     */
-    @Query("select exp from Experiment exp where exp.experimentStatus = 'FINISHED' and exp.deletedDate is null " +
-            "and (select count(err) from ExperimentResultsRequest err where " +
-            "err.experiment = exp and err.responseStatus = 'SUCCESS') = 0 order by exp.creationDate desc")
-    List<Experiment> findExperimentsToErsSent();
 }

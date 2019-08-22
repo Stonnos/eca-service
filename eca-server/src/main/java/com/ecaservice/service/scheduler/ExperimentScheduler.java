@@ -2,9 +2,11 @@ package com.ecaservice.service.scheduler;
 
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.repository.ExperimentRepository;
+import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.experiment.mail.NotificationService;
@@ -18,6 +20,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Experiment scheduler.
@@ -29,6 +33,7 @@ import java.util.List;
 public class ExperimentScheduler {
 
     private final ExperimentRepository experimentRepository;
+    private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
     private final ExperimentService experimentService;
     private final NotificationService notificationService;
     private final ErsService ersService;
@@ -37,19 +42,22 @@ public class ExperimentScheduler {
     /**
      * Constructor with dependency spring injection.
      *
-     * @param experimentRepository - experiment repository bean
-     * @param experimentService    - experiment service bean
-     * @param notificationService  - notification service bean
-     * @param ersService           - ers service bean
-     * @param experimentConfig     - experiment config bean
+     * @param experimentRepository              - experiment repository bean
+     * @param experimentResultsEntityRepository - experiment results entity repository bean
+     * @param experimentService                 - experiment service bean
+     * @param notificationService               - notification service bean
+     * @param ersService                        - ers service bean
+     * @param experimentConfig                  - experiment config bean
      */
     @Inject
     public ExperimentScheduler(ExperimentRepository experimentRepository,
+                               ExperimentResultsEntityRepository experimentResultsEntityRepository,
                                ExperimentService experimentService,
                                NotificationService notificationService,
                                ErsService ersService,
                                ExperimentConfig experimentConfig) {
         this.experimentRepository = experimentRepository;
+        this.experimentResultsEntityRepository = experimentResultsEntityRepository;
         this.experimentService = experimentService;
         this.notificationService = notificationService;
         this.ersService = ersService;
@@ -103,13 +111,30 @@ public class ExperimentScheduler {
     @Scheduled(cron = "${experiment.ersSendingCron}")
     public void processRequestsToErs() {
         log.info("Starting to sent experiment results to ERS service");
-        List<Experiment> experiments = experimentRepository.findExperimentsToErsSent();
+       /* List<Experiment> experiments = experimentRepository.findExperimentsToErsSent();
         log.trace("Obtained {} experiments sending to ERS service", experiments.size());
         experiments.forEach(experiment -> {
             try {
                 ExperimentHistory experimentHistory = experimentService.getExperimentResults(experiment);
                 ersService.sentExperimentHistory(experiment, experimentHistory,
                         ExperimentResultsRequestSource.SYSTEM);
+            } catch (Exception ex) {
+                log.error("There was an error while sending experiment [{}] history: {}", experiment.getUuid(),
+                        ex.getMessage());
+            }
+        });*/
+        List<ExperimentResultsEntity> experimentResultsEntities =
+                experimentResultsEntityRepository.findfindExperimentsResulsToErsSent();
+        log.trace("Obtained {} experiments results sending to ERS service", experimentResultsEntities.size());
+        Map<Experiment, List<ExperimentResultsEntity>> experimentResultsMap =
+                experimentResultsEntities.stream().collect(
+                        Collectors.groupingBy(ExperimentResultsEntity::getExperiment));
+        experimentResultsMap.forEach((experiment, experimentResultsEntityList) -> {
+            try {
+                ExperimentHistory experimentHistory = experimentService.getExperimentResults(experiment);
+                experimentResultsEntityList.forEach(
+                        experimentResultsEntity -> ersService.sentExperimentResults(experimentResultsEntity,
+                                experimentHistory, ExperimentResultsRequestSource.SYSTEM));
             } catch (Exception ex) {
                 log.error("There was an error while sending experiment [{}] history: {}", experiment.getUuid(),
                         ex.getMessage());

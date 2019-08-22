@@ -9,6 +9,7 @@ import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.repository.EmailRequestRepository;
 import com.ecaservice.repository.ErsRequestRepository;
 import com.ecaservice.repository.ExperimentRepository;
+import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.ers.ErsService;
@@ -50,6 +51,8 @@ public class ExperimentSchedulerTest extends AbstractJpaTest {
     private EmailRequestRepository emailRequestRepository;
     @Inject
     private ExperimentResultsRequestRepository experimentResultsRequestRepository;
+    @Inject
+    private ExperimentResultsEntityRepository experimentResultsEntityRepository;
     @Mock
     private ExperimentService experimentService;
     @Mock
@@ -66,7 +69,8 @@ public class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        experimentScheduler = new ExperimentScheduler(experimentRepository, experimentService, notificationService,
+        experimentScheduler = new ExperimentScheduler(experimentRepository, experimentResultsEntityRepository,
+                experimentService, notificationService,
                 ersService, experimentConfig);
     }
 
