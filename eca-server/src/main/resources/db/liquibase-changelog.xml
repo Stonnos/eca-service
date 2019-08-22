@@ -22,4 +22,5 @@
     <include file="db/changelog/000000000018.xml"/>
     <include file="db/changelog/000000000019.xml"/>
     <include file="db/changelog/000000000020.xml"/>
+    <include file="db/changelog/000000000021.xml"/>
 </databaseChangeLog>
