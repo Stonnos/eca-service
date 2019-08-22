@@ -4,6 +4,7 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.repository.EmailRequestRepository;
@@ -78,6 +79,7 @@ public class ExperimentSchedulerTest extends AbstractJpaTest {
     public void deleteAll() {
         ersRequestRepository.deleteAll();
         emailRequestRepository.deleteAll();
+        experimentResultsEntityRepository.deleteAll();
         experimentRepository.deleteAll();
     }
 
@@ -125,7 +127,35 @@ public class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @Test
     public void testSentExperimentsToErs() {
+        //Create finished experiment
         Experiment finishedExperiment =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        experimentRepository.save(finishedExperiment);
+        ExperimentResultsEntity firstResults = TestHelperUtils.createExperimentResultsEntity(finishedExperiment);
+        ExperimentResultsEntity secondResults = TestHelperUtils.createExperimentResultsEntity(finishedExperiment);
+        ExperimentResultsEntity thirdResults = TestHelperUtils.createExperimentResultsEntity(finishedExperiment);
+        experimentResultsEntityRepository.saveAll(Arrays.asList(firstResults, secondResults, thirdResults));
+        experimentResultsRequestRepository.save(
+                TestHelperUtils.createExperimentResultsRequest(firstResults, ErsResponseStatus.ERROR));
+        experimentResultsRequestRepository.save(
+                TestHelperUtils.createExperimentResultsRequest(firstResults, ErsResponseStatus.DUPLICATE_REQUEST_ID));
+        experimentResultsRequestRepository.save(
+                TestHelperUtils.createExperimentResultsRequest(secondResults, ErsResponseStatus.SUCCESS));
+        //Created deleted experiment
+        Experiment removedExperiment =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        removedExperiment.setDeletedDate(LocalDateTime.now());
+        experimentRepository.save(removedExperiment);
+        //Create error experiment
+        Experiment errorExperiment =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT);
+        experimentRepository.save(errorExperiment);
+        //Create another finished experiment
+        finishedExperiment =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        experimentRepository.save(finishedExperiment);
+        experimentResultsEntityRepository.save(TestHelperUtils.createExperimentResultsEntity(finishedExperiment));
+       /* Experiment finishedExperiment =
                 TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         Experiment removedExperiment =
                 TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
@@ -148,11 +178,11 @@ public class ExperimentSchedulerTest extends AbstractJpaTest {
                         ErsResponseStatus.ERROR));
         experimentResultsRequestRepository.save(
                 TestHelperUtils.createExperimentResultsRequest(finishedExperimentWithErrorRequests,
-                        ErsResponseStatus.DUPLICATE_REQUEST_ID));
+                        ErsResponseStatus.DUPLICATE_REQUEST_ID));*/
 
         when(experimentService.getExperimentResults(any(Experiment.class))).thenReturn(new ExperimentHistory());
         experimentScheduler.processRequestsToErs();
-        verify(ersService, times(2)).sentExperimentHistory(any(Experiment.class), any(ExperimentHistory.class),
-                any(ExperimentResultsRequestSource.class));
+        verify(ersService, times(3)).sentExperimentResults(any(ExperimentResultsEntity.class),
+                any(ExperimentHistory.class), any(ExperimentResultsRequestSource.class));
     }
 }

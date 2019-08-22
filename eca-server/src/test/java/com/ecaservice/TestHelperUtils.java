@@ -19,6 +19,7 @@ import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.ExperimentResultsRequest;
 import com.ecaservice.model.entity.FilterDictionaryValue;
 import com.ecaservice.model.entity.InstancesInfo;
@@ -758,6 +759,37 @@ public class TestHelperUtils {
                                                                           ErsResponseStatus responseStatus) {
         ExperimentResultsRequest experimentResultsRequest = new ExperimentResultsRequest();
         experimentResultsRequest.setExperiment(experiment);
+        experimentResultsRequest.setResponseStatus(responseStatus);
+        experimentResultsRequest.setRequestDate(LocalDateTime.now());
+        experimentResultsRequest.setRequestId(UUID.randomUUID().toString());
+        experimentResultsRequest.setRequestSource(ExperimentResultsRequestSource.SYSTEM);
+        return experimentResultsRequest;
+    }
+
+    /**
+     * Creates experiment results entity.
+     *
+     * @param experiment - experiment entity
+     * @return experiment results entity
+     */
+    public static ExperimentResultsEntity createExperimentResultsEntity(Experiment experiment) {
+        ExperimentResultsEntity experimentResultsEntity = new ExperimentResultsEntity();
+        experimentResultsEntity.setExperiment(experiment);
+        return experimentResultsEntity;
+    }
+
+    /**
+     * Creates experiment results request.
+     *
+     * @param experimentResultsEntity - experiment results entity
+     * @param responseStatus          - response status
+     * @return experiment results request
+     */
+    public static ExperimentResultsRequest createExperimentResultsRequest(
+            ExperimentResultsEntity experimentResultsEntity,
+            ErsResponseStatus responseStatus) {
+        ExperimentResultsRequest experimentResultsRequest = new ExperimentResultsRequest();
+        experimentResultsRequest.setExperimentResultsEntity(experimentResultsEntity);
         experimentResultsRequest.setResponseStatus(responseStatus);
         experimentResultsRequest.setRequestDate(LocalDateTime.now());
         experimentResultsRequest.setRequestId(UUID.randomUUID().toString());
