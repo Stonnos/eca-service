@@ -24,4 +24,21 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment_results"/>
+            <tableExists tableName="experiment_results_request"/>
+            <not>
+                <columnExists tableName="experiment_results_request" columnName="experiment_results_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="experiment_results_request">
+            <column name="experiment_results_id" type="bigint">
+                <constraints foreignKeyName="fk_experiment_results_request_experiment_results_id"
+                             referencedTableName="experiment_results"
+                             referencedColumnNames="id" nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
