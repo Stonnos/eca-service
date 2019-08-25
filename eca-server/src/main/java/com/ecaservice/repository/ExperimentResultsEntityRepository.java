@@ -4,7 +4,9 @@ import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -20,7 +22,7 @@ public interface ExperimentResultsEntityRepository extends JpaRepository<Experim
      * @param experiment - experiment entity
      * @return experiment results list
      */
-    List<ExperimentResultsEntity> findByExperiment(Experiment experiment);
+    List<ExperimentResultsEntity> findAllByExperiment(Experiment experiment);
 
     /**
      * Finds experiments results for sending to ERS service.
@@ -31,5 +33,15 @@ public interface ExperimentResultsEntityRepository extends JpaRepository<Experim
             "exp.experimentStatus = 'FINISHED' and exp.deletedDate is null " +
             "and (select count(err) from ExperimentResultsRequest err where " +
             "err.experimentResultsEntity = er and err.responseStatus = 'SUCCESS') = 0")
-    List<ExperimentResultsEntity> findfindExperimentsResulsToErsSent();
+    List<ExperimentResultsEntity> findExperimentsResultsToErsSent();
+
+    /**
+     * Finds experiment results ids successfully sent to ERS service.
+     *
+     * @param ids - experiment results ids list
+     * @return experiment results ids
+     */
+    @Query("select er.id from ExperimentResultsEntity er join ExperimentResultsRequest err " +
+            "on err.experimentResultsEntity = er where er.id in (:ids) and err.responseStatus = 'SUCCESS'")
+    List<Long> findSuccessfullySentResultsIds(@Param("ids") Collection<Long> ids);
 }

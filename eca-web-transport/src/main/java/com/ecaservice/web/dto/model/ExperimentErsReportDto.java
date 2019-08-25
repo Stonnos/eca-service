@@ -4,14 +4,16 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
- * ERS report dto model.
+ * Experiment ERS report dto model.
  *
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "ERS report model")
-public class ErsReportDto {
+@ApiModel(description = "Experiment ERS report model")
+public class ExperimentErsReportDto {
 
     /**
      * Experiment uuid
@@ -20,10 +22,10 @@ public class ErsReportDto {
     private String experimentUuid;
 
     /**
-     * ERS requests count
+     * Total classifiers count that should be sent to ERS service
      */
-    @ApiModelProperty(value = "Total ERS requests count")
-    private long requestsCount;
+    @ApiModelProperty(value = "Total classifiers count")
+    private long classifiersCount;
 
     /**
      * Successfully saved classifiers count
@@ -32,10 +34,10 @@ public class ErsReportDto {
     private long successfullySavedClassifiers;
 
     /**
-     * Failed requests count
+     * Experiment results list
      */
-    @ApiModelProperty(value = "TFailed requests count")
-    private long failedRequestsCount;
+    @ApiModelProperty(value = "Experiment results list")
+    private List<ExperimentResultsDto> experimentResults;
 
     /**
      * Ers report status

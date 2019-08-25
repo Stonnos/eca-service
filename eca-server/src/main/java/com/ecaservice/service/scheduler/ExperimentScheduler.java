@@ -124,7 +124,7 @@ public class ExperimentScheduler {
             }
         });*/
         List<ExperimentResultsEntity> experimentResultsEntities =
-                experimentResultsEntityRepository.findfindExperimentsResulsToErsSent();
+                experimentResultsEntityRepository.findExperimentsResultsToErsSent();
         log.trace("Obtained {} experiments results sending to ERS service", experimentResultsEntities.size());
         Map<Experiment, List<ExperimentResultsEntity>> experimentResultsMap =
                 experimentResultsEntities.stream().collect(

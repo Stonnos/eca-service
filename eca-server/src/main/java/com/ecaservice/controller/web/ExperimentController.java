@@ -20,7 +20,7 @@ import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.util.Utils;
 import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
-import com.ecaservice.web.dto.model.ErsReportDto;
+import com.ecaservice.web.dto.model.ExperimentErsReportDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -223,7 +223,7 @@ public class ExperimentController {
             notes = "Gets experiment ERS report"
     )
     @GetMapping(value = "/ers-report/{uuid}")
-    public ResponseEntity<ErsReportDto> getExperimentErsReport(
+    public ResponseEntity<ExperimentErsReportDto> getExperimentErsReport(
             @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
         log.info("Received request for ERS report for experiment [{}]", uuid);
         Experiment experiment = experimentRepository.findByUuid(uuid);

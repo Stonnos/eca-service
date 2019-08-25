@@ -32,4 +32,10 @@ public class ExperimentResultsDto {
      */
     @ApiModelProperty(value = "Correctly classified percentage")
     private BigDecimal pctCorrect;
+
+    /**
+     * s experiment results sent to ERS?
+     */
+    @ApiModelProperty("Is experiment results sent to ERS?")
+    private boolean sent;
 }

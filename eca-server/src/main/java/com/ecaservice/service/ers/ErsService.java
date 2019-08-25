@@ -17,10 +17,10 @@ import com.ecaservice.repository.EvaluationResultsRequestEntityRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.web.dto.model.EnumDto;
-import com.ecaservice.web.dto.model.ErsReportDto;
 import com.ecaservice.web.dto.model.ErsReportStatus;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
+import com.ecaservice.web.dto.model.ExperimentErsReportDto;
 import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
@@ -84,22 +84,42 @@ public class ErsService {
      * @param experiment - experiment entity
      * @return ERS report dto
      */
-    public ErsReportDto getErsReport(Experiment experiment) {
-        List<ExperimentResultsRequest> experimentResultsRequests =
+    public ExperimentErsReportDto getErsReport(Experiment experiment) {
+        /*List<ExperimentResultsRequest> experimentResultsRequests =
                 experimentResultsRequestRepository.findAllByExperiment(experiment);
-        ErsReportDto ersReportDto = new ErsReportDto();
-        ersReportDto.setExperimentUuid(experiment.getUuid());
+        ExperimentErsReportDto experimentErsReportDto = new ExperimentErsReportDto();
+        experimentErsReportDto.setExperimentUuid(experiment.getUuid());
         if (!CollectionUtils.isEmpty(experimentResultsRequests)) {
-            ersReportDto.setRequestsCount(experimentResultsRequests.size());
-            ersReportDto.setSuccessfullySavedClassifiers(experimentResultsRequests.stream().filter(
+            experimentErsReportDto.setRequestsCount(experimentResultsRequests.size());
+            experimentErsReportDto.setSuccessfullySavedClassifiers(experimentResultsRequests.stream().filter(
                     experimentResultsRequest -> ErsResponseStatus.SUCCESS.equals(
                             experimentResultsRequest.getResponseStatus())).count());
-            ersReportDto.setFailedRequestsCount(experimentResultsRequests.stream().filter(
+            experimentErsReportDto.setFailedRequestsCount(experimentResultsRequests.stream().filter(
                     experimentResultsRequest -> !ErsResponseStatus.SUCCESS.equals(
                             experimentResultsRequest.getResponseStatus())).count());
         }
-        populateErsReportStatus(experiment, ersReportDto);
-        return ersReportDto;
+        populateErsReportStatus(experiment, experimentErsReportDto);
+        return experimentErsReportDto;*/
+        ExperimentErsReportDto experimentErsReportDto = new ExperimentErsReportDto();
+        experimentErsReportDto.setExperimentUuid(experiment.getUuid());
+        //Gets experiment results list
+        List<ExperimentResultsEntity> experimentResultsEntityList =
+                experimentResultsEntityRepository.findAllByExperiment(experiment);
+        experimentErsReportDto.setExperimentResults(experimentResultsMapper.map(experimentResultsEntityList));
+        if (!CollectionUtils.isEmpty(experimentResultsEntityList)) {
+            experimentErsReportDto.setClassifiersCount(experimentResultsEntityList.size());
+            List<Long> experimentResultsIds =
+                    experimentResultsEntityList.stream().map(ExperimentResultsEntity::getId).collect(
+                            Collectors.toList());
+            List<Long> successfullySentIds =
+                    experimentResultsEntityRepository.findSuccessfullySentResultsIds(experimentResultsIds);
+            experimentErsReportDto.setSuccessfullySavedClassifiers(successfullySentIds.size());
+            //Set sent flag for each experiment results
+            experimentErsReportDto.getExperimentResults().forEach(experimentResultsDto -> experimentResultsDto.setSent(
+                    successfullySentIds.contains(experimentResultsDto.getId())));
+        }
+        populateErsReportStatus(experiment, experimentErsReportDto);
+        return experimentErsReportDto;
     }
 
     /**
@@ -157,7 +177,7 @@ public class ErsService {
     private List<ExperimentResultsEntity> getOrSaveExperimentResults(Experiment experiment,
                                                                      ExperimentHistory experimentHistory) {
         List<ExperimentResultsEntity> experimentResultsEntities =
-                experimentResultsEntityRepository.findByExperiment(experiment);
+                experimentResultsEntityRepository.findAllByExperiment(experiment);
         if (CollectionUtils.isEmpty(experimentResultsEntities)) {
             List<EvaluationResults> evaluationResultsList = experimentHistory.getExperiment();
             int resultsSize = Integer.min(evaluationResultsList.size(), experimentConfig.getResultSizeToSend());
@@ -174,20 +194,22 @@ public class ErsService {
         return experimentResultsEntities;
     }
 
-    private void populateErsReportStatus(Experiment experiment, ErsReportDto ersReportDto) {
+    private void populateErsReportStatus(Experiment experiment, ExperimentErsReportDto experimentErsReportDto) {
         ErsReportStatus ersReportStatus;
         if (!RequestStatus.FINISHED.equals(experiment.getExperimentStatus())) {
             ersReportStatus = RequestStatus.NEW.equals(experiment.getExperimentStatus()) ?
                     ErsReportStatus.EXPERIMENT_IN_PROGRESS : ErsReportStatus.EXPERIMENT_ERROR;
             //else handle ERS report status for experiment with FINISHED status
-        } else if (ersReportDto.getSuccessfullySavedClassifiers() > 0) {
+        } else if (experimentErsReportDto.getSuccessfullySavedClassifiers() ==
+                experimentErsReportDto.getClassifiersCount()) {
             ersReportStatus = ErsReportStatus.SUCCESS_SENT;
         } else if (experiment.getDeletedDate() != null) {
             ersReportStatus = ErsReportStatus.EXPERIMENT_DELETED;
         } else {
             ersReportStatus = ErsReportStatus.NEED_SENT;
         }
-        ersReportDto.setErsReportStatus(new EnumDto(ersReportStatus.name(), ersReportStatus.getDescription()));
+        experimentErsReportDto.setErsReportStatus(
+                new EnumDto(ersReportStatus.name(), ersReportStatus.getDescription()));
     }
 
     private void populateEvaluationResults(EvaluationLogDetailsDto evaluationLogDetailsDto,
