@@ -148,9 +148,11 @@ public class ErsServiceTest extends AbstractJpaTest {
         ExperimentResultsEntity experimentResultsEntity2 = TestHelperUtils.createExperimentResultsEntity(experiment);
         experimentResultsEntityRepository.saveAll(Arrays.asList(experimentResultsEntity1, experimentResultsEntity2));
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity1, ErsResponseStatus.SUCCESS));
+                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity1, experiment,
+                        ErsResponseStatus.SUCCESS));
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity2, ErsResponseStatus.SUCCESS));
+                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity2, experiment,
+                        ErsResponseStatus.SUCCESS));
         ExperimentErsReportDto experimentErsReportDto = ersService.getErsReport(experiment);
         Assertions.assertThat(experimentErsReportDto).isNotNull();
         Assertions.assertThat(experimentErsReportDto.getErsReportStatus().getValue()).isEqualTo(
@@ -165,11 +167,13 @@ public class ErsServiceTest extends AbstractJpaTest {
         ExperimentResultsEntity experimentResultsEntity2 = TestHelperUtils.createExperimentResultsEntity(experiment);
         experimentResultsEntityRepository.saveAll(Arrays.asList(experimentResultsEntity1, experimentResultsEntity2));
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity1, ErsResponseStatus.SUCCESS));
+                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity1, experiment,
+                        ErsResponseStatus.SUCCESS));
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity2, ErsResponseStatus.ERROR));
+                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity2, experiment,
+                        ErsResponseStatus.ERROR));
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity2,
+                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity2, experiment,
                         ErsResponseStatus.INVALID_REQUEST_ID));
         ExperimentErsReportDto experimentErsReportDto = ersService.getErsReport(experiment);
         Assertions.assertThat(experimentErsReportDto).isNotNull();
@@ -187,9 +191,11 @@ public class ErsServiceTest extends AbstractJpaTest {
                 Arrays.asList(experimentResultsEntity1, experimentResultsEntity2);
         experimentResultsEntityRepository.saveAll(experimentResultsEntityList);
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity1, ErsResponseStatus.SUCCESS));
+                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity1, experiment,
+                        ErsResponseStatus.SUCCESS));
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity2, ErsResponseStatus.SUCCESS));
+                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity2, experiment,
+                        ErsResponseStatus.SUCCESS));
         ExperimentErsReportDto experimentErsReportDto = ersService.getErsReport(experiment);
         Assertions.assertThat(experimentErsReportDto).isNotNull();
         Assertions.assertThat(experimentErsReportDto.getErsReportStatus().getValue()).isEqualTo(
@@ -198,8 +204,7 @@ public class ErsServiceTest extends AbstractJpaTest {
                 experimentResultsEntityList.size());
         Assertions.assertThat(experimentErsReportDto.getSuccessfullySavedClassifiers()).isEqualTo(
                 experimentResultsEntityList.size());
-        Assertions.assertThat(experimentErsReportDto.getExperimentResults()).hasSameSizeAs(
-                experimentResultsEntityList.size());
+        Assertions.assertThat(experimentErsReportDto.getExperimentResults()).hasSameSizeAs(experimentResultsEntityList);
     }
 
     @Test
