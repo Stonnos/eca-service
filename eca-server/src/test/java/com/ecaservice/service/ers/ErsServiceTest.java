@@ -17,6 +17,7 @@ import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.repository.EvaluationLogRepository;
@@ -25,10 +26,10 @@ import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.service.AbstractJpaTest;
-import com.ecaservice.web.dto.model.ExperimentErsReportDto;
 import com.ecaservice.web.dto.model.ErsReportStatus;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
+import com.ecaservice.web.dto.model.ExperimentErsReportDto;
 import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationResults;
 import org.assertj.core.api.Assertions;
@@ -40,6 +41,8 @@ import org.springframework.ws.client.WebServiceIOException;
 import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.Matchers.any;
@@ -82,14 +85,15 @@ public class ErsServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        ersService = new ErsService(ersRequestService, experimentConfig, evaluationLogDetailsMapper,
-                experimentResultsMapper, experimentResultsRequestRepository,
-                evaluationResultsRequestEntityRepository, experimentResultsEntityRepository);
+        ersService =
+                new ErsService(ersRequestService, experimentConfig, evaluationLogDetailsMapper, experimentResultsMapper,
+                        evaluationResultsRequestEntityRepository, experimentResultsEntityRepository);
     }
 
     @Override
     public void deleteAll() {
         experimentResultsRequestRepository.deleteAll();
+        experimentResultsEntityRepository.deleteAll();
         experimentRepository.deleteAll();
         evaluationResultsRequestEntityRepository.deleteAll();
         evaluationLogRepository.deleteAll();
@@ -116,27 +120,38 @@ public class ErsServiceTest extends AbstractJpaTest {
     }
 
     /**
-     * Case 1: There is no one success requests to ERS service and experiment is deleted. Expected: EXPERIMENT_DELETED
-     * Case 2: There is no one success requests to ERS service and experiment is deleted. Expected: SUCCESS_SENT
+     * There is no one success requests to ERS service and experiment is deleted. Expected: EXPERIMENT_DELETED
      */
     @Test
-    public void testErsReportWithExperimentDeletedStatus() {
-        //Case 1
+    public void testErsReportForNotSentAndDeletedExperiment() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experiment.setDeletedDate(LocalDateTime.now());
         experimentRepository.save(experiment);
+        ExperimentResultsEntity experimentResultsEntity1 = TestHelperUtils.createExperimentResultsEntity(experiment);
+        ExperimentResultsEntity experimentResultsEntity2 = TestHelperUtils.createExperimentResultsEntity(experiment);
+        experimentResultsEntityRepository.saveAll(Arrays.asList(experimentResultsEntity1, experimentResultsEntity2));
         ExperimentErsReportDto experimentErsReportDto = ersService.getErsReport(experiment);
         Assertions.assertThat(experimentErsReportDto).isNotNull();
         Assertions.assertThat(experimentErsReportDto.getErsReportStatus().getValue()).isEqualTo(
                 ErsReportStatus.EXPERIMENT_DELETED.name());
-        experimentRepository.deleteAll();
-        //Case 2
-        experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+    }
+
+    /**
+     * There are success requests to ERS service and experiment is deleted. Expected: SUCCESS_SENT
+     */
+    @Test
+    public void testErsReportForSentAndDeletedExperiment() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experiment.setDeletedDate(LocalDateTime.now());
         experimentRepository.save(experiment);
+        ExperimentResultsEntity experimentResultsEntity1 = TestHelperUtils.createExperimentResultsEntity(experiment);
+        ExperimentResultsEntity experimentResultsEntity2 = TestHelperUtils.createExperimentResultsEntity(experiment);
+        experimentResultsEntityRepository.saveAll(Arrays.asList(experimentResultsEntity1, experimentResultsEntity2));
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experiment, ErsResponseStatus.SUCCESS));
-        experimentErsReportDto = ersService.getErsReport(experiment);
+                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity1, ErsResponseStatus.SUCCESS));
+        experimentResultsRequestRepository.save(
+                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity2, ErsResponseStatus.SUCCESS));
+        ExperimentErsReportDto experimentErsReportDto = ersService.getErsReport(experiment);
         Assertions.assertThat(experimentErsReportDto).isNotNull();
         Assertions.assertThat(experimentErsReportDto.getErsReportStatus().getValue()).isEqualTo(
                 ErsReportStatus.SUCCESS_SENT.name());
@@ -146,36 +161,45 @@ public class ErsServiceTest extends AbstractJpaTest {
     public void testErsReportWithNeedSentStatus() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experimentRepository.save(experiment);
+        ExperimentResultsEntity experimentResultsEntity1 = TestHelperUtils.createExperimentResultsEntity(experiment);
+        ExperimentResultsEntity experimentResultsEntity2 = TestHelperUtils.createExperimentResultsEntity(experiment);
+        experimentResultsEntityRepository.saveAll(Arrays.asList(experimentResultsEntity1, experimentResultsEntity2));
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experiment, ErsResponseStatus.ERROR));
+                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity1, ErsResponseStatus.SUCCESS));
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experiment, ErsResponseStatus.INVALID_REQUEST_PARAMS));
+                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity2, ErsResponseStatus.ERROR));
+        experimentResultsRequestRepository.save(
+                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity2,
+                        ErsResponseStatus.INVALID_REQUEST_ID));
         ExperimentErsReportDto experimentErsReportDto = ersService.getErsReport(experiment);
         Assertions.assertThat(experimentErsReportDto).isNotNull();
-        Assertions.assertThat(experimentErsReportDto.getErsReportStatus().getValue()).isEqualTo(ErsReportStatus.NEED_SENT.name());
+        Assertions.assertThat(experimentErsReportDto.getErsReportStatus().getValue()).isEqualTo(
+                ErsReportStatus.NEED_SENT.name());
     }
 
     @Test
-    public void testErsReportBase() {
+    public void testErsReportWithSuccessSentStatus() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experimentRepository.save(experiment);
+        ExperimentResultsEntity experimentResultsEntity1 = TestHelperUtils.createExperimentResultsEntity(experiment);
+        ExperimentResultsEntity experimentResultsEntity2 = TestHelperUtils.createExperimentResultsEntity(experiment);
+        List<ExperimentResultsEntity> experimentResultsEntityList =
+                Arrays.asList(experimentResultsEntity1, experimentResultsEntity2);
+        experimentResultsEntityRepository.saveAll(experimentResultsEntityList);
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experiment, ErsResponseStatus.ERROR));
+                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity1, ErsResponseStatus.SUCCESS));
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experiment, ErsResponseStatus.INVALID_REQUEST_PARAMS));
-        experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experiment, ErsResponseStatus.DUPLICATE_REQUEST_ID));
-        experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experiment, ErsResponseStatus.SUCCESS));
-        experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experiment, ErsResponseStatus.SUCCESS));
+                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity2, ErsResponseStatus.SUCCESS));
         ExperimentErsReportDto experimentErsReportDto = ersService.getErsReport(experiment);
         Assertions.assertThat(experimentErsReportDto).isNotNull();
         Assertions.assertThat(experimentErsReportDto.getErsReportStatus().getValue()).isEqualTo(
                 ErsReportStatus.SUCCESS_SENT.name());
-        Assertions.assertThat(experimentErsReportDto.getRequestsCount()).isEqualTo(5);
-        Assertions.assertThat(experimentErsReportDto.getSuccessfullySavedClassifiers()).isEqualTo(2);
-        Assertions.assertThat(experimentErsReportDto.getFailedRequestsCount()).isEqualTo(3);
+        Assertions.assertThat(experimentErsReportDto.getClassifiersCount()).isEqualTo(
+                experimentResultsEntityList.size());
+        Assertions.assertThat(experimentErsReportDto.getSuccessfullySavedClassifiers()).isEqualTo(
+                experimentResultsEntityList.size());
+        Assertions.assertThat(experimentErsReportDto.getExperimentResults()).hasSameSizeAs(
+                experimentResultsEntityList.size());
     }
 
     @Test

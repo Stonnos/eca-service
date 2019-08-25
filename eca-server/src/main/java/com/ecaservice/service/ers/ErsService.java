@@ -15,7 +15,6 @@ import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.repository.EvaluationResultsRequestEntityRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
-import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.ErsReportStatus;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
@@ -46,7 +45,6 @@ public class ErsService {
     private final ExperimentConfig experimentConfig;
     private final EvaluationLogDetailsMapper evaluationLogDetailsMapper;
     private final ExperimentResultsMapper experimentResultsMapper;
-    private final ExperimentResultsRequestRepository experimentResultsRequestRepository;
     private final EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
 
@@ -57,7 +55,6 @@ public class ErsService {
      * @param experimentConfig                         - experiment config bean
      * @param evaluationLogDetailsMapper               - evaluation log details mapper bean
      * @param experimentResultsMapper                  - experiment results mapper bean
-     * @param experimentResultsRequestRepository       - experiment results request repository bean
      * @param evaluationResultsRequestEntityRepository - evaluation results request repository bean
      * @param experimentResultsEntityRepository        - experiment results entity repository bean
      */
@@ -66,14 +63,12 @@ public class ErsService {
                       ExperimentConfig experimentConfig,
                       EvaluationLogDetailsMapper evaluationLogDetailsMapper,
                       ExperimentResultsMapper experimentResultsMapper,
-                      ExperimentResultsRequestRepository experimentResultsRequestRepository,
                       EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository,
                       ExperimentResultsEntityRepository experimentResultsEntityRepository) {
         this.ersRequestService = ersRequestService;
         this.experimentConfig = experimentConfig;
         this.evaluationLogDetailsMapper = evaluationLogDetailsMapper;
         this.experimentResultsMapper = experimentResultsMapper;
-        this.experimentResultsRequestRepository = experimentResultsRequestRepository;
         this.evaluationResultsRequestEntityRepository = evaluationResultsRequestEntityRepository;
         this.experimentResultsEntityRepository = experimentResultsEntityRepository;
     }

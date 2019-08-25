@@ -9,6 +9,7 @@
             <not>
                 <tableExists tableName="experiment_results"/>
             </not>
+            <tableExists tableName="experiment"/>
         </preConditions>
         <createTable tableName="experiment_results">
             <column name="id" type="bigint" autoIncrement="true">

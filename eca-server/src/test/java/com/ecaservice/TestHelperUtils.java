@@ -749,24 +749,6 @@ public class TestHelperUtils {
     }
 
     /**
-     * Creates experiment results request.
-     *
-     * @param experiment     - experiment
-     * @param responseStatus - response status
-     * @return experiment results request
-     */
-    public static ExperimentResultsRequest createExperimentResultsRequest(Experiment experiment,
-                                                                          ErsResponseStatus responseStatus) {
-        ExperimentResultsRequest experimentResultsRequest = new ExperimentResultsRequest();
-        experimentResultsRequest.setExperiment(experiment);
-        experimentResultsRequest.setResponseStatus(responseStatus);
-        experimentResultsRequest.setRequestDate(LocalDateTime.now());
-        experimentResultsRequest.setRequestId(UUID.randomUUID().toString());
-        experimentResultsRequest.setRequestSource(ExperimentResultsRequestSource.SYSTEM);
-        return experimentResultsRequest;
-    }
-
-    /**
      * Creates experiment results entity.
      *
      * @param experiment - experiment entity
