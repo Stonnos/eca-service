@@ -202,7 +202,7 @@ public class ErsServiceTest extends AbstractJpaTest {
                 ErsReportStatus.SUCCESS_SENT.name());
         Assertions.assertThat(experimentErsReportDto.getClassifiersCount()).isEqualTo(
                 experimentResultsEntityList.size());
-        Assertions.assertThat(experimentErsReportDto.getSuccessfullySavedClassifiers()).isEqualTo(
+        Assertions.assertThat(experimentErsReportDto.getSentClassifiersCount()).isEqualTo(
                 experimentResultsEntityList.size());
         Assertions.assertThat(experimentErsReportDto.getExperimentResults()).hasSameSizeAs(experimentResultsEntityList);
     }

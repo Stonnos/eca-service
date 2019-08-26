@@ -28,10 +28,10 @@ public class ExperimentErsReportDto {
     private long classifiersCount;
 
     /**
-     * Successfully saved classifiers count
+     * Successfully sent classifiers count
      */
-    @ApiModelProperty(value = "Successfully saved classifiers count")
-    private long successfullySavedClassifiers;
+    @ApiModelProperty(value = "Successfully sent classifiers count")
+    private long sentClassifiersCount;
 
     /**
      * Experiment results list

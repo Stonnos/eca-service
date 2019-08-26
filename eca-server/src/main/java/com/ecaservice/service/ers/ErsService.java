@@ -106,12 +106,12 @@ public class ErsService {
             List<Long> experimentResultsIds =
                     experimentResultsEntityList.stream().map(ExperimentResultsEntity::getId).collect(
                             Collectors.toList());
-            List<Long> successfullySentIds =
+            List<Long> sentResultsIds =
                     experimentResultsEntityRepository.findSuccessfullySentResultsIds(experimentResultsIds);
-            experimentErsReportDto.setSuccessfullySavedClassifiers(successfullySentIds.size());
+            experimentErsReportDto.setSentClassifiersCount(sentResultsIds.size());
             //Set sent flag for each experiment results
             experimentErsReportDto.getExperimentResults().forEach(experimentResultsDto -> experimentResultsDto.setSent(
-                    successfullySentIds.contains(experimentResultsDto.getId())));
+                    sentResultsIds.contains(experimentResultsDto.getId())));
         }
         populateErsReportStatus(experiment, experimentErsReportDto);
         return experimentErsReportDto;
@@ -195,8 +195,7 @@ public class ErsService {
             ersReportStatus = RequestStatus.NEW.equals(experiment.getExperimentStatus()) ?
                     ErsReportStatus.EXPERIMENT_IN_PROGRESS : ErsReportStatus.EXPERIMENT_ERROR;
             //else handle ERS report status for experiment with FINISHED status
-        } else if (experimentErsReportDto.getSuccessfullySavedClassifiers() ==
-                experimentErsReportDto.getClassifiersCount()) {
+        } else if (experimentErsReportDto.getSentClassifiersCount() == experimentErsReportDto.getClassifiersCount()) {
             ersReportStatus = ErsReportStatus.SUCCESS_SENT;
         } else if (experiment.getDeletedDate() != null) {
             ersReportStatus = ErsReportStatus.EXPERIMENT_DELETED;
