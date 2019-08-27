@@ -773,7 +773,7 @@ public class TestHelperUtils {
             Experiment experiment,
             ErsResponseStatus responseStatus) {
         ExperimentResultsRequest experimentResultsRequest = new ExperimentResultsRequest();
-        experimentResultsRequest.setExperimentResultsEntity(experimentResultsEntity);
+        experimentResultsRequest.setExperimentResults(experimentResultsEntity);
         experimentResultsRequest.setExperiment(experiment);
         experimentResultsRequest.setResponseStatus(responseStatus);
         experimentResultsRequest.setRequestDate(LocalDateTime.now());

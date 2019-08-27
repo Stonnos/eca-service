@@ -115,7 +115,7 @@ public class ExperimentResultsMigrationService {
         experimentResultsEntity.setResultsIndex(resultsIndex);
         experimentResultsEntityRepository.save(experimentResultsEntity);
         ExperimentResultsRequest experimentResultsRequest = experimentResultsWrapper.getExperimentResultsRequest();
-        experimentResultsRequest.setExperimentResultsEntity(experimentResultsEntity);
+        experimentResultsRequest.setExperimentResults(experimentResultsEntity);
         experimentResultsRequestRepository.save(experimentResultsRequest);
         log.info("Migrated experiment details for results request {}", experimentResultsRequest.getRequestId());
     }

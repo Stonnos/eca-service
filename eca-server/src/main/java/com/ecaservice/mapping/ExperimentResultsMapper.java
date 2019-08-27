@@ -1,6 +1,7 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.model.entity.ExperimentResultsEntity;
+import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import com.ecaservice.web.dto.model.ExperimentResultsDto;
 import eca.core.evaluation.EvaluationResults;
 import org.mapstruct.AfterMapping;

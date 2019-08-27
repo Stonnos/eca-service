@@ -8,6 +8,7 @@ import com.ecaservice.mapping.ClassificationCostsMapperImpl;
 import com.ecaservice.mapping.EvaluationLogDetailsMapper;
 import com.ecaservice.mapping.EvaluationLogDetailsMapperImpl;
 import com.ecaservice.mapping.EvaluationLogInputOptionsMapperImpl;
+import com.ecaservice.mapping.ExperimentResultsDetailsMapper;
 import com.ecaservice.mapping.ExperimentResultsMapper;
 import com.ecaservice.mapping.ExperimentResultsMapperImpl;
 import com.ecaservice.mapping.InstancesInfoMapperImpl;
@@ -75,6 +76,8 @@ public class ErsServiceTest extends AbstractJpaTest {
     @Inject
     private ExperimentResultsMapper experimentResultsMapper;
     @Inject
+    private ExperimentResultsDetailsMapper experimentResultsDetailsMapper;
+    @Inject
     private ExperimentRepository experimentRepository;
     @Inject
     private EvaluationLogRepository evaluationLogRepository;
@@ -86,8 +89,10 @@ public class ErsServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         ersService =
-                new ErsService(ersRequestService, experimentConfig, evaluationLogDetailsMapper, experimentResultsMapper,
-                        evaluationResultsRequestEntityRepository, experimentResultsEntityRepository);
+                new ErsService(ersRequestService, experimentConfig, evaluationLogDetailsMapper,
+                        experimentResultsDetailsMapper, experimentResultsMapper,
+                        evaluationResultsRequestEntityRepository, experimentResultsEntityRepository,
+                        experimentResultsRequestRepository);
     }
 
     @Override

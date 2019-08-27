@@ -14,7 +14,7 @@ import org.mapstruct.Mappings;
 import java.util.Optional;
 
 /**
- * Implements evaluation request to evaluation log mapping.
+ * Implements evaluation log to evaluation log details mapping.
  *
  * @author Roman Batygin
  */
@@ -23,7 +23,7 @@ import java.util.Optional;
 public abstract class EvaluationLogDetailsMapper {
 
     /**
-     * Maps evaluation log entity and evaluation results response to evaluation log details.
+     * Maps evaluation log entity to evaluation log details.
      *
      * @param evaluationLog - evaluation log entity
      * @return evaluation log details dto
