@@ -7,10 +7,12 @@ import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.MultipartFileResource;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.repository.ExperimentRepository;
+import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.service.UserService;
 import com.ecaservice.service.ers.ErsService;
@@ -22,6 +24,7 @@ import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
 import com.ecaservice.web.dto.model.ExperimentErsReportDto;
+import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
@@ -53,6 +56,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -79,6 +83,7 @@ public class ExperimentController {
     private final UserService userService;
     private final ExperimentRepository experimentRepository;
     private final ExperimentResultsRequestRepository experimentResultsRequestRepository;
+    private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
 
     private final ConcurrentHashMap<String, Object> experimentMap = new ConcurrentHashMap<>();
 
@@ -92,6 +97,7 @@ public class ExperimentController {
      * @param userService                        - user service bean
      * @param experimentRepository               - experiment repository bean
      * @param experimentResultsRequestRepository - experiment results request repository bean
+     * @param experimentResultsEntityRepository  - experiment results entity repository bean
      */
     @Inject
     public ExperimentController(ExperimentService experimentService,
@@ -100,7 +106,8 @@ public class ExperimentController {
                                 ExperimentMapper experimentMapper,
                                 UserService userService,
                                 ExperimentRepository experimentRepository,
-                                ExperimentResultsRequestRepository experimentResultsRequestRepository) {
+                                ExperimentResultsRequestRepository experimentResultsRequestRepository,
+                                ExperimentResultsEntityRepository experimentResultsEntityRepository) {
         this.experimentService = experimentService;
         this.experimentRequestService = experimentRequestService;
         this.ersService = ersService;
@@ -108,6 +115,7 @@ public class ExperimentController {
         this.userService = userService;
         this.experimentRepository = experimentRepository;
         this.experimentResultsRequestRepository = experimentResultsRequestRepository;
+        this.experimentResultsEntityRepository = experimentResultsEntityRepository;
     }
 
     /**
@@ -216,6 +224,29 @@ public class ExperimentController {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(experimentMapper.map(experiment));
+    }
+
+    /**
+     * Finds experiment results details with specified id.
+     *
+     * @param id - experiment results id
+     * @return experiment results details dto
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Finds experiment results details with specified id",
+            notes = "Finds experiment results details with specified id"
+    )
+    @GetMapping(value = "/results/details/{id}")
+    public ResponseEntity<ExperimentResultsDetailsDto> getExperimentResultsDetails(
+            @ApiParam(value = "Experiment results id", required = true) @PathVariable Long id) {
+        Optional<ExperimentResultsEntity> experimentResultsEntityOptional =
+                experimentResultsEntityRepository.findById(id);
+        if (!experimentResultsEntityOptional.isPresent()) {
+            log.error("Experiment results with id [{}] not found", id);
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(ersService.getExperimentResultsDetails(experimentResultsEntityOptional.get()));
     }
 
     /**
