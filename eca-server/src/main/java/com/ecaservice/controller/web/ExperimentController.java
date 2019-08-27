@@ -20,8 +20,8 @@ import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.util.Utils;
 import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
-import com.ecaservice.web.dto.model.ExperimentErsReportDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
+import com.ecaservice.web.dto.model.ExperimentErsReportDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
@@ -194,6 +194,28 @@ public class ExperimentController {
         Page<Experiment> experimentPage = experimentService.getNextPage(pageRequestDto);
         List<ExperimentDto> experimentDtoList = experimentMapper.map(experimentPage.getContent());
         return PageDto.of(experimentDtoList, pageRequestDto.getPage(), experimentPage.getTotalElements());
+    }
+
+    /**
+     * Finds experiment with specified uuid.
+     *
+     * @param uuid - experiment uuid
+     * @return experiment dto
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Finds experiment with specified uuid",
+            notes = "Finds experiment with specified uuid"
+    )
+    @GetMapping(value = "/info/{uuid}")
+    public ResponseEntity<ExperimentDto> getExperiment(
+            @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
+        Experiment experiment = experimentRepository.findByUuid(uuid);
+        if (experiment == null) {
+            log.error("Experiment with uuid [{}] not found", uuid);
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(experimentMapper.map(experiment));
     }
 
     /**
