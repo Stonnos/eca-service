@@ -88,11 +88,9 @@ public class ErsServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        ersService =
-                new ErsService(ersRequestService, experimentConfig, evaluationLogDetailsMapper,
-                        experimentResultsDetailsMapper, experimentResultsMapper,
-                        evaluationResultsRequestEntityRepository, experimentResultsEntityRepository,
-                        experimentResultsRequestRepository);
+        ersService = new ErsService(ersRequestService, experimentConfig, evaluationLogDetailsMapper,
+                experimentResultsDetailsMapper, experimentResultsMapper, evaluationResultsRequestEntityRepository,
+                experimentResultsEntityRepository, experimentResultsRequestRepository);
     }
 
     @Override
