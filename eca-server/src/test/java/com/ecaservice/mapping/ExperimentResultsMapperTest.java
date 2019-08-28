@@ -35,6 +35,11 @@ public class ExperimentResultsMapperTest {
         EvaluationResults evaluationResults = TestHelperUtils.getEvaluationResults();
         ExperimentResultsEntity experimentResultsEntity = experimentResultsMapper.map(evaluationResults);
         assertThat(experimentResultsEntity).isNotNull();
+        assertThat(experimentResultsEntity.getClassifierInfo()).isNotNull();
+        assertThat(experimentResultsEntity.getClassifierInfo().getClassifierName()).isEqualTo(
+                evaluationResults.getClassifier().getClass().getSimpleName());
+        assertThat(experimentResultsEntity.getClassifierInfo().getClassifierInputOptions()).isNotNull();
+        assertThat(experimentResultsEntity.getClassifierInfo().getClassifierInputOptions()).isNotEmpty();
         assertThat(experimentResultsEntity.getPctCorrect()).isEqualTo(
                 BigDecimal.valueOf(evaluationResults.getEvaluation().pctCorrect()));
     }
@@ -44,10 +49,16 @@ public class ExperimentResultsMapperTest {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
         experimentResultsEntity.setId(1L);
-        ExperimentResultsDto experimentResultsDetailsDto = experimentResultsMapper.map(experimentResultsEntity);
-        assertThat(experimentResultsDetailsDto).isNotNull();
-        assertThat(experimentResultsDetailsDto.getId()).isEqualTo(experimentResultsEntity.getId());
-        assertThat(experimentResultsDetailsDto.getResultsIndex()).isEqualTo(experimentResultsEntity.getResultsIndex());
-        assertThat(experimentResultsDetailsDto.getPctCorrect()).isEqualTo(experimentResultsEntity.getPctCorrect());
+        ExperimentResultsDto experimentResultsDto = experimentResultsMapper.map(experimentResultsEntity);
+        assertThat(experimentResultsDto).isNotNull();
+        assertThat(experimentResultsDto.getId()).isEqualTo(experimentResultsEntity.getId());
+        assertThat(experimentResultsDto.getResultsIndex()).isEqualTo(experimentResultsEntity.getResultsIndex());
+        assertThat(experimentResultsDto.getPctCorrect()).isEqualTo(experimentResultsEntity.getPctCorrect());
+        assertThat(experimentResultsDto.getClassifierInfo()).isNotNull();
+        assertThat(experimentResultsDto.getClassifierInfo().getClassifierName()).isEqualTo(
+                experimentResultsEntity.getClassifierInfo().getClassifierName());
+        assertThat(experimentResultsDto.getClassifierInfo().getInputOptions()).isNotNull();
+        assertThat(experimentResultsDto.getClassifierInfo().getInputOptions()).hasSameSizeAs(
+                experimentResultsEntity.getClassifierInfo().getClassifierInputOptions());
     }
 }

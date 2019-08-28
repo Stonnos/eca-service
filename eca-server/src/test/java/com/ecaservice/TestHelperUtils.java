@@ -771,6 +771,7 @@ public class TestHelperUtils {
     public static ExperimentResultsEntity createExperimentResultsEntity(Experiment experiment) {
         ExperimentResultsEntity experimentResultsEntity = new ExperimentResultsEntity();
         experimentResultsEntity.setExperiment(experiment);
+        experimentResultsEntity.setClassifierInfo(createClassifierInfo());
         return experimentResultsEntity;
     }
 
