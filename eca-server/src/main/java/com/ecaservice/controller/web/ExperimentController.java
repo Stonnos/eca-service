@@ -5,7 +5,6 @@ import com.ecaservice.exception.ExperimentException;
 import com.ecaservice.exception.ResultsNotFoundException;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.MultipartFileResource;
-import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.RequestStatus;
@@ -53,7 +52,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.inject.Inject;
 import java.io.File;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -380,8 +378,9 @@ public class ExperimentController {
     }
 
     private boolean isResultsSentToErs(Experiment experiment) {
-        return experimentResultsRequestRepository.existsByExperimentAndResponseStatusIn(experiment,
-                Collections.singletonList(ErsResponseStatus.SUCCESS));
+        long resultsCount = experimentResultsEntityRepository.countByExperiment(experiment);
+        long sentResults = experimentResultsEntityRepository.getSentResultsCount(experiment);
+        return resultsCount > 0 && resultsCount == sentResults;
     }
 
     private ResponseEntity handleExperimentResultsSending(Experiment experiment) {
@@ -396,9 +395,12 @@ public class ExperimentController {
                 responseEntity = ResponseEntity.badRequest().body(
                         String.format("Experiment [%s] results has been deleted", experiment.getUuid()));
             } else {
+                List<ExperimentResultsEntity> experimentResultsEntityList =
+                        experimentResultsEntityRepository.findExperimentsResultsToErsSent(experiment);
                 ExperimentHistory experimentHistory = experimentService.getExperimentResults(experiment);
-                ersService.saveAndSentExperimentResults(experiment, experimentHistory,
-                        ExperimentResultsRequestSource.MANUAL);
+                experimentResultsEntityList.forEach(
+                        experimentResultsEntity -> ersService.sentExperimentResults(experimentResultsEntity,
+                                experimentHistory, ExperimentResultsRequestSource.MANUAL));
                 responseEntity = ResponseEntity.ok().build();
             }
         }

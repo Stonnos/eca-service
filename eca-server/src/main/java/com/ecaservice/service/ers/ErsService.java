@@ -104,7 +104,7 @@ public class ErsService {
                     experimentResultsEntityList.stream().map(ExperimentResultsEntity::getId).collect(
                             Collectors.toList());
             List<Long> sentResultsIds =
-                    experimentResultsEntityRepository.findSuccessfullySentResultsIds(experimentResultsIds);
+                    experimentResultsEntityRepository.findSentResultsIds(experimentResultsIds);
             experimentErsReportDto.setSentClassifiersCount(sentResultsIds.size());
             //Set sent flag for each experiment results
             experimentErsReportDto.getExperimentResults().forEach(experimentResultsDto -> experimentResultsDto.setSent(
