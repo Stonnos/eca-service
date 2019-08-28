@@ -3,20 +3,28 @@ package com.ecaservice.service.experiment;
 import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.dto.evaluation.StatisticsReport;
+import com.ecaservice.exception.EcaServiceException;
+import com.ecaservice.mapping.ClassifierInfoMapper;
+import com.ecaservice.model.entity.ClassifierInfo;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.ExperimentResultsRequest;
+import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.repository.ExperimentResultsRequestRepository;
+import com.ecaservice.service.ClassifierOptionsService;
 import com.ecaservice.service.ers.ErsRequestService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import weka.classifiers.Classifier;
 
 import javax.inject.Inject;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -33,16 +41,24 @@ public class ExperimentResultsMigrationService {
     private final ExperimentResultsRequestRepository experimentResultsRequestRepository;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
     private final ErsRequestService ersRequestService;
+    private final ClassifierOptionsService classifierOptionsService;
+    private final ClassifierInfoMapper classifierInfoMapper;
+
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Inject
     public ExperimentResultsMigrationService(ExperimentRepository experimentRepository,
                                              ExperimentResultsRequestRepository experimentResultsRequestRepository,
                                              ExperimentResultsEntityRepository experimentResultsEntityRepository,
-                                             ErsRequestService ersRequestService) {
+                                             ErsRequestService ersRequestService,
+                                             ClassifierOptionsService classifierOptionsService,
+                                             ClassifierInfoMapper classifierInfoMapper) {
         this.experimentRepository = experimentRepository;
         this.experimentResultsRequestRepository = experimentResultsRequestRepository;
         this.experimentResultsEntityRepository = experimentResultsEntityRepository;
         this.ersRequestService = ersRequestService;
+        this.classifierOptionsService = classifierOptionsService;
+        this.classifierInfoMapper = classifierInfoMapper;
     }
 
     @Data
@@ -109,8 +125,7 @@ public class ExperimentResultsMigrationService {
         ExperimentResultsEntity experimentResultsEntity = new ExperimentResultsEntity();
         GetEvaluationResultsResponse evaluationResultsResponse = experimentResultsWrapper
                 .getEvaluationResultsResponse();
-      //  experimentResultsEntity.setClassifierName(evaluationResultsResponse.getClassifierReport().getClassifierName
-        // ());
+        experimentResultsEntity.setClassifierInfo(buildClassifierInfo(evaluationResultsResponse));
         experimentResultsEntity.setPctCorrect(evaluationResultsResponse.getStatistics().getPctCorrect());
         experimentResultsEntity.setExperiment(experiment);
         experimentResultsEntity.setResultsIndex(resultsIndex);
@@ -119,5 +134,18 @@ public class ExperimentResultsMigrationService {
         experimentResultsRequest.setExperimentResults(experimentResultsEntity);
         experimentResultsRequestRepository.save(experimentResultsRequest);
         log.info("Migrated experiment details for results request {}", experimentResultsRequest.getRequestId());
+    }
+
+    private ClassifierInfo buildClassifierInfo(GetEvaluationResultsResponse evaluationResultsResponse) {
+        try {
+            ClassifierOptions classifierOptions =
+                    objectMapper.readValue(evaluationResultsResponse.getClassifierReport().getOptions(),
+                            ClassifierOptions.class);
+            Classifier classifier = classifierOptionsService.convert(classifierOptions);
+            return classifierInfoMapper.map(classifier);
+        } catch (IOException ex) {
+            throw new EcaServiceException(String.format("Can't deserialize classifier [%s] options to json: %s",
+                    evaluationResultsResponse.getClassifierReport().getClassifierName(), ex.getMessage()));
+        }
     }
 }
