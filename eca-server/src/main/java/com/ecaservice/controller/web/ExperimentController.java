@@ -397,7 +397,7 @@ public class ExperimentController {
                         String.format("Experiment [%s] results has been deleted", experiment.getUuid()));
             } else {
                 ExperimentHistory experimentHistory = experimentService.getExperimentResults(experiment);
-                ersService.sentExperimentHistory(experiment, experimentHistory,
+                ersService.saveAndSentExperimentResults(experiment, experimentHistory,
                         ExperimentResultsRequestSource.MANUAL);
                 responseEntity = ResponseEntity.ok().build();
             }

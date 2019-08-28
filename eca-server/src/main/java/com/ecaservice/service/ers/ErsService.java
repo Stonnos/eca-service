@@ -92,21 +92,6 @@ public class ErsService {
      * @return ERS report dto
      */
     public ExperimentErsReportDto getErsReport(Experiment experiment) {
-        /*List<ExperimentResultsRequest> experimentResultsRequests =
-                experimentResultsRequestRepository.findAllByExperiment(experiment);
-        ExperimentErsReportDto experimentErsReportDto = new ExperimentErsReportDto();
-        experimentErsReportDto.setExperimentUuid(experiment.getUuid());
-        if (!CollectionUtils.isEmpty(experimentResultsRequests)) {
-            experimentErsReportDto.setRequestsCount(experimentResultsRequests.size());
-            experimentErsReportDto.setSuccessfullySavedClassifiers(experimentResultsRequests.stream().filter(
-                    experimentResultsRequest -> ErsResponseStatus.SUCCESS.equals(
-                            experimentResultsRequest.getResponseStatus())).count());
-            experimentErsReportDto.setFailedRequestsCount(experimentResultsRequests.stream().filter(
-                    experimentResultsRequest -> !ErsResponseStatus.SUCCESS.equals(
-                            experimentResultsRequest.getResponseStatus())).count());
-        }
-        populateErsReportStatus(experiment, experimentErsReportDto);
-        return experimentErsReportDto;*/
         ExperimentErsReportDto experimentErsReportDto = new ExperimentErsReportDto();
         experimentErsReportDto.setExperimentUuid(experiment.getUuid());
         //Gets experiment results list
@@ -155,22 +140,14 @@ public class ErsService {
     }
 
     /**
-     * Sent experiment history to ERS service.
+     * Save and sent the best experiment classifiers to ERS service.
      *
      * @param experiment        - experiment entity
      * @param experimentHistory - experiment history
      * @param source            - experiment results request source
      */
-    public void sentExperimentHistory(Experiment experiment, ExperimentHistory experimentHistory,
-                                      ExperimentResultsRequestSource source) {
-        //List<EvaluationResults> evaluationResults = experimentHistory.getExperiment();
-        /*int resultsSize = Integer.min(evaluationResults.size(), experimentConfig.getResultSizeToSend());
-        evaluationResults.stream().limit(resultsSize).forEach(results -> {
-            ExperimentResultsRequest experimentResultsRequest = new ExperimentResultsRequest();
-            experimentResultsRequest.setRequestSource(source);
-            experimentResultsRequest.setExperiment(experiment);
-            ersRequestService.saveEvaluationResults(results, experimentResultsRequest);
-        });*/
+    public void saveAndSentExperimentResults(Experiment experiment, ExperimentHistory experimentHistory,
+                                             ExperimentResultsRequestSource source) {
         List<ExperimentResultsEntity> experimentResultsEntities =
                 getOrSaveExperimentResults(experiment, experimentHistory);
         IntStream.range(0, experimentResultsEntities.size()).forEach(

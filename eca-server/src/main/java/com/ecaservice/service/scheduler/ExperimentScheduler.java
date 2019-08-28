@@ -76,7 +76,7 @@ public class ExperimentScheduler {
         experiments.forEach(experiment -> {
             ExperimentHistory experimentHistory = experimentService.processExperiment(experiment);
             if (RequestStatus.FINISHED.equals(experiment.getExperimentStatus())) {
-                ersService.sentExperimentHistory(experiment, experimentHistory,
+                ersService.saveAndSentExperimentResults(experiment, experimentHistory,
                         ExperimentResultsRequestSource.SYSTEM);
             }
         });
@@ -116,7 +116,7 @@ public class ExperimentScheduler {
         experiments.forEach(experiment -> {
             try {
                 ExperimentHistory experimentHistory = experimentService.getExperimentResults(experiment);
-                ersService.sentExperimentHistory(experiment, experimentHistory,
+                ersService.saveAndSentExperimentResults(experiment, experimentHistory,
                         ExperimentResultsRequestSource.SYSTEM);
             } catch (Exception ex) {
                 log.error("There was an error while sending experiment [{}] history: {}", experiment.getUuid(),

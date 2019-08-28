@@ -9,6 +9,7 @@ import com.ecaservice.mapping.EvaluationLogDetailsMapper;
 import com.ecaservice.mapping.EvaluationLogDetailsMapperImpl;
 import com.ecaservice.mapping.EvaluationLogInputOptionsMapperImpl;
 import com.ecaservice.mapping.ExperimentResultsDetailsMapper;
+import com.ecaservice.mapping.ExperimentResultsDetailsMapperImpl;
 import com.ecaservice.mapping.ExperimentResultsMapper;
 import com.ecaservice.mapping.ExperimentResultsMapperImpl;
 import com.ecaservice.mapping.InstancesInfoMapperImpl;
@@ -60,7 +61,8 @@ import static org.mockito.Mockito.when;
  */
 @Import({ExperimentConfig.class, EvaluationLogDetailsMapperImpl.class, InstancesInfoMapperImpl.class,
         EvaluationLogInputOptionsMapperImpl.class, StatisticsReportMapperImpl.class,
-        ClassificationCostsMapperImpl.class, ExperimentResultsMapperImpl.class})
+        ClassificationCostsMapperImpl.class, ExperimentResultsMapperImpl.class,
+        ExperimentResultsDetailsMapperImpl.class})
 public class ErsServiceTest extends AbstractJpaTest {
 
     @Mock
@@ -217,7 +219,8 @@ public class ErsServiceTest extends AbstractJpaTest {
         experimentHistory.getExperiment().add(TestHelperUtils.getEvaluationResults());
         experimentHistory.getExperiment().add(TestHelperUtils.getEvaluationResults());
         doNothing().when(ersRequestService).saveEvaluationResults(any(EvaluationResults.class), any(ErsRequest.class));
-        ersService.sentExperimentHistory(new Experiment(), experimentHistory, ExperimentResultsRequestSource.MANUAL);
+        ersService.saveAndSentExperimentResults(new Experiment(), experimentHistory,
+                ExperimentResultsRequestSource.MANUAL);
         verify(ersRequestService, times(experimentHistory.getExperiment().size())).saveEvaluationResults(
                 any(EvaluationResults.class), any(ErsRequest.class));
     }
