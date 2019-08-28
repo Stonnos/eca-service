@@ -1,12 +1,13 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.model.entity.ExperimentResultsEntity;
-import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import com.ecaservice.web.dto.model.ExperimentResultsDto;
 import eca.core.evaluation.EvaluationResults;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.Optional;
  *
  * @author Roman Batygin
  */
-@Mapper
+@Mapper(uses = ClassifierInfoMapper.class)
 public abstract class ExperimentResultsMapper {
 
     /**
@@ -26,6 +27,9 @@ public abstract class ExperimentResultsMapper {
      * @param evaluationResults - evaluation results
      * @return experiment results entity
      */
+    @Mappings({
+            @Mapping(source = "classifier", target = "classifierInfo")
+    })
     public abstract ExperimentResultsEntity map(EvaluationResults evaluationResults);
 
     /**
@@ -43,14 +47,6 @@ public abstract class ExperimentResultsMapper {
      * @return experiment results dto list
      */
     public abstract List<ExperimentResultsDto> map(List<ExperimentResultsEntity> experimentResultsEntityList);
-
-    @AfterMapping
-    protected void mapClassifier(EvaluationResults evaluationResults,
-                                 @MappingTarget ExperimentResultsEntity experimentResultsEntity) {
-        if (Optional.ofNullable(evaluationResults.getClassifier()).isPresent()) {
-            experimentResultsEntity.setClassifierName(evaluationResults.getClassifier().getClass().getSimpleName());
-        }
-    }
 
     @AfterMapping
     protected void mapEvaluationResults(EvaluationResults evaluationResults,

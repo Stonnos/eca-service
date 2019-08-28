@@ -2,12 +2,14 @@ package com.ecaservice.model.entity;
 
 import lombok.Data;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 
@@ -35,10 +37,11 @@ public class ExperimentResultsEntity {
     private Integer resultsIndex;
 
     /**
-     * Classifier name
+     * Classifier info
      */
-    @Column(name = "classifier_name")
-    private String classifierName;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "classifier_info_id")
+    private ClassifierInfo classifierInfo;
 
     /**
      * Correctly classified percentage

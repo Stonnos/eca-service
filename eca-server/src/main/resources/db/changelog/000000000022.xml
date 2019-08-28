@@ -16,7 +16,11 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="results_index" type="integer"/>
-            <column name="classifier_name" type="varchar(255)"/>
+            <column name="classifier_info_id" type="bigint">
+                <constraints foreignKeyName="fk_experiment_results_classifier_info_id"
+                             referencedTableName="classifier_info"
+                             referencedColumnNames="id" nullable="false"/>
+            </column>
             <column name="pct_correct" type="numeric(19,4)"/>
             <column name="experiment_id" type="bigint">
                 <constraints foreignKeyName="fk_experiment_results_experiment_id"

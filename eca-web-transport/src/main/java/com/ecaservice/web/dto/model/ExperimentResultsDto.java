@@ -22,6 +22,12 @@ public class ExperimentResultsDto {
     private Long id;
 
     /**
+     * Classifier info
+     */
+    @ApiModelProperty(value = "Classifier info")
+    private ClassifierInfoDto classifierInfo;
+
+    /**
      * Experiment results index
      */
     @ApiModelProperty(value = "Results index")

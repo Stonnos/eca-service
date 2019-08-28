@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import(ExperimentResultsMapperImpl.class)
+@Import({ExperimentResultsMapperImpl.class, ClassifierInfoMapperImpl.class, ClassifierInputOptionsMapperImpl.class})
 public class ExperimentResultsMapperTest {
 
     @Inject

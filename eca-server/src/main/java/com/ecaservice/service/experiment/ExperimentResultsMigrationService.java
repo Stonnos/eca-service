@@ -109,7 +109,8 @@ public class ExperimentResultsMigrationService {
         ExperimentResultsEntity experimentResultsEntity = new ExperimentResultsEntity();
         GetEvaluationResultsResponse evaluationResultsResponse = experimentResultsWrapper
                 .getEvaluationResultsResponse();
-        experimentResultsEntity.setClassifierName(evaluationResultsResponse.getClassifierReport().getClassifierName());
+      //  experimentResultsEntity.setClassifierName(evaluationResultsResponse.getClassifierReport().getClassifierName
+        // ());
         experimentResultsEntity.setPctCorrect(evaluationResultsResponse.getStatistics().getPctCorrect());
         experimentResultsEntity.setExperiment(experiment);
         experimentResultsEntity.setResultsIndex(resultsIndex);

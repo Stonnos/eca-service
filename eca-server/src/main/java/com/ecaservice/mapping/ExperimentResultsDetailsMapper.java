@@ -13,7 +13,7 @@ import org.mapstruct.Mappings;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = {StatisticsReportMapper.class, ClassificationCostsMapper.class})
+@Mapper(uses = {StatisticsReportMapper.class, ClassificationCostsMapper.class, ClassifierInfoMapper.class})
 public abstract class ExperimentResultsDetailsMapper {
 
     /**
@@ -28,7 +28,7 @@ public abstract class ExperimentResultsDetailsMapper {
      * Updates experiment results details.
      *
      * @param evaluationResultsSimpleResponse - evaluation results simple response
-     * @param experimentResultsDetailsDto - experiment results details dto
+     * @param experimentResultsDetailsDto     - experiment results details dto
      */
     @Mappings({
             @Mapping(source = "statistics", target = "evaluationResultsDto")

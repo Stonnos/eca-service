@@ -2,6 +2,8 @@ package com.ecaservice.service.scheduler;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
+import com.ecaservice.mapping.ClassifierInfoMapperImpl;
+import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
 import com.ecaservice.mapping.ExperimentResultsMapper;
 import com.ecaservice.mapping.ExperimentResultsMapperImpl;
 import com.ecaservice.model.entity.ErsResponseStatus;
@@ -43,7 +45,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentConfig.class, ExperimentResultsMapperImpl.class})
+@Import({ExperimentConfig.class, ExperimentResultsMapperImpl.class,
+        ClassifierInfoMapperImpl.class, ClassifierInputOptionsMapperImpl.class})
 public class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @Inject

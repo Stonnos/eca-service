@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import weka.classifiers.AbstractClassifier;
+import weka.classifiers.Classifier;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -26,7 +27,7 @@ public abstract class ClassifierInfoMapper {
      * @param classifier - classifier
      * @return classifier info entity
      */
-    public abstract ClassifierInfo map(AbstractClassifier classifier);
+    public abstract ClassifierInfo map(Classifier classifier);
 
     /**
      * Maps classifier info to its dto model.
@@ -40,16 +41,18 @@ public abstract class ClassifierInfoMapper {
     public abstract ClassifierInfoDto map(ClassifierInfo classifierInfo);
 
     @AfterMapping
-    protected void postMapping(AbstractClassifier classifier, @MappingTarget ClassifierInfo classifierInfo) {
+    protected void postMapping(Classifier classifier, @MappingTarget ClassifierInfo classifierInfo) {
         classifierInfo.setClassifierName(classifier.getClass().getSimpleName());
         classifierInfo.setClassifierInputOptions(newArrayList());
-        String[] options = classifier.getOptions();
-        for (int i = 0; i < options.length; i += 2) {
-            ClassifierInputOptions classifierInputOptions = new ClassifierInputOptions();
-            classifierInputOptions.setOptionName(options[i]);
-            classifierInputOptions.setOptionValue(options[i + 1]);
-            classifierInputOptions.setOptionOrder(i / 2);
-            classifierInfo.getClassifierInputOptions().add(classifierInputOptions);
+        if (classifier instanceof AbstractClassifier) {
+            String[] options = ((AbstractClassifier) classifier).getOptions();
+            for (int i = 0; i < options.length; i += 2) {
+                ClassifierInputOptions classifierInputOptions = new ClassifierInputOptions();
+                classifierInputOptions.setOptionName(options[i]);
+                classifierInputOptions.setOptionValue(options[i + 1]);
+                classifierInputOptions.setOptionOrder(i / 2);
+                classifierInfo.getClassifierInputOptions().add(classifierInputOptions);
+            }
         }
     }
 }
