@@ -200,7 +200,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
      * @param experiment - experiment entity
      * @return experiment history
      */
-    public ExperimentHistory getExperimentResults(Experiment experiment) {
+    public ExperimentHistory getExperimentHistory(Experiment experiment) {
         File experimentFile = getExperimentFile(experiment, Experiment::getExperimentAbsolutePath);
         if (!existsFile(experimentFile)) {
             throw new ResultsNotFoundException(

@@ -59,7 +59,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentConfig.class, EvaluationLogDetailsMapperImpl.class, InstancesInfoMapperImpl.class,
+@Import({EvaluationLogDetailsMapperImpl.class, InstancesInfoMapperImpl.class,
         EvaluationLogInputOptionsMapperImpl.class, StatisticsReportMapperImpl.class,
         ClassificationCostsMapperImpl.class, ExperimentResultsMapperImpl.class,
         ExperimentResultsDetailsMapperImpl.class})
@@ -67,8 +67,6 @@ public class ErsServiceTest extends AbstractJpaTest {
 
     @Mock
     private ErsRequestService ersRequestService;
-    @Inject
-    private ExperimentConfig experimentConfig;
     @Inject
     private ExperimentResultsRequestRepository experimentResultsRequestRepository;
     @Inject
@@ -90,9 +88,9 @@ public class ErsServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        ersService = new ErsService(ersRequestService, experimentConfig, evaluationLogDetailsMapper,
-                experimentResultsDetailsMapper, experimentResultsMapper, evaluationResultsRequestEntityRepository,
-                experimentResultsEntityRepository, experimentResultsRequestRepository);
+        ersService = new ErsService(ersRequestService, evaluationLogDetailsMapper, experimentResultsDetailsMapper,
+                experimentResultsMapper, evaluationResultsRequestEntityRepository, experimentResultsEntityRepository,
+                experimentResultsRequestRepository);
     }
 
     @Override

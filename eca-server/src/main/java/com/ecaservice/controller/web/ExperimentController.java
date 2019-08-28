@@ -397,7 +397,7 @@ public class ExperimentController {
             } else {
                 List<ExperimentResultsEntity> experimentResultsEntityList =
                         experimentResultsEntityRepository.findExperimentsResultsToErsSent(experiment);
-                ExperimentHistory experimentHistory = experimentService.getExperimentResults(experiment);
+                ExperimentHistory experimentHistory = experimentService.getExperimentHistory(experiment);
                 experimentResultsEntityList.forEach(
                         experimentResultsEntity -> ersService.sentExperimentResults(experimentResultsEntity,
                                 experimentHistory, ExperimentResultsRequestSource.MANUAL));

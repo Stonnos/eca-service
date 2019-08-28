@@ -1,6 +1,5 @@
 package com.ecaservice.service.ers;
 
-import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.EvaluationLogDetailsMapper;
@@ -34,7 +33,6 @@ import org.springframework.ws.client.WebServiceIOException;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * ERS service.
@@ -46,7 +44,6 @@ import java.util.stream.IntStream;
 public class ErsService {
 
     private final ErsRequestService ersRequestService;
-    private final ExperimentConfig experimentConfig;
     private final EvaluationLogDetailsMapper evaluationLogDetailsMapper;
     private final ExperimentResultsDetailsMapper experimentResultsDetailsMapper;
     private final ExperimentResultsMapper experimentResultsMapper;
@@ -58,7 +55,6 @@ public class ErsService {
      * Constructor with spring dependency injection.
      *
      * @param ersRequestService                        - ers request service bean
-     * @param experimentConfig                         - experiment config bean
      * @param evaluationLogDetailsMapper               - evaluation log details mapper bean
      * @param experimentResultsDetailsMapper           - experiment results details mapper bean
      * @param experimentResultsMapper                  - experiment results mapper bean
@@ -68,7 +64,6 @@ public class ErsService {
      */
     @Inject
     public ErsService(ErsRequestService ersRequestService,
-                      ExperimentConfig experimentConfig,
                       EvaluationLogDetailsMapper evaluationLogDetailsMapper,
                       ExperimentResultsDetailsMapper experimentResultsDetailsMapper,
                       ExperimentResultsMapper experimentResultsMapper,
@@ -76,7 +71,6 @@ public class ErsService {
                       ExperimentResultsEntityRepository experimentResultsEntityRepository,
                       ExperimentResultsRequestRepository experimentResultsRequestRepository) {
         this.ersRequestService = ersRequestService;
-        this.experimentConfig = experimentConfig;
         this.evaluationLogDetailsMapper = evaluationLogDetailsMapper;
         this.experimentResultsDetailsMapper = experimentResultsDetailsMapper;
         this.experimentResultsMapper = experimentResultsMapper;
@@ -140,22 +134,7 @@ public class ErsService {
     }
 
     /**
-     * Save and sent the best experiment classifiers to ERS service.
-     *
-     * @param experiment        - experiment entity
-     * @param experimentHistory - experiment history
-     * @param source            - experiment results request source
-     */
-    public void saveAndSentExperimentResults(Experiment experiment, ExperimentHistory experimentHistory,
-                                             ExperimentResultsRequestSource source) {
-        List<ExperimentResultsEntity> experimentResultsEntities =
-                getOrSaveExperimentResults(experiment, experimentHistory);
-        IntStream.range(0, experimentResultsEntities.size()).forEach(
-                i -> sentExperimentResults(experimentResultsEntities.get(i), experimentHistory, source));
-    }
-
-    /**
-     * Sent single experiment results to ERS service.
+     * Sent experiment results to ERS service.
      *
      * @param experimentResultsEntity - experiment entity
      * @param experimentHistory       - experiment history
@@ -169,26 +148,6 @@ public class ErsService {
         EvaluationResults evaluationResults =
                 experimentHistory.getExperiment().get(experimentResultsEntity.getResultsIndex());
         ersRequestService.saveEvaluationResults(evaluationResults, experimentResultsRequest);
-    }
-
-    private List<ExperimentResultsEntity> getOrSaveExperimentResults(Experiment experiment,
-                                                                     ExperimentHistory experimentHistory) {
-        List<ExperimentResultsEntity> experimentResultsEntities =
-                experimentResultsEntityRepository.findAllByExperiment(experiment);
-        if (CollectionUtils.isEmpty(experimentResultsEntities)) {
-            List<EvaluationResults> evaluationResultsList = experimentHistory.getExperiment();
-            int resultsSize = Integer.min(evaluationResultsList.size(), experimentConfig.getResultSizeToSend());
-            experimentResultsEntities = IntStream.range(0, resultsSize).mapToObj(i -> {
-                EvaluationResults evaluationResults = evaluationResultsList.get(i);
-                ExperimentResultsEntity experimentResultsEntity =
-                        experimentResultsMapper.map(evaluationResults);
-                experimentResultsEntity.setExperiment(experiment);
-                experimentResultsEntity.setResultsIndex(i);
-                return experimentResultsEntity;
-            }).collect(Collectors.toList());
-            experimentResultsEntityRepository.saveAll(experimentResultsEntities);
-        }
-        return experimentResultsEntities;
     }
 
     private void populateErsReportStatus(Experiment experiment, ExperimentErsReportDto experimentErsReportDto) {

@@ -2,6 +2,8 @@ package com.ecaservice.service.scheduler;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
+import com.ecaservice.mapping.ExperimentResultsMapper;
+import com.ecaservice.mapping.ExperimentResultsMapperImpl;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
@@ -41,9 +43,11 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import(ExperimentConfig.class)
+@Import({ExperimentConfig.class, ExperimentResultsMapperImpl.class})
 public class ExperimentSchedulerTest extends AbstractJpaTest {
 
+    @Inject
+    private ExperimentResultsMapper experimentResultsMapper;
     @Inject
     private ExperimentRepository experimentRepository;
     @Inject
@@ -70,9 +74,9 @@ public class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        experimentScheduler = new ExperimentScheduler(experimentRepository, experimentResultsEntityRepository,
-                experimentService, notificationService,
-                ersService, experimentConfig);
+        experimentScheduler =
+                new ExperimentScheduler(experimentRepository, experimentResultsEntityRepository, experimentService,
+                        notificationService, ersService, experimentConfig, experimentResultsMapper);
     }
 
     @Override
@@ -158,32 +162,7 @@ public class ExperimentSchedulerTest extends AbstractJpaTest {
                 TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experimentRepository.save(finishedExperiment);
         experimentResultsEntityRepository.save(TestHelperUtils.createExperimentResultsEntity(finishedExperiment));
-       /* Experiment finishedExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        Experiment removedExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        removedExperiment.setDeletedDate(LocalDateTime.now());
-        Experiment errorExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT);
-        Experiment finishedExperimentWithNoOneRequests =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        Experiment finishedExperimentWithErrorRequests =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        experimentRepository.saveAll(Arrays.asList(finishedExperiment, removedExperiment, errorExperiment,
-                finishedExperimentWithNoOneRequests, finishedExperimentWithErrorRequests));
-
-        experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(finishedExperiment, ErsResponseStatus.SUCCESS));
-        experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(finishedExperiment, ErsResponseStatus.SUCCESS));
-        experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(finishedExperimentWithErrorRequests,
-                        ErsResponseStatus.ERROR));
-        experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(finishedExperimentWithErrorRequests,
-                        ErsResponseStatus.DUPLICATE_REQUEST_ID));*/
-
-        when(experimentService.getExperimentResults(any(Experiment.class))).thenReturn(new ExperimentHistory());
+        when(experimentService.getExperimentHistory(any(Experiment.class))).thenReturn(new ExperimentHistory());
         experimentScheduler.processRequestsToErs();
         verify(ersService, times(3)).sentExperimentResults(any(ExperimentResultsEntity.class),
                 any(ExperimentHistory.class), any(ExperimentResultsRequestSource.class));
