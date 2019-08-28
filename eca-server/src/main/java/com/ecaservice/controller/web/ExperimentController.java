@@ -12,7 +12,6 @@ import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
-import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.service.UserService;
 import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.experiment.ExperimentRequestService;
@@ -74,13 +73,22 @@ import static com.ecaservice.util.Utils.toRequestStatusesStatistics;
 @RequestMapping("/experiment")
 public class ExperimentController {
 
+    private static final String EXPERIMENT_RESULTS_FILE_NOT_FOUND =
+            "Experiment results file for uuid = '%s' not found!";
+    private static final String EXPERIMENT_RESULTS_SENT_FORMAT = "Experiment [%s] results is already sent to ERS";
+    private static final String EXPERIMENT_RESULTS_DELETED_FORMAT = "Experiment [%s] results has been deleted";
+    private static final String EXPERIMENT_NOT_FOUND_FORMAT = "Experiment with uuid [%s] not found";
+    private static final String EXPERIMENT_NOT_FINISHED_FORMAT =
+            "Can't sent experiment [%s] results to ERS, because experiment status isn't FINISHED";
+    private static final String EXPERIMENT_TRAINING_DATA_FILE_NOT_FOUND_FORMAT =
+            "Experiment training data file for uuid = '%s' not found!";
+
     private final ExperimentService experimentService;
     private final ExperimentRequestService experimentRequestService;
     private final ErsService ersService;
     private final ExperimentMapper experimentMapper;
     private final UserService userService;
     private final ExperimentRepository experimentRepository;
-    private final ExperimentResultsRequestRepository experimentResultsRequestRepository;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
 
     private final ConcurrentHashMap<String, Object> experimentMap = new ConcurrentHashMap<>();
@@ -88,14 +96,13 @@ public class ExperimentController {
     /**
      * Constructor with spring dependency injection.
      *
-     * @param experimentService                  - experiment service bean
-     * @param experimentRequestService           - experiment request service bean
-     * @param ersService                         - ers service bean
-     * @param experimentMapper                   - experiment mapper bean
-     * @param userService                        - user service bean
-     * @param experimentRepository               - experiment repository bean
-     * @param experimentResultsRequestRepository - experiment results request repository bean
-     * @param experimentResultsEntityRepository  - experiment results entity repository bean
+     * @param experimentService                 - experiment service bean
+     * @param experimentRequestService          - experiment request service bean
+     * @param ersService                        - ers service bean
+     * @param experimentMapper                  - experiment mapper bean
+     * @param userService                       - user service bean
+     * @param experimentRepository              - experiment repository bean
+     * @param experimentResultsEntityRepository - experiment results entity repository bean
      */
     @Inject
     public ExperimentController(ExperimentService experimentService,
@@ -104,7 +111,6 @@ public class ExperimentController {
                                 ExperimentMapper experimentMapper,
                                 UserService userService,
                                 ExperimentRepository experimentRepository,
-                                ExperimentResultsRequestRepository experimentResultsRequestRepository,
                                 ExperimentResultsEntityRepository experimentResultsEntityRepository) {
         this.experimentService = experimentService;
         this.experimentRequestService = experimentRequestService;
@@ -112,7 +118,6 @@ public class ExperimentController {
         this.experimentMapper = experimentMapper;
         this.userService = userService;
         this.experimentRepository = experimentRepository;
-        this.experimentResultsRequestRepository = experimentResultsRequestRepository;
         this.experimentResultsEntityRepository = experimentResultsEntityRepository;
     }
 
@@ -130,7 +135,7 @@ public class ExperimentController {
     public ResponseEntity downloadTrainingData(
             @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
         return downloadExperimentFile(uuid, Experiment::getTrainingDataAbsolutePath,
-                String.format("Experiment training data file for uuid = '%s' not found!", uuid));
+                String.format(EXPERIMENT_TRAINING_DATA_FILE_NOT_FOUND_FORMAT, uuid));
     }
 
     /**
@@ -147,7 +152,7 @@ public class ExperimentController {
     public ResponseEntity downloadExperiment(
             @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
         return downloadExperimentFile(uuid, Experiment::getExperimentAbsolutePath,
-                String.format("Experiment results file for uuid = '%s' not found!", uuid));
+                String.format(EXPERIMENT_RESULTS_FILE_NOT_FOUND, uuid));
     }
 
     /**
@@ -301,13 +306,11 @@ public class ExperimentController {
         Experiment experiment = experimentRepository.findByUuid(uuid);
         if (experiment == null) {
             log.error("Experiment with uuid [{}] not found", uuid);
-            return ResponseEntity.badRequest().body(String.format("Experiment with uuid [%s] not found", uuid));
+            return ResponseEntity.badRequest().body(String.format(EXPERIMENT_NOT_FOUND_FORMAT, uuid));
         }
         if (!RequestStatus.FINISHED.equals(experiment.getExperimentStatus())) {
             log.error("Can't sent experiment [{}] results to ERS, because experiment status isn't FINISHED", uuid);
-            return ResponseEntity.badRequest().body(
-                    String.format("Can't sent experiment [%s] results to ERS, because experiment status isn't FINISHED",
-                            uuid));
+            return ResponseEntity.badRequest().body(String.format(EXPERIMENT_NOT_FINISHED_FORMAT, uuid));
         }
         return handleExperimentResultsSending(experiment);
     }
@@ -389,11 +392,11 @@ public class ExperimentController {
         synchronized (experimentMap.get(experiment.getUuid())) {
             if (isResultsSentToErs(experiment)) {
                 responseEntity = ResponseEntity.ok(
-                        String.format("Experiment [%s] results is already sent to ERS", experiment.getUuid()));
+                        String.format(EXPERIMENT_RESULTS_SENT_FORMAT, experiment.getUuid()));
             } else if (experiment.getDeletedDate() != null) {
                 log.error("Experiment [{}] results has been deleted", experiment.getUuid());
                 responseEntity = ResponseEntity.badRequest().body(
-                        String.format("Experiment [%s] results has been deleted", experiment.getUuid()));
+                        String.format(EXPERIMENT_RESULTS_DELETED_FORMAT, experiment.getUuid()));
             } else {
                 List<ExperimentResultsEntity> experimentResultsEntityList =
                         experimentResultsEntityRepository.findExperimentsResultsToErsSent(experiment);
