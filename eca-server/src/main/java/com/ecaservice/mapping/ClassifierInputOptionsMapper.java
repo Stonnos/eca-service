@@ -12,7 +12,7 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Mapper
-public interface EvaluationLogInputOptionsMapper {
+public interface ClassifierInputOptionsMapper {
 
     /**
      * Maps classifier input options entity to its dto model.

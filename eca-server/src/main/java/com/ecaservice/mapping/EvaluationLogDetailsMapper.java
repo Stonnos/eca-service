@@ -18,8 +18,8 @@ import java.util.Optional;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = {InstancesInfoMapper.class, EvaluationLogInputOptionsMapper.class,
-        StatisticsReportMapper.class, ClassificationCostsMapper.class})
+@Mapper(uses = {InstancesInfoMapper.class, StatisticsReportMapper.class,
+        ClassificationCostsMapper.class, ClassifierInfoMapper.class})
 public abstract class EvaluationLogDetailsMapper {
 
     /**
@@ -29,7 +29,6 @@ public abstract class EvaluationLogDetailsMapper {
      * @return evaluation log details dto
      */
     @Mappings({
-            @Mapping(source = "classifierInputOptions", target = "inputOptions"),
             @Mapping(target = "evaluationMethod", ignore = true),
             @Mapping(target = "evaluationStatus", ignore = true)
     })

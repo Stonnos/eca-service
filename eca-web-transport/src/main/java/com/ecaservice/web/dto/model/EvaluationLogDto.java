@@ -8,7 +8,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * Evaluation log dto model.
@@ -50,10 +49,10 @@ public class EvaluationLogDto {
     private LocalDateTime endDate;
 
     /**
-     * Classifier name
+     * Classifier info
      */
-    @ApiModelProperty(value = "Classifier name")
-    private String classifierName;
+    @ApiModelProperty(value = "Classifier info")
+    private ClassifierInfoDto classifierInfo;
 
     /**
      * Evaluation status
@@ -84,12 +83,6 @@ public class EvaluationLogDto {
      */
     @ApiModelProperty(value = "Seed value for k * V cross - validation method")
     private Integer seed;
-
-    /**
-     * Classifier input options map
-     */
-    @ApiModelProperty(value = "Classifier input options map")
-    private List<InputOptionDto> inputOptions;
 
     /**
      * Training data info

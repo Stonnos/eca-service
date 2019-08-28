@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -28,7 +27,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class, EvaluationLogInputOptionsMapperImpl.class})
+@Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class,
+        ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class})
 public class EvaluationLogMapperTest {
 
     @Inject
@@ -45,7 +45,8 @@ public class EvaluationLogMapperTest {
 
         assertThat(evaluationLog).isNotNull();
         assertThat(evaluationLog.getEvaluationMethod()).isEqualTo(evaluationRequest.getEvaluationMethod());
-        assertThat(evaluationLog.getClassifierInputOptions()).isNotNull();
+        assertThat(evaluationLog.getClassifierInfo()).isNotNull();
+        assertThat(evaluationLog.getClassifierInfo().getClassifierInputOptions()).isNotNull();
         assertThat(evaluationLog.getInstancesInfo().getRelationName()).isEqualTo(
                 evaluationRequest.getData().relationName());
         assertThat(evaluationLog.getInstancesInfo().getClassName()).isEqualTo(
@@ -65,10 +66,10 @@ public class EvaluationLogMapperTest {
         evaluationLog.setEvaluationOptionsMap(
                 TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
         evaluationLog.setInstancesInfo(TestHelperUtils.createInstancesInfo());
-        evaluationLog.setClassifierInputOptions(Collections.singletonList(new ClassifierInputOptions()));
         EvaluationLogDto evaluationLogDto = evaluationLogMapper.map(evaluationLog);
         assertThat(evaluationLogDto).isNotNull();
-        assertThat(evaluationLogDto.getClassifierName()).isEqualTo(evaluationLog.getClassifierName());
+        assertThat(evaluationLogDto.getClassifierInfo()).isNotNull();
+        assertThat(evaluationLogDto.getClassifierInfo().getClassifierName()).isEqualTo(evaluationLog.getClassifierInfo().getClassifierName());
         assertThat(evaluationLogDto.getCreationDate()).isEqualTo(evaluationLog.getCreationDate());
         assertThat(evaluationLogDto.getStartDate()).isEqualTo(evaluationLog.getStartDate());
         assertThat(evaluationLogDto.getEndDate()).isEqualTo(evaluationLog.getEndDate());
@@ -81,8 +82,8 @@ public class EvaluationLogMapperTest {
         assertThat(evaluationLogDto.getEvaluationStatus().getValue()).isEqualTo(
                 evaluationLog.getEvaluationStatus().name());
         assertThat(evaluationLogDto.getRequestId()).isEqualTo(evaluationLog.getRequestId());
-        assertThat(evaluationLogDto.getInputOptions()).isNotNull();
-        assertThat(evaluationLogDto.getInputOptions().size()).isOne();
+        assertThat(evaluationLogDto.getClassifierInfo().getInputOptions()).isNotNull();
+        assertThat(evaluationLogDto.getClassifierInfo().getInputOptions()).hasSameSizeAs(evaluationLog.getClassifierInfo().getClassifierInputOptions());
         assertThat(evaluationLogDto.getNumFolds()).isNotNull();
         assertThat(evaluationLogDto.getNumTests()).isNotNull();
         assertThat(evaluationLogDto.getSeed()).isNull();
@@ -102,7 +103,8 @@ public class EvaluationLogMapperTest {
     }
 
     private void assertOptions(EvaluationLog evaluationLog, EvaluationRequest request) {
-        List<ClassifierInputOptions> classifierInputOptions = evaluationLog.getClassifierInputOptions();
+        List<ClassifierInputOptions> classifierInputOptions =
+                evaluationLog.getClassifierInfo().getClassifierInputOptions();
         assertThat(classifierInputOptions).isNotNull();
         assertThat(classifierInputOptions).isNotEmpty();
         String[] options = request.getClassifier().getOptions();

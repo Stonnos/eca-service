@@ -111,7 +111,7 @@ export class EvaluationResultsComponent implements OnInit {
   private initMetaInfoRows(): void {
     this.metaInfoRows = [
       { name: "requestId", label: "UUID заявки:" },
-      { name: "classifierName", label: "Классификатор:" },
+      { name: "classifierInfo.classifierName", label: "Классификатор:" },
       { name: "evaluationStatus", label: "Статус заявки:" },
       { name: "instancesInfo.relationName", label: "Обучающая выборка:" },
       { name: "instancesInfo.numInstances", label: "Число объектов:" },

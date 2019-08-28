@@ -92,8 +92,8 @@
   <p-overlayPanel #infoPanel [showCloseIcon]="true">
     <p-panel *ngIf="selectedEvaluationLog && selectedColumn" class="info-panel">
       <ng-container [ngSwitch]="selectedColumn">
-        <ng-container *ngSwitchCase="'classifierName'">
-          <ng-container *ngFor="let option of selectedEvaluationLog.inputOptions">
+        <ng-container *ngSwitchCase="classifierNameColumn">
+          <ng-container *ngFor="let option of selectedEvaluationLog.classifierInfo.inputOptions">
             <div class="ui-g">
               <div class="ui-g-6 text-right text-bold text-wrap">
                 {{ option.optionName }}
