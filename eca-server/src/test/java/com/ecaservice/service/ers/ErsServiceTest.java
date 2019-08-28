@@ -1,7 +1,6 @@
 package com.ecaservice.service.ers;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassificationCostsMapperImpl;
@@ -47,6 +46,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -211,13 +211,14 @@ public class ErsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testSentExperimentHistory() throws Exception {
+    public void testSentExperimentResults() throws Exception {
         ExperimentHistory experimentHistory = new ExperimentHistory();
-        experimentHistory.setExperiment(new ArrayList<>());
-        experimentHistory.getExperiment().add(TestHelperUtils.getEvaluationResults());
+        experimentHistory.setExperiment(newArrayList());
         experimentHistory.getExperiment().add(TestHelperUtils.getEvaluationResults());
         doNothing().when(ersRequestService).saveEvaluationResults(any(EvaluationResults.class), any(ErsRequest.class));
-        ersService.saveAndSentExperimentResults(new Experiment(), experimentHistory,
+        ExperimentResultsEntity experimentResultsEntity = new ExperimentResultsEntity();
+        experimentResultsEntity.setResultsIndex(0);
+        ersService.sentExperimentResults(experimentResultsEntity, experimentHistory,
                 ExperimentResultsRequestSource.MANUAL);
         verify(ersRequestService, times(experimentHistory.getExperiment().size())).saveEvaluationResults(
                 any(EvaluationResults.class), any(ErsRequest.class));
