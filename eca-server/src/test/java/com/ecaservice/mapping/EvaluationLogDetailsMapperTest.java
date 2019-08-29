@@ -1,10 +1,8 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.context.annotation.Import;
@@ -58,18 +56,5 @@ public class EvaluationLogDetailsMapperTest {
         assertThat(evaluationLogDetailsDto.getNumTests()).isNotNull();
         assertThat(evaluationLogDetailsDto.getSeed()).isNull();
         assertThat(evaluationLogDetailsDto.getInstancesInfo()).isNotNull();
-    }
-
-    @Test
-    public void testUpdateEvaluationLogDetailsDto() {
-        EvaluationLogDetailsDto evaluationLogDetailsDto = new EvaluationLogDetailsDto();
-        GetEvaluationResultsResponse response = new GetEvaluationResultsResponse();
-        response.setStatistics(TestHelperUtils.createStatisticsReport());
-        response.getClassificationCosts().add(TestHelperUtils.createClassificationCostsReport());
-        response.getClassificationCosts().add(TestHelperUtils.createClassificationCostsReport());
-        evaluationLogDetailsMapper.update(response, evaluationLogDetailsDto);
-        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNotNull();
-        Assertions.assertThat(evaluationLogDetailsDto.getClassificationCosts()).hasSameSizeAs(
-                response.getClassificationCosts());
     }
 }

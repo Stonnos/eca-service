@@ -5,8 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.List;
-
 /**
  * Experiment results details dto model.
  *
@@ -18,20 +16,8 @@ import java.util.List;
 public class ExperimentResultsDetailsDto extends ExperimentResultsDto {
 
     /**
-     * Evaluation results status
-     */
-    @ApiModelProperty(value = "Evaluation results status")
-    private EnumDto evaluationResultsStatus;
-
-    /**
      * Evaluation results dto (main factors)
      */
     @ApiModelProperty(value = "Evaluation results report (main factors)")
     private EvaluationResultsDto evaluationResultsDto;
-
-    /**
-     * Classification costs results
-     */
-    @ApiModelProperty(value = "Classification costs results")
-    private List<ClassificationCostsDto> classificationCosts;
 }

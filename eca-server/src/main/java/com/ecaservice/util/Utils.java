@@ -8,6 +8,9 @@ import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.options.ClassifierOptions;
+import com.ecaservice.web.dto.model.EnumDto;
+import com.ecaservice.web.dto.model.EvaluationResultsDto;
+import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.data.file.xml.converter.XmlInstancesConverter;
@@ -226,5 +229,18 @@ public class Utils {
         requestStatusStatisticsDto.setTotalCount(
                 statusStatisticsMap.values().stream().mapToLong(Long::longValue).sum());
         return requestStatusStatisticsDto;
+    }
+
+    /**
+     * Creates evaluation results dto with specified status.
+     *
+     * @param evaluationResultsStatus - evaluation results status
+     * @return evaluation results dto
+     */
+    public static EvaluationResultsDto buildEvaluationResultsDto(EvaluationResultsStatus evaluationResultsStatus) {
+        EvaluationResultsDto evaluationResultsDto = new EvaluationResultsDto();
+        evaluationResultsDto.setEvaluationResultsStatus(
+                new EnumDto(evaluationResultsStatus.name(), evaluationResultsStatus.getDescription()));
+        return evaluationResultsDto;
     }
 }

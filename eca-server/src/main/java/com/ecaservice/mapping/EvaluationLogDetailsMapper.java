@@ -1,6 +1,5 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.web.dto.model.EnumDto;
@@ -33,19 +32,6 @@ public abstract class EvaluationLogDetailsMapper {
             @Mapping(target = "evaluationStatus", ignore = true)
     })
     public abstract EvaluationLogDetailsDto map(EvaluationLog evaluationLog);
-
-    /**
-     * Updates evaluation log details.
-     *
-     * @param evaluationResultsSimpleResponse - evaluation results simple response
-     * @param evaluationLogDetailsDto         - evaluation log details
-     */
-    @Mappings({
-            @Mapping(source = "statistics", target = "evaluationResultsDto"),
-            @Mapping(target = "requestId", ignore = true)
-    })
-    public abstract void update(GetEvaluationResultsResponse evaluationResultsSimpleResponse,
-                                @MappingTarget EvaluationLogDetailsDto evaluationLogDetailsDto);
 
     @AfterMapping
     protected void mapEvaluationMethodOptions(EvaluationLog evaluationLog,
