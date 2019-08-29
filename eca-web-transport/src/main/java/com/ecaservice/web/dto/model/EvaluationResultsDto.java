@@ -4,8 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.util.List;
 
 /**
  * Evaluation results dto model.
@@ -17,68 +16,20 @@ import java.math.BigInteger;
 public class EvaluationResultsDto {
 
     /**
-     * Test instances number
+     * Evaluation log results status
      */
-    @ApiModelProperty(value = "Test instances number")
-    private BigInteger numTestInstances;
+    @ApiModelProperty(value = "Evaluation results status")
+    private EnumDto evaluationResultsStatus;
 
     /**
-     * Correctly classified instances number
+     * Evaluation results dto (main factors)
      */
-    @ApiModelProperty(value = "Correctly classified instances number")
-    private BigInteger numCorrect;
+    @ApiModelProperty(value = "Evaluation statistics report (main factors)")
+    private EvaluationStatisticsDto evaluationStatisticsDto;
 
     /**
-     * Incorrectly classified instances number
+     * Classification costs results
      */
-    @ApiModelProperty(value = "Incorrectly classified instances number")
-    private BigInteger numIncorrect;
-
-    /**
-     * Correctly classified percentage
-     */
-    @ApiModelProperty(value = "Correctly classified percentage")
-    private BigDecimal pctCorrect;
-
-    /**
-     * Incorrectly classified percentage
-     */
-    @ApiModelProperty(value = "Incorrectly classified percentage")
-    private BigDecimal pctIncorrect;
-
-    /**
-     * Mean absolute error
-     */
-    @ApiModelProperty(value = "Mean absolute error")
-    private BigDecimal meanAbsoluteError;
-
-    /**
-     * Root mean squared error
-     */
-    @ApiModelProperty(value = "Root mean squared error")
-    private BigDecimal rootMeanSquaredError;
-
-    /**
-     * Max AUC value
-     */
-    @ApiModelProperty(value = "Max AUC value")
-    private BigDecimal maxAucValue;
-
-    /**
-     * Variance error
-     */
-    @ApiModelProperty(value = "Variance error")
-    private BigDecimal varianceError;
-
-    /**
-     * 95% confidence interval lower bound value
-     */
-    @ApiModelProperty(value = "95% confidence interval lower bound value")
-    private BigDecimal confidenceIntervalLowerBound;
-
-    /**
-     * 95% confidence interval upper bound value
-     */
-    @ApiModelProperty(value = "95% confidence interval upper bound value")
-    private BigDecimal confidenceIntervalUpperBound;
+    @ApiModelProperty(value = "Classification costs results")
+    private List<ClassificationCostsDto> classificationCosts;
 }

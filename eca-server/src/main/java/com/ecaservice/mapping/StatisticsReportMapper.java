@@ -1,7 +1,7 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.dto.evaluation.StatisticsReport;
-import com.ecaservice.web.dto.model.EvaluationResultsDto;
+import com.ecaservice.web.dto.model.EvaluationStatisticsDto;
 import org.mapstruct.Mapper;
 
 /**
@@ -13,10 +13,10 @@ import org.mapstruct.Mapper;
 public interface StatisticsReportMapper {
 
     /**
-     * Maps statistics report to classifier options response model.
+     * Maps statistics report to evaluation statistics dto model.
      *
      * @param statisticsReport - statistics report
-     * @return evaluation results dto model
+     * @return evaluation statistics dto model
      */
-    EvaluationResultsDto map(StatisticsReport statisticsReport);
+    EvaluationStatisticsDto map(StatisticsReport statisticsReport);
 }
