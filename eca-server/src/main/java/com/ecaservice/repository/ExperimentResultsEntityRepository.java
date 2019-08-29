@@ -2,12 +2,14 @@ package com.ecaservice.repository;
 
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository to manage with {@link ExperimentResultsEntity} persistence entity.
@@ -16,12 +18,16 @@ import java.util.List;
  */
 public interface ExperimentResultsEntityRepository extends JpaRepository<ExperimentResultsEntity, Long> {
 
+    @EntityGraph(value = "classifierInfo", type = EntityGraph.EntityGraphType.FETCH)
+    Optional<ExperimentResultsEntity> findById(Long id);
+
     /**
      * Finds experiment results list by specified experiment.
      *
      * @param experiment - experiment entity
      * @return experiment results list
      */
+    @EntityGraph(value = "classifierInfo", type = EntityGraph.EntityGraphType.FETCH)
     List<ExperimentResultsEntity> findAllByExperiment(Experiment experiment);
 
     /**
