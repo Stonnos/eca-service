@@ -235,7 +235,7 @@ public class ErsServiceTest extends AbstractJpaTest {
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.NEW);
         EvaluationLogDetailsDto evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
         Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
-        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNotNull();
         Assertions.assertThat(
                 evaluationLogDetailsDto.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
                 EvaluationResultsStatus.EVALUATION_IN_PROGRESS.name());
@@ -247,7 +247,7 @@ public class ErsServiceTest extends AbstractJpaTest {
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR);
         EvaluationLogDetailsDto evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
         Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
-        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNotNull();
         Assertions.assertThat(
                 evaluationLogDetailsDto.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
                 EvaluationResultsStatus.EVALUATION_ERROR.name());
@@ -265,7 +265,7 @@ public class ErsServiceTest extends AbstractJpaTest {
         evaluationLogRepository.save(evaluationLog);
         EvaluationLogDetailsDto evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
         Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
-        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNotNull();
         Assertions.assertThat(
                 evaluationLogDetailsDto.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
                 EvaluationResultsStatus.RESULTS_NOT_SENT.name());
@@ -278,7 +278,7 @@ public class ErsServiceTest extends AbstractJpaTest {
         evaluationResultsRequestEntityRepository.save(evaluationResultsRequestEntity);
         evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
         Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
-        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNotNull();
         Assertions.assertThat(
                 evaluationLogDetailsDto.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
                 EvaluationResultsStatus.RESULTS_NOT_SENT.name());
@@ -292,7 +292,7 @@ public class ErsServiceTest extends AbstractJpaTest {
         when(ersRequestService.getEvaluationResults(anyString())).thenReturn(response);
         EvaluationLogDetailsDto evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
         Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
-        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNotNull();
         Assertions.assertThat(
                 evaluationLogDetailsDto.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
                 EvaluationResultsStatus.EVALUATION_RESULTS_NOT_FOUND.name());
@@ -306,7 +306,7 @@ public class ErsServiceTest extends AbstractJpaTest {
         when(ersRequestService.getEvaluationResults(anyString())).thenReturn(response);
         EvaluationLogDetailsDto evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
         Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
-        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNotNull();
         Assertions.assertThat(
                 evaluationLogDetailsDto.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
                 EvaluationResultsStatus.ERROR.name());
@@ -318,7 +318,7 @@ public class ErsServiceTest extends AbstractJpaTest {
         when(ersRequestService.getEvaluationResults(anyString())).thenThrow(new WebServiceIOException("I/O"));
         EvaluationLogDetailsDto evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
         Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
-        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNotNull();
         Assertions.assertThat(
                 evaluationLogDetailsDto.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
                 EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE.name());
@@ -330,7 +330,7 @@ public class ErsServiceTest extends AbstractJpaTest {
         when(ersRequestService.getEvaluationResults(anyString())).thenThrow(new RuntimeException());
         EvaluationLogDetailsDto evaluationLogDetailsDto = ersService.getEvaluationLogDetails(evaluationLog);
         Assertions.assertThat(evaluationLogDetailsDto).isNotNull();
-        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNull();
+        Assertions.assertThat(evaluationLogDetailsDto.getEvaluationResultsDto()).isNotNull();
         Assertions.assertThat(
                 evaluationLogDetailsDto.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
                 EvaluationResultsStatus.ERROR.name());
