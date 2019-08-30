@@ -1,7 +1,6 @@
 package com.ecaservice.service.ers;
 
 import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
-import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.EvaluationLogDetailsMapper;
 import com.ecaservice.mapping.ExperimentResultsDetailsMapper;
 import com.ecaservice.mapping.ExperimentResultsMapper;
@@ -27,7 +26,6 @@ import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.ws.client.WebServiceIOException;
@@ -193,7 +191,9 @@ public class ErsService {
 
     private EvaluationResultsDto getEvaluationResults(
             ExperimentResultsEntity experimentResultsEntity) {
-        ExperimentResultsRequest experimentResultsRequest = getSuccessExperimentResultsRequest(experimentResultsEntity);
+        ExperimentResultsRequest experimentResultsRequest =
+                experimentResultsRequestRepository.findByExperimentResultsAndResponseStatusEquals(
+                        experimentResultsEntity, ErsResponseStatus.SUCCESS);
         return experimentResultsRequest == null ? buildEvaluationResultsDto(EvaluationResultsStatus.RESULTS_NOT_SENT) :
                 getEvaluationResultsFromErs(experimentResultsRequest.getRequestId());
     }
@@ -214,11 +214,5 @@ public class ErsService {
             }
         }
         return buildEvaluationResultsDto(evaluationResultsStatus);
-    }
-
-    private ExperimentResultsRequest getSuccessExperimentResultsRequest(ExperimentResultsEntity
-                                                                                experimentResultsEntity) {
-        return experimentResultsRequestRepository.findSuccessRequests(experimentResultsEntity,
-                PageRequest.of(0, 1)).stream().findFirst().orElse(null);
     }
 }
