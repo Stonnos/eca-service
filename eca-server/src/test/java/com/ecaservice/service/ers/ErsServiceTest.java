@@ -113,20 +113,14 @@ public class ErsServiceTest extends AbstractJpaTest {
     public void testErsReportWithExperimentInProgressStatus() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
         experimentRepository.save(experiment);
-        ExperimentErsReportDto experimentErsReportDto = ersService.getErsReport(experiment);
-        Assertions.assertThat(experimentErsReportDto).isNotNull();
-        Assertions.assertThat(experimentErsReportDto.getErsReportStatus().getValue()).isEqualTo(
-                ErsReportStatus.EXPERIMENT_IN_PROGRESS.name());
+        testGetErsReport(experiment, ErsReportStatus.EXPERIMENT_IN_PROGRESS);
     }
 
     @Test
     public void testErsReportWithExperimentErrorStatus() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR);
         experimentRepository.save(experiment);
-        ExperimentErsReportDto experimentErsReportDto = ersService.getErsReport(experiment);
-        Assertions.assertThat(experimentErsReportDto).isNotNull();
-        Assertions.assertThat(experimentErsReportDto.getErsReportStatus().getValue()).isEqualTo(
-                ErsReportStatus.EXPERIMENT_ERROR.name());
+        testGetErsReport(experiment, ErsReportStatus.EXPERIMENT_ERROR);
     }
 
     /**
@@ -140,10 +134,7 @@ public class ErsServiceTest extends AbstractJpaTest {
         ExperimentResultsEntity experimentResultsEntity1 = TestHelperUtils.createExperimentResultsEntity(experiment);
         ExperimentResultsEntity experimentResultsEntity2 = TestHelperUtils.createExperimentResultsEntity(experiment);
         experimentResultsEntityRepository.saveAll(Arrays.asList(experimentResultsEntity1, experimentResultsEntity2));
-        ExperimentErsReportDto experimentErsReportDto = ersService.getErsReport(experiment);
-        Assertions.assertThat(experimentErsReportDto).isNotNull();
-        Assertions.assertThat(experimentErsReportDto.getErsReportStatus().getValue()).isEqualTo(
-                ErsReportStatus.EXPERIMENT_DELETED.name());
+        testGetErsReport(experiment, ErsReportStatus.EXPERIMENT_DELETED);
     }
 
     /**
@@ -163,10 +154,7 @@ public class ErsServiceTest extends AbstractJpaTest {
         experimentResultsRequestRepository.save(
                 TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity2, experiment,
                         ErsResponseStatus.SUCCESS));
-        ExperimentErsReportDto experimentErsReportDto = ersService.getErsReport(experiment);
-        Assertions.assertThat(experimentErsReportDto).isNotNull();
-        Assertions.assertThat(experimentErsReportDto.getErsReportStatus().getValue()).isEqualTo(
-                ErsReportStatus.SUCCESS_SENT.name());
+        testGetErsReport(experiment, ErsReportStatus.SUCCESS_SENT);
     }
 
     @Test
@@ -185,10 +173,7 @@ public class ErsServiceTest extends AbstractJpaTest {
         experimentResultsRequestRepository.save(
                 TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity2, experiment,
                         ErsResponseStatus.INVALID_REQUEST_ID));
-        ExperimentErsReportDto experimentErsReportDto = ersService.getErsReport(experiment);
-        Assertions.assertThat(experimentErsReportDto).isNotNull();
-        Assertions.assertThat(experimentErsReportDto.getErsReportStatus().getValue()).isEqualTo(
-                ErsReportStatus.NEED_SENT.name());
+        testGetErsReport(experiment, ErsReportStatus.NEED_SENT);
     }
 
     @Test
@@ -438,6 +423,12 @@ public class ErsServiceTest extends AbstractJpaTest {
         Assertions.assertThat(
                 experimentResultsDetails.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
                 expectedStatus.name());
+    }
+
+    private void testGetErsReport(Experiment experiment, ErsReportStatus expectedStatus) {
+        ExperimentErsReportDto experimentErsReportDto = ersService.getErsReport(experiment);
+        Assertions.assertThat(experimentErsReportDto).isNotNull();
+        Assertions.assertThat(experimentErsReportDto.getErsReportStatus().getValue()).isEqualTo(expectedStatus.name());
     }
 
     private EvaluationLog createAndSaveFinishedEvaluationLog() {
