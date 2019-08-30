@@ -867,11 +867,11 @@ public class TestHelperUtils {
      * @param responseStatus - response status
      * @return get evaluation results response
      */
-    public static GetEvaluationResultsResponse createGetEvaluationResultsSimpleResponse(String requestId,
-                                                                                        ResponseStatus responseStatus) {
-        GetEvaluationResultsResponse resultsSimpleResponse = new GetEvaluationResultsResponse();
-        resultsSimpleResponse.setRequestId(requestId);
-        resultsSimpleResponse.setStatus(responseStatus);
-        return resultsSimpleResponse;
+    public static GetEvaluationResultsResponse createGetEvaluationResultsResponse(String requestId,
+                                                                                  ResponseStatus responseStatus) {
+        GetEvaluationResultsResponse evaluationResultsResponse = new GetEvaluationResultsResponse();
+        evaluationResultsResponse.setRequestId(requestId);
+        evaluationResultsResponse.setStatus(responseStatus);
+        return evaluationResultsResponse;
     }
 }

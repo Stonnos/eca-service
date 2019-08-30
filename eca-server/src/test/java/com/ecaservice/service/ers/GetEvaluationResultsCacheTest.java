@@ -54,11 +54,11 @@ public class GetEvaluationResultsCacheTest extends AbstractJpaTest {
         ReflectionTestUtils.setField(ersRequestService, "ersWebServiceClient", ersWebServiceClient);
         String requestId = UUID.randomUUID().toString();
         GetEvaluationResultsResponse first =
-                TestHelperUtils.createGetEvaluationResultsSimpleResponse(requestId, ResponseStatus.ERROR);
+                TestHelperUtils.createGetEvaluationResultsResponse(requestId, ResponseStatus.ERROR);
         GetEvaluationResultsResponse second =
-                TestHelperUtils.createGetEvaluationResultsSimpleResponse(requestId, ResponseStatus.SUCCESS);
+                TestHelperUtils.createGetEvaluationResultsResponse(requestId, ResponseStatus.SUCCESS);
         GetEvaluationResultsResponse third =
-                TestHelperUtils.createGetEvaluationResultsSimpleResponse(requestId, ResponseStatus.SUCCESS);
+                TestHelperUtils.createGetEvaluationResultsResponse(requestId, ResponseStatus.SUCCESS);
         when(ersWebServiceClient.getEvaluationResultsSimpleResponse(
                 any(GetEvaluationResultsRequest.class))).thenReturn(first).thenReturn(second).thenReturn(third);
         //Checks first call with ERROR status (Results shouldn't save in cache)

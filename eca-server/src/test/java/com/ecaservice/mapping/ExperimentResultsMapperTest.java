@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 /**
- * Unit tests that checks ExperimentMapper functionality {@see ExperimentResultsMapper}.
+ * Unit tests that checks ExperimentResultsMapper functionality {@see ExperimentResultsMapper}.
  *
  * @author Roman Batygin
  */
