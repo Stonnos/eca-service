@@ -360,115 +360,56 @@ public class ErsServiceTest extends AbstractJpaTest {
     @Test
     public void testGetExperimentResultsDetailsWithNotSentStatus() {
         //Case 1
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
-        experimentRepository.save(experiment);
-        experimentResultsEntityRepository.save(experimentResultsEntity);
-        ExperimentResultsDetailsDto experimentResultsDetails =
-                ersService.getExperimentResultsDetails(experimentResultsEntity);
-        Assertions.assertThat(experimentResultsDetails).isNotNull();
-        Assertions.assertThat(experimentResultsDetails.getEvaluationResultsDto()).isNotNull();
-        Assertions.assertThat(
-                experimentResultsDetails.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
-                EvaluationResultsStatus.RESULTS_NOT_SENT.name());
+        ExperimentResultsEntity experimentResultsEntity = createAndSaveExperimentResults();
+        testGetExperimentResultsDetails(experimentResultsEntity, EvaluationResultsStatus.RESULTS_NOT_SENT);
         //Case 2
         ExperimentResultsRequest experimentResultsRequest =
-                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity, experiment,
-                        ErsResponseStatus.ERROR);
+                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity,
+                        experimentResultsEntity.getExperiment(), ErsResponseStatus.ERROR);
         experimentResultsRequestRepository.save(experimentResultsRequest);
-        experimentResultsDetails = ersService.getExperimentResultsDetails(experimentResultsEntity);
-        Assertions.assertThat(experimentResultsDetails).isNotNull();
-        Assertions.assertThat(experimentResultsDetails.getEvaluationResultsDto()).isNotNull();
-        Assertions.assertThat(
-                experimentResultsDetails.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
-                EvaluationResultsStatus.RESULTS_NOT_SENT.name());
+        testGetExperimentResultsDetails(experimentResultsEntity, EvaluationResultsStatus.RESULTS_NOT_SENT);
     }
 
     @Test
     public void testGetExperimentResultsDetailsWithResultsNotFoundStatus() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
-        experimentRepository.save(experiment);
-        experimentResultsEntityRepository.save(experimentResultsEntity);
+        ExperimentResultsEntity experimentResultsEntity = createAndSaveExperimentResultsWithSuccessRequest();
         GetEvaluationResultsResponse response = new GetEvaluationResultsResponse();
         response.setStatus(ResponseStatus.RESULTS_NOT_FOUND);
         when(ersRequestService.getEvaluationResults(anyString())).thenReturn(response);
-        ExperimentResultsDetailsDto experimentResultsDetails =
-                ersService.getExperimentResultsDetails(experimentResultsEntity);
-        Assertions.assertThat(experimentResultsDetails).isNotNull();
-        Assertions.assertThat(experimentResultsDetails.getEvaluationResultsDto()).isNotNull();
-        Assertions.assertThat(
-                experimentResultsDetails.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
-                EvaluationResultsStatus.EVALUATION_RESULTS_NOT_FOUND.name());
+        testGetExperimentResultsDetails(experimentResultsEntity, EvaluationResultsStatus.EVALUATION_RESULTS_NOT_FOUND);
     }
 
     @Test
     public void testGetExperimentResultsDetailsWithResponseErrorStatus() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
-        experimentRepository.save(experiment);
-        experimentResultsEntityRepository.save(experimentResultsEntity);
+        ExperimentResultsEntity experimentResultsEntity = createAndSaveExperimentResultsWithSuccessRequest();
         GetEvaluationResultsResponse response = new GetEvaluationResultsResponse();
         response.setStatus(ResponseStatus.ERROR);
         when(ersRequestService.getEvaluationResults(anyString())).thenReturn(response);
-        ExperimentResultsDetailsDto experimentResultsDetails =
-                ersService.getExperimentResultsDetails(experimentResultsEntity);
-        Assertions.assertThat(experimentResultsDetails).isNotNull();
-        Assertions.assertThat(experimentResultsDetails.getEvaluationResultsDto()).isNotNull();
-        Assertions.assertThat(
-                experimentResultsDetails.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
-                EvaluationResultsStatus.ERROR.name());
+        testGetExperimentResultsDetails(experimentResultsEntity, EvaluationResultsStatus.ERROR);
     }
 
     @Test
     public void testGetExperimentResultsDetailsWithServiceUnavailable() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
-        experimentRepository.save(experiment);
-        experimentResultsEntityRepository.save(experimentResultsEntity);
+        ExperimentResultsEntity experimentResultsEntity = createAndSaveExperimentResultsWithSuccessRequest();
         when(ersRequestService.getEvaluationResults(anyString())).thenThrow(new WebServiceIOException("I/O"));
-        ExperimentResultsDetailsDto experimentResultsDetails =
-                ersService.getExperimentResultsDetails(experimentResultsEntity);
-        Assertions.assertThat(experimentResultsDetails).isNotNull();
-        Assertions.assertThat(experimentResultsDetails.getEvaluationResultsDto()).isNotNull();
-        Assertions.assertThat(
-                experimentResultsDetails.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
-                EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE.name());
+        testGetExperimentResultsDetails(experimentResultsEntity, EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE);
     }
 
     @Test
     public void testGetExperimentResultsDetailsWithUnknownError() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
-        experimentRepository.save(experiment);
-        experimentResultsEntityRepository.save(experimentResultsEntity);
+        ExperimentResultsEntity experimentResultsEntity = createAndSaveExperimentResultsWithSuccessRequest();
         when(ersRequestService.getEvaluationResults(anyString())).thenThrow(new RuntimeException());
-        ExperimentResultsDetailsDto experimentResultsDetails =
-                ersService.getExperimentResultsDetails(experimentResultsEntity);
-        Assertions.assertThat(experimentResultsDetails).isNotNull();
-        Assertions.assertThat(experimentResultsDetails.getEvaluationResultsDto()).isNotNull();
-        Assertions.assertThat(
-                experimentResultsDetails.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
-                EvaluationResultsStatus.ERROR.name());
+        testGetExperimentResultsDetails(experimentResultsEntity, EvaluationResultsStatus.ERROR);
     }
 
     @Test
     public void testSuccessGetExperimentResultsDetails() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
-        experimentRepository.save(experiment);
-        experimentResultsEntityRepository.save(experimentResultsEntity);
+        ExperimentResultsEntity experimentResultsEntity = createAndSaveExperimentResultsWithSuccessRequest();
         GetEvaluationResultsResponse evaluationResultsResponse = TestHelperUtils.createGetEvaluationResultsResponse
                 (UUID.randomUUID().toString(), ResponseStatus.SUCCESS);
         evaluationResultsResponse.setStatistics(TestHelperUtils.createStatisticsReport());
         when(ersRequestService.getEvaluationResults(anyString())).thenReturn(evaluationResultsResponse);
-        ExperimentResultsDetailsDto experimentResultsDetails =
-                ersService.getExperimentResultsDetails(experimentResultsEntity);
-        Assertions.assertThat(experimentResultsDetails).isNotNull();
-        Assertions.assertThat(experimentResultsDetails.getEvaluationResultsDto()).isNotNull();
-        Assertions.assertThat(
-                experimentResultsDetails.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
-                EvaluationResultsStatus.RESULTS_RECEIVED.name());
+        testGetExperimentResultsDetails(experimentResultsEntity, EvaluationResultsStatus.RESULTS_RECEIVED);
     }
 
     private ExperimentResultsEntity createAndSaveExperimentResults() {
@@ -477,6 +418,26 @@ public class ErsServiceTest extends AbstractJpaTest {
         experimentRepository.save(experiment);
         experimentResultsEntityRepository.save(experimentResultsEntity);
         return experimentResultsEntity;
+    }
+
+    private ExperimentResultsEntity createAndSaveExperimentResultsWithSuccessRequest() {
+       ExperimentResultsEntity experimentResultsEntity = createAndSaveExperimentResults();
+        ExperimentResultsRequest experimentResultsRequest =
+                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity,
+                        experimentResultsEntity.getExperiment(), ErsResponseStatus.SUCCESS);
+        experimentResultsRequestRepository.save(experimentResultsRequest);
+        return experimentResultsEntity;
+    }
+
+    private void testGetExperimentResultsDetails(ExperimentResultsEntity experimentResultsEntity,
+                                                 EvaluationResultsStatus expectedStatus) {
+        ExperimentResultsDetailsDto experimentResultsDetails =
+                ersService.getExperimentResultsDetails(experimentResultsEntity);
+        Assertions.assertThat(experimentResultsDetails).isNotNull();
+        Assertions.assertThat(experimentResultsDetails.getEvaluationResultsDto()).isNotNull();
+        Assertions.assertThat(
+                experimentResultsDetails.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
+                expectedStatus.name());
     }
 
     private EvaluationLog createAndSaveFinishedEvaluationLog() {
