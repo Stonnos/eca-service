@@ -98,7 +98,7 @@ public class ErsService {
         experimentErsReportDto.setExperimentUuid(experiment.getUuid());
         //Gets experiment results list
         List<ExperimentResultsEntity> experimentResultsEntityList =
-                experimentResultsEntityRepository.findAllByExperiment(experiment);
+                experimentResultsEntityRepository.findByExperimentOrderByResultsIndex(experiment);
         experimentErsReportDto.setExperimentResults(experimentResultsMapper.map(experimentResultsEntityList));
         if (!CollectionUtils.isEmpty(experimentResultsEntityList)) {
             experimentErsReportDto.setClassifiersCount(experimentResultsEntityList.size());

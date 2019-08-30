@@ -28,7 +28,7 @@ public interface ExperimentResultsEntityRepository extends JpaRepository<Experim
      * @return experiment results list
      */
     @EntityGraph(value = "classifierInfo", type = EntityGraph.EntityGraphType.FETCH)
-    List<ExperimentResultsEntity> findAllByExperiment(Experiment experiment);
+    List<ExperimentResultsEntity> findByExperimentOrderByResultsIndex(Experiment experiment);
 
     /**
      * Gets experiment results count for specified experiment.
