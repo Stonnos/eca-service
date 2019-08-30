@@ -22,6 +22,7 @@ import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
+import com.ecaservice.model.entity.ExperimentResultsRequest;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.repository.EvaluationLogRepository;
@@ -34,6 +35,7 @@ import com.ecaservice.web.dto.model.ErsReportStatus;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.ExperimentErsReportDto;
+import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationResults;
 import org.assertj.core.api.Assertions;
@@ -349,6 +351,132 @@ public class ErsServiceTest extends AbstractJpaTest {
         Assertions.assertThat(
                 evaluationLogDetailsDto.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
                 EvaluationResultsStatus.RESULTS_RECEIVED.name());
+    }
+
+    /**
+     * Case 1: There is no one request to ERS
+     * Case 2: There is no one ERS request with status SUCCESS
+     */
+    @Test
+    public void testGetExperimentResultsDetailsWithNotSentStatus() {
+        //Case 1
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
+        experimentRepository.save(experiment);
+        experimentResultsEntityRepository.save(experimentResultsEntity);
+        ExperimentResultsDetailsDto experimentResultsDetails =
+                ersService.getExperimentResultsDetails(experimentResultsEntity);
+        Assertions.assertThat(experimentResultsDetails).isNotNull();
+        Assertions.assertThat(experimentResultsDetails.getEvaluationResultsDto()).isNotNull();
+        Assertions.assertThat(
+                experimentResultsDetails.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
+                EvaluationResultsStatus.RESULTS_NOT_SENT.name());
+        //Case 2
+        ExperimentResultsRequest experimentResultsRequest =
+                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity, experiment,
+                        ErsResponseStatus.ERROR);
+        experimentResultsRequestRepository.save(experimentResultsRequest);
+        experimentResultsDetails = ersService.getExperimentResultsDetails(experimentResultsEntity);
+        Assertions.assertThat(experimentResultsDetails).isNotNull();
+        Assertions.assertThat(experimentResultsDetails.getEvaluationResultsDto()).isNotNull();
+        Assertions.assertThat(
+                experimentResultsDetails.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
+                EvaluationResultsStatus.RESULTS_NOT_SENT.name());
+    }
+
+    @Test
+    public void testGetExperimentResultsDetailsWithResultsNotFoundStatus() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
+        experimentRepository.save(experiment);
+        experimentResultsEntityRepository.save(experimentResultsEntity);
+        GetEvaluationResultsResponse response = new GetEvaluationResultsResponse();
+        response.setStatus(ResponseStatus.RESULTS_NOT_FOUND);
+        when(ersRequestService.getEvaluationResults(anyString())).thenReturn(response);
+        ExperimentResultsDetailsDto experimentResultsDetails =
+                ersService.getExperimentResultsDetails(experimentResultsEntity);
+        Assertions.assertThat(experimentResultsDetails).isNotNull();
+        Assertions.assertThat(experimentResultsDetails.getEvaluationResultsDto()).isNotNull();
+        Assertions.assertThat(
+                experimentResultsDetails.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
+                EvaluationResultsStatus.EVALUATION_RESULTS_NOT_FOUND.name());
+    }
+
+    @Test
+    public void testGetExperimentResultsDetailsWithResponseErrorStatus() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
+        experimentRepository.save(experiment);
+        experimentResultsEntityRepository.save(experimentResultsEntity);
+        GetEvaluationResultsResponse response = new GetEvaluationResultsResponse();
+        response.setStatus(ResponseStatus.ERROR);
+        when(ersRequestService.getEvaluationResults(anyString())).thenReturn(response);
+        ExperimentResultsDetailsDto experimentResultsDetails =
+                ersService.getExperimentResultsDetails(experimentResultsEntity);
+        Assertions.assertThat(experimentResultsDetails).isNotNull();
+        Assertions.assertThat(experimentResultsDetails.getEvaluationResultsDto()).isNotNull();
+        Assertions.assertThat(
+                experimentResultsDetails.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
+                EvaluationResultsStatus.ERROR.name());
+    }
+
+    @Test
+    public void testGetExperimentResultsDetailsWithServiceUnavailable() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
+        experimentRepository.save(experiment);
+        experimentResultsEntityRepository.save(experimentResultsEntity);
+        when(ersRequestService.getEvaluationResults(anyString())).thenThrow(new WebServiceIOException("I/O"));
+        ExperimentResultsDetailsDto experimentResultsDetails =
+                ersService.getExperimentResultsDetails(experimentResultsEntity);
+        Assertions.assertThat(experimentResultsDetails).isNotNull();
+        Assertions.assertThat(experimentResultsDetails.getEvaluationResultsDto()).isNotNull();
+        Assertions.assertThat(
+                experimentResultsDetails.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
+                EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE.name());
+    }
+
+    @Test
+    public void testGetExperimentResultsDetailsWithUnknownError() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
+        experimentRepository.save(experiment);
+        experimentResultsEntityRepository.save(experimentResultsEntity);
+        when(ersRequestService.getEvaluationResults(anyString())).thenThrow(new RuntimeException());
+        ExperimentResultsDetailsDto experimentResultsDetails =
+                ersService.getExperimentResultsDetails(experimentResultsEntity);
+        Assertions.assertThat(experimentResultsDetails).isNotNull();
+        Assertions.assertThat(experimentResultsDetails.getEvaluationResultsDto()).isNotNull();
+        Assertions.assertThat(
+                experimentResultsDetails.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
+                EvaluationResultsStatus.ERROR.name());
+    }
+
+    @Test
+    public void testSuccessGetExperimentResultsDetails() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
+        experimentRepository.save(experiment);
+        experimentResultsEntityRepository.save(experimentResultsEntity);
+        GetEvaluationResultsResponse evaluationResultsResponse = TestHelperUtils.createGetEvaluationResultsResponse
+                (UUID.randomUUID().toString(), ResponseStatus.SUCCESS);
+        evaluationResultsResponse.setStatistics(TestHelperUtils.createStatisticsReport());
+        when(ersRequestService.getEvaluationResults(anyString())).thenReturn(evaluationResultsResponse);
+        ExperimentResultsDetailsDto experimentResultsDetails =
+                ersService.getExperimentResultsDetails(experimentResultsEntity);
+        Assertions.assertThat(experimentResultsDetails).isNotNull();
+        Assertions.assertThat(experimentResultsDetails.getEvaluationResultsDto()).isNotNull();
+        Assertions.assertThat(
+                experimentResultsDetails.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
+                EvaluationResultsStatus.RESULTS_RECEIVED.name());
+    }
+
+    private ExperimentResultsEntity createAndSaveExperimentResults() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
+        experimentRepository.save(experiment);
+        experimentResultsEntityRepository.save(experimentResultsEntity);
+        return experimentResultsEntity;
     }
 
     private EvaluationLog createAndSaveFinishedEvaluationLog() {
