@@ -179,11 +179,7 @@ public class ErsService {
         EvaluationResultsStatus evaluationResultsStatus;
         try {
             GetEvaluationResultsResponse evaluationResultsResponse = ersRequestService.getEvaluationResults(requestId);
-            EvaluationResultsDto evaluationResultsDto = evaluationResultsMapper.map(evaluationResultsResponse);
-            evaluationResultsStatus = handleEvaluationResultsStatus(evaluationResultsResponse);
-            evaluationResultsDto.setEvaluationResultsStatus(
-                    new EnumDto(evaluationResultsStatus.name(), evaluationResultsStatus.getDescription()));
-            return evaluationResultsDto;
+            return evaluationResultsMapper.map(evaluationResultsResponse);
         } catch (WebServiceIOException ex) {
             log.error(ex.getMessage());
             evaluationResultsStatus = EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE;
@@ -224,15 +220,5 @@ public class ErsService {
                                                                                 experimentResultsEntity) {
         return experimentResultsRequestRepository.findSuccessRequests(experimentResultsEntity,
                 PageRequest.of(0, 1)).stream().findFirst().orElse(null);
-    }
-
-    private EvaluationResultsStatus handleEvaluationResultsStatus(GetEvaluationResultsResponse response) {
-        if (ResponseStatus.SUCCESS.equals(response.getStatus())) {
-            return EvaluationResultsStatus.RESULTS_RECEIVED;
-        } else if (ResponseStatus.RESULTS_NOT_FOUND.equals(response.getStatus())) {
-            return EvaluationResultsStatus.EVALUATION_RESULTS_NOT_FOUND;
-        } else {
-            return EvaluationResultsStatus.ERROR;
-        }
     }
 }
