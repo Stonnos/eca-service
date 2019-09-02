@@ -6,9 +6,9 @@ import { UiComponentsModule } from "../ui-components.module";
 import { ExperimentsService } from "./services/experiments.service";
 import { FilterModule } from "../filter/filter.module";
 import { RequestStatusesStatisticsModule } from "../request-statuses-statistics/request-statuses-statistics.module";
-import { ErsReportModule } from "../ers-report/ers-report.module";
 import { CreateExperimentModule } from "../create-experiment/create-experiment.module";
 import { SharedModule } from "../common/shared.module";
+import { ExperimentErsReportModule } from "../experiment-ers-report/experiment-ers-report.module";
 
 @NgModule({
   imports: [
@@ -18,7 +18,7 @@ import { SharedModule } from "../common/shared.module";
     UiComponentsModule,
     FilterModule,
     RequestStatusesStatisticsModule,
-    ErsReportModule,
+    ExperimentErsReportModule,
     CreateExperimentModule
   ],
   declarations: [

@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   ChartDataDto, CreateExperimentResultDto,
-  ErsReportDto,
+  ExperimentErsReportDto,
   ExperimentDto,
   PageDto,
   PageRequestDto,
@@ -56,12 +56,12 @@ export class ExperimentsService {
     return this.http.get<Blob>(this.serviceUrl + '/training-data/' + uuid, options);
   }
 
-  public getErsReport(uuid: string): Observable<ErsReportDto> {
+  public getErsReport(uuid: string): Observable<ExperimentErsReportDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
-    return this.http.get<ErsReportDto>(this.serviceUrl + '/ers-report/' + uuid, { headers: headers });
+    return this.http.get<ExperimentErsReportDto>(this.serviceUrl + '/ers-report/' + uuid, { headers: headers });
   }
 
   public sentEvaluationResults(uuid: string) {

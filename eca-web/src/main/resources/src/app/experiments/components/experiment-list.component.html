@@ -109,9 +109,9 @@
   (itemEvent)="onCreateExperiment($event)">
 </app-create-experiment>
 
-<app-ers-report
+<app-experiment-ers-report
   [visible]="ersReportVisibility"
-  [ersReport]="ersReport"
+  [experimentErsReport]="experimentErsReportDto"
   (visibilityChange)="onErsReportVisibilityChange($event)"
   (sent)="onEvaluationResultsSent($event)">
-</app-ers-report>
+</app-experiment-ers-report>

@@ -17,7 +17,6 @@ import { ClassifierOptionsRequestsModule } from "./classifier-options-requests/c
 import { ConfigService } from "./config.service";
 import { CookieService } from "ngx-cookie-service";
 import { AuthModule } from "./auth/auth.module";
-import { ErsReportModule } from "./ers-report/ers-report.module";
 import { ExperimentStatisticsModule } from "./experiment-statistics/experiment-statistics.module";
 import { EvaluationResultsModule } from "./evaluation-results/evaluation-results.module";
 import { ClassificationCostsModule } from "./classification-costs/classification-costs.module";
@@ -25,6 +24,7 @@ import { CreateExperimentModule } from "./create-experiment/create-experiment.mo
 import { ExperimentsTabsModule } from "./experiments-tabs/experiments-tabs.module";
 import { SharedModule } from "./common/shared.module";
 import { EvaluationLogDetailsModule } from "./evaluation-log-details/evaluation-log-details.module";
+import { ExperimentErsReportModule } from "./experiment-ers-report/experiment-ers-report.module";
 
 export function initializeApp(configService: ConfigService) {
   return () => configService.getConfigs();
@@ -47,7 +47,7 @@ export function initializeApp(configService: ConfigService) {
     ClassifierOptionsRequestsModule,
     RequestStatusesStatisticsModule,
     FilterModule,
-    ErsReportModule,
+    ExperimentErsReportModule,
     EvaluationResultsModule,
     EvaluationLogDetailsModule,
     ClassificationCostsModule,

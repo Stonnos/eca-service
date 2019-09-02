@@ -14,7 +14,7 @@
       UUID эксперимента:
     </div>
     <div class="ui-g-6 text-left text-wrap text-bold">
-      {{ ersReport?.experimentUuid }}
+      {{ experimentErsReport?.experimentUuid }}
     </div>
   </div>
 
@@ -23,7 +23,7 @@
       Число запросов в ERS на сохранение классификаторов:
     </div>
     <div class="ui-g-6 text-left text-wrap">
-      {{ ersReport?.requestsCount }}
+
     </div>
   </div>
 
@@ -32,7 +32,7 @@
       Число успешно сохраненных классификаторов:
     </div>
     <div class="ui-g-6 text-left text-wrap">
-      {{ ersReport?.successfullySavedClassifiers }}
+
     </div>
   </div>
 
@@ -41,16 +41,16 @@
       Число неудачных запросов:
     </div>
     <div class="ui-g-6 text-left text-wrap">
-      {{ ersReport?.failedRequestsCount }}
+
     </div>
   </div>
 
   <div class="ui-g">
     <div class="ui-g-12 text-center text-wrap">
-      <div [class.text-success]="ersReport?.ersReportStatus.value == 'SUCCESS_SENT'"
-           [class.text-info]="ersReport?.ersReportStatus.value == 'EXPERIMENT_IN_PROGRESS' || ersReport?.ersReportStatus.value == 'NEED_SENT'"
-           [class.text-danger]="ersReport?.ersReportStatus.value == 'EXPERIMENT_ERROR' || ersReport?.ersReportStatus.value == 'EXPERIMENT_DELETED'">
-        {{ ersReport?.ersReportStatus.description }}
+      <div [class.text-success]="experimentErsReport?.ersReportStatus.value == 'SUCCESS_SENT'"
+           [class.text-info]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_IN_PROGRESS' || experimentErsReport?.ersReportStatus.value == 'NEED_SENT'"
+           [class.text-danger]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_ERROR' || experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_DELETED'">
+        {{ experimentErsReport?.ersReportStatus.description }}
       </div>
     </div>
   </div>

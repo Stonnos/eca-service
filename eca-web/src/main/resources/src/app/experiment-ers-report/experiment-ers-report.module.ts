@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { UiComponentsModule } from "../ui-components.module";
-import { ErsReportComponent } from "./components/ers-report.component";
+import { ExperimentErsReportComponent } from "./components/experiment-ers-report.component";
 
 @NgModule({
   imports: [
@@ -11,12 +11,12 @@ import { ErsReportComponent } from "./components/ers-report.component";
     UiComponentsModule
   ],
   declarations: [
-    ErsReportComponent
+    ExperimentErsReportComponent
   ],
   exports: [
-    ErsReportComponent
+    ExperimentErsReportComponent
   ],
   providers: []
 })
-export class ErsReportModule {
+export class ExperimentErsReportModule {
 }

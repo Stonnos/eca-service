@@ -1,7 +1,7 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import {
   CreateExperimentResultDto,
-  ErsReportDto,
+  ExperimentErsReportDto,
   ExperimentDto, FilterDictionaryDto, FilterDictionaryValueDto, FilterFieldDto, PageDto,
   PageRequestDto, RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -22,7 +22,7 @@ import { ExperimentRequest } from "../../create-experiment/model/experiment-requ
 export class ExperimentListComponent extends BaseListComponent<ExperimentDto> implements OnInit {
 
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
-  public ersReport: ErsReportDto;
+  public experimentErsReportDto: ExperimentErsReportDto;
   public ersReportVisibility: boolean = false;
   public createExperimentDialogVisibility: boolean = false;
 
@@ -134,8 +134,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
           this.loading = false;
         })
       )
-      .subscribe((ersReport: ErsReportDto) => {
-        this.ersReport = ersReport;
+      .subscribe((ersReport: ExperimentErsReportDto) => {
+        this.experimentErsReportDto = ersReport;
         this.ersReportVisibility = true;
       }, (error) => {
         this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
