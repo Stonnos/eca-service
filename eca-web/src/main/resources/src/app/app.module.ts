@@ -24,6 +24,7 @@ import { ClassificationCostsModule } from "./classification-costs/classification
 import { CreateExperimentModule } from "./create-experiment/create-experiment.module";
 import { ExperimentsTabsModule } from "./experiments-tabs/experiments-tabs.module";
 import { SharedModule } from "./common/shared.module";
+import { EvaluationLogDetailsModule } from "./evaluation-log-details/evaluation-log-details.module";
 
 export function initializeApp(configService: ConfigService) {
   return () => configService.getConfigs();
@@ -48,6 +49,7 @@ export function initializeApp(configService: ConfigService) {
     FilterModule,
     ErsReportModule,
     EvaluationResultsModule,
+    EvaluationLogDetailsModule,
     ClassificationCostsModule,
     AuthModule,
     ExperimentStatisticsModule,

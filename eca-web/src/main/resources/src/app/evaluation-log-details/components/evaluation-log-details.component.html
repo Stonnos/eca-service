@@ -1,0 +1,62 @@
+<p-progressSpinner
+  class="app-progress-spinner"
+  strokeWidth="4"
+  animationDuration=".5s"
+  *ngIf="loading">
+</p-progressSpinner>
+<div *ngIf="!loading" class="container-fluid">
+  <div class="row mt-2">
+    <div class="col-5">
+      <div class="h-100 details-panel">
+        <p-fieldset legend="Основная информация" class="details-fieldset">
+          <div class="ui-g" *ngFor="let row of evaluationLogInfoRows">
+            <div class="ui-g-6 text-left text-bold text-wrap">
+              {{ row.label }}
+            </div>
+            <div class="ui-g-6 text-left text-wrap">
+              <ng-container [ngSwitch]="row.name">
+                <ng-container *ngSwitchCase="'requestId'">
+                  <span class="text-bold">{{ evaluationLogDetails?.requestId }}</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="'evaluationStatus'">
+                  <span [class.text-info]="evaluationLogDetails?.evaluationStatus.value == 'NEW'"
+                        [class.text-success]="evaluationLogDetails?.evaluationStatus.value == 'FINISHED'"
+                        [class.text-warning]="evaluationLogDetails?.evaluationStatus.value == 'TIMEOUT'"
+                        [class.text-danger]="evaluationLogDetails?.evaluationStatus.value == 'ERROR'">
+                      {{ evaluationLogDetails?.evaluationStatus.description }}
+                  </span>
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                  {{ getEvaluationLogInfoValue(row.name) }}
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+        </p-fieldset>
+
+        <p-fieldset legend="Входные параметры классификатора" class="details-fieldset">
+          <ng-container *ngFor="let option of evaluationLogDetails?.classifierInfo?.inputOptions">
+            <div class="ui-g">
+              <div class="ui-g-6 text-left text-bold text-wrap">
+                {{ option.optionName }}
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ option.optionValue }}
+              </div>
+            </div>
+          </ng-container>
+        </p-fieldset>
+      </div>
+    </div>
+
+    <div class="col-7">
+      <div class="h-100 details-panel">
+        <p-fieldset legend="Статистика" class="details-fieldset">
+          <app-evaluation-results
+            [evaluationResults]="evaluationLogDetails?.evaluationResultsDto">
+          </app-evaluation-results>
+        </p-fieldset>
+      </div>
+    </div>
+  </div>
+</div>

@@ -4,8 +4,8 @@ import { DashboardComponent } from "./dashboard/dashboard.component";
 import { ClassifierListComponent } from "./classifiers/components/classifier-list.component";
 import { ClassifierOptionsRequestsComponent } from "./classifier-options-requests/components/classifier-options-requests.component";
 import { LoginComponent } from "./auth/components/login.component";
-import { EvaluationResultsComponent } from "./evaluation-results/components/evaluation-results.component";
 import { ExperimentTabsComponent } from "./experiments-tabs/components/experiment-tabs.component";
+import { EvaluationLogDetailsComponent } from "./evaluation-log-details/components/evaluation-log-details.component";
 
 const routes: Routes = [
   {
@@ -26,7 +26,7 @@ const routes: Routes = [
       },
       {
         path: 'classifiers/evaluation-results/:id',
-        component: EvaluationResultsComponent
+        component: EvaluationLogDetailsComponent
       },
     ]
   },
