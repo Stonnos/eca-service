@@ -25,6 +25,7 @@ import { ExperimentsTabsModule } from "./experiments-tabs/experiments-tabs.modul
 import { SharedModule } from "./common/shared.module";
 import { EvaluationLogDetailsModule } from "./evaluation-log-details/evaluation-log-details.module";
 import { ExperimentErsReportModule } from "./experiment-ers-report/experiment-ers-report.module";
+import { ExperimentDetailsModule } from "./experiment-details/experiment-details.module";
 
 export function initializeApp(configService: ConfigService) {
   return () => configService.getConfigs();
@@ -54,6 +55,7 @@ export function initializeApp(configService: ConfigService) {
     AuthModule,
     ExperimentStatisticsModule,
     CreateExperimentModule,
+    ExperimentDetailsModule,
     UiComponentsModule,
     HttpClientModule,
     NoopAnimationsModule,

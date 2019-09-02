@@ -18,7 +18,7 @@ export class EvaluationLogDetailsComponent implements OnInit {
 
   private readonly requestId: string;
 
-  public evaluationLogInfoRows: any[] = [];
+  public evaluationLogFields: any[] = [];
   public loading: boolean = false;
 
   public evaluationLogDetails: EvaluationLogDetailsDto;
@@ -27,16 +27,16 @@ export class EvaluationLogDetailsComponent implements OnInit {
                      private messageService: MessageService,
                      private route: ActivatedRoute) {
     this.requestId = this.route.snapshot.params.id;
-    this.initEvaluationLogInfoRows();
+    this.initEvaluationLogFields();
   }
 
   public ngOnInit(): void {
-    this.getEvaluationResults(this.requestId);
+    this.getEvaluationLogDetails();
   }
 
-  public getEvaluationResults(requestId: string): void {
+  public getEvaluationLogDetails(): void {
     this.loading = true;
-    this.classifiersService.getEvaluationLogDetailsDto(requestId)
+    this.classifiersService.getEvaluationLogDetails(this.requestId)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -62,7 +62,7 @@ export class EvaluationLogDetailsComponent implements OnInit {
     }
   }
 
-  public getEvaluationLogInfoValue(row: string) {
+  public getEvaluationLogValue(row: string) {
     switch (row) {
       case "evaluationMethod":
         return this.getEvaluationMethod();
@@ -74,8 +74,8 @@ export class EvaluationLogDetailsComponent implements OnInit {
     }
   }
 
-  private initEvaluationLogInfoRows(): void {
-    this.evaluationLogInfoRows = [
+  private initEvaluationLogFields(): void {
+    this.evaluationLogFields = [
       { name: "requestId", label: "UUID заявки:" },
       { name: "classifierInfo.classifierName", label: "Классификатор:" },
       { name: "evaluationStatus", label: "Статус заявки:" },

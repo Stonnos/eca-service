@@ -37,7 +37,7 @@ export class ClassifiersService {
     return this.http.get<RequestStatusStatisticsDto>(this.serviceUrl + '/request-statuses-statistics', { headers: headers });
   }
 
-  public getEvaluationLogDetailsDto(requestId: string): Observable<EvaluationLogDetailsDto> {
+  public getEvaluationLogDetails(requestId: string): Observable<EvaluationLogDetailsDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)

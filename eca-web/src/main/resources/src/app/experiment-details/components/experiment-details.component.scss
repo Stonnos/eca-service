@@ -1,0 +1,16 @@
+.details-panel {
+  background: white;
+  padding: 8px;
+}
+
+.details-fieldset::ng-deep {
+
+  .ui-fieldset {
+    margin-top: 10px;
+  }
+
+  .ui-fieldset-legend {
+    font-weight: bold;
+    font-size: 16px;
+  }
+}

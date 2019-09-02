@@ -14,10 +14,10 @@ export class EvaluationResultsComponent implements OnInit {
   @Input()
   public evaluationResults: EvaluationResultsDto;
 
-  public evaluationStatisticsRows: any[] = [];
+  public evaluationStatisticsFields: any[] = [];
 
   public constructor() {
-    this.initEvaluationStatisticsRows();
+    this.initEvaluationStatisticsFields();
   }
 
   public ngOnInit(): void {
@@ -50,8 +50,8 @@ export class EvaluationResultsComponent implements OnInit {
     }
   }
 
-  private initEvaluationStatisticsRows(): void {
-    this.evaluationStatisticsRows = [
+  private initEvaluationStatisticsFields(): void {
+    this.evaluationStatisticsFields = [
       { name: "numTestInstances", label: "Число объектов тестовых данных:" },
       { name: "numCorrect", label: "Число правильно классифицированных объектов:" },
       { name: "numIncorrect", label: "Число неправильно классифицированных объектов:" },

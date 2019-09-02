@@ -218,7 +218,7 @@ public class ExperimentController {
             value = "Finds experiment with specified uuid",
             notes = "Finds experiment with specified uuid"
     )
-    @GetMapping(value = "/info/{uuid}")
+    @GetMapping(value = "/details/{uuid}")
     public ResponseEntity<ExperimentDto> getExperiment(
             @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
         Experiment experiment = experimentRepository.findByUuid(uuid);

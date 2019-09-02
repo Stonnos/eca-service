@@ -1,0 +1,43 @@
+<div class="container-fluid">
+  <div class="row mt-2">
+    <div class="col-5">
+      <div class="h-100 details-panel">
+        <p-fieldset legend="Основная информация" class="details-fieldset">
+          <div class="ui-g" *ngFor="let row of experimentFields">
+            <div class="ui-g-6 text-left text-bold text-wrap">
+              {{ row.label }}
+            </div>
+            <div class="ui-g-6 text-left text-wrap">
+              <ng-container [ngSwitch]="row.name">
+                <ng-container *ngSwitchCase="'requestId'">
+                  <span class="text-bold">{{ experimentDto?.uuid }}</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="'evaluationStatus'">
+                  <span [class.text-info]="experimentDto?.experimentStatus.value == 'NEW'"
+                        [class.text-success]="experimentDto?.experimentStatus.value == 'FINISHED'"
+                        [class.text-warning]="experimentDto?.experimentStatus.value == 'TIMEOUT'"
+                        [class.text-danger]="experimentDto?.experimentStatus.value == 'ERROR'">
+                      {{ experimentDto?.experimentStatus.description }}
+                  </span>
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                  {{ getExperimentValue(row.name) }}
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+        </p-fieldset>
+      </div>
+    </div>
+
+    <div class="col-7">
+      <div class="h-100 details-panel">
+        <p-fieldset legend="Статистика" class="details-fieldset">
+          <app-evaluation-results
+            [evaluationResults]="evaluationLogDetails?.evaluationResultsDto">
+          </app-evaluation-results>
+        </p-fieldset>
+      </div>
+    </div>
+  </div>
+</div>

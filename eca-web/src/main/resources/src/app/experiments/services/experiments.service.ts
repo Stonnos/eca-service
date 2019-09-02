@@ -32,6 +32,14 @@ export class ExperimentsService {
     return this.http.get<PageDto<ExperimentDto>>(this.serviceUrl + '/list', options);
   }
 
+  public getExperiment(uuid: string): Observable<ExperimentDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+    });
+    return this.http.get<ExperimentDto>(this.serviceUrl + '/details/' + uuid, { headers: headers });
+  }
+
   public getRequestStatusesStatistics(): Observable<RequestStatusStatisticsDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
