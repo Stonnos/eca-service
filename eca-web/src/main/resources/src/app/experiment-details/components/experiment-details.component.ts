@@ -74,6 +74,11 @@ export class ExperimentDetailsComponent implements OnInit {
       { name: "experimentStatus", label: "Статус заявки" },
       { name: "evaluationMethod", label: "Метод оценки точности" },
       { name: "email", label: "Email заявки" },
+      { name: "creationDate", label: "Дата создания заявки" },
+      { name: "startDate", label: "Дата начала эксперимента" },
+      { name: "endDate", label: "Дата окончания эксперимента" },
+      { name: "sentDate", label: "Дата отправки результатов" },
+      { name: "deletedDate", label: "Дата удаления результатов" },
       { name: "trainingDataAbsolutePath", label: "Обучающая выборка" },
       { name: "experimentAbsolutePath", label: "Результаты эксперимента" }
     ];

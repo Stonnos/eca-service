@@ -12,7 +12,7 @@
                 <ng-container *ngSwitchCase="'uuid'">
                   <span class="text-bold">{{ experimentDto?.uuid }}</span>
                 </ng-container>
-                <ng-container *ngSwitchCase="'evaluationStatus'">
+                <ng-container *ngSwitchCase="'experimentStatus'">
                   <span [class.text-info]="experimentDto?.experimentStatus.value == 'NEW'"
                         [class.text-success]="experimentDto?.experimentStatus.value == 'FINISHED'"
                         [class.text-warning]="experimentDto?.experimentStatus.value == 'TIMEOUT'"
