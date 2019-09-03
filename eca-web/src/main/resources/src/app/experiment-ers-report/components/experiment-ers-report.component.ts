@@ -76,6 +76,7 @@ export class ExperimentErsReportComponent implements OnInit {
 
   private toggleOverlayPanel(event, experimentResults: ExperimentResultsDto, overlayPanel: OverlayPanel): void {
     this.selectedExperimentResults = experimentResults;
+    console.log(this.selectedExperimentResults);
     overlayPanel.toggle(event);
   }
 

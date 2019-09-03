@@ -1,3 +1,28 @@
+.experiment-results-table::ng-deep {
+
+  .ui-table {
+    margin-top: 15px;
+  }
+
+  .ui-table-tbody > tr > td {
+    word-wrap: break-word;
+    &:first-child {
+      width: 50px;
+      font-weight: bold;
+    }
+  }
+  .ui-table-thead > tr > th {
+    word-wrap: break-word;
+    &:first-child {
+      width: 50px;
+    }
+  }
+}
+
+.link {
+  color: #3397ff;
+}
+
 .info-panel::ng-deep {
 
   .ui-panel {

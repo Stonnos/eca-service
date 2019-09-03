@@ -18,8 +18,8 @@ import java.util.Optional;
  */
 public interface ExperimentResultsEntityRepository extends JpaRepository<ExperimentResultsEntity, Long> {
 
-    @EntityGraph(value = "classifierInfo", type = EntityGraph.EntityGraphType.FETCH)
-    Optional<ExperimentResultsEntity> findById(Long id);
+    //@EntityGraph(value = "classifierInfo", type = EntityGraph.EntityGraphType.FETCH)
+   // Optional<ExperimentResultsEntity> findById(Long id);
 
     /**
      * Finds experiment results list by specified experiment.
@@ -27,7 +27,7 @@ public interface ExperimentResultsEntityRepository extends JpaRepository<Experim
      * @param experiment - experiment entity
      * @return experiment results list
      */
-    @EntityGraph(value = "classifierInfo", type = EntityGraph.EntityGraphType.FETCH)
+    //@EntityGraph(value = "classifierInfo", type = EntityGraph.EntityGraphType.FETCH)
     List<ExperimentResultsEntity> findByExperimentOrderByResultsIndex(Experiment experiment);
 
     /**

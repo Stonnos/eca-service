@@ -1,4 +1,5 @@
 <p-table
+  class="experiment-results-table"
   [columns]="experimentResultsColumns"
   [value]="experimentErsReport?.experimentResults || []">
 
@@ -16,7 +17,7 @@
   <ng-template pTemplate="body" let-item>
     <tr>
       <td *ngFor="let column of experimentResultsColumns">
-        <a [routerLink]="" *ngIf="isLink(column.name)"
+        <a class="link" [routerLink]="" *ngIf="isLink(column.name)"
            (click)="onSelect($event, item, column.name, classifierInputOptionsPanel)">
           {{ getColumnValue(column.name, item) }}
         </a>
@@ -44,9 +45,24 @@
     </tr>
   </ng-template>
   <ng-template pTemplate="summary">
-    Отправлено результатов {{ experimentErsReport?.sentClassifiersCount }} из {{ experimentErsReport?.classifiersCount }}
+    Отправлено результатов {{ experimentErsReport?.sentClassifiersCount || 0 }} из {{ experimentErsReport?.classifiersCount || 0 }}
   </ng-template>
 </p-table>
+
+<p-overlayPanel #classifierInputOptionsPanel [showCloseIcon]="true">
+  <p-panel *ngIf="selectedExperimentResults" class="info-panel">
+    <ng-container *ngFor="let option of selectedExperimentResults.classifierInfo.inputOptions">
+      <div class="ui-g">
+        <div class="ui-g-6 text-right text-bold text-wrap">
+          {{ option.optionName }}
+        </div>
+        <div class="ui-g-6 text-left text-wrap">
+          {{ option.optionValue }}
+        </div>
+      </div>
+    </ng-container>
+  </p-panel>
+</p-overlayPanel>
 
 <div class="ui-g">
   <div class="ui-g-12 text-center text-wrap">
@@ -66,25 +82,10 @@
       type="button"
       [disabled]="!needSentToErs()"
       (click)="sentEvaluationResults()"
-      class="mr-auto">
+      class="m-auto">
     </button>
   </div>
 </div>
-
-<p-overlayPanel #classifierInputOptionsPanel [showCloseIcon]="true">
-  <p-panel *ngIf="selectedExperimentResults" class="info-panel">
-    <ng-container *ngFor="let option of selectedExperimentResults.classifierInfo.inputOptions">
-      <div class="ui-g">
-        <div class="ui-g-6 text-right text-bold text-wrap">
-          {{ option.optionName }}
-        </div>
-        <div class="ui-g-6 text-left text-wrap">
-          {{ option.optionValue }}
-        </div>
-      </div>
-    </ng-container>
-  </p-panel>
-</p-overlayPanel>
 <!--<p-dialog
   [(visible)]="visible"
   header="Статистика запросов в ERS"
