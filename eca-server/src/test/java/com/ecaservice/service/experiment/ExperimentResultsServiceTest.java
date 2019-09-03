@@ -23,6 +23,7 @@ import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.ExperimentErsReportDto;
 import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
+import eca.converters.model.ExperimentHistory;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -34,6 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import static org.apache.commons.compress.utils.Lists.newArrayList;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -74,6 +76,20 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
         experimentResultsRequestRepository.deleteAll();
         experimentResultsEntityRepository.deleteAll();
         experimentRepository.deleteAll();
+    }
+
+    @Test
+    public void testSaveExperimentResultsForErsSent() throws Exception {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        experimentRepository.save(experiment);
+        ExperimentHistory experimentHistory = new ExperimentHistory();
+        experimentHistory.setExperiment(newArrayList());
+        experimentHistory.getExperiment().add(TestHelperUtils.getEvaluationResults());
+        experimentHistory.getExperiment().add(TestHelperUtils.getEvaluationResults());
+        experimentResultsService.saveExperimentResultsToErsSent(experiment, experimentHistory);
+        List<ExperimentResultsEntity> experimentResultsEntityList = experimentResultsEntityRepository.findAll();
+        Assertions.assertThat(experimentResultsEntityList).isNotNull();
+        Assertions.assertThat(experimentResultsEntityList).hasSameSizeAs(experimentHistory.getExperiment());
     }
 
     @Test
