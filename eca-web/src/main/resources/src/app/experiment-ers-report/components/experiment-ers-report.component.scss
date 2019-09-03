@@ -6,15 +6,26 @@
 
   .ui-table-tbody > tr > td {
     word-wrap: break-word;
+
     &:first-child {
       width: 50px;
       font-weight: bold;
     }
+
+    &:nth-child(3) {
+      width: 80px;
+    }
   }
+
   .ui-table-thead > tr > th {
     word-wrap: break-word;
+
     &:first-child {
       width: 50px;
+    }
+
+    &:nth-child(3) {
+      width: 80px;
     }
   }
 }

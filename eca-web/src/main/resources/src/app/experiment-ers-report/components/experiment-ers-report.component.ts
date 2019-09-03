@@ -76,7 +76,7 @@ export class ExperimentErsReportComponent implements OnInit {
       case "classifierName":
         return item.classifierInfo.classifierName;
       case "sent":
-        return item.sent ? "Результаты отправлены" : "Результаты не отправлены";
+        return item.sent ? "Отправлены" : "Не отправлены";
       default:
         return item[column];
     }
@@ -87,7 +87,7 @@ export class ExperimentErsReportComponent implements OnInit {
       { name: "resultsIndex", label: "№" },
       { name: "classifierName", label: "Классификатор" },
       { name: "pctCorrect", label: "Точность, %" },
-      { name: "sent", label: "Статус отправки в ERS" }
+      { name: "sent", label: "Статус отправки результатов в ERS" }
     ];
   }
 }
