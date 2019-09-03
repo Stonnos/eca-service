@@ -35,7 +35,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import static org.apache.commons.compress.utils.Lists.newArrayList;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -82,10 +81,7 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
     public void testSaveExperimentResultsForErsSent() throws Exception {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experimentRepository.save(experiment);
-        ExperimentHistory experimentHistory = new ExperimentHistory();
-        experimentHistory.setExperiment(newArrayList());
-        experimentHistory.getExperiment().add(TestHelperUtils.getEvaluationResults());
-        experimentHistory.getExperiment().add(TestHelperUtils.getEvaluationResults());
+        ExperimentHistory experimentHistory = TestHelperUtils.createExperimentHistory();
         experimentResultsService.saveExperimentResultsToErsSent(experiment, experimentHistory);
         List<ExperimentResultsEntity> experimentResultsEntityList = experimentResultsEntityRepository.findAll();
         Assertions.assertThat(experimentResultsEntityList).isNotNull();

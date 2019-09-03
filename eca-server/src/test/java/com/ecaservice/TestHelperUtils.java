@@ -46,6 +46,7 @@ import com.ecaservice.model.options.StackingOptions;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
+import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationMethod;
 import eca.core.evaluation.EvaluationResults;
@@ -80,6 +81,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Test data helper class.
@@ -889,5 +892,18 @@ public class TestHelperUtils {
         evaluationResultsDto.setEvaluationResultsStatus(
                 new EnumDto(evaluationResultsStatus.name(), evaluationResultsStatus.getDescription()));
         return evaluationResultsDto;
+    }
+
+    /**
+     * Creates experiment history.
+     *
+     * @return experiment history
+     * @throws Exception in case of error
+     */
+    public static ExperimentHistory createExperimentHistory() throws Exception {
+        ExperimentHistory experimentHistory = new ExperimentHistory();
+        experimentHistory.setExperiment(newArrayList());
+        experimentHistory.getExperiment().add(getEvaluationResults());
+        return experimentHistory;
     }
 }
