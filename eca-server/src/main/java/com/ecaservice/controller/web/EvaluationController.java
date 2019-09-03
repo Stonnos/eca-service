@@ -3,7 +3,6 @@ package com.ecaservice.controller.web;
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.repository.EvaluationLogRepository;
-import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.evaluation.EvaluationLogService;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
@@ -39,7 +38,6 @@ import static com.ecaservice.util.Utils.toRequestStatusesStatistics;
 public class EvaluationController {
 
     private final EvaluationLogService evaluationLogService;
-    private final ErsService ersService;
     private final EvaluationLogMapper evaluationLogMapper;
     private final EvaluationLogRepository evaluationLogRepository;
 
@@ -47,17 +45,14 @@ public class EvaluationController {
      * Constructor with dependency spring injection.
      *
      * @param evaluationLogService    - evaluation log service bean
-     * @param ersService              - ers service bean
      * @param evaluationLogMapper     - evaluation log mapper bean
      * @param evaluationLogRepository - evaluation log repository bean
      */
     @Inject
     public EvaluationController(EvaluationLogService evaluationLogService,
-                                ErsService ersService,
                                 EvaluationLogMapper evaluationLogMapper,
                                 EvaluationLogRepository evaluationLogRepository) {
         this.evaluationLogService = evaluationLogService;
-        this.ersService = ersService;
         this.evaluationLogMapper = evaluationLogMapper;
         this.evaluationLogRepository = evaluationLogRepository;
     }
@@ -101,7 +96,7 @@ public class EvaluationController {
             log.error("Evaluation log with request id [{}] not found", requestId);
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(ersService.getEvaluationLogDetails(evaluationLog));
+        return ResponseEntity.ok(evaluationLogService.getEvaluationLogDetails(evaluationLog));
     }
 
     /**
