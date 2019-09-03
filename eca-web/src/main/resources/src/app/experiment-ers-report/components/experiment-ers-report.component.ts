@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {
+  ClassifierInfoDto,
   ExperimentErsReportDto, ExperimentResultsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ExperimentsService } from "../../experiments/services/experiments.service";
@@ -20,7 +21,9 @@ export class ExperimentErsReportComponent implements OnInit {
   public linkColumns: string[] = [];
   public experimentResultsColumns: any[] = [];
 
-  public selectedExperimentResults: ExperimentResultsDto;
+  public selectedClassifierInfo: ClassifierInfoDto;
+
+  public classifierOptionsDialogVisibility: boolean = false;
 
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService) {
@@ -35,12 +38,17 @@ export class ExperimentErsReportComponent implements OnInit {
     return this.linkColumns.includes(column);
   }
 
-  public onSelect(event, experimentResults: ExperimentResultsDto, column: string, overlayPanel: OverlayPanel): void {
+  public onSelect(event, experimentResults: ExperimentResultsDto, column: string): void {
     if (column == "resultsIndex") {
       //TODO
-    } else {
-      this.toggleOverlayPanel(event, experimentResults, overlayPanel);
+    } else if (column == "classifierName") {
+      this.selectedClassifierInfo = experimentResults.classifierInfo;
+      this.classifierOptionsDialogVisibility = true;
     }
+  }
+
+  public hideClassifierOptionsDialog(): void {
+    this.classifierOptionsDialogVisibility = false;
   }
 
   public needSentToErs(): boolean {
@@ -72,12 +80,6 @@ export class ExperimentErsReportComponent implements OnInit {
       default:
         return item[column];
     }
-  }
-
-  private toggleOverlayPanel(event, experimentResults: ExperimentResultsDto, overlayPanel: OverlayPanel): void {
-    this.selectedExperimentResults = experimentResults;
-    console.log(this.selectedExperimentResults);
-    overlayPanel.toggle(event);
   }
 
   private initExperimentResultsColumns() {
