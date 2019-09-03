@@ -189,25 +189,28 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
     @Test
     public void testGetExperimentResultsDetailsWithResultsNotFoundStatus() {
         ExperimentResultsEntity experimentResultsEntity = createAndSaveExperimentResultsWithSuccessRequest();
-        testGetExperimentResultsDetails(experimentResultsEntity, EvaluationResultsStatus.EVALUATION_RESULTS_NOT_FOUND);
+        testGetExperimentResultsDetailsWithEvaluationResults(experimentResultsEntity,
+                EvaluationResultsStatus.EVALUATION_RESULTS_NOT_FOUND);
     }
 
     @Test
     public void testGetExperimentResultsDetailsWithResponseErrorStatus() {
         ExperimentResultsEntity experimentResultsEntity = createAndSaveExperimentResultsWithSuccessRequest();
-        testGetExperimentResultsDetails(experimentResultsEntity, EvaluationResultsStatus.ERROR);
+        testGetExperimentResultsDetailsWithEvaluationResults(experimentResultsEntity, EvaluationResultsStatus.ERROR);
     }
 
     @Test
     public void testGetExperimentResultsDetailsWithServiceUnavailable() {
         ExperimentResultsEntity experimentResultsEntity = createAndSaveExperimentResultsWithSuccessRequest();
-        testGetExperimentResultsDetails(experimentResultsEntity, EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE);
+        testGetExperimentResultsDetailsWithEvaluationResults(experimentResultsEntity,
+                EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE);
     }
 
     @Test
     public void testSuccessGetExperimentResultsDetails() {
         ExperimentResultsEntity experimentResultsEntity = createAndSaveExperimentResultsWithSuccessRequest();
-        testGetExperimentResultsDetails(experimentResultsEntity, EvaluationResultsStatus.RESULTS_RECEIVED);
+        testGetExperimentResultsDetailsWithEvaluationResults(experimentResultsEntity,
+                EvaluationResultsStatus.RESULTS_RECEIVED);
     }
 
     private ExperimentResultsEntity createAndSaveExperimentResults() {
@@ -229,8 +232,6 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     private void testGetExperimentResultsDetails(ExperimentResultsEntity experimentResultsEntity,
                                                  EvaluationResultsStatus expectedStatus) {
-        EvaluationResultsDto evaluationResultsDto = TestHelperUtils.createEvaluationResultsDto(expectedStatus);
-        when(ersService.getEvaluationResultsFromErs(anyString())).thenReturn(evaluationResultsDto);
         ExperimentResultsDetailsDto experimentResultsDetails =
                 experimentResultsService.getExperimentResultsDetails(experimentResultsEntity);
         Assertions.assertThat(experimentResultsDetails).isNotNull();
@@ -238,6 +239,13 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
         Assertions.assertThat(
                 experimentResultsDetails.getEvaluationResultsDto().getEvaluationResultsStatus().getValue()).isEqualTo(
                 expectedStatus.name());
+    }
+
+    private void testGetExperimentResultsDetailsWithEvaluationResults(ExperimentResultsEntity experimentResultsEntity,
+                                                                      EvaluationResultsStatus expectedStatus) {
+        EvaluationResultsDto evaluationResultsDto = TestHelperUtils.createEvaluationResultsDto(expectedStatus);
+        when(ersService.getEvaluationResultsFromErs(anyString())).thenReturn(evaluationResultsDto);
+        testGetExperimentResultsDetails(experimentResultsEntity, expectedStatus);
     }
 
     private void testGetErsReport(Experiment experiment, ErsReportStatus expectedStatus) {
