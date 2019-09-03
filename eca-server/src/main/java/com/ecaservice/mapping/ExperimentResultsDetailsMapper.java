@@ -9,7 +9,7 @@ import org.mapstruct.Mapper;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = {StatisticsReportMapper.class, ClassificationCostsMapper.class, ClassifierInfoMapper.class})
+@Mapper(uses = ClassifierInfoMapper.class)
 public abstract class ExperimentResultsDetailsMapper {
 
     /**

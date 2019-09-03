@@ -205,12 +205,6 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testGetExperimentResultsDetailsWithUnknownError() {
-        ExperimentResultsEntity experimentResultsEntity = createAndSaveExperimentResultsWithSuccessRequest();
-        testGetExperimentResultsDetails(experimentResultsEntity, EvaluationResultsStatus.ERROR);
-    }
-
-    @Test
     public void testSuccessGetExperimentResultsDetails() {
         ExperimentResultsEntity experimentResultsEntity = createAndSaveExperimentResultsWithSuccessRequest();
         testGetExperimentResultsDetails(experimentResultsEntity, EvaluationResultsStatus.RESULTS_RECEIVED);
