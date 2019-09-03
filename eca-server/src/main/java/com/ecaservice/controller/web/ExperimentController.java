@@ -15,6 +15,7 @@ import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.UserService;
 import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.experiment.ExperimentRequestService;
+import com.ecaservice.service.experiment.ExperimentResultsService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.util.Utils;
@@ -86,6 +87,7 @@ public class ExperimentController {
     private final ExperimentService experimentService;
     private final ExperimentRequestService experimentRequestService;
     private final ErsService ersService;
+    private final ExperimentResultsService experimentResultsService;
     private final ExperimentMapper experimentMapper;
     private final UserService userService;
     private final ExperimentRepository experimentRepository;
@@ -99,6 +101,7 @@ public class ExperimentController {
      * @param experimentService                 - experiment service bean
      * @param experimentRequestService          - experiment request service bean
      * @param ersService                        - ers service bean
+     * @param experimentResultsService          - experiment results service bean
      * @param experimentMapper                  - experiment mapper bean
      * @param userService                       - user service bean
      * @param experimentRepository              - experiment repository bean
@@ -108,6 +111,7 @@ public class ExperimentController {
     public ExperimentController(ExperimentService experimentService,
                                 ExperimentRequestService experimentRequestService,
                                 ErsService ersService,
+                                ExperimentResultsService experimentResultsService,
                                 ExperimentMapper experimentMapper,
                                 UserService userService,
                                 ExperimentRepository experimentRepository,
@@ -115,6 +119,7 @@ public class ExperimentController {
         this.experimentService = experimentService;
         this.experimentRequestService = experimentRequestService;
         this.ersService = ersService;
+        this.experimentResultsService = experimentResultsService;
         this.experimentMapper = experimentMapper;
         this.userService = userService;
         this.experimentRepository = experimentRepository;
@@ -249,7 +254,8 @@ public class ExperimentController {
             log.error("Experiment results with id [{}] not found", id);
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(ersService.getExperimentResultsDetails(experimentResultsEntityOptional.get()));
+        return ResponseEntity.ok(
+                experimentResultsService.getExperimentResultsDetails(experimentResultsEntityOptional.get()));
     }
 
     /**
@@ -287,7 +293,7 @@ public class ExperimentController {
             log.error("Experiment with uuid [{}] not found", uuid);
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(ersService.getErsReport(experiment));
+        return ResponseEntity.ok(experimentResultsService.getErsReport(experiment));
     }
 
     /**
