@@ -21,7 +21,7 @@ import { Router } from "@angular/router";
 })
 export class ExperimentListComponent extends BaseListComponent<ExperimentDto> implements OnInit {
 
-  private experimentDetailsUrl: string = '/dashboard/experiment/details';
+  private experimentDetailsUrl: string = '/dashboard/experiments/details';
 
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
 //  public experimentErsReportDto: ExperimentErsReportDto;
