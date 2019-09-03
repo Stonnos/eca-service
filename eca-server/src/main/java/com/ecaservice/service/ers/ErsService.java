@@ -156,6 +156,28 @@ public class ErsService {
         ersRequestService.saveEvaluationResults(evaluationResults, experimentResultsRequest);
     }
 
+    /**
+     * Gets evaluation results from ERS service.
+     *
+     * @param requestId - request id
+     * @return evaluation results dto
+     */
+    public EvaluationResultsDto getEvaluationResultsFromErs(String requestId) {
+        EvaluationResultsStatus evaluationResultsStatus;
+        try {
+            GetEvaluationResultsResponse evaluationResultsResponse = ersRequestService.getEvaluationResults(requestId);
+            return evaluationResultsMapper.map(evaluationResultsResponse);
+        } catch (WebServiceIOException ex) {
+            log.error(ex.getMessage());
+            evaluationResultsStatus = EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE;
+        } catch (Exception ex) {
+            log.error("There was an error while fetching evaluation results for request id [{}]: {}", requestId,
+                    ex.getMessage());
+            evaluationResultsStatus = EvaluationResultsStatus.ERROR;
+        }
+        return buildEvaluationResultsDto(evaluationResultsStatus);
+    }
+
     private void populateErsReportStatus(Experiment experiment, ExperimentErsReportDto experimentErsReportDto) {
         ErsReportStatus ersReportStatus;
         if (!RequestStatus.FINISHED.equals(experiment.getExperimentStatus())) {
@@ -171,22 +193,6 @@ public class ErsService {
         }
         experimentErsReportDto.setErsReportStatus(
                 new EnumDto(ersReportStatus.name(), ersReportStatus.getDescription()));
-    }
-
-    private EvaluationResultsDto getEvaluationResultsFromErs(String requestId) {
-        EvaluationResultsStatus evaluationResultsStatus;
-        try {
-            GetEvaluationResultsResponse evaluationResultsResponse = ersRequestService.getEvaluationResults(requestId);
-            return evaluationResultsMapper.map(evaluationResultsResponse);
-        } catch (WebServiceIOException ex) {
-            log.error(ex.getMessage());
-            evaluationResultsStatus = EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE;
-        } catch (Exception ex) {
-            log.error("There was an error while fetching evaluation results for request id [{}]: {}", requestId,
-                    ex.getMessage());
-            evaluationResultsStatus = EvaluationResultsStatus.ERROR;
-        }
-        return buildEvaluationResultsDto(evaluationResultsStatus);
     }
 
     private EvaluationResultsDto getEvaluationResults(

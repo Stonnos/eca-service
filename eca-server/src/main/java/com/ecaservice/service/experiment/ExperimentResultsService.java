@@ -1,19 +1,34 @@
 package com.ecaservice.service.experiment;
 
 import com.ecaservice.config.ExperimentConfig;
+import com.ecaservice.mapping.ExperimentResultsDetailsMapper;
 import com.ecaservice.mapping.ExperimentResultsMapper;
+import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
+import com.ecaservice.model.entity.ExperimentResultsRequest;
+import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
+import com.ecaservice.repository.ExperimentResultsRequestRepository;
+import com.ecaservice.service.ers.ErsService;
+import com.ecaservice.web.dto.model.EnumDto;
+import com.ecaservice.web.dto.model.ErsReportStatus;
+import com.ecaservice.web.dto.model.EvaluationResultsDto;
+import com.ecaservice.web.dto.model.EvaluationResultsStatus;
+import com.ecaservice.web.dto.model.ExperimentErsReportDto;
+import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static com.ecaservice.util.Utils.buildEvaluationResultsDto;
 
 /**
  * Experiment results service.
@@ -24,17 +39,36 @@ import java.util.stream.IntStream;
 @Service
 public class ExperimentResultsService {
 
+    private final ErsService ersService;
     private final ExperimentConfig experimentConfig;
     private final ExperimentResultsMapper experimentResultsMapper;
+    private final ExperimentResultsDetailsMapper experimentResultsDetailsMapper;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
+    private final ExperimentResultsRequestRepository experimentResultsRequestRepository;
 
+    /**
+     * Constructor with spring dependency injection.
+     *
+     * @param ersService                         - ers service bean
+     * @param experimentConfig                   - experiment config bean
+     * @param experimentResultsMapper            - experiment results mapper bean
+     * @param experimentResultsDetailsMapper     - experiment results details mapper bean
+     * @param experimentResultsEntityRepository  - experiment results entity repository bean
+     * @param experimentResultsRequestRepository - experiment results request repository bean
+     */
     @Inject
-    public ExperimentResultsService(ExperimentConfig experimentConfig,
+    public ExperimentResultsService(ErsService ersService,
+                                    ExperimentConfig experimentConfig,
                                     ExperimentResultsMapper experimentResultsMapper,
-                                    ExperimentResultsEntityRepository experimentResultsEntityRepository) {
+                                    ExperimentResultsDetailsMapper experimentResultsDetailsMapper,
+                                    ExperimentResultsEntityRepository experimentResultsEntityRepository,
+                                    ExperimentResultsRequestRepository experimentResultsRequestRepository) {
+        this.ersService = ersService;
         this.experimentConfig = experimentConfig;
         this.experimentResultsMapper = experimentResultsMapper;
+        this.experimentResultsDetailsMapper = experimentResultsDetailsMapper;
         this.experimentResultsEntityRepository = experimentResultsEntityRepository;
+        this.experimentResultsRequestRepository = experimentResultsRequestRepository;
     }
 
     /**
@@ -57,5 +91,75 @@ public class ExperimentResultsService {
             return experimentResultsEntity;
         }).collect(Collectors.toList());
         return experimentResultsEntityRepository.saveAll(experimentResultsEntities);
+    }
+
+    /**
+     * Gets experiment results details report.
+     *
+     * @param experimentResultsEntity - experiment results entity
+     * @return experiment results details dto
+     */
+    public ExperimentResultsDetailsDto getExperimentResultsDetails(ExperimentResultsEntity experimentResultsEntity) {
+        ExperimentResultsDetailsDto experimentResultsDetailsDto =
+                experimentResultsDetailsMapper.map(experimentResultsEntity);
+        experimentResultsDetailsDto.setEvaluationResultsDto(getEvaluationResults(experimentResultsEntity));
+        return experimentResultsDetailsDto;
+    }
+
+    /**
+     * Gets ERS report for specified experiment.
+     *
+     * @param experiment - experiment entity
+     * @return ERS report dto
+     */
+    public ExperimentErsReportDto getErsReport(Experiment experiment) {
+        ExperimentErsReportDto experimentErsReportDto = new ExperimentErsReportDto();
+        experimentErsReportDto.setExperimentUuid(experiment.getUuid());
+        //Gets experiment results list
+        List<ExperimentResultsEntity> experimentResultsEntityList =
+                experimentResultsEntityRepository.findByExperimentOrderByResultsIndex(experiment);
+        experimentErsReportDto.setExperimentResults(experimentResultsMapper.map(experimentResultsEntityList));
+        if (!CollectionUtils.isEmpty(experimentResultsEntityList)) {
+            experimentErsReportDto.setClassifiersCount(experimentResultsEntityList.size());
+            List<Long> experimentResultsIds =
+                    experimentResultsEntityList.stream().map(ExperimentResultsEntity::getId).collect(
+                            Collectors.toList());
+            List<Long> sentResultsIds =
+                    experimentResultsEntityRepository.findSentResultsIds(experimentResultsIds);
+            experimentErsReportDto.setSentClassifiersCount(sentResultsIds.size());
+            //Set sent flag for each experiment results
+            experimentErsReportDto.getExperimentResults().forEach(experimentResultsDto -> experimentResultsDto.setSent(
+                    sentResultsIds.contains(experimentResultsDto.getId())));
+        }
+        populateErsReportStatus(experiment, experimentErsReportDto);
+        return experimentErsReportDto;
+    }
+
+    private void populateErsReportStatus(Experiment experiment, ExperimentErsReportDto experimentErsReportDto) {
+        ErsReportStatus ersReportStatus;
+        if (!RequestStatus.FINISHED.equals(experiment.getExperimentStatus())) {
+            ersReportStatus = RequestStatus.NEW.equals(experiment.getExperimentStatus()) ?
+                    ErsReportStatus.EXPERIMENT_IN_PROGRESS : ErsReportStatus.EXPERIMENT_ERROR;
+            //else handle ERS report status for experiment with FINISHED status
+        } else if (experimentErsReportDto.getSentClassifiersCount() == experimentErsReportDto.getClassifiersCount()) {
+            ersReportStatus = ErsReportStatus.SUCCESS_SENT;
+        } else if (experiment.getDeletedDate() != null) {
+            ersReportStatus = ErsReportStatus.EXPERIMENT_DELETED;
+        } else {
+            ersReportStatus = ErsReportStatus.NEED_SENT;
+        }
+        experimentErsReportDto.setErsReportStatus(
+                new EnumDto(ersReportStatus.name(), ersReportStatus.getDescription()));
+    }
+
+    private EvaluationResultsDto getEvaluationResults(ExperimentResultsEntity experimentResultsEntity) {
+        ExperimentResultsRequest experimentResultsRequest =
+                experimentResultsRequestRepository.findByExperimentResultsAndResponseStatusEquals(
+                        experimentResultsEntity, ErsResponseStatus.SUCCESS);
+        if (experimentResultsRequest != null) {
+            return ersService.getEvaluationResultsFromErs(experimentResultsRequest.getRequestId());
+        } else {
+            return buildEvaluationResultsDto(EvaluationResultsStatus.RESULTS_NOT_SENT);
+        }
     }
 }

@@ -43,6 +43,9 @@ import com.ecaservice.model.options.NeuralNetworkOptions;
 import com.ecaservice.model.options.RandomForestsOptions;
 import com.ecaservice.model.options.RandomNetworkOptions;
 import com.ecaservice.model.options.StackingOptions;
+import com.ecaservice.web.dto.model.EnumDto;
+import com.ecaservice.web.dto.model.EvaluationResultsDto;
+import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationMethod;
 import eca.core.evaluation.EvaluationResults;
@@ -873,5 +876,18 @@ public class TestHelperUtils {
         evaluationResultsResponse.setRequestId(requestId);
         evaluationResultsResponse.setStatus(responseStatus);
         return evaluationResultsResponse;
+    }
+
+    /**
+     * Creates evaluation results dto with specified status.
+     *
+     * @param evaluationResultsStatus - evaluation results status
+     * @return evaluation results dto
+     */
+    public static EvaluationResultsDto createEvaluationResultsDto(EvaluationResultsStatus evaluationResultsStatus) {
+        EvaluationResultsDto evaluationResultsDto = new EvaluationResultsDto();
+        evaluationResultsDto.setEvaluationResultsStatus(
+                new EnumDto(evaluationResultsStatus.name(), evaluationResultsStatus.getDescription()));
+        return evaluationResultsDto;
     }
 }
