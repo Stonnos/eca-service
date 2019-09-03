@@ -5,7 +5,7 @@ import {
 import { ExperimentsService } from "../../experiments/services/experiments.service";
 import { finalize } from "rxjs/operators";
 import { MessageService } from "primeng/api";
-import {OverlayPanel} from "primeng/primeng";
+import { OverlayPanel } from "primeng/primeng";
 
 @Component({
   selector: 'app-experiment-ers-report',
