@@ -9,10 +9,10 @@ import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.ers.ErsService;
+import com.ecaservice.service.experiment.ExperimentResultsService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.experiment.mail.NotificationService;
 import eca.converters.model.ExperimentHistory;
-import eca.core.evaluation.EvaluationResults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Experiment scheduler.
@@ -41,7 +40,7 @@ public class ExperimentScheduler {
     private final NotificationService notificationService;
     private final ErsService ersService;
     private final ExperimentConfig experimentConfig;
-    private final ExperimentResultsMapper experimentResultsMapper;
+    private final ExperimentResultsService experimentResultsService;
 
     /**
      * Constructor with dependency spring injection.
@@ -52,7 +51,7 @@ public class ExperimentScheduler {
      * @param notificationService               - notification service bean
      * @param ersService                        - ers service bean
      * @param experimentConfig                  - experiment config bean
-     * @param experimentResultsMapper           - experiment results mapper bean
+     * @param experimentResultsService          - experiment results service bean
      */
     @Inject
     public ExperimentScheduler(ExperimentRepository experimentRepository,
@@ -61,14 +60,15 @@ public class ExperimentScheduler {
                                NotificationService notificationService,
                                ErsService ersService,
                                ExperimentConfig experimentConfig,
-                               ExperimentResultsMapper experimentResultsMapper) {
+                               ExperimentResultsMapper experimentResultsMapper,
+                               ExperimentResultsService experimentResultsService) {
         this.experimentRepository = experimentRepository;
         this.experimentResultsEntityRepository = experimentResultsEntityRepository;
         this.experimentService = experimentService;
         this.notificationService = notificationService;
         this.ersService = ersService;
         this.experimentConfig = experimentConfig;
-        this.experimentResultsMapper = experimentResultsMapper;
+        this.experimentResultsService = experimentResultsService;
     }
 
     /**
@@ -84,7 +84,7 @@ public class ExperimentScheduler {
             ExperimentHistory experimentHistory = experimentService.processExperiment(experiment);
             if (RequestStatus.FINISHED.equals(experiment.getExperimentStatus())) {
                 List<ExperimentResultsEntity> experimentResultsEntityList =
-                        saveExperimentResultsToErsSent(experiment, experimentHistory);
+                        experimentResultsService.saveExperimentResultsToErsSent(experiment, experimentHistory);
                 experimentResultsEntityList.forEach(
                         experimentResultsEntity -> ersService.sentExperimentResults(experimentResultsEntity,
                                 experimentHistory, ExperimentResultsRequestSource.SYSTEM));
@@ -152,20 +152,5 @@ public class ExperimentScheduler {
         log.trace("Obtained {} experiments to remove data", experiments.size());
         experiments.forEach(experimentService::removeExperimentData);
         log.info("Experiments data removing has been finished.");
-    }
-
-    private List<ExperimentResultsEntity> saveExperimentResultsToErsSent(Experiment experiment,
-                                                                         ExperimentHistory experimentHistory) {
-        List<EvaluationResults> evaluationResultsList = experimentHistory.getExperiment();
-        int resultsSize = Integer.min(evaluationResultsList.size(), experimentConfig.getResultSizeToSend());
-        List<ExperimentResultsEntity> experimentResultsEntities = IntStream.range(0, resultsSize).mapToObj(i -> {
-            EvaluationResults evaluationResults = evaluationResultsList.get(i);
-            ExperimentResultsEntity experimentResultsEntity =
-                    experimentResultsMapper.map(evaluationResults);
-            experimentResultsEntity.setExperiment(experiment);
-            experimentResultsEntity.setResultsIndex(i);
-            return experimentResultsEntity;
-        }).collect(Collectors.toList());
-        return experimentResultsEntityRepository.saveAll(experimentResultsEntities);
     }
 }
