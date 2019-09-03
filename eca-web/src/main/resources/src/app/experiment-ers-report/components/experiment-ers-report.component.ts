@@ -83,7 +83,7 @@ export class ExperimentErsReportComponent implements OnInit {
     this.experimentResultsColumns = [
       { name: "resultsIndex", label: "№" },
       { name: "classifierName", label: "Классификатор" },
-      { name: "pctCorrect", label: "Точность классификатора, %" },
+      { name: "pctCorrect", label: "Точность, %" },
       { name: "sent", label: "Статус отправки в ERS" }
     ];
   }

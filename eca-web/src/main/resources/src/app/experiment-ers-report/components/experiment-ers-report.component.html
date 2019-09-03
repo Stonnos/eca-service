@@ -43,6 +43,9 @@
       </td>
     </tr>
   </ng-template>
+  <ng-template pTemplate="summary">
+    Отправлено результатов {{ experimentErsReport?.sentClassifiersCount }} из {{ experimentErsReport?.classifiersCount }}
+  </ng-template>
 </p-table>
 
 <div class="ui-g">
@@ -63,7 +66,7 @@
       type="button"
       [disabled]="!needSentToErs()"
       (click)="sentEvaluationResults()"
-      class="ml-auto">
+      class="mr-auto">
     </button>
   </div>
 </div>

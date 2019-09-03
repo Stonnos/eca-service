@@ -9,7 +9,7 @@
             </div>
             <div class="ui-g-6 text-left text-wrap">
               <ng-container [ngSwitch]="row.name">
-                <ng-container *ngSwitchCase="'requestId'">
+                <ng-container *ngSwitchCase="'uuid'">
                   <span class="text-bold">{{ experimentDto?.uuid }}</span>
                 </ng-container>
                 <ng-container *ngSwitchCase="'evaluationStatus'">

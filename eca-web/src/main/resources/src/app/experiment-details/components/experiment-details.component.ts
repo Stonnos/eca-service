@@ -52,16 +52,19 @@ export class ExperimentDetailsComponent implements OnInit {
   }
 
   public getExperimentValue(row: string) {
-    switch (row) {
-      case "evaluationMethod":
-        return this.experimentDto.evaluationMethod.description;
-      case "experimentStatus":
-        return this.experimentDto.experimentStatus.description;
-      case "experimentType":
-        return this.experimentDto.experimentType.description;
-      default:
-        return this.experimentDto[row];
+    if (this.experimentDto) {
+      switch (row) {
+        case "evaluationMethod":
+          return this.experimentDto.evaluationMethod.description;
+        case "experimentStatus":
+          return this.experimentDto.experimentStatus.description;
+        case "experimentType":
+          return this.experimentDto.experimentType.description;
+        default:
+          return this.experimentDto[row];
+      }
     }
+    return null;
   }
 
   private initExperimentFields(): void {
