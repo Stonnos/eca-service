@@ -107,12 +107,4 @@
             <where>global_filter_template_id = 2 and field_name = 'classifierName'</where>
         </update>
     </changeSet>
-
-    <changeSet id="9" author="roman.batygin@mail.ru" context="schema">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="classifier_input_options"/>
-            <columnExists tableName="classifier_input_options" columnName="classifier_info_id"/>
-        </preConditions>
-        <addNotNullConstraint tableName="classifier_input_options" columnName="classifier_info_id"/>
-    </changeSet>
 </databaseChangeLog>

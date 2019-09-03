@@ -19,7 +19,7 @@
             <column name="classifier_info_id" type="bigint">
                 <constraints foreignKeyName="fk_experiment_results_classifier_info_id"
                              referencedTableName="classifier_info"
-                             referencedColumnNames="id" nullable="false"/>
+                             referencedColumnNames="id" nullable="true"/>
             </column>
             <column name="pct_correct" type="numeric(19,4)"/>
             <column name="experiment_id" type="bigint">
