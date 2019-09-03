@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  ExperimentDto
+  ExperimentDto, ExperimentErsReportDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { MessageService } from "primeng/api";
 import { ActivatedRoute } from "@angular/router";
@@ -19,7 +19,9 @@ export class ExperimentDetailsComponent implements OnInit {
 
   public experimentDto: ExperimentDto;
 
-  public constructor(private experimentService: ExperimentsService,
+  public experimentErsReport: ExperimentErsReportDto;
+
+  public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService,
                      private route: ActivatedRoute) {
     this.experimentUuid = this.route.snapshot.params.id;
@@ -28,12 +30,22 @@ export class ExperimentDetailsComponent implements OnInit {
 
   public ngOnInit(): void {
     this.getExperiment();
+    this.getExperimentErsReport();
   }
 
   public getExperiment(): void {
-    this.experimentService.getExperiment(this.experimentUuid)
+    this.experimentsService.getExperiment(this.experimentUuid)
       .subscribe((experimentDto: ExperimentDto) => {
         this.experimentDto = experimentDto;
+      }, (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      });
+  }
+
+  public getExperimentErsReport(): void {
+    this.experimentsService.getExperimentErsReport(this.experimentUuid)
+      .subscribe((experimentErsReport: ExperimentErsReportDto) => {
+        this.experimentErsReport = experimentErsReport;
       }, (error) => {
         this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
       });

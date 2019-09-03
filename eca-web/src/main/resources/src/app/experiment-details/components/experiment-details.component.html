@@ -32,10 +32,10 @@
 
     <div class="col-7">
       <div class="h-100 details-panel">
-        <p-fieldset legend="Статистика" class="details-fieldset">
-          <app-evaluation-results
-            [evaluationResults]="evaluationLogDetails?.evaluationResultsDto">
-          </app-evaluation-results>
+        <p-fieldset legend="История эксперимента" class="details-fieldset">
+          <app-experiment-ers-report
+            [experimentErsReport]="experimentErsReport">
+          </app-experiment-ers-report>
         </p-fieldset>
       </div>
     </div>

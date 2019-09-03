@@ -64,7 +64,7 @@ export class ExperimentsService {
     return this.http.get<Blob>(this.serviceUrl + '/training-data/' + uuid, options);
   }
 
-  public getErsReport(uuid: string): Observable<ExperimentErsReportDto> {
+  public getExperimentErsReport(uuid: string): Observable<ExperimentErsReportDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)

@@ -1,7 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import {
   CreateExperimentResultDto,
-  ExperimentErsReportDto,
   ExperimentDto, FilterDictionaryDto, FilterDictionaryValueDto, FilterFieldDto, PageDto,
   PageRequestDto, RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -13,6 +12,7 @@ import { Observable } from "rxjs/internal/Observable";
 import { FilterService } from "../../filter/services/filter.service";
 import { finalize } from "rxjs/internal/operators";
 import { ExperimentRequest } from "../../create-experiment/model/experiment-request.model";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-experiment-list',
@@ -21,9 +21,11 @@ import { ExperimentRequest } from "../../create-experiment/model/experiment-requ
 })
 export class ExperimentListComponent extends BaseListComponent<ExperimentDto> implements OnInit {
 
+  private experimentDetailsUrl: string = '/dashboard/experiment/details';
+
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
-  public experimentErsReportDto: ExperimentErsReportDto;
-  public ersReportVisibility: boolean = false;
+//  public experimentErsReportDto: ExperimentErsReportDto;
+//  public ersReportVisibility: boolean = false;
   public createExperimentDialogVisibility: boolean = false;
 
   public lastCreatedExperimentUuid: string;
@@ -36,7 +38,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public constructor(private injector: Injector,
                      private experimentsService: ExperimentsService,
-                     private filterService: FilterService) {
+                     private filterService: FilterService,
+                     private router: Router) {
     super(injector.get(MessageService));
     this.defaultSortField = "creationDate";
     this.linkColumns = ["trainingDataAbsolutePath", "experimentAbsolutePath", "uuid"];
@@ -84,14 +87,14 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public onLink(column: string, experiment: ExperimentDto) {
     switch (column) {
-      case this.linkColumns[0]:
+      case "trainingDataAbsolutePath":
         this.getExperimentTrainingDataFile(experiment);
         break;
-      case this.linkColumns[1]:
+      case "experimentAbsolutePath":
         this.getExperimentResultsFile(experiment);
         break;
-      case this.linkColumns[2]:
-        this.getErsReport(experiment);
+      case "uuid":
+        this.router.navigate([this.experimentDetailsUrl, experiment.uuid]);
         break;
     }
   }
@@ -126,7 +129,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       });
   }
 
-  public getErsReport(experiment: ExperimentDto): void {
+  /*public getErsReport(experiment: ExperimentDto): void {
     this.loading = true;
     this.experimentsService.getErsReport(experiment.uuid)
       .pipe(
@@ -144,7 +147,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public onErsReportVisibilityChange(visible): void {
     this.ersReportVisibility = visible;
-  }
+  }*/
 
   public onCreateExperimentDialogVisibility(visible): void {
     this.createExperimentDialogVisibility = visible;
@@ -180,7 +183,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     this.createExperimentDialogVisibility = true;
   }
 
-  public onEvaluationResultsSent(experimentUuid: string) {
+  /*public onEvaluationResultsSent(experimentUuid: string) {
     this.loading = true;
     this.experimentsService.sentEvaluationResults(experimentUuid)
       .pipe(
@@ -194,7 +197,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     });
-  }
+  }*/
 
   public getFilterFields() {
     this.filterService.getExperimentFilterFields().subscribe((filterFields: FilterFieldDto[]) => {

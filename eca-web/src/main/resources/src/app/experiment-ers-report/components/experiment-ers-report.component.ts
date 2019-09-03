@@ -1,7 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {
-  ExperimentErsReportDto
+  ExperimentErsReportDto, ExperimentResultsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import { ExperimentsService } from "../../experiments/services/experiments.service";
+import { finalize } from "rxjs/operators";
+import { MessageService } from "primeng/api";
+import {OverlayPanel} from "primeng/primeng";
 
 @Component({
   selector: 'app-experiment-ers-report',
@@ -11,30 +15,76 @@ import {
 export class ExperimentErsReportComponent implements OnInit {
 
   @Input()
-  public visible: boolean = false;
-
-  @Input()
   public experimentErsReport: ExperimentErsReportDto;
 
-  @Output()
-  public visibilityChange: EventEmitter<boolean> = new EventEmitter();
+  public linkColumns: string[] = [];
+  public experimentResultsColumns: any[] = [];
 
-  @Output()
-  public sent: EventEmitter<string> = new EventEmitter();
+  public selectedExperimentResults: ExperimentResultsDto;
+
+  public constructor(private experimentsService: ExperimentsService,
+                     private messageService: MessageService) {
+    this.initExperimentResultsColumns();
+    this.linkColumns = ["resultsIndex", "classifierName"];
+  }
 
   public ngOnInit(): void {
   }
 
-  public canSent(): boolean {
+  public isLink(column: string): boolean {
+    return this.linkColumns.includes(column);
+  }
+
+  public onSelect(event, experimentResults: ExperimentResultsDto, column: string, overlayPanel: OverlayPanel): void {
+    if (column == "resultsIndex") {
+      //TODO
+    } else {
+      this.toggleOverlayPanel(event, experimentResults, overlayPanel);
+    }
+  }
+
+  public needSentToErs(): boolean {
     return this.experimentErsReport && this.experimentErsReport.ersReportStatus.value == "NEED_SENT";
   }
 
-  public hide(): void {
-    this.visibilityChange.emit(false);
+  public sentEvaluationResults(): void {
+   // this.loading = true;
+    /*this.experimentsService.sentEvaluationResults(this.experimentUuid)
+      .pipe(
+        finalize(() => {
+        //  this.loading = false;
+        })
+      )
+      .subscribe(data => {
+        this.messageService.add({ severity: 'success',
+          summary: `Запрос в ERS на сохранение классификаторов для эксперимента ${this.experimentUuid} был успешно создан`, detail: '' });
+      }, (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      });*/
   }
 
-  public sentEvaluationResults(): void {
-    this.sent.emit(this.experimentErsReport.experimentUuid);
-    this.hide();
+  public getColumnValue(column: string, item: ExperimentResultsDto) {
+    switch (column) {
+      case "classifierName":
+        return item.classifierInfo.classifierName;
+      case "sent":
+        return item.sent ? "Результаты отправлены" : "Результаты не отправлены";
+      default:
+        return item[column];
+    }
+  }
+
+  private toggleOverlayPanel(event, experimentResults: ExperimentResultsDto, overlayPanel: OverlayPanel): void {
+    this.selectedExperimentResults = experimentResults;
+    overlayPanel.toggle(event);
+  }
+
+  private initExperimentResultsColumns() {
+    this.experimentResultsColumns = [
+      { name: "resultsIndex", label: "№" },
+      { name: "classifierName", label: "Классификатор" },
+      { name: "pctCorrect", label: "Точность классификатора, %" },
+      { name: "sent", label: "Статус отправки в ERS" }
+    ];
   }
 }
