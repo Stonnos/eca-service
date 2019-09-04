@@ -62,11 +62,17 @@
   <div class="ui-g-12">
     <button
       pButton
-      label="Отправить"
       type="button"
-      [disabled]="!needSentToErs()"
+      [disabled]="loading || !needSentToErs()"
       (click)="sentEvaluationResults()"
       class="m-auto">
+      <span class="sent-button-text" *ngIf="!loading">Отправить</span>
+      <p-progressSpinner
+        *ngIf="loading"
+        class="sent-button-progress-spinner"
+        strokeWidth="4"
+        animationDuration=".5s">
+      </p-progressSpinner>
     </button>
   </div>
 
@@ -94,71 +100,3 @@
     </p-scrollPanel>
   </p-dialog>
 </div>
-<!--<p-dialog
-  [(visible)]="visible"
-  header="Статистика запросов в ERS"
-  width="700"
-  appendTo="body"
-  [modal]="true"
-  [blockScroll]="false"
-  [draggable]="false"
-  [resizable]="false"
-  (onHide)="hide()">
-
-  <div class="ui-g">
-    <div class="ui-g-6 text-right text-bold text-wrap">
-      UUID эксперимента:
-    </div>
-    <div class="ui-g-6 text-left text-wrap text-bold">
-      {{ experimentErsReport?.experimentUuid }}
-    </div>
-  </div>
-
-  <div class="ui-g">
-    <div class="ui-g-6 text-right text-bold text-wrap">
-      Число запросов в ERS на сохранение классификаторов:
-    </div>
-    <div class="ui-g-6 text-left text-wrap">
-
-    </div>
-  </div>
-
-  <div class="ui-g">
-    <div class="ui-g-6 text-right text-bold text-wrap">
-      Число успешно сохраненных классификаторов:
-    </div>
-    <div class="ui-g-6 text-left text-wrap">
-
-    </div>
-  </div>
-
-  <div class="ui-g">
-    <div class="ui-g-6 text-right text-bold text-wrap">
-      Число неудачных запросов:
-    </div>
-    <div class="ui-g-6 text-left text-wrap">
-
-    </div>
-  </div>
-
-  <div class="ui-g">
-    <div class="ui-g-12 text-center text-wrap">
-      <div [class.text-success]="experimentErsReport?.ersReportStatus.value == 'SUCCESS_SENT'"
-           [class.text-info]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_IN_PROGRESS' || experimentErsReport?.ersReportStatus.value == 'NEED_SENT'"
-           [class.text-danger]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_ERROR' || experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_DELETED'">
-        {{ experimentErsReport?.ersReportStatus.description }}
-      </div>
-    </div>
-  </div>
-
-  <p-footer>
-    <button
-      pButton
-      label="Отправить запрос"
-      type="button"
-      [disabled]="!canSent()"
-      (click)="sentEvaluationResults()"
-      class="ml-auto">
-    </button>
-  </p-footer>
-</p-dialog>-->

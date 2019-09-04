@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   ClassifierInfoDto,
   ExperimentErsReportDto, ExperimentResultsDto
@@ -6,7 +6,6 @@ import {
 import { ExperimentsService } from "../../experiments/services/experiments.service";
 import { finalize } from "rxjs/operators";
 import { MessageService } from "primeng/api";
-import { OverlayPanel } from "primeng/primeng";
 
 @Component({
   selector: 'app-experiment-ers-report',
@@ -18,12 +17,17 @@ export class ExperimentErsReportComponent implements OnInit {
   @Input()
   public experimentErsReport: ExperimentErsReportDto;
 
+  @Output()
+  public evaluationResultsSent: EventEmitter<void> = new EventEmitter();
+
   public linkColumns: string[] = [];
   public experimentResultsColumns: any[] = [];
 
   public selectedClassifierInfo: ClassifierInfoDto;
 
   public classifierOptionsDialogVisibility: boolean = false;
+
+  public loading: boolean = false;
 
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService) {
@@ -56,19 +60,20 @@ export class ExperimentErsReportComponent implements OnInit {
   }
 
   public sentEvaluationResults(): void {
-   // this.loading = true;
-    /*this.experimentsService.sentEvaluationResults(this.experimentUuid)
+    this.loading = true;
+    this.experimentsService.sentEvaluationResults(this.experimentErsReport.experimentUuid)
       .pipe(
         finalize(() => {
-        //  this.loading = false;
+          this.loading = false;
         })
       )
       .subscribe(data => {
         this.messageService.add({ severity: 'success',
-          summary: `Запрос в ERS на сохранение классификаторов для эксперимента ${this.experimentUuid} был успешно создан`, detail: '' });
+          summary: `Запрос в ERS на сохранение классификаторов для эксперимента ${this.experimentErsReport.experimentUuid} был успешно создан`, detail: '' });
+        this.evaluationResultsSent.emit();
       }, (error) => {
         this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-      });*/
+      });
   }
 
   public getColumnValue(column: string, item: ExperimentResultsDto) {
