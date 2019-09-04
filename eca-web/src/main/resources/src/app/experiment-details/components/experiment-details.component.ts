@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  ExperimentDto, ExperimentErsReportDto
+  ExperimentDto,
+  ExperimentErsReportDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { MessageService } from "primeng/api";
 import { ActivatedRoute } from "@angular/router";
 import { ExperimentsService } from "../../experiments/services/experiments.service";
+import { saveAs } from 'file-saver/dist/FileSaver';
 
 @Component({
   selector: 'app-experiment-details',
@@ -21,11 +23,14 @@ export class ExperimentDetailsComponent implements OnInit {
 
   public experimentErsReport: ExperimentErsReportDto;
 
+  public linkColumns: string[] = [];
+
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService,
                      private route: ActivatedRoute) {
     this.experimentUuid = this.route.snapshot.params.id;
     this.initExperimentFields();
+    this.linkColumns = ["trainingDataAbsolutePath", "experimentAbsolutePath"];
   }
 
   public ngOnInit(): void {
@@ -38,7 +43,25 @@ export class ExperimentDetailsComponent implements OnInit {
       .subscribe((experimentDto: ExperimentDto) => {
         this.experimentDto = experimentDto;
       }, (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
+      });
+  }
+
+  public getExperimentTrainingDataFile(): void {
+    this.experimentsService.getExperimentTrainingDataFile(this.experimentDto.uuid)
+      .subscribe((blob: Blob) => {
+        saveAs(blob, this.experimentDto.trainingDataAbsolutePath);
+      }, (error) => {
+        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
+      });
+  }
+
+  public getExperimentResultsFile(): void {
+    this.experimentsService.getExperimentResultsFile(this.experimentDto.uuid)
+      .subscribe((blob: Blob) => {
+        saveAs(blob, this.experimentDto.experimentAbsolutePath);
+      }, (error) => {
+        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
       });
   }
 
@@ -47,8 +70,25 @@ export class ExperimentDetailsComponent implements OnInit {
       .subscribe((experimentErsReport: ExperimentErsReportDto) => {
         this.experimentErsReport = experimentErsReport;
       }, (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
       });
+  }
+
+  public isLink(column: string): boolean {
+    return this.linkColumns.includes(column);
+  }
+
+  public onLink(row: string) {
+    switch (row) {
+      case "trainingDataAbsolutePath":
+        this.getExperimentTrainingDataFile();
+        break;
+      case "experimentAbsolutePath":
+        this.getExperimentResultsFile();
+        break;
+      default:
+        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${row} as link`});
+    }
   }
 
   public getExperimentValue(row: string) {

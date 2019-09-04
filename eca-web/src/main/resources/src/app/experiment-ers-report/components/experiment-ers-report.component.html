@@ -18,7 +18,7 @@
     <tr>
       <td *ngFor="let column of experimentResultsColumns">
         <a class="link" [routerLink]="" *ngIf="isLink(column.name)"
-           (click)="onSelect($event, item, column.name)">
+           (click)="onLink(item, column.name)">
           {{ getColumnValue(column.name, item) }}
         </a>
         <div *ngIf="!isLink(column.name)">

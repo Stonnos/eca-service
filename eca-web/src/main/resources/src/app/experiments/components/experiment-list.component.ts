@@ -96,6 +96,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       case "uuid":
         this.router.navigate([this.experimentDetailsUrl, experiment.uuid]);
         break;
+      default:
+        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${column} as link`});
     }
   }
 

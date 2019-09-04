@@ -42,7 +42,7 @@ export class ExperimentErsReportComponent implements OnInit {
     return this.linkColumns.includes(column);
   }
 
-  public onSelect(event, experimentResults: ExperimentResultsDto, column: string): void {
+  public onLink(experimentResults: ExperimentResultsDto, column: string): void {
     if (column == "resultsIndex") {
       //TODO
     } else if (column == "classifierName") {
