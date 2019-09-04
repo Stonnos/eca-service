@@ -30,3 +30,13 @@
   margin-top: 5px;
   font-size: 12px;
 }
+
+.request-status {
+  border-radius: 4px;
+  width: 200px;
+  text-align: center;
+}
+
+.request-status-width {
+  width: 150px;
+}

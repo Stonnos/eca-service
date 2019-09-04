@@ -63,12 +63,13 @@
               <div *ngIf="!isLink(column.name)">
                 <ng-container [ngSwitch]="column.name">
                   <ng-container *ngSwitchCase="'evaluationStatus'">
-                    <span [class.text-info]="item.evaluationStatus.value == 'NEW'"
-                          [class.text-success]="item.evaluationStatus.value == 'FINISHED'"
-                          [class.text-warning]="item.evaluationStatus.value == 'TIMEOUT'"
-                          [class.text-danger]="item.evaluationStatus.value == 'ERROR'">
+                    <div class="text-white request-status"
+                         [class.text-info]="item.evaluationStatus.value == 'NEW'"
+                         [class.text-success]="item.evaluationStatus.value == 'FINISHED'"
+                         [class.text-warning]="item.evaluationStatus.value == 'TIMEOUT'"
+                         [class.text-danger]="item.evaluationStatus.value == 'ERROR'">
                       {{ getColumnValue(column.name, item) }}
-                    </span>
+                    </div>
                   </ng-container>
                   <ng-container *ngSwitchDefault>
                     <span>{{ getColumnValue(column.name, item) }}</span>

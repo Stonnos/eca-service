@@ -8,7 +8,8 @@
   <div class="row mt-2">
     <div class="col">
       <div class="details-panel">
-        <h6 class="ml-4 mt-2 mb-2">Классификатор - {{ evaluationLogDetails?.classifierInfo?.classifierName }}</h6>
+        <h6 class="ml-4 mt-2 mb-2">Информация о классификаторе
+          - {{ evaluationLogDetails?.classifierInfo?.classifierName }}</h6>
       </div>
     </div>
   </div>
@@ -26,12 +27,13 @@
                   <span class="text-bold">{{ evaluationLogDetails?.requestId }}</span>
                 </ng-container>
                 <ng-container *ngSwitchCase="'evaluationStatus'">
-                  <span [class.text-info]="evaluationLogDetails?.evaluationStatus.value == 'NEW'"
-                        [class.text-success]="evaluationLogDetails?.evaluationStatus.value == 'FINISHED'"
-                        [class.text-warning]="evaluationLogDetails?.evaluationStatus.value == 'TIMEOUT'"
-                        [class.text-danger]="evaluationLogDetails?.evaluationStatus.value == 'ERROR'">
-                      {{ evaluationLogDetails?.evaluationStatus.description }}
-                  </span>
+                  <div class="text-white request-status"
+                       [class.text-info]="evaluationLogDetails?.evaluationStatus.value == 'NEW'"
+                       [class.text-success]="evaluationLogDetails?.evaluationStatus.value == 'FINISHED'"
+                       [class.text-warning]="evaluationLogDetails?.evaluationStatus.value == 'TIMEOUT'"
+                       [class.text-danger]="evaluationLogDetails?.evaluationStatus.value == 'ERROR'">
+                    {{ evaluationLogDetails?.evaluationStatus.description }}
+                  </div>
                 </ng-container>
                 <ng-container *ngSwitchDefault>
                   {{ getEvaluationLogValue(row.name) }}

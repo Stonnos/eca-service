@@ -2,7 +2,7 @@
   <div class="row mt-2">
     <div class="col">
       <div class="details-panel">
-        <h6 class="ml-4 mt-2 mb-2">Заявка на эксперимент - {{ experimentDto?.experimentType?.description }}</h6>
+        <h6 class="ml-4 mt-2 mb-2">Информация о заявке на эксперимент - {{ experimentDto?.experimentType?.description }}</h6>
       </div>
     </div>
   </div>
@@ -25,12 +25,13 @@
                     <span class="text-bold">{{ experimentDto?.uuid }}</span>
                   </ng-container>
                   <ng-container *ngSwitchCase="'experimentStatus'">
-                  <span [class.text-info]="experimentDto?.experimentStatus.value == 'NEW'"
-                        [class.text-success]="experimentDto?.experimentStatus.value == 'FINISHED'"
-                        [class.text-warning]="experimentDto?.experimentStatus.value == 'TIMEOUT'"
-                        [class.text-danger]="experimentDto?.experimentStatus.value == 'ERROR'">
+                    <div class="text-white request-status"
+                         [class.bg-info]="experimentDto?.experimentStatus.value == 'NEW'"
+                         [class.bg-success]="experimentDto?.experimentStatus.value == 'FINISHED'"
+                         [class.bg-warning]="experimentDto?.experimentStatus.value == 'TIMEOUT'"
+                         [class.bg-danger]="experimentDto?.experimentStatus.value == 'ERROR'">
                       {{ experimentDto?.experimentStatus.description }}
-                  </span>
+                    </div>
                   </ng-container>
                   <ng-container *ngSwitchDefault>
                     {{ getExperimentValue(row.name) }}

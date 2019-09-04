@@ -24,8 +24,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   private experimentDetailsUrl: string = '/dashboard/experiments/details';
 
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
-//  public experimentErsReportDto: ExperimentErsReportDto;
-//  public ersReportVisibility: boolean = false;
+
   public createExperimentDialogVisibility: boolean = false;
 
   public lastCreatedExperimentUuid: string;
@@ -131,26 +130,6 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       });
   }
 
-  /*public getErsReport(experiment: ExperimentDto): void {
-    this.loading = true;
-    this.experimentsService.getErsReport(experiment.uuid)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
-      .subscribe((ersReport: ExperimentErsReportDto) => {
-        this.experimentErsReportDto = ersReport;
-        this.ersReportVisibility = true;
-      }, (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-      });
-  }
-
-  public onErsReportVisibilityChange(visible): void {
-    this.ersReportVisibility = visible;
-  }*/
-
   public onCreateExperimentDialogVisibility(visible): void {
     this.createExperimentDialogVisibility = visible;
   }
@@ -184,22 +163,6 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   public showCreateExperimentDialog(): void {
     this.createExperimentDialogVisibility = true;
   }
-
-  /*public onEvaluationResultsSent(experimentUuid: string) {
-    this.loading = true;
-    this.experimentsService.sentEvaluationResults(experimentUuid)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
-      .subscribe(data => {
-        this.messageService.add({ severity: 'success',
-          summary: `Запрос в ERS на сохранение классификаторов для эксперимента ${experimentUuid} был успешно создан`, detail: '' });
-      }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-    });
-  }*/
 
   public getFilterFields() {
     this.filterService.getExperimentFilterFields().subscribe((filterFields: FilterFieldDto[]) => {
