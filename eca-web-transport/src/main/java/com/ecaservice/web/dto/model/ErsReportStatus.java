@@ -10,7 +10,7 @@ import com.ecaservice.web.dto.dictionary.ErsReportStatusDictionary;
 public enum ErsReportStatus {
 
     /**
-     * Experiment results has been sent to ERS service
+     * All experiment results has been sent to ERS service
      */
     SUCCESS_SENT(ErsReportStatusDictionary.SUCCESS_SENT_DESCRIPTION),
 
@@ -25,12 +25,17 @@ public enum ErsReportStatus {
     EXPERIMENT_ERROR(ErsReportStatusDictionary.EXPERIMENT_ERROR_DESCRIPTION),
 
     /**
-     * Experiment results hasn't been sent to ERS service and deleted
+     * Experiment results for sending to ERS not found
+     */
+    EXPERIMENT_RESULTS_NOT_FOUND(ErsReportStatusDictionary.EXPERIMENT_RESULTS_NOT_FOUND_DESCRIPTION),
+
+    /**
+     * No experiment results were sent to ERS service and experiment files were deleted
      */
     EXPERIMENT_DELETED(ErsReportStatusDictionary.EXPERIMENT_DELETED_DESCRIPTION),
 
     /**
-     * Experiment results needs sending to ERS service
+     * Some experiment results must be sent to ERS service
      */
     NEED_SENT(ErsReportStatusDictionary.NEED_SENT_DESCRIPTION);
 

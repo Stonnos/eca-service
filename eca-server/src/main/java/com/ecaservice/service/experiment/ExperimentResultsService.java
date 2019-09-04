@@ -142,6 +142,8 @@ public class ExperimentResultsService {
             ersReportStatus = RequestStatus.NEW.equals(experiment.getExperimentStatus()) ?
                     ErsReportStatus.EXPERIMENT_IN_PROGRESS : ErsReportStatus.EXPERIMENT_ERROR;
             //else handle ERS report status for experiment with FINISHED status
+        } else if (experimentErsReportDto.getClassifiersCount() == 0L) {
+            ersReportStatus = ErsReportStatus.EXPERIMENT_RESULTS_NOT_FOUND;
         } else if (experimentErsReportDto.getSentClassifiersCount() == experimentErsReportDto.getClassifiersCount()) {
             ersReportStatus = ErsReportStatus.SUCCESS_SENT;
         } else if (experiment.getDeletedDate() != null) {

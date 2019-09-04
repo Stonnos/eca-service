@@ -137,6 +137,13 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
     }
 
     @Test
+    public void testErsReportWithExperimentResultsNotFoundStatus() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        experimentRepository.save(experiment);
+        testGetErsReport(experiment, ErsReportStatus.EXPERIMENT_RESULTS_NOT_FOUND);
+    }
+
+    @Test
     public void testErsReportWithNeedSentStatus() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experimentRepository.save(experiment);
