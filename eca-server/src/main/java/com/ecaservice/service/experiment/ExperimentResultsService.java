@@ -80,6 +80,7 @@ public class ExperimentResultsService {
      */
     public List<ExperimentResultsEntity> saveExperimentResultsToErsSent(Experiment experiment,
                                                                         ExperimentHistory experimentHistory) {
+        log.info("Starting to save experiment [{}] results to ERS sent", experiment.getUuid());
         List<EvaluationResults> evaluationResultsList = experimentHistory.getExperiment();
         int resultsSize = Integer.min(evaluationResultsList.size(), experimentConfig.getResultSizeToSend());
         List<ExperimentResultsEntity> experimentResultsEntities = IntStream.range(0, resultsSize).mapToObj(i -> {
