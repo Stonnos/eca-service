@@ -58,45 +58,43 @@
   </div>
 </div>
 
-<div class="ui-g">
-  <div class="ui-g-12">
-    <button
-      pButton
-      type="button"
-      [disabled]="loading || !needSentToErs()"
-      (click)="sentEvaluationResults()"
-      class="m-auto">
-      <span class="sent-button-text" *ngIf="!loading">Отправить</span>
-      <p-progressSpinner
-        *ngIf="loading"
-        class="sent-button-progress-spinner"
-        strokeWidth="4"
-        animationDuration=".5s">
-      </p-progressSpinner>
-    </button>
-  </div>
-
-  <p-dialog
-    [(visible)]="classifierOptionsDialogVisibility"
-    [header]="selectedClassifierInfo?.classifierName"
-    [width]="600"
-    appendTo="body"
-    [modal]="true"
-    [blockScroll]="false"
-    [draggable]="false"
-    [resizable]="false"
-    (onHide)="hideClassifierOptionsDialog()">
-    <p-scrollPanel [style]="{width: '100%', height: '500px'}">
-      <ng-container *ngFor="let option of selectedClassifierInfo?.inputOptions">
-        <div class="ui-g">
-          <div class="ui-g-6 text-right text-bold text-wrap">
-            {{ option.optionName }}
-          </div>
-          <div class="ui-g-6 text-left text-wrap">
-            {{ option.optionValue }}
-          </div>
-        </div>
-      </ng-container>
-    </p-scrollPanel>
-  </p-dialog>
+<div class="ui-g-4 offset-4">
+  <button
+    pButton
+    type="button"
+    [disabled]="loading || !needSentToErs()"
+    (click)="sentEvaluationResults()"
+    class="sent-button w-100">
+    <span class="sent-button-text" *ngIf="!loading">Отправить</span>
+    <p-progressSpinner
+      *ngIf="loading"
+      class="sent-button-progress-spinner"
+      strokeWidth="4"
+      animationDuration=".5s">
+    </p-progressSpinner>
+  </button>
 </div>
+
+<p-dialog
+  [(visible)]="classifierOptionsDialogVisibility"
+  [header]="selectedClassifierInfo?.classifierName"
+  [width]="600"
+  appendTo="body"
+  [modal]="true"
+  [blockScroll]="false"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="hideClassifierOptionsDialog()">
+  <p-scrollPanel [style]="{width: '100%', minHeight: '200px', maxHeight: '500px'}">
+    <ng-container *ngFor="let option of selectedClassifierInfo?.inputOptions">
+      <div class="ui-g">
+        <div class="ui-g-6 text-right text-bold text-wrap">
+          {{ option.optionName }}
+        </div>
+        <div class="ui-g-6 text-left text-wrap">
+          {{ option.optionValue }}
+        </div>
+      </div>
+    </ng-container>
+  </p-scrollPanel>
+</p-dialog>

@@ -9,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.util.List;
 
@@ -35,6 +34,5 @@ public class ClassifierInfo {
      */
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "classifier_info_id")
-    @OrderBy("optionOrder")
     private List<ClassifierInputOptions> classifierInputOptions;
 }

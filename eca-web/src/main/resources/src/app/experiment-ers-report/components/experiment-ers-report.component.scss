@@ -46,6 +46,10 @@
   -ms-transform: translate(-50%, -50%);
 }
 
+.sent-button {
+  height: 30px;
+}
+
 .sent-button-progress-spinner::ng-deep {
   .ui-progress-spinner {
     width: 30px;
