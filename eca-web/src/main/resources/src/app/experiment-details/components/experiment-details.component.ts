@@ -110,7 +110,6 @@ export class ExperimentDetailsComponent implements OnInit {
   private initExperimentFields(): void {
     this.experimentFields = [
       { name: "uuid", label: "UUID заявки" },
-      { name: "experimentType", label: "Тип эксперимента" },
       { name: "experimentStatus", label: "Статус заявки" },
       { name: "evaluationMethod", label: "Метод оценки точности" },
       { name: "email", label: "Email заявки" },

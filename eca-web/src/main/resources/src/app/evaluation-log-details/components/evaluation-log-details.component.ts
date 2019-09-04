@@ -77,7 +77,6 @@ export class EvaluationLogDetailsComponent implements OnInit {
   private initEvaluationLogFields(): void {
     this.evaluationLogFields = [
       { name: "requestId", label: "UUID заявки:" },
-      { name: "classifierInfo.classifierName", label: "Классификатор:" },
       { name: "evaluationStatus", label: "Статус заявки:" },
       { name: "instancesInfo.relationName", label: "Обучающая выборка:" },
       { name: "instancesInfo.numInstances", label: "Число объектов:" },
