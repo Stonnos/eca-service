@@ -1,0 +1,61 @@
+<p-progressSpinner
+  class="app-progress-spinner"
+  strokeWidth="4"
+  animationDuration=".5s"
+  *ngIf="loading">
+</p-progressSpinner>
+<div *ngIf="!loading" class="container-fluid">
+  <div class="row mt-2">
+    <div class="col">
+      <div class="details-panel">
+        <h6 class="ml-4 mt-2 mb-2">Информация о классификаторе
+          - {{ experimentResultsDetailsDto?.classifierInfo?.classifierName }}</h6>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-1">
+    <div class="col-5">
+      <div class="h-100 details-panel">
+        <p-fieldset legend="Информация об эксперименте" class="details-fieldset">
+          <div class="ui-g" *ngFor="let field of experimentFields">
+            <div class="ui-g-6 text-left text-bold text-wrap">
+              {{ field.label }}
+            </div>
+            <div class="ui-g-6 text-left text-wrap">
+              <a class="link" [routerLink]="" *ngIf="isLink(field.name)"
+                 (click)="onLink(field.name)">
+                {{ getExperimentValue(field.name) }}
+              </a>
+              <div *ngIf="!isLink(field.name)">
+                {{ getExperimentValue(field.name) }}
+              </div>
+            </div>
+          </div>
+        </p-fieldset>
+
+        <p-fieldset legend="Входные параметры классификатора" class="details-fieldset">
+          <ng-container *ngFor="let option of experimentResultsDetailsDto?.classifierInfo?.inputOptions">
+            <div class="ui-g">
+              <div class="ui-g-6 text-left text-bold text-wrap">
+                {{ option.optionName }}
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ option.optionValue }}
+              </div>
+            </div>
+          </ng-container>
+        </p-fieldset>
+      </div>
+    </div>
+
+    <div class="col-7">
+      <div class="h-100 details-panel">
+        <p-fieldset legend="Статистика" class="details-fieldset">
+          <app-evaluation-results
+            [evaluationResults]="experimentResultsDetailsDto?.evaluationResultsDto">
+          </app-evaluation-results>
+        </p-fieldset>
+      </div>
+    </div>
+  </div>
+</div>

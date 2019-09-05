@@ -1,0 +1,45 @@
+.details-panel {
+  background: white;
+  padding: 2px;
+}
+
+.details-fieldset::ng-deep {
+
+  .ui-fieldset {
+    margin-top: 10px;
+  }
+
+  .ui-fieldset-legend {
+    font-weight: bold;
+    font-size: 16px;
+  }
+}
+
+.app-progress-spinner::ng-deep {
+  .ui-progress-spinner {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    margin-top: -150px;
+    width: 150px;
+    height: 150px;
+    z-index: 100000;
+  }
+
+  @keyframes ui-progress-spinner-color {
+    100%,
+    0% {
+      stroke: #416ee7;
+    }
+    40% {
+      stroke: #416ee7;
+    }
+    66% {
+      stroke: #416ee7;
+    }
+    80%,
+    90% {
+      stroke: #416ee7;
+    }
+  }
+}

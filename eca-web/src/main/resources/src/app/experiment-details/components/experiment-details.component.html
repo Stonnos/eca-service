@@ -10,17 +10,17 @@
     <div class="col-5">
       <div class="h-100 details-panel">
         <p-fieldset legend="Основная информация" class="details-fieldset">
-          <div class="ui-g" *ngFor="let row of experimentFields">
+          <div class="ui-g" *ngFor="let field of experimentFields">
             <div class="ui-g-6 text-left text-bold text-wrap">
-              {{ row.label }}
+              {{ field.label }}
             </div>
             <div class="ui-g-6 text-left text-wrap">
-              <a class="link" [routerLink]="" *ngIf="isLink(row.name)"
-                 (click)="onLink(row.name)">
-                {{ getExperimentValue(row.name) }}
+              <a class="link" [routerLink]="" *ngIf="isLink(field.name)"
+                 (click)="onLink(field.name)">
+                {{ getExperimentValue(field.name) }}
               </a>
-              <div *ngIf="!isLink(row.name)">
-                <ng-container [ngSwitch]="row.name">
+              <div *ngIf="!isLink(field.name)">
+                <ng-container [ngSwitch]="field.name">
                   <ng-container *ngSwitchCase="'uuid'">
                     <span class="text-bold">{{ experimentDto?.uuid }}</span>
                   </ng-container>
@@ -34,7 +34,7 @@
                     </div>
                   </ng-container>
                   <ng-container *ngSwitchDefault>
-                    {{ getExperimentValue(row.name) }}
+                    {{ getExperimentValue(field.name) }}
                   </ng-container>
                 </ng-container>
               </div>

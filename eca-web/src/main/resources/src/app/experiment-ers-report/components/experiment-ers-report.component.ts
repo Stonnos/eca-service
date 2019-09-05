@@ -5,6 +5,7 @@ import {
 import { ExperimentsService } from "../../experiments/services/experiments.service";
 import { finalize } from "rxjs/operators";
 import { MessageService } from "primeng/api";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-experiment-ers-report',
@@ -13,13 +14,15 @@ import { MessageService } from "primeng/api";
 })
 export class ExperimentErsReportComponent implements OnInit {
 
+  private readonly experimentResultsDetailsUrl: string = '/dashboard/experiments/results/details';
+
   @Input()
   public experimentErsReport: ExperimentErsReportDto;
 
   @Output()
   public evaluationResultsSent: EventEmitter<void> = new EventEmitter();
 
-  public linkColumns: string[] = [];
+  public linkColumns: string[] = ["resultsIndex", "classifierName"];
   public experimentResultsColumns: any[] = [];
 
   public selectedExperimentResults: ExperimentResultsDto;
@@ -29,9 +32,9 @@ export class ExperimentErsReportComponent implements OnInit {
   public loading: boolean = false;
 
   public constructor(private experimentsService: ExperimentsService,
-                     private messageService: MessageService) {
+                     private messageService: MessageService,
+                     private router: Router) {
     this.initExperimentResultsColumns();
-    this.linkColumns = ["resultsIndex", "classifierName"];
   }
 
   public ngOnInit(): void {
@@ -42,11 +45,16 @@ export class ExperimentErsReportComponent implements OnInit {
   }
 
   public onLink(experimentResults: ExperimentResultsDto, column: string): void {
-    if (column == "resultsIndex") {
-      //TODO
-    } else if (column == "classifierName") {
-      this.selectedExperimentResults = experimentResults;
-      this.classifierOptionsDialogVisibility = true;
+    switch (column) {
+      case "resultsIndex":
+        this.router.navigate([this.experimentResultsDetailsUrl, experimentResults.id]);
+        break;
+      case "classifierName":
+        this.selectedExperimentResults = experimentResults;
+        this.classifierOptionsDialogVisibility = true;
+        break;
+      default:
+        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${column} as link`});
     }
   }
 

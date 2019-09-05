@@ -17,12 +17,12 @@
     <div class="col-5">
       <div class="h-100 details-panel">
         <p-fieldset legend="Основная информация" class="details-fieldset">
-          <div class="ui-g" *ngFor="let row of evaluationLogFields">
+          <div class="ui-g" *ngFor="let field of evaluationLogFields">
             <div class="ui-g-6 text-left text-bold text-wrap">
-              {{ row.label }}
+              {{ field.label }}
             </div>
             <div class="ui-g-6 text-left text-wrap">
-              <ng-container [ngSwitch]="row.name">
+              <ng-container [ngSwitch]="field.name">
                 <ng-container *ngSwitchCase="'requestId'">
                   <span class="text-bold">{{ evaluationLogDetails?.requestId }}</span>
                 </ng-container>
@@ -36,7 +36,7 @@
                   </div>
                 </ng-container>
                 <ng-container *ngSwitchDefault>
-                  {{ getEvaluationLogValue(row.name) }}
+                  {{ getEvaluationLogValue(field.name) }}
                 </ng-container>
               </ng-container>
             </div>

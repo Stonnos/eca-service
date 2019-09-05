@@ -62,14 +62,14 @@ export class EvaluationLogDetailsComponent implements OnInit {
     }
   }
 
-  public getEvaluationLogValue(row: string) {
-    switch (row) {
+  public getEvaluationLogValue(field: string) {
+    switch (field) {
       case "evaluationMethod":
         return this.getEvaluationMethod();
       case "evaluationStatus":
         return this.evaluationLogDetails.evaluationStatus.description;
       default:
-        const tokens: string[] = row.split(".");
+        const tokens: string[] = field.split(".");
         return tokens.length == 2 ? this.evaluationLogDetails[tokens[0]][tokens[1]] : this.evaluationLogDetails[tokens[0]];
     }
   }

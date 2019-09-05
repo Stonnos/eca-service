@@ -6,7 +6,7 @@ import {
   ExperimentDto,
   PageDto,
   PageRequestDto,
-  RequestStatusStatisticsDto
+  RequestStatusStatisticsDto, ExperimentResultsDetailsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { ConfigService } from "../../config.service";
@@ -38,6 +38,14 @@ export class ExperimentsService {
       'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
     return this.http.get<ExperimentDto>(this.serviceUrl + '/details/' + uuid, { headers: headers });
+  }
+
+  public getExperimentResultsDetails(id: number): Observable<ExperimentResultsDetailsDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+    });
+    return this.http.get<ExperimentResultsDetailsDto>(this.serviceUrl + '/results/details/' + id, { headers: headers });
   }
 
   public getRequestStatusesStatistics(): Observable<RequestStatusStatisticsDto> {

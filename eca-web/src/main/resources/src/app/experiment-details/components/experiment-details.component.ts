@@ -23,14 +23,13 @@ export class ExperimentDetailsComponent implements OnInit {
 
   public experimentErsReport: ExperimentErsReportDto;
 
-  public linkColumns: string[] = [];
+  public linkColumns: string[] = ["trainingDataAbsolutePath", "experimentAbsolutePath"];
 
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService,
                      private route: ActivatedRoute) {
     this.experimentUuid = this.route.snapshot.params.id;
     this.initExperimentFields();
-    this.linkColumns = ["trainingDataAbsolutePath", "experimentAbsolutePath"];
   }
 
   public ngOnInit(): void {
@@ -74,12 +73,12 @@ export class ExperimentDetailsComponent implements OnInit {
       });
   }
 
-  public isLink(column: string): boolean {
-    return this.linkColumns.includes(column);
+  public isLink(field: string): boolean {
+    return this.linkColumns.includes(field);
   }
 
-  public onLink(row: string) {
-    switch (row) {
+  public onLink(field: string) {
+    switch (field) {
       case "trainingDataAbsolutePath":
         this.getExperimentTrainingDataFile();
         break;
@@ -87,13 +86,13 @@ export class ExperimentDetailsComponent implements OnInit {
         this.getExperimentResultsFile();
         break;
       default:
-        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${row} as link`});
+        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${field} as link`});
     }
   }
 
-  public getExperimentValue(row: string) {
+  public getExperimentValue(field: string) {
     if (this.experimentDto) {
-      switch (row) {
+      switch (field) {
         case "evaluationMethod":
           return this.experimentDto.evaluationMethod.description;
         case "experimentStatus":
@@ -101,7 +100,7 @@ export class ExperimentDetailsComponent implements OnInit {
         case "experimentType":
           return this.experimentDto.experimentType.description;
         default:
-          return this.experimentDto[row];
+          return this.experimentDto[field];
       }
     }
     return null;

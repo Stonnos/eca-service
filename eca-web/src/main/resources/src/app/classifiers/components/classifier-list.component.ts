@@ -20,7 +20,7 @@ import { Router } from "@angular/router";
 })
 export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto> {
 
-  private evaluationDetailsUrl: string = '/dashboard/classifiers/evaluation-results';
+  private readonly evaluationDetailsUrl: string = '/dashboard/classifiers/evaluation-results';
 
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
 
