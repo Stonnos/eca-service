@@ -1,7 +1,6 @@
 package com.ecaservice.service.experiment;
 
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.mapping.ExperimentResultsDetailsMapper;
 import com.ecaservice.mapping.ExperimentResultsMapper;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.Experiment;
@@ -42,7 +41,6 @@ public class ExperimentResultsService {
     private final ErsService ersService;
     private final ExperimentConfig experimentConfig;
     private final ExperimentResultsMapper experimentResultsMapper;
-    private final ExperimentResultsDetailsMapper experimentResultsDetailsMapper;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
     private final ExperimentResultsRequestRepository experimentResultsRequestRepository;
 
@@ -52,7 +50,6 @@ public class ExperimentResultsService {
      * @param ersService                         - ers service bean
      * @param experimentConfig                   - experiment config bean
      * @param experimentResultsMapper            - experiment results mapper bean
-     * @param experimentResultsDetailsMapper     - experiment results details mapper bean
      * @param experimentResultsEntityRepository  - experiment results entity repository bean
      * @param experimentResultsRequestRepository - experiment results request repository bean
      */
@@ -60,13 +57,11 @@ public class ExperimentResultsService {
     public ExperimentResultsService(ErsService ersService,
                                     ExperimentConfig experimentConfig,
                                     ExperimentResultsMapper experimentResultsMapper,
-                                    ExperimentResultsDetailsMapper experimentResultsDetailsMapper,
                                     ExperimentResultsEntityRepository experimentResultsEntityRepository,
                                     ExperimentResultsRequestRepository experimentResultsRequestRepository) {
         this.ersService = ersService;
         this.experimentConfig = experimentConfig;
         this.experimentResultsMapper = experimentResultsMapper;
-        this.experimentResultsDetailsMapper = experimentResultsDetailsMapper;
         this.experimentResultsEntityRepository = experimentResultsEntityRepository;
         this.experimentResultsRequestRepository = experimentResultsRequestRepository;
     }
@@ -102,7 +97,7 @@ public class ExperimentResultsService {
      */
     public ExperimentResultsDetailsDto getExperimentResultsDetails(ExperimentResultsEntity experimentResultsEntity) {
         ExperimentResultsDetailsDto experimentResultsDetailsDto =
-                experimentResultsDetailsMapper.map(experimentResultsEntity);
+                experimentResultsMapper.mapDetails(experimentResultsEntity);
         experimentResultsDetailsDto.setEvaluationResultsDto(getEvaluationResults(experimentResultsEntity));
         return experimentResultsDetailsDto;
     }
@@ -119,7 +114,8 @@ public class ExperimentResultsService {
         //Gets experiment results list
         List<ExperimentResultsEntity> experimentResultsEntityList =
                 experimentResultsEntityRepository.findByExperimentOrderByResultsIndex(experiment);
-        experimentErsReportDto.setExperimentResults(experimentResultsMapper.map(experimentResultsEntityList));
+        experimentErsReportDto.setExperimentResults(
+                experimentResultsEntityList.stream().map(experimentResultsMapper::map).collect(Collectors.toList()));
         if (!CollectionUtils.isEmpty(experimentResultsEntityList)) {
             experimentErsReportDto.setClassifiersCount(experimentResultsEntityList.size());
             List<Long> experimentResultsIds =

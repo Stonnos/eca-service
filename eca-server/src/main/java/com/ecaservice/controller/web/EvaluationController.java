@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.ecaservice.util.Utils.toRequestStatusesStatistics;
 
@@ -72,7 +73,8 @@ public class EvaluationController {
     public PageDto<EvaluationLogDto> getEvaluationLogs(PageRequestDto pageRequestDto) {
         log.info("Received evaluation logs page request: {}", pageRequestDto);
         Page<EvaluationLog> evaluationLogs = evaluationLogService.getNextPage(pageRequestDto);
-        List<EvaluationLogDto> evaluationLogDtoList = evaluationLogMapper.map(evaluationLogs.getContent());
+        List<EvaluationLogDto> evaluationLogDtoList =
+                evaluationLogs.getContent().stream().map(evaluationLogMapper::map).collect(Collectors.toList());
         return PageDto.of(evaluationLogDtoList, pageRequestDto.getPage(), evaluationLogs.getTotalElements());
     }
 

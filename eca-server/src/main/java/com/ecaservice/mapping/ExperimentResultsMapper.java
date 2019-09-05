@@ -1,6 +1,7 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.model.entity.ExperimentResultsEntity;
+import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import com.ecaservice.web.dto.model.ExperimentResultsDto;
 import eca.core.evaluation.EvaluationResults;
 import org.mapstruct.AfterMapping;
@@ -10,7 +11,6 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,12 +41,12 @@ public abstract class ExperimentResultsMapper {
     public abstract ExperimentResultsDto map(ExperimentResultsEntity experimentResultsEntity);
 
     /**
-     * Maps experiment results entities list to its dto list.
+     * Maps experiment results entity and experiment results details.
      *
-     * @param experimentResultsEntityList - experiment results entity list
-     * @return experiment results dto list
+     * @param experimentResultsEntity - experiment results details mapper
+     * @return experiment results details dto
      */
-    public abstract List<ExperimentResultsDto> map(List<ExperimentResultsEntity> experimentResultsEntityList);
+    public abstract ExperimentResultsDetailsDto mapDetails(ExperimentResultsEntity experimentResultsEntity);
 
     @AfterMapping
     protected void mapEvaluationResults(EvaluationResults evaluationResults,

@@ -5,6 +5,7 @@ import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.InstancesInfo;
 import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.web.dto.model.EnumDto;
+import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -12,7 +13,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -47,12 +47,16 @@ public abstract class EvaluationLogMapper {
     public abstract EvaluationLogDto map(EvaluationLog evaluationLog);
 
     /**
-     * Maps evaluations logs entities to dto models.
+     * Maps evaluation log entity to evaluation log details.
      *
-     * @param evaluationLogs - evaluations logs entities list
-     * @return evaluations logs dto list
+     * @param evaluationLog - evaluation log entity
+     * @return evaluation log details dto
      */
-    public abstract List<EvaluationLogDto> map(List<EvaluationLog> evaluationLogs);
+    @Mappings({
+            @Mapping(target = "evaluationMethod", ignore = true),
+            @Mapping(target = "evaluationStatus", ignore = true)
+    })
+    public abstract EvaluationLogDetailsDto mapDetails(EvaluationLog evaluationLog);
 
     @AfterMapping
     protected void mapData(EvaluationRequest evaluationRequest, @MappingTarget EvaluationLog evaluationLog) {

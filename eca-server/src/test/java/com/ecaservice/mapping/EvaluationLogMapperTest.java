@@ -4,7 +4,7 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.model.entity.ClassifierInputOptions;
 import com.ecaservice.model.entity.EvaluationLog;
-import com.ecaservice.model.entity.RequestStatus;
+import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
 import eca.core.evaluation.EvaluationMethod;
 import eca.metrics.KNearestNeighbours;
@@ -14,10 +14,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -69,7 +67,8 @@ public class EvaluationLogMapperTest {
         EvaluationLogDto evaluationLogDto = evaluationLogMapper.map(evaluationLog);
         assertThat(evaluationLogDto).isNotNull();
         assertThat(evaluationLogDto.getClassifierInfo()).isNotNull();
-        assertThat(evaluationLogDto.getClassifierInfo().getClassifierName()).isEqualTo(evaluationLog.getClassifierInfo().getClassifierName());
+        assertThat(evaluationLogDto.getClassifierInfo().getClassifierName()).isEqualTo(
+                evaluationLog.getClassifierInfo().getClassifierName());
         assertThat(evaluationLogDto.getCreationDate()).isEqualTo(evaluationLog.getCreationDate());
         assertThat(evaluationLogDto.getStartDate()).isEqualTo(evaluationLog.getStartDate());
         assertThat(evaluationLogDto.getEndDate()).isEqualTo(evaluationLog.getEndDate());
@@ -83,7 +82,8 @@ public class EvaluationLogMapperTest {
                 evaluationLog.getEvaluationStatus().name());
         assertThat(evaluationLogDto.getRequestId()).isEqualTo(evaluationLog.getRequestId());
         assertThat(evaluationLogDto.getClassifierInfo().getInputOptions()).isNotNull();
-        assertThat(evaluationLogDto.getClassifierInfo().getInputOptions()).hasSameSizeAs(evaluationLog.getClassifierInfo().getClassifierInputOptions());
+        assertThat(evaluationLogDto.getClassifierInfo().getInputOptions()).hasSameSizeAs(
+                evaluationLog.getClassifierInfo().getClassifierInputOptions());
         assertThat(evaluationLogDto.getNumFolds()).isNotNull();
         assertThat(evaluationLogDto.getNumTests()).isNotNull();
         assertThat(evaluationLogDto.getSeed()).isNull();
@@ -91,15 +91,35 @@ public class EvaluationLogMapperTest {
     }
 
     @Test
-    public void testMapToEvaluationLogDtoList() {
-        EvaluationLog evaluationLog =
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.NEW);
-        EvaluationLog evaluationLog1 =
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        List<EvaluationLogDto> evaluationLogDtoList =
-                evaluationLogMapper.map(Arrays.asList(evaluationLog, evaluationLog1));
-        assertThat(evaluationLogDtoList).isNotNull();
-        assertThat(evaluationLogDtoList).hasSize(2);
+    public void testMapToEvaluationLogDetailsDto() {
+        EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
+        evaluationLog.setEvaluationOptionsMap(
+                TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
+        evaluationLog.setInstancesInfo(TestHelperUtils.createInstancesInfo());
+        EvaluationLogDetailsDto evaluationLogDetailsDto = evaluationLogMapper.mapDetails(evaluationLog);
+        assertThat(evaluationLogDetailsDto).isNotNull();
+        assertThat(evaluationLogDetailsDto.getClassifierInfo()).isNotNull();
+        assertThat(evaluationLogDetailsDto.getClassifierInfo().getClassifierName()).isEqualTo(
+                evaluationLog.getClassifierInfo().getClassifierName());
+        assertThat(evaluationLogDetailsDto.getCreationDate()).isEqualTo(evaluationLog.getCreationDate());
+        assertThat(evaluationLogDetailsDto.getStartDate()).isEqualTo(evaluationLog.getStartDate());
+        assertThat(evaluationLogDetailsDto.getEndDate()).isEqualTo(evaluationLog.getEndDate());
+        assertThat(evaluationLogDetailsDto.getEvaluationMethod().getDescription()).isEqualTo(
+                evaluationLog.getEvaluationMethod().getDescription());
+        assertThat(evaluationLogDetailsDto.getEvaluationMethod().getValue()).isEqualTo(
+                evaluationLog.getEvaluationMethod().name());
+        assertThat(evaluationLogDetailsDto.getEvaluationStatus().getDescription()).isEqualTo(
+                evaluationLog.getEvaluationStatus().getDescription());
+        assertThat(evaluationLogDetailsDto.getEvaluationStatus().getValue()).isEqualTo(
+                evaluationLog.getEvaluationStatus().name());
+        assertThat(evaluationLogDetailsDto.getRequestId()).isEqualTo(evaluationLog.getRequestId());
+        assertThat(evaluationLogDetailsDto.getClassifierInfo().getInputOptions()).isNotNull();
+        assertThat(evaluationLogDetailsDto.getClassifierInfo().getInputOptions()).hasSameSizeAs(
+                evaluationLog.getClassifierInfo().getClassifierInputOptions());
+        assertThat(evaluationLogDetailsDto.getNumFolds()).isNotNull();
+        assertThat(evaluationLogDetailsDto.getNumTests()).isNotNull();
+        assertThat(evaluationLogDetailsDto.getSeed()).isNull();
+        assertThat(evaluationLogDetailsDto.getInstancesInfo()).isNotNull();
     }
 
     private void assertOptions(EvaluationLog evaluationLog, EvaluationRequest request) {

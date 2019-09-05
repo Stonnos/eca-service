@@ -4,8 +4,6 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
-import com.ecaservice.mapping.ExperimentResultsDetailsMapper;
-import com.ecaservice.mapping.ExperimentResultsDetailsMapperImpl;
 import com.ecaservice.mapping.ExperimentResultsMapper;
 import com.ecaservice.mapping.ExperimentResultsMapperImpl;
 import com.ecaservice.model.entity.ErsResponseStatus;
@@ -43,8 +41,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ClassifierInputOptionsMapperImpl.class, ExperimentResultsMapperImpl.class, ExperimentConfig.class,
-        ExperimentResultsDetailsMapperImpl.class, ClassifierInfoMapperImpl.class})
+@Import({ClassifierInputOptionsMapperImpl.class, ExperimentResultsMapperImpl.class,
+        ExperimentConfig.class, ClassifierInfoMapperImpl.class})
 public class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     @Mock
@@ -56,8 +54,6 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
     @Inject
     private ExperimentResultsMapper experimentResultsMapper;
     @Inject
-    private ExperimentResultsDetailsMapper experimentResultsDetailsMapper;
-    @Inject
     private ExperimentRepository experimentRepository;
     @Inject
     private ExperimentResultsEntityRepository experimentResultsEntityRepository;
@@ -67,7 +63,7 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         experimentResultsService = new ExperimentResultsService(ersService, experimentConfig, experimentResultsMapper,
-                experimentResultsDetailsMapper, experimentResultsEntityRepository, experimentResultsRequestRepository);
+                experimentResultsEntityRepository, experimentResultsRequestRepository);
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.ecaservice.service.evaluation;
 
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.filter.EvaluationLogFilter;
-import com.ecaservice.mapping.EvaluationLogDetailsMapper;
+import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
@@ -45,7 +45,7 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
 
     private final CommonConfig commonConfig;
     private final FilterService filterService;
-    private final EvaluationLogDetailsMapper evaluationLogDetailsMapper;
+    private final EvaluationLogMapper evaluationLogMapper;
     private final ErsService ersService;
     private final EvaluationLogRepository evaluationLogRepository;
     private final EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository;
@@ -55,7 +55,7 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
      *
      * @param commonConfig                             - common config bean
      * @param filterService                            - filter service bean
-     * @param evaluationLogDetailsMapper               - evaluation log details service bean
+     * @param evaluationLogMapper                      - evaluation log mapper bean
      * @param ersService                               - ers service bean
      * @param evaluationLogRepository                  - evaluation log repository bean
      * @param evaluationResultsRequestEntityRepository - evaluation results request entity repository bean
@@ -63,13 +63,13 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
     @Inject
     public EvaluationLogService(CommonConfig commonConfig,
                                 FilterService filterService,
-                                EvaluationLogDetailsMapper evaluationLogDetailsMapper,
+                                EvaluationLogMapper evaluationLogMapper,
                                 ErsService ersService,
                                 EvaluationLogRepository evaluationLogRepository,
                                 EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository) {
         this.commonConfig = commonConfig;
         this.filterService = filterService;
-        this.evaluationLogDetailsMapper = evaluationLogDetailsMapper;
+        this.evaluationLogMapper = evaluationLogMapper;
         this.ersService = ersService;
         this.evaluationLogRepository = evaluationLogRepository;
         this.evaluationResultsRequestEntityRepository = evaluationResultsRequestEntityRepository;
@@ -92,7 +92,7 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
      * @return evaluation log details dto
      */
     public EvaluationLogDetailsDto getEvaluationLogDetails(EvaluationLog evaluationLog) {
-        EvaluationLogDetailsDto evaluationLogDetailsDto = evaluationLogDetailsMapper.map(evaluationLog);
+        EvaluationLogDetailsDto evaluationLogDetailsDto = evaluationLogMapper.mapDetails(evaluationLog);
         evaluationLogDetailsDto.setEvaluationResultsDto(getEvaluationResults(evaluationLog));
         return evaluationLogDetailsDto;
     }
