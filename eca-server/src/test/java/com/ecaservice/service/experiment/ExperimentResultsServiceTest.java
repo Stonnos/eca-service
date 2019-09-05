@@ -4,6 +4,7 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
+import com.ecaservice.mapping.ExperimentMapperImpl;
 import com.ecaservice.mapping.ExperimentResultsMapper;
 import com.ecaservice.mapping.ExperimentResultsMapperImpl;
 import com.ecaservice.model.entity.ErsResponseStatus;
@@ -42,7 +43,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({ClassifierInputOptionsMapperImpl.class, ExperimentResultsMapperImpl.class,
-        ExperimentConfig.class, ClassifierInfoMapperImpl.class})
+        ExperimentConfig.class, ClassifierInfoMapperImpl.class, ExperimentMapperImpl.class})
 public class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     @Mock

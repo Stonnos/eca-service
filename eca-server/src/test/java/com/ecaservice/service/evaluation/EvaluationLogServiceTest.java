@@ -4,8 +4,8 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
-import com.ecaservice.mapping.EvaluationLogDetailsMapper;
-import com.ecaservice.mapping.EvaluationLogDetailsMapperImpl;
+import com.ecaservice.mapping.EvaluationLogMapper;
+import com.ecaservice.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.EvaluationLog;
@@ -54,7 +54,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({CommonConfig.class, EvaluationLogDetailsMapperImpl.class, ClassifierInfoMapperImpl.class,
+@Import({CommonConfig.class, ClassifierInfoMapperImpl.class, EvaluationLogMapperImpl.class,
         InstancesInfoMapperImpl.class, ClassifierInputOptionsMapperImpl.class})
 public class EvaluationLogServiceTest extends AbstractJpaTest {
 
@@ -68,7 +68,7 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
     @Inject
     private CommonConfig commonConfig;
     @Inject
-    private EvaluationLogDetailsMapper evaluationLogDetailsMapper;
+    private EvaluationLogMapper evaluationLogMapper;
 
     @Mock
     private FilterService filterService;
@@ -79,8 +79,8 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        evaluationLogService = new EvaluationLogService(commonConfig, filterService, evaluationLogDetailsMapper,
-                ersService, evaluationLogRepository, evaluationResultsRequestEntityRepository);
+        evaluationLogService = new EvaluationLogService(commonConfig, filterService, evaluationLogMapper, ersService,
+                evaluationLogRepository, evaluationResultsRequestEntityRepository);
     }
 
     @Override

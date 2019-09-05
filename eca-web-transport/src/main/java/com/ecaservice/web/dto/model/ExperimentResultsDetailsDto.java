@@ -16,6 +16,12 @@ import lombok.EqualsAndHashCode;
 public class ExperimentResultsDetailsDto extends ExperimentResultsDto {
 
     /**
+     * Experiment dto
+     */
+    @ApiModelProperty(value = "Experiment model")
+    private ExperimentDto experimentDto;
+
+    /**
      * Evaluation results dto (main factors)
      */
     @ApiModelProperty(value = "Evaluation results report (main factors)")

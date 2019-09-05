@@ -18,7 +18,7 @@ import java.util.Optional;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = ClassifierInfoMapper.class)
+@Mapper(uses = {ClassifierInfoMapper.class, ExperimentMapper.class})
 public abstract class ExperimentResultsMapper {
 
     /**
@@ -46,6 +46,9 @@ public abstract class ExperimentResultsMapper {
      * @param experimentResultsEntity - experiment results details mapper
      * @return experiment results details dto
      */
+    @Mappings({
+            @Mapping(source = "experiment", target = "experimentDto")
+    })
     public abstract ExperimentResultsDetailsDto mapDetails(ExperimentResultsEntity experimentResultsEntity);
 
     @AfterMapping

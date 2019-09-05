@@ -3,6 +3,7 @@ package com.ecaservice.mapping;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
+import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import com.ecaservice.web.dto.model.ExperimentResultsDto;
 import eca.core.evaluation.EvaluationResults;
 import org.junit.Test;
@@ -23,7 +24,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import({ExperimentResultsMapperImpl.class, ClassifierInfoMapperImpl.class, ClassifierInputOptionsMapperImpl.class})
+@Import({ExperimentResultsMapperImpl.class, ClassifierInfoMapperImpl.class,
+        ClassifierInputOptionsMapperImpl.class, ExperimentMapperImpl.class})
 public class ExperimentResultsMapperTest {
 
     @Inject
@@ -58,8 +60,9 @@ public class ExperimentResultsMapperTest {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
         experimentResultsEntity.setId(1L);
-        ExperimentResultsDto experimentResultsDto = experimentResultsMapper.mapDetails(experimentResultsEntity);
-        assertExperimentResultsDto(experimentResultsDto, experimentResultsEntity);
+        ExperimentResultsDetailsDto experimentResultsDetailsDto = experimentResultsMapper.mapDetails(experimentResultsEntity);
+        assertExperimentResultsDto(experimentResultsDetailsDto, experimentResultsEntity);
+        assertThat(experimentResultsDetailsDto.getExperimentDto()).isNotNull();
     }
 
     private void assertExperimentResultsDto(ExperimentResultsDto experimentResultsDto,
