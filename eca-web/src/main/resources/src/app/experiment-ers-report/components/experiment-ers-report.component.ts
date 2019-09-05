@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
-  ClassifierInfoDto,
   ExperimentErsReportDto, ExperimentResultsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ExperimentsService } from "../../experiments/services/experiments.service";
@@ -23,7 +22,7 @@ export class ExperimentErsReportComponent implements OnInit {
   public linkColumns: string[] = [];
   public experimentResultsColumns: any[] = [];
 
-  public selectedClassifierInfo: ClassifierInfoDto;
+  public selectedExperimentResults: ExperimentResultsDto;
 
   public classifierOptionsDialogVisibility: boolean = false;
 
@@ -46,7 +45,7 @@ export class ExperimentErsReportComponent implements OnInit {
     if (column == "resultsIndex") {
       //TODO
     } else if (column == "classifierName") {
-      this.selectedClassifierInfo = experimentResults.classifierInfo;
+      this.selectedExperimentResults = experimentResults;
       this.classifierOptionsDialogVisibility = true;
     }
   }
