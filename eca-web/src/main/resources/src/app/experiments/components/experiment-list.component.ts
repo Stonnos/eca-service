@@ -13,6 +13,7 @@ import { FilterService } from "../../filter/services/filter.service";
 import { finalize } from "rxjs/internal/operators";
 import { ExperimentRequest } from "../../create-experiment/model/experiment-request.model";
 import { Router } from "@angular/router";
+import { RouterPaths } from "../../router.paths";
 
 @Component({
   selector: 'app-experiment-list',
@@ -20,8 +21,6 @@ import { Router } from "@angular/router";
   styleUrls: ['./experiment-list.component.scss']
 })
 export class ExperimentListComponent extends BaseListComponent<ExperimentDto> implements OnInit {
-
-  private readonly experimentDetailsUrl: string = '/dashboard/experiments/details';
 
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
 
@@ -93,7 +92,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
         this.getExperimentResultsFile(experiment);
         break;
       case "uuid":
-        this.router.navigate([this.experimentDetailsUrl, experiment.uuid]);
+        this.router.navigate([RouterPaths.EXPERIMENT_DETAILS_URL, experiment.uuid]);
         break;
       default:
         this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${column} as link`});

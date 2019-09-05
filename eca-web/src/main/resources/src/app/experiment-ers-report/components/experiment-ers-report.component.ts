@@ -6,6 +6,7 @@ import { ExperimentsService } from "../../experiments/services/experiments.servi
 import { finalize } from "rxjs/operators";
 import { MessageService } from "primeng/api";
 import { Router } from "@angular/router";
+import { RouterPaths } from "../../router.paths";
 
 @Component({
   selector: 'app-experiment-ers-report',
@@ -13,8 +14,6 @@ import { Router } from "@angular/router";
   styleUrls: ['./experiment-ers-report.component.scss']
 })
 export class ExperimentErsReportComponent implements OnInit {
-
-  private readonly experimentResultsDetailsUrl: string = '/dashboard/experiments/results/details';
 
   @Input()
   public experimentErsReport: ExperimentErsReportDto;
@@ -47,7 +46,7 @@ export class ExperimentErsReportComponent implements OnInit {
   public onLink(experimentResults: ExperimentResultsDto, column: string): void {
     switch (column) {
       case "resultsIndex":
-        this.router.navigate([this.experimentResultsDetailsUrl, experimentResults.id]);
+        this.router.navigate([RouterPaths.EXPERIMENT_RESULTS_DETAILS_URL, experimentResults.id]);
         break;
       case "classifierName":
         this.selectedExperimentResults = experimentResults;

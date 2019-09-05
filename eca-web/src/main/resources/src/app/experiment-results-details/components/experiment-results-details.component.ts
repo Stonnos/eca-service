@@ -6,6 +6,7 @@ import { MessageService } from "primeng/api";
 import { ActivatedRoute, Router } from "@angular/router";
 import { finalize } from "rxjs/internal/operators";
 import { ExperimentsService } from "../../experiments/services/experiments.service";
+import { RouterPaths } from "../../router.paths";
 
 @Component({
   selector: 'app-experiment-results-details',
@@ -13,8 +14,6 @@ import { ExperimentsService } from "../../experiments/services/experiments.servi
   styleUrls: ['./experiment-results-details.component.scss']
 })
 export class ExperimentResultsDetailsComponent implements OnInit {
-
-  private readonly experimentDetailsUrl: string = '/dashboard/experiments/details';
 
   private readonly evaluationResultsId: number;
 
@@ -73,7 +72,7 @@ export class ExperimentResultsDetailsComponent implements OnInit {
 
   public onLink(field: string): void {
     if (field == "uuid") {
-      this.router.navigate([this.experimentDetailsUrl, this.experimentResultsDetailsDto.experimentDto.uuid]);
+      this.router.navigate([RouterPaths.EXPERIMENT_DETAILS_URL, this.experimentResultsDetailsDto.experimentDto.uuid]);
     } else {
       this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${field} as link`});
     }

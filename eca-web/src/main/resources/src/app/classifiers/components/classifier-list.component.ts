@@ -12,6 +12,7 @@ import { Observable } from "rxjs/internal/Observable";
 import { FilterService } from "../../filter/services/filter.service";
 import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
 import { Router } from "@angular/router";
+import { RouterPaths } from "../../router.paths";
 
 @Component({
   selector: 'app-classifier-list',
@@ -19,8 +20,6 @@ import { Router } from "@angular/router";
   styleUrls: ['./classifier-list.component.scss']
 })
 export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto> {
-
-  private readonly evaluationDetailsUrl: string = '/dashboard/classifiers/evaluation-results';
 
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
 
@@ -70,7 +69,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   public onSelect(event, evaluationLog: EvaluationLogDto, column: string, overlayPanel: OverlayPanel): void {
     switch (column) {
       case this.requestIdColumn:
-        this.router.navigate([this.evaluationDetailsUrl, evaluationLog.requestId]);
+        this.router.navigate([RouterPaths.EVALUATION_DETAILS_URL, evaluationLog.requestId]);
         break;
       case this.evaluationMethodColumn:
         if (evaluationLog.evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION) {
