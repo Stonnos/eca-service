@@ -13,7 +13,7 @@ import { FilterService } from "../../filter/services/filter.service";
 import { finalize } from "rxjs/internal/operators";
 import { ExperimentRequest } from "../../create-experiment/model/experiment-request.model";
 import { Router } from "@angular/router";
-import { RouterPaths } from "../../router.paths";
+import { RouterPaths } from "../../routing/router.paths";
 
 @Component({
   selector: 'app-experiment-list',

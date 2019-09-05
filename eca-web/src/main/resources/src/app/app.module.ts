@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { AppRoutingModule } from "./app-routing.module";
+import { AppRoutingModule } from "./routing/app-routing.module";
 import { DashboardComponent } from "./dashboard/dashboard.component";
 import { ClassifiersModule } from "./classifiers/classifiers.module";
 import { ExperimentsModule } from "./experiments/experiments.module";

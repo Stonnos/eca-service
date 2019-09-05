@@ -6,7 +6,7 @@ import { ExperimentsService } from "../../experiments/services/experiments.servi
 import { finalize } from "rxjs/operators";
 import { MessageService } from "primeng/api";
 import { Router } from "@angular/router";
-import { RouterPaths } from "../../router.paths";
+import { RouterPaths } from "../../routing/router.paths";
 
 @Component({
   selector: 'app-experiment-ers-report',

@@ -12,7 +12,7 @@ import { Observable } from "rxjs/internal/Observable";
 import { FilterService } from "../../filter/services/filter.service";
 import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
 import { Router } from "@angular/router";
-import { RouterPaths } from "../../router.paths";
+import { RouterPaths } from "../../routing/router.paths";
 
 @Component({
   selector: 'app-classifier-list',

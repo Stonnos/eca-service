@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DashboardComponent } from "./dashboard/dashboard.component";
-import { ClassifierListComponent } from "./classifiers/components/classifier-list.component";
-import { ClassifierOptionsRequestsComponent } from "./classifier-options-requests/components/classifier-options-requests.component";
-import { LoginComponent } from "./auth/components/login.component";
-import { ExperimentTabsComponent } from "./experiments-tabs/components/experiment-tabs.component";
-import { EvaluationLogDetailsComponent } from "./evaluation-log-details/components/evaluation-log-details.component";
-import { ExperimentDetailsComponent } from "./experiment-details/components/experiment-details.component";
-import { ExperimentResultsDetailsComponent } from "./experiment-results-details/components/experiment-results-details.component";
+import { DashboardComponent } from "../dashboard/dashboard.component";
+import { ClassifierListComponent } from "../classifiers/components/classifier-list.component";
+import { ClassifierOptionsRequestsComponent } from "../classifier-options-requests/components/classifier-options-requests.component";
+import { LoginComponent } from "../auth/components/login.component";
+import { ExperimentTabsComponent } from "../experiments-tabs/components/experiment-tabs.component";
+import { EvaluationLogDetailsComponent } from "../evaluation-log-details/components/evaluation-log-details.component";
+import { ExperimentDetailsComponent } from "../experiment-details/components/experiment-details.component";
+import { ExperimentResultsDetailsComponent } from "../experiment-results-details/components/experiment-results-details.component";
 
 const routes: Routes = [
   {
