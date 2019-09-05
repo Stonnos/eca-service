@@ -50,6 +50,20 @@ public class ExperimentResultsMapperTest {
         ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
         experimentResultsEntity.setId(1L);
         ExperimentResultsDto experimentResultsDto = experimentResultsMapper.map(experimentResultsEntity);
+        assertExperimentResultsDto(experimentResultsDto, experimentResultsEntity);
+    }
+
+    @Test
+    public void testMapToExperimentResultsDetailsDto() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
+        experimentResultsEntity.setId(1L);
+        ExperimentResultsDto experimentResultsDto = experimentResultsMapper.mapDetails(experimentResultsEntity);
+        assertExperimentResultsDto(experimentResultsDto, experimentResultsEntity);
+    }
+
+    private void assertExperimentResultsDto(ExperimentResultsDto experimentResultsDto,
+                                            ExperimentResultsEntity experimentResultsEntity) {
         assertThat(experimentResultsDto).isNotNull();
         assertThat(experimentResultsDto.getId()).isEqualTo(experimentResultsEntity.getId());
         assertThat(experimentResultsDto.getResultsIndex()).isEqualTo(experimentResultsEntity.getResultsIndex());
