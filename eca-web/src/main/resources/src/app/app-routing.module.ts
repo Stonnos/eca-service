@@ -7,6 +7,7 @@ import { LoginComponent } from "./auth/components/login.component";
 import { ExperimentTabsComponent } from "./experiments-tabs/components/experiment-tabs.component";
 import { EvaluationLogDetailsComponent } from "./evaluation-log-details/components/evaluation-log-details.component";
 import { ExperimentDetailsComponent } from "./experiment-details/components/experiment-details.component";
+import { ExperimentResultsDetailsComponent } from "./experiment-results-details/components/experiment-results-details.component";
 
 const routes: Routes = [
   {
@@ -32,6 +33,10 @@ const routes: Routes = [
       {
         path: 'experiments/details/:id',
         component: ExperimentDetailsComponent
+      },
+      {
+        path: 'experiments/results/details/:id',
+        component: ExperimentResultsDetailsComponent
       },
     ]
   },
