@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { finalize } from "rxjs/internal/operators";
 import { ExperimentsService } from "../../experiments/services/experiments.service";
 import { RouterPaths } from "../../routing/router-paths";
+import { ExperimentFields } from "../../common/util/field-names";
 
 @Component({
   selector: 'app-experiment-results-details',
@@ -22,7 +23,7 @@ export class ExperimentResultsDetailsComponent implements OnInit {
 
   public experimentResultsDetailsDto: ExperimentResultsDetailsDto;
 
-  public linkColumns: string[] = ["uuid"];
+  public linkColumns: string[] = [ExperimentFields.UUID];
 
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService,
@@ -55,9 +56,9 @@ export class ExperimentResultsDetailsComponent implements OnInit {
     if (this.experimentResultsDetailsDto && this.experimentResultsDetailsDto.experimentDto) {
       const experimentDto: ExperimentDto = this.experimentResultsDetailsDto.experimentDto;
       switch (field) {
-        case "experimentType":
+        case ExperimentFields.EXPERIMENT_TYPE:
           return experimentDto.experimentType.description;
-        case "evaluationMethod":
+        case ExperimentFields.EVALUATION_METHOD:
           return experimentDto.evaluationMethod.description;
         default:
           return experimentDto[field];
@@ -71,7 +72,7 @@ export class ExperimentResultsDetailsComponent implements OnInit {
   }
 
   public onLink(field: string): void {
-    if (field == "uuid") {
+    if (field == ExperimentFields.UUID) {
       this.router.navigate([RouterPaths.EXPERIMENT_DETAILS_URL, this.experimentResultsDetailsDto.experimentDto.uuid]);
     } else {
       this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${field} as link`});
@@ -80,9 +81,9 @@ export class ExperimentResultsDetailsComponent implements OnInit {
 
   private initExperimentFields(): void {
     this.experimentFields = [
-      { name: "uuid", label: "UUID заявки" },
-      { name: "experimentType", label: "Тип эксперимента" },
-      { name: "evaluationMethod", label: "Метод оценки точности" }
+      { name: ExperimentFields.UUID, label: "UUID заявки" },
+      { name: ExperimentFields.EXPERIMENT_TYPE, label: "Тип эксперимента" },
+      { name: ExperimentFields.EVALUATION_METHOD, label: "Метод оценки точности" }
     ];
   }
 }
