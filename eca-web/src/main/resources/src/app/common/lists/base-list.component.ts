@@ -10,7 +10,6 @@ import {
   PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
-import { FilterFieldType } from "../model/filter-field-type.enum";
 
 export abstract class BaseListComponent<T> {
 
@@ -122,9 +121,9 @@ export abstract class BaseListComponent<T> {
 
   private transformValues(filter: Filter, values: any[]): string[] {
     switch (filter.filterFieldType) {
-      case FilterFieldType.DATE:
+      case "DATE":
         return values.map((item) => this.datePipe.transform(item, this.dateFormat));
-      case FilterFieldType.REFERENCE:
+      case "REFERENCE":
         return values.map((item) => item.value);
       default:
         return values;
