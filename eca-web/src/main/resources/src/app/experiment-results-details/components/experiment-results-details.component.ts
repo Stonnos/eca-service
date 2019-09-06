@@ -6,7 +6,7 @@ import { MessageService } from "primeng/api";
 import { ActivatedRoute, Router } from "@angular/router";
 import { finalize } from "rxjs/internal/operators";
 import { ExperimentsService } from "../../experiments/services/experiments.service";
-import { RouterPaths } from "../../routing/router.paths";
+import { RouterPaths } from "../../routing/router-paths";
 
 @Component({
   selector: 'app-experiment-results-details',

@@ -11,6 +11,7 @@ import { ClassifierOptionsRequestService } from "../services/classifier-options-
 import { Observable } from "rxjs/internal/Observable";
 import { saveAs } from 'file-saver/dist/FileSaver';
 import { FilterService } from "../../filter/services/filter.service";
+import { ClassifierOptionsRequestsFields } from "../../common/util/field-names";
 
 declare var Prism: any;
 
@@ -28,9 +29,9 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
                      private classifierOptionsService: ClassifierOptionsRequestService,
                      private filterService: FilterService) {
     super(injector.get(MessageService));
-    this.defaultSortField = "requestDate";
-    this.linkColumns = ["classifierName", "evaluationMethod"];
-    this.notSortableColumns = ["classifierName"];
+    this.defaultSortField = ClassifierOptionsRequestsFields.REQUEST_DATE;
+    this.linkColumns = [ClassifierOptionsRequestsFields.CLASSIFIER_NAME, ClassifierOptionsRequestsFields.EVALUATION_METHOD];
+    this.notSortableColumns = [ClassifierOptionsRequestsFields.CLASSIFIER_NAME];
     this.initColumns();
   }
 
@@ -52,11 +53,11 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
 
   public getColumnValue(column: string, item: ClassifierOptionsRequestDto) {
     switch (column) {
-      case "classifierName":
+      case ClassifierOptionsRequestsFields.CLASSIFIER_NAME:
         return this.hasClassifierOptionsResponse(item) ? item.classifierOptionsResponseModels[0].classifierName : null;
-      case "evaluationMethod":
+      case ClassifierOptionsRequestsFields.EVALUATION_METHOD:
         return item.evaluationMethod.description;
-      case "responseStatus":
+      case ClassifierOptionsRequestsFields.RESPONSE_STATUS:
         return item.responseStatus.description;
       default:
         return item[column];
@@ -97,12 +98,12 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
 
   private initColumns() {
     this.columns = [
-      { name: "requestId", label: "UUID заявки" },
-      { name: "relationName", label: "Обучающая выборка" },
-      { name: "classifierName", label: "Классификатор" },
-      { name: "evaluationMethod", label: "Метод оценки точности" },
-      { name: "requestDate", label: "Дата отправки запроса в ERS" },
-      { name: "responseStatus", label: "Статус ответа от ERS" }
+      { name: ClassifierOptionsRequestsFields.REQUEST_ID, label: "UUID заявки" },
+      { name: ClassifierOptionsRequestsFields.RELATION_NAME, label: "Обучающая выборка" },
+      { name: ClassifierOptionsRequestsFields.CLASSIFIER_NAME, label: "Классификатор" },
+      { name: ClassifierOptionsRequestsFields.EVALUATION_METHOD, label: "Метод оценки точности" },
+      { name: ClassifierOptionsRequestsFields.REQUEST_DATE, label: "Дата отправки запроса в ERS" },
+      { name: ClassifierOptionsRequestsFields.RESPONSE_STATUS, label: "Статус ответа от ERS" }
     ];
   }
 }

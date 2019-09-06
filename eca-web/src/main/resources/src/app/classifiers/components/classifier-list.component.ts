@@ -12,7 +12,8 @@ import { Observable } from "rxjs/internal/Observable";
 import { FilterService } from "../../filter/services/filter.service";
 import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
 import { Router } from "@angular/router";
-import { RouterPaths } from "../../routing/router.paths";
+import { RouterPaths } from "../../routing/router-paths";
+import { EvaluationLogFields } from "../../common/util/field-names";
 
 @Component({
   selector: 'app-classifier-list',
@@ -23,11 +24,6 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
 
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
 
-  public instancesInfoColumn: string = "instancesInfo.relationName";
-  public classifierNameColumn: string = "classifierInfo.classifierName";
-  public requestIdColumn: string = "requestId";
-  public evaluationMethodColumn: string = "evaluationMethod";
-
   public selectedEvaluationLog: EvaluationLogDto;
   public selectedColumn: string;
 
@@ -36,8 +32,9 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
                      private filterService: FilterService,
                      private router: Router) {
     super(injector.get(MessageService));
-    this.defaultSortField = "creationDate";
-    this.linkColumns = [this.classifierNameColumn, this.evaluationMethodColumn, this.instancesInfoColumn, this.requestIdColumn];
+    this.defaultSortField = EvaluationLogFields.CREATION_DATE;
+    this.linkColumns = [EvaluationLogFields.CLASSIFIER_NAME, EvaluationLogFields.EVALUATION_METHOD,
+      EvaluationLogFields.RELATION_NAME, EvaluationLogFields.REQUEST_ID];
     this.initColumns();
   }
 
@@ -68,10 +65,10 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
 
   public onSelect(event, evaluationLog: EvaluationLogDto, column: string, overlayPanel: OverlayPanel): void {
     switch (column) {
-      case this.requestIdColumn:
+      case EvaluationLogFields.REQUEST_ID:
         this.router.navigate([RouterPaths.EVALUATION_DETAILS_URL, evaluationLog.requestId]);
         break;
-      case this.evaluationMethodColumn:
+      case EvaluationLogFields.EVALUATION_METHOD:
         if (evaluationLog.evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION) {
           this.toggleOverlayPanel(event, evaluationLog, column, overlayPanel);
         }
@@ -83,13 +80,13 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
 
   public getColumnValue(column: string, item: EvaluationLogDto) {
     switch (column) {
-      case this.instancesInfoColumn:
+      case EvaluationLogFields.RELATION_NAME:
         return item.instancesInfo.relationName;
-      case this.classifierNameColumn:
+      case EvaluationLogFields.CLASSIFIER_NAME:
         return item.classifierInfo.classifierName;
-      case this.evaluationMethodColumn:
+      case EvaluationLogFields.EVALUATION_METHOD:
         return item.evaluationMethod.description;
-      case "evaluationStatus":
+      case EvaluationLogFields.EVALUATION_STATUS:
         return item.evaluationStatus.description;
       default:
         return item[column];
@@ -104,14 +101,14 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
 
   private initColumns() {
     this.columns = [
-      { name: "requestId", label: "UUID заявки" },
-      { name: this.classifierNameColumn, label: "Классификатор" },
-      { name: "evaluationStatus", label: "Статус заявки" },
-      { name: this.instancesInfoColumn, label: "Обучающая выборка" },
-      { name: this.evaluationMethodColumn, label: "Метод оценки точности" },
-      { name: "creationDate", label: "Дата создания заявки" },
-      { name: "startDate", label: "Дата начала построения модели" },
-      { name: "endDate", label: "Дата окончания построения модели" }
+      { name: EvaluationLogFields.REQUEST_ID, label: "UUID заявки" },
+      { name: EvaluationLogFields.CLASSIFIER_NAME, label: "Классификатор" },
+      { name: EvaluationLogFields.EVALUATION_STATUS, label: "Статус заявки" },
+      { name: EvaluationLogFields.RELATION_NAME, label: "Обучающая выборка" },
+      { name: EvaluationLogFields.EVALUATION_METHOD, label: "Метод оценки точности" },
+      { name: EvaluationLogFields.CREATION_DATE, label: "Дата создания заявки" },
+      { name: EvaluationLogFields.START_DATE, label: "Дата начала построения модели" },
+      { name: EvaluationLogFields.END_DATE, label: "Дата окончания построения модели" }
     ];
   }
 }

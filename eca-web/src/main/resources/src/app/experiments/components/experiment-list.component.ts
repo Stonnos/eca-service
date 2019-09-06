@@ -13,7 +13,8 @@ import { FilterService } from "../../filter/services/filter.service";
 import { finalize } from "rxjs/internal/operators";
 import { ExperimentRequest } from "../../create-experiment/model/experiment-request.model";
 import { Router } from "@angular/router";
-import { RouterPaths } from "../../routing/router.paths";
+import { RouterPaths } from "../../routing/router-paths";
+import { ExperimentFields } from "../../common/util/field-names";
 
 @Component({
   selector: 'app-experiment-list',
@@ -39,9 +40,9 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
                      private filterService: FilterService,
                      private router: Router) {
     super(injector.get(MessageService));
-    this.defaultSortField = "creationDate";
-    this.linkColumns = ["trainingDataAbsolutePath", "experimentAbsolutePath", "uuid"];
-    this.notSortableColumns = ["trainingDataAbsolutePath", "experimentAbsolutePath"];
+    this.defaultSortField = ExperimentFields.CREATION_DATE;
+    this.linkColumns = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH, ExperimentFields.UUID];
+    this.notSortableColumns = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH];
     this.initColumns();
   }
 
@@ -72,11 +73,11 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public getColumnValue(column: string, item: ExperimentDto) {
     switch (column) {
-      case "evaluationMethod":
+      case ExperimentFields.EVALUATION_METHOD:
         return item.evaluationMethod.description;
-      case "experimentStatus":
+      case ExperimentFields.EXPERIMENT_STATUS:
         return item.experimentStatus.description;
-      case "experimentType":
+      case ExperimentFields.EXPERIMENT_TYPE:
         return item.experimentType.description;
       default:
         return item[column];
@@ -85,13 +86,13 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public onLink(column: string, experiment: ExperimentDto) {
     switch (column) {
-      case "trainingDataAbsolutePath":
+      case ExperimentFields.TRAINING_DATA_PATH:
         this.getExperimentTrainingDataFile(experiment);
         break;
-      case "experimentAbsolutePath":
+      case ExperimentFields.EXPERIMENT_PATH:
         this.getExperimentResultsFile(experiment);
         break;
-      case "uuid":
+      case ExperimentFields.UUID:
         this.router.navigate([RouterPaths.EXPERIMENT_DETAILS_URL, experiment.uuid]);
         break;
       default:
@@ -146,7 +147,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
           this.messageService.add({ severity: 'success', summary: `Эксперимент был успешно создан`, detail: '' });
           this.lastCreatedExperimentUuid = result.uuid;
           this.getRequestStatusesStatistics();
-          this.performPageRequest(0, this.pageSize, "creationDate", false);
+          this.performPageRequest(0, this.pageSize, ExperimentFields.CREATION_DATE, false);
         } else {
           this.messageService.add({ severity: 'error', summary: 'Не удалось создать эксперимент', detail: result.errorMessage });
         }
@@ -189,19 +190,19 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   private initColumns() {
     this.columns = [
-      { name: "uuid", label: "UUID заявки" },
-      { name: "experimentType", label: "Тип эксперимента" },
-      { name: "experimentStatus", label: "Статус заявки" },
-      { name: "evaluationMethod", label: "Метод оценки точности" },
-      { name: "firstName", label: "Имя заявки" },
-      { name: "email", label: "Email заявки" },
-      { name: "trainingDataAbsolutePath", label: "Обучающая выборка" },
-      { name: "experimentAbsolutePath", label: "Результаты эксперимента" },
-      { name: "creationDate", label: "Дата создания заявки" },
-      { name: "startDate", label: "Дата начала эксперимента" },
-      { name: "endDate", label: "Дата окончания эксперимента" },
-      { name: "sentDate", label: "Дата отправки результатов" },
-      { name: "deletedDate", label: "Дата удаления результатов" }
+      { name: ExperimentFields.UUID, label: "UUID заявки" },
+      { name: ExperimentFields.EXPERIMENT_TYPE, label: "Тип эксперимента" },
+      { name: ExperimentFields.EXPERIMENT_STATUS, label: "Статус заявки" },
+      { name: ExperimentFields.EVALUATION_METHOD, label: "Метод оценки точности" },
+      { name: ExperimentFields.FIRST_NAME, label: "Имя заявки" },
+      { name: ExperimentFields.EMAIL, label: "Email заявки" },
+      { name: ExperimentFields.TRAINING_DATA_PATH, label: "Обучающая выборка" },
+      { name: ExperimentFields.EXPERIMENT_PATH, label: "Результаты эксперимента" },
+      { name: ExperimentFields.CREATION_DATE, label: "Дата создания заявки" },
+      { name: ExperimentFields.START_DATE, label: "Дата начала эксперимента" },
+      { name: ExperimentFields.END_DATE, label: "Дата окончания эксперимента" },
+      { name: ExperimentFields.SENT_DATE, label: "Дата отправки результатов" },
+      { name: ExperimentFields.DELETED_DATE, label: "Дата удаления результатов" }
     ];
   }
 }
