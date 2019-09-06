@@ -7,6 +7,7 @@ import { MessageService } from "primeng/api";
 import { ActivatedRoute } from "@angular/router";
 import { ExperimentsService } from "../../experiments/services/experiments.service";
 import { saveAs } from 'file-saver/dist/FileSaver';
+import { ExperimentFields } from "../../common/util/field-names";
 
 @Component({
   selector: 'app-experiment-details',
@@ -23,7 +24,7 @@ export class ExperimentDetailsComponent implements OnInit {
 
   public experimentErsReport: ExperimentErsReportDto;
 
-  public linkColumns: string[] = ["trainingDataAbsolutePath", "experimentAbsolutePath"];
+  public linkColumns: string[] = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH];
 
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService,
@@ -79,10 +80,10 @@ export class ExperimentDetailsComponent implements OnInit {
 
   public onLink(field: string) {
     switch (field) {
-      case "trainingDataAbsolutePath":
+      case ExperimentFields.TRAINING_DATA_PATH:
         this.getExperimentTrainingDataFile();
         break;
-      case "experimentAbsolutePath":
+      case ExperimentFields.EXPERIMENT_PATH:
         this.getExperimentResultsFile();
         break;
       default:
@@ -93,11 +94,11 @@ export class ExperimentDetailsComponent implements OnInit {
   public getExperimentValue(field: string) {
     if (this.experimentDto) {
       switch (field) {
-        case "evaluationMethod":
+        case ExperimentFields.EVALUATION_METHOD:
           return this.experimentDto.evaluationMethod.description;
-        case "experimentStatus":
+        case ExperimentFields.EXPERIMENT_STATUS:
           return this.experimentDto.experimentStatus.description;
-        case "experimentType":
+        case ExperimentFields.EXPERIMENT_TYPE:
           return this.experimentDto.experimentType.description;
         default:
           return this.experimentDto[field];
@@ -108,17 +109,17 @@ export class ExperimentDetailsComponent implements OnInit {
 
   private initExperimentFields(): void {
     this.experimentFields = [
-      { name: "uuid", label: "UUID заявки" },
-      { name: "experimentStatus", label: "Статус заявки" },
-      { name: "evaluationMethod", label: "Метод оценки точности" },
-      { name: "email", label: "Email заявки" },
-      { name: "creationDate", label: "Дата создания заявки" },
-      { name: "startDate", label: "Дата начала эксперимента" },
-      { name: "endDate", label: "Дата окончания эксперимента" },
-      { name: "sentDate", label: "Дата отправки результатов" },
-      { name: "deletedDate", label: "Дата удаления результатов" },
-      { name: "trainingDataAbsolutePath", label: "Обучающая выборка" },
-      { name: "experimentAbsolutePath", label: "Результаты эксперимента" }
+      { name: ExperimentFields.UUID, label: "UUID заявки" },
+      { name: ExperimentFields.EXPERIMENT_STATUS, label: "Статус заявки" },
+      { name: ExperimentFields.EVALUATION_METHOD, label: "Метод оценки точности" },
+      { name: ExperimentFields.EMAIL, label: "Email заявки" },
+      { name: ExperimentFields.CREATION_DATE, label: "Дата создания заявки" },
+      { name: ExperimentFields.START_DATE, label: "Дата начала эксперимента" },
+      { name: ExperimentFields.END_DATE, label: "Дата окончания эксперимента" },
+      { name: ExperimentFields.SENT_DATE, label: "Дата отправки результатов" },
+      { name: ExperimentFields.DELETED_DATE, label: "Дата удаления результатов" },
+      { name: ExperimentFields.TRAINING_DATA_PATH, label: "Обучающая выборка" },
+      { name: ExperimentFields.EXPERIMENT_PATH, label: "Результаты эксперимента" }
     ];
   }
 }
