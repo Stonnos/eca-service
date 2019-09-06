@@ -3,6 +3,7 @@ import {
   EvaluationResultsDto, EvaluationStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { EvaluationResultsStatusEnum } from "../model/evaluation-results-status.enum";
+import { EvaluationStatisticsFields } from "../../common/util/field-names";
 
 @Component({
   selector: 'app-evaluation-results',
@@ -40,27 +41,26 @@ export class EvaluationResultsComponent implements OnInit {
     return `[${evaluationStatistics.confidenceIntervalLowerBound}; ${evaluationStatistics.confidenceIntervalUpperBound}]`;
   }
 
-  public getEvaluationStatisticsValue(row: string) {
+  public getEvaluationStatisticsValue(field: string) {
     const evaluationStatistics: EvaluationStatisticsDto = this.evaluationResults.evaluationStatisticsDto;
-    switch (row) {
-      case "confidenceInterval":
-        return this.getConfidenceInterval();
-      default:
-        return evaluationStatistics[row];
+    if (field == EvaluationStatisticsFields.CONFIDENCE_INTERVAL) {
+      return this.getConfidenceInterval();
+    } else {
+      return evaluationStatistics[field];
     }
   }
 
   private initEvaluationStatisticsFields(): void {
     this.evaluationStatisticsFields = [
-      { name: "numTestInstances", label: "Число объектов тестовых данных:" },
-      { name: "numCorrect", label: "Число правильно классифицированных объектов:" },
-      { name: "numIncorrect", label: "Число неправильно классифицированных объектов:" },
-      { name: "pctCorrect", label: "Точность классификатора, %:" },
-      { name: "pctIncorrect", label: "Ошибка классификатора, %:" },
-      { name: "meanAbsoluteError", label: "Средняя абсолютная ошибка классификатора:" },
-      { name: "rootMeanSquaredError", label: "Среднеквадратическая ошибка классификатора:" },
-      { name: "varianceError", label: "Дисперсия ошибки классификатора:" },
-      { name: "confidenceInterval", label: "95% доверительный интервал ошибки классификатора:" },
+      { name: EvaluationStatisticsFields.NUM_TEST_INSTANCES, label: "Число объектов тестовых данных:" },
+      { name: EvaluationStatisticsFields.NUM_CORRECT, label: "Число правильно классифицированных объектов:" },
+      { name: EvaluationStatisticsFields.NUM_INCORRECT, label: "Число неправильно классифицированных объектов:" },
+      { name: EvaluationStatisticsFields.PCT_CORRECT, label: "Точность классификатора, %:" },
+      { name: EvaluationStatisticsFields.PCT_INCORRECT, label: "Ошибка классификатора, %:" },
+      { name: EvaluationStatisticsFields.MEAN_ABSOLUTE_ERROR, label: "Средняя абсолютная ошибка классификатора:" },
+      { name: EvaluationStatisticsFields.ROOT_MEAN_SQUARED_ERROR, label: "Среднеквадратическая ошибка классификатора:" },
+      { name: EvaluationStatisticsFields.VARIANCE_ERROR, label: "Дисперсия ошибки классификатора:" },
+      { name: EvaluationStatisticsFields.CONFIDENCE_INTERVAL, label: "95% доверительный интервал ошибки классификатора:" },
     ];
   }
 }

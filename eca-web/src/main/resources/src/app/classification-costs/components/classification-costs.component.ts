@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import {
   ClassificationCostsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import { ClassificationCostsFields } from "../../common/util/field-names";
 
 @Component({
   selector: 'app-classification-costs-list',
@@ -25,12 +26,12 @@ export class ClassificationCostsComponent implements OnInit {
 
   private initColumns() {
     this.columns = [
-      { name: "classValue", label: "Класс" },
-      { name: "truePositiveRate", label: "TPR" },
-      { name: "falsePositiveRate", label: "FPR" },
-      { name: "trueNegativeRate", label: "TNR" },
-      { name: "falseNegativeRate", label: "FNR" },
-      { name: "aucValue", label: "AUC" }
+      { name: ClassificationCostsFields.CLASS_VALUE, label: "Класс" },
+      { name: ClassificationCostsFields.TPR, label: "TPR" },
+      { name: ClassificationCostsFields.FPR, label: "FPR" },
+      { name: ClassificationCostsFields.TNR, label: "TNR" },
+      { name: ClassificationCostsFields.FNR, label: "FNR" },
+      { name: ClassificationCostsFields.AUC, label: "AUC" }
     ];
   }
 }

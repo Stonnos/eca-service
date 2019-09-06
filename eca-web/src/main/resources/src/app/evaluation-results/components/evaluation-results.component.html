@@ -15,12 +15,12 @@
 </div>
 
 <ng-container *ngIf="isEvaluationResultsReceived()">
-  <div class="ui-g" *ngFor="let row of evaluationStatisticsFields">
+  <div class="ui-g" *ngFor="let field of evaluationStatisticsFields">
     <div class="ui-g-6 text-left text-bold text-wrap">
-      {{ row.label }}
+      {{ field.label }}
     </div>
     <div class="ui-g-6 text-left text-wrap">
-      {{ getEvaluationStatisticsValue(row.name) }}
+      {{ getEvaluationStatisticsValue(field.name) }}
     </div>
   </div>
   <app-classification-costs-list

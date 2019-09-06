@@ -44,3 +44,24 @@ export class ClassifierOptionsFields {
   public static readonly VERSION: string = "version";
   public static readonly CREATION_DATE: string = "creationDate";
 }
+
+export class EvaluationStatisticsFields {
+  public static readonly NUM_TEST_INSTANCES: string = "numTestInstances";
+  public static readonly NUM_CORRECT: string = "numCorrect";
+  public static readonly NUM_INCORRECT: string = "numIncorrect";
+  public static readonly PCT_CORRECT: string = "pctCorrect";
+  public static readonly PCT_INCORRECT: string = "pctIncorrect";
+  public static readonly MEAN_ABSOLUTE_ERROR: string = "meanAbsoluteError";
+  public static readonly ROOT_MEAN_SQUARED_ERROR: string = "rootMeanSquaredError";
+  public static readonly VARIANCE_ERROR: string = "varianceError";
+  public static readonly CONFIDENCE_INTERVAL: string = "confidenceInterval";
+}
+
+export class ClassificationCostsFields {
+  public static readonly CLASS_VALUE: string = "classValue";
+  public static readonly TPR: string = "truePositiveRate";
+  public static readonly FPR: string = "falsePositiveRate";
+  public static readonly TNR: string = "trueNegativeRate";
+  public static readonly FNR: string = "falseNegativeRate";
+  public static readonly AUC: string = "aucValue";
+}
