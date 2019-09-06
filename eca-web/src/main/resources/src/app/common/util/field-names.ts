@@ -20,6 +20,10 @@ export class EvaluationLogFields {
   public static readonly CLASSIFIER_NAME: string = "classifierInfo.classifierName";
   public static readonly EVALUATION_STATUS: string = "evaluationStatus";
   public static readonly RELATION_NAME: string = "instancesInfo.relationName";
+  public static readonly NUM_INSTANCES: string = "instancesInfo.numInstances";
+  public static readonly NUM_ATTRIBUTES: string = "instancesInfo.numAttributes";
+  public static readonly NUM_CLASSES: string = "instancesInfo.numClasses";
+  public static readonly CLASS_NAME: string = "instancesInfo.className";
   public static readonly EVALUATION_METHOD: string = "evaluationMethod";
   public static readonly CREATION_DATE: string = "creationDate";
   public static readonly START_DATE: string = "startDate";

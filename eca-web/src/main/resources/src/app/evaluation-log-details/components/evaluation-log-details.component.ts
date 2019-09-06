@@ -8,6 +8,7 @@ import { ClassifiersService } from "../../classifiers/services/classifiers.servi
 import { MessageService } from "primeng/api";
 import { ActivatedRoute } from "@angular/router";
 import { finalize } from "rxjs/internal/operators";
+import { EvaluationLogFields } from "../../common/util/field-names";
 
 @Component({
   selector: 'app-evaluation-log-details',
@@ -64,9 +65,9 @@ export class EvaluationLogDetailsComponent implements OnInit {
 
   public getEvaluationLogValue(field: string) {
     switch (field) {
-      case "evaluationMethod":
+      case EvaluationLogFields.EVALUATION_METHOD:
         return this.getEvaluationMethod();
-      case "evaluationStatus":
+      case EvaluationLogFields.EVALUATION_STATUS:
         return this.evaluationLogDetails.evaluationStatus.description;
       default:
         const tokens: string[] = field.split(".");
@@ -76,14 +77,14 @@ export class EvaluationLogDetailsComponent implements OnInit {
 
   private initEvaluationLogFields(): void {
     this.evaluationLogFields = [
-      { name: "requestId", label: "UUID заявки:" },
-      { name: "evaluationStatus", label: "Статус заявки:" },
-      { name: "instancesInfo.relationName", label: "Обучающая выборка:" },
-      { name: "instancesInfo.numInstances", label: "Число объектов:" },
-      { name: "instancesInfo.numAttributes", label: "Число атрибутов:" },
-      { name: "instancesInfo.numClasses", label: "Число классов:" },
-      { name: "instancesInfo.className", label: "Атрибут класса:" },
-      { name: "evaluationMethod", label: "Метод оценки точности:" }
+      { name: EvaluationLogFields.REQUEST_ID, label: "UUID заявки:" },
+      { name: EvaluationLogFields.EVALUATION_STATUS, label: "Статус заявки:" },
+      { name: EvaluationLogFields.RELATION_NAME, label: "Обучающая выборка:" },
+      { name: EvaluationLogFields.NUM_INSTANCES, label: "Число объектов:" },
+      { name: EvaluationLogFields.NUM_ATTRIBUTES, label: "Число атрибутов:" },
+      { name: EvaluationLogFields.NUM_CLASSES, label: "Число классов:" },
+      { name: EvaluationLogFields.CLASS_NAME, label: "Атрибут класса:" },
+      { name: EvaluationLogFields.EVALUATION_METHOD, label: "Метод оценки точности:" }
     ];
   }
 }
