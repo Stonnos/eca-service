@@ -93,7 +93,7 @@
   <p-overlayPanel #infoPanel [showCloseIcon]="true">
     <p-panel *ngIf="selectedEvaluationLog && selectedColumn" class="info-panel">
       <ng-container [ngSwitch]="selectedColumn">
-        <ng-container *ngSwitchCase="classifierNameColumn">
+        <ng-container *ngSwitchCase="'classifierInfo.classifierName'">
           <ng-container *ngFor="let option of selectedEvaluationLog.classifierInfo.inputOptions">
             <div class="ui-g">
               <div class="ui-g-6 text-right text-bold text-wrap">
@@ -133,7 +133,7 @@
             </div>
           </div>
         </ng-container>
-        <ng-container *ngSwitchCase="instancesInfoColumn">
+        <ng-container *ngSwitchCase="'instancesInfo.relationName'">
           <div class="ui-g">
             <div class="ui-g-6 text-right text-bold text-wrap">
               Число объектов:
