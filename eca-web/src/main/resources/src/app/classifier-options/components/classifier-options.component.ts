@@ -10,6 +10,7 @@ import { OverlayPanel} from "primeng/primeng";
 import { JsonPipe } from "@angular/common";
 import { Observable } from "rxjs/internal/Observable";
 import { ClassifierOptionsFields } from "../../common/util/field-names";
+import { FieldService } from "../../common/services/field.service";
 
 declare var Prism: any;
 
@@ -24,7 +25,7 @@ export class ClassifierOptionsComponent extends BaseListComponent<ClassifierOpti
 
   public constructor(private injector: Injector,
                      private classifierOptionsService: ClassifierOptionsService) {
-    super(injector.get(MessageService));
+    super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ClassifierOptionsFields.CREATION_DATE;
     this.linkColumns = [ClassifierOptionsFields.OPTIONS_NAME];
     this.initColumns();

@@ -4,6 +4,7 @@ import {
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { EvaluationResultsStatusEnum } from "../model/evaluation-results-status.enum";
 import { EvaluationStatisticsFields } from "../../common/util/field-names";
+import { FieldService } from "../../common/services/field.service";
 
 @Component({
   selector: 'app-evaluation-results',
@@ -17,7 +18,7 @@ export class EvaluationResultsComponent implements OnInit {
 
   public evaluationStatisticsFields: any[] = [];
 
-  public constructor() {
+  public constructor(private fieldService: FieldService) {
     this.initEvaluationStatisticsFields();
   }
 
@@ -46,7 +47,7 @@ export class EvaluationResultsComponent implements OnInit {
     if (field == EvaluationStatisticsFields.CONFIDENCE_INTERVAL) {
       return this.getConfidenceInterval();
     } else {
-      return evaluationStatistics[field];
+      return this.fieldService.getFieldValue(field, evaluationStatistics);
     }
   }
 

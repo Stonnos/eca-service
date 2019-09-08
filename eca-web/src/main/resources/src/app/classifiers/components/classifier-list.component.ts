@@ -14,6 +14,7 @@ import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
 import { Router } from "@angular/router";
 import { RouterPaths } from "../../routing/router-paths";
 import { EvaluationLogFields } from "../../common/util/field-names";
+import { FieldService } from "../../common/services/field.service";
 
 @Component({
   selector: 'app-classifier-list',
@@ -31,7 +32,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
                      private classifiersService: ClassifiersService,
                      private filterService: FilterService,
                      private router: Router) {
-    super(injector.get(MessageService));
+    super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = EvaluationLogFields.CREATION_DATE;
     this.linkColumns = [EvaluationLogFields.CLASSIFIER_NAME, EvaluationLogFields.EVALUATION_METHOD,
       EvaluationLogFields.RELATION_NAME, EvaluationLogFields.REQUEST_ID];
@@ -75,21 +76,6 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
         break;
       default:
         this.toggleOverlayPanel(event, evaluationLog, column, overlayPanel);
-    }
-  }
-
-  public getColumnValue(column: string, item: EvaluationLogDto) {
-    switch (column) {
-      case EvaluationLogFields.RELATION_NAME:
-        return item.instancesInfo.relationName;
-      case EvaluationLogFields.CLASSIFIER_NAME:
-        return item.classifierInfo.classifierName;
-      case EvaluationLogFields.EVALUATION_METHOD:
-        return item.evaluationMethod.description;
-      case EvaluationLogFields.EVALUATION_STATUS:
-        return item.evaluationStatus.description;
-      default:
-        return item[column];
     }
   }
 

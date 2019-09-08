@@ -15,6 +15,7 @@ import { ExperimentRequest } from "../../create-experiment/model/experiment-requ
 import { Router } from "@angular/router";
 import { RouterPaths } from "../../routing/router-paths";
 import { ExperimentFields } from "../../common/util/field-names";
+import { FieldService } from "../../common/services/field.service";
 
 @Component({
   selector: 'app-experiment-list',
@@ -39,7 +40,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
                      private experimentsService: ExperimentsService,
                      private filterService: FilterService,
                      private router: Router) {
-    super(injector.get(MessageService));
+    super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ExperimentFields.CREATION_DATE;
     this.linkColumns = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH, ExperimentFields.UUID];
     this.notSortableColumns = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH];
@@ -69,19 +70,6 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     });
-  }
-
-  public getColumnValue(column: string, item: ExperimentDto) {
-    switch (column) {
-      case ExperimentFields.EVALUATION_METHOD:
-        return item.evaluationMethod.description;
-      case ExperimentFields.EXPERIMENT_STATUS:
-        return item.experimentStatus.description;
-      case ExperimentFields.EXPERIMENT_TYPE:
-        return item.experimentType.description;
-      default:
-        return item[column];
-    }
   }
 
   public onLink(column: string, experiment: ExperimentDto) {

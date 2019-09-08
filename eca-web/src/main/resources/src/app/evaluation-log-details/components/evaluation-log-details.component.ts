@@ -9,6 +9,7 @@ import { MessageService } from "primeng/api";
 import { ActivatedRoute } from "@angular/router";
 import { finalize } from "rxjs/internal/operators";
 import { EvaluationLogFields } from "../../common/util/field-names";
+import { FieldService } from "../../common/services/field.service";
 
 @Component({
   selector: 'app-evaluation-log-details',
@@ -26,7 +27,8 @@ export class EvaluationLogDetailsComponent implements OnInit {
 
   public constructor(private classifiersService: ClassifiersService,
                      private messageService: MessageService,
-                     private route: ActivatedRoute) {
+                     private route: ActivatedRoute,
+                     private fieldService: FieldService) {
     this.requestId = this.route.snapshot.params.id;
     this.initEvaluationLogFields();
   }
@@ -64,14 +66,10 @@ export class EvaluationLogDetailsComponent implements OnInit {
   }
 
   public getEvaluationLogValue(field: string) {
-    switch (field) {
-      case EvaluationLogFields.EVALUATION_METHOD:
-        return this.getEvaluationMethod();
-      case EvaluationLogFields.EVALUATION_STATUS:
-        return this.evaluationLogDetails.evaluationStatus.description;
-      default:
-        const tokens: string[] = field.split(".");
-        return tokens.length == 2 ? this.evaluationLogDetails[tokens[0]][tokens[1]] : this.evaluationLogDetails[tokens[0]];
+    if (field == EvaluationLogFields.EVALUATION_METHOD) {
+      return this.getEvaluationMethod();
+    } else {
+      return this.fieldService.getFieldValue(field, this.evaluationLogDetails);
     }
   }
 

@@ -8,13 +8,15 @@ import { ActivatedRoute } from "@angular/router";
 import { ExperimentsService } from "../../experiments/services/experiments.service";
 import { saveAs } from 'file-saver/dist/FileSaver';
 import { ExperimentFields } from "../../common/util/field-names";
+import { FieldLink } from "../../common/model/field-link";
+import { FieldService } from "../../common/services/field.service";
 
 @Component({
   selector: 'app-experiment-details',
   templateUrl: './experiment-details.component.html',
   styleUrls: ['./experiment-details.component.scss']
 })
-export class ExperimentDetailsComponent implements OnInit {
+export class ExperimentDetailsComponent implements OnInit, FieldLink {
 
   private readonly experimentUuid: string;
 
@@ -28,7 +30,8 @@ export class ExperimentDetailsComponent implements OnInit {
 
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService,
-                     private route: ActivatedRoute) {
+                     private route: ActivatedRoute,
+                     private fieldService: FieldService) {
     this.experimentUuid = this.route.snapshot.params.id;
     this.initExperimentFields();
   }
@@ -92,19 +95,7 @@ export class ExperimentDetailsComponent implements OnInit {
   }
 
   public getExperimentValue(field: string) {
-    if (this.experimentDto) {
-      switch (field) {
-        case ExperimentFields.EVALUATION_METHOD:
-          return this.experimentDto.evaluationMethod.description;
-        case ExperimentFields.EXPERIMENT_STATUS:
-          return this.experimentDto.experimentStatus.description;
-        case ExperimentFields.EXPERIMENT_TYPE:
-          return this.experimentDto.experimentType.description;
-        default:
-          return this.experimentDto[field];
-      }
-    }
-    return null;
+    return this.fieldService.getFieldValue(field, this.experimentDto);
   }
 
   private initExperimentFields(): void {

@@ -12,6 +12,7 @@ import { Observable } from "rxjs/internal/Observable";
 import { saveAs } from 'file-saver/dist/FileSaver';
 import { FilterService } from "../../filter/services/filter.service";
 import { ClassifierOptionsRequestsFields } from "../../common/util/field-names";
+import { FieldService } from "../../common/services/field.service";
 
 declare var Prism: any;
 
@@ -28,7 +29,7 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
   public constructor(private injector: Injector,
                      private classifierOptionsService: ClassifierOptionsRequestService,
                      private filterService: FilterService) {
-    super(injector.get(MessageService));
+    super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ClassifierOptionsRequestsFields.REQUEST_DATE;
     this.linkColumns = [ClassifierOptionsRequestsFields.CLASSIFIER_NAME, ClassifierOptionsRequestsFields.EVALUATION_METHOD];
     this.notSortableColumns = [ClassifierOptionsRequestsFields.CLASSIFIER_NAME];
@@ -52,15 +53,10 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
   }
 
   public getColumnValue(column: string, item: ClassifierOptionsRequestDto) {
-    switch (column) {
-      case ClassifierOptionsRequestsFields.CLASSIFIER_NAME:
-        return this.hasClassifierOptionsResponse(item) ? item.classifierOptionsResponseModels[0].classifierName : null;
-      case ClassifierOptionsRequestsFields.EVALUATION_METHOD:
-        return item.evaluationMethod.description;
-      case ClassifierOptionsRequestsFields.RESPONSE_STATUS:
-        return item.responseStatus.description;
-      default:
-        return item[column];
+    if (column == ClassifierOptionsRequestsFields.CLASSIFIER_NAME) {
+      return this.hasClassifierOptionsResponse(item) ? item.classifierOptionsResponseModels[0].classifierName : null;
+    } else {
+      return super.getColumnValue(column, item);
     }
   }
 

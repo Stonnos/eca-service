@@ -24,7 +24,7 @@
                   <ng-container *ngSwitchCase="'uuid'">
                     <span class="text-bold">{{ experimentDto?.uuid }}</span>
                   </ng-container>
-                  <ng-container *ngSwitchCase="'experimentStatus'">
+                  <ng-container *ngSwitchCase="'experimentStatus.description'">
                     <div class="text-white request-status"
                          [class.bg-info]="experimentDto?.experimentStatus.value == 'NEW'"
                          [class.bg-success]="experimentDto?.experimentStatus.value == 'FINISHED'"

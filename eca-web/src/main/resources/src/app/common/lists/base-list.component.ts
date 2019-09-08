@@ -10,8 +10,10 @@ import {
   PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import { FieldService } from "../services/field.service";
+import { FieldLink } from "../model/field-link";
 
-export abstract class BaseListComponent<T> {
+export abstract class BaseListComponent<T> implements FieldLink {
 
   private static readonly MIN_QUERY_SIZE: number = 3;
 
@@ -36,7 +38,8 @@ export abstract class BaseListComponent<T> {
 
   private dateFormat: string = "yyyy-MM-dd";
 
-  protected constructor(public messageService: MessageService) {
+  protected constructor(public messageService: MessageService,
+                        public fieldService: FieldService) {
   }
 
   public getNextPage(pageRequest: PageRequestDto) {
@@ -78,6 +81,10 @@ export abstract class BaseListComponent<T> {
     if (pageDto.page == 0) {
       this.table.first = 0;
     }
+  }
+
+  public getColumnValue(column: string, item: T) {
+    return this.fieldService.getFieldValue(column, item);
   }
 
   public isLink(column: string): boolean {

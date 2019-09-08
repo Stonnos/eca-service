@@ -1,19 +1,24 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
-  ExperimentErsReportDto, ExperimentResultsDto
+  ExperimentErsReportDto,
+  ExperimentResultsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ExperimentsService } from "../../experiments/services/experiments.service";
 import { finalize } from "rxjs/operators";
 import { MessageService } from "primeng/api";
 import { Router } from "@angular/router";
 import { RouterPaths } from "../../routing/router-paths";
+import { FieldLink } from "../../common/model/field-link";
+import { FieldService } from "../../common/services/field.service";
+import { ExperimentResultsFields } from "../../common/util/field-names";
+import { ErsSentStatusEnum } from "../../common/model/ers-sent-status.enum";
 
 @Component({
   selector: 'app-experiment-ers-report',
   templateUrl: './experiment-ers-report.component.html',
   styleUrls: ['./experiment-ers-report.component.scss']
 })
-export class ExperimentErsReportComponent implements OnInit {
+export class ExperimentErsReportComponent implements OnInit, FieldLink {
 
   @Input()
   public experimentErsReport: ExperimentErsReportDto;
@@ -21,7 +26,7 @@ export class ExperimentErsReportComponent implements OnInit {
   @Output()
   public evaluationResultsSent: EventEmitter<void> = new EventEmitter();
 
-  public linkColumns: string[] = ["resultsIndex", "classifierName"];
+  public linkColumns: string[] = [ExperimentResultsFields.RESULTS_INDEX, ExperimentResultsFields.CLASSIFIER_NAME];
   public experimentResultsColumns: any[] = [];
 
   public selectedExperimentResults: ExperimentResultsDto;
@@ -32,7 +37,8 @@ export class ExperimentErsReportComponent implements OnInit {
 
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService,
-                     private router: Router) {
+                     private router: Router,
+                     private fieldService: FieldService) {
     this.initExperimentResultsColumns();
   }
 
@@ -45,10 +51,10 @@ export class ExperimentErsReportComponent implements OnInit {
 
   public onLink(experimentResults: ExperimentResultsDto, column: string): void {
     switch (column) {
-      case "resultsIndex":
+      case ExperimentResultsFields.RESULTS_INDEX:
         this.router.navigate([RouterPaths.EXPERIMENT_RESULTS_DETAILS_URL, experimentResults.id]);
         break;
-      case "classifierName":
+      case ExperimentResultsFields.CLASSIFIER_NAME:
         this.selectedExperimentResults = experimentResults;
         this.classifierOptionsDialogVisibility = true;
         break;
@@ -83,22 +89,19 @@ export class ExperimentErsReportComponent implements OnInit {
   }
 
   public getColumnValue(column: string, item: ExperimentResultsDto) {
-    switch (column) {
-      case "classifierName":
-        return item.classifierInfo.classifierName;
-      case "sent":
-        return item.sent ? "Отправлены" : "Не отправлены";
-      default:
-        return item[column];
+    if (column == ExperimentResultsFields.SENT) {
+      return item.sent ? ErsSentStatusEnum.SENT : ErsSentStatusEnum.NOT_SENT;
+    } else {
+      return this.fieldService.getFieldValue(column, item);
     }
   }
 
   private initExperimentResultsColumns() {
     this.experimentResultsColumns = [
-      { name: "resultsIndex", label: "№" },
-      { name: "classifierName", label: "Классификатор" },
-      { name: "pctCorrect", label: "Точность, %" },
-      { name: "sent", label: "Статус отправки результатов в ERS" }
+      { name: ExperimentResultsFields.RESULTS_INDEX, label: "№" },
+      { name: ExperimentResultsFields.CLASSIFIER_NAME, label: "Классификатор" },
+      { name: ExperimentResultsFields.PCT_CORRECT, label: "Точность, %" },
+      { name: ExperimentResultsFields.SENT, label: "Статус отправки результатов в ERS" }
     ];
   }
 }

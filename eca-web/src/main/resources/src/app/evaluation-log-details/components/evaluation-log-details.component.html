@@ -26,7 +26,7 @@
                 <ng-container *ngSwitchCase="'requestId'">
                   <span class="text-bold">{{ evaluationLogDetails?.requestId }}</span>
                 </ng-container>
-                <ng-container *ngSwitchCase="'evaluationStatus'">
+                <ng-container *ngSwitchCase="'evaluationStatus.description'">
                   <div class="text-white request-status"
                        [class.bg-info]="evaluationLogDetails?.evaluationStatus.value == 'NEW'"
                        [class.bg-success]="evaluationLogDetails?.evaluationStatus.value == 'FINISHED'"

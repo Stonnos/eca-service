@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { UiComponentsModule } from "../ui-components.module";
 import { PageRequestService } from "./services/page-request.service";
+import { FieldService } from "./services/field.service";
 
 @NgModule({
   imports: [
@@ -11,7 +12,8 @@ import { PageRequestService } from "./services/page-request.service";
     UiComponentsModule
   ],
   providers: [
-    PageRequestService
+    PageRequestService,
+    FieldService
   ]
 })
 export class SharedModule {

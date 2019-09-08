@@ -62,7 +62,7 @@
               </a>
               <div *ngIf="!isLink(column.name)">
                 <ng-container [ngSwitch]="column.name">
-                  <ng-container *ngSwitchCase="'evaluationStatus'">
+                  <ng-container *ngSwitchCase="'evaluationStatus.description'">
                     <div class="text-white request-status"
                          [class.bg-info]="item.evaluationStatus.value == 'NEW'"
                          [class.bg-success]="item.evaluationStatus.value == 'FINISHED'"
@@ -105,7 +105,7 @@
             </div>
           </ng-container>
         </ng-container>
-        <ng-container *ngSwitchCase="'evaluationMethod'">
+        <ng-container *ngSwitchCase="'evaluationMethod.description'">
           <div class="ui-g" *ngIf="selectedEvaluationLog.numFolds">
             <div class="ui-g-6 text-right text-bold text-wrap">
               Число блоков:

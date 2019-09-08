@@ -8,13 +8,15 @@ import { finalize } from "rxjs/internal/operators";
 import { ExperimentsService } from "../../experiments/services/experiments.service";
 import { RouterPaths } from "../../routing/router-paths";
 import { ExperimentFields } from "../../common/util/field-names";
+import { FieldLink } from "../../common/model/field-link";
+import { FieldService } from "../../common/services/field.service";
 
 @Component({
   selector: 'app-experiment-results-details',
   templateUrl: './experiment-results-details.component.html',
   styleUrls: ['./experiment-results-details.component.scss']
 })
-export class ExperimentResultsDetailsComponent implements OnInit {
+export class ExperimentResultsDetailsComponent implements OnInit, FieldLink {
 
   private readonly evaluationResultsId: number;
 
@@ -28,7 +30,8 @@ export class ExperimentResultsDetailsComponent implements OnInit {
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService,
                      private route: ActivatedRoute,
-                     private router: Router) {
+                     private router: Router,
+                     private fieldService: FieldService) {
     this.evaluationResultsId = this.route.snapshot.params.id;
     this.initExperimentFields();
   }
@@ -53,18 +56,7 @@ export class ExperimentResultsDetailsComponent implements OnInit {
   }
 
   public getExperimentValue(field: string) {
-    if (this.experimentResultsDetailsDto && this.experimentResultsDetailsDto.experimentDto) {
-      const experimentDto: ExperimentDto = this.experimentResultsDetailsDto.experimentDto;
-      switch (field) {
-        case ExperimentFields.EXPERIMENT_TYPE:
-          return experimentDto.experimentType.description;
-        case ExperimentFields.EVALUATION_METHOD:
-          return experimentDto.evaluationMethod.description;
-        default:
-          return experimentDto[field];
-      }
-    }
-    return null;
+    return this.fieldService.getFieldValue(field, this.experimentResultsDetailsDto && this.experimentResultsDetailsDto.experimentDto);
   }
 
   public isLink(field: string): boolean {
