@@ -63,7 +63,7 @@ export class FilterService {
   public mapToFilters(filterFields: FilterFieldDto[]): Filter[] {
     return filterFields.map((filter: FilterFieldDto) => {
       let values: SelectItem[] = [];
-      if (filter.filterFieldType == FilterFieldType.REFERENCE && !!filter.dictionary && !!filter.dictionary.values && filter.dictionary.values.length > 0) {
+      if (filter.filterFieldType == FilterFieldType.REFERENCE && filter.dictionary && filter.dictionary.values && filter.dictionary.values.length > 0) {
         values = filter.dictionary.values.map((filterValue: FilterDictionaryValueDto) => {
           return { label: filterValue.label, value: filterValue.value };
         });

@@ -119,7 +119,7 @@ export abstract class BaseListComponent<T> implements FieldLink {
   }
 
   private hasValue(filter: Filter): boolean {
-    return filter.multiple ? !!filter.currentValues && filter.currentValues.length > 0 : !!filter.currentValue;
+    return filter.multiple ? filter.currentValues && filter.currentValues.length > 0 : filter.currentValue;
   }
 
   private transformFilterValues(filter: Filter): string[] {

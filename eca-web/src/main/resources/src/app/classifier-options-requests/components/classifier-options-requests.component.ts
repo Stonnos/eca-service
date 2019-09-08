@@ -61,9 +61,9 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
   }
 
   public saveClassifierOptions() {
-    if (!!this.selectedRequest) {
+    if (this.selectedRequest) {
       const classifierConfig = this.selectedRequest.classifierOptionsResponseModels[0].options;
-      if (!!classifierConfig) {
+      if (classifierConfig) {
         let blob: Blob = new Blob([classifierConfig], {type: 'application/json'});
         saveAs(blob, `${this.selectedRequest.classifierOptionsResponseModels[0].classifierName}_${this.selectedRequest.requestId}.json`);
       }
@@ -71,7 +71,7 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
   }
 
   public hasClassifierOptionsResponse(item: ClassifierOptionsRequestDto): boolean {
-    return !!item && !!item.classifierOptionsResponseModels && item.classifierOptionsResponseModels.length > 0;
+    return item && item.classifierOptionsResponseModels && item.classifierOptionsResponseModels.length > 0;
   }
 
   public onSelect(event, classifierOptionsRequestDto: ClassifierOptionsRequestDto, column: string, overlayPanel: OverlayPanel) {
