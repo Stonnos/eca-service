@@ -77,10 +77,12 @@ public class ExperimentController {
     private static final String EXPERIMENT_RESULTS_FILE_NOT_FOUND =
             "Experiment results file for uuid = '%s' not found!";
     private static final String EXPERIMENT_RESULTS_SENT_FORMAT = "Experiment [%s] results is already sent to ERS";
-    private static final String EXPERIMENT_RESULTS_DELETED_FORMAT = "Experiment [%s] results has been deleted";
+    private static final String EXPERIMENT_RESULTS_FILE_DELETED_FORMAT =
+            "Experiment [%s] results file has been deleted";
     private static final String EXPERIMENT_NOT_FOUND_FORMAT = "Experiment with uuid [%s] not found";
     private static final String EXPERIMENT_NOT_FINISHED_FORMAT =
             "Can't sent experiment [%s] results to ERS, because experiment status isn't FINISHED";
+    private static final String EXPERIMENT_RESULTS_NOT_FOUND = "Can't found experiment [%s] results to ERS sent";
     private static final String EXPERIMENT_TRAINING_DATA_FILE_NOT_FOUND_FORMAT =
             "Experiment training data file for uuid = '%s' not found!";
 
@@ -386,23 +388,23 @@ public class ExperimentController {
         return experimentRequest;
     }
 
-    private boolean isResultsSentToErs(Experiment experiment) {
-        long resultsCount = experimentResultsEntityRepository.countByExperiment(experiment);
-        long sentResults = experimentResultsEntityRepository.getSentResultsCount(experiment);
-        return resultsCount > 0 && resultsCount == sentResults;
-    }
-
     private ResponseEntity handleExperimentResultsSending(Experiment experiment) {
         ResponseEntity responseEntity;
+        long resultsCount = experimentResultsEntityRepository.countByExperiment(experiment);
+        if (resultsCount == 0L) {
+            log.error("Can't found experiment [{}] results to ERS sent", experiment.getUuid());
+            return ResponseEntity.badRequest().body(String.format(EXPERIMENT_RESULTS_NOT_FOUND, experiment.getUuid()));
+        }
         experimentMap.putIfAbsent(experiment.getUuid(), new Object());
         synchronized (experimentMap.get(experiment.getUuid())) {
-            if (isResultsSentToErs(experiment)) {
+            long sentResults = experimentResultsEntityRepository.getSentResultsCount(experiment);
+            if (resultsCount == sentResults) {
                 responseEntity = ResponseEntity.ok(
                         String.format(EXPERIMENT_RESULTS_SENT_FORMAT, experiment.getUuid()));
             } else if (experiment.getDeletedDate() != null) {
-                log.error("Experiment [{}] results has been deleted", experiment.getUuid());
+                log.error("Experiment [{}] results file has been deleted", experiment.getUuid());
                 responseEntity = ResponseEntity.badRequest().body(
-                        String.format(EXPERIMENT_RESULTS_DELETED_FORMAT, experiment.getUuid()));
+                        String.format(EXPERIMENT_RESULTS_FILE_DELETED_FORMAT, experiment.getUuid()));
             } else {
                 List<ExperimentResultsEntity> experimentResultsEntityList =
                         experimentResultsEntityRepository.findExperimentsResultsToErsSent(experiment);
