@@ -73,7 +73,7 @@
             </a>
             <div *ngIf="!isLink(column.name)">
               <ng-container [ngSwitch]="column.name">
-                <ng-container *ngSwitchCase="'experimentStatus'">
+                <ng-container *ngSwitchCase="'experimentStatus.description'">
                   <div class="text-white request-status"
                         [class.bg-info]="item.experimentStatus.value == 'NEW'"
                         [class.bg-success]="item.experimentStatus.value == 'FINISHED'"
