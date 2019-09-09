@@ -79,7 +79,7 @@ export class ExperimentDetailsComponent implements OnInit, FieldLink {
   }
 
   public isLink(field: string): boolean {
-    return this.linkColumns.includes(field);
+    return this.linkColumns.includes(field) && this.hasValue(field);
   }
 
   public onLink(field: string) {
@@ -97,6 +97,10 @@ export class ExperimentDetailsComponent implements OnInit, FieldLink {
 
   public getExperimentValue(field: string) {
     return this.fieldService.getFieldValue(field, this.experimentDto, Utils.MISSING_VALUE);
+  }
+
+  public hasValue(field: string): boolean {
+    return this.fieldService.hasValue(field, this.experimentDto);
   }
 
   private initExperimentFields(): void {

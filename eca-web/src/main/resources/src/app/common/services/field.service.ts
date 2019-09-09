@@ -7,12 +7,16 @@ export class FieldService {
     const computedDefaultVal = defaultValue ? defaultValue : null;
     if (object) {
       const fields: string[] = field.split(".");
-      return this.getValue(fields, object, computedDefaultVal);
+      return this.getValueInternal(fields, object, computedDefaultVal);
     }
     return computedDefaultVal;
   }
 
-  private getValue(fields: string[], object: any, defaultValue: any): any {
+  public hasValue(field: string, object: any): boolean {
+    return this.getFieldValue(field, object, null) != null;
+  }
+
+  private getValueInternal(fields: string[], object: any, defaultValue: any): any {
     let value = object;
     for (let i = 0; i < fields.length; i++) {
       value = value[fields[i]];
