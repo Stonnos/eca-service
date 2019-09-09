@@ -5,6 +5,7 @@ import {
 import { EvaluationResultsStatusEnum } from "../model/evaluation-results-status.enum";
 import { EvaluationStatisticsFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
+import { Utils } from "../../common/util/utils";
 
 @Component({
   selector: 'app-evaluation-results',
@@ -39,7 +40,10 @@ export class EvaluationResultsComponent implements OnInit {
 
   public getConfidenceInterval(): string {
     const evaluationStatistics: EvaluationStatisticsDto = this.evaluationResults.evaluationStatisticsDto;
-    return `[${evaluationStatistics.confidenceIntervalLowerBound}; ${evaluationStatistics.confidenceIntervalUpperBound}]`;
+    if (evaluationStatistics.confidenceIntervalLowerBound && evaluationStatistics.confidenceIntervalUpperBound) {
+      return `[${evaluationStatistics.confidenceIntervalLowerBound}; ${evaluationStatistics.confidenceIntervalUpperBound}]`;
+    }
+    return Utils.MISSING_VALUE;
   }
 
   public getEvaluationStatisticsValue(field: string) {
@@ -47,7 +51,7 @@ export class EvaluationResultsComponent implements OnInit {
     if (field == EvaluationStatisticsFields.CONFIDENCE_INTERVAL) {
       return this.getConfidenceInterval();
     } else {
-      return this.fieldService.getFieldValue(field, evaluationStatistics);
+      return this.fieldService.getFieldValue(field, evaluationStatistics, Utils.MISSING_VALUE);
     }
   }
 

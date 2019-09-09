@@ -10,6 +10,7 @@ import { ActivatedRoute } from "@angular/router";
 import { finalize } from "rxjs/internal/operators";
 import { EvaluationLogFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
+import { Utils } from "../../common/util/utils";
 
 @Component({
   selector: 'app-evaluation-log-details',
@@ -69,7 +70,7 @@ export class EvaluationLogDetailsComponent implements OnInit {
     if (field == EvaluationLogFields.EVALUATION_METHOD) {
       return this.getEvaluationMethod();
     } else {
-      return this.fieldService.getFieldValue(field, this.evaluationLogDetails);
+      return this.fieldService.getFieldValue(field, this.evaluationLogDetails, Utils.MISSING_VALUE);
     }
   }
 

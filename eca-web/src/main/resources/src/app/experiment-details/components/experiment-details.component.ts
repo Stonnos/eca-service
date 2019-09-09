@@ -10,6 +10,7 @@ import { saveAs } from 'file-saver/dist/FileSaver';
 import { ExperimentFields } from "../../common/util/field-names";
 import { FieldLink } from "../../common/model/field-link";
 import { FieldService } from "../../common/services/field.service";
+import { Utils } from "../../common/util/utils";
 
 @Component({
   selector: 'app-experiment-details',
@@ -95,7 +96,7 @@ export class ExperimentDetailsComponent implements OnInit, FieldLink {
   }
 
   public getExperimentValue(field: string) {
-    return this.fieldService.getFieldValue(field, this.experimentDto);
+    return this.fieldService.getFieldValue(field, this.experimentDto, Utils.MISSING_VALUE);
   }
 
   private initExperimentFields(): void {

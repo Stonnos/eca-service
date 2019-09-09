@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  ExperimentDto, ExperimentResultsDetailsDto
+  ExperimentResultsDetailsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { MessageService } from "primeng/api";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -10,6 +10,7 @@ import { RouterPaths } from "../../routing/router-paths";
 import { ExperimentFields } from "../../common/util/field-names";
 import { FieldLink } from "../../common/model/field-link";
 import { FieldService } from "../../common/services/field.service";
+import { Utils } from "../../common/util/utils";
 
 @Component({
   selector: 'app-experiment-results-details',
@@ -56,7 +57,7 @@ export class ExperimentResultsDetailsComponent implements OnInit, FieldLink {
   }
 
   public getExperimentValue(field: string) {
-    return this.fieldService.getFieldValue(field, this.experimentResultsDetailsDto && this.experimentResultsDetailsDto.experimentDto);
+    return this.fieldService.getFieldValue(field, this.experimentResultsDetailsDto && this.experimentResultsDetailsDto.experimentDto, Utils.MISSING_VALUE);
   }
 
   public isLink(field: string): boolean {

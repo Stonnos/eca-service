@@ -3,22 +3,23 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class FieldService {
 
-  public getFieldValue(field: string, object: any): any {
+  public getFieldValue(field: string, object: any, defaultValue?: any): any {
+    const computedDefaultVal = defaultValue ? defaultValue : null;
     if (object) {
       const fields: string[] = field.split(".");
-      return this.getValue(fields, object);
+      return this.getValue(fields, object, computedDefaultVal);
     }
-    return null;
+    return computedDefaultVal;
   }
 
-  private getValue(fields: string[], object: any): any {
+  private getValue(fields: string[], object: any, defaultValue: any): any {
     let value = object;
-    fields.forEach((field) => {
-      value = value[field];
-      if (!value) {
-        return null;
+    for (let i = 0; i < fields.length; i++) {
+      value = value[fields[i]];
+      if (value == null) {
+        return defaultValue;
       }
-    });
+    }
     return value;
   }
 }
