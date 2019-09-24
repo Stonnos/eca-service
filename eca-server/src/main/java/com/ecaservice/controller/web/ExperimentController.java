@@ -320,7 +320,7 @@ public class ExperimentController {
             log.error("Can't sent experiment [{}] results to ERS, because experiment status isn't FINISHED", uuid);
             return ResponseEntity.badRequest().body(String.format(EXPERIMENT_NOT_FINISHED_FORMAT, uuid));
         }
-        return handleExperimentResultsSending(experiment);
+        return sentExperimentResults(experiment);
     }
 
     /**
@@ -388,7 +388,7 @@ public class ExperimentController {
         return experimentRequest;
     }
 
-    private ResponseEntity handleExperimentResultsSending(Experiment experiment) {
+    private ResponseEntity sentExperimentResults(Experiment experiment) {
         ResponseEntity responseEntity;
         long resultsCount = experimentResultsEntityRepository.countByExperiment(experiment);
         if (resultsCount == 0L) {
