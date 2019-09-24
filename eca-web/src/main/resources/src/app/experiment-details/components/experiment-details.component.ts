@@ -11,6 +11,7 @@ import { ExperimentFields } from "../../common/util/field-names";
 import { FieldLink } from "../../common/model/field-link";
 import { FieldService } from "../../common/services/field.service";
 import { Utils } from "../../common/util/utils";
+import { finalize } from "rxjs/operators";
 
 @Component({
   selector: 'app-experiment-details',
@@ -20,6 +21,10 @@ import { Utils } from "../../common/util/utils";
 export class ExperimentDetailsComponent implements OnInit, FieldLink {
 
   private readonly experimentUuid: string;
+
+  private readonly loadingFieldsMap = new Map<string, boolean>()
+    .set(ExperimentFields.TRAINING_DATA_PATH, false)
+    .set(ExperimentFields.EXPERIMENT_PATH, false);
 
   public experimentFields: any[] = [];
 
@@ -52,7 +57,13 @@ export class ExperimentDetailsComponent implements OnInit, FieldLink {
   }
 
   public getExperimentTrainingDataFile(): void {
+    this.loadingFieldsMap.set(ExperimentFields.TRAINING_DATA_PATH, true);
     this.experimentsService.getExperimentTrainingDataFile(this.experimentDto.uuid)
+      .pipe(
+        finalize(() => {
+          this.loadingFieldsMap.set(ExperimentFields.TRAINING_DATA_PATH, false);
+        })
+      )
       .subscribe((blob: Blob) => {
         saveAs(blob, this.experimentDto.trainingDataAbsolutePath);
       }, (error) => {
@@ -61,7 +72,13 @@ export class ExperimentDetailsComponent implements OnInit, FieldLink {
   }
 
   public getExperimentResultsFile(): void {
+    this.loadingFieldsMap.set(ExperimentFields.EXPERIMENT_PATH, true);
     this.experimentsService.getExperimentResultsFile(this.experimentDto.uuid)
+      .pipe(
+        finalize(() => {
+          this.loadingFieldsMap.set(ExperimentFields.EXPERIMENT_PATH, false);
+        })
+      )
       .subscribe((blob: Blob) => {
         saveAs(blob, this.experimentDto.experimentAbsolutePath);
       }, (error) => {
@@ -80,6 +97,10 @@ export class ExperimentDetailsComponent implements OnInit, FieldLink {
 
   public isLink(field: string): boolean {
     return this.linkColumns.includes(field) && this.hasValue(field);
+  }
+
+  public isLoading(field: string): boolean {
+    return this.loadingFieldsMap.has(field) && this.loadingFieldsMap.get(field);
   }
 
   public onLink(field: string) {

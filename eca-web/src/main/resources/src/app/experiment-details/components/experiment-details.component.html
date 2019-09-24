@@ -2,7 +2,8 @@
   <div class="row mt-2">
     <div class="col">
       <div class="details-panel">
-        <h6 class="ml-4 mt-2 mb-2">Информация о заявке на эксперимент - {{ experimentDto?.experimentType?.description }}</h6>
+        <h6 class="ml-4 mt-2 mb-2">Информация о заявке на эксперимент
+          - {{ experimentDto?.experimentType?.description }}</h6>
       </div>
     </div>
   </div>
@@ -15,7 +16,10 @@
               {{ field.label }}
             </div>
             <div class="ui-g-6 text-left text-wrap">
-              <a class="link" [routerLink]="" *ngIf="isLink(field.name)"
+              <a [class.link]="!isLoading(field.name)"
+                 [class.disabled-link]="isLoading(field.name)"
+                 [routerLink]=""
+                 *ngIf="isLink(field.name)"
                  (click)="onLink(field.name)">
                 {{ getExperimentValue(field.name) }}
               </a>
@@ -38,6 +42,11 @@
                   </ng-container>
                 </ng-container>
               </div>
+              <p-progressBar
+                *ngIf="isLoading(field.name)"
+                class="w-100"
+                mode="indeterminate">
+              </p-progressBar>
             </div>
           </div>
         </p-fieldset>
