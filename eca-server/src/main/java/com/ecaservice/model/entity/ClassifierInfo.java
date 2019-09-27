@@ -33,6 +33,6 @@ public class ClassifierInfo {
      * Classifier input options list
      */
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "classifier_info_id")
+    @JoinColumn(name = "classifier_info_id", nullable = false)
     private List<ClassifierInputOptions> classifierInputOptions;
 }
