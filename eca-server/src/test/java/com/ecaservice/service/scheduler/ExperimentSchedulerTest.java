@@ -148,14 +148,11 @@ public class ExperimentSchedulerTest extends AbstractJpaTest {
         ExperimentResultsEntity thirdResults = TestHelperUtils.createExperimentResultsEntity(finishedExperiment);
         experimentResultsEntityRepository.saveAll(Arrays.asList(firstResults, secondResults, thirdResults));
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(firstResults, finishedExperiment,
-                        ErsResponseStatus.ERROR));
+                TestHelperUtils.createExperimentResultsRequest(firstResults, ErsResponseStatus.ERROR));
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(firstResults, finishedExperiment,
-                        ErsResponseStatus.DUPLICATE_REQUEST_ID));
+                TestHelperUtils.createExperimentResultsRequest(firstResults, ErsResponseStatus.DUPLICATE_REQUEST_ID));
         experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(secondResults, finishedExperiment,
-                        ErsResponseStatus.SUCCESS));
+                TestHelperUtils.createExperimentResultsRequest(secondResults, ErsResponseStatus.SUCCESS));
         //Created deleted experiment
         Experiment removedExperiment =
                 TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);

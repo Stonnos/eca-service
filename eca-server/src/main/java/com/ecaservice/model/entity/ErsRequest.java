@@ -1,6 +1,5 @@
 package com.ecaservice.model.entity;
 
-import com.ecaservice.dto.evaluation.ResponseStatus;
 import lombok.Data;
 
 import javax.persistence.Column;

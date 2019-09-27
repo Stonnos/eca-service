@@ -31,13 +31,6 @@ public class ExperimentResultsRequest extends ErsRequest {
     private ExperimentResultsRequestSource requestSource;
 
     /**
-     * Experiment entity
-     */
-    @ManyToOne
-    @JoinColumn(name = "experiment_id", nullable = false)
-    private Experiment experiment;
-
-    /**
      * Experiment results entity
      */
     @ManyToOne

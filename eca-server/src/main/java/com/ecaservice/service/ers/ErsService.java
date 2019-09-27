@@ -53,7 +53,6 @@ public class ErsService {
                                       ExperimentHistory experimentHistory, ExperimentResultsRequestSource source) {
         ExperimentResultsRequest experimentResultsRequest = new ExperimentResultsRequest();
         experimentResultsRequest.setRequestSource(source);
-        experimentResultsRequest.setExperiment(experimentResultsEntity.getExperiment());
         experimentResultsRequest.setExperimentResults(experimentResultsEntity);
         EvaluationResults evaluationResults =
                 experimentHistory.getExperiment().get(experimentResultsEntity.getResultsIndex());
