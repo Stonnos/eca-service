@@ -1,4 +1,6 @@
-package com.ecaservice.exception;
+package com.ecaservice.exception.experiment;
+
+import com.ecaservice.exception.EcaServiceException;
 
 /**
  * Experiment exception class.

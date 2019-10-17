@@ -4,7 +4,7 @@ import com.ecaservice.config.MailConfig;
 import com.ecaservice.dto.mail.EmailRequest;
 import com.ecaservice.dto.mail.EmailResponse;
 import com.ecaservice.dto.mail.ResponseStatus;
-import com.ecaservice.exception.NotificationException;
+import com.ecaservice.exception.notification.NotificationServiceException;
 import com.ecaservice.model.entity.EmailRequestEntity;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.repository.EmailRequestRepository;
@@ -32,6 +32,8 @@ public class NotificationService {
     private final EmailTemplateVisitor statusTemplateVisitor;
     private final WebServiceTemplate notificationWebServiceTemplate;
     private final EmailRequestRepository emailRequestRepository;
+
+    private final NotificationResponseErrorHandler errorHandler = new NotificationResponseErrorHandler();
 
     /**
      * Constructor with dependency spring injection.
@@ -77,12 +79,21 @@ public class NotificationService {
                 log.trace("Received response [{}] from '{}'.", emailResponse, mailConfig.getServiceUrl());
                 emailRequestEntity.setRequestId(emailResponse.getRequestId());
                 emailRequestEntity.setResponseStatus(emailResponse.getStatus());
-                log.info("Email request has been sent for experiment [{}]  with status [{}].", experiment.getUuid(),
-                        experiment.getExperimentStatus());
-            } catch (Exception ex) {
+                if (errorHandler.hasError(emailResponse)) {
+                    errorHandler.handleError(emailResponse);
+                } else {
+                    log.info("Email request has been successfully sent for experiment [{}], experiment status [{}].",
+                            experiment.getUuid(), experiment.getExperimentStatus());
+                }
+            }
+            catch (NotificationServiceException ex) {
+                emailRequestEntity.setErrorMessage(ex.getMessage());
+                throw ex;
+            }
+            catch (Exception ex) {
                 emailRequestEntity.setResponseStatus(ResponseStatus.ERROR);
                 emailRequestEntity.setErrorMessage(ex.getMessage());
-                throw new NotificationException(ex.getMessage());
+                throw ex;
             } finally {
                 emailRequestRepository.save(emailRequestEntity);
             }

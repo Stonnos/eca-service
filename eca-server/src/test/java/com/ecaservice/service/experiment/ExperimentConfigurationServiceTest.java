@@ -3,7 +3,7 @@ package com.ecaservice.service.experiment;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.exception.ExperimentException;
+import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_;
 import com.ecaservice.model.options.ActivationFunctionOptions;

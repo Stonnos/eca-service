@@ -1,4 +1,4 @@
-package com.ecaservice.exception;
+package com.ecaservice.exception.experiment;
 
 /**
  * Experiment results not found exception.

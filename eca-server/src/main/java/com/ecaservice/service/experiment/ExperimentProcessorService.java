@@ -1,7 +1,7 @@
 package com.ecaservice.service.experiment;
 
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.exception.ExperimentException;
+import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.service.experiment.visitor.ExperimentInitializationVisitor;

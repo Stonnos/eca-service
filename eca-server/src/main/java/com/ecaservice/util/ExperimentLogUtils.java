@@ -1,6 +1,6 @@
 package com.ecaservice.util;
 
-import com.ecaservice.exception.ExperimentException;
+import com.ecaservice.exception.experiment.ExperimentException;
 import org.slf4j.Logger;
 
 /**

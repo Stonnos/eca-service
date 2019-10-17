@@ -1,8 +1,8 @@
 package com.ecaservice.controller.web;
 
 import com.ecaservice.dto.ExperimentRequest;
-import com.ecaservice.exception.ExperimentException;
-import com.ecaservice.exception.ResultsNotFoundException;
+import com.ecaservice.exception.experiment.ExperimentException;
+import com.ecaservice.exception.experiment.ResultsNotFoundException;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.MultipartFileResource;
 import com.ecaservice.model.entity.Experiment;

@@ -5,7 +5,7 @@ import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.dto.InstancesRequest;
-import com.ecaservice.exception.ExperimentException;
+import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.mapping.EcaResponseMapper;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
