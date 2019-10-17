@@ -262,7 +262,7 @@ public abstract class EvaluationResultsMapper {
         try {
             return objectMapper.writeValueAsString(classifierOptions);
         } catch (IOException ex) {
-            throw new EcaServiceException(String.format("Can't serialize classifier [%s] options to json: %s",
+            throw new IllegalStateException(String.format("Can't serialize classifier [%s] options to json: %s",
                     classifier.getClass().getSimpleName(), ex.getMessage()));
         }
     }

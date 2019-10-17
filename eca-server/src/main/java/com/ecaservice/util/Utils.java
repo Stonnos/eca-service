@@ -73,7 +73,7 @@ public class Utils {
             XmlInstancesConverter xmlInstancesConverter = new XmlInstancesConverter();
             return xmlInstancesConverter.toXmlString(data);
         } catch (Exception ex) {
-            throw new EcaServiceException(ex.getMessage());
+            throw new IllegalStateException(ex.getMessage());
         }
     }
 
@@ -87,7 +87,7 @@ public class Utils {
         try {
             return objectMapper.readValue(options, ClassifierOptions.class);
         } catch (Exception ex) {
-            throw new EcaServiceException(ex.getMessage());
+            throw new IllegalStateException(ex.getMessage());
         }
     }
 
@@ -101,7 +101,7 @@ public class Utils {
         try {
             return objectMapper.readValue(inputStream, ClassifierOptions.class);
         } catch (Exception ex) {
-            throw new EcaServiceException(ex.getMessage());
+            throw new IllegalStateException(ex.getMessage());
         }
     }
 

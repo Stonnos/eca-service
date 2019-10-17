@@ -199,7 +199,7 @@ public class QaController {
         log.info("Evaluation response [{}] with status [{}] has been built.", evaluationResponse.getRequestId(),
                 evaluationResponse.getStatus());
         if (!TechnicalStatus.SUCCESS.equals(evaluationResponse.getStatus())) {
-            throw new EcaServiceException(evaluationResponse.getErrorMessage());
+            throw new IllegalStateException(evaluationResponse.getErrorMessage());
         } else {
             EvaluationResultsRequest evaluationResultsRequest =
                     evaluationResultsMapper.map(evaluationResponse.getEvaluationResults());
