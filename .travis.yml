@@ -4,5 +4,5 @@ install: git clone https://github.com/Stonnos/eca.git Stonnos/eca
 script:
   - cd Stonnos/eca/eca-core
   - mvn clean install
-  - cd ./Stonnos/eca-service
+  - cd ../Stonnos/eca-service
   - mvn clean install
