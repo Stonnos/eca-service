@@ -5,5 +5,7 @@ script:
   - cd Stonnos
   - cd eca/eca-core
   - mvn clean install
-  - cd ../eca-service
+  - cd ..
+  - cd ..
+  - cd eca-service
   - mvn clean install
