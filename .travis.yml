@@ -5,6 +5,6 @@ before_install:
   - git clone https://github.com/Stonnos/eca.git
   - cd eca/eca-core
   - mvn clean install
-  - cd ../ ..
+  - cd ../..
   - cd eca-service
 script: mvn clean install
