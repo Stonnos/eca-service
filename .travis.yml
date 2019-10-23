@@ -7,7 +7,7 @@ before_install:
   - mvn clean install
   - cd ..
   - cd eca-service
-script: mvn clean install -Dmaven.test.skip=true
+script: mvn clean install
 cache:
   directories:
     - $HOME/.m2
