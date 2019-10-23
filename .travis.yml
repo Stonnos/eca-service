@@ -8,3 +8,6 @@ before_install:
   - cd ..
   - cd eca-service
 script: mvn clean install
+cache:
+  directories:
+    - $HOME/.m2
