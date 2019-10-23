@@ -1,11 +1,8 @@
 language: java
 jdk: openjdk8
-install: git clone https://github.com/Stonnos/eca.git Stonnos/eca
+before-install: git clone https://github.com/Stonnos/eca.git Stonnos/eca
 script:
-  - cd Stonnos
-  - cd eca/eca-core
+  - cd ../Stonnos/eca/eca-core
   - mvn clean install
-  - cd ..
-  - cd ..
-  - cd eca-service
+  - cd ../Stonnos/eca-service
   - mvn clean install
