@@ -3,8 +3,8 @@ jdk: openjdk8
 before_install:
   - cd ..
   - git clone https://github.com/Stonnos/eca.git
-  - cd eca
+  - cd eca/eca-core
   - mvn clean install
-  - cd ..
+  - cd ../ ..
   - cd eca-service
 script: mvn clean install
