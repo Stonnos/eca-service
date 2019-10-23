@@ -3,6 +3,7 @@ jdk: openjdk8
 script:
   - cd ..
   - git clone https://github.com/Stonnos/eca.git
+  - cd eca
   - mvn clean install
   - cd ..
   - cd eca-service
