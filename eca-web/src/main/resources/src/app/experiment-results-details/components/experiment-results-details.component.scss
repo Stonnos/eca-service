@@ -21,10 +21,11 @@
 
 .app-progress-spinner::ng-deep {
   .ui-progress-spinner {
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    margin-top: -150px;
+    margin: auto;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
     width: 150px;
     height: 150px;
     z-index: 100000;
