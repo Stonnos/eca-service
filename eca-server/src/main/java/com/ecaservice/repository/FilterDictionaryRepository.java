@@ -1,9 +1,9 @@
 package com.ecaservice.repository;
 
 import com.ecaservice.model.entity.FilterDictionary;
-import com.ecaservice.model.entity.FilterTemplate;
-import com.ecaservice.model.entity.FilterTemplateType;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
 
 /**
  * Implements repository that manages with {@link FilterDictionary} entities.
@@ -18,5 +18,5 @@ public interface FilterDictionaryRepository extends JpaRepository<FilterDictiona
      * @param name - dictionary name
      * @return filter dictionary entity
      */
-    FilterDictionary findByName(String name);
+    Optional<FilterDictionary> findByName(String name);
 }

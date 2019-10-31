@@ -4,6 +4,8 @@ import com.ecaservice.model.entity.FilterTemplate;
 import com.ecaservice.model.entity.FilterTemplateType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 /**
  * Implements repository that manages with {@link FilterTemplate} entities.
  *
@@ -17,5 +19,5 @@ public interface FilterTemplateRepository extends JpaRepository<FilterTemplate, 
      * @param templateType - template type
      * @return filter template entity
      */
-    FilterTemplate findFirstByTemplateType(FilterTemplateType templateType);
+    Optional<FilterTemplate> findFirstByTemplateType(FilterTemplateType templateType);
 }

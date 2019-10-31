@@ -3,7 +3,6 @@ package com.ecaservice.service.filter;
 import com.ecaservice.config.CacheNames;
 import com.ecaservice.mapping.filters.FilterDictionaryMapper;
 import com.ecaservice.mapping.filters.FilterFieldMapper;
-import com.ecaservice.model.entity.FilterDictionary;
 import com.ecaservice.model.entity.FilterTemplate;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.model.entity.GlobalFilterField;
@@ -18,9 +17,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -68,11 +65,11 @@ public class FilterService {
      */
     @Cacheable(CacheNames.GLOBAL_FILTERS_CACHE_NAME)
     public List<String> getGlobalFilterFields(FilterTemplateType filterTemplateType) {
-        GlobalFilterTemplate globalFilterTemplate =
-                globalFilterTemplateRepository.findFirstByTemplateType(filterTemplateType);
-        return Optional.ofNullable(globalFilterTemplate).map(GlobalFilterTemplate::getFields).map(
+        return globalFilterTemplateRepository.findFirstByTemplateType(filterTemplateType).map(
+                GlobalFilterTemplate::getFields).map(
                 globalFilterFields -> globalFilterFields.stream().map(GlobalFilterField::getFieldName).collect(
-                        Collectors.toList())).orElse(Collections.emptyList());
+                        Collectors.toList())).orElseThrow(() -> new IllegalArgumentException(
+                String.format("Can't find global filter template with type [%s]", filterTemplateType)));
     }
 
     /**
@@ -84,12 +81,9 @@ public class FilterService {
     @Cacheable(CacheNames.FILTER_TEMPLATES_CACHE_NAME)
     public List<FilterFieldDto> getFilterFields(FilterTemplateType templateType) {
         log.info("Fetch filter fields for template type [{}]", templateType);
-        FilterTemplate filterTemplate = filterTemplateRepository.findFirstByTemplateType(templateType);
-        if (filterTemplate == null) {
-            throw new IllegalArgumentException(
-                    String.format("Can't find filter template with type [%s]", templateType));
-        }
-        return filterFieldMapper.map(filterTemplate.getFields());
+        return filterTemplateRepository.findFirstByTemplateType(templateType).map(FilterTemplate::getFields).map(
+                filterFieldMapper::map).orElseThrow(() -> new IllegalArgumentException(
+                String.format("Can't find filter template with type [%s]", templateType)));
     }
 
     /**
@@ -101,10 +95,8 @@ public class FilterService {
     @Cacheable(CacheNames.FILTER_DICTIONARIES_CACHE_NAME)
     public FilterDictionaryDto getFilterDictionary(String name) {
         log.info("Fetch filter dictionary with name [{}]", name);
-        FilterDictionary filterDictionary = filterDictionaryRepository.findByName(name);
-        if (filterDictionary == null) {
-            throw new IllegalArgumentException(String.format("Can't find filter dictionary with name  [%s]", name));
-        }
-        return filterDictionaryMapper.map(filterDictionary);
+        return filterDictionaryRepository.findByName(name).map(filterDictionaryMapper::map).orElseThrow(
+                () -> new IllegalArgumentException(
+                        String.format("Can't find filter dictionary with name  [%s]", name)));
     }
 }
