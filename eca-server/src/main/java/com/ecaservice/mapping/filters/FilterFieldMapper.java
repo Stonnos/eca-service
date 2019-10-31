@@ -2,6 +2,7 @@ package com.ecaservice.mapping.filters;
 
 import com.ecaservice.model.entity.FilterField;
 import com.ecaservice.web.dto.model.FilterFieldDto;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = FilterDictionaryMapper.class)
+@Mapper(uses = FilterDictionaryMapper.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface FilterFieldMapper {
 
     /**

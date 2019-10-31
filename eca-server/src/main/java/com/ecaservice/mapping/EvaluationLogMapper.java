@@ -8,6 +8,7 @@ import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
 import org.mapstruct.AfterMapping;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -20,7 +21,8 @@ import java.util.Optional;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = {InstancesInfoMapper.class, ClassifierInfoMapper.class})
+@Mapper(uses = {InstancesInfoMapper.class, ClassifierInfoMapper.class},
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class EvaluationLogMapper {
 
     /**

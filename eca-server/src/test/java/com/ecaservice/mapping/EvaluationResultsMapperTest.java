@@ -160,7 +160,7 @@ public class EvaluationResultsMapperTest {
         heterogeneousClassifier.getClassifiersSet().addClassifier(new CART());
         heterogeneousClassifier.getClassifiersSet().addClassifier(new Logistic());
         heterogeneousClassifier.getClassifiersSet().addClassifier(new KNearestNeighbours());
-        EvaluationResults results = new EvaluationResults(heterogeneousClassifier, null);
+        EvaluationResults results = new EvaluationResults(heterogeneousClassifier, evaluationResults.getEvaluation());
         EvaluationResultsRequest resultsRequest = evaluationResultsMapper.map(results);
         Assertions.assertThat(resultsRequest.getClassifierReport()).isNotNull();
         Assertions.assertThat(resultsRequest.getClassifierReport()).isInstanceOf(EnsembleClassifierReport.class);
@@ -177,7 +177,7 @@ public class EvaluationResultsMapperTest {
         stackingClassifier.getClassifiers().addClassifier(new Logistic());
         stackingClassifier.getClassifiers().addClassifier(new KNearestNeighbours());
         stackingClassifier.setMetaClassifier(new J48());
-        EvaluationResults results = new EvaluationResults(stackingClassifier, null);
+        EvaluationResults results = new EvaluationResults(stackingClassifier, evaluationResults.getEvaluation());
         EvaluationResultsRequest resultsRequest = evaluationResultsMapper.map(results);
         Assertions.assertThat(resultsRequest.getClassifierReport()).isNotNull();
         Assertions.assertThat(resultsRequest.getClassifierReport()).isInstanceOf(EnsembleClassifierReport.class);

@@ -4,6 +4,7 @@ import com.ecaservice.model.entity.ClassifierInfo;
 import com.ecaservice.model.entity.ClassifierInputOptions;
 import com.ecaservice.web.dto.model.ClassifierInfoDto;
 import org.mapstruct.AfterMapping;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -18,7 +19,7 @@ import static com.google.common.collect.Lists.newArrayList;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = ClassifierInputOptionsMapper.class)
+@Mapper(uses = ClassifierInputOptionsMapper.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class ClassifierInfoMapper {
 
     /**

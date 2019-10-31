@@ -5,6 +5,7 @@ import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import com.ecaservice.web.dto.model.ExperimentResultsDto;
 import eca.core.evaluation.EvaluationResults;
 import org.mapstruct.AfterMapping;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -18,7 +19,7 @@ import java.util.Optional;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = {ClassifierInfoMapper.class, ExperimentMapper.class})
+@Mapper(uses = {ClassifierInfoMapper.class, ExperimentMapper.class}, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class ExperimentResultsMapper {
 
     /**

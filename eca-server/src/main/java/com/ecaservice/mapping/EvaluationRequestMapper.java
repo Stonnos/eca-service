@@ -5,6 +5,7 @@ import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.model.evaluation.EvaluationOption;
 import eca.util.Utils;
 import org.mapstruct.AfterMapping;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -17,7 +18,7 @@ import java.util.EnumMap;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = ErsEvaluationMethodMapper.class)
+@Mapper(uses = ErsEvaluationMethodMapper.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class EvaluationRequestMapper {
 
     /**

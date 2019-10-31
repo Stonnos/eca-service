@@ -3,6 +3,7 @@ package com.ecaservice.mapping;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.InstancesRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -12,7 +13,7 @@ import org.mapstruct.Mappings;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = InstancesConverter.class)
+@Mapper(uses = InstancesConverter.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface ClassifierOptionsRequestMapper {
 
     /**
