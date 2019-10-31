@@ -2,6 +2,7 @@ package com.ecaservice.util;
 
 import com.ecaservice.model.entity.Experiment;
 import com.google.common.base.Charsets;
+import lombok.experimental.UtilityClass;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.DigestUtils;
 
@@ -17,12 +18,10 @@ import static com.ecaservice.util.Utils.toMillis;
  *
  * @author Roman Batygin
  */
+@UtilityClass
 public class ExperimentUtils {
 
     private static final String SALT_FORMAT = "%s:%d";
-
-    private ExperimentUtils() {
-    }
 
     /**
      * Gets experiment file.

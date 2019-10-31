@@ -1,5 +1,7 @@
 package com.ecaservice.util;
 
+import lombok.experimental.UtilityClass;
+
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 
@@ -10,11 +12,8 @@ import static com.ecaservice.util.Utils.splitByPointSeparator;
  *
  * @author Roman Batygin
  */
+@UtilityClass
 public class ReflectionUtils {
-
-    private ReflectionUtils() {
-
-    }
 
     /**
      * Gets getter method return type by field property. Note: Property can be composite, for example:

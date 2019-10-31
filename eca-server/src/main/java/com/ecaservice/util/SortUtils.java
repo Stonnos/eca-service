@@ -1,5 +1,6 @@
 package com.ecaservice.util;
 
+import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 
@@ -8,10 +9,8 @@ import org.springframework.data.domain.Sort;
  *
  * @author Roman Batygin
  */
+@UtilityClass
 public class SortUtils {
-
-    private SortUtils() {
-    }
 
     /**
      * Builds sort object.
