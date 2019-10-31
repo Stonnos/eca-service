@@ -15,7 +15,7 @@ import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.repository.ClassifierOptionsRequestRepository;
-import com.ecaservice.service.ClassifierOptionsService;
+import com.ecaservice.conversion.ClassifierOptionsConverter;
 import com.ecaservice.service.ers.ErsRequestService;
 import com.google.common.base.Charsets;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +53,7 @@ public class EvaluationOptimizerService {
     private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
     private final EvaluationRequestMapper evaluationRequestMapper;
     private final ClassifierOptionsRequestMapper classifierOptionsRequestMapper;
-    private final ClassifierOptionsService classifierOptionsService;
+    private final ClassifierOptionsConverter classifierOptionsConverter;
     private final ClassifierOptionsRequestRepository classifierOptionsRequestRepository;
 
     private ConcurrentHashMap<String, Object> dataMd5Hashes = new ConcurrentHashMap<>();
@@ -68,7 +68,7 @@ public class EvaluationOptimizerService {
      * @param ersRequestService                   - ers request service bean
      * @param evaluationRequestMapper             - evaluation request mapper bean
      * @param classifierOptionsRequestMapper      - classifier options request mapper bean
-     * @param classifierOptionsService            - classifier options service bean
+     * @param classifierOptionsConverter            - classifier options service bean
      * @param classifierOptionsRequestRepository  - classifier options request repository bean
      */
     @Inject
@@ -79,7 +79,7 @@ public class EvaluationOptimizerService {
                                       ErsRequestService ersRequestService,
                                       EvaluationRequestMapper evaluationRequestMapper,
                                       ClassifierOptionsRequestMapper classifierOptionsRequestMapper,
-                                      ClassifierOptionsService classifierOptionsService,
+                                      ClassifierOptionsConverter classifierOptionsConverter,
                                       ClassifierOptionsRequestRepository classifierOptionsRequestRepository) {
         this.crossValidationConfig = crossValidationConfig;
         this.commonConfig = commonConfig;
@@ -88,7 +88,7 @@ public class EvaluationOptimizerService {
         this.classifierOptionsRequestModelMapper = classifierOptionsRequestModelMapper;
         this.evaluationRequestMapper = evaluationRequestMapper;
         this.classifierOptionsRequestMapper = classifierOptionsRequestMapper;
-        this.classifierOptionsService = classifierOptionsService;
+        this.classifierOptionsConverter = classifierOptionsConverter;
         this.classifierOptionsRequestRepository = classifierOptionsRequestRepository;
     }
 
@@ -150,7 +150,7 @@ public class EvaluationOptimizerService {
 
     private EvaluationResponse evaluateModel(ClassifierOptionsRequest classifierOptionsRequest, String options,
                                              Instances data) {
-        AbstractClassifier classifier = classifierOptionsService.convert(parseOptions(options));
+        AbstractClassifier classifier = classifierOptionsConverter.convert(parseOptions(options));
         EvaluationRequest evaluationRequest = evaluationRequestMapper.map(classifierOptionsRequest);
         evaluationRequest.setData(data);
         evaluationRequest.setClassifier(classifier);

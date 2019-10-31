@@ -47,7 +47,7 @@ import com.ecaservice.repository.ClassifierOptionsRequestRepository;
 import com.ecaservice.repository.ErsRequestRepository;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.AbstractJpaTest;
-import com.ecaservice.service.ClassifierOptionsService;
+import com.ecaservice.conversion.ClassifierOptionsConverter;
 import com.ecaservice.service.ers.ErsRequestService;
 import com.ecaservice.service.ers.ErsWebServiceClient;
 import com.ecaservice.util.Utils;
@@ -98,7 +98,7 @@ import static org.mockito.Mockito.when;
         CrossValidationConfig.class, EvaluationRequestService.class, InstancesInfoMapperImpl.class,
         ClassifierOptionsRequestModelMapperImpl.class, ClassifierReportMapperImpl.class,
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class,
-        ErsConfig.class, ClassifierOptionsService.class, EvaluationLogMapperImpl.class,
+        ErsConfig.class, ClassifierOptionsConverter.class, EvaluationLogMapperImpl.class,
         EvaluationService.class, ErsEvaluationMethodMapperImpl.class, ErsResponseStatusMapperImpl.class,
         InstancesConverter.class, ClassifierOptionsResponseModelMapperImpl.class,
         ClassifierInputOptionsMapperImpl.class, CommonConfig.class, ClassifierInfoMapperImpl.class})
@@ -128,7 +128,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     @Inject
     private ErsConfig ersConfig;
     @Inject
-    private ClassifierOptionsService classifierOptionsService;
+    private ClassifierOptionsConverter classifierOptionsConverter;
     @Inject
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
     @Inject
@@ -155,7 +155,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         evaluationOptimizerService = new EvaluationOptimizerService(crossValidationConfig, commonConfig,
                 evaluationRequestService,
                 classifierOptionsRequestModelMapper, ersRequestService, evaluationRequestMapper,
-                classifierOptionsRequestMapper, classifierOptionsService, classifierOptionsRequestRepository);
+                classifierOptionsRequestMapper, classifierOptionsConverter, classifierOptionsRequestRepository);
         dataMd5Hash = DigestUtils.md5DigestAsHex(
                 Utils.toXmlInstances(instancesRequest.getData()).getBytes(StandardCharsets.UTF_8));
         DecisionTreeOptions treeOptions = TestHelperUtils.createDecisionTreeOptions();

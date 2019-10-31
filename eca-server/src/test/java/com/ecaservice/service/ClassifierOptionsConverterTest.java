@@ -2,6 +2,7 @@ package com.ecaservice.service;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
+import com.ecaservice.conversion.ClassifierOptionsConverter;
 import com.ecaservice.model.options.AdaBoostOptions;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.model.options.DecisionTreeOptions;
@@ -42,49 +43,49 @@ import weka.classifiers.bayes.BayesNet;
 import javax.inject.Inject;
 
 /**
- * Unit tests for checking {@link ClassifierOptionsService} functionality.
+ * Unit tests for checking {@link ClassifierOptionsConverter} functionality.
  *
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-@Import({ClassifierOptionsMapperConfiguration.class, ClassifierOptionsService.class})
-public class ClassifierOptionsServiceTest {
+@Import({ClassifierOptionsMapperConfiguration.class, ClassifierOptionsConverter.class})
+public class ClassifierOptionsConverterTest {
 
     @Inject
-    private ClassifierOptionsService classifierOptionsService;
+    private ClassifierOptionsConverter classifierOptionsConverter;
 
     @Test(expected = UnsupportedOperationException.class)
     public void testUnsupportedClassifier() {
-        classifierOptionsService.convert(new BayesNet());
+        classifierOptionsConverter.convert(new BayesNet());
     }
 
     @Test
     public void testMapLogistic() {
-        ClassifierOptions options = classifierOptionsService.convert(new Logistic());
+        ClassifierOptions options = classifierOptionsConverter.convert(new Logistic());
         Assertions.assertThat(options).isInstanceOf(LogisticOptions.class);
     }
 
     @Test
     public void testDecisionTree() {
-        ClassifierOptions options = classifierOptionsService.convert(new CART());
+        ClassifierOptions options = classifierOptionsConverter.convert(new CART());
         Assertions.assertThat(options).isInstanceOf(DecisionTreeOptions.class);
     }
 
     @Test
     public void testMapJ48() {
-        ClassifierOptions options = classifierOptionsService.convert(new J48());
+        ClassifierOptions options = classifierOptionsConverter.convert(new J48());
         Assertions.assertThat(options).isInstanceOf(J48Options.class);
     }
 
     @Test
     public void testMapKNN() {
-        ClassifierOptions options = classifierOptionsService.convert(new KNearestNeighbours());
+        ClassifierOptions options = classifierOptionsConverter.convert(new KNearestNeighbours());
         Assertions.assertThat(options).isInstanceOf(KNearestNeighboursOptions.class);
     }
 
     @Test
     public void testMapNeuralNetwork() {
-        ClassifierOptions options = classifierOptionsService.convert(new NeuralNetwork());
+        ClassifierOptions options = classifierOptionsConverter.convert(new NeuralNetwork());
         Assertions.assertThat(options).isInstanceOf(NeuralNetworkOptions.class);
     }
 
@@ -100,7 +101,7 @@ public class ClassifierOptionsServiceTest {
         heterogeneousClassifier.getClassifiersSet().addClassifier(new Logistic());
         heterogeneousClassifier.getClassifiersSet().addClassifier(
                 TestHelperUtils.createDecisionTreeClassifier(DecisionTreeType.ID3));
-        ClassifierOptions options = classifierOptionsService.convert(heterogeneousClassifier);
+        ClassifierOptions options = classifierOptionsConverter.convert(heterogeneousClassifier);
         Assertions.assertThat(options).isInstanceOf(HeterogeneousClassifierOptions.class);
         HeterogeneousClassifierOptions heterogeneousClassifierOptions = (HeterogeneousClassifierOptions) options;
         Assertions.assertThat(heterogeneousClassifierOptions.getClassifierOptions()).isNotEmpty();
@@ -118,7 +119,7 @@ public class ClassifierOptionsServiceTest {
                 TestHelperUtils.createDecisionTreeClassifier(DecisionTreeType.CART));
         adaBoostClassifier.getClassifiersSet().addClassifier(
                 TestHelperUtils.createDecisionTreeClassifier(DecisionTreeType.C45));
-        ClassifierOptions options = classifierOptionsService.convert(adaBoostClassifier);
+        ClassifierOptions options = classifierOptionsConverter.convert(adaBoostClassifier);
         Assertions.assertThat(options).isInstanceOf(AdaBoostOptions.class);
         AdaBoostOptions adaBoostOptions = (AdaBoostOptions) options;
         Assertions.assertThat(adaBoostOptions.getClassifierOptions()).isNotEmpty();
@@ -139,7 +140,7 @@ public class ClassifierOptionsServiceTest {
         stackingClassifier.getClassifiers().addClassifier(new Logistic());
         stackingClassifier.getClassifiers().addClassifier(
                 TestHelperUtils.createNeuralNetwork(new HyperbolicTangentFunction()));
-        ClassifierOptions options = classifierOptionsService.convert(stackingClassifier);
+        ClassifierOptions options = classifierOptionsConverter.convert(stackingClassifier);
         Assertions.assertThat(options).isInstanceOf(StackingOptions.class);
         StackingOptions stackingOptions = (StackingOptions) options;
         Assertions.assertThat(stackingOptions.getMetaClassifierOptions()).isNotNull();
@@ -151,19 +152,19 @@ public class ClassifierOptionsServiceTest {
 
     @Test
     public void testMapRandomForests() {
-        ClassifierOptions options = classifierOptionsService.convert(new RandomForests());
+        ClassifierOptions options = classifierOptionsConverter.convert(new RandomForests());
         Assertions.assertThat(options).isInstanceOf(RandomForestsOptions.class);
     }
 
     @Test
     public void testMapExtraTrees() {
-        ClassifierOptions options = classifierOptionsService.convert(new ExtraTreesClassifier());
+        ClassifierOptions options = classifierOptionsConverter.convert(new ExtraTreesClassifier());
         Assertions.assertThat(options).isInstanceOf(ExtraTreesOptions.class);
     }
 
     @Test
     public void testMapRandomNetworks() {
-        ClassifierOptions options = classifierOptionsService.convert(new RandomNetworks());
+        ClassifierOptions options = classifierOptionsConverter.convert(new RandomNetworks());
         Assertions.assertThat(options).isInstanceOf(RandomNetworkOptions.class);
     }
 }

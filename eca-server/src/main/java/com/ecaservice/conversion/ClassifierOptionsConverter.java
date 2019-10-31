@@ -1,4 +1,4 @@
-package com.ecaservice.service;
+package com.ecaservice.conversion;
 
 import com.ecaservice.mapping.options.AbstractClassifierMapper;
 import com.ecaservice.mapping.options.ClassifierOptionsMapper;
@@ -10,7 +10,7 @@ import eca.ensemble.ClassifiersSet;
 import eca.ensemble.EnsembleUtils;
 import eca.ensemble.StackingClassifier;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import weka.classifiers.AbstractClassifier;
 
 import javax.inject.Inject;
@@ -23,8 +23,8 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Slf4j
-@Service
-public class ClassifierOptionsService {
+@Component
+public class ClassifierOptionsConverter {
 
     private final List<AbstractClassifierMapper> classifierMappers;
     private final List<ClassifierOptionsMapper> classifierOptionsMappers;
@@ -36,8 +36,8 @@ public class ClassifierOptionsService {
      * @param classifierOptionsMappers - classifier options mappers beans
      */
     @Inject
-    public ClassifierOptionsService(List<AbstractClassifierMapper> classifierMappers,
-                                    List<ClassifierOptionsMapper> classifierOptionsMappers) {
+    public ClassifierOptionsConverter(List<AbstractClassifierMapper> classifierMappers,
+                                      List<ClassifierOptionsMapper> classifierOptionsMappers) {
         this.classifierMappers = classifierMappers;
         this.classifierOptionsMappers = classifierOptionsMappers;
     }

@@ -5,14 +5,13 @@ import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.dto.InstancesRequest;
 import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
-import com.ecaservice.exception.EcaServiceException;
 import com.ecaservice.mapping.EvaluationResultsMapper;
 import com.ecaservice.model.MultipartFileResource;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.options.ClassifierOptions;
-import com.ecaservice.service.ClassifierOptionsService;
+import com.ecaservice.conversion.ClassifierOptionsConverter;
 import com.ecaservice.service.evaluation.EvaluationOptimizerService;
 import com.ecaservice.service.evaluation.EvaluationRequestService;
 import com.ecaservice.service.experiment.ExperimentRequestService;
@@ -57,7 +56,7 @@ public class QaController {
 
     private final EvaluationRequestService evaluationRequestService;
     private final EvaluationResultsMapper evaluationResultsMapper;
-    private final ClassifierOptionsService classifierOptionsService;
+    private final ClassifierOptionsConverter classifierOptionsConverter;
     private final ExperimentRequestService experimentRequestService;
     private final EvaluationOptimizerService evaluationOptimizerService;
     private final Jaxb2Marshaller ersMarshaller;
@@ -67,7 +66,7 @@ public class QaController {
      *
      * @param evaluationRequestService   - evaluation request service bean
      * @param evaluationResultsMapper    - evaluation results mapper bean
-     * @param classifierOptionsService   - classifier options service bean
+     * @param classifierOptionsConverter   - classifier options service bean
      * @param experimentRequestService   - experiment request service bean
      * @param evaluationOptimizerService - evaluation optimizer service bean
      * @param ersMarshaller              - jaxb2 marshaller bean
@@ -75,13 +74,13 @@ public class QaController {
     @Inject
     public QaController(EvaluationRequestService evaluationRequestService,
                         EvaluationResultsMapper evaluationResultsMapper,
-                        ClassifierOptionsService classifierOptionsService,
+                        ClassifierOptionsConverter classifierOptionsConverter,
                         ExperimentRequestService experimentRequestService,
                         EvaluationOptimizerService evaluationOptimizerService,
                         Jaxb2Marshaller ersMarshaller) {
         this.evaluationRequestService = evaluationRequestService;
         this.evaluationResultsMapper = evaluationResultsMapper;
-        this.classifierOptionsService = classifierOptionsService;
+        this.classifierOptionsConverter = classifierOptionsConverter;
         this.experimentRequestService = experimentRequestService;
         this.evaluationOptimizerService = evaluationOptimizerService;
         this.ersMarshaller = ersMarshaller;
@@ -178,7 +177,7 @@ public class QaController {
         evaluationRequest.setEvaluationMethod(evaluationMethod);
         evaluationRequest.setEvaluationOptionsMap(Collections.emptyMap());
         ClassifierOptions options = parseOptions(classifierOptions.getInputStream());
-        AbstractClassifier classifier = classifierOptionsService.convert(options);
+        AbstractClassifier classifier = classifierOptionsConverter.convert(options);
         evaluationRequest.setClassifier(classifier);
         return evaluationRequest;
     }

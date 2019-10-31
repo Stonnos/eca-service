@@ -15,7 +15,7 @@ import com.ecaservice.mapping.ErsResponseStatusMapperImpl;
 import com.ecaservice.mapping.EvaluationResultsMapperImpl;
 import com.ecaservice.mapping.InstancesConverter;
 import com.ecaservice.service.AbstractJpaTest;
-import com.ecaservice.service.ClassifierOptionsService;
+import com.ecaservice.conversion.ClassifierOptionsConverter;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -39,7 +39,7 @@ import static org.mockito.Mockito.when;
 @Import({ErsConfig.class, ClassifierReportMapperImpl.class, ErsWebServiceClient.class,
         EvaluationResultsMapperImpl.class, ErsWebServiceConfiguration.class, ErsResponseStatusMapperImpl.class,
         CacheConfiguration.class, CrossValidationConfig.class, ErsRequestService.class,
-        ClassifierOptionsService.class, ClassifierOptionsMapperConfiguration.class, InstancesConverter.class})
+        ClassifierOptionsConverter.class, ClassifierOptionsMapperConfiguration.class, InstancesConverter.class})
 public class GetEvaluationResultsCacheTest extends AbstractJpaTest {
 
     @Inject
