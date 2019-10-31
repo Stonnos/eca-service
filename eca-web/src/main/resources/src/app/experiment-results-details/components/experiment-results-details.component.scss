@@ -21,6 +21,7 @@
 
 .app-progress-spinner::ng-deep {
   .ui-progress-spinner {
+    position: fixed;
     margin: auto;
     left: 0;
     top: 0;
