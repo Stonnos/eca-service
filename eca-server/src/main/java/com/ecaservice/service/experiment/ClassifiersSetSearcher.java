@@ -2,8 +2,8 @@ package com.ecaservice.service.experiment;
 
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
+import com.ecaservice.conversion.ClassifierOptionsConverter;
 import com.ecaservice.exception.experiment.ExperimentException;
-import com.ecaservice.mapping.options.ClassifierOptionsMapper;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.evaluation.ClassificationResult;
@@ -47,7 +47,7 @@ public class ClassifiersSetSearcher {
     private final ExperimentConfig experimentConfig;
     private final CrossValidationConfig crossValidationConfig;
     private final List<ClassifierInputDataHandler> classifierInputDataHandlers;
-    private final List<ClassifierOptionsMapper> classifierOptionsMappers;
+    private final ClassifierOptionsConverter classifierOptionsConverter;
 
     /**
      * Constructor with spring dependency injection.
@@ -57,7 +57,7 @@ public class ClassifiersSetSearcher {
      * @param experimentConfig               - experiment config bean
      * @param crossValidationConfig          - cross - validation config
      * @param classifierInputDataHandlers    - classifier input data handler beans
-     * @param classifierOptionsMappers       - classifier options mapper bean
+     * @param classifierOptionsConverter     - classifier options converter bean
      */
     @Inject
     public ClassifiersSetSearcher(EvaluationService evaluationService,
@@ -65,13 +65,13 @@ public class ClassifiersSetSearcher {
                                   ExperimentConfig experimentConfig,
                                   CrossValidationConfig crossValidationConfig,
                                   List<ClassifierInputDataHandler> classifierInputDataHandlers,
-                                  List<ClassifierOptionsMapper> classifierOptionsMappers) {
+                                  ClassifierOptionsConverter classifierOptionsConverter) {
         this.evaluationService = evaluationService;
         this.experimentConfigurationService = experimentConfigurationService;
         this.experimentConfig = experimentConfig;
         this.crossValidationConfig = crossValidationConfig;
         this.classifierInputDataHandlers = classifierInputDataHandlers;
-        this.classifierOptionsMappers = classifierOptionsMappers;
+        this.classifierOptionsConverter = classifierOptionsConverter;
     }
 
     /**
@@ -127,12 +127,7 @@ public class ClassifiersSetSearcher {
             for (ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel : classifierOptionsDatabaseModels) {
                 ClassifierOptions classifierOptions =
                         objectMapper.readValue(classifierOptionsDatabaseModel.getConfig(), ClassifierOptions.class);
-                for (ClassifierOptionsMapper optionsMapper : classifierOptionsMappers) {
-                    if (optionsMapper.canMap(classifierOptions)) {
-                        classifierList.add(optionsMapper.map(classifierOptions));
-                        break;
-                    }
-                }
+                classifierList.add(classifierOptionsConverter.convert(classifierOptions));
             }
         } catch (Exception ex) {
             logAndThrowError(String.format("There was an error while creating individual classifiers: %s",

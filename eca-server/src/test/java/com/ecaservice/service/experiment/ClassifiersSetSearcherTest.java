@@ -3,9 +3,9 @@ package com.ecaservice.service.experiment;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
+import com.ecaservice.conversion.ClassifierOptionsConverter;
 import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.mapping.options.AdaBoostOptionsMapperImpl;
-import com.ecaservice.mapping.options.ClassifierOptionsMapper;
 import com.ecaservice.mapping.options.DecisionTreeFactory;
 import com.ecaservice.mapping.options.DecisionTreeOptionsMapperImpl;
 import com.ecaservice.mapping.options.ExtraTreesOptionsMapperImpl;
@@ -68,7 +68,7 @@ import static org.mockito.Mockito.when;
         RandomForestsOptionsMapperImpl.class, RandomNetworkOptionsMapperImpl.class,
         DecisionTreeOptionsMapperImpl.class, KNearestNeighboursOptionsMapperImpl.class,
         J48OptionsMapperImpl.class, NeuralNetworkOptionsMapperImpl.class, LogisticOptionsMapperImpl.class,
-        HeterogeneousClassifierFactory.class, DecisionTreeFactory.class})
+        HeterogeneousClassifierFactory.class, DecisionTreeFactory.class, ClassifierOptionsConverter.class})
 public class ClassifiersSetSearcherTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -81,7 +81,7 @@ public class ClassifiersSetSearcherTest {
     @Inject
     private List<ClassifierInputDataHandler> classifierInputDataHandlers;
     @Inject
-    private List<ClassifierOptionsMapper> classifierOptionsMappers;
+    private ClassifierOptionsConverter classifierOptionsConverter;
     @Mock
     private EvaluationService evaluationService;
     @Mock
@@ -94,8 +94,9 @@ public class ClassifiersSetSearcherTest {
     @Before
     public void init() throws Exception {
         testInstances = TestHelperUtils.loadInstances();
-        classifiersSetSearcher = new ClassifiersSetSearcher(evaluationService, experimentConfigurationService,
-                experimentConfig, crossValidationConfig, classifierInputDataHandlers, classifierOptionsMappers);
+        classifiersSetSearcher =
+                new ClassifiersSetSearcher(evaluationService, experimentConfigurationService, experimentConfig,
+                        crossValidationConfig, classifierInputDataHandlers, classifierOptionsConverter);
         evaluationResults = new EvaluationResults(new KNearestNeighbours(), new Evaluation(testInstances));
     }
 
