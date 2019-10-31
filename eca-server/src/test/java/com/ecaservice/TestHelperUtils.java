@@ -67,6 +67,7 @@ import eca.neural.functions.AbstractFunction;
 import eca.trees.CART;
 import eca.trees.DecisionTreeClassifier;
 import eca.trees.J48;
+import lombok.experimental.UtilityClass;
 import weka.core.Instances;
 
 import java.io.File;
@@ -89,6 +90,7 @@ import static com.google.common.collect.Lists.newArrayList;
  *
  * @author Roman Batygin
  */
+@UtilityClass
 public class TestHelperUtils {
 
     public static final int NUM_FOLDS = 3;
