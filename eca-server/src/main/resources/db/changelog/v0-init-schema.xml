@@ -38,7 +38,7 @@
                 <tableExists tableName="evaluation_log"/>
             </not>
         </preConditions>
-        <createTable tableName="classifier_options_info">
+        <createTable tableName="evaluation_log">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
