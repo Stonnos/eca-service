@@ -4,6 +4,7 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <include file="db/changelog/v0-init-schema.xml"/>
     <include file="db/changelog/v1-add-experiment-deleted-date.xml"/>
     <include file="db/changelog/v2-create-classifier-options-table.xml"/>
     <include file="db/changelog/v3-add-email-columns.xml"/>
