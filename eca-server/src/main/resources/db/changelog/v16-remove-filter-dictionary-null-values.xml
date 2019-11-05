@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog
+        logicalFilePath="db/changelog/000000000016.xml"
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+    <!-- Removes values with null values-->
+    <changeSet id="1" author="roman.batygin@mail.ru" context="data">
         <preConditions onFail="MARK_RAN">
-            <tableExists tableName="input_options"/>
+            <tableExists tableName="filter_dictionary_value"/>
         </preConditions>
-        <dropTable tableName="input_options"/>
+        <delete tableName="filter_dictionary_value">
+            <where>value IS NULL</where>
+        </delete>
     </changeSet>
 </databaseChangeLog>
