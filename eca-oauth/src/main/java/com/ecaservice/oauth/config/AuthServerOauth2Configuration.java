@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.config;
 
 import com.ecaservice.oauth.service.UserDetailsServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -14,7 +15,6 @@ import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
-import javax.inject.Inject;
 import javax.sql.DataSource;
 
 /**
@@ -24,27 +24,12 @@ import javax.sql.DataSource;
  */
 @Configuration
 @EnableAuthorizationServer
+@RequiredArgsConstructor
 public class AuthServerOauth2Configuration extends AuthorizationServerConfigurerAdapter {
 
     private final AuthenticationManager authenticationManager;
     private final UserDetailsServiceImpl userDetailsService;
     private final DataSource oauthDataSource;
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param authenticationManager - authentication manager bean
-     * @param userDetailsService    - user details service bean
-     * @param oauthDataSource       - oauth data source bean
-     */
-    @Inject
-    public AuthServerOauth2Configuration(AuthenticationManager authenticationManager,
-                                         UserDetailsServiceImpl userDetailsService,
-                                         DataSource oauthDataSource) {
-        this.authenticationManager = authenticationManager;
-        this.userDetailsService = userDetailsService;
-        this.oauthDataSource = oauthDataSource;
-    }
 
     @Override
     public void configure(final AuthorizationServerSecurityConfigurer oauthServer) {

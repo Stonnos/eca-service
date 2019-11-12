@@ -9,11 +9,10 @@ import com.ecaservice.dto.evaluation.GetEvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.mapping.EvaluationResultsMapper;
 import eca.core.evaluation.EvaluationResults;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.ws.client.core.WebServiceTemplate;
-
-import javax.inject.Inject;
 
 /**
  * Service for communication with evaluation results web - service.
@@ -22,27 +21,12 @@ import javax.inject.Inject;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ErsWebServiceClient {
 
     private final WebServiceTemplate ersWebServiceTemplate;
     private final EvaluationResultsMapper evaluationResultsMapper;
     private final ErsConfig ersConfig;
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param ersWebServiceTemplate   - web service template bean
-     * @param evaluationResultsMapper - evaluation results mapper bean
-     * @param ersConfig               - evaluation results service config bean
-     */
-    @Inject
-    public ErsWebServiceClient(WebServiceTemplate ersWebServiceTemplate,
-                               EvaluationResultsMapper evaluationResultsMapper,
-                               ErsConfig ersConfig) {
-        this.ersWebServiceTemplate = ersWebServiceTemplate;
-        this.evaluationResultsMapper = evaluationResultsMapper;
-        this.ersConfig = ersConfig;
-    }
 
     /**
      * Sends classifier evaluation results to  evaluation results web service.

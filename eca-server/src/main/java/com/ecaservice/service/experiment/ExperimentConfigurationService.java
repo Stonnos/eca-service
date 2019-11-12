@@ -1,7 +1,7 @@
 package com.ecaservice.service.experiment;
 
-import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CacheNames;
+import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.options.ClassifierOptions;
@@ -10,6 +10,7 @@ import com.ecaservice.service.PageRequestService;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,7 +21,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -37,6 +37,7 @@ import static com.ecaservice.util.ExperimentLogUtils.logAndThrowError;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ExperimentConfigurationService implements PageRequestService<ClassifierOptionsDatabaseModel> {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
@@ -44,22 +45,6 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
     private final CommonConfig commonConfig;
     private final ExperimentConfig experimentConfig;
     private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
-
-    /**
-     * Constructor with dependency spring injection.
-     *
-     * @param commonConfig                             - common config bean
-     * @param experimentConfig                         - experiment config bean
-     * @param classifierOptionsDatabaseModelRepository - classifier options database model repository bean
-     */
-    @Inject
-    public ExperimentConfigurationService(CommonConfig commonConfig,
-                                          ExperimentConfig experimentConfig,
-                                          ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository) {
-        this.commonConfig = commonConfig;
-        this.experimentConfig = experimentConfig;
-        this.classifierOptionsDatabaseModelRepository = classifierOptionsDatabaseModelRepository;
-    }
 
     /**
      * Saves individual classifiers input options into database.

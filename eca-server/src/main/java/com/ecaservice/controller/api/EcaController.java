@@ -22,6 +22,7 @@ import com.ecaservice.util.Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,7 +34,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
 import javax.validation.Valid;
 import java.io.File;
 import java.util.Collections;
@@ -51,6 +51,7 @@ import static com.ecaservice.util.Utils.existsFile;
 @Slf4j
 @RestController
 @RequestMapping("/eca-api")
+@RequiredArgsConstructor
 public class EcaController {
 
     private final ExperimentRequestService experimentRequestService;
@@ -61,37 +62,6 @@ public class EcaController {
     private final EcaResponseMapper ecaResponseMapper;
     private final EvaluationLogRepository evaluationLogRepository;
     private final ExperimentRepository experimentRepository;
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param experimentRequestService   - experiment request service bean
-     * @param evaluationRequestService   - evaluation request service bean
-     * @param evaluationOptimizerService - evaluation optimizer service bean
-     * @param ersRequestService          - ers request service bean
-     * @param asyncTaskService           - async task service bean
-     * @param ecaResponseMapper          - eca response mapper bean
-     * @param evaluationLogRepository    - evaluation log repository bean
-     * @param experimentRepository       - experiment repository bean
-     */
-    @Inject
-    public EcaController(ExperimentRequestService experimentRequestService,
-                         EvaluationRequestService evaluationRequestService,
-                         EvaluationOptimizerService evaluationOptimizerService,
-                         ErsRequestService ersRequestService,
-                         AsyncTaskService asyncTaskService,
-                         EcaResponseMapper ecaResponseMapper,
-                         EvaluationLogRepository evaluationLogRepository,
-                         ExperimentRepository experimentRepository) {
-        this.experimentRequestService = experimentRequestService;
-        this.evaluationRequestService = evaluationRequestService;
-        this.evaluationOptimizerService = evaluationOptimizerService;
-        this.ersRequestService = ersRequestService;
-        this.asyncTaskService = asyncTaskService;
-        this.ecaResponseMapper = ecaResponseMapper;
-        this.evaluationLogRepository = evaluationLogRepository;
-        this.experimentRepository = experimentRepository;
-    }
 
     /**
      * Creates experiment request.

@@ -2,6 +2,7 @@ package com.ecaservice.service.evaluation;
 
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CrossValidationConfig;
+import com.ecaservice.conversion.ClassifierOptionsConverter;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.InstancesRequest;
@@ -15,9 +16,9 @@ import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.repository.ClassifierOptionsRequestRepository;
-import com.ecaservice.conversion.ClassifierOptionsConverter;
 import com.ecaservice.service.ers.ErsRequestService;
 import com.google.common.base.Charsets;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,6 @@ import org.springframework.util.DigestUtils;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -42,6 +42,7 @@ import static com.ecaservice.util.Utils.parseOptions;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class EvaluationOptimizerService {
 
     private static final String RESULTS_NOT_FOUND_MESSAGE = "Can't find classifiers options for data '%s'";
@@ -57,40 +58,6 @@ public class EvaluationOptimizerService {
     private final ClassifierOptionsRequestRepository classifierOptionsRequestRepository;
 
     private ConcurrentHashMap<String, Object> dataMd5Hashes = new ConcurrentHashMap<>();
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param crossValidationConfig               - cross - validation config bean
-     * @param commonConfig                        - common config bean
-     * @param evaluationRequestService            - evaluation request service bean
-     * @param classifierOptionsRequestModelMapper - classifier options request model mapper bean
-     * @param ersRequestService                   - ers request service bean
-     * @param evaluationRequestMapper             - evaluation request mapper bean
-     * @param classifierOptionsRequestMapper      - classifier options request mapper bean
-     * @param classifierOptionsConverter            - classifier options service bean
-     * @param classifierOptionsRequestRepository  - classifier options request repository bean
-     */
-    @Inject
-    public EvaluationOptimizerService(CrossValidationConfig crossValidationConfig,
-                                      CommonConfig commonConfig,
-                                      EvaluationRequestService evaluationRequestService,
-                                      ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper,
-                                      ErsRequestService ersRequestService,
-                                      EvaluationRequestMapper evaluationRequestMapper,
-                                      ClassifierOptionsRequestMapper classifierOptionsRequestMapper,
-                                      ClassifierOptionsConverter classifierOptionsConverter,
-                                      ClassifierOptionsRequestRepository classifierOptionsRequestRepository) {
-        this.crossValidationConfig = crossValidationConfig;
-        this.commonConfig = commonConfig;
-        this.evaluationRequestService = evaluationRequestService;
-        this.ersRequestService = ersRequestService;
-        this.classifierOptionsRequestModelMapper = classifierOptionsRequestModelMapper;
-        this.evaluationRequestMapper = evaluationRequestMapper;
-        this.classifierOptionsRequestMapper = classifierOptionsRequestMapper;
-        this.classifierOptionsConverter = classifierOptionsConverter;
-        this.classifierOptionsRequestRepository = classifierOptionsRequestRepository;
-    }
 
     /**
      * Evaluate model with optimal classifier options.

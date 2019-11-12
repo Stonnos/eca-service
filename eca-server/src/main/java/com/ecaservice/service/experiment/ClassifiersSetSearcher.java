@@ -16,6 +16,7 @@ import eca.core.evaluation.EvaluationMethod;
 import eca.core.evaluation.EvaluationResults;
 import eca.dataminer.ClassifierComparator;
 import eca.ensemble.ClassifiersSet;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -23,7 +24,6 @@ import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 import weka.core.Randomizable;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +38,7 @@ import static com.ecaservice.util.ExperimentLogUtils.logAndThrowError;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ClassifiersSetSearcher {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
@@ -48,31 +49,6 @@ public class ClassifiersSetSearcher {
     private final CrossValidationConfig crossValidationConfig;
     private final List<ClassifierInputDataHandler> classifierInputDataHandlers;
     private final ClassifierOptionsConverter classifierOptionsConverter;
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param evaluationService              - evaluation service bean
-     * @param experimentConfigurationService - experiment configuration service bean
-     * @param experimentConfig               - experiment config bean
-     * @param crossValidationConfig          - cross - validation config
-     * @param classifierInputDataHandlers    - classifier input data handler beans
-     * @param classifierOptionsConverter     - classifier options converter bean
-     */
-    @Inject
-    public ClassifiersSetSearcher(EvaluationService evaluationService,
-                                  ExperimentConfigurationService experimentConfigurationService,
-                                  ExperimentConfig experimentConfig,
-                                  CrossValidationConfig crossValidationConfig,
-                                  List<ClassifierInputDataHandler> classifierInputDataHandlers,
-                                  ClassifierOptionsConverter classifierOptionsConverter) {
-        this.evaluationService = evaluationService;
-        this.experimentConfigurationService = experimentConfigurationService;
-        this.experimentConfig = experimentConfig;
-        this.crossValidationConfig = crossValidationConfig;
-        this.classifierInputDataHandlers = classifierInputDataHandlers;
-        this.classifierOptionsConverter = classifierOptionsConverter;
-    }
 
     /**
      * Finds the best individual classifiers set by the criterion of accuracy maximization.

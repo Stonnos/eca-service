@@ -22,9 +22,9 @@ import eca.ensemble.ModifiedHeterogeneousClassifier;
 import eca.ensemble.StackingClassifier;
 import eca.metrics.KNearestNeighbours;
 import eca.neural.NeuralNetwork;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
@@ -35,28 +35,13 @@ import java.util.Map;
  * @author Roman Batygin
  */
 @Component
+@RequiredArgsConstructor
 public class ExperimentInitializationVisitor
         implements ExperimentTypeVisitor<AbstractExperiment, InitializationParams> {
 
     private final ExperimentConfig experimentConfig;
     private final CrossValidationConfig crossValidationConfig;
     private final ClassifiersSetSearcher classifiersSetSearcher;
-
-    /**
-     * Constructor with dependency spring injection.
-     *
-     * @param experimentConfig       - experiment config bean
-     * @param crossValidationConfig  - cross validation config bean
-     * @param classifiersSetSearcher - classifiers set searcher bean
-     */
-    @Inject
-    public ExperimentInitializationVisitor(ExperimentConfig experimentConfig,
-                                           CrossValidationConfig crossValidationConfig,
-                                           ClassifiersSetSearcher classifiersSetSearcher) {
-        this.experimentConfig = experimentConfig;
-        this.crossValidationConfig = crossValidationConfig;
-        this.classifiersSetSearcher = classifiersSetSearcher;
-    }
 
     @Override
     public AbstractExperiment caseNeuralNetwork(InitializationParams initializationParams) {

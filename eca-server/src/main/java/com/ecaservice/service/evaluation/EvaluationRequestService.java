@@ -10,10 +10,10 @@ import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.evaluation.ClassificationResult;
 import com.ecaservice.repository.EvaluationLogRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -27,6 +27,7 @@ import java.util.concurrent.TimeoutException;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class EvaluationRequestService {
 
     private final CrossValidationConfig crossValidationConfig;
@@ -34,28 +35,6 @@ public class EvaluationRequestService {
     private final EvaluationService evaluationService;
     private final EvaluationLogRepository evaluationLogRepository;
     private final EvaluationLogMapper evaluationLogMapper;
-
-    /**
-     * Constructor with dependency spring injection.
-     *
-     * @param crossValidationConfig   - cross validation config bean
-     * @param executorService         - executor service bean
-     * @param evaluationService       - evaluation service bean
-     * @param evaluationLogRepository - evaluation log repository bean
-     * @param evaluationLogMapper     - evaluation log mapper bean
-     */
-    @Inject
-    public EvaluationRequestService(CrossValidationConfig crossValidationConfig,
-                                    CalculationExecutorService executorService,
-                                    EvaluationService evaluationService,
-                                    EvaluationLogRepository evaluationLogRepository,
-                                    EvaluationLogMapper evaluationLogMapper) {
-        this.crossValidationConfig = crossValidationConfig;
-        this.executorService = executorService;
-        this.evaluationService = evaluationService;
-        this.evaluationLogRepository = evaluationLogRepository;
-        this.evaluationLogMapper = evaluationLogMapper;
-    }
 
     /**
      * Processes input request and returns classification results.

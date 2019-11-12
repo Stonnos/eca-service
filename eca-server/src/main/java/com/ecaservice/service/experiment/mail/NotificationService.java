@@ -9,13 +9,13 @@ import com.ecaservice.model.entity.EmailRequestEntity;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.repository.EmailRequestRepository;
 import com.ecaservice.service.experiment.visitor.EmailTemplateVisitor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 
 /**
@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class NotificationService {
 
     private final TemplateEngine templateEngine;
@@ -33,29 +34,7 @@ public class NotificationService {
     private final WebServiceTemplate notificationWebServiceTemplate;
     private final EmailRequestRepository emailRequestRepository;
 
-    private final NotificationResponseErrorHandler errorHandler = new NotificationResponseErrorHandler();
-
-    /**
-     * Constructor with dependency spring injection.
-     *
-     * @param templateEngine                 - template engine bean
-     * @param mailConfig                     - mail config bean
-     * @param statusTemplateVisitor          - email template visitor bean
-     * @param notificationWebServiceTemplate - web service template bean
-     * @param emailRequestRepository         - email request repository bean
-     */
-    @Inject
-    public NotificationService(TemplateEngine templateEngine,
-                               MailConfig mailConfig,
-                               EmailTemplateVisitor statusTemplateVisitor,
-                               WebServiceTemplate notificationWebServiceTemplate,
-                               EmailRequestRepository emailRequestRepository) {
-        this.templateEngine = templateEngine;
-        this.mailConfig = mailConfig;
-        this.statusTemplateVisitor = statusTemplateVisitor;
-        this.notificationWebServiceTemplate = notificationWebServiceTemplate;
-        this.emailRequestRepository = emailRequestRepository;
-    }
+    private NotificationResponseErrorHandler errorHandler = new NotificationResponseErrorHandler();
 
     /**
      * Sends email message based on experiment status.

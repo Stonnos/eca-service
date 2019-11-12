@@ -4,12 +4,12 @@ import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.user.model.Role;
 import com.ecaservice.user.model.UserDetailsImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,19 +19,10 @@ import java.util.stream.Collectors;
  * @author Roman Batygin
  */
 @Service
+@RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserEntityRepository userEntityRepository;
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param userEntityRepository - user entity repository bean
-     */
-    @Inject
-    public UserDetailsServiceImpl(UserEntityRepository userEntityRepository) {
-        this.userEntityRepository = userEntityRepository;
-    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

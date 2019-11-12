@@ -2,12 +2,14 @@ package com.ecaservice.model.entity;
 
 import com.ecaservice.model.dictionary.RequestStatusDictionary;
 import eca.core.DescriptiveEnum;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Request status enum.
  *
  * @author Roman Batygin
  */
+@RequiredArgsConstructor
 public enum RequestStatus implements DescriptiveEnum {
 
     /**
@@ -50,11 +52,7 @@ public enum RequestStatus implements DescriptiveEnum {
         }
     };
 
-    private String description;
-
-    RequestStatus(String description) {
-        this.description = description;
-    }
+    private final String description;
 
     /**
      * Returns request status description.

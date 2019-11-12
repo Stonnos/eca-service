@@ -9,11 +9,11 @@ import eca.ensemble.AbstractHeterogeneousClassifier;
 import eca.ensemble.ClassifiersSet;
 import eca.ensemble.EnsembleUtils;
 import eca.ensemble.StackingClassifier;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import weka.classifiers.AbstractClassifier;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,23 +24,11 @@ import java.util.List;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class ClassifierOptionsConverter {
 
     private final List<AbstractClassifierMapper> classifierMappers;
     private final List<ClassifierOptionsMapper> classifierOptionsMappers;
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param classifierMappers        - classifier mappers beans
-     * @param classifierOptionsMappers - classifier options mappers beans
-     */
-    @Inject
-    public ClassifierOptionsConverter(List<AbstractClassifierMapper> classifierMappers,
-                                      List<ClassifierOptionsMapper> classifierOptionsMappers) {
-        this.classifierMappers = classifierMappers;
-        this.classifierOptionsMappers = classifierOptionsMappers;
-    }
 
     /**
      * Converts classifier model to its input options model.

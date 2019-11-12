@@ -1,6 +1,7 @@
 package com.ecaservice.web.controller;
 
 import com.google.common.base.Charsets;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
@@ -10,13 +11,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.inject.Inject;
 import java.io.IOException;
 
 /**
  * Eca-web controller.
  */
 @Controller
+@RequiredArgsConstructor
 public class EcaWebController {
 
     private static final String CONFIG_LOCATION_TEMPLATE = "/static/assets/configs/config-%s.json";
@@ -24,16 +25,6 @@ public class EcaWebController {
     private static final String FORWARD = "forward:/";
 
     private final Environment environment;
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param environment - environment bean
-     */
-    @Inject
-    public EcaWebController(Environment environment) {
-        this.environment = environment;
-    }
 
     /**
      * Passes URL to Angular router.

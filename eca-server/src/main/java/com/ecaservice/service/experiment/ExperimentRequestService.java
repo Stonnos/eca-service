@@ -4,10 +4,9 @@ import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.service.async.AsyncTaskService;
 import com.ecaservice.service.experiment.mail.NotificationService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
 
 /**
  * Experiment request service.
@@ -16,27 +15,12 @@ import javax.inject.Inject;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ExperimentRequestService {
 
     private final ExperimentService experimentService;
     private final NotificationService notificationService;
     private final AsyncTaskService asyncTaskService;
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param experimentService   - experiment service bean
-     * @param notificationService - notification service bean
-     * @param asyncTaskService    - async task service bean
-     */
-    @Inject
-    public ExperimentRequestService(ExperimentService experimentService,
-                                    NotificationService notificationService,
-                                    AsyncTaskService asyncTaskService) {
-        this.experimentService = experimentService;
-        this.notificationService = notificationService;
-        this.asyncTaskService = asyncTaskService;
-    }
 
     /**
      * Creates experiment and send email notification.

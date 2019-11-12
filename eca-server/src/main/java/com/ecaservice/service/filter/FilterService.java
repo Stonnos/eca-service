@@ -12,11 +12,11 @@ import com.ecaservice.repository.FilterTemplateRepository;
 import com.ecaservice.repository.GlobalFilterTemplateRepository;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class FilterService {
 
     private final FilterFieldMapper filterFieldMapper;
@@ -34,28 +35,6 @@ public class FilterService {
     private final GlobalFilterTemplateRepository globalFilterTemplateRepository;
     private final FilterTemplateRepository filterTemplateRepository;
     private final FilterDictionaryRepository filterDictionaryRepository;
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param filterFieldMapper              - filter field mapper bean
-     * @param filterDictionaryMapper         - filter dictionary mapper bean
-     * @param globalFilterTemplateRepository - global filter template repository bean
-     * @param filterTemplateRepository       - filter template repository bean
-     * @param filterDictionaryRepository     - filter dictionary repository bean
-     */
-    @Inject
-    public FilterService(FilterFieldMapper filterFieldMapper,
-                         FilterDictionaryMapper filterDictionaryMapper,
-                         GlobalFilterTemplateRepository globalFilterTemplateRepository,
-                         FilterTemplateRepository filterTemplateRepository,
-                         FilterDictionaryRepository filterDictionaryRepository) {
-        this.filterFieldMapper = filterFieldMapper;
-        this.filterDictionaryMapper = filterDictionaryMapper;
-        this.globalFilterTemplateRepository = globalFilterTemplateRepository;
-        this.filterTemplateRepository = filterTemplateRepository;
-        this.filterDictionaryRepository = filterDictionaryRepository;
-    }
 
     /**
      * Finds global filter fields by template type.
