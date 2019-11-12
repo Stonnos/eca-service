@@ -33,8 +33,7 @@ public class NotificationService {
     private final EmailTemplateVisitor statusTemplateVisitor;
     private final WebServiceTemplate notificationWebServiceTemplate;
     private final EmailRequestRepository emailRequestRepository;
-
-    private NotificationResponseErrorHandler errorHandler = new NotificationResponseErrorHandler();
+    private final NotificationResponseErrorHandler errorHandler;
 
     /**
      * Sends email message based on experiment status.

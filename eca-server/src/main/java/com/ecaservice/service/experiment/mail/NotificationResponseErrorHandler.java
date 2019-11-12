@@ -7,6 +7,7 @@ import com.ecaservice.exception.notification.InvalidRequestParamsException;
 import com.ecaservice.exception.notification.UnknownErrorStatusException;
 import com.ecaservice.handler.ResponseErrorHandler;
 import com.google.common.collect.ImmutableMap;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import java.util.Map;
  *
  * @author Roman Batygin
  */
+@Component
 public class NotificationResponseErrorHandler implements ResponseErrorHandler<EmailResponse> {
 
     private static final Map<ResponseStatus, String> statusMapping =

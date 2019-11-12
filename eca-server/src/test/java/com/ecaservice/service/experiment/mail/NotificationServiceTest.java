@@ -25,6 +25,7 @@ import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -55,6 +56,7 @@ import static org.mockito.Mockito.when;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest(TemplateEngine.class)
+@Import(NotificationResponseErrorHandler.class)
 public class NotificationServiceTest {
 
     private static final String TEMPLATE_HTML = "test-template.html";
@@ -67,6 +69,8 @@ public class NotificationServiceTest {
     private ExperimentRepository experimentRepository;
     @Inject
     private EmailRequestRepository emailRequestRepository;
+    @Inject
+    private NotificationResponseErrorHandler errorHandler;
     @Mock
     private WebServiceTemplate notificationWebServiceTemplate;
 
@@ -79,7 +83,7 @@ public class NotificationServiceTest {
         deleteAll();
         templateEngine = PowerMockito.mock(TemplateEngine.class);
         notificationService = new NotificationService(templateEngine, mailConfig, statusTemplateVisitor,
-                notificationWebServiceTemplate, emailRequestRepository);
+                notificationWebServiceTemplate, emailRequestRepository, errorHandler);
         EnumMap<RequestStatus, String> statusMap = new EnumMap<>(RequestStatus.class);
         statusMap.put(RequestStatus.FINISHED, TEMPLATE_HTML);
         when(mailConfig.getMessageTemplatesMap()).thenReturn(statusMap);
