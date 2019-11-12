@@ -152,10 +152,10 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         instancesRequest.setData(TestHelperUtils.loadInstances());
         ErsRequestService ersRequestService = new ErsRequestService(ersWebServiceClient, ersRequestRepository,
                 classifierOptionsRequestModelRepository, classifierReportMapper, ersResponseStatusMapper, ersConfig);
-        evaluationOptimizerService = new EvaluationOptimizerService(crossValidationConfig, commonConfig,
-                evaluationRequestService,
-                classifierOptionsRequestModelMapper, ersRequestService, evaluationRequestMapper,
-                classifierOptionsRequestMapper, classifierOptionsConverter, classifierOptionsRequestRepository);
+        evaluationOptimizerService =
+                new EvaluationOptimizerService(crossValidationConfig, commonConfig, evaluationRequestService,
+                        ersRequestService, classifierOptionsRequestModelMapper, evaluationRequestMapper,
+                        classifierOptionsRequestMapper, classifierOptionsConverter, classifierOptionsRequestRepository);
         dataMd5Hash = DigestUtils.md5DigestAsHex(
                 Utils.toXmlInstances(instancesRequest.getData()).getBytes(StandardCharsets.UTF_8));
         DecisionTreeOptions treeOptions = TestHelperUtils.createDecisionTreeOptions();
