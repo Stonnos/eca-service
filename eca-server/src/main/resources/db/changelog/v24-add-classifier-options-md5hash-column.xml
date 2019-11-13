@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v24-add-classifier-options-md5hash-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Add config_md5_hash column to classifier_options table -->
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options"/>
+            <not>
+                <columnExists tableName="classifier_options" columnName="config_md5_hash"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="classifier_options">
+            <column name="config_md5_hash" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

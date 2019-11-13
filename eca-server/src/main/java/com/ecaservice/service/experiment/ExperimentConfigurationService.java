@@ -10,6 +10,7 @@ import com.ecaservice.service.PageRequestService;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Charsets;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.DigestUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,7 +66,7 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
                     classifierOptionsDatabaseModelRepository.findAllByVersion(version);
             List<ClassifierOptionsDatabaseModel> newOptions = createClassifiersOptions(modelFiles, ++version);
             if (CollectionUtils.isEmpty(latestOptions) || latestOptions.size() != newOptions.size() ||
-                    !latestOptions.equals(newOptions)) {
+                    !newOptions.equals(latestOptions)) {
                 log.info("Saving new classifiers input options with version {}.", version);
                 classifierOptionsDatabaseModelRepository.saveAll(newOptions);
             }
@@ -103,7 +105,8 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
                 classifierOptionsDatabaseModels.add(
                         createClassifierOptions(objectMapper.readValue(modelFile, ClassifierOptions.class), version));
             } catch (IOException ex) {
-                logAndThrowError(String.format("There was an error while parsing json file '%s': %s", modelFile.getAbsolutePath(),
+                logAndThrowError(String.format("There was an error while parsing json file '%s': %s",
+                        modelFile.getAbsolutePath(),
                         ex.getMessage()), log);
             }
         }
@@ -116,11 +119,15 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
             classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
             classifierOptionsDatabaseModel.setVersion(version);
             classifierOptionsDatabaseModel.setOptionsName(classifierOptions.getClass().getSimpleName());
-            classifierOptionsDatabaseModel.setConfig(objectMapper.writeValueAsString(classifierOptions));
+            String config = objectMapper.writeValueAsString(classifierOptions);
+            classifierOptionsDatabaseModel.setConfigMd5Hash(
+                    DigestUtils.md5DigestAsHex(config.getBytes(Charsets.UTF_8)));
+            classifierOptionsDatabaseModel.setConfig(config);
             classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
             return classifierOptionsDatabaseModel;
         } catch (IOException ex) {
-            logAndThrowError(String.format("There was an error while parsing object [%s]: %s", classifierOptions, ex.getMessage()),
+            logAndThrowError(String.format("There was an error while parsing object [%s]: %s", classifierOptions,
+                    ex.getMessage()),
                     log);
         }
         return classifierOptionsDatabaseModel;

@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  * @author Roman Batygin
  */
 @Data
-@EqualsAndHashCode(exclude = {"id", "version", "creationDate"})
+@EqualsAndHashCode(exclude = {"id", "version", "creationDate", "config"})
 @Entity
 @Table(name = "classifier_options")
 public class ClassifierOptionsDatabaseModel {
@@ -47,4 +47,10 @@ public class ClassifierOptionsDatabaseModel {
      */
     @Column(columnDefinition = "text")
     private String config;
+
+    /**
+     * Classifier options config MD5 hash
+     */
+    @Column(name = "config_md5_hash")
+    private String configMd5Hash;
 }
