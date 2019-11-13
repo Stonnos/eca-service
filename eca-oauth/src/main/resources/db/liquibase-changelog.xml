@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-    <include file="db/changelog/000000000001.xml"/>
-    <include file="db/changelog/000000000002.xml"/>
-    <include file="db/changelog/000000000003.xml"/>
-    <include file="db/changelog/000000000004.xml"/>
-    <include file="db/changelog/000000000005.xml"/>
+<databaseChangeLog
+        logicalFilePath="liquibase-changelog.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <include file="db/changelog/v0-init-schema.xml"/>
+    <include file="db/changelog/v1-create-oauth-tables.xml"/>
+    <include file="db/changelog/v2-create-user-role-table.xml"/>
+    <include file="db/changelog/v3-insert-eca-credentials.xml"/>
+    <include file="db/changelog/v4-insert-swagger-credentials.xml"/>
 </databaseChangeLog>
