@@ -200,7 +200,7 @@ public class ExperimentController {
             @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
         Experiment experiment = experimentRepository.findByUuid(uuid);
         if (experiment == null) {
-            log.error("Experiment with uuid [{}] not found", uuid);
+            log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, uuid));
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(experimentMapper.map(experiment));
@@ -262,7 +262,7 @@ public class ExperimentController {
         log.info("Received request for ERS report for experiment [{}]", uuid);
         Experiment experiment = experimentRepository.findByUuid(uuid);
         if (experiment == null) {
-            log.error("Experiment with uuid [{}] not found", uuid);
+            log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, uuid));
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(experimentResultsService.getErsReport(experiment));
@@ -283,8 +283,9 @@ public class ExperimentController {
         log.info("Received request to send evaluation results to ERS for experiment [{}]", uuid);
         Experiment experiment = experimentRepository.findByUuid(uuid);
         if (experiment == null) {
-            log.error("Experiment with uuid [{}] not found", uuid);
-            return ResponseEntity.badRequest().body(String.format(EXPERIMENT_NOT_FOUND_FORMAT, uuid));
+            String error = String.format(EXPERIMENT_NOT_FOUND_FORMAT, uuid);
+            log.error(error);
+            return ResponseEntity.badRequest().body(error);
         }
         if (!RequestStatus.FINISHED.equals(experiment.getExperimentStatus())) {
             log.error("Can't sent experiment [{}] results to ERS, because experiment status isn't FINISHED", uuid);
@@ -393,7 +394,7 @@ public class ExperimentController {
                                                   String errorMessage) {
         Experiment experiment = experimentRepository.findByUuid(uuid);
         if (experiment == null) {
-            log.error("Experiment with uuid [{}] not found", uuid);
+            log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, uuid));
             return ResponseEntity.badRequest().build();
         }
         File experimentFile = getExperimentFile(experiment, filePathFunction);
