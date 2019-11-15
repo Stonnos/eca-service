@@ -2,7 +2,6 @@ package com.ecaservice.util;
 
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.evaluation.ClassifierReport;
-import com.ecaservice.exception.EcaServiceException;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
