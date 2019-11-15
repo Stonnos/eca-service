@@ -9,7 +9,6 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
 
 import java.util.EnumMap;
 
@@ -27,10 +26,7 @@ public abstract class EvaluationRequestMapper {
      * @param classifierOptionsRequest - classifier options request
      * @return evaluation request
      */
-    @Mappings( {
-            @Mapping(source = "classifierOptionsRequest.evaluationMethodReport.evaluationMethod",
-                    target = "evaluationMethod"),
-    })
+    @Mapping(source = "classifierOptionsRequest.evaluationMethodReport.evaluationMethod", target = "evaluationMethod")
     public abstract EvaluationRequest map(ClassifierOptionsRequest classifierOptionsRequest);
 
     @AfterMapping

@@ -9,7 +9,6 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -28,9 +27,7 @@ public abstract class ExperimentResultsMapper {
      * @param evaluationResults - evaluation results
      * @return experiment results entity
      */
-    @Mappings({
-            @Mapping(source = "classifier", target = "classifierInfo")
-    })
+    @Mapping(source = "classifier", target = "classifierInfo")
     public abstract ExperimentResultsEntity map(EvaluationResults evaluationResults);
 
     /**
@@ -47,9 +44,7 @@ public abstract class ExperimentResultsMapper {
      * @param experimentResultsEntity - experiment results details mapper
      * @return experiment results details dto
      */
-    @Mappings({
-            @Mapping(source = "experiment", target = "experimentDto")
-    })
+    @Mapping(source = "experiment", target = "experimentDto")
     public abstract ExperimentResultsDetailsDto mapDetails(ExperimentResultsEntity experimentResultsEntity);
 
     @AfterMapping

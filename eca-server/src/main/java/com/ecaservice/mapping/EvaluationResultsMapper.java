@@ -25,7 +25,6 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Attribute;
 import weka.core.Instances;
@@ -62,10 +61,8 @@ public abstract class EvaluationResultsMapper {
      * @param evaluationResults - evaluation results
      * @return evaluation results request model
      */
-    @Mappings({
-            @Mapping(source = "evaluationResults.evaluation.data", target = "instances",
-                    qualifiedByName = "instancesToInstancesReport")
-    })
+    @Mapping(source = "evaluationResults.evaluation.data", target = "instances",
+            qualifiedByName = "instancesToInstancesReport")
     public abstract EvaluationResultsRequest map(EvaluationResults evaluationResults);
 
     /**

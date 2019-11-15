@@ -6,7 +6,6 @@ import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 
 /**
  * Implements mapping to classifier options request.
@@ -23,14 +22,11 @@ public interface ClassifierOptionsRequestMapper {
      * @param crossValidationConfig - cross validation config
      * @return classifier options request
      */
-    @Mappings({
-            @Mapping(source = "instancesRequest.data", target = "instances",
-                    qualifiedByName = "instancesToInstancesReport"),
-            @Mapping(target = "evaluationMethodReport.evaluationMethod", constant = "CROSS_VALIDATION"),
-            @Mapping(source = "crossValidationConfig.numFolds", target = "evaluationMethodReport.numFolds"),
-            @Mapping(source = "crossValidationConfig.numTests", target = "evaluationMethodReport.numTests"),
-            @Mapping(source = "crossValidationConfig.seed", target = "evaluationMethodReport.seed")
-    })
+    @Mapping(source = "instancesRequest.data", target = "instances", qualifiedByName = "instancesToInstancesReport")
+    @Mapping(target = "evaluationMethodReport.evaluationMethod", constant = "CROSS_VALIDATION")
+    @Mapping(source = "crossValidationConfig.numFolds", target = "evaluationMethodReport.numFolds")
+    @Mapping(source = "crossValidationConfig.numTests", target = "evaluationMethodReport.numTests")
+    @Mapping(source = "crossValidationConfig.seed", target = "evaluationMethodReport.seed")
     ClassifierOptionsRequest map(InstancesRequest instancesRequest,
                                  CrossValidationConfig crossValidationConfig);
 }

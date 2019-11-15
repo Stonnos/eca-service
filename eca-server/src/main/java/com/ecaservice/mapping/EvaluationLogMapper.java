@@ -12,7 +12,6 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
 
 import java.util.Optional;
 
@@ -31,9 +30,7 @@ public abstract class EvaluationLogMapper {
      * @param evaluationRequest evaluation request
      * @return evaluation log entity
      */
-    @Mappings({
-            @Mapping(source = "classifier", target = "classifierInfo")
-    })
+    @Mapping(source = "classifier", target = "classifierInfo")
     public abstract EvaluationLog map(EvaluationRequest evaluationRequest);
 
     /**
@@ -42,10 +39,8 @@ public abstract class EvaluationLogMapper {
      * @param evaluationLog - evaluation log entity
      * @return evaluation log dto
      */
-    @Mappings({
-            @Mapping(target = "evaluationMethod", ignore = true),
-            @Mapping(target = "evaluationStatus", ignore = true)
-    })
+    @Mapping(target = "evaluationMethod", ignore = true)
+    @Mapping(target = "evaluationStatus", ignore = true)
     public abstract EvaluationLogDto map(EvaluationLog evaluationLog);
 
     /**
@@ -54,10 +49,8 @@ public abstract class EvaluationLogMapper {
      * @param evaluationLog - evaluation log entity
      * @return evaluation log details dto
      */
-    @Mappings({
-            @Mapping(target = "evaluationMethod", ignore = true),
-            @Mapping(target = "evaluationStatus", ignore = true)
-    })
+    @Mapping(target = "evaluationMethod", ignore = true)
+    @Mapping(target = "evaluationStatus", ignore = true)
     public abstract EvaluationLogDetailsDto mapDetails(EvaluationLog evaluationLog);
 
     @AfterMapping

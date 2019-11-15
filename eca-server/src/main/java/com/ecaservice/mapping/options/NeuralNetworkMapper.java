@@ -11,7 +11,6 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
 
 /**
  * Implements mapping Neural network classifier to its options model.
@@ -31,13 +30,11 @@ public abstract class NeuralNetworkMapper extends AbstractClassifierMapper<Neura
      * @param neuralNetwork - neural network
      * @return neural network options
      */
-    @Mappings( {
-            @Mapping(source = "multilayerPerceptron.numInNeurons", target = "numInNeurons"),
-            @Mapping(source = "multilayerPerceptron.numOutNeurons", target = "numOutNeurons"),
-            @Mapping(source = "multilayerPerceptron.minError", target = "minError"),
-            @Mapping(source = "multilayerPerceptron.numIterations", target = "numIterations"),
-            @Mapping(source = "multilayerPerceptron.hiddenLayer", target = "hiddenLayer"),
-    })
+    @Mapping(source = "multilayerPerceptron.numInNeurons", target = "numInNeurons")
+    @Mapping(source = "multilayerPerceptron.numOutNeurons", target = "numOutNeurons")
+    @Mapping(source = "multilayerPerceptron.minError", target = "minError")
+    @Mapping(source = "multilayerPerceptron.numIterations", target = "numIterations")
+    @Mapping(source = "multilayerPerceptron.hiddenLayer", target = "hiddenLayer")
     public abstract NeuralNetworkOptions map(NeuralNetwork neuralNetwork);
 
     @AfterMapping

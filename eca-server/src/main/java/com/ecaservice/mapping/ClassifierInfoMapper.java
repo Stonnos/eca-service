@@ -8,7 +8,6 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 
@@ -36,9 +35,7 @@ public abstract class ClassifierInfoMapper {
      * @param classifierInfo - classifier info
      * @return classifier info dto
      */
-    @Mappings({
-            @Mapping(source = "classifierInputOptions", target = "inputOptions")
-    })
+    @Mapping(source = "classifierInputOptions", target = "inputOptions")
     public abstract ClassifierInfoDto map(ClassifierInfo classifierInfo);
 
     @AfterMapping
