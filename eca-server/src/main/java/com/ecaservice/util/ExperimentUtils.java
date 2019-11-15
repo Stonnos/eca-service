@@ -1,12 +1,12 @@
 package com.ecaservice.util;
 
 import com.ecaservice.model.entity.Experiment;
-import com.google.common.base.Charsets;
 import lombok.experimental.UtilityClass;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.DigestUtils;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.function.Function;
@@ -47,8 +47,8 @@ public class ExperimentUtils {
     public static String generateToken(Experiment experiment) {
         LocalDateTime tokenCreationDate = LocalDateTime.now();
         String salt = String.format(SALT_FORMAT, experiment.getUuid(), toMillis(experiment.getCreationDate()));
-        String md5Salt = DigestUtils.md5DigestAsHex(salt.getBytes(Charsets.UTF_8));
+        String md5Salt = DigestUtils.md5DigestAsHex(salt.getBytes(StandardCharsets.UTF_8));
         String stringToEncode = String.format(SALT_FORMAT, md5Salt, toMillis(tokenCreationDate));
-        return Base64Utils.encodeToString(stringToEncode.getBytes(Charsets.UTF_8));
+        return Base64Utils.encodeToString(stringToEncode.getBytes(StandardCharsets.UTF_8));
     }
 }

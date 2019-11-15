@@ -1,6 +1,5 @@
 package com.ecaservice.web.controller;
 
-import com.google.common.base.Charsets;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.env.Environment;
@@ -8,10 +7,10 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Eca-web controller.
@@ -31,7 +30,7 @@ public class EcaWebController {
      *
      * @return forward url
      */
-    @RequestMapping({"/login", "/dashboard/**"})
+    @GetMapping({"/login", "/dashboard/**"})
     public String index() {
         return FORWARD;
     }
@@ -56,6 +55,6 @@ public class EcaWebController {
 
     private String loadJsonConfig(String path) throws IOException {
         ClassPathResource classPathResource = new ClassPathResource(path);
-        return IOUtils.toString(classPathResource.getInputStream(), Charsets.UTF_8);
+        return IOUtils.toString(classPathResource.getInputStream(), StandardCharsets.UTF_8);
     }
 }

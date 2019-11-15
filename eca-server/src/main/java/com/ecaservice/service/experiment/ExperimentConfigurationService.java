@@ -10,7 +10,6 @@ import com.ecaservice.service.PageRequestService;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Charsets;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -25,6 +24,7 @@ import org.springframework.util.DigestUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -121,7 +121,7 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
             classifierOptionsDatabaseModel.setOptionsName(classifierOptions.getClass().getSimpleName());
             String config = objectMapper.writeValueAsString(classifierOptions);
             classifierOptionsDatabaseModel.setConfigMd5Hash(
-                    DigestUtils.md5DigestAsHex(config.getBytes(Charsets.UTF_8)));
+                    DigestUtils.md5DigestAsHex(config.getBytes(StandardCharsets.UTF_8)));
             classifierOptionsDatabaseModel.setConfig(config);
             classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
             return classifierOptionsDatabaseModel;

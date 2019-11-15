@@ -17,7 +17,6 @@ import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.repository.ClassifierOptionsRequestRepository;
 import com.ecaservice.service.ers.ErsRequestService;
-import com.google.common.base.Charsets;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +25,7 @@ import org.springframework.util.DigestUtils;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -79,7 +79,7 @@ public class EvaluationOptimizerService {
     private String getOptimalClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
         String options;
         String dataMd5Hash = DigestUtils.md5DigestAsHex(
-                classifierOptionsRequest.getInstances().getXmlInstances().getBytes(Charsets.UTF_8));
+                classifierOptionsRequest.getInstances().getXmlInstances().getBytes(StandardCharsets.UTF_8));
         dataMd5Hashes.putIfAbsent(dataMd5Hash, new Object());
         synchronized (dataMd5Hashes.get(dataMd5Hash)) {
             ClassifierOptionsRequestEntity requestEntity = new ClassifierOptionsRequestEntity();
