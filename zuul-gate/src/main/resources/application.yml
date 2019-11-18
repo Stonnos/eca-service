@@ -1,3 +1,8 @@
+spring:
+  application:
+    name: zuul-gate
+  jmx:
+    default-domain: zuul-gate
 zuul:
   routes:
       server:

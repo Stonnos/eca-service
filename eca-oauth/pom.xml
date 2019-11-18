@@ -80,6 +80,11 @@
             <version>${spring.boot.admin.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-sleuth</artifactId>
+        </dependency>
+
         <!--test dependencies-->
         <dependency>
             <scope>test</scope>
