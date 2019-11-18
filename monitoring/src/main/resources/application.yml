@@ -1,4 +1,8 @@
 spring:
+  application:
+    name: monitoring
+  jmx:
+    default-domain: monitoring
   ## Email properties
   mail:
     host: smtp.gmail.com

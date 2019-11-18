@@ -1,6 +1,8 @@
 spring:
   application:
     name: eca-server
+  jmx:
+    default-domain: eca-server
   ## Eca datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
