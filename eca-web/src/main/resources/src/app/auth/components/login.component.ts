@@ -28,7 +28,7 @@ export class LoginComponent implements BaseForm, OnInit {
   }
 
   public ngOnInit() {
-    if (this.authService.hasAccessToken()) {
+    if (localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)) {
       this.giveAccess();
     }
   }
