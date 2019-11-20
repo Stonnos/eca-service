@@ -1,10 +1,13 @@
 package com.ecaservice.model.options;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * Classifier options type for JSON inheritance.
  *
  * @author Roman Batygin
  */
+@UtilityClass
 public class ClassifierOptionsType {
 
     public static final String DECISION_TREE = "decision_tree";
