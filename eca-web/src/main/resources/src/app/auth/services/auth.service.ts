@@ -20,29 +20,28 @@ export class AuthService {
     params.append('username', user.login);
     params.append('password', user.password);
     params.append('grant_type', 'password');
-    const headers = new HttpHeaders({
-      'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
-      'Authorization': this.getHttpBasicAuthorizationHeader()
-    });
-    const options = { headers: headers };
-    return this.http.post(this.serviceUrl, params.toString(), options);
+    return this.performTokenRequest(params);
   }
 
   public refreshToken(): Observable<any> {
     const params = new URLSearchParams();
     params.append('refresh_token', localStorage.getItem(AuthenticationKeys.REFRESH_TOKEN));
     params.append('grant_type', 'refresh_token');
+    return this.performTokenRequest(params);
+  }
+
+  public saveToken(token): void {
+    localStorage.setItem(AuthenticationKeys.ACCESS_TOKEN, token.access_token);
+    localStorage.setItem(AuthenticationKeys.REFRESH_TOKEN, token.refresh_token);
+  }
+
+  private performTokenRequest(params: URLSearchParams): Observable<any> {
     const headers = new HttpHeaders({
       'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
       'Authorization': this.getHttpBasicAuthorizationHeader()
     });
     const options = { headers: headers };
     return this.http.post(this.serviceUrl, params.toString(), options);
-  }
-
-  public saveToken(token): void {
-    localStorage.setItem(AuthenticationKeys.ACCESS_TOKEN, token.access_token);
-    localStorage.setItem(AuthenticationKeys.REFRESH_TOKEN, token.refresh_token);
   }
 
   private getHttpBasicAuthorizationHeader(): string {
