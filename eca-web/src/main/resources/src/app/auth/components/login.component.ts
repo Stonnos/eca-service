@@ -28,12 +28,12 @@ export class LoginComponent implements BaseForm, OnInit {
   }
 
   public ngOnInit() {
-    if (this.authService.hasAccessToken()) {
-      this.giveAccess();
+    if (localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)) {
+      this.enter();
     }
   }
 
-  public giveAccess(): void {
+  public enter(): void {
     this.router.navigate(['/dashboard/experiments']);
   }
 
@@ -62,7 +62,7 @@ export class LoginComponent implements BaseForm, OnInit {
         .subscribe((token) => {
           this.authService.saveToken(token);
           this.saveUser();
-          this.giveAccess();
+          this.enter();
         }, (error) => {
           this.handleError(error);
         });
