@@ -147,7 +147,7 @@ docker rm container_name
 
 docker image rm image_id
 
-Для просотра доступных сетей, необходимо выполнить команду:
+Для просмотра доступных сетей, необходимо выполнить команду:
 
 docker network ls
 
