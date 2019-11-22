@@ -9,4 +9,5 @@
     <include file="db/changelog/v2-create-user-role-table.xml"/>
     <include file="db/changelog/v3-insert-eca-credentials.xml"/>
     <include file="db/changelog/v4-insert-swagger-credentials.xml"/>
+    <include file="db/changelog/v5-change-token-validity-time.xml"/>
 </databaseChangeLog>

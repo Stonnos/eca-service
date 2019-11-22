@@ -25,15 +25,6 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   public intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (!localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)) {
-      this.logoutService.logout();
-      return EMPTY;
-    } else {
-      return this.internalInterceptRequest(this.addAuthenticationToken(request), next);
-    }
-  }
-
-  private internalInterceptRequest(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(catchError(error => {
       if (error instanceof HttpErrorResponse && error.status === 401) {
         if (request.url.includes('/oauth/token')) {
