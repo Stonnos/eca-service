@@ -22,7 +22,7 @@ export class AuthService {
     params.append('grant_type', 'password');
     const headers = new HttpHeaders({
       'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
-      'Authorization': 'Basic ' + btoa(this.clientId + ':' + this.secret)
+      'Authorization': this.getHttpBasicAuthorizationHeader()
     });
     const options = { headers: headers };
     return this.http.post(this.serviceUrl, params.toString(), options);
@@ -34,16 +34,26 @@ export class AuthService {
     params.append('grant_type', 'refresh_token');
     const headers = new HttpHeaders({
       'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
-      'Authorization': 'Basic ' + btoa(this.clientId + ':' + this.secret)
+      'Authorization': this.getHttpBasicAuthorizationHeader()
     });
     const options = { headers: headers };
     return this.http.post(this.serviceUrl, params.toString(), options);
   }
 
   public saveToken(token): void {
-    const expireDate = new Date().getTime() + 1000 * token.expires_in;
     localStorage.setItem(AuthenticationKeys.ACCESS_TOKEN, token.access_token);
     localStorage.setItem(AuthenticationKeys.REFRESH_TOKEN, token.refresh_token);
-    localStorage.setItem(AuthenticationKeys.EXPIRE_DATE, expireDate.toString());
+  }
+
+  public getAccessToken(): string {
+    return localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN);
+  }
+
+  public getRefreshToken(): string {
+    return localStorage.getItem(AuthenticationKeys.REFRESH_TOKEN);
+  }
+
+  private getHttpBasicAuthorizationHeader(): string {
+    return 'Basic ' + btoa(this.clientId + ':' + this.secret);
   }
 }
