@@ -45,14 +45,6 @@ export class AuthService {
     localStorage.setItem(AuthenticationKeys.REFRESH_TOKEN, token.refresh_token);
   }
 
-  public getAccessToken(): string {
-    return localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN);
-  }
-
-  public getRefreshToken(): string {
-    return localStorage.getItem(AuthenticationKeys.REFRESH_TOKEN);
-  }
-
   private getHttpBasicAuthorizationHeader(): string {
     return 'Basic ' + btoa(this.clientId + ':' + this.secret);
   }
