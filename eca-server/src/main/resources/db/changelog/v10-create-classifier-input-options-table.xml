@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/000000000010.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="classifier_input_options"/>
+            </not>
+            <tableExists tableName="evaluation_log"/>
+        </preConditions>
+        <createTable tableName="classifier_input_options">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="option_name" type="varchar(255)"/>
+            <column name="option_value" type="varchar(255)"/>
+            <column name="option_order" type="integer"/>
+            <column name="evaluation_log_id" type="bigint">
+                <constraints foreignKeyName="fk_classifier_input_options_evaluation_log_id"
+                             referencedTableName="evaluation_log" referencedColumnNames="id" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

@@ -4,6 +4,8 @@ import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.model.entity.GlobalFilterTemplate;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 /**
  * Repository to manage with {@link GlobalFilterTemplate} entities.
  *
@@ -17,5 +19,5 @@ public interface GlobalFilterTemplateRepository extends JpaRepository<GlobalFilt
      * @param templateType - template type
      * @return global filter template entity
      */
-    GlobalFilterTemplate findFirstByTemplateType(FilterTemplateType templateType);
+    Optional<GlobalFilterTemplate> findFirstByTemplateType(FilterTemplateType templateType);
 }

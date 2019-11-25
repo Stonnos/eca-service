@@ -2,12 +2,14 @@ package com.ecaservice.model.experiment;
 
 import com.ecaservice.model.dictionary.ExperimentTypeDictionary;
 import eca.core.DescriptiveEnum;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Experiment type.
  *
  * @author Roman Batygin
  */
+@RequiredArgsConstructor
 public enum ExperimentType implements DescriptiveEnum {
 
     /**
@@ -101,11 +103,7 @@ public enum ExperimentType implements DescriptiveEnum {
         }
     };
 
-    private String description;
-
-    ExperimentType(String description) {
-        this.description = description;
-    }
+    private final String description;
 
     /**
      * Returns experiment description.

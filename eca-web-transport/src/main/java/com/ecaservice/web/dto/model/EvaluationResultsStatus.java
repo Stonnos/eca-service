@@ -1,12 +1,14 @@
 package com.ecaservice.web.dto.model;
 
 import com.ecaservice.web.dto.dictionary.EvaluationResultsStatusDictionary;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Evaluation results status enum.
  *
  * @author Roman Batygin
  */
+@RequiredArgsConstructor
 public enum EvaluationResultsStatus {
 
     /**
@@ -44,11 +46,7 @@ public enum EvaluationResultsStatus {
      */
     ERS_SERVICE_UNAVAILABLE(EvaluationResultsStatusDictionary.ERS_SERVICE_UNAVAILABLE_DESCRIPTION);
 
-    private String description;
-
-    EvaluationResultsStatus(String description) {
-        this.description = description;
-    }
+    private final String description;
 
     /**
      * Evaluation results status status description.

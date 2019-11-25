@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/000000000021.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="classifier_info"/>
+            </not>
+        </preConditions>
+        <createTable tableName="classifier_info">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="classifier_name" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_input_options"/>
+            <tableExists tableName="classifier_info"/>
+            <not>
+                <columnExists tableName="classifier_input_options" columnName="classifier_info_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="classifier_input_options">
+            <column name="classifier_info_id" type="bigint">
+                <constraints foreignKeyName="fk_classifier_input_options_classifier_info_id"
+                             referencedTableName="classifier_info"
+                             referencedColumnNames="id" nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <tableExists tableName="classifier_info"/>
+            <not>
+                <columnExists tableName="evaluation_log" columnName="classifier_info_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_log">
+            <column name="classifier_info_id" type="bigint">
+                <constraints foreignKeyName="fk_evaluation_log_classifier_info_id"
+                             referencedTableName="classifier_info"
+                             referencedColumnNames="id" nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <tableExists tableName="classifier_info"/>
+            <tableExists tableName="classifier_input_options"/>
+        </preConditions>
+        <sqlFile path="sql/migrate-classifiers-info.sql"
+                 dbms="postgresql"
+                 relativeToChangelogFile="true"
+                 splitStatements="false"
+                 stripComments="false"/>
+    </changeSet>
+
+    <changeSet id="5" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <columnExists tableName="evaluation_log" columnName="classifier_name"/>
+        </preConditions>
+        <dropColumn tableName="evaluation_log" columnName="classifier_name"/>
+    </changeSet>
+
+    <changeSet id="6" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_input_options"/>
+            <columnExists tableName="classifier_input_options" columnName="evaluation_log_id"/>
+        </preConditions>
+        <dropColumn tableName="classifier_input_options" columnName="evaluation_log_id"/>
+    </changeSet>
+
+    <!-- Changed classifier name field in filter template -->
+    <changeSet id="7" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 2 and field_name = 'classifierName'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="filter_field">
+            <column name="field_name" value="classifierInfo.classifierName"/>
+            <where>filter_template_id = 2 and field_name = 'classifierName'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="8" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from global_filter_field where global_filter_template_id = 2 and field_name = 'classifierName'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="global_filter_field">
+            <column name="field_name" value="classifierInfo.classifierName"/>
+            <where>global_filter_template_id = 2 and field_name = 'classifierName'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

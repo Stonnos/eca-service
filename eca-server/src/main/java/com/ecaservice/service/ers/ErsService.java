@@ -9,11 +9,10 @@ import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationResults;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.ws.client.WebServiceIOException;
-
-import javax.inject.Inject;
 
 import static com.ecaservice.util.Utils.buildEvaluationResultsDto;
 
@@ -24,23 +23,11 @@ import static com.ecaservice.util.Utils.buildEvaluationResultsDto;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ErsService {
 
     private final ErsRequestService ersRequestService;
     private final GetEvaluationResultsMapper evaluationResultsMapper;
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param ersRequestService       - ers request service bean
-     * @param evaluationResultsMapper - evaluation results mapper bean
-     */
-    @Inject
-    public ErsService(ErsRequestService ersRequestService,
-                      GetEvaluationResultsMapper evaluationResultsMapper) {
-        this.ersRequestService = ersRequestService;
-        this.evaluationResultsMapper = evaluationResultsMapper;
-    }
 
     /**
      * Sent experiment results to ERS service.

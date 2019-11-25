@@ -4,7 +4,6 @@ import com.ecaservice.dto.evaluation.ClassificationCostsReport;
 import com.ecaservice.web.dto.model.ClassificationCostsDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 
 import java.util.List;
 
@@ -22,9 +21,7 @@ public interface ClassificationCostsMapper {
      * @param classificationCostsReport - classification costs report
      * @return classification costs dto
      */
-    @Mappings({
-            @Mapping(source = "rocCurve.aucValue", target = "aucValue")
-    })
+    @Mapping(source = "rocCurve.aucValue", target = "aucValue")
     ClassificationCostsDto map(ClassificationCostsReport classificationCostsReport);
 
     /**

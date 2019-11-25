@@ -1,7 +1,7 @@
 package com.ecaservice.service.experiment;
 
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.exception.ExperimentException;
+import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.service.experiment.visitor.ExperimentInitializationVisitor;
@@ -12,12 +12,12 @@ import eca.core.evaluation.EvaluationResults;
 import eca.dataminer.AbstractExperiment;
 import eca.dataminer.ClassifierComparator;
 import eca.dataminer.IterativeExperiment;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,25 +28,13 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ExperimentProcessorService {
 
     private static final int PROGRESS_STEP = 10;
 
     private final ExperimentInitializationVisitor experimentInitializer;
     private final ExperimentConfig experimentConfig;
-
-    /**
-     * Constructor with dependency spring injection.
-     *
-     * @param experimentInitializer - experiment initializer bean
-     * @param experimentConfig      - experiment config bean
-     */
-    @Inject
-    public ExperimentProcessorService(ExperimentInitializationVisitor experimentInitializer,
-                                      ExperimentConfig experimentConfig) {
-        this.experimentInitializer = experimentInitializer;
-        this.experimentConfig = experimentConfig;
-    }
 
     /**
      * Processes experiment and returns its history.

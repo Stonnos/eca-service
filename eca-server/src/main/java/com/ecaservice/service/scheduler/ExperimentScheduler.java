@@ -1,7 +1,6 @@
 package com.ecaservice.service.scheduler;
 
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.mapping.ExperimentResultsMapper;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.RequestStatus;
@@ -13,11 +12,11 @@ import com.ecaservice.service.experiment.ExperimentResultsService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.experiment.mail.NotificationService;
 import eca.converters.model.ExperimentHistory;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,6 +31,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ExperimentScheduler {
 
     private final ExperimentRepository experimentRepository;
@@ -41,35 +41,6 @@ public class ExperimentScheduler {
     private final ErsService ersService;
     private final ExperimentConfig experimentConfig;
     private final ExperimentResultsService experimentResultsService;
-
-    /**
-     * Constructor with dependency spring injection.
-     *
-     * @param experimentRepository              - experiment repository bean
-     * @param experimentResultsEntityRepository - experiment results entity repository bean
-     * @param experimentService                 - experiment service bean
-     * @param notificationService               - notification service bean
-     * @param ersService                        - ers service bean
-     * @param experimentConfig                  - experiment config bean
-     * @param experimentResultsService          - experiment results service bean
-     */
-    @Inject
-    public ExperimentScheduler(ExperimentRepository experimentRepository,
-                               ExperimentResultsEntityRepository experimentResultsEntityRepository,
-                               ExperimentService experimentService,
-                               NotificationService notificationService,
-                               ErsService ersService,
-                               ExperimentConfig experimentConfig,
-                               ExperimentResultsMapper experimentResultsMapper,
-                               ExperimentResultsService experimentResultsService) {
-        this.experimentRepository = experimentRepository;
-        this.experimentResultsEntityRepository = experimentResultsEntityRepository;
-        this.experimentService = experimentService;
-        this.notificationService = notificationService;
-        this.ersService = ersService;
-        this.experimentConfig = experimentConfig;
-        this.experimentResultsService = experimentResultsService;
-    }
 
     /**
      * Processing new experiment requests.

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v5-change-token-validity-time.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Sets access token validity time to 30 minutes, and refresh token validity time to 1 month for eca-web -->
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="oauth_client_details"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from oauth_client_details where client_id = 'eca_web'
+            </sqlCheck>
+        </preConditions>
+
+        <update tableName="oauth_client_details">
+            <column name="refresh_token_validity" valueNumeric="2592000"/>
+            <column name="access_token_validity" valueNumeric="1800"/>
+            <where>client_id = 'eca_web'</where>
+        </update>
+    </changeSet>
+
+    <!-- Sets access token validity time to 30 minutes, and refresh token validity time to 1 month for eca -->
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="oauth_client_details"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from oauth_client_details where client_id = 'eca'
+            </sqlCheck>
+        </preConditions>
+
+        <update tableName="oauth_client_details">
+            <column name="refresh_token_validity" valueNumeric="2592000"/>
+            <column name="access_token_validity" valueNumeric="1800"/>
+            <where>client_id = 'eca'</where>
+        </update>
+    </changeSet>
+
+    <!-- Sets access token validity time to 30 minutes, and refresh token validity time to 1 month for swagger -->
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="oauth_client_details"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from oauth_client_details where client_id = 'swagger'
+            </sqlCheck>
+        </preConditions>
+
+        <update tableName="oauth_client_details">
+            <column name="refresh_token_validity" valueNumeric="2592000"/>
+            <column name="access_token_validity" valueNumeric="1800"/>
+            <where>client_id = 'swagger'</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>

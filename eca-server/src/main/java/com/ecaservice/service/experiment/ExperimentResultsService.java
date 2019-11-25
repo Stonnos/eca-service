@@ -18,11 +18,11 @@ import com.ecaservice.web.dto.model.ExperimentErsReportDto;
 import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationResults;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -36,6 +36,7 @@ import static com.ecaservice.util.Utils.buildEvaluationResultsDto;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ExperimentResultsService {
 
     private final ErsService ersService;
@@ -43,28 +44,6 @@ public class ExperimentResultsService {
     private final ExperimentResultsMapper experimentResultsMapper;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
     private final ExperimentResultsRequestRepository experimentResultsRequestRepository;
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param ersService                         - ers service bean
-     * @param experimentConfig                   - experiment config bean
-     * @param experimentResultsMapper            - experiment results mapper bean
-     * @param experimentResultsEntityRepository  - experiment results entity repository bean
-     * @param experimentResultsRequestRepository - experiment results request repository bean
-     */
-    @Inject
-    public ExperimentResultsService(ErsService ersService,
-                                    ExperimentConfig experimentConfig,
-                                    ExperimentResultsMapper experimentResultsMapper,
-                                    ExperimentResultsEntityRepository experimentResultsEntityRepository,
-                                    ExperimentResultsRequestRepository experimentResultsRequestRepository) {
-        this.ersService = ersService;
-        this.experimentConfig = experimentConfig;
-        this.experimentResultsMapper = experimentResultsMapper;
-        this.experimentResultsEntityRepository = experimentResultsEntityRepository;
-        this.experimentResultsRequestRepository = experimentResultsRequestRepository;
-    }
 
     /**
      * Saves experiments results that should be sent to ERS.

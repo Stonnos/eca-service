@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/000000000013.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="global_filter_template"/>
+            </not>
+        </preConditions>
+        <createTable tableName="global_filter_template">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="filter_name" type="varchar(255)"/>
+            <column name="template_type" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_template"/>
+            <not>
+                <tableExists tableName="global_filter_field"/>
+            </not>
+        </preConditions>
+        <createTable tableName="global_filter_field">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="field_name" type="varchar(255)"/>
+            <column name="global_filter_template_id" type="bigint">
+                <constraints foreignKeyName="fk_global_filter_template_id"
+                             referencedTableName="global_filter_template" referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Insert experiment global filter template -->
+    <changeSet id="3" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_template"/>
+            <tableExists tableName="global_filter_field"/>
+            <sqlCheck expectedResult="0">
+                select count(*) from global_filter_template where id = 1
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="global_filter_template">
+            <column name="id" valueNumeric="1"/>
+            <column name="filter_name" value="experimentFilter"/>
+            <column name="template_type" value="EXPERIMENT"/>
+        </insert>
+
+        <insert tableName="global_filter_field">
+            <column name="field_name" value="uuid"/>
+            <column name="global_filter_template_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="global_filter_field">
+            <column name="field_name" value="firstName"/>
+            <column name="global_filter_template_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="global_filter_field">
+            <column name="field_name" value="email"/>
+            <column name="global_filter_template_id" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+
+    <!-- Insert evaluation log global filter template -->
+    <changeSet id="4" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_template"/>
+            <tableExists tableName="global_filter_field"/>
+            <sqlCheck expectedResult="0">
+                select count(*) from global_filter_template where id = 2
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="global_filter_template">
+            <column name="id" valueNumeric="2"/>
+            <column name="filter_name" value="evaluationLogFilter"/>
+            <column name="template_type" value="EVALUATION_LOG"/>
+        </insert>
+
+        <insert tableName="global_filter_field">
+            <column name="field_name" value="requestId"/>
+            <column name="global_filter_template_id" valueNumeric="2"/>
+        </insert>
+
+        <insert tableName="global_filter_field">
+            <column name="field_name" value="classifierName"/>
+            <column name="global_filter_template_id" valueNumeric="2"/>
+        </insert>
+
+        <insert tableName="global_filter_field">
+            <column name="field_name" value="instancesInfo.relationName"/>
+            <column name="global_filter_template_id" valueNumeric="2"/>
+        </insert>
+    </changeSet>
+
+    <!-- Insert classifier options request global filter template -->
+    <changeSet id="11" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_template"/>
+            <tableExists tableName="global_filter_field"/>
+            <sqlCheck expectedResult="0">
+                select count(*) from global_filter_template where id = 3
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="global_filter_template">
+            <column name="id" valueNumeric="3"/>
+            <column name="filter_name" value="classifierOptionsRequestFilter"/>
+            <column name="template_type" value="CLASSIFIER_OPTIONS_REQUEST"/>
+        </insert>
+
+        <insert tableName="global_filter_field">
+            <column name="field_name" value="requestId"/>
+            <column name="global_filter_template_id" valueNumeric="3"/>
+        </insert>
+
+        <insert tableName="global_filter_field">
+            <column name="field_name" value="relationName"/>
+            <column name="global_filter_template_id" valueNumeric="3"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

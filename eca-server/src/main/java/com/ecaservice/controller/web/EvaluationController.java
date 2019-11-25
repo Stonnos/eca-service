@@ -12,6 +12,7 @@ import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,27 +36,12 @@ import static com.ecaservice.util.Utils.toRequestStatusesStatistics;
 @Slf4j
 @RestController
 @RequestMapping("/evaluation")
+@RequiredArgsConstructor
 public class EvaluationController {
 
     private final EvaluationLogService evaluationLogService;
     private final EvaluationLogMapper evaluationLogMapper;
     private final EvaluationLogRepository evaluationLogRepository;
-
-    /**
-     * Constructor with dependency spring injection.
-     *
-     * @param evaluationLogService    - evaluation log service bean
-     * @param evaluationLogMapper     - evaluation log mapper bean
-     * @param evaluationLogRepository - evaluation log repository bean
-     */
-    @Inject
-    public EvaluationController(EvaluationLogService evaluationLogService,
-                                EvaluationLogMapper evaluationLogMapper,
-                                EvaluationLogRepository evaluationLogRepository) {
-        this.evaluationLogService = evaluationLogService;
-        this.evaluationLogMapper = evaluationLogMapper;
-        this.evaluationLogRepository = evaluationLogRepository;
-    }
 
     /**
      * Finds evaluation logs with specified options such as filter, sorting and paging.

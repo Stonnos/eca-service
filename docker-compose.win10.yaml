@@ -8,9 +8,10 @@ services:
 
   eca-server:
     volumes:
-      - E:/experiment:/home/experiment
-      - E:/experiment/data:/home/experiment/data
+      - experiment-data:/home/experiment
 
 volumes:
   eca-pgdata:
     name: eca-pgdata
+  experiment-data:
+    name: experiment-data

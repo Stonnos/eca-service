@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/000000000008.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="email"/>
+        </preConditions>
+        <dropTable tableName="email"/>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <columnExists tableName="experiment" columnName="failed_attempts_to_sent"/>
+        </preConditions>
+        <dropColumn tableName="experiment" columnName="failed_attempts_to_sent"/>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="email_request"/>
+            </not>
+            <tableExists tableName="experiment"/>
+        </preConditions>
+        <createTable tableName="email_request">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="request_id" type="varchar(255)"/>
+            <column name="request_date" type="timestamp"/>
+            <column name="response_status" type="varchar(255)"/>
+            <column name="error_message" type="text"/>
+            <column name="experiment_id" type="bigint">
+                <constraints foreignKeyName="fk_email_request_experiment_id" referencedTableName="experiment"
+                             referencedColumnNames="id" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

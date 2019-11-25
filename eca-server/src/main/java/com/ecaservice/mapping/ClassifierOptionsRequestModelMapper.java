@@ -5,10 +5,10 @@ import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
 import com.ecaservice.web.dto.model.EnumDto;
 import org.mapstruct.AfterMapping;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
 
 import java.util.List;
 
@@ -17,7 +17,8 @@ import java.util.List;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = {ErsEvaluationMethodMapper.class, ClassifierOptionsResponseModelMapper.class})
+@Mapper(uses = {ErsEvaluationMethodMapper.class, ClassifierOptionsResponseModelMapper.class},
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class ClassifierOptionsRequestModelMapper {
 
     /**
@@ -26,12 +27,10 @@ public abstract class ClassifierOptionsRequestModelMapper {
      * @param classifierOptionsRequest - classifier options request
      * @return classifier options request entity
      */
-    @Mappings({
-            @Mapping(source = "evaluationMethodReport.evaluationMethod", target = "evaluationMethod"),
-            @Mapping(source = "evaluationMethodReport.numFolds", target = "numFolds"),
-            @Mapping(source = "evaluationMethodReport.numTests", target = "numTests"),
-            @Mapping(source = "evaluationMethodReport.seed", target = "seed"),
-    })
+    @Mapping(source = "evaluationMethodReport.evaluationMethod", target = "evaluationMethod")
+    @Mapping(source = "evaluationMethodReport.numFolds", target = "numFolds")
+    @Mapping(source = "evaluationMethodReport.numTests", target = "numTests")
+    @Mapping(source = "evaluationMethodReport.seed", target = "seed")
     public abstract ClassifierOptionsRequestModel map(ClassifierOptionsRequest classifierOptionsRequest);
 
     /**
@@ -40,9 +39,7 @@ public abstract class ClassifierOptionsRequestModelMapper {
      * @param classifierOptionsRequestModel - classifier options request model entity
      * @return classifier options request dto model
      */
-    @Mappings({
-            @Mapping(target = "evaluationMethod", ignore = true)
-    })
+    @Mapping(target = "evaluationMethod", ignore = true)
     public abstract ClassifierOptionsRequestDto map(ClassifierOptionsRequestModel classifierOptionsRequestModel);
 
     /**

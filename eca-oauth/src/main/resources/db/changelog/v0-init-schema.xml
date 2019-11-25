@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/000000000001.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="user_entity"/>
+            </not>
+        </preConditions>
+        <createTable tableName="user_entity">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="login" type="varchar(255)"/>
+            <column name="password" type="varchar(255)"/>
+            <column name="creation_date" type="timestamp"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from user_entity where login = 'admin'
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="user_entity">
+            <column name="login" value="admin"/>
+            <column name="password" value="{bcrypt}$2a$10$yI5atkieI.kjEPiau/slJe80YlVR.0lsYCHCxcvJVBarbwuAguGEW"/>
+            <column name="creation_date" valueDate="now()"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

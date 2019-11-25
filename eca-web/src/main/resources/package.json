@@ -33,7 +33,7 @@
     "primeicons": "^1.0.0",
     "primeng": "^6.1.5",
     "prismjs": "^1.15.0",
-    "rxjs": "^6.0.0",
+    "rxjs": "6.0.0",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {

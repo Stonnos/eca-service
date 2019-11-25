@@ -16,7 +16,7 @@ import com.ecaservice.dto.evaluation.InstancesReport;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.EvaluationResultsMapperImpl;
 import com.ecaservice.mapping.InstancesConverter;
-import com.ecaservice.service.ClassifierOptionsService;
+import com.ecaservice.conversion.ClassifierOptionsConverter;
 import com.ecaservice.util.Utils;
 import eca.core.evaluation.EvaluationResults;
 import org.assertj.core.api.Assertions;
@@ -42,7 +42,7 @@ import java.util.UUID;
 @TestPropertySource("classpath:application.properties")
 @Import({ErsWebServiceConfiguration.class, EvaluationResultsMapperImpl.class,
         ErsConfig.class, ErsWebServiceClient.class, CrossValidationConfig.class,
-        ClassifierOptionsService.class, ClassifierOptionsMapperConfiguration.class, InstancesConverter.class})
+        ClassifierOptionsConverter.class, ClassifierOptionsMapperConfiguration.class, InstancesConverter.class})
 public class ErsWebServiceClientIT {
 
     @Inject

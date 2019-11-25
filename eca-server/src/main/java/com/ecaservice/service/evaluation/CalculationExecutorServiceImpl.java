@@ -1,10 +1,10 @@
 package com.ecaservice.service.evaluation;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
-import javax.inject.Inject;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -19,19 +19,10 @@ import java.util.concurrent.TimeoutException;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CalculationExecutorServiceImpl implements CalculationExecutorService {
 
     private final ExecutorService executorService;
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param executorService - executor service bean
-     */
-    @Inject
-    public CalculationExecutorServiceImpl(ExecutorService executorService) {
-        this.executorService = executorService;
-    }
 
     @Override
     public <V> V execute(Callable<V> task, long timeout, TimeUnit timeUnit)

@@ -6,6 +6,7 @@ import eca.trees.CHAID;
 import eca.trees.DecisionTreeClassifier;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.mapstruct.AfterMapping;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.springframework.util.CollectionUtils;
@@ -15,7 +16,7 @@ import org.springframework.util.CollectionUtils;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = DecisionTreeFactory.class)
+@Mapper(uses = DecisionTreeFactory.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class DecisionTreeOptionsMapper
         extends ClassifierOptionsMapper<DecisionTreeOptions, DecisionTreeClassifier> {
 

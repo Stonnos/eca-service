@@ -1,14 +1,14 @@
 package com.ecaservice.model.dictionary;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * Experiment type dictionary.
  *
  * @author Roman Batygin
  */
+@UtilityClass
 public class ExperimentTypeDictionary {
-
-    private ExperimentTypeDictionary() {
-    }
 
     public static final String NEURAL_NETWORKS_NAME = "Нейронные сети";
     public static final String HETEROGENEOUS_ENSEMBLE_NAME = "Неоднородный ансамбль";

@@ -9,6 +9,7 @@ import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationMethod;
 import eca.core.evaluation.EvaluationMethodVisitor;
 import eca.core.evaluation.EvaluationResults;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,6 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
@@ -30,19 +30,10 @@ import java.util.Random;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class EvaluationService {
 
     private final CrossValidationConfig config;
-
-    /**
-     * Constructor with dependency spring injection.
-     *
-     * @param config - cross - validation config bean
-     */
-    @Inject
-    public EvaluationService(CrossValidationConfig config) {
-        this.config = config;
-    }
 
     /**
      * Evaluates classifier model. For evaluation classifier's copy is created.

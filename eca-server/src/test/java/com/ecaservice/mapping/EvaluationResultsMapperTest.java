@@ -3,6 +3,7 @@ package com.ecaservice.mapping;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
+import com.ecaservice.conversion.ClassifierOptionsConverter;
 import com.ecaservice.dto.evaluation.ClassificationCostsReport;
 import com.ecaservice.dto.evaluation.ClassifierReport;
 import com.ecaservice.dto.evaluation.ConfusionMatrixReport;
@@ -13,7 +14,6 @@ import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.InstancesReport;
 import com.ecaservice.dto.evaluation.RocCurveReport;
 import com.ecaservice.dto.evaluation.StatisticsReport;
-import com.ecaservice.service.ClassifierOptionsService;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.ensemble.ClassifiersSet;
@@ -47,7 +47,7 @@ import java.util.List;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @Import({EvaluationResultsMapperImpl.class, CrossValidationConfig.class,
-        InstancesConverter.class, ClassifierOptionsService.class, ClassifierOptionsMapperConfiguration.class})
+        InstancesConverter.class, ClassifierOptionsConverter.class, ClassifierOptionsMapperConfiguration.class})
 public class EvaluationResultsMapperTest {
 
     @Inject
@@ -160,7 +160,7 @@ public class EvaluationResultsMapperTest {
         heterogeneousClassifier.getClassifiersSet().addClassifier(new CART());
         heterogeneousClassifier.getClassifiersSet().addClassifier(new Logistic());
         heterogeneousClassifier.getClassifiersSet().addClassifier(new KNearestNeighbours());
-        EvaluationResults results = new EvaluationResults(heterogeneousClassifier, null);
+        EvaluationResults results = new EvaluationResults(heterogeneousClassifier, evaluationResults.getEvaluation());
         EvaluationResultsRequest resultsRequest = evaluationResultsMapper.map(results);
         Assertions.assertThat(resultsRequest.getClassifierReport()).isNotNull();
         Assertions.assertThat(resultsRequest.getClassifierReport()).isInstanceOf(EnsembleClassifierReport.class);
@@ -177,7 +177,7 @@ public class EvaluationResultsMapperTest {
         stackingClassifier.getClassifiers().addClassifier(new Logistic());
         stackingClassifier.getClassifiers().addClassifier(new KNearestNeighbours());
         stackingClassifier.setMetaClassifier(new J48());
-        EvaluationResults results = new EvaluationResults(stackingClassifier, null);
+        EvaluationResults results = new EvaluationResults(stackingClassifier, evaluationResults.getEvaluation());
         EvaluationResultsRequest resultsRequest = evaluationResultsMapper.map(results);
         Assertions.assertThat(resultsRequest.getClassifierReport()).isNotNull();
         Assertions.assertThat(resultsRequest.getClassifierReport()).isInstanceOf(EnsembleClassifierReport.class);

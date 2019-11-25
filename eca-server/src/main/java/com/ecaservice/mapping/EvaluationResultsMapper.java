@@ -1,6 +1,7 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.config.CrossValidationConfig;
+import com.ecaservice.conversion.ClassifierOptionsConverter;
 import com.ecaservice.dto.evaluation.ClassificationCostsReport;
 import com.ecaservice.dto.evaluation.ClassifierReport;
 import com.ecaservice.dto.evaluation.ConfusionMatrixReport;
@@ -11,9 +12,7 @@ import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.InputOptionsMap;
 import com.ecaservice.dto.evaluation.RocCurveReport;
 import com.ecaservice.dto.evaluation.StatisticsReport;
-import com.ecaservice.exception.EcaServiceException;
 import com.ecaservice.model.options.ClassifierOptions;
-import com.ecaservice.service.ClassifierOptionsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
@@ -26,7 +25,6 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Attribute;
 import weka.core.Instances;
@@ -53,7 +51,7 @@ public abstract class EvaluationResultsMapper {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Inject
-    private ClassifierOptionsService classifierOptionsService;
+    private ClassifierOptionsConverter classifierOptionsConverter;
     @Inject
     private CrossValidationConfig crossValidationConfig;
 
@@ -63,10 +61,8 @@ public abstract class EvaluationResultsMapper {
      * @param evaluationResults - evaluation results
      * @return evaluation results request model
      */
-    @Mappings({
-            @Mapping(source = "evaluationResults.evaluation.data", target = "instances",
-                    qualifiedByName = "instancesToInstancesReport")
-    })
+    @Mapping(source = "evaluationResults.evaluation.data", target = "instances",
+            qualifiedByName = "instancesToInstancesReport")
     public abstract EvaluationResultsRequest map(EvaluationResults evaluationResults);
 
     /**
@@ -258,11 +254,11 @@ public abstract class EvaluationResultsMapper {
     }
 
     private String getClassifierOptionsAsJsonString(AbstractClassifier classifier) {
-        ClassifierOptions classifierOptions = classifierOptionsService.convert(classifier);
+        ClassifierOptions classifierOptions = classifierOptionsConverter.convert(classifier);
         try {
             return objectMapper.writeValueAsString(classifierOptions);
         } catch (IOException ex) {
-            throw new EcaServiceException(String.format("Can't serialize classifier [%s] options to json: %s",
+            throw new IllegalStateException(String.format("Can't serialize classifier [%s] options to json: %s",
                     classifier.getClass().getSimpleName(), ex.getMessage()));
         }
     }

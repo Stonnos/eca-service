@@ -1,7 +1,7 @@
 package com.ecaservice.service.experiment;
 
-import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CacheNames;
+import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.options.ClassifierOptions;
@@ -10,6 +10,7 @@ import com.ecaservice.service.PageRequestService;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,10 +20,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.DigestUtils;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +39,7 @@ import static com.ecaservice.util.ExperimentLogUtils.logAndThrowError;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ExperimentConfigurationService implements PageRequestService<ClassifierOptionsDatabaseModel> {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
@@ -44,22 +47,6 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
     private final CommonConfig commonConfig;
     private final ExperimentConfig experimentConfig;
     private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
-
-    /**
-     * Constructor with dependency spring injection.
-     *
-     * @param commonConfig                             - common config bean
-     * @param experimentConfig                         - experiment config bean
-     * @param classifierOptionsDatabaseModelRepository - classifier options database model repository bean
-     */
-    @Inject
-    public ExperimentConfigurationService(CommonConfig commonConfig,
-                                          ExperimentConfig experimentConfig,
-                                          ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository) {
-        this.commonConfig = commonConfig;
-        this.experimentConfig = experimentConfig;
-        this.classifierOptionsDatabaseModelRepository = classifierOptionsDatabaseModelRepository;
-    }
 
     /**
      * Saves individual classifiers input options into database.
@@ -79,7 +66,7 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
                     classifierOptionsDatabaseModelRepository.findAllByVersion(version);
             List<ClassifierOptionsDatabaseModel> newOptions = createClassifiersOptions(modelFiles, ++version);
             if (CollectionUtils.isEmpty(latestOptions) || latestOptions.size() != newOptions.size() ||
-                    !latestOptions.equals(newOptions)) {
+                    !newOptions.equals(latestOptions)) {
                 log.info("Saving new classifiers input options with version {}.", version);
                 classifierOptionsDatabaseModelRepository.saveAll(newOptions);
             }
@@ -118,7 +105,8 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
                 classifierOptionsDatabaseModels.add(
                         createClassifierOptions(objectMapper.readValue(modelFile, ClassifierOptions.class), version));
             } catch (IOException ex) {
-                logAndThrowError(String.format("There was an error while parsing json file '%s': %s", modelFile.getAbsolutePath(),
+                logAndThrowError(String.format("There was an error while parsing json file '%s': %s",
+                        modelFile.getAbsolutePath(),
                         ex.getMessage()), log);
             }
         }
@@ -131,11 +119,15 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
             classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
             classifierOptionsDatabaseModel.setVersion(version);
             classifierOptionsDatabaseModel.setOptionsName(classifierOptions.getClass().getSimpleName());
-            classifierOptionsDatabaseModel.setConfig(objectMapper.writeValueAsString(classifierOptions));
+            String config = objectMapper.writeValueAsString(classifierOptions);
+            classifierOptionsDatabaseModel.setConfigMd5Hash(
+                    DigestUtils.md5DigestAsHex(config.getBytes(StandardCharsets.UTF_8)));
+            classifierOptionsDatabaseModel.setConfig(config);
             classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
             return classifierOptionsDatabaseModel;
         } catch (IOException ex) {
-            logAndThrowError(String.format("There was an error while parsing object [%s]: %s", classifierOptions, ex.getMessage()),
+            logAndThrowError(String.format("There was an error while parsing object [%s]: %s", classifierOptions,
+                    ex.getMessage()),
                     log);
         }
         return classifierOptionsDatabaseModel;

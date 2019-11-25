@@ -5,10 +5,10 @@ import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.model.evaluation.EvaluationOption;
 import eca.util.Utils;
 import org.mapstruct.AfterMapping;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
 
 import java.util.EnumMap;
 
@@ -17,7 +17,7 @@ import java.util.EnumMap;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = ErsEvaluationMethodMapper.class)
+@Mapper(uses = ErsEvaluationMethodMapper.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class EvaluationRequestMapper {
 
     /**
@@ -26,10 +26,7 @@ public abstract class EvaluationRequestMapper {
      * @param classifierOptionsRequest - classifier options request
      * @return evaluation request
      */
-    @Mappings( {
-            @Mapping(source = "classifierOptionsRequest.evaluationMethodReport.evaluationMethod",
-                    target = "evaluationMethod"),
-    })
+    @Mapping(source = "classifierOptionsRequest.evaluationMethodReport.evaluationMethod", target = "evaluationMethod")
     public abstract EvaluationRequest map(ClassifierOptionsRequest classifierOptionsRequest);
 
     @AfterMapping

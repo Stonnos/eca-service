@@ -1,10 +1,13 @@
 package com.ecaservice.service.experiment.dictionary;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * Email message template variables.
  *
  * @author Roman Batygin
  */
+@UtilityClass
 public class TemplateVariablesDictionary {
 
     public static final String FIRST_NAME_KEY = "firstName";

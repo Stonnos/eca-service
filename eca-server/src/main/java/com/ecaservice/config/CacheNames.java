@@ -1,10 +1,13 @@
 package com.ecaservice.config;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * Cache names utility class.
  *
  * @author Roman Batygin
  */
+@UtilityClass
 public class CacheNames {
 
     /**
@@ -31,7 +34,4 @@ public class CacheNames {
      * Filter dictionaries cache name
      */
     public static final String FILTER_DICTIONARIES_CACHE_NAME = "filter-dictionaries";
-
-    private CacheNames() {
-    }
 }

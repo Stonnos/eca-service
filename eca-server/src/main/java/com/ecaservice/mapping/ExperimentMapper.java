@@ -10,7 +10,6 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 
 import java.util.List;
@@ -37,15 +36,11 @@ public abstract class ExperimentMapper {
      * @param experiment - experiment entity
      * @return experiment dto model
      */
-    @Mappings({
-            @Mapping(source = "experimentAbsolutePath", target = "experimentAbsolutePath",
-                    qualifiedByName = "toFileName"),
-            @Mapping(source = "trainingDataAbsolutePath", target = "trainingDataAbsolutePath",
-                    qualifiedByName = "toFileName"),
-            @Mapping(target = "evaluationMethod", ignore = true),
-            @Mapping(target = "experimentType", ignore = true),
-            @Mapping(target = "experimentStatus", ignore = true)
-    })
+    @Mapping(source = "experimentAbsolutePath", target = "experimentAbsolutePath", qualifiedByName = "toFileName")
+    @Mapping(source = "trainingDataAbsolutePath", target = "trainingDataAbsolutePath", qualifiedByName = "toFileName")
+    @Mapping(target = "evaluationMethod", ignore = true)
+    @Mapping(target = "experimentType", ignore = true)
+    @Mapping(target = "experimentStatus", ignore = true)
     public abstract ExperimentDto map(Experiment experiment);
 
     /**

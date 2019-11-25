@@ -4,10 +4,9 @@ import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatusVisitor;
 import com.ecaservice.service.experiment.dictionary.TemplateVariablesDictionary;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
-
-import javax.inject.Inject;
 
 /**
  * Visitor obtaining email template context for experiment status.
@@ -15,19 +14,10 @@ import javax.inject.Inject;
  * @author Roman Batygin
  */
 @Component
+@RequiredArgsConstructor
 public class EmailTemplateVisitor implements RequestStatusVisitor<Context, Experiment> {
 
     private final ExperimentConfig experimentConfig;
-
-    /**
-     * Constructor with dependency spring injection.
-     *
-     * @param experimentConfig - experiment config bean
-     */
-    @Inject
-    public EmailTemplateVisitor(ExperimentConfig experimentConfig) {
-        this.experimentConfig = experimentConfig;
-    }
 
     @Override
     public Context caseNew(Experiment parameter) {

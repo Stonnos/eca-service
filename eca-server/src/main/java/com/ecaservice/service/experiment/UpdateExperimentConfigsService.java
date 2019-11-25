@@ -1,9 +1,9 @@
 package com.ecaservice.service.experiment;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 
 /**
  * Implements service for updating experiment configs.
@@ -11,19 +11,10 @@ import javax.inject.Inject;
  * @author Roman Batygin
  */
 @Service
+@RequiredArgsConstructor
 public class UpdateExperimentConfigsService {
 
     private final ExperimentConfigurationService experimentConfigurationService;
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param experimentConfigurationService - experiment configuration service bean
-     */
-    @Inject
-    public UpdateExperimentConfigsService(ExperimentConfigurationService experimentConfigurationService) {
-        this.experimentConfigurationService = experimentConfigurationService;
-    }
 
     /**
      * Updates experiment configs.

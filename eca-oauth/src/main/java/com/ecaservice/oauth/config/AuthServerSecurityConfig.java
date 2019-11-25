@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.config;
 
 import com.ecaservice.oauth.service.UserDetailsServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,8 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.inject.Inject;
-
 /**
  * Spring security configuration.
  *
@@ -20,19 +19,10 @@ import javax.inject.Inject;
  */
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class AuthServerSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsServiceImpl userDetailsService;
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param userDetailsService - user details service bean
-     */
-    @Inject
-    public AuthServerSecurityConfig(UserDetailsServiceImpl userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

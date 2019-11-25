@@ -91,7 +91,7 @@ public class EvaluationRequestServiceTest extends AbstractJpaTest {
         EvaluationRequestService service =
                 new EvaluationRequestService(crossValidationConfig, executorService, evaluationService,
                         evaluationLogRepository, evaluationLogMapper);
-        doThrow(new EcaServiceException("Error")).when(executorService)
+        doThrow(new RuntimeException("Error")).when(executorService)
                 .execute(anyObject(), anyLong(), any(TimeUnit.class));
         EvaluationResponse evaluationResponse = service.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);

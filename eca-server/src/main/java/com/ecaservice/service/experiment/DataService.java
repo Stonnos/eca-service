@@ -6,13 +6,13 @@ import eca.converters.model.ExperimentHistory;
 import eca.data.file.FileDataLoader;
 import eca.data.file.FileDataSaver;
 import eca.data.file.resource.FileResource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import weka.core.Instances;
 
-import javax.inject.Inject;
 import java.io.File;
 
 /**
@@ -22,22 +22,11 @@ import java.io.File;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class DataService {
 
     private final FileDataSaver dataSaver;
     private final FileDataLoader dataLoader;
-
-    /**
-     * Constructor with dependency spring injection.
-     *
-     * @param dataSaver  - file data saver bean
-     * @param dataLoader - file data loader bean
-     */
-    @Inject
-    public DataService(FileDataSaver dataSaver, FileDataLoader dataLoader) {
-        this.dataSaver = dataSaver;
-        this.dataLoader = dataLoader;
-    }
 
     /**
      * Saves data to file.

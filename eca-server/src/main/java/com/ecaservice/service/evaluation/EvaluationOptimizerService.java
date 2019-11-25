@@ -2,6 +2,7 @@ package com.ecaservice.service.evaluation;
 
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CrossValidationConfig;
+import com.ecaservice.conversion.ClassifierOptionsConverter;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.InstancesRequest;
@@ -15,9 +16,8 @@ import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.repository.ClassifierOptionsRequestRepository;
-import com.ecaservice.service.ClassifierOptionsService;
 import com.ecaservice.service.ers.ErsRequestService;
-import com.google.common.base.Charsets;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ import org.springframework.util.DigestUtils;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
-import javax.inject.Inject;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -42,6 +42,7 @@ import static com.ecaservice.util.Utils.parseOptions;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class EvaluationOptimizerService {
 
     private static final String RESULTS_NOT_FOUND_MESSAGE = "Can't find classifiers options for data '%s'";
@@ -53,44 +54,10 @@ public class EvaluationOptimizerService {
     private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
     private final EvaluationRequestMapper evaluationRequestMapper;
     private final ClassifierOptionsRequestMapper classifierOptionsRequestMapper;
-    private final ClassifierOptionsService classifierOptionsService;
+    private final ClassifierOptionsConverter classifierOptionsConverter;
     private final ClassifierOptionsRequestRepository classifierOptionsRequestRepository;
 
     private ConcurrentHashMap<String, Object> dataMd5Hashes = new ConcurrentHashMap<>();
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param crossValidationConfig               - cross - validation config bean
-     * @param commonConfig                        - common config bean
-     * @param evaluationRequestService            - evaluation request service bean
-     * @param classifierOptionsRequestModelMapper - classifier options request model mapper bean
-     * @param ersRequestService                   - ers request service bean
-     * @param evaluationRequestMapper             - evaluation request mapper bean
-     * @param classifierOptionsRequestMapper      - classifier options request mapper bean
-     * @param classifierOptionsService            - classifier options service bean
-     * @param classifierOptionsRequestRepository  - classifier options request repository bean
-     */
-    @Inject
-    public EvaluationOptimizerService(CrossValidationConfig crossValidationConfig,
-                                      CommonConfig commonConfig,
-                                      EvaluationRequestService evaluationRequestService,
-                                      ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper,
-                                      ErsRequestService ersRequestService,
-                                      EvaluationRequestMapper evaluationRequestMapper,
-                                      ClassifierOptionsRequestMapper classifierOptionsRequestMapper,
-                                      ClassifierOptionsService classifierOptionsService,
-                                      ClassifierOptionsRequestRepository classifierOptionsRequestRepository) {
-        this.crossValidationConfig = crossValidationConfig;
-        this.commonConfig = commonConfig;
-        this.evaluationRequestService = evaluationRequestService;
-        this.ersRequestService = ersRequestService;
-        this.classifierOptionsRequestModelMapper = classifierOptionsRequestModelMapper;
-        this.evaluationRequestMapper = evaluationRequestMapper;
-        this.classifierOptionsRequestMapper = classifierOptionsRequestMapper;
-        this.classifierOptionsService = classifierOptionsService;
-        this.classifierOptionsRequestRepository = classifierOptionsRequestRepository;
-    }
 
     /**
      * Evaluate model with optimal classifier options.
@@ -112,7 +79,7 @@ public class EvaluationOptimizerService {
     private String getOptimalClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
         String options;
         String dataMd5Hash = DigestUtils.md5DigestAsHex(
-                classifierOptionsRequest.getInstances().getXmlInstances().getBytes(Charsets.UTF_8));
+                classifierOptionsRequest.getInstances().getXmlInstances().getBytes(StandardCharsets.UTF_8));
         dataMd5Hashes.putIfAbsent(dataMd5Hash, new Object());
         synchronized (dataMd5Hashes.get(dataMd5Hash)) {
             ClassifierOptionsRequestEntity requestEntity = new ClassifierOptionsRequestEntity();
@@ -150,7 +117,7 @@ public class EvaluationOptimizerService {
 
     private EvaluationResponse evaluateModel(ClassifierOptionsRequest classifierOptionsRequest, String options,
                                              Instances data) {
-        AbstractClassifier classifier = classifierOptionsService.convert(parseOptions(options));
+        AbstractClassifier classifier = classifierOptionsConverter.convert(parseOptions(options));
         EvaluationRequest evaluationRequest = evaluationRequestMapper.map(classifierOptionsRequest);
         evaluationRequest.setData(data);
         evaluationRequest.setClassifier(classifier);

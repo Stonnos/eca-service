@@ -9,13 +9,13 @@ import com.ecaservice.service.PageRequestService;
 import com.ecaservice.service.filter.FilterService;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -25,28 +25,12 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ClassifierOptionsRequestService implements PageRequestService<ClassifierOptionsRequestModel> {
 
     private final CommonConfig commonConfig;
     private final FilterService filterService;
     private final ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param commonConfig                            - common config bean
-     * @param filterService                           - filter service bean
-     * @param classifierOptionsRequestModelRepository - classifier options request model repository bean
-     */
-    @Inject
-    public ClassifierOptionsRequestService(
-            CommonConfig commonConfig,
-            FilterService filterService,
-            ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository) {
-        this.commonConfig = commonConfig;
-        this.filterService = filterService;
-        this.classifierOptionsRequestModelRepository = classifierOptionsRequestModelRepository;
-    }
 
     @Override
     public Page<ClassifierOptionsRequestModel> getNextPage(PageRequestDto pageRequestDto) {

@@ -8,13 +8,13 @@ import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -25,23 +25,11 @@ import java.util.List;
 @Api(tags = "Classifier options requests API for web application")
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class ClassifierOptionsRequestController {
 
     private final ClassifierOptionsRequestService classifierOptionsRequestService;
     private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param classifierOptionsRequestService     - classifier options request service bean
-     * @param classifierOptionsRequestModelMapper - classifier options request mapper bean
-     */
-    @Inject
-    public ClassifierOptionsRequestController(ClassifierOptionsRequestService classifierOptionsRequestService,
-                                              ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper) {
-        this.classifierOptionsRequestService = classifierOptionsRequestService;
-        this.classifierOptionsRequestModelMapper = classifierOptionsRequestModelMapper;
-    }
 
     /**
      * Finds classifiers options requests models with specified options such as filter, sorting and paging.

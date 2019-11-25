@@ -2,8 +2,8 @@ package com.ecaservice.service.experiment;
 
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.exception.ExperimentException;
-import com.ecaservice.mapping.options.ClassifierOptionsMapper;
+import com.ecaservice.conversion.ClassifierOptionsConverter;
+import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.model.InputData;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.evaluation.ClassificationResult;
@@ -16,6 +16,7 @@ import eca.core.evaluation.EvaluationMethod;
 import eca.core.evaluation.EvaluationResults;
 import eca.dataminer.ClassifierComparator;
 import eca.ensemble.ClassifiersSet;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -23,7 +24,6 @@ import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 import weka.core.Randomizable;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +38,7 @@ import static com.ecaservice.util.ExperimentLogUtils.logAndThrowError;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ClassifiersSetSearcher {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
@@ -47,32 +48,7 @@ public class ClassifiersSetSearcher {
     private final ExperimentConfig experimentConfig;
     private final CrossValidationConfig crossValidationConfig;
     private final List<ClassifierInputDataHandler> classifierInputDataHandlers;
-    private final List<ClassifierOptionsMapper> classifierOptionsMappers;
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param evaluationService              - evaluation service bean
-     * @param experimentConfigurationService - experiment configuration service bean
-     * @param experimentConfig               - experiment config bean
-     * @param crossValidationConfig          - cross - validation config
-     * @param classifierInputDataHandlers    - classifier input data handler beans
-     * @param classifierOptionsMappers       - classifier options mapper bean
-     */
-    @Inject
-    public ClassifiersSetSearcher(EvaluationService evaluationService,
-                                  ExperimentConfigurationService experimentConfigurationService,
-                                  ExperimentConfig experimentConfig,
-                                  CrossValidationConfig crossValidationConfig,
-                                  List<ClassifierInputDataHandler> classifierInputDataHandlers,
-                                  List<ClassifierOptionsMapper> classifierOptionsMappers) {
-        this.evaluationService = evaluationService;
-        this.experimentConfigurationService = experimentConfigurationService;
-        this.experimentConfig = experimentConfig;
-        this.crossValidationConfig = crossValidationConfig;
-        this.classifierInputDataHandlers = classifierInputDataHandlers;
-        this.classifierOptionsMappers = classifierOptionsMappers;
-    }
+    private final ClassifierOptionsConverter classifierOptionsConverter;
 
     /**
      * Finds the best individual classifiers set by the criterion of accuracy maximization.
@@ -127,12 +103,7 @@ public class ClassifiersSetSearcher {
             for (ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel : classifierOptionsDatabaseModels) {
                 ClassifierOptions classifierOptions =
                         objectMapper.readValue(classifierOptionsDatabaseModel.getConfig(), ClassifierOptions.class);
-                for (ClassifierOptionsMapper optionsMapper : classifierOptionsMappers) {
-                    if (optionsMapper.canMap(classifierOptions)) {
-                        classifierList.add(optionsMapper.map(classifierOptions));
-                        break;
-                    }
-                }
+                classifierList.add(classifierOptionsConverter.convert(classifierOptions));
             }
         } catch (Exception ex) {
             logAndThrowError(String.format("There was an error while creating individual classifiers: %s",

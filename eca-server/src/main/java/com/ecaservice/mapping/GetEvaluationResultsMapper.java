@@ -6,17 +6,18 @@ import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import org.mapstruct.AfterMapping;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
 
 /**
  * Implements map evaluation results from ERS.
  *
  * @author Roman Batygin
  */
-@Mapper(uses = {StatisticsReportMapper.class, ClassificationCostsMapper.class})
+@Mapper(uses = {StatisticsReportMapper.class, ClassificationCostsMapper.class},
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class GetEvaluationResultsMapper {
 
     /**
@@ -25,9 +26,7 @@ public abstract class GetEvaluationResultsMapper {
      * @param evaluationResultsResponse - evaluation results response
      * @return evaluation results dto model
      */
-    @Mappings({
-            @Mapping(source = "statistics", target = "evaluationStatisticsDto")
-    })
+    @Mapping(source = "statistics", target = "evaluationStatisticsDto")
     public abstract EvaluationResultsDto map(GetEvaluationResultsResponse evaluationResultsResponse);
 
     @AfterMapping

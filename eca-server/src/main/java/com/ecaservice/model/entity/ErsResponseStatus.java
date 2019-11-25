@@ -2,12 +2,14 @@ package com.ecaservice.model.entity;
 
 import com.ecaservice.model.dictionary.ErsResponseStatusDictionary;
 import eca.core.DescriptiveEnum;
+import lombok.RequiredArgsConstructor;
 
 /**
  * ERS response status enum.
  *
  * @author Roman batygin
  */
+@RequiredArgsConstructor
 public enum ErsResponseStatus implements DescriptiveEnum {
 
     SUCCESS(ErsResponseStatusDictionary.SUCCESS_DESCRIPTION),
@@ -18,11 +20,7 @@ public enum ErsResponseStatus implements DescriptiveEnum {
     DATA_NOT_FOUND(ErsResponseStatusDictionary.DATA_NOT_FOUND_DESCRIPTION),
     RESULTS_NOT_FOUND(ErsResponseStatusDictionary.RESULTS_NOT_FOUND);
 
-    private String description;
-
-    ErsResponseStatus(String description) {
-        this.description = description;
-    }
+    private final String description;
 
     /**
      * ERS response status description.

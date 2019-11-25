@@ -19,13 +19,13 @@ import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +41,7 @@ import static com.ecaservice.util.Utils.buildEvaluationResultsDto;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class EvaluationLogService implements PageRequestService<EvaluationLog> {
 
     private final CommonConfig commonConfig;
@@ -49,31 +50,6 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
     private final ErsService ersService;
     private final EvaluationLogRepository evaluationLogRepository;
     private final EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository;
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param commonConfig                             - common config bean
-     * @param filterService                            - filter service bean
-     * @param evaluationLogMapper                      - evaluation log mapper bean
-     * @param ersService                               - ers service bean
-     * @param evaluationLogRepository                  - evaluation log repository bean
-     * @param evaluationResultsRequestEntityRepository - evaluation results request entity repository bean
-     */
-    @Inject
-    public EvaluationLogService(CommonConfig commonConfig,
-                                FilterService filterService,
-                                EvaluationLogMapper evaluationLogMapper,
-                                ErsService ersService,
-                                EvaluationLogRepository evaluationLogRepository,
-                                EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository) {
-        this.commonConfig = commonConfig;
-        this.filterService = filterService;
-        this.evaluationLogMapper = evaluationLogMapper;
-        this.ersService = ersService;
-        this.evaluationLogRepository = evaluationLogRepository;
-        this.evaluationResultsRequestEntityRepository = evaluationResultsRequestEntityRepository;
-    }
 
     @Override
     public Page<EvaluationLog> getNextPage(PageRequestDto pageRequestDto) {

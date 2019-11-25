@@ -2,6 +2,7 @@ package com.ecaservice.mapping.options;
 
 import com.ecaservice.model.options.HeterogeneousClassifierOptions;
 import eca.ensemble.HeterogeneousClassifier;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 
 /**
@@ -9,7 +10,7 @@ import org.mapstruct.Mapper;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = HeterogeneousClassifierFactory.class)
+@Mapper(uses = HeterogeneousClassifierFactory.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class HeterogeneousClassifierOptionsMapper
         extends ClassifierOptionsMapper<HeterogeneousClassifierOptions, HeterogeneousClassifier> {
 

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/000000000017.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Add multiple column -->
+    <changeSet id="1" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_field"/>
+            <not>
+                <columnExists tableName="filter_field" columnName="multiple"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="filter_field">
+            <column name="multiple" type="boolean" defaultValueBoolean="false"/>
+        </addColumn>
+    </changeSet>
+
+    <!-- Changed experiment creationDate filter field match mode -->
+    <changeSet id="2" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 1 and field_name = 'creationDate' and match_mode = 'LTE'
+            </sqlCheck>
+        </preConditions>
+        <delete tableName="filter_field">
+            <where>filter_template_id = 1 and field_name = 'creationDate' and match_mode = 'LTE'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 1 and field_name = 'creationDate' and match_mode = 'GTE'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="filter_field">
+            <column name="match_mode" value="RANGE"/>
+            <column name="description" value="Дата создания заявки"/>
+            <column name="multiple" valueBoolean="true"/>
+            <where>filter_template_id = 1 and field_name = 'creationDate' and match_mode = 'GTE'</where>
+        </update>
+    </changeSet>
+
+    <!-- Changed experiment sentDate filter field match mode -->
+    <changeSet id="4" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 1 and field_name = 'sentDate' and match_mode = 'LTE'
+            </sqlCheck>
+        </preConditions>
+        <delete tableName="filter_field">
+            <where>filter_template_id = 1 and field_name = 'sentDate' and match_mode = 'LTE'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="5" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 1 and field_name = 'sentDate' and match_mode = 'GTE'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="filter_field">
+            <column name="match_mode" value="RANGE"/>
+            <column name="description" value="Дата отправки результатов"/>
+            <column name="multiple" valueBoolean="true"/>
+            <column name="field_order" valueNumeric="6"/>
+            <where>filter_template_id = 1 and field_name = 'sentDate' and match_mode = 'GTE'</where>
+        </update>
+    </changeSet>
+
+    <!-- Changed evaluation log creationDate filter field match mode -->
+    <changeSet id="6" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 2 and field_name = 'creationDate' and match_mode = 'LTE'
+            </sqlCheck>
+        </preConditions>
+        <delete tableName="filter_field">
+            <where>filter_template_id = 2 and field_name = 'creationDate' and match_mode = 'LTE'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="7" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 2 and field_name = 'creationDate' and match_mode = 'GTE'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="filter_field">
+            <column name="match_mode" value="RANGE"/>
+            <column name="description" value="Дата создания заявки"/>
+            <column name="multiple" valueBoolean="true"/>
+            <where>filter_template_id = 2 and field_name = 'creationDate' and match_mode = 'GTE'</where>
+        </update>
+    </changeSet>
+
+    <!-- Changed classifier options request requestDate filter field match mode -->
+    <changeSet id="8" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 3 and field_name = 'requestDate' and match_mode = 'LTE'
+            </sqlCheck>
+        </preConditions>
+        <delete tableName="filter_field">
+            <where>filter_template_id = 3 and field_name = 'requestDate' and match_mode = 'LTE'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="9" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 3 and field_name = 'requestDate' and match_mode = 'GTE'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="filter_field">
+            <column name="match_mode" value="RANGE"/>
+            <column name="description" value="Дата отправки запроса в ERS"/>
+            <column name="multiple" valueBoolean="true"/>
+            <where>filter_template_id = 3 and field_name = 'requestDate' and match_mode = 'GTE'</where>
+        </update>
+    </changeSet>
+
+    <!-- Set experiment type support multiple values -->
+    <changeSet id="10" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 1 and field_name = 'experimentType'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="filter_field">
+            <column name="multiple" valueBoolean="true"/>
+            <where>filter_template_id = 1 and field_name = 'experimentType'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

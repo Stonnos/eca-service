@@ -65,7 +65,7 @@ public class ClassifierOptionsMapperConfiguration {
 
     @Bean
     public HeterogeneousClassifierOptionsMapper heterogeneousClassifierOptionsMapper() {
-        return new HeterogeneousClassifierOptionsMapperImpl();
+        return new HeterogeneousClassifierOptionsMapperImpl(heterogeneousClassifierFactory());
     }
 
     @Bean
@@ -90,7 +90,7 @@ public class ClassifierOptionsMapperConfiguration {
 
     @Bean
     public DecisionTreeOptionsMapper decisionTreeOptionsMapper() {
-        return new DecisionTreeOptionsMapperImpl();
+        return new DecisionTreeOptionsMapperImpl(decisionTreeFactory());
     }
 
     @Bean

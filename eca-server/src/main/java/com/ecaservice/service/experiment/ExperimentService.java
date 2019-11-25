@@ -3,8 +3,8 @@ package com.ecaservice.service.experiment;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.dto.ExperimentRequest;
-import com.ecaservice.exception.ExperimentException;
-import com.ecaservice.exception.ResultsNotFoundException;
+import com.ecaservice.exception.experiment.ExperimentException;
+import com.ecaservice.exception.experiment.ResultsNotFoundException;
 import com.ecaservice.filter.ExperimentFilter;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.entity.Experiment;
@@ -21,6 +21,7 @@ import com.ecaservice.service.filter.FilterService;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.converters.model.ExperimentHistory;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -30,7 +31,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 import weka.core.Instances;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -67,6 +67,7 @@ import static com.ecaservice.util.Utils.existsFile;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ExperimentService implements PageRequestService<Experiment> {
 
     private final ExperimentRepository experimentRepository;
@@ -78,40 +79,6 @@ public class ExperimentService implements PageRequestService<Experiment> {
     private final EntityManager entityManager;
     private final CommonConfig commonConfig;
     private final FilterService filterService;
-
-    /**
-     * Constructor with dependency spring injection.
-     *
-     * @param experimentRepository       - experiment repository bean
-     * @param executorService            - calculation executor service bean
-     * @param experimentMapper           - experiment mapper bean
-     * @param dataService                - data service bean
-     * @param experimentConfig           - experiment config bean
-     * @param experimentProcessorService - experiment processor service bean
-     * @param entityManager              - entity manager bean
-     * @param commonConfig               - common config bean
-     * @param filterService              - filter service bean
-     */
-    @Inject
-    public ExperimentService(ExperimentRepository experimentRepository,
-                             CalculationExecutorService executorService,
-                             ExperimentMapper experimentMapper,
-                             DataService dataService,
-                             ExperimentConfig experimentConfig,
-                             ExperimentProcessorService experimentProcessorService,
-                             EntityManager entityManager,
-                             CommonConfig commonConfig,
-                             FilterService filterService) {
-        this.experimentRepository = experimentRepository;
-        this.executorService = executorService;
-        this.experimentMapper = experimentMapper;
-        this.dataService = dataService;
-        this.experimentConfig = experimentConfig;
-        this.experimentProcessorService = experimentProcessorService;
-        this.entityManager = entityManager;
-        this.commonConfig = commonConfig;
-        this.filterService = filterService;
-    }
 
     /**
      * Creates experiment request.

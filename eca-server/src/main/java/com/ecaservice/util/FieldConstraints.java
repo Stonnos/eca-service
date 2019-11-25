@@ -1,10 +1,13 @@
 package com.ecaservice.util;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * Dto field constraints utility class.
  *
  * @author Roman Batygin
  */
+@UtilityClass
 public class FieldConstraints {
 
     /**
@@ -32,7 +35,4 @@ public class FieldConstraints {
      * Scale length
      */
     public static final int SCALE = 4;
-
-    private FieldConstraints() {
-    }
 }

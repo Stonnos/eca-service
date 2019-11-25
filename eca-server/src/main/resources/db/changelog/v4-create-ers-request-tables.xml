@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/000000000004.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ers_request"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ers_request">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="request_date" type="timestamp"/>
+            <column name="request_id" type="varchar(255)"/>
+            <column name="response_status" type="varchar(255)"/>
+            <column name="details" type="text"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ers_request"/>
+            <tableExists tableName="evaluation_log"/>
+            <not>
+                <tableExists tableName="evaluation_results_request"/>
+            </not>
+        </preConditions>
+        <createTable tableName="evaluation_results_request">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="evaluation_log_id" type="bigint">
+                <constraints foreignKeyName="fk_evaluation_log" referencedTableName="evaluation_log"
+                             referencedColumnNames="id" nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="evaluation_results_request" baseColumnNames="id"
+                                 constraintName="fk_evaluation_results_id" referencedTableName="ers_request"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ers_request"/>
+            <tableExists tableName="experiment"/>
+            <not>
+                <tableExists tableName="experiment_results_request"/>
+            </not>
+        </preConditions>
+        <createTable tableName="experiment_results_request">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="request_source" type="varchar(255)"/>
+            <column name="experiment_id" type="bigint">
+                <constraints foreignKeyName="fk_experiment_id" referencedTableName="experiment"
+                             referencedColumnNames="id" nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="experiment_results_request" baseColumnNames="id"
+                                 constraintName="fk_experiment_results_id" referencedTableName="ers_request"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+</databaseChangeLog>

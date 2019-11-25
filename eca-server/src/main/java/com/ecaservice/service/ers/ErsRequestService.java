@@ -17,11 +17,11 @@ import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.repository.ErsRequestRepository;
 import eca.core.evaluation.EvaluationResults;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
@@ -36,6 +36,7 @@ import static com.ecaservice.util.Utils.parseOptions;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ErsRequestService {
 
     private final ErsWebServiceClient ersWebServiceClient;
@@ -44,31 +45,6 @@ public class ErsRequestService {
     private final ClassifierReportMapper classifierReportMapper;
     private final ErsResponseStatusMapper ersResponseStatusMapper;
     private final ErsConfig ersConfig;
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param ersWebServiceClient                     - ers web service client bean
-     * @param ersRequestRepository                    - evaluation results service request repository bean
-     * @param classifierOptionsRequestModelRepository - classifier options request model repository bean
-     * @param classifierReportMapper                  - classifier report mapper bean
-     * @param ersResponseStatusMapper                 - ers response status mapper bean
-     * @param ersConfig                               - evaluation results config bean
-     */
-    @Inject
-    public ErsRequestService(ErsWebServiceClient ersWebServiceClient,
-                             ErsRequestRepository ersRequestRepository,
-                             ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository,
-                             ClassifierReportMapper classifierReportMapper,
-                             ErsResponseStatusMapper ersResponseStatusMapper,
-                             ErsConfig ersConfig) {
-        this.ersWebServiceClient = ersWebServiceClient;
-        this.ersRequestRepository = ersRequestRepository;
-        this.classifierOptionsRequestModelRepository = classifierOptionsRequestModelRepository;
-        this.classifierReportMapper = classifierReportMapper;
-        this.ersResponseStatusMapper = ersResponseStatusMapper;
-        this.ersConfig = ersConfig;
-    }
 
     /**
      * Save evaluation results by sending request to ERS web - service.

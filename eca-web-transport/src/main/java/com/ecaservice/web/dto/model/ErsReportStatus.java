@@ -1,12 +1,14 @@
 package com.ecaservice.web.dto.model;
 
 import com.ecaservice.web.dto.dictionary.ErsReportStatusDictionary;
+import lombok.RequiredArgsConstructor;
 
 /**
  * ERS report status enum.
  *
  * @author Roman Batygin
  */
+@RequiredArgsConstructor
 public enum ErsReportStatus {
 
     /**
@@ -39,12 +41,7 @@ public enum ErsReportStatus {
      */
     NEED_SENT(ErsReportStatusDictionary.NEED_SENT_DESCRIPTION);
 
-    private String description;
-
-    ErsReportStatus(String description) {
-        this.description = description;
-    }
-
+    private final String description;
 
     /**
      * ERS report status description.

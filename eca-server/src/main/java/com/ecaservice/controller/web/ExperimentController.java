@@ -1,8 +1,8 @@
 package com.ecaservice.controller.web;
 
 import com.ecaservice.dto.ExperimentRequest;
-import com.ecaservice.exception.ExperimentException;
-import com.ecaservice.exception.ResultsNotFoundException;
+import com.ecaservice.exception.experiment.ExperimentException;
+import com.ecaservice.exception.experiment.ResultsNotFoundException;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.MultipartFileResource;
 import com.ecaservice.model.entity.Experiment;
@@ -33,6 +33,7 @@ import eca.data.file.FileDataLoader;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -49,7 +50,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
@@ -72,6 +72,7 @@ import static com.ecaservice.util.Utils.toRequestStatusesStatistics;
 @Slf4j
 @RestController
 @RequestMapping("/experiment")
+@RequiredArgsConstructor
 public class ExperimentController {
 
     private static final String EXPERIMENT_RESULTS_FILE_NOT_FOUND =
@@ -96,37 +97,6 @@ public class ExperimentController {
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
 
     private final ConcurrentHashMap<String, Object> experimentMap = new ConcurrentHashMap<>();
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param experimentService                 - experiment service bean
-     * @param experimentRequestService          - experiment request service bean
-     * @param ersService                        - ers service bean
-     * @param experimentResultsService          - experiment results service bean
-     * @param experimentMapper                  - experiment mapper bean
-     * @param userService                       - user service bean
-     * @param experimentRepository              - experiment repository bean
-     * @param experimentResultsEntityRepository - experiment results entity repository bean
-     */
-    @Inject
-    public ExperimentController(ExperimentService experimentService,
-                                ExperimentRequestService experimentRequestService,
-                                ErsService ersService,
-                                ExperimentResultsService experimentResultsService,
-                                ExperimentMapper experimentMapper,
-                                UserService userService,
-                                ExperimentRepository experimentRepository,
-                                ExperimentResultsEntityRepository experimentResultsEntityRepository) {
-        this.experimentService = experimentService;
-        this.experimentRequestService = experimentRequestService;
-        this.ersService = ersService;
-        this.experimentResultsService = experimentResultsService;
-        this.experimentMapper = experimentMapper;
-        this.userService = userService;
-        this.experimentRepository = experimentRepository;
-        this.experimentResultsEntityRepository = experimentResultsEntityRepository;
-    }
 
     /**
      * Downloads experiment training data by specified uuid.
@@ -230,7 +200,7 @@ public class ExperimentController {
             @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
         Experiment experiment = experimentRepository.findByUuid(uuid);
         if (experiment == null) {
-            log.error("Experiment with uuid [{}] not found", uuid);
+            log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, uuid));
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(experimentMapper.map(experiment));
@@ -292,7 +262,7 @@ public class ExperimentController {
         log.info("Received request for ERS report for experiment [{}]", uuid);
         Experiment experiment = experimentRepository.findByUuid(uuid);
         if (experiment == null) {
-            log.error("Experiment with uuid [{}] not found", uuid);
+            log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, uuid));
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(experimentResultsService.getErsReport(experiment));
@@ -313,8 +283,9 @@ public class ExperimentController {
         log.info("Received request to send evaluation results to ERS for experiment [{}]", uuid);
         Experiment experiment = experimentRepository.findByUuid(uuid);
         if (experiment == null) {
-            log.error("Experiment with uuid [{}] not found", uuid);
-            return ResponseEntity.badRequest().body(String.format(EXPERIMENT_NOT_FOUND_FORMAT, uuid));
+            String error = String.format(EXPERIMENT_NOT_FOUND_FORMAT, uuid);
+            log.error(error);
+            return ResponseEntity.badRequest().body(error);
         }
         if (!RequestStatus.FINISHED.equals(experiment.getExperimentStatus())) {
             log.error("Can't sent experiment [{}] results to ERS, because experiment status isn't FINISHED", uuid);
@@ -423,7 +394,7 @@ public class ExperimentController {
                                                   String errorMessage) {
         Experiment experiment = experimentRepository.findByUuid(uuid);
         if (experiment == null) {
-            log.error("Experiment with uuid [{}] not found", uuid);
+            log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, uuid));
             return ResponseEntity.badRequest().build();
         }
         File experimentFile = getExperimentFile(experiment, filePathFunction);

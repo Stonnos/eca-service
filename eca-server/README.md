@@ -118,6 +118,12 @@ mvn clean install -Pquality
 
 ВАЖНО! Данную команду необходимо выполнять из корневой папки проекта.
 
+Для остановки приложения (удаления контейнеров) нужно выполнить команду:
+
+docker-compose down (для ОС семейства Linux)
+
+docker-compose -f docker-compose.yaml -f docker-compose.win10.yaml down (для Windows 10)
+
 Для удаления всех контейнеров и image-ов необходимо выполнить команду:
 
 docker-compose down --rmi all
@@ -141,7 +147,7 @@ docker rm container_name
 
 docker image rm image_id
 
-Для просотра доступных сетей, необходимо выполнить команду:
+Для просмотра доступных сетей, необходимо выполнить команду:
 
 docker network ls
 

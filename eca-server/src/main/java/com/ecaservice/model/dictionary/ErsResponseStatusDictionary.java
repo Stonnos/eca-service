@@ -1,14 +1,14 @@
 package com.ecaservice.model.dictionary;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * ERS response status dictionary.
  *
  * @author Roman Batygin
  */
+@UtilityClass
 public class ErsResponseStatusDictionary {
-
-    private ErsResponseStatusDictionary() {
-    }
 
     public static final String SUCCESS_DESCRIPTION = "Успешно";
     public static final String INVALID_REQUEST_ID_DESCRIPTION = "Не задан UUID заявки";

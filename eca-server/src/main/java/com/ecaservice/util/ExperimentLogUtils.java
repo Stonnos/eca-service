@@ -1,6 +1,7 @@
 package com.ecaservice.util;
 
-import com.ecaservice.exception.ExperimentException;
+import com.ecaservice.exception.experiment.ExperimentException;
+import lombok.experimental.UtilityClass;
 import org.slf4j.Logger;
 
 /**
@@ -8,10 +9,8 @@ import org.slf4j.Logger;
  *
  * @author Roman Batygin
  */
+@UtilityClass
 public class ExperimentLogUtils {
-
-    private ExperimentLogUtils() {
-    }
 
     /**
      * Logs error message and throws exception.

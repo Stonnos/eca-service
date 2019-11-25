@@ -1,18 +1,17 @@
 package com.ecaservice.controller.web;
 
+import com.ecaservice.conversion.ClassifierOptionsConverter;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.dto.InstancesRequest;
 import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
-import com.ecaservice.exception.EcaServiceException;
 import com.ecaservice.mapping.EvaluationResultsMapper;
 import com.ecaservice.model.MultipartFileResource;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.options.ClassifierOptions;
-import com.ecaservice.service.ClassifierOptionsService;
 import com.ecaservice.service.evaluation.EvaluationOptimizerService;
 import com.ecaservice.service.evaluation.EvaluationRequestService;
 import com.ecaservice.service.experiment.ExperimentRequestService;
@@ -21,6 +20,7 @@ import eca.data.file.FileDataLoader;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -34,7 +34,6 @@ import org.springframework.web.multipart.MultipartFile;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.stream.StreamResult;
 import java.io.OutputStream;
@@ -51,41 +50,17 @@ import static com.ecaservice.util.Utils.parseOptions;
 @Slf4j
 @RestController
 @RequestMapping("/qa")
+@RequiredArgsConstructor
 public class QaController {
 
     private static final String ATTACHMENT_FORMAT = "attachment;filename=%s%s.xml";
 
     private final EvaluationRequestService evaluationRequestService;
     private final EvaluationResultsMapper evaluationResultsMapper;
-    private final ClassifierOptionsService classifierOptionsService;
+    private final ClassifierOptionsConverter classifierOptionsConverter;
     private final ExperimentRequestService experimentRequestService;
     private final EvaluationOptimizerService evaluationOptimizerService;
     private final Jaxb2Marshaller ersMarshaller;
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param evaluationRequestService   - evaluation request service bean
-     * @param evaluationResultsMapper    - evaluation results mapper bean
-     * @param classifierOptionsService   - classifier options service bean
-     * @param experimentRequestService   - experiment request service bean
-     * @param evaluationOptimizerService - evaluation optimizer service bean
-     * @param ersMarshaller              - jaxb2 marshaller bean
-     */
-    @Inject
-    public QaController(EvaluationRequestService evaluationRequestService,
-                        EvaluationResultsMapper evaluationResultsMapper,
-                        ClassifierOptionsService classifierOptionsService,
-                        ExperimentRequestService experimentRequestService,
-                        EvaluationOptimizerService evaluationOptimizerService,
-                        Jaxb2Marshaller ersMarshaller) {
-        this.evaluationRequestService = evaluationRequestService;
-        this.evaluationResultsMapper = evaluationResultsMapper;
-        this.classifierOptionsService = classifierOptionsService;
-        this.experimentRequestService = experimentRequestService;
-        this.evaluationOptimizerService = evaluationOptimizerService;
-        this.ersMarshaller = ersMarshaller;
-    }
 
     /**
      * Processed the request on classifier model evaluation.
@@ -178,7 +153,7 @@ public class QaController {
         evaluationRequest.setEvaluationMethod(evaluationMethod);
         evaluationRequest.setEvaluationOptionsMap(Collections.emptyMap());
         ClassifierOptions options = parseOptions(classifierOptions.getInputStream());
-        AbstractClassifier classifier = classifierOptionsService.convert(options);
+        AbstractClassifier classifier = classifierOptionsConverter.convert(options);
         evaluationRequest.setClassifier(classifier);
         return evaluationRequest;
     }
@@ -199,7 +174,7 @@ public class QaController {
         log.info("Evaluation response [{}] with status [{}] has been built.", evaluationResponse.getRequestId(),
                 evaluationResponse.getStatus());
         if (!TechnicalStatus.SUCCESS.equals(evaluationResponse.getStatus())) {
-            throw new EcaServiceException(evaluationResponse.getErrorMessage());
+            throw new IllegalStateException(evaluationResponse.getErrorMessage());
         } else {
             EvaluationResultsRequest evaluationResultsRequest =
                     evaluationResultsMapper.map(evaluationResponse.getEvaluationResults());
