@@ -10,7 +10,10 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+
+import javax.validation.Valid;
 
 /**
  * Rabbit MQ listener for evaluation request messages.
@@ -31,7 +34,7 @@ public class EvaluationListener {
      * @param evaluationRequest - evaluation request
      */
     @RabbitListener(queues = Queues.EVALUATION_REQUEST_QUEUE)
-    public void handleMessage(EvaluationRequest evaluationRequest, Message inboundMessage) {
+    public void handleMessage(@Valid @Payload EvaluationRequest evaluationRequest, Message inboundMessage) {
         log.info("Received request for classifier [{}] evaluation with data [{}]",
                 evaluationRequest.getClassifier().getClass().getSimpleName(),
                 evaluationRequest.getData().relationName());
