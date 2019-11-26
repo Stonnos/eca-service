@@ -84,6 +84,6 @@ export class ExperimentStatisticsComponent implements OnInit {
   }
 
   private transformDate(date: Date): string {
-    return !!date ? this.datePipe.transform(date, this.dateFormat) : '';
+    return date ? this.datePipe.transform(date, this.dateFormat) : '';
   }
 }
