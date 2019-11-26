@@ -12,6 +12,17 @@ import { ExperimentType } from "../../common/model/experiment-type.enum";
 })
 export class ExperimentStatisticsComponent implements OnInit {
 
+  private readonly experimentTypeColorMap = new Map<ExperimentType, string>()
+    .set(ExperimentType.NEURAL_NETWORKS, 'red')
+    .set(ExperimentType.HETEROGENEOUS_ENSEMBLE, 'darkblue')
+    .set(ExperimentType.MODIFIED_HETEROGENEOUS_ENSEMBLE, 'green')
+    .set(ExperimentType.ADA_BOOST, 'yellow')
+    .set(ExperimentType.STACKING, 'purple')
+    .set(ExperimentType.KNN, 'chocolate')
+    .set(ExperimentType.RANDOM_FORESTS, 'hotpink')
+    .set(ExperimentType.STACKING_CV, 'cyan')
+    .set(ExperimentType.DECISION_TREE, 'greenyellow');
+
   public now: Date = new Date();
 
   public dataSet: any;
@@ -43,17 +54,6 @@ export class ExperimentStatisticsComponent implements OnInit {
       }]
     }
   };
-
-  private readonly experimentTypeColorMap = new Map<ExperimentType, string>()
-    .set(ExperimentType.NEURAL_NETWORKS, 'red')
-    .set(ExperimentType.HETEROGENEOUS_ENSEMBLE, 'darkblue')
-    .set(ExperimentType.MODIFIED_HETEROGENEOUS_ENSEMBLE, 'green')
-    .set(ExperimentType.ADA_BOOST, 'yellow')
-    .set(ExperimentType.STACKING, 'purple')
-    .set(ExperimentType.KNN, 'chocolate')
-    .set(ExperimentType.RANDOM_FORESTS, 'hotpink')
-    .set(ExperimentType.STACKING_CV, 'cyan')
-    .set(ExperimentType.DECISION_TREE, 'greenyellow');
 
   public constructor(private experimentsService: ExperimentsService, private messageService: MessageService) {
   }
