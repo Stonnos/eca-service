@@ -29,7 +29,6 @@ import { TabViewModule } from 'primeng/tabview';
 import { CardModule } from "primeng/card";
 import { FieldsetModule } from 'primeng/fieldset';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
-import { RandomcolorModule } from "angular-randomcolor";
 
 @NgModule({
   imports: [
@@ -68,8 +67,7 @@ import { RandomcolorModule } from "angular-randomcolor";
     InputSwitchModule,
     CheckboxModule,
     FieldsetModule,
-    ScrollPanelModule,
-    RandomcolorModule
+    ScrollPanelModule
   ]
 })
 export class UiComponentsModule {

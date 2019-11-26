@@ -3,8 +3,7 @@ import { ChartDataDto } from "../../../../../../../target/generated-sources/type
 import { ExperimentsService } from "../../experiments/services/experiments.service";
 import { MessageService } from "primeng/api";
 import { DatePipe } from "@angular/common";
-import { RandomColor } from "angular-randomcolor";
-import {ExperimentType} from "../../common/model/experiment-type.enum";
+import { ExperimentType } from "../../common/model/experiment-type.enum";
 
 @Component({
   selector: 'app-experiment-statistics',
