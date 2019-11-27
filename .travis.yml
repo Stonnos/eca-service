@@ -8,6 +8,8 @@ stages:
   - name: build_image
     if: branch = master
 
+install: true
+
 jobs:
   include:
     - stage: test
