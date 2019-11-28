@@ -114,7 +114,7 @@ export abstract class BaseListComponent<T> implements FieldLink {
 
   private rebuildFilterRequests(): void {
     this.filterRequests = this.filters.filter((filter: Filter) => this.hasValue(filter)).map((filter: Filter) => {
-      return { name: filter.name, values: this.transformFilterValues(filter), filterFieldType: filter.filterFieldType, matchMode: filter.matchMode };
+      return { name: filter.name, values: this.transformFilterValues(filter), matchMode: filter.matchMode };
     });
   }
 
