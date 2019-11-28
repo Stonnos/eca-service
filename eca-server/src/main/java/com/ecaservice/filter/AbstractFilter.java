@@ -1,6 +1,5 @@
 package com.ecaservice.filter;
 
-import com.ecaservice.web.dto.FilterFieldTypeVisitor;
 import com.ecaservice.web.dto.MatchModeVisitor;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import eca.core.DescriptiveEnum;
@@ -130,102 +129,86 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     private Predicate buildGreaterThanOrEqualPredicate(FilterRequestDto filterRequestDto, String value, Root<T> root,
                                                        CriteriaBuilder criteriaBuilder) {
-        return filterRequestDto.getFilterFieldType().handle(new FilterFieldTypeVisitor<Predicate>() {
-            @Override
-            public Predicate caseText() {
-                return criteriaBuilder.greaterThanOrEqualTo(buildExpression(root, filterRequestDto.getName()), value);
-            }
-
-            @Override
-            public Predicate caseDate() {
-                Expression<LocalDateTime> expression = buildExpression(root, filterRequestDto.getName());
-                LocalDate localDate = LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE);
-                return criteriaBuilder.greaterThanOrEqualTo(expression, localDate.atStartOfDay());
-            }
-
-            @Override
-            public Predicate caseReference() {
-                throw new UnsupportedOperationException(
-                        String.format("Can't build GTE predicate for filter field with type: %s",
-                                filterRequestDto.getFilterFieldType()));
-            }
-        });
+        Class<?> fieldClazz = getGetterReturnType(filterRequestDto.getName(), clazz);
+        if (fieldClazz.isEnum()) {
+            throw new IllegalStateException(String.format("Can't build GTE predicate for filter field [%s] of class %s",
+                    filterRequestDto.getName(), clazz.getName()));
+        } else if (LocalDateTime.class.isAssignableFrom(fieldClazz)) {
+            Expression<LocalDateTime> expression = buildExpression(root, filterRequestDto.getName());
+            LocalDate localDate = LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE);
+            return criteriaBuilder.greaterThanOrEqualTo(expression, localDate.atStartOfDay());
+        } else {
+            return criteriaBuilder.greaterThanOrEqualTo(buildExpression(root, filterRequestDto.getName()), value);
+        }
     }
 
     private Predicate buildLessThanOrEqualPredicate(FilterRequestDto filterRequestDto, String value, Root<T> root,
                                                     CriteriaBuilder criteriaBuilder) {
-        return filterRequestDto.getFilterFieldType().handle(new FilterFieldTypeVisitor<Predicate>() {
-            @Override
-            public Predicate caseText() {
-                return criteriaBuilder.lessThanOrEqualTo(buildExpression(root, filterRequestDto.getName()), value);
-            }
-
-            @Override
-            public Predicate caseDate() {
-                Expression<LocalDateTime> expression = buildExpression(root, filterRequestDto.getName());
-                LocalDate localDate = LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE);
-                return criteriaBuilder.lessThanOrEqualTo(expression, localDate.atTime(LocalTime.MAX));
-            }
-
-            @Override
-            public Predicate caseReference() {
-                throw new UnsupportedOperationException(
-                        String.format("Can't build LTE predicate for filter field with type: %s",
-                                filterRequestDto.getFilterFieldType()));
-            }
-        });
+        Class<?> fieldClazz = getGetterReturnType(filterRequestDto.getName(), clazz);
+        if (fieldClazz.isEnum()) {
+            throw new IllegalStateException(String.format("Can't build LTE predicate for filter field [%s] of class %s",
+                    filterRequestDto.getName(), clazz.getName()));
+        } else if (LocalDateTime.class.isAssignableFrom(fieldClazz)) {
+            Expression<LocalDateTime> expression = buildExpression(root, filterRequestDto.getName());
+            LocalDate localDate = LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE);
+            return criteriaBuilder.lessThanOrEqualTo(expression, localDate.atTime(LocalTime.MAX));
+        } else {
+            return criteriaBuilder.lessThanOrEqualTo(buildExpression(root, filterRequestDto.getName()), value);
+        }
     }
 
     private Predicate buildEqualPredicate(FilterRequestDto filterRequestDto, List<String> values, Root<T> root,
                                           CriteriaBuilder criteriaBuilder) {
-        return filterRequestDto.getFilterFieldType().handle(new FilterFieldTypeVisitor<Predicate>() {
-            @Override
-            public Predicate caseText() {
-                Expression<String> expression = buildExpression(root, filterRequestDto.getName());
-                return expression.in(values);
-            }
-
-            @Override
-            public Predicate caseDate() {
-                Predicate[] predicates = values.stream().map(value -> {
-                    Expression<LocalDateTime> expression = buildExpression(root, filterRequestDto.getName());
-                    LocalDate localDate = LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE);
-                    return criteriaBuilder.between(expression, localDate.atStartOfDay(),
-                            localDate.atTime(LocalTime.MAX));
-                }).toArray(Predicate[]::new);
-                return criteriaBuilder.or(predicates);
-            }
-
-            @Override
-            public Predicate caseReference() {
-                Expression<?> expression = buildExpression(root, filterRequestDto.getName());
-                try {
-                    Class enumClazz = getGetterReturnType(filterRequestDto.getName(), clazz);
-                    return expression.in(
-                            values.stream().map(value -> Enum.valueOf(enumClazz, value)).collect(Collectors.toList()));
-                } catch (Exception ex) {
-                    throw new IllegalStateException(ex.getMessage());
-                }
-            }
-        });
+        Class fieldClazz = getGetterReturnType(filterRequestDto.getName(), clazz);
+        if (LocalDateTime.class.isAssignableFrom(fieldClazz)) {
+            Predicate[] predicates = values.stream().map(value -> {
+                Expression<LocalDateTime> expression = buildExpression(root, filterRequestDto.getName());
+                LocalDate localDate = LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE);
+                return criteriaBuilder.between(expression, localDate.atStartOfDay(),
+                        localDate.atTime(LocalTime.MAX));
+            }).toArray(Predicate[]::new);
+            return criteriaBuilder.or(predicates);
+        } else if (fieldClazz.isEnum()) {
+            Expression<?> expression = buildExpression(root, filterRequestDto.getName());
+            return expression.in(
+                    values.stream().map(value -> Enum.valueOf(fieldClazz, value)).collect(Collectors.toList()));
+        } else {
+            Expression<String> expression = buildExpression(root, filterRequestDto.getName());
+            return expression.in(values);
+        }
     }
 
     private Predicate buildLikePredicate(FilterRequestDto filterRequestDto, List<String> values, Root<T> root,
                                          CriteriaBuilder criteriaBuilder) {
-        Expression<String> expression = buildExpression(root, filterRequestDto.getName());
-        Predicate[] predicates = values.stream().map(value -> criteriaBuilder.like(criteriaBuilder.lower(expression),
-                MessageFormat.format(LIKE_FORMAT, value.toLowerCase()))).toArray(Predicate[]::new);
-        return criteriaBuilder.or(predicates);
+        Class<?> fieldClazz = getGetterReturnType(filterRequestDto.getName(), clazz);
+        if (!String.class.isAssignableFrom(fieldClazz)) {
+            throw new IllegalStateException(
+                    String.format("Can't build LIKE predicate for filter field [%s] of class %s",
+                            filterRequestDto.getName(), clazz.getName()));
+        } else {
+            Expression<String> expression = buildExpression(root, filterRequestDto.getName());
+            Predicate[] predicates =
+                    values.stream().map(value -> criteriaBuilder.like(criteriaBuilder.lower(expression),
+                            MessageFormat.format(LIKE_FORMAT, value.toLowerCase()))).toArray(Predicate[]::new);
+            return criteriaBuilder.or(predicates);
+        }
     }
 
     private Predicate buildRangePredicate(FilterRequestDto filterRequestDto, List<String> values, Root<T> root,
                                           CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(buildGreaterThanOrEqualPredicate(filterRequestDto, values.get(0), root, criteriaBuilder));
-        if (values.size() > 1) {
-            predicates.add(buildLessThanOrEqualPredicate(filterRequestDto, values.get(1), root, criteriaBuilder));
+        for (int i = 0; i < values.size(); i += 2) {
+            Predicate lowerBoundPredicate =
+                    buildGreaterThanOrEqualPredicate(filterRequestDto, values.get(i), root, criteriaBuilder);
+            if (i < values.size() - 1) {
+                Predicate upperBoundPredicate =
+                        buildLessThanOrEqualPredicate(filterRequestDto, values.get(i + 1), root, criteriaBuilder);
+                predicates.add(criteriaBuilder.and(lowerBoundPredicate, upperBoundPredicate));
+            } else {
+                predicates.add(lowerBoundPredicate);
+            }
         }
-        return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        return criteriaBuilder.or(predicates.toArray(new Predicate[0]));
     }
 
     private <E> Expression<E> buildExpression(Root<T> root, String fieldName) {
@@ -240,29 +223,34 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     private Predicate buildSinglePredicateForGlobalFilter(Root<T> root, CriteriaBuilder criteriaBuilder, String field,
                                                           String value) {
-        try {
-            Class<?> fieldClazz = getGetterReturnType(field, clazz);
-            if (fieldClazz.isEnum()) {
-                if (!DescriptiveEnum.class.isAssignableFrom(fieldClazz)) {
-                    throw new IllegalStateException(
-                            String.format("Enum class [%s] must implements [%s] interface!", fieldClazz.getSimpleName(),
-                                    DescriptiveEnum.class.getSimpleName()));
-                }
-                List<DescriptiveEnum> descriptiveEnums =
-                        Stream.of(fieldClazz.getEnumConstants()).map(DescriptiveEnum.class::cast).filter(
-                                val -> val.getDescription().toLowerCase().contains(value)).collect(Collectors.toList());
-                if (!CollectionUtils.isEmpty(descriptiveEnums)) {
-                    Expression<?> expression = buildExpression(root, field);
-                    return expression.in(descriptiveEnums);
-                }
-                return null;
-            } else {
-                Expression<String> expression = buildExpression(root, field);
-                return criteriaBuilder.like(criteriaBuilder.lower(expression),
-                        MessageFormat.format(LIKE_FORMAT, value));
+        Class<?> fieldClazz = getGetterReturnType(field, clazz);
+        if (fieldClazz.isEnum()) {
+            if (!DescriptiveEnum.class.isAssignableFrom(fieldClazz)) {
+                throw new IllegalStateException(
+                        String.format("Enum class [%s] must implements [%s] interface!", fieldClazz.getSimpleName(),
+                                DescriptiveEnum.class.getSimpleName()));
             }
-        } catch (Exception ex) {
-            throw new IllegalStateException(ex.getMessage());
+            return buildGlobalFilterPredicateForEnumField(fieldClazz, root, field, value);
+        } else if (String.class.isAssignableFrom(fieldClazz)) {
+            Expression<String> expression = buildExpression(root, field);
+            return criteriaBuilder.like(criteriaBuilder.lower(expression),
+                    MessageFormat.format(LIKE_FORMAT, value));
+        } else {
+            throw new IllegalStateException(
+                    String.format("Can't build LIKE predicate for filter field [%s] of class %s", field,
+                            clazz.getName()));
         }
+    }
+
+    private Predicate buildGlobalFilterPredicateForEnumField(Class<?> fieldClazz, Root<T> root, String field,
+                                                             String value) {
+        List<DescriptiveEnum> descriptiveEnums =
+                Stream.of(fieldClazz.getEnumConstants()).map(DescriptiveEnum.class::cast).filter(
+                        val -> val.getDescription().toLowerCase().contains(value)).collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty(descriptiveEnums)) {
+            Expression<?> expression = buildExpression(root, field);
+            return expression.in(descriptiveEnums);
+        }
+        return null;
     }
 }

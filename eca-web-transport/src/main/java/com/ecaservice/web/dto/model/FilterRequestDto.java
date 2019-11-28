@@ -27,11 +27,6 @@ public class FilterRequestDto {
     private List<String> values;
 
     /**
-     * Filter field type {@link FilterFieldType}
-     */
-    private FilterFieldType filterFieldType;
-
-    /**
      * Match mode type {@link MatchMode}
      */
     private MatchMode matchMode;
