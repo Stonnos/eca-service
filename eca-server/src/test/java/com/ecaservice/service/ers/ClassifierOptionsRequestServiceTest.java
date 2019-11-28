@@ -9,7 +9,6 @@ import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.filter.FilterService;
-import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -85,8 +84,7 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
         PageRequestDto pageRequestDto =
                 new PageRequestDto(0, 10, ClassifierOptionsRequestModel_.REQUEST_DATE, false, "gla", newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.RESPONSE_STATUS,
-                Collections.singletonList(ErsResponseStatus.SUCCESS.name()), FilterFieldType.REFERENCE,
-                MatchMode.EQUALS));
+                Collections.singletonList(ErsResponseStatus.SUCCESS.name()), MatchMode.EQUALS));
         when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST)).thenReturn(
                 Arrays.asList(ClassifierOptionsRequestModel_.RELATION_NAME, ClassifierOptionsRequestModel_.REQUEST_ID));
         Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
@@ -109,7 +107,7 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
         PageRequestDto pageRequestDto =
                 new PageRequestDto(0, 10, ClassifierOptionsRequestModel_.REQUEST_ID, false, null, newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.REQUEST_ID,
-                Collections.singletonList(requestModel2.getRequestId()), FilterFieldType.TEXT, MatchMode.EQUALS));
+                Collections.singletonList(requestModel2.getRequestId()), MatchMode.EQUALS));
         Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
                 classifierOptionsRequestService.getNextPage(pageRequestDto);
         List<ClassifierOptionsRequestModel> classifierOptionsRequestModels =
