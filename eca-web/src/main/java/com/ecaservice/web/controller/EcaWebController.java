@@ -21,19 +21,8 @@ public class EcaWebController {
 
     private static final String CONFIG_LOCATION_TEMPLATE = "/static/assets/configs/config-%s.json";
     private static final String DEFAULT_CONFIG_LOCATION_TEMPLATE = "/static/assets/configs/config.json";
-    private static final String FORWARD = "forward:/";
 
     private final Environment environment;
-
-    /**
-     * Passes URL to Angular router.
-     *
-     * @return forward url
-     */
-    @GetMapping({"/login", "/dashboard/**"})
-    public String index() {
-        return FORWARD;
-    }
 
     /**
      * Loads config json string.
