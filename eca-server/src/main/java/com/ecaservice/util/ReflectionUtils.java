@@ -30,12 +30,9 @@ public class ReflectionUtils {
         try {
             String[] fieldLevels = splitByPointSeparator(fieldName);
             return getTargetClazz(fieldLevels, clazz);
-        } catch (NoSuchMethodException ex) {
+        } catch (Exception ex) {
             throw new IllegalStateException(
                     String.format("Can't found getter for field [%s] of class %s", fieldName, clazz.getName()));
-
-        } catch (IntrospectionException ex) {
-            throw new IllegalStateException(ex.getMessage());
         }
     }
 
