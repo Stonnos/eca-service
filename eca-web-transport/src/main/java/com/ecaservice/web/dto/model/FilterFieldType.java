@@ -1,7 +1,7 @@
 package com.ecaservice.web.dto.model;
 
 /**
- * Field field type.
+ * Field field view type.
  *
  * @author Roman Batygin
  */
