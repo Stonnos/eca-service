@@ -25,13 +25,18 @@ public class ReflectionUtils {
      * @param fieldName - field name
      * @param clazz     - entity class
      * @return getter return type
-     * @throws IntrospectionException in case of errors
-     * @throws NoSuchMethodException  in case if method is not exists
      */
-    public static Class<?> getGetterReturnType(String fieldName, Class<?> clazz)
-            throws IntrospectionException, NoSuchMethodException {
-        String[] fieldLevels = splitByPointSeparator(fieldName);
-        return getTargetClazz(fieldLevels, clazz);
+    public static Class<?> getGetterReturnType(String fieldName, Class<?> clazz) {
+        try {
+            String[] fieldLevels = splitByPointSeparator(fieldName);
+            return getTargetClazz(fieldLevels, clazz);
+        } catch (NoSuchMethodException ex) {
+            throw new IllegalStateException(
+                    String.format("Can't found getter for field [%s] of class %s", fieldName, clazz.getName()));
+
+        } catch (IntrospectionException ex) {
+            throw new IllegalStateException(ex.getMessage());
+        }
     }
 
     private static Class<?> getTargetClazz(String[] fieldLevels, Class<?> clazz)
