@@ -18,14 +18,9 @@ public class BaseReportBean<T> {
     private int page;
 
     /**
-     * Page size
+     * Total pages count
      */
-    private int size;
-
-    /**
-     * Total items count
-     */
-    private int total;
+    private int totalPages;
 
     /**
      * Search query string

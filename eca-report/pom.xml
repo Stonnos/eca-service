@@ -14,7 +14,7 @@
 
     <properties>
         <jxls.version>2.7.2</jxls.version>
-        <jxls-poi.version>1.3.1</jxls-poi.version>
+        <jxls-poi.version>1.3.2</jxls-poi.version>
     </properties>
 
     <dependencies>

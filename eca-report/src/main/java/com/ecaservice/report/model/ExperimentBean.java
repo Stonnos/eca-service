@@ -13,6 +13,26 @@ import java.time.LocalDateTime;
 public class ExperimentBean {
 
     /**
+     * Experiment uuid
+     */
+    private String uuid;
+
+    /**
+     * Experiment type
+     */
+    private String experimentType;
+
+    /**
+     * Experiment status
+     */
+    private String experimentStatus;
+
+    /**
+     * Evaluation method
+     */
+    private String evaluationMethod;
+
+    /**
      * First name
      */
     private String firstName;
@@ -31,11 +51,6 @@ public class ExperimentBean {
      * Training data absolute path
      */
     private String trainingDataAbsolutePath;
-
-    /**
-     * Experiment uuid
-     */
-    private String uuid;
 
     /**
      * Request creation date
@@ -61,19 +76,4 @@ public class ExperimentBean {
      * Experiment files deleted date
      */
     private LocalDateTime deletedDate;
-
-    /**
-     * Experiment type
-     */
-    private String experimentType;
-
-    /**
-     * Experiment status
-     */
-    private String experimentStatus;
-
-    /**
-     * Evaluation method
-     */
-    private String evaluationMethod;
 }
