@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  * @author Roman Batygin
  */
 @Data
-public class ExperimentBean implements ReportBean {
+public class ExperimentBean {
 
     /**
      * First name
