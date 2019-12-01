@@ -10,6 +10,7 @@
     <modules>
         <module>eca-user-model</module>
         <module>eca-web-transport</module>
+        <module>eca-report</module>
         <module>eca-oauth</module>
         <module>eca-server</module>
         <module>eca-web</module>
