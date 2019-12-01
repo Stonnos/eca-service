@@ -16,7 +16,7 @@ public class FilterBean {
     private String description;
 
     /**
-     * Filter field values as string
+     * Filter field data as string
      */
-    private String values;
+    private String data;
 }
