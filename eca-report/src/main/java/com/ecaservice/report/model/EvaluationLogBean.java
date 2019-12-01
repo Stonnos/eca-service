@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  * @author Roman Batygin
  */
 @Data
-public class EvaluationBean {
+public class EvaluationLogBean {
 
     /**
      * Request unique identifier

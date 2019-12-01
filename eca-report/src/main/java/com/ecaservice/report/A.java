@@ -4,9 +4,9 @@ import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.ExperimentBean;
 import com.ecaservice.report.model.FilterBean;
 
+import java.io.FileOutputStream;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.UUID;
 
 /**
@@ -32,12 +32,13 @@ public class A {
         experimentBean.setDeletedDate(LocalDateTime.now());
         experimentBean.setUuid(UUID.randomUUID().toString());
         experimentBean.setEvaluationMethod("V-блочная кросс проверка");
-        experimentBean.setTrainingDataAbsolutePath("data_"+experimentBean.getUuid());
-        experimentBean.setExperimentAbsolutePath("experiment_"+experimentBean.getUuid());
+        experimentBean.setTrainingDataAbsolutePath("data_" + experimentBean.getUuid());
+        experimentBean.setExperimentAbsolutePath("experiment_" + experimentBean.getUuid());
         ExperimentBean experimentBean1 = new ExperimentBean();
         experimentBean1.setUuid(UUID.randomUUID().toString());
 
         beanBaseReportBean.setItems(Arrays.asList(experimentBean, experimentBean1));
-        BaseReportUtils.generateReport("experiments-report-template.xlsx", beanBaseReportBean);
+        BaseReportGenerator.generateExperimentsReport(beanBaseReportBean,
+                new FileOutputStream("D:/results-report.xlsx"));
     }
 }
