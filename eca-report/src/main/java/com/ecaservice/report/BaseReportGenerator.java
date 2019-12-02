@@ -58,8 +58,9 @@ public class BaseReportGenerator {
         generateReport(EVALUATION_LOGS_REPORT_TEMPLATE, beanBaseReportBean, outputStream);
     }
 
-    private static <T> void generateReport(String template, BaseReportBean<T> baseReportBean, OutputStream outputStream)
-            throws IOException {
+    private static <T> void generateReport(String template,
+                                           BaseReportBean<T> baseReportBean,
+                                           OutputStream outputStream) throws IOException {
         @Cleanup InputStream inputStream = BaseReportGenerator.class.getClassLoader().getResourceAsStream(template);
         Context context = buildContext(baseReportBean);
         JxlsHelper.getInstance().processTemplate(inputStream, outputStream, context);
