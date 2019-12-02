@@ -1,8 +1,9 @@
 package com.ecaservice.report.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -11,7 +12,9 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Data
-public class BaseReportBean<T> implements Iterable<T> {
+@NoArgsConstructor
+@AllArgsConstructor
+public class BaseReportBean<T> {
 
     /**
      * Page number
@@ -37,9 +40,4 @@ public class BaseReportBean<T> implements Iterable<T> {
      * Report items list
      */
     private List<T> items;
-
-    @Override
-    public Iterator<T> iterator() {
-        return items.iterator();
-    }
 }

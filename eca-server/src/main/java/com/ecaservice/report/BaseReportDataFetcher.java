@@ -1,11 +1,15 @@
 package com.ecaservice.report;
 
-import com.ecaservice.mapping.report.BaseReportMapper;
+import com.ecaservice.mapping.EvaluationLogMapper;
+import com.ecaservice.mapping.ExperimentMapper;
+import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.report.model.BaseReportBean;
+import com.ecaservice.report.model.EvaluationLogBean;
 import com.ecaservice.report.model.ExperimentBean;
 import com.ecaservice.report.model.FilterBean;
+import com.ecaservice.service.evaluation.EvaluationLogService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.filter.FilterService;
 import com.ecaservice.web.dto.model.FilterFieldDto;
@@ -33,7 +37,9 @@ public class BaseReportDataFetcher {
 
     private final FilterService filterService;
     private final ExperimentService experimentService;
-    private final BaseReportMapper baseReportMapper;
+    private final EvaluationLogService evaluationLogService;
+    private final ExperimentMapper experimentMapper;
+    private final EvaluationLogMapper evaluationLogMapper;
 
     /**
      * Gets experiments report data.
@@ -43,10 +49,24 @@ public class BaseReportDataFetcher {
      */
     public BaseReportBean<ExperimentBean> fetchExperimentsData(PageRequestDto pageRequestDto) {
         Page<Experiment> experimentPage = experimentService.getNextPage(pageRequestDto);
-        BaseReportBean<ExperimentBean> baseReportBean = baseReportMapper.map(experimentPage, pageRequestDto);
+        List<ExperimentBean> experimentBeans = experimentMapper.mapToBeans(experimentPage.getContent());
         List<FilterBean> filterBeans = getFilterBeans(pageRequestDto, FilterTemplateType.EXPERIMENT);
-        baseReportBean.setFilters(filterBeans);
-        return baseReportBean;
+        return new BaseReportBean<>(experimentPage.getNumber(), experimentPage.getTotalPages(),
+                pageRequestDto.getSearchQuery(), filterBeans, experimentBeans);
+    }
+
+    /**
+     * Gets evaluation logs report data.
+     *
+     * @param pageRequestDto - page request dto
+     * @return base report bean
+     */
+    public BaseReportBean<EvaluationLogBean> fetchEvaluationLogs(PageRequestDto pageRequestDto) {
+        Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);
+        List<EvaluationLogBean> evaluationLogBeans = evaluationLogMapper.mapToBeans(evaluationLogPage.getContent());
+        List<FilterBean> filterBeans = getFilterBeans(pageRequestDto, FilterTemplateType.EVALUATION_LOG);
+        return new BaseReportBean<>(evaluationLogPage.getNumber(), evaluationLogPage.getTotalPages(),
+                pageRequestDto.getSearchQuery(), filterBeans, evaluationLogBeans);
     }
 
     private List<FilterBean> getFilterBeans(PageRequestDto pageRequestDto, FilterTemplateType filterTemplateType) {
