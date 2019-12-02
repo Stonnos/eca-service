@@ -13,6 +13,7 @@ import com.ecaservice.service.evaluation.EvaluationLogService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.filter.FilterService;
 import com.ecaservice.web.dto.model.FilterFieldDto;
+import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -34,6 +35,10 @@ import static com.google.common.collect.Lists.newArrayList;
 @Component
 @RequiredArgsConstructor
 public class BaseReportDataFetcher {
+
+    private static final String VALUES_SEPARATOR = ",";
+    private static final String DATE_INTERVAL_FORMAT = "с %s по %s";
+    private static final String LOWER_BOUND_DATE_INTERVAL_FORMAT = "с %s";
 
     private final FilterService filterService;
     private final ExperimentService experimentService;
@@ -81,11 +86,28 @@ public class BaseReportDataFetcher {
                     if (!CollectionUtils.isEmpty(values)) {
                         FilterBean filterBean = new FilterBean();
                         filterBean.setDescription(filterFieldsMap.get(filterRequestDto.getName()));
+                        String filterData = getFilterValuesAsString(values, filterRequestDto.getMatchMode());
+                        filterBean.setData(filterData);
                         filterBeans.add(filterBean);
                     }
                 }
             });
         }
         return filterBeans;
+    }
+
+    private String getFilterValuesAsString(List<String> values, MatchMode matchMode) {
+        List<String> filterData = values;
+        if (MatchMode.RANGE.equals(matchMode)) {
+            filterData = newArrayList();
+            for (int i = 0; i < values.size(); i += 2) {
+                if (i < values.size() - 1) {
+                    filterData.add(String.format(DATE_INTERVAL_FORMAT, values.get(i), values.get(i + 1)));
+                } else {
+                    filterData.add(String.format(LOWER_BOUND_DATE_INTERVAL_FORMAT, values.get(i)));
+                }
+            }
+        }
+        return StringUtils.join(filterData, VALUES_SEPARATOR);
     }
 }
