@@ -2,6 +2,7 @@ package com.ecaservice.report.model;
 
 import lombok.Data;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Data
-public class BaseReportBean<T> {
+public class BaseReportBean<T> implements Iterable<T> {
 
     /**
      * Page number
@@ -36,4 +37,9 @@ public class BaseReportBean<T> {
      * Report items list
      */
     private List<T> items;
+
+    @Override
+    public Iterator<T> iterator() {
+        return items.iterator();
+    }
 }

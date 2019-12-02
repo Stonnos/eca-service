@@ -2,8 +2,6 @@ package com.ecaservice.report.model;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 /**
  * Evaluation log report model.
  *
@@ -20,17 +18,17 @@ public class EvaluationLogBean {
     /**
      * Request creation date
      */
-    private LocalDateTime creationDate;
+    private String creationDate;
 
     /**
      * Evaluation start date
      */
-    private LocalDateTime startDate;
+    private String startDate;
 
     /**
      * Evaluation end date
      */
-    private LocalDateTime endDate;
+    private String endDate;
 
     /**
      * Classifier name

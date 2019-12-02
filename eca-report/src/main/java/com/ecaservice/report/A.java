@@ -28,8 +28,7 @@ public class A {
         beanBaseReportBean.setFilters(Arrays.asList(filterBean, filterBean1));
         //beanBaseReportBean.setFilters(Collections.emptyList());
         ExperimentBean experimentBean = new ExperimentBean();
-        experimentBean.setCreationDate(LocalDateTime.now());
-        experimentBean.setDeletedDate(LocalDateTime.now());
+        experimentBean.setCreationDate("2018-01-01");
         experimentBean.setUuid(UUID.randomUUID().toString());
         experimentBean.setEvaluationMethod("V-блочная кросс проверка");
         experimentBean.setTrainingDataAbsolutePath("data_" + experimentBean.getUuid());

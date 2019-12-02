@@ -2,8 +2,6 @@ package com.ecaservice.report.model;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 /**
  * Experiment report model.
  *
@@ -55,25 +53,25 @@ public class ExperimentBean {
     /**
      * Request creation date
      */
-    private LocalDateTime creationDate;
+    private String creationDate;
 
     /**
      * Experiment processing start date
      */
-    private LocalDateTime startDate;
+    private String startDate;
 
     /**
      * Experiment processing end date
      */
-    private LocalDateTime endDate;
+    private String endDate;
 
     /**
      * Date when experiment results is sent
      */
-    private LocalDateTime sentDate;
+    private String sentDate;
 
     /**
      * Experiment files deleted date
      */
-    private LocalDateTime deletedDate;
+    private String deletedDate;
 }
