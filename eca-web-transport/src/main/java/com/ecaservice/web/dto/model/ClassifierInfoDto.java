@@ -1,5 +1,6 @@
 package com.ecaservice.web.dto.model;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Data
+@ApiModel(description = "Classifier info model")
 public class ClassifierInfoDto {
 
     /**
