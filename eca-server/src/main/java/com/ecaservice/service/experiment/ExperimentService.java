@@ -208,19 +208,19 @@ public class ExperimentService implements PageRequestService<Experiment> {
     }
 
     /**
-     * Calculates requests status counting statistics.
+     * Calculates experiment statuses counting statistics.
      *
      * @return requests status counting statistics list
      */
     public Map<RequestStatus, Long> getRequestStatusesStatistics() {
-        Map<RequestStatus, Long> requestStatusesMap =
+        Map<RequestStatus, Long> experimentStatusesMap =
                 experimentRepository.getRequestStatusesStatistics().stream().collect(
                         Collectors.toMap(RequestStatusStatistics::getRequestStatus,
                                 RequestStatusStatistics::getRequestsCount, (v1, v2) -> v1, TreeMap::new));
         Arrays.stream(RequestStatus.values()).filter(
-                requestStatus -> !requestStatusesMap.containsKey(requestStatus)).forEach(
-                requestStatus -> requestStatusesMap.put(requestStatus, 0L));
-        return requestStatusesMap;
+                requestStatus -> !experimentStatusesMap.containsKey(requestStatus)).forEach(
+                requestStatus -> experimentStatusesMap.put(requestStatus, 0L));
+        return experimentStatusesMap;
     }
 
     /**

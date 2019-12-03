@@ -74,19 +74,19 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
     }
 
     /**
-     * Calculates requests status counting statistics.
+     * Calculates evaluation statuses counting statistics.
      *
      * @return requests status counting statistics list
      */
     public Map<RequestStatus, Long> getRequestStatusesStatistics() {
-        Map<RequestStatus, Long> requestStatusesMap =
+        Map<RequestStatus, Long> evaluationStatusesMap =
                 evaluationLogRepository.getRequestStatusesStatistics().stream().collect(
                         Collectors.toMap(RequestStatusStatistics::getRequestStatus,
                                 RequestStatusStatistics::getRequestsCount, (v1, v2) -> v1, TreeMap::new));
         Arrays.stream(RequestStatus.values()).filter(
-                requestStatus -> !requestStatusesMap.containsKey(requestStatus)).forEach(
-                requestStatus -> requestStatusesMap.put(requestStatus, 0L));
-        return requestStatusesMap;
+                requestStatus -> !evaluationStatusesMap.containsKey(requestStatus)).forEach(
+                requestStatus -> evaluationStatusesMap.put(requestStatus, 0L));
+        return evaluationStatusesMap;
     }
 
     private EvaluationResultsDto getEvaluationResults(EvaluationLog evaluationLog) {

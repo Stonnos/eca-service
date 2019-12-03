@@ -65,7 +65,7 @@ public class ExperimentScheduler {
     }
 
     /**
-     * Processing experiment requests for sending.
+     * Processing experiment results sending to emails.
      */
     @Scheduled(fixedDelayString = "${experiment.delaySeconds}000")
     public void processRequestsToSent() {
