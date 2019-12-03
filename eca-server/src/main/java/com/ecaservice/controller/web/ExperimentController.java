@@ -219,7 +219,7 @@ public class ExperimentController {
     )
     @GetMapping(value = "/results/details/{id}")
     public ResponseEntity<ExperimentResultsDetailsDto> getExperimentResultsDetails(
-            @ApiParam(value = "Experiment results id", required = true) @PathVariable Long id) {
+            @ApiParam(value = "Experiment results id", example = "1", required = true) @PathVariable Long id) {
         Optional<ExperimentResultsEntity> experimentResultsEntityOptional =
                 experimentResultsEntityRepository.findById(id);
         if (!experimentResultsEntityOptional.isPresent()) {
