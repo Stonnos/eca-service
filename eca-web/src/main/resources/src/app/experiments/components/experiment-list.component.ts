@@ -77,7 +77,13 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   }
 
   public generateReport() {
+    this.loading = true;
     this.reportsService.getExperimentsBaseReport(this.pageRequestDto)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
       .subscribe((blob: Blob) => {
         saveAs(blob, ExperimentListComponent.EXPERIMENT_REPORT_FILE_NAME);
       }, (error) => {
