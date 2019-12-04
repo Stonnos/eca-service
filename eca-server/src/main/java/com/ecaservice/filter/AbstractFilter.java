@@ -196,19 +196,13 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     private Predicate buildRangePredicate(FilterRequestDto filterRequestDto, List<String> values, Root<T> root,
                                           CriteriaBuilder criteriaBuilder) {
-        List<Predicate> predicates = new ArrayList<>();
-        for (int i = 0; i < values.size(); i += 2) {
-            Predicate lowerBoundPredicate =
-                    buildGreaterThanOrEqualPredicate(filterRequestDto, values.get(i), root, criteriaBuilder);
-            if (i < values.size() - 1) {
-                Predicate upperBoundPredicate =
-                        buildLessThanOrEqualPredicate(filterRequestDto, values.get(i + 1), root, criteriaBuilder);
-                predicates.add(criteriaBuilder.and(lowerBoundPredicate, upperBoundPredicate));
-            } else {
-                predicates.add(lowerBoundPredicate);
-            }
+        Predicate predicate = buildGreaterThanOrEqualPredicate(filterRequestDto, values.get(0), root, criteriaBuilder);
+        if (values.size() > 1) {
+            Predicate upperBoundPredicate =
+                    buildLessThanOrEqualPredicate(filterRequestDto, values.get(1), root, criteriaBuilder);
+            predicate = criteriaBuilder.and(predicate, upperBoundPredicate);
         }
-        return criteriaBuilder.or(predicates.toArray(new Predicate[0]));
+        return predicate;
     }
 
     private <E> Expression<E> buildExpression(Root<T> root, String fieldName) {

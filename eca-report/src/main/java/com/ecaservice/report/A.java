@@ -21,10 +21,10 @@ public class A {
         beanBaseReportBean.setSearchQuery("  ");
         FilterBean filterBean = new FilterBean();
         filterBean.setDescription("Дата создания заявки");
-        filterBean.setData("2018-23-34");
+        filterBean.setFilterData("2018-23-34");
         FilterBean filterBean1 = new FilterBean();
         filterBean1.setDescription("Тип эксперимента");
-        filterBean1.setData("Нейронные сети, Неоднородный ансамбль, Алгоритм KNN");
+        filterBean1.setFilterData("Нейронные сети, Неоднородный ансамбль, Алгоритм KNN");
         beanBaseReportBean.setFilters(Arrays.asList(filterBean, filterBean1));
         //beanBaseReportBean.setFilters(Collections.emptyList());
         ExperimentBean experimentBean = new ExperimentBean();

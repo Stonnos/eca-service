@@ -18,5 +18,5 @@ public class FilterBean {
     /**
      * Filter field data as string
      */
-    private String data;
+    private String filterData;
 }
