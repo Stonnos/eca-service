@@ -32,7 +32,7 @@ import static com.ecaservice.report.BaseReportGenerator.generateExperimentsRepor
 @Api(tags = "Base reports controller for web application")
 @Slf4j
 @RestController
-@RequestMapping("/report")
+@RequestMapping("/reports")
 @RequiredArgsConstructor
 public class ReportController {
 

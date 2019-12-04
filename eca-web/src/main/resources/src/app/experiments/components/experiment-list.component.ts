@@ -16,6 +16,7 @@ import { Router } from "@angular/router";
 import { RouterPaths } from "../../routing/router-paths";
 import { ExperimentFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
+import { ReportsService } from "../../common/services/report.service";
 
 @Component({
   selector: 'app-experiment-list',
@@ -23,6 +24,8 @@ import { FieldService } from "../../common/services/field.service";
   styleUrls: ['./experiment-list.component.scss']
 })
 export class ExperimentListComponent extends BaseListComponent<ExperimentDto> implements OnInit {
+
+  private static readonly EXPERIMENT_REPORT_FILE_NAME = 'experiments-report.xlsx';
 
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
 
@@ -39,6 +42,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   public constructor(private injector: Injector,
                      private experimentsService: ExperimentsService,
                      private filterService: FilterService,
+                     private reportsService: ReportsService,
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ExperimentFields.CREATION_DATE;
@@ -70,6 +74,15 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     });
+  }
+
+  public generateReport() {
+    this.reportsService.getExperimentsBaseReport(this.pageRequestDto)
+      .subscribe((blob: Blob) => {
+        saveAs(blob, ExperimentListComponent.EXPERIMENT_REPORT_FILE_NAME);
+      }, (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      });
   }
 
   public onLink(column: string, experiment: ExperimentDto) {
