@@ -59,8 +59,7 @@ public class BaseReportDataFetcher {
         Page<Experiment> experimentPage = experimentService.getNextPage(pageRequestDto);
         List<ExperimentBean> experimentBeans = experimentMapper.mapToBeans(experimentPage.getContent());
         List<FilterBean> filterBeans = getFilterBeans(pageRequestDto, FilterTemplateType.EXPERIMENT, Experiment.class);
-        return new BaseReportBean<>(experimentPage.getNumber() + 1, experimentPage.getTotalPages(),
-                pageRequestDto.getSearchQuery(), filterBeans, experimentBeans);
+        return createBaseReportBean(pageRequestDto, experimentPage, experimentBeans, filterBeans);
     }
 
     /**
@@ -74,8 +73,14 @@ public class BaseReportDataFetcher {
         List<EvaluationLogBean> evaluationLogBeans = evaluationLogMapper.mapToBeans(evaluationLogPage.getContent());
         List<FilterBean> filterBeans =
                 getFilterBeans(pageRequestDto, FilterTemplateType.EVALUATION_LOG, EvaluationLog.class);
-        return new BaseReportBean<>(evaluationLogPage.getNumber() + 1, evaluationLogPage.getTotalPages(),
-                pageRequestDto.getSearchQuery(), filterBeans, evaluationLogBeans);
+        return createBaseReportBean(pageRequestDto, evaluationLogPage, evaluationLogBeans, filterBeans);
+    }
+
+    private <E, B> BaseReportBean<B> createBaseReportBean(PageRequestDto pageRequestDto, Page<E> page, List<B> beans,
+                                                          List<FilterBean> filterBeans) {
+        int pageNumber = page.getTotalPages() > 0 ? page.getNumber() + 1 : page.getNumber();
+        return new BaseReportBean<>(pageNumber, page.getTotalPages(), pageRequestDto.getSearchQuery(), filterBeans,
+                beans);
     }
 
     private List<FilterBean> getFilterBeans(PageRequestDto pageRequestDto, FilterTemplateType filterTemplateType,
