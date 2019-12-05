@@ -25,7 +25,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.ecaservice.util.ReflectionUtils.getGetterReturnType;
+import static com.ecaservice.util.ReflectionUtils.getFieldType;
 import static com.ecaservice.util.Utils.splitByPointSeparator;
 
 /**
@@ -129,7 +129,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     private Predicate buildGreaterThanOrEqualPredicate(FilterRequestDto filterRequestDto, String value, Root<T> root,
                                                        CriteriaBuilder criteriaBuilder) {
-        Class<?> fieldClazz = getGetterReturnType(filterRequestDto.getName(), clazz);
+        Class<?> fieldClazz = getFieldType(filterRequestDto.getName(), clazz);
         if (fieldClazz.isEnum()) {
             throw new IllegalStateException(String.format("Can't build GTE predicate for filter field [%s] of class %s",
                     filterRequestDto.getName(), clazz.getName()));
@@ -144,7 +144,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     private Predicate buildLessThanOrEqualPredicate(FilterRequestDto filterRequestDto, String value, Root<T> root,
                                                     CriteriaBuilder criteriaBuilder) {
-        Class<?> fieldClazz = getGetterReturnType(filterRequestDto.getName(), clazz);
+        Class<?> fieldClazz = getFieldType(filterRequestDto.getName(), clazz);
         if (fieldClazz.isEnum()) {
             throw new IllegalStateException(String.format("Can't build LTE predicate for filter field [%s] of class %s",
                     filterRequestDto.getName(), clazz.getName()));
@@ -159,7 +159,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     private Predicate buildEqualPredicate(FilterRequestDto filterRequestDto, List<String> values, Root<T> root,
                                           CriteriaBuilder criteriaBuilder) {
-        Class fieldClazz = getGetterReturnType(filterRequestDto.getName(), clazz);
+        Class fieldClazz = getFieldType(filterRequestDto.getName(), clazz);
         if (LocalDateTime.class.isAssignableFrom(fieldClazz)) {
             Predicate[] predicates = values.stream().map(value -> {
                 Expression<LocalDateTime> expression = buildExpression(root, filterRequestDto.getName());
@@ -180,7 +180,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     private Predicate buildLikePredicate(FilterRequestDto filterRequestDto, List<String> values, Root<T> root,
                                          CriteriaBuilder criteriaBuilder) {
-        Class<?> fieldClazz = getGetterReturnType(filterRequestDto.getName(), clazz);
+        Class<?> fieldClazz = getFieldType(filterRequestDto.getName(), clazz);
         if (!String.class.isAssignableFrom(fieldClazz)) {
             throw new IllegalStateException(
                     String.format("Can't build LIKE predicate for filter field [%s] of class %s",
@@ -217,7 +217,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     private Predicate buildSinglePredicateForGlobalFilter(Root<T> root, CriteriaBuilder criteriaBuilder, String field,
                                                           String value) {
-        Class<?> fieldClazz = getGetterReturnType(field, clazz);
+        Class<?> fieldClazz = getFieldType(field, clazz);
         if (fieldClazz.isEnum()) {
             if (!DescriptiveEnum.class.isAssignableFrom(fieldClazz)) {
                 throw new IllegalStateException(

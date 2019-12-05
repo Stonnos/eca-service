@@ -15,7 +15,7 @@ public class ReflectionUtilsTest {
 
     @Test
     public void testGetGetterReturnType() {
-        Class<?> actual = ReflectionUtils.getGetterReturnType(INSTANCES_INFO_RELATION_NAME, EvaluationLog.class);
+        Class<?> actual = ReflectionUtils.getFieldType(INSTANCES_INFO_RELATION_NAME, EvaluationLog.class);
         Assertions.assertThat(actual).isAssignableFrom(String.class);
     }
 }

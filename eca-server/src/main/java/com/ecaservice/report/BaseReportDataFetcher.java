@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.util.RangeUtils.formatDateRange;
-import static com.ecaservice.util.ReflectionUtils.getGetterReturnType;
+import static com.ecaservice.util.ReflectionUtils.getFieldType;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
@@ -108,7 +108,7 @@ public class BaseReportDataFetcher {
 
     private String getFilterValuesAsString(FilterRequestDto filterRequestDto, List<String> values,
                                            Class<?> entityClazz) {
-        Class fieldClazz = getGetterReturnType(filterRequestDto.getName(), entityClazz);
+        Class fieldClazz = getFieldType(filterRequestDto.getName(), entityClazz);
         if (MatchMode.RANGE.equals(filterRequestDto.getMatchMode())) {
             return getRangeAsString(values, fieldClazz);
         } else {

@@ -18,17 +18,17 @@ public class ReflectionUtils {
     private static final ConcurrentHashMap<String, Class<?>> fieldClassMap = new ConcurrentHashMap<>(256);
 
     /**
-     * Gets getter method return type by field property. Note: Property can be composite, for example:
+     * Gets field type. Note: Field name can be composite, for example:
      * <pre>
      *  entity.entity1.prop1
      * </pre>
-     * If the field is composite, then the last property name is taken. In our case the last name is prop1.
+     * If the field name is composite, then the last property is taken. In our case the last property is prop1.
      *
      * @param fieldName - field name
      * @param clazz     - entity class
-     * @return getter return type
+     * @return field type
      */
-    public static Class<?> getGetterReturnType(String fieldName, Class<?> clazz) {
+    public static Class<?> getFieldType(String fieldName, Class<?> clazz) {
         String[] fieldLevels = splitByPointSeparator(fieldName);
         return getTargetClazz(fieldLevels, clazz);
     }
@@ -36,12 +36,12 @@ public class ReflectionUtils {
     private static Class<?> getTargetClazz(String[] fieldLevels, Class<?> clazz) {
         Class<?> currentClazz = clazz;
         for (int i = 0; i < fieldLevels.length; i++) {
-            currentClazz = getFieldReturnType(fieldLevels[i], currentClazz);
+            currentClazz = getInternalFieldType(fieldLevels[i], currentClazz);
         }
         return currentClazz;
     }
 
-    private static Class<?> getFieldReturnType(String fieldName, Class<?> clazz) {
+    private static Class<?> getInternalFieldType(String fieldName, Class<?> clazz) {
         Class<?> result = fieldClassMap.get(fieldName);
         if (result == null) {
             doWithFields(clazz,
