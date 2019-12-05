@@ -38,7 +38,7 @@ public class ReportController {
 
     private static final String ATTACHMENT_FORMAT = "attachment; filename=%s";
     private static final String EXPERIMENTS_REPORT_NAME = "experiments-report.xlsx";
-    private static final String EVALUATION_LOGS_REPORT_NAME = "evaluation-logs.xlsx";
+    private static final String EVALUATION_LOGS_REPORT_NAME = "evaluation-logs-report.xlsx";
 
     private final BaseReportDataFetcher baseReportDataFetcher;
 

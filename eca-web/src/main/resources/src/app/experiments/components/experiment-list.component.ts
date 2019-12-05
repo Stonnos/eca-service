@@ -25,7 +25,7 @@ import { ReportsService } from "../../common/services/report.service";
 })
 export class ExperimentListComponent extends BaseListComponent<ExperimentDto> implements OnInit {
 
-  private static readonly EXPERIMENT_REPORTS_FILE_NAME = 'experiments-report.xlsx';
+  private static readonly EXPERIMENTS_REPORT_FILE_NAME = 'experiments-report.xlsx';
 
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
 
@@ -85,7 +85,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
         })
       )
       .subscribe((blob: Blob) => {
-        saveAs(blob, ExperimentListComponent.EXPERIMENT_REPORTS_FILE_NAME);
+        saveAs(blob, ExperimentListComponent.EXPERIMENTS_REPORT_FILE_NAME);
       }, (error) => {
         this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
       });
