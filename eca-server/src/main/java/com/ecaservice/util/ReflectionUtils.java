@@ -15,6 +15,14 @@ import static org.springframework.util.ReflectionUtils.doWithFields;
 @UtilityClass
 public class ReflectionUtils {
 
+    /**
+     * Cache key in format className.fieldName
+     */
+    private static final String KEY_FORMAT = "%s.%s";
+
+    /**
+     * Fields type cache
+     */
     private static final ConcurrentHashMap<String, Class<?>> fieldClassMap = new ConcurrentHashMap<>(256);
 
     /**
@@ -42,12 +50,13 @@ public class ReflectionUtils {
     }
 
     private static Class<?> getInternalFieldType(String fieldName, Class<?> clazz) {
-        Class<?> result = fieldClassMap.get(fieldName);
+        String key = String.format(KEY_FORMAT, clazz.getName(), fieldName);
+        Class<?> result = fieldClassMap.get(key);
         if (result == null) {
             doWithFields(clazz,
-                    field -> fieldClassMap.putIfAbsent(fieldName, field.getType()),
+                    field -> fieldClassMap.putIfAbsent(key, field.getType()),
                     field -> fieldName.equals(field.getName()));
-            return fieldClassMap.get(fieldName);
+            return fieldClassMap.get(key);
         }
         return result;
     }
