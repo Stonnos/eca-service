@@ -4,11 +4,11 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.mapping.*;
-import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.model.entity.Experiment_;
+import com.ecaservice.model.entity.*;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.report.BaseReportDataFetcher;
 import com.ecaservice.report.model.BaseReportBean;
+import com.ecaservice.report.model.EvaluationLogBean;
 import com.ecaservice.report.model.ExperimentBean;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.repository.EvaluationResultsRequestEntityRepository;
@@ -26,7 +26,6 @@ import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.google.common.collect.ImmutableList;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
@@ -100,6 +99,7 @@ public class BaseReportDataFetcherTest extends AbstractJpaTest {
     @Override
     public void deleteAll() {
         experimentRepository.deleteAll();
+        evaluationLogRepository.deleteAll();
     }
 
     @Test
@@ -108,8 +108,9 @@ public class BaseReportDataFetcherTest extends AbstractJpaTest {
         experiment.setCreationDate(CREATION_DATE);
         experiment.setExperimentType(ExperimentType.ADA_BOOST);
         experimentRepository.save(experiment);
+        String searchQuery = experiment.getUuid().substring(0, 10);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false, StringUtils.EMPTY, newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false, searchQuery, newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(Experiment_.CREATION_DATE, DATE_RANGE_VALUES,
                         MatchMode.RANGE));
@@ -120,6 +121,32 @@ public class BaseReportDataFetcherTest extends AbstractJpaTest {
                 new FilterRequestDto(Experiment_.EXPERIMENT_TYPE, Arrays.asList(ExperimentType.ADA_BOOST.name(), ExperimentType.HETEROGENEOUS_ENSEMBLE.name(), ExperimentType.NEURAL_NETWORKS.name()),
                         MatchMode.EQUALS));
         BaseReportBean<ExperimentBean> baseReportBean = baseReportDataFetcher.fetchExperimentsData(pageRequestDto);
+        assertBaseReportBean(baseReportBean, pageRequestDto);
+    }
+
+    @Test
+    public void testFetchEvaluationLogsData() {
+        EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
+        evaluationLog.setCreationDate(CREATION_DATE);
+        evaluationLog.setEvaluationStatus(RequestStatus.FINISHED);
+        evaluationLogRepository.save(evaluationLog);
+        String searchQuery = evaluationLog.getRequestId().substring(0, 10);
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, EvaluationLog_.CREATION_DATE, false, searchQuery, newArrayList());
+        pageRequestDto.getFilters().add(
+                new FilterRequestDto(EvaluationLog_.CREATION_DATE, DATE_RANGE_VALUES,
+                        MatchMode.RANGE));
+        pageRequestDto.getFilters().add(
+                new FilterRequestDto(EvaluationLog_.REQUEST_ID, Collections.singletonList(evaluationLog.getRequestId()),
+                        MatchMode.LIKE));
+        pageRequestDto.getFilters().add(
+                new FilterRequestDto(EvaluationLog_.EVALUATION_STATUS, Collections.singletonList(RequestStatus.FINISHED.name()),
+                        MatchMode.EQUALS));
+        BaseReportBean<EvaluationLogBean> baseReportBean = baseReportDataFetcher.fetchEvaluationLogs(pageRequestDto);
+        assertBaseReportBean(baseReportBean, pageRequestDto);
+    }
+
+    private <T> void assertBaseReportBean(BaseReportBean<T> baseReportBean, PageRequestDto pageRequestDto) {
         assertThat(baseReportBean).isNotNull();
         assertThat(baseReportBean.getPage()).isOne();
         assertThat(baseReportBean.getTotalPages()).isOne();
