@@ -2,10 +2,10 @@ package com.ecaservice.util;
 
 import lombok.experimental.UtilityClass;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.ecaservice.util.Utils.splitByPointSeparator;
+import static org.springframework.util.ReflectionUtils.doWithFields;
 
 /**
  * Reflection utility class.
@@ -14,6 +14,8 @@ import static com.ecaservice.util.Utils.splitByPointSeparator;
  */
 @UtilityClass
 public class ReflectionUtils {
+
+    private static final ConcurrentHashMap<String, Class<?>> fieldClassMap = new ConcurrentHashMap<>(256);
 
     /**
      * Gets getter method return type by field property. Note: Property can be composite, for example:
@@ -27,27 +29,26 @@ public class ReflectionUtils {
      * @return getter return type
      */
     public static Class<?> getGetterReturnType(String fieldName, Class<?> clazz) {
-        try {
-            String[] fieldLevels = splitByPointSeparator(fieldName);
-            return getTargetClazz(fieldLevels, clazz);
-        } catch (Exception ex) {
-            throw new IllegalStateException(
-                    String.format("Can't found getter for field [%s] of class %s", fieldName, clazz.getName()));
-        }
+        String[] fieldLevels = splitByPointSeparator(fieldName);
+        return getTargetClazz(fieldLevels, clazz);
     }
 
-    private static Class<?> getTargetClazz(String[] fieldLevels, Class<?> clazz)
-            throws IntrospectionException, NoSuchMethodException {
+    private static Class<?> getTargetClazz(String[] fieldLevels, Class<?> clazz) {
         Class<?> currentClazz = clazz;
         for (int i = 0; i < fieldLevels.length; i++) {
-            String getter = getGetterForField(fieldLevels[i], currentClazz);
-            currentClazz = currentClazz.getMethod(getter).getReturnType();
+            currentClazz = getFieldReturnType(fieldLevels[i], currentClazz);
         }
         return currentClazz;
     }
 
-    private static String getGetterForField(String fieldName, Class<?> clazz) throws IntrospectionException {
-        PropertyDescriptor propertyDescriptor = new PropertyDescriptor(fieldName, clazz);
-        return propertyDescriptor.getReadMethod().getName();
+    private static Class<?> getFieldReturnType(String fieldName, Class<?> clazz) {
+        Class<?> result = fieldClassMap.get(fieldName);
+        if (result == null) {
+            doWithFields(clazz,
+                    field -> fieldClassMap.putIfAbsent(fieldName, field.getType()),
+                    field -> fieldName.equals(field.getName()));
+            return fieldClassMap.get(fieldName);
+        }
+        return result;
     }
 }
