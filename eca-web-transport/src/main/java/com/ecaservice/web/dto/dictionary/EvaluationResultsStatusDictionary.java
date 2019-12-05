@@ -1,14 +1,14 @@
 package com.ecaservice.web.dto.dictionary;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * Evaluation results status status dictionary.
  *
  * @author Roman Batygin
  */
+@UtilityClass
 public class EvaluationResultsStatusDictionary {
-
-    private EvaluationResultsStatusDictionary() {
-    }
 
     public static final String RESULTS_RECEIVED_DESCRIPTION = "Получены результаты классификации";
     public static final String EVALUATION_IN_PROGRESS_DESCRIPTION = "Идет построение модели классификатора...";

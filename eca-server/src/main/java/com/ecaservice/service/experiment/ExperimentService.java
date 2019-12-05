@@ -87,21 +87,20 @@ public class ExperimentService implements PageRequestService<Experiment> {
      * @return created experiment entity
      */
     public Experiment createExperiment(ExperimentRequest experimentRequest) {
-        Experiment experiment = experimentMapper.map(experimentRequest);
         try {
+            Experiment experiment = experimentMapper.map(experimentRequest);
             experiment.setExperimentStatus(RequestStatus.NEW);
             experiment.setUuid(UUID.randomUUID().toString());
-            experiment.setCreationDate(LocalDateTime.now());
             File dataFile = new File(experimentConfig.getData().getStoragePath(),
                     String.format(experimentConfig.getData().getFileFormat(), experiment.getUuid()));
             dataService.save(dataFile, experimentRequest.getData());
             experiment.setTrainingDataAbsolutePath(dataFile.getAbsolutePath());
-            experimentRepository.save(experiment);
+            experiment.setCreationDate(LocalDateTime.now());
+            return experimentRepository.save(experiment);
         } catch (Exception ex) {
             log.error(ex.getMessage());
             throw new ExperimentException(ex.getMessage());
         }
-        return experiment;
     }
 
     /**
@@ -209,19 +208,19 @@ public class ExperimentService implements PageRequestService<Experiment> {
     }
 
     /**
-     * Calculates requests status counting statistics.
+     * Calculates experiment statuses counting statistics.
      *
      * @return requests status counting statistics list
      */
     public Map<RequestStatus, Long> getRequestStatusesStatistics() {
-        Map<RequestStatus, Long> requestStatusesMap =
+        Map<RequestStatus, Long> experimentStatusesMap =
                 experimentRepository.getRequestStatusesStatistics().stream().collect(
                         Collectors.toMap(RequestStatusStatistics::getRequestStatus,
                                 RequestStatusStatistics::getRequestsCount, (v1, v2) -> v1, TreeMap::new));
         Arrays.stream(RequestStatus.values()).filter(
-                requestStatus -> !requestStatusesMap.containsKey(requestStatus)).forEach(
-                requestStatus -> requestStatusesMap.put(requestStatus, 0L));
-        return requestStatusesMap;
+                requestStatus -> !experimentStatusesMap.containsKey(requestStatus)).forEach(
+                requestStatus -> experimentStatusesMap.put(requestStatus, 0L));
+        return experimentStatusesMap;
     }
 
     /**
