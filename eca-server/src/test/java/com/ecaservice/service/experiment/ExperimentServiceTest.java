@@ -59,6 +59,9 @@ import static org.mockito.Mockito.when;
 @Import({ExperimentMapperImpl.class, ExperimentConfig.class, CommonConfig.class})
 public class ExperimentServiceTest extends AbstractJpaTest {
 
+    private static final int PAGE_NUMBER = 0;
+    private static final int PAGE_SIZE = 10;
+
     @Inject
     private ExperimentRepository experimentRepository;
     @Inject
@@ -242,7 +245,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         Experiment experiment3 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR);
         experimentRepository.saveAll(Arrays.asList(experiment, experiment1, experiment2, experiment3));
         PageRequestDto pageRequestDto =
-                new PageRequestDto(0, 10, Experiment_.CREATION_DATE, false, experiment1.getUuid().substring(4, 10),
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false, experiment1.getUuid().substring(4, 10),
                         newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(Experiment_.EXPERIMENT_STATUS,
                 Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
@@ -263,7 +266,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT);
         Experiment experiment3 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR);
         experimentRepository.saveAll(Arrays.asList(experiment, experiment1, experiment2, experiment3));
-        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, Experiment_.CREATION_DATE, false,
+        PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false,
                 RequestStatus.FINISHED.getDescription().substring(0, 2), newArrayList());
         when(filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT)).thenReturn(
                 Collections.singletonList(Experiment_.EXPERIMENT_STATUS));
@@ -281,7 +284,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experimentRepository.saveAll(Arrays.asList(experiment, experiment1, experiment2));
-        PageRequestDto pageRequestDto = new PageRequestDto(0, 10, Experiment_.CREATION_DATE, false,
+        PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false,
                 "query", newArrayList());
         when(filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT)).thenReturn(
                 Collections.singletonList(Experiment_.EXPERIMENT_STATUS));
@@ -316,7 +319,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         experiment3.setCreationDate(LocalDateTime.of(2018, 1, 1, 9, 0, 0));
         experimentRepository.save(experiment3);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(0, 10, Experiment_.CREATION_DATE, false, null, newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false, null, newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(Experiment_.EXPERIMENT_STATUS, Collections.singletonList(RequestStatus.NEW.name()),
                         MatchMode.EQUALS));
@@ -349,7 +352,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         experiment3.setCreationDate(LocalDateTime.of(2018, 7, 1, 9, 0, 0));
         experimentRepository.save(experiment3);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(0, 10, Experiment_.CREATION_DATE, false, null, newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false, null, newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(Experiment_.CREATION_DATE, Arrays.asList("2018-01-01", "2018-05-01"),
                         MatchMode.RANGE));
@@ -380,7 +383,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         experiment2.setCreationDate(LocalDateTime.of(2018, 1, 2, 23, 59, 59));
         experimentRepository.save(experiment2);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(0, 10, Experiment_.CREATION_DATE, false, null, newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false, null, newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(Experiment_.CREATION_DATE, Arrays.asList("2018-01-01", "2018-01-02"),
                         MatchMode.RANGE));
@@ -397,7 +400,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
         experiment1.setCreationDate(LocalDateTime.of(2018, 1, 1, 23, 59, 59));
         experimentRepository.save(experiment1);
-        pageRequestDto = new PageRequestDto(0, 10, Experiment_.CREATION_DATE, false, null, newArrayList());
+        pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false, null, newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(Experiment_.CREATION_DATE, Arrays.asList("2018-01-01", "2018-01-01"),
                         MatchMode.RANGE));

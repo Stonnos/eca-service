@@ -37,6 +37,9 @@ import static org.mockito.Mockito.when;
 @Import(CommonConfig.class)
 public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
 
+    private static final int PAGE_NUMBER = 0;
+    private static final int PAGE_SIZE = 10;
+
     @Inject
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
     @Inject
@@ -82,7 +85,7 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
         classifierOptionsRequestModelRepository.saveAll(
                 Arrays.asList(requestModel, requestModel1, requestModel2, requestModel3));
         PageRequestDto pageRequestDto =
-                new PageRequestDto(0, 10, ClassifierOptionsRequestModel_.REQUEST_DATE, false, "gla", newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, "gla", newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.RESPONSE_STATUS,
                 Collections.singletonList(ErsResponseStatus.SUCCESS.name()), MatchMode.EQUALS));
         when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST)).thenReturn(
@@ -105,7 +108,7 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
         requestModel3.setRequestId(UUID.randomUUID().toString());
         classifierOptionsRequestModelRepository.save(requestModel3);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(0, 10, ClassifierOptionsRequestModel_.REQUEST_ID, false, null, newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_ID, false, null, newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.REQUEST_ID,
                 Collections.singletonList(requestModel2.getRequestId()), MatchMode.EQUALS));
         Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
