@@ -25,11 +25,11 @@ import static com.ecaservice.report.BaseReportGenerator.generateEvaluationLogsRe
 import static com.ecaservice.report.BaseReportGenerator.generateExperimentsReport;
 
 /**
- * Controller fot exporting base reports.
+ * Controller for reports downloading.
  *
  * @author Roman Batygin
  */
-@Api(tags = "Base reports controller for web application")
+@Api(tags = "Reports controller for web application")
 @Slf4j
 @RestController
 @RequestMapping("/reports")
@@ -43,7 +43,7 @@ public class ReportController {
     private final BaseReportDataFetcher baseReportDataFetcher;
 
     /**
-     * Exports experiments base report in xlsx format.
+     * Downloads experiments base report in xlsx format.
      *
      * @param pageRequestDto      - page request dto
      * @param httpServletResponse - http servlet response
@@ -51,11 +51,11 @@ public class ReportController {
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
-            value = "Exports experiments base report in xlsx format",
-            notes = "Exports experiments base report in xlsx format"
+            value = "Downloads experiments base report in xlsx format",
+            notes = "Downloads experiments base report in xlsx format"
     )
     @GetMapping(value = "/experiments")
-    public void exportExperimentsReport(PageRequestDto pageRequestDto,
+    public void downloadExperimentsReport(PageRequestDto pageRequestDto,
                                         HttpServletResponse httpServletResponse) throws IOException {
         @Cleanup OutputStream outputStream = httpServletResponse.getOutputStream();
         httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
@@ -67,7 +67,7 @@ public class ReportController {
     }
 
     /**
-     * Exports evaluation logs base report in xlsx format.
+     * Downloads evaluation logs base report in xlsx format.
      *
      * @param pageRequestDto      - page request dto
      * @param httpServletResponse - http servlet response
@@ -75,11 +75,11 @@ public class ReportController {
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
-            value = "Exports evaluation logs base report in xlsx format",
-            notes = "Exports evaluation logs base report in xlsx format"
+            value = "Downloads evaluation logs base report in xlsx format",
+            notes = "Downloads evaluation logs base report in xlsx format"
     )
     @GetMapping(value = "/evaluations")
-    public void exportEvaluationLogs(PageRequestDto pageRequestDto,
+    public void downloadEvaluationLogs(PageRequestDto pageRequestDto,
                                      HttpServletResponse httpServletResponse) throws IOException {
         @Cleanup OutputStream outputStream = httpServletResponse.getOutputStream();
         httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);

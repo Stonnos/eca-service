@@ -132,12 +132,12 @@ public class BaseReportDataFetcher {
     }
 
     private String getRangeAsString(List<String> values, Class fieldClazz) {
-        String lowerBound = values.get(0);
-        String upperBound = values.size() > 1 ? values.get(1) : null;
         if (!LocalDateTime.class.isAssignableFrom(fieldClazz)) {
             throw new IllegalStateException(
                     String.format("Can't get range value as string for field class %s", fieldClazz.getSimpleName()));
         } else {
+            String lowerBound = values.get(0);
+            String upperBound = values.size() > 1 ? values.get(1) : null;
             return formatDateRange(lowerBound, upperBound);
         }
     }

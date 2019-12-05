@@ -46,21 +46,6 @@ public class EvaluationLogBean {
     private String evaluationMethod;
 
     /**
-     * Folds number for k * V cross - validation method
-     */
-    private Integer numFolds;
-
-    /**
-     * Tests number for k * V cross - validation method
-     */
-    private Integer numTests;
-
-    /**
-     * Seed value for k * V cross - validation method
-     */
-    private Integer seed;
-
-    /**
      * Training data name
      */
     private String relationName;
