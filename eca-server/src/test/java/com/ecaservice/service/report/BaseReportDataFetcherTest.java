@@ -3,8 +3,18 @@ package com.ecaservice.service.report;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.mapping.*;
-import com.ecaservice.model.entity.*;
+import com.ecaservice.mapping.ClassifierInfoMapperImpl;
+import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
+import com.ecaservice.mapping.EvaluationLogMapper;
+import com.ecaservice.mapping.EvaluationLogMapperImpl;
+import com.ecaservice.mapping.ExperimentMapper;
+import com.ecaservice.mapping.ExperimentMapperImpl;
+import com.ecaservice.mapping.InstancesInfoMapperImpl;
+import com.ecaservice.model.entity.EvaluationLog;
+import com.ecaservice.model.entity.EvaluationLog_;
+import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.model.entity.Experiment_;
+import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.report.BaseReportDataFetcher;
 import com.ecaservice.report.model.BaseReportBean;
@@ -89,11 +99,15 @@ public class BaseReportDataFetcherTest extends AbstractJpaTest {
     public void init() {
         CalculationExecutorService executorService =
                 new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
-        ExperimentService experimentService = new ExperimentService(experimentRepository, executorService, experimentMapper, dataService,
-                experimentConfig, experimentProcessorService, entityManager, commonConfig, filterService);
-        EvaluationLogService evaluationLogService = new EvaluationLogService(commonConfig, filterService, evaluationLogMapper, ersService,
-                evaluationLogRepository, evaluationResultsRequestEntityRepository);
-        baseReportDataFetcher = new BaseReportDataFetcher(filterService, experimentService, evaluationLogService, experimentMapper, evaluationLogMapper);
+        ExperimentService experimentService =
+                new ExperimentService(experimentRepository, executorService, experimentMapper, dataService,
+                        experimentConfig, experimentProcessorService, entityManager, commonConfig, filterService);
+        EvaluationLogService evaluationLogService =
+                new EvaluationLogService(commonConfig, filterService, evaluationLogMapper, ersService,
+                        evaluationLogRepository, evaluationResultsRequestEntityRepository);
+        baseReportDataFetcher =
+                new BaseReportDataFetcher(filterService, experimentService, evaluationLogService, experimentMapper,
+                        evaluationLogMapper);
     }
 
     @Override
@@ -110,16 +124,16 @@ public class BaseReportDataFetcherTest extends AbstractJpaTest {
         experimentRepository.save(experiment);
         String searchQuery = experiment.getUuid().substring(0, 10);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false, searchQuery, newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false, searchQuery,
+                        newArrayList());
         pageRequestDto.getFilters().add(
-                new FilterRequestDto(Experiment_.CREATION_DATE, DATE_RANGE_VALUES,
-                        MatchMode.RANGE));
+                new FilterRequestDto(Experiment_.CREATION_DATE, DATE_RANGE_VALUES, MatchMode.RANGE));
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(Experiment_.UUID, Collections.singletonList(experiment.getUuid()),
                         MatchMode.LIKE));
-        pageRequestDto.getFilters().add(
-                new FilterRequestDto(Experiment_.EXPERIMENT_TYPE, Arrays.asList(ExperimentType.ADA_BOOST.name(), ExperimentType.HETEROGENEOUS_ENSEMBLE.name(), ExperimentType.NEURAL_NETWORKS.name()),
-                        MatchMode.EQUALS));
+        pageRequestDto.getFilters().add(new FilterRequestDto(Experiment_.EXPERIMENT_TYPE,
+                Arrays.asList(ExperimentType.ADA_BOOST.name(), ExperimentType.HETEROGENEOUS_ENSEMBLE.name(),
+                        ExperimentType.NEURAL_NETWORKS.name()), MatchMode.EQUALS));
         BaseReportBean<ExperimentBean> baseReportBean = baseReportDataFetcher.fetchExperimentsData(pageRequestDto);
         assertBaseReportBean(baseReportBean, pageRequestDto);
     }
@@ -132,16 +146,15 @@ public class BaseReportDataFetcherTest extends AbstractJpaTest {
         evaluationLogRepository.save(evaluationLog);
         String searchQuery = evaluationLog.getRequestId().substring(0, 10);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, EvaluationLog_.CREATION_DATE, false, searchQuery, newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, EvaluationLog_.CREATION_DATE, false, searchQuery,
+                        newArrayList());
         pageRequestDto.getFilters().add(
-                new FilterRequestDto(EvaluationLog_.CREATION_DATE, DATE_RANGE_VALUES,
-                        MatchMode.RANGE));
+                new FilterRequestDto(EvaluationLog_.CREATION_DATE, DATE_RANGE_VALUES, MatchMode.RANGE));
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(EvaluationLog_.REQUEST_ID, Collections.singletonList(evaluationLog.getRequestId()),
                         MatchMode.LIKE));
-        pageRequestDto.getFilters().add(
-                new FilterRequestDto(EvaluationLog_.EVALUATION_STATUS, Collections.singletonList(RequestStatus.FINISHED.name()),
-                        MatchMode.EQUALS));
+        pageRequestDto.getFilters().add(new FilterRequestDto(EvaluationLog_.EVALUATION_STATUS,
+                Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
         BaseReportBean<EvaluationLogBean> baseReportBean = baseReportDataFetcher.fetchEvaluationLogs(pageRequestDto);
         assertBaseReportBean(baseReportBean, pageRequestDto);
     }
