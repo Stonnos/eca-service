@@ -304,10 +304,12 @@ public class TestHelperUtils {
      */
     public static EvaluationLog createEvaluationLog() {
         EvaluationLog evaluationLog = new EvaluationLog();
+        evaluationLog.setRequestId(UUID.randomUUID().toString());
         evaluationLog.setCreationDate(LocalDateTime.now());
         evaluationLog.setStartDate(LocalDateTime.now());
         evaluationLog.setEndDate(LocalDateTime.now());
         evaluationLog.setClassifierInfo(createClassifierInfo());
+        evaluationLog.setInstancesInfo(createInstancesInfo());
         evaluationLog.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         evaluationLog.setEvaluationStatus(RequestStatus.FINISHED);
         evaluationLog.setEvaluationOptionsMap(Collections.emptyMap());
