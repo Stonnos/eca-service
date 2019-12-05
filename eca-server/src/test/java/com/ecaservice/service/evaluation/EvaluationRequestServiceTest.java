@@ -6,7 +6,6 @@ import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.configuation.ExecutorConfiguration;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
-import com.ecaservice.exception.EcaServiceException;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
 import com.ecaservice.mapping.EvaluationLogMapper;

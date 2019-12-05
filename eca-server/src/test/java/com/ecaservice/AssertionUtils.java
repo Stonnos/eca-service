@@ -1,5 +1,6 @@
 package com.ecaservice;
 
+import lombok.experimental.UtilityClass;
 import org.assertj.core.api.Assertions;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
  *
  * @author Roman Batygin
  */
-
+@UtilityClass
 public class AssertionUtils {
 
     /**

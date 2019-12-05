@@ -94,8 +94,8 @@ public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
 
     @Test(expected = ExperimentException.class)
     public void testNotSpecifiedConfigsDirectory() {
-        ExperimentConfig experimentConfig = new ExperimentConfig();
-        ReflectionTestUtils.setField(experimentConfigurationService, "experimentConfig", experimentConfig);
+        ExperimentConfig config = new ExperimentConfig();
+        ReflectionTestUtils.setField(experimentConfigurationService, "experimentConfig", config);
         experimentConfigurationService.saveClassifiersOptions();
     }
 
