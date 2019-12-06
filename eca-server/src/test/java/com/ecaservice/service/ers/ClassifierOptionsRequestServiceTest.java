@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -37,6 +38,8 @@ import static org.mockito.Mockito.when;
  */
 @Import(CommonConfig.class)
 public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
+
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
@@ -139,6 +142,22 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, null, newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.REQUEST_ID,
                 Arrays.asList(requestModel.getRequestId(), requestModel.getRequestId()), MatchMode.RANGE));
+        Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
+                classifierOptionsRequestService.getNextPage(pageRequestDto);
+        assertThat(classifierOptionsRequestModelPage).isNotNull();
+        assertThat(classifierOptionsRequestModelPage.getTotalElements()).isOne();
+    }
+
+    @Test
+    public void testEqualsFilterByDateField() {
+        ClassifierOptionsRequestModel requestModel =
+                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
+                        ErsResponseStatus.ERROR, Collections.emptyList());
+        classifierOptionsRequestModelRepository.save(requestModel);
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, null, newArrayList());
+        pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.REQUEST_DATE,
+                Collections.singletonList(dateTimeFormatter.format(requestModel.getRequestDate())), MatchMode.EQUALS));
         Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
                 classifierOptionsRequestService.getNextPage(pageRequestDto);
         assertThat(classifierOptionsRequestModelPage).isNotNull();
