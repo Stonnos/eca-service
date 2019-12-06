@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 
 import javax.inject.Inject;
@@ -117,7 +118,61 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
                 classifierOptionsRequestModelPage.getContent();
         assertThat(classifierOptionsRequestModelPage).isNotNull();
         assertThat(classifierOptionsRequestModelPage.getTotalElements()).isOne();
-        assertThat(classifierOptionsRequestModels.size()).isOne();
         assertThat(classifierOptionsRequestModels.get(0).getRequestId()).isEqualTo(requestModel2.getRequestId());
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void testRangeFilterForIllegalFieldType() {
+        FilterRequestDto filterRequestDto = new FilterRequestDto(ClassifierOptionsRequestModel_.RESPONSE_STATUS,
+                Arrays.asList(ErsResponseStatus.RESULTS_NOT_FOUND.name(), ErsResponseStatus.ERROR.name()), MatchMode.RANGE);
+        testFilterForIllegalFieldType(filterRequestDto);
+    }
+
+    @Test
+    public void testRangeFilterForStringField() {
+        ClassifierOptionsRequestModel requestModel =
+                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
+                        ErsResponseStatus.ERROR, Collections.emptyList());
+        requestModel.setRequestId(UUID.randomUUID().toString());
+        classifierOptionsRequestModelRepository.save(requestModel);
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, null, newArrayList());
+        pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.REQUEST_ID,
+                Arrays.asList(requestModel.getRequestId(), requestModel.getRequestId()), MatchMode.RANGE));
+        Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
+                classifierOptionsRequestService.getNextPage(pageRequestDto);
+        assertThat(classifierOptionsRequestModelPage).isNotNull();
+        assertThat(classifierOptionsRequestModelPage.getTotalElements()).isOne();
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void testLikeFilterForNotStringField() {
+        FilterRequestDto filterRequestDto = new FilterRequestDto(ClassifierOptionsRequestModel_.REQUEST_DATE,
+                Collections.singletonList("2018-11-11"), MatchMode.LIKE);
+        testFilterForIllegalFieldType(filterRequestDto);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void testGlobalFilterForNotStringField() {
+        when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST)).thenReturn(
+                Collections.singletonList(ClassifierOptionsRequestModel_.REQUEST_DATE));
+        ClassifierOptionsRequestModel requestModel =
+                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
+                        ErsResponseStatus.ERROR, Collections.emptyList());
+        classifierOptionsRequestModelRepository.save(requestModel);
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, "query", newArrayList());
+        classifierOptionsRequestService.getNextPage(pageRequestDto);
+    }
+
+    private void testFilterForIllegalFieldType(FilterRequestDto filterRequestDto) {
+        ClassifierOptionsRequestModel requestModel =
+                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
+                        ErsResponseStatus.ERROR, Collections.emptyList());
+        classifierOptionsRequestModelRepository.save(requestModel);
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, null, newArrayList());
+        pageRequestDto.getFilters().add(filterRequestDto);
+        classifierOptionsRequestService.getNextPage(pageRequestDto);
     }
 }
