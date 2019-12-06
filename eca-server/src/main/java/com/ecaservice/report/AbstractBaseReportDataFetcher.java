@@ -18,6 +18,7 @@ import org.springframework.util.CollectionUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.util.RangeUtils.formatDateRange;
@@ -73,7 +74,7 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
                 Collectors.toMap(FilterFieldDto::getFieldName, FilterFieldDto::getDescription));
         List<FilterBean> filterBeans = newArrayList();
         if (!CollectionUtils.isEmpty(pageRequestDto.getFilters())) {
-            pageRequestDto.getFilters().forEach(filterRequestDto -> {
+            pageRequestDto.getFilters().stream().filter(Objects::nonNull).forEach(filterRequestDto -> {
                 if (!CollectionUtils.isEmpty(filterRequestDto.getValues())) {
                     List<String> values = filterRequestDto.getValues().stream().filter(StringUtils::isNotBlank).map(
                             String::trim).collect(Collectors.toList());
