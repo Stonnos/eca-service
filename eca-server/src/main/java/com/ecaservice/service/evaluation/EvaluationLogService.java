@@ -26,13 +26,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import static com.ecaservice.util.Utils.buildEvaluationResultsDto;
+import static com.ecaservice.util.Utils.toRequestStatusStatisticsMap;
 
 /**
  * Evaluation log service.
@@ -79,14 +77,8 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
      * @return requests status counting statistics list
      */
     public Map<RequestStatus, Long> getRequestStatusesStatistics() {
-        Map<RequestStatus, Long> evaluationStatusesMap =
-                evaluationLogRepository.getRequestStatusesStatistics().stream().collect(
-                        Collectors.toMap(RequestStatusStatistics::getRequestStatus,
-                                RequestStatusStatistics::getRequestsCount, (v1, v2) -> v1, TreeMap::new));
-        Arrays.stream(RequestStatus.values()).filter(
-                requestStatus -> !evaluationStatusesMap.containsKey(requestStatus)).forEach(
-                requestStatus -> evaluationStatusesMap.put(requestStatus, 0L));
-        return evaluationStatusesMap;
+        List<RequestStatusStatistics> requestStatusStatistics = evaluationLogRepository.getRequestStatusesStatistics();
+        return toRequestStatusStatisticsMap(requestStatusStatistics);
     }
 
     private EvaluationResultsDto getEvaluationResults(EvaluationLog evaluationLog) {
