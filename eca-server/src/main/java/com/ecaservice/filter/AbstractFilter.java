@@ -6,6 +6,7 @@ import eca.core.DescriptiveEnum;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -27,6 +28,7 @@ import java.util.stream.Stream;
 
 import static com.ecaservice.util.ReflectionUtils.getFieldType;
 import static com.ecaservice.util.Utils.splitByPointSeparator;
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Implements filter based on JPA specification.
@@ -62,6 +64,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     protected AbstractFilter(Class<T> clazz, String searchQuery, List<String> globalFilterFields,
                              List<FilterRequestDto> filters) {
+        Assert.notNull(clazz, "Class isn't specified!");
         this.clazz = clazz;
         this.searchQuery = searchQuery;
         this.globalFilterFields = globalFilterFields;
@@ -75,7 +78,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
     }
 
     private List<Predicate> buildPredicates(Root<T> root, CriteriaBuilder criteriaBuilder) {
-        List<Predicate> predicates = new ArrayList<>();
+        List<Predicate> predicates = newArrayList();
         if (StringUtils.isNotBlank(searchQuery) && !CollectionUtils.isEmpty(globalFilterFields)) {
             predicates.add(buildPredicateForGlobalFilter(root, criteriaBuilder));
         }
@@ -95,7 +98,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     private List<Predicate> buildPredicatesForFilters(Root<T> root, CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
-        filters.forEach(filterRequestDto -> {
+        filters.stream().filter(Objects::nonNull).forEach(filterRequestDto -> {
             if (!CollectionUtils.isEmpty(filterRequestDto.getValues())) {
                 List<String> values = filterRequestDto.getValues().stream().filter(StringUtils::isNotBlank).map(
                         String::trim).collect(Collectors.toList());
@@ -207,7 +210,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     private <E> Expression<E> buildExpression(Root<T> root, String fieldName) {
         String[] fieldLevels = splitByPointSeparator(fieldName);
-        if (fieldLevels.length > 1) {
+        if (fieldLevels != null && fieldLevels.length > 1) {
             Join<T, ?> join = root.join(fieldLevels[0]);
             return join.get(fieldLevels[1]);
         } else {

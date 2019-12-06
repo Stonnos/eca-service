@@ -1,6 +1,7 @@
 package com.ecaservice.util;
 
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -37,6 +38,9 @@ public class ReflectionUtils {
      * @return field type
      */
     public static Class<?> getFieldType(String fieldName, Class<?> clazz) {
+        if (StringUtils.isBlank(fieldName)) {
+            throw new IllegalArgumentException("Field name is blank string!");
+        }
         String[] fieldLevels = splitByPointSeparator(fieldName);
         return getTargetClazz(fieldLevels, clazz);
     }
