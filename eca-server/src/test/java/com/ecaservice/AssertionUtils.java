@@ -1,9 +1,13 @@
 package com.ecaservice;
 
+import com.ecaservice.report.model.BaseReportBean;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.experimental.UtilityClass;
 import org.assertj.core.api.Assertions;
 
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Assertion utility class.
@@ -23,5 +27,23 @@ public class AssertionUtils {
         Assertions.assertThat(list).isNotNull();
         Assertions.assertThat(list).isNotEmpty();
         Assertions.assertThat(list.size()).isOne();
+    }
+
+    /**
+     * Asserts base report bean.
+     *
+     * @param baseReportBean - base report bean
+     * @param pageRequestDto - page request dto
+     * @param <T>            - beans generic type
+     */
+    public static <T> void assertBaseReportBean(BaseReportBean<T> baseReportBean, PageRequestDto pageRequestDto) {
+        assertThat(baseReportBean).isNotNull();
+        assertThat(baseReportBean.getPage()).isOne();
+        assertThat(baseReportBean.getTotalPages()).isOne();
+        assertThat(baseReportBean.getSearchQuery()).isNotNull();
+        assertThat(baseReportBean.getItems()).isNotNull();
+        assertThat(baseReportBean.getItems().size()).isOne();
+        assertThat(baseReportBean.getFilters()).isNotNull();
+        assertThat(baseReportBean.getFilters()).hasSameSizeAs(pageRequestDto.getFilters());
     }
 }

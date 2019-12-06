@@ -1,6 +1,7 @@
 package com.ecaservice.controller.web;
 
-import com.ecaservice.report.BaseReportDataFetcher;
+import com.ecaservice.report.EvaluationLogsBaseReportDataFetcher;
+import com.ecaservice.report.ExperimentsBaseReportDataFetcher;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.EvaluationLogBean;
 import com.ecaservice.report.model.ExperimentBean;
@@ -40,7 +41,8 @@ public class ReportController {
     private static final String EXPERIMENTS_REPORT_NAME = "experiments-report.xlsx";
     private static final String EVALUATION_LOGS_REPORT_NAME = "evaluation-logs-report.xlsx";
 
-    private final BaseReportDataFetcher baseReportDataFetcher;
+    private final ExperimentsBaseReportDataFetcher experimentsBaseReportDataFetcher;
+    private final EvaluationLogsBaseReportDataFetcher evaluationLogsBaseReportDataFetcher;
 
     /**
      * Downloads experiments base report in xlsx format.
@@ -61,7 +63,8 @@ public class ReportController {
         httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
         httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION,
                 String.format(ATTACHMENT_FORMAT, EXPERIMENTS_REPORT_NAME));
-        BaseReportBean<ExperimentBean> baseReportBean = baseReportDataFetcher.fetchExperimentsData(pageRequestDto);
+        BaseReportBean<ExperimentBean> baseReportBean =
+                experimentsBaseReportDataFetcher.fetchReportData(pageRequestDto);
         generateExperimentsReport(baseReportBean, outputStream);
         outputStream.flush();
     }
@@ -85,7 +88,8 @@ public class ReportController {
         httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
         httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION,
                 String.format(ATTACHMENT_FORMAT, EVALUATION_LOGS_REPORT_NAME));
-        BaseReportBean<EvaluationLogBean> baseReportBean = baseReportDataFetcher.fetchEvaluationLogs(pageRequestDto);
+        BaseReportBean<EvaluationLogBean> baseReportBean =
+                evaluationLogsBaseReportDataFetcher.fetchReportData(pageRequestDto);
         generateEvaluationLogsReport(baseReportBean, outputStream);
         outputStream.flush();
     }
