@@ -5,6 +5,7 @@ import com.ecaservice.filter.EvaluationLogFilter;
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.EvaluationLog;
+import com.ecaservice.model.entity.EvaluationLog_;
 import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.model.entity.RequestStatus;
@@ -51,7 +52,8 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
 
     @Override
     public Page<EvaluationLog> getNextPage(PageRequestDto pageRequestDto) {
-        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
+        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), EvaluationLog_.CREATION_DATE,
+                pageRequestDto.isAscending());
         List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG);
         EvaluationLogFilter filter = new EvaluationLogFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());

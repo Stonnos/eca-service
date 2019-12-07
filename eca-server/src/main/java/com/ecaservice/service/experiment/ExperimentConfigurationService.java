@@ -4,6 +4,7 @@ import com.ecaservice.config.CacheNames;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
+import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.service.PageRequestService;
@@ -92,7 +93,8 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
     @Override
     public Page<ClassifierOptionsDatabaseModel> getNextPage(PageRequestDto pageRequestDto) {
         int lastVersion = classifierOptionsDatabaseModelRepository.findLatestVersion();
-        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
+        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), ClassifierOptionsDatabaseModel_.CREATION_DATE,
+                pageRequestDto.isAscending());
         int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
         return classifierOptionsDatabaseModelRepository.findAllByVersion(lastVersion,
                 PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
