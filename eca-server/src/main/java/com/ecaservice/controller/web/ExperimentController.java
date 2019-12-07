@@ -50,6 +50,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
@@ -177,7 +178,7 @@ public class ExperimentController {
             notes = "Finds experiments with specified options"
     )
     @GetMapping(value = "/list")
-    public PageDto<ExperimentDto> getExperiments(PageRequestDto pageRequestDto) {
+    public PageDto<ExperimentDto> getExperiments(@Valid PageRequestDto pageRequestDto) {
         log.info("Received experiments page request: {}", pageRequestDto);
         Page<Experiment> experimentPage = experimentService.getNextPage(pageRequestDto);
         List<ExperimentDto> experimentDtoList = experimentMapper.map(experimentPage.getContent());

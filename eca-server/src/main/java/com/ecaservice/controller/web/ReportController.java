@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -57,8 +58,8 @@ public class ReportController {
             notes = "Downloads experiments base report in xlsx format"
     )
     @GetMapping(value = "/experiments")
-    public void downloadExperimentsReport(PageRequestDto pageRequestDto,
-                                        HttpServletResponse httpServletResponse) throws IOException {
+    public void downloadExperimentsReport(@Valid PageRequestDto pageRequestDto, HttpServletResponse httpServletResponse)
+            throws IOException {
         @Cleanup OutputStream outputStream = httpServletResponse.getOutputStream();
         httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
         httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION,
@@ -82,8 +83,8 @@ public class ReportController {
             notes = "Downloads evaluation logs base report in xlsx format"
     )
     @GetMapping(value = "/evaluations")
-    public void downloadEvaluationLogs(PageRequestDto pageRequestDto,
-                                     HttpServletResponse httpServletResponse) throws IOException {
+    public void downloadEvaluationLogs(@Valid PageRequestDto pageRequestDto, HttpServletResponse httpServletResponse)
+            throws IOException {
         @Cleanup OutputStream outputStream = httpServletResponse.getOutputStream();
         httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
         httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION,
