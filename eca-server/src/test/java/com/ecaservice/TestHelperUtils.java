@@ -905,9 +905,8 @@ public class TestHelperUtils {
      * Creates experiment history.
      *
      * @return experiment history
-     * @throws Exception in case of error
      */
-    public static ExperimentHistory createExperimentHistory() throws Exception {
+    public static ExperimentHistory createExperimentHistory() {
         ExperimentHistory experimentHistory = new ExperimentHistory();
         experimentHistory.setExperiment(newArrayList());
         experimentHistory.getExperiment().add(getEvaluationResults());
