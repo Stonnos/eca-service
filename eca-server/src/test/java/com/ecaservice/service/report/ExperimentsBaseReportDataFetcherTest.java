@@ -106,7 +106,8 @@ public class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
         pageRequestDto.getFilters().add(new FilterRequestDto(Experiment_.EXPERIMENT_TYPE,
                 Arrays.asList(ExperimentType.ADA_BOOST.name(), ExperimentType.HETEROGENEOUS_ENSEMBLE.name(),
                         ExperimentType.NEURAL_NETWORKS.name()), MatchMode.EQUALS));
-        BaseReportBean<ExperimentBean> baseReportBean = experimentsBaseReportDataFetcher.fetchReportData(pageRequestDto);
+        BaseReportBean<ExperimentBean> baseReportBean =
+                experimentsBaseReportDataFetcher.fetchReportData(pageRequestDto);
         assertBaseReportBean(baseReportBean, pageRequestDto);
     }
 }

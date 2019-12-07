@@ -89,7 +89,8 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
         classifierOptionsRequestModelRepository.saveAll(
                 Arrays.asList(requestModel, requestModel1, requestModel2, requestModel3));
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, "gla", newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, "gla",
+                        newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.RESPONSE_STATUS,
                 Collections.singletonList(ErsResponseStatus.SUCCESS.name()), MatchMode.EQUALS));
         when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST)).thenReturn(
@@ -112,7 +113,8 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
         requestModel3.setRequestId(UUID.randomUUID().toString());
         classifierOptionsRequestModelRepository.save(requestModel3);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_ID, false, null, newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_ID, false, null,
+                        newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.REQUEST_ID,
                 Collections.singletonList(requestModel2.getRequestId()), MatchMode.EQUALS));
         Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
@@ -127,7 +129,8 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
     @Test(expected = InvalidDataAccessApiUsageException.class)
     public void testRangeFilterForIllegalFieldType() {
         FilterRequestDto filterRequestDto = new FilterRequestDto(ClassifierOptionsRequestModel_.RESPONSE_STATUS,
-                Arrays.asList(ErsResponseStatus.RESULTS_NOT_FOUND.name(), ErsResponseStatus.ERROR.name()), MatchMode.RANGE);
+                Arrays.asList(ErsResponseStatus.RESULTS_NOT_FOUND.name(), ErsResponseStatus.ERROR.name()),
+                MatchMode.RANGE);
         testFilterForIllegalFieldType(filterRequestDto);
     }
 
@@ -139,7 +142,8 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
         requestModel.setRequestId(UUID.randomUUID().toString());
         classifierOptionsRequestModelRepository.save(requestModel);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, null, newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, null,
+                        newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.REQUEST_ID,
                 Arrays.asList(requestModel.getRequestId(), requestModel.getRequestId()), MatchMode.RANGE));
         Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
@@ -155,7 +159,8 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
                         ErsResponseStatus.ERROR, Collections.emptyList());
         classifierOptionsRequestModelRepository.save(requestModel);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, null, newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, null,
+                        newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.REQUEST_DATE,
                 Collections.singletonList(dateTimeFormatter.format(requestModel.getRequestDate())), MatchMode.EQUALS));
         Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
@@ -180,7 +185,8 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
                         ErsResponseStatus.ERROR, Collections.emptyList());
         classifierOptionsRequestModelRepository.save(requestModel);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, "query", newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, "query",
+                        newArrayList());
         classifierOptionsRequestService.getNextPage(pageRequestDto);
     }
 
@@ -190,7 +196,8 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
                         ErsResponseStatus.ERROR, Collections.emptyList());
         classifierOptionsRequestModelRepository.save(requestModel);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, null, newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, null,
+                        newArrayList());
         pageRequestDto.getFilters().add(filterRequestDto);
         classifierOptionsRequestService.getNextPage(pageRequestDto);
     }
