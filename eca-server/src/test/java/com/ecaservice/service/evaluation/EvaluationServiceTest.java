@@ -50,7 +50,7 @@ public class EvaluationServiceTest {
     private Instances testInstances;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         testInstances = TestHelperUtils.loadInstances();
         evaluationService = new EvaluationService(config);
     }

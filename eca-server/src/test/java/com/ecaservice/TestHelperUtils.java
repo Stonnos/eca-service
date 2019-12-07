@@ -134,26 +134,33 @@ public class TestHelperUtils {
      *
      * @return created training data
      */
-    public static Instances loadInstances() throws Exception {
-        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-        XLSLoader dataLoader = new XLSLoader();
-        dataLoader.setSource(new FileResource(new File(classLoader.getResource(DATA_PATH).getFile())));
-        return dataLoader.loadInstances();
+    public static Instances loadInstances() {
+        try {
+            ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+            XLSLoader dataLoader = new XLSLoader();
+            dataLoader.setSource(new FileResource(new File(classLoader.getResource(DATA_PATH).getFile())));
+            return dataLoader.loadInstances();
+        } catch (Exception ex) {
+            throw new IllegalStateException(ex.getMessage());
+        }
     }
 
     /**
      * Evaluation classifier and returns its evaluation results.
      *
      * @return evaluation results
-     * @throws Exception in case of error
      */
-    public static EvaluationResults getEvaluationResults() throws Exception {
-        CART cart = new CART();
-        Instances testInstances = loadInstances();
-        Evaluation evaluation = EvaluationService.evaluateModel(cart, testInstances,
-                eca.core.evaluation.EvaluationMethod.CROSS_VALIDATION, TestHelperUtils.NUM_FOLDS,
-                TestHelperUtils.NUM_TESTS, new Random(SEED));
-        return new EvaluationResults(cart, evaluation);
+    public static EvaluationResults getEvaluationResults() {
+        try {
+            CART cart = new CART();
+            Instances testInstances = loadInstances();
+            Evaluation evaluation = EvaluationService.evaluateModel(cart, testInstances,
+                    eca.core.evaluation.EvaluationMethod.CROSS_VALIDATION, TestHelperUtils.NUM_FOLDS,
+                    TestHelperUtils.NUM_TESTS, new Random(SEED));
+            return new EvaluationResults(cart, evaluation);
+        } catch (Exception ex) {
+            throw new IllegalStateException(ex.getMessage());
+        }
     }
 
     /**
@@ -161,7 +168,7 @@ public class TestHelperUtils {
      *
      * @return created evaluation request
      */
-    public static EvaluationRequest createEvaluationRequest() throws Exception {
+    public static EvaluationRequest createEvaluationRequest() {
         EvaluationRequest request = new EvaluationRequest();
         request.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         request.setEvaluationOptionsMap(Collections.emptyMap());
@@ -189,7 +196,7 @@ public class TestHelperUtils {
      *
      * @return created experiment request
      */
-    public static ExperimentRequest createExperimentRequest() throws Exception {
+    public static ExperimentRequest createExperimentRequest() {
         ExperimentRequest experimentRequest = new ExperimentRequest();
         experimentRequest.setExperimentType(ExperimentType.KNN);
         experimentRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
@@ -263,7 +270,7 @@ public class TestHelperUtils {
      *
      * @return initialization params
      */
-    public static InitializationParams createInitializationParams() throws Exception {
+    public static InitializationParams createInitializationParams() {
         InitializationParams initializationParams = new InitializationParams();
         initializationParams.setData(loadInstances());
         initializationParams.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);

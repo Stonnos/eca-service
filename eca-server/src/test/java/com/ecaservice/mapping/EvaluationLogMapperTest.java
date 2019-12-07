@@ -34,7 +34,7 @@ public class EvaluationLogMapperTest {
     private EvaluationLogMapper evaluationLogMapper;
 
     @Test
-    public void testMapToEvaluationLog() throws Exception {
+    public void testMapToEvaluationLog() {
         EvaluationRequest evaluationRequest = new EvaluationRequest();
         evaluationRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         evaluationRequest.setEvaluationOptionsMap(new HashMap<>());

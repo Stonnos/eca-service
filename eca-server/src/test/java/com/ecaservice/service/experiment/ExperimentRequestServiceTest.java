@@ -45,7 +45,7 @@ public class ExperimentRequestServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testSuccessCreation() throws Exception {
+    public void testSuccessCreation() {
         ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         when(experimentService.createExperiment(experimentRequest)).thenReturn(experiment);

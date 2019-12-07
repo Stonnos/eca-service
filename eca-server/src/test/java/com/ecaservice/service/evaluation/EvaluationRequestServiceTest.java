@@ -102,7 +102,7 @@ public class EvaluationRequestServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testClassificationWithError() throws Exception {
+    public void testClassificationWithError() {
         EvaluationRequest request = TestHelperUtils.createEvaluationRequest();
         request.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         request.setEvaluationOptionsMap(new EnumMap<>(EvaluationOption.class));

@@ -37,7 +37,7 @@ public class ExperimentMapperTest {
     private ExperimentMapper experimentMapper;
 
     @Test
-    public void testMapExperimentRequest() throws Exception {
+    public void testMapExperimentRequest() {
         ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
         Experiment experiment = experimentMapper.map(experimentRequest);
         assertThat(experiment).isNotNull();

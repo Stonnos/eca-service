@@ -40,7 +40,7 @@ public class ExperimentProcessorServiceTest {
     private Instances data;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(experimentConfig.getResultSize()).thenReturn(RESULTS_SIZE);
         data = TestHelperUtils.loadInstances();
     }
