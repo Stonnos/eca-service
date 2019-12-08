@@ -3,6 +3,7 @@ package com.ecaservice.config.rabbit.listener;
 import com.ecaservice.config.rabbit.Queues;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
+import com.ecaservice.events.model.EvaluationFinishedEvent;
 import com.ecaservice.service.evaluation.EvaluationRequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +29,7 @@ public class EvaluationRequestListener {
 
     private final RabbitTemplate rabbitTemplate;
     private final EvaluationRequestService evaluationRequestService;
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * Handles evaluation request message.
@@ -41,6 +44,7 @@ public class EvaluationRequestListener {
         EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(evaluationRequest);
         log.info("Evaluation response [{}] with status [{}] has been built.", evaluationResponse.getRequestId(),
                 evaluationResponse.getStatus());
+        eventPublisher.publishEvent(new EvaluationFinishedEvent(this, evaluationResponse));
         MessageProperties inboundMessageProperties = inboundMessage.getMessageProperties();
         rabbitTemplate.convertAndSend(inboundMessageProperties.getReplyTo(), evaluationResponse, outboundMessage -> {
             outboundMessage.getMessageProperties().setCorrelationId(inboundMessageProperties.getCorrelationId());
