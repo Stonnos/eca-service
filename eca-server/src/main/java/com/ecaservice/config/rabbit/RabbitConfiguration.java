@@ -62,8 +62,48 @@ public class RabbitConfiguration implements RabbitListenerConfigurer {
      * @return evaluation request queue bindings bean
      */
     @Bean
-    public Binding bindingEvaluation() {
+    public Binding bindingEvaluationRequestQueue() {
         return BindingBuilder.bind(evaluationRequestQueue()).to(DirectExchange.DEFAULT).withQueueName();
+    }
+
+    /**
+     * Creates evaluation optimizer request queue bean.
+     *
+     * @return evaluation optimizer request queue bean
+     */
+    @Bean
+    public Queue evaluationOptimizerRequestQueue() {
+        return QueueBuilder.durable(Queues.EVALUATION_OPTIMIZER_REQUEST_QUEUE).build();
+    }
+
+    /**
+     * Creates evaluation optimizer request queue bindings bean.
+     *
+     * @return evaluation optimizer request queue bindings bean
+     */
+    @Bean
+    public Binding bindingEvaluationOptimizerQueue() {
+        return BindingBuilder.bind(evaluationOptimizerRequestQueue()).to(DirectExchange.DEFAULT).withQueueName();
+    }
+
+    /**
+     * Creates experiment request queue bean.
+     *
+     * @return experiment request queue bean
+     */
+    @Bean
+    public Queue experimentRequestQueue() {
+        return QueueBuilder.durable(Queues.EXPERIMENT_REQUEST_QUEUE).build();
+    }
+
+    /**
+     * Creates experiment request queue bindings bean.
+     *
+     * @return experiment request queue bindings bean
+     */
+    @Bean
+    public Binding bindingExperimentRequestQueue() {
+        return BindingBuilder.bind(experimentRequestQueue()).to(DirectExchange.DEFAULT).withQueueName();
     }
 
     @Override
