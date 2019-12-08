@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.swagger.web.SecurityConfiguration;
 import springfox.documentation.swagger.web.SecurityConfigurationBuilder;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * Swagger security configuration.
@@ -12,6 +13,7 @@ import springfox.documentation.swagger.web.SecurityConfigurationBuilder;
  * @author Roman Batygin
  */
 @Configuration
+@EnableSwagger2
 @EnableConfigurationProperties(Swagger2ApiConfig.class)
 public class SwaggerSecurityConfiguration {
 

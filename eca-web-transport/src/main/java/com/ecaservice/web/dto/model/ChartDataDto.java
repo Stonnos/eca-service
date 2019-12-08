@@ -18,6 +18,12 @@ import lombok.NoArgsConstructor;
 public class ChartDataDto {
 
     /**
+     * Chart item name
+     */
+    @ApiModelProperty(value = "Chart item name", required = true)
+    private String name;
+
+    /**
      * Chart item label
      */
     @ApiModelProperty(value = "Chart item label", required = true)

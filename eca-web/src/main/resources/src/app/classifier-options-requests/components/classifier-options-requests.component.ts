@@ -83,7 +83,7 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
   public getFormattedJsonConfig(): string {
     if (this.hasClassifierOptionsResponse(this.selectedRequest)) {
       const classifierConfig = this.selectedRequest.classifierOptionsResponseModels[0].options;
-      if (!!classifierConfig) {
+      if (classifierConfig) {
         const configObj = JSON.parse(classifierConfig);
         const json = new JsonPipe().transform(configObj);
         return Prism.highlight(json, Prism.languages['json']);

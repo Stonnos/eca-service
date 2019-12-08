@@ -3,7 +3,7 @@ import { ChartDataDto } from "../../../../../../../target/generated-sources/type
 import { ExperimentsService } from "../../experiments/services/experiments.service";
 import { MessageService } from "primeng/api";
 import { DatePipe } from "@angular/common";
-import { RandomColor } from "angular-randomcolor";
+import { ExperimentType } from "../../common/model/experiment-type.enum";
 
 @Component({
   selector: 'app-experiment-statistics',
@@ -11,6 +11,17 @@ import { RandomColor } from "angular-randomcolor";
   styleUrls: ['./experiment-statistics.scss']
 })
 export class ExperimentStatisticsComponent implements OnInit {
+
+  private readonly experimentTypeColorMap = new Map<ExperimentType, string>()
+    .set(ExperimentType.NEURAL_NETWORKS, 'red')
+    .set(ExperimentType.HETEROGENEOUS_ENSEMBLE, 'darkblue')
+    .set(ExperimentType.MODIFIED_HETEROGENEOUS_ENSEMBLE, 'green')
+    .set(ExperimentType.ADA_BOOST, 'yellow')
+    .set(ExperimentType.STACKING, 'purple')
+    .set(ExperimentType.KNN, 'chocolate')
+    .set(ExperimentType.RANDOM_FORESTS, 'hotpink')
+    .set(ExperimentType.STACKING_CV, 'cyan')
+    .set(ExperimentType.DECISION_TREE, 'greenyellow');
 
   public now: Date = new Date();
 
@@ -57,7 +68,7 @@ export class ExperimentStatisticsComponent implements OnInit {
           labels: chartData.map((chartData: ChartDataDto) => `${chartData.label} (${chartData.count})`),
           datasets: [
             {
-              backgroundColor: chartData.map((chartData: ChartDataDto) => RandomColor.generateColor()),
+              backgroundColor: chartData.map((chartData: ChartDataDto) => this.experimentTypeColorMap.get(chartData.name as ExperimentType)),
               borderColor: '#a5a5a5',
               data: chartData.map((chartData: ChartDataDto) => chartData.count)
             }
@@ -73,6 +84,6 @@ export class ExperimentStatisticsComponent implements OnInit {
   }
 
   private transformDate(date: Date): string {
-    return !!date ? this.datePipe.transform(date, this.dateFormat) : '';
+    return date ? this.datePipe.transform(date, this.dateFormat) : '';
   }
 }

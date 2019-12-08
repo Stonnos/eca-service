@@ -2,6 +2,7 @@ package com.ecaservice.config;
 
 import eca.data.file.FileDataLoader;
 import eca.data.file.FileDataSaver;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,8 @@ import java.util.concurrent.Executors;
 @EnableScheduling
 @EnableCaching
 @EnableAsync
+@EnableConfigurationProperties(
+        {CommonConfig.class, CrossValidationConfig.class, ExperimentConfig.class, MailConfig.class})
 public class EcaServiceConfiguration {
 
     /**
@@ -32,46 +35,6 @@ public class EcaServiceConfiguration {
     @Bean
     public ExecutorService executorService() {
         return Executors.newCachedThreadPool();
-    }
-
-    /**
-     * Creates common config bean.
-     *
-     * @return common config bean
-     */
-    @Bean
-    public CommonConfig commonConfig() {
-        return new CommonConfig();
-    }
-
-    /**
-     * Creates cross - validation config bean.
-     *
-     * @return cross - validation config bean
-     */
-    @Bean
-    public CrossValidationConfig crossValidationConfig() {
-        return new CrossValidationConfig();
-    }
-
-    /**
-     * Creates experiment config bean.
-     *
-     * @return experiment config bean
-     */
-    @Bean
-    public ExperimentConfig experimentConfig() {
-        return new ExperimentConfig();
-    }
-
-    /**
-     * Creates mail config bean.
-     *
-     * @return mail config bean
-     */
-    @Bean
-    public MailConfig mailConfig() {
-        return new MailConfig();
     }
 
     /**

@@ -1,14 +1,14 @@
 package com.ecaservice.web.dto.dictionary;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * ERS report status dictionary.
  *
  * @author Roman Batygin
  */
+@UtilityClass
 public class ErsReportStatusDictionary {
-
-    private ErsReportStatusDictionary() {
-    }
 
     public static final String SUCCESS_SENT_DESCRIPTION =
             "Результаты эксперимента были успешно отправлены в ERS сервис";

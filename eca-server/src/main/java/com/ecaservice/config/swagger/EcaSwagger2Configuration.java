@@ -3,14 +3,13 @@ package com.ecaservice.config.swagger;
 import com.ecaservice.controller.api.EcaController;
 import com.fasterxml.classmate.TypeResolver;
 import com.google.common.collect.ImmutableList;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.ClientCredentialsGrant;
 import springfox.documentation.service.GrantType;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import javax.inject.Inject;
 import java.util.Collections;
@@ -21,9 +20,8 @@ import java.util.List;
  *
  * @author Roman Batygin
  */
+@ConditionalOnBean(SwaggerSecurityConfiguration.class)
 @Configuration
-@EnableSwagger2
-@EnableConfigurationProperties(Swagger2ApiConfig.class)
 public class EcaSwagger2Configuration extends AbstractSwagger2Configuration {
 
     private static final String SECURITY_SCHEMA_ECA = "eca security";

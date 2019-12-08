@@ -219,7 +219,7 @@ public class ExperimentController {
     )
     @GetMapping(value = "/results/details/{id}")
     public ResponseEntity<ExperimentResultsDetailsDto> getExperimentResultsDetails(
-            @ApiParam(value = "Experiment results id", required = true) @PathVariable Long id) {
+            @ApiParam(value = "Experiment results id", example = "1", required = true) @PathVariable Long id) {
         Optional<ExperimentResultsEntity> experimentResultsEntityOptional =
                 experimentResultsEntityRepository.findById(id);
         if (!experimentResultsEntityOptional.isPresent()) {
@@ -317,8 +317,8 @@ public class ExperimentController {
         Map<ExperimentType, Long> experimentTypesMap =
                 experimentService.getExperimentTypesStatistics(createdDateFrom, createdDateTo);
         return experimentTypesMap.entrySet().stream().map(
-                entry -> new ChartDataDto(entry.getKey().getDescription(), entry.getValue())).collect(
-                Collectors.toList());
+                entry -> new ChartDataDto(entry.getKey().name(), entry.getKey().getDescription(),
+                        entry.getValue())).collect(Collectors.toList());
     }
 
     /**

@@ -95,7 +95,7 @@ public class EvaluationService {
             log.info(stopWatch.prettyPrint());
 
         } catch (Exception ex) {
-            log.error("There was an error occurred in evaluation : {}", ex);
+            log.error("There was an error occurred in evaluation : {}", ex.getMessage());
             classificationResult.setErrorMessage(ex.getMessage());
         }
         return classificationResult;

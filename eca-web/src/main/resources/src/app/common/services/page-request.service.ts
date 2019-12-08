@@ -18,7 +18,6 @@ export class PageRequestService {
       filter.values.map((value, valueIndex) => {
         params = params.set(`filters['${index}'].values['${valueIndex}']`, value);
       });
-      params = params.set(`filters['${index}'].filterFieldType`, filter.filterFieldType);
       params = params.set(`filters['${index}'].matchMode`, filter.matchMode);
     });
     return params;

@@ -2,27 +2,33 @@ language: java
 jdk: openjdk8
 services:
   - docker
-before_install:
-  - cd ..
-  - git clone https://github.com/Stonnos/eca.git
-  - cd eca
-  - mvn clean install
-  - cd ../eca-service
-script: mvn clean install dockerfile:build -Pprod -Dmaven.test.skip=true
-after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
-      docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD;
-      docker tag eca-oauth $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-oauth;
-      docker push $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-oauth;
-      docker tag eca-server $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-server;
-      docker push $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-server;
-      docker tag eca-web $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-web;
-      docker push $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-web;
-      docker tag zuul-gate $DOCKER_USERNAME/$DOCKER_REPOSITORY:zuul-gate;
-      docker push $DOCKER_USERNAME/$DOCKER_REPOSITORY:zuul-gate;
-      docker tag monitoring $DOCKER_USERNAME/$DOCKER_REPOSITORY:monitoring;
-      docker push $DOCKER_USERNAME/$DOCKER_REPOSITORY:monitoring;
-    fi
+
+stages:
+  - name: test
+  - name: build_image
+    if: branch = master
+
+install: true
+
+jobs:
+  include:
+    - stage: test
+      script: mvn clean test
+    - stage: build_image
+      before_script:
+        - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD;
+      script:
+        - mvn clean install dockerfile:build -Pprod -Dmaven.test.skip=true
+        - docker tag eca-oauth $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-oauth;
+        - docker push $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-oauth;
+        - docker tag eca-server $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-server;
+        - docker push $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-server;
+        - docker tag eca-web $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-web;
+        - docker push $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-web;
+        - docker tag zuul-gate $DOCKER_USERNAME/$DOCKER_REPOSITORY:zuul-gate;
+        - docker push $DOCKER_USERNAME/$DOCKER_REPOSITORY:zuul-gate;
+        - docker tag monitoring $DOCKER_USERNAME/$DOCKER_REPOSITORY:monitoring;
+        - docker push $DOCKER_USERNAME/$DOCKER_REPOSITORY:monitoring;
 cache:
   directories:
     - $HOME/.m2
