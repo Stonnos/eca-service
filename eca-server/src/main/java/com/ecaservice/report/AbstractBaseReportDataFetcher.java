@@ -18,7 +18,6 @@ import org.springframework.util.CollectionUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.util.RangeUtils.formatDateRange;
@@ -65,8 +64,8 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
         Page<E> page = getItemsPage(pageRequestDto);
         List<B> beans = convertToBeans(page);
         List<FilterBean> filterBeans = getFilterBeans(pageRequestDto);
-        int pageNumber = page.getTotalPages() > 0 ? page.getNumber() + 1 : page.getNumber();
-        return new BaseReportBean<>(pageNumber, page.getTotalPages(), pageRequestDto.getSearchQuery(), filterBeans, beans);
+        int totalPages = page.getTotalPages() > 0 ? page.getTotalPages() : 1;
+        return BaseReportBean.of(page.getNumber() + 1, totalPages, pageRequestDto.getSearchQuery(), filterBeans, beans);
     }
 
     private List<FilterBean> getFilterBeans(PageRequestDto pageRequestDto) {
