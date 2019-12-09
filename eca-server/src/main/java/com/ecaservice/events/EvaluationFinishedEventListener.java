@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 
+import static com.ecaservice.config.EcaServiceConfiguration.ECA_THREAD_POOL_TASK_EXECUTOR;
+
 /**
  * Classifier evaluation finished event listener.
  *
@@ -33,7 +35,7 @@ public class EvaluationFinishedEventListener {
      *
      * @param evaluationFinishedEvent - evaluation finished event
      */
-    @Async("ecaThreadPoolTaskExecutor")
+    @Async(ECA_THREAD_POOL_TASK_EXECUTOR)
     @EventListener
     public void handleEvaluationFinishedEvent(EvaluationFinishedEvent evaluationFinishedEvent) {
         EvaluationResponse evaluationResponse = evaluationFinishedEvent.getEvaluationResponse();
