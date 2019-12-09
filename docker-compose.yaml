@@ -26,6 +26,10 @@ services:
     volumes:
       - ./conf/rabbitmq.conf:/etc/rabbitmq/rabbitmq.config
       - /home/rabbit-data:/var/lib/rabbitmq
+    environment:
+      TZ: "Asia/Novosibirsk"
+    networks:
+      - default
 
   eca-server:
     image: eca-server
