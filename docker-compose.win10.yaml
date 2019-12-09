@@ -3,8 +3,11 @@ services:
 
   eca-db:
     volumes:
-      - ./scripts/postgresinit.sql:/docker-entrypoint-initdb.d/postgresinit.sql
       - eca-pgdata:/var/lib/postgresql/data
+
+  rabbitmq:
+    volumes:
+      - rabbit-data:/var/lib/rabbitmq
 
   eca-server:
     volumes:
@@ -13,5 +16,7 @@ services:
 volumes:
   eca-pgdata:
     name: eca-pgdata
+  rabbit-data:
+    name: rabbit-data
   experiment-data:
     name: experiment-data
