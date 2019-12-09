@@ -97,7 +97,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
     }
 
     private List<Predicate> buildPredicatesForFilters(Root<T> root, CriteriaBuilder criteriaBuilder) {
-        List<Predicate> predicates = new ArrayList<>();
+        List<Predicate> predicates = newArrayList();
         filters.forEach(filterRequestDto -> {
             if (!CollectionUtils.isEmpty(filterRequestDto.getValues())) {
                 List<String> values = filterRequestDto.getValues().stream().filter(StringUtils::isNotBlank).map(
