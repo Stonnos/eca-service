@@ -15,7 +15,7 @@ public class ExperimentCreatedEvent extends ApplicationEvent {
      * Experiment entity
      */
     @Getter
-    private Experiment experiment;
+    private final Experiment experiment;
 
     /**
      * Create a new  ExperimentCreatedEvent.

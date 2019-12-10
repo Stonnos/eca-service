@@ -15,7 +15,7 @@ public class EvaluationFinishedEvent extends ApplicationEvent {
      * Evaluation response
      */
     @Getter
-    private EvaluationResponse evaluationResponse;
+    private final EvaluationResponse evaluationResponse;
 
     /**
      * Create a new EvaluationFinishedEvent.
