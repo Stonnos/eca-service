@@ -1,6 +1,7 @@
 package com.ecaservice;
 
 import com.ecaservice.dto.EvaluationRequest;
+import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.dto.evaluation.ClassificationCostsReport;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
@@ -12,6 +13,7 @@ import com.ecaservice.dto.evaluation.InputOptionsMap;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.dto.evaluation.RocCurveReport;
 import com.ecaservice.dto.evaluation.StatisticsReport;
+import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.ClassifierInfo;
 import com.ecaservice.model.entity.ClassifierInputOptions;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
@@ -890,6 +892,19 @@ public class TestHelperUtils {
         evaluationResultsDto.setEvaluationResultsStatus(
                 new EnumDto(evaluationResultsStatus.name(), evaluationResultsStatus.getDescription()));
         return evaluationResultsDto;
+    }
+
+    /**
+     * Creates evaluation response with specified request id.
+     *
+     * @param requestId - request id
+     * @return evaluation response
+     */
+    public static EvaluationResponse createEvaluationResponse(String requestId) {
+        EvaluationResponse evaluationResponse = new EvaluationResponse();
+        evaluationResponse.setRequestId(requestId);
+        evaluationResponse.setStatus(TechnicalStatus.SUCCESS);
+        return evaluationResponse;
     }
 
     /**
