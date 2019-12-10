@@ -3,7 +3,7 @@ package com.ecaservice.config.rabbit.listener;
 import com.ecaservice.config.rabbit.Queues;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
-import com.ecaservice.events.model.EvaluationFinishedEvent;
+import com.ecaservice.event.model.EvaluationFinishedEvent;
 import com.ecaservice.service.evaluation.EvaluationRequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

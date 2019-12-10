@@ -1,7 +1,7 @@
-package com.ecaservice.events;
+package com.ecaservice.event.listener;
 
 import com.ecaservice.dto.EvaluationResponse;
-import com.ecaservice.events.model.EvaluationFinishedEvent;
+import com.ecaservice.event.model.EvaluationFinishedEvent;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.model.entity.RequestStatus;
@@ -18,7 +18,7 @@ import java.util.Collections;
 import static com.ecaservice.config.EcaServiceConfiguration.ECA_THREAD_POOL_TASK_EXECUTOR;
 
 /**
- * Classifier evaluation finished event listener.
+ * Event listener that occurs after evaluation is finished.
  *
  * @author Roman Batygin
  */
