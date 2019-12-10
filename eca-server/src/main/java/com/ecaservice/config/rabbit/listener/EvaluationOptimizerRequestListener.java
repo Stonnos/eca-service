@@ -40,8 +40,8 @@ public class EvaluationOptimizerRequestListener {
     public void handleMessage(@Valid @Payload InstancesRequest instancesRequest, Message inboundMessage) {
         EvaluationResponse evaluationResponse =
                 evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
-        log.info("Evaluation response [{}] with status [{}] has been built.", evaluationResponse.getRequestId(),
-                evaluationResponse.getStatus());
+        log.info("Evaluation response [{}] with status [{}] has been built for evaluation optimizer request.",
+                evaluationResponse.getRequestId(), evaluationResponse.getStatus());
         eventPublisher.publishEvent(new EvaluationFinishedEvent(this, evaluationResponse));
         MessageProperties inboundMessageProperties = inboundMessage.getMessageProperties();
         rabbitTemplate.convertAndSend(inboundMessageProperties.getReplyTo(), evaluationResponse, outboundMessage -> {
