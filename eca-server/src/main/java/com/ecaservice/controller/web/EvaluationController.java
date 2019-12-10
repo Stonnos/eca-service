@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,7 +56,7 @@ public class EvaluationController {
             notes = "Finds evaluation logs with specified options"
     )
     @GetMapping(value = "/list")
-    public PageDto<EvaluationLogDto> getEvaluationLogs(PageRequestDto pageRequestDto) {
+    public PageDto<EvaluationLogDto> getEvaluationLogs(@Valid PageRequestDto pageRequestDto) {
         log.info("Received evaluation logs page request: {}", pageRequestDto);
         Page<EvaluationLog> evaluationLogs = evaluationLogService.getNextPage(pageRequestDto);
         List<EvaluationLogDto> evaluationLogDtoList =

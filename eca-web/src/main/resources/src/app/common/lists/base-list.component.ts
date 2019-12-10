@@ -29,6 +29,8 @@ export abstract class BaseListComponent<T> implements FieldLink {
   public items: T[] = [];
   public loading: boolean = true;
 
+  public pageRequestDto: PageRequestDto;
+
   @ViewChild(Table)
   private table: Table;
 
@@ -101,7 +103,7 @@ export abstract class BaseListComponent<T> implements FieldLink {
   }
 
   public performPageRequest(page: number, size: number, sortField: string, ascending: boolean) {
-    const pageRequest: PageRequestDto = {
+    this.pageRequestDto = {
       page: page,
       size: size,
       sortField: sortField,
@@ -109,7 +111,7 @@ export abstract class BaseListComponent<T> implements FieldLink {
       searchQuery: this.searchQuery,
       filters: this.filterRequests
     };
-    this.getNextPage(pageRequest);
+    this.getNextPage(this.pageRequestDto);
   }
 
   private rebuildFilterRequests(): void {

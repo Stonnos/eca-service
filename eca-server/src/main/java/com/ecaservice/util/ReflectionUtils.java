@@ -1,11 +1,12 @@
 package com.ecaservice.util;
 
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.StringUtils;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.ecaservice.util.Utils.splitByPointSeparator;
+import static org.springframework.util.ReflectionUtils.doWithFields;
 
 /**
  * Reflection utility class.
@@ -16,38 +17,51 @@ import static com.ecaservice.util.Utils.splitByPointSeparator;
 public class ReflectionUtils {
 
     /**
-     * Gets getter method return type by field property. Note: Property can be composite, for example:
+     * Cache key in format className.fieldName
+     */
+    private static final String KEY_FORMAT = "%s.%s";
+
+    /**
+     * Fields type cache
+     */
+    private static final ConcurrentHashMap<String, Class<?>> fieldClassMap = new ConcurrentHashMap<>(256);
+
+    /**
+     * Gets field type. Note: Field name can be composite, for example:
      * <pre>
      *  entity.entity1.prop1
      * </pre>
-     * If the field is composite, then the last property name is taken. In our case the last name is prop1.
+     * If the field name is composite, then the last property is taken. In our case the last property is prop1.
      *
      * @param fieldName - field name
      * @param clazz     - entity class
-     * @return getter return type
+     * @return field type
      */
-    public static Class<?> getGetterReturnType(String fieldName, Class<?> clazz) {
-        try {
-            String[] fieldLevels = splitByPointSeparator(fieldName);
-            return getTargetClazz(fieldLevels, clazz);
-        } catch (Exception ex) {
-            throw new IllegalStateException(
-                    String.format("Can't found getter for field [%s] of class %s", fieldName, clazz.getName()));
+    public static Class<?> getFieldType(String fieldName, Class<?> clazz) {
+        if (StringUtils.isBlank(fieldName)) {
+            throw new IllegalArgumentException("Field name is blank string!");
         }
+        String[] fieldLevels = splitByPointSeparator(fieldName);
+        return getTargetClazz(fieldLevels, clazz);
     }
 
-    private static Class<?> getTargetClazz(String[] fieldLevels, Class<?> clazz)
-            throws IntrospectionException, NoSuchMethodException {
+    private static Class<?> getTargetClazz(String[] fieldLevels, Class<?> clazz) {
         Class<?> currentClazz = clazz;
         for (int i = 0; i < fieldLevels.length; i++) {
-            String getter = getGetterForField(fieldLevels[i], currentClazz);
-            currentClazz = currentClazz.getMethod(getter).getReturnType();
+            currentClazz = getInternalFieldType(fieldLevels[i], currentClazz);
         }
         return currentClazz;
     }
 
-    private static String getGetterForField(String fieldName, Class<?> clazz) throws IntrospectionException {
-        PropertyDescriptor propertyDescriptor = new PropertyDescriptor(fieldName, clazz);
-        return propertyDescriptor.getReadMethod().getName();
+    private static Class<?> getInternalFieldType(String fieldName, Class<?> clazz) {
+        String key = String.format(KEY_FORMAT, clazz.getName(), fieldName);
+        Class<?> result = fieldClassMap.get(key);
+        if (result == null) {
+            doWithFields(clazz,
+                    field -> fieldClassMap.putIfAbsent(key, field.getType()),
+                    field -> fieldName.equals(field.getName()));
+            return fieldClassMap.get(key);
+        }
+        return result;
     }
 }

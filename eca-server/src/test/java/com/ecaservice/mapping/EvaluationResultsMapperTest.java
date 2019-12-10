@@ -58,7 +58,7 @@ public class EvaluationResultsMapperTest {
     private EvaluationResults evaluationResults;
 
     @Before
-    public void init() throws Exception {
+    public void init() {
         evaluationResults = TestHelperUtils.getEvaluationResults();
     }
 

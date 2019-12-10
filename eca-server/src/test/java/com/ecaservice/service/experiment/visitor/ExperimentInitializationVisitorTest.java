@@ -61,7 +61,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeNeuralNetwork() throws Exception {
+    public void testInitializeNeuralNetwork() {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedNeuralNetwork automatedNeuralNetwork =
                 (AutomatedNeuralNetwork) experimentInitializationVisitor.caseNeuralNetwork(initializationParams);
@@ -72,7 +72,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeHeterogeneousEnsemble() throws Exception {
+    public void testInitializeHeterogeneousEnsemble() {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedHeterogeneousEnsemble automatedHeterogeneousEnsemble =
                 (AutomatedHeterogeneousEnsemble) experimentInitializationVisitor.caseHeterogeneousEnsemble(
@@ -81,7 +81,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeModifiedHeterogeneousEnsemble() throws Exception {
+    public void testInitializeModifiedHeterogeneousEnsemble() {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedHeterogeneousEnsemble automatedHeterogeneousEnsemble =
                 (AutomatedHeterogeneousEnsemble) experimentInitializationVisitor.caseModifiedHeterogeneousEnsemble(
@@ -90,7 +90,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeAdaBoost() throws Exception {
+    public void testInitializeAdaBoost() {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedHeterogeneousEnsemble automatedHeterogeneousEnsemble =
                 (AutomatedHeterogeneousEnsemble) experimentInitializationVisitor.caseAdaBoost(initializationParams);
@@ -98,7 +98,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeStacking() throws Exception {
+    public void testInitializeStacking() {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedStacking automatedStacking =
                 (AutomatedStacking) experimentInitializationVisitor.caseStacking(initializationParams);
@@ -108,7 +108,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeKNearestNeighbours() throws Exception {
+    public void testInitializeKNearestNeighbours() {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedKNearestNeighbours automatedKNearestNeighbours =
                 (AutomatedKNearestNeighbours) experimentInitializationVisitor.caseKNearestNeighbours(
@@ -121,7 +121,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeRandomForests() throws Exception {
+    public void testInitializeRandomForests() {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedRandomForests automatedRandomForests =
                 (AutomatedRandomForests) experimentInitializationVisitor.caseRandomForests(
@@ -133,7 +133,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeStackingCV() throws Exception {
+    public void testInitializeStackingCV() {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedStacking automatedStacking =
                 (AutomatedStacking) experimentInitializationVisitor.caseStackingCV(initializationParams);
@@ -145,7 +145,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeDecisionTree() throws Exception {
+    public void testInitializeDecisionTree() {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedDecisionTree automatedDecisionTree =
                 (AutomatedDecisionTree) experimentInitializationVisitor.caseDecisionTree(
@@ -156,7 +156,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testAfterHandle() throws Exception {
+    public void testAfterHandle() {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         initializationParams.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         AbstractExperiment experiment =

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -60,7 +61,7 @@ public class ClassifierOptionsController {
             notes = "Finds the last classifiers options configs"
     )
     @GetMapping(value = "/page")
-    public PageDto<ClassifierOptionsDto> getConfigsPage(PageRequestDto pageRequestDto) {
+    public PageDto<ClassifierOptionsDto> getConfigsPage(@Valid PageRequestDto pageRequestDto) {
         Page<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
                 experimentConfigurationService.getNextPage(pageRequestDto);
         List<ClassifierOptionsDto> classifierOptionsDtoList =

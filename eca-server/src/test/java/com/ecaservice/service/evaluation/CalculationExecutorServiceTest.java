@@ -28,10 +28,8 @@ public class CalculationExecutorServiceTest {
     @Test(expected = TimeoutException.class)
     public void testTimeOut() throws Exception {
         executorService.execute(() -> {
-            {
-                Thread.sleep(TIMEOUT + 100L);
-                return null;
-            }
+            Thread.sleep(TIMEOUT + 100L);
+            return null;
         }, TIMEOUT, TimeUnit.MILLISECONDS);
     }
 }

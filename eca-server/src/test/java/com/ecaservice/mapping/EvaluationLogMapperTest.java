@@ -4,6 +4,7 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.model.entity.ClassifierInputOptions;
 import com.ecaservice.model.entity.EvaluationLog;
+import com.ecaservice.report.model.EvaluationLogBean;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
 import eca.core.evaluation.EvaluationMethod;
@@ -33,7 +34,7 @@ public class EvaluationLogMapperTest {
     private EvaluationLogMapper evaluationLogMapper;
 
     @Test
-    public void testMapToEvaluationLog() throws Exception {
+    public void testMapToEvaluationLog() {
         EvaluationRequest evaluationRequest = new EvaluationRequest();
         evaluationRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         evaluationRequest.setEvaluationOptionsMap(new HashMap<>());
@@ -63,7 +64,6 @@ public class EvaluationLogMapperTest {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
         evaluationLog.setEvaluationOptionsMap(
                 TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
-        evaluationLog.setInstancesInfo(TestHelperUtils.createInstancesInfo());
         EvaluationLogDto evaluationLogDto = evaluationLogMapper.map(evaluationLog);
         assertEvaluationLogDto(evaluationLogDto, evaluationLog);
     }
@@ -73,9 +73,27 @@ public class EvaluationLogMapperTest {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
         evaluationLog.setEvaluationOptionsMap(
                 TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
-        evaluationLog.setInstancesInfo(TestHelperUtils.createInstancesInfo());
         EvaluationLogDetailsDto evaluationLogDetailsDto = evaluationLogMapper.mapDetails(evaluationLog);
         assertEvaluationLogDto(evaluationLogDetailsDto, evaluationLog);
+    }
+
+    @Test
+    public void testMapToEvaluationBean() {
+        EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
+        EvaluationLogBean evaluationLogBean = evaluationLogMapper.mapToBean(evaluationLog);
+        assertThat(evaluationLogBean).isNotNull();
+        assertThat(evaluationLogBean.getEvaluationMethod())
+                .isEqualTo(evaluationLog.getEvaluationMethod().getDescription());
+        assertThat(evaluationLogBean.getClassifierName())
+                .isEqualTo(evaluationLog.getClassifierInfo().getClassifierName());
+        assertThat(evaluationLogBean.getRelationName())
+                .isEqualTo(evaluationLog.getInstancesInfo().getRelationName());
+        assertThat(evaluationLogBean.getRequestId()).isEqualTo(evaluationLog.getRequestId());
+        assertThat(evaluationLogBean.getEvaluationStatus())
+                .isEqualTo(evaluationLog.getEvaluationStatus().getDescription());
+        assertThat(evaluationLogBean.getCreationDate()).isNotNull();
+        assertThat(evaluationLogBean.getStartDate()).isNotNull();
+        assertThat(evaluationLogBean.getEndDate()).isNotNull();
     }
 
     private void assertEvaluationLogDto(EvaluationLogDto evaluationLogDto, EvaluationLog evaluationLog) {

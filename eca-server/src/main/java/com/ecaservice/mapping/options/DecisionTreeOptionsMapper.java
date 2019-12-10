@@ -29,7 +29,7 @@ public abstract class DecisionTreeOptionsMapper
         if (classifier instanceof CHAID && !CollectionUtils.isEmpty(options.getAdditionalOptions())) {
             String alphaStr = options.getAdditionalOptions().get(OptionsVariables.ALPHA);
             if (NumberUtils.isCreatable(alphaStr)) {
-                ((CHAID) classifier).setAlpha(Double.valueOf(alphaStr));
+                ((CHAID) classifier).setAlpha(Double.parseDouble(alphaStr));
             }
         }
     }

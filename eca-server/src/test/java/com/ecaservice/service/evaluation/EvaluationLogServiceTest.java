@@ -57,6 +57,8 @@ import static org.mockito.Mockito.when;
         InstancesInfoMapperImpl.class, ClassifierInputOptionsMapperImpl.class})
 public class EvaluationLogServiceTest extends AbstractJpaTest {
 
+    private static final int PAGE_NUMBER = 0;
+    private static final int PAGE_SIZE = 10;
     private static final String INSTANCES_INFO_RELATION_NAME = "instancesInfo.relationName";
     private static final String CLASSIFIER_INFO_CLASSIFIER_NAME = "classifierInfo.classifierName";
 
@@ -139,7 +141,7 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
         evaluationLog4.getClassifierInfo().setClassifierName(NeuralNetwork.class.getSimpleName());
         evaluationLogRepository.save(evaluationLog4);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(0, 10, CLASSIFIER_INFO_CLASSIFIER_NAME, false, null, newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CLASSIFIER_INFO_CLASSIFIER_NAME, false, null, newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(EvaluationLog_.EVALUATION_STATUS,
                 Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
         pageRequestDto.getFilters().add(
@@ -166,7 +168,7 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
         evaluationLog1.getInstancesInfo().setRelationName("Relation");
         evaluationLogRepository.save(evaluationLog1);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(0, 10, CLASSIFIER_INFO_CLASSIFIER_NAME, false, null, newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CLASSIFIER_INFO_CLASSIFIER_NAME, false, null, newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(INSTANCES_INFO_RELATION_NAME, Collections.singletonList("Dat"), MatchMode.LIKE));
         Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);
@@ -193,7 +195,7 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
         evaluationLog2.setInstancesInfo(TestHelperUtils.createInstancesInfo());
         evaluationLogRepository.saveAll(Arrays.asList(evaluationLog, evaluationLog1, evaluationLog2));
         PageRequestDto pageRequestDto =
-                new PageRequestDto(0, 10, EvaluationLog_.CREATION_DATE, false, "car", newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, EvaluationLog_.CREATION_DATE, false, "car", newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(EvaluationLog_.EVALUATION_STATUS,
                 Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
         when(filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG)).thenReturn(

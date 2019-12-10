@@ -7,6 +7,7 @@ import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.options.ClassifierOptions;
+import com.ecaservice.model.projections.RequestStatusStatistics;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import weka.core.Instances;
 
 import java.io.File;
@@ -28,9 +30,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Utility class.
@@ -227,6 +234,26 @@ public class Utils {
         requestStatusStatisticsDto.setTotalCount(
                 statusStatisticsMap.values().stream().mapToLong(Long::longValue).sum());
         return requestStatusStatisticsDto;
+    }
+
+    /**
+     * Transforms requests statuses list to map.
+     *
+     * @param requestStatusStatistics - request statuses list
+     * @return request statuses map
+     */
+    public static Map<RequestStatus, Long> toRequestStatusStatisticsMap(List<RequestStatusStatistics> requestStatusStatistics) {
+        if (CollectionUtils.isEmpty(requestStatusStatistics)) {
+            return Collections.emptyMap();
+        }
+        Map<RequestStatus, Long> requestStatusMap =
+                requestStatusStatistics.stream().collect(
+                        Collectors.toMap(RequestStatusStatistics::getRequestStatus,
+                                RequestStatusStatistics::getRequestsCount, (v1, v2) -> v1, TreeMap::new));
+        Arrays.stream(RequestStatus.values()).filter(
+                requestStatus -> !requestStatusMap.containsKey(requestStatus)).forEach(
+                requestStatus -> requestStatusMap.put(requestStatus, 0L));
+        return requestStatusMap;
     }
 
     /**
