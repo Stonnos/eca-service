@@ -42,6 +42,11 @@ spring:
         username: admin
         password: secret
         read-timeout: 1m
+  rabbitmq:
+    listener:
+      simple:
+        concurrency: 10
+        maxConcurrency: 10
 
 ## Application common configs
 common:
