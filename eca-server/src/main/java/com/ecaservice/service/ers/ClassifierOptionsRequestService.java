@@ -3,6 +3,7 @@ package com.ecaservice.service.ers;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.filter.ClassifierOptionsRequestModelFilter;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
+import com.ecaservice.model.entity.ClassifierOptionsRequestModel_;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.service.PageRequestService;
@@ -34,7 +35,8 @@ public class ClassifierOptionsRequestService implements PageRequestService<Class
 
     @Override
     public Page<ClassifierOptionsRequestModel> getNextPage(PageRequestDto pageRequestDto) {
-        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
+        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), ClassifierOptionsRequestModel_.REQUEST_DATE,
+                pageRequestDto.isAscending());
         List<String> globalFilterFields =
                 filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST);
         ClassifierOptionsRequestModelFilter filter =

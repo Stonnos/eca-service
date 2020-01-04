@@ -35,7 +35,7 @@ public class ClassifierOptionsRequestMapperTest {
     private InstancesRequest instancesRequest;
 
     @Before
-    public void init() throws Exception {
+    public void init() {
         instancesRequest = new InstancesRequest();
         instancesRequest.setData(TestHelperUtils.loadInstances());
     }

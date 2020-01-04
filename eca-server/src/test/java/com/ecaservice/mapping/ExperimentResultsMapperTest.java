@@ -33,7 +33,7 @@ public class ExperimentResultsMapperTest {
 
 
     @Test
-    public void testMapEvaluationResultsToExperimentResults() throws Exception {
+    public void testMapEvaluationResultsToExperimentResults() {
         EvaluationResults evaluationResults = TestHelperUtils.getEvaluationResults();
         ExperimentResultsEntity experimentResultsEntity = experimentResultsMapper.map(evaluationResults);
         assertThat(experimentResultsEntity).isNotNull();

@@ -1,10 +1,13 @@
 package com.ecaservice.service.filter.dictionary;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * Filter dictionary names.
  *
  * @author Roman Batygin
  */
+@UtilityClass
 public class FilterDictionaries {
 
     /**
@@ -16,7 +19,4 @@ public class FilterDictionaries {
      * Experiment type dictionary name
      */
     public static final String EXPERIMENT_TYPE = "experimentType";
-
-    private FilterDictionaries() {
-    }
 }

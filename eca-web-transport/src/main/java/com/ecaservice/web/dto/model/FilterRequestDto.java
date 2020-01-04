@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -19,6 +21,7 @@ public class FilterRequestDto {
     /**
      * Column name
      */
+    @NotBlank
     private String name;
 
     /**
@@ -29,5 +32,6 @@ public class FilterRequestDto {
     /**
      * Match mode type {@link MatchMode}
      */
+    @NotNull
     private MatchMode matchMode;
 }

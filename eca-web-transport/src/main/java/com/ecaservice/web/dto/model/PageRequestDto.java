@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -19,12 +21,14 @@ public class PageRequestDto {
     /**
      * Page number
      */
-    private int page;
+    @NotNull
+    private Integer page;
 
     /**
      * Page size
      */
-    private int size;
+    @NotNull
+    private Integer size;
 
     /**
      * Sort field
@@ -44,5 +48,6 @@ public class PageRequestDto {
     /**
      * Filters list
      */
+    @Valid
     private List<FilterRequestDto> filters;
 }

@@ -6,6 +6,7 @@ import {
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { BaseListComponent } from "../../common/lists/base-list.component";
 import { MessageService } from "primeng/api";
+import { saveAs } from 'file-saver/dist/FileSaver';
 import { ClassifiersService } from "../services/classifiers.service";
 import { OverlayPanel } from "primeng/primeng";
 import { Observable } from "rxjs/internal/Observable";
@@ -15,6 +16,8 @@ import { Router } from "@angular/router";
 import { RouterPaths } from "../../routing/router-paths";
 import { EvaluationLogFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
+import { finalize } from "rxjs/operators";
+import { ReportsService } from "../../common/services/report.service";
 
 @Component({
   selector: 'app-classifier-list',
@@ -22,6 +25,8 @@ import { FieldService } from "../../common/services/field.service";
   styleUrls: ['./classifier-list.component.scss']
 })
 export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto> {
+
+  private static readonly EVALUATION_LOGS_REPORT_FILE_NAME = 'evaluation-logs-report.xlsx';
 
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
 
@@ -31,6 +36,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   public constructor(private injector: Injector,
                      private classifiersService: ClassifiersService,
                      private filterService: FilterService,
+                     private reportsService: ReportsService,
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = EvaluationLogFields.CREATION_DATE;
@@ -62,6 +68,21 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     });
+  }
+
+  public generateReport() {
+    this.loading = true;
+    this.reportsService.getEvaluationLogsBaseReport(this.pageRequestDto)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe((blob: Blob) => {
+        saveAs(blob, ClassifierListComponent.EVALUATION_LOGS_REPORT_FILE_NAME);
+      }, (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      });
   }
 
   public onSelect(event, evaluationLog: EvaluationLogDto, column: string, overlayPanel: OverlayPanel): void {

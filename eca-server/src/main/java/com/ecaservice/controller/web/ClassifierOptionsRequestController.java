@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -43,7 +44,8 @@ public class ClassifierOptionsRequestController {
             notes = "Finds classifiers options requests models with specified options"
     )
     @GetMapping(value = "/classifiers-options-requests")
-    public PageDto<ClassifierOptionsRequestDto> getClassifierOptionsRequestModels(PageRequestDto pageRequestDto) {
+    public PageDto<ClassifierOptionsRequestDto> getClassifierOptionsRequestModels(
+            @Valid PageRequestDto pageRequestDto) {
         log.info("Received classifiers options requests models page request: {}", pageRequestDto);
         Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
                 classifierOptionsRequestService.getNextPage(pageRequestDto);

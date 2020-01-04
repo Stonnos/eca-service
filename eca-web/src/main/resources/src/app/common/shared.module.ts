@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { UiComponentsModule } from "../ui-components.module";
 import { PageRequestService } from "./services/page-request.service";
 import { FieldService } from "./services/field.service";
+import { ReportsService } from "./services/report.service";
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import { FieldService } from "./services/field.service";
   ],
   providers: [
     PageRequestService,
-    FieldService
+    FieldService,
+    ReportsService
   ]
 })
 export class SharedModule {

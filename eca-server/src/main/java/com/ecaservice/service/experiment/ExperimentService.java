@@ -59,6 +59,7 @@ import static com.ecaservice.util.ExperimentUtils.getExperimentFile;
 import static com.ecaservice.util.Utils.atEndOfDay;
 import static com.ecaservice.util.Utils.atStartOfDay;
 import static com.ecaservice.util.Utils.existsFile;
+import static com.ecaservice.util.Utils.toRequestStatusStatisticsMap;
 
 /**
  * Experiment service.
@@ -199,7 +200,8 @@ public class ExperimentService implements PageRequestService<Experiment> {
 
     @Override
     public Page<Experiment> getNextPage(PageRequestDto pageRequestDto) {
-        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
+        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), Experiment_.CREATION_DATE,
+                pageRequestDto.isAscending());
         List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT);
         ExperimentFilter filter =
                 new ExperimentFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
@@ -213,14 +215,8 @@ public class ExperimentService implements PageRequestService<Experiment> {
      * @return requests status counting statistics list
      */
     public Map<RequestStatus, Long> getRequestStatusesStatistics() {
-        Map<RequestStatus, Long> experimentStatusesMap =
-                experimentRepository.getRequestStatusesStatistics().stream().collect(
-                        Collectors.toMap(RequestStatusStatistics::getRequestStatus,
-                                RequestStatusStatistics::getRequestsCount, (v1, v2) -> v1, TreeMap::new));
-        Arrays.stream(RequestStatus.values()).filter(
-                requestStatus -> !experimentStatusesMap.containsKey(requestStatus)).forEach(
-                requestStatus -> experimentStatusesMap.put(requestStatus, 0L));
-        return experimentStatusesMap;
+        List<RequestStatusStatistics> requestStatusStatistics = experimentRepository.getRequestStatusesStatistics();
+        return toRequestStatusStatisticsMap(requestStatusStatistics);
     }
 
     /**

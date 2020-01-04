@@ -16,10 +16,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -36,6 +38,11 @@ import static org.mockito.Mockito.when;
  */
 @Import(CommonConfig.class)
 public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
+
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    private static final int PAGE_NUMBER = 0;
+    private static final int PAGE_SIZE = 10;
 
     @Inject
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
@@ -82,7 +89,8 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
         classifierOptionsRequestModelRepository.saveAll(
                 Arrays.asList(requestModel, requestModel1, requestModel2, requestModel3));
         PageRequestDto pageRequestDto =
-                new PageRequestDto(0, 10, ClassifierOptionsRequestModel_.REQUEST_DATE, false, "gla", newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, "gla",
+                        newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.RESPONSE_STATUS,
                 Collections.singletonList(ErsResponseStatus.SUCCESS.name()), MatchMode.EQUALS));
         when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST)).thenReturn(
@@ -105,7 +113,8 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
         requestModel3.setRequestId(UUID.randomUUID().toString());
         classifierOptionsRequestModelRepository.save(requestModel3);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(0, 10, ClassifierOptionsRequestModel_.REQUEST_ID, false, null, newArrayList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_ID, false, null,
+                        newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.REQUEST_ID,
                 Collections.singletonList(requestModel2.getRequestId()), MatchMode.EQUALS));
         Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
@@ -114,7 +123,82 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
                 classifierOptionsRequestModelPage.getContent();
         assertThat(classifierOptionsRequestModelPage).isNotNull();
         assertThat(classifierOptionsRequestModelPage.getTotalElements()).isOne();
-        assertThat(classifierOptionsRequestModels.size()).isOne();
         assertThat(classifierOptionsRequestModels.get(0).getRequestId()).isEqualTo(requestModel2.getRequestId());
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void testRangeFilterForIllegalFieldType() {
+        FilterRequestDto filterRequestDto = new FilterRequestDto(ClassifierOptionsRequestModel_.RESPONSE_STATUS,
+                Arrays.asList(ErsResponseStatus.RESULTS_NOT_FOUND.name(), ErsResponseStatus.ERROR.name()),
+                MatchMode.RANGE);
+        testFilterForIllegalFieldType(filterRequestDto);
+    }
+
+    @Test
+    public void testRangeFilterForStringField() {
+        ClassifierOptionsRequestModel requestModel =
+                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
+                        ErsResponseStatus.ERROR, Collections.emptyList());
+        requestModel.setRequestId(UUID.randomUUID().toString());
+        classifierOptionsRequestModelRepository.save(requestModel);
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, null,
+                        newArrayList());
+        pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.REQUEST_ID,
+                Arrays.asList(requestModel.getRequestId(), requestModel.getRequestId()), MatchMode.RANGE));
+        Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
+                classifierOptionsRequestService.getNextPage(pageRequestDto);
+        assertThat(classifierOptionsRequestModelPage).isNotNull();
+        assertThat(classifierOptionsRequestModelPage.getTotalElements()).isOne();
+    }
+
+    @Test
+    public void testEqualsFilterByDateField() {
+        ClassifierOptionsRequestModel requestModel =
+                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
+                        ErsResponseStatus.ERROR, Collections.emptyList());
+        classifierOptionsRequestModelRepository.save(requestModel);
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, null,
+                        newArrayList());
+        pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.REQUEST_DATE,
+                Collections.singletonList(dateTimeFormatter.format(requestModel.getRequestDate())), MatchMode.EQUALS));
+        Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
+                classifierOptionsRequestService.getNextPage(pageRequestDto);
+        assertThat(classifierOptionsRequestModelPage).isNotNull();
+        assertThat(classifierOptionsRequestModelPage.getTotalElements()).isOne();
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void testLikeFilterForNotStringField() {
+        FilterRequestDto filterRequestDto = new FilterRequestDto(ClassifierOptionsRequestModel_.REQUEST_DATE,
+                Collections.singletonList("2018-11-11"), MatchMode.LIKE);
+        testFilterForIllegalFieldType(filterRequestDto);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void testGlobalFilterForNotStringField() {
+        when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST)).thenReturn(
+                Collections.singletonList(ClassifierOptionsRequestModel_.REQUEST_DATE));
+        ClassifierOptionsRequestModel requestModel =
+                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
+                        ErsResponseStatus.ERROR, Collections.emptyList());
+        classifierOptionsRequestModelRepository.save(requestModel);
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, "query",
+                        newArrayList());
+        classifierOptionsRequestService.getNextPage(pageRequestDto);
+    }
+
+    private void testFilterForIllegalFieldType(FilterRequestDto filterRequestDto) {
+        ClassifierOptionsRequestModel requestModel =
+                TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
+                        ErsResponseStatus.ERROR, Collections.emptyList());
+        classifierOptionsRequestModelRepository.save(requestModel);
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, null,
+                        newArrayList());
+        pageRequestDto.getFilters().add(filterRequestDto);
+        classifierOptionsRequestService.getNextPage(pageRequestDto);
     }
 }

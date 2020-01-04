@@ -35,6 +35,8 @@
         </layout>
     </appender>
 
+    <logger name="org.jxls" level="OFF"/>
+
     <root level="INFO">
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>

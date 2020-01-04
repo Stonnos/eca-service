@@ -4,6 +4,7 @@ import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.InstancesInfo;
 import com.ecaservice.model.evaluation.EvaluationOption;
+import com.ecaservice.report.model.EvaluationLogBean;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
@@ -12,7 +13,11 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -23,6 +28,8 @@ import java.util.Optional;
 @Mapper(uses = {InstancesInfoMapper.class, ClassifierInfoMapper.class},
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class EvaluationLogMapper {
+
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Maps evaluation request to evaluation log.
@@ -52,6 +59,29 @@ public abstract class EvaluationLogMapper {
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(target = "evaluationStatus", ignore = true)
     public abstract EvaluationLogDetailsDto mapDetails(EvaluationLog evaluationLog);
+
+    /**
+     * Maps evaluation log entity to evaluation log report bean.
+     *
+     * @param evaluationLog - evaluation log entity
+     * @return evaluation log bean
+     */
+    @Mapping(source = "evaluationMethod.description", target = "evaluationMethod")
+    @Mapping(source = "evaluationStatus.description", target = "evaluationStatus")
+    @Mapping(source = "creationDate", target = "creationDate", qualifiedByName = "formatLocalDateTime")
+    @Mapping(source = "startDate", target = "startDate", qualifiedByName = "formatLocalDateTime")
+    @Mapping(source = "endDate", target = "endDate", qualifiedByName = "formatLocalDateTime")
+    @Mapping(source = "classifierInfo.classifierName", target = "classifierName")
+    @Mapping(source = "instancesInfo.relationName", target = "relationName")
+    public abstract EvaluationLogBean mapToBean(EvaluationLog evaluationLog);
+
+    /**
+     * Maps evaluation logs entities to evaluation log reports beans.
+     *
+     * @param evaluationLogs - evaluation logs entities list
+     * @return evaluation logs beans list
+     */
+    public abstract List<EvaluationLogBean> mapToBeans(List<EvaluationLog> evaluationLogs);
 
     @AfterMapping
     protected void mapData(EvaluationRequest evaluationRequest, @MappingTarget EvaluationLog evaluationLog) {
@@ -87,5 +117,10 @@ public abstract class EvaluationLogMapper {
                                        @MappingTarget EvaluationLogDto evaluationLogDto) {
         evaluationLogDto.setEvaluationStatus(new EnumDto(evaluationLog.getEvaluationStatus().name(),
                 evaluationLog.getEvaluationStatus().getDescription()));
+    }
+
+    @Named("formatLocalDateTime")
+    protected String formatLocalDateTime(LocalDateTime localDateTime) {
+        return Optional.ofNullable(localDateTime).map(dateTimeFormatter::format).orElse(null);
     }
 }

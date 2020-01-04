@@ -5,6 +5,7 @@ import com.ecaservice.filter.EvaluationLogFilter;
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.EvaluationLog;
+import com.ecaservice.model.entity.EvaluationLog_;
 import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.model.entity.RequestStatus;
@@ -26,13 +27,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import static com.ecaservice.util.Utils.buildEvaluationResultsDto;
+import static com.ecaservice.util.Utils.toRequestStatusStatisticsMap;
 
 /**
  * Evaluation log service.
@@ -53,7 +52,8 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
 
     @Override
     public Page<EvaluationLog> getNextPage(PageRequestDto pageRequestDto) {
-        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), pageRequestDto.isAscending());
+        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), EvaluationLog_.CREATION_DATE,
+                pageRequestDto.isAscending());
         List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG);
         EvaluationLogFilter filter = new EvaluationLogFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());
@@ -79,14 +79,8 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
      * @return requests status counting statistics list
      */
     public Map<RequestStatus, Long> getRequestStatusesStatistics() {
-        Map<RequestStatus, Long> evaluationStatusesMap =
-                evaluationLogRepository.getRequestStatusesStatistics().stream().collect(
-                        Collectors.toMap(RequestStatusStatistics::getRequestStatus,
-                                RequestStatusStatistics::getRequestsCount, (v1, v2) -> v1, TreeMap::new));
-        Arrays.stream(RequestStatus.values()).filter(
-                requestStatus -> !evaluationStatusesMap.containsKey(requestStatus)).forEach(
-                requestStatus -> evaluationStatusesMap.put(requestStatus, 0L));
-        return evaluationStatusesMap;
+        List<RequestStatusStatistics> requestStatusStatistics = evaluationLogRepository.getRequestStatusesStatistics();
+        return toRequestStatusStatisticsMap(requestStatusStatistics);
     }
 
     private EvaluationResultsDto getEvaluationResults(EvaluationLog evaluationLog) {
