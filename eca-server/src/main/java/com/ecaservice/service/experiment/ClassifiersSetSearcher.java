@@ -116,16 +116,14 @@ public class ClassifiersSetSearcher {
 
     private void initializeClassifiers(List<AbstractClassifier> classifiers, Instances data) {
         //Initialize classifiers options based on training data
-        for (AbstractClassifier classifier : classifiers) {
+        classifiers.forEach(classifier -> {
             if (classifier instanceof Randomizable) {
                 ((Randomizable) classifier).setSeed(crossValidationConfig.getSeed());
             }
-            for (ClassifierInputDataHandler handler : classifierInputDataHandlers) {
-                if (handler.canHandle(classifier)) {
-                    handler.handle(data, classifier);
-                    break;
-                }
-            }
-        }
+            classifierInputDataHandlers.stream()
+                    .filter(h -> h.canHandle(classifier))
+                    .findFirst()
+                    .ifPresent(classifierInputDataHandler -> classifierInputDataHandler.handle(data, classifier));
+        });
     }
 }

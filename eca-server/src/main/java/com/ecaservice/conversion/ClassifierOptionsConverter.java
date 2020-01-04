@@ -37,31 +37,30 @@ public class ClassifierOptionsConverter {
      * @return classifiers options model
      */
     public ClassifierOptions convert(AbstractClassifier classifier) {
-        for (AbstractClassifierMapper classifierMapper : classifierMappers) {
-            if (classifierMapper.canMap(classifier)) {
-                ClassifierOptions classifierOptions = classifierMapper.map(classifier);
-                if (EnsembleUtils.isHeterogeneousEnsembleClassifier(classifier)) {
-                    if (classifier instanceof AbstractHeterogeneousClassifier) {
-                        AbstractHeterogeneousClassifier heterogeneousClassifier =
-                                (AbstractHeterogeneousClassifier) classifier;
-                        AbstractHeterogeneousClassifierOptions heterogeneousClassifierOptions =
-                                (AbstractHeterogeneousClassifierOptions) classifierOptions;
-                        heterogeneousClassifierOptions.setClassifierOptions(
-                                convertClassifiersSet(heterogeneousClassifier.getClassifiersSet()));
-                    } else if (classifier instanceof StackingClassifier) {
-                        StackingOptions stackingOptions = (StackingOptions) classifierOptions;
-                        StackingClassifier stackingClassifier = (StackingClassifier) classifier;
-                        stackingOptions.setMetaClassifierOptions(
-                                convert((AbstractClassifier) stackingClassifier.getMetaClassifier()));
-                        stackingOptions.setClassifierOptions(
-                                convertClassifiersSet(stackingClassifier.getClassifiers()));
-                    }
-                }
-                return classifierOptions;
+        AbstractClassifierMapper classifierMapper = classifierMappers.stream()
+                .filter(mapper -> mapper.canMap(classifier))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(
+                        String.format("Can not convert '%s' classifier!", classifier.getClass().getSimpleName())));
+        ClassifierOptions classifierOptions = classifierMapper.map(classifier);
+        if (EnsembleUtils.isHeterogeneousEnsembleClassifier(classifier)) {
+            if (classifier instanceof AbstractHeterogeneousClassifier) {
+                AbstractHeterogeneousClassifier heterogeneousClassifier =
+                        (AbstractHeterogeneousClassifier) classifier;
+                AbstractHeterogeneousClassifierOptions heterogeneousClassifierOptions =
+                        (AbstractHeterogeneousClassifierOptions) classifierOptions;
+                heterogeneousClassifierOptions.setClassifierOptions(
+                        convertClassifiersSet(heterogeneousClassifier.getClassifiersSet()));
+            } else if (classifier instanceof StackingClassifier) {
+                StackingOptions stackingOptions = (StackingOptions) classifierOptions;
+                StackingClassifier stackingClassifier = (StackingClassifier) classifier;
+                stackingOptions.setMetaClassifierOptions(
+                        convert((AbstractClassifier) stackingClassifier.getMetaClassifier()));
+                stackingOptions.setClassifierOptions(
+                        convertClassifiersSet(stackingClassifier.getClassifiers()));
             }
         }
-        throw new UnsupportedOperationException(
-                String.format("Can not convert '%s' classifier!", classifier.getClass().getSimpleName()));
+        return classifierOptions;
     }
 
     /**
@@ -71,28 +70,27 @@ public class ClassifierOptionsConverter {
      * @return classifier model
      */
     public AbstractClassifier convert(ClassifierOptions classifierOptions) {
-        for (ClassifierOptionsMapper classifierOptionsMapper : classifierOptionsMappers) {
-            if (classifierOptionsMapper.canMap(classifierOptions)) {
-                AbstractClassifier classifier = classifierOptionsMapper.map(classifierOptions);
-                if (classifierOptions instanceof AbstractHeterogeneousClassifierOptions) {
-                    AbstractHeterogeneousClassifier heterogeneousClassifier =
-                            (AbstractHeterogeneousClassifier) classifier;
-                    AbstractHeterogeneousClassifierOptions heterogeneousClassifierOptions =
-                            (AbstractHeterogeneousClassifierOptions) classifierOptions;
-                    heterogeneousClassifier.setClassifiersSet(
-                            convertClassifiersOptions(heterogeneousClassifierOptions.getClassifierOptions()));
-                } else if (classifierOptions instanceof StackingOptions) {
-                    StackingOptions stackingOptions = (StackingOptions) classifierOptions;
-                    StackingClassifier stackingClassifier = (StackingClassifier) classifier;
-                    stackingClassifier.setClassifiers(
-                            convertClassifiersOptions(stackingOptions.getClassifierOptions()));
-                    stackingClassifier.setMetaClassifier(convert(stackingOptions.getMetaClassifierOptions()));
-                }
-                return classifier;
-            }
+        ClassifierOptionsMapper classifierOptionsMapper = classifierOptionsMappers.stream()
+                .filter(mapper -> mapper.canMap(classifierOptions))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(String.format("Can not convert '%s' classifier options!",
+                        classifierOptions.getClass().getSimpleName())));
+        AbstractClassifier classifier = classifierOptionsMapper.map(classifierOptions);
+        if (classifierOptions instanceof AbstractHeterogeneousClassifierOptions) {
+            AbstractHeterogeneousClassifier heterogeneousClassifier =
+                    (AbstractHeterogeneousClassifier) classifier;
+            AbstractHeterogeneousClassifierOptions heterogeneousClassifierOptions =
+                    (AbstractHeterogeneousClassifierOptions) classifierOptions;
+            heterogeneousClassifier.setClassifiersSet(
+                    convertClassifiersOptions(heterogeneousClassifierOptions.getClassifierOptions()));
+        } else if (classifierOptions instanceof StackingOptions) {
+            StackingOptions stackingOptions = (StackingOptions) classifierOptions;
+            StackingClassifier stackingClassifier = (StackingClassifier) classifier;
+            stackingClassifier.setClassifiers(
+                    convertClassifiersOptions(stackingOptions.getClassifierOptions()));
+            stackingClassifier.setMetaClassifier(convert(stackingOptions.getMetaClassifierOptions()));
         }
-        throw new UnsupportedOperationException(String.format("Can not convert '%s' classifier options!",
-                classifierOptions.getClass().getSimpleName()));
+        return classifier;
     }
 
     private List<ClassifierOptions> convertClassifiersSet(ClassifiersSet classifiers) {
