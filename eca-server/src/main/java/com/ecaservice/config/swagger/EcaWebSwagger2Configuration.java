@@ -20,7 +20,7 @@ import java.util.List;
  *
  * @author Roman Batygin
  */
-@ConditionalOnBean(SwaggerSecurityConfiguration.class)
+@ConditionalOnBean(SwaggerBaseConfiguration.class)
 @Configuration
 public class EcaWebSwagger2Configuration extends AbstractSwagger2Configuration {
 

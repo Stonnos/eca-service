@@ -14,7 +14,7 @@ import javax.inject.Inject;
  *
  * @author Roman Batygin
  */
-@ConditionalOnBean(SwaggerSecurityConfiguration.class)
+@ConditionalOnBean(SwaggerBaseConfiguration.class)
 @Configuration
 public class EcaSwagger2Configuration extends AbstractSwagger2Configuration {
 
