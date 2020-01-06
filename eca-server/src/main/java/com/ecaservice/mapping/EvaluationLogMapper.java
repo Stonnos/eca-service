@@ -1,13 +1,14 @@
 package com.ecaservice.mapping;
 
+import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.InstancesInfo;
-import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.report.model.EvaluationLogBean;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
+import eca.core.evaluation.EvaluationMethod;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -34,11 +35,15 @@ public abstract class EvaluationLogMapper {
     /**
      * Maps evaluation request to evaluation log.
      *
-     * @param evaluationRequest evaluation request
+     * @param evaluationRequest     - evaluation request
+     * @param crossValidationConfig - cross validation config
      * @return evaluation log entity
      */
-    @Mapping(source = "classifier", target = "classifierInfo")
-    public abstract EvaluationLog map(EvaluationRequest evaluationRequest);
+    @Mapping(source = "evaluationRequest.classifier", target = "classifierInfo")
+    @Mapping(target = "numFolds", ignore = true)
+    @Mapping(target = "numTests", ignore = true)
+    @Mapping(target = "seed", ignore = true)
+    public abstract EvaluationLog map(EvaluationRequest evaluationRequest, CrossValidationConfig crossValidationConfig);
 
     /**
      * Maps evaluation log entity to its dto model.
@@ -48,6 +53,9 @@ public abstract class EvaluationLogMapper {
      */
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(target = "evaluationStatus", ignore = true)
+    @Mapping(target = "numFolds", ignore = true)
+    @Mapping(target = "numTests", ignore = true)
+    @Mapping(target = "seed", ignore = true)
     public abstract EvaluationLogDto map(EvaluationLog evaluationLog);
 
     /**
@@ -58,6 +66,9 @@ public abstract class EvaluationLogMapper {
      */
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(target = "evaluationStatus", ignore = true)
+    @Mapping(target = "numFolds", ignore = true)
+    @Mapping(target = "numTests", ignore = true)
+    @Mapping(target = "seed", ignore = true)
     public abstract EvaluationLogDetailsDto mapDetails(EvaluationLog evaluationLog);
 
     /**
@@ -97,19 +108,29 @@ public abstract class EvaluationLogMapper {
     }
 
     @AfterMapping
+    protected void mapEvaluationMethodOptions(EvaluationRequest evaluationRequest,
+                                              CrossValidationConfig crossValidationConfig,
+                                              @MappingTarget EvaluationLog evaluationLog) {
+        if (EvaluationMethod.CROSS_VALIDATION.equals(evaluationRequest.getEvaluationMethod())) {
+            evaluationLog.setNumFolds(
+                    Optional.ofNullable(evaluationRequest.getNumFolds()).orElse(crossValidationConfig.getNumFolds()));
+            evaluationLog.setNumTests(
+                    Optional.ofNullable(evaluationRequest.getNumTests()).orElse(crossValidationConfig.getNumTests()));
+            evaluationLog.setSeed(
+                    Optional.ofNullable(evaluationRequest.getSeed()).orElse(crossValidationConfig.getSeed()));
+        }
+    }
+
+    @AfterMapping
     protected void mapEvaluationMethodOptions(EvaluationLog evaluationLog,
                                               @MappingTarget EvaluationLogDto evaluationLogDto) {
         evaluationLogDto.setEvaluationMethod(new EnumDto(evaluationLog.getEvaluationMethod().name(),
                 evaluationLog.getEvaluationMethod().getDescription()));
-        evaluationLogDto.setNumFolds(
-                Optional.ofNullable(evaluationLog.getEvaluationOptionsMap().get(EvaluationOption.NUM_FOLDS)).map(
-                        Integer::valueOf).orElse(null));
-        evaluationLogDto.setNumTests(
-                Optional.ofNullable(evaluationLog.getEvaluationOptionsMap().get(EvaluationOption.NUM_TESTS)).map(
-                        Integer::valueOf).orElse(null));
-        evaluationLogDto.setSeed(
-                Optional.ofNullable(evaluationLog.getEvaluationOptionsMap().get(EvaluationOption.SEED)).map(
-                        Integer::valueOf).orElse(null));
+        if (EvaluationMethod.CROSS_VALIDATION.equals(evaluationLog.getEvaluationMethod())) {
+            evaluationLogDto.setNumFolds(evaluationLog.getNumFolds());
+            evaluationLogDto.setNumTests(evaluationLog.getNumTests());
+            evaluationLogDto.setSeed(evaluationLog.getSeed());
+        }
     }
 
     @AfterMapping

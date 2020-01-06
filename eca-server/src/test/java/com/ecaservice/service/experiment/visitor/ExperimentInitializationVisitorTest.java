@@ -29,7 +29,6 @@ import javax.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyMap;
 import static org.mockito.Mockito.when;
 
 /**
@@ -56,8 +55,8 @@ public class ExperimentInitializationVisitorTest {
     public void setUp() {
         experimentInitializationVisitor = new ExperimentInitializationVisitor(experimentConfig,
                 crossValidationConfig, classifiersSetSearcher);
-        when(classifiersSetSearcher.findBestClassifiers(any(Instances.class), any(EvaluationMethod.class),
-                anyMap())).thenReturn(new ClassifiersSet());
+        when(classifiersSetSearcher.findBestClassifiers(any(Instances.class), any(EvaluationMethod.class))).thenReturn(
+                new ClassifiersSet());
     }
 
     @Test

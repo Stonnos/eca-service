@@ -37,7 +37,6 @@ import weka.core.Instances;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.stream.StreamResult;
 import java.io.OutputStream;
-import java.util.Collections;
 
 import static com.ecaservice.util.Utils.parseOptions;
 
@@ -151,7 +150,6 @@ public class QaController {
         EvaluationRequest evaluationRequest = new EvaluationRequest();
         evaluationRequest.setData(loadInstances(trainingData));
         evaluationRequest.setEvaluationMethod(evaluationMethod);
-        evaluationRequest.setEvaluationOptionsMap(Collections.emptyMap());
         ClassifierOptions options = parseOptions(classifierOptions.getInputStream());
         AbstractClassifier classifier = classifierOptionsConverter.convert(options);
         evaluationRequest.setClassifier(classifier);

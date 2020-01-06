@@ -1,6 +1,7 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.model.entity.ClassifierInputOptions;
 import com.ecaservice.model.entity.EvaluationLog;
@@ -15,7 +16,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
-import java.util.HashMap;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,20 +27,21 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @RunWith(SpringRunner.class)
 @Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class,
-        ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class})
+        ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class, CrossValidationConfig.class})
 public class EvaluationLogMapperTest {
 
+    @Inject
+    private CrossValidationConfig crossValidationConfig;
     @Inject
     private EvaluationLogMapper evaluationLogMapper;
 
     @Test
-    public void testMapToEvaluationLog() {
+    public void testMapToEvaluationLogWithTrainingDataEvaluationMethod() {
         EvaluationRequest evaluationRequest = new EvaluationRequest();
         evaluationRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        evaluationRequest.setEvaluationOptionsMap(new HashMap<>());
         evaluationRequest.setData(TestHelperUtils.loadInstances());
         evaluationRequest.setClassifier(new KNearestNeighbours());
-        EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequest);
+        EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequest, crossValidationConfig);
 
         assertThat(evaluationLog).isNotNull();
         assertThat(evaluationLog.getEvaluationMethod()).isEqualTo(evaluationRequest.getEvaluationMethod());
@@ -56,14 +57,40 @@ public class EvaluationLogMapperTest {
                 evaluationRequest.getData().numClasses());
         assertThat(evaluationLog.getInstancesInfo().getNumInstances().intValue()).isEqualTo(
                 evaluationRequest.getData().numInstances());
+        assertThat(evaluationLog.getNumFolds()).isNull();
+        assertThat(evaluationLog.getNumTests()).isNull();
+        assertThat(evaluationLog.getSeed()).isNull();
         assertOptions(evaluationLog, evaluationRequest);
+    }
+
+    @Test
+    public void testMapToEvaluationLogWithCrossValidationEvaluationMethod() {
+        EvaluationRequest evaluationRequest = new EvaluationRequest();
+        evaluationRequest.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
+        evaluationRequest.setNumFolds(TestHelperUtils.NUM_FOLDS);
+        evaluationRequest.setNumFolds(TestHelperUtils.NUM_TESTS);
+        evaluationRequest.setNumFolds(TestHelperUtils.SEED);
+        EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequest, crossValidationConfig);
+        assertThat(evaluationLog).isNotNull();
+        assertThat(evaluationLog.getNumFolds()).isEqualTo(evaluationRequest.getNumFolds());
+        assertThat(evaluationLog.getNumTests()).isEqualTo(evaluationRequest.getNumTests());
+        assertThat(evaluationLog.getSeed()).isEqualTo(evaluationRequest.getSeed());
+    }
+
+    @Test
+    public void testMapToEvaluationLogWithDefaultOptions() {
+        EvaluationRequest evaluationRequest = new EvaluationRequest();
+        evaluationRequest.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
+        EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequest, crossValidationConfig);
+        assertThat(evaluationLog).isNotNull();
+        assertThat(evaluationLog.getNumFolds()).isEqualTo(crossValidationConfig.getNumFolds());
+        assertThat(evaluationLog.getNumTests()).isEqualTo(crossValidationConfig.getNumTests());
+        assertThat(evaluationLog.getSeed()).isEqualTo(crossValidationConfig.getSeed());
     }
 
     @Test
     public void testMapToEvaluationLogDto() {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
-        evaluationLog.setEvaluationOptionsMap(
-                TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
         EvaluationLogDto evaluationLogDto = evaluationLogMapper.map(evaluationLog);
         assertEvaluationLogDto(evaluationLogDto, evaluationLog);
     }
@@ -71,8 +98,6 @@ public class EvaluationLogMapperTest {
     @Test
     public void testMapToEvaluationLogDetailsDto() {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
-        evaluationLog.setEvaluationOptionsMap(
-                TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
         EvaluationLogDetailsDto evaluationLogDetailsDto = evaluationLogMapper.mapDetails(evaluationLog);
         assertEvaluationLogDto(evaluationLogDetailsDto, evaluationLog);
     }
@@ -116,9 +141,9 @@ public class EvaluationLogMapperTest {
         assertThat(evaluationLogDto.getClassifierInfo().getInputOptions()).isNotNull();
         assertThat(evaluationLogDto.getClassifierInfo().getInputOptions()).hasSameSizeAs(
                 evaluationLog.getClassifierInfo().getClassifierInputOptions());
-        assertThat(evaluationLogDto.getNumFolds()).isNotNull();
-        assertThat(evaluationLogDto.getNumTests()).isNotNull();
-        assertThat(evaluationLogDto.getSeed()).isNull();
+        assertThat(evaluationLogDto.getNumFolds()).isEqualTo(evaluationLog.getNumFolds());
+        assertThat(evaluationLogDto.getNumTests()).isEqualTo(evaluationLog.getNumTests());
+        assertThat(evaluationLogDto.getSeed()).isEqualTo(evaluationLog.getSeed());
         assertThat(evaluationLogDto.getInstancesInfo()).isNotNull();
     }
 

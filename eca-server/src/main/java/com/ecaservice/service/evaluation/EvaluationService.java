@@ -2,24 +2,19 @@ package com.ecaservice.service.evaluation;
 
 
 import com.ecaservice.config.CrossValidationConfig;
-import com.ecaservice.model.InputData;
+import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.model.evaluation.ClassificationResult;
-import com.ecaservice.model.evaluation.EvaluationOption;
 import eca.core.evaluation.Evaluation;
-import eca.core.evaluation.EvaluationMethod;
 import eca.core.evaluation.EvaluationMethodVisitor;
 import eca.core.evaluation.EvaluationResults;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
-import java.util.Collections;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
@@ -40,27 +35,21 @@ public class EvaluationService {
      * If options for cross - validation method is not specified then the options
      * from configs will be used for evaluation.
      *
-     * @param inputData            - input data {@link InputData}
-     * @param evaluationMethod     - evaluation method
-     * @param evaluationOptionsMap - evaluation options map
+     * @param evaluationRequest - evaluation request
      * @return classification results {@link ClassificationResult}
      */
-    public ClassificationResult evaluateModel(final InputData inputData,
-                                              final EvaluationMethod evaluationMethod,
-                                              final Map<EvaluationOption, String> evaluationOptionsMap) {
+    public ClassificationResult evaluateModel(EvaluationRequest evaluationRequest) {
         ClassificationResult classificationResult = new ClassificationResult();
         try {
-            final Classifier classifier = AbstractClassifier.makeCopy(inputData.getClassifier());
-            final Instances data = inputData.getData();
+            final Classifier classifier = AbstractClassifier.makeCopy(evaluationRequest.getClassifier());
+            final Instances data = evaluationRequest.getData();
             final String classifierName = classifier.getClass().getSimpleName();
-            final Map<EvaluationOption, String> optionsMap =
-                    Optional.ofNullable(evaluationOptionsMap).orElse(Collections.emptyMap());
             log.info("Model evaluation starting for classifier = {}, data = {}, evaluationMethod = {}",
-                    classifierName, data.relationName(), evaluationMethod);
+                    classifierName, data.relationName(), evaluationRequest.getEvaluationMethod());
             final Evaluation evaluation = new Evaluation(data);
             final StopWatch stopWatch = new StopWatch(String.format("Stop watching for %s", classifierName));
 
-            evaluationMethod.accept(new EvaluationMethodVisitor() {
+            evaluationRequest.getEvaluationMethod().accept(new EvaluationMethodVisitor() {
                 @Override
                 public void evaluateModel() throws Exception {
                     stopWatch.start(String.format("%s model training", classifierName));
@@ -73,9 +62,9 @@ public class EvaluationService {
 
                 @Override
                 public void crossValidateModel() throws Exception {
-                    int folds = NumberUtils.toInt(optionsMap.get(EvaluationOption.NUM_FOLDS), config.getNumFolds());
-                    int tests = NumberUtils.toInt(optionsMap.get(EvaluationOption.NUM_TESTS), config.getNumTests());
-                    int seed = NumberUtils.toInt(optionsMap.get(EvaluationOption.SEED), config.getSeed());
+                    int folds = Optional.ofNullable(evaluationRequest.getNumFolds()).orElse(config.getNumFolds());
+                    int tests = Optional.ofNullable(evaluationRequest.getNumTests()).orElse(config.getNumTests());
+                    int seed = Optional.ofNullable(evaluationRequest.getSeed()).orElse(config.getSeed());
                     log.trace("evaluateModel: numFolds = {}, numTests = {}, seed {}", folds, tests, seed);
                     stopWatch.start(String.format("%s model evaluation", classifierName));
                     evaluation.kCrossValidateModel(AbstractClassifier.makeCopy(classifier), data, folds, tests,

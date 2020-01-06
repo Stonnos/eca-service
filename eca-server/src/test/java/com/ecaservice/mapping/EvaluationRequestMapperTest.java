@@ -3,7 +3,6 @@ package com.ecaservice.mapping;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
-import com.ecaservice.model.evaluation.EvaluationOption;
 import eca.core.evaluation.EvaluationMethod;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -33,11 +32,11 @@ public class EvaluationRequestMapperTest {
         EvaluationRequest evaluationRequest =
                 evaluationRequestMapper.map(classifierOptionsRequest);
         Assertions.assertThat(evaluationRequest.getEvaluationMethod()).isEqualTo(EvaluationMethod.CROSS_VALIDATION);
-        assertThat(evaluationRequest.getEvaluationOptionsMap().get(EvaluationOption.NUM_FOLDS)).isEqualTo(
-                classifierOptionsRequest.getEvaluationMethodReport().getNumFolds().toString());
-        assertThat(evaluationRequest.getEvaluationOptionsMap().get(EvaluationOption.NUM_TESTS)).isEqualTo(
-                classifierOptionsRequest.getEvaluationMethodReport().getNumTests().toString());
-        assertThat(evaluationRequest.getEvaluationOptionsMap().get(EvaluationOption.SEED)).isEqualTo(
-                classifierOptionsRequest.getEvaluationMethodReport().getSeed().toString());
+        assertThat(evaluationRequest.getNumFolds()).isEqualTo(
+                classifierOptionsRequest.getEvaluationMethodReport().getNumFolds().intValue());
+        assertThat(evaluationRequest.getNumTests()).isEqualTo(
+                classifierOptionsRequest.getEvaluationMethodReport().getNumTests().intValue());
+        assertThat(evaluationRequest.getSeed()).isEqualTo(
+                classifierOptionsRequest.getEvaluationMethodReport().getSeed().intValue());
     }
 }

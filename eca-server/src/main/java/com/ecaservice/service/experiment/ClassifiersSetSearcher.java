@@ -3,11 +3,10 @@ package com.ecaservice.service.experiment;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.conversion.ClassifierOptionsConverter;
+import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.exception.experiment.ExperimentException;
-import com.ecaservice.model.InputData;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.evaluation.ClassificationResult;
-import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.service.evaluation.EvaluationService;
 import com.ecaservice.service.experiment.handler.ClassifierInputDataHandler;
@@ -26,7 +25,6 @@ import weka.core.Randomizable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.util.ExperimentLogUtils.logAndThrowError;
@@ -54,22 +52,19 @@ public class ClassifiersSetSearcher {
      * Finds the best individual classifiers set by the criterion of accuracy maximization.
      * Individual classifiers set are taken from database and then are cached on time specified in configs.
      *
-     * @param data                      training data
-     * @param evaluationMethod          evaluation method
-     * @param evaluationOptionStringMap evaluation options {@link Map}
-     * @return classifiers set {@link ClassifiersSet}
+     * @param data             training data
+     * @param evaluationMethod evaluation method
+     * @return classifiers set
      */
-    public ClassifiersSet findBestClassifiers(Instances data, EvaluationMethod evaluationMethod,
-                                              Map<EvaluationOption, String> evaluationOptionStringMap) {
+    public ClassifiersSet findBestClassifiers(Instances data, EvaluationMethod evaluationMethod) {
         log.info("Starting to find the best individual classifiers using {} evaluation method.", evaluationMethod);
         List<AbstractClassifier> classifiersSet = readClassifiers();
         initializeClassifiers(classifiersSet, data);
         ArrayList<EvaluationResults> finished = new ArrayList<>(classifiersSet.size());
 
         for (AbstractClassifier classifier : classifiersSet) {
-            ClassificationResult classificationResult =
-                    evaluationService.evaluateModel(new InputData(classifier, data), evaluationMethod,
-                            evaluationOptionStringMap);
+            EvaluationRequest evaluationRequest = createEvaluationRequest(classifier, data, evaluationMethod);
+            ClassificationResult classificationResult = evaluationService.evaluateModel(evaluationRequest);
             if (classificationResult.isSuccess()) {
                 classificationResult.getEvaluationResults().setClassifier(classifier);
                 finished.add(classificationResult.getEvaluationResults());
@@ -125,5 +120,19 @@ public class ClassifiersSetSearcher {
                     .findFirst()
                     .ifPresent(classifierInputDataHandler -> classifierInputDataHandler.handle(data, classifier));
         });
+    }
+
+    private EvaluationRequest createEvaluationRequest(AbstractClassifier classifier, Instances data,
+                                                      EvaluationMethod evaluationMethod) {
+        EvaluationRequest evaluationRequest = new EvaluationRequest();
+        evaluationRequest.setClassifier(classifier);
+        evaluationRequest.setData(data);
+        evaluationRequest.setEvaluationMethod(evaluationMethod);
+        if (EvaluationMethod.CROSS_VALIDATION.equals(evaluationMethod)) {
+            evaluationRequest.setNumFolds(crossValidationConfig.getNumFolds());
+            evaluationRequest.setNumTests(crossValidationConfig.getNumTests());
+            evaluationRequest.setSeed(crossValidationConfig.getSeed());
+        }
+        return evaluationRequest;
     }
 }

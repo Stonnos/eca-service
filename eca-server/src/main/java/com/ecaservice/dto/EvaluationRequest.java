@@ -2,7 +2,6 @@ package com.ecaservice.dto;
 
 import com.ecaservice.dto.json.ClassifierDeserializer;
 import com.ecaservice.dto.json.InstancesDeserializer;
-import com.ecaservice.model.evaluation.EvaluationOption;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import eca.core.evaluation.EvaluationMethod;
 import io.swagger.annotations.ApiModel;
@@ -12,7 +11,6 @@ import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
 import javax.validation.constraints.NotNull;
-import java.util.Map;
 
 /**
  * Evaluation request transport model.
@@ -47,8 +45,20 @@ public class EvaluationRequest {
     private EvaluationMethod evaluationMethod;
 
     /**
-     * Evaluation options map
+     * Folds number for k * V cross - validation method
      */
-    @ApiModelProperty(value = "Evaluation options map")
-    private Map<EvaluationOption, String> evaluationOptionsMap;
+    @ApiModelProperty(value = "Folds number for k * V cross - validation method")
+    private Integer numFolds;
+
+    /**
+     * Tests number for k * V cross - validation method
+     */
+    @ApiModelProperty(value = "Tests number for k * V cross - validation method")
+    private Integer numTests;
+
+    /**
+     * Seed value for k * V cross - validation method
+     */
+    @ApiModelProperty(value = "Seed value for k * V cross - validation method")
+    private Integer seed;
 }

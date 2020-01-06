@@ -29,7 +29,6 @@ import com.ecaservice.model.entity.FilterDictionaryValue;
 import com.ecaservice.model.entity.InstancesInfo;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.evaluation.ClassifierOptionsRequestSource;
-import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
@@ -79,9 +78,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
@@ -173,24 +170,9 @@ public class TestHelperUtils {
     public static EvaluationRequest createEvaluationRequest() {
         EvaluationRequest request = new EvaluationRequest();
         request.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
-        request.setEvaluationOptionsMap(Collections.emptyMap());
         request.setData(loadInstances());
         request.setClassifier(new KNearestNeighbours());
         return request;
-    }
-
-    /**
-     * Creates evaluation options map.
-     *
-     * @param numFolds number of folds
-     * @param numTests number of tests
-     * @return evaluation options map
-     */
-    public static Map<EvaluationOption, String> createEvaluationOptionsMap(int numFolds, int numTests) {
-        Map<EvaluationOption, String> evaluationOptionsMap = new EnumMap<>(EvaluationOption.class);
-        evaluationOptionsMap.put(EvaluationOption.NUM_FOLDS, String.valueOf(numFolds));
-        evaluationOptionsMap.put(EvaluationOption.NUM_TESTS, String.valueOf(numTests));
-        return evaluationOptionsMap;
     }
 
     /**
@@ -320,8 +302,10 @@ public class TestHelperUtils {
         evaluationLog.setClassifierInfo(createClassifierInfo());
         evaluationLog.setInstancesInfo(createInstancesInfo());
         evaluationLog.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
+        evaluationLog.setNumFolds(NUM_FOLDS);
+        evaluationLog.setNumTests(NUM_TESTS);
+        evaluationLog.setSeed(SEED);
         evaluationLog.setEvaluationStatus(RequestStatus.FINISHED);
-        evaluationLog.setEvaluationOptionsMap(Collections.emptyMap());
         return evaluationLog;
     }
 

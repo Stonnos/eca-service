@@ -14,7 +14,6 @@ import com.ecaservice.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.RequestStatus;
-import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import eca.core.evaluation.EvaluationMethod;
@@ -22,7 +21,6 @@ import org.junit.Test;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -105,8 +103,7 @@ public class EvaluationRequestServiceTest extends AbstractJpaTest {
     public void testClassificationWithError() {
         EvaluationRequest request = TestHelperUtils.createEvaluationRequest();
         request.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
-        request.setEvaluationOptionsMap(new EnumMap<>(EvaluationOption.class));
-        request.getEvaluationOptionsMap().put(EvaluationOption.NUM_FOLDS, String.valueOf(1));
+        request.setNumFolds(1);
         EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
