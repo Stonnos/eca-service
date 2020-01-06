@@ -44,7 +44,7 @@
     <changeSet id="4" author="roman.batygin@mail.ru">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="evaluation_log"/>
-            <tableExists tableName="evaluation-options"/>
+            <tableExists tableName="evaluation_options"/>
         </preConditions>
         <sqlFile path="sql/migrate-evaluation-options.sql"
                  dbms="postgresql"
@@ -55,8 +55,8 @@
 
     <changeSet id="5" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
-            <tableExists tableName="evaluation-options"/>
+            <tableExists tableName="evaluation_options"/>
         </preConditions>
-        <dropTable tableName="evaluation-options"/>
+        <dropTable tableName="evaluation_options"/>
     </changeSet>
 </databaseChangeLog>
