@@ -116,30 +116,30 @@
           </ng-container>
         </ng-container>
         <ng-container *ngSwitchCase="'evaluationMethod.description'">
-          <div class="ui-g" *ngIf="selectedEvaluationLog.numFolds">
+          <div class="ui-g">
             <div class="ui-g-6 text-right text-bold text-wrap">
               Число блоков:
             </div>
             <div class="ui-g-6 text-left text-wrap">
-              {{ selectedEvaluationLog.numFolds }}
+              {{ getNumFolds(selectedEvaluationLog) }}
             </div>
           </div>
 
-          <div class="ui-g" *ngIf="selectedEvaluationLog.numTests">
+          <div class="ui-g">
             <div class="ui-g-6 text-right text-bold text-wrap">
               Число проверок:
             </div>
             <div class="ui-g-6 text-left text-wrap">
-              {{ selectedEvaluationLog.numTests }}
+              {{ getNumTests(selectedEvaluationLog) }}
             </div>
           </div>
 
-          <div class="ui-g" *ngIf="selectedEvaluationLog.seed">
+          <div class="ui-g">
             <div class="ui-g-6 text-right text-bold text-wrap">
               Начальное значение (seed):
             </div>
             <div class="ui-g-6 text-left text-wrap">
-              {{ selectedEvaluationLog.seed }}
+              {{ getSeed(selectedEvaluationLog) }}
             </div>
           </div>
         </ng-container>

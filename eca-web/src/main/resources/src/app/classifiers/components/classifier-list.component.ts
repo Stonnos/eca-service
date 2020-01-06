@@ -18,6 +18,7 @@ import { EvaluationLogFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
 import { finalize } from "rxjs/operators";
 import { ReportsService } from "../../common/services/report.service";
+import {Utils} from "../../common/util/utils";
 
 @Component({
   selector: 'app-classifier-list',
@@ -83,6 +84,18 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
       }, (error) => {
         this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
       });
+  }
+
+  public getNumFolds(evaluationLog: EvaluationLogDto): number {
+    return this.fieldService.getFieldValue(EvaluationLogFields.NUM_FOLDS, evaluationLog, Utils.MISSING_VALUE);
+  }
+
+  public getNumTests(evaluationLog: EvaluationLogDto): number {
+    return this.fieldService.getFieldValue(EvaluationLogFields.NUM_TESTS, evaluationLog, Utils.MISSING_VALUE);
+  }
+
+  public getSeed(evaluationLog: EvaluationLogDto): number {
+    return this.fieldService.getFieldValue(EvaluationLogFields.SEED, evaluationLog, Utils.MISSING_VALUE);
   }
 
   public onSelect(event, evaluationLog: EvaluationLogDto, column: string, overlayPanel: OverlayPanel): void {
