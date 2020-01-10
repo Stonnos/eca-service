@@ -18,7 +18,7 @@ import { EvaluationLogFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
 import { finalize } from "rxjs/operators";
 import { ReportsService } from "../../common/services/report.service";
-import {Utils} from "../../common/util/utils";
+import { Utils} from "../../common/util/utils";
 
 @Component({
   selector: 'app-classifier-list',
