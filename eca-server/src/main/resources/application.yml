@@ -76,11 +76,6 @@ swagger2:
       description: Operations for ECA web application
       author: Roman Batygin
       email: roman.batygin@mail.ru
-    experiment-download:
-      title: Download experiment REST API
-      description: API for experiment results downloading
-      author: Roman Batygin
-      email: roman.batygin@mail.ru
   tokenUrl: http://localhost:8085/eca-oauth/oauth/token
   clientId: swagger
   secret: swagger_secret
