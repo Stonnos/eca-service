@@ -1,3 +1,14 @@
+spring:
+  boot:
+    admin:
+      client:
+        instance:
+          service-url: http://eca-web:8080
+        url: http://monitoring:8080
+        username: admin
+        password: secret
+        read-timeout: 1m
+
 web-config:
   apiUrl: http://localhost:8080/eca-server
   oauthUrl: http://localhost:8080/auth-server/oauth/token
