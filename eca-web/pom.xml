@@ -53,9 +53,19 @@
         </dependency>
 
         <dependency>
-            <scope>test</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-sleuth</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -75,6 +85,14 @@
     <build>
         <finalName>${project.artifactId}</finalName>
         <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>application.yml</include>
+                    <include>application-docker.yml</include>
+                    <include>logback-spring.xml</include>
+                </includes>
+            </resource>
             <resource>
                 <directory>src/main/resources/dist/resources</directory>
                 <targetPath>static</targetPath>
