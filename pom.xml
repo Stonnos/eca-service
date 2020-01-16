@@ -60,6 +60,22 @@
         </dependencies>
     </dependencyManagement>
 
+    <profiles>
+        <profile>
+            <id>sonar</id>
+            <properties>
+                <sonar.coverage.exclusions>
+                    **/config/*,
+                    **/exception/*,
+                    **/model/*,
+                    **/dto/*,
+                    **/util/*,
+                    **/*Application.java
+                </sonar.coverage.exclusions>
+            </properties>
+        </profile>
+    </profiles>
+
     <dependencies>
 
         <dependency>

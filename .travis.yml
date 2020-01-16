@@ -21,7 +21,7 @@ jobs:
     - stage: test
       script: mvn clean test
     - stage: sonar_analysis
-      script: mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=$PROJECT_KEY
+      script: mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Psonar -Dsonar.projectKey=$PROJECT_KEY
     - stage: build_image
       before_script:
         - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD;
