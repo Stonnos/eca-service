@@ -3,17 +3,25 @@ jdk: openjdk8
 services:
   - docker
 
+install: true
+addons:
+  sonarcloud:
+    organization: $ORGANIZATION_KEY
+    token:
+      secure: $SONAR_TOKEN
+
 stages:
   - name: test
+  - name: sonar_analysis
   - name: build_image
     if: branch = master
-
-install: true
 
 jobs:
   include:
     - stage: test
       script: mvn clean test
+    - stage: sonar_analysis
+      script: mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Psonar -Dsonar.projectKey=$PROJECT_KEY
     - stage: build_image
       before_script:
         - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD;
@@ -32,3 +40,4 @@ jobs:
 cache:
   directories:
     - $HOME/.m2
+    - $HOME/.sonar/cache
