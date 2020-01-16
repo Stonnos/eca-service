@@ -2,11 +2,10 @@ package com.ecaservice.service.evaluation;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
-import com.ecaservice.model.InputData;
+import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.model.evaluation.ClassificationResult;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationMethod;
-import eca.metrics.KNearestNeighbours;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +21,6 @@ import weka.classifiers.Classifier;
 import weka.core.Instances;
 
 import javax.inject.Inject;
-import java.util.Collections;
 import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,28 +45,27 @@ public class EvaluationServiceTest {
     private CrossValidationConfig config;
 
     private EvaluationService evaluationService;
-    private Instances testInstances;
 
     @Before
     public void setUp() {
-        testInstances = TestHelperUtils.loadInstances();
         evaluationService = new EvaluationService(config);
     }
 
     @Test
     public void testTrainingDataMethod() {
-        InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
-        ClassificationResult result = evaluationService.evaluateModel(inputData,
-                EvaluationMethod.TRAINING_DATA, Collections.emptyMap());
+        EvaluationRequest evaluationRequest = TestHelperUtils.createEvaluationRequest();
+        ClassificationResult result = evaluationService.evaluateModel(evaluationRequest);
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.getEvaluationResults().getEvaluation().isKCrossValidationMethod()).isFalse();
     }
 
     @Test
     public void testCrossValidationMethod() {
-        InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
-        ClassificationResult result = evaluationService.evaluateModel(inputData, EvaluationMethod.CROSS_VALIDATION,
-                TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
+        EvaluationRequest evaluationRequest = TestHelperUtils.createEvaluationRequest();
+        evaluationRequest.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
+        evaluationRequest.setNumFolds(TestHelperUtils.NUM_FOLDS);
+        evaluationRequest.setNumTests(TestHelperUtils.NUM_TESTS);
+        ClassificationResult result = evaluationService.evaluateModel(evaluationRequest);
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.getEvaluationResults().getEvaluation().isKCrossValidationMethod()).isTrue();
     }
@@ -79,9 +76,9 @@ public class EvaluationServiceTest {
         PowerMockito.whenNew(Evaluation.class).withAnyArguments().thenReturn(evaluation);
         doThrow(new Exception()).when(evaluation).kCrossValidateModel(any(Classifier.class), any(Instances.class),
                 anyInt(), anyInt(), any(Random.class));
-        InputData inputData = new InputData(new KNearestNeighbours(), testInstances);
-        ClassificationResult result = evaluationService.evaluateModel(inputData, EvaluationMethod.CROSS_VALIDATION,
-                TestHelperUtils.createEvaluationOptionsMap(TestHelperUtils.NUM_FOLDS, TestHelperUtils.NUM_TESTS));
+        EvaluationRequest evaluationRequest = TestHelperUtils.createEvaluationRequest();
+        evaluationRequest.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
+        ClassificationResult result = evaluationService.evaluateModel(evaluationRequest);
         assertThat(result.isSuccess()).isFalse();
     }
 }

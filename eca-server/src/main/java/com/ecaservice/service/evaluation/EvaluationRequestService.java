@@ -4,7 +4,6 @@ import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.mapping.EvaluationLogMapper;
-import com.ecaservice.model.InputData;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.RequestStatus;
@@ -39,11 +38,11 @@ public class EvaluationRequestService {
     /**
      * Processes input request and returns classification results.
      *
-     * @param request - evaluation request {@link EvaluationRequest}
-     * @return evaluation response {@link EvaluationResponse}
+     * @param request - evaluation request
+     * @return evaluation response
      */
     public EvaluationResponse processRequest(final EvaluationRequest request) {
-        EvaluationLog evaluationLog = evaluationLogMapper.map(request);
+        EvaluationLog evaluationLog = evaluationLogMapper.map(request, crossValidationConfig);
         evaluationLog.setEvaluationStatus(RequestStatus.NEW);
         evaluationLog.setRequestId(UUID.randomUUID().toString());
         evaluationLog.setCreationDate(LocalDateTime.now());
@@ -53,9 +52,7 @@ public class EvaluationRequestService {
         EvaluationResponse evaluationResponse = new EvaluationResponse();
         evaluationResponse.setRequestId(evaluationLog.getRequestId());
         try {
-            Callable<ClassificationResult> callable =
-                    () -> evaluationService.evaluateModel(new InputData(request.getClassifier(), request.getData()),
-                            request.getEvaluationMethod(), request.getEvaluationOptionsMap());
+            Callable<ClassificationResult> callable = () -> evaluationService.evaluateModel(request);
             ClassificationResult classificationResult = executorService.execute(callable,
                     crossValidationConfig.getTimeout(), TimeUnit.MINUTES);
 

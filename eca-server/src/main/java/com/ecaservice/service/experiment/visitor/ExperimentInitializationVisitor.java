@@ -3,11 +3,9 @@ package com.ecaservice.service.experiment.visitor;
 
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.model.evaluation.EvaluationOption;
 import com.ecaservice.model.experiment.ExperimentTypeVisitor;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.service.experiment.ClassifiersSetSearcher;
-import eca.core.evaluation.EvaluationMethod;
 import eca.dataminer.AbstractExperiment;
 import eca.dataminer.AutomatedDecisionTree;
 import eca.dataminer.AutomatedHeterogeneousEnsemble;
@@ -24,10 +22,6 @@ import eca.metrics.KNearestNeighbours;
 import eca.neural.NeuralNetwork;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.Map;
 
 /**
  * Implements experiment parameters initialization.
@@ -56,7 +50,7 @@ public class ExperimentInitializationVisitor
     @Override
     public AbstractExperiment caseHeterogeneousEnsemble(InitializationParams initializationParams) {
         ClassifiersSet classifiersSet = classifiersSetSearcher.findBestClassifiers(initializationParams.getData(),
-                initializationParams.getEvaluationMethod(), createEvaluationOptionsMap(initializationParams));
+                initializationParams.getEvaluationMethod());
         HeterogeneousClassifier heterogeneousClassifier = new HeterogeneousClassifier(classifiersSet);
         heterogeneousClassifier.setNumThreads(getNumThreads());
         heterogeneousClassifier.setNumIterations(experimentConfig.getEnsemble().getNumIterations());
@@ -66,7 +60,7 @@ public class ExperimentInitializationVisitor
     @Override
     public AbstractExperiment caseModifiedHeterogeneousEnsemble(InitializationParams initializationParams) {
         ClassifiersSet classifiersSet = classifiersSetSearcher.findBestClassifiers(initializationParams.getData(),
-                initializationParams.getEvaluationMethod(), createEvaluationOptionsMap(initializationParams));
+                initializationParams.getEvaluationMethod());
         ModifiedHeterogeneousClassifier modifiedHeterogeneousClassifier =
                 new ModifiedHeterogeneousClassifier(classifiersSet);
         modifiedHeterogeneousClassifier.setNumThreads(getNumThreads());
@@ -77,7 +71,7 @@ public class ExperimentInitializationVisitor
     @Override
     public AbstractExperiment caseAdaBoost(InitializationParams initializationParams) {
         ClassifiersSet classifiersSet = classifiersSetSearcher.findBestClassifiers(initializationParams.getData(),
-                initializationParams.getEvaluationMethod(), createEvaluationOptionsMap(initializationParams));
+                initializationParams.getEvaluationMethod());
         AdaBoostClassifier adaBoostClassifier = new AdaBoostClassifier(classifiersSet);
         adaBoostClassifier.setNumIterations(experimentConfig.getEnsemble().getNumIterations());
         return new AutomatedHeterogeneousEnsemble(adaBoostClassifier, initializationParams.getData());
@@ -131,7 +125,7 @@ public class ExperimentInitializationVisitor
     private AutomatedStacking createStackingExperiment(InitializationParams initializationParams,
                                                        boolean useCrossValidation) {
         ClassifiersSet classifiersSet = classifiersSetSearcher.findBestClassifiers(initializationParams.getData(),
-                initializationParams.getEvaluationMethod(), createEvaluationOptionsMap(initializationParams));
+                initializationParams.getEvaluationMethod());
         StackingClassifier stackingClassifier = new StackingClassifier(useCrossValidation);
         stackingClassifier.setClassifiers(classifiersSet);
         return new AutomatedStacking(stackingClassifier, initializationParams.getData());
@@ -151,18 +145,4 @@ public class ExperimentInitializationVisitor
             return null;
         }
     }
-
-    private Map<EvaluationOption, String> createEvaluationOptionsMap(InitializationParams initializationParams) {
-        if (EvaluationMethod.CROSS_VALIDATION.equals(initializationParams.getEvaluationMethod())) {
-            Map<EvaluationOption, String> evaluationOptionStringMap = new EnumMap<>(EvaluationOption.class);
-            evaluationOptionStringMap.put(EvaluationOption.NUM_FOLDS,
-                    String.valueOf(crossValidationConfig.getNumFolds()));
-            evaluationOptionStringMap.put(EvaluationOption.NUM_TESTS,
-                    String.valueOf(crossValidationConfig.getNumTests()));
-            return evaluationOptionStringMap;
-        } else {
-            return Collections.emptyMap();
-        }
-    }
-
 }

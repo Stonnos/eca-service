@@ -21,6 +21,8 @@ spring:
         instance:
           service-url: http://eca-server:8080/eca-server
         url: http://monitoring:8080
+  rabbitmq:
+    host: rabbitmq
 
 ## Swagger properties
 swagger2:

@@ -1,13 +1,10 @@
 package com.ecaservice.model.entity;
 
-import com.ecaservice.model.evaluation.EvaluationOption;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
 
 import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -15,12 +12,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
-import javax.persistence.MapKeyColumn;
-import javax.persistence.MapKeyEnumerated;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.Map;
 
 /**
  * Evaluation log persistence entity.
@@ -90,14 +84,21 @@ public class EvaluationLog {
     private EvaluationMethod evaluationMethod;
 
     /**
-     * Evaluation options map
+     * Folds number for k * V cross - validation method
      */
-    @ElementCollection
-    @CollectionTable(name = "evaluation_options")
-    @MapKeyEnumerated(EnumType.STRING)
-    @MapKeyColumn(name = "evaluation_option_name")
-    @Column(name = "evaluation_option_value")
-    private Map<EvaluationOption, String> evaluationOptionsMap;
+    @Column(name = "num_folds")
+    private Integer numFolds;
+
+    /**
+     * Tests number for k * V cross - validation method
+     */
+    @Column(name = "num_tests")
+    private Integer numTests;
+
+    /**
+     * Seed value for k * V cross - validation method
+     */
+    private Integer seed;
 
     /**
      * Training data info

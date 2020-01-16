@@ -42,6 +42,11 @@ spring:
         username: admin
         password: secret
         read-timeout: 1m
+  rabbitmq:
+    listener:
+      simple:
+        concurrency: 10
+        maxConcurrency: 10
 
 ## Application common configs
 common:
@@ -69,11 +74,6 @@ swagger2:
     eca-web:
       title: REST API for web application
       description: Operations for ECA web application
-      author: Roman Batygin
-      email: roman.batygin@mail.ru
-    experiment-download:
-      title: Download experiment REST API
-      description: API for experiment results downloading
       author: Roman Batygin
       email: roman.batygin@mail.ru
   tokenUrl: http://localhost:8085/eca-oauth/oauth/token
@@ -114,7 +114,7 @@ experiment:
   mail:
     from: rbatsw@gmail.com
     subject: Eca - service
-    serviceUrl: http://localhost:8085/notification-service/ws/
+    serviceUrl: http://localhost:8090/notification-service/ws/
     enabled: true
     messageTemplatesMap:
       NEW: email-new-template.html
@@ -123,7 +123,7 @@ experiment:
       TIMEOUT: email-timeout-message-template.html
 
 ers-config:
-  url: http://localhost:8085/evaluation-results-service/ws/
+  url: http://localhost:8089/evaluation-results-service/ws/
   enabled: true
 
 management:

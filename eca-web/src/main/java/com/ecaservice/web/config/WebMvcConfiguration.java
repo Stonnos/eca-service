@@ -1,5 +1,6 @@
 package com.ecaservice.web.config;
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -10,6 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @author Roman Batygin
  */
 @Configuration
+@EnableConfigurationProperties(WebConfig.class)
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
     private static final String FORWARD = "forward:/";

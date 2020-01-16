@@ -29,4 +29,5 @@
     <include file="db/changelog/v22-create-experiment-results-table.xml"/>
     <include file="db/changelog/v23-drop-experiment-id-column.xml"/>
     <include file="db/changelog/v24-add-classifier-options-md5hash-column.xml"/>
+    <include file="db/changelog/v25-drop-evaluation-options-table.xml"/>
 </databaseChangeLog>

@@ -1,6 +1,7 @@
 package com.ecaservice.service.scheduler;
 
 import com.ecaservice.config.ExperimentConfig;
+import com.ecaservice.event.model.ExperimentFinishedEvent;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.RequestStatus;
@@ -8,12 +9,12 @@ import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.ers.ErsService;
-import com.ecaservice.service.experiment.ExperimentResultsService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.experiment.mail.NotificationService;
 import eca.converters.model.ExperimentHistory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -38,9 +39,9 @@ public class ExperimentScheduler {
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
     private final ExperimentService experimentService;
     private final NotificationService notificationService;
+    private final ApplicationEventPublisher eventPublisher;
     private final ErsService ersService;
     private final ExperimentConfig experimentConfig;
-    private final ExperimentResultsService experimentResultsService;
 
     /**
      * Processing new experiment requests.
@@ -54,11 +55,7 @@ public class ExperimentScheduler {
         experiments.forEach(experiment -> {
             ExperimentHistory experimentHistory = experimentService.processExperiment(experiment);
             if (RequestStatus.FINISHED.equals(experiment.getExperimentStatus())) {
-                List<ExperimentResultsEntity> experimentResultsEntityList =
-                        experimentResultsService.saveExperimentResultsToErsSent(experiment, experimentHistory);
-                experimentResultsEntityList.forEach(
-                        experimentResultsEntity -> ersService.sentExperimentResults(experimentResultsEntity,
-                                experimentHistory, ExperimentResultsRequestSource.SYSTEM));
+               eventPublisher.publishEvent(new ExperimentFinishedEvent(this, experiment, experimentHistory));
             }
         });
         log.trace("New experiments processing has been successfully finished.");

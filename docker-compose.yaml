@@ -17,6 +17,20 @@ services:
       TZ: "Asia/Novosibirsk"
       PGTZ: "Asia/Novosibirsk"
 
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    container_name: "rabbit"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    volumes:
+      - ./conf/rabbitmq.conf:/etc/rabbitmq/rabbitmq.config
+      - /home/rabbit-data:/var/lib/rabbitmq
+    environment:
+      TZ: "Asia/Novosibirsk"
+    networks:
+      - default
+
   eca-server:
     image: eca-server
     container_name: eca-server
@@ -31,6 +45,7 @@ services:
       - default
     depends_on:
       - eca-db
+      - rabbitmq
       - monitoring
 
   eca-oauth:

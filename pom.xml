@@ -6,7 +6,7 @@
 
     <groupId>eca.service</groupId>
     <artifactId>eca-service</artifactId>
-    <version>4.0</version>
+    <version>5.0</version>
     <modules>
         <module>eca-user-model</module>
         <module>eca-web-transport</module>

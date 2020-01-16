@@ -5,7 +5,7 @@
     <parent>
         <artifactId>eca-service</artifactId>
         <groupId>eca.service</groupId>
-        <version>4.0</version>
+        <version>5.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -25,7 +25,7 @@
 
     <properties>
         <postresql.version>42.2.6</postresql.version>
-        <eca.version>6.5.1</eca.version>
+        <eca.version>6.6</eca.version>
         <assertj.core.version>3.13.1</assertj.core.version>
         <mockito.version>1.10.19</mockito.version>
         <commons.io.version>2.5</commons.io.version>
@@ -122,6 +122,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
 
         <dependency>

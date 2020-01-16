@@ -54,7 +54,7 @@ public class ClassifierOptionsConverterTest {
     @Inject
     private ClassifierOptionsConverter classifierOptionsConverter;
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test(expected = IllegalStateException.class)
     public void testUnsupportedClassifier() {
         classifierOptionsConverter.convert(new BayesNet());
     }

@@ -1,49 +1,28 @@
 package com.ecaservice.web.controller;
 
+import com.ecaservice.web.config.WebConfig;
+import com.ecaservice.web.dto.WebConfigDto;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.IOUtils;
-import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Eca-web controller.
  */
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class EcaWebController {
 
-    private static final String CONFIG_LOCATION_TEMPLATE = "/static/assets/configs/config-%s.json";
-    private static final String DEFAULT_CONFIG_LOCATION_TEMPLATE = "/static/assets/configs/config.json";
-
-    private final Environment environment;
+    private final WebConfig webConfig;
 
     /**
-     * Loads config json string.
+     * Gets web application config.
      *
-     * @return config json string
+     * @return application config
      */
-    @GetMapping(value = "/config", produces = "application/json")
-    @ResponseBody
-    public String config() throws IOException {
-        String profile = getActiveProfile();
-        String path = StringUtils.isEmpty(profile) ? DEFAULT_CONFIG_LOCATION_TEMPLATE :
-                String.format(CONFIG_LOCATION_TEMPLATE, profile);
-        return loadJsonConfig(path);
-    }
-
-    private String getActiveProfile() {
-        return environment.getActiveProfiles().length > 0 ? environment.getActiveProfiles()[0] : null;
-    }
-
-    private String loadJsonConfig(String path) throws IOException {
-        ClassPathResource classPathResource = new ClassPathResource(path);
-        return IOUtils.toString(classPathResource.getInputStream(), StandardCharsets.UTF_8);
+    @GetMapping(value = "/config")
+    public WebConfigDto config() {
+        return new WebConfigDto(webConfig.getApiUrl(), webConfig.getOauthUrl(), webConfig.getClientId(),
+                webConfig.getSecret());
     }
 }

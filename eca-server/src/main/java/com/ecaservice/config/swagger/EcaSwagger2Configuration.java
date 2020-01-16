@@ -2,32 +2,22 @@ package com.ecaservice.config.swagger;
 
 import com.ecaservice.controller.api.EcaController;
 import com.fasterxml.classmate.TypeResolver;
-import com.google.common.collect.ImmutableList;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import springfox.documentation.service.AuthorizationScope;
-import springfox.documentation.service.ClientCredentialsGrant;
-import springfox.documentation.service.GrantType;
 import springfox.documentation.spring.web.plugins.Docket;
 
 import javax.inject.Inject;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Swagger configuration for ECA.
  *
  * @author Roman Batygin
  */
-@ConditionalOnBean(SwaggerSecurityConfiguration.class)
+@ConditionalOnBean(SwaggerBaseConfiguration.class)
 @Configuration
 public class EcaSwagger2Configuration extends AbstractSwagger2Configuration {
 
-    private static final String SECURITY_SCHEMA_ECA = "eca security";
-
-    private static final List<AuthorizationScope> ECA_SCOPES =
-            ImmutableList.of(new AuthorizationScope("eca", "for eca - desktop"));
     private static final String ECA_GROUP = "eca";
 
     /**
@@ -54,12 +44,5 @@ public class EcaSwagger2Configuration extends AbstractSwagger2Configuration {
     @Override
     protected String getControllersPackage() {
         return EcaController.class.getPackage().getName();
-    }
-
-    @Override
-    protected List<SecuritySchemeOptions> getSecuritySchemes() {
-        List<GrantType> grantTypes =
-                Collections.singletonList(new ClientCredentialsGrant(getSwagger2ApiConfig().getTokenUrl()));
-        return Collections.singletonList(new SecuritySchemeOptions(SECURITY_SCHEMA_ECA, grantTypes, ECA_SCOPES));
     }
 }

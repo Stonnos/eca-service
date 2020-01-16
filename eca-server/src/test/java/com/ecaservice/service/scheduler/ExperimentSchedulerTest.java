@@ -14,7 +14,6 @@ import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.ers.ErsService;
-import com.ecaservice.service.experiment.ExperimentResultsService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.experiment.mail.NotificationService;
 import eca.converters.model.ExperimentHistory;
@@ -22,6 +21,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
@@ -62,7 +62,7 @@ public class ExperimentSchedulerTest extends AbstractJpaTest {
     @Mock
     private ErsService ersService;
     @Mock
-    private ExperimentResultsService experimentResultsService;
+    private ApplicationEventPublisher eventPublisher;
     @Captor
     private ArgumentCaptor<Experiment> argumentCaptor;
 
@@ -75,7 +75,7 @@ public class ExperimentSchedulerTest extends AbstractJpaTest {
     public void init() {
         experimentScheduler =
                 new ExperimentScheduler(experimentRepository, experimentResultsEntityRepository, experimentService,
-                        notificationService, ersService, experimentConfig, experimentResultsService);
+                        notificationService, eventPublisher, ersService, experimentConfig);
     }
 
     @Override

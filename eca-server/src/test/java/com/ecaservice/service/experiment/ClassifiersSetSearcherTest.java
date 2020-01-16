@@ -4,6 +4,7 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.conversion.ClassifierOptionsConverter;
+import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.mapping.options.AdaBoostOptionsMapperImpl;
 import com.ecaservice.mapping.options.DecisionTreeFactory;
@@ -50,7 +51,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 /**
@@ -103,8 +104,7 @@ public class ClassifiersSetSearcherTest {
     @Test(expected = ExperimentException.class)
     public void testEmptyConfigs() {
         when(experimentConfigurationService.findLastClassifiersOptions()).thenReturn(Collections.emptyList());
-        classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA,
-                Collections.emptyMap());
+        classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA);
     }
 
     @Test(expected = ExperimentException.class)
@@ -114,8 +114,7 @@ public class ClassifiersSetSearcherTest {
         classifierOptionsDatabaseModel.setConfig("config");
         when(experimentConfigurationService.findLastClassifiersOptions()).thenReturn(
                 Collections.singletonList(classifierOptionsDatabaseModel));
-        classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA,
-                Collections.emptyMap());
+        classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA);
     }
 
     @Test(expected = ExperimentException.class)
@@ -127,9 +126,8 @@ public class ClassifiersSetSearcherTest {
                 objectMapper.writeValueAsString(new KNearestNeighboursOptions()), CONFIG_VERSION);
         when(experimentConfigurationService.findLastClassifiersOptions()).thenReturn(
                 Arrays.asList(logisticModel, knnModel));
-        when(evaluationService.evaluateModel(anyObject(), anyObject(), anyObject())).thenReturn(classificationResult);
-        classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA,
-                Collections.emptyMap());
+        when(evaluationService.evaluateModel(any(EvaluationRequest.class))).thenReturn(classificationResult);
+        classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA);
     }
 
     /**
@@ -153,9 +151,9 @@ public class ClassifiersSetSearcherTest {
         optionsList.add(TestHelperUtils.createClassifierOptionsDatabaseModel(
                 objectMapper.writeValueAsString(new LogisticOptions()), CONFIG_VERSION));
         when(experimentConfigurationService.findLastClassifiersOptions()).thenReturn(optionsList);
-        when(evaluationService.evaluateModel(anyObject(), anyObject(), anyObject())).thenReturn(classificationResult);
-        ClassifiersSet classifiers = classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod
-                .TRAINING_DATA, Collections.emptyMap());
+        when(evaluationService.evaluateModel(any(EvaluationRequest.class))).thenReturn(classificationResult);
+        ClassifiersSet classifiers =
+                classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA);
         assertThat(classifiers.size()).isEqualTo(experimentConfig.getEnsemble().getNumBestClassifiers().intValue());
         //checks case 2
         optionsList = Arrays.asList(
@@ -164,8 +162,7 @@ public class ClassifiersSetSearcherTest {
                 TestHelperUtils.createClassifierOptionsDatabaseModel(
                         objectMapper.writeValueAsString(new KNearestNeighboursOptions()), CONFIG_VERSION));
         when(experimentConfigurationService.findLastClassifiersOptions()).thenReturn(optionsList);
-        classifiers = classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod
-                .TRAINING_DATA, Collections.emptyMap());
+        classifiers = classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA);
         assertThat(classifiers.size()).isEqualTo(optionsList.size());
     }
 }

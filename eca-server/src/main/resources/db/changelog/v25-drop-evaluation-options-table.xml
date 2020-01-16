@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v25-drop-evaluation-options-table.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <not>
+                <columnExists tableName="evaluation_log" columnName="num_folds"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_log">
+            <column name="num_folds" type="integer"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <not>
+                <columnExists tableName="evaluation_log" columnName="num_tests"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_log">
+            <column name="num_tests" type="integer"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <not>
+                <columnExists tableName="evaluation_log" columnName="seed"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_log">
+            <column name="seed" type="integer"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <tableExists tableName="evaluation_options"/>
+        </preConditions>
+        <sqlFile path="sql/migrate-evaluation-options.sql"
+                 dbms="postgresql"
+                 relativeToChangelogFile="true"
+                 splitStatements="false"
+                 stripComments="false"/>
+    </changeSet>
+
+    <changeSet id="5" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_options"/>
+        </preConditions>
+        <dropTable tableName="evaluation_options"/>
+    </changeSet>
+</databaseChangeLog>

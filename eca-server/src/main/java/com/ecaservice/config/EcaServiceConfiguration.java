@@ -27,6 +27,8 @@ import java.util.concurrent.Executors;
         {CommonConfig.class, CrossValidationConfig.class, ExperimentConfig.class, MailConfig.class})
 public class EcaServiceConfiguration {
 
+    public static final String ECA_THREAD_POOL_TASK_EXECUTOR = "ecaThreadPoolTaskExecutor";
+
     /**
      * Creates executor service bean.
      *
@@ -69,7 +71,7 @@ public class EcaServiceConfiguration {
      * @param commonConfig - common config bean
      * @return thread pool task executor
      */
-    @Bean
+    @Bean(name = ECA_THREAD_POOL_TASK_EXECUTOR)
     public Executor ecaThreadPoolTaskExecutor(CommonConfig commonConfig) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(commonConfig.getThreadPoolSize());
