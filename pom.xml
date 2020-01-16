@@ -65,11 +65,11 @@
             <id>sonar</id>
             <properties>
                 <sonar.coverage.exclusions>
-                    **/config/*,
-                    **/exception/*,
+                    **/*Configuration.java,
+                    **/*Exception.java,
                     **/model/*,
                     **/dto/*,
-                    **/util/*,
+                    **/*Utils.java,
                     **/*Application.java
                 </sonar.coverage.exclusions>
             </properties>
