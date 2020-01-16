@@ -20,7 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class AuthServerSecurityConfig extends WebSecurityConfigurerAdapter {
+public class AuthServerSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsServiceImpl userDetailsService;
 
