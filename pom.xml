@@ -69,6 +69,8 @@
                     **/*Exception.java,
                     **/model/*,
                     **/dto/*,
+                    **/entity/*,
+                    **/json/*,
                     **/*Utils.java,
                     **/*Application.java
                 </sonar.coverage.exclusions>
