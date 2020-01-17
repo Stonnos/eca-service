@@ -37,7 +37,7 @@ jobs:
         - docker push $DOCKER_USERNAME/$DOCKER_REPOSITORY:zuul-gate;
         - docker tag monitoring $DOCKER_USERNAME/$DOCKER_REPOSITORY:monitoring;
         - docker push $DOCKER_USERNAME/$DOCKER_REPOSITORY:monitoring;
-#cache:
-#  directories:
-#    - $HOME/.m2
-#    - $HOME/.sonar/cache
+cache:
+  directories:
+    - $HOME/.m2
+    - $HOME/.sonar/cache
