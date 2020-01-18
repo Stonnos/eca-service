@@ -26,13 +26,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 public abstract class AbstractJpaTest {
 
     @Before
-    public void before() throws Exception {
+    public final void before() throws Exception {
         deleteAll();
         init();
     }
 
     @After
-    public void after() {
+    public final void after() {
         deleteAll();
     }
 
