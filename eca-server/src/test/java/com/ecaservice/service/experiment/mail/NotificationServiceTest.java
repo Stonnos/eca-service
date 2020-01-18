@@ -60,6 +60,7 @@ import static org.mockito.Mockito.when;
 public class NotificationServiceTest {
 
     private static final String TEMPLATE_HTML = "test-template.html";
+    private static final String WEB_SERVICE_URL = "http://localhost";
 
     @Mock
     private MailConfig mailConfig;
@@ -88,7 +89,7 @@ public class NotificationServiceTest {
         statusMap.put(RequestStatus.FINISHED, TEMPLATE_HTML);
         when(mailConfig.getMessageTemplatesMap()).thenReturn(statusMap);
         when(mailConfig.getEnabled()).thenReturn(true);
-        when(mailConfig.getServiceUrl()).thenReturn("http://localhost");
+        when(mailConfig.getServiceUrl()).thenReturn(WEB_SERVICE_URL);
     }
 
     @After

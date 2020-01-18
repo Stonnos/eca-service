@@ -33,6 +33,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ErsWebServiceClientTest {
 
+    private static final String WEB_SERVICE_URL = "http://localhost";
+
     @Mock
     private ErsConfig serviceConfig;
     @Mock
@@ -50,7 +52,7 @@ public class ErsWebServiceClientTest {
         evaluationResults =
                 new EvaluationResults(new KNearestNeighbours(), new Evaluation(TestHelperUtils.loadInstances()));
         when(evaluationResultsMapper.map(any(EvaluationResults.class))).thenReturn(new EvaluationResultsRequest());
-        when(serviceConfig.getUrl()).thenReturn("http://localhost");
+        when(serviceConfig.getUrl()).thenReturn(WEB_SERVICE_URL);
     }
 
     @Test
