@@ -26,9 +26,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
@@ -89,7 +88,7 @@ public class EvaluationRequestServiceTest extends AbstractJpaTest {
                 new EvaluationRequestService(crossValidationConfig, executorService, evaluationService,
                         evaluationLogRepository, evaluationLogMapper);
         doThrow(new RuntimeException("Error")).when(executorService)
-                .execute(anyObject(), anyLong(), any(TimeUnit.class));
+                .execute(any(), anyLong(), any(TimeUnit.class));
         EvaluationResponse evaluationResponse = service.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
@@ -120,7 +119,7 @@ public class EvaluationRequestServiceTest extends AbstractJpaTest {
         EvaluationRequestService service =
                 new EvaluationRequestService(crossValidationConfig, executorService, evaluationService,
                         evaluationLogRepository, evaluationLogMapper);
-        doThrow(TimeoutException.class).when(executorService).execute(anyObject(), anyLong(), any(TimeUnit.class));
+        doThrow(TimeoutException.class).when(executorService).execute(any(), anyLong(), any(TimeUnit.class));
         EvaluationResponse evaluationResponse = service.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.TIMEOUT);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
