@@ -39,8 +39,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
@@ -88,6 +88,7 @@ public class NotificationServiceTest {
         statusMap.put(RequestStatus.FINISHED, TEMPLATE_HTML);
         when(mailConfig.getMessageTemplatesMap()).thenReturn(statusMap);
         when(mailConfig.getEnabled()).thenReturn(true);
+        when(mailConfig.getServiceUrl()).thenReturn("http://localhost");
     }
 
     @After

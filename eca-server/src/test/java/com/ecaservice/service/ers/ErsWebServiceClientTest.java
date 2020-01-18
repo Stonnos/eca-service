@@ -15,14 +15,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.ws.client.WebServiceIOException;
 import org.springframework.ws.client.core.WebServiceTemplate;
 
 import java.util.UUID;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
@@ -33,9 +33,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ErsWebServiceClientTest {
 
-    @InjectMocks
-    private ErsWebServiceClient ersWebServiceClient;
-
     @Mock
     private ErsConfig serviceConfig;
     @Mock
@@ -43,14 +40,17 @@ public class ErsWebServiceClientTest {
     @Mock
     private EvaluationResultsMapper evaluationResultsMapper;
 
+    @InjectMocks
+    private ErsWebServiceClient ersWebServiceClient;
+
     private EvaluationResults evaluationResults;
 
     @Before
     public void init() throws Exception {
-        when(serviceConfig.getEnabled()).thenReturn(true);
         evaluationResults =
                 new EvaluationResults(new KNearestNeighbours(), new Evaluation(TestHelperUtils.loadInstances()));
         when(evaluationResultsMapper.map(any(EvaluationResults.class))).thenReturn(new EvaluationResultsRequest());
+        when(serviceConfig.getUrl()).thenReturn("http://localhost");
     }
 
     @Test

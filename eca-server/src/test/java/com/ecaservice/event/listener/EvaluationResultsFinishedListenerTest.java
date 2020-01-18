@@ -19,11 +19,12 @@ import java.util.UUID;
 
 import static com.ecaservice.TestHelperUtils.createEvaluationLog;
 import static com.ecaservice.TestHelperUtils.createEvaluationResponse;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.atLeastOnce;
+import static com.ecaservice.TestHelperUtils.getEvaluationResults;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for checking {@see EvaluationFinishedEventListener} functionality.
@@ -49,6 +50,7 @@ public class EvaluationResultsFinishedListenerTest {
         when(evaluationLogRepository.findByRequestIdAndEvaluationStatusIn(evaluationLog.getRequestId(),
                 Collections.singletonList(RequestStatus.FINISHED))).thenReturn(evaluationLog);
         EvaluationResponse evaluationResponse = createEvaluationResponse(evaluationLog.getRequestId());
+        evaluationResponse.setEvaluationResults(getEvaluationResults());
         EvaluationFinishedEvent evaluationFinishedEvent = new EvaluationFinishedEvent(this, evaluationResponse);
         evaluationFinishedEventListener.handleEvaluationFinishedEvent(evaluationFinishedEvent);
         verify(ersRequestService, atLeastOnce())

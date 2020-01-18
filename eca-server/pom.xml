@@ -27,10 +27,10 @@
         <postresql.version>42.2.6</postresql.version>
         <eca.version>6.6</eca.version>
         <assertj.core.version>3.13.1</assertj.core.version>
-        <mockito.version>1.10.19</mockito.version>
+        <mockito.version>3.2.4</mockito.version>
         <commons.io.version>2.5</commons.io.version>
         <org.mapstruct.version>1.3.0.Final</org.mapstruct.version>
-        <powermock.version>1.7.3</powermock.version>
+        <powermock.version>2.0.4</powermock.version>
         <liquibase.version>3.7.0</liquibase.version>
         <xmlschema.version>2.2.3</xmlschema.version>
         <jaxb2-maven-plugin.version>2.3</jaxb2-maven-plugin.version>
@@ -201,7 +201,7 @@
         <!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
+            <artifactId>mockito-core</artifactId>
             <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
@@ -215,7 +215,7 @@
 
         <dependency>
             <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito</artifactId>
+            <artifactId>powermock-api-mockito2</artifactId>
             <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
