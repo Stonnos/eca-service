@@ -5,6 +5,7 @@ import com.ecaservice.config.oauth2.MethodSecurityConfiguration;
 import com.ecaservice.configuation.Oauth2ResourceServerConfiguration;
 import com.ecaservice.configuation.Oauth2ServerConfiguration;
 import com.ecaservice.configuation.Oauth2ServerSecurityConfiguration;
+import com.ecaservice.configuation.annotation.Oauth2TestConfiguration;
 import com.ecaservice.controller.web.EvaluationController;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
@@ -48,9 +49,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = EvaluationController.class)
-@Import({Oauth2ResourceServerConfiguration.class, Oauth2ServerConfiguration.class,
-        Oauth2ServerSecurityConfiguration.class, MethodSecurityConfiguration.class,
-        EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class,
+@Oauth2TestConfiguration
+@Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class,
         ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class})
 public class EvaluationControllerTest {
 
