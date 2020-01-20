@@ -127,6 +127,7 @@ public class TestHelperUtils {
     private static final int NUM_CLASSES = 2;
     private static final String LABEL = "label";
     private static final String VALUE = "value";
+    private static final String BEARER_HEADER_FORMAT = "Bearer %s";
 
     /**
      * Generates the test data set.
@@ -910,5 +911,15 @@ public class TestHelperUtils {
         experimentHistory.setExperiment(newArrayList());
         experimentHistory.getExperiment().add(getEvaluationResults());
         return experimentHistory;
+    }
+
+    /**
+     * Creates authorization header with bearer token.
+     *
+     * @param token - token
+     * @return authorization header with bearer token
+     */
+    public static String bearerHeader(String token) {
+        return String.format(BEARER_HEADER_FORMAT, token);
     }
 }
