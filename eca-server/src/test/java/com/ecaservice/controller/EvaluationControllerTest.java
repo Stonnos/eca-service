@@ -17,6 +17,7 @@ import com.ecaservice.token.TokenService;
 import com.ecaservice.util.Utils;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
+import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
@@ -41,11 +42,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.PageRequestUtils.FILTER_MATCH_MODE_PARAM;
 import static com.ecaservice.PageRequestUtils.FILTER_NAME_PARAM;
 import static com.ecaservice.PageRequestUtils.PAGE;
 import static com.ecaservice.PageRequestUtils.PAGE_PARAM;
 import static com.ecaservice.PageRequestUtils.SIZE;
 import static com.ecaservice.PageRequestUtils.SIZE_PARAM;
+import static com.ecaservice.PageRequestUtils.TOTAL_ELEMENTS;
 import static com.ecaservice.TestHelperUtils.TEST_UUID;
 import static com.ecaservice.TestHelperUtils.bearerHeader;
 import static com.ecaservice.TestHelperUtils.buildRequestStatusStatisticsMap;
@@ -71,8 +74,6 @@ public class EvaluationControllerTest {
     private static final String DETAILS_URL = BASE_URL + "/details/{requestId}";
     private static final String LIST_URL = BASE_URL + "/list";
     private static final String REQUEST_STATUS_STATISTICS_URL = BASE_URL + "/request-statuses-statistics";
-
-    private static final long TOTAL_ELEMENTS = 1L;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -152,7 +153,8 @@ public class EvaluationControllerTest {
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
                 .param(PAGE_PARAM, String.valueOf(PAGE))
                 .param(SIZE_PARAM, String.valueOf(SIZE))
-                .param(FILTER_NAME_PARAM, StringUtils.EMPTY))
+                .param(FILTER_NAME_PARAM, StringUtils.EMPTY)
+                .param(FILTER_MATCH_MODE_PARAM, MatchMode.RANGE.name()))
                 .andExpect(status().isBadRequest());
     }
 
