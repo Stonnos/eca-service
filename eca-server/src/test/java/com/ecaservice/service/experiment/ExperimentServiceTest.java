@@ -110,7 +110,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         doNothing().when(dataService).save(any(File.class), any(Instances.class));
         experimentService.createExperiment(experimentRequest);
         List<Experiment> experiments = experimentRepository.findAll();
-        AssertionUtils.assertSingletonList(experiments);
+        AssertionUtils.hasOneElement(experiments);
         Experiment experiment = experiments.get(0);
         assertThat(experiment.getExperimentStatus()).isEqualTo(RequestStatus.NEW);
         assertThat(experiment.getUuid()).isNotNull();
@@ -133,7 +133,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         doNothing().when(dataService).saveExperimentHistory(any(File.class), any(ExperimentHistory.class));
         experimentService.processExperiment(TestHelperUtils.createExperiment(null));
         List<Experiment> experiments = experimentRepository.findAll();
-        AssertionUtils.assertSingletonList(experiments);
+        AssertionUtils.hasOneElement(experiments);
         Experiment experiment = experiments.get(0);
         assertThat(experiment.getStartDate()).isNotNull();
         assertThat(experiment.getEndDate()).isNotNull();
@@ -147,7 +147,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         when(dataService.load(any(File.class))).thenThrow(new Exception());
         experimentService.processExperiment(TestHelperUtils.createExperiment(null));
         List<Experiment> experiments = experimentRepository.findAll();
-        AssertionUtils.assertSingletonList(experiments);
+        AssertionUtils.hasOneElement(experiments);
         Experiment experiment = experiments.get(0);
         assertThat(experiment.getStartDate()).isNotNull();
         assertThat(experiment.getEndDate()).isNotNull();
@@ -163,7 +163,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
                 any(ExperimentHistory.class));
         experimentService.processExperiment(TestHelperUtils.createExperiment(null));
         List<Experiment> experiments = experimentRepository.findAll();
-        AssertionUtils.assertSingletonList(experiments);
+        AssertionUtils.hasOneElement(experiments);
         Experiment experiment = experiments.get(0);
         assertThat(experiment.getStartDate()).isNotNull();
         assertThat(experiment.getEndDate()).isNotNull();

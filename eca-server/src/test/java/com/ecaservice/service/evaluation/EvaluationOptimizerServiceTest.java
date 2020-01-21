@@ -181,7 +181,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         assertThat(evaluationResponse.getEvaluationResults()).isNull();
         List<ClassifierOptionsRequestModel> optionsRequests = classifierOptionsRequestModelRepository.findAll();
-        AssertionUtils.assertSingletonList(optionsRequests);
+        AssertionUtils.hasOneElement(optionsRequests);
         ClassifierOptionsRequestModel requestModel = optionsRequests.get(0);
         assertThat(evaluationResponse.getRequestId()).isNotNull();
         assertThat(requestModel.getResponseStatus()).isEqualTo(ErsResponseStatus.ERROR);
@@ -198,7 +198,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         assertThat(evaluationResponse).isNotNull();
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         List<ClassifierOptionsRequestModel> optionsRequests = classifierOptionsRequestModelRepository.findAll();
-        AssertionUtils.assertSingletonList(optionsRequests);
+        AssertionUtils.hasOneElement(optionsRequests);
         ClassifierOptionsRequestModel requestModel = optionsRequests.get(0);
         assertThat(evaluationResponse.getRequestId()).isNotNull();
         assertThat(requestModel.getResponseStatus()).isEqualTo(ErsResponseStatus.ERROR);
@@ -214,7 +214,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
                 instancesRequest);
         assertSuccessEvaluationResponse(evaluationResponse);
         List<ClassifierOptionsRequestModel> optionsRequests = classifierOptionsRequestModelRepository.findAll();
-        AssertionUtils.assertSingletonList(optionsRequests);
+        AssertionUtils.hasOneElement(optionsRequests);
         assertSuccessClassifierOptionsRequestModel(optionsRequests.get(0));
         assertErsSource();
     }
@@ -461,7 +461,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     private void assertErsSource() {
         List<ClassifierOptionsRequestEntity> requestEntities = classifierOptionsRequestRepository.findAll();
-        AssertionUtils.assertSingletonList(requestEntities);
+        AssertionUtils.hasOneElement(requestEntities);
         assertThat(requestEntities.get(0).getSource()).isEqualTo(ClassifierOptionsRequestSource.ERS);
     }
 }

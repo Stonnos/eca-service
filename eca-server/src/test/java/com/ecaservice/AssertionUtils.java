@@ -23,7 +23,7 @@ public class AssertionUtils {
      * @param list list object
      * @param <T>  generic type
      */
-    public static <T> void assertSingletonList(List<T> list) {
+    public static <T> void hasOneElement(List<T> list) {
         Assertions.assertThat(list).hasSize(1);
     }
 
