@@ -60,7 +60,7 @@
         </dependencies>
     </dependencyManagement>
 
-    <profiles>
+    <!--<profiles>
         <profile>
             <id>sonar</id>
             <properties>
@@ -77,7 +77,7 @@
                 </sonar.coverage.exclusions>
             </properties>
         </profile>
-    </profiles>
+    </profiles>-->
 
     <dependencies>
 

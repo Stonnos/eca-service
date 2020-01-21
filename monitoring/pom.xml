@@ -12,6 +12,10 @@
     <artifactId>monitoring</artifactId>
     <packaging>war</packaging>
 
+    <properties>
+        <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
+    </properties>
+
     <dependencies>
 
         <!-- Spring Boot -->

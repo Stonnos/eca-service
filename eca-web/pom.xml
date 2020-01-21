@@ -18,6 +18,7 @@
         <node.version>v8.11.3</node.version>
         <npm.version>5.6.0</npm.version>
         <commons.io.version>2.5</commons.io.version>
+        <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
     </properties>
 
     <profiles>
