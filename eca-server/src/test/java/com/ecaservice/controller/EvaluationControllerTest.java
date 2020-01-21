@@ -44,10 +44,10 @@ import java.util.stream.Collectors;
 
 import static com.ecaservice.PageRequestUtils.FILTER_MATCH_MODE_PARAM;
 import static com.ecaservice.PageRequestUtils.FILTER_NAME_PARAM;
-import static com.ecaservice.PageRequestUtils.PAGE;
-import static com.ecaservice.PageRequestUtils.PAGE_PARAM;
-import static com.ecaservice.PageRequestUtils.SIZE;
-import static com.ecaservice.PageRequestUtils.SIZE_PARAM;
+import static com.ecaservice.PageRequestUtils.PAGE_NUMBER;
+import static com.ecaservice.PageRequestUtils.PAGE_NUMBER_PARAM;
+import static com.ecaservice.PageRequestUtils.PAGE_SIZE;
+import static com.ecaservice.PageRequestUtils.PAGE_SIZE_PARAM;
 import static com.ecaservice.PageRequestUtils.TOTAL_ELEMENTS;
 import static com.ecaservice.TestHelperUtils.TEST_UUID;
 import static com.ecaservice.TestHelperUtils.bearerHeader;
@@ -126,8 +126,8 @@ public class EvaluationControllerTest {
     @Test
     public void testGetEvaluationLogsUnauthorized() throws Exception {
         mockMvc.perform(get(LIST_URL)
-                .param(PAGE_PARAM, String.valueOf(PAGE))
-                .param(SIZE_PARAM, String.valueOf(SIZE)))
+                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
+                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -135,7 +135,7 @@ public class EvaluationControllerTest {
     public void testGetEvaluationLogsWithNullPageNumber() throws Exception {
         mockMvc.perform(get(LIST_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
-                .param(SIZE_PARAM, String.valueOf(SIZE)))
+                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -143,7 +143,7 @@ public class EvaluationControllerTest {
     public void testGetEvaluationLogsWithNullPageSize() throws Exception {
         mockMvc.perform(get(LIST_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
-                .param(PAGE_PARAM, String.valueOf(PAGE)))
+                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -151,8 +151,8 @@ public class EvaluationControllerTest {
     public void testGetEvaluationLogsWithEmptyFilterRequestName() throws Exception {
         mockMvc.perform(get(LIST_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
-                .param(PAGE_PARAM, String.valueOf(PAGE))
-                .param(SIZE_PARAM, String.valueOf(SIZE))
+                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
+                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE))
                 .param(FILTER_NAME_PARAM, StringUtils.EMPTY)
                 .param(FILTER_MATCH_MODE_PARAM, MatchMode.RANGE.name()))
                 .andExpect(status().isBadRequest());
@@ -162,8 +162,8 @@ public class EvaluationControllerTest {
     public void testGetEvaluationLogsWithNullMatchMode() throws Exception {
         mockMvc.perform(get(LIST_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
-                .param(PAGE_PARAM, String.valueOf(PAGE))
-                .param(SIZE_PARAM, String.valueOf(SIZE))
+                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
+                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE))
                 .param(FILTER_NAME_PARAM, EvaluationLog_.CREATION_DATE))
                 .andExpect(status().isBadRequest());
     }
@@ -174,14 +174,15 @@ public class EvaluationControllerTest {
         when(evaluationLogPage.getTotalElements()).thenReturn(TOTAL_ELEMENTS);
         List<EvaluationLog> evaluationLogs = Collections.singletonList(TestHelperUtils.createEvaluationLog());
         PageDto<EvaluationLogDto> expected =
-                PageDto.of(evaluationLogs.stream().map(evaluationLogMapper::map).collect(Collectors.toList()), PAGE,
+                PageDto.of(evaluationLogs.stream().map(evaluationLogMapper::map).collect(Collectors.toList()),
+                        PAGE_NUMBER,
                         TOTAL_ELEMENTS);
         when(evaluationLogPage.getContent()).thenReturn(evaluationLogs);
         when(evaluationLogService.getNextPage(any(PageRequestDto.class))).thenReturn(evaluationLogPage);
         mockMvc.perform(get(LIST_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
-                .param(PAGE_PARAM, String.valueOf(PAGE))
-                .param(SIZE_PARAM, String.valueOf(SIZE)))
+                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
+                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));

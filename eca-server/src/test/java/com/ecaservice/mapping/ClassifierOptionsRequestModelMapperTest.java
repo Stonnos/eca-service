@@ -30,6 +30,9 @@ import java.util.List;
         ClassifierOptionsResponseModelMapperImpl.class})
 public class ClassifierOptionsRequestModelMapperTest {
 
+    private static final String DATA_MD5_HASH = "hash";
+    private static final String OPTIONS = "options";
+
     @Inject
     private ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
 
@@ -46,8 +49,8 @@ public class ClassifierOptionsRequestModelMapperTest {
     @Test
     public void testMapClassifierOptionsRequestModel() {
         ClassifierOptionsRequestModel requestModel =
-                TestHelperUtils.createClassifierOptionsRequestModel("hash", LocalDateTime.now(), ErsResponseStatus.SUCCESS,
-                        Collections.singletonList(TestHelperUtils.createClassifierOptionsResponseModel("options")));
+                TestHelperUtils.createClassifierOptionsRequestModel(DATA_MD5_HASH, LocalDateTime.now(), ErsResponseStatus.SUCCESS,
+                        Collections.singletonList(TestHelperUtils.createClassifierOptionsResponseModel(OPTIONS)));
         ClassifierOptionsRequestDto classifierOptionsRequestDto = classifierOptionsRequestModelMapper.map(requestModel);
         Assertions.assertThat(classifierOptionsRequestDto).isNotNull();
         Assertions.assertThat(classifierOptionsRequestDto.getRequestDate()).isEqualTo(requestModel.getRequestDate());
