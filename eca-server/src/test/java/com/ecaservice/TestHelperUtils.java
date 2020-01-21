@@ -47,6 +47,10 @@ import com.ecaservice.model.options.StackingOptions;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
+import com.ecaservice.web.dto.model.FilterDictionaryDto;
+import com.ecaservice.web.dto.model.FilterFieldDto;
+import com.ecaservice.web.dto.model.FilterFieldType;
+import com.ecaservice.web.dto.model.MatchMode;
 import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationMethod;
@@ -131,6 +135,8 @@ public class TestHelperUtils {
     private static final String LABEL = "label";
     private static final String VALUE = "value";
     private static final String BEARER_HEADER_FORMAT = "Bearer %s";
+    private static final String FILTER_NAME = "name";
+    private static final String FILTER_DESCRIPTION = "description";
 
     /**
      * Generates the test data set.
@@ -810,6 +816,34 @@ public class TestHelperUtils {
         filterDictionaryValue.setLabel(LABEL);
         filterDictionaryValue.setValue(VALUE);
         return filterDictionaryValue;
+    }
+
+    /**
+     * Creates filter field dto.
+     *
+     * @return filter field dto
+     */
+    public static FilterFieldDto createFilterFieldDto() {
+        FilterFieldDto filterField = new FilterFieldDto();
+        filterField.setDescription(FILTER_DESCRIPTION);
+        filterField.setFieldOrder(1);
+        filterField.setFieldName(FILTER_NAME);
+        filterField.setFilterFieldType(FilterFieldType.REFERENCE);
+        filterField.setMatchMode(MatchMode.EQUALS);
+        filterField.setMultiple(false);
+        return filterField;
+    }
+
+    /**
+     * Creates filter dictionary dto.
+     *
+     * @return filter dictionary dto
+     */
+    public static FilterDictionaryDto createFilterDictionaryDto() {
+        FilterDictionaryDto filterDictionaryDto = new FilterDictionaryDto();
+        filterDictionaryDto.setName(FILTER_NAME);
+        filterDictionaryDto.setValues(Collections.emptyList());
+        return filterDictionaryDto;
     }
 
     /**
