@@ -1,4 +1,4 @@
-package com.ecaservice.service.report;
+package com.ecaservice.report;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CommonConfig;
@@ -10,7 +10,6 @@ import com.ecaservice.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationLog_;
 import com.ecaservice.model.entity.RequestStatus;
-import com.ecaservice.report.EvaluationLogsBaseReportDataFetcher;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.EvaluationLogBean;
 import com.ecaservice.repository.EvaluationLogRepository;
