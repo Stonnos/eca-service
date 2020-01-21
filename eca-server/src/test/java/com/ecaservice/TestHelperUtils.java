@@ -73,6 +73,7 @@ import eca.trees.CART;
 import eca.trees.DecisionTreeClassifier;
 import eca.trees.J48;
 import lombok.experimental.UtilityClass;
+import org.springframework.amqp.core.MessageProperties;
 import weka.core.Instances;
 
 import java.io.File;
@@ -137,6 +138,7 @@ public class TestHelperUtils {
     private static final String BEARER_HEADER_FORMAT = "Bearer %s";
     private static final String FILTER_NAME = "name";
     private static final String FILTER_DESCRIPTION = "description";
+    private static final String REPLY_TO = "replyTo";
 
     /**
      * Generates the test data set.
@@ -971,5 +973,17 @@ public class TestHelperUtils {
         Stream.of(requestStatuses).forEach(
                 requestStatus -> requestStatusMap.put(requestStatus, (long) requestStatus.ordinal()));
         return requestStatusMap;
+    }
+
+    /**
+     * Creates message properties.
+     *
+     * @return message properties
+     */
+    public static MessageProperties buildMessageProperties() {
+        MessageProperties messageProperties = new MessageProperties();
+        messageProperties.setReplyTo(REPLY_TO);
+        messageProperties.setCorrelationId(UUID.randomUUID().toString());
+        return messageProperties;
     }
 }
