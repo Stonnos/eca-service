@@ -329,6 +329,7 @@
                         <exclude>**/config/**/*</exclude>
                         <exclude>**/exception/**/*</exclude>
                         <exclude>**/util/**/*</exclude>
+                        <exclude>**/qa/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>

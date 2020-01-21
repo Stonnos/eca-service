@@ -69,6 +69,7 @@
                     **/dto/*,
                     **/entity/*,
                     **/json/*,
+                    **/qa/*,
                     **/*Configuration.java,
                     **/*Exception.java,
                     **/*Utils.java,
