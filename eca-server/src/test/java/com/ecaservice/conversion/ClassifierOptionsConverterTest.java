@@ -1,8 +1,7 @@
-package com.ecaservice.service;
+package com.ecaservice.conversion;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
-import com.ecaservice.conversion.ClassifierOptionsConverter;
 import com.ecaservice.model.options.AdaBoostOptions;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.model.options.DecisionTreeOptions;
