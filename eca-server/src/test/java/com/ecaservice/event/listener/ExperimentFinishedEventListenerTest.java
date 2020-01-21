@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-public class ExperimentFinishedListenerTest {
+public class ExperimentFinishedEventListenerTest {
 
     @Mock
     private ErsService ersService;
