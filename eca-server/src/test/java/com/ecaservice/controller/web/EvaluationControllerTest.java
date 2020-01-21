@@ -1,4 +1,4 @@
-package com.ecaservice.controller;
+package com.ecaservice.controller.web;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.configuation.annotation.Oauth2TestConfiguration;

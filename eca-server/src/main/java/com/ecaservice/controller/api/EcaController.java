@@ -2,7 +2,6 @@ package com.ecaservice.controller.api;
 
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.repository.ExperimentRepository;
-import com.ecaservice.util.Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.File;
 
 import static com.ecaservice.util.ExperimentUtils.getExperimentFile;
+import static com.ecaservice.util.Utils.buildAttachmentResponse;
 import static com.ecaservice.util.Utils.existsFile;
 
 /**
@@ -56,6 +56,6 @@ public class EcaController {
             return ResponseEntity.badRequest().body("Experiment results file not found");
         }
         log.info("Downloads experiment file '{}' for token = '{}'", experiment.getExperimentAbsolutePath(), token);
-        return Utils.buildAttachmentResponse(experimentFile);
+        return buildAttachmentResponse(experimentFile);
     }
 }
