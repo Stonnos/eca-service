@@ -1,10 +1,10 @@
 package com.ecaservice.listener;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
-import com.ecaservice.dto.InstancesRequest;
 import com.ecaservice.event.model.EvaluationFinishedEvent;
-import com.ecaservice.service.evaluation.EvaluationOptimizerService;
+import com.ecaservice.service.evaluation.EvaluationRequestService;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,35 +26,34 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for checking {@link EvaluationOptimizerRequestListener} functionality.
+ * Unit tests for checking {@link EvaluationRequestListener} functionality.
  *
  * @author Roman Batygin
  */
 @RunWith(MockitoJUnitRunner.class)
-public class EvaluationOptimizerRequestListenerTest {
+public class EvaluationRequestListenerTest {
 
     @Mock
     private RabbitTemplate rabbitTemplate;
     @Mock
-    private EvaluationOptimizerService evaluationOptimizerService;
+    private EvaluationRequestService evaluationRequestService;
     @Mock
     private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
-    private EvaluationOptimizerRequestListener evaluationOptimizerRequestListener;
+    private EvaluationRequestListener evaluationRequestListener;
 
     @Captor
     private ArgumentCaptor<String> replyToCaptor;
 
     @Test
     public void testHandleMessage() {
-        InstancesRequest instancesRequest = new InstancesRequest();
+        EvaluationRequest evaluationRequest = TestHelperUtils.createEvaluationRequest();
         Message message = Mockito.mock(Message.class);
-        when(evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest)).thenReturn(
-                new EvaluationResponse());
+        when(evaluationRequestService.processRequest(evaluationRequest)).thenReturn(new EvaluationResponse());
         MessageProperties messageProperties = TestHelperUtils.buildMessageProperties();
         when(message.getMessageProperties()).thenReturn(messageProperties);
-        evaluationOptimizerRequestListener.handleMessage(instancesRequest, message);
+        evaluationRequestListener.handleMessage(evaluationRequest, message);
         verify(eventPublisher, atLeastOnce()).publishEvent(any(EvaluationFinishedEvent.class));
         verify(rabbitTemplate).convertAndSend(replyToCaptor.capture(), any(EvaluationResponse.class),
                 any(MessagePostProcessor.class));
