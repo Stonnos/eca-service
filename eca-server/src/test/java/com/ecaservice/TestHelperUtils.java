@@ -79,10 +79,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
 
 /**
  * Test data helper class.
@@ -921,5 +924,18 @@ public class TestHelperUtils {
      */
     public static String bearerHeader(String token) {
         return String.format(BEARER_HEADER_FORMAT, token);
+    }
+
+    /**
+     * Creates request status statistics map.
+     *
+     * @return request status statistics map
+     */
+    public static Map<RequestStatus, Long> buildRequestStatusStatisticsMap() {
+        RequestStatus[] requestStatuses = RequestStatus.values();
+        Map<RequestStatus, Long> requestStatusMap = newHashMap();
+        Stream.of(requestStatuses).forEach(
+                requestStatus -> requestStatusMap.put(requestStatus, (long) requestStatus.ordinal()));
+        return requestStatusMap;
     }
 }
