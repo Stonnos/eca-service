@@ -24,9 +24,7 @@ public class AssertionUtils {
      * @param <T>  generic type
      */
     public static <T> void assertSingletonList(List<T> list) {
-        Assertions.assertThat(list).isNotNull();
-        Assertions.assertThat(list).isNotEmpty();
-        Assertions.assertThat(list.size()).isOne();
+        Assertions.assertThat(list).hasSize(1);
     }
 
     /**

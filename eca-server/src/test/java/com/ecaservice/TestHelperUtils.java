@@ -26,6 +26,11 @@ import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.ExperimentResultsRequest;
 import com.ecaservice.model.entity.FilterDictionaryValue;
+import com.ecaservice.model.entity.FilterField;
+import com.ecaservice.model.entity.FilterTemplate;
+import com.ecaservice.model.entity.FilterTemplateType;
+import com.ecaservice.model.entity.GlobalFilterField;
+import com.ecaservice.model.entity.GlobalFilterTemplate;
 import com.ecaservice.model.entity.InstancesInfo;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.evaluation.ClassifierOptionsRequestSource;
@@ -87,6 +92,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -139,6 +146,7 @@ public class TestHelperUtils {
     private static final String FILTER_NAME = "name";
     private static final String FILTER_DESCRIPTION = "description";
     private static final String REPLY_TO = "replyTo";
+    private static final int FILTER_TEMPLATE_FIELDS = 5;
 
     /**
      * Generates the test data set.
@@ -846,6 +854,63 @@ public class TestHelperUtils {
         filterDictionaryDto.setName(FILTER_NAME);
         filterDictionaryDto.setValues(Collections.emptyList());
         return filterDictionaryDto;
+    }
+
+    /**
+     * Creates filter field.
+     *
+     * @param name  - field name
+     * @param order - field order
+     * @return filter field
+     */
+    public static FilterField createFilterField(String name, int order) {
+        FilterField filterField = new FilterField();
+        filterField.setFieldName(name);
+        filterField.setFieldOrder(order);
+        filterField.setFilterFieldType(FilterFieldType.TEXT);
+        filterField.setMatchMode(MatchMode.LIKE);
+        return filterField;
+    }
+
+    /**
+     * Creates filter template.
+     *
+     * @param filterTemplateType - filter template type
+     * @return filter template
+     */
+    public static FilterTemplate createFilterTemplate(FilterTemplateType filterTemplateType) {
+        FilterTemplate filterTemplate = new FilterTemplate();
+        filterTemplate.setTemplateType(filterTemplateType);
+        filterTemplate.setCreated(LocalDateTime.now());
+        filterTemplate.setFields(IntStream.range(0, FILTER_TEMPLATE_FIELDS).mapToObj(
+                i -> createFilterField(String.valueOf(i), i)).collect(Collectors.toList()));
+        return filterTemplate;
+    }
+
+    /**
+     * Creates global filter template.
+     *
+     * @param filterTemplateType - filter template type
+     * @return global filter template
+     */
+    public static GlobalFilterTemplate createGlobalFilterTemplate(FilterTemplateType filterTemplateType) {
+        GlobalFilterTemplate filterTemplate = new GlobalFilterTemplate();
+        filterTemplate.setTemplateType(filterTemplateType);
+        filterTemplate.setFields(IntStream.range(0, FILTER_TEMPLATE_FIELDS).mapToObj(
+                i -> createGlobalFilterField(String.valueOf(i))).collect(Collectors.toList()));
+        return filterTemplate;
+    }
+
+    /**
+     * Creates global filter field.
+     *
+     * @param name - field name
+     * @return global filter field
+     */
+    public static GlobalFilterField createGlobalFilterField(String name) {
+        GlobalFilterField filterField = new GlobalFilterField();
+        filterField.setFieldName(name);
+        return filterField;
     }
 
     /**
