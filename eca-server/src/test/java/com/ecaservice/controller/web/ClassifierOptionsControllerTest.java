@@ -53,7 +53,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = ClassifierOptionsController.class)
 @Oauth2TestConfiguration
-@Import({ClassifierOptionsDatabaseModelMapperImpl.class, TokenService.class})
+@Import(ClassifierOptionsDatabaseModelMapperImpl.class)
 public class ClassifierOptionsControllerTest {
 
     private static final String BASE_URL = "/experiment/classifiers-config";

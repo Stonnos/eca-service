@@ -66,7 +66,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = EvaluationController.class)
 @Oauth2TestConfiguration
-@Import({TokenService.class, EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class,
+@Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class,
         ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class})
 public class EvaluationControllerTest {
 
