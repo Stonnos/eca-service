@@ -1,4 +1,4 @@
-package com.ecaservice.config.rabbit.listener;
+package com.ecaservice.listener;
 
 import com.ecaservice.config.rabbit.Queues;
 import com.ecaservice.dto.EcaResponse;
