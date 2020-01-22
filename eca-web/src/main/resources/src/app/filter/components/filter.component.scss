@@ -16,6 +16,13 @@
     background: rgba(226, 226, 226, 0.64);
     border: 1px solid #d5d5d5;
     margin-top: 15px;
+    margin-left: 15px;
+
+    .ui-panel-content {
+      background: inherit;
+      padding: 2px;
+      border: none;
+    }
   }
 }
 
