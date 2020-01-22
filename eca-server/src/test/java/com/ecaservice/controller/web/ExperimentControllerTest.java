@@ -13,6 +13,7 @@ import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationLog_;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
+import com.ecaservice.report.BaseReportGenerator;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
@@ -37,6 +38,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -47,6 +52,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +80,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
+@RunWith(PowerMockRunner.class)
+@PowerMockRunnerDelegate(SpringRunner.class)
+@PrepareForTest(Utils.class)
 @WebMvcTest(controllers = ExperimentController.class)
 @Oauth2TestConfiguration
 @Import(ExperimentMapperImpl.class)
@@ -83,6 +91,8 @@ public class ExperimentControllerTest {
     private static final String BASE_URL = "/experiment";
     private static final String DETAILS_URL = BASE_URL + "/details/{uuid}";
     private static final String LIST_URL = BASE_URL + "/list";
+    private static final String DOWNLOAD_TRAINING_DATA_URL = BASE_URL + "/training-data/{uuid}";
+    private static final String DOWNLOAD_EXPERIMENT_RESULTS_URL = BASE_URL + "/results/{uuid}";
     private static final String REQUEST_STATUS_STATISTICS_URL = BASE_URL + "/request-statuses-statistics";
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -117,9 +127,38 @@ public class ExperimentControllerTest {
     }
 
     @Test
+    public void testDownloadTrainingDataUnauthorized() throws Exception {
+        mockMvc.perform(get(DOWNLOAD_TRAINING_DATA_URL, TEST_UUID)).andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testDownloadTrainingDataForNotExistingExperiment() throws Exception {
+        testDownloadFileForNotExistingExperiment(DOWNLOAD_TRAINING_DATA_URL);
+    }
+
+    @Test
+    public void testDownloadNotExistingTrainingDataFile() throws Exception {
+        testDownloadNotExistingExperimentFile(DOWNLOAD_TRAINING_DATA_URL);
+    }
+
+    @Test
+    public void testDownloadExperimentResultsUnauthorized() throws Exception {
+        mockMvc.perform(get(DOWNLOAD_EXPERIMENT_RESULTS_URL, TEST_UUID)).andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testDownloadExperimentResultsForNotExistingExperiment() throws Exception {
+        testDownloadFileForNotExistingExperiment(DOWNLOAD_EXPERIMENT_RESULTS_URL);
+    }
+
+    @Test
+    public void testDownloadExperimentResultsFile() throws Exception {
+        testDownloadNotExistingExperimentFile(DOWNLOAD_EXPERIMENT_RESULTS_URL);
+    }
+
+    @Test
     public void testGetExperimentDetailsUnauthorized() throws Exception {
-        mockMvc.perform(get(DETAILS_URL, TEST_UUID))
-                .andExpect(status().isUnauthorized());
+        mockMvc.perform(get(DETAILS_URL, TEST_UUID)).andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -221,5 +260,22 @@ public class ExperimentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(content().json(objectMapper.writeValueAsString(requestStatusStatisticsDto)));
+    }
+
+    private void testDownloadFileForNotExistingExperiment(String url) throws Exception {
+        when(experimentRepository.findByUuid(TEST_UUID)).thenReturn(null);
+        mockMvc.perform(get(url, TEST_UUID)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
+                .andExpect(status().isBadRequest());
+    }
+
+    private void testDownloadNotExistingExperimentFile(String url) throws Exception {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        when(experimentRepository.findByUuid(TEST_UUID)).thenReturn(experiment);
+        PowerMockito.mockStatic(Utils.class);
+        when(Utils.existsFile(any(File.class))).thenReturn(false);
+        mockMvc.perform(get(url, TEST_UUID)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
+                .andExpect(status().isBadRequest());
     }
 }
