@@ -57,6 +57,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -144,7 +145,8 @@ public class ExperimentControllerTest {
     private String accessToken;
 
     private final MockMultipartFile trainingData =
-            new MockMultipartFile(TRAINING_DATA_PARAM, "iris.txt", "text/plain", "file-content".getBytes());
+            new MockMultipartFile(TRAINING_DATA_PARAM, "iris.txt",
+                    "text/plain", "file-content".getBytes(StandardCharsets.UTF_8));
 
     @Before
     public void init() throws Exception {
