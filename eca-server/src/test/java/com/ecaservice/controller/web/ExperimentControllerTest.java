@@ -2,37 +2,32 @@ package com.ecaservice.controller.web;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.configuation.annotation.Oauth2TestConfiguration;
-import com.ecaservice.mapping.ClassifierInfoMapperImpl;
-import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
-import com.ecaservice.mapping.EvaluationLogMapper;
-import com.ecaservice.mapping.EvaluationLogMapperImpl;
+import com.ecaservice.dto.ExperimentRequest;
+import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentMapperImpl;
-import com.ecaservice.mapping.InstancesInfoMapperImpl;
-import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.EvaluationLog_;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
-import com.ecaservice.report.BaseReportGenerator;
-import com.ecaservice.repository.EvaluationLogRepository;
+import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.UserService;
 import com.ecaservice.service.ers.ErsService;
-import com.ecaservice.service.evaluation.EvaluationLogService;
 import com.ecaservice.service.experiment.ExperimentRequestService;
 import com.ecaservice.service.experiment.ExperimentResultsService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.token.TokenService;
+import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.util.Utils;
-import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
-import com.ecaservice.web.dto.model.EvaluationLogDto;
+import com.ecaservice.web.dto.model.CreateExperimentResultDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eca.core.evaluation.EvaluationMethod;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,6 +43,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -57,7 +53,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.ecaservice.PageRequestUtils.FILTER_MATCH_MODE_PARAM;
 import static com.ecaservice.PageRequestUtils.FILTER_NAME_PARAM;
@@ -72,6 +67,8 @@ import static com.ecaservice.TestHelperUtils.buildRequestStatusStatisticsMap;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -93,7 +90,13 @@ public class ExperimentControllerTest {
     private static final String LIST_URL = BASE_URL + "/list";
     private static final String DOWNLOAD_TRAINING_DATA_URL = BASE_URL + "/training-data/{uuid}";
     private static final String DOWNLOAD_EXPERIMENT_RESULTS_URL = BASE_URL + "/results/{uuid}";
+    private static final String CREATE_EXPERIMENT_URL = BASE_URL + "/create";
     private static final String REQUEST_STATUS_STATISTICS_URL = BASE_URL + "/request-statuses-statistics";
+
+    private static final String EXPERIMENT_TYPE_PARAM = "experimentType";
+    private static final String EVALUATION_METHOD_PARAM = "evaluationMethod";
+    private static final String TRAINING_DATA_PARAM = "trainingData";
+    private static final String ERROR_MESSAGE = "Error";
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -120,6 +123,9 @@ public class ExperimentControllerTest {
     private MockMvc mockMvc;
 
     private String accessToken;
+
+    private final MockMultipartFile trainingData =
+            new MockMultipartFile(TRAINING_DATA_PARAM, "iris.txt", "text/plain", "file-content".getBytes());
 
     @Before
     public void init() throws Exception {
@@ -167,6 +173,50 @@ public class ExperimentControllerTest {
         mockMvc.perform(get(DETAILS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testCreateExperimentUnauthorized() throws Exception {
+        mockMvc.perform(get(CREATE_EXPERIMENT_URL)).andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testCreateExperimentSuccess() throws Exception {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        CreateExperimentResultDto expected = new CreateExperimentResultDto();
+        expected.setCreated(true);
+        expected.setUuid(experiment.getUuid());
+        when(userService.getCurrentUser()).thenReturn(
+                new UserDetailsImpl(StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY,
+                        Collections.emptyList()));
+        when(experimentRequestService.createExperimentRequest(any(ExperimentRequest.class))).thenReturn(experiment);
+        mockMvc.perform(multipart(CREATE_EXPERIMENT_URL)
+                .file(trainingData)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .param(EXPERIMENT_TYPE_PARAM, ExperimentType.NEURAL_NETWORKS.name())
+                .param(EVALUATION_METHOD_PARAM, EvaluationMethod.CROSS_VALIDATION.name()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().json(objectMapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    public void testCreateExperimentWithError() throws Exception {
+        CreateExperimentResultDto expected = new CreateExperimentResultDto();
+        expected.setErrorMessage(ERROR_MESSAGE);
+        when(userService.getCurrentUser()).thenReturn(
+                new UserDetailsImpl(StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY,
+                        Collections.emptyList()));
+        when(experimentRequestService.createExperimentRequest(any(ExperimentRequest.class))).thenThrow(
+                new ExperimentException(ERROR_MESSAGE));
+        mockMvc.perform(multipart(CREATE_EXPERIMENT_URL)
+                .file(trainingData)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .param(EXPERIMENT_TYPE_PARAM, ExperimentType.NEURAL_NETWORKS.name())
+                .param(EVALUATION_METHOD_PARAM, EvaluationMethod.CROSS_VALIDATION.name()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().json(objectMapper.writeValueAsString(expected)));
     }
 
     @Test
