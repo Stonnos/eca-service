@@ -1,4 +1,4 @@
-package com.ecaservice.configuation;
+package com.ecaservice.configuation.oauth2;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

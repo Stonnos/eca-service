@@ -1,9 +1,10 @@
 package com.ecaservice.configuation.annotation;
 
 import com.ecaservice.config.oauth2.MethodSecurityConfiguration;
-import com.ecaservice.configuation.Oauth2ResourceServerConfiguration;
-import com.ecaservice.configuation.Oauth2ServerConfiguration;
-import com.ecaservice.configuation.Oauth2ServerSecurityConfiguration;
+import com.ecaservice.configuation.oauth2.Oauth2BaseConfiguration;
+import com.ecaservice.configuation.oauth2.Oauth2ResourceServerConfiguration;
+import com.ecaservice.configuation.oauth2.Oauth2ServerConfiguration;
+import com.ecaservice.configuation.oauth2.Oauth2ServerSecurityConfiguration;
 import com.ecaservice.token.TokenService;
 import org.springframework.context.annotation.Import;
 
@@ -20,7 +21,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import({Oauth2ResourceServerConfiguration.class, Oauth2ServerConfiguration.class,
+@Import({Oauth2BaseConfiguration.class, Oauth2ResourceServerConfiguration.class, Oauth2ServerConfiguration.class,
         Oauth2ServerSecurityConfiguration.class, MethodSecurityConfiguration.class, TokenService.class})
 @Documented
 public @interface Oauth2TestConfiguration {

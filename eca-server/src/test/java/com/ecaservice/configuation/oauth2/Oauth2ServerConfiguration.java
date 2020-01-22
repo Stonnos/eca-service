@@ -1,4 +1,4 @@
-package com.ecaservice.configuation;
+package com.ecaservice.configuation.oauth2;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -25,6 +25,7 @@ import org.springframework.security.oauth2.provider.token.store.InMemoryTokenSto
 public class Oauth2ServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
     private final AuthenticationManager authenticationManager;
+    private final Oauth2TestConfig oauth2TestConfig;
 
     @Override
     public void configure(final AuthorizationServerSecurityConfigurer oauthServer) {
@@ -34,10 +35,10 @@ public class Oauth2ServerConfiguration extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
-                .withClient("client")
-                .secret("{noop}secret")
-                .scopes("web")
-                .authorizedGrantTypes("password", "refresh_token")
+                .withClient(oauth2TestConfig.getClientId())
+                .secret(String.format("{noop}%s", oauth2TestConfig.getSecret()))
+                .scopes(oauth2TestConfig.getScope())
+                .authorizedGrantTypes(oauth2TestConfig.getGrantTypes())
                 .autoApprove(true);
     }
 

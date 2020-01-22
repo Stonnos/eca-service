@@ -1,4 +1,4 @@
-package com.ecaservice.configuation;
+package com.ecaservice.configuation.oauth2;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -23,11 +23,13 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class Oauth2ServerSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    private final Oauth2TestConfig oauth2TestConfig;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
-                .withUser("admin")
-                .password(passwordEncoder().encode("secret"))
+                .withUser(oauth2TestConfig.getUsername())
+                .password(passwordEncoder().encode(oauth2TestConfig.getPassword()))
                 .authorities(Collections.emptyList());
     }
 
