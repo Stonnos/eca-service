@@ -60,7 +60,7 @@
         </dependencies>
     </dependencyManagement>
 
-    <profiles>
+    <!--<profiles>
         <profile>
             <id>sonar</id>
             <properties>
@@ -69,6 +69,7 @@
                     **/dto/*,
                     **/entity/*,
                     **/json/*,
+                    **/qa/*,
                     **/*Configuration.java,
                     **/*Exception.java,
                     **/*Utils.java,
@@ -76,7 +77,7 @@
                 </sonar.coverage.exclusions>
             </properties>
         </profile>
-    </profiles>
+    </profiles>-->
 
     <dependencies>
 

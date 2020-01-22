@@ -98,7 +98,7 @@ public class ErsRequestServiceTest extends AbstractJpaTest {
         requestEntity.setEvaluationLog(evaluationLog);
         ersRequestService.saveEvaluationResults(evaluationResults, requestEntity);
         List<ErsRequest> requestEntities = ersRequestRepository.findAll();
-        AssertionUtils.assertSingletonList(requestEntities);
+        AssertionUtils.hasOneElement(requestEntities);
         ErsRequest ersRequest = requestEntities.stream().findFirst().orElse(null);
         Assertions.assertThat(ersRequest).isNotNull();
         Assertions.assertThat(ersRequest.getResponseStatus()).isEqualTo(
@@ -121,7 +121,7 @@ public class ErsRequestServiceTest extends AbstractJpaTest {
         requestEntity.setEvaluationLog(evaluationLog);
         ersRequestService.saveEvaluationResults(evaluationResults, requestEntity);
         List<ErsRequest> requestEntities = ersRequestRepository.findAll();
-        AssertionUtils.assertSingletonList(requestEntities);
+        AssertionUtils.hasOneElement(requestEntities);
         ErsRequest ersRequest = requestEntities.stream().findFirst().orElse(null);
         Assertions.assertThat(ersRequest).isNotNull();
         Assertions.assertThat(ersRequest.getResponseStatus()).isEqualTo(ErsResponseStatus.ERROR);

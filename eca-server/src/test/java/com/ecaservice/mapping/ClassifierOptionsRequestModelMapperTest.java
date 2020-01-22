@@ -30,6 +30,9 @@ import java.util.List;
         ClassifierOptionsResponseModelMapperImpl.class})
 public class ClassifierOptionsRequestModelMapperTest {
 
+    private static final String DATA_MD5_HASH = "hash";
+    private static final String OPTIONS = "options";
+
     @Inject
     private ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
 
@@ -46,8 +49,8 @@ public class ClassifierOptionsRequestModelMapperTest {
     @Test
     public void testMapClassifierOptionsRequestModel() {
         ClassifierOptionsRequestModel requestModel =
-                TestHelperUtils.createClassifierOptionsRequestModel("hash", LocalDateTime.now(), ErsResponseStatus.SUCCESS,
-                        Collections.singletonList(TestHelperUtils.createClassifierOptionsResponseModel("options")));
+                TestHelperUtils.createClassifierOptionsRequestModel(DATA_MD5_HASH, LocalDateTime.now(), ErsResponseStatus.SUCCESS,
+                        Collections.singletonList(TestHelperUtils.createClassifierOptionsResponseModel(OPTIONS)));
         ClassifierOptionsRequestDto classifierOptionsRequestDto = classifierOptionsRequestModelMapper.map(requestModel);
         Assertions.assertThat(classifierOptionsRequestDto).isNotNull();
         Assertions.assertThat(classifierOptionsRequestDto.getRequestDate()).isEqualTo(requestModel.getRequestDate());
@@ -64,8 +67,7 @@ public class ClassifierOptionsRequestModelMapperTest {
                 requestModel.getEvaluationMethod().getDescription());
         Assertions.assertThat(classifierOptionsRequestDto.getEvaluationMethod().getValue()).isEqualTo(
                 requestModel.getEvaluationMethod().name());
-        Assertions.assertThat(classifierOptionsRequestDto.getClassifierOptionsResponseModels()).isNotNull();
-        Assertions.assertThat(classifierOptionsRequestDto.getClassifierOptionsResponseModels().size()).isOne();
+        Assertions.assertThat(classifierOptionsRequestDto.getClassifierOptionsResponseModels()).hasSize(1);
     }
 
     @Test
@@ -78,7 +80,6 @@ public class ClassifierOptionsRequestModelMapperTest {
                         ErsResponseStatus.SUCCESS, Collections.emptyList());
         List<ClassifierOptionsRequestDto> classifierOptionsRequestDtoList = classifierOptionsRequestModelMapper.map
                 (Arrays.asList(requestModel, requestModel1));
-        Assertions.assertThat(classifierOptionsRequestDtoList).isNotNull();
         Assertions.assertThat(classifierOptionsRequestDtoList).hasSize(2);
     }
 }

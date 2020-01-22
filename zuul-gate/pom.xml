@@ -14,6 +14,7 @@
 
     <properties>
         <spring.cloud.zuul.version>2.1.2.RELEASE</spring.cloud.zuul.version>
+        <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
     </properties>
 
     <dependencies>

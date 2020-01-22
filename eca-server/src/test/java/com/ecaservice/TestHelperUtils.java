@@ -26,6 +26,11 @@ import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.ExperimentResultsRequest;
 import com.ecaservice.model.entity.FilterDictionaryValue;
+import com.ecaservice.model.entity.FilterField;
+import com.ecaservice.model.entity.FilterTemplate;
+import com.ecaservice.model.entity.FilterTemplateType;
+import com.ecaservice.model.entity.GlobalFilterField;
+import com.ecaservice.model.entity.GlobalFilterTemplate;
 import com.ecaservice.model.entity.InstancesInfo;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.evaluation.ClassifierOptionsRequestSource;
@@ -47,6 +52,10 @@ import com.ecaservice.model.options.StackingOptions;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
+import com.ecaservice.web.dto.model.FilterDictionaryDto;
+import com.ecaservice.web.dto.model.FilterFieldDto;
+import com.ecaservice.web.dto.model.FilterFieldType;
+import com.ecaservice.web.dto.model.MatchMode;
 import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationMethod;
@@ -69,6 +78,7 @@ import eca.trees.CART;
 import eca.trees.DecisionTreeClassifier;
 import eca.trees.J48;
 import lombok.experimental.UtilityClass;
+import org.springframework.amqp.core.MessageProperties;
 import weka.core.Instances;
 
 import java.io.File;
@@ -79,10 +89,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newEnumMap;
 
 /**
  * Test data helper class.
@@ -127,6 +142,11 @@ public class TestHelperUtils {
     private static final int NUM_CLASSES = 2;
     private static final String LABEL = "label";
     private static final String VALUE = "value";
+    private static final String BEARER_HEADER_FORMAT = "Bearer %s";
+    private static final String FILTER_NAME = "name";
+    private static final String FILTER_DESCRIPTION = "description";
+    private static final String REPLY_TO = "replyTo";
+    private static final int FILTER_TEMPLATE_FIELDS = 5;
 
     /**
      * Generates the test data set.
@@ -809,6 +829,91 @@ public class TestHelperUtils {
     }
 
     /**
+     * Creates filter field dto.
+     *
+     * @return filter field dto
+     */
+    public static FilterFieldDto createFilterFieldDto() {
+        FilterFieldDto filterField = new FilterFieldDto();
+        filterField.setDescription(FILTER_DESCRIPTION);
+        filterField.setFieldOrder(1);
+        filterField.setFieldName(FILTER_NAME);
+        filterField.setFilterFieldType(FilterFieldType.REFERENCE);
+        filterField.setMatchMode(MatchMode.EQUALS);
+        filterField.setMultiple(false);
+        return filterField;
+    }
+
+    /**
+     * Creates filter dictionary dto.
+     *
+     * @return filter dictionary dto
+     */
+    public static FilterDictionaryDto createFilterDictionaryDto() {
+        FilterDictionaryDto filterDictionaryDto = new FilterDictionaryDto();
+        filterDictionaryDto.setName(FILTER_NAME);
+        filterDictionaryDto.setValues(Collections.emptyList());
+        return filterDictionaryDto;
+    }
+
+    /**
+     * Creates filter field.
+     *
+     * @param name  - field name
+     * @param order - field order
+     * @return filter field
+     */
+    public static FilterField createFilterField(String name, int order) {
+        FilterField filterField = new FilterField();
+        filterField.setFieldName(name);
+        filterField.setFieldOrder(order);
+        filterField.setFilterFieldType(FilterFieldType.TEXT);
+        filterField.setMatchMode(MatchMode.LIKE);
+        return filterField;
+    }
+
+    /**
+     * Creates filter template.
+     *
+     * @param filterTemplateType - filter template type
+     * @return filter template
+     */
+    public static FilterTemplate createFilterTemplate(FilterTemplateType filterTemplateType) {
+        FilterTemplate filterTemplate = new FilterTemplate();
+        filterTemplate.setTemplateType(filterTemplateType);
+        filterTemplate.setCreated(LocalDateTime.now());
+        filterTemplate.setFields(IntStream.range(0, FILTER_TEMPLATE_FIELDS).mapToObj(
+                i -> createFilterField(String.valueOf(i), i)).collect(Collectors.toList()));
+        return filterTemplate;
+    }
+
+    /**
+     * Creates global filter template.
+     *
+     * @param filterTemplateType - filter template type
+     * @return global filter template
+     */
+    public static GlobalFilterTemplate createGlobalFilterTemplate(FilterTemplateType filterTemplateType) {
+        GlobalFilterTemplate filterTemplate = new GlobalFilterTemplate();
+        filterTemplate.setTemplateType(filterTemplateType);
+        filterTemplate.setFields(IntStream.range(0, FILTER_TEMPLATE_FIELDS).mapToObj(
+                i -> createGlobalFilterField(String.valueOf(i))).collect(Collectors.toList()));
+        return filterTemplate;
+    }
+
+    /**
+     * Creates global filter field.
+     *
+     * @param name - field name
+     * @return global filter field
+     */
+    public static GlobalFilterField createGlobalFilterField(String name) {
+        GlobalFilterField filterField = new GlobalFilterField();
+        filterField.setFieldName(name);
+        return filterField;
+    }
+
+    /**
      * Creates statistics report.
      *
      * @return statistics report
@@ -910,5 +1015,53 @@ public class TestHelperUtils {
         experimentHistory.setExperiment(newArrayList());
         experimentHistory.getExperiment().add(getEvaluationResults());
         return experimentHistory;
+    }
+
+    /**
+     * Creates authorization header with bearer token.
+     *
+     * @param token - token
+     * @return authorization header with bearer token
+     */
+    public static String bearerHeader(String token) {
+        return String.format(BEARER_HEADER_FORMAT, token);
+    }
+
+    /**
+     * Creates request status statistics map.
+     *
+     * @return request status statistics map
+     */
+    public static Map<RequestStatus, Long> buildRequestStatusStatisticsMap() {
+        RequestStatus[] requestStatuses = RequestStatus.values();
+        Map<RequestStatus, Long> requestStatusMap = newEnumMap(RequestStatus.class);
+        Stream.of(requestStatuses).forEach(
+                requestStatus -> requestStatusMap.put(requestStatus, (long) requestStatus.ordinal()));
+        return requestStatusMap;
+    }
+
+    /**
+     * Creates experiment types statistics map.
+     *
+     * @return experiment types statistics map
+     */
+    public static Map<ExperimentType, Long> buildexperimentTypeStatisticMap() {
+        ExperimentType[] experimentTypes = ExperimentType.values();
+        Map<ExperimentType, Long> experimentTypesMap = newEnumMap(ExperimentType.class);
+        Stream.of(experimentTypes).forEach(
+                experimentType -> experimentTypesMap.put(experimentType, (long) experimentType.ordinal()));
+        return experimentTypesMap;
+    }
+
+    /**
+     * Creates message properties.
+     *
+     * @return message properties
+     */
+    public static MessageProperties buildMessageProperties() {
+        MessageProperties messageProperties = new MessageProperties();
+        messageProperties.setReplyTo(REPLY_TO);
+        messageProperties.setCorrelationId(UUID.randomUUID().toString());
+        return messageProperties;
     }
 }

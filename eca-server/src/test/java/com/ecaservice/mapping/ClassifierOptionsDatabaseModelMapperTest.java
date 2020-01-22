@@ -50,7 +50,6 @@ public class ClassifierOptionsDatabaseModelMapperTest {
         classifierOptionsDatabaseModel1.setCreationDate(LocalDateTime.now().plusDays(1L));
         List<ClassifierOptionsDto> classifierOptionsDtoList = classifierOptionsDatabaseModelMapper.map(
                 Arrays.asList(classifierOptionsDatabaseModel, classifierOptionsDatabaseModel1));
-        assertThat(classifierOptionsDtoList).isNotNull();
         assertThat(classifierOptionsDtoList).hasSize(2);
     }
 }

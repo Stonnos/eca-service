@@ -44,7 +44,6 @@ public class ClassifierReportMapperTest {
         List<ClassifierOptionsResponseModel> classifierOptionsRequestModelList =
                 classifierReportMapper.map(Arrays.asList
                         (classifierReport, classifierReport1));
-        assertThat(classifierOptionsRequestModelList).isNotNull();
         assertThat(classifierOptionsRequestModelList).hasSize(2);
     }
 }

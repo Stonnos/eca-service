@@ -138,7 +138,6 @@ public class EvaluationLogMapperTest {
         assertThat(evaluationLogDto.getEvaluationStatus().getValue()).isEqualTo(
                 evaluationLog.getEvaluationStatus().name());
         assertThat(evaluationLogDto.getRequestId()).isEqualTo(evaluationLog.getRequestId());
-        assertThat(evaluationLogDto.getClassifierInfo().getInputOptions()).isNotNull();
         assertThat(evaluationLogDto.getClassifierInfo().getInputOptions()).hasSameSizeAs(
                 evaluationLog.getClassifierInfo().getClassifierInputOptions());
         assertThat(evaluationLogDto.getNumFolds()).isEqualTo(evaluationLog.getNumFolds());
@@ -150,7 +149,6 @@ public class EvaluationLogMapperTest {
     private void assertOptions(EvaluationLog evaluationLog, EvaluationRequest request) {
         List<ClassifierInputOptions> classifierInputOptions =
                 evaluationLog.getClassifierInfo().getClassifierInputOptions();
-        assertThat(classifierInputOptions).isNotNull();
         assertThat(classifierInputOptions).isNotEmpty();
         String[] options = request.getClassifier().getOptions();
         assertThat(classifierInputOptions.size()).isEqualTo(options.length / 2);

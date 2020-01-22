@@ -61,8 +61,8 @@ public class FilterFieldMapperTest {
         filterField1.setFilterFieldType(FilterFieldType.REFERENCE);
         filterField1.setMatchMode(MatchMode.LIKE);
         filterField1.setDictionary(new FilterDictionary());
-        List<FilterFieldDto> filterFieldDtoList = filterFieldMapper.map(Arrays.asList(filterField, filterField1));
-        Assertions.assertThat(filterFieldDtoList).isNotNull();
-        Assertions.assertThat(filterFieldDtoList).hasSize(2);
+        List<FilterField> filterFields = Arrays.asList(filterField, filterField1);
+        List<FilterFieldDto> filterFieldDtoList = filterFieldMapper.map(filterFields);
+        Assertions.assertThat(filterFieldDtoList).hasSameSizeAs(filterFields);
     }
 }

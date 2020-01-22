@@ -72,7 +72,7 @@ public class EvaluationRequestServiceTest extends AbstractJpaTest {
         EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.SUCCESS);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
-        AssertionUtils.assertSingletonList(evaluationLogList);
+        AssertionUtils.hasOneElement(evaluationLogList);
         assertThat(evaluationLogList.get(0).getEvaluationStatus()).isEqualTo(RequestStatus.FINISHED);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.SUCCESS);
         assertThat(evaluationResponse.getEvaluationResults()).isNotNull();
@@ -92,7 +92,7 @@ public class EvaluationRequestServiceTest extends AbstractJpaTest {
         EvaluationResponse evaluationResponse = service.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
-        AssertionUtils.assertSingletonList(evaluationLogList);
+        AssertionUtils.hasOneElement(evaluationLogList);
         assertThat(evaluationLogList.get(0).getEvaluationStatus()).isEqualTo(RequestStatus.ERROR);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         assertThat(evaluationResponse.getEvaluationResults()).isNull();
@@ -106,7 +106,7 @@ public class EvaluationRequestServiceTest extends AbstractJpaTest {
         EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
-        AssertionUtils.assertSingletonList(evaluationLogList);
+        AssertionUtils.hasOneElement(evaluationLogList);
         assertThat(evaluationLogList.get(0).getEvaluationStatus()).isEqualTo(RequestStatus.ERROR);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
         assertThat(evaluationResponse.getEvaluationResults()).isNull();
@@ -123,7 +123,7 @@ public class EvaluationRequestServiceTest extends AbstractJpaTest {
         EvaluationResponse evaluationResponse = service.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.TIMEOUT);
         List<EvaluationLog> evaluationLogList = evaluationLogRepository.findAll();
-        AssertionUtils.assertSingletonList(evaluationLogList);
+        AssertionUtils.hasOneElement(evaluationLogList);
         assertThat(evaluationLogList.get(0).getEvaluationStatus()).isEqualTo(RequestStatus.TIMEOUT);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.TIMEOUT);
         assertThat(evaluationResponse.getEvaluationResults()).isNull();

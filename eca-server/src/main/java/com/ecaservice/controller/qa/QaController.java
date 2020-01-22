@@ -1,4 +1,4 @@
-package com.ecaservice.controller.web;
+package com.ecaservice.controller.qa;
 
 import com.ecaservice.conversion.ClassifierOptionsConverter;
 import com.ecaservice.dto.EvaluationRequest;

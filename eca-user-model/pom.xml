@@ -12,6 +12,10 @@
     <artifactId>eca-user-model</artifactId>
     <packaging>jar</packaging>
 
+    <properties>
+        <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.security</groupId>

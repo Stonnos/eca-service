@@ -23,10 +23,8 @@ public class AssertionUtils {
      * @param list list object
      * @param <T>  generic type
      */
-    public static <T> void assertSingletonList(List<T> list) {
-        Assertions.assertThat(list).isNotNull();
-        Assertions.assertThat(list).isNotEmpty();
-        Assertions.assertThat(list.size()).isOne();
+    public static <T> void hasOneElement(List<T> list) {
+        Assertions.assertThat(list).hasSize(1);
     }
 
     /**
@@ -43,7 +41,6 @@ public class AssertionUtils {
         assertThat(baseReportBean.getSearchQuery()).isNotNull();
         assertThat(baseReportBean.getItems()).isNotNull();
         assertThat(baseReportBean.getItems().size()).isOne();
-        assertThat(baseReportBean.getFilters()).isNotNull();
         assertThat(baseReportBean.getFilters()).hasSameSizeAs(pageRequestDto.getFilters());
     }
 }

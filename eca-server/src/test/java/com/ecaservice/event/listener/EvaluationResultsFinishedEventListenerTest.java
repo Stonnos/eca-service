@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
-public class EvaluationResultsFinishedListenerTest {
+public class EvaluationResultsFinishedEventListenerTest {
 
     @Mock
     private ErsRequestService ersRequestService;

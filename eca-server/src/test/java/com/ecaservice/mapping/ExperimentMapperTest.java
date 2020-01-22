@@ -86,9 +86,9 @@ public class ExperimentMapperTest {
     public void testMapExperimentDtoList() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
-        List<ExperimentDto> experimentDtoList = experimentMapper.map(Arrays.asList(experiment, experiment1));
-        assertThat(experimentDtoList).isNotNull();
-        assertThat(experimentDtoList).hasSize(2);
+        List<Experiment> experiments = Arrays.asList(experiment, experiment1);
+        List<ExperimentDto> experimentDtoList = experimentMapper.map(experiments);
+        assertThat(experimentDtoList).hasSameSizeAs(experiments);
     }
 
     @Test
