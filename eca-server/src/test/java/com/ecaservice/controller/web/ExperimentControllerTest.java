@@ -24,6 +24,7 @@ import com.ecaservice.util.Utils;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.ExperimentDto;
+import com.ecaservice.web.dto.model.ExperimentErsReportDto;
 import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageDto;
@@ -95,6 +96,7 @@ public class ExperimentControllerTest {
     private static final String DOWNLOAD_EXPERIMENT_RESULTS_URL = BASE_URL + "/results/{uuid}";
     private static final String CREATE_EXPERIMENT_URL = BASE_URL + "/create";
     private static final String EXPERIMENT_RESULTS_DETAILS_URL = BASE_URL + "/results/details/{id}";
+    private static final String ERS_REPORT_URL = BASE_URL + "/ers-report/{uuid}";
     private static final String REQUEST_STATUS_STATISTICS_URL = BASE_URL + "/request-statuses-statistics";
 
     private static final String EXPERIMENT_TYPE_PARAM = "experimentType";
@@ -352,6 +354,31 @@ public class ExperimentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(content().json(objectMapper.writeValueAsString(experimentResultsDetailsDto)));
+    }
+
+    @Test
+    public void testGetErsReportUnauthorized() throws Exception {
+        mockMvc.perform(get(ERS_REPORT_URL, TEST_UUID)).andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testGetErsReportForNotExistingExperiment() throws Exception {
+        when(experimentRepository.findByUuid(TEST_UUID)).thenReturn(null);
+        mockMvc.perform(get(ERS_REPORT_URL, TEST_UUID)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testGetErsReportOk() throws Exception {
+        ExperimentErsReportDto expected = new ExperimentErsReportDto();
+        when(experimentRepository.findByUuid(TEST_UUID)).thenReturn(new Experiment());
+        when(experimentResultsService.getErsReport(any(Experiment.class))).thenReturn(expected);
+        mockMvc.perform(get(ERS_REPORT_URL, TEST_UUID)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().json(objectMapper.writeValueAsString(expected)));
     }
 
     private void testDownloadFileForNotExistingExperiment(String url) throws Exception {
