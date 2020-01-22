@@ -21,7 +21,7 @@ export class LoginComponent implements BaseForm, OnInit {
 
   public userModel: UserModel = new UserModel();
 
-  @ViewChild(NgForm)
+  @ViewChild(NgForm, { static: true })
   public form: NgForm;
 
   public constructor(private router: Router, private authService: AuthService) {

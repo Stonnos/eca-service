@@ -20,7 +20,7 @@ export class CreateExperimentComponent extends BaseCreateDialogComponent<Experim
   public invalidFileTypeMessageSummary: string = 'Некорректный тип файла,';
   public invalidFileTypeMessageDetail: string = 'допускаются только файлы форматов: {0}.';
 
-  @ViewChild(FileUpload)
+  @ViewChild(FileUpload, { static: true })
   public fileUpload: FileUpload;
 
   @Input()

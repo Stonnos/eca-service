@@ -31,7 +31,7 @@ export abstract class BaseListComponent<T> implements FieldLink {
 
   public pageRequestDto: PageRequestDto;
 
-  @ViewChild(Table)
+  @ViewChild(Table, { static: true })
   private table: Table;
 
   private filterRequests: FilterRequestDto[] = [];

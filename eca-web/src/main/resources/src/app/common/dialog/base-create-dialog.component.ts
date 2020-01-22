@@ -19,7 +19,7 @@ export abstract class BaseCreateDialogComponent<T> implements BaseDialog, BaseFo
   @Output()
   public visibilityChange: EventEmitter<boolean> = new EventEmitter();
 
-  @ViewChild(NgForm)
+  @ViewChild(NgForm, { static: true })
   private form: NgForm;
 
   public hide() {
