@@ -4,12 +4,14 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.configuation.annotation.Oauth2TestConfiguration;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.exception.experiment.ExperimentException;
+import com.ecaservice.exception.experiment.ResultsNotFoundException;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentMapperImpl;
-import com.ecaservice.model.entity.EvaluationLog_;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
+import com.ecaservice.model.entity.Experiment_;
 import com.ecaservice.model.entity.RequestStatus;
+import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
@@ -21,6 +23,7 @@ import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.token.TokenService;
 import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.util.Utils;
+import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.ExperimentDto;
@@ -31,6 +34,7 @@ import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationMethod;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
@@ -53,11 +57,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.ecaservice.PageRequestUtils.FILTER_MATCH_MODE_PARAM;
 import static com.ecaservice.PageRequestUtils.FILTER_NAME_PARAM;
@@ -70,9 +76,12 @@ import static com.ecaservice.TestHelperUtils.TEST_UUID;
 import static com.ecaservice.TestHelperUtils.bearerHeader;
 import static com.ecaservice.TestHelperUtils.buildRequestStatusStatisticsMap;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -97,13 +106,16 @@ public class ExperimentControllerTest {
     private static final String CREATE_EXPERIMENT_URL = BASE_URL + "/create";
     private static final String EXPERIMENT_RESULTS_DETAILS_URL = BASE_URL + "/results/details/{id}";
     private static final String ERS_REPORT_URL = BASE_URL + "/ers-report/{uuid}";
+    private static final String SENT_EVALUATION_RESULTS_URL = BASE_URL + "/sent-evaluation-results";
     private static final String REQUEST_STATUS_STATISTICS_URL = BASE_URL + "/request-statuses-statistics";
+    private static final String EXPERIMENT_TYPES_STATISTICS_URL = BASE_URL + "/statistics";
 
     private static final String EXPERIMENT_TYPE_PARAM = "experimentType";
     private static final String EVALUATION_METHOD_PARAM = "evaluationMethod";
     private static final String TRAINING_DATA_PARAM = "trainingData";
     private static final String ERROR_MESSAGE = "Error";
     private static final long EXPERIMENT_RESULTS_ID = 1L;
+    private static final long RESULTS_COUNT = 1L;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -283,7 +295,7 @@ public class ExperimentControllerTest {
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE))
-                .param(FILTER_NAME_PARAM, EvaluationLog_.CREATION_DATE))
+                .param(FILTER_NAME_PARAM, Experiment_.CREATION_DATE))
                 .andExpect(status().isBadRequest());
     }
 
@@ -379,6 +391,126 @@ public class ExperimentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    public void testSentEvaluationResultsUnauthorized() throws Exception {
+        mockMvc.perform(post(SENT_EVALUATION_RESULTS_URL)
+                .content(TEST_UUID))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testSentEvaluationResultsForNotExistingExperiment() throws Exception {
+        when(experimentRepository.findByUuid(TEST_UUID)).thenReturn(null);
+        mockMvc.perform(post(SENT_EVALUATION_RESULTS_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .content(TEST_UUID))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testSentEvaluationResultsForNotFinishedExperiment() throws Exception {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        experiment.setExperimentStatus(RequestStatus.ERROR);
+        when(experimentRepository.findByUuid(TEST_UUID)).thenReturn(experiment);
+        mockMvc.perform(post(SENT_EVALUATION_RESULTS_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .content(TEST_UUID))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testSentEmptyEvaluationResults() throws Exception {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        when(experimentRepository.findByUuid(TEST_UUID)).thenReturn(experiment);
+        when(experimentResultsEntityRepository.countByExperiment(experiment)).thenReturn(0L);
+        mockMvc.perform(post(SENT_EVALUATION_RESULTS_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .content(TEST_UUID))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testAlreadySentEvaluationResults() throws Exception {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        when(experimentRepository.findByUuid(TEST_UUID)).thenReturn(experiment);
+        when(experimentResultsEntityRepository.countByExperiment(experiment)).thenReturn(RESULTS_COUNT);
+        when(experimentResultsEntityRepository.getSentResultsCount(experiment)).thenReturn(RESULTS_COUNT);
+        mockMvc.perform(post(SENT_EVALUATION_RESULTS_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .content(TEST_UUID))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testSentEvaluationResultsForDeletedExperiment() throws Exception {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        experiment.setDeletedDate(LocalDateTime.now());
+        when(experimentRepository.findByUuid(TEST_UUID)).thenReturn(experiment);
+        when(experimentResultsEntityRepository.countByExperiment(experiment)).thenReturn(RESULTS_COUNT + 1);
+        when(experimentResultsEntityRepository.getSentResultsCount(experiment)).thenReturn(RESULTS_COUNT);
+        mockMvc.perform(post(SENT_EVALUATION_RESULTS_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .content(TEST_UUID))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testSentEvaluationResultsOk() throws Exception {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        when(experimentRepository.findByUuid(TEST_UUID)).thenReturn(experiment);
+        when(experimentResultsEntityRepository.countByExperiment(experiment)).thenReturn(RESULTS_COUNT + 1);
+        when(experimentResultsEntityRepository.getSentResultsCount(experiment)).thenReturn(RESULTS_COUNT);
+        List<ExperimentResultsEntity> experimentResultsEntityList =
+                Collections.singletonList(TestHelperUtils.createExperimentResultsEntity(experiment));
+        when(experimentResultsEntityRepository.findExperimentsResultsToErsSent(experiment)).thenReturn(
+                experimentResultsEntityList);
+        when(experimentService.getExperimentHistory(experiment)).thenReturn(new ExperimentHistory());
+        mockMvc.perform(post(SENT_EVALUATION_RESULTS_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .content(TEST_UUID))
+                .andExpect(status().isOk());
+        verify(ersService, times(experimentResultsEntityList.size())).sentExperimentResults(
+                any(ExperimentResultsEntity.class), any(ExperimentHistory.class),
+                any(ExperimentResultsRequestSource.class));
+    }
+
+    @Test
+    public void testSentEvaluationResultsWithExperimentHistoryNotFound() throws Exception {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        when(experimentRepository.findByUuid(TEST_UUID)).thenReturn(experiment);
+        when(experimentResultsEntityRepository.countByExperiment(experiment)).thenReturn(RESULTS_COUNT + 1);
+        when(experimentResultsEntityRepository.getSentResultsCount(experiment)).thenReturn(RESULTS_COUNT);
+        List<ExperimentResultsEntity> experimentResultsEntityList =
+                Collections.singletonList(TestHelperUtils.createExperimentResultsEntity(experiment));
+        when(experimentResultsEntityRepository.findExperimentsResultsToErsSent(experiment)).thenReturn(
+                experimentResultsEntityList);
+        when(experimentService.getExperimentHistory(experiment)).thenThrow(new ResultsNotFoundException(ERROR_MESSAGE));
+        mockMvc.perform(post(SENT_EVALUATION_RESULTS_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .content(TEST_UUID))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testGetExperimentTypesStatisticsUnauthorized() throws Exception {
+        mockMvc.perform(get(EXPERIMENT_TYPES_STATISTICS_URL)).andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testGetExperimentTypesStatisticsOk() throws Exception {
+        Map<ExperimentType, Long> experimentTypesMap = TestHelperUtils.buildexperimentTypeStatisticMap();
+        when(experimentService.getExperimentTypesStatistics(null, null)).thenReturn(experimentTypesMap);
+        List<ChartDataDto> chartDataDtoList = experimentTypesMap.entrySet().stream().map(
+                entry -> new ChartDataDto(entry.getKey().name(), entry.getKey().getDescription(),
+                        entry.getValue())).collect(Collectors.toList());
+        mockMvc.perform(get(EXPERIMENT_TYPES_STATISTICS_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().json(objectMapper.writeValueAsString(chartDataDtoList)));
+
     }
 
     private void testDownloadFileForNotExistingExperiment(String url) throws Exception {

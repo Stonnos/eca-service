@@ -97,7 +97,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Maps.newHashMap;
+import static com.google.common.collect.Maps.newEnumMap;
 
 /**
  * Test data helper class.
@@ -1034,10 +1034,23 @@ public class TestHelperUtils {
      */
     public static Map<RequestStatus, Long> buildRequestStatusStatisticsMap() {
         RequestStatus[] requestStatuses = RequestStatus.values();
-        Map<RequestStatus, Long> requestStatusMap = newHashMap();
+        Map<RequestStatus, Long> requestStatusMap = newEnumMap(RequestStatus.class);
         Stream.of(requestStatuses).forEach(
                 requestStatus -> requestStatusMap.put(requestStatus, (long) requestStatus.ordinal()));
         return requestStatusMap;
+    }
+
+    /**
+     * Creates experiment types statistics map.
+     *
+     * @return experiment types statistics map
+     */
+    public static Map<ExperimentType, Long> buildexperimentTypeStatisticMap() {
+        ExperimentType[] experimentTypes = ExperimentType.values();
+        Map<ExperimentType, Long> experimentTypesMap = newEnumMap(ExperimentType.class);
+        Stream.of(experimentTypes).forEach(
+                experimentType -> experimentTypesMap.put(experimentType, (long) experimentType.ordinal()));
+        return experimentTypesMap;
     }
 
     /**
