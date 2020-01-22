@@ -40,7 +40,6 @@ public class ExperimentResultsMapperTest {
         assertThat(experimentResultsEntity.getClassifierInfo()).isNotNull();
         assertThat(experimentResultsEntity.getClassifierInfo().getClassifierName()).isEqualTo(
                 evaluationResults.getClassifier().getClass().getSimpleName());
-        assertThat(experimentResultsEntity.getClassifierInfo().getClassifierInputOptions()).isNotNull();
         assertThat(experimentResultsEntity.getClassifierInfo().getClassifierInputOptions()).isNotEmpty();
         assertThat(experimentResultsEntity.getPctCorrect()).isEqualTo(
                 BigDecimal.valueOf(evaluationResults.getEvaluation().pctCorrect()));
@@ -74,7 +73,6 @@ public class ExperimentResultsMapperTest {
         assertThat(experimentResultsDto.getClassifierInfo()).isNotNull();
         assertThat(experimentResultsDto.getClassifierInfo().getClassifierName()).isEqualTo(
                 experimentResultsEntity.getClassifierInfo().getClassifierName());
-        assertThat(experimentResultsDto.getClassifierInfo().getInputOptions()).isNotNull();
         assertThat(experimentResultsDto.getClassifierInfo().getInputOptions()).hasSameSizeAs(
                 experimentResultsEntity.getClassifierInfo().getClassifierInputOptions());
     }

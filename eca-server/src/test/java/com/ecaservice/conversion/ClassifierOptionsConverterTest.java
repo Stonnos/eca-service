@@ -145,8 +145,8 @@ public class ClassifierOptionsConverterTest {
         Assertions.assertThat(stackingOptions.getMetaClassifierOptions()).isNotNull();
         Assertions.assertThat(stackingOptions.getMetaClassifierOptions()).isInstanceOf(NeuralNetworkOptions.class);
         Assertions.assertThat(stackingOptions.getClassifierOptions()).isNotEmpty();
-        Assertions.assertThat(stackingOptions.getClassifierOptions().size()).isEqualTo(
-                stackingClassifier.getClassifiers().size());
+        Assertions.assertThat(stackingOptions.getClassifierOptions()).hasSameSizeAs(
+                stackingClassifier.getClassifiers());
     }
 
     @Test

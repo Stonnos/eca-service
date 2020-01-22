@@ -81,7 +81,6 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
         ExperimentHistory experimentHistory = TestHelperUtils.createExperimentHistory();
         experimentResultsService.saveExperimentResultsToErsSent(experiment, experimentHistory);
         List<ExperimentResultsEntity> experimentResultsEntityList = experimentResultsEntityRepository.findAll();
-        Assertions.assertThat(experimentResultsEntityList).isNotNull();
         Assertions.assertThat(experimentResultsEntityList).hasSameSizeAs(experimentHistory.getExperiment());
     }
 

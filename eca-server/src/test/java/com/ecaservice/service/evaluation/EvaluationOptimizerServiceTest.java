@@ -455,8 +455,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         assertThat(requestModel.getNumTests()).isNotNull();
         assertThat(requestModel.getSeed()).isNotNull();
         assertThat(requestModel.getEvaluationMethod()).isNotNull();
-        assertThat(requestModel.getClassifierOptionsResponseModels()).isNotNull();
-        assertThat(requestModel.getClassifierOptionsResponseModels().size()).isOne();
+        assertThat(requestModel.getClassifierOptionsResponseModels()).hasSize(1);
     }
 
     private void assertErsSource() {

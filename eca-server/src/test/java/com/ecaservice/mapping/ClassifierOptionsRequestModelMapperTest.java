@@ -67,8 +67,7 @@ public class ClassifierOptionsRequestModelMapperTest {
                 requestModel.getEvaluationMethod().getDescription());
         Assertions.assertThat(classifierOptionsRequestDto.getEvaluationMethod().getValue()).isEqualTo(
                 requestModel.getEvaluationMethod().name());
-        Assertions.assertThat(classifierOptionsRequestDto.getClassifierOptionsResponseModels()).isNotNull();
-        Assertions.assertThat(classifierOptionsRequestDto.getClassifierOptionsResponseModels().size()).isOne();
+        Assertions.assertThat(classifierOptionsRequestDto.getClassifierOptionsResponseModels()).hasSize(1);
     }
 
     @Test
@@ -81,7 +80,6 @@ public class ClassifierOptionsRequestModelMapperTest {
                         ErsResponseStatus.SUCCESS, Collections.emptyList());
         List<ClassifierOptionsRequestDto> classifierOptionsRequestDtoList = classifierOptionsRequestModelMapper.map
                 (Arrays.asList(requestModel, requestModel1));
-        Assertions.assertThat(classifierOptionsRequestDtoList).isNotNull();
         Assertions.assertThat(classifierOptionsRequestDtoList).hasSize(2);
     }
 }

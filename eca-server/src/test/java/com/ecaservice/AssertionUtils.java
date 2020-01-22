@@ -41,7 +41,6 @@ public class AssertionUtils {
         assertThat(baseReportBean.getSearchQuery()).isNotNull();
         assertThat(baseReportBean.getItems()).isNotNull();
         assertThat(baseReportBean.getItems().size()).isOne();
-        assertThat(baseReportBean.getFilters()).isNotNull();
         assertThat(baseReportBean.getFilters()).hasSameSizeAs(pageRequestDto.getFilters());
     }
 }
