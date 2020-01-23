@@ -12,6 +12,7 @@ import {
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { FieldService } from "../services/field.service";
 import { FieldLink } from "../model/field-link";
+import { ColumnModel } from "../model/column.model";
 
 export abstract class BaseListComponent<T> implements FieldLink {
 
@@ -23,7 +24,7 @@ export abstract class BaseListComponent<T> implements FieldLink {
 
   public searchQuery: string = '';
   public filters: Filter[] = [];
-  public columns: any[] = [];
+  public columns: ColumnModel[] = [];
   public linkColumns: string[] = [];
   public notSortableColumns: string[] = [];
   public items: T[] = [];
@@ -106,12 +107,20 @@ export abstract class BaseListComponent<T> implements FieldLink {
     this.pageRequestDto = {
       page: page,
       size: size,
-      sortField: sortField,
+      sortField: this.getSortField(sortField),
       ascending: ascending,
       searchQuery: this.searchQuery,
       filters: this.filterRequests
     };
     this.getNextPage(this.pageRequestDto);
+  }
+
+  private getSortField(columnName: string): string {
+    const column: ColumnModel = this.columns.find((column: ColumnModel) => columnName == column.name);
+    if (column) {
+      return column.sortBy ? column.sortBy : column.name;
+    }
+    return null;
   }
 
   private rebuildFilterRequests(): void {

@@ -198,9 +198,9 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   private initColumns() {
     this.columns = [
       { name: ExperimentFields.UUID, label: "UUID заявки" },
-      { name: ExperimentFields.EXPERIMENT_TYPE, label: "Тип эксперимента" },
-      { name: ExperimentFields.EXPERIMENT_STATUS, label: "Статус заявки" },
-      { name: ExperimentFields.EVALUATION_METHOD, label: "Метод оценки точности" },
+      { name: ExperimentFields.EXPERIMENT_TYPE_DESCRIPTION, label: "Тип эксперимента", sortBy: ExperimentFields.EXPERIMENT_TYPE },
+      { name: ExperimentFields.EXPERIMENT_STATUS_DESCRIPTION, label: "Статус заявки", sortBy: ExperimentFields.EXPERIMENT_STATUS },
+      { name: ExperimentFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: ExperimentFields.EVALUATION_METHOD },
       { name: ExperimentFields.FIRST_NAME, label: "Имя заявки" },
       { name: ExperimentFields.EMAIL, label: "Email заявки" },
       { name: ExperimentFields.TRAINING_DATA_PATH, label: "Обучающая выборка" },

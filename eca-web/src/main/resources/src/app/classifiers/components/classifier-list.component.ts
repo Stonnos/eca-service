@@ -41,7 +41,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = EvaluationLogFields.CREATION_DATE;
-    this.linkColumns = [EvaluationLogFields.CLASSIFIER_NAME, EvaluationLogFields.EVALUATION_METHOD,
+    this.linkColumns = [EvaluationLogFields.CLASSIFIER_NAME, EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION,
       EvaluationLogFields.RELATION_NAME, EvaluationLogFields.REQUEST_ID];
     this.initColumns();
   }
@@ -103,7 +103,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
       case EvaluationLogFields.REQUEST_ID:
         this.router.navigate([RouterPaths.EVALUATION_DETAILS_URL, evaluationLog.requestId]);
         break;
-      case EvaluationLogFields.EVALUATION_METHOD:
+      case EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION:
         if (evaluationLog.evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION) {
           this.toggleOverlayPanel(event, evaluationLog, column, overlayPanel);
         }
@@ -123,9 +123,9 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     this.columns = [
       { name: EvaluationLogFields.REQUEST_ID, label: "UUID заявки" },
       { name: EvaluationLogFields.CLASSIFIER_NAME, label: "Классификатор" },
-      { name: EvaluationLogFields.EVALUATION_STATUS, label: "Статус заявки" },
+      { name: EvaluationLogFields.EVALUATION_STATUS_DESCRIPTION, label: "Статус заявки", sortBy: EvaluationLogFields.EVALUATION_STATUS },
       { name: EvaluationLogFields.RELATION_NAME, label: "Обучающая выборка" },
-      { name: EvaluationLogFields.EVALUATION_METHOD, label: "Метод оценки точности" },
+      { name: EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: EvaluationLogFields.EVALUATION_METHOD },
       { name: EvaluationLogFields.CREATION_DATE, label: "Дата создания заявки" },
       { name: EvaluationLogFields.START_DATE, label: "Дата начала построения модели" },
       { name: EvaluationLogFields.END_DATE, label: "Дата окончания построения модели" }
