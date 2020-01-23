@@ -67,7 +67,7 @@ export class EvaluationLogDetailsComponent implements OnInit {
   }
 
   public getEvaluationLogValue(field: string) {
-    if (field == EvaluationLogFields.EVALUATION_METHOD) {
+    if (field == EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION) {
       return this.getEvaluationMethod();
     } else {
       return this.fieldService.getFieldValue(field, this.evaluationLogDetails, Utils.MISSING_VALUE);
@@ -77,14 +77,14 @@ export class EvaluationLogDetailsComponent implements OnInit {
   private initEvaluationLogFields(): void {
     this.evaluationLogFields = [
       { name: EvaluationLogFields.REQUEST_ID, label: "UUID заявки:" },
-      { name: EvaluationLogFields.EVALUATION_STATUS, label: "Статус заявки:" },
+      { name: EvaluationLogFields.EVALUATION_STATUS_DESCRIPTION, label: "Статус заявки:" },
       { name: EvaluationLogFields.CREATION_DATE, label: "Дата создания заявки:" },
       { name: EvaluationLogFields.RELATION_NAME, label: "Обучающая выборка:" },
       { name: EvaluationLogFields.NUM_INSTANCES, label: "Число объектов:" },
       { name: EvaluationLogFields.NUM_ATTRIBUTES, label: "Число атрибутов:" },
       { name: EvaluationLogFields.NUM_CLASSES, label: "Число классов:" },
       { name: EvaluationLogFields.CLASS_NAME, label: "Атрибут класса:" },
-      { name: EvaluationLogFields.EVALUATION_METHOD, label: "Метод оценки точности:" }
+      { name: EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности:" }
     ];
   }
 }

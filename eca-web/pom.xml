@@ -13,11 +13,10 @@
     <packaging>war</packaging>
 
     <properties>
-        <frontend-maven-plugin.version>1.6</frontend-maven-plugin.version>
+        <frontend-maven-plugin.version>1.9.0</frontend-maven-plugin.version>
         <typescript-generator-maven-plugin.version>2.5.423</typescript-generator-maven-plugin.version>
-        <node.version>v8.11.3</node.version>
-        <npm.version>5.6.0</npm.version>
-        <commons.io.version>2.5</commons.io.version>
+        <node.version>v12.14.1</node.version>
+        <npm.version>6.13.4</npm.version>
         <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
     </properties>
 
@@ -83,12 +82,6 @@
             <groupId>eca.service</groupId>
             <artifactId>eca-web-transport</artifactId>
             <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${commons.io.version}</version>
         </dependency>
 
     </dependencies>

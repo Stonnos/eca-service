@@ -31,7 +31,7 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
                      private filterService: FilterService) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ClassifierOptionsRequestsFields.REQUEST_DATE;
-    this.linkColumns = [ClassifierOptionsRequestsFields.CLASSIFIER_NAME, ClassifierOptionsRequestsFields.EVALUATION_METHOD];
+    this.linkColumns = [ClassifierOptionsRequestsFields.CLASSIFIER_NAME, ClassifierOptionsRequestsFields.EVALUATION_METHOD_DESCRIPTION];
     this.notSortableColumns = [ClassifierOptionsRequestsFields.CLASSIFIER_NAME];
     this.initColumns();
   }
@@ -97,9 +97,9 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
       { name: ClassifierOptionsRequestsFields.REQUEST_ID, label: "UUID заявки" },
       { name: ClassifierOptionsRequestsFields.RELATION_NAME, label: "Обучающая выборка" },
       { name: ClassifierOptionsRequestsFields.CLASSIFIER_NAME, label: "Классификатор" },
-      { name: ClassifierOptionsRequestsFields.EVALUATION_METHOD, label: "Метод оценки точности" },
+      { name: ClassifierOptionsRequestsFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: ClassifierOptionsRequestsFields.EVALUATION_METHOD },
       { name: ClassifierOptionsRequestsFields.REQUEST_DATE, label: "Дата отправки запроса в ERS" },
-      { name: ClassifierOptionsRequestsFields.RESPONSE_STATUS, label: "Статус ответа от ERS" }
+      { name: ClassifierOptionsRequestsFields.RESPONSE_STATUS_DESCRIPTION, label: "Статус ответа от ERS", sortBy: ClassifierOptionsRequestsFields.RESPONSE_STATUS }
     ];
   }
 }

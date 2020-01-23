@@ -127,8 +127,8 @@ export class ExperimentDetailsComponent implements OnInit, FieldLink {
   private initExperimentFields(): void {
     this.experimentFields = [
       { name: ExperimentFields.UUID, label: "UUID заявки" },
-      { name: ExperimentFields.EXPERIMENT_STATUS, label: "Статус заявки" },
-      { name: ExperimentFields.EVALUATION_METHOD, label: "Метод оценки точности" },
+      { name: ExperimentFields.EXPERIMENT_STATUS_DESCRIPTION, label: "Статус заявки" },
+      { name: ExperimentFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности" },
       { name: ExperimentFields.EMAIL, label: "Email заявки" },
       { name: ExperimentFields.CREATION_DATE, label: "Дата создания заявки" },
       { name: ExperimentFields.START_DATE, label: "Дата начала эксперимента" },

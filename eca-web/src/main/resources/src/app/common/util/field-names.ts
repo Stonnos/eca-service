@@ -1,8 +1,11 @@
 export class ExperimentFields {
   public static readonly UUID: string = "uuid";
-  public static readonly EXPERIMENT_TYPE: string = "experimentType.description";
-  public static readonly EXPERIMENT_STATUS: string = "experimentStatus.description";
-  public static readonly EVALUATION_METHOD: string = "evaluationMethod.description";
+  public static readonly EXPERIMENT_TYPE_DESCRIPTION: string = "experimentType.description";
+  public static readonly EXPERIMENT_TYPE: string = "experimentType";
+  public static readonly EXPERIMENT_STATUS_DESCRIPTION: string = "experimentStatus.description";
+  public static readonly EXPERIMENT_STATUS: string = "experimentStatus";
+  public static readonly EVALUATION_METHOD_DESCRIPTION: string = "evaluationMethod.description";
+  public static readonly EVALUATION_METHOD: string = "evaluationMethod";
   public static readonly FIRST_NAME: string = "firstName";
   public static readonly EMAIL: string = "email";
   public static readonly TRAINING_DATA_PATH: string = "trainingDataAbsolutePath";
@@ -18,13 +21,15 @@ export class ExperimentFields {
 export class EvaluationLogFields {
   public static readonly REQUEST_ID: string = "requestId";
   public static readonly CLASSIFIER_NAME: string = "classifierInfo.classifierName";
-  public static readonly EVALUATION_STATUS: string = "evaluationStatus.description";
+  public static readonly EVALUATION_STATUS_DESCRIPTION: string = "evaluationStatus.description";
+  public static readonly EVALUATION_STATUS: string = "evaluationStatus";
   public static readonly RELATION_NAME: string = "instancesInfo.relationName";
   public static readonly NUM_INSTANCES: string = "instancesInfo.numInstances";
   public static readonly NUM_ATTRIBUTES: string = "instancesInfo.numAttributes";
   public static readonly NUM_CLASSES: string = "instancesInfo.numClasses";
   public static readonly CLASS_NAME: string = "instancesInfo.className";
-  public static readonly EVALUATION_METHOD: string = "evaluationMethod.description";
+  public static readonly EVALUATION_METHOD_DESCRIPTION: string = "evaluationMethod.description";
+  public static readonly EVALUATION_METHOD: string = "evaluationMethod";
   public static readonly NUM_FOLDS: string = "numFolds";
   public static readonly NUM_TESTS: string = "numTests";
   public static readonly SEED: string = "seed";
@@ -37,9 +42,11 @@ export class ClassifierOptionsRequestsFields {
   public static readonly REQUEST_ID: string = "requestId";
   public static readonly RELATION_NAME: string = "relationName";
   public static readonly CLASSIFIER_NAME: string = "classifierName";
-  public static readonly EVALUATION_METHOD: string = "evaluationMethod.description";
+  public static readonly EVALUATION_METHOD_DESCRIPTION: string = "evaluationMethod.description";
+  public static readonly EVALUATION_METHOD: string = "evaluationMethod";
   public static readonly REQUEST_DATE: string = "requestDate";
-  public static readonly RESPONSE_STATUS: string = "responseStatus.description";
+  public static readonly RESPONSE_STATUS_DESCRIPTION: string = "responseStatus.description";
+  public static readonly RESPONSE_STATUS: string = "responseStatus";
 }
 
 export class ClassifierOptionsFields {
