@@ -23,6 +23,7 @@
               placeholder="Введите логин"
               [(ngModel)]="userModel.login"
               #login="ngModel"
+              [disabled]="loading"
               class="form-control d-block w-100">
             <div class="text-danger error-message" *ngIf="login.invalid && (login.dirty || login.touched || submitted)">
               <div *ngIf="login?.errors?.required">
@@ -41,6 +42,7 @@
               placeholder="Введите пароль"
               [(ngModel)]="userModel.password"
               #password="ngModel"
+              [disabled]="loading"
               class="form-control d-block w-100"
               [feedback]="false">
             <div class="text-danger error-message"
