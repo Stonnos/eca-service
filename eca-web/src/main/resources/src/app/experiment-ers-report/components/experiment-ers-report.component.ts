@@ -79,12 +79,15 @@ export class ExperimentErsReportComponent implements OnInit, FieldLink {
           this.loading = false;
         })
       )
-      .subscribe(data => {
-        this.messageService.add({ severity: 'success',
-          summary: `Запрос в ERS на сохранение классификаторов для эксперимента ${this.experimentErsReport.experimentUuid} был успешно создан`, detail: '' });
-        this.evaluationResultsSent.emit();
-      }, (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      .subscribe({
+        next: data => {
+          this.messageService.add({ severity: 'success',
+            summary: `Запрос в ERS на сохранение классификаторов для эксперимента ${this.experimentErsReport.experimentUuid} был успешно создан`, detail: '' });
+          this.evaluationResultsSent.emit();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
       });
   }
 

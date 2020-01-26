@@ -73,14 +73,10 @@ public class ExperimentConfig {
     private Integer delaySeconds;
 
     /**
-     * Experiment result models size for sending to ERS web - service
-     */
-    private Integer resultSizeToSend;
-
-    /**
      * Data configuration properties.
      */
     @Data
+    @ConfigurationProperties("experiment.data")
     public static class DataConfig {
 
         /**
@@ -103,6 +99,7 @@ public class ExperimentConfig {
      * Ensemble configuration properties.
      */
     @Data
+    @ConfigurationProperties("experiment.ensemble")
     public static class EnsembleConfig {
 
         /**

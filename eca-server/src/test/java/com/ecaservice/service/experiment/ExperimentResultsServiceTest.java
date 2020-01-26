@@ -1,7 +1,6 @@
 package com.ecaservice.service.experiment;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
 import com.ecaservice.mapping.ExperimentMapperImpl;
@@ -43,13 +42,11 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({ClassifierInputOptionsMapperImpl.class, ExperimentResultsMapperImpl.class,
-        ExperimentConfig.class, ClassifierInfoMapperImpl.class, ExperimentMapperImpl.class})
+        ClassifierInfoMapperImpl.class, ExperimentMapperImpl.class})
 public class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     @Mock
     private ErsService ersService;
-    @Inject
-    private ExperimentConfig experimentConfig;
     @Inject
     private ExperimentResultsRequestRepository experimentResultsRequestRepository;
     @Inject
@@ -63,8 +60,9 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        experimentResultsService = new ExperimentResultsService(ersService, experimentConfig, experimentResultsMapper,
-                experimentResultsEntityRepository, experimentResultsRequestRepository);
+        experimentResultsService =
+                new ExperimentResultsService(ersService, experimentResultsMapper, experimentResultsEntityRepository,
+                        experimentResultsRequestRepository);
     }
 
     @Override

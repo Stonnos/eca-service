@@ -52,11 +52,15 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   }
 
   public getFilterFields() {
-    this.filterService.getEvaluationLogFilterFields().subscribe((filterFields: FilterFieldDto[]) => {
-      this.filters = this.filterService.mapToFilters(filterFields);
-    }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-    });
+    this.filterService.getEvaluationLogFilterFields()
+      .subscribe({
+        next: (filterFields: FilterFieldDto[]) => {
+          this.filters = this.filterService.mapToFilters(filterFields);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
   }
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<EvaluationLogDto>> {
@@ -64,11 +68,15 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   }
 
   public getRequestStatusesStatistics() {
-    this.classifiersService.getRequestStatusesStatistics().subscribe((requestStatusStatisticsDto: RequestStatusStatisticsDto) => {
-      this.requestStatusStatisticsDto = requestStatusStatisticsDto;
-    }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-    });
+    this.classifiersService.getRequestStatusesStatistics()
+      .subscribe({
+        next: (requestStatusStatisticsDto: RequestStatusStatisticsDto) => {
+          this.requestStatusStatisticsDto = requestStatusStatisticsDto;
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
   }
 
   public generateReport() {
@@ -79,10 +87,13 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
           this.loading = false;
         })
       )
-      .subscribe((blob: Blob) => {
-        saveAs(blob, ClassifierListComponent.EVALUATION_LOGS_REPORT_FILE_NAME);
-      }, (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      .subscribe({
+        next: (blob: Blob) => {
+          saveAs(blob, ClassifierListComponent.EVALUATION_LOGS_REPORT_FILE_NAME);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
       });
   }
 

@@ -1,6 +1,5 @@
 package com.ecaservice.service.experiment;
 
-import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.mapping.ExperimentResultsMapper;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.Experiment;
@@ -40,7 +39,6 @@ import static com.ecaservice.util.Utils.buildEvaluationResultsDto;
 public class ExperimentResultsService {
 
     private final ErsService ersService;
-    private final ExperimentConfig experimentConfig;
     private final ExperimentResultsMapper experimentResultsMapper;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
     private final ExperimentResultsRequestRepository experimentResultsRequestRepository;
@@ -56,15 +54,15 @@ public class ExperimentResultsService {
                                                                         ExperimentHistory experimentHistory) {
         log.info("Starting to save experiment [{}] results to ERS sent", experiment.getUuid());
         List<EvaluationResults> evaluationResultsList = experimentHistory.getExperiment();
-        int resultsSize = Integer.min(evaluationResultsList.size(), experimentConfig.getResultSizeToSend());
-        List<ExperimentResultsEntity> experimentResultsEntities = IntStream.range(0, resultsSize).mapToObj(i -> {
-            EvaluationResults evaluationResults = evaluationResultsList.get(i);
-            ExperimentResultsEntity experimentResultsEntity =
-                    experimentResultsMapper.map(evaluationResults);
-            experimentResultsEntity.setExperiment(experiment);
-            experimentResultsEntity.setResultsIndex(i);
-            return experimentResultsEntity;
-        }).collect(Collectors.toList());
+        List<ExperimentResultsEntity> experimentResultsEntities =
+                IntStream.range(0, evaluationResultsList.size()).mapToObj(i -> {
+                    EvaluationResults evaluationResults = evaluationResultsList.get(i);
+                    ExperimentResultsEntity experimentResultsEntity =
+                            experimentResultsMapper.map(evaluationResults);
+                    experimentResultsEntity.setExperiment(experiment);
+                    experimentResultsEntity.setResultsIndex(i);
+                    return experimentResultsEntity;
+                }).collect(Collectors.toList());
         return experimentResultsEntityRepository.saveAll(experimentResultsEntities);
     }
 
