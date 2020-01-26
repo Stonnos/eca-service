@@ -41,11 +41,15 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
   }
 
   public getFilterFields() {
-    this.filterService.getClassifierOptionsRequestFilterFields().subscribe((filterFields: FilterFieldDto[]) => {
-      this.filters = this.filterService.mapToFilters(filterFields);
-    }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-    });
+    this.filterService.getClassifierOptionsRequestFilterFields()
+      .subscribe({
+        next: (filterFields: FilterFieldDto[]) => {
+          this.filters = this.filterService.mapToFilters(filterFields);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
   }
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<ClassifierOptionsRequestDto>> {

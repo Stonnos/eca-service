@@ -49,10 +49,13 @@ export class ExperimentResultsDetailsComponent implements OnInit, FieldLink {
           this.loading = false;
         })
       )
-      .subscribe((experimentResultsDetailsDto: ExperimentResultsDetailsDto) => {
-        this.experimentResultsDetailsDto = experimentResultsDetailsDto;
-      }, (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      .subscribe({
+        next: (experimentResultsDetailsDto: ExperimentResultsDetailsDto) => {
+          this.experimentResultsDetailsDto = experimentResultsDetailsDto;
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
       });
   }
 

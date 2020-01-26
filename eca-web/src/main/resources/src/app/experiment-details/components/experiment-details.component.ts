@@ -49,10 +49,13 @@ export class ExperimentDetailsComponent implements OnInit, FieldLink {
 
   public getExperiment(): void {
     this.experimentsService.getExperiment(this.experimentUuid)
-      .subscribe((experimentDto: ExperimentDto) => {
-        this.experimentDto = experimentDto;
-      }, (error) => {
-        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
+      .subscribe({
+        next: (experimentDto: ExperimentDto) => {
+          this.experimentDto = experimentDto;
+        },
+        error: (error) => {
+          this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
+        }
       });
   }
 
@@ -64,10 +67,13 @@ export class ExperimentDetailsComponent implements OnInit, FieldLink {
           this.loadingFieldsMap.set(ExperimentFields.TRAINING_DATA_PATH, false);
         })
       )
-      .subscribe((blob: Blob) => {
-        saveAs(blob, this.experimentDto.trainingDataAbsolutePath);
-      }, (error) => {
-        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
+      .subscribe({
+        next: (blob: Blob) => {
+          saveAs(blob, this.experimentDto.trainingDataAbsolutePath);
+        },
+        error: (error) => {
+          this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
+        }
       });
   }
 
@@ -79,19 +85,25 @@ export class ExperimentDetailsComponent implements OnInit, FieldLink {
           this.loadingFieldsMap.set(ExperimentFields.EXPERIMENT_PATH, false);
         })
       )
-      .subscribe((blob: Blob) => {
-        saveAs(blob, this.experimentDto.experimentAbsolutePath);
-      }, (error) => {
-        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
+      .subscribe({
+        next: (blob: Blob) => {
+          saveAs(blob, this.experimentDto.experimentAbsolutePath);
+        },
+        error: (error) => {
+          this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
+        }
       });
   }
 
   public getExperimentErsReport(): void {
     this.experimentsService.getExperimentErsReport(this.experimentUuid)
-      .subscribe((experimentErsReport: ExperimentErsReportDto) => {
-        this.experimentErsReport = experimentErsReport;
-      }, (error) => {
-        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
+      .subscribe({
+        next: (experimentErsReport: ExperimentErsReportDto) => {
+          this.experimentErsReport = experimentErsReport;
+        },
+        error: (error) => {
+          this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
+        }
       });
   }
 

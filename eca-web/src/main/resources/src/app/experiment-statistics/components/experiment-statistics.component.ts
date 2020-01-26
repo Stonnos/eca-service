@@ -62,21 +62,24 @@ export class ExperimentStatisticsComponent implements OnInit {
     const createdFrom: Date = this.createdDateRange && this.createdDateRange[0];
     const createdTo: Date = this.createdDateRange && this.createdDateRange[1];
     this.experimentsService.getExperimentTypesStatistics(this.transformDate(createdFrom), this.transformDate(createdTo))
-      .subscribe((chartData: ChartDataDto[]) => {
-      this.total = chartData.map((chartData: ChartDataDto) => chartData.count).reduce((sum, current) => sum + current);
-        this.dataSet = {
-          labels: chartData.map((chartData: ChartDataDto) => `${chartData.label} (${chartData.count})`),
-          datasets: [
-            {
-              backgroundColor: chartData.map((chartData: ChartDataDto) => this.experimentTypeColorMap.get(chartData.name as ExperimentType)),
-              borderColor: '#a5a5a5',
-              data: chartData.map((chartData: ChartDataDto) => chartData.count)
-            }
-          ]
-        };
-    }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-    });
+      .subscribe({
+        next: (chartData: ChartDataDto[]) => {
+          this.total = chartData.map((chartData: ChartDataDto) => chartData.count).reduce((sum, current) => sum + current);
+          this.dataSet = {
+            labels: chartData.map((chartData: ChartDataDto) => `${chartData.label} (${chartData.count})`),
+            datasets: [
+              {
+                backgroundColor: chartData.map((chartData: ChartDataDto) => this.experimentTypeColorMap.get(chartData.name as ExperimentType)),
+                borderColor: '#a5a5a5',
+                data: chartData.map((chartData: ChartDataDto) => chartData.count)
+              }
+            ]
+          };
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
   }
 
   public ngOnInit(): void {

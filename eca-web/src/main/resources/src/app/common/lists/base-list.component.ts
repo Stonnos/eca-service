@@ -53,11 +53,14 @@ export abstract class BaseListComponent<T> implements FieldLink {
           this.loading = false;
         })
       )
-      .subscribe((pageDto: PageDto<T>) => {
-        this.setPage(pageDto);
-      }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-    });
+      .subscribe({
+        next: (pageDto: PageDto<T>) => {
+          this.setPage(pageDto);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
   }
 
   public abstract getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<T>>;

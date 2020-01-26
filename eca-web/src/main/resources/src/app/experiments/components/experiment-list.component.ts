@@ -69,10 +69,13 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   }
 
   public getRequestStatusesStatistics() {
-    this.experimentsService.getRequestStatusesStatistics().subscribe((requestStatusStatisticsDto: RequestStatusStatisticsDto) => {
-      this.requestStatusStatisticsDto = requestStatusStatisticsDto;
-    }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+    this.experimentsService.getRequestStatusesStatistics().subscribe({
+      next: (requestStatusStatisticsDto: RequestStatusStatisticsDto) => {
+        this.requestStatusStatisticsDto = requestStatusStatisticsDto;
+      },
+      error: (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      }
     });
   }
 
@@ -84,10 +87,13 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
           this.loading = false;
         })
       )
-      .subscribe((blob: Blob) => {
-        saveAs(blob, ExperimentListComponent.EXPERIMENTS_REPORT_FILE_NAME);
-      }, (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      .subscribe({
+        next: (blob: Blob) => {
+          saveAs(blob, ExperimentListComponent.EXPERIMENTS_REPORT_FILE_NAME);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
       });
   }
 
@@ -115,10 +121,13 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
           this.loading = false;
         })
       )
-      .subscribe((blob: Blob) => {
-        saveAs(blob, experiment.trainingDataAbsolutePath);
-      }, (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      .subscribe({
+        next: (blob: Blob) => {
+          saveAs(blob, experiment.trainingDataAbsolutePath);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
       });
   }
 
@@ -130,10 +139,13 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
           this.loading = false;
         })
       )
-      .subscribe((blob: Blob) => {
-        saveAs(blob, experiment.experimentAbsolutePath);
-      }, (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      .subscribe({
+        next: (blob: Blob) => {
+          saveAs(blob, experiment.experimentAbsolutePath);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
       });
   }
 
@@ -149,18 +161,21 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
           this.loading = false;
         })
       )
-      .subscribe((result: CreateExperimentResultDto) => {
-        if (result.created) {
-          this.messageService.add({ severity: 'success', summary: `Эксперимент был успешно создан`, detail: '' });
-          this.lastCreatedExperimentUuid = result.uuid;
-          this.getRequestStatusesStatistics();
-          this.performPageRequest(0, this.pageSize, ExperimentFields.CREATION_DATE, false);
-        } else {
-          this.messageService.add({ severity: 'error', summary: 'Не удалось создать эксперимент', detail: result.errorMessage });
+      .subscribe({
+        next: (result: CreateExperimentResultDto) => {
+          if (result.created) {
+            this.messageService.add({ severity: 'success', summary: `Эксперимент был успешно создан`, detail: '' });
+            this.lastCreatedExperimentUuid = result.uuid;
+            this.getRequestStatusesStatistics();
+            this.performPageRequest(0, this.pageSize, ExperimentFields.CREATION_DATE, false);
+          } else {
+            this.messageService.add({ severity: 'error', summary: 'Не удалось создать эксперимент', detail: result.errorMessage });
+          }
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
-      }, (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-      });
+      })
   }
 
   public isBlink(item: ExperimentDto): boolean {
@@ -172,27 +187,39 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   }
 
   public getFilterFields() {
-    this.filterService.getExperimentFilterFields().subscribe((filterFields: FilterFieldDto[]) => {
-      this.filters = this.filterService.mapToFilters(filterFields);
-    }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-    });
+    this.filterService.getExperimentFilterFields()
+      .subscribe({
+        next: (filterFields: FilterFieldDto[]) => {
+          this.filters = this.filterService.mapToFilters(filterFields);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
   }
 
   public getExperimentTypes(): void {
-    this.filterService.getExperimentTypeDictionary().subscribe((filterDictionary: FilterDictionaryDto) => {
-      this.experimentTypes = filterDictionary.values;
-    }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-    });
+    this.filterService.getExperimentTypeDictionary()
+      .subscribe({
+        next: (filterDictionary: FilterDictionaryDto) => {
+          this.experimentTypes = filterDictionary.values;
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
   }
 
   public getEvaluationMethods(): void {
-    this.filterService.getEvaluationMethodDictionary().subscribe((filterDictionary: FilterDictionaryDto) => {
-      this.evaluationMethods = filterDictionary.values;
-    }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-    });
+    this.filterService.getEvaluationMethodDictionary()
+      .subscribe({
+        next: (filterDictionary: FilterDictionaryDto) => {
+          this.evaluationMethods = filterDictionary.values;
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
   }
 
   private initColumns() {

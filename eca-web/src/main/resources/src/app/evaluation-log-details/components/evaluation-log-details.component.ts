@@ -46,10 +46,13 @@ export class EvaluationLogDetailsComponent implements OnInit {
           this.loading = false;
         })
       )
-      .subscribe((evaluationLogDetails: EvaluationLogDetailsDto) => {
-        this.evaluationLogDetails = evaluationLogDetails;
-      }, (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      .subscribe({
+        next: (evaluationLogDetails: EvaluationLogDetailsDto) => {
+          this.evaluationLogDetails = evaluationLogDetails;
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
       });
   }
 

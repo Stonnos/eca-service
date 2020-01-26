@@ -59,12 +59,15 @@ export class LoginComponent implements BaseForm, OnInit {
             this.loading = false;
           })
         )
-        .subscribe((token) => {
-          this.authService.saveToken(token);
-          this.saveUser();
-          this.enter();
-        }, (error) => {
-          this.handleError(error);
+        .subscribe({
+          next: (token) => {
+            this.authService.saveToken(token);
+            this.saveUser();
+            this.enter();
+          },
+          error: (error) => {
+            this.handleError(error);
+          }
         });
       this.clear();
     }
