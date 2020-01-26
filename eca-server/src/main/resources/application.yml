@@ -82,7 +82,7 @@ swagger2:
 
 ## Experiment properties
 experiment:
-  resultSize: 25
+  resultSize: 5
   numIterations: 100
   fileFormat: experiment_%s.model
   storagePath: D:/experiment/
@@ -98,7 +98,6 @@ experiment:
   timeout: 5
   ## Scheduler delay in seconds
   delaySeconds: 30
-  resultSizeToSend: 5
 
   data:
     storagePath: D:/experiment/data/
