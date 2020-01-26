@@ -1,6 +1,5 @@
 package com.ecaservice.service.experiment;
 
-import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.mapping.ExperimentResultsMapper;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.Experiment;
@@ -40,7 +39,6 @@ import static com.ecaservice.util.Utils.buildEvaluationResultsDto;
 public class ExperimentResultsService {
 
     private final ErsService ersService;
-    private final ExperimentConfig experimentConfig;
     private final ExperimentResultsMapper experimentResultsMapper;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
     private final ExperimentResultsRequestRepository experimentResultsRequestRepository;
