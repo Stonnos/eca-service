@@ -81,3 +81,27 @@
     }
   }
 }
+
+.sent-results-progress-spinner::ng-deep {
+  .ui-progress-spinner {
+    width: 12px;
+    height: 12px;
+  }
+
+  @keyframes ui-progress-spinner-color {
+    100%,
+    0% {
+      stroke: #416ee7;
+    }
+    40% {
+      stroke: #416ee7;
+    }
+    66% {
+      stroke: #416ee7;
+    }
+    80%,
+    90% {
+      stroke: #416ee7;
+    }
+  }
+}
