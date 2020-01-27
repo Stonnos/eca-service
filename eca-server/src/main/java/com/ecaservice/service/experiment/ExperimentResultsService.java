@@ -39,6 +39,7 @@ import static com.ecaservice.util.Utils.buildEvaluationResultsDto;
 public class ExperimentResultsService {
 
     private final ErsService ersService;
+    private final ExperimentResultsLockService lockService;
     private final ExperimentResultsMapper experimentResultsMapper;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
     private final ExperimentResultsRequestRepository experimentResultsRequestRepository;
@@ -121,6 +122,8 @@ public class ExperimentResultsService {
             ersReportStatus = ErsReportStatus.SUCCESS_SENT;
         } else if (experiment.getDeletedDate() != null) {
             ersReportStatus = ErsReportStatus.EXPERIMENT_DELETED;
+        } else if (lockService.locked(experiment.getUuid())) {
+            ersReportStatus = ErsReportStatus.SENDING;
         } else {
             ersReportStatus = ErsReportStatus.NEED_SENT;
         }

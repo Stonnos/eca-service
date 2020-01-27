@@ -20,4 +20,5 @@ public class ErsReportStatusDictionary {
     public static final String EXPERIMENT_DELETED_DESCRIPTION =
             "Невозможно отправить результаты эксперимента в ERS сервис. Файл с результатами эксперимента был удален";
     public static final String NEED_SENT_DESCRIPTION = "Необходимо отправить результаты эксперимента в ERS сервис";
+    public static final String SENDING_DESCRIPTION = "Идет отправка результатов эксперимента в ERS сервис...";
 }

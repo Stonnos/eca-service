@@ -47,6 +47,8 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     @Mock
     private ErsService ersService;
+    @Mock
+    private ExperimentResultsLockService lockService;
     @Inject
     private ExperimentResultsRequestRepository experimentResultsRequestRepository;
     @Inject
@@ -60,9 +62,8 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        experimentResultsService =
-                new ExperimentResultsService(ersService, experimentResultsMapper, experimentResultsEntityRepository,
-                        experimentResultsRequestRepository);
+        experimentResultsService = new ExperimentResultsService(ersService, lockService, experimentResultsMapper,
+                experimentResultsEntityRepository, experimentResultsRequestRepository);
     }
 
     @Override

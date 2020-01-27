@@ -39,7 +39,12 @@ public enum ErsReportStatus {
     /**
      * Some experiment results must be sent to ERS service
      */
-    NEED_SENT(ErsReportStatusDictionary.NEED_SENT_DESCRIPTION);
+    NEED_SENT(ErsReportStatusDictionary.NEED_SENT_DESCRIPTION),
+
+    /**
+     * Experiment results sending in progress
+     */
+    SENDING(ErsReportStatusDictionary.SENDING_DESCRIPTION);
 
     private final String description;
 
