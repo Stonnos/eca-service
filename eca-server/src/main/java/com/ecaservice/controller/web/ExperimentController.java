@@ -1,6 +1,7 @@
 package com.ecaservice.controller.web;
 
 import com.ecaservice.dto.ExperimentRequest;
+import com.ecaservice.event.model.ExperimentResultsSendingEvent;
 import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.exception.experiment.ResultsNotFoundException;
 import com.ecaservice.mapping.ExperimentMapper;
@@ -13,8 +14,8 @@ import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.UserService;
-import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.experiment.ExperimentRequestService;
+import com.ecaservice.service.experiment.ExperimentResultsLockService;
 import com.ecaservice.service.experiment.ExperimentResultsService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.user.model.UserDetailsImpl;
@@ -27,7 +28,6 @@ import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
-import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationMethod;
 import eca.data.file.FileDataLoader;
 import io.swagger.annotations.Api;
@@ -35,6 +35,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -90,10 +91,11 @@ public class ExperimentController {
 
     private final ExperimentService experimentService;
     private final ExperimentRequestService experimentRequestService;
-    private final ErsService ersService;
     private final ExperimentResultsService experimentResultsService;
     private final ExperimentMapper experimentMapper;
     private final UserService userService;
+    private final ExperimentResultsLockService lockService;
+    private final ApplicationEventPublisher applicationEventPublisher;
     private final ExperimentRepository experimentRepository;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
 
@@ -292,6 +294,19 @@ public class ExperimentController {
             log.error("Can't sent experiment [{}] results to ERS, because experiment status isn't FINISHED", uuid);
             return ResponseEntity.badRequest().body(String.format(EXPERIMENT_NOT_FINISHED_FORMAT, uuid));
         }
+        long resultsCount = experimentResultsEntityRepository.countByExperiment(experiment);
+        if (resultsCount == 0L) {
+            log.error("Can't found experiment [{}] results to ERS sent", experiment.getUuid());
+            return ResponseEntity.badRequest().body(String.format(EXPERIMENT_RESULTS_NOT_FOUND, experiment.getUuid()));
+        }
+        long sentResults = experimentResultsEntityRepository.getSentResultsCount(experiment);
+        if (resultsCount == sentResults) {
+            return ResponseEntity.ok(String.format(EXPERIMENT_RESULTS_SENT_FORMAT, experiment.getUuid()));
+        } else if (experiment.getDeletedDate() != null) {
+            log.error("Experiment [{}] results file has been deleted", experiment.getUuid());
+            return ResponseEntity.badRequest().body(
+                    String.format(EXPERIMENT_RESULTS_FILE_DELETED_FORMAT, experiment.getUuid()));
+        }
         return sentExperimentResults(experiment);
     }
 
@@ -362,28 +377,13 @@ public class ExperimentController {
 
     private ResponseEntity sentExperimentResults(Experiment experiment) {
         ResponseEntity responseEntity;
-        long resultsCount = experimentResultsEntityRepository.countByExperiment(experiment);
-        if (resultsCount == 0L) {
-            log.error("Can't found experiment [{}] results to ERS sent", experiment.getUuid());
-            return ResponseEntity.badRequest().body(String.format(EXPERIMENT_RESULTS_NOT_FOUND, experiment.getUuid()));
-        }
         experimentMap.putIfAbsent(experiment.getUuid(), new Object());
         synchronized (experimentMap.get(experiment.getUuid())) {
-            long sentResults = experimentResultsEntityRepository.getSentResultsCount(experiment);
-            if (resultsCount == sentResults) {
-                responseEntity = ResponseEntity.ok(
-                        String.format(EXPERIMENT_RESULTS_SENT_FORMAT, experiment.getUuid()));
-            } else if (experiment.getDeletedDate() != null) {
-                log.error("Experiment [{}] results file has been deleted", experiment.getUuid());
-                responseEntity = ResponseEntity.badRequest().body(
-                        String.format(EXPERIMENT_RESULTS_FILE_DELETED_FORMAT, experiment.getUuid()));
+            if (lockService.locked(experiment.getUuid())) {
+                responseEntity = ResponseEntity.status(HttpStatus.CONFLICT).build();
             } else {
-                List<ExperimentResultsEntity> experimentResultsEntityList =
-                        experimentResultsEntityRepository.findExperimentsResultsToErsSent(experiment);
-                ExperimentHistory experimentHistory = experimentService.getExperimentHistory(experiment);
-                experimentResultsEntityList.forEach(
-                        experimentResultsEntity -> ersService.sentExperimentResults(experimentResultsEntity,
-                                experimentHistory, ExperimentResultsRequestSource.MANUAL));
+                applicationEventPublisher.publishEvent(
+                        new ExperimentResultsSendingEvent(this, experiment, ExperimentResultsRequestSource.MANUAL));
                 responseEntity = ResponseEntity.ok().build();
             }
         }

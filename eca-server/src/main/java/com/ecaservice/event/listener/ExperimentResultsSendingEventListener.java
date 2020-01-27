@@ -1,9 +1,8 @@
 package com.ecaservice.event.listener;
 
-import com.ecaservice.event.model.ExperimentResultsManualSendingEvent;
+import com.ecaservice.event.model.ExperimentResultsSendingEvent;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
-import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.experiment.ExperimentResultsLockService;
@@ -27,7 +26,7 @@ import static com.ecaservice.config.EcaServiceConfiguration.ECA_THREAD_POOL_TASK
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ExperimentResultsManualSendingEventListener {
+public class ExperimentResultsSendingEventListener {
 
     private final ExperimentService experimentService;
     private final ErsService ersService;
@@ -41,7 +40,7 @@ public class ExperimentResultsManualSendingEventListener {
      */
     @Async(ECA_THREAD_POOL_TASK_EXECUTOR)
     @EventListener
-    public void handleExperimentResultsSendingEvent(ExperimentResultsManualSendingEvent event) {
+    public void handleExperimentResultsSendingEvent(ExperimentResultsSendingEvent event) {
         Experiment experiment = event.getExperiment();
         try {
             List<ExperimentResultsEntity> experimentResultsEntityList =
@@ -49,7 +48,7 @@ public class ExperimentResultsManualSendingEventListener {
             ExperimentHistory experimentHistory = experimentService.getExperimentHistory(experiment);
             experimentResultsEntityList.forEach(
                     experimentResultsEntity -> ersService.sentExperimentResults(experimentResultsEntity,
-                            experimentHistory, ExperimentResultsRequestSource.MANUAL));
+                            experimentHistory, event.getExperimentResultsRequestSource()));
         } catch (Exception ex) {
             log.error("There was an error while experiment history manually sending: {}", ex.getMessage());
         } finally {
