@@ -272,18 +272,19 @@ public class ExperimentController {
     }
 
     /**
-     * Gets experiment results manual sending progress.
+     * Gets experiment results manual sending status.
      *
      * @param uuid - experiment uuid
-     * @return response entity
+     * @return response entity wraps boolean value ({@code true} if experiment results sending is in progress,
+     * false otherwise)
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
-            value = "Gets experiment results manual sending progress",
-            notes = "Gets experiment results manual sending progress"
+            value = "Gets experiment results manual sending status",
+            notes = "Gets experiment results manual sending status"
     )
-    @GetMapping(value = "/ers-report/sending-progress/{uuid}")
-    public ResponseEntity<Boolean> getExperimentResultsSendingProgress(@PathVariable String uuid) {
+    @GetMapping(value = "/ers-report/sending-status/{uuid}")
+    public ResponseEntity<Boolean> getExperimentResultsSendingStatus(@PathVariable String uuid) {
         Experiment experiment = experimentRepository.findByUuid(uuid);
         if (experiment == null) {
             log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, uuid));

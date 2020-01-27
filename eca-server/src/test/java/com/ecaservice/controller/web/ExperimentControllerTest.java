@@ -3,7 +3,6 @@ package com.ecaservice.controller.web;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.configuation.annotation.Oauth2TestConfiguration;
 import com.ecaservice.dto.ExperimentRequest;
-import com.ecaservice.event.model.ExperimentResultsSendingEvent;
 import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentMapperImpl;
@@ -77,7 +76,6 @@ import static com.ecaservice.TestHelperUtils.bearerHeader;
 import static com.ecaservice.TestHelperUtils.buildRequestStatusStatisticsMap;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -107,6 +105,8 @@ public class ExperimentControllerTest {
     private static final String CREATE_EXPERIMENT_URL = BASE_URL + "/create";
     private static final String EXPERIMENT_RESULTS_DETAILS_URL = BASE_URL + "/results/details/{id}";
     private static final String ERS_REPORT_URL = BASE_URL + "/ers-report/{uuid}";
+    private static final String EXPERIMENT_RESULTS_SENDING_STATUS_URL =
+            BASE_URL + "/ers-report/sending-status/{uuid}";
     private static final String SENT_EVALUATION_RESULTS_URL = BASE_URL + "/sent-evaluation-results";
     private static final String REQUEST_STATUS_STATISTICS_URL = BASE_URL + "/request-statuses-statistics";
     private static final String EXPERIMENT_TYPES_STATISTICS_URL = BASE_URL + "/statistics";
@@ -485,7 +485,30 @@ public class ExperimentControllerTest {
                 .content(TEST_UUID))
                 .andExpect(status().isOk());
         verify(lockService, atLeastOnce()).lock(experiment.getUuid());
-        verify(applicationEventPublisher, atLeastOnce()).publishEvent(any(ExperimentResultsSendingEvent.class));
+    }
+
+    @Test
+    public void testGetExperimentResultsSendingStatusUnauthorized() throws Exception {
+        mockMvc.perform(get(EXPERIMENT_RESULTS_SENDING_STATUS_URL, TEST_UUID)).andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testGetExperimentResultsSendingStatusBadRequest() throws Exception {
+        when(experimentRepository.findByUuid(TEST_UUID)).thenReturn(null);
+        mockMvc.perform(get(EXPERIMENT_RESULTS_SENDING_STATUS_URL, TEST_UUID)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testGetExperimentResultsSendingStatusOk() throws Exception {
+        Experiment experiment = TestHelperUtils.createExperiment(TEST_UUID);
+        when(experimentRepository.findByUuid(TEST_UUID)).thenReturn(experiment);
+        when(lockService.locked(experiment.getUuid())).thenReturn(true);
+        mockMvc.perform(get(EXPERIMENT_RESULTS_SENDING_STATUS_URL, TEST_UUID)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
+                .andExpect(content().string(Boolean.toString(true)))
+                .andExpect(status().isOk());
     }
 
     @Test
