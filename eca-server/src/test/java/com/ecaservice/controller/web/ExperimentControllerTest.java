@@ -3,21 +3,20 @@ package com.ecaservice.controller.web;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.configuation.annotation.Oauth2TestConfiguration;
 import com.ecaservice.dto.ExperimentRequest;
+import com.ecaservice.event.model.ExperimentResultsSendingEvent;
 import com.ecaservice.exception.experiment.ExperimentException;
-import com.ecaservice.exception.experiment.ResultsNotFoundException;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentMapperImpl;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.Experiment_;
 import com.ecaservice.model.entity.RequestStatus;
-import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.UserService;
-import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.experiment.ExperimentRequestService;
+import com.ecaservice.service.experiment.ExperimentResultsLockService;
 import com.ecaservice.service.experiment.ExperimentResultsService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.token.TokenService;
@@ -34,7 +33,6 @@ import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationMethod;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
@@ -47,6 +45,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -77,7 +76,8 @@ import static com.ecaservice.TestHelperUtils.TEST_UUID;
 import static com.ecaservice.TestHelperUtils.bearerHeader;
 import static com.ecaservice.TestHelperUtils.buildRequestStatusStatisticsMap;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -125,7 +125,9 @@ public class ExperimentControllerTest {
     @MockBean
     private ExperimentRequestService experimentRequestService;
     @MockBean
-    private ErsService ersService;
+    private ApplicationEventPublisher applicationEventPublisher;
+    @MockBean
+    private ExperimentResultsLockService lockService;
     @MockBean
     private ExperimentResultsService experimentResultsService;
     @MockBean
@@ -459,40 +461,31 @@ public class ExperimentControllerTest {
     }
 
     @Test
+    public void testSentEvaluationResultsWithConflict() throws Exception {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        when(experimentRepository.findByUuid(TEST_UUID)).thenReturn(experiment);
+        when(experimentResultsEntityRepository.countByExperiment(experiment)).thenReturn(RESULTS_COUNT + 1);
+        when(experimentResultsEntityRepository.getSentResultsCount(experiment)).thenReturn(RESULTS_COUNT);
+        when(lockService.locked(experiment.getUuid())).thenReturn(true);
+        mockMvc.perform(post(SENT_EVALUATION_RESULTS_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .content(TEST_UUID))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
     public void testSentEvaluationResultsOk() throws Exception {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         when(experimentRepository.findByUuid(TEST_UUID)).thenReturn(experiment);
         when(experimentResultsEntityRepository.countByExperiment(experiment)).thenReturn(RESULTS_COUNT + 1);
         when(experimentResultsEntityRepository.getSentResultsCount(experiment)).thenReturn(RESULTS_COUNT);
-        List<ExperimentResultsEntity> experimentResultsEntityList =
-                Collections.singletonList(TestHelperUtils.createExperimentResultsEntity(experiment));
-        when(experimentResultsEntityRepository.findExperimentsResultsToErsSent(experiment)).thenReturn(
-                experimentResultsEntityList);
-        when(experimentService.getExperimentHistory(experiment)).thenReturn(new ExperimentHistory());
+        when(lockService.locked(experiment.getUuid())).thenReturn(false);
         mockMvc.perform(post(SENT_EVALUATION_RESULTS_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
                 .content(TEST_UUID))
                 .andExpect(status().isOk());
-        verify(ersService, times(experimentResultsEntityList.size())).sentExperimentResults(
-                any(ExperimentResultsEntity.class), any(ExperimentHistory.class),
-                any(ExperimentResultsRequestSource.class));
-    }
-
-    @Test
-    public void testSentEvaluationResultsWithExperimentHistoryNotFound() throws Exception {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        when(experimentRepository.findByUuid(TEST_UUID)).thenReturn(experiment);
-        when(experimentResultsEntityRepository.countByExperiment(experiment)).thenReturn(RESULTS_COUNT + 1);
-        when(experimentResultsEntityRepository.getSentResultsCount(experiment)).thenReturn(RESULTS_COUNT);
-        List<ExperimentResultsEntity> experimentResultsEntityList =
-                Collections.singletonList(TestHelperUtils.createExperimentResultsEntity(experiment));
-        when(experimentResultsEntityRepository.findExperimentsResultsToErsSent(experiment)).thenReturn(
-                experimentResultsEntityList);
-        when(experimentService.getExperimentHistory(experiment)).thenThrow(new ResultsNotFoundException(ERROR_MESSAGE));
-        mockMvc.perform(post(SENT_EVALUATION_RESULTS_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
-                .content(TEST_UUID))
-                .andExpect(status().isBadRequest());
+        verify(lockService, atLeastOnce()).lock(experiment.getUuid());
+        verify(applicationEventPublisher, atLeastOnce()).publishEvent(any(ExperimentResultsSendingEvent.class));
     }
 
     @Test

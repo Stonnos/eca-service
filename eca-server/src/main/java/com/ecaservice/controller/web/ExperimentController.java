@@ -323,7 +323,8 @@ public class ExperimentController {
         long sentResults = experimentResultsEntityRepository.getSentResultsCount(experiment);
         if (resultsCount == sentResults) {
             return ResponseEntity.ok(String.format(EXPERIMENT_RESULTS_SENT_FORMAT, experiment.getUuid()));
-        } else if (experiment.getDeletedDate() != null) {
+        }
+        if (experiment.getDeletedDate() != null) {
             log.error("Experiment [{}] results file has been deleted", experiment.getUuid());
             return ResponseEntity.badRequest().body(
                     String.format(EXPERIMENT_RESULTS_FILE_DELETED_FORMAT, experiment.getUuid()));
