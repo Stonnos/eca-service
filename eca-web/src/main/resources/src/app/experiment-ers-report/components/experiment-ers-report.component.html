@@ -45,7 +45,8 @@
   <div class="ui-g-12 text-center text-wrap">
     <div [class.text-success]="experimentErsReport?.ersReportStatus.value == 'SUCCESS_SENT'"
          [class.text-info]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_IN_PROGRESS' ||
-                            experimentErsReport?.ersReportStatus.value == 'NEED_SENT'"
+                            experimentErsReport?.ersReportStatus.value == 'NEED_SENT' ||
+                            experimentErsReport?.ersReportStatus.value == 'SENDING'"
          [class.text-danger]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_ERROR'"
          [class.text-warning]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_RESULTS_NOT_FOUND' ||
                                experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_DELETED'">

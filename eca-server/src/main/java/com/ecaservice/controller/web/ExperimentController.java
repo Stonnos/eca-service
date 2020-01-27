@@ -272,6 +272,27 @@ public class ExperimentController {
     }
 
     /**
+     * Checks manual experiment results sending progress.
+     *
+     * @param uuid - experiment uuid
+     * @return response entity
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Checks manual experiment results sending progress",
+            notes = "Checks manual experiment results sending progress"
+    )
+    @GetMapping(value = "/ers-report/check-sending-progress/{uuid}")
+    public ResponseEntity<Boolean> isExperimentResultsSendingInProgress(@PathVariable String uuid) {
+        Experiment experiment = experimentRepository.findByUuid(uuid);
+        if (experiment == null) {
+            log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, uuid));
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(lockService.locked(uuid));
+    }
+
+    /**
      * Sent evaluation results to ERS for experiment.
      *
      * @param uuid - experiment uuid
@@ -382,6 +403,7 @@ public class ExperimentController {
             if (lockService.locked(experiment.getUuid())) {
                 responseEntity = ResponseEntity.status(HttpStatus.CONFLICT).build();
             } else {
+                lockService.lock(experiment.getUuid());
                 applicationEventPublisher.publishEvent(
                         new ExperimentResultsSendingEvent(this, experiment, ExperimentResultsRequestSource.MANUAL));
                 responseEntity = ResponseEntity.ok().build();
