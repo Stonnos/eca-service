@@ -272,18 +272,18 @@ public class ExperimentController {
     }
 
     /**
-     * Checks manual experiment results sending progress.
+     * Gets experiment results manual sending progress.
      *
      * @param uuid - experiment uuid
      * @return response entity
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
-            value = "Checks manual experiment results sending progress",
-            notes = "Checks manual experiment results sending progress"
+            value = "Gets experiment results manual sending progress",
+            notes = "Gets experiment results manual sending progress"
     )
-    @GetMapping(value = "/ers-report/check-sending-progress/{uuid}")
-    public ResponseEntity<Boolean> isExperimentResultsSendingInProgress(@PathVariable String uuid) {
+    @GetMapping(value = "/ers-report/sending-progress/{uuid}")
+    public ResponseEntity<Boolean> getExperimentResultsSendingProgress(@PathVariable String uuid) {
         Experiment experiment = experimentRepository.findByUuid(uuid);
         if (experiment == null) {
             log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, uuid));
@@ -356,18 +356,6 @@ public class ExperimentController {
         return experimentTypesMap.entrySet().stream().map(
                 entry -> new ChartDataDto(entry.getKey().name(), entry.getKey().getDescription(),
                         entry.getValue())).collect(Collectors.toList());
-    }
-
-    /**
-     * Handles experiment results not found exception.
-     *
-     * @param ex - results not found exception
-     * @return response entity
-     */
-    @ExceptionHandler(ResultsNotFoundException.class)
-    public ResponseEntity handleResultsNotFound(ResultsNotFoundException ex) {
-        log.error(ex.getMessage());
-        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
     /**

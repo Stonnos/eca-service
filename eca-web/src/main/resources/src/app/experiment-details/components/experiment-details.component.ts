@@ -12,7 +12,7 @@ import { FieldLink } from "../../common/model/field-link";
 import { FieldService } from "../../common/services/field.service";
 import { Utils } from "../../common/util/utils";
 import { Subscription, timer } from "rxjs";
-import { filter, finalize, switchMap, take } from "rxjs/internal/operators";
+import { filter, finalize, take } from "rxjs/internal/operators";
 
 @Component({
   selector: 'app-experiment-details',
@@ -27,6 +27,8 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
     .set(ExperimentFields.TRAINING_DATA_PATH, false)
     .set(ExperimentFields.EXPERIMENT_PATH, false);
 
+  private readonly refreshInterval = 1000;
+
   public experimentFields: any[] = [];
 
   public experimentDto: ExperimentDto;
@@ -35,7 +37,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
 
   public linkColumns: string[] = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH];
 
-  private refreshSubscription: Subscription;
+  private refreshSubscription: Subscription = new Subscription();
 
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService,
@@ -51,7 +53,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   }
 
   public ngOnDestroy(): void {
-    this.unsubscribe();
+    this.unSubscribe();
   }
 
   public getExperiment(): void {
@@ -147,16 +149,18 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   }
 
   private refreshExperimentErsReport(): void {
-    this.refreshSubscription = timer(0, 1000).subscribe({
+    this.refreshSubscription = timer(0, this.refreshInterval).subscribe({
       next: () => {
         console.log('next');
-        this.experimentsService.checkExperimentResultsSendingProgress(this.experimentDto.uuid)
+        this.experimentsService.getExperimentResultsSendingProgress(this.experimentDto.uuid)
+          .pipe(
+            filter(result => !result),
+            take(1)
+          )
           .subscribe({
-            next: (result: boolean) => {
-              if (!result) {
-                this.getExperimentErsReport();
-                this.unsubscribe();
-              }
+            next: () => {
+              this.getExperimentErsReport();
+              this.unSubscribe();
             },
             error: (error) => {
               this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
@@ -166,15 +170,12 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
       error: (error) => {
         this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
       }
-    })
+    });
   }
 
-  private unsubscribe(): void {
-    if (this.refreshSubscription) {
-      console.log('unsubscribe');
-      this.refreshSubscription.unsubscribe();
-      this.refreshSubscription = null;
-    }
+  private unSubscribe(): void {
+    console.log('unsubscribe');
+    this.refreshSubscription.unsubscribe();
   }
 
   private initExperimentFields(): void {

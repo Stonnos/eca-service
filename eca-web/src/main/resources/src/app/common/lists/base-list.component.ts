@@ -55,7 +55,6 @@ export abstract class BaseListComponent<T> implements FieldLink {
       )
       .subscribe({
         next: (pageDto: PageDto<T>) => {
-          console.log('page');
           this.setPage(pageDto);
         },
         error: (error) => {

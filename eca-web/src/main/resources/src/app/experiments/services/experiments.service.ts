@@ -80,12 +80,12 @@ export class ExperimentsService {
     return this.http.get<ExperimentErsReportDto>(this.serviceUrl + '/ers-report/' + uuid, { headers: headers });
   }
 
-  public checkExperimentResultsSendingProgress(uuid: string): Observable<boolean> {
+  public getExperimentResultsSendingProgress(uuid: string): Observable<boolean> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
-    return this.http.get<boolean>(this.serviceUrl + '/ers-report/check-sending-progress/' + uuid, { headers: headers });
+    return this.http.get<boolean>(this.serviceUrl + '/ers-report/sending-progress/' + uuid, { headers: headers });
   }
 
   public sentEvaluationResults(uuid: string) {
