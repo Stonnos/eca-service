@@ -3,6 +3,7 @@ package com.ecaservice.event.listener;
 import com.ecaservice.event.model.ExperimentResultsSendingEvent;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
+import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.experiment.ExperimentResultsLockService;
@@ -48,7 +49,7 @@ public class ExperimentResultsSendingEventListener {
             ExperimentHistory experimentHistory = experimentService.getExperimentHistory(experiment);
             experimentResultsEntityList.forEach(
                     experimentResultsEntity -> ersService.sentExperimentResults(experimentResultsEntity,
-                            experimentHistory, event.getExperimentResultsRequestSource()));
+                            experimentHistory, ExperimentResultsRequestSource.MANUAL));
         } catch (Exception ex) {
             log.error("There was an error while experiment history manually sending: {}", ex.getMessage());
         } finally {

@@ -151,10 +151,9 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   private refreshExperimentErsReport(): void {
     this.refreshSubscription = timer(0, this.refreshInterval).subscribe({
       next: () => {
-        console.log('next');
-        this.experimentsService.getExperimentResultsSendingStatus(this.experimentDto.uuid)
+        this.experimentsService.checkExperimentResultsSendingStatus(this.experimentDto.uuid)
           .pipe(
-            filter(result => !result),
+            filter(result => !result.sending),
             take(1)
           )
           .subscribe({
@@ -174,7 +173,6 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   }
 
   private unSubscribe(): void {
-    console.log('unsubscribe');
     this.refreshSubscription.unsubscribe();
   }
 

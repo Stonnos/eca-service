@@ -3,13 +3,11 @@ package com.ecaservice.controller.web;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.event.model.ExperimentResultsSendingEvent;
 import com.ecaservice.exception.experiment.ExperimentException;
-import com.ecaservice.exception.experiment.ResultsNotFoundException;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.MultipartFileResource;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.RequestStatus;
-import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
@@ -28,6 +26,7 @@ import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
+import com.ecaservice.web.dto.model.SendingStatus;
 import eca.core.evaluation.EvaluationMethod;
 import eca.data.file.FileDataLoader;
 import io.swagger.annotations.Api;
@@ -272,25 +271,24 @@ public class ExperimentController {
     }
 
     /**
-     * Gets experiment results manual sending status.
+     * Checks experiment results manual sending status.
      *
      * @param uuid - experiment uuid
-     * @return response entity wraps boolean value ({@code true} if experiment results sending is in progress,
-     * false otherwise)
+     * @return response entity
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
-            value = "Gets experiment results manual sending status",
-            notes = "Gets experiment results manual sending status"
+            value = "Checks experiment results manual sending status",
+            notes = "Checks experiment results manual sending status"
     )
     @GetMapping(value = "/ers-report/sending-status/{uuid}")
-    public ResponseEntity<Boolean> getExperimentResultsSendingStatus(@PathVariable String uuid) {
+    public ResponseEntity<SendingStatus> checkExperimentResultsSendingStatus(@PathVariable String uuid) {
         Experiment experiment = experimentRepository.findByUuid(uuid);
         if (experiment == null) {
             log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, uuid));
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(lockService.locked(uuid));
+        return ResponseEntity.ok(new SendingStatus(experiment.getUuid(), lockService.locked(uuid)));
     }
 
     /**
@@ -394,8 +392,7 @@ public class ExperimentController {
                 responseEntity = ResponseEntity.status(HttpStatus.CONFLICT).build();
             } else {
                 lockService.lock(experiment.getUuid());
-                applicationEventPublisher.publishEvent(
-                        new ExperimentResultsSendingEvent(this, experiment, ExperimentResultsRequestSource.MANUAL));
+                applicationEventPublisher.publishEvent(new ExperimentResultsSendingEvent(this, experiment));
                 responseEntity = ResponseEntity.ok().build();
             }
         }

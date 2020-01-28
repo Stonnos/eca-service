@@ -57,7 +57,7 @@ public class ExperimentResultsSendingEventListenerTest {
                 experimentResultsEntityList);
         when(experimentService.getExperimentHistory(experiment)).thenReturn(new ExperimentHistory());
         experimentResultsSendingEventListener.handleExperimentResultsSendingEvent(
-                new ExperimentResultsSendingEvent(this, experiment, ExperimentResultsRequestSource.MANUAL));
+                new ExperimentResultsSendingEvent(this, experiment));
         verify(ersService, times(experimentResultsEntityList.size())).sentExperimentResults(
                 any(ExperimentResultsEntity.class), any(ExperimentHistory.class),
                 any(ExperimentResultsRequestSource.class));
@@ -73,7 +73,7 @@ public class ExperimentResultsSendingEventListenerTest {
                 experimentResultsEntityList);
         when(experimentService.getExperimentHistory(experiment)).thenThrow(new ResultsNotFoundException("Error"));
         experimentResultsSendingEventListener.handleExperimentResultsSendingEvent(
-                new ExperimentResultsSendingEvent(this, experiment, ExperimentResultsRequestSource.MANUAL));
+                new ExperimentResultsSendingEvent(this, experiment));
         verify(ersService, never()).sentExperimentResults(
                 any(ExperimentResultsEntity.class), any(ExperimentHistory.class),
                 any(ExperimentResultsRequestSource.class));

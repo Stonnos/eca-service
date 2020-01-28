@@ -31,6 +31,7 @@ import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
+import com.ecaservice.web.dto.model.SendingStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.EvaluationMethod;
 import org.apache.commons.lang3.StringUtils;
@@ -503,12 +504,13 @@ public class ExperimentControllerTest {
     @Test
     public void testGetExperimentResultsSendingStatusOk() throws Exception {
         Experiment experiment = TestHelperUtils.createExperiment(TEST_UUID);
+        SendingStatus sendingStatus = new SendingStatus(experiment.getUuid(), true);
         when(experimentRepository.findByUuid(TEST_UUID)).thenReturn(experiment);
         when(lockService.locked(experiment.getUuid())).thenReturn(true);
         mockMvc.perform(get(EXPERIMENT_RESULTS_SENDING_STATUS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
-                .andExpect(content().string(Boolean.toString(true)))
-                .andExpect(status().isOk());
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().json(objectMapper.writeValueAsString(sendingStatus)));
     }
 
     @Test
