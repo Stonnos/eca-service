@@ -153,6 +153,18 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
     }
 
     @Test
+    public void testErsReportWithSendingStatus() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        experimentRepository.save(experiment);
+        ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
+        experimentResultsEntityRepository.save(experimentResultsEntity);
+        experimentResultsRequestRepository.save(
+                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity, ErsResponseStatus.ERROR));
+        when(lockService.locked(experiment.getUuid())).thenReturn(true);
+        testGetErsReport(experiment, ErsReportStatus.SENDING);
+    }
+
+    @Test
     public void testErsReportWithSuccessSentStatus() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experimentRepository.save(experiment);
