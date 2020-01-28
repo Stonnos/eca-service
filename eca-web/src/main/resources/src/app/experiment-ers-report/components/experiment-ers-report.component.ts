@@ -80,9 +80,7 @@ export class ExperimentErsReportComponent implements OnInit, FieldLink {
         })
       )
       .subscribe({
-        next: data => {
-          this.messageService.add({ severity: 'success',
-            summary: `Запрос в ERS на сохранение классификаторов для эксперимента ${this.experimentErsReport.experimentUuid} был успешно создан`, detail: '' });
+        next: () => {
           this.evaluationResultsSent.emit();
         },
         error: (error) => {

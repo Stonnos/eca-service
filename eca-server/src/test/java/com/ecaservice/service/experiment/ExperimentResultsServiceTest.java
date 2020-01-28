@@ -47,6 +47,8 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     @Mock
     private ErsService ersService;
+    @Mock
+    private ExperimentResultsLockService lockService;
     @Inject
     private ExperimentResultsRequestRepository experimentResultsRequestRepository;
     @Inject
@@ -60,9 +62,8 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        experimentResultsService =
-                new ExperimentResultsService(ersService, experimentResultsMapper, experimentResultsEntityRepository,
-                        experimentResultsRequestRepository);
+        experimentResultsService = new ExperimentResultsService(ersService, lockService, experimentResultsMapper,
+                experimentResultsEntityRepository, experimentResultsRequestRepository);
     }
 
     @Override
@@ -149,6 +150,18 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
         experimentResultsRequestRepository.save(TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity2,
                 ErsResponseStatus.INVALID_REQUEST_ID));
         testGetErsReport(experiment, ErsReportStatus.NEED_SENT);
+    }
+
+    @Test
+    public void testErsReportWithSendingStatus() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        experimentRepository.save(experiment);
+        ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
+        experimentResultsEntityRepository.save(experimentResultsEntity);
+        experimentResultsRequestRepository.save(
+                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity, ErsResponseStatus.ERROR));
+        when(lockService.locked(experiment.getUuid())).thenReturn(true);
+        testGetErsReport(experiment, ErsReportStatus.SENDING);
     }
 
     @Test

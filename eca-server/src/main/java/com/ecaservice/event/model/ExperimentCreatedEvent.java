@@ -18,7 +18,7 @@ public class ExperimentCreatedEvent extends ApplicationEvent {
     private final Experiment experiment;
 
     /**
-     * Create a new  ExperimentCreatedEvent.
+     * Create a new ExperimentCreatedEvent.
      *
      * @param source     - the object on which the event initially occurred (never {@code null})
      * @param experiment - experiment entity
