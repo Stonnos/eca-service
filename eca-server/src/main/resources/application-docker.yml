@@ -37,7 +37,7 @@ experiment:
   mail:
     from: rbatsw@gmail.com
     subject: Eca - service
-    serviceUrl: http://notification-service:8080/notification-service/ws/
+    serviceUrl: https://notification-service:8443/ws/
     enabled: true
 
 ers-config:
