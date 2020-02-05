@@ -120,9 +120,6 @@ experiment:
       FINISHED: email-message-template.html
       ERROR: email-error-message-template.html
       TIMEOUT: email-timeout-message-template.html
-    ssl:
-      trustStore: classpath:notification/notification-truststore.jks
-      trustStorePassword: notification
 
 ers-config:
   url: http://localhost:8089/evaluation-results-service/ws/

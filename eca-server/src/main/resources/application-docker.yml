@@ -39,6 +39,9 @@ experiment:
     subject: Eca - service
     serviceUrl: https://notification-service:8443/ws/
     enabled: true
+    ssl:
+      trustStore: classpath:notification/notification-truststore.jks
+      trustStorePassword: notification
 
 ers-config:
   url: http://evaluation-results-service:8080/evaluation-results-service/ws/
