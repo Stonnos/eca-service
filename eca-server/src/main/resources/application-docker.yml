@@ -44,5 +44,8 @@ experiment:
       trustStorePassword: notification
 
 ers-config:
-  url: http://evaluation-results-service:8080/evaluation-results-service/ws/
+  url: https://evaluation-results-service:9443/ws/
   enabled: true
+  ssl:
+    trustStore: classpath:evaluation-results/evaluation-truststore.jks
+    trustStorePassword: evaluation

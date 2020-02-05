@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.client.core.WebServiceTemplate;
@@ -28,12 +29,14 @@ public class ErsWebServiceConfiguration extends AbstractWebServiceConfiguration 
         return super.jaxb2Marshaller();
     }
 
-    //@Bean(name = "ersWebServiceTemplate")
-   // @Override
-   // public WebServiceTemplate webServiceTemplate() {
-  //      return super.webServiceTemplate();
- //   }
+    @Profile("!docker")
+    @Bean(name = "ersWebServiceTemplate")
+    @Override
+    public WebServiceTemplate webServiceTemplate() {
+        return super.webServiceTemplate();
+    }
 
+    @Profile("docker")
     @Bean(name = "ersWebServiceTemplate")
     @Override
     public WebServiceTemplate sslWebServiceTemplate() throws Exception {
