@@ -20,9 +20,9 @@ import javax.net.ssl.SSLContext;
 public abstract class AbstractWebServiceConfiguration {
 
     /**
-     * Creates Jax2Marshaller bean.
+     * Creates jaxb2 marshaller.
      *
-     * @return Jaxb2Marshaller bean
+     * @return jaxb2 marshaller
      */
     public Jaxb2Marshaller jaxb2Marshaller() {
         Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
@@ -31,9 +31,9 @@ public abstract class AbstractWebServiceConfiguration {
     }
 
     /**
-     * Creates web service template bean.
+     * Creates web service template.
      *
-     * @return web service template bean
+     * @return web service template
      */
     public WebServiceTemplate webServiceTemplate() {
         Jaxb2Marshaller jaxb2Marshaller = jaxb2Marshaller();
@@ -41,9 +41,9 @@ public abstract class AbstractWebServiceConfiguration {
     }
 
     /**
-     * Creates ssl web service template bean.
+     * Creates ssl web service template.
      *
-     * @return ssl web service template bean
+     * @return ssl web service template
      * @throws Exception in case of error
      */
     public WebServiceTemplate sslWebServiceTemplate() throws Exception {
@@ -54,7 +54,7 @@ public abstract class AbstractWebServiceConfiguration {
     }
 
     /**
-     * Gets context path.
+     * Gets context path (package with classes generated from xsd schema).
      *
      * @return context path
      */
