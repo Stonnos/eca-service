@@ -2,7 +2,7 @@ package com.ecaservice.service.ers;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
-import com.ecaservice.config.ers.ErsConfig;
+import com.ecaservice.config.ws.ers.ErsConfig;
 import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
 import com.ecaservice.configuation.ErsWebServiceConfiguration;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
