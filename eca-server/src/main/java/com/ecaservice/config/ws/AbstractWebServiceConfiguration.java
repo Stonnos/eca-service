@@ -5,7 +5,6 @@ import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.ssl.SSLContextBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.client.core.WebServiceTemplate;
@@ -25,7 +24,6 @@ public abstract class AbstractWebServiceConfiguration {
      *
      * @return Jaxb2Marshaller bean
      */
-    @Bean
     public Jaxb2Marshaller jaxb2Marshaller() {
         Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
         marshaller.setContextPath(getContextPath());
@@ -49,7 +47,8 @@ public abstract class AbstractWebServiceConfiguration {
      * @throws Exception in case of error
      */
     public WebServiceTemplate sslWebServiceTemplate() throws Exception {
-        WebServiceTemplate webServiceTemplate = webServiceTemplate();
+        Jaxb2Marshaller jaxb2Marshaller = jaxb2Marshaller();
+        WebServiceTemplate webServiceTemplate = new WebServiceTemplate(jaxb2Marshaller, jaxb2Marshaller);
         webServiceTemplate.setMessageSender(httpComponentsMessageSender());
         return webServiceTemplate;
     }
