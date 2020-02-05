@@ -98,6 +98,24 @@ public class ReportControllerTest {
     }
 
     @Test
+    public void testDownloadExperimentsReportWithZeroPageSize() throws Exception {
+        mockMvc.perform(get(EXPERIMENTS_REPORT_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
+                .param(PAGE_SIZE_PARAM, String.valueOf(0)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testDownloadExperimentsReportWithNegativePageNumber() throws Exception {
+        mockMvc.perform(get(EXPERIMENTS_REPORT_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .param(PAGE_NUMBER_PARAM, String.valueOf(-1))
+                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void testDownloadExperimentsReportWithEmptyFilterRequestName() throws Exception {
         mockMvc.perform(get(EXPERIMENTS_REPORT_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
@@ -154,6 +172,24 @@ public class ReportControllerTest {
         mockMvc.perform(get(EVALUATIONS_REPORT_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testDownloadEvaluationsReportWithZeroPageSize() throws Exception {
+        mockMvc.perform(get(EVALUATIONS_REPORT_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
+                .param(PAGE_SIZE_PARAM, String.valueOf(0)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testDownloadEvaluationsReportWithNegativePageNumber() throws Exception {
+        mockMvc.perform(get(EVALUATIONS_REPORT_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .param(PAGE_NUMBER_PARAM, String.valueOf(-1))
+                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
                 .andExpect(status().isBadRequest());
     }
 

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -22,12 +23,14 @@ public class PageRequestDto {
      * Page number
      */
     @NotNull
+    @Min(0)
     private Integer page;
 
     /**
      * Page size
      */
     @NotNull
+    @Min(1)
     private Integer size;
 
     /**

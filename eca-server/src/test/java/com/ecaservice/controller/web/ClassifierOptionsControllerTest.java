@@ -127,6 +127,24 @@ public class ClassifierOptionsControllerTest {
     }
 
     @Test
+    public void testGetConfigsPageWithZeroPageSize() throws Exception {
+        mockMvc.perform(get(PAGE_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
+                .param(PAGE_SIZE_PARAM, String.valueOf(0)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testGetConfigsPageWithNegativePageNumber() throws Exception {
+        mockMvc.perform(get(PAGE_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .param(PAGE_NUMBER_PARAM, String.valueOf(-1))
+                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void testGetConfigsPageWithEmptyFilterRequestName() throws Exception {
         mockMvc.perform(get(PAGE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
