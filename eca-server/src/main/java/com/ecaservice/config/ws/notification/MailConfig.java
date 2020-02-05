@@ -1,4 +1,4 @@
-package com.ecaservice.config;
+package com.ecaservice.config.ws.notification;
 
 import com.ecaservice.model.entity.RequestStatus;
 import lombok.Data;
