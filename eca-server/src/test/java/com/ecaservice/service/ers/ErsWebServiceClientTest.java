@@ -1,7 +1,7 @@
 package com.ecaservice.service.ers;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.config.ers.ErsConfig;
+import com.ecaservice.config.ws.ers.ErsConfig;
 import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.EvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;

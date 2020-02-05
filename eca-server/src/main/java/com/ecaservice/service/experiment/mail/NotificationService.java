@@ -1,6 +1,6 @@
 package com.ecaservice.service.experiment.mail;
 
-import com.ecaservice.config.MailConfig;
+import com.ecaservice.config.ws.notification.MailConfig;
 import com.ecaservice.dto.mail.EmailRequest;
 import com.ecaservice.dto.mail.EmailResponse;
 import com.ecaservice.dto.mail.ResponseStatus;

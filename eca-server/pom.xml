@@ -33,6 +33,7 @@
         <powermock.version>2.0.4</powermock.version>
         <liquibase.version>3.7.0</liquibase.version>
         <xmlschema.version>2.2.3</xmlschema.version>
+        <httpclient.version>4.5.11</httpclient.version>
         <jaxb2-maven-plugin.version>2.3</jaxb2-maven-plugin.version>
         <jacoco-plugin.version>0.7.7.201606060606</jacoco-plugin.version>
         <jacoco.minCoverage>0.70</jacoco.minCoverage>
@@ -191,6 +192,12 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${httpclient.version}</version>
         </dependency>
 
         <!--test dependencies-->

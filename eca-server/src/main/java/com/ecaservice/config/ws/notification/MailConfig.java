@@ -1,8 +1,9 @@
-package com.ecaservice.config;
+package com.ecaservice.config.ws.notification;
 
 import com.ecaservice.model.entity.RequestStatus;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.io.Resource;
 
 import java.util.Map;
 
@@ -39,4 +40,27 @@ public class MailConfig {
      * Is service enabled?
      */
     private Boolean enabled;
+
+    /**
+     * Ssl config
+     */
+    private SslConfig ssl;
+
+    /**
+     * Ssl config.
+     */
+    @Data
+    @ConfigurationProperties("experiment.mail.ssl")
+    public static class SslConfig {
+
+        /**
+         * Trust store resource
+         */
+        private Resource trustStore;
+
+        /**
+         * Trust store password
+         */
+        private String trustStorePassword;
+    }
 }
