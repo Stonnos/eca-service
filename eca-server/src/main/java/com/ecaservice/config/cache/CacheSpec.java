@@ -13,10 +13,10 @@ public class CacheSpec {
     /**
      * Expires after write in seconds
      */
-    private Integer expireAfterWriteSeconds;
+    private Long expireAfterWriteSeconds;
 
     /**
      * Cache max size
      */
-    private Integer maxSize;
+    private Long maxSize;
 }

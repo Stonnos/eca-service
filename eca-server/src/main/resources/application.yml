@@ -128,7 +128,7 @@ cache:
       maxSize: 100
     evaluation-results:
       expireAfterWriteSeconds: 1200
-      maxSize: 20
+      maxSize: 50
     global-filters:
       expireAfterWriteSeconds: 18000
       maxSize: 100
