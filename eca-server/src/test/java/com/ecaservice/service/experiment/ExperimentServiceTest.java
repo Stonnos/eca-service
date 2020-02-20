@@ -3,6 +3,7 @@ package com.ecaservice.service.experiment;
 import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CommonConfig;
+import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.exception.experiment.ExperimentException;
@@ -56,7 +57,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentMapperImpl.class, ExperimentConfig.class, CommonConfig.class})
+@Import({ExperimentMapperImpl.class, ExperimentConfig.class, CommonConfig.class, CrossValidationConfig.class})
 public class ExperimentServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
@@ -68,6 +69,8 @@ public class ExperimentServiceTest extends AbstractJpaTest {
     private ExperimentMapper experimentMapper;
     @Mock
     private DataService dataService;
+    @Inject
+    private CrossValidationConfig crossValidationConfig;
     @Inject
     private ExperimentConfig experimentConfig;
     @Inject
@@ -89,7 +92,8 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         CalculationExecutorService executorService =
                 new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
         experimentService = new ExperimentService(experimentRepository, executorService, experimentMapper, dataService,
-                experimentConfig, experimentProcessorService, entityManager, commonConfig, filterService);
+                crossValidationConfig, experimentConfig, experimentProcessorService, entityManager, commonConfig,
+                filterService);
     }
 
     @Override
@@ -245,7 +249,8 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         Experiment experiment3 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR);
         experimentRepository.saveAll(Arrays.asList(experiment, experiment1, experiment2, experiment3));
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false, experiment1.getUuid().substring(4, 10),
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false,
+                        experiment1.getUuid().substring(4, 10),
                         newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(Experiment_.EXPERIMENT_STATUS,
                 Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
@@ -400,7 +405,8 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
         experiment1.setCreationDate(LocalDateTime.of(2018, 1, 1, 23, 59, 59));
         experimentRepository.save(experiment1);
-        pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false, null, newArrayList());
+        pageRequestDto =
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false, null, newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(Experiment_.CREATION_DATE, Arrays.asList("2018-01-01", "2018-01-01"),
                         MatchMode.RANGE));

@@ -1,10 +1,12 @@
 package com.ecaservice.mapping;
 
+import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.report.model.ExperimentBean;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
+import eca.core.evaluation.EvaluationMethod;
 import org.apache.commons.io.FilenameUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -30,10 +32,14 @@ public abstract class ExperimentMapper {
     /**
      * Maps experiment request to experiment persistence entity.
      *
-     * @param experimentRequest experiment request
+     * @param experimentRequest     - experiment request
+     * @param crossValidationConfig - cross - validation config
      * @return experiment entity
      */
-    public abstract Experiment map(ExperimentRequest experimentRequest);
+    @Mapping(target = "numFolds", ignore = true)
+    @Mapping(target = "numTests", ignore = true)
+    @Mapping(target = "seed", ignore = true)
+    public abstract Experiment map(ExperimentRequest experimentRequest, CrossValidationConfig crossValidationConfig);
 
     /**
      * Maps experiment entity to experiment dto model.
@@ -81,6 +87,17 @@ public abstract class ExperimentMapper {
      * @return experiments beans list
      */
     public abstract List<ExperimentBean> mapToBeans(List<Experiment> experiments);
+
+    @AfterMapping
+    protected void mapEvaluationMethodOptions(ExperimentRequest experimentRequest,
+                                              CrossValidationConfig crossValidationConfig,
+                                              @MappingTarget Experiment experiment) {
+        if (EvaluationMethod.CROSS_VALIDATION.equals(experiment.getEvaluationMethod())) {
+            experiment.setNumFolds(crossValidationConfig.getNumFolds());
+            experiment.setNumTests(crossValidationConfig.getNumTests());
+            experiment.setSeed(crossValidationConfig.getSeed());
+        }
+    }
 
     @AfterMapping
     protected void postMapping(Experiment experiment, @MappingTarget ExperimentDto experimentDto) {
