@@ -72,12 +72,16 @@ public class ExperimentMapperTest {
     @Test
     public void testMapToExperimentDto() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        experiment.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         experiment.setStartDate(LocalDateTime.now().plusHours(1L));
         experiment.setEndDate(experiment.getStartDate().minusMinutes(1L));
         experiment.setSentDate(experiment.getEndDate().plusMinutes(1L));
         experiment.setDeletedDate(experiment.getEndDate().plusMinutes(1L));
         experiment.setTrainingDataAbsolutePath(TRAINING_DATA_ABSOLUTE_PATH);
         experiment.setExperimentAbsolutePath(EXPERIMENT_ABSOLUTE_PATH);
+        experiment.setNumFolds(crossValidationConfig.getNumFolds());
+        experiment.setNumTests(crossValidationConfig.getNumTests());
+        experiment.setSeed(crossValidationConfig.getSeed());
         ExperimentDto experimentDto = experimentMapper.map(experiment);
         assertThat(experimentDto).isNotNull();
         assertThat(experimentDto.getFirstName()).isEqualTo(experiment.getFirstName());
@@ -102,6 +106,9 @@ public class ExperimentMapperTest {
         assertThat(experimentDto.getTrainingDataAbsolutePath()).isEqualTo(DATA_XLS);
         assertThat(experimentDto.getExperimentAbsolutePath()).isEqualTo(EXPERIMENT_MODEL);
         assertThat(experimentDto.getUuid()).isEqualTo(experiment.getUuid());
+        assertThat(experimentDto.getNumFolds()).isEqualTo(experiment.getNumFolds());
+        assertThat(experimentDto.getNumTests()).isEqualTo(experiment.getNumTests());
+        assertThat(experimentDto.getSeed()).isEqualTo(experiment.getSeed());
     }
 
     @Test

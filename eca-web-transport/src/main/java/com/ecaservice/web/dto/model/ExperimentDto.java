@@ -105,4 +105,22 @@ public class ExperimentDto {
      */
     @ApiModelProperty(value = "Evaluation method")
     private EnumDto evaluationMethod;
+
+    /**
+     * Folds number for k * V cross - validation method
+     */
+    @ApiModelProperty(value = "Folds number for k * V cross - validation method")
+    private Integer numFolds;
+
+    /**
+     * Tests number for k * V cross - validation method
+     */
+    @ApiModelProperty(value = "Tests number for k * V cross - validation method")
+    private Integer numTests;
+
+    /**
+     * Seed value for k * V cross - validation method
+     */
+    @ApiModelProperty(value = "Seed value for k * V cross - validation method")
+    private Integer seed;
 }

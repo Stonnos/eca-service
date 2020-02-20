@@ -52,6 +52,9 @@ public abstract class ExperimentMapper {
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(target = "experimentType", ignore = true)
     @Mapping(target = "experimentStatus", ignore = true)
+    @Mapping(target = "numFolds", ignore = true)
+    @Mapping(target = "numTests", ignore = true)
+    @Mapping(target = "seed", ignore = true)
     public abstract ExperimentDto map(Experiment experiment);
 
     /**
@@ -100,9 +103,18 @@ public abstract class ExperimentMapper {
     }
 
     @AfterMapping
-    protected void postMapping(Experiment experiment, @MappingTarget ExperimentDto experimentDto) {
+    protected void mapEvaluationMethodOptions(Experiment experiment, @MappingTarget ExperimentDto experimentDto) {
         experimentDto.setEvaluationMethod(new EnumDto(experiment.getEvaluationMethod().name(),
                 experiment.getEvaluationMethod().getDescription()));
+        if (EvaluationMethod.CROSS_VALIDATION.equals(experiment.getEvaluationMethod())) {
+            experimentDto.setNumFolds(experiment.getNumFolds());
+            experimentDto.setNumTests(experiment.getNumTests());
+            experimentDto.setSeed(experiment.getSeed());
+        }
+    }
+
+    @AfterMapping
+    protected void postMapping(Experiment experiment, @MappingTarget ExperimentDto experimentDto) {
         experimentDto.setExperimentStatus(new EnumDto(experiment.getExperimentStatus().name(),
                 experiment.getExperimentStatus().getDescription()));
         experimentDto.setExperimentType(new EnumDto(experiment.getExperimentType().name(),
