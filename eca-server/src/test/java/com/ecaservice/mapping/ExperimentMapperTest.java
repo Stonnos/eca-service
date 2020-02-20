@@ -138,7 +138,7 @@ public class ExperimentMapperTest {
         assertThat(experimentBean.getEndDate()).isNotNull();
         assertThat(experimentBean.getSentDate()).isNotNull();
         assertThat(experimentBean.getDeletedDate()).isNotNull();
-        assertThat(experimentBean.getEvaluationMethod()).isEqualTo(experiment.getEvaluationMethod().getDescription());
+        assertThat(experimentBean.getEvaluationMethod()).isNotNull();
         assertThat(experimentBean.getExperimentStatus()).isEqualTo(experiment.getExperimentStatus().getDescription());
         assertThat(experimentBean.getExperimentType()).isEqualTo(experiment.getExperimentType().getDescription());
         assertThat(experimentBean.getTrainingDataAbsolutePath()).isEqualTo(DATA_XLS);

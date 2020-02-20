@@ -19,6 +19,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
+import static com.ecaservice.util.Utils.getEvaluationMethodDescription;
+
 /**
  * Experiment mapper.
  *
@@ -73,7 +75,7 @@ public abstract class ExperimentMapper {
      */
     @Mapping(source = "experimentAbsolutePath", target = "experimentAbsolutePath", qualifiedByName = "toFileName")
     @Mapping(source = "trainingDataAbsolutePath", target = "trainingDataAbsolutePath", qualifiedByName = "toFileName")
-    @Mapping(source = "evaluationMethod.description", target = "evaluationMethod")
+    @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(source = "experimentType.description", target = "experimentType")
     @Mapping(source = "experimentStatus.description", target = "experimentStatus")
     @Mapping(source = "creationDate", target = "creationDate", qualifiedByName = "formatLocalDateTime")
@@ -111,6 +113,14 @@ public abstract class ExperimentMapper {
             experimentDto.setNumTests(experiment.getNumTests());
             experimentDto.setSeed(experiment.getSeed());
         }
+    }
+
+    @AfterMapping
+    protected void mapEvaluationMethodOptions(Experiment experiment, @MappingTarget ExperimentBean experimentBean) {
+        String evaluationMethodDescription =
+                getEvaluationMethodDescription(experiment.getEvaluationMethod(), experiment.getNumFolds(),
+                        experiment.getNumTests());
+        experimentBean.setEvaluationMethod(evaluationMethodDescription);
     }
 
     @AfterMapping

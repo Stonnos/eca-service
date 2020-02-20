@@ -13,6 +13,7 @@ import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eca.core.evaluation.EvaluationMethod;
 import eca.data.file.xml.converter.XmlInstancesConverter;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
@@ -50,6 +51,8 @@ public class Utils {
     private static final String ATTACHMENT = "attachment";
 
     private static final String POINT_SEPARATOR = ".";
+    private static final String CV_FORMAT = "%d - блочная кросс - проверка";
+    private static final String CV_EXTENDED_FORMAT = "%d×%d - блочная кросс - проверка";
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
@@ -242,7 +245,8 @@ public class Utils {
      * @param requestStatusStatistics - request statuses list
      * @return request statuses map
      */
-    public static Map<RequestStatus, Long> toRequestStatusStatisticsMap(List<RequestStatusStatistics> requestStatusStatistics) {
+    public static Map<RequestStatus, Long> toRequestStatusStatisticsMap(
+            List<RequestStatusStatistics> requestStatusStatistics) {
         if (CollectionUtils.isEmpty(requestStatusStatistics)) {
             return Collections.emptyMap();
         }
@@ -267,5 +271,22 @@ public class Utils {
         evaluationResultsDto.setEvaluationResultsStatus(
                 new EnumDto(evaluationResultsStatus.name(), evaluationResultsStatus.getDescription()));
         return evaluationResultsDto;
+    }
+
+    /**
+     * Gets evaluation method description.
+     *
+     * @param evaluationMethod - evaluation method
+     * @param numFolds         - num folds for k * V cross - validation method
+     * @param numTests         - num tests for k * V cross - validation method
+     * @return evaluation method description
+     */
+    public static String getEvaluationMethodDescription(EvaluationMethod evaluationMethod, Integer numFolds,
+                                                        Integer numTests) {
+        if (EvaluationMethod.CROSS_VALIDATION.equals(evaluationMethod)) {
+            return numTests == 1 ? String.format(CV_FORMAT, numFolds) :
+                    String.format(CV_EXTENDED_FORMAT, numFolds, numTests);
+        }
+        return evaluationMethod.getDescription();
     }
 }

@@ -21,6 +21,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
+import static com.ecaservice.util.Utils.getEvaluationMethodDescription;
+
 /**
  * Implements evaluation request to evaluation log mapping.
  *
@@ -77,7 +79,7 @@ public abstract class EvaluationLogMapper {
      * @param evaluationLog - evaluation log entity
      * @return evaluation log bean
      */
-    @Mapping(source = "evaluationMethod.description", target = "evaluationMethod")
+    @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(source = "evaluationStatus.description", target = "evaluationStatus")
     @Mapping(source = "creationDate", target = "creationDate", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "startDate", target = "startDate", qualifiedByName = "formatLocalDateTime")
@@ -131,6 +133,15 @@ public abstract class EvaluationLogMapper {
             evaluationLogDto.setNumTests(evaluationLog.getNumTests());
             evaluationLogDto.setSeed(evaluationLog.getSeed());
         }
+    }
+
+    @AfterMapping
+    protected void mapEvaluationMethodOptions(EvaluationLog evaluationLog,
+                                              @MappingTarget EvaluationLogBean evaluationLogBean) {
+        String evaluationMethodDescription =
+                getEvaluationMethodDescription(evaluationLog.getEvaluationMethod(), evaluationLog.getNumFolds(),
+                        evaluationLog.getNumTests());
+        evaluationLogBean.setEvaluationMethod(evaluationMethodDescription);
     }
 
     @AfterMapping
