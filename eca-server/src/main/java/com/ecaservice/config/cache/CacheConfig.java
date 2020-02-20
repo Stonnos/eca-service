@@ -11,7 +11,7 @@ import java.util.Map;
  * @author Roman Batygin
  */
 @Data
-@ConfigurationProperties("cache-config")
+@ConfigurationProperties("cache")
 public class CacheConfig {
 
     /**

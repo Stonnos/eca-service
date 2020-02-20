@@ -43,7 +43,7 @@ experiment:
       trustStore: classpath:notification/notification-truststore.jks
       trustStorePassword: notification
 
-ers-config:
+ers:
   url: https://evaluation-results-service:9443/ws/
   enabled: true
   ssl:

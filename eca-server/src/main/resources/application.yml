@@ -117,11 +117,11 @@ experiment:
       ERROR: email-error-message-template.html
       TIMEOUT: email-timeout-message-template.html
 
-ers-config:
+ers:
   url: http://localhost:8089/evaluation-results-service/ws/
   enabled: true
 
-cache-config:
+cache:
   specs:
     classifiers:
       expireAfterWriteSeconds: 18000
