@@ -8,9 +8,9 @@ export class Utils {
   public static getEvaluationMethodDescription(evaluationMethod: EnumDto, numFolds: number, numTests: number): string {
     if (evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION) {
       if (numTests == 1) {
-        return `${numFolds} блочная кросс - проверка`;
+        return `${numFolds} - блочная кросс - проверка`;
       } else {
-        return `${numTests}×${numFolds} блочная кросс - проверка`;
+        return `${numTests}×${numFolds} - блочная кросс - проверка`;
       }
     } else {
       return evaluationMethod.description;
