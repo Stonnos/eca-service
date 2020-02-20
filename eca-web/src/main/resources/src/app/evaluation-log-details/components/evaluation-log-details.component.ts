@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  EnumDto,
   EvaluationLogDetailsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
-import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
 import { ClassifiersService } from "../../classifiers/services/classifiers.service";
 import { MessageService } from "primeng/api";
 import { ActivatedRoute } from "@angular/router";
@@ -56,22 +54,10 @@ export class EvaluationLogDetailsComponent implements OnInit {
       });
   }
 
-  public getEvaluationMethod(): string {
-    const evaluationMethod: EnumDto = this.evaluationLogDetails.evaluationMethod;
-    if (evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION) {
-      if (this.evaluationLogDetails.numTests == 1) {
-        return `${this.evaluationLogDetails.evaluationMethod.description} (${this.evaluationLogDetails.numFolds} блочная)`;
-      } else {
-        return `${this.evaluationLogDetails.evaluationMethod.description} (${this.evaluationLogDetails.numTests}×${this.evaluationLogDetails.numFolds} блочная)`;
-      }
-    } else {
-      return this.evaluationLogDetails.evaluationMethod.description;
-    }
-  }
-
   public getEvaluationLogValue(field: string) {
     if (field == EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION) {
-      return this.getEvaluationMethod();
+      return Utils.getEvaluationMethodDescription(this.evaluationLogDetails.evaluationMethod,
+        this.evaluationLogDetails.numFolds, this.evaluationLogDetails.numTests);
     } else {
       return this.fieldService.getFieldValue(field, this.evaluationLogDetails, Utils.MISSING_VALUE);
     }
