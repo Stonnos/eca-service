@@ -15,7 +15,9 @@ export class ExperimentFields {
   public static readonly END_DATE: string = "endDate";
   public static readonly SENT_DATE: string = "sentDate";
   public static readonly DELETED_DATE: string = "deletedDate";
-
+  public static readonly NUM_FOLDS: string = "numFolds";
+  public static readonly NUM_TESTS: string = "numTests";
+  public static readonly SEED: string = "seed";
 }
 
 export class EvaluationLogFields {
