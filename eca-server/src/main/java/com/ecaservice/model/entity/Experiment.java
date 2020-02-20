@@ -117,6 +117,23 @@ public class Experiment {
     private EvaluationMethod evaluationMethod;
 
     /**
+     * Folds number for k * V cross - validation method
+     */
+    @Column(name = "num_folds")
+    private Integer numFolds;
+
+    /**
+     * Tests number for k * V cross - validation method
+     */
+    @Column(name = "num_tests")
+    private Integer numTests;
+
+    /**
+     * Seed value for k * V cross - validation method
+     */
+    private Integer seed;
+
+    /**
      * Unique token used to download experiment results for external API
      */
     private String token;
