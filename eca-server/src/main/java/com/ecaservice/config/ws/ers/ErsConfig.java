@@ -10,7 +10,7 @@ import org.springframework.core.io.Resource;
  * @author Roman Batygin
  */
 @Data
-@ConfigurationProperties("ers-config")
+@ConfigurationProperties("ers")
 public class ErsConfig {
 
     /**
