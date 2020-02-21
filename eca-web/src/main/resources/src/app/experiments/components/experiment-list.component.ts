@@ -8,6 +8,7 @@ import { ExperimentsService } from "../services/experiments.service";
 import { MessageService } from "primeng/api";
 import { saveAs } from 'file-saver/dist/FileSaver';
 import { BaseListComponent } from "../../common/lists/base-list.component";
+import { OverlayPanel } from "primeng/primeng";
 import { Observable } from "rxjs/internal/Observable";
 import { FilterService } from "../../filter/services/filter.service";
 import { finalize } from "rxjs/internal/operators";
@@ -17,6 +18,8 @@ import { RouterPaths } from "../../routing/router-paths";
 import { ExperimentFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
 import { ReportsService } from "../../common/services/report.service";
+import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
+import { Utils } from "../../common/util/utils";
 
 @Component({
   selector: 'app-experiment-list',
@@ -34,6 +37,9 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   public lastCreatedExperimentUuid: string;
   public blinkUuid: string;
 
+  public selectedExperiment: ExperimentDto;
+  public selectedColumn: string;
+
   public experimentTypes: FilterDictionaryValueDto[] = [];
   public evaluationMethods: FilterDictionaryValueDto[] = [];
 
@@ -46,7 +52,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ExperimentFields.CREATION_DATE;
-    this.linkColumns = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH, ExperimentFields.UUID];
+    this.linkColumns = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH, ExperimentFields.UUID,
+      ExperimentFields.EVALUATION_METHOD_DESCRIPTION];
     this.notSortableColumns = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH];
     this.initColumns();
   }
@@ -97,7 +104,19 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       });
   }
 
-  public onLink(column: string, experiment: ExperimentDto) {
+  public getNumFolds(experimentDto: ExperimentDto): number {
+    return this.fieldService.getFieldValue(ExperimentFields.NUM_FOLDS, experimentDto, Utils.MISSING_VALUE);
+  }
+
+  public getNumTests(experimentDto: ExperimentDto): number {
+    return this.fieldService.getFieldValue(ExperimentFields.NUM_TESTS, experimentDto, Utils.MISSING_VALUE);
+  }
+
+  public getSeed(experimentDto: ExperimentDto): number {
+    return this.fieldService.getFieldValue(ExperimentFields.SEED, experimentDto, Utils.MISSING_VALUE);
+  }
+
+  public onLink(column: string, experiment: ExperimentDto, overlayPanel: OverlayPanel) {
     switch (column) {
       case ExperimentFields.TRAINING_DATA_PATH:
         this.getExperimentTrainingDataFile(experiment);
@@ -107,6 +126,11 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
         break;
       case ExperimentFields.UUID:
         this.router.navigate([RouterPaths.EXPERIMENT_DETAILS_URL, experiment.uuid]);
+        break;
+      case ExperimentFields.EVALUATION_METHOD_DESCRIPTION:
+        if (experiment.evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION) {
+          this.toggleOverlayPanel(event, experiment, column, overlayPanel);
+        }
         break;
       default:
         this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${column} as link`});
@@ -220,6 +244,12 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
       });
+  }
+
+  private toggleOverlayPanel(event, experimentDto: ExperimentDto, column: string, overlayPanel: OverlayPanel): void {
+    this.selectedExperiment = experimentDto;
+    this.selectedColumn = column;
+    overlayPanel.toggle(event);
   }
 
   private initColumns() {

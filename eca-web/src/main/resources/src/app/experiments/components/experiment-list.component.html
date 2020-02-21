@@ -76,7 +76,7 @@
       <ng-template pTemplate="body" let-item>
         <tr [ngClass]="{'experiment-blink': isBlink(item)}">
           <td *ngFor="let column of columns">
-            <a class="link" [routerLink]="" *ngIf="isLink(column.name)" (click)="onLink(column.name, item)">
+            <a class="link" [routerLink]="" *ngIf="isLink(column.name)" (click)="onLink(column.name, item, infoPanel)">
               {{ getColumnValue(column.name, item) }}
             </a>
             <div *ngIf="!isLink(column.name)">
@@ -108,6 +108,43 @@
     </p-table>
   </div>
 </div>
+
+<p-overlayPanel #infoPanel [showCloseIcon]="true">
+  <p-panel *ngIf="selectedExperiment && selectedColumn" class="info-panel">
+    <ng-container [ngSwitch]="selectedColumn">
+      <ng-container *ngSwitchCase="'evaluationMethod.description'">
+        <div class="ui-g">
+          <div class="ui-g-6 text-right text-bold text-wrap">
+            Число блоков:
+          </div>
+          <div class="ui-g-6 text-left text-wrap">
+            {{ getNumFolds(selectedExperiment) }}
+          </div>
+        </div>
+
+        <div class="ui-g">
+          <div class="ui-g-6 text-right text-bold text-wrap">
+            Число проверок:
+          </div>
+          <div class="ui-g-6 text-left text-wrap">
+            {{ getNumTests(selectedExperiment) }}
+          </div>
+        </div>
+
+        <div class="ui-g">
+          <div class="ui-g-6 text-right text-bold text-wrap">
+            Начальное значение (seed):
+          </div>
+          <div class="ui-g-6 text-left text-wrap">
+            {{ getSeed(selectedExperiment) }}
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+      </ng-container>
+    </ng-container>
+  </p-panel>
+</p-overlayPanel>
 
 <app-create-experiment
   [item]="experimentRequest"

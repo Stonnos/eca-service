@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {
+  ExperimentDto,
   ExperimentResultsDetailsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { MessageService } from "primeng/api";
@@ -60,7 +61,12 @@ export class ExperimentResultsDetailsComponent implements OnInit, FieldLink {
   }
 
   public getExperimentValue(field: string) {
-    return this.fieldService.getFieldValue(field, this.experimentResultsDetailsDto && this.experimentResultsDetailsDto.experimentDto, Utils.MISSING_VALUE);
+    const experimentDto: ExperimentDto = this.experimentResultsDetailsDto && this.experimentResultsDetailsDto.experimentDto;
+    if (field == ExperimentFields.EVALUATION_METHOD_DESCRIPTION) {
+      return Utils.getEvaluationMethodDescription(experimentDto.evaluationMethod, experimentDto.numFolds, experimentDto.numTests);
+    } else {
+      return this.fieldService.getFieldValue(field, experimentDto, Utils.MISSING_VALUE);
+    }
   }
 
   public isLink(field: string): boolean {

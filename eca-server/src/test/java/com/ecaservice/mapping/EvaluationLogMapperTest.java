@@ -107,8 +107,7 @@ public class EvaluationLogMapperTest {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
         EvaluationLogBean evaluationLogBean = evaluationLogMapper.mapToBean(evaluationLog);
         assertThat(evaluationLogBean).isNotNull();
-        assertThat(evaluationLogBean.getEvaluationMethod())
-                .isEqualTo(evaluationLog.getEvaluationMethod().getDescription());
+        assertThat(evaluationLogBean.getEvaluationMethod()).isNotNull();
         assertThat(evaluationLogBean.getClassifierName())
                 .isEqualTo(evaluationLog.getClassifierInfo().getClassifierName());
         assertThat(evaluationLogBean.getRelationName())

@@ -1,10 +1,12 @@
 package com.ecaservice.mapping;
 
+import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.report.model.ExperimentBean;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
+import eca.core.evaluation.EvaluationMethod;
 import org.apache.commons.io.FilenameUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -16,6 +18,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+
+import static com.ecaservice.util.Utils.getEvaluationMethodDescription;
 
 /**
  * Experiment mapper.
@@ -30,10 +34,14 @@ public abstract class ExperimentMapper {
     /**
      * Maps experiment request to experiment persistence entity.
      *
-     * @param experimentRequest experiment request
+     * @param experimentRequest     - experiment request
+     * @param crossValidationConfig - cross - validation config
      * @return experiment entity
      */
-    public abstract Experiment map(ExperimentRequest experimentRequest);
+    @Mapping(target = "numFolds", ignore = true)
+    @Mapping(target = "numTests", ignore = true)
+    @Mapping(target = "seed", ignore = true)
+    public abstract Experiment map(ExperimentRequest experimentRequest, CrossValidationConfig crossValidationConfig);
 
     /**
      * Maps experiment entity to experiment dto model.
@@ -46,6 +54,9 @@ public abstract class ExperimentMapper {
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(target = "experimentType", ignore = true)
     @Mapping(target = "experimentStatus", ignore = true)
+    @Mapping(target = "numFolds", ignore = true)
+    @Mapping(target = "numTests", ignore = true)
+    @Mapping(target = "seed", ignore = true)
     public abstract ExperimentDto map(Experiment experiment);
 
     /**
@@ -64,7 +75,7 @@ public abstract class ExperimentMapper {
      */
     @Mapping(source = "experimentAbsolutePath", target = "experimentAbsolutePath", qualifiedByName = "toFileName")
     @Mapping(source = "trainingDataAbsolutePath", target = "trainingDataAbsolutePath", qualifiedByName = "toFileName")
-    @Mapping(source = "evaluationMethod.description", target = "evaluationMethod")
+    @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(source = "experimentType.description", target = "experimentType")
     @Mapping(source = "experimentStatus.description", target = "experimentStatus")
     @Mapping(source = "creationDate", target = "creationDate", qualifiedByName = "formatLocalDateTime")
@@ -83,9 +94,37 @@ public abstract class ExperimentMapper {
     public abstract List<ExperimentBean> mapToBeans(List<Experiment> experiments);
 
     @AfterMapping
-    protected void postMapping(Experiment experiment, @MappingTarget ExperimentDto experimentDto) {
+    protected void mapEvaluationMethodOptions(ExperimentRequest experimentRequest,
+                                              CrossValidationConfig crossValidationConfig,
+                                              @MappingTarget Experiment experiment) {
+        if (EvaluationMethod.CROSS_VALIDATION.equals(experiment.getEvaluationMethod())) {
+            experiment.setNumFolds(crossValidationConfig.getNumFolds());
+            experiment.setNumTests(crossValidationConfig.getNumTests());
+            experiment.setSeed(crossValidationConfig.getSeed());
+        }
+    }
+
+    @AfterMapping
+    protected void mapEvaluationMethodOptions(Experiment experiment, @MappingTarget ExperimentDto experimentDto) {
         experimentDto.setEvaluationMethod(new EnumDto(experiment.getEvaluationMethod().name(),
                 experiment.getEvaluationMethod().getDescription()));
+        if (EvaluationMethod.CROSS_VALIDATION.equals(experiment.getEvaluationMethod())) {
+            experimentDto.setNumFolds(experiment.getNumFolds());
+            experimentDto.setNumTests(experiment.getNumTests());
+            experimentDto.setSeed(experiment.getSeed());
+        }
+    }
+
+    @AfterMapping
+    protected void mapEvaluationMethodOptions(Experiment experiment, @MappingTarget ExperimentBean experimentBean) {
+        String evaluationMethodDescription =
+                getEvaluationMethodDescription(experiment.getEvaluationMethod(), experiment.getNumFolds(),
+                        experiment.getNumTests());
+        experimentBean.setEvaluationMethod(evaluationMethodDescription);
+    }
+
+    @AfterMapping
+    protected void postMapping(Experiment experiment, @MappingTarget ExperimentDto experimentDto) {
         experimentDto.setExperimentStatus(new EnumDto(experiment.getExperimentStatus().name(),
                 experiment.getExperimentStatus().getDescription()));
         experimentDto.setExperimentType(new EnumDto(experiment.getExperimentType().name(),

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v26-add-experiment-cross-validation-fields.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <not>
+                <columnExists tableName="experiment" columnName="num_folds"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="experiment">
+            <column name="num_folds" type="integer"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <not>
+                <columnExists tableName="experiment" columnName="num_tests"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="experiment">
+            <column name="num_tests" type="integer"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <not>
+                <columnExists tableName="experiment" columnName="seed"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="experiment">
+            <column name="seed" type="integer"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <columnExists tableName="experiment" columnName="num_folds"/>
+        </preConditions>
+        <update tableName="experiment">
+            <column name="num_folds" valueNumeric="10"/>
+            <where>evaluation_method = 'CROSS_VALIDATION' and num_folds is null</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="5" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <columnExists tableName="experiment" columnName="num_tests"/>
+        </preConditions>
+        <update tableName="experiment">
+            <column name="num_tests" valueNumeric="1"/>
+            <where>evaluation_method = 'CROSS_VALIDATION' and num_tests is null</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="6" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <columnExists tableName="experiment" columnName="seed"/>
+        </preConditions>
+        <update tableName="experiment">
+            <column name="seed" valueNumeric="3"/>
+            <where>evaluation_method = 'CROSS_VALIDATION' and creation_date &lt; '2018-05-25' and seed is null</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="7" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <columnExists tableName="experiment" columnName="seed"/>
+        </preConditions>
+        <update tableName="experiment">
+            <column name="seed" valueNumeric="1"/>
+            <where>evaluation_method = 'CROSS_VALIDATION' and creation_date &gt;= '2018-05-25' and seed is null</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="8" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <columnExists tableName="evaluation_log" columnName="seed"/>
+        </preConditions>
+        <update tableName="evaluation_log">
+            <column name="seed" valueNumeric="3"/>
+            <where>evaluation_method = 'CROSS_VALIDATION' and creation_date &lt; '2018-05-25' and seed is null</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="9" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <columnExists tableName="evaluation_log" columnName="seed"/>
+        </preConditions>
+        <update tableName="evaluation_log">
+            <column name="seed" valueNumeric="1"/>
+            <where>evaluation_method = 'CROSS_VALIDATION' and creation_date &gt;= '2018-05-25' and seed is null</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

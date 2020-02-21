@@ -141,7 +141,12 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   }
 
   public getExperimentValue(field: string) {
-    return this.fieldService.getFieldValue(field, this.experimentDto, Utils.MISSING_VALUE);
+    if (field == ExperimentFields.EVALUATION_METHOD_DESCRIPTION) {
+      return Utils.getEvaluationMethodDescription(this.experimentDto.evaluationMethod,
+        this.experimentDto.numFolds, this.experimentDto.numTests);
+    } else {
+      return this.fieldService.getFieldValue(field, this.experimentDto, Utils.MISSING_VALUE);
+    }
   }
 
   public hasValue(field: string): boolean {

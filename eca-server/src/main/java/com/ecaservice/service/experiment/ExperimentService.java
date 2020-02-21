@@ -1,6 +1,7 @@
 package com.ecaservice.service.experiment;
 
 import com.ecaservice.config.CommonConfig;
+import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.exception.experiment.ExperimentException;
@@ -75,6 +76,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
     private final CalculationExecutorService executorService;
     private final ExperimentMapper experimentMapper;
     private final DataService dataService;
+    private final CrossValidationConfig crossValidationConfig;
     private final ExperimentConfig experimentConfig;
     private final ExperimentProcessorService experimentProcessorService;
     private final EntityManager entityManager;
@@ -89,7 +91,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
      */
     public Experiment createExperiment(ExperimentRequest experimentRequest) {
         try {
-            Experiment experiment = experimentMapper.map(experimentRequest);
+            Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
             experiment.setExperimentStatus(RequestStatus.NEW);
             experiment.setUuid(UUID.randomUUID().toString());
             File dataFile = new File(experimentConfig.getData().getStoragePath(),
