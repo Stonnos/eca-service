@@ -59,9 +59,9 @@ ECA server v5.0
    * experiment.mail.subject - тема письма
    * experiment.mail.serviceUrl - url конечной точки Notification service
    * experiment.mail.enabled - выключатель для отправки нотификаций во внешний сервис
-4) ers-config - настройки интеграции с сервисом evaluation-results-service
-   * ers-config.url - url конечной точки ERS сервиса
-   * ers-config.enabled - выключатель для отправки результатов классификации (вкл./выкл.)
+4) ers - настройки интеграции с сервисом evaluation-results-service
+   * ers.url - url конечной точки ERS сервиса
+   * ers.enabled - выключатель для отправки результатов классификации (вкл./выкл.)
 5) common - общие настройки
    * common.classifierOptionsCacheDurationInDays - период хранения оптимальных настроек классификатора
       полученных от внешнего сервиса ERS
@@ -72,6 +72,7 @@ ECA server v5.0
    * url - url сервиса мониторинга
    * username - логин пользователя для авторизации в сервисе мониторинга
    * password - пароль пользователя для авторизации в сервисе мониторинга
+7) cache.specs - настройки spring cache
 
 Инструкция по развертыванию
 ----------------------------------------
@@ -109,17 +110,13 @@ mvn clean install -Pquality
 
 3. Используя пакетный менеджер docker-compose, создать docker контейнеры с помощью команды:
 
-    docker-compose up -d (для ОС семейства Linux)
-
-    docker-compose -f docker-compose.yaml -f docker-compose.win10.yaml up (для Windows 10)
+    docker-compose up -d
 
 ВАЖНО! Данную команду необходимо выполнять из корневой папки проекта.
 
 Для остановки приложения (удаления контейнеров) нужно выполнить команду:
 
-docker-compose down (для ОС семейства Linux)
-
-docker-compose -f docker-compose.yaml -f docker-compose.win10.yaml down (для Windows 10)
+docker-compose down
 
 Для удаления всех контейнеров и image-ов необходимо выполнить команду:
 
