@@ -6,7 +6,7 @@ services:
     container_name: eca-db
     volumes:
       - ./scripts/postgresinit.sql:/docker-entrypoint-initdb.d/postgresinit.sql
-      - /home/eca-pgdata:/var/lib/postgresql/data
+      - eca-pgdata:/var/lib/postgresql/data
     ports:
       - "5433:5432"
     networks:
@@ -25,7 +25,7 @@ services:
       - "5672:5672"
     volumes:
       - ./conf/rabbitmq.conf:/etc/rabbitmq/rabbitmq.config
-      - /home/rabbit-data:/var/lib/rabbitmq
+      - rabbit-data:/var/lib/rabbitmq
     environment:
       TZ: "Asia/Novosibirsk"
     networks:
@@ -36,8 +36,7 @@ services:
     container_name: eca-server
     command: ["/wait-for-it.sh", "eca-db:5432", "--timeout=45", "--", "catalina.sh", "run"]
     volumes:
-      - /home/experiment:/home/experiment
-      - /home/experiment/data:/home/experiment/data
+      - experiment-data:/home/experiment
     environment:
       TZ: "Asia/Novosibirsk"
       SPRING_PROFILES_ACTIVE: "docker"
@@ -98,3 +97,11 @@ networks:
   default:
     name: app-network
     driver: bridge
+
+volumes:
+  eca-pgdata:
+    name: eca-pgdata
+  rabbit-data:
+    name: rabbit-data
+  experiment-data:
+    name: experiment-data
