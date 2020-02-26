@@ -49,10 +49,10 @@ import java.util.stream.Collectors;
 public class Utils {
 
     private static final String ATTACHMENT = "attachment";
-
     private static final String POINT_SEPARATOR = ".";
     private static final String CV_FORMAT = "%d - блочная кросс - проверка";
     private static final String CV_EXTENDED_FORMAT = "%d×%d - блочная кросс - проверка";
+    private static final long ZERO = 0L;
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
@@ -230,11 +230,11 @@ public class Utils {
      */
     public static RequestStatusStatisticsDto toRequestStatusesStatistics(Map<RequestStatus, Long> statusStatisticsMap) {
         RequestStatusStatisticsDto requestStatusStatisticsDto = new RequestStatusStatisticsDto();
-        requestStatusStatisticsDto.setNewRequestsCount(statusStatisticsMap.getOrDefault(RequestStatus.NEW, 0L));
+        requestStatusStatisticsDto.setNewRequestsCount(statusStatisticsMap.getOrDefault(RequestStatus.NEW, ZERO));
         requestStatusStatisticsDto.setFinishedRequestsCount(
-                statusStatisticsMap.getOrDefault(RequestStatus.FINISHED, 0L));
-        requestStatusStatisticsDto.setTimeoutRequestsCount(statusStatisticsMap.getOrDefault(RequestStatus.TIMEOUT, 0L));
-        requestStatusStatisticsDto.setErrorRequestsCount(statusStatisticsMap.getOrDefault(RequestStatus.ERROR, 0L));
+                statusStatisticsMap.getOrDefault(RequestStatus.FINISHED, ZERO));
+        requestStatusStatisticsDto.setTimeoutRequestsCount(statusStatisticsMap.getOrDefault(RequestStatus.TIMEOUT, ZERO));
+        requestStatusStatisticsDto.setErrorRequestsCount(statusStatisticsMap.getOrDefault(RequestStatus.ERROR, ZERO));
         requestStatusStatisticsDto.setTotalCount(
                 statusStatisticsMap.values().stream().mapToLong(Long::longValue).sum());
         return requestStatusStatisticsDto;
@@ -257,7 +257,7 @@ public class Utils {
                                 RequestStatusStatistics::getRequestsCount, (v1, v2) -> v1, TreeMap::new));
         Arrays.stream(RequestStatus.values()).filter(
                 requestStatus -> !requestStatusMap.containsKey(requestStatus)).forEach(
-                requestStatus -> requestStatusMap.put(requestStatus, 0L));
+                requestStatus -> requestStatusMap.put(requestStatus, ZERO));
         return requestStatusMap;
     }
 
