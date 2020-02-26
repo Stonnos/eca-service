@@ -230,14 +230,11 @@ public class Utils {
      */
     public static RequestStatusStatisticsDto toRequestStatusesStatistics(Map<RequestStatus, Long> statusStatisticsMap) {
         RequestStatusStatisticsDto requestStatusStatisticsDto = new RequestStatusStatisticsDto();
-        requestStatusStatisticsDto.setNewRequestsCount(
-                Optional.ofNullable(statusStatisticsMap.get(RequestStatus.NEW)).orElse(0L));
+        requestStatusStatisticsDto.setNewRequestsCount(statusStatisticsMap.getOrDefault(RequestStatus.NEW, 0L));
         requestStatusStatisticsDto.setFinishedRequestsCount(
-                Optional.ofNullable(statusStatisticsMap.get(RequestStatus.FINISHED)).orElse(0L));
-        requestStatusStatisticsDto.setTimeoutRequestsCount(
-                Optional.ofNullable(statusStatisticsMap.get(RequestStatus.TIMEOUT)).orElse(0L));
-        requestStatusStatisticsDto.setErrorRequestsCount(
-                Optional.ofNullable(statusStatisticsMap.get(RequestStatus.ERROR)).orElse(0L));
+                statusStatisticsMap.getOrDefault(RequestStatus.FINISHED, 0L));
+        requestStatusStatisticsDto.setTimeoutRequestsCount(statusStatisticsMap.getOrDefault(RequestStatus.TIMEOUT, 0L));
+        requestStatusStatisticsDto.setErrorRequestsCount(statusStatisticsMap.getOrDefault(RequestStatus.ERROR, 0L));
         requestStatusStatisticsDto.setTotalCount(
                 statusStatisticsMap.values().stream().mapToLong(Long::longValue).sum());
         return requestStatusStatisticsDto;
