@@ -45,7 +45,6 @@ services:
     depends_on:
       - eca-db
       - rabbitmq
-      - monitoring
 
   eca-oauth:
     image: eca-oauth
@@ -58,7 +57,6 @@ services:
       - default
     depends_on:
       - eca-db
-      - monitoring
 
   eca-web:
     image: eca-web
