@@ -29,15 +29,6 @@ spring:
   liquibase:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
-  boot:
-    admin:
-      client:
-        instance:
-          service-url: http://localhost:8085/eca-server
-        url: http://localhost:8085/monitoring
-        username: admin
-        password: secret
-        read-timeout: 1m
   rabbitmq:
     listener:
       simple:
