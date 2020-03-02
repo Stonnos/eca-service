@@ -15,7 +15,6 @@
         <module>eca-server</module>
         <module>eca-web</module>
         <module>zuul-gate</module>
-        <module>monitoring</module>
     </modules>
 
     <parent>

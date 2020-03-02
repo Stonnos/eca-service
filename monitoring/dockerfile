@@ -1,3 +1,0 @@
-FROM openjdk:8
-COPY target/monitoring.war monitoring.war
-ENTRYPOINT exec java -jar monitoring.war
