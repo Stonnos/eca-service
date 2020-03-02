@@ -32,6 +32,9 @@ spring:
         read-timeout: 1m
 
 management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
   endpoints:
     web:
       exposure:
