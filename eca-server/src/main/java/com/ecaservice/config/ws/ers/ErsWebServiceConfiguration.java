@@ -29,14 +29,14 @@ public class ErsWebServiceConfiguration extends AbstractWebServiceConfiguration 
         return super.jaxb2Marshaller();
     }
 
-    @Profile("!docker")
+    @Profile("!docker-prod")
     @Bean(name = "ersWebServiceTemplate")
     @Override
     public WebServiceTemplate webServiceTemplate() {
         return super.webServiceTemplate();
     }
 
-    @Profile("docker")
+    @Profile("docker-prod")
     @Bean(name = "ersWebServiceTemplate")
     @Override
     public WebServiceTemplate sslWebServiceTemplate() throws Exception {
