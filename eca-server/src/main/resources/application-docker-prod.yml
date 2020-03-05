@@ -2,13 +2,13 @@ spring:
   ## Eca datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://eca-db:5432/eca
+    jdbc-url: jdbc:postgresql://postgres-db:5432/eca
     username: postgres
     password: postgres
   ## Token datasource properties
   tokendatasource:
     driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://eca-db:5432/eca-oauth
+    jdbc-url: jdbc:postgresql://postgres-db:5432/eca-oauth
     username: postgres
     password: postgres
   jpa:
@@ -31,9 +31,15 @@ experiment:
   mail:
     from: rbatsw@gmail.com
     subject: Eca - service
-    serviceUrl: http://notification-service:8080/ws/
+    serviceUrl: https://notification-service:8443/ws/
     enabled: true
+    ssl:
+      trustStore: classpath:notification/notification-truststore.jks
+      trustStorePassword: notification
 
 ers:
-  url: http://evaluation-results-service:8080/ws/
+  url: https://evaluation-results-service:9443/ws/
   enabled: true
+  ssl:
+    trustStore: classpath:evaluation-results/evaluation-truststore.jks
+    trustStorePassword: evaluation

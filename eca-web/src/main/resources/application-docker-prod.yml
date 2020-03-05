@@ -1,0 +1,3 @@
+web-config:
+  apiUrl: http://localhost:8080/eca-server
+  oauthUrl: http://localhost:8080/auth-server/oauth/token
