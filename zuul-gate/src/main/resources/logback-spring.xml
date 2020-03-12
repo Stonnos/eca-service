@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <springProfile name="!docker">
+    <springProfile name="!docker-prod">
         <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
             <layout class="ch.qos.logback.classic.PatternLayout">
                 <Pattern>
@@ -11,7 +11,7 @@
         </appender>
     </springProfile>
 
-    <springProfile name="docker">
+    <springProfile name="docker-prod">
         <springProperty scope="context" name="application_name" source="spring.application.name"/>
 
         <appender name="console" class="ch.qos.logback.core.ConsoleAppender">

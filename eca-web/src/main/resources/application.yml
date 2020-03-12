@@ -3,15 +3,6 @@ spring:
     name: eca-web
   jmx:
     default-domain: eca-web
-  boot:
-    admin:
-      client:
-        instance:
-          service-url: http://localhost:8085
-        url: http://localhost:8085/monitoring
-        username: admin
-        password: secret
-        read-timeout: 1m
 
 web-config:
   apiUrl: http://localhost:8085/eca-server
@@ -20,6 +11,9 @@ web-config:
   secret: web_secret
 
 management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
   endpoints:
     web:
       exposure:

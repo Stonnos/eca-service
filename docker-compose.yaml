@@ -1,8 +1,8 @@
-version: '3.5'
+version: "3.5"
 services:
 
   eca-db:
-    image: postgres:9.6.9
+    image: postgres:${POSTGRES_VERSION}
     container_name: eca-db
     volumes:
       - ./scripts/postgresinit.sql:/docker-entrypoint-initdb.d/postgresinit.sql
@@ -12,59 +12,57 @@ services:
     networks:
       - default
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      TZ: "Asia/Novosibirsk"
-      PGTZ: "Asia/Novosibirsk"
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      TZ: ${TIME_ZONE}
+      PGTZ: ${TIME_ZONE}
 
   rabbitmq:
     image: "rabbitmq:3-management"
-    container_name: "rabbit"
+    container_name: "rabbitmq"
     ports:
       - "15672:15672"
       - "5672:5672"
     volumes:
-      - ./conf/rabbitmq.conf:/etc/rabbitmq/rabbitmq.config
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.config
       - rabbit-data:/var/lib/rabbitmq
     environment:
-      TZ: "Asia/Novosibirsk"
+      TZ: ${TIME_ZONE}
     networks:
       - default
 
   eca-server:
     image: eca-server
     container_name: eca-server
-    command: ["/wait-for-it.sh", "eca-db:5432", "--timeout=45", "--", "catalina.sh", "run"]
+    command: ["/wait-for-it.sh", "eca-db:5432", "--timeout=${DB_CONTAINER_WAIT_TIMEOUT}", "--", "catalina.sh", "run"]
     volumes:
       - experiment-data:/home/experiment
     environment:
-      TZ: "Asia/Novosibirsk"
+      TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
     networks:
       - default
     depends_on:
       - eca-db
       - rabbitmq
-      - monitoring
 
   eca-oauth:
     image: eca-oauth
     container_name: eca-oauth
-    command: ["/wait-for-it.sh", "eca-db:5432", "--timeout=45", "--", "catalina.sh", "run"]
+    command: ["/wait-for-it.sh", "eca-db:5432", "--timeout=${DB_CONTAINER_WAIT_TIMEOUT}", "--", "catalina.sh", "run"]
     environment:
-      TZ: "Asia/Novosibirsk"
+      TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
     networks:
       - default
     depends_on:
       - eca-db
-      - monitoring
 
   eca-web:
     image: eca-web
     container_name: eca-web
     environment:
-      TZ: "Asia/Novosibirsk"
+      TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
     networks:
       - default
@@ -75,21 +73,10 @@ services:
     image: zuul-gate
     container_name: zuul-gate
     environment:
-      TZ: "Asia/Novosibirsk"
+      TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
     ports:
       - "8080:8080"
-    networks:
-      - default
-
-  monitoring:
-    image: monitoring
-    container_name: monitoring
-    environment:
-      TZ: "Asia/Novosibirsk"
-      SPRING_PROFILES_ACTIVE: "docker"
-    ports:
-      - "8085:8080"
     networks:
       - default
 

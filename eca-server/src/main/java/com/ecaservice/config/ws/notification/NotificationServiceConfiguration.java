@@ -29,14 +29,14 @@ public class NotificationServiceConfiguration extends AbstractWebServiceConfigur
         return super.jaxb2Marshaller();
     }
 
-    @Profile("!docker")
+    @Profile("!docker-prod")
     @Bean(name = "notificationWebServiceTemplate")
     @Override
     public WebServiceTemplate webServiceTemplate() {
         return super.webServiceTemplate();
     }
 
-    @Profile("docker")
+    @Profile("docker-prod")
     @Bean(name = "notificationWebServiceTemplate")
     @Override
     public WebServiceTemplate sslWebServiceTemplate() throws Exception {
