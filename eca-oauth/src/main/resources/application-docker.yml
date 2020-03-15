@@ -2,7 +2,7 @@ spring:
   ## Datasource properties
   datasource:
     driverClassName: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://eca-db:5432/eca-oauth
+    jdbc-url: jdbc:postgresql://eca-db:5432/eca_oauth
     username: postgres
     password: postgres
   jpa:

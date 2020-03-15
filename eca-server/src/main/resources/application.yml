@@ -12,7 +12,7 @@ spring:
   ## Token datasource properties
   tokendatasource:
     driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://localhost:5432/eca-oauth
+    jdbc-url: jdbc:postgresql://localhost:5432/eca_oauth
     username: postgres
     password: postgres
   jpa:
