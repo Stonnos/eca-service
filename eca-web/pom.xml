@@ -92,8 +92,7 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
-                    <include>application.yml</include>
-                    <include>application-docker.yml</include>
+                    <include>application*.yml</include>
                     <include>logback-spring.xml</include>
                 </includes>
             </resource>
