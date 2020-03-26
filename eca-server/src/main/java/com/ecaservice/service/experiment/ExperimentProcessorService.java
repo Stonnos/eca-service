@@ -46,7 +46,7 @@ public class ExperimentProcessorService {
     public ExperimentHistory processExperimentHistory(Experiment experiment,
                                                       InitializationParams initializationParams) {
         Assert.notNull(initializationParams, "Initialization params is not specified!");
-        AbstractExperiment abstractExperiment =
+        AbstractExperiment<?> abstractExperiment =
                 experiment.getExperimentType().handle(experimentInitializer, initializationParams);
         IterativeExperiment iterativeExperiment = abstractExperiment.getIterativeExperiment();
         int currentPercent = 0;
@@ -71,7 +71,7 @@ public class ExperimentProcessorService {
     }
 
     private ExperimentHistory buildExperimentHistory(List<EvaluationResults> evaluationResults,
-                                                     AbstractExperiment abstractExperiment) {
+                                                     AbstractExperiment<?> abstractExperiment) {
         EvaluationParams evaluationParams = EvaluationMethod.TRAINING_DATA.equals(abstractExperiment
                 .getEvaluationMethod()) ? null : new EvaluationParams(abstractExperiment.getNumFolds(),
                 abstractExperiment.getNumTests());
