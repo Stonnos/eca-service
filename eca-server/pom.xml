@@ -25,7 +25,7 @@
 
     <properties>
         <postresql.version>42.2.6</postresql.version>
-        <eca.version>6.6</eca.version>
+        <eca.version>6.7</eca.version>
         <assertj.core.version>3.13.1</assertj.core.version>
         <mockito.version>3.2.4</mockito.version>
         <commons.io.version>2.5</commons.io.version>
