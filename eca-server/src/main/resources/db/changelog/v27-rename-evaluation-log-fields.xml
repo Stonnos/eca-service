@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v26-add-experiment-cross-validation-fields.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <columnExists tableName="evaluation_log" columnName="evaluation_status"/>
+        </preConditions>
+        <renameColumn tableName="evaluation_log" oldColumnName="evaluation_status" newColumnName="request_status"/>
+    </changeSet>
+
+    <!-- Changed evaluationStatus name to requestStatus name in filter template -->
+    <changeSet id="2" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 2 and field_name = 'evaluationStatus'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="filter_field">
+            <column name="field_name" value="requestStatus"/>
+            <where>filter_template_id = 2 and field_name = 'evaluationStatus'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from global_filter_field where global_filter_template_id = 2 and field_name = 'evaluationStatus'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="global_filter_field">
+            <column name="field_name" value="requestStatus"/>
+            <where>global_filter_template_id = 2 and field_name = 'evaluationStatus'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

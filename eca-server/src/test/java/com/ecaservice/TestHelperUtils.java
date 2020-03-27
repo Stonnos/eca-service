@@ -325,7 +325,7 @@ public class TestHelperUtils {
         evaluationLog.setNumFolds(NUM_FOLDS);
         evaluationLog.setNumTests(NUM_TESTS);
         evaluationLog.setSeed(SEED);
-        evaluationLog.setEvaluationStatus(RequestStatus.FINISHED);
+        evaluationLog.setRequestStatus(RequestStatus.FINISHED);
         return evaluationLog;
     }
 
@@ -338,7 +338,7 @@ public class TestHelperUtils {
      */
     public static EvaluationLog createEvaluationLog(String uuid, RequestStatus requestStatus) {
         EvaluationLog evaluationLog = createEvaluationLog();
-        evaluationLog.setEvaluationStatus(requestStatus);
+        evaluationLog.setRequestStatus(requestStatus);
         evaluationLog.setRequestId(uuid);
         return evaluationLog;
     }

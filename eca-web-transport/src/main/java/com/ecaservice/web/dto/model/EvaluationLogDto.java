@@ -55,10 +55,10 @@ public class EvaluationLogDto {
     private ClassifierInfoDto classifierInfo;
 
     /**
-     * Evaluation status
+     * Request status
      */
-    @ApiModelProperty(value = "Evaluation status")
-    private EnumDto evaluationStatus;
+    @ApiModelProperty(value = "Request status")
+    private EnumDto requestStatus;
 
     /**
      * Evaluation method
