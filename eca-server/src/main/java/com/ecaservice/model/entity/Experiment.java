@@ -1,15 +1,13 @@
 package com.ecaservice.model.entity;
 
 import com.ecaservice.model.experiment.ExperimentType;
-import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
@@ -19,18 +17,15 @@ import java.time.LocalDateTime;
  *
  * @author Roman Batygin
  */
+@Data
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "experiment",
         indexes = {
-                @Index(name = "idx_uuid", columnList = "uuid"),
-                @Index(name = "idx_experiment_status", columnList = "experiment_status")
+                @Index(name = "idx_uuid", columnList = "request_id"),
+                @Index(name = "idx_experiment_status", columnList = "request_status")
         })
-@Data
-public class Experiment {
-
-    @Id
-    @GeneratedValue
-    private Long id;
+public class Experiment extends AbstractEvaluationEntity {
 
     /**
      * First name
@@ -57,30 +52,6 @@ public class Experiment {
     private String trainingDataAbsolutePath;
 
     /**
-     * Experiment uuid
-     */
-    @Column(unique = true)
-    private String uuid;
-
-    /**
-     * Request creation date
-     */
-    @Column(name = "creation_date")
-    private LocalDateTime creationDate;
-
-    /**
-     * Experiment processing start date
-     */
-    @Column(name = "start_date")
-    private LocalDateTime startDate;
-
-    /**
-     * Experiment processing end date
-     */
-    @Column(name = "end_date")
-    private LocalDateTime endDate;
-
-    /**
      * Date when experiment results notification is sent to email service
      */
     @Column(name = "sent_date")
@@ -98,40 +69,6 @@ public class Experiment {
     @Enumerated(EnumType.STRING)
     @Column(name = "experiment_type")
     private ExperimentType experimentType;
-
-    /**
-     * Experiment status
-     */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "experiment_status")
-    private RequestStatus experimentStatus;
-
-    @Column(name = "error_message", columnDefinition = "text")
-    private String errorMessage;
-
-    /**
-     * Evaluation method
-     */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "evaluation_method")
-    private EvaluationMethod evaluationMethod;
-
-    /**
-     * Folds number for k * V cross - validation method
-     */
-    @Column(name = "num_folds")
-    private Integer numFolds;
-
-    /**
-     * Tests number for k * V cross - validation method
-     */
-    @Column(name = "num_tests")
-    private Integer numTests;
-
-    /**
-     * Seed value for k * V cross - validation method
-     */
-    private Integer seed;
 
     /**
      * Unique token used to download experiment results for external API

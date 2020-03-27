@@ -26,13 +26,13 @@
                 <ng-container *ngSwitchCase="'requestId'">
                   <span class="text-bold">{{ evaluationLogDetails?.requestId }}</span>
                 </ng-container>
-                <ng-container *ngSwitchCase="'evaluationStatus.description'">
+                <ng-container *ngSwitchCase="'requestStatus.description'">
                   <div class="text-white request-status"
-                       [class.bg-info]="evaluationLogDetails?.evaluationStatus.value == 'NEW'"
-                       [class.bg-success]="evaluationLogDetails?.evaluationStatus.value == 'FINISHED'"
-                       [class.bg-warning]="evaluationLogDetails?.evaluationStatus.value == 'TIMEOUT'"
-                       [class.bg-danger]="evaluationLogDetails?.evaluationStatus.value == 'ERROR'">
-                    {{ evaluationLogDetails?.evaluationStatus.description }}
+                       [class.bg-info]="evaluationLogDetails?.requestStatus.value == 'NEW'"
+                       [class.bg-success]="evaluationLogDetails?.requestStatus.value == 'FINISHED'"
+                       [class.bg-warning]="evaluationLogDetails?.requestStatus.value == 'TIMEOUT'"
+                       [class.bg-danger]="evaluationLogDetails?.requestStatus.value == 'ERROR'">
+                    {{ evaluationLogDetails?.requestStatus.description }}
                   </div>
                 </ng-container>
                 <ng-container *ngSwitchDefault>

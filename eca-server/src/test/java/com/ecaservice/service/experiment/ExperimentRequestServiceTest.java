@@ -44,6 +44,6 @@ public class ExperimentRequestServiceTest {
         experiment = experimentRequestService.createExperimentRequest(experimentRequest);
         verify(eventPublisher, atLeastOnce()).publishEvent(any(ExperimentCreatedEvent.class));
         Assertions.assertThat(experiment).isNotNull();
-        Assertions.assertThat(experiment.getExperimentStatus()).isEqualTo(RequestStatus.NEW);
+        Assertions.assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.NEW);
     }
 }

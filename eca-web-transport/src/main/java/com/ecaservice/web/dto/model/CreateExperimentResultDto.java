@@ -18,10 +18,10 @@ import lombok.NoArgsConstructor;
 public class CreateExperimentResultDto {
 
     /**
-     * Experiment uuid
+     * Experiment request id
      */
-    @ApiModelProperty(value = "Experiment uuid", required = true)
-    private String uuid;
+    @ApiModelProperty(value = "Experiment request id", required = true)
+    private String requestId;
 
     /**
      * Is experiment created?

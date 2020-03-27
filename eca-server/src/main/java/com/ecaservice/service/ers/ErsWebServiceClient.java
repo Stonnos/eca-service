@@ -7,7 +7,7 @@ import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.EvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.GetEvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
-import com.ecaservice.mapping.EvaluationResultsMapper;
+import com.ecaservice.service.evaluation.EvaluationResultsService;
 import eca.core.evaluation.EvaluationResults;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ import org.springframework.ws.client.core.WebServiceTemplate;
 public class ErsWebServiceClient {
 
     private final WebServiceTemplate ersWebServiceTemplate;
-    private final EvaluationResultsMapper evaluationResultsMapper;
+    private final EvaluationResultsService evaluationResultsService;
     private final ErsConfig ersConfig;
 
     /**
@@ -35,7 +35,7 @@ public class ErsWebServiceClient {
      * @return evaluation results response
      */
     public EvaluationResultsResponse sendEvaluationResults(EvaluationResults evaluationResults, String requestId) {
-        EvaluationResultsRequest resultsRequest = evaluationResultsMapper.map(evaluationResults);
+        EvaluationResultsRequest resultsRequest = evaluationResultsService.proceed(evaluationResults);
         resultsRequest.setRequestId(requestId);
         log.trace("Starting to send evaluation results request '{}' to: {}.", requestId, ersConfig.getUrl());
         EvaluationResultsResponse resultsResponse =

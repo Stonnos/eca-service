@@ -113,8 +113,8 @@ public class EvaluationLogMapperTest {
         assertThat(evaluationLogBean.getRelationName())
                 .isEqualTo(evaluationLog.getInstancesInfo().getRelationName());
         assertThat(evaluationLogBean.getRequestId()).isEqualTo(evaluationLog.getRequestId());
-        assertThat(evaluationLogBean.getEvaluationStatus())
-                .isEqualTo(evaluationLog.getEvaluationStatus().getDescription());
+        assertThat(evaluationLogBean.getRequestStatus())
+                .isEqualTo(evaluationLog.getRequestStatus().getDescription());
         assertThat(evaluationLogBean.getCreationDate()).isNotNull();
         assertThat(evaluationLogBean.getStartDate()).isNotNull();
         assertThat(evaluationLogBean.getEndDate()).isNotNull();
@@ -132,10 +132,10 @@ public class EvaluationLogMapperTest {
                 evaluationLog.getEvaluationMethod().getDescription());
         assertThat(evaluationLogDto.getEvaluationMethod().getValue()).isEqualTo(
                 evaluationLog.getEvaluationMethod().name());
-        assertThat(evaluationLogDto.getEvaluationStatus().getDescription()).isEqualTo(
-                evaluationLog.getEvaluationStatus().getDescription());
-        assertThat(evaluationLogDto.getEvaluationStatus().getValue()).isEqualTo(
-                evaluationLog.getEvaluationStatus().name());
+        assertThat(evaluationLogDto.getRequestStatus().getDescription()).isEqualTo(
+                evaluationLog.getRequestStatus().getDescription());
+        assertThat(evaluationLogDto.getRequestStatus().getValue()).isEqualTo(
+                evaluationLog.getRequestStatus().name());
         assertThat(evaluationLogDto.getRequestId()).isEqualTo(evaluationLog.getRequestId());
         assertThat(evaluationLogDto.getClassifierInfo().getInputOptions()).hasSameSizeAs(
                 evaluationLog.getClassifierInfo().getClassifierInputOptions());

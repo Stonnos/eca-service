@@ -44,24 +44,24 @@ public class EmailTemplateVisitorTest {
     @Test
     public void testNewStatusContext() {
         Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
-        experiment.setExperimentStatus(RequestStatus.NEW);
-        Context context = experiment.getExperimentStatus().handle(emailTemplateVisitor, experiment);
+        experiment.setRequestStatus(RequestStatus.NEW);
+        Context context = experiment.getRequestStatus().handle(emailTemplateVisitor, experiment);
         assertContext(context, experiment);
     }
 
     @Test
     public void testErrorStatusContext() {
         Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
-        experiment.setExperimentStatus(RequestStatus.ERROR);
-        Context context = experiment.getExperimentStatus().handle(emailTemplateVisitor, experiment);
+        experiment.setRequestStatus(RequestStatus.ERROR);
+        Context context = experiment.getRequestStatus().handle(emailTemplateVisitor, experiment);
         assertContext(context, experiment);
     }
 
     @Test
     public void testTimeoutStatusContext() {
         Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
-        experiment.setExperimentStatus(RequestStatus.TIMEOUT);
-        Context context = experiment.getExperimentStatus().handle(emailTemplateVisitor, experiment);
+        experiment.setRequestStatus(RequestStatus.TIMEOUT);
+        Context context = experiment.getRequestStatus().handle(emailTemplateVisitor, experiment);
         assertContext(context, experiment);
         assertThat(Integer.valueOf(context.getVariable(TemplateVariablesDictionary.TIMEOUT_KEY).toString())).isEqualTo(
                 experimentConfig.getTimeout());
@@ -70,8 +70,8 @@ public class EmailTemplateVisitorTest {
     @Test
     public void testFinishedStatusContext() {
         Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
-        experiment.setExperimentStatus(RequestStatus.FINISHED);
-        Context context = experiment.getExperimentStatus().handle(emailTemplateVisitor, experiment);
+        experiment.setRequestStatus(RequestStatus.FINISHED);
+        Context context = experiment.getRequestStatus().handle(emailTemplateVisitor, experiment);
         assertContext(context, experiment);
         String actualUrl = context.getVariable(TemplateVariablesDictionary.DOWNLOAD_URL_KEY).toString();
         assertThat(actualUrl).isNotNull();
@@ -84,7 +84,7 @@ public class EmailTemplateVisitorTest {
                 ExperimentType.findByDescription(
                         context.getVariable(TemplateVariablesDictionary.EXPERIMENT_TYPE_KEY).toString());
         assertThat(actualExperimentType).isEqualTo(experiment.getExperimentType());
-        assertThat(context.getVariable(TemplateVariablesDictionary.UUID_KEY).toString()).isEqualTo(
-                experiment.getUuid());
+        assertThat(context.getVariable(TemplateVariablesDictionary.REQUEST_ID_KEY).toString()).isEqualTo(
+                experiment.getRequestId());
     }
 }

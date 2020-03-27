@@ -16,10 +16,10 @@ import lombok.Data;
 public class SendingStatus {
 
     /**
-     * Experiment uuid
+     * Experiment request id
      */
-    @ApiModelProperty(value = "Experiment uuid")
-    private String experimentUuid;
+    @ApiModelProperty(value = "Experiment request id")
+    private String experimentRequestId;
 
     /**
      * Sending status

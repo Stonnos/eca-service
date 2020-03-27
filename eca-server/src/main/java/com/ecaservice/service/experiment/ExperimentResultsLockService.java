@@ -18,28 +18,28 @@ public class ExperimentResultsLockService {
     /**
      * Locks specified experiment.
      *
-     * @param uuid - experiment uuid
+     * @param requestId - experiment request id
      */
-    public void lock(String uuid) {
-        lockStore.putIfAbsent(uuid, new Object());
+    public void lock(String requestId) {
+        lockStore.putIfAbsent(requestId, new Object());
     }
 
     /**
      * Unlocks specified experiment.
      *
-     * @param uuid - experiment uuid
+     * @param requestId - experiment request id
      */
-    public void unlock(String uuid) {
-        lockStore.remove(uuid);
+    public void unlock(String requestId) {
+        lockStore.remove(requestId);
     }
 
     /**
      * Checks experiment for locking
      *
-     * @param uuid - experiment uuid
+     * @param requestId - experiment request id
      * @return {@code true} if experiment is locked
      */
-    public boolean locked(String uuid) {
-        return lockStore.containsKey(uuid);
+    public boolean locked(String requestId) {
+        return lockStore.containsKey(requestId);
     }
 }

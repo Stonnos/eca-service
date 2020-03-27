@@ -160,7 +160,7 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
         experimentResultsEntityRepository.save(experimentResultsEntity);
         experimentResultsRequestRepository.save(
                 TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity, ErsResponseStatus.ERROR));
-        when(lockService.locked(experiment.getUuid())).thenReturn(true);
+        when(lockService.locked(experiment.getRequestId())).thenReturn(true);
         testGetErsReport(experiment, ErsReportStatus.SENDING);
     }
 

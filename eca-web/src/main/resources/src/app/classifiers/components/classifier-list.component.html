@@ -72,12 +72,12 @@
               </a>
               <div *ngIf="!isLink(column.name)">
                 <ng-container [ngSwitch]="column.name">
-                  <ng-container *ngSwitchCase="'evaluationStatus.description'">
+                  <ng-container *ngSwitchCase="'requestStatus.description'">
                     <div class="text-white request-status"
-                         [class.bg-info]="item.evaluationStatus.value == 'NEW'"
-                         [class.bg-success]="item.evaluationStatus.value == 'FINISHED'"
-                         [class.bg-warning]="item.evaluationStatus.value == 'TIMEOUT'"
-                         [class.bg-danger]="item.evaluationStatus.value == 'ERROR'">
+                         [class.bg-info]="item.requestStatus.value == 'NEW'"
+                         [class.bg-success]="item.requestStatus.value == 'FINISHED'"
+                         [class.bg-warning]="item.requestStatus.value == 'TIMEOUT'"
+                         [class.bg-danger]="item.requestStatus.value == 'ERROR'">
                       {{ getColumnValue(column.name, item) }}
                     </div>
                   </ng-container>

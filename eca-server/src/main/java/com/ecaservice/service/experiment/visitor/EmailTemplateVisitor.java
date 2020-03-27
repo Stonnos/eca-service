@@ -49,7 +49,7 @@ public class EmailTemplateVisitor implements RequestStatusVisitor<Context, Exper
         context.setVariable(TemplateVariablesDictionary.FIRST_NAME_KEY, parameter.getFirstName());
         context.setVariable(TemplateVariablesDictionary.EXPERIMENT_TYPE_KEY,
                 parameter.getExperimentType().getDescription());
-        context.setVariable(TemplateVariablesDictionary.UUID_KEY, parameter.getUuid());
+        context.setVariable(TemplateVariablesDictionary.REQUEST_ID_KEY, parameter.getRequestId());
         return context;
     }
 }

@@ -5,6 +5,7 @@ import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ws.ers.ErsConfig;
 import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
 import com.ecaservice.configuation.ErsWebServiceConfiguration;
+import com.ecaservice.conversion.ClassifierOptionsConverter;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.EvaluationMethod;
@@ -14,9 +15,8 @@ import com.ecaservice.dto.evaluation.GetEvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.InstancesReport;
 import com.ecaservice.dto.evaluation.ResponseStatus;
-import com.ecaservice.mapping.EvaluationResultsMapperImpl;
 import com.ecaservice.mapping.InstancesConverter;
-import com.ecaservice.conversion.ClassifierOptionsConverter;
+import com.ecaservice.service.evaluation.EvaluationResultsService;
 import com.ecaservice.util.Utils;
 import eca.core.evaluation.EvaluationResults;
 import org.assertj.core.api.Assertions;
@@ -40,7 +40,7 @@ import java.util.UUID;
 @RunWith(SpringRunner.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({ErsWebServiceConfiguration.class, EvaluationResultsMapperImpl.class,
+@Import({ErsWebServiceConfiguration.class, EvaluationResultsService.class,
         ErsConfig.class, ErsWebServiceClient.class, CrossValidationConfig.class,
         ClassifierOptionsConverter.class, ClassifierOptionsMapperConfiguration.class, InstancesConverter.class})
 public class ErsWebServiceClientIT {
