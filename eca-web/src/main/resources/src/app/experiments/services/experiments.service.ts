@@ -32,12 +32,12 @@ export class ExperimentsService {
     return this.http.get<PageDto<ExperimentDto>>(this.serviceUrl + '/list', options);
   }
 
-  public getExperiment(uuid: string): Observable<ExperimentDto> {
+  public getExperiment(requestId: string): Observable<ExperimentDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
-    return this.http.get<ExperimentDto>(this.serviceUrl + '/details/' + uuid, { headers: headers });
+    return this.http.get<ExperimentDto>(this.serviceUrl + '/details/' + requestId, { headers: headers });
   }
 
   public getExperimentResultsDetails(id: number): Observable<ExperimentResultsDetailsDto> {
@@ -56,44 +56,44 @@ export class ExperimentsService {
     return this.http.get<RequestStatusStatisticsDto>(this.serviceUrl + '/request-statuses-statistics', { headers: headers });
   }
 
-  public getExperimentResultsFile(uuid: string): Observable<Blob> {
+  public getExperimentResultsFile(requestId: string): Observable<Blob> {
     const headers = new HttpHeaders({
       'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
     const options = { headers: headers, responseType: 'blob' as 'json' };
-    return this.http.get<Blob>(this.serviceUrl + '/results/' + uuid, options);
+    return this.http.get<Blob>(this.serviceUrl + '/results/' + requestId, options);
   }
 
-  public getExperimentTrainingDataFile(uuid: string): Observable<Blob> {
+  public getExperimentTrainingDataFile(requestId: string): Observable<Blob> {
     const headers = new HttpHeaders({
       'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
     const options = { headers: headers, responseType: 'blob' as 'json' };
-    return this.http.get<Blob>(this.serviceUrl + '/training-data/' + uuid, options);
+    return this.http.get<Blob>(this.serviceUrl + '/training-data/' + requestId, options);
   }
 
-  public getExperimentErsReport(uuid: string): Observable<ExperimentErsReportDto> {
+  public getExperimentErsReport(requestId: string): Observable<ExperimentErsReportDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
-    return this.http.get<ExperimentErsReportDto>(this.serviceUrl + '/ers-report/' + uuid, { headers: headers });
+    return this.http.get<ExperimentErsReportDto>(this.serviceUrl + '/ers-report/' + requestId, { headers: headers });
   }
 
-  public checkExperimentResultsSendingStatus(uuid: string): Observable<SendingStatus> {
+  public checkExperimentResultsSendingStatus(requestId: string): Observable<SendingStatus> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
-    return this.http.get<SendingStatus>(this.serviceUrl + '/ers-report/sending-status/' + uuid, { headers: headers });
+    return this.http.get<SendingStatus>(this.serviceUrl + '/ers-report/sending-status/' + requestId, { headers: headers });
   }
 
-  public sentEvaluationResults(uuid: string) {
+  public sentEvaluationResults(requestId: string) {
     const headers = new HttpHeaders({
       'Content-type': 'application/json',
       'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
-    return this.http.post(this.serviceUrl + '/sent-evaluation-results', uuid, { headers: headers });
+    return this.http.post(this.serviceUrl + '/sent-evaluation-results', requestId, { headers: headers });
   }
 
   public getExperimentTypesStatistics(createdDateFrom: string, createdDateTo: string): Observable<ChartDataDto[]> {

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * @author Roman Batygin
  */
 @Data
-public class AbstractEvaluationDto {
+public abstract class AbstractEvaluationDto {
 
     /**
      * Request unique identifier
