@@ -73,7 +73,7 @@ export class ExperimentErsReportComponent implements OnInit, FieldLink {
 
   public sentEvaluationResults(): void {
     this.loading = true;
-    this.experimentsService.sentEvaluationResults(this.experimentErsReport.experimentUuid)
+    this.experimentsService.sentEvaluationResults(this.experimentErsReport.experimentRequestId)
       .pipe(
         finalize(() => {
           this.loading = false;
