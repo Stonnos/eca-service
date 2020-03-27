@@ -31,7 +31,7 @@
         </preConditions>
         <update tableName="filter_field">
             <column name="field_name" value="requestStatus"/>
-            <where>filter_template_id = 2 and field_name = 'experimentStatus'</where>
+            <where>filter_template_id = 1 and field_name = 'experimentStatus'</where>
         </update>
     </changeSet>
 
@@ -44,7 +44,7 @@
         </preConditions>
         <update tableName="global_filter_field">
             <column name="field_name" value="requestStatus"/>
-            <where>global_filter_template_id = 2 and field_name = 'experimentStatus'</where>
+            <where>global_filter_template_id = 1 and field_name = 'experimentStatus'</where>
         </update>
     </changeSet>
 

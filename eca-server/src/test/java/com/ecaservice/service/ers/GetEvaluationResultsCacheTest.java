@@ -1,21 +1,21 @@
 package com.ecaservice.service.ers;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.CacheNames;
+import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ws.ers.ErsConfig;
 import com.ecaservice.configuation.CacheConfiguration;
 import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
 import com.ecaservice.configuation.ErsWebServiceConfiguration;
+import com.ecaservice.conversion.ClassifierOptionsConverter;
 import com.ecaservice.dto.evaluation.GetEvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassifierReportMapperImpl;
 import com.ecaservice.mapping.ErsResponseStatusMapperImpl;
-import com.ecaservice.mapping.EvaluationResultsMapperImpl;
 import com.ecaservice.mapping.InstancesConverter;
 import com.ecaservice.service.AbstractJpaTest;
-import com.ecaservice.conversion.ClassifierOptionsConverter;
+import com.ecaservice.service.evaluation.EvaluationResultsService;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({ErsConfig.class, ClassifierReportMapperImpl.class, ErsWebServiceClient.class,
-        EvaluationResultsMapperImpl.class, ErsWebServiceConfiguration.class, ErsResponseStatusMapperImpl.class,
+        EvaluationResultsService.class, ErsWebServiceConfiguration.class, ErsResponseStatusMapperImpl.class,
         CacheConfiguration.class, CrossValidationConfig.class, ErsRequestService.class,
         ClassifierOptionsConverter.class, ClassifierOptionsMapperConfiguration.class, InstancesConverter.class})
 public class GetEvaluationResultsCacheTest extends AbstractJpaTest {
