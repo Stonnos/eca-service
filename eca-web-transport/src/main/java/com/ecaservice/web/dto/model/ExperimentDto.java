@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
@@ -15,8 +16,9 @@ import java.time.LocalDateTime;
  * @author Roman Batygin
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @ApiModel(description = "Experiment model")
-public class ExperimentDto {
+public class ExperimentDto extends AbstractEvaluationDto {
 
     /**
      * First name
@@ -43,36 +45,6 @@ public class ExperimentDto {
     private String trainingDataAbsolutePath;
 
     /**
-     * Experiment request id
-     */
-    @ApiModelProperty(value = "Experiment request id")
-    private String requestId;
-
-    /**
-     * Request creation date
-     */
-    @ApiModelProperty(value = "Experiment creation date")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    private LocalDateTime creationDate;
-
-    /**
-     * Experiment processing start date
-     */
-    @ApiModelProperty(value = "Experiment processing start date")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    private LocalDateTime startDate;
-
-    /**
-     * Experiment processing end date
-     */
-    @ApiModelProperty(value = "Experiment processing end date")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    private LocalDateTime endDate;
-
-    /**
      * Date when experiment results is sent
      */
     @ApiModelProperty(value = "Experiment results sent date")
@@ -93,34 +65,4 @@ public class ExperimentDto {
      */
     @ApiModelProperty(value = "Experiment type")
     private EnumDto experimentType;
-
-    /**
-     * Request status
-     */
-    @ApiModelProperty(value = "Request status")
-    private EnumDto requestStatus;
-
-    /**
-     * Evaluation method
-     */
-    @ApiModelProperty(value = "Evaluation method")
-    private EnumDto evaluationMethod;
-
-    /**
-     * Folds number for k * V cross - validation method
-     */
-    @ApiModelProperty(value = "Folds number for k * V cross - validation method")
-    private Integer numFolds;
-
-    /**
-     * Tests number for k * V cross - validation method
-     */
-    @ApiModelProperty(value = "Tests number for k * V cross - validation method")
-    private Integer numTests;
-
-    /**
-     * Seed value for k * V cross - validation method
-     */
-    @ApiModelProperty(value = "Seed value for k * V cross - validation method")
-    private Integer seed;
 }

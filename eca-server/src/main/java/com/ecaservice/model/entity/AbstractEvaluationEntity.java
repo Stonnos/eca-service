@@ -2,11 +2,12 @@ package com.ecaservice.model.entity;
 
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
@@ -16,9 +17,12 @@ import java.time.LocalDateTime;
  * @author Roman Batygin
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 @MappedSuperclass
-public abstract class AbstractEvaluationEntity extends BaseEntity {
+public abstract class AbstractEvaluationEntity {
+
+    @Id
+    @GeneratedValue
+    private Long id;
 
     /**
      * Request unique identifier
@@ -75,6 +79,9 @@ public abstract class AbstractEvaluationEntity extends BaseEntity {
      */
     private Integer seed;
 
+    /**
+     * Error message
+     */
     @Column(name = "error_message", columnDefinition = "text")
     private String errorMessage;
 }
