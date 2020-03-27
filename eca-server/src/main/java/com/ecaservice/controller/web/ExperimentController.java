@@ -77,16 +77,16 @@ import static com.ecaservice.util.Utils.toRequestStatusesStatistics;
 public class ExperimentController {
 
     private static final String EXPERIMENT_RESULTS_FILE_NOT_FOUND =
-            "Experiment results file for uuid = '%s' not found!";
+            "Experiment results file for request id = '%s' not found!";
     private static final String EXPERIMENT_RESULTS_SENT_FORMAT = "Experiment [%s] results is already sent to ERS";
     private static final String EXPERIMENT_RESULTS_FILE_DELETED_FORMAT =
             "Experiment [%s] results file has been deleted";
-    private static final String EXPERIMENT_NOT_FOUND_FORMAT = "Experiment with uuid [%s] not found";
+    private static final String EXPERIMENT_NOT_FOUND_FORMAT = "Experiment with request id [%s] not found";
     private static final String EXPERIMENT_NOT_FINISHED_FORMAT =
             "Can't sent experiment [%s] results to ERS, because experiment status isn't FINISHED";
     private static final String EXPERIMENT_RESULTS_NOT_FOUND = "Can't found experiment [%s] results to ERS sent";
     private static final String EXPERIMENT_TRAINING_DATA_FILE_NOT_FOUND_FORMAT =
-            "Experiment training data file for uuid = '%s' not found!";
+            "Experiment training data file for request id = '%s' not found!";
 
     private final ExperimentService experimentService;
     private final ExperimentRequestService experimentRequestService;
@@ -101,37 +101,37 @@ public class ExperimentController {
     private final ConcurrentHashMap<String, Object> experimentMap = new ConcurrentHashMap<>();
 
     /**
-     * Downloads experiment training data by specified uuid.
+     * Downloads experiment training data by specified request id.
      *
-     * @param uuid - experiment uuid
+     * @param requestId - experiment request id
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
-            value = "Downloads experiment training data by specified uuid",
-            notes = "Downloads experiment training data by specified uuid"
+            value = "Downloads experiment training data by specified request id",
+            notes = "Downloads experiment training data by specified request id"
     )
-    @GetMapping(value = "/training-data/{uuid}")
+    @GetMapping(value = "/training-data/{requestId}")
     public ResponseEntity downloadTrainingData(
-            @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
-        return downloadExperimentFile(uuid, Experiment::getTrainingDataAbsolutePath,
-                String.format(EXPERIMENT_TRAINING_DATA_FILE_NOT_FOUND_FORMAT, uuid));
+            @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
+        return downloadExperimentFile(requestId, Experiment::getTrainingDataAbsolutePath,
+                String.format(EXPERIMENT_TRAINING_DATA_FILE_NOT_FOUND_FORMAT, requestId));
     }
 
     /**
-     * Downloads experiment results by specified uuid.
+     * Downloads experiment results by specified request id.
      *
-     * @param uuid - experiment uuid
+     * @param requestId - experiment request id
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
-            value = "Downloads experiment results by specified uuid",
-            notes = "Downloads experiment results by specified uuid"
+            value = "Downloads experiment results by specified request id",
+            notes = "Downloads experiment results by specified request id"
     )
-    @GetMapping(value = "/results/{uuid}")
+    @GetMapping(value = "/results/{requestId}")
     public ResponseEntity downloadExperiment(
-            @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
-        return downloadExperimentFile(uuid, Experiment::getExperimentAbsolutePath,
-                String.format(EXPERIMENT_RESULTS_FILE_NOT_FOUND, uuid));
+            @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
+        return downloadExperimentFile(requestId, Experiment::getExperimentAbsolutePath,
+                String.format(EXPERIMENT_RESULTS_FILE_NOT_FOUND, requestId));
     }
 
     /**
@@ -140,7 +140,7 @@ public class ExperimentController {
      * @param trainingData     - training data file with format, such as csv, xls, xlsx, arff, json, docx, data, txt
      * @param experimentType   - experiment type
      * @param evaluationMethod - evaluation method
-     * @return experiment uuid
+     * @return create experiment results dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
@@ -158,7 +158,7 @@ public class ExperimentController {
             ExperimentRequest experimentRequest =
                     createExperimentRequest(trainingData, experimentType, evaluationMethod);
             Experiment experiment = experimentRequestService.createExperimentRequest(experimentRequest);
-            resultDto.setUuid(experiment.getUuid());
+            resultDto.setRequestId(experiment.getRequestId());
             resultDto.setCreated(true);
         } catch (Exception ex) {
             log.error("There was an error while experiment creation for data '{}'", trainingData.getOriginalFilename());
@@ -187,22 +187,22 @@ public class ExperimentController {
     }
 
     /**
-     * Finds experiment with specified uuid.
+     * Finds experiment with specified request id.
      *
-     * @param uuid - experiment uuid
+     * @param requestId - experiment request id
      * @return experiment dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
-            value = "Finds experiment with specified uuid",
-            notes = "Finds experiment with specified uuid"
+            value = "Finds experiment with specified request id",
+            notes = "Finds experiment with specified request id"
     )
-    @GetMapping(value = "/details/{uuid}")
+    @GetMapping(value = "/details/{requestId}")
     public ResponseEntity<ExperimentDto> getExperiment(
-            @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
-        Experiment experiment = experimentRepository.findByUuid(uuid);
+            @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
+        Experiment experiment = experimentRepository.findByRequestId(requestId);
         if (experiment == null) {
-            log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, uuid));
+            log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, requestId));
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(experimentMapper.map(experiment));
@@ -250,7 +250,7 @@ public class ExperimentController {
     /**
      * Gets ERS report for specified experiment.
      *
-     * @param uuid - experiment uuid
+     * @param requestId - experiment request id
      * @return ers report dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
@@ -258,13 +258,13 @@ public class ExperimentController {
             value = "Gets experiment ERS report",
             notes = "Gets experiment ERS report"
     )
-    @GetMapping(value = "/ers-report/{uuid}")
+    @GetMapping(value = "/ers-report/{requestId}")
     public ResponseEntity<ExperimentErsReportDto> getExperimentErsReport(
-            @ApiParam(value = "Experiment uuid", required = true) @PathVariable String uuid) {
-        log.info("Received request for ERS report for experiment [{}]", uuid);
-        Experiment experiment = experimentRepository.findByUuid(uuid);
+            @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
+        log.info("Received request for ERS report for experiment [{}]", requestId);
+        Experiment experiment = experimentRepository.findByRequestId(requestId);
         if (experiment == null) {
-            log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, uuid));
+            log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, requestId));
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(experimentResultsService.getErsReport(experiment));
@@ -273,7 +273,7 @@ public class ExperimentController {
     /**
      * Checks experiment results manual sending status.
      *
-     * @param uuid - experiment uuid
+     * @param requestId - experiment request id
      * @return response entity
      */
     @PreAuthorize("#oauth2.hasScope('web')")
@@ -281,20 +281,20 @@ public class ExperimentController {
             value = "Checks experiment results manual sending status",
             notes = "Checks experiment results manual sending status"
     )
-    @GetMapping(value = "/ers-report/sending-status/{uuid}")
-    public ResponseEntity<SendingStatus> checkExperimentResultsSendingStatus(@PathVariable String uuid) {
-        Experiment experiment = experimentRepository.findByUuid(uuid);
+    @GetMapping(value = "/ers-report/sending-status/{requestId}")
+    public ResponseEntity<SendingStatus> checkExperimentResultsSendingStatus(@PathVariable String requestId) {
+        Experiment experiment = experimentRepository.findByRequestId(requestId);
         if (experiment == null) {
-            log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, uuid));
+            log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, requestId));
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(new SendingStatus(experiment.getUuid(), lockService.locked(uuid)));
+        return ResponseEntity.ok(new SendingStatus(experiment.getRequestId(), lockService.locked(requestId)));
     }
 
     /**
      * Sent evaluation results to ERS for experiment.
      *
-     * @param uuid - experiment uuid
+     * @param requestId - experiment request id
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
@@ -302,31 +302,31 @@ public class ExperimentController {
             notes = "Sent evaluation results to ERS for experiment"
     )
     @PostMapping(value = "/sent-evaluation-results")
-    public ResponseEntity sentExperimentEvaluationResults(@RequestBody String uuid) {
-        log.info("Received request to send evaluation results to ERS for experiment [{}]", uuid);
-        Experiment experiment = experimentRepository.findByUuid(uuid);
+    public ResponseEntity sentExperimentEvaluationResults(@RequestBody String requestId) {
+        log.info("Received request to send evaluation results to ERS for experiment [{}]", requestId);
+        Experiment experiment = experimentRepository.findByRequestId(requestId);
         if (experiment == null) {
-            String error = String.format(EXPERIMENT_NOT_FOUND_FORMAT, uuid);
+            String error = String.format(EXPERIMENT_NOT_FOUND_FORMAT, requestId);
             log.error(error);
             return ResponseEntity.badRequest().body(error);
         }
-        if (!RequestStatus.FINISHED.equals(experiment.getExperimentStatus())) {
-            log.error("Can't sent experiment [{}] results to ERS, because experiment status isn't FINISHED", uuid);
-            return ResponseEntity.badRequest().body(String.format(EXPERIMENT_NOT_FINISHED_FORMAT, uuid));
+        if (!RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
+            log.error("Can't sent experiment [{}] results to ERS, because experiment status isn't FINISHED", requestId);
+            return ResponseEntity.badRequest().body(String.format(EXPERIMENT_NOT_FINISHED_FORMAT, requestId));
         }
         long resultsCount = experimentResultsEntityRepository.countByExperiment(experiment);
         if (resultsCount == 0L) {
-            log.error("Can't found experiment [{}] results to ERS sent", experiment.getUuid());
-            return ResponseEntity.badRequest().body(String.format(EXPERIMENT_RESULTS_NOT_FOUND, experiment.getUuid()));
+            log.error("Can't found experiment [{}] results to ERS sent", experiment.getRequestId());
+            return ResponseEntity.badRequest().body(String.format(EXPERIMENT_RESULTS_NOT_FOUND, experiment.getRequestId()));
         }
         long sentResults = experimentResultsEntityRepository.getSentResultsCount(experiment);
         if (resultsCount == sentResults) {
-            return ResponseEntity.ok(String.format(EXPERIMENT_RESULTS_SENT_FORMAT, experiment.getUuid()));
+            return ResponseEntity.ok(String.format(EXPERIMENT_RESULTS_SENT_FORMAT, experiment.getRequestId()));
         }
         if (experiment.getDeletedDate() != null) {
-            log.error("Experiment [{}] results file has been deleted", experiment.getUuid());
+            log.error("Experiment [{}] results file has been deleted", experiment.getRequestId());
             return ResponseEntity.badRequest().body(
-                    String.format(EXPERIMENT_RESULTS_FILE_DELETED_FORMAT, experiment.getUuid()));
+                    String.format(EXPERIMENT_RESULTS_FILE_DELETED_FORMAT, experiment.getRequestId()));
         }
         return sentExperimentResults(experiment);
     }
@@ -386,25 +386,25 @@ public class ExperimentController {
 
     private ResponseEntity sentExperimentResults(Experiment experiment) {
         ResponseEntity responseEntity;
-        experimentMap.putIfAbsent(experiment.getUuid(), new Object());
-        synchronized (experimentMap.get(experiment.getUuid())) {
-            if (lockService.locked(experiment.getUuid())) {
+        experimentMap.putIfAbsent(experiment.getRequestId(), new Object());
+        synchronized (experimentMap.get(experiment.getRequestId())) {
+            if (lockService.locked(experiment.getRequestId())) {
                 responseEntity = ResponseEntity.status(HttpStatus.CONFLICT).build();
             } else {
-                lockService.lock(experiment.getUuid());
+                lockService.lock(experiment.getRequestId());
                 applicationEventPublisher.publishEvent(new ExperimentResultsSendingEvent(this, experiment));
                 responseEntity = ResponseEntity.ok().build();
             }
         }
-        experimentMap.remove(experiment.getUuid());
+        experimentMap.remove(experiment.getRequestId());
         return responseEntity;
     }
 
-    private ResponseEntity downloadExperimentFile(String uuid, Function<Experiment, String> filePathFunction,
+    private ResponseEntity downloadExperimentFile(String requestId, Function<Experiment, String> filePathFunction,
                                                   String errorMessage) {
-        Experiment experiment = experimentRepository.findByUuid(uuid);
+        Experiment experiment = experimentRepository.findByRequestId(requestId);
         if (experiment == null) {
-            log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, uuid));
+            log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, requestId));
             return ResponseEntity.badRequest().build();
         }
         File experimentFile = getExperimentFile(experiment, filePathFunction);
@@ -412,7 +412,7 @@ public class ExperimentController {
             log.error(errorMessage);
             return ResponseEntity.badRequest().body(errorMessage);
         }
-        log.info("Downloads experiment file '{}' for uuid = '{}'", filePathFunction.apply(experiment), uuid);
+        log.info("Downloads experiment file '{}' for request id = '{}'", filePathFunction.apply(experiment), requestId);
         return Utils.buildAttachmentResponse(experimentFile);
     }
 }

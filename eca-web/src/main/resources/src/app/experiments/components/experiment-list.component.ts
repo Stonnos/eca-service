@@ -34,8 +34,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public createExperimentDialogVisibility: boolean = false;
 
-  public lastCreatedExperimentUuid: string;
-  public blinkUuid: string;
+  public lastCreatedExperimentRequestId: string;
+  public blinkRequestId: string;
 
   public selectedExperiment: ExperimentDto;
   public selectedColumn: string;
@@ -52,8 +52,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ExperimentFields.CREATION_DATE;
-    this.linkColumns = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH, ExperimentFields.UUID,
-      ExperimentFields.EVALUATION_METHOD_DESCRIPTION];
+    this.linkColumns = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH,
+      ExperimentFields.REQUEST_ID, ExperimentFields.EVALUATION_METHOD_DESCRIPTION];
     this.notSortableColumns = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH];
     this.initColumns();
   }
@@ -70,8 +70,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   }
 
   public setPage(pageDto: PageDto<ExperimentDto>) {
-    this.blinkUuid = this.lastCreatedExperimentUuid;
-    this.lastCreatedExperimentUuid = null;
+    this.blinkRequestId = this.lastCreatedExperimentRequestId;
+    this.lastCreatedExperimentRequestId = null;
     super.setPage(pageDto);
   }
 
@@ -124,8 +124,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       case ExperimentFields.EXPERIMENT_PATH:
         this.getExperimentResultsFile(experiment);
         break;
-      case ExperimentFields.UUID:
-        this.router.navigate([RouterPaths.EXPERIMENT_DETAILS_URL, experiment.uuid]);
+      case ExperimentFields.REQUEST_ID:
+        this.router.navigate([RouterPaths.EXPERIMENT_DETAILS_URL, experiment.requestId]);
         break;
       case ExperimentFields.EVALUATION_METHOD_DESCRIPTION:
         if (experiment.evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION) {
@@ -139,7 +139,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public getExperimentTrainingDataFile(experiment: ExperimentDto): void {
     this.loading = true;
-    this.experimentsService.getExperimentTrainingDataFile(experiment.uuid)
+    this.experimentsService.getExperimentTrainingDataFile(experiment.requestId)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -157,7 +157,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public getExperimentResultsFile(experiment: ExperimentDto): void {
     this.loading = true;
-    this.experimentsService.getExperimentResultsFile(experiment.uuid)
+    this.experimentsService.getExperimentResultsFile(experiment.requestId)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -189,7 +189,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
         next: (result: CreateExperimentResultDto) => {
           if (result.created) {
             this.messageService.add({ severity: 'success', summary: `Эксперимент был успешно создан`, detail: '' });
-            this.lastCreatedExperimentUuid = result.uuid;
+            this.lastCreatedExperimentRequestId = result.requestId;
             this.getRequestStatusesStatistics();
             this.performPageRequest(0, this.pageSize, ExperimentFields.CREATION_DATE, false);
           } else {
@@ -203,7 +203,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   }
 
   public isBlink(item: ExperimentDto): boolean {
-    return this.blinkUuid == item.uuid;
+    return this.blinkRequestId == item.requestId;
   }
 
   public showCreateExperimentDialog(): void {
@@ -254,9 +254,9 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   private initColumns() {
     this.columns = [
-      { name: ExperimentFields.UUID, label: "UUID заявки" },
+      { name: ExperimentFields.REQUEST_ID, label: "UUID заявки" },
       { name: ExperimentFields.EXPERIMENT_TYPE_DESCRIPTION, label: "Тип эксперимента", sortBy: ExperimentFields.EXPERIMENT_TYPE },
-      { name: ExperimentFields.EXPERIMENT_STATUS_DESCRIPTION, label: "Статус заявки", sortBy: ExperimentFields.EXPERIMENT_STATUS },
+      { name: ExperimentFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки", sortBy: ExperimentFields.REQUEST_STATUS },
       { name: ExperimentFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: ExperimentFields.EVALUATION_METHOD },
       { name: ExperimentFields.FIRST_NAME, label: "Имя заявки" },
       { name: ExperimentFields.EMAIL, label: "Email заявки" },

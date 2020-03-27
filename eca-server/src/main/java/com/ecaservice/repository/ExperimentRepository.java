@@ -20,12 +20,12 @@ import java.util.List;
 public interface ExperimentRepository extends JpaRepository<Experiment, Long>, JpaSpecificationExecutor<Experiment> {
 
     /**
-     * Finds experiment by uuid.
+     * Finds experiment by request id.
      *
-     * @param uuid - experiment uuid
+     * @param requestId - request id
      * @return experiment entity
      */
-    Experiment findByUuid(String uuid);
+    Experiment findByRequestId(String requestId);
 
     /**
      * Finds experiment by token.
@@ -41,7 +41,7 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
      * @param statuses - {@link RequestStatus} collection
      * @return experiments list
      */
-    @Query("select exp from Experiment exp where exp.experimentStatus in (:statuses) and exp.sentDate is null order by exp.creationDate")
+    @Query("select exp from Experiment exp where exp.requestStatus in (:statuses) and exp.sentDate is null order by exp.creationDate")
     List<Experiment> findNotSentExperiments(@Param("statuses") Collection<RequestStatus> statuses);
 
     /**
@@ -59,7 +59,7 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
      *
      * @return requests status counting statistics list
      */
-    @Query("select e.experimentStatus as requestStatus, count(e.experimentStatus) as requestsCount from " +
-            "Experiment e group by e.experimentStatus")
+    @Query("select e.requestStatus as requestStatus, count(e.requestStatus) as requestsCount from " +
+            "Experiment e group by e.requestStatus")
     List<RequestStatusStatistics> getRequestStatusesStatistics();
 }

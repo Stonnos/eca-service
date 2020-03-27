@@ -82,7 +82,7 @@ public class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     public void testFetchEvaluationLogsData() {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
         evaluationLog.setCreationDate(CREATION_DATE);
-        evaluationLog.setEvaluationStatus(RequestStatus.FINISHED);
+        evaluationLog.setRequestStatus(RequestStatus.FINISHED);
         evaluationLogRepository.save(evaluationLog);
         String searchQuery = evaluationLog.getRequestId().substring(0, 10);
         PageRequestDto pageRequestDto =
@@ -93,7 +93,7 @@ public class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(EvaluationLog_.REQUEST_ID, Collections.singletonList(evaluationLog.getRequestId()),
                         MatchMode.LIKE));
-        pageRequestDto.getFilters().add(new FilterRequestDto(EvaluationLog_.EVALUATION_STATUS,
+        pageRequestDto.getFilters().add(new FilterRequestDto(EvaluationLog_.REQUEST_STATUS,
                 Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
         BaseReportBean<EvaluationLogBean> baseReportBean =
                 evaluationLogsBaseReportDataFetcher.fetchReportData(pageRequestDto);

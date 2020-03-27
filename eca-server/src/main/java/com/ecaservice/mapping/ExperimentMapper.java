@@ -53,7 +53,7 @@ public abstract class ExperimentMapper {
     @Mapping(source = "trainingDataAbsolutePath", target = "trainingDataAbsolutePath", qualifiedByName = "toFileName")
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(target = "experimentType", ignore = true)
-    @Mapping(target = "experimentStatus", ignore = true)
+    @Mapping(target = "requestStatus", ignore = true)
     @Mapping(target = "numFolds", ignore = true)
     @Mapping(target = "numTests", ignore = true)
     @Mapping(target = "seed", ignore = true)
@@ -77,7 +77,7 @@ public abstract class ExperimentMapper {
     @Mapping(source = "trainingDataAbsolutePath", target = "trainingDataAbsolutePath", qualifiedByName = "toFileName")
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(source = "experimentType.description", target = "experimentType")
-    @Mapping(source = "experimentStatus.description", target = "experimentStatus")
+    @Mapping(source = "requestStatus.description", target = "requestStatus")
     @Mapping(source = "creationDate", target = "creationDate", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "startDate", target = "startDate", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "endDate", target = "endDate", qualifiedByName = "formatLocalDateTime")
@@ -125,8 +125,8 @@ public abstract class ExperimentMapper {
 
     @AfterMapping
     protected void postMapping(Experiment experiment, @MappingTarget ExperimentDto experimentDto) {
-        experimentDto.setExperimentStatus(new EnumDto(experiment.getExperimentStatus().name(),
-                experiment.getExperimentStatus().getDescription()));
+        experimentDto.setRequestStatus(new EnumDto(experiment.getRequestStatus().name(),
+                experiment.getRequestStatus().getDescription()));
         experimentDto.setExperimentType(new EnumDto(experiment.getExperimentType().name(),
                 experiment.getExperimentType().getDescription()));
     }

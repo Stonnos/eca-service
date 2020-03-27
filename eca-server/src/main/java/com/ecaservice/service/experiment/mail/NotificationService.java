@@ -41,8 +41,8 @@ public class NotificationService {
      * @param experiment - experiment object
      */
     public void notifyByEmail(Experiment experiment) {
-        log.info("Starting to send email request for experiment [{}] with status [{}].", experiment.getUuid(),
-                experiment.getExperimentStatus());
+        log.info("Starting to send email request for experiment [{}] with status [{}].", experiment.getRequestId(),
+                experiment.getRequestStatus());
         if (!Boolean.TRUE.equals(mailConfig.getEnabled())) {
             log.warn("Notifications sending is disabled.");
         } else {
@@ -61,7 +61,7 @@ public class NotificationService {
                     errorHandler.handleError(emailResponse);
                 } else {
                     log.info("Email request has been successfully sent for experiment [{}], experiment status [{}].",
-                            experiment.getUuid(), experiment.getExperimentStatus());
+                            experiment.getRequestId(), experiment.getRequestStatus());
                 }
             }
             catch (NotificationServiceException ex) {
@@ -79,8 +79,8 @@ public class NotificationService {
     }
 
     private String buildEmailMessage(Experiment experiment) {
-        String template = mailConfig.getMessageTemplatesMap().get(experiment.getExperimentStatus());
-        Context context = experiment.getExperimentStatus().handle(statusTemplateVisitor, experiment);
+        String template = mailConfig.getMessageTemplatesMap().get(experiment.getRequestStatus());
+        Context context = experiment.getRequestStatus().handle(statusTemplateVisitor, experiment);
         return templateEngine.process(template, context);
     }
 

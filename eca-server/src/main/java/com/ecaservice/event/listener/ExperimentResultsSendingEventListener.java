@@ -53,7 +53,7 @@ public class ExperimentResultsSendingEventListener {
         } catch (Exception ex) {
             log.error("There was an error while experiment history manually sending: {}", ex.getMessage());
         } finally {
-            lockService.unlock(experiment.getUuid());
+            lockService.unlock(experiment.getRequestId());
         }
     }
 }

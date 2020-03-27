@@ -54,7 +54,7 @@ public abstract class EvaluationLogMapper {
      * @return evaluation log dto
      */
     @Mapping(target = "evaluationMethod", ignore = true)
-    @Mapping(target = "evaluationStatus", ignore = true)
+    @Mapping(target = "requestStatus", ignore = true)
     @Mapping(target = "numFolds", ignore = true)
     @Mapping(target = "numTests", ignore = true)
     @Mapping(target = "seed", ignore = true)
@@ -67,7 +67,7 @@ public abstract class EvaluationLogMapper {
      * @return evaluation log details dto
      */
     @Mapping(target = "evaluationMethod", ignore = true)
-    @Mapping(target = "evaluationStatus", ignore = true)
+    @Mapping(target = "requestStatus", ignore = true)
     @Mapping(target = "numFolds", ignore = true)
     @Mapping(target = "numTests", ignore = true)
     @Mapping(target = "seed", ignore = true)
@@ -80,7 +80,7 @@ public abstract class EvaluationLogMapper {
      * @return evaluation log bean
      */
     @Mapping(target = "evaluationMethod", ignore = true)
-    @Mapping(source = "evaluationStatus.description", target = "evaluationStatus")
+    @Mapping(source = "requestStatus.description", target = "requestStatus")
     @Mapping(source = "creationDate", target = "creationDate", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "startDate", target = "startDate", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "endDate", target = "endDate", qualifiedByName = "formatLocalDateTime")
@@ -147,8 +147,8 @@ public abstract class EvaluationLogMapper {
     @AfterMapping
     protected void mapEvaluationStatus(EvaluationLog evaluationLog,
                                        @MappingTarget EvaluationLogDto evaluationLogDto) {
-        evaluationLogDto.setEvaluationStatus(new EnumDto(evaluationLog.getEvaluationStatus().name(),
-                evaluationLog.getEvaluationStatus().getDescription()));
+        evaluationLogDto.setRequestStatus(new EnumDto(evaluationLog.getRequestStatus().name(),
+                evaluationLog.getRequestStatus().getDescription()));
     }
 
     @Named("formatLocalDateTime")

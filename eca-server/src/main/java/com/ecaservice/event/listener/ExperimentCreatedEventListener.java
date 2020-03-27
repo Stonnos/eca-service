@@ -36,7 +36,7 @@ public class ExperimentCreatedEventListener {
             notificationService.notifyByEmail(experiment);
         } catch (Exception ex) {
             log.error("There was an error while sending email request for experiment [{}]: {}",
-                    experiment.getUuid(), ex.getMessage());
+                    experiment.getRequestId(), ex.getMessage());
         }
     }
 }

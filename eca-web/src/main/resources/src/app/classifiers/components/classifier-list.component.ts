@@ -134,7 +134,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     this.columns = [
       { name: EvaluationLogFields.REQUEST_ID, label: "UUID заявки" },
       { name: EvaluationLogFields.CLASSIFIER_NAME, label: "Классификатор" },
-      { name: EvaluationLogFields.EVALUATION_STATUS_DESCRIPTION, label: "Статус заявки", sortBy: EvaluationLogFields.EVALUATION_STATUS },
+      { name: EvaluationLogFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки", sortBy: EvaluationLogFields.REQUEST_STATUS },
       { name: EvaluationLogFields.RELATION_NAME, label: "Обучающая выборка" },
       { name: EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: EvaluationLogFields.EVALUATION_METHOD },
       { name: EvaluationLogFields.CREATION_DATE, label: "Дата создания заявки" },

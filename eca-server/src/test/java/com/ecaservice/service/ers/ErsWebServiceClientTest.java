@@ -5,7 +5,7 @@ import com.ecaservice.config.ws.ers.ErsConfig;
 import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.EvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
-import com.ecaservice.mapping.EvaluationResultsMapper;
+import com.ecaservice.service.evaluation.EvaluationResultsService;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.metrics.KNearestNeighbours;
@@ -40,7 +40,7 @@ public class ErsWebServiceClientTest {
     @Mock
     private WebServiceTemplate ersWebServiceTemplate;
     @Mock
-    private EvaluationResultsMapper evaluationResultsMapper;
+    private EvaluationResultsService evaluationResultsService;
 
     @InjectMocks
     private ErsWebServiceClient ersWebServiceClient;
@@ -51,7 +51,7 @@ public class ErsWebServiceClientTest {
     public void init() throws Exception {
         evaluationResults =
                 new EvaluationResults(new KNearestNeighbours(), new Evaluation(TestHelperUtils.loadInstances()));
-        when(evaluationResultsMapper.map(any(EvaluationResults.class))).thenReturn(new EvaluationResultsRequest());
+        when(evaluationResultsService.proceed(any(EvaluationResults.class))).thenReturn(new EvaluationResultsRequest());
         when(serviceConfig.getUrl()).thenReturn(WEB_SERVICE_URL);
     }
 

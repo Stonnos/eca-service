@@ -36,9 +36,9 @@ public class EvaluationLogBean {
     private String classifierName;
 
     /**
-     * Evaluation status
+     * Request status
      */
-    private String evaluationStatus;
+    private String requestStatus;
 
     /**
      * Evaluation method

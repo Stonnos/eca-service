@@ -67,7 +67,7 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
                     classifierOptionsDatabaseModelRepository.findAllByVersion(version);
             List<ClassifierOptionsDatabaseModel> newOptions = createClassifiersOptions(modelFiles, ++version);
             if (CollectionUtils.isEmpty(latestOptions) || latestOptions.size() != newOptions.size() ||
-                    !newOptions.equals(latestOptions)) {
+                    !latestOptions.containsAll(newOptions)) {
                 log.info("Saving new classifiers input options with version {}.", version);
                 classifierOptionsDatabaseModelRepository.saveAll(newOptions);
             }

@@ -19,7 +19,6 @@ public interface EcaResponseMapper {
      * @param experiment experiment
      * @return eca response model
      */
-    @Mapping(source = "uuid", target = "requestId")
     @Mapping(target = "status", constant = "SUCCESS")
     @Mapping(target = "errorMessage", ignore = true)
     EcaResponse map(Experiment experiment);

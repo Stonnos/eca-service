@@ -27,7 +27,7 @@ export class ExperimentResultsDetailsComponent implements OnInit, FieldLink {
 
   public experimentResultsDetailsDto: ExperimentResultsDetailsDto;
 
-  public linkColumns: string[] = [ExperimentFields.UUID];
+  public linkColumns: string[] = [ExperimentFields.REQUEST_ID];
 
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService,
@@ -74,8 +74,8 @@ export class ExperimentResultsDetailsComponent implements OnInit, FieldLink {
   }
 
   public onLink(field: string): void {
-    if (field == ExperimentFields.UUID) {
-      this.router.navigate([RouterPaths.EXPERIMENT_DETAILS_URL, this.experimentResultsDetailsDto.experimentDto.uuid]);
+    if (field == ExperimentFields.REQUEST_ID) {
+      this.router.navigate([RouterPaths.EXPERIMENT_DETAILS_URL, this.experimentResultsDetailsDto.experimentDto.requestId]);
     } else {
       this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${field} as link`});
     }
@@ -83,7 +83,7 @@ export class ExperimentResultsDetailsComponent implements OnInit, FieldLink {
 
   private initExperimentFields(): void {
     this.experimentFields = [
-      { name: ExperimentFields.UUID, label: "UUID заявки" },
+      { name: ExperimentFields.REQUEST_ID, label: "UUID заявки" },
       { name: ExperimentFields.EXPERIMENT_TYPE_DESCRIPTION, label: "Тип эксперимента" },
       { name: ExperimentFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности" }
     ];

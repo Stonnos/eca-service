@@ -21,7 +21,7 @@ import { filter, finalize, take } from "rxjs/internal/operators";
 })
 export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink {
 
-  private readonly experimentUuid: string;
+  private readonly experimentRequestId: string;
 
   private readonly loadingFieldsMap = new Map<string, boolean>()
     .set(ExperimentFields.TRAINING_DATA_PATH, false)
@@ -43,7 +43,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
                      private messageService: MessageService,
                      private route: ActivatedRoute,
                      private fieldService: FieldService) {
-    this.experimentUuid = this.route.snapshot.params.id;
+    this.experimentRequestId = this.route.snapshot.params.id;
     this.initExperimentFields();
   }
 
@@ -57,7 +57,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   }
 
   public getExperiment(): void {
-    this.experimentsService.getExperiment(this.experimentUuid)
+    this.experimentsService.getExperiment(this.experimentRequestId)
       .subscribe({
         next: (experimentDto: ExperimentDto) => {
           this.experimentDto = experimentDto;
@@ -70,7 +70,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
 
   public getExperimentTrainingDataFile(): void {
     this.loadingFieldsMap.set(ExperimentFields.TRAINING_DATA_PATH, true);
-    this.experimentsService.getExperimentTrainingDataFile(this.experimentDto.uuid)
+    this.experimentsService.getExperimentTrainingDataFile(this.experimentDto.requestId)
       .pipe(
         finalize(() => {
           this.loadingFieldsMap.set(ExperimentFields.TRAINING_DATA_PATH, false);
@@ -88,7 +88,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
 
   public getExperimentResultsFile(): void {
     this.loadingFieldsMap.set(ExperimentFields.EXPERIMENT_PATH, true);
-    this.experimentsService.getExperimentResultsFile(this.experimentDto.uuid)
+    this.experimentsService.getExperimentResultsFile(this.experimentDto.requestId)
       .pipe(
         finalize(() => {
           this.loadingFieldsMap.set(ExperimentFields.EXPERIMENT_PATH, false);
@@ -105,7 +105,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   }
 
   public getExperimentErsReport(): void {
-    this.experimentsService.getExperimentErsReport(this.experimentUuid)
+    this.experimentsService.getExperimentErsReport(this.experimentRequestId)
       .subscribe({
         next: (experimentErsReport: ExperimentErsReportDto) => {
           this.experimentErsReport = experimentErsReport;
@@ -156,7 +156,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   private refreshExperimentErsReport(): void {
     this.refreshSubscription = timer(0, this.refreshInterval).subscribe({
       next: () => {
-        this.experimentsService.checkExperimentResultsSendingStatus(this.experimentDto.uuid)
+        this.experimentsService.checkExperimentResultsSendingStatus(this.experimentDto.requestId)
           .pipe(
             filter(result => !result.sending),
             take(1)
@@ -183,8 +183,8 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
 
   private initExperimentFields(): void {
     this.experimentFields = [
-      { name: ExperimentFields.UUID, label: "UUID заявки" },
-      { name: ExperimentFields.EXPERIMENT_STATUS_DESCRIPTION, label: "Статус заявки" },
+      { name: ExperimentFields.REQUEST_ID, label: "UUID заявки" },
+      { name: ExperimentFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки" },
       { name: ExperimentFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности" },
       { name: ExperimentFields.EMAIL, label: "Email заявки" },
       { name: ExperimentFields.CREATION_DATE, label: "Дата создания заявки" },

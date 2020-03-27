@@ -6,7 +6,6 @@ import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.dto.InstancesRequest;
 import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
-import com.ecaservice.mapping.EvaluationResultsMapper;
 import com.ecaservice.model.MultipartFileResource;
 import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.Experiment;
@@ -14,6 +13,7 @@ import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.service.evaluation.EvaluationOptimizerService;
 import com.ecaservice.service.evaluation.EvaluationRequestService;
+import com.ecaservice.service.evaluation.EvaluationResultsService;
 import com.ecaservice.service.experiment.ExperimentRequestService;
 import eca.core.evaluation.EvaluationMethod;
 import eca.data.file.FileDataLoader;
@@ -55,7 +55,7 @@ public class QaController {
     private static final String ATTACHMENT_FORMAT = "attachment;filename=%s%s.xml";
 
     private final EvaluationRequestService evaluationRequestService;
-    private final EvaluationResultsMapper evaluationResultsMapper;
+    private final EvaluationResultsService evaluationResultsService;
     private final ClassifierOptionsConverter classifierOptionsConverter;
     private final ExperimentRequestService experimentRequestService;
     private final EvaluationOptimizerService evaluationOptimizerService;
@@ -97,7 +97,7 @@ public class QaController {
      * @param email            - email
      * @param experimentType   - experiment type
      * @param evaluationMethod - evaluation method
-     * @return experiment uuid
+     * @return experiment request id
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
@@ -120,7 +120,7 @@ public class QaController {
         experimentRequest.setExperimentType(experimentType);
         experimentRequest.setEvaluationMethod(evaluationMethod);
         Experiment experiment = experimentRequestService.createExperimentRequest(experimentRequest);
-        return experiment.getUuid();
+        return experiment.getRequestId();
     }
 
     /**
@@ -175,7 +175,7 @@ public class QaController {
             throw new IllegalStateException(evaluationResponse.getErrorMessage());
         } else {
             EvaluationResultsRequest evaluationResultsRequest =
-                    evaluationResultsMapper.map(evaluationResponse.getEvaluationResults());
+                    evaluationResultsService.proceed(evaluationResponse.getEvaluationResults());
             response.setContentType(MediaType.APPLICATION_XML_VALUE);
             response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(ATTACHMENT_FORMAT,
                     evaluationResponse.getEvaluationResults().getClassifier().getClass().getSimpleName(),

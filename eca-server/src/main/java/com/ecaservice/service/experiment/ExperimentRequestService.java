@@ -32,7 +32,7 @@ public class ExperimentRequestService {
                 experimentRequest.getEmail());
         Experiment experiment = experimentService.createExperiment(experimentRequest);
         eventPublisher.publishEvent(new ExperimentCreatedEvent(this, experiment));
-        log.info("Experiment request [{}] has been created.", experiment.getUuid());
+        log.info("Experiment request [{}] has been created.", experiment.getRequestId());
         return experiment;
     }
 }

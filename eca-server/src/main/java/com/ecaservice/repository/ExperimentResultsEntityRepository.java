@@ -44,8 +44,9 @@ public interface ExperimentResultsEntityRepository extends JpaRepository<Experim
      * @param experiment - experiment entity
      * @return sent experiment results count
      */
-    @Query("select count(er) from ExperimentResultsEntity er join ExperimentResultsRequest err " +
-            "on err.experimentResults = er where er.experiment = :experiment and err.responseStatus = 'SUCCESS'")
+    @Query("select count(er) from ExperimentResultsEntity er where " +
+            "er.experiment = :experiment and (select count(err) from ExperimentResultsRequest err " +
+            "where err.experimentResults = er and err.responseStatus = 'SUCCESS') > 0")
     long getSentResultsCount(@Param("experiment") Experiment experiment);
 
     /**
@@ -54,7 +55,7 @@ public interface ExperimentResultsEntityRepository extends JpaRepository<Experim
      * @return experiments results list
      */
     @Query("select er from ExperimentResultsEntity er join er.experiment exp where " +
-            "exp.experimentStatus = 'FINISHED' and exp.deletedDate is null " +
+            "exp.requestStatus = 'FINISHED' and exp.deletedDate is null " +
             "and (select count(err) from ExperimentResultsRequest err where " +
             "err.experimentResults = er and err.responseStatus = 'SUCCESS') = 0")
     List<ExperimentResultsEntity> findExperimentsResultsToErsSent();
@@ -76,7 +77,7 @@ public interface ExperimentResultsEntityRepository extends JpaRepository<Experim
      * @param ids - experiment results ids list
      * @return experiment results ids
      */
-    @Query("select er.id from ExperimentResultsEntity er join ExperimentResultsRequest err " +
+    @Query("select distinct er.id from ExperimentResultsEntity er join ExperimentResultsRequest err " +
             "on err.experimentResults = er where er.id in (:ids) and err.responseStatus = 'SUCCESS'")
     List<Long> findSentResultsIds(@Param("ids") Collection<Long> ids);
 }

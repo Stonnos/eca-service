@@ -1,9 +1,9 @@
 export class ExperimentFields {
-  public static readonly UUID: string = "uuid";
+  public static readonly REQUEST_ID: string = "requestId";
   public static readonly EXPERIMENT_TYPE_DESCRIPTION: string = "experimentType.description";
   public static readonly EXPERIMENT_TYPE: string = "experimentType";
-  public static readonly EXPERIMENT_STATUS_DESCRIPTION: string = "experimentStatus.description";
-  public static readonly EXPERIMENT_STATUS: string = "experimentStatus";
+  public static readonly REQUEST_STATUS_DESCRIPTION: string = "requestStatus.description";
+  public static readonly REQUEST_STATUS: string = "requestStatus";
   public static readonly EVALUATION_METHOD_DESCRIPTION: string = "evaluationMethod.description";
   public static readonly EVALUATION_METHOD: string = "evaluationMethod";
   public static readonly FIRST_NAME: string = "firstName";
@@ -23,8 +23,8 @@ export class ExperimentFields {
 export class EvaluationLogFields {
   public static readonly REQUEST_ID: string = "requestId";
   public static readonly CLASSIFIER_NAME: string = "classifierInfo.classifierName";
-  public static readonly EVALUATION_STATUS_DESCRIPTION: string = "evaluationStatus.description";
-  public static readonly EVALUATION_STATUS: string = "evaluationStatus";
+  public static readonly REQUEST_STATUS_DESCRIPTION: string = "requestStatus.description";
+  public static readonly REQUEST_STATUS: string = "requestStatus";
   public static readonly RELATION_NAME: string = "instancesInfo.relationName";
   public static readonly NUM_INSTANCES: string = "instancesInfo.numInstances";
   public static readonly NUM_ATTRIBUTES: string = "instancesInfo.numAttributes";

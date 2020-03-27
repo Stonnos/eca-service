@@ -105,7 +105,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
     public void testNullTrainingDataPath() {
         Experiment experiment = new Experiment();
         experimentService.processExperiment(experiment);
-        assertThat(experiment.getExperimentStatus()).isEqualTo(RequestStatus.ERROR);
+        assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.ERROR);
     }
 
     @Test
@@ -116,8 +116,8 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.hasOneElement(experiments);
         Experiment experiment = experiments.get(0);
-        assertThat(experiment.getExperimentStatus()).isEqualTo(RequestStatus.NEW);
-        assertThat(experiment.getUuid()).isNotNull();
+        assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.NEW);
+        assertThat(experiment.getRequestId()).isNotNull();
         assertThat(experiment.getCreationDate()).isNotNull();
         assertThat(experiment.getTrainingDataAbsolutePath()).isNotNull();
     }
@@ -143,7 +143,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         assertThat(experiment.getEndDate()).isNotNull();
         assertThat(experiment.getExperimentAbsolutePath()).isNotNull();
         assertThat(experiment.getToken()).isNotNull();
-        assertThat(experiment.getExperimentStatus()).isEqualTo(RequestStatus.FINISHED);
+        assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.FINISHED);
     }
 
     @Test
@@ -155,7 +155,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         Experiment experiment = experiments.get(0);
         assertThat(experiment.getStartDate()).isNotNull();
         assertThat(experiment.getEndDate()).isNotNull();
-        assertThat(experiment.getExperimentStatus()).isEqualTo(RequestStatus.ERROR);
+        assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.ERROR);
     }
 
     @Test
@@ -171,7 +171,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         Experiment experiment = experiments.get(0);
         assertThat(experiment.getStartDate()).isNotNull();
         assertThat(experiment.getEndDate()).isNotNull();
-        assertThat(experiment.getExperimentStatus()).isEqualTo(RequestStatus.TIMEOUT);
+        assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.TIMEOUT);
     }
 
     @Test
@@ -250,12 +250,12 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         experimentRepository.saveAll(Arrays.asList(experiment, experiment1, experiment2, experiment3));
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false,
-                        experiment1.getUuid().substring(4, 10),
+                        experiment1.getRequestId().substring(4, 10),
                         newArrayList());
-        pageRequestDto.getFilters().add(new FilterRequestDto(Experiment_.EXPERIMENT_STATUS,
+        pageRequestDto.getFilters().add(new FilterRequestDto(Experiment_.REQUEST_STATUS,
                 Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
         when(filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT)).thenReturn(
-                Arrays.asList(Experiment_.EMAIL, Experiment_.FIRST_NAME, Experiment_.UUID));
+                Arrays.asList(Experiment_.EMAIL, Experiment_.FIRST_NAME, Experiment_.REQUEST_ID));
         Page<Experiment> evaluationLogPage = experimentService.getNextPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();
         assertThat(evaluationLogPage.getTotalElements()).isOne();
@@ -274,7 +274,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false,
                 RequestStatus.FINISHED.getDescription().substring(0, 2), newArrayList());
         when(filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT)).thenReturn(
-                Collections.singletonList(Experiment_.EXPERIMENT_STATUS));
+                Collections.singletonList(Experiment_.REQUEST_STATUS));
         Page<Experiment> evaluationLogPage = experimentService.getNextPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();
         assertThat(evaluationLogPage.getTotalElements()).isOne();
@@ -292,7 +292,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false,
                 "query", newArrayList());
         when(filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT)).thenReturn(
-                Collections.singletonList(Experiment_.EXPERIMENT_STATUS));
+                Collections.singletonList(Experiment_.REQUEST_STATUS));
         Page<Experiment> evaluationLogPage = experimentService.getNextPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();
         assertThat(evaluationLogPage).isEmpty();
@@ -305,28 +305,28 @@ public class ExperimentServiceTest extends AbstractJpaTest {
     public void testExperimentsFilterByTypeAndStatusOrderByCreationDate() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
         experiment.setExperimentType(ExperimentType.ADA_BOOST);
-        experiment.setExperimentStatus(RequestStatus.NEW);
+        experiment.setRequestStatus(RequestStatus.NEW);
         experiment.setCreationDate(LocalDateTime.of(2018, 2, 1, 0, 0, 0));
         experimentRepository.save(experiment);
         Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
         experiment1.setExperimentType(ExperimentType.ADA_BOOST);
-        experiment1.setExperimentStatus(RequestStatus.NEW);
+        experiment1.setRequestStatus(RequestStatus.NEW);
         experiment1.setCreationDate(LocalDateTime.of(2018, 3, 1, 0, 0, 0));
         experimentRepository.save(experiment1);
         Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
         experiment2.setExperimentType(ExperimentType.ADA_BOOST);
-        experiment2.setExperimentStatus(RequestStatus.FINISHED);
+        experiment2.setRequestStatus(RequestStatus.FINISHED);
         experiment2.setCreationDate(LocalDateTime.of(2018, 1, 1, 12, 0, 0));
         experimentRepository.save(experiment2);
         Experiment experiment3 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
         experiment3.setExperimentType(ExperimentType.KNN);
-        experiment3.setExperimentStatus(RequestStatus.NEW);
+        experiment3.setRequestStatus(RequestStatus.NEW);
         experiment3.setCreationDate(LocalDateTime.of(2018, 1, 1, 9, 0, 0));
         experimentRepository.save(experiment3);
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false, null, newArrayList());
         pageRequestDto.getFilters().add(
-                new FilterRequestDto(Experiment_.EXPERIMENT_STATUS, Collections.singletonList(RequestStatus.NEW.name()),
+                new FilterRequestDto(Experiment_.REQUEST_STATUS, Collections.singletonList(RequestStatus.NEW.name()),
                         MatchMode.EQUALS));
         pageRequestDto.getFilters().add(new FilterRequestDto(Experiment_.EXPERIMENT_TYPE,
                 Collections.singletonList(ExperimentType.ADA_BOOST.name()), MatchMode.EQUALS));
@@ -335,8 +335,8 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         assertThat(experiments).isNotNull();
         assertThat(experiments.getTotalElements()).isEqualTo(2);
         assertThat(experimentList.size()).isEqualTo(2);
-        assertThat(experimentList.get(0).getUuid()).isEqualTo(experiment1.getUuid());
-        assertThat(experimentList.get(1).getUuid()).isEqualTo(experiment.getUuid());
+        assertThat(experimentList.get(0).getRequestId()).isEqualTo(experiment1.getRequestId());
+        assertThat(experimentList.get(1).getRequestId()).isEqualTo(experiment.getRequestId());
     }
 
     /**
@@ -366,8 +366,8 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         assertThat(experiments).isNotNull();
         assertThat(experiments.getTotalElements()).isEqualTo(2);
         assertThat(experimentList.size()).isEqualTo(2);
-        assertThat(experimentList.get(0).getUuid()).isEqualTo(experiment1.getUuid());
-        assertThat(experimentList.get(1).getUuid()).isEqualTo(experiment.getUuid());
+        assertThat(experimentList.get(0).getRequestId()).isEqualTo(experiment1.getRequestId());
+        assertThat(experimentList.get(1).getRequestId()).isEqualTo(experiment.getRequestId());
     }
 
     /**

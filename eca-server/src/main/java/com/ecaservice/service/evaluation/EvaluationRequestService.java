@@ -43,7 +43,7 @@ public class EvaluationRequestService {
      */
     public EvaluationResponse processRequest(final EvaluationRequest request) {
         EvaluationLog evaluationLog = evaluationLogMapper.map(request, crossValidationConfig);
-        evaluationLog.setEvaluationStatus(RequestStatus.NEW);
+        evaluationLog.setRequestStatus(RequestStatus.NEW);
         evaluationLog.setRequestId(UUID.randomUUID().toString());
         evaluationLog.setCreationDate(LocalDateTime.now());
         evaluationLog.setStartDate(LocalDateTime.now());
@@ -57,7 +57,7 @@ public class EvaluationRequestService {
                     crossValidationConfig.getTimeout(), TimeUnit.MINUTES);
 
             if (classificationResult.isSuccess()) {
-                evaluationLog.setEvaluationStatus(RequestStatus.FINISHED);
+                evaluationLog.setRequestStatus(RequestStatus.FINISHED);
                 evaluationResponse.setEvaluationResults(classificationResult.getEvaluationResults());
                 evaluationResponse.setStatus(TechnicalStatus.SUCCESS);
             } else {
@@ -65,7 +65,7 @@ public class EvaluationRequestService {
             }
         } catch (TimeoutException ex) {
             log.warn("There was a timeout for evaluation [{}].", evaluationLog.getRequestId());
-            evaluationLog.setEvaluationStatus(RequestStatus.TIMEOUT);
+            evaluationLog.setRequestStatus(RequestStatus.TIMEOUT);
             evaluationResponse.setStatus(TechnicalStatus.TIMEOUT);
         } catch (Exception ex) {
             log.error("There was an error occurred for evaluation [{}]: {}", evaluationLog.getRequestId(), ex);
@@ -78,7 +78,7 @@ public class EvaluationRequestService {
     }
 
     private void handleError(EvaluationLog evaluationLog, EvaluationResponse evaluationResponse, String errorMessage) {
-        evaluationLog.setEvaluationStatus(RequestStatus.ERROR);
+        evaluationLog.setRequestStatus(RequestStatus.ERROR);
         evaluationLog.setErrorMessage(errorMessage);
         evaluationResponse.setStatus(TechnicalStatus.ERROR);
         evaluationResponse.setErrorMessage(errorMessage);

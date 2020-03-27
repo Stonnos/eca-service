@@ -1,4 +1,4 @@
-package com.ecaservice.mapping;
+package com.ecaservice.service.evaluation;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CrossValidationConfig;
@@ -14,6 +14,7 @@ import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.InstancesReport;
 import com.ecaservice.dto.evaluation.RocCurveReport;
 import com.ecaservice.dto.evaluation.StatisticsReport;
+import com.ecaservice.mapping.InstancesConverter;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.ensemble.ClassifiersSet;
@@ -39,19 +40,19 @@ import javax.inject.Inject;
 import java.util.List;
 
 /**
- * Unit tests for checking {@link EvaluationResultsMapper} functionality.
+ * Unit tests for checking {@link EvaluationResultsService} functionality.
  *
  * @author Roman Batygin
  */
 @RunWith(SpringRunner.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({EvaluationResultsMapperImpl.class, CrossValidationConfig.class,
+@Import({EvaluationResultsService.class, CrossValidationConfig.class,
         InstancesConverter.class, ClassifierOptionsConverter.class, ClassifierOptionsMapperConfiguration.class})
-public class EvaluationResultsMapperTest {
+public class EvaluationResultsServiceTest {
 
     @Inject
-    private EvaluationResultsMapper evaluationResultsMapper;
+    private EvaluationResultsService evaluationResultsService;
     @Inject
     private CrossValidationConfig crossValidationConfig;
 
@@ -64,7 +65,7 @@ public class EvaluationResultsMapperTest {
 
     @Test
     public void testMapEvaluationResults() {
-        EvaluationResultsRequest resultsRequest = evaluationResultsMapper.map(evaluationResults);
+        EvaluationResultsRequest resultsRequest = evaluationResultsService.proceed(evaluationResults);
         Assertions.assertThat(resultsRequest).isNotNull();
         //Instances report assertion
         InstancesReport instancesReport = resultsRequest.getInstances();
@@ -161,7 +162,7 @@ public class EvaluationResultsMapperTest {
         heterogeneousClassifier.getClassifiersSet().addClassifier(new Logistic());
         heterogeneousClassifier.getClassifiersSet().addClassifier(new KNearestNeighbours());
         EvaluationResults results = new EvaluationResults(heterogeneousClassifier, evaluationResults.getEvaluation());
-        EvaluationResultsRequest resultsRequest = evaluationResultsMapper.map(results);
+        EvaluationResultsRequest resultsRequest = evaluationResultsService.proceed(results);
         Assertions.assertThat(resultsRequest.getClassifierReport()).isNotNull();
         Assertions.assertThat(resultsRequest.getClassifierReport()).isInstanceOf(EnsembleClassifierReport.class);
         EnsembleClassifierReport classifierReport = (EnsembleClassifierReport) resultsRequest.getClassifierReport();
@@ -178,7 +179,7 @@ public class EvaluationResultsMapperTest {
         stackingClassifier.getClassifiers().addClassifier(new KNearestNeighbours());
         stackingClassifier.setMetaClassifier(new J48());
         EvaluationResults results = new EvaluationResults(stackingClassifier, evaluationResults.getEvaluation());
-        EvaluationResultsRequest resultsRequest = evaluationResultsMapper.map(results);
+        EvaluationResultsRequest resultsRequest = evaluationResultsService.proceed(results);
         Assertions.assertThat(resultsRequest.getClassifierReport()).isNotNull();
         Assertions.assertThat(resultsRequest.getClassifierReport()).isInstanceOf(EnsembleClassifierReport.class);
         EnsembleClassifierReport classifierReport = (EnsembleClassifierReport) resultsRequest.getClassifierReport();

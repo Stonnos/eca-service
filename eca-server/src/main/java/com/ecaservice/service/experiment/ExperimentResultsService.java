@@ -53,7 +53,7 @@ public class ExperimentResultsService {
      */
     public List<ExperimentResultsEntity> saveExperimentResultsToErsSent(Experiment experiment,
                                                                         ExperimentHistory experimentHistory) {
-        log.info("Starting to save experiment [{}] results to ERS sent", experiment.getUuid());
+        log.info("Starting to save experiment [{}] results to ERS sent", experiment.getRequestId());
         List<EvaluationResults> evaluationResultsList = experimentHistory.getExperiment();
         List<ExperimentResultsEntity> experimentResultsEntities =
                 IntStream.range(0, evaluationResultsList.size()).mapToObj(i -> {
@@ -88,7 +88,7 @@ public class ExperimentResultsService {
      */
     public ExperimentErsReportDto getErsReport(Experiment experiment) {
         ExperimentErsReportDto experimentErsReportDto = new ExperimentErsReportDto();
-        experimentErsReportDto.setExperimentUuid(experiment.getUuid());
+        experimentErsReportDto.setExperimentRequestId(experiment.getRequestId());
         //Gets experiment results list
         List<ExperimentResultsEntity> experimentResultsEntityList =
                 experimentResultsEntityRepository.findByExperimentOrderByResultsIndex(experiment);
@@ -112,8 +112,8 @@ public class ExperimentResultsService {
 
     private void populateErsReportStatus(Experiment experiment, ExperimentErsReportDto experimentErsReportDto) {
         ErsReportStatus ersReportStatus;
-        if (!RequestStatus.FINISHED.equals(experiment.getExperimentStatus())) {
-            ersReportStatus = RequestStatus.NEW.equals(experiment.getExperimentStatus()) ?
+        if (!RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
+            ersReportStatus = RequestStatus.NEW.equals(experiment.getRequestStatus()) ?
                     ErsReportStatus.EXPERIMENT_IN_PROGRESS : ErsReportStatus.EXPERIMENT_ERROR;
             //else handle ERS report status for experiment with FINISHED status
         } else if (experimentErsReportDto.getClassifiersCount() == 0L) {
@@ -122,7 +122,7 @@ public class ExperimentResultsService {
             ersReportStatus = ErsReportStatus.SUCCESS_SENT;
         } else if (experiment.getDeletedDate() != null) {
             ersReportStatus = ErsReportStatus.EXPERIMENT_DELETED;
-        } else if (lockService.locked(experiment.getUuid())) {
+        } else if (lockService.locked(experiment.getRequestId())) {
             ersReportStatus = ErsReportStatus.SENDING;
         } else {
             ersReportStatus = ErsReportStatus.NEED_SENT;

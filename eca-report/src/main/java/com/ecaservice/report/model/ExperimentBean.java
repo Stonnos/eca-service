@@ -11,9 +11,9 @@ import lombok.Data;
 public class ExperimentBean {
 
     /**
-     * Experiment uuid
+     * Request id
      */
-    private String uuid;
+    private String requestId;
 
     /**
      * Experiment type
@@ -21,9 +21,9 @@ public class ExperimentBean {
     private String experimentType;
 
     /**
-     * Experiment status
+     * Request status
      */
-    private String experimentStatus;
+    private String requestStatus;
 
     /**
      * Evaluation method
