@@ -54,7 +54,7 @@ public class ExperimentScheduler {
         log.trace("Obtained {} new experiments", experiments.size());
         experiments.forEach(experiment -> {
             ExperimentHistory experimentHistory = experimentService.processExperiment(experiment);
-            if (RequestStatus.FINISHED.equals(experiment.getExperimentStatus())) {
+            if (RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
                eventPublisher.publishEvent(new ExperimentFinishedEvent(this, experiment, experimentHistory));
             }
         });
@@ -77,7 +77,7 @@ public class ExperimentScheduler {
                 experimentRepository.save(experiment);
             } catch (Exception ex) {
                 log.error("There was an error while sending email request for experiment [{}]: {}",
-                        experiment.getUuid(), ex.getMessage());
+                        experiment.getRequestId(), ex.getMessage());
             }
         }
         log.trace("Sending experiments has been successfully finished.");
@@ -102,7 +102,7 @@ public class ExperimentScheduler {
                         experimentResultsEntity -> ersService.sentExperimentResults(experimentResultsEntity,
                                 experimentHistory, ExperimentResultsRequestSource.SYSTEM));
             } catch (Exception ex) {
-                log.error("There was an error while sending experiment [{}] history: {}", experiment.getUuid(),
+                log.error("There was an error while sending experiment [{}] history: {}", experiment.getRequestId(),
                         ex.getMessage());
             }
         });

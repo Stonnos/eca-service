@@ -97,14 +97,14 @@ public class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
         experiment.setCreationDate(CREATION_DATE);
         experiment.setExperimentType(ExperimentType.ADA_BOOST);
         experimentRepository.save(experiment);
-        String searchQuery = experiment.getUuid().substring(0, 10);
+        String searchQuery = experiment.getRequestId().substring(0, 10);
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false, searchQuery,
                         newArrayList());
         pageRequestDto.getFilters().add(
                 new FilterRequestDto(Experiment_.CREATION_DATE, DATE_RANGE_VALUES, MatchMode.RANGE));
         pageRequestDto.getFilters().add(
-                new FilterRequestDto(Experiment_.UUID, Collections.singletonList(experiment.getUuid()),
+                new FilterRequestDto(Experiment_.REQUEST_ID, Collections.singletonList(experiment.getRequestId()),
                         MatchMode.LIKE));
         pageRequestDto.getFilters().add(new FilterRequestDto(Experiment_.EXPERIMENT_TYPE,
                 Arrays.asList(ExperimentType.ADA_BOOST.name(), ExperimentType.HETEROGENEOUS_ENSEMBLE.name(),

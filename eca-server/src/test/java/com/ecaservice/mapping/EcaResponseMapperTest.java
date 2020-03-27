@@ -29,11 +29,11 @@ public class EcaResponseMapperTest {
     @Test
     public void testMapExperimentToEcaResponse() {
         Experiment experiment = new Experiment();
-        experiment.setExperimentStatus(RequestStatus.NEW);
-        experiment.setUuid(UUID.randomUUID().toString());
+        experiment.setRequestStatus(RequestStatus.NEW);
+        experiment.setRequestId(UUID.randomUUID().toString());
         EcaResponse ecaResponse = ecaResponseMapper.map(experiment);
         assertThat(ecaResponse).isNotNull();
         assertThat(ecaResponse.getStatus()).isEqualTo(TechnicalStatus.SUCCESS);
-        assertThat(ecaResponse.getRequestId()).isEqualTo(experiment.getUuid());
+        assertThat(ecaResponse.getRequestId()).isEqualTo(experiment.getRequestId());
     }
 }

@@ -47,7 +47,7 @@ public class EvaluationResultsFinishedEventListenerTest {
     @Test
     public void testEvaluationResultsSentWithFinishedStatus() {
         EvaluationLog evaluationLog = createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        when(evaluationLogRepository.findByRequestIdAndEvaluationStatusIn(evaluationLog.getRequestId(),
+        when(evaluationLogRepository.findByRequestIdAndRequestStatusIn(evaluationLog.getRequestId(),
                 Collections.singletonList(RequestStatus.FINISHED))).thenReturn(evaluationLog);
         EvaluationResponse evaluationResponse = createEvaluationResponse(evaluationLog.getRequestId());
         evaluationResponse.setEvaluationResults(getEvaluationResults());
@@ -63,7 +63,7 @@ public class EvaluationResultsFinishedEventListenerTest {
     @Test
     public void testEvaluationResultsSentWithErrorStatus() {
         EvaluationLog evaluationLog = createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR);
-        when(evaluationLogRepository.findByRequestIdAndEvaluationStatusIn(evaluationLog.getRequestId(),
+        when(evaluationLogRepository.findByRequestIdAndRequestStatusIn(evaluationLog.getRequestId(),
                 Collections.singletonList(RequestStatus.FINISHED))).thenReturn(null);
         EvaluationResponse evaluationResponse = createEvaluationResponse(evaluationLog.getRequestId());
         EvaluationFinishedEvent evaluationFinishedEvent = new EvaluationFinishedEvent(this, evaluationResponse);

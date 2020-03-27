@@ -36,7 +36,7 @@ public class ExperimentUtils {
 
     /**
      * Generates unique token for experiment by algorithm:
-     * 1. Creates salt in format experiment_uuid:experiment_creation_date_millis
+     * 1. Creates salt in format experiment_request_id:experiment_creation_date_millis
      * 2. Gets md5_salt = MD5(salt)
      * 3. Creates string in format md5_salt:token_creation_date_millis
      * 4. Gets results = base64(md5_salt:token_creation_date_millis)
@@ -46,7 +46,7 @@ public class ExperimentUtils {
      */
     public static String generateToken(Experiment experiment) {
         LocalDateTime tokenCreationDate = LocalDateTime.now();
-        String salt = String.format(SALT_FORMAT, experiment.getUuid(), toMillis(experiment.getCreationDate()));
+        String salt = String.format(SALT_FORMAT, experiment.getRequestId(), toMillis(experiment.getCreationDate()));
         String md5Salt = DigestUtils.md5DigestAsHex(salt.getBytes(StandardCharsets.UTF_8));
         String stringToEncode = String.format(SALT_FORMAT, md5Salt, toMillis(tokenCreationDate));
         return Base64Utils.encodeToString(stringToEncode.getBytes(StandardCharsets.UTF_8));

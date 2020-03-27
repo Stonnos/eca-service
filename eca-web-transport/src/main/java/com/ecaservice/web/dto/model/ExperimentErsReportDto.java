@@ -16,10 +16,10 @@ import java.util.List;
 public class ExperimentErsReportDto {
 
     /**
-     * Experiment uuid
+     * Experiment request id
      */
-    @ApiModelProperty(value = "Experiment uuid")
-    private String experimentUuid;
+    @ApiModelProperty(value = "Experiment request id")
+    private String experimentRequestId;
 
     /**
      * Total classifiers count that should be sent to ERS service

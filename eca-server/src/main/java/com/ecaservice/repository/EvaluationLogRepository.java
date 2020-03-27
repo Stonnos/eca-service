@@ -22,10 +22,10 @@ public interface EvaluationLogRepository
      * Finds evaluation log by request id and statuses.
      *
      * @param requestId          - request id
-     * @param evaluationStatuses - evaluation log statuses
+     * @param requestStatuses - evaluation log statuses
      * @return evaluation log entity
      */
-    EvaluationLog findByRequestIdAndEvaluationStatusIn(String requestId, Collection<RequestStatus> evaluationStatuses);
+    EvaluationLog findByRequestIdAndRequestStatusIn(String requestId, Collection<RequestStatus> requestStatuses);
 
     /**
      * Finds evaluation log by request id.
@@ -40,7 +40,7 @@ public interface EvaluationLogRepository
      *
      * @return requests status counting statistics list
      */
-    @Query("select el.evaluationStatus as requestStatus, count(el.evaluationStatus) as requestsCount from " +
-            "EvaluationLog el group by el.evaluationStatus")
+    @Query("select el.requestStatus as requestStatus, count(el.requestStatus) as requestsCount from " +
+            "EvaluationLog el group by el.requestStatus")
     List<RequestStatusStatistics> getRequestStatusesStatistics();
 }

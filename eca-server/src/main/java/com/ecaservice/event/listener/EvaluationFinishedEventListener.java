@@ -42,7 +42,7 @@ public class EvaluationFinishedEventListener {
         log.info("Handles event to sent evaluation results to ERS for request id [{}]",
                 evaluationResponse.getRequestId());
         EvaluationLog evaluationLog =
-                evaluationLogRepository.findByRequestIdAndEvaluationStatusIn(evaluationResponse.getRequestId(),
+                evaluationLogRepository.findByRequestIdAndRequestStatusIn(evaluationResponse.getRequestId(),
                         Collections.singletonList(RequestStatus.FINISHED));
         if (evaluationLog != null) {
             EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();

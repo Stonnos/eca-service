@@ -54,7 +54,7 @@ public interface ExperimentResultsEntityRepository extends JpaRepository<Experim
      * @return experiments results list
      */
     @Query("select er from ExperimentResultsEntity er join er.experiment exp where " +
-            "exp.experimentStatus = 'FINISHED' and exp.deletedDate is null " +
+            "exp.requestStatus = 'FINISHED' and exp.deletedDate is null " +
             "and (select count(err) from ExperimentResultsRequest err where " +
             "err.experimentResults = er and err.responseStatus = 'SUCCESS') = 0")
     List<ExperimentResultsEntity> findExperimentsResultsToErsSent();

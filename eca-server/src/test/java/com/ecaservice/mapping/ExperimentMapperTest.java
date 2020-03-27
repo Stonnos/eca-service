@@ -95,17 +95,17 @@ public class ExperimentMapperTest {
                 experiment.getEvaluationMethod().getDescription());
         assertThat(experimentDto.getEvaluationMethod().getValue()).isEqualTo(
                 experiment.getEvaluationMethod().name());
-        assertThat(experimentDto.getExperimentStatus().getDescription()).isEqualTo(
-                experiment.getExperimentStatus().getDescription());
-        assertThat(experimentDto.getExperimentStatus().getValue()).isEqualTo(
-                experiment.getExperimentStatus().name());
+        assertThat(experimentDto.getRequestStatus().getDescription()).isEqualTo(
+                experiment.getRequestStatus().getDescription());
+        assertThat(experimentDto.getRequestStatus().getValue()).isEqualTo(
+                experiment.getRequestStatus().name());
         assertThat(experimentDto.getExperimentType().getDescription()).isEqualTo(
                 experiment.getExperimentType().getDescription());
         assertThat(experimentDto.getExperimentType().getValue()).isEqualTo(
                 experiment.getExperimentType().name());
         assertThat(experimentDto.getTrainingDataAbsolutePath()).isEqualTo(DATA_XLS);
         assertThat(experimentDto.getExperimentAbsolutePath()).isEqualTo(EXPERIMENT_MODEL);
-        assertThat(experimentDto.getUuid()).isEqualTo(experiment.getUuid());
+        assertThat(experimentDto.getRequestId()).isEqualTo(experiment.getRequestId());
         assertThat(experimentDto.getNumFolds()).isEqualTo(experiment.getNumFolds());
         assertThat(experimentDto.getNumTests()).isEqualTo(experiment.getNumTests());
         assertThat(experimentDto.getSeed()).isEqualTo(experiment.getSeed());
@@ -139,10 +139,10 @@ public class ExperimentMapperTest {
         assertThat(experimentBean.getSentDate()).isNotNull();
         assertThat(experimentBean.getDeletedDate()).isNotNull();
         assertThat(experimentBean.getEvaluationMethod()).isNotNull();
-        assertThat(experimentBean.getExperimentStatus()).isEqualTo(experiment.getExperimentStatus().getDescription());
+        assertThat(experimentBean.getRequestStatus()).isEqualTo(experiment.getRequestStatus().getDescription());
         assertThat(experimentBean.getExperimentType()).isEqualTo(experiment.getExperimentType().getDescription());
         assertThat(experimentBean.getTrainingDataAbsolutePath()).isEqualTo(DATA_XLS);
         assertThat(experimentBean.getExperimentAbsolutePath()).isEqualTo(EXPERIMENT_MODEL);
-        assertThat(experimentBean.getUuid()).isEqualTo(experiment.getUuid());
+        assertThat(experimentBean.getRequestId()).isEqualTo(experiment.getRequestId());
     }
 }

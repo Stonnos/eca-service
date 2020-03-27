@@ -213,45 +213,45 @@ public class TestHelperUtils {
     /**
      * Creates experiment.
      *
-     * @param uuid uuid
+     * @param requestId - request id
      * @return created experiment
      */
-    public static Experiment createExperiment(String uuid) {
-        return createExperiment(uuid, RequestStatus.NEW);
+    public static Experiment createExperiment(String requestId) {
+        return createExperiment(requestId, RequestStatus.NEW);
     }
 
     /**
      * Creates experiment.
      *
-     * @param uuid             uuid
-     * @param experimentStatus experiment status
+     * @param requestId        - request id
+     * @param experimentStatus - experiment status
      * @return created experiment
      */
-    public static Experiment createExperiment(String uuid, RequestStatus experimentStatus) {
+    public static Experiment createExperiment(String requestId, RequestStatus experimentStatus) {
         Experiment experiment = new Experiment();
         experiment.setFirstName(FIRST_NAME);
         experiment.setEmail(TEST_MAIL_RU);
-        experiment.setExperimentStatus(experimentStatus);
+        experiment.setRequestStatus(experimentStatus);
         experiment.setCreationDate(LocalDateTime.now());
         experiment.setExperimentType(ExperimentType.KNN);
         experiment.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         experiment.setTrainingDataAbsolutePath(TRAINING_DATA_ABSOLUTE_PATH);
         experiment.setExperimentAbsolutePath(EXPERIMENT_ABSOLUTE_PATH);
-        experiment.setUuid(uuid);
+        experiment.setRequestId(requestId);
         return experiment;
     }
 
     /**
      * Creates sent experiment.
      *
-     * @param uuid             uuid
-     * @param experimentStatus experiment status
-     * @param sentDate         sent date
+     * @param requestId        - request id
+     * @param experimentStatus - experiment status
+     * @param sentDate         - sent date
      * @return created experiment
      */
-    public static Experiment createSentExperiment(String uuid, RequestStatus experimentStatus,
+    public static Experiment createSentExperiment(String requestId, RequestStatus experimentStatus,
                                                   LocalDateTime sentDate) {
-        Experiment experiment = createExperiment(uuid, experimentStatus);
+        Experiment experiment = createExperiment(requestId, experimentStatus);
         experiment.setSentDate(sentDate);
         return experiment;
     }
@@ -330,16 +330,16 @@ public class TestHelperUtils {
     }
 
     /**
-     * Creates evaluation log with specified uuid and status.
+     * Creates evaluation log with specified request id and status.
      *
-     * @param uuid          - request id
+     * @param requestId     - request id
      * @param requestStatus - request status
      * @return evaluation log
      */
-    public static EvaluationLog createEvaluationLog(String uuid, RequestStatus requestStatus) {
+    public static EvaluationLog createEvaluationLog(String requestId, RequestStatus requestStatus) {
         EvaluationLog evaluationLog = createEvaluationLog();
         evaluationLog.setRequestStatus(requestStatus);
-        evaluationLog.setRequestId(uuid);
+        evaluationLog.setRequestId(requestId);
         return evaluationLog;
     }
 

@@ -43,10 +43,10 @@ public class ExperimentDto {
     private String trainingDataAbsolutePath;
 
     /**
-     * Experiment uuid
+     * Experiment request id
      */
-    @ApiModelProperty(value = "Experiment uuid")
-    private String uuid;
+    @ApiModelProperty(value = "Experiment request id")
+    private String requestId;
 
     /**
      * Request creation date
@@ -95,10 +95,10 @@ public class ExperimentDto {
     private EnumDto experimentType;
 
     /**
-     * Experiment status
+     * Request status
      */
-    @ApiModelProperty(value = "Experiment status")
-    private EnumDto experimentStatus;
+    @ApiModelProperty(value = "Request status")
+    private EnumDto requestStatus;
 
     /**
      * Evaluation method

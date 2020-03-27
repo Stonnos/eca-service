@@ -61,7 +61,7 @@ public class ExperimentResultsSendingEventListenerTest {
         verify(ersService, times(experimentResultsEntityList.size())).sentExperimentResults(
                 any(ExperimentResultsEntity.class), any(ExperimentHistory.class),
                 any(ExperimentResultsRequestSource.class));
-        verify(lockService, atLeastOnce()).unlock(experiment.getUuid());
+        verify(lockService, atLeastOnce()).unlock(experiment.getRequestId());
     }
 
     @Test
@@ -77,6 +77,6 @@ public class ExperimentResultsSendingEventListenerTest {
         verify(ersService, never()).sentExperimentResults(
                 any(ExperimentResultsEntity.class), any(ExperimentHistory.class),
                 any(ExperimentResultsRequestSource.class));
-        verify(lockService, atLeastOnce()).unlock(experiment.getUuid());
+        verify(lockService, atLeastOnce()).unlock(experiment.getRequestId());
     }
 }

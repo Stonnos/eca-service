@@ -97,7 +97,7 @@ public class QaController {
      * @param email            - email
      * @param experimentType   - experiment type
      * @param evaluationMethod - evaluation method
-     * @return experiment uuid
+     * @return experiment request id
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
@@ -120,7 +120,7 @@ public class QaController {
         experimentRequest.setExperimentType(experimentType);
         experimentRequest.setEvaluationMethod(evaluationMethod);
         Experiment experiment = experimentRequestService.createExperimentRequest(experimentRequest);
-        return experiment.getUuid();
+        return experiment.getRequestId();
     }
 
     /**
