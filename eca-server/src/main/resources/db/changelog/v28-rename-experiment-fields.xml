@@ -48,7 +48,7 @@
         </update>
     </changeSet>
 
-    <!-- Changed uuid name to requestId name in global filter template -->
+    <!-- Changed uuid name to requestId name in filter template -->
     <changeSet id="5" author="roman.batygin@mail.ru" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="filter_field"/>
@@ -58,7 +58,7 @@
         </preConditions>
         <update tableName="filter_field">
             <column name="field_name" value="requestId"/>
-            <where>filter_template_id = 2 and field_name = 'uuid'</where>
+            <where>filter_template_id = 1 and field_name = 'uuid'</where>
         </update>
     </changeSet>
 
@@ -71,7 +71,7 @@
         </preConditions>
         <update tableName="global_filter_field">
             <column name="field_name" value="requestId"/>
-            <where>global_filter_template_id = 2 and field_name = 'uuid'</where>
+            <where>global_filter_template_id = 1 and field_name = 'uuid'</where>
         </update>
     </changeSet>
 </databaseChangeLog>
