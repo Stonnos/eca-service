@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v28-rename-experiment-fields.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <columnExists tableName="experiment" columnName="experiment_status"/>
+        </preConditions>
+        <renameColumn tableName="experiment" oldColumnName="experiment_status" newColumnName="request_status"/>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <columnExists tableName="experiment" columnName="uuid"/>
+        </preConditions>
+        <renameColumn tableName="experiment" oldColumnName="uuid" newColumnName="request_id"/>
+    </changeSet>
+
+    <!-- Changed experimentStatus name to requestStatus name in filter template -->
+    <changeSet id="3" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 1 and field_name = 'experimentStatus'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="filter_field">
+            <column name="field_name" value="requestStatus"/>
+            <where>filter_template_id = 2 and field_name = 'experimentStatus'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from global_filter_field where global_filter_template_id = 1 and field_name = 'experimentStatus'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="global_filter_field">
+            <column name="field_name" value="requestStatus"/>
+            <where>global_filter_template_id = 2 and field_name = 'experimentStatus'</where>
+        </update>
+    </changeSet>
+
+    <!-- Changed uuid name to requestId name in global filter template -->
+    <changeSet id="5" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_field where filter_template_id = 1 and field_name = 'uuid'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="filter_field">
+            <column name="field_name" value="requestId"/>
+            <where>filter_template_id = 2 and field_name = 'uuid'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="6" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_field"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from global_filter_field where global_filter_template_id = 1 and field_name = 'uuid'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="global_filter_field">
+            <column name="field_name" value="requestId"/>
+            <where>global_filter_template_id = 2 and field_name = 'uuid'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

@@ -31,4 +31,6 @@
     <include file="db/changelog/v24-add-classifier-options-md5hash-column.xml"/>
     <include file="db/changelog/v25-drop-evaluation-options-table.xml"/>
     <include file="db/changelog/v26-add-experiment-cross-validation-fields.xml"/>
+    <include file="db/changelog/v27-rename-evaluation-log-fields.xml"/>
+    <include file="db/changelog/v28-rename-experiment-fields.xml"/>
 </databaseChangeLog>

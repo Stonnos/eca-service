@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog
-        logicalFilePath="db/changelog/v26-add-experiment-cross-validation-fields.xml"
+        logicalFilePath="db/changelog/v27-rename-evaluation-log-fields.xml"
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
@@ -13,7 +13,7 @@
         <renameColumn tableName="evaluation_log" oldColumnName="evaluation_status" newColumnName="request_status"/>
     </changeSet>
 
-    <!-- Changed evaluationStatus name to requestStatus name in filter template -->
+    <!-- Changed evaluationStatus name to requestStatus name in global filter template -->
     <changeSet id="2" author="roman.batygin@mail.ru" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="filter_field"/>
