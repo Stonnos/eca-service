@@ -62,12 +62,13 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
         if (CollectionUtils.isEmpty(modelFiles)) {
             logAndThrowError("Classifiers input options directory is empty.", log);
         } else {
+            log.info("Starting to save individual classifiers options into database");
             int version = classifierOptionsDatabaseModelRepository.findLatestVersion();
             List<ClassifierOptionsDatabaseModel> latestOptions =
                     classifierOptionsDatabaseModelRepository.findAllByVersion(version);
             List<ClassifierOptionsDatabaseModel> newOptions = createClassifiersOptions(modelFiles, ++version);
             if (CollectionUtils.isEmpty(latestOptions) || latestOptions.size() != newOptions.size() ||
-                    !latestOptions.containsAll(newOptions)) {
+                    !newOptions.containsAll(latestOptions)) {
                 log.info("Saving new classifiers input options with version {}.", version);
                 classifierOptionsDatabaseModelRepository.saveAll(newOptions);
             }
