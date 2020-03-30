@@ -1,4 +1,4 @@
-package com.ecaservice.service;
+package com.ecaservice.service.classifiers;
 
 import com.ecaservice.mapping.ClassifiersConfigurationMapper;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
