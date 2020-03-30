@@ -17,9 +17,16 @@ public interface ClassifiersConfigurationRepository extends JpaRepository<Classi
     /**
      * Gets classifiers configurations by specified source.
      *
-     * @param source - configuration source
+     * @param source   - configuration source
      * @param pageable - pageable object
      * @return classifiers configurations list
      */
     List<ClassifiersConfiguration> findAllBySource(ClassifiersConfigurationSource source, Pageable pageable);
+
+    /**
+     * Gets active classifiers configuration.
+     *
+     * @return classifiers configuration entity
+     */
+    ClassifiersConfiguration findFirstByActiveTrue();
 }
