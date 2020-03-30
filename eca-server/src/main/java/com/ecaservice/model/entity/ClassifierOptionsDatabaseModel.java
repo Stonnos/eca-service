@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
@@ -53,4 +55,11 @@ public class ClassifierOptionsDatabaseModel {
      */
     @Column(name = "config_md5_hash")
     private String configMd5Hash;
+
+    /**
+     * Classifiers configuration.
+     */
+    @ManyToOne
+    @JoinColumn(name = "configuration_id", nullable = false)
+    private ClassifiersConfiguration configuration;
 }
