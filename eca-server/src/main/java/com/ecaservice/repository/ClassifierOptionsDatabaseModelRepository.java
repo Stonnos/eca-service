@@ -1,6 +1,7 @@
 package com.ecaservice.repository;
 
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
+import com.ecaservice.model.entity.ClassifiersConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,6 +31,14 @@ public interface ClassifierOptionsDatabaseModelRepository extends JpaRepository<
      * @return classifier options database models list
      */
     List<ClassifierOptionsDatabaseModel> findAllByVersion(int version);
+
+    /**
+     * Finds all classifiers input options by specified configuration.
+     *
+     * @param configuration - classifiers configuration
+     * @return classifier options database models list
+     */
+    List<ClassifierOptionsDatabaseModel> findAllByConfiguration(ClassifiersConfiguration configuration);
 
     /**
      * Finds all classifiers input options by specified version.

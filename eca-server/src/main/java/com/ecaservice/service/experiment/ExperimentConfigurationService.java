@@ -5,8 +5,11 @@ import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_;
+import com.ecaservice.model.entity.ClassifiersConfiguration;
+import com.ecaservice.model.entity.ClassifiersConfigurationSource;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
+import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.PageRequestService;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -30,6 +33,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.ecaservice.util.ExperimentLogUtils.logAndThrowError;
 
@@ -43,11 +47,13 @@ import static com.ecaservice.util.ExperimentLogUtils.logAndThrowError;
 @RequiredArgsConstructor
 public class ExperimentConfigurationService implements PageRequestService<ClassifierOptionsDatabaseModel> {
 
+    private static final String DEFAULT_CONFIGURATION_NAME = "Default configuration";
     private static ObjectMapper objectMapper = new ObjectMapper();
 
     private final CommonConfig commonConfig;
     private final ExperimentConfig experimentConfig;
     private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
+    private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
 
     /**
      * Saves individual classifiers input options into database.
@@ -63,16 +69,48 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
             logAndThrowError("Classifiers input options directory is empty.", log);
         } else {
             log.info("Starting to save individual classifiers options into database");
-            int version = classifierOptionsDatabaseModelRepository.findLatestVersion();
+            ClassifiersConfiguration classifiersConfiguration = getOrSaveSystemClassifiersConfiguration();
             List<ClassifierOptionsDatabaseModel> latestOptions =
-                    classifierOptionsDatabaseModelRepository.findAllByVersion(version);
-            List<ClassifierOptionsDatabaseModel> newOptions = createClassifiersOptions(modelFiles, ++version);
-            if (CollectionUtils.isEmpty(latestOptions) || latestOptions.size() != newOptions.size() ||
-                    !newOptions.containsAll(latestOptions)) {
-                log.info("Saving new classifiers input options with version {}.", version);
+                    classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration);
+            List<ClassifierOptionsDatabaseModel> newOptions =
+                    createClassifiersOptions(modelFiles, classifiersConfiguration);
+            updateSystemClassifiersConfiguration(newOptions, latestOptions);
+        }
+    }
+
+    private void updateSystemClassifiersConfiguration(List<ClassifierOptionsDatabaseModel> newOptions,
+                                                      List<ClassifierOptionsDatabaseModel> latestOptions) {
+        if (CollectionUtils.isEmpty(latestOptions) || latestOptions.size() != newOptions.size() ||
+                !newOptions.containsAll(latestOptions)) {
+            log.info("Saving new classifiers input options for system configuration.");
+            List<ClassifierOptionsDatabaseModel> oldOptionsToDelete =
+                    latestOptions.stream().filter(options -> !newOptions.contains(options)).collect(
+                            Collectors.toList());
+            List<ClassifierOptionsDatabaseModel> newOptionsToSave =
+                    newOptions.stream().filter(options -> !latestOptions.contains(options)).collect(
+                            Collectors.toList());
+            if (!CollectionUtils.isEmpty(oldOptionsToDelete)) {
+                classifierOptionsDatabaseModelRepository.deleteAll(oldOptionsToDelete);
+            }
+            if (!CollectionUtils.isEmpty(newOptionsToSave)) {
                 classifierOptionsDatabaseModelRepository.saveAll(newOptions);
             }
         }
+    }
+
+    private ClassifiersConfiguration getOrSaveSystemClassifiersConfiguration() {
+        ClassifiersConfiguration classifiersConfiguration =
+                classifiersConfigurationRepository.findAllBySource(ClassifiersConfigurationSource.SYSTEM,
+                        PageRequest.of(0, 1)).stream().findFirst().orElse(null);
+        if (classifiersConfiguration == null) {
+            classifiersConfiguration = new ClassifiersConfiguration();
+            classifiersConfiguration.setName(DEFAULT_CONFIGURATION_NAME);
+            classifiersConfiguration.setSource(ClassifiersConfigurationSource.SYSTEM);
+            classifiersConfiguration.setActive(true);
+            classifiersConfiguration.setCreated(LocalDateTime.now());
+            return classifiersConfigurationRepository.save(classifiersConfiguration);
+        }
+        return classifiersConfiguration;
     }
 
     /**
@@ -101,12 +139,14 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
                 PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
     }
 
-    private List<ClassifierOptionsDatabaseModel> createClassifiersOptions(Collection<File> modelFiles, int version) {
+    private List<ClassifierOptionsDatabaseModel> createClassifiersOptions(Collection<File> modelFiles,
+                                                                          ClassifiersConfiguration classifiersConfiguration) {
         List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = new ArrayList<>(modelFiles.size());
         for (File modelFile : modelFiles) {
             try {
                 classifierOptionsDatabaseModels.add(
-                        createClassifierOptions(objectMapper.readValue(modelFile, ClassifierOptions.class), version));
+                        createClassifierOptions(objectMapper.readValue(modelFile, ClassifierOptions.class),
+                                classifiersConfiguration));
             } catch (IOException ex) {
                 logAndThrowError(String.format("There was an error while parsing json file '%s': %s",
                         modelFile.getAbsolutePath(),
@@ -116,17 +156,18 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
         return classifierOptionsDatabaseModels;
     }
 
-    private ClassifierOptionsDatabaseModel createClassifierOptions(ClassifierOptions classifierOptions, int version) {
+    private ClassifierOptionsDatabaseModel createClassifierOptions(ClassifierOptions classifierOptions,
+                                                                   ClassifiersConfiguration classifiersConfiguration) {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = null;
         try {
             classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
-            classifierOptionsDatabaseModel.setVersion(version);
             classifierOptionsDatabaseModel.setOptionsName(classifierOptions.getClass().getSimpleName());
             String config = objectMapper.writeValueAsString(classifierOptions);
             classifierOptionsDatabaseModel.setConfigMd5Hash(
                     DigestUtils.md5DigestAsHex(config.getBytes(StandardCharsets.UTF_8)));
             classifierOptionsDatabaseModel.setConfig(config);
             classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
+            classifierOptionsDatabaseModel.setConfiguration(classifiersConfiguration);
             return classifierOptionsDatabaseModel;
         } catch (IOException ex) {
             logAndThrowError(String.format("There was an error while parsing object [%s]: %s", classifierOptions,
