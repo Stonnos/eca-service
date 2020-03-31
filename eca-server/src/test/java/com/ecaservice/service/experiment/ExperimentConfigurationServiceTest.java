@@ -5,27 +5,25 @@ import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
-import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_;
+import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.model.options.ActivationFunctionOptions;
 import com.ecaservice.model.options.DecisionTreeOptions;
 import com.ecaservice.model.options.LogisticOptions;
 import com.ecaservice.model.options.NeuralNetworkOptions;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
+import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.AbstractJpaTest;
-import com.ecaservice.web.dto.model.PageRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.ensemble.forests.DecisionTreeType;
 import eca.neural.functions.ActivationFunctionType;
 import org.junit.Test;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,7 +42,7 @@ public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
     @Inject
     private ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
     @Inject
-    private CommonConfig commonConfig;
+    private ClassifiersConfigurationRepository classifiersConfigurationRepository;
     @Inject
     private ExperimentConfig experimentConfig;
 
@@ -53,12 +51,14 @@ public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         experimentConfigurationService =
-                new ExperimentConfigurationService(commonConfig, experimentConfig, classifierOptionsDatabaseModelRepository);
+                new ExperimentConfigurationService(experimentConfig, classifierOptionsDatabaseModelRepository,
+                        classifiersConfigurationRepository);
     }
 
     @Override
     public void deleteAll() {
         classifierOptionsDatabaseModelRepository.deleteAll();
+        classifiersConfigurationRepository.deleteAll();
     }
 
     @Test
@@ -76,16 +76,18 @@ public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
         decisionTreeOptions.setDecisionTreeType(DecisionTreeType.C45);
         decisionTreeOptions.setMaxDepth(25);
         //Saves classifiers options
+        ClassifiersConfiguration classifiersConfiguration = TestHelperUtils.createClassifiersConfiguration();
+        classifiersConfigurationRepository.save(classifiersConfiguration);
         ClassifierOptionsDatabaseModel logisticOptionsDatabaseModel =
                 TestHelperUtils.createClassifierOptionsDatabaseModel(objectMapper.writeValueAsString(logisticOptions),
-                        CONFIG_VERSION);
+                        classifiersConfiguration);
         classifierOptionsDatabaseModelRepository.save(logisticOptionsDatabaseModel);
         ClassifierOptionsDatabaseModel neuralNetworkOptionsDatabaseModel =
                 TestHelperUtils.createClassifierOptionsDatabaseModel(
-                        objectMapper.writeValueAsString(neuralNetworkOptions), CONFIG_VERSION);
+                        objectMapper.writeValueAsString(neuralNetworkOptions), classifiersConfiguration);
         classifierOptionsDatabaseModelRepository.save(neuralNetworkOptionsDatabaseModel);
         ClassifierOptionsDatabaseModel treeOptionsDatabaseModel = TestHelperUtils.createClassifierOptionsDatabaseModel(
-                objectMapper.writeValueAsString(decisionTreeOptions), CONFIG_VERSION);
+                objectMapper.writeValueAsString(decisionTreeOptions), classifiersConfiguration);
         classifierOptionsDatabaseModelRepository.save(treeOptionsDatabaseModel);
         List<ClassifierOptionsDatabaseModel> classifierList =
                 experimentConfigurationService.findLastClassifiersOptions();
@@ -120,21 +122,5 @@ public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
         List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
                 classifierOptionsDatabaseModelRepository.findAll();
         assertThat(classifierOptionsDatabaseModels.size()).isEqualTo(modelFiles.length);
-    }
-
-    @Test
-    public void testGetConfigsPage() {
-        URL modelsUrl = getClass().getClassLoader().getResource(experimentConfig.getIndividualClassifiersStoragePath());
-        File classifiersOptionsDir = new File(modelsUrl.getPath());
-        File[] modelFiles = classifiersOptionsDir.listFiles();
-        experimentConfigurationService.saveClassifiersOptions();
-        PageRequestDto pageRequestDto =
-                new PageRequestDto(0, modelFiles.length / 2, ClassifierOptionsDatabaseModel_.CREATION_DATE, false, null,
-                        Collections.emptyList());
-        Page<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModelPage =
-                experimentConfigurationService.getNextPage(pageRequestDto);
-        assertThat(classifierOptionsDatabaseModelPage).isNotNull();
-        assertThat(classifierOptionsDatabaseModelPage.getTotalElements()).isEqualTo(modelFiles.length);
-        assertThat(classifierOptionsDatabaseModelPage.getContent().size()).isEqualTo(pageRequestDto.getSize());
     }
 }

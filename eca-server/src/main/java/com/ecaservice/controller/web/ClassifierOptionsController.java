@@ -2,6 +2,7 @@ package com.ecaservice.controller.web;
 
 import com.ecaservice.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
+import com.ecaservice.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.service.experiment.ExperimentConfigurationService;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -30,6 +31,7 @@ import java.util.List;
 public class ClassifierOptionsController {
 
     private final ExperimentConfigurationService experimentConfigurationService;
+    private final ClassifierOptionsService classifierOptionsService;
     private final ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
 
     /**
@@ -63,7 +65,7 @@ public class ClassifierOptionsController {
     @GetMapping(value = "/page")
     public PageDto<ClassifierOptionsDto> getConfigsPage(@Valid PageRequestDto pageRequestDto) {
         Page<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
-                experimentConfigurationService.getNextPage(pageRequestDto);
+                classifierOptionsService.getNextPage(pageRequestDto);
         List<ClassifierOptionsDto> classifierOptionsDtoList =
                 classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModels.getContent());
         return PageDto.of(classifierOptionsDtoList, pageRequestDto.getPage(),

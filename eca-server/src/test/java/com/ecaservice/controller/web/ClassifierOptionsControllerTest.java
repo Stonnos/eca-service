@@ -6,6 +6,8 @@ import com.ecaservice.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.mapping.ClassifierOptionsDatabaseModelMapperImpl;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_;
+import com.ecaservice.model.entity.ClassifiersConfiguration;
+import com.ecaservice.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.service.experiment.ExperimentConfigurationService;
 import com.ecaservice.token.TokenService;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
@@ -39,6 +41,7 @@ import static com.ecaservice.PageRequestUtils.PAGE_SIZE;
 import static com.ecaservice.PageRequestUtils.PAGE_SIZE_PARAM;
 import static com.ecaservice.PageRequestUtils.TOTAL_ELEMENTS;
 import static com.ecaservice.TestHelperUtils.bearerHeader;
+import static com.ecaservice.TestHelperUtils.createClassifiersConfiguration;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -67,6 +70,8 @@ public class ClassifierOptionsControllerTest {
 
     @MockBean
     private ExperimentConfigurationService experimentConfigurationService;
+    @MockBean
+    private ClassifierOptionsService classifierOptionsService;
 
     @Inject
     private TokenService tokenService;
@@ -90,8 +95,9 @@ public class ClassifierOptionsControllerTest {
 
     @Test
     public void testGetConfigsOk() throws Exception {
-        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
-                Collections.singletonList(TestHelperUtils.createClassifierOptionsDatabaseModel(OPTIONS, VERSION));
+        ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
+        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = Collections.singletonList(
+                TestHelperUtils.createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration));
         List<ClassifierOptionsDto> classifierOptionsDtoList =
                 classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModels);
         when(experimentConfigurationService.findLastClassifiersOptions()).thenReturn(classifierOptionsDatabaseModels);
@@ -169,13 +175,14 @@ public class ClassifierOptionsControllerTest {
     public void testGetConfigPageOk() throws Exception {
         Page<ClassifierOptionsDatabaseModel> page = Mockito.mock(Page.class);
         when(page.getTotalElements()).thenReturn(TOTAL_ELEMENTS);
-        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
-                Collections.singletonList(TestHelperUtils.createClassifierOptionsDatabaseModel(OPTIONS, VERSION));
+        ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
+        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = Collections.singletonList(
+                TestHelperUtils.createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration));
         PageDto<ClassifierOptionsDto> pageDto =
                 PageDto.of(classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModels), PAGE_NUMBER,
                         TOTAL_ELEMENTS);
         when(page.getContent()).thenReturn(classifierOptionsDatabaseModels);
-        when(experimentConfigurationService.getNextPage(any(PageRequestDto.class))).thenReturn(page);
+        when(classifierOptionsService.getNextPage(any(PageRequestDto.class))).thenReturn(page);
         mockMvc.perform(get(PAGE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))

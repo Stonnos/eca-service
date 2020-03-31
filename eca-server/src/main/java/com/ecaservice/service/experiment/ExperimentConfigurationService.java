@@ -1,27 +1,20 @@
 package com.ecaservice.service.experiment;
 
 import com.ecaservice.config.CacheNames;
-import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
-import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.model.entity.ClassifiersConfigurationSource;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
-import com.ecaservice.service.PageRequestService;
-import com.ecaservice.util.SortUtils;
-import com.ecaservice.web.dto.model.PageRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -44,12 +37,11 @@ import static com.ecaservice.util.ExperimentLogUtils.logAndThrowError;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ExperimentConfigurationService implements PageRequestService<ClassifierOptionsDatabaseModel> {
+public class ExperimentConfigurationService {
 
     private static final String DEFAULT_CONFIGURATION_NAME = "Default configuration";
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    private final CommonConfig commonConfig;
     private final ExperimentConfig experimentConfig;
     private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
@@ -126,16 +118,6 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
         log.info("{} classifiers input options configs has been successfully read from database.",
                 classifierOptionsDatabaseModelList.size());
         return classifierOptionsDatabaseModelList;
-    }
-
-    @Override
-    public Page<ClassifierOptionsDatabaseModel> getNextPage(PageRequestDto pageRequestDto) {
-        int lastVersion = classifierOptionsDatabaseModelRepository.findLatestVersion();
-        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), ClassifierOptionsDatabaseModel_.CREATION_DATE,
-                pageRequestDto.isAscending());
-        int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
-        return classifierOptionsDatabaseModelRepository.findAllByVersion(lastVersion,
-                PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
     }
 
     private List<ClassifierOptionsDatabaseModel> createClassifiersOptions(Collection<File> modelFiles,

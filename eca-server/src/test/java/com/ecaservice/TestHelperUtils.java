@@ -20,6 +20,8 @@ import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
+import com.ecaservice.model.entity.ClassifiersConfiguration;
+import com.ecaservice.model.entity.ClassifiersConfigurationSource;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.Experiment;
@@ -284,16 +286,30 @@ public class TestHelperUtils {
     /**
      * Creates classifiers options database model.
      *
-     * @param config  json options configs
-     * @param version configs version
+     * @param config                   - json options configs
+     * @param classifiersConfiguration - classifiers configuration entity
      * @return classifier options db model {@see ClassifierOptionsDatabaseModel}
      */
-    public static ClassifierOptionsDatabaseModel createClassifierOptionsDatabaseModel(String config, int version) {
+    public static ClassifierOptionsDatabaseModel createClassifierOptionsDatabaseModel(String config,
+                                                                                      ClassifiersConfiguration classifiersConfiguration) {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
-        classifierOptionsDatabaseModel.setVersion(version);
+        classifierOptionsDatabaseModel.setConfiguration(classifiersConfiguration);
         classifierOptionsDatabaseModel.setConfig(config);
         classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
         return classifierOptionsDatabaseModel;
+    }
+
+    /**
+     * Creates classifiers configuration entity.
+     *
+     * @return classifiers configuration entity
+     */
+    public static ClassifiersConfiguration createClassifiersConfiguration() {
+        ClassifiersConfiguration classifiersConfiguration = new ClassifiersConfiguration();
+        classifiersConfiguration.setActive(true);
+        classifiersConfiguration.setCreated(LocalDateTime.now());
+        classifiersConfiguration.setSource(ClassifiersConfigurationSource.SYSTEM);
+        return classifiersConfiguration;
     }
 
     /**
