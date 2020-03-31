@@ -1,6 +1,7 @@
 package com.ecaservice.service.classifiers;
 
 import com.ecaservice.config.CommonConfig;
+import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Page;
 
 import javax.inject.Inject;
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static com.ecaservice.TestHelperUtils.createClassifierOptionsDatabaseModel;
 import static com.ecaservice.TestHelperUtils.createClassifiersConfiguration;
@@ -46,11 +49,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     @Test
     public void testGetConfigsPage() {
-        ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
-        classifiersConfigurationRepository.save(classifiersConfiguration);
-        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
-                createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration);
-        classifierOptionsDatabaseModelRepository.save(classifierOptionsDatabaseModel);
+        saveClassifierOptions();
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsDatabaseModel_.CREATION_DATE, false, null,
                         Collections.emptyList());
@@ -58,6 +57,45 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
                 classifierOptionsService.getNextPage(pageRequestDto);
         assertThat(classifierOptionsDatabaseModelPage).isNotNull();
         assertThat(classifierOptionsDatabaseModelPage.getTotalElements()).isOne();
-        assertThat(classifierOptionsDatabaseModelPage.getContent().size()).isEqualTo(pageRequestDto.getSize());
     }
+
+    @Test(expected = IllegalStateException.class)
+    public void testGetActiveOptionsForNotExistsConfiguration() {
+        classifierOptionsService.getActiveClassifiersOptions();
+    }
+
+    @Test
+    public void testGetActiveOptions() {
+        saveClassifierOptions();
+        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
+                classifierOptionsService.getActiveClassifiersOptions();
+        assertThat(classifierOptionsDatabaseModels).hasSize(1);
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void testDeleteNotExistingOptions() {
+        classifierOptionsService.deleteOptions(1L);
+    }
+
+    @Test
+    public void testDeleteOptions() {
+        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions();
+        classifierOptionsService.deleteOptions(classifierOptionsDatabaseModel.getId());
+        Optional<ClassifierOptionsDatabaseModel> actualOptions =
+                classifierOptionsDatabaseModelRepository.findById(classifierOptionsDatabaseModel.getId());
+        assertThat(actualOptions.isPresent()).isFalse();
+        Optional<ClassifiersConfiguration> actualConfiguration =
+                classifiersConfigurationRepository.findById(classifierOptionsDatabaseModel.getConfiguration().getId());
+        assertThat(actualConfiguration.isPresent()).isTrue();
+        assertThat(actualConfiguration.get().getUpdated()).isNotNull();
+    }
+
+    private ClassifierOptionsDatabaseModel saveClassifierOptions() {
+        ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
+        classifiersConfigurationRepository.save(classifiersConfiguration);
+        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
+                createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration);
+        return classifierOptionsDatabaseModelRepository.save(classifierOptionsDatabaseModel);
+    }
+
 }
