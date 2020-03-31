@@ -8,6 +8,7 @@ import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.evaluation.ClassificationResult;
 import com.ecaservice.model.options.ClassifierOptions;
+import com.ecaservice.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.service.evaluation.EvaluationService;
 import com.ecaservice.service.experiment.handler.ClassifierInputDataHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,7 +43,7 @@ public class ClassifiersSetSearcher {
     private static ObjectMapper objectMapper = new ObjectMapper();
 
     private final EvaluationService evaluationService;
-    private final ExperimentConfigurationService experimentConfigurationService;
+    private final ClassifierOptionsService classifierOptionsService;
     private final ExperimentConfig experimentConfig;
     private final CrossValidationConfig crossValidationConfig;
     private final List<ClassifierInputDataHandler> classifierInputDataHandlers;
@@ -87,8 +88,8 @@ public class ClassifiersSetSearcher {
     }
 
     private List<AbstractClassifier> readClassifiers() {
-        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = experimentConfigurationService
-                .findLastClassifiersOptions();
+        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
+                classifierOptionsService.getActiveClassifiersOptions();
         if (CollectionUtils.isEmpty(classifierOptionsDatabaseModels)) {
             throw new ExperimentException("Classifiers options config hasn't been found.");
         }

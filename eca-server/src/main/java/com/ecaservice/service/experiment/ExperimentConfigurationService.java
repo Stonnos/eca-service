@@ -1,6 +1,5 @@
 package com.ecaservice.service.experiment;
 
-import com.ecaservice.config.CacheNames;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
@@ -13,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -102,22 +100,6 @@ public class ExperimentConfigurationService {
             return classifiersConfigurationRepository.save(classifiersConfiguration);
         }
         return classifiersConfiguration;
-    }
-
-    /**
-     * Finds the last classifiers options configs.
-     *
-     * @return {@link ClassifierOptionsDatabaseModel} list
-     */
-    @Cacheable(CacheNames.CLASSIFIERS_CACHE_NAME)
-    public List<ClassifierOptionsDatabaseModel> findLastClassifiersOptions() {
-        log.info("Starting to read classifiers input options configs from database");
-        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModelList =
-                classifierOptionsDatabaseModelRepository.findAllByVersion(
-                        classifierOptionsDatabaseModelRepository.findLatestVersion());
-        log.info("{} classifiers input options configs has been successfully read from database.",
-                classifierOptionsDatabaseModelList.size());
-        return classifierOptionsDatabaseModelList;
     }
 
     private List<ClassifierOptionsDatabaseModel> createClassifiersOptions(Collection<File> modelFiles,
