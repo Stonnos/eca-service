@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Implements repository that manages with {@link com.ecaservice.model.entity.ClassifiersConfiguration} entities.
@@ -28,5 +29,5 @@ public interface ClassifiersConfigurationRepository extends JpaRepository<Classi
      *
      * @return classifiers configuration entity
      */
-    ClassifiersConfiguration findFirstByActiveTrue();
+    Optional<ClassifiersConfiguration> findFirstByActiveTrue();
 }

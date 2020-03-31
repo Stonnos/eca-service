@@ -1,9 +1,12 @@
 package com.ecaservice.service.classifiers;
 
 import com.ecaservice.config.CommonConfig;
+import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
+import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
+import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.PageRequestService;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -15,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import static com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_.CREATION_DATE;
+import static com.ecaservice.util.ClassifierOptionsHelper.createClassifierOptionsDatabaseModel;
 
 /**
  * Classifier options service.
@@ -27,10 +31,23 @@ import static com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_.CREATI
 public class ClassifierOptionsService implements PageRequestService<ClassifierOptionsDatabaseModel> {
 
     private final CommonConfig commonConfig;
+    private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
     private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
 
-    public void saveClassifierOptions(ClassifierOptions classifierOptions) {
-
+    /**
+     * Saves new classifier options for specified configuration.
+     *
+     * @param configurationId   - configuration id
+     * @param classifierOptions - classifier options
+     */
+    public void saveClassifierOptions(long configurationId, ClassifierOptions classifierOptions) {
+        ClassifiersConfiguration classifiersConfiguration =
+                classifiersConfigurationRepository.findById(configurationId).orElseThrow(
+                        () -> new EntityNotFoundException(ClassifiersConfiguration.class, configurationId));
+        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
+                createClassifierOptionsDatabaseModel(classifierOptions, classifiersConfiguration);
+        classifierOptionsDatabaseModelRepository.save(classifierOptionsDatabaseModel);
+        log.info("New classifier options has been saved for configuration [{}]", configurationId);
     }
 
     /**
@@ -40,9 +57,10 @@ public class ClassifierOptionsService implements PageRequestService<ClassifierOp
      */
     public void deleteOptions(long id) {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
-                classifierOptionsDatabaseModelRepository.findById(id).orElseThrow(() -> new IllegalStateException(
-                        String.format("Classifier options with id [%s] not found!", id)));
+                classifierOptionsDatabaseModelRepository.findById(id).orElseThrow(
+                        () -> new EntityNotFoundException(ClassifierOptionsDatabaseModel.class, id));
         classifierOptionsDatabaseModelRepository.delete(classifierOptionsDatabaseModel);
+        log.info("Classifier options with id [{}] has been deleted", classifierOptionsDatabaseModel.getId());
     }
 
     @Override

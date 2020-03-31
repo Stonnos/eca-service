@@ -24,17 +24,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.DigestUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.util.ClassifierOptionsHelper.createClassifierOptionsDatabaseModel;
 import static com.ecaservice.util.ExperimentLogUtils.logAndThrowError;
 
 /**
@@ -145,7 +144,7 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
         for (File modelFile : modelFiles) {
             try {
                 classifierOptionsDatabaseModels.add(
-                        createClassifierOptions(objectMapper.readValue(modelFile, ClassifierOptions.class),
+                        createClassifierOptionsDatabaseModel(objectMapper.readValue(modelFile, ClassifierOptions.class),
                                 classifiersConfiguration));
             } catch (IOException ex) {
                 logAndThrowError(String.format("There was an error while parsing json file '%s': %s",
@@ -154,27 +153,6 @@ public class ExperimentConfigurationService implements PageRequestService<Classi
             }
         }
         return classifierOptionsDatabaseModels;
-    }
-
-    private ClassifierOptionsDatabaseModel createClassifierOptions(ClassifierOptions classifierOptions,
-                                                                   ClassifiersConfiguration classifiersConfiguration) {
-        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = null;
-        try {
-            classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
-            classifierOptionsDatabaseModel.setOptionsName(classifierOptions.getClass().getSimpleName());
-            String config = objectMapper.writeValueAsString(classifierOptions);
-            classifierOptionsDatabaseModel.setConfigMd5Hash(
-                    DigestUtils.md5DigestAsHex(config.getBytes(StandardCharsets.UTF_8)));
-            classifierOptionsDatabaseModel.setConfig(config);
-            classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
-            classifierOptionsDatabaseModel.setConfiguration(classifiersConfiguration);
-            return classifierOptionsDatabaseModel;
-        } catch (IOException ex) {
-            logAndThrowError(String.format("There was an error while parsing object [%s]: %s", classifierOptions,
-                    ex.getMessage()),
-                    log);
-        }
-        return classifierOptionsDatabaseModel;
     }
 
 }

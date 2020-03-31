@@ -26,8 +26,8 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
 
+import static com.ecaservice.util.ClassifierOptionsHelper.parseOptions;
 import static com.ecaservice.util.Utils.isValid;
-import static com.ecaservice.util.Utils.parseOptions;
 
 /**
  * Implements service for saving evaluation results by sending request to ERS web - service.

@@ -38,7 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.stream.StreamResult;
 import java.io.OutputStream;
 
-import static com.ecaservice.util.Utils.parseOptions;
+import static com.ecaservice.util.ClassifierOptionsHelper.parseOptions;
 
 /**
  * QA controller.

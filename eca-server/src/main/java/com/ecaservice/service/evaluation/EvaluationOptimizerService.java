@@ -31,9 +31,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.ecaservice.util.ClassifierOptionsHelper.parseOptions;
 import static com.ecaservice.util.Utils.buildErrorResponse;
 import static com.ecaservice.util.Utils.getFirstResponseModel;
-import static com.ecaservice.util.Utils.parseOptions;
 
 /**
  * Implements classifier evaluation by searching optimal classifier options.

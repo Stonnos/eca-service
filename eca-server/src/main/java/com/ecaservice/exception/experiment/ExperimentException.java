@@ -7,7 +7,6 @@ import com.ecaservice.exception.EcaServiceException;
  *
  * @author Roman Batygin
  */
-
 public class ExperimentException extends EcaServiceException {
 
     /**

@@ -1,5 +1,6 @@
 package com.ecaservice.service.classifiers;
 
+import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.mapping.ClassifiersConfigurationMapper;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
@@ -68,7 +69,9 @@ public class ClassifiersConfigurationService {
      */
     public void setActive(long id) {
         ClassifiersConfiguration classifiersConfiguration = getById(id);
-        ClassifiersConfiguration activeConfiguration = classifiersConfigurationRepository.findFirstByActiveTrue();
+        ClassifiersConfiguration activeConfiguration =
+                classifiersConfigurationRepository.findFirstByActiveTrue().orElseThrow(
+                        () -> new IllegalStateException("Can't find active classifiers configuration!"));
         if (!classifiersConfiguration.getId().equals(activeConfiguration.getId())) {
             activeConfiguration.setActive(false);
             classifiersConfiguration.setActive(true);
@@ -78,7 +81,7 @@ public class ClassifiersConfigurationService {
     }
 
     private ClassifiersConfiguration getById(long id) {
-        return classifiersConfigurationRepository.findById(id).orElseThrow(() -> new IllegalStateException(
-                String.format("Classifiers configuration with id [%s] not found!", id)));
+        return classifiersConfigurationRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(ClassifiersConfiguration.class, id));
     }
 }
