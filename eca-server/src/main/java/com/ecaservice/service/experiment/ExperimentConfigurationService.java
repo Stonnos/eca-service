@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -47,6 +48,7 @@ public class ExperimentConfigurationService {
     /**
      * Saves individual classifiers input options into database.
      */
+    @PostConstruct
     public void saveClassifiersOptions() {
         if (StringUtils.isEmpty(experimentConfig.getIndividualClassifiersStoragePath())) {
             logAndThrowError("Classifiers input options directory doesn't specified.", log);
