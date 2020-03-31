@@ -16,7 +16,6 @@ import org.springframework.data.domain.Page;
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static com.ecaservice.TestHelperUtils.createClassifierOptionsDatabaseModel;
 import static com.ecaservice.TestHelperUtils.createClassifiersConfiguration;
@@ -33,6 +32,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
     private static final String OPTIONS = "options";
+    private static final long ID = 1L;
 
     @Inject
     private ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
@@ -74,20 +74,20 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     @Test(expected = EntityNotFoundException.class)
     public void testDeleteNotExistingOptions() {
-        classifierOptionsService.deleteOptions(1L);
+        classifierOptionsService.deleteOptions(ID);
     }
 
     @Test
     public void testDeleteOptions() {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions();
         classifierOptionsService.deleteOptions(classifierOptionsDatabaseModel.getId());
-        Optional<ClassifierOptionsDatabaseModel> actualOptions =
-                classifierOptionsDatabaseModelRepository.findById(classifierOptionsDatabaseModel.getId());
-        assertThat(actualOptions.isPresent()).isFalse();
-        Optional<ClassifiersConfiguration> actualConfiguration =
-                classifiersConfigurationRepository.findById(classifierOptionsDatabaseModel.getConfiguration().getId());
-        assertThat(actualConfiguration.isPresent()).isTrue();
-        assertThat(actualConfiguration.get().getUpdated()).isNotNull();
+        ClassifierOptionsDatabaseModel actualOptions =
+                classifierOptionsDatabaseModelRepository.findById(classifierOptionsDatabaseModel.getId()).orElse(null);
+        assertThat(actualOptions).isNull();
+        ClassifiersConfiguration actualConfiguration = classifiersConfigurationRepository.findById(
+                classifierOptionsDatabaseModel.getConfiguration().getId()).orElse(null);
+        assertThat(actualConfiguration).isNotNull();
+        assertThat(actualConfiguration.getUpdated()).isNotNull();
     }
 
     private ClassifierOptionsDatabaseModel saveClassifierOptions() {

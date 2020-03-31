@@ -2,14 +2,17 @@ package com.ecaservice.model.entity;
 
 import lombok.Data;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Classifiers options configuration persistence entity.
@@ -52,4 +55,10 @@ public class ClassifiersConfiguration {
      */
     @Column(columnDefinition = "boolean default false", nullable = false)
     private boolean active;
+
+    /**
+     * Classifiers options list
+     */
+    @OneToMany(mappedBy = "configuration", cascade = CascadeType.ALL)
+    private List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels;
 }
