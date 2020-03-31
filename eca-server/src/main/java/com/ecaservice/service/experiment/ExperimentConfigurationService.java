@@ -1,6 +1,7 @@
 package com.ecaservice.service.experiment;
 
 import com.ecaservice.config.ExperimentConfig;
+import com.ecaservice.exception.ClassifierOptionsException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.model.entity.ClassifiersConfigurationSource;
@@ -26,7 +27,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.util.ClassifierOptionsHelper.createClassifierOptionsDatabaseModel;
-import static com.ecaservice.util.ExperimentLogUtils.logAndThrowError;
 
 /**
  * Service for saving individual classifiers input options into database.
@@ -39,6 +39,10 @@ import static com.ecaservice.util.ExperimentLogUtils.logAndThrowError;
 public class ExperimentConfigurationService {
 
     private static final String DEFAULT_CONFIGURATION_NAME = "Default configuration";
+    public static final String CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_NOT_SPECIFIED =
+            "Classifiers input options directory isn't specified.";
+    public static final String CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_EMPTY =
+            "Classifiers input options directory is empty.";
     private static ObjectMapper objectMapper = new ObjectMapper();
 
     private final ExperimentConfig experimentConfig;
@@ -51,13 +55,15 @@ public class ExperimentConfigurationService {
     @PostConstruct
     public void saveClassifiersOptions() {
         if (StringUtils.isEmpty(experimentConfig.getIndividualClassifiersStoragePath())) {
-            logAndThrowError("Classifiers input options directory doesn't specified.", log);
+            log.error(CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_NOT_SPECIFIED);
+            throw new ClassifierOptionsException(CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_NOT_SPECIFIED);
         }
         File classifiersOptionsDir = new File(getClass().getClassLoader().getResource(
                 experimentConfig.getIndividualClassifiersStoragePath()).getFile());
         Collection<File> modelFiles = FileUtils.listFiles(classifiersOptionsDir, null, true);
         if (CollectionUtils.isEmpty(modelFiles)) {
-            logAndThrowError("Classifiers input options directory is empty.", log);
+            log.error(CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_EMPTY);
+            throw new ClassifierOptionsException(CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_EMPTY);
         } else {
             log.info("Starting to save individual classifiers options into database");
             ClassifiersConfiguration classifiersConfiguration = getOrSaveSystemClassifiersConfiguration();
@@ -113,9 +119,11 @@ public class ExperimentConfigurationService {
                         createClassifierOptionsDatabaseModel(objectMapper.readValue(modelFile, ClassifierOptions.class),
                                 classifiersConfiguration));
             } catch (IOException ex) {
-                logAndThrowError(String.format("There was an error while parsing json file '%s': %s",
-                        modelFile.getAbsolutePath(),
-                        ex.getMessage()), log);
+                log.error("There was an error while parsing json file [{}]: {}", modelFile.getAbsolutePath(),
+                        ex.getMessage());
+                throw new ClassifierOptionsException(
+                        String.format("There was an error while parsing json file '%s': %s",
+                                modelFile.getAbsolutePath(), ex.getMessage()));
             }
         }
         return classifierOptionsDatabaseModels;

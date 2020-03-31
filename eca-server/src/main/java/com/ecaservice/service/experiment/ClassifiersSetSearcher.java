@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.ecaservice.util.ExperimentLogUtils.logAndThrowError;
-
 /**
  * Service for searching the best individual classifiers set by the criterion of accuracy maximization.
  *
@@ -102,8 +100,8 @@ public class ClassifiersSetSearcher {
                 classifierList.add(classifierOptionsConverter.convert(classifierOptions));
             }
         } catch (Exception ex) {
-            logAndThrowError(String.format("There was an error while creating individual classifiers: %s",
-                    ex.getMessage()), log);
+            throw new ExperimentException(
+                    String.format("There was an error while creating individual classifiers: %s", ex.getMessage()));
         }
         log.info("{} individual classifiers has been successfully created.",
                 classifierList.size());
