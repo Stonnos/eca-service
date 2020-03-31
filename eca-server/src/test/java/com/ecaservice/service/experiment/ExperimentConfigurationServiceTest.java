@@ -37,7 +37,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    private static final int CONFIG_VERSION = 1;
 
     @Inject
     private ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;

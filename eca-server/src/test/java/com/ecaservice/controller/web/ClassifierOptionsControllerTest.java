@@ -8,7 +8,6 @@ import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.service.classifiers.ClassifierOptionsService;
-import com.ecaservice.service.experiment.ExperimentConfigurationService;
 import com.ecaservice.token.TokenService;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.MatchMode;
@@ -64,12 +63,9 @@ public class ClassifierOptionsControllerTest {
     private static final String PAGE_URL = BASE_URL + "/page";
 
     private static final String OPTIONS = "options";
-    private static final int VERSION = 0;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @MockBean
-    private ExperimentConfigurationService experimentConfigurationService;
     @MockBean
     private ClassifierOptionsService classifierOptionsService;
 
@@ -100,7 +96,7 @@ public class ClassifierOptionsControllerTest {
                 TestHelperUtils.createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration));
         List<ClassifierOptionsDto> classifierOptionsDtoList =
                 classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModels);
-        when(experimentConfigurationService.findLastClassifiersOptions()).thenReturn(classifierOptionsDatabaseModels);
+        when(classifierOptionsService.getActiveClassifiersOptions()).thenReturn(classifierOptionsDatabaseModels);
         mockMvc.perform(get(LIST_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
                 .andExpect(status().isOk())

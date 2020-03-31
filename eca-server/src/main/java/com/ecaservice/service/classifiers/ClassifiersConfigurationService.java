@@ -75,6 +75,8 @@ public class ClassifiersConfigurationService {
         if (!classifiersConfiguration.getId().equals(activeConfiguration.getId())) {
             activeConfiguration.setActive(false);
             classifiersConfiguration.setActive(true);
+            activeConfiguration.setUpdated(LocalDateTime.now());
+            classifiersConfiguration.setUpdated(LocalDateTime.now());
             classifiersConfigurationRepository.saveAll(Arrays.asList(classifiersConfiguration, activeConfiguration));
             log.info("Classifiers configuration [{}] has been set as active.", classifiersConfiguration.getId());
         }

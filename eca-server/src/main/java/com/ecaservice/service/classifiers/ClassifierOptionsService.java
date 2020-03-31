@@ -16,6 +16,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_.CREATION_DATE;
 import static com.ecaservice.util.ClassifierOptionsHelper.createClassifierOptionsDatabaseModel;
@@ -40,6 +44,7 @@ public class ClassifierOptionsService implements PageRequestService<ClassifierOp
      * @param configurationId   - configuration id
      * @param classifierOptions - classifier options
      */
+    @Transactional
     public void saveClassifierOptions(long configurationId, ClassifierOptions classifierOptions) {
         ClassifiersConfiguration classifiersConfiguration =
                 classifiersConfigurationRepository.findById(configurationId).orElseThrow(
@@ -47,6 +52,8 @@ public class ClassifierOptionsService implements PageRequestService<ClassifierOp
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
                 createClassifierOptionsDatabaseModel(classifierOptions, classifiersConfiguration);
         classifierOptionsDatabaseModelRepository.save(classifierOptionsDatabaseModel);
+        classifiersConfiguration.setUpdated(LocalDateTime.now());
+        classifiersConfigurationRepository.save(classifiersConfiguration);
         log.info("New classifier options has been saved for configuration [{}]", configurationId);
     }
 
@@ -55,11 +62,15 @@ public class ClassifierOptionsService implements PageRequestService<ClassifierOp
      *
      * @param id - classifier options id
      */
+    @Transactional
     public void deleteOptions(long id) {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
                 classifierOptionsDatabaseModelRepository.findById(id).orElseThrow(
                         () -> new EntityNotFoundException(ClassifierOptionsDatabaseModel.class, id));
+        ClassifiersConfiguration classifiersConfiguration = classifierOptionsDatabaseModel.getConfiguration();
         classifierOptionsDatabaseModelRepository.delete(classifierOptionsDatabaseModel);
+        classifiersConfiguration.setUpdated(LocalDateTime.now());
+        classifiersConfigurationRepository.save(classifiersConfiguration);
         log.info("Classifier options with id [{}] has been deleted", classifierOptionsDatabaseModel.getId());
     }
 
@@ -69,5 +80,17 @@ public class ClassifierOptionsService implements PageRequestService<ClassifierOp
         int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
         return classifierOptionsDatabaseModelRepository.findAll(
                 PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+    }
+
+    /**
+     * Finds classifiers options for active configuration.
+     *
+     * @return classifiers options list
+     */
+    public List<ClassifierOptionsDatabaseModel> getActiveClassifiersOptions() {
+        ClassifiersConfiguration activeConfiguration =
+                classifiersConfigurationRepository.findFirstByActiveTrue().orElseThrow(
+                        () -> new IllegalStateException("Can't find active classifiers configuration!"));
+        return classifierOptionsDatabaseModelRepository.findAllByConfiguration(activeConfiguration);
     }
 }

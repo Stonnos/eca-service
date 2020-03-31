@@ -3,7 +3,6 @@ package com.ecaservice.controller.web;
 import com.ecaservice.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.service.classifiers.ClassifierOptionsService;
-import com.ecaservice.service.experiment.ExperimentConfigurationService;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -30,37 +29,36 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClassifierOptionsController {
 
-    private final ExperimentConfigurationService experimentConfigurationService;
     private final ClassifierOptionsService classifierOptionsService;
     private final ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
 
     /**
-     * Finds the last classifiers options configs.
+     * Finds active classifiers options configs.
      *
      * @return response entity
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
-            value = "Finds the last classifiers options configs",
-            notes = "Finds the last classifiers options configs"
+            value = "Finds active classifiers options configs",
+            notes = "Finds active classifiers options configs"
     )
     @GetMapping(value = "/list")
     public List<ClassifierOptionsDto> configs() {
         List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
-                experimentConfigurationService.findLastClassifiersOptions();
+                classifierOptionsService.getActiveClassifiersOptions();
         return classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModels);
     }
 
     /**
-     * Finds the last classifiers options configs.
+     * Finds classifiers options configs page.
      *
      * @param pageRequestDto - page request dto
      * @return response entity
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
-            value = "Finds the last classifiers options configs",
-            notes = "Finds the last classifiers options configs"
+            value = "Finds classifiers options configs page",
+            notes = "Finds classifiers options configs page"
     )
     @GetMapping(value = "/page")
     public PageDto<ClassifierOptionsDto> getConfigsPage(@Valid PageRequestDto pageRequestDto) {
