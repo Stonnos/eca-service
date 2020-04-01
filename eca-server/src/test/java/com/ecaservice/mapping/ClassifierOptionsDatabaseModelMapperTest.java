@@ -24,21 +24,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(ClassifierOptionsDatabaseModelMapperImpl.class)
 public class ClassifierOptionsDatabaseModelMapperTest {
 
+    private static final String CONFIG = "config";
+
     @Inject
     private ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
 
     @Test
     public void testMapClassifierOptionsDatabaseModel() {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
-        classifierOptionsDatabaseModel.setConfig("config");
+        classifierOptionsDatabaseModel.setConfig(CONFIG);
         classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
-        classifierOptionsDatabaseModel.setVersion(0);
         classifierOptionsDatabaseModel.setOptionsName(DecisionTreeOptions.class.getSimpleName());
         ClassifierOptionsDto classifierOptionsDto =
                 classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModel);
         assertThat(classifierOptionsDto.getConfig()).isEqualTo(classifierOptionsDatabaseModel.getConfig());
         assertThat(classifierOptionsDto.getCreationDate()).isEqualTo(classifierOptionsDatabaseModel.getCreationDate());
-        assertThat(classifierOptionsDto.getVersion()).isEqualTo(classifierOptionsDatabaseModel.getVersion());
         assertThat(classifierOptionsDto.getOptionsName()).isEqualTo(classifierOptionsDatabaseModel.getOptionsName());
     }
 

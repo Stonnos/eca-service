@@ -53,7 +53,7 @@ public class ClassifiersConfiguration {
     /**
      * Is active?
      */
-    @Column(columnDefinition = "boolean default false", nullable = false)
+    @Column(name = "_active")
     private boolean active;
 
     /**

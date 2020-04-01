@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
  * @author Roman Batygin
  */
 @Data
-@EqualsAndHashCode(exclude = {"id", "version", "creationDate", "config"})
+@EqualsAndHashCode(exclude = {"id", "creationDate", "config"})
 @Entity
 @Table(name = "classifier_options")
 public class ClassifierOptionsDatabaseModel {
@@ -26,11 +26,6 @@ public class ClassifierOptionsDatabaseModel {
     @Id
     @GeneratedValue
     private Long id;
-
-    /**
-     * Config version
-     */
-    private int version;
 
     /**
      * Options name
