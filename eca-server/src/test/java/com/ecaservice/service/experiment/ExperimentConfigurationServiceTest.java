@@ -76,5 +76,6 @@ public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
         List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
                 classifierOptionsDatabaseModelRepository.findAll();
         assertThat(classifierOptionsDatabaseModels.size()).isEqualTo(modelFiles.length);
+        assertThat(classifiersConfigurationRepository.count()).isOne();
     }
 }
