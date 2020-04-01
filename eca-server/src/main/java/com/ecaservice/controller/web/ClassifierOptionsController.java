@@ -100,7 +100,7 @@ public class ClassifierOptionsController {
     )
     @DeleteMapping(value = "/delete")
     public void delete(
-            @ApiParam(value = "Classifier options id", example = "1", required = true) @PathVariable Long id) {
+            @ApiParam(value = "Classifier options id", example = "1", required = true) @RequestParam long id) {
         classifierOptionsService.deleteOptions(id);
     }
 

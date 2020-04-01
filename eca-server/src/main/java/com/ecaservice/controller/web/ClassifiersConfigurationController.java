@@ -9,10 +9,10 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -71,7 +71,7 @@ public class ClassifiersConfigurationController {
             notes = "Deletes classifiers configuration"
     )
     @DeleteMapping(value = "/delete")
-    public void delete(@ApiParam(value = "Configuration id", example = "1", required = true) @PathVariable Long id) {
+    public void delete(@ApiParam(value = "Configuration id", example = "1", required = true) @RequestParam long id) {
         classifiersConfigurationService.delete(id);
     }
 
@@ -86,7 +86,7 @@ public class ClassifiersConfigurationController {
             notes = "Sets classifiers configuration as active"
     )
     @PostMapping(value = "/set-active")
-    public void setActive(@ApiParam(value = "Configuration id", example = "1", required = true) @PathVariable Long id) {
+    public void setActive(@ApiParam(value = "Configuration id", example = "1", required = true) @RequestParam long id) {
         classifiersConfigurationService.setActive(id);
     }
 }
