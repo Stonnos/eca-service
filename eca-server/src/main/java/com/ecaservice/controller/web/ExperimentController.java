@@ -2,7 +2,6 @@ package com.ecaservice.controller.web;
 
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.event.model.ExperimentResultsSendingEvent;
-import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.MultipartFileResource;
 import com.ecaservice.model.entity.Experiment;
@@ -40,7 +39,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -356,18 +354,6 @@ public class ExperimentController {
         return experimentTypesMap.entrySet().stream().map(
                 entry -> new ChartDataDto(entry.getKey().name(), entry.getKey().getDescription(),
                         entry.getValue())).collect(Collectors.toList());
-    }
-
-    /**
-     * Handles experiments error.
-     *
-     * @param ex - experiment exception
-     * @return response entity
-     */
-    @ExceptionHandler(ExperimentException.class)
-    public ResponseEntity handleError(ExperimentException ex) {
-        log.error(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     private ExperimentRequest createExperimentRequest(MultipartFile trainingData, ExperimentType experimentType,
