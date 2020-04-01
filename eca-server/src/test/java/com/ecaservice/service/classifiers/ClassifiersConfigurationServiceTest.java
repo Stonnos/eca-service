@@ -67,7 +67,8 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     @Test
     public void testUpdateClassifiersConfiguration() {
-        ClassifiersConfiguration classifiersConfiguration = saveConfiguration(true);
+        ClassifiersConfiguration classifiersConfiguration =
+                saveConfiguration(true, ClassifiersConfigurationSource.MANUAL);
         assertThat(classifiersConfiguration.getUpdated()).isNull();
         assertThat(classifiersConfiguration.getName()).isEqualTo(TEST_CONFIGURATION_NAME);
         UpdateClassifiersConfigurationDto updateClassifiersConfigurationDto = new UpdateClassifiersConfigurationDto();
@@ -88,12 +89,27 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     @Test
     public void testDeleteConfiguration() {
-        ClassifiersConfiguration classifiersConfiguration = saveConfiguration(true);
+        ClassifiersConfiguration classifiersConfiguration =
+                saveConfiguration(false, ClassifiersConfigurationSource.MANUAL);
         classifiersConfigurationService.delete(classifiersConfiguration.getId());
         ClassifiersConfiguration actualConfiguration =
                 classifiersConfigurationRepository.findById(classifiersConfiguration.getId()).orElse(null);
         assertThat(actualConfiguration).isNull();
         assertThat(classifierOptionsDatabaseModelRepository.count()).isZero();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testDeleteActiveConfiguration() {
+        ClassifiersConfiguration classifiersConfiguration =
+                saveConfiguration(true, ClassifiersConfigurationSource.MANUAL);
+        classifiersConfigurationService.delete(classifiersConfiguration.getId());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testDeleteSystemConfiguration() {
+        ClassifiersConfiguration classifiersConfiguration =
+                saveConfiguration(true, ClassifiersConfigurationSource.SYSTEM);
+        classifiersConfigurationService.delete(classifiersConfiguration.getId());
     }
 
     @Test(expected = EntityNotFoundException.class)
@@ -103,14 +119,15 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     @Test(expected = IllegalStateException.class)
     public void testSetActiveNotExistingActiveConfiguration() {
-        ClassifiersConfiguration classifiersConfiguration = saveConfiguration(false);
+        ClassifiersConfiguration classifiersConfiguration =
+                saveConfiguration(false, ClassifiersConfigurationSource.MANUAL);
         classifiersConfigurationService.setActive(classifiersConfiguration.getId());
     }
 
     @Test
     public void testSetActiveConfiguration() {
-        ClassifiersConfiguration lastActive = saveConfiguration(true);
-        ClassifiersConfiguration newActive = saveConfiguration(false);
+        ClassifiersConfiguration lastActive = saveConfiguration(true, ClassifiersConfigurationSource.MANUAL);
+        ClassifiersConfiguration newActive = saveConfiguration(false, ClassifiersConfigurationSource.MANUAL);
         classifiersConfigurationService.setActive(newActive.getId());
         ClassifiersConfiguration actualActive =
                 classifiersConfigurationRepository.findById(newActive.getId()).orElse(null);
@@ -122,8 +139,9 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         assertThat(actualNotActive.isActive()).isNotNull();
     }
 
-    private ClassifiersConfiguration saveConfiguration(boolean active) {
+    private ClassifiersConfiguration saveConfiguration(boolean active, ClassifiersConfigurationSource source) {
         ClassifiersConfiguration classifiersConfiguration = TestHelperUtils.createClassifiersConfiguration();
+        classifiersConfiguration.setSource(source);
         classifiersConfiguration.setActive(active);
         classifiersConfiguration.setName(TEST_CONFIGURATION_NAME);
         classifiersConfigurationRepository.save(classifiersConfiguration);

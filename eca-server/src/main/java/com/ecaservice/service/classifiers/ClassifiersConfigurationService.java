@@ -3,12 +3,14 @@ package com.ecaservice.service.classifiers;
 import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.mapping.ClassifiersConfigurationMapper;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
+import com.ecaservice.model.entity.ClassifiersConfigurationSource;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -58,6 +60,10 @@ public class ClassifiersConfigurationService {
      */
     public void delete(long id) {
         ClassifiersConfiguration classifiersConfiguration = getById(id);
+        Assert.state(!ClassifiersConfigurationSource.SYSTEM.equals(classifiersConfiguration.getSource()),
+                String.format("Can't delete system configuration [%d]!", id));
+        Assert.state(!classifiersConfiguration.isActive(),
+                String.format("Can't delete active configuration [%d]!", id));
         classifiersConfigurationRepository.delete(classifiersConfiguration);
         log.info("Classifiers configuration [{}] has been deleted", id);
     }
