@@ -67,7 +67,7 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     @Test
     public void testUpdateClassifiersConfiguration() {
-        ClassifiersConfiguration classifiersConfiguration = saveConfiguration();
+        ClassifiersConfiguration classifiersConfiguration = saveConfiguration(true);
         assertThat(classifiersConfiguration.getUpdated()).isNull();
         assertThat(classifiersConfiguration.getName()).isEqualTo(TEST_CONFIGURATION_NAME);
         UpdateClassifiersConfigurationDto updateClassifiersConfigurationDto = new UpdateClassifiersConfigurationDto();
@@ -88,7 +88,7 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     @Test
     public void testDeleteConfiguration() {
-        ClassifiersConfiguration classifiersConfiguration = saveConfiguration();
+        ClassifiersConfiguration classifiersConfiguration = saveConfiguration(true);
         classifiersConfigurationService.delete(classifiersConfiguration.getId());
         ClassifiersConfiguration actualConfiguration =
                 classifiersConfigurationRepository.findById(classifiersConfiguration.getId()).orElse(null);
@@ -96,8 +96,35 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         assertThat(classifierOptionsDatabaseModelRepository.count()).isZero();
     }
 
-    private ClassifiersConfiguration saveConfiguration() {
+    @Test(expected = EntityNotFoundException.class)
+    public void testSetActiveNotExistingConfiguration() {
+        classifiersConfigurationService.setActive(ID);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testSetActiveNotExistingActiveConfiguration() {
+        ClassifiersConfiguration classifiersConfiguration = saveConfiguration(false);
+        classifiersConfigurationService.setActive(classifiersConfiguration.getId());
+    }
+
+    @Test
+    public void testSetActiveConfiguration() {
+        ClassifiersConfiguration lastActive = saveConfiguration(true);
+        ClassifiersConfiguration newActive = saveConfiguration(false);
+        classifiersConfigurationService.setActive(newActive.getId());
+        ClassifiersConfiguration actualActive =
+                classifiersConfigurationRepository.findById(newActive.getId()).orElse(null);
+        ClassifiersConfiguration actualNotActive =
+                classifiersConfigurationRepository.findById(lastActive.getId()).orElse(null);
+        assertThat(actualActive).isNotNull();
+        assertThat(actualActive.isActive()).isTrue();
+        assertThat(actualNotActive).isNotNull();
+        assertThat(actualNotActive.isActive()).isNotNull();
+    }
+
+    private ClassifiersConfiguration saveConfiguration(boolean active) {
         ClassifiersConfiguration classifiersConfiguration = TestHelperUtils.createClassifiersConfiguration();
+        classifiersConfiguration.setActive(active);
         classifiersConfiguration.setName(TEST_CONFIGURATION_NAME);
         classifiersConfigurationRepository.save(classifiersConfiguration);
         classifierOptionsDatabaseModelRepository.saveAll(Arrays.asList(

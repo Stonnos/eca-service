@@ -1,10 +1,12 @@
 package com.ecaservice.service.classifiers;
 
+import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
+import com.ecaservice.model.options.AdaBoostOptions;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.AbstractJpaTest;
@@ -88,6 +90,28 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
                 classifierOptionsDatabaseModel.getConfiguration().getId()).orElse(null);
         assertThat(actualConfiguration).isNotNull();
         assertThat(actualConfiguration.getUpdated()).isNotNull();
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void testSaveOptionsForNotExistingClassifiersConfiguration() {
+        classifierOptionsService.saveClassifierOptions(ID, TestHelperUtils.createAdaBoostOptions());
+    }
+
+    @Test
+    public void testSaveClassifierOptions() {
+        ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
+        classifiersConfigurationRepository.save(classifiersConfiguration);
+        AdaBoostOptions adaBoostOptions = TestHelperUtils.createAdaBoostOptions();
+        classifierOptionsService.saveClassifierOptions(classifiersConfiguration.getId(), adaBoostOptions);
+        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
+                classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration);
+        assertThat(classifierOptionsDatabaseModels).hasSize(1);
+        ClassifierOptionsDatabaseModel actual = classifierOptionsDatabaseModels.iterator().next();
+        assertThat(actual.getOptionsName()).isEqualTo(adaBoostOptions.getClass().getSimpleName());
+        assertThat(actual.getConfigMd5Hash()).isNotNull();
+        assertThat(actual.getConfig()).isNotNull();
+        assertThat(actual.getCreationDate()).isNotNull();
+        assertThat(actual.getConfiguration().getUpdated()).isNotNull();
     }
 
     private ClassifierOptionsDatabaseModel saveClassifierOptions() {

@@ -51,8 +51,8 @@ public class ClassifierOptionsService implements PageRequestService<ClassifierOp
                         () -> new EntityNotFoundException(ClassifiersConfiguration.class, configurationId));
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
                 createClassifierOptionsDatabaseModel(classifierOptions, classifiersConfiguration);
-        classifierOptionsDatabaseModelRepository.save(classifierOptionsDatabaseModel);
         classifiersConfiguration.setUpdated(LocalDateTime.now());
+        classifierOptionsDatabaseModelRepository.save(classifierOptionsDatabaseModel);
         classifiersConfigurationRepository.save(classifiersConfiguration);
         log.info("New classifier options has been saved for configuration [{}]", configurationId);
     }
