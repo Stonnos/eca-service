@@ -16,12 +16,24 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ErrorHandler {
 
     /**
+     * Handles not found error.
+     *
+     * @param ex -  exception
+     * @return response entity
+     */
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity handleNotFound(EntityNotFoundException ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity.notFound().build();
+    }
+
+    /**
      * Handles bad request error.
      *
      * @param ex -  exception
      * @return response entity
      */
-    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class, EntityNotFoundException.class})
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
     public ResponseEntity handleBadRequest(Exception ex) {
         log.error(ex.getMessage());
         return ResponseEntity.badRequest().body(ex.getMessage());
