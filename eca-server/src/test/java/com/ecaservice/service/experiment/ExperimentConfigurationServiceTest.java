@@ -2,7 +2,7 @@ package com.ecaservice.service.experiment;
 
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.exception.experiment.ExperimentException;
+import com.ecaservice.exception.ClassifierOptionsException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
@@ -48,7 +48,7 @@ public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
         classifiersConfigurationRepository.deleteAll();
     }
 
-    @Test(expected = ExperimentException.class)
+    @Test(expected = ClassifierOptionsException.class)
     public void testNotSpecifiedConfigsDirectory() {
         ExperimentConfig config = new ExperimentConfig();
         ReflectionTestUtils.setField(experimentConfigurationService, "experimentConfig", config);
