@@ -6,6 +6,7 @@ import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
+import com.ecaservice.model.entity.ClassifiersConfigurationSource;
 import com.ecaservice.model.options.AdaBoostOptions;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
@@ -51,7 +52,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     @Test
     public void testGetConfigsPage() {
-        saveClassifierOptions();
+        saveClassifierOptions(ClassifiersConfigurationSource.SYSTEM);
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsDatabaseModel_.CREATION_DATE, false, null,
                         Collections.emptyList());
@@ -68,7 +69,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     @Test
     public void testGetActiveOptions() {
-        saveClassifierOptions();
+        saveClassifierOptions(ClassifiersConfigurationSource.SYSTEM);
         List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
                 classifierOptionsService.getActiveClassifiersOptions();
         assertThat(classifierOptionsDatabaseModels).hasSize(1);
@@ -81,7 +82,8 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     @Test
     public void testDeleteOptions() {
-        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions();
+        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
+                saveClassifierOptions(ClassifiersConfigurationSource.MANUAL);
         classifierOptionsService.deleteOptions(classifierOptionsDatabaseModel.getId());
         ClassifierOptionsDatabaseModel actualOptions =
                 classifierOptionsDatabaseModelRepository.findById(classifierOptionsDatabaseModel.getId()).orElse(null);
@@ -92,6 +94,13 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
         assertThat(actualConfiguration.getUpdated()).isNotNull();
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void testDeleteFromSystemConfiguration() {
+        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
+                saveClassifierOptions(ClassifiersConfigurationSource.SYSTEM);
+        classifierOptionsService.deleteOptions(classifierOptionsDatabaseModel.getId());
+    }
+
     @Test(expected = EntityNotFoundException.class)
     public void testSaveOptionsForNotExistingClassifiersConfiguration() {
         classifierOptionsService.saveClassifierOptions(ID, TestHelperUtils.createAdaBoostOptions());
@@ -100,6 +109,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     @Test
     public void testSaveClassifierOptions() {
         ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
+        classifiersConfiguration.setSource(ClassifiersConfigurationSource.MANUAL);
         classifiersConfigurationRepository.save(classifiersConfiguration);
         AdaBoostOptions adaBoostOptions = TestHelperUtils.createAdaBoostOptions();
         classifierOptionsService.saveClassifierOptions(classifiersConfiguration.getId(), adaBoostOptions);
@@ -114,8 +124,18 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
         assertThat(actual.getConfiguration().getUpdated()).isNotNull();
     }
 
-    private ClassifierOptionsDatabaseModel saveClassifierOptions() {
+    @Test(expected = IllegalStateException.class)
+    public void testSaveClassifierOptionsToSystemConfiguration() {
         ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
+        classifiersConfiguration.setSource(ClassifiersConfigurationSource.SYSTEM);
+        classifiersConfigurationRepository.save(classifiersConfiguration);
+        AdaBoostOptions adaBoostOptions = TestHelperUtils.createAdaBoostOptions();
+        classifierOptionsService.saveClassifierOptions(classifiersConfiguration.getId(), adaBoostOptions);
+    }
+
+    private ClassifierOptionsDatabaseModel saveClassifierOptions(ClassifiersConfigurationSource source) {
+        ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
+        classifiersConfiguration.setSource(source);
         classifiersConfigurationRepository.save(classifiersConfiguration);
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
                 createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration);

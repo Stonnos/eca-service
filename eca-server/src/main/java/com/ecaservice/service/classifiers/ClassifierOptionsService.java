@@ -4,6 +4,7 @@ import com.ecaservice.config.CommonConfig;
 import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
+import com.ecaservice.model.entity.ClassifiersConfigurationSource;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -49,6 +51,8 @@ public class ClassifierOptionsService implements PageRequestService<ClassifierOp
         ClassifiersConfiguration classifiersConfiguration =
                 classifiersConfigurationRepository.findById(configurationId).orElseThrow(
                         () -> new EntityNotFoundException(ClassifiersConfiguration.class, configurationId));
+        Assert.state(!ClassifiersConfigurationSource.SYSTEM.equals(classifiersConfiguration.getSource()),
+                "Can't add classifier options to system configuration!");
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
                 createClassifierOptionsDatabaseModel(classifierOptions, classifiersConfiguration);
         classifiersConfiguration.setUpdated(LocalDateTime.now());
@@ -68,6 +72,8 @@ public class ClassifierOptionsService implements PageRequestService<ClassifierOp
                 classifierOptionsDatabaseModelRepository.findById(id).orElseThrow(
                         () -> new EntityNotFoundException(ClassifierOptionsDatabaseModel.class, id));
         ClassifiersConfiguration classifiersConfiguration = classifierOptionsDatabaseModel.getConfiguration();
+        Assert.state(!ClassifiersConfigurationSource.SYSTEM.equals(classifiersConfiguration.getSource()),
+                "Can't delete classifier options from system configuration!");
         classifierOptionsDatabaseModelRepository.delete(classifierOptionsDatabaseModel);
         classifiersConfiguration.setUpdated(LocalDateTime.now());
         classifiersConfigurationRepository.save(classifiersConfiguration);
