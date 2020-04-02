@@ -27,6 +27,6 @@ export class ClassifierOptionsService {
       .set('sortField', pageRequest.sortField)
       .set('ascending', pageRequest.ascending.toString());
     const options = { headers: headers, params: params };
-    return this.http.get<PageDto<ClassifierOptionsDto>>(this.serviceUrl + '/experiment/classifiers-config/page', options);
+    return this.http.get<PageDto<ClassifierOptionsDto>>(this.serviceUrl + '/experiment/classifiers-options/page', options);
   }
 }
