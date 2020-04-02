@@ -1,19 +1,22 @@
 package com.ecaservice.exception;
 
+import lombok.NoArgsConstructor;
+
 /**
  * Entity not found exception class.
  *
  * @author Roman Batygin
  */
+@NoArgsConstructor
 public class EntityNotFoundException extends EcaServiceException {
 
     /**
      * Creates entity not found exception.
      *
      * @param clazz    - entity class
-     * @param entityId - entity id
+     * @param searchKey - search key
      */
-    public EntityNotFoundException(Class<?> clazz, Long entityId) {
-        super(String.format("Entity [%s] with id [%d] not found!", clazz.getSimpleName(), entityId));
+    public EntityNotFoundException(Class<?> clazz, Object searchKey) {
+        super(String.format("Entity [%s] with search key [%s] not found!", clazz.getSimpleName(), searchKey));
     }
 }

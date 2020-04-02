@@ -192,11 +192,11 @@ public class ExperimentControllerTest {
     }
 
     @Test
-    public void testGetExperimentDetailsBadRequest() throws Exception {
+    public void testGetExperimentDetailsNotFound() throws Exception {
         when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(null);
         mockMvc.perform(get(DETAILS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -365,11 +365,11 @@ public class ExperimentControllerTest {
     }
 
     @Test
-    public void testGetExperimentResultsDetailsBadRequest() throws Exception {
+    public void testGetExperimentResultsDetailsNotFound() throws Exception {
         when(experimentResultsEntityRepository.findById(EXPERIMENT_RESULTS_ID)).thenReturn(Optional.empty());
         mockMvc.perform(get(EXPERIMENT_RESULTS_DETAILS_URL, EXPERIMENT_RESULTS_ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -401,7 +401,7 @@ public class ExperimentControllerTest {
         when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(null);
         mockMvc.perform(get(ERS_REPORT_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -429,7 +429,7 @@ public class ExperimentControllerTest {
         mockMvc.perform(post(SENT_EVALUATION_RESULTS_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
                 .content(TEST_UUID))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -512,11 +512,11 @@ public class ExperimentControllerTest {
     }
 
     @Test
-    public void testGetExperimentResultsSendingStatusBadRequest() throws Exception {
+    public void testGetExperimentResultsSendingStatusNotFound() throws Exception {
         when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(null);
         mockMvc.perform(get(EXPERIMENT_RESULTS_SENDING_STATUS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -555,7 +555,7 @@ public class ExperimentControllerTest {
         when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(null);
         mockMvc.perform(get(url, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     private void testDownloadNotExistingExperimentFile(String url) throws Exception {
@@ -565,6 +565,6 @@ public class ExperimentControllerTest {
         when(Utils.existsFile(any(File.class))).thenReturn(false);
         mockMvc.perform(get(url, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 }

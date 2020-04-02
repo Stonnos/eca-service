@@ -32,7 +32,7 @@ import java.util.List;
  */
 @Api(tags = "Experiment classifiers configs API for web application")
 @RestController
-@RequestMapping("/experiment/classifier-options")
+@RequestMapping("/experiment/classifiers-options")
 @RequiredArgsConstructor
 public class ClassifierOptionsController {
 

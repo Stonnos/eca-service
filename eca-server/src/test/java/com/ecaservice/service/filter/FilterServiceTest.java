@@ -1,6 +1,7 @@
 package com.ecaservice.service.filter;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.mapping.filters.FilterDictionaryMapperImpl;
 import com.ecaservice.mapping.filters.FilterDictionaryValueMapperImpl;
 import com.ecaservice.mapping.filters.FilterFieldMapperImpl;
@@ -57,7 +58,7 @@ public class FilterServiceTest extends AbstractJpaTest {
         assertThat(filterFieldDtoList).hasSameSizeAs(filterTemplate.getFields());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = EntityNotFoundException.class)
     public void testNotExistingFilterTemplate() {
         filterService.getFilterFields(FilterTemplateType.EVALUATION_LOG);
     }
@@ -71,7 +72,7 @@ public class FilterServiceTest extends AbstractJpaTest {
         assertThat(fields).hasSameSizeAs(filterTemplate.getFields());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = EntityNotFoundException.class)
     public void testNotExistingGlobalFilterTemplate() {
         filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG);
     }
@@ -87,7 +88,7 @@ public class FilterServiceTest extends AbstractJpaTest {
         assertThat(filterDictionaryDto.getName()).isEqualTo(filterDictionary.getName());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = EntityNotFoundException.class)
     public void testNotExistingFilterDictionary() {
         filterService.getFilterDictionary(FilterDictionaries.EVALUATION_METHOD);
     }

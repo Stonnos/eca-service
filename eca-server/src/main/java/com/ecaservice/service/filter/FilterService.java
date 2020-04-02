@@ -1,8 +1,10 @@
 package com.ecaservice.service.filter;
 
 import com.ecaservice.config.CacheNames;
+import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.mapping.filters.FilterDictionaryMapper;
 import com.ecaservice.mapping.filters.FilterFieldMapper;
+import com.ecaservice.model.entity.FilterDictionary;
 import com.ecaservice.model.entity.FilterTemplate;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.model.entity.GlobalFilterField;
@@ -47,8 +49,8 @@ public class FilterService {
         return globalFilterTemplateRepository.findFirstByTemplateType(filterTemplateType).map(
                 GlobalFilterTemplate::getFields).map(
                 globalFilterFields -> globalFilterFields.stream().map(GlobalFilterField::getFieldName).collect(
-                        Collectors.toList())).orElseThrow(() -> new IllegalArgumentException(
-                String.format("Can't find global filter template with type [%s]", filterTemplateType)));
+                        Collectors.toList())).orElseThrow(
+                () -> new EntityNotFoundException(GlobalFilterTemplate.class, filterTemplateType));
     }
 
     /**
@@ -61,8 +63,8 @@ public class FilterService {
     public List<FilterFieldDto> getFilterFields(FilterTemplateType templateType) {
         log.info("Fetch filter fields for template type [{}]", templateType);
         return filterTemplateRepository.findFirstByTemplateType(templateType).map(FilterTemplate::getFields).map(
-                filterFieldMapper::map).orElseThrow(() -> new IllegalArgumentException(
-                String.format("Can't find filter template with type [%s]", templateType)));
+                filterFieldMapper::map).orElseThrow(
+                () -> new EntityNotFoundException(FilterTemplate.class, templateType));
     }
 
     /**
@@ -75,7 +77,6 @@ public class FilterService {
     public FilterDictionaryDto getFilterDictionary(String name) {
         log.info("Fetch filter dictionary with name [{}]", name);
         return filterDictionaryRepository.findByName(name).map(filterDictionaryMapper::map).orElseThrow(
-                () -> new IllegalArgumentException(
-                        String.format("Can't find filter dictionary with name  [%s]", name)));
+                () -> new EntityNotFoundException(FilterDictionary.class, name));
     }
 }

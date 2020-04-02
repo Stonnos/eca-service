@@ -103,11 +103,11 @@ public class EvaluationControllerTest {
     }
 
     @Test
-    public void testGetEvaluationLogDetailsBadRequest() throws Exception {
+    public void testGetEvaluationLogDetailsNotFound() throws Exception {
         when(evaluationLogRepository.findByRequestId(TEST_UUID)).thenReturn(null);
         mockMvc.perform(get(DETAILS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test

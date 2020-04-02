@@ -50,7 +50,7 @@ public class EcaControllerTest {
     @Test
     public void testExperimentNotExists() throws Exception {
         when(experimentRepository.findByToken(anyString())).thenReturn(null);
-        mockMvc.perform(get(DOWNLOAD_URL, TOKEN)).andExpect(status().isBadRequest());
+        mockMvc.perform(get(DOWNLOAD_URL, TOKEN)).andExpect(status().isNotFound());
     }
 
     @Test
@@ -60,6 +60,6 @@ public class EcaControllerTest {
         when(experimentRepository.findByToken(anyString())).thenReturn(new Experiment());
         when(ExperimentUtils.getExperimentFile(any(Experiment.class), any())).thenReturn(new File(MODEL_FILE));
         when(Utils.existsFile(any(File.class))).thenReturn(false);
-        mockMvc.perform(get(DOWNLOAD_URL, TOKEN)).andExpect(status().isBadRequest());
+        mockMvc.perform(get(DOWNLOAD_URL, TOKEN)).andExpect(status().isNotFound());
     }
 }

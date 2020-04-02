@@ -48,12 +48,12 @@ public class EcaController {
         Experiment experiment = experimentRepository.findByToken(token);
         if (experiment == null) {
             log.error("Experiment with token [{}] not found", token);
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
         File experimentFile = getExperimentFile(experiment, Experiment::getExperimentAbsolutePath);
         if (!existsFile(experimentFile)) {
             log.error("Experiment results file not found for token [{}]", token);
-            return ResponseEntity.badRequest().body("Experiment results file not found");
+            return ResponseEntity.notFound().build();
         }
         log.info("Downloads experiment file '{}' for token = '{}'", experiment.getExperimentAbsolutePath(), token);
         return buildAttachmentResponse(experimentFile);

@@ -2,6 +2,7 @@ package com.ecaservice.controller.web;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.configuation.annotation.Oauth2TestConfiguration;
+import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.service.filter.FilterService;
 import com.ecaservice.service.filter.dictionary.FilterDictionaries;
@@ -70,8 +71,8 @@ public class FilterTemplateControllerTest {
     }
 
     @Test
-    public void testGetExperimentFilterTemplateBadRequest() throws Exception {
-        testGetFilterTemplateBadRequest(EXPERIMENT_FILTER_TEMPLATE_URL, FilterTemplateType.EXPERIMENT);
+    public void testGetExperimentFilterTemplateNotFound() throws Exception {
+        testGetFilterTemplateNotFound(EXPERIMENT_FILTER_TEMPLATE_URL, FilterTemplateType.EXPERIMENT);
     }
 
     @Test
@@ -85,8 +86,8 @@ public class FilterTemplateControllerTest {
     }
 
     @Test
-    public void testGetEvaluationLogFilterTemplateBadRequest() throws Exception {
-        testGetFilterTemplateBadRequest(EVALUATION_LOG_FILTER_TEMPLATE_URL, FilterTemplateType.EVALUATION_LOG);
+    public void testGetEvaluationLogFilterTemplateNotFound() throws Exception {
+        testGetFilterTemplateNotFound(EVALUATION_LOG_FILTER_TEMPLATE_URL, FilterTemplateType.EVALUATION_LOG);
     }
 
     @Test
@@ -100,8 +101,8 @@ public class FilterTemplateControllerTest {
     }
 
     @Test
-    public void testGetClassifierOptionsRequestFilterTemplateBadRequest() throws Exception {
-        testGetFilterTemplateBadRequest(CLASSIFIER_OPTIONS_REQUEST_FILTER_TEMPLATE_URL,
+    public void testGetClassifierOptionsRequestFilterTemplateNotFound() throws Exception {
+        testGetFilterTemplateNotFound(CLASSIFIER_OPTIONS_REQUEST_FILTER_TEMPLATE_URL,
                 FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST);
     }
 
@@ -117,8 +118,8 @@ public class FilterTemplateControllerTest {
     }
 
     @Test
-    public void testGetExperimentTypeDictionaryBadRequest() throws Exception {
-        testGetFilterDictionaryBadRequest(EXPERIMENT_TYPES_URL, FilterDictionaries.EXPERIMENT_TYPE);
+    public void testGetExperimentTypeDictionaryNotFound() throws Exception {
+        testGetFilterDictionaryNotFound(EXPERIMENT_TYPES_URL, FilterDictionaries.EXPERIMENT_TYPE);
     }
 
     @Test
@@ -132,8 +133,8 @@ public class FilterTemplateControllerTest {
     }
 
     @Test
-    public void testGetEvaluationMethodsDictionaryBadRequest() throws Exception {
-        testGetFilterDictionaryBadRequest(EVALUATION_METHODS_URL, FilterDictionaries.EVALUATION_METHOD);
+    public void testGetEvaluationMethodsDictionaryNotFound() throws Exception {
+        testGetFilterDictionaryNotFound(EVALUATION_METHODS_URL, FilterDictionaries.EVALUATION_METHOD);
     }
 
     @Test
@@ -141,12 +142,12 @@ public class FilterTemplateControllerTest {
         testGetFilterDictionaryOk(EVALUATION_METHODS_URL, FilterDictionaries.EVALUATION_METHOD);
     }
 
-    private void testGetFilterTemplateBadRequest(String templateUrl, FilterTemplateType filterTemplateType)
+    private void testGetFilterTemplateNotFound(String templateUrl, FilterTemplateType filterTemplateType)
             throws Exception {
-        when(filterService.getFilterFields(filterTemplateType)).thenThrow(new IllegalArgumentException());
+        when(filterService.getFilterFields(filterTemplateType)).thenThrow(new EntityNotFoundException());
         mockMvc.perform(get(templateUrl)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     private void testGetFilterTemplateOk(String templateUrl, FilterTemplateType filterTemplateType) throws Exception {
@@ -159,11 +160,11 @@ public class FilterTemplateControllerTest {
                 .andExpect(content().json(objectMapper.writeValueAsString(filterFieldDtoList)));
     }
 
-    private void testGetFilterDictionaryBadRequest(String templateUrl, String filterDictionaryName) throws Exception {
-        when(filterService.getFilterDictionary(filterDictionaryName)).thenThrow(new IllegalArgumentException());
+    private void testGetFilterDictionaryNotFound(String templateUrl, String filterDictionaryName) throws Exception {
+        when(filterService.getFilterDictionary(filterDictionaryName)).thenThrow(new EntityNotFoundException());
         mockMvc.perform(get(templateUrl)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     private void testGetFilterDictionaryOk(String templateUrl, String filterDictionaryName) throws Exception {

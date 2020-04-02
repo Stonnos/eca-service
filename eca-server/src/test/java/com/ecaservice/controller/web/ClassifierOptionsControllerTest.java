@@ -58,8 +58,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(ClassifierOptionsDatabaseModelMapperImpl.class)
 public class ClassifierOptionsControllerTest {
 
-    private static final String BASE_URL = "/experiment/classifiers-config";
-    private static final String LIST_URL = BASE_URL + "/list";
+    private static final String BASE_URL = "/experiment/classifiers-options";
+    private static final String ACTIVE_OPTIONS_URL = BASE_URL + "/active-options";
     private static final String PAGE_URL = BASE_URL + "/page";
 
     private static final String OPTIONS = "options";
@@ -85,7 +85,7 @@ public class ClassifierOptionsControllerTest {
 
     @Test
     public void testGetConfigsUnauthorized() throws Exception {
-        mockMvc.perform(get(LIST_URL))
+        mockMvc.perform(get(ACTIVE_OPTIONS_URL))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -97,7 +97,7 @@ public class ClassifierOptionsControllerTest {
         List<ClassifierOptionsDto> classifierOptionsDtoList =
                 classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModels);
         when(classifierOptionsService.getActiveClassifiersOptions()).thenReturn(classifierOptionsDatabaseModels);
-        mockMvc.perform(get(LIST_URL)
+        mockMvc.perform(get(ACTIVE_OPTIONS_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
