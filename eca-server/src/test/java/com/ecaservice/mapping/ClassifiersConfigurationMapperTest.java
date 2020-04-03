@@ -1,7 +1,9 @@
 package com.ecaservice.mapping;
 
+import com.ecaservice.TestHelperUtils;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.model.entity.ClassifiersConfigurationSource;
+import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
 import org.junit.Test;
@@ -10,6 +12,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ClassifiersConfigurationMapperTest {
 
     private static final String CONFIGURATION_NAME = "ConfigurationName";
+    private static final long ID = 1L;
 
     @Inject
     private ClassifiersConfigurationMapper classifiersConfigurationMapper;
@@ -45,5 +49,18 @@ public class ClassifiersConfigurationMapperTest {
         ClassifiersConfiguration classifiersConfiguration = new ClassifiersConfiguration();
         classifiersConfigurationMapper.update(classifiersConfigurationDto, classifiersConfiguration);
         assertThat(classifiersConfiguration.getName()).isEqualTo(classifiersConfigurationDto.getName());
+    }
+
+    @Test
+    public void testMapClassifiersConfigurationEntity() {
+        ClassifiersConfiguration classifiersConfiguration = TestHelperUtils.createClassifiersConfiguration();
+        classifiersConfiguration.setId(ID);
+        classifiersConfiguration.setUpdated(LocalDateTime.now());
+        ClassifiersConfigurationDto classifiersConfigurationDto =
+                classifiersConfigurationMapper.map(classifiersConfiguration);
+        assertThat(classifiersConfigurationDto).isNotNull();
+        assertThat(classifiersConfigurationDto.getId()).isEqualTo(classifiersConfiguration.getId());
+        assertThat(classifiersConfigurationDto.getName()).isEqualTo(classifiersConfiguration.getName());
+        assertThat(classifiersConfigurationDto.getCreated()).isEqualTo(classifiersConfiguration.getCreated());
     }
 }
