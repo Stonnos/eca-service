@@ -1,14 +1,19 @@
 package com.ecaservice.controller.web;
 
 import com.ecaservice.service.classifiers.ClassifiersConfigurationService;
+import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
+import com.ecaservice.web.dto.model.PageDto;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +27,7 @@ import javax.validation.Valid;
  *
  * @author Roman Batygin
  */
+@Slf4j
 @Api(tags = "API to manage experiment classifiers configurations")
 @RestController
 @RequestMapping("/experiment/classifiers-configurations")
@@ -29,6 +35,23 @@ import javax.validation.Valid;
 public class ClassifiersConfigurationController {
 
     private final ClassifiersConfigurationService classifiersConfigurationService;
+
+    /**
+     * Finds classifiers configurations with specified options such as filter, sorting and paging.
+     *
+     * @param pageRequestDto - page request dto
+     * @return classifiers configurations page
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Finds classifiers configurations with specified options",
+            notes = "Finds classifiers configurations with specified options"
+    )
+    @GetMapping(value = "/list")
+    public PageDto<ClassifiersConfigurationDto> getClassifiersConfigurations(@Valid PageRequestDto pageRequestDto) {
+        log.info("Received classifiers configurations page request: {}", pageRequestDto);
+        return classifiersConfigurationService.getClassifiersConfigurations(pageRequestDto);
+    }
 
     /**
      * Saves new classifiers configuration.

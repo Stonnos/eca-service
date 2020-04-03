@@ -2,8 +2,12 @@ package com.ecaservice.repository;
 
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
+import com.ecaservice.model.projections.ClassifiersOptionsStatistics;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -20,4 +24,16 @@ public interface ClassifierOptionsDatabaseModelRepository extends JpaRepository<
      * @return classifier options database models list
      */
     List<ClassifierOptionsDatabaseModel> findAllByConfiguration(ClassifiersConfiguration configuration);
+
+    /**
+     * Gets classifiers options statistics group by classifiers configuration.
+     *
+     * @param configurationsIds - configurations ids
+     * @return classifiers options statistics as list
+     */
+    @Query("select c.configuration.id as configurationId, count(c.configuration.id) as classifiersOptionsCount " +
+            "from ClassifierOptionsDatabaseModel c where c.configuration.id in (:configurationsIds) " +
+            "group by c.configuration.id")
+    List<ClassifiersOptionsStatistics> getClassifiersOptionsStatistics(
+            @Param("configurationsIds") Collection<Long> configurationsIds);
 }

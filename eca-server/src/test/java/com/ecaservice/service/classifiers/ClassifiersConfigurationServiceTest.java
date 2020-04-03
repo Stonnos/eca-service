@@ -1,6 +1,7 @@
 package com.ecaservice.service.classifiers;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.config.CommonConfig;
 import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.mapping.ClassifiersConfigurationMapperImpl;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
@@ -8,15 +9,23 @@ import com.ecaservice.model.entity.ClassifiersConfigurationSource;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.AbstractJpaTest;
+import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
+import com.ecaservice.web.dto.model.PageDto;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
 import org.junit.Test;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import static com.ecaservice.model.entity.ClassifiersConfiguration_.CREATED;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -24,13 +33,15 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@Import({ClassifiersConfigurationService.class, ClassifiersConfigurationMapperImpl.class})
+@Import({ClassifiersConfigurationService.class, ClassifiersConfigurationMapperImpl.class, CommonConfig.class})
 public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     private static final String TEST_CONFIG = "test_config";
     private static final String TEST_CONFIGURATION_NAME = "TestConfiguration";
     private static final String TEST_CONFIGURATION_UPDATED_NAME = "UpdatedTestName";
     private static final long ID = 1L;
+    private static final int PAGE_NUMBER = 0;
+    private static final int PAGE_SIZE = 10;
 
     @Inject
     private ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
@@ -137,6 +148,36 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         assertThat(actualActive.isActive()).isTrue();
         assertThat(actualNotActive).isNotNull();
         assertThat(actualNotActive.isActive()).isNotNull();
+    }
+
+    @Test
+    public void testGetClassifiersConfigurations() {
+        ClassifiersConfiguration firstConfiguration = saveConfiguration(true,
+                ClassifiersConfigurationSource.SYSTEM);
+        ClassifiersConfiguration secondConfiguration = saveConfiguration(false,
+                ClassifiersConfigurationSource.MANUAL);
+        classifierOptionsDatabaseModelRepository.save(
+                TestHelperUtils.createClassifierOptionsDatabaseModel(TEST_CONFIG, secondConfiguration));
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CREATED, false, null, Collections.emptyList());
+        PageDto<ClassifiersConfigurationDto> configurationsPage =
+                classifiersConfigurationService.getClassifiersConfigurations(pageRequestDto);
+        assertThat(configurationsPage).isNotNull();
+        assertThat(configurationsPage.getPage()).isEqualTo(pageRequestDto.getPage());
+        assertThat(configurationsPage.getTotalCount()).isEqualTo(2);
+        assertThat(configurationsPage.getContent()).isNotNull();
+        assertThat(configurationsPage.getContent()).hasSize(2);
+
+        //Assert configurations dto
+        Map<Long, ClassifiersConfigurationDto> classifiersConfigurationDtoMap =
+                configurationsPage.getContent().stream().collect(
+                        Collectors.toMap(ClassifiersConfigurationDto::getId, Function.identity()));
+        ClassifiersConfigurationDto actualFirst = classifiersConfigurationDtoMap.get(firstConfiguration.getId());
+        assertThat(actualFirst.getId()).isEqualTo(firstConfiguration.getId());
+        assertThat(actualFirst.getClassifiersOptionsCount()).isEqualTo(2);
+        ClassifiersConfigurationDto actualSecond = classifiersConfigurationDtoMap.get(secondConfiguration.getId());
+        assertThat(actualSecond.getId()).isEqualTo(secondConfiguration.getId());
+        assertThat(actualSecond.getClassifiersOptionsCount()).isEqualTo(3);
     }
 
     private ClassifiersConfiguration saveConfiguration(boolean active, ClassifiersConfigurationSource source) {

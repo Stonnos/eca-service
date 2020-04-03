@@ -1,19 +1,36 @@
 package com.ecaservice.service.classifiers;
 
+import com.ecaservice.config.CommonConfig;
 import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.mapping.ClassifiersConfigurationMapper;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.model.entity.ClassifiersConfigurationSource;
+import com.ecaservice.model.projections.ClassifiersOptionsStatistics;
+import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
+import com.ecaservice.service.PageRequestService;
+import com.ecaservice.util.SortUtils;
+import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
+import com.ecaservice.web.dto.model.PageDto;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static com.ecaservice.model.entity.ClassifiersConfiguration_.CREATED;
 
 /**
  * Classifiers configuration service.
@@ -23,10 +40,12 @@ import java.util.Arrays;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ClassifiersConfigurationService {
+public class ClassifiersConfigurationService implements PageRequestService<ClassifiersConfiguration> {
 
     private final ClassifiersConfigurationMapper classifiersConfigurationMapper;
+    private final CommonConfig commonConfig;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
+    private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
 
     /**
      * Saves new classifiers configuration.
@@ -89,5 +108,39 @@ public class ClassifiersConfigurationService {
     private ClassifiersConfiguration getById(long id) {
         return classifiersConfigurationRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(ClassifiersConfiguration.class, id));
+    }
+
+    @Override
+    public Page<ClassifiersConfiguration> getNextPage(PageRequestDto pageRequestDto) {
+        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), CREATED, pageRequestDto.isAscending());
+        int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
+        return classifiersConfigurationRepository.findAll(PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+    }
+
+    /**
+     * Gets classifiers configurations dto models page
+     *
+     * @param pageRequestDto - page request object
+     * @return classifiers configurations dto models page
+     */
+    public PageDto<ClassifiersConfigurationDto> getClassifiersConfigurations(PageRequestDto pageRequestDto) {
+        Page<ClassifiersConfiguration> classifiersConfigurationsPage = getNextPage(pageRequestDto);
+        List<Long> configurationsIds =
+                classifiersConfigurationsPage.getContent().stream().map(ClassifiersConfiguration::getId).collect(
+                        Collectors.toList());
+        List<ClassifiersOptionsStatistics> classifiersOptionsStatisticsList =
+                classifierOptionsDatabaseModelRepository.getClassifiersOptionsStatistics(configurationsIds);
+        List<ClassifiersConfigurationDto> configurationDtoList =
+                classifiersConfigurationMapper.map(classifiersConfigurationsPage.getContent());
+        Map<Long, ClassifiersConfigurationDto> configurationDtoMap = configurationDtoList.stream().collect(
+                Collectors.toMap(ClassifiersConfigurationDto::getId, Function.identity()));
+        classifiersOptionsStatisticsList.forEach(classifiersOptionsStatistics -> {
+            ClassifiersConfigurationDto classifiersConfigurationDto =
+                    configurationDtoMap.get(classifiersOptionsStatistics.getConfigurationId());
+            classifiersConfigurationDto.setClassifiersOptionsCount(
+                    classifiersOptionsStatistics.getClassifiersOptionsCount());
+        });
+        return PageDto.of(configurationDtoList, pageRequestDto.getPage(),
+                classifiersConfigurationsPage.getTotalElements());
     }
 }

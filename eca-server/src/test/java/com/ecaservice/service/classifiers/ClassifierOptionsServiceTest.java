@@ -4,7 +4,6 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
-import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.model.entity.ClassifiersConfigurationSource;
 import com.ecaservice.model.options.AdaBoostOptions;
@@ -22,6 +21,7 @@ import java.util.List;
 
 import static com.ecaservice.TestHelperUtils.createClassifierOptionsDatabaseModel;
 import static com.ecaservice.TestHelperUtils.createClassifiersConfiguration;
+import static com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_.CREATION_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -54,7 +54,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     public void testGetConfigsPage() {
         saveClassifierOptions(ClassifiersConfigurationSource.SYSTEM);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsDatabaseModel_.CREATION_DATE, false, null,
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CREATION_DATE, false, null,
                         Collections.emptyList());
         Page<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModelPage =
                 classifierOptionsService.getNextPage(pageRequestDto);
