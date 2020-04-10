@@ -5,8 +5,6 @@ import lombok.Data;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -45,10 +43,10 @@ public class ClassifiersConfiguration {
     private LocalDateTime updated;
 
     /**
-     * Configuration source
+     * Is build in?
      */
-    @Enumerated(EnumType.STRING)
-    private ClassifiersConfigurationSource source;
+    @Column(name = "build_in")
+    private boolean buildIn;
 
     /**
      * Is active?

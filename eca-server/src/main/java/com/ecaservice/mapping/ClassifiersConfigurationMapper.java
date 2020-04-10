@@ -24,7 +24,6 @@ public interface ClassifiersConfigurationMapper {
      * @param configurationDto - create classifiers configuration dto
      * @return classifiers configuration entity
      */
-    @Mapping(target = "source", constant = "MANUAL")
     ClassifiersConfiguration map(CreateClassifiersConfigurationDto configurationDto);
 
     /**

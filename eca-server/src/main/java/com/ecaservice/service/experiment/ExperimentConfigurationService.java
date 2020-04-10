@@ -4,7 +4,6 @@ import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.exception.ClassifierOptionsException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
-import com.ecaservice.model.entity.ClassifiersConfigurationSource;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
@@ -13,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -66,7 +64,7 @@ public class ExperimentConfigurationService {
             throw new ClassifierOptionsException(CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_EMPTY);
         } else {
             log.info("Starting to save individual classifiers options into database");
-            ClassifiersConfiguration classifiersConfiguration = getOrSaveSystemClassifiersConfiguration();
+            ClassifiersConfiguration classifiersConfiguration = getOrSaveBuildInClassifiersConfiguration();
             List<ClassifierOptionsDatabaseModel> latestOptions =
                     classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration);
             List<ClassifierOptionsDatabaseModel> newOptions =
@@ -95,14 +93,13 @@ public class ExperimentConfigurationService {
         }
     }
 
-    private ClassifiersConfiguration getOrSaveSystemClassifiersConfiguration() {
+    private ClassifiersConfiguration getOrSaveBuildInClassifiersConfiguration() {
         ClassifiersConfiguration classifiersConfiguration =
-                classifiersConfigurationRepository.findAllBySource(ClassifiersConfigurationSource.SYSTEM,
-                        PageRequest.of(0, 1)).stream().findFirst().orElse(null);
+                classifiersConfigurationRepository.findFirstByBuildInIsTrue();
         if (classifiersConfiguration == null) {
             classifiersConfiguration = new ClassifiersConfiguration();
             classifiersConfiguration.setName(DEFAULT_CONFIGURATION_NAME);
-            classifiersConfiguration.setSource(ClassifiersConfigurationSource.SYSTEM);
+            classifiersConfiguration.setBuildIn(true);
             classifiersConfiguration.setActive(true);
             classifiersConfiguration.setCreated(LocalDateTime.now());
             return classifiersConfigurationRepository.save(classifiersConfiguration);

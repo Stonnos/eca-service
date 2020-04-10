@@ -21,7 +21,6 @@ import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
-import com.ecaservice.model.entity.ClassifiersConfigurationSource;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.Experiment;
@@ -308,7 +307,7 @@ public class TestHelperUtils {
         ClassifiersConfiguration classifiersConfiguration = new ClassifiersConfiguration();
         classifiersConfiguration.setActive(true);
         classifiersConfiguration.setCreated(LocalDateTime.now());
-        classifiersConfiguration.setSource(ClassifiersConfigurationSource.SYSTEM);
+        classifiersConfiguration.setBuildIn(true);
         return classifiersConfiguration;
     }
 

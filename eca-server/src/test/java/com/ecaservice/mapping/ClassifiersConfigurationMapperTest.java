@@ -2,7 +2,6 @@ package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
-import com.ecaservice.model.entity.ClassifiersConfigurationSource;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
@@ -39,7 +38,7 @@ public class ClassifiersConfigurationMapperTest {
                 classifiersConfigurationMapper.map(classifiersConfigurationDto);
         assertThat(classifiersConfiguration).isNotNull();
         assertThat(classifiersConfiguration.getName()).isEqualTo(classifiersConfigurationDto.getName());
-        assertThat(classifiersConfiguration.getSource()).isEqualTo(ClassifiersConfigurationSource.MANUAL);
+        assertThat(classifiersConfiguration.isBuildIn()).isFalse();
     }
 
     @Test

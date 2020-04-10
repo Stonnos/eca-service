@@ -18,7 +18,7 @@
             <column name="_name" type="varchar(255)"/>
             <column name="created" type="timestamp"/>
             <column name="updated" type="timestamp"/>
-            <column name="source" type="varchar(255)"/>
+            <column name="build_in" type="boolean" defaultValueBoolean="false"/>
             <column name="_active" type="boolean" defaultValueBoolean="false"/>
         </createTable>
     </changeSet>

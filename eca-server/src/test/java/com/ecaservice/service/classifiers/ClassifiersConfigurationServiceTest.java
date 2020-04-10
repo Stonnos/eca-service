@@ -5,7 +5,6 @@ import com.ecaservice.config.CommonConfig;
 import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.mapping.ClassifiersConfigurationMapperImpl;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
-import com.ecaservice.model.entity.ClassifiersConfigurationSource;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.AbstractJpaTest;
@@ -66,7 +65,7 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         ClassifiersConfiguration actual = configurations.iterator().next();
         assertThat(actual.getName()).isEqualTo(configurationDto.getName());
         assertThat(actual.getCreated()).isNotNull();
-        assertThat(actual.getSource()).isEqualTo(ClassifiersConfigurationSource.MANUAL);
+        assertThat(actual.isBuildIn()).isFalse();
     }
 
     @Test(expected = EntityNotFoundException.class)
@@ -78,8 +77,7 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     @Test
     public void testUpdateClassifiersConfiguration() {
-        ClassifiersConfiguration classifiersConfiguration =
-                saveConfiguration(true, ClassifiersConfigurationSource.MANUAL);
+        ClassifiersConfiguration classifiersConfiguration = saveConfiguration(true, false);
         assertThat(classifiersConfiguration.getUpdated()).isNull();
         assertThat(classifiersConfiguration.getName()).isEqualTo(TEST_CONFIGURATION_NAME);
         UpdateClassifiersConfigurationDto updateClassifiersConfigurationDto = new UpdateClassifiersConfigurationDto();
@@ -100,8 +98,7 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     @Test
     public void testDeleteConfiguration() {
-        ClassifiersConfiguration classifiersConfiguration =
-                saveConfiguration(false, ClassifiersConfigurationSource.MANUAL);
+        ClassifiersConfiguration classifiersConfiguration = saveConfiguration(false, false);
         classifiersConfigurationService.delete(classifiersConfiguration.getId());
         ClassifiersConfiguration actualConfiguration =
                 classifiersConfigurationRepository.findById(classifiersConfiguration.getId()).orElse(null);
@@ -111,15 +108,13 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     @Test(expected = IllegalStateException.class)
     public void testDeleteActiveConfiguration() {
-        ClassifiersConfiguration classifiersConfiguration =
-                saveConfiguration(true, ClassifiersConfigurationSource.MANUAL);
+        ClassifiersConfiguration classifiersConfiguration = saveConfiguration(true, false);
         classifiersConfigurationService.delete(classifiersConfiguration.getId());
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testDeleteSystemConfiguration() {
-        ClassifiersConfiguration classifiersConfiguration =
-                saveConfiguration(true, ClassifiersConfigurationSource.SYSTEM);
+    public void testDeleteBuildInConfiguration() {
+        ClassifiersConfiguration classifiersConfiguration = saveConfiguration(true, false);
         classifiersConfigurationService.delete(classifiersConfiguration.getId());
     }
 
@@ -130,15 +125,14 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     @Test(expected = IllegalStateException.class)
     public void testSetActiveNotExistingActiveConfiguration() {
-        ClassifiersConfiguration classifiersConfiguration =
-                saveConfiguration(false, ClassifiersConfigurationSource.MANUAL);
+        ClassifiersConfiguration classifiersConfiguration = saveConfiguration(false, false);
         classifiersConfigurationService.setActive(classifiersConfiguration.getId());
     }
 
     @Test
     public void testSetActiveConfiguration() {
-        ClassifiersConfiguration lastActive = saveConfiguration(true, ClassifiersConfigurationSource.MANUAL);
-        ClassifiersConfiguration newActive = saveConfiguration(false, ClassifiersConfigurationSource.MANUAL);
+        ClassifiersConfiguration lastActive = saveConfiguration(true, false);
+        ClassifiersConfiguration newActive = saveConfiguration(false, false);
         classifiersConfigurationService.setActive(newActive.getId());
         ClassifiersConfiguration actualActive =
                 classifiersConfigurationRepository.findById(newActive.getId()).orElse(null);
@@ -152,10 +146,8 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     @Test
     public void testGetClassifiersConfigurations() {
-        ClassifiersConfiguration firstConfiguration = saveConfiguration(true,
-                ClassifiersConfigurationSource.SYSTEM);
-        ClassifiersConfiguration secondConfiguration = saveConfiguration(false,
-                ClassifiersConfigurationSource.MANUAL);
+        ClassifiersConfiguration firstConfiguration = saveConfiguration(true, true);
+        ClassifiersConfiguration secondConfiguration = saveConfiguration(false, false);
         classifierOptionsDatabaseModelRepository.save(
                 TestHelperUtils.createClassifierOptionsDatabaseModel(TEST_CONFIG, secondConfiguration));
         PageRequestDto pageRequestDto =
@@ -180,9 +172,9 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         assertThat(actualSecond.getClassifiersOptionsCount()).isEqualTo(3);
     }
 
-    private ClassifiersConfiguration saveConfiguration(boolean active, ClassifiersConfigurationSource source) {
+    private ClassifiersConfiguration saveConfiguration(boolean active, boolean buildIn) {
         ClassifiersConfiguration classifiersConfiguration = TestHelperUtils.createClassifiersConfiguration();
-        classifiersConfiguration.setSource(source);
+        classifiersConfiguration.setBuildIn(buildIn);
         classifiersConfiguration.setActive(active);
         classifiersConfiguration.setName(TEST_CONFIGURATION_NAME);
         classifiersConfigurationRepository.save(classifiersConfiguration);

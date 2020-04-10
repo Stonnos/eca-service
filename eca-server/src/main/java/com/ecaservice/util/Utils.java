@@ -11,7 +11,6 @@ import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.EvaluationMethod;
 import eca.data.file.xml.converter.XmlInstancesConverter;
 import lombok.experimental.UtilityClass;
@@ -53,8 +52,6 @@ public class Utils {
     private static final String CV_FORMAT = "%d - блочная кросс - проверка";
     private static final String CV_EXTENDED_FORMAT = "%d×%d - блочная кросс - проверка";
     private static final long ZERO = 0L;
-
-    private static ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * Creates evaluation response with error status.

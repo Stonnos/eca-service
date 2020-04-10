@@ -50,6 +50,12 @@ public class ClassifiersConfigurationDto {
     private boolean active;
 
     /**
+     * Is build in?
+     */
+    @ApiModelProperty(value = "Is build in?")
+    private boolean buildIn;
+
+    /**
      * Classifiers options count associated with configuration
      */
     @ApiModelProperty(value = "Classifiers options count associated with configuration")

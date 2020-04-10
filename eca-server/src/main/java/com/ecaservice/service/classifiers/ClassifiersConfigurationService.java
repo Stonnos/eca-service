@@ -4,7 +4,6 @@ import com.ecaservice.config.CommonConfig;
 import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.mapping.ClassifiersConfigurationMapper;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
-import com.ecaservice.model.entity.ClassifiersConfigurationSource;
 import com.ecaservice.model.projections.ClassifiersOptionsStatistics;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
@@ -79,8 +78,8 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      */
     public void delete(long id) {
         ClassifiersConfiguration classifiersConfiguration = getById(id);
-        Assert.state(!ClassifiersConfigurationSource.SYSTEM.equals(classifiersConfiguration.getSource()),
-                String.format("Can't delete system configuration [%d]!", id));
+        Assert.state(!classifiersConfiguration.isBuildIn(),
+                String.format("Can't delete build in configuration [%d]!", id));
         Assert.state(!classifiersConfiguration.isActive(),
                 String.format("Can't delete active configuration [%d]!", id));
         classifiersConfigurationRepository.delete(classifiersConfiguration);

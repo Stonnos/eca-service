@@ -1,11 +1,8 @@
 package com.ecaservice.repository;
 
 import com.ecaservice.model.entity.ClassifiersConfiguration;
-import com.ecaservice.model.entity.ClassifiersConfigurationSource;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -18,11 +15,9 @@ public interface ClassifiersConfigurationRepository extends JpaRepository<Classi
     /**
      * Gets classifiers configurations by specified source.
      *
-     * @param source   - configuration source
-     * @param pageable - pageable object
      * @return classifiers configurations list
      */
-    List<ClassifiersConfiguration> findAllBySource(ClassifiersConfigurationSource source, Pageable pageable);
+    ClassifiersConfiguration findFirstByBuildInIsTrue();
 
     /**
      * Gets active classifiers configuration.
