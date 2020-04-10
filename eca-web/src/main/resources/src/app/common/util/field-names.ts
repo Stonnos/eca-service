@@ -57,6 +57,15 @@ export class ClassifierOptionsFields {
   public static readonly CREATION_DATE: string = "creationDate";
 }
 
+export class ClassifiersConfigurationFields {
+  public static readonly NAME: string = "name";
+  public static readonly CREATED: string = "created";
+  public static readonly UPDATED: string = "updated";
+  public static readonly ACTIVE: string = "active";
+  public static readonly BUILD_IN: string = "buildIn";
+  public static readonly CLASSIFIERS_OPTIONS_COUNT: string = "classifiersOptionsCount";
+}
+
 export class EvaluationStatisticsFields {
   public static readonly NUM_TEST_INSTANCES: string = "numTestInstances";
   public static readonly NUM_CORRECT: string = "numCorrect";

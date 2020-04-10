@@ -6,6 +6,7 @@ import { ExperimentStatisticsModule } from "../experiment-statistics/experiment-
 import { ClassifierOptionsModule } from "../classifier-options/classifier-options.module";
 import { ExperimentTabsComponent } from "./components/experiment-tabs.component";
 import { ExperimentsModule } from "../experiments/experiments.module";
+import { ClassifiersConfigurationsModule } from "../classifiers-configurations/classifiers-configurations.module";
 
 @NgModule({
   imports: [
@@ -14,6 +15,7 @@ import { ExperimentsModule } from "../experiments/experiments.module";
     UiComponentsModule,
     ExperimentStatisticsModule,
     ClassifierOptionsModule,
+    ClassifiersConfigurationsModule,
     ExperimentsModule
   ],
   declarations: [

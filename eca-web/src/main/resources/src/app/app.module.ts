@@ -27,6 +27,7 @@ import { EvaluationLogDetailsModule } from "./evaluation-log-details/evaluation-
 import { ExperimentErsReportModule } from "./experiment-ers-report/experiment-ers-report.module";
 import { ExperimentDetailsModule } from "./experiment-details/experiment-details.module";
 import { ExperimentResultsDetailsModule } from "./experiment-results-details/experiment-results-details.module";
+import { ClassifiersConfigurationsModule } from "./classifiers-configurations/classifiers-configurations.module";
 
 export function initializeApp(configService: ConfigService) {
   return () => configService.getConfigs();
@@ -46,6 +47,7 @@ export function initializeApp(configService: ConfigService) {
     ClassifiersModule,
     ExperimentsModule,
     ClassifierOptionsModule,
+    ClassifiersConfigurationsModule,
     ClassifierOptionsRequestsModule,
     RequestStatusesStatisticsModule,
     FilterModule,

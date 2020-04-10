@@ -69,12 +69,12 @@ public class ExperimentConfigurationService {
                     classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration);
             List<ClassifierOptionsDatabaseModel> newOptions =
                     createClassifiersOptions(modelFiles, classifiersConfiguration);
-            updateSystemClassifiersConfiguration(newOptions, latestOptions);
+            updateBuildInClassifiersConfiguration(newOptions, latestOptions);
         }
     }
 
-    private void updateSystemClassifiersConfiguration(List<ClassifierOptionsDatabaseModel> newOptions,
-                                                      List<ClassifierOptionsDatabaseModel> latestOptions) {
+    private void updateBuildInClassifiersConfiguration(List<ClassifierOptionsDatabaseModel> newOptions,
+                                                       List<ClassifierOptionsDatabaseModel> latestOptions) {
         if (CollectionUtils.isEmpty(latestOptions) || latestOptions.size() != newOptions.size() ||
                 !newOptions.containsAll(latestOptions)) {
             log.info("Saving new classifiers input options for system configuration.");
