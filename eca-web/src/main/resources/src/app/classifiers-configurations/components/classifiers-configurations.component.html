@@ -44,6 +44,7 @@
 
     <ng-template pTemplate="header">
       <tr>
+        <th></th>
         <ng-container *ngFor="let column of columns">
           <th *ngIf="!notSortable(column.name)" [pSortableColumn]="column.name">
             {{ column.label }}
@@ -51,11 +52,13 @@
           </th>
           <th *ngIf="notSortable(column.name)">{{ column.label }}</th>
         </ng-container>
-        <th></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-item>
       <tr>
+        <td>
+          <p-menubar [model]="optionsMenu" (click)="onMouseClickMenu($event, item)"></p-menubar>
+        </td>
         <td *ngFor="let column of columns">
           <a class="link" [routerLink]="" *ngIf="isLink(column.name)">
             {{ getColumnValue(column.name, item) }}
@@ -73,9 +76,6 @@
             <ng-container *ngSwitchDefault>
             </ng-container>
           </ng-container>
-        </td>
-        <td>
-          <button pButton type="button" class="ui-button-secondary" icon="pi pi-cog"></button>
         </td>
       </tr>
     </ng-template>
