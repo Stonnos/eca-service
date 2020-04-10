@@ -15,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,9 +67,11 @@ public class ClassifierOptionsController {
             notes = "Finds classifiers options configs page"
     )
     @GetMapping(value = "/page")
-    public PageDto<ClassifierOptionsDto> getConfigsPage(@Valid PageRequestDto pageRequestDto) {
+    public PageDto<ClassifierOptionsDto> getClassifiersOptionsPage(
+            @ApiParam(value = "Configuration id", required = true) @RequestParam long configurationId,
+            @Valid PageRequestDto pageRequestDto) {
         Page<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
-                classifierOptionsService.getNextPage(pageRequestDto);
+                classifierOptionsService.getNextPage(configurationId, pageRequestDto);
         List<ClassifierOptionsDto> classifierOptionsDtoList =
                 classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModels.getContent());
         return PageDto.of(classifierOptionsDtoList, pageRequestDto.getPage(),

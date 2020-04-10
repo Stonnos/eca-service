@@ -7,7 +7,6 @@ import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
-import com.ecaservice.service.PageRequestService;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +32,7 @@ import static com.ecaservice.util.ClassifierOptionsHelper.createClassifierOption
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ClassifierOptionsService implements PageRequestService<ClassifierOptionsDatabaseModel> {
+public class ClassifierOptionsService {
 
     private final CommonConfig commonConfig;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
@@ -47,9 +46,7 @@ public class ClassifierOptionsService implements PageRequestService<ClassifierOp
      */
     @Transactional
     public void saveClassifierOptions(long configurationId, ClassifierOptions classifierOptions) {
-        ClassifiersConfiguration classifiersConfiguration =
-                classifiersConfigurationRepository.findById(configurationId).orElseThrow(
-                        () -> new EntityNotFoundException(ClassifiersConfiguration.class, configurationId));
+        ClassifiersConfiguration classifiersConfiguration = getConfigurationById(configurationId);
         Assert.state(!classifiersConfiguration.isBuildIn(),
                 "Can't add classifier options to build in configuration!");
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
@@ -79,11 +76,18 @@ public class ClassifierOptionsService implements PageRequestService<ClassifierOp
         log.info("Classifier options with id [{}] has been deleted", classifierOptionsDatabaseModel.getId());
     }
 
-    @Override
-    public Page<ClassifierOptionsDatabaseModel> getNextPage(PageRequestDto pageRequestDto) {
+    /**
+     * Gets classifiers options with specified filtering params.
+     *
+     * @param configurationId - configuration id
+     * @param pageRequestDto  - page request dto
+     * @return classifiers options page
+     */
+    public Page<ClassifierOptionsDatabaseModel> getNextPage(long configurationId, PageRequestDto pageRequestDto) {
+        ClassifiersConfiguration classifiersConfiguration = getConfigurationById(configurationId);
         Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
         int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
-        return classifierOptionsDatabaseModelRepository.findAll(
+        return classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration,
                 PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
     }
 
@@ -97,5 +101,10 @@ public class ClassifierOptionsService implements PageRequestService<ClassifierOp
                 classifiersConfigurationRepository.findFirstByActiveTrue().orElseThrow(
                         () -> new IllegalStateException("Can't find active classifiers configuration!"));
         return classifierOptionsDatabaseModelRepository.findAllByConfiguration(activeConfiguration);
+    }
+
+    private ClassifiersConfiguration getConfigurationById(long configurationId) {
+        return classifiersConfigurationRepository.findById(configurationId).orElseThrow(
+                () -> new EntityNotFoundException(ClassifiersConfiguration.class, configurationId));
     }
 }

@@ -42,6 +42,7 @@ import static com.ecaservice.PageRequestUtils.TOTAL_ELEMENTS;
 import static com.ecaservice.TestHelperUtils.bearerHeader;
 import static com.ecaservice.TestHelperUtils.createClassifiersConfiguration;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -62,7 +63,9 @@ public class ClassifierOptionsControllerTest {
     private static final String ACTIVE_OPTIONS_URL = BASE_URL + "/active-options";
     private static final String PAGE_URL = BASE_URL + "/page";
 
+    private static final String CONFIGURATION_ID_PARAM = "configurationId";
     private static final String OPTIONS = "options";
+    private static final long CONFIGURATION_ID = 1L;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -84,13 +87,13 @@ public class ClassifierOptionsControllerTest {
     }
 
     @Test
-    public void testGetConfigsUnauthorized() throws Exception {
+    public void testGetActiveOptionsUnauthorized() throws Exception {
         mockMvc.perform(get(ACTIVE_OPTIONS_URL))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testGetConfigsOk() throws Exception {
+    public void testGetActiveOptionsOk() throws Exception {
         ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
         List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = Collections.singletonList(
                 TestHelperUtils.createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration));
@@ -105,51 +108,66 @@ public class ClassifierOptionsControllerTest {
     }
 
     @Test
-    public void testGetConfigsPageUnauthorized() throws Exception {
+    public void testGetClassifiersOptionsPageUnauthorized() throws Exception {
         mockMvc.perform(get(PAGE_URL)
+                .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testGetConfigsPageWithNullPageNumber() throws Exception {
+    public void testGetClassifiersOptionsPageWithNullConfigurationId() throws Exception {
         mockMvc.perform(get(PAGE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void testGetConfigsPageWithNullPageSize() throws Exception {
+    public void testGetClassifiersOptionsPageWithNullPageNumber() throws Exception {
         mockMvc.perform(get(PAGE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
+                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testGetClassifiersOptionsPageWithNullPageSize() throws Exception {
+        mockMvc.perform(get(PAGE_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER)))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void testGetConfigsPageWithZeroPageSize() throws Exception {
+    public void testGetClassifiersOptionsPageWithZeroPageSize() throws Exception {
         mockMvc.perform(get(PAGE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(0)))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void testGetConfigsPageWithNegativePageNumber() throws Exception {
+    public void testGetClassifiersOptionsPageWithNegativePageNumber() throws Exception {
         mockMvc.perform(get(PAGE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(-1))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void testGetConfigsPageWithEmptyFilterRequestName() throws Exception {
+    public void testGetClassifiersOptionsPageWithEmptyFilterRequestName() throws Exception {
         mockMvc.perform(get(PAGE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE))
                 .param(FILTER_NAME_PARAM, StringUtils.EMPTY)
@@ -158,9 +176,10 @@ public class ClassifierOptionsControllerTest {
     }
 
     @Test
-    public void testGetConfigsPageWithNullMatchMode() throws Exception {
+    public void testGetClassifiersOptionsPageWithNullMatchMode() throws Exception {
         mockMvc.perform(get(PAGE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE))
                 .param(FILTER_NAME_PARAM, ClassifierOptionsDatabaseModel_.CREATION_DATE))
@@ -168,7 +187,7 @@ public class ClassifierOptionsControllerTest {
     }
 
     @Test
-    public void testGetConfigPageOk() throws Exception {
+    public void testGetClassifiersOptionsPageOk() throws Exception {
         Page<ClassifierOptionsDatabaseModel> page = Mockito.mock(Page.class);
         when(page.getTotalElements()).thenReturn(TOTAL_ELEMENTS);
         ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
@@ -178,9 +197,10 @@ public class ClassifierOptionsControllerTest {
                 PageDto.of(classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModels), PAGE_NUMBER,
                         TOTAL_ELEMENTS);
         when(page.getContent()).thenReturn(classifierOptionsDatabaseModels);
-        when(classifierOptionsService.getNextPage(any(PageRequestDto.class))).thenReturn(page);
+        when(classifierOptionsService.getNextPage(anyLong(), any(PageRequestDto.class))).thenReturn(page);
         mockMvc.perform(get(PAGE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
                 .andExpect(status().isOk())

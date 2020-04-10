@@ -50,15 +50,24 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testGetConfigsPage() {
-        saveClassifierOptions(true);
+    public void testGetClassifiersOptionsPage() {
+        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(true);
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CREATION_DATE, false, null,
                         Collections.emptyList());
         Page<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModelPage =
-                classifierOptionsService.getNextPage(pageRequestDto);
+                classifierOptionsService.getNextPage(classifierOptionsDatabaseModel.getConfiguration().getId(),
+                        pageRequestDto);
         assertThat(classifierOptionsDatabaseModelPage).isNotNull();
         assertThat(classifierOptionsDatabaseModelPage.getTotalElements()).isOne();
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void testGetClassifiersOptionsPageForNotExistingConfiguration() {
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CREATION_DATE, false, null,
+                        Collections.emptyList());
+        classifierOptionsService.getNextPage(ID, pageRequestDto);
     }
 
     @Test(expected = IllegalStateException.class)

@@ -3,6 +3,8 @@ package com.ecaservice.repository;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.model.projections.ClassifiersOptionsStatistics;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -36,4 +38,14 @@ public interface ClassifierOptionsDatabaseModelRepository extends JpaRepository<
             "group by c.configuration.id")
     List<ClassifiersOptionsStatistics> getClassifiersOptionsStatistics(
             @Param("configurationsIds") Collection<Long> configurationsIds);
+
+    /**
+     * Gets classifiers options page.
+     *
+     * @param classifiersConfiguration - classifiers configuration entity
+     * @param pageable                 - pageable object
+     * @return classifiers options page
+     */
+    Page<ClassifierOptionsDatabaseModel> findAllByConfiguration(ClassifiersConfiguration classifiersConfiguration,
+                                                                Pageable pageable);
 }
