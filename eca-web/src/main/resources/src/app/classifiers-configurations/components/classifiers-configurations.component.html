@@ -57,7 +57,7 @@
     <ng-template pTemplate="body" let-item>
       <tr>
         <td>
-          <p-menubar [model]="optionsMenu" (click)="onMouseClickMenu($event, item)"></p-menubar>
+          <p-menubar class="options-menu" [model]="optionsMenu" (click)="onMouseClickMenu($event, item)"></p-menubar>
         </td>
         <td *ngFor="let column of columns">
           <a class="link" [routerLink]="" *ngIf="isLink(column.name)">

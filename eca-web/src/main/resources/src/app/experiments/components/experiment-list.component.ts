@@ -116,7 +116,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     return this.fieldService.getFieldValue(ExperimentFields.SEED, experimentDto, Utils.MISSING_VALUE);
   }
 
-  public onLink(column: string, experiment: ExperimentDto, overlayPanel: OverlayPanel) {
+  public onLink(event, column: string, experiment: ExperimentDto, overlayPanel: OverlayPanel) {
     switch (column) {
       case ExperimentFields.TRAINING_DATA_PATH:
         this.getExperimentTrainingDataFile(experiment);
@@ -199,7 +199,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
-      })
+      });
   }
 
   public isBlink(item: ExperimentDto): boolean {

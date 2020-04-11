@@ -43,6 +43,18 @@
   }
 }
 
+.options-menu::ng-deep {
+
+  .ui-menubar {
+    border: none;
+    background: inherit;
+  }
+
+  .main-menu-item {
+    background: #e0e0e0;
+  }
+}
+
 .link {
   color: #3397ff;
 }

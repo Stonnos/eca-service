@@ -29,4 +29,22 @@ export class ClassifiersConfigurationsService {
     const options = { headers: headers, params: params };
     return this.http.get<PageDto<ClassifiersConfigurationDto>>(this.serviceUrl + '/list', options);
   }
+
+  public deleteConfiguration(id: number): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+    });
+    let params = new HttpParams().set('id', id.toString());
+    const options = { headers: headers, params: params };
+    return this.http.delete(this.serviceUrl + '/delete', options);
+  }
+
+  public setActive(id: number): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+    });
+    const formData = new FormData();
+    formData.append('id', id.toString());
+    return this.http.post(this.serviceUrl + '/set-active', formData, { headers });
+  }
 }

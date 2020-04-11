@@ -9,6 +9,7 @@ import { Observable } from "rxjs/internal/Observable";
 import { ClassifiersConfigurationFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
 import { ClassifiersConfigurationsService } from "../services/classifiers-configurations.service";
+import { finalize } from "rxjs/internal/operators";
 
 @Component({
   selector: 'app-classifiers-configurations',
@@ -19,6 +20,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   public setActiveMenuItem: MenuItem;
   public deleteMenuItem: MenuItem;
+  public renameMenuItem: MenuItem;
   public optionsMenu: MenuItem[] = [];
   public selectedConfiguration: ClassifiersConfigurationDto;
 
@@ -54,35 +56,74 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
     ];
   }
 
+  private refreshClassifiersConfigurationsPage(): void {
+    this.performPageRequest(0, this.pageSize, ClassifiersConfigurationFields.CREATED, false);
+  }
+
+  private deleteConfiguration(): void {
+    this.loading = true;
+    this.classifierOptionsService.deleteConfiguration(this.selectedConfiguration.id)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.messageService.add({ severity: 'success', summary: `Конфигурация ${this.selectedConfiguration.name} была удалена`, detail: '' });
+          this.refreshClassifiersConfigurationsPage();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private setActiveConfiguration(): void {
+    this.loading = true;
+    this.classifierOptionsService.setActive(this.selectedConfiguration.id)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.refreshClassifiersConfigurationsPage();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
   private initMenu() {
     this.setActiveMenuItem = {
       label: 'Сделать активной',
       icon: 'pi pi-tag',
       command: () => {
-        console.log('Activate ' + this.selectedConfiguration.name);
+        this.setActiveConfiguration();
       }
     };
     this.deleteMenuItem = {
       label: 'Удалить',
       icon: 'pi pi-fw pi-trash',
       command: () => {
-        console.log('Delete' + this.selectedConfiguration.name);
+        this.deleteConfiguration();
+      }
+    };
+    this.renameMenuItem = {
+      label: 'Переименовать',
+      icon: 'pi pi-fw pi-pencil',
+      command: () => {
+        console.log('Renamed');
       }
     };
     this.optionsMenu = [
       {
         icon: 'pi pi-fw pi-cog',
-        items: [
-          {
-            label: 'Переименовать',
-            icon: 'pi pi-fw pi-pencil',
-            command: () => {
-              console.log('Renamed');
-            }
-          },
-          this.setActiveMenuItem,
-          this.deleteMenuItem
-        ]
+        styleClass: 'main-menu-item',
+        items: [this.renameMenuItem, this.deleteMenuItem, this.setActiveMenuItem]
       }
     ];
   }
