@@ -98,7 +98,7 @@ public class ExperimentConfigurationService {
                 classifiersConfigurationRepository.findFirstByBuildInIsTrue();
         if (classifiersConfiguration == null) {
             classifiersConfiguration = new ClassifiersConfiguration();
-            classifiersConfiguration.setName(DEFAULT_CONFIGURATION_NAME);
+            classifiersConfiguration.setConfigurationName(DEFAULT_CONFIGURATION_NAME);
             classifiersConfiguration.setBuildIn(true);
             classifiersConfiguration.setActive(true);
             classifiersConfiguration.setCreated(LocalDateTime.now());

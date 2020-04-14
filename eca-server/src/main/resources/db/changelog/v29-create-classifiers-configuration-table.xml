@@ -15,11 +15,11 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="_name" type="varchar(255)"/>
+            <column name="configuration_name" type="varchar(255)"/>
             <column name="created" type="timestamp"/>
             <column name="updated" type="timestamp"/>
             <column name="build_in" type="boolean" defaultValueBoolean="false"/>
-            <column name="_active" type="boolean" defaultValueBoolean="false"/>
+            <column name="is_active" type="boolean" defaultValueBoolean="false"/>
         </createTable>
     </changeSet>
 

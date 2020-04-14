@@ -59,7 +59,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
         ClassifiersConfiguration classifiersConfiguration = classifiersConfigurationMapper.map(configurationDto);
         classifiersConfiguration.setCreated(LocalDateTime.now());
         ClassifiersConfiguration savedConfiguration = classifiersConfigurationRepository.save(classifiersConfiguration);
-        log.info("Classifiers configuration [{}] has been saved", savedConfiguration.getName());
+        log.info("Classifiers configuration [{}] has been saved", savedConfiguration.getConfigurationName());
         return savedConfiguration;
     }
 

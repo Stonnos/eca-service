@@ -26,7 +26,7 @@ public abstract class ClassifiersConfigurationMapper {
      * @param configurationDto - create classifiers configuration dto
      * @return classifiers configuration entity
      */
-    @Mapping(source = "name", target = "name", qualifiedByName = "trim")
+    @Mapping(source = "configurationName", target = "configurationName", qualifiedByName = "trim")
     public abstract ClassifiersConfiguration map(CreateClassifiersConfigurationDto configurationDto);
 
     /**
@@ -35,7 +35,7 @@ public abstract class ClassifiersConfigurationMapper {
      * @param configurationDto         - update classifiers configuration dto
      * @param classifiersConfiguration - classifiers configuration entity
      */
-    @Mapping(source = "name", target = "name", qualifiedByName = "trim")
+    @Mapping(source = "configurationName", target = "configurationName", qualifiedByName = "trim")
     @Mapping(target = "id", ignore = true)
     public abstract void update(UpdateClassifiersConfigurationDto configurationDto,
                 @MappingTarget ClassifiersConfiguration classifiersConfiguration);

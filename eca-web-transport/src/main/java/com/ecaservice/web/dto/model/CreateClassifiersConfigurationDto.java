@@ -24,5 +24,5 @@ public class CreateClassifiersConfigurationDto {
      */
     @NotBlank
     @ApiModelProperty(value = "Configuration name", required = true)
-    private String name;
+    private String configurationName;
 }

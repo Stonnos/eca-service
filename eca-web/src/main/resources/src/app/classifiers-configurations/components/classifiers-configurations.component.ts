@@ -36,7 +36,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ClassifiersConfigurationFields.CREATED;
     this.notSortableColumns = [ClassifiersConfigurationFields.CLASSIFIERS_OPTIONS_COUNT];
-    this.linkColumns = [ClassifiersConfigurationFields.NAME];
+    this.linkColumns = [ClassifiersConfigurationFields.CONFIGURATION_NAME];
     this.initColumns();
   }
 
@@ -49,7 +49,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   }
 
   public setPage(pageDto: PageDto<ClassifiersConfigurationDto>) {
-    this.blinkConfigurationId = this.lastCreatedConfigurationId
+    this.blinkConfigurationId = this.lastCreatedConfigurationId;
     this.lastCreatedConfigurationId = null;
     super.setPage(pageDto);
   }
@@ -62,7 +62,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   public showEditClassifiersConfigurationDialog(item?: ClassifiersConfigurationDto): void {
     if (item && item.id) {
-      this.classifiersConfiguration = { id: item.id, name: item.name };
+      this.classifiersConfiguration = { id: item.id, configurationName: item.configurationName };
     } else {
       this.classifiersConfiguration = new ClassifiersConfigurationModel();
     }
@@ -87,7 +87,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   private initColumns() {
     this.columns = [
-      { name: ClassifiersConfigurationFields.NAME, label: "Конфигурация" },
+      { name: ClassifiersConfigurationFields.CONFIGURATION_NAME, label: "Конфигурация" },
       { name: ClassifiersConfigurationFields.CREATED, label: "Дата создания" },
       { name: ClassifiersConfigurationFields.UPDATED, label: "Дата обновления" },
       { name: ClassifiersConfigurationFields.CLASSIFIERS_OPTIONS_COUNT, label: "Число настроек классификаторов" },
@@ -100,7 +100,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   private createConfiguration(item: ClassifiersConfigurationModel): void {
     this.loading = true;
-    this.classifierOptionsService.saveConfiguration({ name: item.name })
+    this.classifierOptionsService.saveConfiguration({ configurationName: item.configurationName })
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -109,7 +109,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
       .subscribe({
         next: (configuration: ClassifiersConfigurationDto) => {
           this.lastCreatedConfigurationId = configuration.id;
-          this.messageService.add({ severity: 'success', summary: `Добавлена конфигурация ${configuration.name}`, detail: '' });
+          this.messageService.add({ severity: 'success', summary: `Добавлена конфигурация ${configuration.configurationName}`, detail: '' });
           this.refreshClassifiersConfigurationsPage();
         },
         error: (error) => {
@@ -120,7 +120,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   private updateConfiguration(item: ClassifiersConfigurationModel): void {
     this.loading = true;
-    this.classifierOptionsService.updateConfiguration({ id: item.id, name: item.name })
+    this.classifierOptionsService.updateConfiguration({ id: item.id, configurationName: item.configurationName })
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -146,7 +146,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
       )
       .subscribe({
         next: () => {
-          this.messageService.add({ severity: 'success', summary: `Конфигурация ${this.selectedConfiguration.name} была удалена`, detail: '' });
+          this.messageService.add({ severity: 'success', summary: `Конфигурация ${this.selectedConfiguration.configurationName} была удалена`, detail: '' });
           this.refreshClassifiersConfigurationsPage();
         },
         error: (error) => {

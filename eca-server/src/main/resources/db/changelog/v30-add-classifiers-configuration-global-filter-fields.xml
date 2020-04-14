@@ -24,11 +24,11 @@
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="global_filter_field"/>
             <sqlCheck expectedResult="0">
-                select count(*) from global_filter_field where global_filter_template_id = 4 and field_name = 'name'
+                select count(*) from global_filter_field where global_filter_template_id = 4 and field_name = 'configurationName'
             </sqlCheck>
         </preConditions>
         <insert tableName="global_filter_field">
-            <column name="field_name" value="name"/>
+            <column name="field_name" value="configurationName"/>
             <column name="global_filter_template_id" valueNumeric="4"/>
         </insert>
     </changeSet>

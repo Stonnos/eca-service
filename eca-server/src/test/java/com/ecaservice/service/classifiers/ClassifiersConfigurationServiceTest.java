@@ -64,12 +64,12 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     @Test
     public void testSaveClassifiersConfiguration() {
         CreateClassifiersConfigurationDto configurationDto = new CreateClassifiersConfigurationDto();
-        configurationDto.setName(TEST_CONFIGURATION_NAME);
+        configurationDto.setConfigurationName(TEST_CONFIGURATION_NAME);
         classifiersConfigurationService.save(configurationDto);
         List<ClassifiersConfiguration> configurations = classifiersConfigurationRepository.findAll();
         assertThat(configurations).hasSize(1);
         ClassifiersConfiguration actual = configurations.iterator().next();
-        assertThat(actual.getName()).isEqualTo(configurationDto.getName());
+        assertThat(actual.getConfigurationName()).isEqualTo(configurationDto.getConfigurationName());
         assertThat(actual.getCreated()).isNotNull();
         assertThat(actual.isBuildIn()).isFalse();
     }
@@ -85,15 +85,15 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     public void testUpdateClassifiersConfiguration() {
         ClassifiersConfiguration classifiersConfiguration = saveConfiguration(true, false);
         assertThat(classifiersConfiguration.getUpdated()).isNull();
-        assertThat(classifiersConfiguration.getName()).isEqualTo(TEST_CONFIGURATION_NAME);
+        assertThat(classifiersConfiguration.getConfigurationName()).isEqualTo(TEST_CONFIGURATION_NAME);
         UpdateClassifiersConfigurationDto updateClassifiersConfigurationDto = new UpdateClassifiersConfigurationDto();
-        updateClassifiersConfigurationDto.setName(TEST_CONFIGURATION_UPDATED_NAME);
+        updateClassifiersConfigurationDto.setConfigurationName(TEST_CONFIGURATION_UPDATED_NAME);
         updateClassifiersConfigurationDto.setId(classifiersConfiguration.getId());
         classifiersConfigurationService.update(updateClassifiersConfigurationDto);
         List<ClassifiersConfiguration> configurations = classifiersConfigurationRepository.findAll();
         assertThat(configurations).hasSize(1);
         ClassifiersConfiguration actual = configurations.iterator().next();
-        assertThat(actual.getName()).isEqualTo(updateClassifiersConfigurationDto.getName());
+        assertThat(actual.getConfigurationName()).isEqualTo(updateClassifiersConfigurationDto.getConfigurationName());
         assertThat(actual.getUpdated()).isNotNull();
     }
 
@@ -184,7 +184,7 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         ClassifiersConfiguration classifiersConfiguration = TestHelperUtils.createClassifiersConfiguration();
         classifiersConfiguration.setBuildIn(buildIn);
         classifiersConfiguration.setActive(active);
-        classifiersConfiguration.setName(TEST_CONFIGURATION_NAME);
+        classifiersConfiguration.setConfigurationName(TEST_CONFIGURATION_NAME);
         classifiersConfigurationRepository.save(classifiersConfiguration);
         classifierOptionsDatabaseModelRepository.saveAll(Arrays.asList(
                 TestHelperUtils.createClassifierOptionsDatabaseModel(TEST_CONFIG, classifiersConfiguration),

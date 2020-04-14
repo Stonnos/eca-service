@@ -33,21 +33,21 @@ public class ClassifiersConfigurationMapperTest {
     @Test
     public void testMapCreateClassifiersConfigurationDto() {
         CreateClassifiersConfigurationDto classifiersConfigurationDto = new CreateClassifiersConfigurationDto();
-        classifiersConfigurationDto.setName(CONFIGURATION_NAME);
+        classifiersConfigurationDto.setConfigurationName(CONFIGURATION_NAME);
         ClassifiersConfiguration classifiersConfiguration =
                 classifiersConfigurationMapper.map(classifiersConfigurationDto);
         assertThat(classifiersConfiguration).isNotNull();
-        assertThat(classifiersConfiguration.getName()).isEqualTo(classifiersConfigurationDto.getName());
+        assertThat(classifiersConfiguration.getConfigurationName()).isEqualTo(classifiersConfigurationDto.getConfigurationName());
         assertThat(classifiersConfiguration.isBuildIn()).isFalse();
     }
 
     @Test
     public void testMapUpdateClassifiersConfigurationDto() {
         UpdateClassifiersConfigurationDto classifiersConfigurationDto = new UpdateClassifiersConfigurationDto();
-        classifiersConfigurationDto.setName(CONFIGURATION_NAME);
+        classifiersConfigurationDto.setConfigurationName(CONFIGURATION_NAME);
         ClassifiersConfiguration classifiersConfiguration = new ClassifiersConfiguration();
         classifiersConfigurationMapper.update(classifiersConfigurationDto, classifiersConfiguration);
-        assertThat(classifiersConfiguration.getName()).isEqualTo(classifiersConfigurationDto.getName());
+        assertThat(classifiersConfiguration.getConfigurationName()).isEqualTo(classifiersConfigurationDto.getConfigurationName());
     }
 
     @Test
@@ -59,7 +59,7 @@ public class ClassifiersConfigurationMapperTest {
                 classifiersConfigurationMapper.map(classifiersConfiguration);
         assertThat(classifiersConfigurationDto).isNotNull();
         assertThat(classifiersConfigurationDto.getId()).isEqualTo(classifiersConfiguration.getId());
-        assertThat(classifiersConfigurationDto.getName()).isEqualTo(classifiersConfiguration.getName());
+        assertThat(classifiersConfigurationDto.getConfigurationName()).isEqualTo(classifiersConfiguration.getConfigurationName());
         assertThat(classifiersConfigurationDto.getCreated()).isEqualTo(classifiersConfiguration.getCreated());
     }
 }

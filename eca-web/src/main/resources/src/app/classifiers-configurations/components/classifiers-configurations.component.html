@@ -66,7 +66,7 @@
           </a>
           <span *ngIf="!isLink(column.name)">{{ getColumnValue(column.name, item) }}</span>
           <ng-container [ngSwitch]="column.name">
-            <ng-container *ngSwitchCase="'name'">
+            <ng-container *ngSwitchCase="'configurationName'">
               <div *ngIf="item.buildIn" class="ml-2 build-in-status bg-secondary text-white text-bold">
                   BUILD IN
                 </div>

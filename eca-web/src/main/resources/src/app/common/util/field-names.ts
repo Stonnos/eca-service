@@ -58,7 +58,7 @@ export class ClassifierOptionsFields {
 }
 
 export class ClassifiersConfigurationFields {
-  public static readonly NAME: string = "name";
+  public static readonly CONFIGURATION_NAME: string = "configurationName";
   public static readonly CREATED: string = "created";
   public static readonly UPDATED: string = "updated";
   public static readonly ACTIVE: string = "active";

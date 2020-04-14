@@ -25,7 +25,7 @@ public class ClassifiersConfigurationDto {
      * Configuration name
      */
     @ApiModelProperty(value = "Configuration name")
-    private String name;
+    private String configurationName;
 
     /**
      * Configuration created date

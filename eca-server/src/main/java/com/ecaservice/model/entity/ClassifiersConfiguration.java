@@ -29,8 +29,8 @@ public class ClassifiersConfiguration {
     /**
      * Configuration name
      */
-    @Column(name = "_name")
-    private String name;
+    @Column(name = "configuration_name")
+    private String configurationName;
 
     /**
      * Configuration created date
@@ -51,7 +51,7 @@ public class ClassifiersConfiguration {
     /**
      * Is active?
      */
-    @Column(name = "_active")
+    @Column(name = "is_active")
     private boolean active;
 
     /**
