@@ -51,11 +51,12 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      *
      * @param configurationDto - create classifiers configuration dto
      */
-    public void save(CreateClassifiersConfigurationDto configurationDto) {
+    public ClassifiersConfiguration save(CreateClassifiersConfigurationDto configurationDto) {
         ClassifiersConfiguration classifiersConfiguration = classifiersConfigurationMapper.map(configurationDto);
         classifiersConfiguration.setCreated(LocalDateTime.now());
-        classifiersConfigurationRepository.save(classifiersConfiguration);
-        log.info("Classifiers configuration [{}] has been saved", classifiersConfiguration.getName());
+        ClassifiersConfiguration savedConfiguration = classifiersConfigurationRepository.save(classifiersConfiguration);
+        log.info("Classifiers configuration [{}] has been saved", savedConfiguration.getName());
+        return savedConfiguration;
     }
 
     /**
@@ -104,7 +105,13 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
         }
     }
 
-    private ClassifiersConfiguration getById(long id) {
+    /**
+     * Gets classifiers configuration by id.
+     *
+     * @param id - classifiers configuration id
+     * @return classifiers configuration entity
+     */
+    public ClassifiersConfiguration getById(long id) {
         return classifiersConfigurationRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(ClassifiersConfiguration.class, id));
     }

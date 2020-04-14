@@ -31,12 +31,12 @@ export class ClassifiersConfigurationsService {
     return this.http.get<PageDto<ClassifiersConfigurationDto>>(this.serviceUrl + '/list', options);
   }
 
-  public saveConfiguration(configuration: CreateClassifiersConfigurationDto): Observable<any> {
+  public saveConfiguration(configuration: CreateClassifiersConfigurationDto): Observable<ClassifiersConfigurationDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
-    return this.http.post(this.serviceUrl + '/save', configuration, { headers: headers })
+    return this.http.post<ClassifiersConfigurationDto>(this.serviceUrl + '/save', configuration, { headers: headers })
   }
 
   public updateConfiguration(configuration: UpdateClassifiersConfigurationDto): Observable<any> {

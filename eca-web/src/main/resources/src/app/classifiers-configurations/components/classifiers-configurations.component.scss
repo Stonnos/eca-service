@@ -72,3 +72,16 @@
   text-align: center;
   display: inline-block;
 }
+
+.configuration-blink {
+  animation: 1.5s blink 400ms 1;
+}
+
+@keyframes blink {
+  from {
+    background: #4eb1ff;
+  }
+  to {
+    background: white;
+  }
+}

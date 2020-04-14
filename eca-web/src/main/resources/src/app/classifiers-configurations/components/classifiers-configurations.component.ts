@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import {
-  ClassifiersConfigurationDto, CreateClassifiersConfigurationDto, PageDto,
+  ClassifiersConfigurationDto, PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { MenuItem, MessageService } from "primeng/api";
@@ -28,6 +28,9 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   public classifiersConfiguration: ClassifiersConfigurationModel = new ClassifiersConfigurationModel();
   public editClassifiersConfigurationDialogVisibility: boolean = false;
 
+  public lastCreatedConfigurationId: number;
+  public blinkConfigurationId: number;
+
   public constructor(private injector: Injector,
                      private classifierOptionsService: ClassifiersConfigurationsService) {
     super(injector.get(MessageService), injector.get(FieldService));
@@ -43,6 +46,12 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<ClassifiersConfigurationDto>> {
     return this.classifierOptionsService.getClassifiersConfigurations(pageRequest);
+  }
+
+  public setPage(pageDto: PageDto<ClassifiersConfigurationDto>) {
+    this.blinkConfigurationId = this.lastCreatedConfigurationId
+    this.lastCreatedConfigurationId = null;
+    super.setPage(pageDto);
   }
 
   public onMouseClickMenu(event: any, item: ClassifiersConfigurationDto): void {
@@ -72,6 +81,10 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
     }
   }
 
+  public isBlink(item: ClassifiersConfigurationDto): boolean {
+    return this.blinkConfigurationId == item.id;
+  }
+
   private initColumns() {
     this.columns = [
       { name: ClassifiersConfigurationFields.NAME, label: "Конфигурация" },
@@ -87,17 +100,15 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   private createConfiguration(item: ClassifiersConfigurationModel): void {
     this.loading = true;
-    const configuration: CreateClassifiersConfigurationDto = {
-      name: item.name
-    };
-    this.classifierOptionsService.saveConfiguration(configuration)
+    this.classifierOptionsService.saveConfiguration({ name: item.name })
       .pipe(
         finalize(() => {
           this.loading = false;
         })
       )
       .subscribe({
-        next: () => {
+        next: (configuration: ClassifiersConfigurationDto) => {
+          this.lastCreatedConfigurationId = configuration.id;
           this.messageService.add({ severity: 'success', summary: `Добавлена конфигурация ${configuration.name}`, detail: '' });
           this.refreshClassifiersConfigurationsPage();
         },

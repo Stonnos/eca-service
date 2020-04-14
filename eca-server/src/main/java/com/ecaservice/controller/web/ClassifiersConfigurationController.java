@@ -1,5 +1,7 @@
 package com.ecaservice.controller.web;
 
+import com.ecaservice.mapping.ClassifiersConfigurationMapper;
+import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.service.classifiers.ClassifiersConfigurationService;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
@@ -36,6 +38,7 @@ import javax.validation.Valid;
 public class ClassifiersConfigurationController {
 
     private final ClassifiersConfigurationService classifiersConfigurationService;
+    private final ClassifiersConfigurationMapper classifiersConfigurationMapper;
 
     /**
      * Finds classifiers configurations with specified options such as filter, sorting and paging.
@@ -55,9 +58,27 @@ public class ClassifiersConfigurationController {
     }
 
     /**
+     * Gets classifiers configuration details.
+     *
+     * @param id - configuration id
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Gets classifiers configuration details",
+            notes = "Gets classifiers configuration details"
+    )
+    @GetMapping(value = "/details")
+    public ClassifiersConfigurationDto getClassifiersConfigurationDetails(
+            @ApiParam(value = "Configuration id", example = "1", required = true) @RequestParam long id) {
+        ClassifiersConfiguration classifiersConfiguration = classifiersConfigurationService.getById(id);
+        return classifiersConfigurationMapper.map(classifiersConfiguration);
+    }
+
+    /**
      * Saves new classifiers configuration.
      *
      * @param configurationDto - classifiers configuration
+     * @return classifiers configuration dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
@@ -65,8 +86,9 @@ public class ClassifiersConfigurationController {
             notes = "Saves new classifiers configuration"
     )
     @PostMapping(value = "/save")
-    public void save(@Valid @RequestBody CreateClassifiersConfigurationDto configurationDto) {
-        classifiersConfigurationService.save(configurationDto);
+    public ClassifiersConfigurationDto save(@Valid @RequestBody CreateClassifiersConfigurationDto configurationDto) {
+        ClassifiersConfiguration classifiersConfiguration = classifiersConfigurationService.save(configurationDto);
+        return classifiersConfigurationMapper.map(classifiersConfiguration);
     }
 
     /**
