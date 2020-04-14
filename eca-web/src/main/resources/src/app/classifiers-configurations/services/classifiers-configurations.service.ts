@@ -1,9 +1,9 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
-  ClassifiersConfigurationDto,
+  ClassifiersConfigurationDto, CreateClassifiersConfigurationDto,
   PageDto,
-  PageRequestDto
+  PageRequestDto, UpdateClassifiersConfigurationDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { ConfigService } from "../../config.service";
@@ -25,9 +25,26 @@ export class ClassifiersConfigurationsService {
     let params = new HttpParams().set('page', pageRequest.page.toString())
       .set('size', pageRequest.size.toString())
       .set('sortField', pageRequest.sortField)
+      .set('searchQuery', pageRequest.searchQuery)
       .set('ascending', pageRequest.ascending.toString());
     const options = { headers: headers, params: params };
     return this.http.get<PageDto<ClassifiersConfigurationDto>>(this.serviceUrl + '/list', options);
+  }
+
+  public saveConfiguration(configuration: CreateClassifiersConfigurationDto): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+    });
+    return this.http.post(this.serviceUrl + '/save', configuration, { headers: headers })
+  }
+
+  public updateConfiguration(configuration: UpdateClassifiersConfigurationDto): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+    });
+    return this.http.put(this.serviceUrl + '/update', configuration, { headers: headers })
   }
 
   public deleteConfiguration(id: number): Observable<any> {
@@ -45,6 +62,6 @@ export class ClassifiersConfigurationsService {
     });
     const formData = new FormData();
     formData.append('id', id.toString());
-    return this.http.post(this.serviceUrl + '/set-active', formData, { headers });
+    return this.http.post(this.serviceUrl + '/set-active', formData, { headers: headers });
   }
 }

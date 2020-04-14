@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "Update experiment result model")
+@ApiModel(description = "Update classifiers configuration model")
 public class UpdateClassifiersConfigurationDto {
 
     /**

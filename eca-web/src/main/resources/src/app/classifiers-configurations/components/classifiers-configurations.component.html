@@ -6,6 +6,7 @@
         label="Создать конфигурацию"
         icon="pi pi-plus"
         type="button"
+        (click)="showEditClassifiersConfigurationDialog()"
         class="ml-2 mt-2 mb-2">
       </button>
     </div>
@@ -88,3 +89,10 @@
     </ng-template>
   </p-table>
 </div>
+
+<app-create-classifiers-configuration
+  [item]="classifiersConfiguration"
+  [visible]="editClassifiersConfigurationDialogVisibility"
+  (visibilityChange)="onEditClassifiersConfigurationDialogVisibility($event)"
+  (itemEvent)="onEditClassifiersConfiguration($event)">
+</app-create-classifiers-configuration>

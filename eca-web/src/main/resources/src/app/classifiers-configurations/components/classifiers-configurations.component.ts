@@ -10,6 +10,7 @@ import { ClassifiersConfigurationFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
 import { ClassifiersConfigurationsService } from "../services/classifiers-configurations.service";
 import { finalize } from "rxjs/internal/operators";
+import { ClassifiersConfigurationModel } from "../../create-classifiers-configuration/model/classifiers-configuration.model";
 
 @Component({
   selector: 'app-classifiers-configurations',
@@ -23,6 +24,9 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   public renameMenuItem: MenuItem;
   public optionsMenu: MenuItem[] = [];
   public selectedConfiguration: ClassifiersConfigurationDto;
+
+  public classifiersConfiguration: ClassifiersConfigurationModel = new ClassifiersConfigurationModel();
+  public editClassifiersConfigurationDialogVisibility: boolean = false;
 
   public constructor(private injector: Injector,
                      private classifierOptionsService: ClassifiersConfigurationsService) {
@@ -47,6 +51,27 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
     this.deleteMenuItem.visible = !item.buildIn && !item.active;
   }
 
+  public showEditClassifiersConfigurationDialog(item?: ClassifiersConfigurationDto): void {
+    if (item && item.id) {
+      this.classifiersConfiguration = { id: item.id, name: item.name};
+    } else {
+      this.classifiersConfiguration = new ClassifiersConfigurationModel();
+    }
+    this.editClassifiersConfigurationDialogVisibility = true;
+  }
+
+  public onEditClassifiersConfigurationDialogVisibility(visible): void {
+    this.editClassifiersConfigurationDialogVisibility = visible;
+  }
+
+  public onEditClassifiersConfiguration(item: ClassifiersConfigurationModel): void {
+    if (item.id) {
+      this.updateConfiguration(item);
+    } else {
+      this.createConfiguration(item);
+    }
+  }
+
   private initColumns() {
     this.columns = [
       { name: ClassifiersConfigurationFields.NAME, label: "Конфигурация" },
@@ -58,6 +83,43 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   private refreshClassifiersConfigurationsPage(): void {
     this.performPageRequest(0, this.pageSize, ClassifiersConfigurationFields.CREATED, false);
+  }
+
+  private createConfiguration(item: ClassifiersConfigurationModel): void {
+    this.loading = true;
+    this.classifierOptionsService.saveConfiguration({ name: item.name })
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.messageService.add({ severity: 'success', summary: `Добавлена конфигурация ${item.name}`, detail: '' });
+          this.refreshClassifiersConfigurationsPage();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private updateConfiguration(item: ClassifiersConfigurationModel): void {
+    this.loading = true;
+    this.classifierOptionsService.updateConfiguration({ id: item.id, name: item.name })
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.refreshClassifiersConfigurationsPage();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
   }
 
   private deleteConfiguration(): void {
@@ -116,7 +178,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
       label: 'Переименовать',
       icon: 'pi pi-fw pi-pencil',
       command: () => {
-        console.log('Renamed');
+        this.showEditClassifiersConfigurationDialog(this.selectedConfiguration);
       }
     };
     this.optionsMenu = [

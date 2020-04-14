@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -64,7 +65,7 @@ public class ClassifiersConfigurationController {
             notes = "Saves new classifiers configuration"
     )
     @PostMapping(value = "/save")
-    public void save(@Valid CreateClassifiersConfigurationDto configurationDto) {
+    public void save(@Valid @RequestBody CreateClassifiersConfigurationDto configurationDto) {
         classifiersConfigurationService.save(configurationDto);
     }
 
@@ -79,7 +80,7 @@ public class ClassifiersConfigurationController {
             notes = "Updates classifiers configuration"
     )
     @PutMapping(value = "/update")
-    public void update(@Valid UpdateClassifiersConfigurationDto configurationDto) {
+    public void update(@Valid @RequestBody UpdateClassifiersConfigurationDto configurationDto) {
         classifiersConfigurationService.update(configurationDto);
     }
 

@@ -16,7 +16,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "Create experiment result model")
+@ApiModel(description = "Create classifiers configuration model")
 public class CreateClassifiersConfigurationDto {
 
     /**

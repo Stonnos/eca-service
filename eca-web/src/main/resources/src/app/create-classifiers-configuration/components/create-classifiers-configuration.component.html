@@ -1,0 +1,45 @@
+<p-dialog
+  [(visible)]="visible"
+  header="{{ item.id ? 'Переименовать' : 'Создать' }} конфигурацию"
+  width="650"
+  appendTo="body"
+  [modal]="true"
+  [blockScroll]="false"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="hide()">
+
+  <form novalidate class="form d-flex flex-column justify-content-center m-auto" (keydown.enter)="submit()">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-10 mx-auto mb-2">
+        <label class="text-bold control-label">Название</label>
+        <input
+          required
+          pInputText
+          id="configurationName"
+          name="configurationName"
+          type="text"
+          placeholder="Введите название"
+          [(ngModel)]="item.name"
+          #configurationName="ngModel"
+          maxlength="32"
+          class="form-control d-block w-100">
+        <div class="text-danger error-message" *ngIf="configurationName.invalid && (configurationName.dirty || configurationName.touched || submitted)">
+          <div *ngIf="configurationName?.errors?.required">
+            Заполните название
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <p-footer>
+    <button
+      pButton
+      label="{{ item.id ? 'Переименовать' : 'Создать' }}"
+      type="button"
+      (click)="submit()"
+      class="ml-auto">
+    </button>
+  </p-footer>
+</p-dialog>
