@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import {
-  ClassifiersConfigurationDto, PageDto,
+  ClassifiersConfigurationDto, CreateClassifiersConfigurationDto, PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { MenuItem, MessageService } from "primeng/api";
@@ -53,7 +53,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   public showEditClassifiersConfigurationDialog(item?: ClassifiersConfigurationDto): void {
     if (item && item.id) {
-      this.classifiersConfiguration = { id: item.id, name: item.name};
+      this.classifiersConfiguration = { id: item.id, name: item.name };
     } else {
       this.classifiersConfiguration = new ClassifiersConfigurationModel();
     }
@@ -77,7 +77,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
       { name: ClassifiersConfigurationFields.NAME, label: "Конфигурация" },
       { name: ClassifiersConfigurationFields.CREATED, label: "Дата создания" },
       { name: ClassifiersConfigurationFields.UPDATED, label: "Дата обновления" },
-      { name: ClassifiersConfigurationFields.CLASSIFIERS_OPTIONS_COUNT, label: "Кол-во настроек классификаторов" },
+      { name: ClassifiersConfigurationFields.CLASSIFIERS_OPTIONS_COUNT, label: "Число настроек классификаторов" },
     ];
   }
 
@@ -87,7 +87,10 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   private createConfiguration(item: ClassifiersConfigurationModel): void {
     this.loading = true;
-    this.classifierOptionsService.saveConfiguration({ name: item.name })
+    const configuration: CreateClassifiersConfigurationDto = {
+      name: item.name
+    };
+    this.classifierOptionsService.saveConfiguration(configuration)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -95,7 +98,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
       )
       .subscribe({
         next: () => {
-          this.messageService.add({ severity: 'success', summary: `Добавлена конфигурация ${item.name}`, detail: '' });
+          this.messageService.add({ severity: 'success', summary: `Добавлена конфигурация ${configuration.name}`, detail: '' });
           this.refreshClassifiersConfigurationsPage();
         },
         error: (error) => {

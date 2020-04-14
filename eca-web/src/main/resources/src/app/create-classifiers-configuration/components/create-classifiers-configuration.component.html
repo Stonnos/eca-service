@@ -22,7 +22,7 @@
           placeholder="Введите название"
           [(ngModel)]="item.name"
           #configurationName="ngModel"
-          maxlength="32"
+          maxlength="20"
           class="form-control d-block w-100">
         <div class="text-danger error-message" *ngIf="configurationName.invalid && (configurationName.dirty || configurationName.touched || submitted)">
           <div *ngIf="configurationName?.errors?.required">
