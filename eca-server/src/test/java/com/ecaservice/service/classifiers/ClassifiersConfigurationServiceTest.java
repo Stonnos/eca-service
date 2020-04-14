@@ -150,6 +150,23 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         assertThat(actualNotActive.isActive()).isNotNull();
     }
 
+    @Test(expected = EntityNotFoundException.class)
+    public void testGetClassifiersConfigurationDetailsNotFound() {
+        classifiersConfigurationService.getClassifiersConfigurationDetails(ID);
+    }
+
+    @Test
+    public void testGetClassifiersConfigurationDetails() {
+        ClassifiersConfiguration configuration = saveConfiguration(true, true);
+        ClassifiersConfigurationDto classifiersConfigurationDto =
+                classifiersConfigurationService.getClassifiersConfigurationDetails(configuration.getId());
+        assertThat(classifiersConfigurationDto).isNotNull();
+        assertThat(classifiersConfigurationDto.getId()).isEqualTo(configuration.getId());
+        assertThat(classifiersConfigurationDto.getConfigurationName()).isEqualTo(configuration.getConfigurationName());
+        assertThat(classifiersConfigurationDto.getClassifiersOptionsCount()).isEqualTo(
+                classifierOptionsDatabaseModelRepository.countByConfiguration(configuration));
+    }
+
     @Test
     public void testGetClassifiersConfigurations() {
         when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION)).thenReturn(

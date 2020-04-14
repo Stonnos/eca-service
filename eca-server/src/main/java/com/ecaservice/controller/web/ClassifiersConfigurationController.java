@@ -70,8 +70,8 @@ public class ClassifiersConfigurationController {
     @GetMapping(value = "/details")
     public ClassifiersConfigurationDto getClassifiersConfigurationDetails(
             @ApiParam(value = "Configuration id", example = "1", required = true) @RequestParam long id) {
-        ClassifiersConfiguration classifiersConfiguration = classifiersConfigurationService.getById(id);
-        return classifiersConfigurationMapper.map(classifiersConfiguration);
+        log.info("Gets classifier configuration details by id {}", id);
+        return classifiersConfigurationService.getClassifiersConfigurationDetails(id);
     }
 
     /**

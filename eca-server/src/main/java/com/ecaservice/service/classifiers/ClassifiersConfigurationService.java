@@ -109,17 +109,6 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
         }
     }
 
-    /**
-     * Gets classifiers configuration by id.
-     *
-     * @param id - classifiers configuration id
-     * @return classifiers configuration entity
-     */
-    public ClassifiersConfiguration getById(long id) {
-        return classifiersConfigurationRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(ClassifiersConfiguration.class, id));
-    }
-
     @Override
     public Page<ClassifiersConfiguration> getNextPage(PageRequestDto pageRequestDto) {
         Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), CREATED, pageRequestDto.isAscending());
@@ -159,5 +148,25 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
         }
         return PageDto.of(configurationDtoList, pageRequestDto.getPage(),
                 classifiersConfigurationsPage.getTotalElements());
+    }
+
+    /**
+     * Gets classifiers configuration details by id.
+     *
+     * @param id - configuration id
+     * @return classifiers configuration dto
+     */
+    public ClassifiersConfigurationDto getClassifiersConfigurationDetails(long id) {
+        ClassifiersConfiguration classifiersConfiguration = getById(id);
+        ClassifiersConfigurationDto classifiersConfigurationDto =
+                classifiersConfigurationMapper.map(classifiersConfiguration);
+        classifiersConfigurationDto.setClassifiersOptionsCount(
+                classifierOptionsDatabaseModelRepository.countByConfiguration(classifiersConfiguration));
+        return classifiersConfigurationDto;
+    }
+
+    private ClassifiersConfiguration getById(long id) {
+        return classifiersConfigurationRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(ClassifiersConfiguration.class, id));
     }
 }

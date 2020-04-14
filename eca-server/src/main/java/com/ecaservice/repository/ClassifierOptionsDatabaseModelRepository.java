@@ -48,4 +48,12 @@ public interface ClassifierOptionsDatabaseModelRepository extends JpaRepository<
      */
     Page<ClassifierOptionsDatabaseModel> findAllByConfiguration(ClassifiersConfiguration classifiersConfiguration,
                                                                 Pageable pageable);
+
+    /**
+     * Gets classifiers options count for specified configuration.
+     *
+     * @param classifiersConfiguration - classifiers configuration entity
+     * @return classifiers options count
+     */
+    long countByConfiguration(ClassifiersConfiguration classifiersConfiguration);
 }
