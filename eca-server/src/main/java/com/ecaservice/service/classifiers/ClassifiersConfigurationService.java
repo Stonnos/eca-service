@@ -140,21 +140,23 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      */
     public PageDto<ClassifiersConfigurationDto> getClassifiersConfigurations(PageRequestDto pageRequestDto) {
         Page<ClassifiersConfiguration> classifiersConfigurationsPage = getNextPage(pageRequestDto);
-        List<Long> configurationsIds =
-                classifiersConfigurationsPage.getContent().stream().map(ClassifiersConfiguration::getId).collect(
-                        Collectors.toList());
-        List<ClassifiersOptionsStatistics> classifiersOptionsStatisticsList =
-                classifierOptionsDatabaseModelRepository.getClassifiersOptionsStatistics(configurationsIds);
         List<ClassifiersConfigurationDto> configurationDtoList =
                 classifiersConfigurationMapper.map(classifiersConfigurationsPage.getContent());
-        Map<Long, ClassifiersConfigurationDto> configurationDtoMap = configurationDtoList.stream().collect(
-                Collectors.toMap(ClassifiersConfigurationDto::getId, Function.identity()));
-        classifiersOptionsStatisticsList.forEach(classifiersOptionsStatistics -> {
-            ClassifiersConfigurationDto classifiersConfigurationDto =
-                    configurationDtoMap.get(classifiersOptionsStatistics.getConfigurationId());
-            classifiersConfigurationDto.setClassifiersOptionsCount(
-                    classifiersOptionsStatistics.getClassifiersOptionsCount());
-        });
+        if (classifiersConfigurationsPage.hasContent()) {
+            List<Long> configurationsIds =
+                    classifiersConfigurationsPage.getContent().stream().map(ClassifiersConfiguration::getId).collect(
+                            Collectors.toList());
+            List<ClassifiersOptionsStatistics> classifiersOptionsStatisticsList =
+                    classifierOptionsDatabaseModelRepository.getClassifiersOptionsStatistics(configurationsIds);
+            Map<Long, ClassifiersConfigurationDto> configurationDtoMap = configurationDtoList.stream().collect(
+                    Collectors.toMap(ClassifiersConfigurationDto::getId, Function.identity()));
+            classifiersOptionsStatisticsList.forEach(classifiersOptionsStatistics -> {
+                ClassifiersConfigurationDto classifiersConfigurationDto =
+                        configurationDtoMap.get(classifiersOptionsStatistics.getConfigurationId());
+                classifiersConfigurationDto.setClassifiersOptionsCount(
+                        classifiersOptionsStatistics.getClassifiersOptionsCount());
+            });
+        }
         return PageDto.of(configurationDtoList, pageRequestDto.getPage(),
                 classifiersConfigurationsPage.getTotalElements());
     }
