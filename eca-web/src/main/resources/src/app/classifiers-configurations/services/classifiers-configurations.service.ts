@@ -8,13 +8,14 @@ import {
 import { Observable } from "rxjs/internal/Observable";
 import { ConfigService } from "../../config.service";
 import { AuthenticationKeys } from "../../auth/model/auth.keys";
+import { PageRequestService } from "../../common/services/page-request.service";
 
 @Injectable()
 export class ClassifiersConfigurationsService {
 
   private serviceUrl = ConfigService.appConfig.apiUrl + '/experiment/classifiers-configurations';
 
-  public constructor(private http: HttpClient) {
+  public constructor(private http: HttpClient, private pageRequestService: PageRequestService) {
   }
 
   public getClassifiersConfigurations(pageRequest: PageRequestDto): Observable<PageDto<ClassifiersConfigurationDto>> {
@@ -22,11 +23,7 @@ export class ClassifiersConfigurationsService {
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
-    let params = new HttpParams().set('page', pageRequest.page.toString())
-      .set('size', pageRequest.size.toString())
-      .set('sortField', pageRequest.sortField)
-      .set('searchQuery', pageRequest.searchQuery)
-      .set('ascending', pageRequest.ascending.toString());
+    const params: HttpParams = this.pageRequestService.convertToHttpRequestParams(pageRequest);
     const options = { headers: headers, params: params };
     return this.http.get<PageDto<ClassifiersConfigurationDto>>(this.serviceUrl + '/list', options);
   }
