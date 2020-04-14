@@ -7,8 +7,10 @@ import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Classifiers configuration mapper.
@@ -16,7 +18,7 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Mapper
-public interface ClassifiersConfigurationMapper {
+public abstract class ClassifiersConfigurationMapper {
 
     /**
      * Maps create classifiers configuration dto to its entity model.
@@ -24,7 +26,8 @@ public interface ClassifiersConfigurationMapper {
      * @param configurationDto - create classifiers configuration dto
      * @return classifiers configuration entity
      */
-    ClassifiersConfiguration map(CreateClassifiersConfigurationDto configurationDto);
+    @Mapping(source = "name", target = "name", qualifiedByName = "trim")
+    public abstract ClassifiersConfiguration map(CreateClassifiersConfigurationDto configurationDto);
 
     /**
      * Updates classifiers configuration entity.
@@ -32,8 +35,9 @@ public interface ClassifiersConfigurationMapper {
      * @param configurationDto         - update classifiers configuration dto
      * @param classifiersConfiguration - classifiers configuration entity
      */
+    @Mapping(source = "name", target = "name", qualifiedByName = "trim")
     @Mapping(target = "id", ignore = true)
-    void update(UpdateClassifiersConfigurationDto configurationDto,
+    public abstract void update(UpdateClassifiersConfigurationDto configurationDto,
                 @MappingTarget ClassifiersConfiguration classifiersConfiguration);
 
     /**
@@ -42,7 +46,7 @@ public interface ClassifiersConfigurationMapper {
      * @param classifiersConfiguration - classifiers configuration entity
      * @return classifiers configuration dto
      */
-    ClassifiersConfigurationDto map(ClassifiersConfiguration classifiersConfiguration);
+    public abstract ClassifiersConfigurationDto map(ClassifiersConfiguration classifiersConfiguration);
 
     /**
      * Maps classifiers configuration entities to its dto models.
@@ -50,5 +54,10 @@ public interface ClassifiersConfigurationMapper {
      * @param classifiersConfiguration - classifiers configuration entities
      * @return classifiers configurations dto list
      */
-    List<ClassifiersConfigurationDto> map(List<ClassifiersConfiguration> classifiersConfiguration);
+    public abstract List<ClassifiersConfigurationDto> map(List<ClassifiersConfiguration> classifiersConfiguration);
+
+    @Named("trim")
+    protected String trim(String value) {
+        return Optional.ofNullable(value).map(String::trim).orElse(null);
+    }
 }
