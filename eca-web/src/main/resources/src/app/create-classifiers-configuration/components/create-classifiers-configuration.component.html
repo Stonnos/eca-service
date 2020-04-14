@@ -21,14 +21,8 @@
           type="text"
           placeholder="Введите название"
           [(ngModel)]="item.name"
-          #configurationName="ngModel"
           maxlength="20"
           class="form-control d-block w-100">
-        <div class="text-danger error-message" *ngIf="configurationName.invalid && (configurationName.dirty || configurationName.touched || submitted)">
-          <div *ngIf="configurationName?.errors?.required">
-            Заполните название
-          </div>
-        </div>
       </div>
     </div>
   </form>
@@ -38,6 +32,7 @@
       pButton
       label="{{ item.id ? 'Переименовать' : 'Создать' }}"
       type="button"
+      [disabled]="!isValid()"
       (click)="submit()"
       class="ml-auto">
     </button>
