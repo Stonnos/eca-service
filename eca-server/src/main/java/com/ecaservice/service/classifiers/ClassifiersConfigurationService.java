@@ -2,12 +2,15 @@ package com.ecaservice.service.classifiers;
 
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.exception.EntityNotFoundException;
+import com.ecaservice.filter.ClassifiersConfigurationFilter;
 import com.ecaservice.mapping.ClassifiersConfigurationMapper;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
+import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.model.projections.ClassifiersOptionsStatistics;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.PageRequestService;
+import com.ecaservice.service.filter.FilterService;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
@@ -41,6 +44,7 @@ import static com.ecaservice.model.entity.ClassifiersConfiguration_.CREATED;
 @RequiredArgsConstructor
 public class ClassifiersConfigurationService implements PageRequestService<ClassifiersConfiguration> {
 
+    private final FilterService filterService;
     private final ClassifiersConfigurationMapper classifiersConfigurationMapper;
     private final CommonConfig commonConfig;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
@@ -119,8 +123,13 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
     @Override
     public Page<ClassifiersConfiguration> getNextPage(PageRequestDto pageRequestDto) {
         Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), CREATED, pageRequestDto.isAscending());
+        List<String> globalFilterFields =
+                filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION);
+        ClassifiersConfigurationFilter filter = new ClassifiersConfigurationFilter(pageRequestDto.getSearchQuery(),
+                globalFilterFields, pageRequestDto.getFilters());
         int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
-        return classifiersConfigurationRepository.findAll(PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        return classifiersConfigurationRepository.findAll(filter,
+                PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
     }
 
     /**

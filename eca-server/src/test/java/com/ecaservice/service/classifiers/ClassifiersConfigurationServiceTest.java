@@ -5,15 +5,18 @@ import com.ecaservice.config.CommonConfig;
 import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.mapping.ClassifiersConfigurationMapperImpl;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
+import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.AbstractJpaTest;
+import com.ecaservice.service.filter.FilterService;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
 import org.junit.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
@@ -26,6 +29,7 @@ import java.util.stream.Collectors;
 
 import static com.ecaservice.model.entity.ClassifiersConfiguration_.CREATED;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for checking {@link ClassifiersConfigurationService} functionality
@@ -48,6 +52,8 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
     @Inject
     private ClassifiersConfigurationService classifiersConfigurationService;
+    @MockBean
+    private FilterService filterService;
 
     @Override
     public void deleteAll() {
@@ -146,6 +152,8 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     @Test
     public void testGetClassifiersConfigurations() {
+        when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION)).thenReturn(
+                Collections.emptyList());
         ClassifiersConfiguration firstConfiguration = saveConfiguration(true, true);
         ClassifiersConfiguration secondConfiguration = saveConfiguration(false, false);
         classifierOptionsDatabaseModelRepository.save(

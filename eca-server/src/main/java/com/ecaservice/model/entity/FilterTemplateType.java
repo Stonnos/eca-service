@@ -20,5 +20,10 @@ public enum FilterTemplateType {
     /**
      * Classifier options request filter template type
      */
-    CLASSIFIER_OPTIONS_REQUEST
+    CLASSIFIER_OPTIONS_REQUEST,
+
+    /**
+     * Classifiers configuration filter template type
+     */
+    CLASSIFIERS_CONFIGURATION
 }
