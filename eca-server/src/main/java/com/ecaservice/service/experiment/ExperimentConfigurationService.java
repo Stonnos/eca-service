@@ -62,7 +62,7 @@ public class ExperimentConfigurationService {
             log.error(CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_EMPTY);
             throw new ClassifierOptionsException(CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_EMPTY);
         } else {
-            log.info("Starting to save individual classifiers options into database");
+            log.info("Starting to save individual classifiers options into database for build in configuration");
             ClassifiersConfiguration classifiersConfiguration = getOrSaveBuildInClassifiersConfiguration();
             List<ClassifierOptionsDatabaseModel> newOptions =
                     createClassifiersOptions(modelFiles, classifiersConfiguration);
