@@ -11,24 +11,29 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
+
+import static com.ecaservice.util.ClassifierOptionsHelper.parseOptions;
 
 /**
  * Implements experiment classifiers configs API for web application.
  *
  * @author Roman Batygin
  */
+@Slf4j
 @Api(tags = "Experiment classifiers configs API for web application")
 @RestController
 @RequestMapping("/experiment/classifiers-options")
@@ -70,6 +75,8 @@ public class ClassifierOptionsController {
     public PageDto<ClassifierOptionsDto> getClassifiersOptionsPage(
             @ApiParam(value = "Configuration id", required = true) @RequestParam long configurationId,
             @Valid PageRequestDto pageRequestDto) {
+        log.info("Received classifiers options page request: {}, configuration id [{}]", pageRequestDto,
+                configurationId);
         Page<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
                 classifierOptionsService.getNextPage(configurationId, pageRequestDto);
         List<ClassifierOptionsDto> classifierOptionsDtoList =
@@ -78,14 +85,25 @@ public class ClassifierOptionsController {
                 classifierOptionsDatabaseModels.getTotalElements());
     }
 
+    /**
+     * Saves new classifier options for specified configuration.
+     *
+     * @param configurationId        - configuration id
+     * @param classifiersOptionsFile - classifier options file
+     * @throws IOException in case of I/O errors
+     */
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
-            value = "",
-            notes = ""
+            value = "Saves new classifier options for specified configuration",
+            notes = "Saves new classifier options for specified configuration"
     )
     @PostMapping(value = "/save")
     public void save(@ApiParam(value = "Configuration id", required = true) @RequestParam long configurationId,
-                     @RequestBody ClassifierOptions classifierOptions) {
+                     @ApiParam(value = "Classifiers options file", required = true) @RequestParam
+                             MultipartFile classifiersOptionsFile) throws IOException {
+        log.info("Received request to save classifier options for configuration id [{}], options file [{}]",
+                configurationId, classifiersOptionsFile.getOriginalFilename());
+        ClassifierOptions classifierOptions = parseOptions(classifiersOptionsFile.getInputStream());
         classifierOptionsService.saveClassifierOptions(configurationId, classifierOptions);
     }
 
