@@ -1,6 +1,7 @@
 package com.ecaservice.model.entity;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -57,6 +58,7 @@ public class ClassifiersConfiguration {
     /**
      * Classifiers options list
      */
+    @ToString.Exclude
     @OneToMany(mappedBy = "configuration", cascade = CascadeType.ALL)
     private List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels;
 }

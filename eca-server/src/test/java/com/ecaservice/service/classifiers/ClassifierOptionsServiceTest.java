@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 
 import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -137,6 +138,91 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
         classifiersConfigurationRepository.save(classifiersConfiguration);
         AdaBoostOptions adaBoostOptions = TestHelperUtils.createAdaBoostOptions();
         classifierOptionsService.saveClassifierOptions(classifiersConfiguration.getId(), adaBoostOptions);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testUpdateNotBuildInClassifiersConfigurationOptions() {
+        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(false);
+        classifierOptionsService.updateBuildInClassifiersConfiguration(
+                classifierOptionsDatabaseModel.getConfiguration(), Collections.singletonList(
+                        createClassifierOptionsDatabaseModel(OPTIONS,
+                                classifierOptionsDatabaseModel.getConfiguration())));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUpdateBuildInClassifiersConfigurationWithEmptyOptions() {
+        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(true);
+        classifierOptionsService.updateBuildInClassifiersConfiguration(
+                classifierOptionsDatabaseModel.getConfiguration(), Collections.emptyList());
+    }
+
+    @Test
+    public void testUpdateBuildInClassifiersConfigurationWithEmptyLatestOptions() {
+        ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
+        classifiersConfiguration.setBuildIn(true);
+        classifiersConfigurationRepository.save(classifiersConfiguration);
+        classifierOptionsService.updateBuildInClassifiersConfiguration(classifiersConfiguration,
+                Collections.singletonList(createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration)));
+        assertThat(classifierOptionsDatabaseModelRepository.count()).isOne();
+        ClassifiersConfiguration actualConfiguration =
+                classifiersConfigurationRepository.findById(classifiersConfiguration.getId()).orElse(null);
+        assertThat(actualConfiguration).isNotNull();
+        assertThat(actualConfiguration.getUpdated()).isNull();
+    }
+
+    @Test
+    public void testUpdateBuildInClassifiersConfigurationWithOtherSize() {
+        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(true);
+        ClassifierOptionsDatabaseModel newFirst = createClassifierOptionsDatabaseModel("config1",
+                classifierOptionsDatabaseModel.getConfiguration());
+        ClassifierOptionsDatabaseModel newSecond = createClassifierOptionsDatabaseModel("config2",
+                classifierOptionsDatabaseModel.getConfiguration());
+        List<ClassifierOptionsDatabaseModel> newOptions = Arrays.asList(newFirst, newSecond);
+        classifierOptionsService.updateBuildInClassifiersConfiguration(
+                classifierOptionsDatabaseModel.getConfiguration(), newOptions);
+        assertThat(classifierOptionsDatabaseModelRepository.count()).isEqualTo(newOptions.size());
+        ClassifiersConfiguration actualConfiguration = classifiersConfigurationRepository.findById(
+                classifierOptionsDatabaseModel.getConfiguration().getId()).orElse(null);
+        assertThat(actualConfiguration).isNotNull();
+        assertThat(actualConfiguration.getUpdated()).isNotNull();
+        assertThat(
+                classifierOptionsDatabaseModelRepository.existsById(classifierOptionsDatabaseModel.getId())).isFalse();
+        assertThat(classifierOptionsDatabaseModelRepository.existsById(newFirst.getId())).isTrue();
+        assertThat(classifierOptionsDatabaseModelRepository.existsById(newSecond.getId())).isTrue();
+    }
+
+    @Test
+    public void testUpdateBuildInClassifiersConfigurationWithSameSize() {
+        ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
+        classifiersConfiguration.setBuildIn(true);
+        classifiersConfigurationRepository.save(classifiersConfiguration);
+        //Creates latest options
+        ClassifierOptionsDatabaseModel latestFirst =
+                createClassifierOptionsDatabaseModel("config1", classifiersConfiguration);
+        latestFirst.setOptionsName("config1Name");
+        ClassifierOptionsDatabaseModel latestSecond =
+                createClassifierOptionsDatabaseModel("config2", classifiersConfiguration);
+        latestSecond.setOptionsName("config2Name");
+        List<ClassifierOptionsDatabaseModel> latestOptions = Arrays.asList(latestFirst, latestSecond);
+        classifierOptionsDatabaseModelRepository.saveAll(latestOptions);
+        //Creates new options
+        ClassifierOptionsDatabaseModel newFirst =
+                createClassifierOptionsDatabaseModel("config3", classifiersConfiguration);
+        newFirst.setOptionsName("config1Name");
+        ClassifierOptionsDatabaseModel newSecond =
+                createClassifierOptionsDatabaseModel("config2", classifiersConfiguration);
+        newSecond.setOptionsName("config2Name");
+        List<ClassifierOptionsDatabaseModel> newOptions = Arrays.asList(newFirst, newSecond);
+        //Performs test
+        classifierOptionsService.updateBuildInClassifiersConfiguration(classifiersConfiguration, newOptions);
+        assertThat(classifierOptionsDatabaseModelRepository.count()).isEqualTo(newOptions.size());
+        ClassifiersConfiguration actualConfiguration =
+                classifiersConfigurationRepository.findById(classifiersConfiguration.getId()).orElse(null);
+        assertThat(actualConfiguration).isNotNull();
+        assertThat(actualConfiguration.getUpdated()).isNotNull();
+        assertThat(classifierOptionsDatabaseModelRepository.existsById(latestFirst.getId())).isFalse();
+        assertThat(classifierOptionsDatabaseModelRepository.existsById(latestSecond.getId())).isTrue();
+        assertThat(classifierOptionsDatabaseModelRepository.existsById(newFirst.getId())).isTrue();
     }
 
     private ClassifierOptionsDatabaseModel saveClassifierOptions(boolean buildIn) {

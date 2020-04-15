@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
  * @author Roman Batygin
  */
 @Data
-@EqualsAndHashCode(exclude = {"id", "creationDate", "config"})
+@EqualsAndHashCode(exclude = {"id", "creationDate", "config", "configuration"})
 @Entity
 @Table(name = "classifier_options")
 public class ClassifierOptionsDatabaseModel {

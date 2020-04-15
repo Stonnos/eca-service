@@ -80,11 +80,13 @@ import eca.trees.DecisionTreeClassifier;
 import eca.trees.J48;
 import lombok.experimental.UtilityClass;
 import org.springframework.amqp.core.MessageProperties;
+import org.springframework.util.DigestUtils;
 import weka.core.Instances;
 
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -294,6 +296,8 @@ public class TestHelperUtils {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
         classifierOptionsDatabaseModel.setConfiguration(classifiersConfiguration);
         classifierOptionsDatabaseModel.setConfig(config);
+        classifierOptionsDatabaseModel.setConfigMd5Hash(
+                DigestUtils.md5DigestAsHex(config.getBytes(StandardCharsets.UTF_8)));
         classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
         return classifierOptionsDatabaseModel;
     }

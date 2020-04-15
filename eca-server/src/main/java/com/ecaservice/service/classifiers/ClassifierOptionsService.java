@@ -114,6 +114,8 @@ public class ClassifierOptionsService {
     @Transactional
     public void updateBuildInClassifiersConfiguration(ClassifiersConfiguration classifiersConfiguration,
                                                       List<ClassifierOptionsDatabaseModel> newOptions) {
+        Assert.state(classifiersConfiguration.isBuildIn(), "Expected build in configuration!");
+        Assert.notEmpty(newOptions, "New classifiers options list must be not empty!");
         List<ClassifierOptionsDatabaseModel> latestOptions =
                 classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration);
         if (CollectionUtils.isEmpty(latestOptions) || latestOptions.size() != newOptions.size() ||
@@ -128,9 +130,9 @@ public class ClassifierOptionsService {
                 classifierOptionsDatabaseModelRepository.deleteAll(oldOptionsToDelete);
             }
             if (!CollectionUtils.isEmpty(newOptionsToSave)) {
-                classifierOptionsDatabaseModelRepository.saveAll(newOptions);
+                classifierOptionsDatabaseModelRepository.saveAll(newOptionsToSave);
             }
-            if (CollectionUtils.isEmpty(latestOptions)) {
+            if (!CollectionUtils.isEmpty(latestOptions)) {
                 classifiersConfiguration.setUpdated(LocalDateTime.now());
                 classifiersConfigurationRepository.save(classifiersConfiguration);
             }
