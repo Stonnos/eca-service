@@ -114,7 +114,7 @@ public class Utils {
      * @param file - file attachment
      * @return response entity
      */
-    public static ResponseEntity buildAttachmentResponse(File file) {
+    public static ResponseEntity<FileSystemResource> buildAttachmentResponse(File file) {
         FileSystemResource resource = new FileSystemResource(file);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
