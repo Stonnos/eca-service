@@ -5,8 +5,8 @@ import com.ecaservice.exception.ClassifierOptionsException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.model.options.ClassifierOptions;
-import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
+import com.ecaservice.service.classifiers.ClassifierOptionsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.ecaservice.util.ClassifierOptionsHelper.createClassifierOptionsDatabaseModel;
 
@@ -43,8 +42,8 @@ public class ExperimentConfigurationService {
             "Classifiers input options directory is empty.";
     private static ObjectMapper objectMapper = new ObjectMapper();
 
+    private final ClassifierOptionsService classifierOptionsService;
     private final ExperimentConfig experimentConfig;
-    private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
 
     /**
@@ -65,31 +64,9 @@ public class ExperimentConfigurationService {
         } else {
             log.info("Starting to save individual classifiers options into database");
             ClassifiersConfiguration classifiersConfiguration = getOrSaveBuildInClassifiersConfiguration();
-            List<ClassifierOptionsDatabaseModel> latestOptions =
-                    classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration);
             List<ClassifierOptionsDatabaseModel> newOptions =
                     createClassifiersOptions(modelFiles, classifiersConfiguration);
-            updateBuildInClassifiersConfiguration(newOptions, latestOptions);
-        }
-    }
-
-    private void updateBuildInClassifiersConfiguration(List<ClassifierOptionsDatabaseModel> newOptions,
-                                                       List<ClassifierOptionsDatabaseModel> latestOptions) {
-        if (CollectionUtils.isEmpty(latestOptions) || latestOptions.size() != newOptions.size() ||
-                !newOptions.containsAll(latestOptions)) {
-            log.info("Saving new classifiers input options for system configuration.");
-            List<ClassifierOptionsDatabaseModel> oldOptionsToDelete =
-                    latestOptions.stream().filter(options -> !newOptions.contains(options)).collect(
-                            Collectors.toList());
-            List<ClassifierOptionsDatabaseModel> newOptionsToSave =
-                    newOptions.stream().filter(options -> !latestOptions.contains(options)).collect(
-                            Collectors.toList());
-            if (!CollectionUtils.isEmpty(oldOptionsToDelete)) {
-                classifierOptionsDatabaseModelRepository.deleteAll(oldOptionsToDelete);
-            }
-            if (!CollectionUtils.isEmpty(newOptionsToSave)) {
-                classifierOptionsDatabaseModelRepository.saveAll(newOptions);
-            }
+            classifierOptionsService.updateBuildInClassifiersConfiguration(classifiersConfiguration, newOptions);
         }
     }
 

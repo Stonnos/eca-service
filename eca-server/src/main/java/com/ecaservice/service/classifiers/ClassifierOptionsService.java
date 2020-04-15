@@ -17,9 +17,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_.CREATION_DATE;
 import static com.ecaservice.util.ClassifierOptionsHelper.createClassifierOptionsDatabaseModel;
@@ -101,6 +103,39 @@ public class ClassifierOptionsService {
                 classifiersConfigurationRepository.findFirstByActiveTrue().orElseThrow(
                         () -> new IllegalStateException("Can't find active classifiers configuration!"));
         return classifierOptionsDatabaseModelRepository.findAllByConfiguration(activeConfiguration);
+    }
+
+    /**
+     * Updates build in classifiers configuration with new classifiers options.
+     *
+     * @param classifiersConfiguration - classifiers configuration
+     * @param newOptions               - new option list
+     */
+    @Transactional
+    public void updateBuildInClassifiersConfiguration(ClassifiersConfiguration classifiersConfiguration,
+                                                      List<ClassifierOptionsDatabaseModel> newOptions) {
+        List<ClassifierOptionsDatabaseModel> latestOptions =
+                classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration);
+        if (CollectionUtils.isEmpty(latestOptions) || latestOptions.size() != newOptions.size() ||
+                !newOptions.containsAll(latestOptions)) {
+            List<ClassifierOptionsDatabaseModel> oldOptionsToDelete =
+                    latestOptions.stream().filter(options -> !newOptions.contains(options)).collect(
+                            Collectors.toList());
+            List<ClassifierOptionsDatabaseModel> newOptionsToSave =
+                    newOptions.stream().filter(options -> !latestOptions.contains(options)).collect(
+                            Collectors.toList());
+            if (!CollectionUtils.isEmpty(oldOptionsToDelete)) {
+                classifierOptionsDatabaseModelRepository.deleteAll(oldOptionsToDelete);
+            }
+            if (!CollectionUtils.isEmpty(newOptionsToSave)) {
+                classifierOptionsDatabaseModelRepository.saveAll(newOptions);
+            }
+            if (CollectionUtils.isEmpty(latestOptions)) {
+                classifiersConfiguration.setUpdated(LocalDateTime.now());
+                classifiersConfigurationRepository.save(classifiersConfiguration);
+            }
+            log.info("New classifiers input options has been saved for build in configuration.");
+        }
     }
 
     private ClassifiersConfiguration getConfigurationById(long configurationId) {

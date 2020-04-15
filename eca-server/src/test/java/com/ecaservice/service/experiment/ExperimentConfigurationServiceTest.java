@@ -7,6 +7,7 @@ import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.AbstractJpaTest;
+import com.ecaservice.service.classifiers.ClassifierOptionsService;
 import org.junit.Test;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -23,9 +24,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentConfig.class, CommonConfig.class})
+@Import({ExperimentConfig.class, CommonConfig.class, ClassifierOptionsService.class})
 public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
 
+    @Inject
+    private ClassifierOptionsService classifierOptionsService;
     @Inject
     private ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
     @Inject
@@ -37,9 +40,8 @@ public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        experimentConfigurationService =
-                new ExperimentConfigurationService(experimentConfig, classifierOptionsDatabaseModelRepository,
-                        classifiersConfigurationRepository);
+        experimentConfigurationService = new ExperimentConfigurationService(classifierOptionsService, experimentConfig,
+                classifiersConfigurationRepository);
     }
 
     @Override
@@ -63,6 +65,7 @@ public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
         experimentConfigurationService.saveClassifiersOptions();
         List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
                 classifierOptionsDatabaseModelRepository.findAll();
+        assertThat(classifiersConfigurationRepository.count()).isOne();
         assertThat(classifierOptionsDatabaseModels.size()).isEqualTo(modelFiles.length);
     }
 
