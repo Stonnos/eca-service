@@ -150,7 +150,8 @@ public class ExperimentController {
             @ApiParam(value = "Training data file", required = true) @RequestParam MultipartFile trainingData,
             @ApiParam(value = "Experiment type", required = true) @RequestParam ExperimentType experimentType,
             @ApiParam(value = "Evaluation method", required = true) @RequestParam EvaluationMethod evaluationMethod) {
-        log.info("Received experiment request for data '{}'", trainingData.getOriginalFilename());
+        log.info("Received experiment request for data '{}', experiment type {}, evaluation method {}",
+                trainingData.getOriginalFilename(), experimentType, evaluationMethod);
         CreateExperimentResultDto resultDto = new CreateExperimentResultDto();
         try {
             ExperimentRequest experimentRequest =
@@ -198,6 +199,7 @@ public class ExperimentController {
     @GetMapping(value = "/details/{requestId}")
     public ResponseEntity<ExperimentDto> getExperiment(
             @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
+        log.info("Received request to get experiment details for request id [{}]", requestId);
         Experiment experiment = experimentRepository.findByRequestId(requestId);
         if (experiment == null) {
             log.error(EXPERIMENT_NOT_FOUND_FORMAT, requestId);
@@ -220,6 +222,7 @@ public class ExperimentController {
     @GetMapping(value = "/results/details/{id}")
     public ResponseEntity<ExperimentResultsDetailsDto> getExperimentResultsDetails(
             @ApiParam(value = "Experiment results id", example = "1", required = true) @PathVariable Long id) {
+        log.info("Received request to get experiment results details for id [{}]", id);
         Optional<ExperimentResultsEntity> experimentResultsEntityOptional =
                 experimentResultsEntityRepository.findById(id);
         if (!experimentResultsEntityOptional.isPresent()) {
@@ -314,7 +317,8 @@ public class ExperimentController {
         long resultsCount = experimentResultsEntityRepository.countByExperiment(experiment);
         if (resultsCount == 0L) {
             log.error("Can't found experiment [{}] results to ERS sent", experiment.getRequestId());
-            return ResponseEntity.badRequest().body(String.format(EXPERIMENT_RESULTS_NOT_FOUND, experiment.getRequestId()));
+            return ResponseEntity.badRequest().body(
+                    String.format(EXPERIMENT_RESULTS_NOT_FOUND, experiment.getRequestId()));
         }
         long sentResults = experimentResultsEntityRepository.getSentResultsCount(experiment);
         if (resultsCount == sentResults) {
@@ -389,7 +393,7 @@ public class ExperimentController {
                                                   String errorMessage) {
         Experiment experiment = experimentRepository.findByRequestId(requestId);
         if (experiment == null) {
-            log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, requestId));
+            log.error(EXPERIMENT_NOT_FOUND_FORMAT, requestId);
             return ResponseEntity.notFound().build();
         }
         File experimentFile = getExperimentFile(experiment, filePathFunction);
