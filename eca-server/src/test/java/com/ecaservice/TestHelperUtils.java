@@ -46,6 +46,7 @@ import com.ecaservice.model.options.ExtraTreesOptions;
 import com.ecaservice.model.options.HeterogeneousClassifierOptions;
 import com.ecaservice.model.options.J48Options;
 import com.ecaservice.model.options.KNearestNeighboursOptions;
+import com.ecaservice.model.options.LogisticOptions;
 import com.ecaservice.model.options.NeuralNetworkOptions;
 import com.ecaservice.model.options.RandomForestsOptions;
 import com.ecaservice.model.options.RandomNetworkOptions;
@@ -1064,7 +1065,7 @@ public class TestHelperUtils {
      *
      * @return experiment types statistics map
      */
-    public static Map<ExperimentType, Long> buildexperimentTypeStatisticMap() {
+    public static Map<ExperimentType, Long> buildExperimentTypeStatisticMap() {
         ExperimentType[] experimentTypes = ExperimentType.values();
         Map<ExperimentType, Long> experimentTypesMap = newEnumMap(ExperimentType.class);
         Stream.of(experimentTypes).forEach(
@@ -1082,5 +1083,17 @@ public class TestHelperUtils {
         messageProperties.setReplyTo(REPLY_TO);
         messageProperties.setCorrelationId(UUID.randomUUID().toString());
         return messageProperties;
+    }
+
+    /**
+     * Creates logistic options.
+     *
+     * @return logistic options
+     */
+    public LogisticOptions createLogisticOptions() {
+        LogisticOptions logisticOptions = new LogisticOptions();
+        logisticOptions.setMaxIts(NUM_ITERATIONS);
+        logisticOptions.setUseConjugateGradientDescent(false);
+        return logisticOptions;
     }
 }

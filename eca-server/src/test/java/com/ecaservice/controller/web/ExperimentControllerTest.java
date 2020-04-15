@@ -53,6 +53,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.MimeTypeUtils;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -149,7 +150,7 @@ public class ExperimentControllerTest {
 
     private final MockMultipartFile trainingData =
             new MockMultipartFile(TRAINING_DATA_PARAM, "iris.txt",
-                    "text/plain", "file-content".getBytes(StandardCharsets.UTF_8));
+                    MimeTypeUtils.TEXT_PLAIN.toString(), "file-content".getBytes(StandardCharsets.UTF_8));
 
     @Before
     public void init() throws Exception {
@@ -538,7 +539,7 @@ public class ExperimentControllerTest {
 
     @Test
     public void testGetExperimentTypesStatisticsOk() throws Exception {
-        Map<ExperimentType, Long> experimentTypesMap = TestHelperUtils.buildexperimentTypeStatisticMap();
+        Map<ExperimentType, Long> experimentTypesMap = TestHelperUtils.buildExperimentTypeStatisticMap();
         when(experimentService.getExperimentTypesStatistics(null, null)).thenReturn(experimentTypesMap);
         List<ChartDataDto> chartDataDtoList = experimentTypesMap.entrySet().stream().map(
                 entry -> new ChartDataDto(entry.getKey().name(), entry.getKey().getDescription(),
