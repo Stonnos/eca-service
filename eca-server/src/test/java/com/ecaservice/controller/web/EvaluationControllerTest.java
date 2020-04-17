@@ -7,18 +7,15 @@ import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.model.entity.EvaluationLog;
-import com.ecaservice.model.entity.EvaluationLog_;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.evaluation.EvaluationLogService;
 import com.ecaservice.util.Utils;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
-import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -36,8 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.ecaservice.PageRequestUtils.FILTER_MATCH_MODE_PARAM;
-import static com.ecaservice.PageRequestUtils.FILTER_NAME_PARAM;
 import static com.ecaservice.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.PageRequestUtils.PAGE_NUMBER_PARAM;
 import static com.ecaservice.PageRequestUtils.PAGE_SIZE;
@@ -61,7 +56,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = EvaluationController.class)
 @Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class,
         ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class})
-public class EvaluationControllerTest extends AbstractControllerTest {
+public class EvaluationControllerTest extends PageRequestControllerTest {
 
     private static final String BASE_URL = "/evaluation";
     private static final String DETAILS_URL = BASE_URL + "/details/{requestId}";
@@ -105,65 +100,37 @@ public class EvaluationControllerTest extends AbstractControllerTest {
 
     @Test
     public void testGetEvaluationLogsUnauthorized() throws Exception {
-        mockMvc.perform(get(LIST_URL)
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
-                .andExpect(status().isUnauthorized());
+        testGetPageUnauthorized(LIST_URL, Collections.emptyMap());
     }
 
     @Test
     public void testGetEvaluationLogsWithNullPageNumber() throws Exception {
-        mockMvc.perform(get(LIST_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
-                .andExpect(status().isBadRequest());
+        testGetPageWithNullPageNumber(LIST_URL, Collections.emptyMap());
     }
 
     @Test
     public void testGetEvaluationLogsWithNullPageSize() throws Exception {
-        mockMvc.perform(get(LIST_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER)))
-                .andExpect(status().isBadRequest());
+        testGetPageWithNullPageSize(LIST_URL, Collections.emptyMap());
     }
 
     @Test
     public void testGetEvaluationLogsWithZeroPageSize() throws Exception {
-        mockMvc.perform(get(LIST_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(0)))
-                .andExpect(status().isBadRequest());
+        testGetPageWithZeroPageSize(LIST_URL, Collections.emptyMap());
     }
 
     @Test
     public void testGetEvaluationLogsWithNegativePageNumber() throws Exception {
-        mockMvc.perform(get(LIST_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(-1))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
-                .andExpect(status().isBadRequest());
+        testGetPageWithNegativePageNumber(LIST_URL, Collections.emptyMap());
     }
 
     @Test
     public void testGetEvaluationLogsWithEmptyFilterRequestName() throws Exception {
-        mockMvc.perform(get(LIST_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE))
-                .param(FILTER_NAME_PARAM, StringUtils.EMPTY)
-                .param(FILTER_MATCH_MODE_PARAM, MatchMode.RANGE.name()))
-                .andExpect(status().isBadRequest());
+        testGetPageWithEmptyFilterRequestName(LIST_URL, Collections.emptyMap());
     }
 
     @Test
     public void testGetEvaluationLogsWithNullMatchMode() throws Exception {
-        mockMvc.perform(get(LIST_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE))
-                .param(FILTER_NAME_PARAM, EvaluationLog_.CREATION_DATE))
-                .andExpect(status().isBadRequest());
+        testGetPageWithNullMatchMode(LIST_URL, Collections.emptyMap());
     }
 
     @Test

@@ -1,13 +1,10 @@
 package com.ecaservice.controller.web;
 
-import com.ecaservice.model.entity.EvaluationLog_;
 import com.ecaservice.report.BaseReportGenerator;
 import com.ecaservice.report.EvaluationLogsBaseReportDataFetcher;
 import com.ecaservice.report.ExperimentsBaseReportDataFetcher;
 import com.ecaservice.report.model.BaseReportBean;
-import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -21,9 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.OutputStream;
+import java.util.Collections;
 
-import static com.ecaservice.PageRequestUtils.FILTER_MATCH_MODE_PARAM;
-import static com.ecaservice.PageRequestUtils.FILTER_NAME_PARAM;
 import static com.ecaservice.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.PageRequestUtils.PAGE_NUMBER_PARAM;
 import static com.ecaservice.PageRequestUtils.PAGE_SIZE;
@@ -44,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({BaseReportGenerator.class})
 @WebMvcTest(controllers = ReportController.class)
-public class ReportControllerTest extends AbstractControllerTest {
+public class ReportControllerTest extends PageRequestControllerTest {
 
     private static final String BASE_URL = "/reports";
     private static final String EXPERIMENTS_REPORT_URL = BASE_URL + "/experiments";
@@ -54,68 +50,40 @@ public class ReportControllerTest extends AbstractControllerTest {
     private ExperimentsBaseReportDataFetcher experimentsBaseReportDataFetcher;
     @MockBean
     private EvaluationLogsBaseReportDataFetcher evaluationLogsBaseReportDataFetcher;
-    
+
     @Test
     public void testDownloadExperimentsReportUnauthorized() throws Exception {
-        mockMvc.perform(get(EXPERIMENTS_REPORT_URL)
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
-                .andExpect(status().isUnauthorized());
+        testGetPageUnauthorized(EXPERIMENTS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
     public void testDownloadExperimentsReportWithNullPageNumber() throws Exception {
-        mockMvc.perform(get(EXPERIMENTS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
-                .andExpect(status().isBadRequest());
+        testGetPageWithNullPageNumber(EXPERIMENTS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
     public void testDownloadExperimentsReportWithNullPageSize() throws Exception {
-        mockMvc.perform(get(EXPERIMENTS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER)))
-                .andExpect(status().isBadRequest());
+        testGetPageWithNullPageSize(EXPERIMENTS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
     public void testDownloadExperimentsReportWithZeroPageSize() throws Exception {
-        mockMvc.perform(get(EXPERIMENTS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(0)))
-                .andExpect(status().isBadRequest());
+        testGetPageWithZeroPageSize(EXPERIMENTS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
     public void testDownloadExperimentsReportWithNegativePageNumber() throws Exception {
-        mockMvc.perform(get(EXPERIMENTS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(-1))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
-                .andExpect(status().isBadRequest());
+        testGetPageWithNegativePageNumber(EXPERIMENTS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
     public void testDownloadExperimentsReportWithEmptyFilterRequestName() throws Exception {
-        mockMvc.perform(get(EXPERIMENTS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE))
-                .param(FILTER_NAME_PARAM, StringUtils.EMPTY)
-                .param(FILTER_MATCH_MODE_PARAM, MatchMode.RANGE.name()))
-                .andExpect(status().isBadRequest());
+        testGetPageWithEmptyFilterRequestName(EXPERIMENTS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
     public void testDownloadExperimentsReportWithNullMatchMode() throws Exception {
-        mockMvc.perform(get(EXPERIMENTS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE))
-                .param(FILTER_NAME_PARAM, EvaluationLog_.CREATION_DATE))
-                .andExpect(status().isBadRequest());
+        testGetPageWithNullMatchMode(EXPERIMENTS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
@@ -135,65 +103,37 @@ public class ReportControllerTest extends AbstractControllerTest {
 
     @Test
     public void testDownloadEvaluationsReportUnauthorized() throws Exception {
-        mockMvc.perform(get(EVALUATIONS_REPORT_URL)
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
-                .andExpect(status().isUnauthorized());
+        testGetPageUnauthorized(EVALUATIONS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
     public void testDownloadEvaluationsReportWithNullPageNumber() throws Exception {
-        mockMvc.perform(get(EVALUATIONS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
-                .andExpect(status().isBadRequest());
+        testGetPageWithNullPageNumber(EVALUATIONS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
     public void testDownloadEvaluationsReportWithNullPageSize() throws Exception {
-        mockMvc.perform(get(EVALUATIONS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER)))
-                .andExpect(status().isBadRequest());
+        testGetPageWithNullPageSize(EVALUATIONS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
     public void testDownloadEvaluationsReportWithZeroPageSize() throws Exception {
-        mockMvc.perform(get(EVALUATIONS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(0)))
-                .andExpect(status().isBadRequest());
+        testGetPageWithZeroPageSize(EVALUATIONS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
     public void testDownloadEvaluationsReportWithNegativePageNumber() throws Exception {
-        mockMvc.perform(get(EVALUATIONS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(-1))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
-                .andExpect(status().isBadRequest());
+        testGetPageWithNegativePageNumber(EVALUATIONS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
     public void testDownloadEvaluationsReportWithEmptyFilterRequestName() throws Exception {
-        mockMvc.perform(get(EVALUATIONS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE))
-                .param(FILTER_NAME_PARAM, StringUtils.EMPTY)
-                .param(FILTER_MATCH_MODE_PARAM, MatchMode.RANGE.name()))
-                .andExpect(status().isBadRequest());
+        testGetPageWithEmptyFilterRequestName(EVALUATIONS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
     public void testDownloadEvaluationsReportWithNullMatchMode() throws Exception {
-        mockMvc.perform(get(EVALUATIONS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE))
-                .param(FILTER_NAME_PARAM, EvaluationLog_.CREATION_DATE))
-                .andExpect(status().isBadRequest());
+        testGetPageWithNullMatchMode(EVALUATIONS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test

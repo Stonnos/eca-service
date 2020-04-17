@@ -2,11 +2,9 @@ package com.ecaservice.controller.web;
 
 import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.mapping.ClassifiersConfigurationMapperImpl;
-import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_;
 import com.ecaservice.service.classifiers.ClassifiersConfigurationService;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
-import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
@@ -22,8 +20,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Collections;
 
-import static com.ecaservice.PageRequestUtils.FILTER_MATCH_MODE_PARAM;
-import static com.ecaservice.PageRequestUtils.FILTER_NAME_PARAM;
 import static com.ecaservice.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.PageRequestUtils.PAGE_NUMBER_PARAM;
 import static com.ecaservice.PageRequestUtils.PAGE_SIZE;
@@ -49,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = ClassifiersConfigurationController.class)
 @Import(ClassifiersConfigurationMapperImpl.class)
-public class ClassifiersConfigurationControllerTest extends AbstractControllerTest {
+public class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
 
     private static final String BASE_URL = "/experiment/classifiers-configurations";
     private static final String LIST_URL = BASE_URL + "/list";
@@ -68,65 +64,37 @@ public class ClassifiersConfigurationControllerTest extends AbstractControllerTe
 
     @Test
     public void testGetClassifiersConfigurationsPageUnauthorized() throws Exception {
-        mockMvc.perform(get(LIST_URL)
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
-                .andExpect(status().isUnauthorized());
+        testGetPageUnauthorized(LIST_URL, Collections.emptyMap());
     }
 
     @Test
     public void testGetClassifiersConfigurationsPageWithNullPageNumber() throws Exception {
-        mockMvc.perform(get(LIST_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
-                .andExpect(status().isBadRequest());
+        testGetPageWithNullPageNumber(LIST_URL, Collections.emptyMap());
     }
 
     @Test
     public void testGetClassifiersConfigurationsPageWithNullPageSize() throws Exception {
-        mockMvc.perform(get(LIST_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER)))
-                .andExpect(status().isBadRequest());
+        testGetPageWithNullPageSize(LIST_URL, Collections.emptyMap());
     }
 
     @Test
     public void testGetClassifiersConfigurationsPageWithZeroPageSize() throws Exception {
-        mockMvc.perform(get(LIST_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(0)))
-                .andExpect(status().isBadRequest());
+        testGetPageWithZeroPageSize(LIST_URL, Collections.emptyMap());
     }
 
     @Test
     public void testGetClassifiersConfigurationsPageWithNegativePageNumber() throws Exception {
-        mockMvc.perform(get(LIST_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(-1))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
-                .andExpect(status().isBadRequest());
+        testGetPageWithNegativePageNumber(LIST_URL, Collections.emptyMap());
     }
 
     @Test
     public void testGetClassifiersConfigurationsPageWithEmptyFilterRequestName() throws Exception {
-        mockMvc.perform(get(LIST_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE))
-                .param(FILTER_NAME_PARAM, StringUtils.EMPTY)
-                .param(FILTER_MATCH_MODE_PARAM, MatchMode.RANGE.name()))
-                .andExpect(status().isBadRequest());
+        testGetPageWithEmptyFilterRequestName(LIST_URL, Collections.emptyMap());
     }
 
     @Test
     public void testGetClassifiersConfigurationsPageWithNullMatchMode() throws Exception {
-        mockMvc.perform(get(LIST_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE))
-                .param(FILTER_NAME_PARAM, ClassifierOptionsDatabaseModel_.CREATION_DATE))
-                .andExpect(status().isBadRequest());
+        testGetPageWithNullMatchMode(LIST_URL, Collections.emptyMap());
     }
 
     @Test
