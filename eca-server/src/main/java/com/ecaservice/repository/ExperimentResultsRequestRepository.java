@@ -11,8 +11,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author Roman Batygin
  */
 public interface ExperimentResultsRequestRepository extends JpaRepository<ExperimentResultsRequest, Long> {
+
     /**
-     * Finds experiment results requests with specified status.
+     * Finds experiment results request with specified status.
      *
      * @param experimentResults - experiment results entity
      * @param responseStatus    - response status
@@ -20,4 +21,14 @@ public interface ExperimentResultsRequestRepository extends JpaRepository<Experi
      */
     ExperimentResultsRequest findByExperimentResultsAndResponseStatusEquals(ExperimentResultsEntity experimentResults,
                                                                             ErsResponseStatus responseStatus);
+
+    /**
+     * Checks experiment results request existing with specified params.
+     *
+     * @param experimentResults - experiment results entity
+     * @param responseStatus    - response status
+     * @return {@code true} if experiment results request exists, {@code false} otherwise
+     */
+    boolean existsByExperimentResultsAndResponseStatusEquals(ExperimentResultsEntity experimentResults,
+                                                             ErsResponseStatus responseStatus);
 }
