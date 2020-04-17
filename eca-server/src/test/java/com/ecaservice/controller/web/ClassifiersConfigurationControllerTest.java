@@ -1,6 +1,5 @@
 package com.ecaservice.controller.web;
 
-import com.ecaservice.mapping.ClassifiersConfigurationMapper;
 import com.ecaservice.mapping.ClassifiersConfigurationMapperImpl;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_;
 import com.ecaservice.service.classifiers.ClassifiersConfigurationService;
@@ -18,7 +17,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.inject.Inject;
 import java.util.Collections;
 
 import static com.ecaservice.PageRequestUtils.FILTER_MATCH_MODE_PARAM;
@@ -31,7 +29,9 @@ import static com.ecaservice.PageRequestUtils.TOTAL_ELEMENTS;
 import static com.ecaservice.TestHelperUtils.bearerHeader;
 import static com.ecaservice.TestHelperUtils.createClassifiersConfigurationDto;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -48,11 +48,15 @@ public class ClassifiersConfigurationControllerTest extends AbstractControllerTe
 
     private static final String BASE_URL = "/experiment/classifiers-configurations";
     private static final String LIST_URL = BASE_URL + "/list";
+    private static final String DETAIL_URL = BASE_URL + "/details";
+    private static final String DELETE_URL = BASE_URL + "/delete";
+    private static final String SET_ACTIVE_URL = BASE_URL + "/set-active";
+
+    private static final String ID_PARAM = "id";
+    private static final long ID = 1L;
 
     @MockBean
     private ClassifiersConfigurationService classifiersConfigurationService;
-    @Inject
-    private ClassifiersConfigurationMapper classifiersConfigurationMapper;
 
     @Test
     public void testGetClassifiersConfigurationsPageUnauthorized() throws Exception {
@@ -118,7 +122,7 @@ public class ClassifiersConfigurationControllerTest extends AbstractControllerTe
     }
 
     @Test
-    public void testGetClassifiersOptionsPageOk() throws Exception {
+    public void testGetClassifiersConfigurationsPageOk() throws Exception {
         PageDto<ClassifiersConfigurationDto> pageDto =
                 PageDto.of(Collections.singletonList(createClassifiersConfigurationDto()), PAGE_NUMBER, TOTAL_ELEMENTS);
         when(classifiersConfigurationService.getClassifiersConfigurations(any(PageRequestDto.class))).thenReturn(
@@ -130,5 +134,63 @@ public class ClassifiersConfigurationControllerTest extends AbstractControllerTe
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(content().json(objectMapper.writeValueAsString(pageDto)));
+    }
+
+    @Test
+    public void testGetClassifiersConfigurationDetailsUnauthorized() throws Exception {
+        mockMvc.perform(get(DETAIL_URL)
+                .param(ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testGetClassifiersConfigurationDetailsWithNullId() throws Exception {
+        mockMvc.perform(get(DETAIL_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testGetClassifiersConfigurationDetailsOk() throws Exception {
+        ClassifiersConfigurationDto classifiersConfigurationDto = createClassifiersConfigurationDto();
+        when(classifiersConfigurationService.getClassifiersConfigurationDetails(ID)).thenReturn(
+                classifiersConfigurationDto);
+        mockMvc.perform(get(DETAIL_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .param(ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().json(objectMapper.writeValueAsString(classifiersConfigurationDto)));
+    }
+
+    @Test
+    public void testDeleteClassifiersConfigurationUnauthorized() throws Exception {
+        mockMvc.perform(delete(DELETE_URL)
+                .param(ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testDeleteClassifiersConfigurationWithNullId() throws Exception {
+        mockMvc.perform(delete(DELETE_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testDeleteClassifiersConfigurationOk() throws Exception {
+        mockMvc.perform(delete(DELETE_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .param(ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testDeleteConfigurationWithIllegalStateException() throws Exception {
+        doThrow(new IllegalStateException()).when(classifiersConfigurationService).delete(ID);
+        mockMvc.perform(delete(DELETE_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .param(ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isBadRequest());
     }
 }
