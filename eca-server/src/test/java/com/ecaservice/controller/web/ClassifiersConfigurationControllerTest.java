@@ -5,6 +5,7 @@ import com.ecaservice.mapping.ClassifiersConfigurationMapperImpl;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_;
 import com.ecaservice.service.classifiers.ClassifiersConfigurationService;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
+import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -53,9 +54,12 @@ public class ClassifiersConfigurationControllerTest extends AbstractControllerTe
     private static final String DETAIL_URL = BASE_URL + "/details";
     private static final String DELETE_URL = BASE_URL + "/delete";
     private static final String SET_ACTIVE_URL = BASE_URL + "/set-active";
+    private static final String SAVE_URL = BASE_URL + "/save";
+    private static final String UPDATE_URL = BASE_URL + "/update";
 
     private static final String ID_PARAM = "id";
     private static final long ID = 1L;
+    public static final String CONFIGURATION_NAME = "ConfigurationName";
 
     @MockBean
     private ClassifiersConfigurationService classifiersConfigurationService;
@@ -236,5 +240,42 @@ public class ClassifiersConfigurationControllerTest extends AbstractControllerTe
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    public void testSaveClassifiersConfigurationUnauthorized() throws Exception {
+        CreateClassifiersConfigurationDto createClassifiersConfigurationDto =
+                new CreateClassifiersConfigurationDto(CONFIGURATION_NAME);
+        mockMvc.perform(post(SAVE_URL)
+                .content(objectMapper.writeValueAsString(createClassifiersConfigurationDto))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(status().isUnauthorized());
+    }
 
+    @Test
+    public void testSaveEmptyClassifiersConfiguration() throws Exception {
+        mockMvc.perform(post(SAVE_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testSaveClassifiersConfigurationWithEmptyName() throws Exception {
+        CreateClassifiersConfigurationDto createClassifiersConfigurationDto =
+                new CreateClassifiersConfigurationDto(StringUtils.EMPTY);
+        mockMvc.perform(post(SAVE_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .content(objectMapper.writeValueAsString(createClassifiersConfigurationDto))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testSaveClassifiersConfigurationOk() throws Exception {
+        CreateClassifiersConfigurationDto createClassifiersConfigurationDto =
+                new CreateClassifiersConfigurationDto(CONFIGURATION_NAME);
+        mockMvc.perform(post(SAVE_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .content(objectMapper.writeValueAsString(createClassifiersConfigurationDto))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(status().isOk());
+    }
 }
