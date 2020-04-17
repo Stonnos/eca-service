@@ -100,7 +100,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
         ClassifiersConfiguration classifiersConfiguration = getById(id);
         ClassifiersConfiguration activeConfiguration =
                 classifiersConfigurationRepository.findFirstByActiveTrue().orElseThrow(
-                        () -> new IllegalStateException("Can't find active classifiers configuration!"));
+                        () -> new IllegalStateException("Can't find previous active classifiers configuration!"));
         if (!classifiersConfiguration.getId().equals(activeConfiguration.getId())) {
             activeConfiguration.setActive(false);
             classifiersConfiguration.setActive(true);

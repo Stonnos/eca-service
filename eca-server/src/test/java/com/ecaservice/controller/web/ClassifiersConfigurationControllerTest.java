@@ -1,5 +1,6 @@
 package com.ecaservice.controller.web;
 
+import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.mapping.ClassifiersConfigurationMapperImpl;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_;
 import com.ecaservice.service.classifiers.ClassifiersConfigurationService;
@@ -33,6 +34,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -193,4 +195,46 @@ public class ClassifiersConfigurationControllerTest extends AbstractControllerTe
                 .param(ID_PARAM, String.valueOf(ID)))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    public void testSetActiveClassifiersConfigurationUnauthorized() throws Exception {
+        mockMvc.perform(post(SET_ACTIVE_URL)
+                .param(ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testSetActiveClassifiersConfigurationWithNullId() throws Exception {
+        mockMvc.perform(post(SET_ACTIVE_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testSetActiveClassifiersConfigurationOk() throws Exception {
+        mockMvc.perform(post(SET_ACTIVE_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .param(ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testSetActiveNotExistingClassifiersConfiguration() throws Exception {
+        doThrow(new EntityNotFoundException()).when(classifiersConfigurationService).setActive(ID);
+        mockMvc.perform(post(SET_ACTIVE_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .param(ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testSetActiveClassifiersConfigurationWithIllegalStateException() throws Exception {
+        doThrow(new IllegalStateException()).when(classifiersConfigurationService).setActive(ID);
+        mockMvc.perform(post(SET_ACTIVE_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .param(ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isBadRequest());
+    }
+
+
 }
