@@ -9,6 +9,7 @@ import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +37,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -275,6 +277,45 @@ public class ClassifiersConfigurationControllerTest extends AbstractControllerTe
         mockMvc.perform(post(SAVE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .content(objectMapper.writeValueAsString(createClassifiersConfigurationDto))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testUpdateClassifiersConfigurationUnauthorized() throws Exception {
+        UpdateClassifiersConfigurationDto updateClassifiersConfigurationDto =
+                new UpdateClassifiersConfigurationDto(ID, CONFIGURATION_NAME);
+        mockMvc.perform(put(UPDATE_URL)
+                .content(objectMapper.writeValueAsString(updateClassifiersConfigurationDto))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testUpdateEmptyClassifiersConfiguration() throws Exception {
+        mockMvc.perform(put(UPDATE_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testUpdateClassifiersConfigurationWithEmptyName() throws Exception {
+        UpdateClassifiersConfigurationDto updateClassifiersConfigurationDto =
+                new UpdateClassifiersConfigurationDto(ID, StringUtils.EMPTY);
+        mockMvc.perform(put(UPDATE_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .content(objectMapper.writeValueAsString(updateClassifiersConfigurationDto))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testUpdateClassifiersConfigurationOk() throws Exception {
+        UpdateClassifiersConfigurationDto updateClassifiersConfigurationDto =
+                new UpdateClassifiersConfigurationDto(ID, CONFIGURATION_NAME);
+        mockMvc.perform(put(UPDATE_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .content(objectMapper.writeValueAsString(updateClassifiersConfigurationDto))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isOk());
     }
