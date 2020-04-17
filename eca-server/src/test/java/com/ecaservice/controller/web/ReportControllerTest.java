@@ -1,16 +1,13 @@
 package com.ecaservice.controller.web;
 
-import com.ecaservice.configuation.annotation.Oauth2TestConfiguration;
 import com.ecaservice.model.entity.EvaluationLog_;
 import com.ecaservice.report.BaseReportGenerator;
 import com.ecaservice.report.EvaluationLogsBaseReportDataFetcher;
 import com.ecaservice.report.ExperimentsBaseReportDataFetcher;
 import com.ecaservice.report.model.BaseReportBean;
-import com.ecaservice.token.TokenService;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -22,9 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 
-import javax.inject.Inject;
 import java.io.OutputStream;
 
 import static com.ecaservice.PageRequestUtils.FILTER_MATCH_MODE_PARAM;
@@ -49,8 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({BaseReportGenerator.class})
 @WebMvcTest(controllers = ReportController.class)
-@Oauth2TestConfiguration
-public class ReportControllerTest {
+public class ReportControllerTest extends AbstractControllerTest {
 
     private static final String BASE_URL = "/reports";
     private static final String EXPERIMENTS_REPORT_URL = BASE_URL + "/experiments";
@@ -60,19 +54,7 @@ public class ReportControllerTest {
     private ExperimentsBaseReportDataFetcher experimentsBaseReportDataFetcher;
     @MockBean
     private EvaluationLogsBaseReportDataFetcher evaluationLogsBaseReportDataFetcher;
-
-    @Inject
-    private TokenService tokenService;
-    @Inject
-    private MockMvc mockMvc;
-
-    private String accessToken;
-
-    @Before
-    public void init() throws Exception {
-        accessToken = tokenService.obtainAccessToken();
-    }
-
+    
     @Test
     public void testDownloadExperimentsReportUnauthorized() throws Exception {
         mockMvc.perform(get(EXPERIMENTS_REPORT_URL)
@@ -84,7 +66,7 @@ public class ReportControllerTest {
     @Test
     public void testDownloadExperimentsReportWithNullPageNumber() throws Exception {
         mockMvc.perform(get(EXPERIMENTS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
                 .andExpect(status().isBadRequest());
     }
@@ -92,7 +74,7 @@ public class ReportControllerTest {
     @Test
     public void testDownloadExperimentsReportWithNullPageSize() throws Exception {
         mockMvc.perform(get(EXPERIMENTS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER)))
                 .andExpect(status().isBadRequest());
     }
@@ -100,7 +82,7 @@ public class ReportControllerTest {
     @Test
     public void testDownloadExperimentsReportWithZeroPageSize() throws Exception {
         mockMvc.perform(get(EXPERIMENTS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(0)))
                 .andExpect(status().isBadRequest());
@@ -109,7 +91,7 @@ public class ReportControllerTest {
     @Test
     public void testDownloadExperimentsReportWithNegativePageNumber() throws Exception {
         mockMvc.perform(get(EXPERIMENTS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(-1))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
                 .andExpect(status().isBadRequest());
@@ -118,7 +100,7 @@ public class ReportControllerTest {
     @Test
     public void testDownloadExperimentsReportWithEmptyFilterRequestName() throws Exception {
         mockMvc.perform(get(EXPERIMENTS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE))
                 .param(FILTER_NAME_PARAM, StringUtils.EMPTY)
@@ -129,7 +111,7 @@ public class ReportControllerTest {
     @Test
     public void testDownloadExperimentsReportWithNullMatchMode() throws Exception {
         mockMvc.perform(get(EXPERIMENTS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE))
                 .param(FILTER_NAME_PARAM, EvaluationLog_.CREATION_DATE))
@@ -144,7 +126,7 @@ public class ReportControllerTest {
         PowerMockito.doNothing().when(BaseReportGenerator.class, "generateExperimentsReport", any(BaseReportBean
                 .class), any(OutputStream.class));
         mockMvc.perform(get(EXPERIMENTS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
                 .andExpect(status().isOk())
@@ -162,7 +144,7 @@ public class ReportControllerTest {
     @Test
     public void testDownloadEvaluationsReportWithNullPageNumber() throws Exception {
         mockMvc.perform(get(EVALUATIONS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
                 .andExpect(status().isBadRequest());
     }
@@ -170,7 +152,7 @@ public class ReportControllerTest {
     @Test
     public void testDownloadEvaluationsReportWithNullPageSize() throws Exception {
         mockMvc.perform(get(EVALUATIONS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER)))
                 .andExpect(status().isBadRequest());
     }
@@ -178,7 +160,7 @@ public class ReportControllerTest {
     @Test
     public void testDownloadEvaluationsReportWithZeroPageSize() throws Exception {
         mockMvc.perform(get(EVALUATIONS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(0)))
                 .andExpect(status().isBadRequest());
@@ -187,7 +169,7 @@ public class ReportControllerTest {
     @Test
     public void testDownloadEvaluationsReportWithNegativePageNumber() throws Exception {
         mockMvc.perform(get(EVALUATIONS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(-1))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
                 .andExpect(status().isBadRequest());
@@ -196,7 +178,7 @@ public class ReportControllerTest {
     @Test
     public void testDownloadEvaluationsReportWithEmptyFilterRequestName() throws Exception {
         mockMvc.perform(get(EVALUATIONS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE))
                 .param(FILTER_NAME_PARAM, StringUtils.EMPTY)
@@ -207,7 +189,7 @@ public class ReportControllerTest {
     @Test
     public void testDownloadEvaluationsReportWithNullMatchMode() throws Exception {
         mockMvc.perform(get(EVALUATIONS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE))
                 .param(FILTER_NAME_PARAM, EvaluationLog_.CREATION_DATE))
@@ -222,7 +204,7 @@ public class ReportControllerTest {
         PowerMockito.doNothing().when(BaseReportGenerator.class, "generateEvaluationLogsReport", any(BaseReportBean
                 .class), any(OutputStream.class));
         mockMvc.perform(get(EVALUATIONS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
                 .andExpect(status().isOk())

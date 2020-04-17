@@ -1,7 +1,6 @@
 package com.ecaservice.controller.web;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.configuation.annotation.Oauth2TestConfiguration;
 import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.mapping.ClassifierOptionsDatabaseModelMapperImpl;
@@ -10,15 +9,12 @@ import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.model.options.LogisticOptions;
 import com.ecaservice.service.classifiers.ClassifierOptionsService;
-import com.ecaservice.token.TokenService;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -30,7 +26,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.MimeTypeUtils;
 
 import javax.inject.Inject;
@@ -64,9 +59,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = ClassifierOptionsController.class)
-@Oauth2TestConfiguration
 @Import(ClassifierOptionsDatabaseModelMapperImpl.class)
-public class ClassifierOptionsControllerTest {
+public class ClassifierOptionsControllerTest extends AbstractControllerTest {
 
     private static final String BASE_URL = "/experiment/classifiers-options";
     private static final String ACTIVE_OPTIONS_URL = BASE_URL + "/active-options";
@@ -81,24 +75,11 @@ public class ClassifierOptionsControllerTest {
     private static final String OPTIONS = "options";
     private static final long CONFIGURATION_ID = 1L;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
     @MockBean
     private ClassifierOptionsService classifierOptionsService;
-
-    @Inject
-    private TokenService tokenService;
+    
     @Inject
     private ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
-    @Inject
-    private MockMvc mockMvc;
-
-    private String accessToken;
-
-    @Before
-    public void init() throws Exception {
-        accessToken = tokenService.obtainAccessToken();
-    }
 
     @Test
     public void testGetActiveOptionsUnauthorized() throws Exception {
@@ -115,7 +96,7 @@ public class ClassifierOptionsControllerTest {
                 classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModels);
         when(classifierOptionsService.getActiveClassifiersOptions()).thenReturn(classifierOptionsDatabaseModels);
         mockMvc.perform(get(ACTIVE_OPTIONS_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(content().json(objectMapper.writeValueAsString(classifierOptionsDtoList)));
@@ -133,7 +114,7 @@ public class ClassifierOptionsControllerTest {
     @Test
     public void testGetClassifiersOptionsPageWithNullConfigurationId() throws Exception {
         mockMvc.perform(get(PAGE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
                 .andExpect(status().isBadRequest());
@@ -142,7 +123,7 @@ public class ClassifierOptionsControllerTest {
     @Test
     public void testGetClassifiersOptionsPageWithNullPageNumber() throws Exception {
         mockMvc.perform(get(PAGE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
                 .andExpect(status().isBadRequest());
@@ -151,7 +132,7 @@ public class ClassifierOptionsControllerTest {
     @Test
     public void testGetClassifiersOptionsPageWithNullPageSize() throws Exception {
         mockMvc.perform(get(PAGE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER)))
                 .andExpect(status().isBadRequest());
@@ -160,7 +141,7 @@ public class ClassifierOptionsControllerTest {
     @Test
     public void testGetClassifiersOptionsPageWithZeroPageSize() throws Exception {
         mockMvc.perform(get(PAGE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(0)))
@@ -170,7 +151,7 @@ public class ClassifierOptionsControllerTest {
     @Test
     public void testGetClassifiersOptionsPageWithNegativePageNumber() throws Exception {
         mockMvc.perform(get(PAGE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(-1))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
@@ -180,7 +161,7 @@ public class ClassifierOptionsControllerTest {
     @Test
     public void testGetClassifiersOptionsPageWithEmptyFilterRequestName() throws Exception {
         mockMvc.perform(get(PAGE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE))
@@ -192,7 +173,7 @@ public class ClassifierOptionsControllerTest {
     @Test
     public void testGetClassifiersOptionsPageWithNullMatchMode() throws Exception {
         mockMvc.perform(get(PAGE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE))
@@ -213,7 +194,7 @@ public class ClassifierOptionsControllerTest {
         when(page.getContent()).thenReturn(classifierOptionsDatabaseModels);
         when(classifierOptionsService.getNextPage(anyLong(), any(PageRequestDto.class))).thenReturn(page);
         mockMvc.perform(get(PAGE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
@@ -232,7 +213,7 @@ public class ClassifierOptionsControllerTest {
     @Test
     public void testDeleteOptionsWithNotSpecifiedConfigurationId() throws Exception {
         mockMvc.perform(delete(DELETE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
     }
 
@@ -240,7 +221,7 @@ public class ClassifierOptionsControllerTest {
     public void testDeleteNotExistingOptions() throws Exception {
         doThrow(new EntityNotFoundException()).when(classifierOptionsService).deleteOptions(CONFIGURATION_ID);
         mockMvc.perform(delete(DELETE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(ID_PARAM, String.valueOf(CONFIGURATION_ID)))
                 .andExpect(status().isNotFound());
     }
@@ -249,7 +230,7 @@ public class ClassifierOptionsControllerTest {
     public void testDeleteOptionsForBuildInConfiguration() throws Exception {
         doThrow(new IllegalStateException()).when(classifierOptionsService).deleteOptions(CONFIGURATION_ID);
         mockMvc.perform(delete(DELETE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(ID_PARAM, String.valueOf(CONFIGURATION_ID)))
                 .andExpect(status().isBadRequest());
     }
@@ -257,7 +238,7 @@ public class ClassifierOptionsControllerTest {
     @Test
     public void testDeleteOptionsOk() throws Exception {
         mockMvc.perform(delete(DELETE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(ID_PARAM, String.valueOf(CONFIGURATION_ID)))
                 .andExpect(status().isOk());
     }
@@ -274,7 +255,7 @@ public class ClassifierOptionsControllerTest {
     public void testSaveOptionsWithNotSpecifiedConfigurationId() throws Exception {
         mockMvc.perform(multipart(SAVE_URL)
                 .file(createClassifierOptionsFileMock())
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
     }
 
@@ -282,7 +263,7 @@ public class ClassifierOptionsControllerTest {
     public void testSaveOptionsWithNotSpecifiedFile() throws Exception {
         mockMvc.perform(multipart(SAVE_URL)
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
     }
 
@@ -291,7 +272,7 @@ public class ClassifierOptionsControllerTest {
         mockMvc.perform(multipart(SAVE_URL)
                 .file(createClassifierOptionsFileMock())
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk());
     }
 
@@ -302,7 +283,7 @@ public class ClassifierOptionsControllerTest {
         mockMvc.perform(multipart(SAVE_URL)
                 .file(multipartFile)
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
     }
 

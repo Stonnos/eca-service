@@ -51,6 +51,7 @@ import com.ecaservice.model.options.NeuralNetworkOptions;
 import com.ecaservice.model.options.RandomForestsOptions;
 import com.ecaservice.model.options.RandomNetworkOptions;
 import com.ecaservice.model.options.StackingOptions;
+import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
@@ -310,6 +311,19 @@ public class TestHelperUtils {
      */
     public static ClassifiersConfiguration createClassifiersConfiguration() {
         ClassifiersConfiguration classifiersConfiguration = new ClassifiersConfiguration();
+        classifiersConfiguration.setActive(true);
+        classifiersConfiguration.setCreated(LocalDateTime.now());
+        classifiersConfiguration.setBuildIn(true);
+        return classifiersConfiguration;
+    }
+
+    /**
+     * Creates classifiers configuration dto.
+     *
+     * @return classifiers configuration dto
+     */
+    public static ClassifiersConfigurationDto createClassifiersConfigurationDto() {
+        ClassifiersConfigurationDto classifiersConfiguration = new ClassifiersConfigurationDto();
         classifiersConfiguration.setActive(true);
         classifiersConfiguration.setCreated(LocalDateTime.now());
         classifiersConfiguration.setBuildIn(true);
