@@ -96,3 +96,9 @@
   (visibilityChange)="onEditClassifiersConfigurationDialogVisibility($event)"
   (itemEvent)="onEditClassifiersConfiguration($event)">
 </app-create-classifiers-configuration>
+
+<app-upload-classifier-options-dialog
+  [configurationId]="selectedConfiguration?.id"
+  [visible]="uploadClassifiersOptionsDialogVisibility"
+  (visibilityChange)="onUploadClassifiersOptionsDialogVisibility($event)">
+</app-upload-classifier-options-dialog>

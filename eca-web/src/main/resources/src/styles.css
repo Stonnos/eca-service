@@ -7,6 +7,10 @@
   word-wrap: break-word;
 }
 
+.text-ellipsis {
+  text-overflow: ellipsis;
+}
+
 .filter-sidebar {
   width: 320px;
   min-width: 320px;

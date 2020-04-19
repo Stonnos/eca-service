@@ -22,11 +22,13 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   public setActiveMenuItem: MenuItem;
   public deleteMenuItem: MenuItem;
   public renameMenuItem: MenuItem;
+  public uploadClassifiersOptionsMenu: MenuItem;
   public optionsMenu: MenuItem[] = [];
   public selectedConfiguration: ClassifiersConfigurationDto;
 
   public classifiersConfiguration: ClassifiersConfigurationModel = new ClassifiersConfigurationModel();
   public editClassifiersConfigurationDialogVisibility: boolean = false;
+  public uploadClassifiersOptionsDialogVisibility: boolean = false;
 
   public lastCreatedConfigurationId: number;
   public blinkConfigurationId: number;
@@ -52,6 +54,14 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
     this.blinkConfigurationId = this.lastCreatedConfigurationId;
     this.lastCreatedConfigurationId = null;
     super.setPage(pageDto);
+  }
+
+  public showUploadClassifiersOptionsDialogVisibility(): void {
+    this.uploadClassifiersOptionsDialogVisibility = true;
+  }
+
+  public onUploadClassifiersOptionsDialogVisibility(visible): void {
+    this.uploadClassifiersOptionsDialogVisibility = visible;
   }
 
   public onMouseClickMenu(event: any, item: ClassifiersConfigurationDto): void {
@@ -174,6 +184,13 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   }
 
   private initMenu() {
+    this.uploadClassifiersOptionsMenu = {
+      label: 'Загрузить настройки',
+      icon: 'pi pi-upload',
+      command: () => {
+        this.showUploadClassifiersOptionsDialogVisibility();
+      }
+    };
     this.setActiveMenuItem = {
       label: 'Сделать активной',
       icon: 'pi pi-tag',
@@ -199,7 +216,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
       {
         icon: 'pi pi-fw pi-cog',
         styleClass: 'main-menu-item',
-        items: [this.renameMenuItem, this.deleteMenuItem, this.setActiveMenuItem]
+        items: [this.renameMenuItem, this.deleteMenuItem, this.setActiveMenuItem, this.uploadClassifiersOptionsMenu]
       }
     ];
   }

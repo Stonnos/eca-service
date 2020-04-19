@@ -1,0 +1,53 @@
+<p-dialog
+  [(visible)]="visible"
+  header="Загрузить настройки классификаторов"
+  width="650"
+  appendTo="body"
+  [modal]="true"
+  [blockScroll]="false"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="hide()">
+
+  <p-scrollPanel [style]="{ width: '100%', height: '200px' }">
+    <form novalidate class="form d-flex flex-column justify-content-center m-auto">
+      <div class="ui-g ui-fluid">
+        <div class="ui-g-10 mx-auto mb-5">
+          <p-fileUpload name="classifiersOptions"
+                        chooseLabel="Выбрать"
+                        uploadLabel="Загрузить"
+                        cancelLabel="Отмена"
+                        [multiple]="true"
+                        [invalidFileSizeMessageSummary]="invalidFileSizeMessageSummary"
+                        [invalidFileSizeMessageDetail]="invalidFileSizeMessageDetail"
+                        [invalidFileTypeMessageSummary]="invalidFileTypeMessageSummary"
+                        [invalidFileTypeMessageDetail]="invalidFileTypeMessageDetail"
+                        [customUpload]="true"
+                        (uploadHandler)="onUpload($event)"
+                        [accept]="accept"
+                        [maxFileSize]="maxFileSize">
+            <ng-template pTemplate="content">
+              <div class="ui-g" *ngFor="let file of uploadedFiles">
+                <div class="ui-g-6 text-left text-ellipsis">
+                  {{ file.name }}
+                </div>
+                <div class="ui-g-6 text-left">
+                  {{ file.size }}
+                </div>
+              </div>
+            </ng-template>
+          </p-fileUpload>
+        </div>
+      </div>
+    </form>
+  </p-scrollPanel>
+  <p-footer>
+    <button
+      pButton
+      label="Закрыть"
+      type="button"
+      (click)="hide()"
+      class="ml-auto">
+    </button>
+  </p-footer>
+</p-dialog>

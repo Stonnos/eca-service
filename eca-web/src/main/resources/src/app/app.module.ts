@@ -29,6 +29,7 @@ import { ExperimentDetailsModule } from "./experiment-details/experiment-details
 import { ExperimentResultsDetailsModule } from "./experiment-results-details/experiment-results-details.module";
 import { ClassifiersConfigurationsModule } from "./classifiers-configurations/classifiers-configurations.module";
 import { CreateClassifiersConfigurationModule } from "./create-classifiers-configuration/create-classifiers-configuration.module";
+import { UploadClassifierOptionsDialogModule } from "./upload-classifier-options-dialog/upload-classifier-options-dialog.module";
 
 export function initializeApp(configService: ConfigService) {
   return () => configService.getConfigs();
@@ -62,6 +63,7 @@ export function initializeApp(configService: ConfigService) {
     ExperimentStatisticsModule,
     CreateExperimentModule,
     ExperimentDetailsModule,
+    UploadClassifierOptionsDialogModule,
     UiComponentsModule,
     HttpClientModule,
     NoopAnimationsModule,
