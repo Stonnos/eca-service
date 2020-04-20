@@ -3,7 +3,7 @@ import {
   ClassifiersConfigurationDto, PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
-import { MessageService } from "primeng/api";
+import { ConfirmationService, MessageService } from "primeng/api";
 import { BaseListComponent } from "../../common/lists/base-list.component";
 import { Observable } from "rxjs/internal/Observable";
 import { ClassifiersConfigurationFields } from "../../common/util/field-names";
@@ -29,7 +29,8 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   public blinkConfigurationId: number;
 
   public constructor(private injector: Injector,
-                     private classifierOptionsService: ClassifiersConfigurationsService) {
+                     private classifierOptionsService: ClassifiersConfigurationsService,
+                     private confirmationService: ConfirmationService) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ClassifiersConfigurationFields.CREATED;
     this.notSortableColumns = [ClassifiersConfigurationFields.CLASSIFIERS_OPTIONS_COUNT];
@@ -81,7 +82,14 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   }
 
   public onDeleteClassifiersConfiguration(item: ClassifiersConfigurationDto): void {
-    this.deleteConfiguration(item);
+    this.confirmationService.confirm({
+      message: 'Вы уверены?',
+      acceptLabel: 'Да',
+      rejectLabel: 'Нет',
+      accept: () => {
+        this.deleteConfiguration(item);
+      }
+    });
   }
 
   public onSetActiveClassifiersConfiguration(item: ClassifiersConfigurationDto): void {
