@@ -54,6 +54,10 @@ export class UploadClassifierOptionsDialogComponent implements OnInit {
     this.visibilityChange.emit(false);
   }
 
+  public onSelectFiles(event: any): void {
+    this.uploadedFiles = [];
+  }
+
   public onUpload(event: any): void {
     this.uploadProgress = true;
     this.uploadedFiles = [];

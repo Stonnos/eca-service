@@ -25,6 +25,7 @@
                         [invalidFileTypeMessageDetail]="invalidFileTypeMessageDetail"
                         [customUpload]="true"
                         (uploadHandler)="onUpload($event)"
+                        (onSelect)="onSelectFiles($event)"
                         [accept]="accept"
                         [maxFileSize]="maxFileSize">
             <ng-template pTemplate="content">
