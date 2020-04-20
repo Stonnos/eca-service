@@ -9,7 +9,7 @@
   [resizable]="false"
   (onHide)="hide()">
 
-  <p-scrollPanel [style]="{ width: '100%', height: '200px' }">
+  <p-scrollPanel [style]="{ width: '100%', height: '350px' }">
     <form novalidate class="form d-flex flex-column justify-content-center m-auto">
       <div class="ui-g ui-fluid">
         <div class="ui-g-10 mx-auto mb-5">
@@ -28,9 +28,14 @@
                         [accept]="accept"
                         [maxFileSize]="maxFileSize">
             <ng-template pTemplate="content">
-              <p-progressBar *ngIf="uploadProgress" mode="indeterminate"
-                             [style]="{ width: '100%', height: '6px' }"></p-progressBar>
-              <table *ngIf="uploadedFiles?.length > 0" class="table w-100">
+              <div *ngIf="uploadProgress" class="progress-content">
+                <p-progressSpinner
+                  class="upload-progress-spinner"
+                  strokeWidth="6"
+                  animationDuration=".5s">
+                </p-progressSpinner>
+              </div>
+              <table *ngIf="!uploadProgress && !fileUpload.hasFiles() && uploadedFiles?.length > 0" class="table w-100">
                 <thead>
                 <tr>
                   <th [colSpan]="2" scope="col" class="detail-header">
@@ -54,6 +59,9 @@
                 </tr>
                 </tbody>
               </table>
+              <div class="empty-content" *ngIf="!uploadProgress && !fileUpload.hasFiles() && uploadedFiles?.length == 0">
+                Выберите файлы
+              </div>
             </ng-template>
           </p-fileUpload>
         </div>
