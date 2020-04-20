@@ -114,6 +114,6 @@ export class ExperimentsService {
     formData.append('trainingData', experimentRequest.trainingDataFile, experimentRequest.trainingDataFile.name);
     formData.append('experimentType', experimentRequest.experimentType.value);
     formData.append('evaluationMethod', experimentRequest.evaluationMethod.value);
-    return this.http.post<CreateExperimentResultDto>(this.serviceUrl + '/create', formData, { headers });
+    return this.http.post<CreateExperimentResultDto>(this.serviceUrl + '/create', formData, { headers: headers });
   }
 }

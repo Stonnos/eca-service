@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
-  ClassifierOptionsDto,
+  ClassifierOptionsDto, CreateExperimentResultDto,
   PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -28,5 +28,15 @@ export class ClassifierOptionsService {
       .set('ascending', pageRequest.ascending.toString());
     const options = { headers: headers, params: params };
     return this.http.get<PageDto<ClassifierOptionsDto>>(this.serviceUrl + '/experiment/classifiers-options/page', options);
+  }
+
+  public saveClassifierOptions(configurationId: number, file: File): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+    });
+    const formData = new FormData();
+    formData.append('classifiersOptionsFile', file, file.name);
+    formData.append('configurationId', configurationId.toString());
+    return this.http.post<CreateExperimentResultDto>(this.serviceUrl + '/save', formData, { headers: headers });
   }
 }

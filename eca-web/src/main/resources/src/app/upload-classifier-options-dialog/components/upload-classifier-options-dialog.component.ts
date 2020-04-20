@@ -35,7 +35,7 @@ export class UploadClassifierOptionsDialogComponent implements OnInit {
 
   public uploadedFiles: UploadFileModel[] = [];
 
-  public constructor(classifierOptionsService: ClassifierOptionsService) {
+  public constructor(private classifierOptionsService: ClassifierOptionsService) {
   }
 
   public ngOnInit(): void {
