@@ -34,6 +34,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -109,7 +110,7 @@ public class ExperimentController {
             notes = "Downloads experiment training data by specified request id"
     )
     @GetMapping(value = "/training-data/{requestId}")
-    public ResponseEntity<?> downloadTrainingData(
+    public ResponseEntity<FileSystemResource> downloadTrainingData(
             @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
         return downloadExperimentFile(requestId, Experiment::getTrainingDataAbsolutePath,
                 String.format(EXPERIMENT_TRAINING_DATA_FILE_NOT_FOUND_FORMAT, requestId));
@@ -126,7 +127,7 @@ public class ExperimentController {
             notes = "Downloads experiment results by specified request id"
     )
     @GetMapping(value = "/results/{requestId}")
-    public ResponseEntity<?> downloadExperiment(
+    public ResponseEntity<FileSystemResource> downloadExperiment(
             @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
         return downloadExperimentFile(requestId, Experiment::getExperimentAbsolutePath,
                 String.format(EXPERIMENT_RESULTS_FILE_NOT_FOUND, requestId));
@@ -303,7 +304,7 @@ public class ExperimentController {
             notes = "Sent evaluation results to ERS for experiment"
     )
     @PostMapping(value = "/sent-evaluation-results")
-    public ResponseEntity<?> sentExperimentEvaluationResults(@RequestBody String requestId) {
+    public ResponseEntity<String> sentExperimentEvaluationResults(@RequestBody String requestId) {
         log.info("Received request to send evaluation results to ERS for experiment [{}]", requestId);
         Experiment experiment = experimentRepository.findByRequestId(requestId);
         if (experiment == null) {
@@ -373,8 +374,8 @@ public class ExperimentController {
         return experimentRequest;
     }
 
-    private ResponseEntity<?> sentExperimentResults(Experiment experiment) {
-        ResponseEntity<?> responseEntity;
+    private ResponseEntity<String> sentExperimentResults(Experiment experiment) {
+        ResponseEntity<String> responseEntity;
         experimentMap.putIfAbsent(experiment.getRequestId(), new Object());
         synchronized (experimentMap.get(experiment.getRequestId())) {
             if (lockService.locked(experiment.getRequestId())) {
@@ -389,8 +390,9 @@ public class ExperimentController {
         return responseEntity;
     }
 
-    private ResponseEntity<?> downloadExperimentFile(String requestId, Function<Experiment, String> filePathFunction,
-                                                  String errorMessage) {
+    private ResponseEntity<FileSystemResource> downloadExperimentFile(String requestId,
+                                                                      Function<Experiment, String> filePathFunction,
+                                                                      String errorMessage) {
         Experiment experiment = experimentRepository.findByRequestId(requestId);
         if (experiment == null) {
             log.error(EXPERIMENT_NOT_FOUND_FORMAT, requestId);

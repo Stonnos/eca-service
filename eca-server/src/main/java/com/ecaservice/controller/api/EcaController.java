@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,7 +44,7 @@ public class EcaController {
             notes = "Downloads experiment results by token"
     )
     @GetMapping(value = "/experiment/download/{token}")
-    public ResponseEntity<?> downloadExperiment(
+    public ResponseEntity<FileSystemResource> downloadExperiment(
             @ApiParam(value = "Experiment token", required = true) @PathVariable String token) {
         Experiment experiment = experimentRepository.findByToken(token);
         if (experiment == null) {

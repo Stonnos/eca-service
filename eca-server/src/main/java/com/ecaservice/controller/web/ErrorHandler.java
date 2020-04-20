@@ -22,7 +22,7 @@ public class ErrorHandler {
      * @return response entity
      */
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<?> handleNotFound(EntityNotFoundException ex) {
+    public ResponseEntity<String> handleNotFound(EntityNotFoundException ex) {
         log.error(ex.getMessage());
         return ResponseEntity.notFound().build();
     }
@@ -34,7 +34,7 @@ public class ErrorHandler {
      * @return response entity
      */
     @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
-    public ResponseEntity<?> handleBadRequest(Exception ex) {
+    public ResponseEntity<String> handleBadRequest(Exception ex) {
         log.error(ex.getMessage());
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
