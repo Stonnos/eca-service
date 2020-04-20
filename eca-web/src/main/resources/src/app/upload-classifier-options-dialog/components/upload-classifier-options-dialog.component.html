@@ -18,6 +18,7 @@
                         uploadLabel="Загрузить"
                         cancelLabel="Отмена"
                         [multiple]="true"
+                        [disabled]="uploadProgress"
                         [invalidFileSizeMessageSummary]="invalidFileSizeMessageSummary"
                         [invalidFileSizeMessageDetail]="invalidFileSizeMessageDetail"
                         [invalidFileTypeMessageSummary]="invalidFileTypeMessageSummary"
@@ -28,6 +29,7 @@
                         [fileLimit]="filesLimit"
                         [maxFileSize]="maxFileSize">
             <ng-template pTemplate="content">
+              <p-progressBar *ngIf="uploadProgress" mode="indeterminate" [style]="{ width: '100%', height: '6px' }"></p-progressBar>
               <table class="table w-100">
                 <tbody>
                 <tr *ngFor="let uploadFile of uploadedFiles">
