@@ -24,6 +24,8 @@ export class UploadClassifierOptionsDialogComponent implements OnInit {
   public invalidFileSizeMessageDetail: string = 'максимальный допустимый размер: {0}.';
   public invalidFileTypeMessageSummary: string = 'Некорректный тип файла,';
   public invalidFileTypeMessageDetail: string = 'допускаются только файлы форматов: {0}.';
+  public invalidFileLimitMessageDetail: string = 'максимальное допустимое число: {0}';
+  public invalidFileLimitMessageSummary: string = 'Превышено максимальное число файлов';
 
   @Input()
   public visible: boolean = false;
@@ -52,6 +54,7 @@ export class UploadClassifierOptionsDialogComponent implements OnInit {
   public hide(): void {
     this.uploadedFiles = [];
     this.fileUpload.clear();
+    this.fileUpload.msgs = [];
     this.visibilityChange.emit(false);
   }
 
@@ -76,6 +79,14 @@ export class UploadClassifierOptionsDialogComponent implements OnInit {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
     });
+  }
+
+  public getSuccessfullyUploadedFilesCount(): number {
+    return this.uploadedFiles.filter((result: CreateClassifierOptionsResultDto) => result.success).length;
+  }
+
+  public getUploadedWithErrorFilesCount(): number {
+    return this.uploadedFiles.filter((result: CreateClassifierOptionsResultDto) => !result.success).length;
   }
 
   private initializeObservables(event: any): Observable<CreateClassifierOptionsResultDto>[] {

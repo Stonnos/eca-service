@@ -23,14 +23,24 @@
                         [invalidFileSizeMessageDetail]="invalidFileSizeMessageDetail"
                         [invalidFileTypeMessageSummary]="invalidFileTypeMessageSummary"
                         [invalidFileTypeMessageDetail]="invalidFileTypeMessageDetail"
+                        [invalidFileLimitMessageDetail]="invalidFileLimitMessageDetail"
+                        [invalidFileLimitMessageSummary]="invalidFileLimitMessageSummary"
                         [customUpload]="true"
                         (uploadHandler)="onUpload($event)"
                         [accept]="accept"
                         [fileLimit]="filesLimit"
                         [maxFileSize]="maxFileSize">
             <ng-template pTemplate="content">
-              <p-progressBar *ngIf="uploadProgress" mode="indeterminate" [style]="{ width: '100%', height: '6px' }"></p-progressBar>
-              <table class="table w-100">
+              <p-progressBar *ngIf="uploadProgress" mode="indeterminate"
+                             [style]="{ width: '100%', height: '6px' }"></p-progressBar>
+              <table *ngIf="uploadedFiles?.length > 0" class="table w-100">
+                <thead>
+                <tr>
+                  <th [colSpan]="2" scope="col" class="detail-header">
+                    <span class="upload-status-success">Успешно загружено {{getSuccessfullyUploadedFilesCount() }}</span>, <span class="upload-status-error">с ошибкой {{ getUploadedWithErrorFilesCount() }}</span>
+                  </th>
+                </tr>
+                </thead>
                 <tbody>
                 <tr *ngFor="let uploadFile of uploadedFiles">
                   <td>

@@ -88,6 +88,10 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
     this.setActiveConfiguration(item);
   }
 
+  public onUploadedClassifiersOptions(event): void {
+    this.refreshClassifiersConfigurationsPage();
+  }
+
   public isBlink(item: ClassifiersConfigurationDto): boolean {
     return this.blinkConfigurationId == item.id;
   }
