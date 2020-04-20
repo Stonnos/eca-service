@@ -185,7 +185,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   private initMenu() {
     this.uploadClassifiersOptionsMenu = {
-      label: 'Загрузить настройки',
+      label: 'Классификаторы',
       icon: 'pi pi-upload',
       command: () => {
         this.showUploadClassifiersOptionsDialogVisibility();

@@ -27,14 +27,23 @@
                         [accept]="accept"
                         [maxFileSize]="maxFileSize">
             <ng-template pTemplate="content">
-              <div class="ui-g" *ngFor="let file of uploadedFiles">
-                <div class="ui-g-6 text-left text-ellipsis">
-                  {{ file.name }}
-                </div>
-                <div class="ui-g-6 text-left">
-                  {{ file.size }}
-                </div>
-              </div>
+              <table class="table w-100">
+                <tbody>
+                <tr *ngFor="let uploadFile of uploadedFiles">
+                  <td>
+                    <div class="file-name">
+                      {{ uploadFile.file.name }}
+                    </div>
+                  </td>
+                  <td>
+                    <span [class.upload-status-error]="uploadFile.status == 'Ошибка'"
+                          [class.upload-status-success]="uploadFile.status == 'Успешно'">
+                      {{ uploadFile.status }}
+                    </span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
             </ng-template>
           </p-fileUpload>
         </div>

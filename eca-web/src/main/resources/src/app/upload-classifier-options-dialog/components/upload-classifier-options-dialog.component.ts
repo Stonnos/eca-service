@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { FileUpload} from "primeng/primeng";
+import { FileUpload } from "primeng/primeng";
 import { ClassifierOptionsService } from "../../classifier-options/services/classifier-options.service";
+import { UploadFileModel } from "../model/upload-file.model";
+import { UploadStatus } from "../model/upload-status.enum";
 
 @Component({
   selector: 'app-upload-classifier-options-dialog',
@@ -31,7 +33,7 @@ export class UploadClassifierOptionsDialogComponent implements OnInit {
   @Output()
   public uploaded: EventEmitter<any> = new EventEmitter<any>();
 
-  public uploadedFiles: any[] = [];
+  public uploadedFiles: UploadFileModel[] = [];
 
   public constructor(classifierOptionsService: ClassifierOptionsService) {
   }
@@ -47,8 +49,9 @@ export class UploadClassifierOptionsDialogComponent implements OnInit {
 
   public onUpload(event: any): void {
     this.uploadedFiles = [];
-    for (let file in event.files) {
-      this.uploadedFiles.push(file);
+    for (let fileName in event.files) {
+      const file: File = event.files[fileName];
+      this.uploadedFiles.push(new UploadFileModel(file, UploadStatus.SUCCESS));
     }
     this.fileUpload.clear();
   }
