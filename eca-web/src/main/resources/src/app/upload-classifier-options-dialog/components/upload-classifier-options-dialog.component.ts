@@ -16,16 +16,12 @@ export class UploadClassifierOptionsDialogComponent implements OnInit {
 
   //Max file size: 10kb
   public maxFileSize: number = 10000;
-  //Files limit
-  public filesLimit: number = 10;
   //Files formats
   public accept: string = '.json';
   public invalidFileSizeMessageSummary: string = 'Недопустимый размер файла,';
   public invalidFileSizeMessageDetail: string = 'максимальный допустимый размер: {0}.';
   public invalidFileTypeMessageSummary: string = 'Некорректный тип файла,';
   public invalidFileTypeMessageDetail: string = 'допускаются только файлы форматов: {0}.';
-  public invalidFileLimitMessageDetail: string = 'максимальное допустимое число: {0}';
-  public invalidFileLimitMessageSummary: string = 'Превышено максимальное число файлов';
 
   @Input()
   public visible: boolean = false;
@@ -61,8 +57,8 @@ export class UploadClassifierOptionsDialogComponent implements OnInit {
   public onUpload(event: any): void {
     this.uploadProgress = true;
     this.uploadedFiles = [];
-    const observables: Observable<CreateClassifierOptionsResultDto>[] = this.initializeObservables(event);
     this.fileUpload.clear();
+    const observables: Observable<CreateClassifierOptionsResultDto>[] = this.initializeObservables(event);
     forkJoin(observables)
       .pipe(
         finalize(() => {
@@ -72,7 +68,6 @@ export class UploadClassifierOptionsDialogComponent implements OnInit {
       .subscribe({
         next: (results: CreateClassifierOptionsResultDto[]) => {
           this.uploadedFiles = results;
-          this.uploadProgress = false;
           this.uploaded.emit();
         },
         error: (error) => {

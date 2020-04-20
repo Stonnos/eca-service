@@ -23,12 +23,9 @@
                         [invalidFileSizeMessageDetail]="invalidFileSizeMessageDetail"
                         [invalidFileTypeMessageSummary]="invalidFileTypeMessageSummary"
                         [invalidFileTypeMessageDetail]="invalidFileTypeMessageDetail"
-                        [invalidFileLimitMessageDetail]="invalidFileLimitMessageDetail"
-                        [invalidFileLimitMessageSummary]="invalidFileLimitMessageSummary"
                         [customUpload]="true"
                         (uploadHandler)="onUpload($event)"
                         [accept]="accept"
-                        [fileLimit]="filesLimit"
                         [maxFileSize]="maxFileSize">
             <ng-template pTemplate="content">
               <p-progressBar *ngIf="uploadProgress" mode="indeterminate"
