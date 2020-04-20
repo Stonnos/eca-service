@@ -119,11 +119,11 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
         classifiersConfiguration.setBuildIn(false);
         classifiersConfigurationRepository.save(classifiersConfiguration);
         AdaBoostOptions adaBoostOptions = TestHelperUtils.createAdaBoostOptions();
-        classifierOptionsService.saveClassifierOptions(classifiersConfiguration.getId(), adaBoostOptions);
-        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
-                classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration);
-        assertThat(classifierOptionsDatabaseModels).hasSize(1);
-        ClassifierOptionsDatabaseModel actual = classifierOptionsDatabaseModels.iterator().next();
+        ClassifierOptionsDatabaseModel saved =
+                classifierOptionsService.saveClassifierOptions(classifiersConfiguration.getId(), adaBoostOptions);
+        ClassifierOptionsDatabaseModel actual =
+                classifierOptionsDatabaseModelRepository.findById(saved.getId()).orElse(null);
+        assertThat(actual).isNotNull();
         assertThat(actual.getOptionsName()).isEqualTo(adaBoostOptions.getClass().getSimpleName());
         assertThat(actual.getConfigMd5Hash()).isNotNull();
         assertThat(actual.getConfig()).isNotNull();

@@ -234,7 +234,8 @@ public class ClassifierOptionsControllerTest extends PageRequestControllerTest {
                 .file(createClassifierOptionsFileMock())
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
     }
 
     @Test
@@ -245,7 +246,8 @@ public class ClassifierOptionsControllerTest extends PageRequestControllerTest {
                 .file(multipartFile)
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
     }
 
     private MockMultipartFile createClassifierOptionsFileMock() throws JsonProcessingException {

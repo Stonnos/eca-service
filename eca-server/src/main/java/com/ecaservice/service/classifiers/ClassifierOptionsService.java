@@ -47,16 +47,19 @@ public class ClassifierOptionsService {
      * @param classifierOptions - classifier options
      */
     @Transactional
-    public void saveClassifierOptions(long configurationId, ClassifierOptions classifierOptions) {
+    public ClassifierOptionsDatabaseModel saveClassifierOptions(long configurationId,
+                                                                ClassifierOptions classifierOptions) {
         ClassifiersConfiguration classifiersConfiguration = getConfigurationById(configurationId);
         Assert.state(!classifiersConfiguration.isBuildIn(),
                 "Can't add classifier options to build in configuration!");
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
                 createClassifierOptionsDatabaseModel(classifierOptions, classifiersConfiguration);
         classifiersConfiguration.setUpdated(LocalDateTime.now());
-        classifierOptionsDatabaseModelRepository.save(classifierOptionsDatabaseModel);
+        ClassifierOptionsDatabaseModel saved =
+                classifierOptionsDatabaseModelRepository.save(classifierOptionsDatabaseModel);
         classifiersConfigurationRepository.save(classifiersConfiguration);
         log.info("New classifier options has been saved for configuration [{}]", configurationId);
+        return saved;
     }
 
     /**

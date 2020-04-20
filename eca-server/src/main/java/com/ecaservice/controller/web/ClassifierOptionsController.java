@@ -5,6 +5,7 @@ import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
+import com.ecaservice.web.dto.model.CreateClassifierOptionsResultDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import io.swagger.annotations.Api;
@@ -23,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
 
 import static com.ecaservice.util.ClassifierOptionsHelper.parseOptions;
@@ -90,7 +90,6 @@ public class ClassifierOptionsController {
      *
      * @param configurationId        - configuration id
      * @param classifiersOptionsFile - classifier options file
-     * @throws IOException in case of I/O errors
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
@@ -98,13 +97,26 @@ public class ClassifierOptionsController {
             notes = "Saves new classifier options for specified configuration"
     )
     @PostMapping(value = "/save")
-    public void save(@ApiParam(value = "Configuration id", required = true) @RequestParam long configurationId,
-                     @ApiParam(value = "Classifiers options file", required = true) @RequestParam
-                             MultipartFile classifiersOptionsFile) throws IOException {
+    public CreateClassifierOptionsResultDto save(
+            @ApiParam(value = "Configuration id", required = true) @RequestParam long configurationId,
+            @ApiParam(value = "Classifiers options file", required = true) @RequestParam
+                    MultipartFile classifiersOptionsFile) {
         log.info("Received request to save classifier options for configuration id [{}], options file [{}]",
                 configurationId, classifiersOptionsFile.getOriginalFilename());
-        ClassifierOptions classifierOptions = parseOptions(classifiersOptionsFile.getInputStream());
-        classifierOptionsService.saveClassifierOptions(configurationId, classifierOptions);
+        CreateClassifierOptionsResultDto classifierOptionsResultDto = new CreateClassifierOptionsResultDto();
+        classifierOptionsResultDto.setSourceFileName(classifiersOptionsFile.getOriginalFilename());
+        try {
+            ClassifierOptions classifierOptions = parseOptions(classifiersOptionsFile.getInputStream());
+            ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
+                    classifierOptionsService.saveClassifierOptions(configurationId, classifierOptions);
+            classifierOptionsResultDto.setId(classifierOptionsDatabaseModel.getId());
+            classifierOptionsResultDto.setSuccess(true);
+        } catch (Exception ex) {
+            log.error("There was an error while classifier options saving for configuration id [{}], options file [{}]",
+                    configurationId, classifiersOptionsFile.getOriginalFilename());
+            classifierOptionsResultDto.setErrorMessage(ex.getMessage());
+        }
+        return classifierOptionsResultDto;
     }
 
     /**
