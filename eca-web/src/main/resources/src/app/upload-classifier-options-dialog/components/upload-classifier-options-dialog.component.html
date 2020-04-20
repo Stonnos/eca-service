@@ -25,6 +25,7 @@
                         [customUpload]="true"
                         (uploadHandler)="onUpload($event)"
                         [accept]="accept"
+                        [fileLimit]="filesLimit"
                         [maxFileSize]="maxFileSize">
             <ng-template pTemplate="content">
               <table class="table w-100">
@@ -32,13 +33,13 @@
                 <tr *ngFor="let uploadFile of uploadedFiles">
                   <td>
                     <div class="file-name">
-                      {{ uploadFile.file.name }}
+                      {{ uploadFile.sourceFileName }}
                     </div>
                   </td>
                   <td>
-                    <span [class.upload-status-error]="uploadFile.status == 'Ошибка'"
-                          [class.upload-status-success]="uploadFile.status == 'Успешно'">
-                      {{ uploadFile.status }}
+                    <span [class.upload-status-error]="!uploadFile.success"
+                          [class.upload-status-success]="uploadFile.success">
+                      {{ uploadFile.success ? 'Успешно' : 'Ошибка' }}
                     </span>
                   </td>
                 </tr>
@@ -55,6 +56,7 @@
       pButton
       label="Закрыть"
       type="button"
+      [disabled]="uploadProgress"
       (click)="hide()"
       class="ml-auto">
     </button>

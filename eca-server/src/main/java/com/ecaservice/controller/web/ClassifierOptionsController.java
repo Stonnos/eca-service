@@ -106,6 +106,7 @@ public class ClassifierOptionsController {
         CreateClassifierOptionsResultDto classifierOptionsResultDto = new CreateClassifierOptionsResultDto();
         classifierOptionsResultDto.setSourceFileName(classifiersOptionsFile.getOriginalFilename());
         try {
+            Thread.sleep(5000L);
             ClassifierOptions classifierOptions = parseOptions(classifiersOptionsFile.getInputStream());
             ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
                     classifierOptionsService.saveClassifierOptions(configurationId, classifierOptions);

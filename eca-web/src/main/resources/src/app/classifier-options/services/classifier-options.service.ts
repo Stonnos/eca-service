@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
-  ClassifierOptionsDto, CreateExperimentResultDto,
+  ClassifierOptionsDto, CreateClassifierOptionsResultDto,
   PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -12,7 +12,7 @@ import { AuthenticationKeys } from "../../auth/model/auth.keys";
 @Injectable()
 export class ClassifierOptionsService {
 
-  private serviceUrl = ConfigService.appConfig.apiUrl;
+  private serviceUrl = ConfigService.appConfig.apiUrl + '/experiment/classifiers-options';
 
   public constructor(private http: HttpClient) {
   }
@@ -27,16 +27,16 @@ export class ClassifierOptionsService {
       .set('sortField', pageRequest.sortField)
       .set('ascending', pageRequest.ascending.toString());
     const options = { headers: headers, params: params };
-    return this.http.get<PageDto<ClassifierOptionsDto>>(this.serviceUrl + '/experiment/classifiers-options/page', options);
+    return this.http.get<PageDto<ClassifierOptionsDto>>(this.serviceUrl + '/page', options);
   }
 
-  public saveClassifierOptions(configurationId: number, file: File): Observable<any> {
+  public saveClassifierOptions(configurationId: number, file: File): Observable<CreateClassifierOptionsResultDto> {
     const headers = new HttpHeaders({
       'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
     const formData = new FormData();
     formData.append('classifiersOptionsFile', file, file.name);
     formData.append('configurationId', configurationId.toString());
-    return this.http.post<CreateExperimentResultDto>(this.serviceUrl + '/save', formData, { headers: headers });
+    return this.http.post<CreateClassifierOptionsResultDto>(this.serviceUrl + '/save', formData, { headers: headers });
   }
 }

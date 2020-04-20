@@ -1,8 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FileUpload } from "primeng/primeng";
 import { ClassifierOptionsService } from "../../classifier-options/services/classifier-options.service";
-import { UploadFileModel } from "../model/upload-file.model";
-import { UploadStatus } from "../model/upload-status.enum";
+import { CreateClassifierOptionsResultDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import { Observable } from "rxjs/internal/Observable";
+import { forkJoin } from 'rxjs';
+import { MessageService } from "primeng/api";
+import { finalize } from "rxjs/internal/operators";
 
 @Component({
   selector: 'app-upload-classifier-options-dialog',
@@ -13,6 +16,8 @@ export class UploadClassifierOptionsDialogComponent implements OnInit {
 
   //Max file size: 10kb
   public maxFileSize: number = 10000;
+  //Files limit
+  public filesLimit: number = 10;
   //Files formats
   public accept: string = '.json';
   public invalidFileSizeMessageSummary: string = 'Недопустимый размер файла,';
@@ -28,14 +33,17 @@ export class UploadClassifierOptionsDialogComponent implements OnInit {
   @ViewChild(FileUpload, { static: true })
   public fileUpload: FileUpload;
 
+  public uploadProgress: boolean = false;
+
   @Output()
   public visibilityChange: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output()
   public uploaded: EventEmitter<any> = new EventEmitter<any>();
 
-  public uploadedFiles: UploadFileModel[] = [];
+  public uploadedFiles: CreateClassifierOptionsResultDto[] = [];
 
-  public constructor(private classifierOptionsService: ClassifierOptionsService) {
+  public constructor(private classifierOptionsService: ClassifierOptionsService,
+                     private messageService: MessageService) {
   }
 
   public ngOnInit(): void {
@@ -48,11 +56,34 @@ export class UploadClassifierOptionsDialogComponent implements OnInit {
   }
 
   public onUpload(event: any): void {
+    this.uploadProgress = true;
     this.uploadedFiles = [];
+    const observables: Observable<CreateClassifierOptionsResultDto>[] = this.initializeObservables(event);
+    this.fileUpload.clear();
+    forkJoin(observables)
+      .pipe(
+        finalize(() => {
+          this.uploadProgress = false;
+        })
+      )
+      .subscribe({
+        next: (results: CreateClassifierOptionsResultDto[]) => {
+          this.uploadedFiles = results;
+          this.uploadProgress = false;
+          this.uploaded.emit();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+    });
+  }
+
+  private initializeObservables(event: any): Observable<CreateClassifierOptionsResultDto>[] {
+    const observables: Observable<CreateClassifierOptionsResultDto>[] = [];
     for (let fileName in event.files) {
       const file: File = event.files[fileName];
-      this.uploadedFiles.push(new UploadFileModel(file, UploadStatus.SUCCESS));
+      observables.push(this.classifierOptionsService.saveClassifierOptions(this.configurationId, file));
     }
-    this.fileUpload.clear();
+    return observables;
   }
 }
