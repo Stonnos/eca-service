@@ -3,7 +3,7 @@ import {
   ClassifiersConfigurationDto, PageDto,
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
-import { MenuItem, MessageService } from "primeng/api";
+import { MessageService } from "primeng/api";
 import { BaseListComponent } from "../../common/lists/base-list.component";
 import { Observable } from "rxjs/internal/Observable";
 import { ClassifiersConfigurationFields } from "../../common/util/field-names";
@@ -19,11 +19,6 @@ import { ClassifiersConfigurationModel } from "../../create-classifiers-configur
 })
 export class ClassifiersConfigurationsComponent extends BaseListComponent<ClassifiersConfigurationDto> implements OnInit {
 
-  public setActiveMenuItem: MenuItem;
-  public deleteMenuItem: MenuItem;
-  public renameMenuItem: MenuItem;
-  public uploadClassifiersOptionsMenu: MenuItem;
-  public optionsMenu: MenuItem[] = [];
   public selectedConfiguration: ClassifiersConfigurationDto;
 
   public classifiersConfiguration: ClassifiersConfigurationModel = new ClassifiersConfigurationModel();
@@ -43,7 +38,6 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   }
 
   public ngOnInit() {
-    this.initMenu();
   }
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<ClassifiersConfigurationDto>> {
@@ -56,18 +50,13 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
     super.setPage(pageDto);
   }
 
-  public showUploadClassifiersOptionsDialogVisibility(): void {
+  public showUploadClassifiersOptionsDialogVisibility(item?: ClassifiersConfigurationDto): void {
+    this.selectedConfiguration = item;
     this.uploadClassifiersOptionsDialogVisibility = true;
   }
 
   public onUploadClassifiersOptionsDialogVisibility(visible): void {
     this.uploadClassifiersOptionsDialogVisibility = visible;
-  }
-
-  public onMouseClickMenu(event: any, item: ClassifiersConfigurationDto): void {
-    this.selectedConfiguration = item;
-    this.setActiveMenuItem.visible = !item.active;
-    this.deleteMenuItem.visible = !item.buildIn && !item.active;
   }
 
   public showEditClassifiersConfigurationDialog(item?: ClassifiersConfigurationDto): void {
@@ -89,6 +78,14 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
     } else {
       this.createConfiguration(item);
     }
+  }
+
+  public onDeleteClassifiersConfiguration(item: ClassifiersConfigurationDto): void {
+    this.deleteConfiguration(item);
+  }
+
+  public onSetActiveClassifiersConfiguration(item: ClassifiersConfigurationDto): void {
+    this.setActiveConfiguration(item);
   }
 
   public isBlink(item: ClassifiersConfigurationDto): boolean {
@@ -146,9 +143,9 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
       });
   }
 
-  private deleteConfiguration(): void {
+  private deleteConfiguration(item: ClassifiersConfigurationDto): void {
     this.loading = true;
-    this.classifierOptionsService.deleteConfiguration(this.selectedConfiguration.id)
+    this.classifierOptionsService.deleteConfiguration(item.id)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -156,7 +153,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
       )
       .subscribe({
         next: () => {
-          this.messageService.add({ severity: 'success', summary: `Конфигурация ${this.selectedConfiguration.configurationName} была удалена`, detail: '' });
+          this.messageService.add({ severity: 'success', summary: `Конфигурация ${item.configurationName} была удалена`, detail: '' });
           this.refreshClassifiersConfigurationsPage();
         },
         error: (error) => {
@@ -165,9 +162,9 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
       });
   }
 
-  private setActiveConfiguration(): void {
+  private setActiveConfiguration(item: ClassifiersConfigurationDto): void {
     this.loading = true;
-    this.classifierOptionsService.setActive(this.selectedConfiguration.id)
+    this.classifierOptionsService.setActive(item.id)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -181,43 +178,5 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
       });
-  }
-
-  private initMenu() {
-    this.uploadClassifiersOptionsMenu = {
-      label: 'Классификаторы',
-      icon: 'pi pi-upload',
-      command: () => {
-        this.showUploadClassifiersOptionsDialogVisibility();
-      }
-    };
-    this.setActiveMenuItem = {
-      label: 'Сделать активной',
-      icon: 'pi pi-tag',
-      command: () => {
-        this.setActiveConfiguration();
-      }
-    };
-    this.deleteMenuItem = {
-      label: 'Удалить',
-      icon: 'pi pi-fw pi-trash',
-      command: () => {
-        this.deleteConfiguration();
-      }
-    };
-    this.renameMenuItem = {
-      label: 'Переименовать',
-      icon: 'pi pi-fw pi-pencil',
-      command: () => {
-        this.showEditClassifiersConfigurationDialog(this.selectedConfiguration);
-      }
-    };
-    this.optionsMenu = [
-      {
-        icon: 'pi pi-fw pi-cog',
-        styleClass: 'main-menu-item',
-        items: [this.renameMenuItem, this.deleteMenuItem, this.setActiveMenuItem, this.uploadClassifiersOptionsMenu]
-      }
-    ];
   }
 }

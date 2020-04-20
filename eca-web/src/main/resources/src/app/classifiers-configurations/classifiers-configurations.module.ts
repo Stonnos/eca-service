@@ -6,6 +6,7 @@ import { ClassifiersConfigurationsComponent } from "./components/classifiers-con
 import { ClassifiersConfigurationsService } from "./services/classifiers-configurations.service";
 import { CreateClassifiersConfigurationModule } from "../create-classifiers-configuration/create-classifiers-configuration.module";
 import { UploadClassifierOptionsDialogModule } from "../upload-classifier-options-dialog/upload-classifier-options-dialog.module";
+import { ClassifiersConfigurationMenuModule } from "../classifiers-configuration-menu/classifiers-configuration-menu.module";
 
 @NgModule({
   imports: [
@@ -13,6 +14,7 @@ import { UploadClassifierOptionsDialogModule } from "../upload-classifier-option
     FormsModule,
     UiComponentsModule,
     CreateClassifiersConfigurationModule,
+    ClassifiersConfigurationMenuModule,
     UploadClassifierOptionsDialogModule
   ],
   declarations: [

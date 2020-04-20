@@ -58,7 +58,13 @@
     <ng-template pTemplate="body" let-item>
       <tr [ngClass]="{'configuration-blink': isBlink(item)}">
         <td>
-          <p-menubar class="options-menu" [model]="optionsMenu" (click)="onMouseClickMenu($event, item)"></p-menubar>
+          <app-classifiers-configuration-menu
+            [classifiersConfiguration]="item"
+            (onDelete)="onDeleteClassifiersConfiguration($event)"
+            (onSetActive)="onSetActiveClassifiersConfiguration($event)"
+            (onUploadClassifiers)="showUploadClassifiersOptionsDialogVisibility($event)"
+            (onRename)="showEditClassifiersConfigurationDialog($event)">
+          </app-classifiers-configuration-menu>
         </td>
         <td *ngFor="let column of columns">
           <a class="link" [routerLink]="" *ngIf="isLink(column.name)">
