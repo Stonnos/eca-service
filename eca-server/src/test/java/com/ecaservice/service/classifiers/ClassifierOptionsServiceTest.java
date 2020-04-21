@@ -90,7 +90,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testDeleteOptions() {
+    public void testDeleteOptionsForActiveConfiguration() {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(false);
         classifierOptionsDatabaseModelRepository.save(
                 createClassifierOptionsDatabaseModel(OPTIONS, classifierOptionsDatabaseModel.getConfiguration()));
@@ -104,9 +104,29 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
         assertThat(actualConfiguration.getUpdated()).isNotNull();
     }
 
+    @Test
+    public void testDeleteOptionsForNotActiveConfiguration() {
+        ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
+        classifiersConfiguration.setActive(false);
+        classifiersConfiguration.setBuildIn(false);
+        classifiersConfigurationRepository.save(classifiersConfiguration);
+        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = classifierOptionsDatabaseModelRepository.save(
+                createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration));
+        classifierOptionsService.deleteOptions(classifierOptionsDatabaseModel.getId());
+        ClassifierOptionsDatabaseModel actualOptions =
+                classifierOptionsDatabaseModelRepository.findById(classifierOptionsDatabaseModel.getId()).orElse(null);
+        assertThat(actualOptions).isNull();
+        ClassifiersConfiguration actualConfiguration = classifiersConfigurationRepository.findById(
+                classifierOptionsDatabaseModel.getConfiguration().getId()).orElse(null);
+        assertThat(actualConfiguration).isNotNull();
+        assertThat(actualConfiguration.getUpdated()).isNotNull();
+    }
+
     @Test(expected = IllegalStateException.class)
     public void testDeleteOptionsForActiveConfigurationWithSingleOption() {
         ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
+        classifiersConfiguration.setActive(true);
+        classifiersConfiguration.setBuildIn(false);
         classifiersConfigurationRepository.save(classifiersConfiguration);
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
                 createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration);
