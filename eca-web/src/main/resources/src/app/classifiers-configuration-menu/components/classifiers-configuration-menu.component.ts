@@ -35,7 +35,7 @@ export class ClassifiersConfigurationMenuComponent implements OnInit {
 
   private initMenu() {
     this.uploadClassifiersOptionsMenu = {
-      label: 'Классификаторы',
+      label: ' Загрузить классификаторы',
       icon: 'pi pi-upload',
       styleClass: 'menu-item',
       visible: this.classifiersConfiguration && !this.classifiersConfiguration.buildIn,
