@@ -101,6 +101,9 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
         ClassifiersConfiguration activeConfiguration =
                 classifiersConfigurationRepository.findFirstByActiveTrue().orElseThrow(
                         () -> new IllegalStateException("Can't find previous active classifiers configuration!"));
+        Assert.state(classifierOptionsDatabaseModelRepository.countByConfiguration(classifiersConfiguration) > 0L,
+                String.format("Can't set configuration [%d] as active, because its has no one classifiers options!",
+                        classifiersConfiguration.getId()));
         if (!classifiersConfiguration.getId().equals(activeConfiguration.getId())) {
             activeConfiguration.setActive(false);
             classifiersConfiguration.setActive(true);

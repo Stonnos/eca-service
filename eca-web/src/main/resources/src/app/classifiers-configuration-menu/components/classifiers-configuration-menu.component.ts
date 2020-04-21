@@ -44,7 +44,7 @@ export class ClassifiersConfigurationMenuComponent implements OnInit {
     this.setActiveMenuItem = {
       label: 'Сделать активной',
       icon: 'pi pi-tag',
-      visible: !this.classifiersConfiguration.active,
+      visible: !this.classifiersConfiguration.active && this.classifiersConfiguration.classifiersOptionsCount > 0,
       command: () => {
         this.onSetActive.emit(this.classifiersConfiguration);
       }

@@ -150,6 +150,17 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         assertThat(actualNotActive.isActive()).isNotNull();
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void testSetActiveConfigurationWithEmptyClassifiersOptions() {
+        saveConfiguration(true, false);
+        ClassifiersConfiguration newActive = new ClassifiersConfiguration();
+        newActive.setBuildIn(false);
+        newActive.setActive(false);
+        newActive.setConfigurationName(TEST_CONFIGURATION_NAME);
+        classifiersConfigurationRepository.save(newActive);
+        classifiersConfigurationService.setActive(newActive.getId());
+    }
+
     @Test(expected = EntityNotFoundException.class)
     public void testGetClassifiersConfigurationDetailsNotFound() {
         classifiersConfigurationService.getClassifiersConfigurationDetails(ID);
