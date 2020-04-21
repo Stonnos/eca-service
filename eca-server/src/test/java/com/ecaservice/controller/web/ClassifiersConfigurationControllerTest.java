@@ -8,6 +8,7 @@ import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
+import com.ecaservice.web.dto.util.FieldConstraints;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -239,6 +240,17 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
     }
 
     @Test
+    public void testSaveClassifiersConfigurationWithLargeName() throws Exception {
+        CreateClassifiersConfigurationDto createClassifiersConfigurationDto = new CreateClassifiersConfigurationDto(
+                StringUtils.repeat('Q', FieldConstraints.CONFIGURATION_NAME_MAX_LENGTH + 1));
+        mockMvc.perform(post(SAVE_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .content(objectMapper.writeValueAsString(createClassifiersConfigurationDto))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void testSaveClassifiersConfigurationOk() throws Exception {
         CreateClassifiersConfigurationDto createClassifiersConfigurationDto =
                 new CreateClassifiersConfigurationDto(CONFIGURATION_NAME);
@@ -270,6 +282,17 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
     public void testUpdateClassifiersConfigurationWithEmptyName() throws Exception {
         UpdateClassifiersConfigurationDto updateClassifiersConfigurationDto =
                 new UpdateClassifiersConfigurationDto(ID, StringUtils.EMPTY);
+        mockMvc.perform(put(UPDATE_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .content(objectMapper.writeValueAsString(updateClassifiersConfigurationDto))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testUpdateClassifiersConfigurationWithLargeName() throws Exception {
+        UpdateClassifiersConfigurationDto updateClassifiersConfigurationDto = new UpdateClassifiersConfigurationDto(ID,
+                StringUtils.repeat('Q', FieldConstraints.CONFIGURATION_NAME_MAX_LENGTH + 1));
         mockMvc.perform(put(UPDATE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .content(objectMapper.writeValueAsString(updateClassifiersConfigurationDto))
