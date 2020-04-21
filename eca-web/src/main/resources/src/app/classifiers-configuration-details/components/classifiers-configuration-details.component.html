@@ -11,6 +11,22 @@
     [loading]="loading"
     (onLazyLoad)="onLazyLoad($event)">
 
+    <ng-template pTemplate="caption">
+      <div class="justify-content-start align-items-center d-flex">
+        Конфигурация - {{ classifiersConfiguration?.configurationName }}
+        <div *ngIf="classifiersConfiguration?.buildIn" class="ml-2 build-in-status bg-secondary text-white text-bold">
+          BUILD IN
+        </div>
+        <div *ngIf="classifiersConfiguration?.active" class="ml-2 active-status bg-info text-white text-bold">
+          ACTIVE
+        </div>
+        <app-classifiers-configuration-menu
+          class="ml-2 d-inline-block"
+          [classifiersConfiguration]="classifiersConfiguration">
+        </app-classifiers-configuration-menu>
+      </div>
+    </ng-template>
+
     <ng-template pTemplate="header">
       <tr>
         <th *ngFor="let column of columns" [pSortableColumn]="column.name">

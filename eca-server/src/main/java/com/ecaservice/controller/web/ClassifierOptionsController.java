@@ -73,7 +73,7 @@ public class ClassifierOptionsController {
     )
     @GetMapping(value = "/page")
     public PageDto<ClassifierOptionsDto> getClassifiersOptionsPage(
-            @ApiParam(value = "Configuration id", required = true) @RequestParam long configurationId,
+            @ApiParam(value = "Configuration id", example = "1", required = true) @RequestParam long configurationId,
             @Valid PageRequestDto pageRequestDto) {
         log.info("Received classifiers options page request: {}, configuration id [{}]", pageRequestDto,
                 configurationId);
@@ -98,7 +98,7 @@ public class ClassifierOptionsController {
     )
     @PostMapping(value = "/save")
     public CreateClassifierOptionsResultDto save(
-            @ApiParam(value = "Configuration id", required = true) @RequestParam long configurationId,
+            @ApiParam(value = "Configuration id", example = "1", required = true) @RequestParam long configurationId,
             @ApiParam(value = "Classifiers options file", required = true) @RequestParam
                     MultipartFile classifiersOptionsFile) {
         log.info("Received request to save classifier options for configuration id [{}], options file [{}]",

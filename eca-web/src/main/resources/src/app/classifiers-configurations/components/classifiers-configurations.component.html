@@ -67,7 +67,7 @@
           </app-classifiers-configuration-menu>
         </td>
         <td *ngFor="let column of columns">
-          <a class="link" [routerLink]="" *ngIf="isLink(column.name)">
+          <a class="link" [routerLink]="" *ngIf="isLink(column.name)" (click)="onLink($event, column.name, item)">
             {{ getColumnValue(column.name, item) }}
           </a>
           <span *ngIf="!isLink(column.name)">{{ getColumnValue(column.name, item) }}</span>
@@ -88,7 +88,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage" *ngIf="items.length == 0">
       <tr>
-        <td [attr.colspan]="columns.length" class="text-center">
+        <td [attr.colspan]="columns.length + 1" class="text-center">
           Не найдено ни одной конфигурации
         </td>
       </tr>

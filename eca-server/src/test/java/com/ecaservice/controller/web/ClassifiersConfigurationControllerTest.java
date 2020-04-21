@@ -49,7 +49,7 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
 
     private static final String BASE_URL = "/experiment/classifiers-configurations";
     private static final String LIST_URL = BASE_URL + "/list";
-    private static final String DETAIL_URL = BASE_URL + "/details";
+    private static final String DETAIL_URL = BASE_URL + "/details/{id}";
     private static final String DELETE_URL = BASE_URL + "/delete";
     private static final String SET_ACTIVE_URL = BASE_URL + "/set-active";
     private static final String SAVE_URL = BASE_URL + "/save";
@@ -114,16 +114,17 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
 
     @Test
     public void testGetClassifiersConfigurationDetailsUnauthorized() throws Exception {
-        mockMvc.perform(get(DETAIL_URL)
-                .param(ID_PARAM, String.valueOf(ID)))
+        mockMvc.perform(get(DETAIL_URL, ID))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testGetClassifiersConfigurationDetailsWithNullId() throws Exception {
-        mockMvc.perform(get(DETAIL_URL)
+    public void testGetClassifiersConfigurationDetailsNotFound() throws Exception {
+        doThrow(new EntityNotFoundException()).when(classifiersConfigurationService).getClassifiersConfigurationDetails(
+                ID);
+        mockMvc.perform(get(DETAIL_URL, ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -131,9 +132,8 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
         ClassifiersConfigurationDto classifiersConfigurationDto = createClassifiersConfigurationDto();
         when(classifiersConfigurationService.getClassifiersConfigurationDetails(ID)).thenReturn(
                 classifiersConfigurationDto);
-        mockMvc.perform(get(DETAIL_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(ID_PARAM, String.valueOf(ID)))
+        mockMvc.perform(get(DETAIL_URL, ID)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(content().json(objectMapper.writeValueAsString(classifiersConfigurationDto)));

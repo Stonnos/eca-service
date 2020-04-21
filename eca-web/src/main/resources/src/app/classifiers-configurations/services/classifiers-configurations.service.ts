@@ -28,6 +28,14 @@ export class ClassifiersConfigurationsService {
     return this.http.get<PageDto<ClassifiersConfigurationDto>>(this.serviceUrl + '/list', options);
   }
 
+  public getClassifiersConfigurationDetails(configurationId: number): Observable<ClassifiersConfigurationDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+    });
+    return this.http.get<ClassifiersConfigurationDto>(this.serviceUrl + '/details/' + configurationId.toString(), { headers: headers });
+  }
+
   public saveConfiguration(configuration: CreateClassifiersConfigurationDto): Observable<ClassifiersConfigurationDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',

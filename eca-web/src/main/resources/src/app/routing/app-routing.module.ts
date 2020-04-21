@@ -8,6 +8,7 @@ import { ExperimentTabsComponent } from "../experiments-tabs/components/experime
 import { EvaluationLogDetailsComponent } from "../evaluation-log-details/components/evaluation-log-details.component";
 import { ExperimentDetailsComponent } from "../experiment-details/components/experiment-details.component";
 import { ExperimentResultsDetailsComponent } from "../experiment-results-details/components/experiment-results-details.component";
+import { ClassifiersConfigurationDetailsComponent } from "../classifiers-configuration-details/components/classifiers-configuration-details.component";
 
 const routes: Routes = [
   {
@@ -38,6 +39,10 @@ const routes: Routes = [
         path: 'experiments/results/details/:id',
         component: ExperimentResultsDetailsComponent
       },
+      {
+        path: 'experiments/classifiers-configuration/details/:id',
+        component: ClassifiersConfigurationDetailsComponent
+      }
     ]
   },
   {

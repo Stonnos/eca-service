@@ -8,24 +8,23 @@ import {
 import { Observable } from "rxjs/internal/Observable";
 import { ConfigService } from "../../config.service";
 import { AuthenticationKeys } from "../../auth/model/auth.keys";
+import { PageRequestService } from "../../common/services/page-request.service";
 
 @Injectable()
 export class ClassifierOptionsService {
 
   private serviceUrl = ConfigService.appConfig.apiUrl + '/experiment/classifiers-options';
 
-  public constructor(private http: HttpClient) {
+  public constructor(private http: HttpClient, private pageRequestService: PageRequestService) {
   }
 
-  public getClassifiersOptions(pageRequest: PageRequestDto): Observable<PageDto<ClassifierOptionsDto>> {
+  public getClassifiersOptions(configurationId: number, pageRequest: PageRequestDto): Observable<PageDto<ClassifierOptionsDto>> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
-    let params = new HttpParams().set('page', pageRequest.page.toString())
-      .set('size', pageRequest.size.toString())
-      .set('sortField', pageRequest.sortField)
-      .set('ascending', pageRequest.ascending.toString());
+    const params: HttpParams = this.pageRequestService.convertToHttpRequestParams(pageRequest)
+      .set('configurationId', configurationId.toString());
     const options = { headers: headers, params: params };
     return this.http.get<PageDto<ClassifierOptionsDto>>(this.serviceUrl + '/page', options);
   }

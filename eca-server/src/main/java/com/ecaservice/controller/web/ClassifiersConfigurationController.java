@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -67,9 +68,9 @@ public class ClassifiersConfigurationController {
             value = "Gets classifiers configuration details",
             notes = "Gets classifiers configuration details"
     )
-    @GetMapping(value = "/details")
+    @GetMapping(value = "/details/{id}")
     public ClassifiersConfigurationDto getClassifiersConfigurationDetails(
-            @ApiParam(value = "Configuration id", example = "1", required = true) @RequestParam long id) {
+            @ApiParam(value = "Configuration id", example = "1", required = true) @PathVariable Long id) {
         log.info("Gets classifier configuration details by id {}", id);
         return classifiersConfigurationService.getClassifiersConfigurationDetails(id);
     }

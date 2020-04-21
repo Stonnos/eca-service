@@ -284,7 +284,8 @@ public class ExperimentController {
             notes = "Checks experiment results manual sending status"
     )
     @GetMapping(value = "/ers-report/sending-status/{requestId}")
-    public ResponseEntity<SendingStatus> checkExperimentResultsSendingStatus(@PathVariable String requestId) {
+    public ResponseEntity<SendingStatus> checkExperimentResultsSendingStatus(
+            @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
         Experiment experiment = experimentRepository.findByRequestId(requestId);
         if (experiment == null) {
             log.error(EXPERIMENT_NOT_FOUND_FORMAT, requestId);

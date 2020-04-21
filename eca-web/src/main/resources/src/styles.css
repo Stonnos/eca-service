@@ -56,3 +56,17 @@
   content: ' *';
   color: red;
 }
+
+.build-in-status {
+  border-radius: 4px;
+  width: 100px;
+  text-align: center;
+  display: inline-block;
+}
+
+.active-status {
+  border-radius: 4px;
+  width: 100px;
+  text-align: center;
+  display: inline-block;
+}

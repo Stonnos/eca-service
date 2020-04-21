@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FileUpload } from "primeng/primeng";
-import { ClassifierOptionsService } from "../../classifier-options/services/classifier-options.service";
 import { CreateClassifierOptionsResultDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { forkJoin } from 'rxjs';
 import { MessageService } from "primeng/api";
 import { finalize } from "rxjs/internal/operators";
+import { ClassifierOptionsService } from "../../classifiers-configuration-details/services/classifier-options.service";
 
 @Component({
   selector: 'app-upload-classifier-options-dialog',

@@ -19,12 +19,6 @@ import java.time.LocalDateTime;
 public class ClassifierOptionsDto {
 
     /**
-     * Config version
-     */
-    @ApiModelProperty(value = "Options version", required = true)
-    private int version;
-
-    /**
      * Options name
      */
     @ApiModelProperty(value = "Options name", required = true)

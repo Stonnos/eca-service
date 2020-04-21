@@ -11,6 +11,8 @@ import { FieldService } from "../../common/services/field.service";
 import { ClassifiersConfigurationsService } from "../services/classifiers-configurations.service";
 import { finalize } from "rxjs/internal/operators";
 import { ClassifiersConfigurationModel } from "../../create-classifiers-configuration/model/classifiers-configuration.model";
+import { Router } from "@angular/router";
+import { RouterPaths } from "../../routing/router-paths";
 
 @Component({
   selector: 'app-classifiers-configurations',
@@ -30,7 +32,8 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   public constructor(private injector: Injector,
                      private classifierOptionsService: ClassifiersConfigurationsService,
-                     private confirmationService: ConfirmationService) {
+                     private confirmationService: ConfirmationService,
+                     private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ClassifiersConfigurationFields.CREATED;
     this.notSortableColumns = [ClassifiersConfigurationFields.CLASSIFIERS_OPTIONS_COUNT];
@@ -49,6 +52,14 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
     this.blinkConfigurationId = this.lastCreatedConfigurationId;
     this.lastCreatedConfigurationId = null;
     super.setPage(pageDto);
+  }
+
+  public onLink(event: any, column: string, item: ClassifiersConfigurationDto): void {
+    if (column === ClassifiersConfigurationFields.CONFIGURATION_NAME) {
+      this.router.navigate([RouterPaths.CLASSIFIERS_CONFIGURATION_DETAILS_URL, item.id]);
+    } else {
+      this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${column} as link`});
+    }
   }
 
   public showUploadClassifiersOptionsDialogVisibility(item?: ClassifiersConfigurationDto): void {

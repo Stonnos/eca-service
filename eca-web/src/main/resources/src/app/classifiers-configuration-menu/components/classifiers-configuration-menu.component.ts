@@ -37,7 +37,7 @@ export class ClassifiersConfigurationMenuComponent implements OnInit {
     this.uploadClassifiersOptionsMenu = {
       label: 'Классификаторы',
       icon: 'pi pi-upload',
-      visible: !this.classifiersConfiguration.buildIn,
+      visible: this.classifiersConfiguration && !this.classifiersConfiguration.buildIn,
       command: () => {
         this.onUploadClassifiers.emit(this.classifiersConfiguration);
       }
@@ -45,7 +45,7 @@ export class ClassifiersConfigurationMenuComponent implements OnInit {
     this.setActiveMenuItem = {
       label: 'Сделать активной',
       icon: 'pi pi-tag',
-      visible: !this.classifiersConfiguration.active && this.classifiersConfiguration.classifiersOptionsCount > 0,
+      visible: this.classifiersConfiguration && !this.classifiersConfiguration.active && this.classifiersConfiguration.classifiersOptionsCount > 0,
       command: () => {
         this.onSetActive.emit(this.classifiersConfiguration);
       }
@@ -53,7 +53,7 @@ export class ClassifiersConfigurationMenuComponent implements OnInit {
     this.deleteMenuItem = {
       label: 'Удалить',
       icon: 'pi pi-fw pi-trash',
-      visible: !this.classifiersConfiguration.buildIn && !this.classifiersConfiguration.active,
+      visible: this.classifiersConfiguration && !this.classifiersConfiguration.buildIn && !this.classifiersConfiguration.active,
       command: () => {
         this.onDelete.emit(this.classifiersConfiguration);
       }
