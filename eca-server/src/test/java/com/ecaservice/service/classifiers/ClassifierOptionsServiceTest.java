@@ -92,6 +92,8 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     @Test
     public void testDeleteOptions() {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(false);
+        classifierOptionsDatabaseModelRepository.save(
+                createClassifierOptionsDatabaseModel(OPTIONS, classifierOptionsDatabaseModel.getConfiguration()));
         classifierOptionsService.deleteOptions(classifierOptionsDatabaseModel.getId());
         ClassifierOptionsDatabaseModel actualOptions =
                 classifierOptionsDatabaseModelRepository.findById(classifierOptionsDatabaseModel.getId()).orElse(null);
@@ -100,6 +102,16 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
                 classifierOptionsDatabaseModel.getConfiguration().getId()).orElse(null);
         assertThat(actualConfiguration).isNotNull();
         assertThat(actualConfiguration.getUpdated()).isNotNull();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testDeleteOptionsForActiveConfigurationWithSingleOption() {
+        ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
+        classifiersConfigurationRepository.save(classifiersConfiguration);
+        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
+                createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration);
+        classifierOptionsDatabaseModelRepository.save(classifierOptionsDatabaseModel);
+        classifierOptionsService.deleteOptions(classifierOptionsDatabaseModel.getId());
     }
 
     @Test(expected = IllegalStateException.class)

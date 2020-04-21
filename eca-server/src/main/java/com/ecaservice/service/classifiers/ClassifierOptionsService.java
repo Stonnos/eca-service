@@ -75,6 +75,9 @@ public class ClassifierOptionsService {
         ClassifiersConfiguration classifiersConfiguration = classifierOptionsDatabaseModel.getConfiguration();
         Assert.state(!classifiersConfiguration.isBuildIn(),
                 "Can't delete classifier options from build in configuration!");
+        Assert.state(hasMoreThanOneOptionsForActiveConfiguration(classifiersConfiguration), String.format(
+                "Can't delete classifier options [%d], because classifiers configuration is active and has only one classifier options!",
+                classifierOptionsDatabaseModel.getId()));
         classifierOptionsDatabaseModelRepository.delete(classifierOptionsDatabaseModel);
         classifiersConfiguration.setUpdated(LocalDateTime.now());
         classifiersConfigurationRepository.save(classifiersConfiguration);
@@ -147,4 +150,10 @@ public class ClassifierOptionsService {
         return classifiersConfigurationRepository.findById(configurationId).orElseThrow(
                 () -> new EntityNotFoundException(ClassifiersConfiguration.class, configurationId));
     }
+
+    private boolean hasMoreThanOneOptionsForActiveConfiguration(ClassifiersConfiguration classifiersConfiguration) {
+        return !classifiersConfiguration.isActive() ||
+                classifierOptionsDatabaseModelRepository.countByConfiguration(classifiersConfiguration) > 1L;
+    }
+
 }
