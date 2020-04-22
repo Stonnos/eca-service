@@ -58,7 +58,8 @@ public class ClassifierOptionsService {
         ClassifierOptionsDatabaseModel saved =
                 classifierOptionsDatabaseModelRepository.save(classifierOptionsDatabaseModel);
         classifiersConfigurationRepository.save(classifiersConfiguration);
-        log.info("New classifier options has been saved for configuration [{}]", configurationId);
+        log.info("New classifier options [{}, id {}] has been saved for configuration [{}]", saved.getOptionsName(),
+                saved.getId(), configurationId);
         return saved;
     }
 
