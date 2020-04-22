@@ -108,7 +108,12 @@ public class ClassifierOptionsService {
         ClassifiersConfiguration activeConfiguration =
                 classifiersConfigurationRepository.findFirstByActiveTrue().orElseThrow(
                         () -> new IllegalStateException("Can't find active classifiers configuration!"));
-        return classifierOptionsDatabaseModelRepository.findAllByConfiguration(activeConfiguration);
+        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
+                classifierOptionsDatabaseModelRepository.findAllByConfiguration(activeConfiguration);
+        log.info("Fetched active classifiers configuration with name [{}], id [{}], options size [{}]!",
+                activeConfiguration.getConfigurationName(), activeConfiguration.getId(),
+                classifierOptionsDatabaseModels.size());
+        return classifierOptionsDatabaseModels;
     }
 
     /**

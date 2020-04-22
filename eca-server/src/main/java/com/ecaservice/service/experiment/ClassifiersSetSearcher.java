@@ -89,9 +89,8 @@ public class ClassifiersSetSearcher {
         List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
                 classifierOptionsService.getActiveClassifiersOptions();
         if (CollectionUtils.isEmpty(classifierOptionsDatabaseModels)) {
-            throw new ExperimentException("Classifiers options config hasn't been found.");
+            throw new ExperimentException("Expected not empty classifiers options list.");
         }
-        log.info("{} classifiers configs has been found.", classifierOptionsDatabaseModels.size());
         List<AbstractClassifier> classifierList = new ArrayList<>(classifierOptionsDatabaseModels.size());
         try {
             for (ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel : classifierOptionsDatabaseModels) {
