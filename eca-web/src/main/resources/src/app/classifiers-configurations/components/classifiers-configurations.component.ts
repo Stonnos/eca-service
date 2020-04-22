@@ -125,7 +125,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   }
 
   private refreshClassifiersConfigurationsPage(): void {
-    this.performPageRequest(0, this.pageSize, this.defaultSortField, false);
+    this.performPageRequest(0, this.pageSize, ClassifiersConfigurationFields.CREATED, false);
   }
 
   private createConfiguration(item: ClassifiersConfigurationModel): void {

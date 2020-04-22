@@ -38,4 +38,13 @@ export class ClassifierOptionsService {
     formData.append('configurationId', configurationId.toString());
     return this.http.post<CreateClassifierOptionsResultDto>(this.serviceUrl + '/save', formData, { headers: headers });
   }
+
+  public deleteClassifierOptions(id: number): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+    });
+    let params = new HttpParams().set('id', id.toString());
+    const options = { headers: headers, params: params };
+    return this.http.delete(this.serviceUrl + '/delete', options);
+  }
 }

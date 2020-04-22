@@ -191,7 +191,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
             this.messageService.add({ severity: 'success', summary: `Эксперимент был успешно создан`, detail: '' });
             this.lastCreatedExperimentRequestId = result.requestId;
             this.getRequestStatusesStatistics();
-            this.performPageRequest(0, this.pageSize, this.defaultSortField, false);
+            this.performPageRequest(0, this.pageSize, ExperimentFields.CREATION_DATE, false);
           } else {
             this.messageService.add({ severity: 'error', summary: 'Не удалось создать эксперимент', detail: result.errorMessage });
           }

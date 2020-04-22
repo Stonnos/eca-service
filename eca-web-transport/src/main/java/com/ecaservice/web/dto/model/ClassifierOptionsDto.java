@@ -18,6 +18,9 @@ import java.time.LocalDateTime;
 @ApiModel(description = "Classifier json input options model")
 public class ClassifierOptionsDto {
 
+    @ApiModelProperty(value = "Options id")
+    private Long id;
+
     /**
      * Options name
      */

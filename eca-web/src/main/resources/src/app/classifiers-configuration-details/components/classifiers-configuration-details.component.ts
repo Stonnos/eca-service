@@ -15,6 +15,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ClassifiersConfigurationsService } from "../../classifiers-configurations/services/classifiers-configurations.service";
 import { ClassifiersConfigurationModel } from "../../create-classifiers-configuration/model/classifiers-configuration.model";
 import { ExperimentTabUtils } from "../../experiments-tabs/model/experiment-tab.utils";
+import {finalize} from "rxjs/internal/operators";
 
 declare var Prism: any;
 
@@ -80,6 +81,14 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
     return Prism.highlight(json, Prism.languages['json']);
   }
 
+  public isDeleteAllowed(): boolean {
+    return this.classifiersConfiguration && !this.classifiersConfiguration.buildIn && this.hasMoreThanOneOptionsForActiveConfiguration();
+  }
+
+  public onDeleteClassifierOptions(event: any, item: ClassifierOptionsDto): void {
+    this.deleteClassifierOptions(item);
+  }
+
   public onUploadClassifiersOptionsDialogVisibility(visible): void {
     this.uploadClassifiersOptionsDialogVisibility = visible;
   }
@@ -122,7 +131,7 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
   }
 
   private refreshClassifiersOptionsPage(): void {
-    this.performPageRequest(0, this.pageSize, this.defaultSortField, false);
+    this.performPageRequest(0, this.pageSize, ClassifierOptionsFields.CREATION_DATE, false);
   }
 
   private deleteConfiguration(item: ClassifiersConfigurationDto): void {
@@ -150,7 +159,7 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
       });
   }
 
-  public updateConfiguration(item: ClassifiersConfigurationModel): void {
+  private updateConfiguration(item: ClassifiersConfigurationModel): void {
     this.classifiersConfigurationService
       .updateConfiguration({ id: item.id, configurationName: item.configurationName })
       .subscribe({
@@ -161,6 +170,29 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
       });
+  }
+
+  private deleteClassifierOptions(item: ClassifierOptionsDto): void {
+    this.loading = true;
+    this.classifierOptionsService.deleteClassifierOptions(item.id)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.messageService.add({ severity: 'success', summary: `Удалена настройка ${item.optionsName}`, detail: '' });
+          this.refreshClassifiersOptionsPage();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  public hasMoreThanOneOptionsForActiveConfiguration(): boolean {
+    return !this.classifiersConfiguration.active || this.classifiersConfiguration.classifiersOptionsCount> 1;
   }
 
   private initColumns() {

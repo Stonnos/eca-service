@@ -1,0 +1,18 @@
+.options-table::ng-deep {
+
+  .ui-table-tbody > tr > td {
+    &:nth-child(3) {
+      width: 100px;
+    }
+  }
+
+  .ui-table-thead > tr > th {
+    &:nth-child(3) {
+      width: 100px;
+    }
+  }
+}
+
+.delete-button {
+  border-radius: 50%;
+}

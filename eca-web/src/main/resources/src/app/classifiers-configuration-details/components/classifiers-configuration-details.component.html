@@ -1,5 +1,6 @@
 <div class="container-fluid mb-5">
   <p-table
+    class="options-table"
     [columns]="columns"
     [value]="items"
     [rows]="pageSize"
@@ -36,6 +37,7 @@
           {{ column.label }}
           <p-sortIcon [field]="column.name"></p-sortIcon>
         </th>
+        <th></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-item>
@@ -46,11 +48,19 @@
           </a>
           <span *ngIf="!isLink(column.name)">{{ getColumnValue(column.name, item) }}</span>
         </td>
+        <td>
+          <button pButton
+                  type="button"
+                  class="ui-button-secondary delete-button"
+                  icon="pi pi-fw pi-trash" [disabled]="!isDeleteAllowed()"
+                  (click)="onDeleteClassifierOptions($event, item)">
+          </button>
+        </td>
       </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage" *ngIf="items.length == 0">
       <tr>
-        <td [attr.colspan]="columns.length" class="text-center">
+        <td [attr.colspan]="columns.length + 1" class="text-center">
           Не найдено ни одной настройки
         </td>
       </tr>
