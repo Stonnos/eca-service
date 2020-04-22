@@ -24,7 +24,8 @@
           [classifiersConfiguration]="classifiersConfiguration"
           (onSetActive)="onSetActiveClassifiersConfiguration($event)"
           (onDelete)="onDeleteClassifiersConfiguration($event)"
-          (onUploadClassifiers)="onUploadedClassifiersOptions($event)">
+          (onRename)="showEditClassifiersConfigurationDialog($event)"
+          (onUploadClassifiers)="showUploadClassifiersOptionsDialogVisibility($event)">
         </app-classifiers-configuration-menu>
       </div>
     </ng-template>
@@ -61,3 +62,17 @@
     </p-panel>
   </p-overlayPanel>
 </div>
+
+<app-create-classifiers-configuration
+  [item]="editClassifiersConfiguration"
+  [visible]="editClassifiersConfigurationDialogVisibility"
+  (visibilityChange)="onEditClassifiersConfigurationDialogVisibility($event)"
+  (itemEvent)="onEditClassifiersConfiguration($event)">
+</app-create-classifiers-configuration>
+
+<app-upload-classifier-options-dialog
+  [configurationId]="classifiersConfiguration?.id"
+  [visible]="uploadClassifiersOptionsDialogVisibility"
+  (visibilityChange)="onUploadClassifiersOptionsDialogVisibility($event)"
+  (uploaded)="onUploadedClassifiersOptions($event)">
+</app-upload-classifier-options-dialog>

@@ -5,13 +5,17 @@ import { UiComponentsModule } from "../ui-components.module";
 import { ClassifierOptionsService } from "./services/classifier-options.service";
 import { ClassifiersConfigurationDetailsComponent } from "./components/classifiers-configuration-details.component";
 import { ClassifiersConfigurationMenuModule } from "../classifiers-configuration-menu/classifiers-configuration-menu.module";
+import { CreateClassifiersConfigurationModule } from "../create-classifiers-configuration/create-classifiers-configuration.module";
+import { UploadClassifierOptionsDialogModule } from "../upload-classifier-options-dialog/upload-classifier-options-dialog.module";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     UiComponentsModule,
-    ClassifiersConfigurationMenuModule
+    ClassifiersConfigurationMenuModule,
+    CreateClassifiersConfigurationModule,
+    UploadClassifierOptionsDialogModule
   ],
   declarations: [
     ClassifiersConfigurationDetailsComponent

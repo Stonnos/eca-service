@@ -73,7 +73,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   public showEditClassifiersConfigurationDialog(item?: ClassifiersConfigurationDto): void {
     if (item && item.id) {
-      this.classifiersConfiguration = { id: item.id, configurationName: item.configurationName };
+      this.classifiersConfiguration = new ClassifiersConfigurationModel(item.id, item.configurationName);
     } else {
       this.classifiersConfiguration = new ClassifiersConfigurationModel();
     }

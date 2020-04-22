@@ -13,6 +13,7 @@ import { ClassifierOptionsFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ClassifiersConfigurationsService } from "../../classifiers-configurations/services/classifiers-configurations.service";
+import { ClassifiersConfigurationModel } from "../../create-classifiers-configuration/model/classifiers-configuration.model";
 
 declare var Prism: any;
 
@@ -27,7 +28,12 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
 
   public classifiersConfiguration: ClassifiersConfigurationDto;
 
+  public editClassifiersConfiguration: ClassifiersConfigurationModel = new ClassifiersConfigurationModel();
+
   public selectedOptions: ClassifierOptionsDto;
+
+  public editClassifiersConfigurationDialogVisibility: boolean = false;
+  public uploadClassifiersOptionsDialogVisibility: boolean = false;
 
   public constructor(private injector: Injector,
                      private classifierOptionsService: ClassifierOptionsService,
@@ -73,6 +79,23 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
     return Prism.highlight(json, Prism.languages['json']);
   }
 
+  public onUploadClassifiersOptionsDialogVisibility(visible): void {
+    this.uploadClassifiersOptionsDialogVisibility = visible;
+  }
+
+  public showUploadClassifiersOptionsDialogVisibility(item: ClassifiersConfigurationDto): void {
+    this.uploadClassifiersOptionsDialogVisibility = true;
+  }
+
+  public onEditClassifiersConfigurationDialogVisibility(visible): void {
+    this.editClassifiersConfigurationDialogVisibility = visible;
+  }
+
+  public showEditClassifiersConfigurationDialog(item: ClassifiersConfigurationDto): void {
+    this.editClassifiersConfiguration = new ClassifiersConfigurationModel(item.id, item.configurationName);
+    this.editClassifiersConfigurationDialogVisibility = true;
+  }
+
   public onDeleteClassifiersConfiguration(item: ClassifiersConfigurationDto): void {
     this.confirmationService.confirm({
       message: 'Вы уверены?',
@@ -89,7 +112,12 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
   }
 
   public onUploadedClassifiersOptions(event): void {
+    this.getClassifiersConfigurationDetails();
     this.refreshClassifiersOptionsPage();
+  }
+
+  public onEditClassifiersConfiguration(item: ClassifiersConfigurationModel): void {
+    this.updateConfiguration(item);
   }
 
   private refreshClassifiersOptionsPage(): void {
@@ -110,6 +138,19 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
 
   private setActiveConfiguration(item: ClassifiersConfigurationDto): void {
     this.classifiersConfigurationService.setActive(item.id)
+      .subscribe({
+        next: () => {
+          this.getClassifiersConfigurationDetails();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  public updateConfiguration(item: ClassifiersConfigurationModel): void {
+    this.classifiersConfigurationService
+      .updateConfiguration({ id: item.id, configurationName: item.configurationName })
       .subscribe({
         next: () => {
           this.getClassifiersConfigurationDetails();
