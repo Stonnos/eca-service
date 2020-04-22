@@ -96,7 +96,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      *
      * @param id - configuration id
      */
-    public void setActive(long id) {
+    public synchronized void setActive(long id) {
         ClassifiersConfiguration classifiersConfiguration = getById(id);
         ClassifiersConfiguration activeConfiguration =
                 classifiersConfigurationRepository.findFirstByActiveTrue().orElseThrow(
