@@ -131,7 +131,7 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
   }
 
   private refreshClassifiersOptionsPage(): void {
-    this.performPageRequest(0, this.pageSize, ClassifierOptionsFields.CREATION_DATE, false);
+    this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == -1);
   }
 
   private deleteConfiguration(item: ClassifiersConfigurationDto): void {
@@ -192,7 +192,7 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
   }
 
   public hasMoreThanOneOptionsForActiveConfiguration(): boolean {
-    return !this.classifiersConfiguration.active || this.classifiersConfiguration.classifiersOptionsCount> 1;
+    return !this.classifiersConfiguration.active || this.items.length > 1;
   }
 
   private initColumns() {
