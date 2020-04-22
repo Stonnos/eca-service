@@ -74,7 +74,7 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-item>
-        <tr [ngClass]="{'experiment-blink': isBlink(item)}">
+        <tr [ngClass]="{'item-blink': isBlink(item)}">
           <td *ngFor="let column of columns">
             <a class="link" [routerLink]="" *ngIf="isLink(column.name)" (click)="onLink($event, column.name, item, infoPanel)">
               {{ getColumnValue(column.name, item) }}

@@ -1,0 +1,33 @@
+.ui-table {
+  margin-top: 15px;
+}
+
+.ui-table-loading {
+  opacity: 0.5 !important;
+  background-color: #747474 !important;
+}
+
+.ui-table-loading-content {
+  top: 25% !important;
+}
+
+.ui-table-tbody > tr > td {
+  word-wrap: break-word;
+  &:first-child {
+    width: 125px;
+  }
+
+  &:nth-child(2) {
+    width: 450px;
+  }
+}
+.ui-table-thead > tr > th {
+  word-wrap: break-word;
+  &:first-child {
+    width: 125px;
+  }
+
+  &:nth-child(2) {
+    width: 450px;
+  }
+}

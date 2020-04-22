@@ -70,3 +70,19 @@
   text-align: center;
   display: inline-block;
 }
+
+.details-panel {
+  background: white;
+  padding: 2px;
+}
+
+.link {
+  color: #3397ff;
+}
+
+.disabled-link {
+  color: #3397ff;
+  cursor: not-allowed;
+  opacity: 0.5;
+  text-decoration: none;
+}
