@@ -1,6 +1,6 @@
 package com.ecaservice.service.filter;
 
-import com.ecaservice.config.CacheNames;
+import com.ecaservice.config.cache.CacheNames;
 import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.mapping.filters.FilterDictionaryMapper;
 import com.ecaservice.mapping.filters.FilterFieldMapper;

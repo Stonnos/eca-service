@@ -1,6 +1,6 @@
 package com.ecaservice.service.ers;
 
-import com.ecaservice.config.CacheNames;
+import com.ecaservice.config.cache.CacheNames;
 import com.ecaservice.config.ws.ers.ErsConfig;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;

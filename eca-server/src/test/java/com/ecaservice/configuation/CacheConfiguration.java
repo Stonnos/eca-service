@@ -1,6 +1,6 @@
 package com.ecaservice.configuation;
 
-import com.ecaservice.config.CacheNames;
+import com.ecaservice.config.cache.CacheNames;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Ticker;
 import org.springframework.boot.test.context.TestConfiguration;

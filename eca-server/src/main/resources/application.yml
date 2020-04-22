@@ -114,9 +114,6 @@ ers:
 
 cache:
   specs:
-    classifiers:
-      expireAfterWriteSeconds: 18000
-      maxSize: 100
     evaluation-results:
       expireAfterWriteSeconds: 1200
       maxSize: 50

@@ -1,4 +1,4 @@
-package com.ecaservice.config;
+package com.ecaservice.config.cache;
 
 import lombok.experimental.UtilityClass;
 
@@ -9,11 +9,6 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 public class CacheNames {
-
-    /**
-     * Classifiers cache name
-     */
-    public static final String CLASSIFIERS_CACHE_NAME = "classifiers";
 
     /**
      * Evaluation results cache name
