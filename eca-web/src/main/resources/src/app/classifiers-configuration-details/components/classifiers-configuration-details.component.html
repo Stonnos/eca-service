@@ -21,7 +21,10 @@
         </div>
         <app-classifiers-configuration-menu
           class="ml-5"
-          [classifiersConfiguration]="classifiersConfiguration">
+          [classifiersConfiguration]="classifiersConfiguration"
+          (onSetActive)="onSetActiveClassifiersConfiguration($event)"
+          (onDelete)="onDeleteClassifiersConfiguration($event)"
+          (onUploadClassifiers)="onUploadedClassifiersOptions($event)">
         </app-classifiers-configuration-menu>
       </div>
     </ng-template>

@@ -31,7 +31,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   public blinkConfigurationId: number;
 
   public constructor(private injector: Injector,
-                     private classifierOptionsService: ClassifiersConfigurationsService,
+                     private classifiersConfigurationsService: ClassifiersConfigurationsService,
                      private confirmationService: ConfirmationService,
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
@@ -45,7 +45,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   }
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<ClassifiersConfigurationDto>> {
-    return this.classifierOptionsService.getClassifiersConfigurations(pageRequest);
+    return this.classifiersConfigurationsService.getClassifiersConfigurations(pageRequest);
   }
 
   public setPage(pageDto: PageDto<ClassifiersConfigurationDto>) {
@@ -125,12 +125,12 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   }
 
   private refreshClassifiersConfigurationsPage(): void {
-    this.performPageRequest(0, this.pageSize, ClassifiersConfigurationFields.CREATED, false);
+    this.performPageRequest(0, this.pageSize, this.defaultSortField, false);
   }
 
   private createConfiguration(item: ClassifiersConfigurationModel): void {
     this.loading = true;
-    this.classifierOptionsService.saveConfiguration({ configurationName: item.configurationName })
+    this.classifiersConfigurationsService.saveConfiguration({ configurationName: item.configurationName })
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -150,7 +150,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   private updateConfiguration(item: ClassifiersConfigurationModel): void {
     this.loading = true;
-    this.classifierOptionsService.updateConfiguration({ id: item.id, configurationName: item.configurationName })
+    this.classifiersConfigurationsService.updateConfiguration({ id: item.id, configurationName: item.configurationName })
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -168,7 +168,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   private deleteConfiguration(item: ClassifiersConfigurationDto): void {
     this.loading = true;
-    this.classifierOptionsService.deleteConfiguration(item.id)
+    this.classifiersConfigurationsService.deleteConfiguration(item.id)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -187,7 +187,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   private setActiveConfiguration(item: ClassifiersConfigurationDto): void {
     this.loading = true;
-    this.classifierOptionsService.setActive(item.id)
+    this.classifiersConfigurationsService.setActive(item.id)
       .pipe(
         finalize(() => {
           this.loading = false;

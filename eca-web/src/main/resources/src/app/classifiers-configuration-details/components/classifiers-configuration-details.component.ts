@@ -4,14 +4,14 @@ import {
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ClassifierOptionsService } from "../services/classifier-options.service";
-import { MessageService } from "primeng/api";
+import { ConfirmationService, MessageService } from "primeng/api";
 import { BaseListComponent } from "../../common/lists/base-list.component";
 import { OverlayPanel} from "primeng/primeng";
 import { JsonPipe } from "@angular/common";
 import { Observable } from "rxjs/internal/Observable";
 import { ClassifierOptionsFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { ClassifiersConfigurationsService } from "../../classifiers-configurations/services/classifiers-configurations.service";
 
 declare var Prism: any;
@@ -32,7 +32,9 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
   public constructor(private injector: Injector,
                      private classifierOptionsService: ClassifierOptionsService,
                      private classifiersConfigurationService: ClassifiersConfigurationsService,
-                     private route: ActivatedRoute) {
+                     private route: ActivatedRoute,
+                     private confirmationService: ConfirmationService,
+                     private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.configurationId = this.route.snapshot.params.id;
     this.defaultSortField = ClassifierOptionsFields.CREATION_DATE;
@@ -69,6 +71,53 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
     const configObj = JSON.parse(this.selectedOptions.config);
     const json = new JsonPipe().transform(configObj);
     return Prism.highlight(json, Prism.languages['json']);
+  }
+
+  public onDeleteClassifiersConfiguration(item: ClassifiersConfigurationDto): void {
+    this.confirmationService.confirm({
+      message: 'Вы уверены?',
+      acceptLabel: 'Да',
+      rejectLabel: 'Нет',
+      accept: () => {
+        this.deleteConfiguration(item);
+      }
+    });
+  }
+
+  public onSetActiveClassifiersConfiguration(item: ClassifiersConfigurationDto): void {
+    this.setActiveConfiguration(item);
+  }
+
+  public onUploadedClassifiersOptions(event): void {
+    this.refreshClassifiersOptionsPage();
+  }
+
+  private refreshClassifiersOptionsPage(): void {
+    this.performPageRequest(0, this.pageSize, this.defaultSortField, false);
+  }
+
+  private deleteConfiguration(item: ClassifiersConfigurationDto): void {
+    this.classifiersConfigurationService.deleteConfiguration(item.id)
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/dashboard/experiments']);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private setActiveConfiguration(item: ClassifiersConfigurationDto): void {
+    this.classifiersConfigurationService.setActive(item.id)
+      .subscribe({
+        next: () => {
+          this.getClassifiersConfigurationDetails();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
   }
 
   private initColumns() {
