@@ -14,6 +14,7 @@ import { FieldService } from "../../common/services/field.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ClassifiersConfigurationsService } from "../../classifiers-configurations/services/classifiers-configurations.service";
 import { ClassifiersConfigurationModel } from "../../create-classifiers-configuration/model/classifiers-configuration.model";
+import { ExperimentTabUtils } from "../../experiments-tabs/model/experiment-tab.utils";
 
 declare var Prism: any;
 
@@ -128,6 +129,7 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
     this.classifiersConfigurationService.deleteConfiguration(item.id)
       .subscribe({
         next: () => {
+          localStorage.setItem(ExperimentTabUtils.EXPERIMENT_ACTIVE_TAB_KEY, ExperimentTabUtils.CLASSIFIERS_CONFIGURATION_TAB_INDEX.toString());
           this.router.navigate(['/dashboard/experiments']);
         },
         error: (error) => {

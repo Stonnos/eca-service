@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ExperimentTabUtils } from "../model/experiment-tab.utils";
 
 @Component({
   selector: 'app-experiment-tabs',
@@ -7,8 +8,6 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ExperimentTabsComponent implements OnInit {
 
-  private static readonly EXPERIMENT_ACTIVE_TAB_KEY: string = 'experimentTabActiveIndex';
-
   public activeTabIndex: number = 0;
 
   public ngOnInit() {
@@ -16,11 +15,11 @@ export class ExperimentTabsComponent implements OnInit {
   }
 
   public onChangeTab(event): void {
-    localStorage.setItem(ExperimentTabsComponent.EXPERIMENT_ACTIVE_TAB_KEY, event.index);
+    localStorage.setItem(ExperimentTabUtils.EXPERIMENT_ACTIVE_TAB_KEY, event.index);
   }
 
   public updateActiveIndex(): void {
-    const tabIndex = localStorage.getItem(ExperimentTabsComponent.EXPERIMENT_ACTIVE_TAB_KEY);
+    const tabIndex = localStorage.getItem(ExperimentTabUtils.EXPERIMENT_ACTIVE_TAB_KEY);
     if (tabIndex) {
       this.activeTabIndex = parseInt(tabIndex);
     }
