@@ -22,10 +22,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,6 +49,7 @@ import static com.ecaservice.util.ClassifierOptionsHelper.parseOptions;
 @Slf4j
 @RestController
 @RequestMapping("/qa")
+@Profile("!docker-prod")
 @RequiredArgsConstructor
 public class QaController {
 
@@ -69,7 +70,6 @@ public class QaController {
      * @param evaluationMethod    - evaluation method
      * @param httpServletResponse - http servlet response
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Evaluates classifier with specified options",
             notes = "Evaluates classifier with specified options"
@@ -99,7 +99,6 @@ public class QaController {
      * @param evaluationMethod - evaluation method
      * @return experiment request id
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Creates experiment request with specified options",
             notes = "Creates experiment request with specified options"
@@ -129,7 +128,6 @@ public class QaController {
      * @param trainingData        - training data file with format, such as csv, xls, xlsx, arff, json, docx, data, txt
      * @param httpServletResponse - http servlet response
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Evaluates classifier using optimal options",
             notes = "Evaluates classifier using optimal options"

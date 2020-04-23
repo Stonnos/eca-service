@@ -63,6 +63,9 @@ swagger2:
       description: Operations for ECA web application
       author: Roman Batygin
       email: roman.batygin@mail.ru
+    qa:
+      title: REST API for QA
+      description: Operations for QA
   tokenUrl: http://localhost:8085/eca-oauth/oauth/token
   clientId: swagger
   secret: swagger_secret
