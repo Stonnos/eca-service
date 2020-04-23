@@ -45,7 +45,6 @@ public class EvaluationResultsService {
 
     private static final int CONFIDENCE_INTERVAL_LOWER_INDEX = 0;
     private static final int CONFIDENCE_INTERVAL_UPPER_INDEX = 1;
-    private static final String META_CLASSIFIER_DESCRIPTION = "Meta classifier";
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private final ClassifierOptionsConverter classifierOptionsConverter;
@@ -204,7 +203,7 @@ public class EvaluationResultsService {
                     c -> classifierReportList.add(buildClassifierReport((AbstractClassifier) c)));
             ClassifierReport metaClassifierReport =
                     buildClassifierReport((AbstractClassifier) stackingClassifier.getMetaClassifier());
-            metaClassifierReport.setClassifierDescription(META_CLASSIFIER_DESCRIPTION);
+            metaClassifierReport.setMetaClassifier(true);
             classifierReportList.add(metaClassifierReport);
         } else {
             throw new IllegalArgumentException(

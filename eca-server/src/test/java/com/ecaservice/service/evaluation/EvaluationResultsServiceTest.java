@@ -187,6 +187,6 @@ public class EvaluationResultsServiceTest {
                 stackingClassifier.getClassifiers().size() + 1);
         ClassifierReport metaClassifierReport =
                 classifierReport.getIndividualClassifiers().get(classifierReport.getIndividualClassifiers().size() - 1);
-        Assertions.assertThat(metaClassifierReport.getClassifierDescription()).isNotNull();
+        Assertions.assertThat(metaClassifierReport.isMetaClassifier()).isTrue();
     }
 }

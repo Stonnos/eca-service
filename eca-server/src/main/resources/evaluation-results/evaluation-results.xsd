@@ -43,6 +43,7 @@
             <xsd:element name="classifierDescription" type="xsd:string"/>
             <xsd:element name="options" type="xsd:string"/>
             <xsd:element name="inputOptionsMap" type="evaluation:inputOptionsMap"/>
+            <xsd:element name="metaClassifier" type="xsd:boolean"/>
         </xsd:sequence>
     </xsd:complexType>
 
