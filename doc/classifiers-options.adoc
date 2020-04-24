@@ -1,0 +1,128 @@
+= Описание JSON конфигураций классификаторов
+:toc: macro
+
+== Введение
+
+В данном документе описаны форматы json конфигураций классификаторов с примерами.
+
+== 1. Описание формата json конфигурации логистической регресии
+
+Ниже приведен пример json конфигурации логистической регресии:
+
+[source,json]
+----
+{
+  "type": "logistic",
+  "maxIts": 200,
+  "useConjugateGradientDescent": false
+}
+----
+
+где
+
+* maxIts - максимальное число итераций для поиска минимума функции -Log(Likelihood)
+* useConjugateGradientDescent - использование метода сопряженных градиентов вкл./выкл.
+
+== 2. Описание форматов json конфигураций деревьев решений
+
+=== 2.1 Формат json конфигурации алгоритма CART
+
+Ниже приведен пример json конфигурации алгоритма CART:
+
+[source,json]
+----
+{
+  "type": "decision_tree",
+  "decisionTreeType": "CART",
+  "minObj": 2,
+  "maxDepth": 0,
+  "randomTree": false,
+  "numRandomAttr": 0,
+  "useBinarySplits": true,
+  "useRandomSplits": false,
+  "numRandomSplits": 1,
+  "seed": 1,
+  "additionalOptions": null
+}
+----
+
+где
+
+* minObj - минимальное число объектов в листе
+* maxDepth - максимальная глубина дерева
+* randomTree - случайное дерево вкл./выкл.
+* numRandomAttr - число случайных атрибутов при расщеплении узла
+* useBinarySplits - бинарное дерево вкл./выкл.
+* useRandomSplits - использование случайных расщеплений вкл./выкл.
+* numRandomSplits - число случайных расщеплений
+* seed - начальное значение для генератора псевдослучайных чисел
+* additionalOptions - дополнительные настройки
+
+=== 2.2 Формат json конфигурации алгоритма C45
+
+Ниже приведен пример json конфигурации алгоритма C45:
+
+[source,json]
+----
+{
+  "type": "decision_tree",
+  "decisionTreeType": "C45",
+  "minObj": 2,
+  "maxDepth": 0,
+  "randomTree": false,
+  "numRandomAttr": 0,
+  "useBinarySplits": false,
+  "useRandomSplits": false,
+  "numRandomSplits": 1,
+  "seed": 1,
+  "additionalOptions": null
+}
+----
+
+=== 2.3 Формат json конфигурации алгоритма ID3
+
+Ниже приведен пример json конфигурации алгоритма ID3:
+
+[source,json]
+----
+{
+  "type": "decision_tree",
+  "decisionTreeType": "ID3",
+  "minObj": 2,
+  "maxDepth": 0,
+  "randomTree": false,
+  "numRandomAttr": 0,
+  "useBinarySplits": true,
+  "useRandomSplits": false,
+  "numRandomSplits": 1,
+  "seed": 1,
+  "additionalOptions": null
+}
+----
+
+=== 2.4 Формат json конфигурации алгоритма CHAID
+
+Ниже приведен пример json конфигурации алгоритма CHAID:
+
+[source,json]
+----
+{
+  "type": "decision_tree",
+  "decisionTreeType": "CHAID",
+  "minObj": 2,
+  "maxDepth": 0,
+  "randomTree": false,
+  "numRandomAttr": 0,
+  "useBinarySplits": true,
+  "useRandomSplits": false,
+  "numRandomSplits": 1,
+  "seed": 1,
+  "additionalOptions": {
+    "alphaValue": "0.05"
+  }
+}
+----
+
+где
+
+* alphaValue - уровень значимости &alpha;
