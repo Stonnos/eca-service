@@ -1,23 +1,17 @@
 package com.ecaservice.controller.web;
 
-import com.ecaservice.report.BaseReportGenerator;
 import com.ecaservice.report.EvaluationLogsBaseReportDataFetcher;
 import com.ecaservice.report.ExperimentsBaseReportDataFetcher;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.OutputStream;
 import java.util.Collections;
 
 import static com.ecaservice.PageRequestUtils.PAGE_NUMBER;
@@ -36,9 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(SpringRunner.class)
-@PrepareForTest({BaseReportGenerator.class})
+@RunWith(SpringRunner.class)
 @WebMvcTest(controllers = ReportController.class)
 public class ReportControllerTest extends PageRequestControllerTest {
 
@@ -90,9 +82,6 @@ public class ReportControllerTest extends PageRequestControllerTest {
     public void testDownloadExperimentsReportOk() throws Exception {
         when(experimentsBaseReportDataFetcher.fetchReportData(any(PageRequestDto.class))).thenReturn(
                 new BaseReportBean<>());
-        PowerMockito.mockStatic(BaseReportGenerator.class);
-        PowerMockito.doNothing().when(BaseReportGenerator.class, "generateExperimentsReport", any(BaseReportBean
-                .class), any(OutputStream.class));
         mockMvc.perform(get(EXPERIMENTS_REPORT_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
@@ -140,9 +129,6 @@ public class ReportControllerTest extends PageRequestControllerTest {
     public void testDownloadEvaluationsReportOk() throws Exception {
         when(evaluationLogsBaseReportDataFetcher.fetchReportData(any(PageRequestDto.class))).thenReturn(
                 new BaseReportBean<>());
-        PowerMockito.mockStatic(BaseReportGenerator.class);
-        PowerMockito.doNothing().when(BaseReportGenerator.class, "generateEvaluationLogsReport", any(BaseReportBean
-                .class), any(OutputStream.class));
         mockMvc.perform(get(EVALUATIONS_REPORT_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))

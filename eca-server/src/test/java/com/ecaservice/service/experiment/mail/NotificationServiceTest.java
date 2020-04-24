@@ -12,25 +12,13 @@ import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.EmailRequestRepository;
 import com.ecaservice.repository.ExperimentRepository;
+import com.ecaservice.service.AbstractJpaTest;
+import com.ecaservice.service.experiment.mail.template.TemplateEngineService;
 import com.ecaservice.service.experiment.visitor.EmailTemplateVisitor;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.ws.client.core.WebServiceTemplate;
-import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import javax.inject.Inject;
@@ -48,16 +36,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@AutoConfigureDataJpa
-@EnableJpaRepositories(basePackageClasses = ExperimentRepository.class)
-@EntityScan(basePackageClasses = Experiment.class)
-@EnableConfigurationProperties
-@TestPropertySource("classpath:application.properties")
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(SpringRunner.class)
-@PrepareForTest(TemplateEngine.class)
 @Import(NotificationResponseErrorHandler.class)
-public class NotificationServiceTest {
+public class NotificationServiceTest extends AbstractJpaTest {
 
     private static final String TEMPLATE_HTML = "test-template.html";
     private static final String WEB_SERVICE_URL = "http://localhost";
@@ -74,16 +54,14 @@ public class NotificationServiceTest {
     private NotificationResponseErrorHandler errorHandler;
     @Mock
     private WebServiceTemplate notificationWebServiceTemplate;
-
-    private TemplateEngine templateEngine;
+    @Mock
+    private TemplateEngineService templateEngineService;
 
     private NotificationService notificationService;
 
-    @Before
-    public void setUp() {
-        deleteAll();
-        templateEngine = PowerMockito.mock(TemplateEngine.class);
-        notificationService = new NotificationService(templateEngine, mailConfig, statusTemplateVisitor,
+    @Override
+    public void init() {
+        notificationService = new NotificationService(templateEngineService, mailConfig, statusTemplateVisitor,
                 notificationWebServiceTemplate, emailRequestRepository, errorHandler);
         EnumMap<RequestStatus, String> statusMap = new EnumMap<>(RequestStatus.class);
         statusMap.put(RequestStatus.FINISHED, TEMPLATE_HTML);
@@ -92,9 +70,10 @@ public class NotificationServiceTest {
         when(mailConfig.getServiceUrl()).thenReturn(WEB_SERVICE_URL);
     }
 
-    @After
-    public void afterTest() {
-        deleteAll();
+    @Override
+    public void deleteAll() {
+        emailRequestRepository.deleteAll();
+        experimentRepository.deleteAll();
     }
 
     @Test
@@ -113,7 +92,7 @@ public class NotificationServiceTest {
         emailResponse.setStatus(ResponseStatus.SUCCESS);
         emailResponse.setRequestId(UUID.randomUUID().toString());
         when(statusTemplateVisitor.caseFinished(experiment)).thenReturn(new Context());
-        when(templateEngine.process(anyString(), any(Context.class))).thenReturn("message");
+        when(templateEngineService.process(anyString(), any(Context.class))).thenReturn("message");
         when(notificationWebServiceTemplate.marshalSendAndReceive(anyString(),
                 any(EmailRequest.class))).thenReturn(
                 emailResponse);
@@ -148,15 +127,10 @@ public class NotificationServiceTest {
         emailResponse.setStatus(status);
         emailResponse.setRequestId(UUID.randomUUID().toString());
         when(statusTemplateVisitor.caseFinished(experiment)).thenReturn(new Context());
-        when(templateEngine.process(anyString(), any(Context.class))).thenReturn("message");
+        when(templateEngineService.process(anyString(), any(Context.class))).thenReturn("message");
         when(notificationWebServiceTemplate.marshalSendAndReceive(anyString(),
                 any(EmailRequest.class))).thenReturn(
                 emailResponse);
         notificationService.notifyByEmail(experiment);
-    }
-
-    private void deleteAll() {
-        emailRequestRepository.deleteAll();
-        experimentRepository.deleteAll();
     }
 }

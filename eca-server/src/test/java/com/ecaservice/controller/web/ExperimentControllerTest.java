@@ -33,10 +33,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
@@ -49,7 +45,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.MimeTypeUtils;
 
 import javax.inject.Inject;
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -82,9 +77,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(SpringRunner.class)
-@PrepareForTest(Utils.class)
+@RunWith(SpringRunner.class)
 @WebMvcTest(controllers = ExperimentController.class)
 @Import(ExperimentMapperImpl.class)
 public class ExperimentControllerTest extends PageRequestControllerTest {
@@ -511,8 +504,6 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
     private void testDownloadNotExistingExperimentFile(String url) throws Exception {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(experiment);
-        PowerMockito.mockStatic(Utils.class);
-        when(Utils.existsFile(any(File.class))).thenReturn(false);
         mockMvc.perform(get(url, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isNotFound());

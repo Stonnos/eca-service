@@ -8,12 +8,12 @@ import com.ecaservice.exception.notification.NotificationServiceException;
 import com.ecaservice.model.entity.EmailRequestEntity;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.repository.EmailRequestRepository;
+import com.ecaservice.service.experiment.mail.template.TemplateEngineService;
 import com.ecaservice.service.experiment.visitor.EmailTemplateVisitor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.ws.client.core.WebServiceTemplate;
-import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.time.LocalDateTime;
@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class NotificationService {
 
-    private final TemplateEngine templateEngine;
+    private final TemplateEngineService templateEngineService;
     private final MailConfig mailConfig;
     private final EmailTemplateVisitor statusTemplateVisitor;
     private final WebServiceTemplate notificationWebServiceTemplate;
@@ -81,7 +81,7 @@ public class NotificationService {
     private String buildEmailMessage(Experiment experiment) {
         String template = mailConfig.getMessageTemplatesMap().get(experiment.getRequestStatus());
         Context context = experiment.getRequestStatus().handle(statusTemplateVisitor, experiment);
-        return templateEngine.process(template, context);
+        return templateEngineService.process(template, context);
     }
 
     private EmailRequest createEmailRequest(Experiment experiment) {
