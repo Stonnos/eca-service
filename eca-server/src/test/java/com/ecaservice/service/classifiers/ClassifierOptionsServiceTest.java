@@ -6,6 +6,7 @@ import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.model.options.AdaBoostOptions;
+import com.ecaservice.model.options.LogisticOptions;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.AbstractJpaTest;
@@ -142,7 +143,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     @Test(expected = EntityNotFoundException.class)
     public void testSaveOptionsForNotExistingClassifiersConfiguration() {
-        classifierOptionsService.saveClassifierOptions(ID, TestHelperUtils.createAdaBoostOptions());
+        classifierOptionsService.saveClassifierOptions(ID, TestHelperUtils.createLogisticOptions());
     }
 
     @Test
@@ -150,13 +151,13 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
         ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
         classifiersConfiguration.setBuildIn(false);
         classifiersConfigurationRepository.save(classifiersConfiguration);
-        AdaBoostOptions adaBoostOptions = TestHelperUtils.createAdaBoostOptions();
+        LogisticOptions logisticOptions = TestHelperUtils.createLogisticOptions();
         ClassifierOptionsDatabaseModel saved =
-                classifierOptionsService.saveClassifierOptions(classifiersConfiguration.getId(), adaBoostOptions);
+                classifierOptionsService.saveClassifierOptions(classifiersConfiguration.getId(), logisticOptions);
         ClassifierOptionsDatabaseModel actual =
                 classifierOptionsDatabaseModelRepository.findById(saved.getId()).orElse(null);
         assertThat(actual).isNotNull();
-        assertThat(actual.getOptionsName()).isEqualTo(adaBoostOptions.getClass().getSimpleName());
+        assertThat(actual.getOptionsName()).isEqualTo(logisticOptions.getClass().getSimpleName());
         assertThat(actual.getConfigMd5Hash()).isNotNull();
         assertThat(actual.getConfig()).isNotNull();
         assertThat(actual.getCreationDate()).isNotNull();
@@ -167,6 +168,15 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     public void testSaveClassifierOptionsToBuildInConfiguration() {
         ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
         classifiersConfiguration.setBuildIn(true);
+        classifiersConfigurationRepository.save(classifiersConfiguration);
+        LogisticOptions logisticOptions = TestHelperUtils.createLogisticOptions();
+        classifierOptionsService.saveClassifierOptions(classifiersConfiguration.getId(), logisticOptions);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testSaveEnsembleClassifierOptions() {
+        ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
+        classifiersConfiguration.setBuildIn(false);
         classifiersConfigurationRepository.save(classifiersConfiguration);
         AdaBoostOptions adaBoostOptions = TestHelperUtils.createAdaBoostOptions();
         classifierOptionsService.saveClassifierOptions(classifiersConfiguration.getId(), adaBoostOptions);

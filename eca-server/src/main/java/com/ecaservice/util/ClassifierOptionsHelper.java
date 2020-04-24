@@ -4,6 +4,8 @@ import com.ecaservice.exception.ClassifierOptionsException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.model.options.ClassifierOptions;
+import com.ecaservice.model.options.IterativeEnsembleOptions;
+import com.ecaservice.model.options.StackingOptions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -97,5 +99,15 @@ public class ClassifierOptionsHelper {
                 return false;
             }
         }
+    }
+
+    /**
+     * Checks if classifier options is ensemble classifier options.
+     *
+     * @param classifierOptions - classifier options
+     * @return {@code true} if classifier options is ensemble classifier options
+     */
+    public static boolean isEnsembleClassifierOptions(ClassifierOptions classifierOptions) {
+        return classifierOptions instanceof IterativeEnsembleOptions || classifierOptions instanceof StackingOptions;
     }
 }

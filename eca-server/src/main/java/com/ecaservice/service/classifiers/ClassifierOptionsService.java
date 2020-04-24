@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 import static com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_.CREATION_DATE;
 import static com.ecaservice.util.ClassifierOptionsHelper.createClassifierOptionsDatabaseModel;
+import static com.ecaservice.util.ClassifierOptionsHelper.isEnsembleClassifierOptions;
 
 /**
  * Classifier options service.
@@ -52,6 +53,7 @@ public class ClassifierOptionsService {
         ClassifiersConfiguration classifiersConfiguration = getConfigurationById(configurationId);
         Assert.state(!classifiersConfiguration.isBuildIn(),
                 "Can't add classifier options to build in configuration!");
+        Assert.state(!isEnsembleClassifierOptions(classifierOptions), "Can't save ensemble classifier options!");
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
                 createClassifierOptionsDatabaseModel(classifierOptions, classifiersConfiguration);
         classifiersConfiguration.setUpdated(LocalDateTime.now());
