@@ -131,7 +131,7 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
   }
 
   private refreshClassifiersOptionsPage(): void {
-    this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == -1);
+    this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1);
   }
 
   private deleteConfiguration(item: ClassifiersConfigurationDto): void {
