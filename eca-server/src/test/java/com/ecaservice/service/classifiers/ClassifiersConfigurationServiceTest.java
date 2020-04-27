@@ -15,7 +15,7 @@ import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 import static com.ecaservice.model.entity.ClassifiersConfiguration_.CREATED;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 /**
@@ -74,11 +75,12 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         assertThat(actual.isBuildIn()).isFalse();
     }
 
-    @Test(expected = EntityNotFoundException.class)
+    @Test
     public void testUpdateNotExistingConfiguration() {
         UpdateClassifiersConfigurationDto updateClassifiersConfigurationDto = new UpdateClassifiersConfigurationDto();
         updateClassifiersConfigurationDto.setId(ID);
-        classifiersConfigurationService.update(updateClassifiersConfigurationDto);
+        assertThrows(EntityNotFoundException.class,
+                () -> classifiersConfigurationService.update(updateClassifiersConfigurationDto));
     }
 
     @Test
@@ -97,9 +99,9 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         assertThat(actual.getUpdated()).isNotNull();
     }
 
-    @Test(expected = EntityNotFoundException.class)
+    @Test
     public void testDeleteNotExistingConfiguration() {
-        classifiersConfigurationService.delete(ID);
+        assertThrows(EntityNotFoundException.class, () -> classifiersConfigurationService.delete(ID));
     }
 
     @Test
@@ -112,27 +114,30 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         assertThat(classifierOptionsDatabaseModelRepository.count()).isZero();
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testDeleteActiveConfiguration() {
         ClassifiersConfiguration classifiersConfiguration = saveConfiguration(true, false);
-        classifiersConfigurationService.delete(classifiersConfiguration.getId());
+        assertThrows(IllegalStateException.class,
+                () -> classifiersConfigurationService.delete(classifiersConfiguration.getId()));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testDeleteBuildInConfiguration() {
         ClassifiersConfiguration classifiersConfiguration = saveConfiguration(true, false);
-        classifiersConfigurationService.delete(classifiersConfiguration.getId());
+        assertThrows(IllegalStateException.class,
+                () -> classifiersConfigurationService.delete(classifiersConfiguration.getId()));
     }
 
-    @Test(expected = EntityNotFoundException.class)
+    @Test
     public void testSetActiveNotExistingConfiguration() {
-        classifiersConfigurationService.setActive(ID);
+        assertThrows(EntityNotFoundException.class, () -> classifiersConfigurationService.setActive(ID));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSetActiveNotExistingActiveConfiguration() {
         ClassifiersConfiguration classifiersConfiguration = saveConfiguration(false, false);
-        classifiersConfigurationService.setActive(classifiersConfiguration.getId());
+        assertThrows(IllegalStateException.class,
+                () -> classifiersConfigurationService.setActive(classifiersConfiguration.getId()));
     }
 
     @Test
@@ -150,7 +155,7 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         assertThat(actualNotActive.isActive()).isNotNull();
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSetActiveConfigurationWithEmptyClassifiersOptions() {
         saveConfiguration(true, false);
         ClassifiersConfiguration newActive = new ClassifiersConfiguration();
@@ -158,12 +163,13 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         newActive.setActive(false);
         newActive.setConfigurationName(TEST_CONFIGURATION_NAME);
         classifiersConfigurationRepository.save(newActive);
-        classifiersConfigurationService.setActive(newActive.getId());
+        assertThrows(IllegalStateException.class, () -> classifiersConfigurationService.setActive(newActive.getId()));
     }
 
-    @Test(expected = EntityNotFoundException.class)
+    @Test
     public void testGetClassifiersConfigurationDetailsNotFound() {
-        classifiersConfigurationService.getClassifiersConfigurationDetails(ID);
+        assertThrows(EntityNotFoundException.class,
+                () -> classifiersConfigurationService.getClassifiersConfigurationDetails(ID));
     }
 
     @Test

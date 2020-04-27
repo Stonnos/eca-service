@@ -5,10 +5,10 @@ import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @Import(ClassifiersConfigurationMapperImpl.class)
 public class ClassifiersConfigurationMapperTest {
 

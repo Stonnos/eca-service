@@ -15,7 +15,7 @@
     <properties>
         <postresql.version>42.2.6</postresql.version>
         <liquibase.version>3.7.0</liquibase.version>
-        <spring.security.oauth2.version>2.1.6.RELEASE</spring.security.oauth2.version>
+        <spring.security.oauth2.version>2.2.6.RELEASE</spring.security.oauth2.version>
         <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
     </properties>
 

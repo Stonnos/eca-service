@@ -33,29 +33,31 @@ import eca.regression.Logistic;
 import eca.trees.CART;
 import eca.trees.J48;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import weka.classifiers.bayes.BayesNet;
 
 import javax.inject.Inject;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for checking {@link ClassifierOptionsConverter} functionality.
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @Import({ClassifierOptionsMapperConfiguration.class, ClassifierOptionsConverter.class})
 public class ClassifierOptionsConverterTest {
 
     @Inject
     private ClassifierOptionsConverter classifierOptionsConverter;
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testUnsupportedClassifier() {
-        classifierOptionsConverter.convert(new BayesNet());
+        assertThrows(IllegalStateException.class, () -> classifierOptionsConverter.convert(new BayesNet()));
     }
 
     @Test

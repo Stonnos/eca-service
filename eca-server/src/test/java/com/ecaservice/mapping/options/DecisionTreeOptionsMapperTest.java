@@ -7,10 +7,10 @@ import eca.ensemble.forests.DecisionTreeBuilder;
 import eca.ensemble.forests.DecisionTreeType;
 import eca.trees.CHAID;
 import eca.trees.DecisionTreeClassifier;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 import java.util.Collections;
@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @Import({DecisionTreeOptionsMapperImpl.class, DecisionTreeFactory.class})
 public class DecisionTreeOptionsMapperTest {
 

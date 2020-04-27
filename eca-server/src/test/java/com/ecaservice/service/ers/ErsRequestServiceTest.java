@@ -23,7 +23,7 @@ import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.metrics.KNearestNeighbours;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.util.ReflectionTestUtils;

@@ -6,13 +6,13 @@ import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.service.experiment.dictionary.TemplateVariablesDictionary;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.thymeleaf.context.Context;
 
 import javax.inject.Inject;
@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @Import(ExperimentConfig.class)
@@ -36,7 +36,7 @@ public class EmailTemplateVisitorTest {
 
     private EmailTemplateVisitor emailTemplateVisitor;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         emailTemplateVisitor = new EmailTemplateVisitor(experimentConfig);
     }

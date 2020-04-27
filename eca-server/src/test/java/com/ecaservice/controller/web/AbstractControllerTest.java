@@ -4,7 +4,7 @@ import com.ecaservice.configuation.annotation.Oauth2TestConfiguration;
 import com.ecaservice.token.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
@@ -28,7 +28,7 @@ public abstract class AbstractControllerTest {
 
     protected final ObjectMapper objectMapper = new ObjectMapper();
 
-    @Before
+    @BeforeEach
     public void init() throws Exception {
         accessToken = tokenService.obtainAccessToken();
     }

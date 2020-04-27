@@ -8,15 +8,16 @@ import com.ecaservice.service.experiment.visitor.ExperimentInitializationVisitor
 import eca.converters.model.ExperimentHistory;
 import eca.dataminer.AutomatedKNearestNeighbours;
 import eca.metrics.KNearestNeighbours;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import weka.core.Instances;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 /**
@@ -24,7 +25,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(SpringExtension.class)
 public class ExperimentProcessorServiceTest {
 
     private static final int RESULTS_SIZE = 5;
@@ -39,15 +40,16 @@ public class ExperimentProcessorServiceTest {
 
     private Instances data;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(experimentConfig.getResultSize()).thenReturn(RESULTS_SIZE);
         data = TestHelperUtils.loadInstances();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testNullInitializationParams() {
-        experimentProcessorService.processExperimentHistory(new Experiment(), null);
+        assertThrows(IllegalArgumentException.class,
+                () -> experimentProcessorService.processExperimentHistory(new Experiment(), null));
     }
 
     @Test

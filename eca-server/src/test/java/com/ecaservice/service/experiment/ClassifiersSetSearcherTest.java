@@ -36,14 +36,14 @@ import eca.core.evaluation.EvaluationResults;
 import eca.ensemble.ClassifiersSet;
 import eca.metrics.KNearestNeighbours;
 import eca.metrics.distances.DistanceType;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import weka.core.Instances;
 
 import javax.inject.Inject;
@@ -53,6 +53,7 @@ import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -61,7 +62,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @Import({ExperimentConfig.class, CrossValidationConfig.class,
@@ -94,7 +95,7 @@ public class ClassifiersSetSearcherTest {
     private Instances testInstances;
     private EvaluationResults evaluationResults;
 
-    @Before
+    @BeforeEach
     public void init() throws Exception {
         testInstances = TestHelperUtils.loadInstances();
         classifiersSetSearcher =
@@ -103,23 +104,25 @@ public class ClassifiersSetSearcherTest {
         evaluationResults = new EvaluationResults(new KNearestNeighbours(), new Evaluation(testInstances));
     }
 
-    @Test(expected = ExperimentException.class)
+    @Test
     public void testEmptyConfigs() {
         when(classifierOptionsService.getActiveClassifiersOptions()).thenReturn(Collections.emptyList());
-        classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA);
+        assertThrows(ExperimentException.class,
+                () -> classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA));
     }
 
-    @Test(expected = ExperimentException.class)
+    @Test
     public void testErrorConfigs() {
         ClassifiersConfiguration classifiersConfiguration = TestHelperUtils.createClassifiersConfiguration();
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
                 TestHelperUtils.createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration);
         when(classifierOptionsService.getActiveClassifiersOptions()).thenReturn(
                 Collections.singletonList(classifierOptionsDatabaseModel));
-        classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA);
+        assertThrows(ExperimentException.class,
+                () -> classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA));
     }
 
-    @Test(expected = ExperimentException.class)
+    @Test
     public void testEmptySet() throws Exception {
         ClassificationResult classificationResult = new ClassificationResult();
         ClassifiersConfiguration classifiersConfiguration = TestHelperUtils.createClassifiersConfiguration();
@@ -130,7 +133,8 @@ public class ClassifiersSetSearcherTest {
         when(classifierOptionsService.getActiveClassifiersOptions()).thenReturn(
                 Arrays.asList(logisticModel, knnModel));
         when(evaluationService.evaluateModel(any(EvaluationRequest.class))).thenReturn(classificationResult);
-        classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA);
+        assertThrows(ExperimentException.class,
+                () -> classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA));
     }
 
     /**

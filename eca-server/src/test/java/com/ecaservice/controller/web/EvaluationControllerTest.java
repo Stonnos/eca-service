@@ -16,8 +16,7 @@ import com.ecaservice.web.dto.model.EvaluationLogDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -25,7 +24,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
 import java.util.Collections;
@@ -52,7 +50,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
 @WebMvcTest(controllers = EvaluationController.class)
 @Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class,
         ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class})
@@ -94,7 +91,7 @@ public class EvaluationControllerTest extends PageRequestControllerTest {
         mockMvc.perform(get(DETAILS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(evaluationLogDetailsDto)));
     }
 
@@ -149,7 +146,7 @@ public class EvaluationControllerTest extends PageRequestControllerTest {
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
     }
 
@@ -167,7 +164,7 @@ public class EvaluationControllerTest extends PageRequestControllerTest {
         mockMvc.perform(get(REQUEST_STATUS_STATISTICS_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(requestStatusStatisticsDto)));
     }
 }

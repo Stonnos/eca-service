@@ -12,8 +12,7 @@ import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,7 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.MimeTypeUtils;
 
 import javax.inject.Inject;
@@ -53,7 +51,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
 @WebMvcTest(controllers = ClassifierOptionsController.class)
 @Import(ClassifierOptionsDatabaseModelMapperImpl.class)
 public class ClassifierOptionsControllerTest extends PageRequestControllerTest {
@@ -94,7 +91,7 @@ public class ClassifierOptionsControllerTest extends PageRequestControllerTest {
         mockMvc.perform(get(ACTIVE_OPTIONS_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(classifierOptionsDtoList)));
     }
 
@@ -160,7 +157,7 @@ public class ClassifierOptionsControllerTest extends PageRequestControllerTest {
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(pageDto)));
     }
 
@@ -235,7 +232,7 @@ public class ClassifierOptionsControllerTest extends PageRequestControllerTest {
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -247,7 +244,7 @@ public class ClassifierOptionsControllerTest extends PageRequestControllerTest {
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     private MockMultipartFile createClassifierOptionsFileMock() throws JsonProcessingException {

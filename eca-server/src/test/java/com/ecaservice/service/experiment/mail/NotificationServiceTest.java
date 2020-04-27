@@ -15,7 +15,7 @@ import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.experiment.mail.template.TemplateEngineService;
 import com.ecaservice.service.experiment.visitor.EmailTemplateVisitor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 import org.springframework.ws.client.core.WebServiceTemplate;
@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -104,14 +105,15 @@ public class NotificationServiceTest extends AbstractJpaTest {
         assertThat(emailRequest.getResponseStatus()).isEqualTo(emailResponse.getStatus());
     }
 
-    @Test(expected = ErrorStatusException.class)
+    @Test
     public void testErrorStatusResponse() {
-        testInvalidStatus(ResponseStatus.ERROR);
+        assertThrows(ErrorStatusException.class, () -> testInvalidStatus(ResponseStatus.ERROR));
     }
 
-    @Test(expected = InvalidRequestParamsException.class)
+    @Test
     public void testInvalidRequestParamsStatusResponse() {
-        testInvalidStatus(ResponseStatus.INVALID_REQUEST_PARAMS);
+        assertThrows(InvalidRequestParamsException.class,
+                () -> testInvalidStatus(ResponseStatus.INVALID_REQUEST_PARAMS));
     }
 
     private Experiment createAndSaveExperiment() {

@@ -11,7 +11,7 @@ import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 
@@ -24,6 +24,7 @@ import static com.ecaservice.TestHelperUtils.createClassifierOptionsDatabaseMode
 import static com.ecaservice.TestHelperUtils.createClassifiersConfiguration;
 import static com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_.CREATION_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for checking {@link ClassifierOptionsService} functionality.
@@ -64,17 +65,17 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
         assertThat(classifierOptionsDatabaseModelPage.getTotalElements()).isOne();
     }
 
-    @Test(expected = EntityNotFoundException.class)
+    @Test
     public void testGetClassifiersOptionsPageForNotExistingConfiguration() {
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CREATION_DATE, false, null,
                         Collections.emptyList());
-        classifierOptionsService.getNextPage(ID, pageRequestDto);
+        assertThrows(EntityNotFoundException.class, () -> classifierOptionsService.getNextPage(ID, pageRequestDto));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testGetActiveOptionsForNotExistsConfiguration() {
-        classifierOptionsService.getActiveClassifiersOptions();
+        assertThrows(IllegalStateException.class, () -> classifierOptionsService.getActiveClassifiersOptions());
     }
 
     @Test
@@ -85,9 +86,9 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
         assertThat(classifierOptionsDatabaseModels).hasSize(1);
     }
 
-    @Test(expected = EntityNotFoundException.class)
+    @Test
     public void testDeleteNotExistingOptions() {
-        classifierOptionsService.deleteOptions(ID);
+        assertThrows(EntityNotFoundException.class, () -> classifierOptionsService.deleteOptions(ID));
     }
 
     @Test
@@ -123,7 +124,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
         assertThat(actualConfiguration.getUpdated()).isNotNull();
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testDeleteOptionsForActiveConfigurationWithSingleOption() {
         ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
         classifiersConfiguration.setActive(true);
@@ -132,18 +133,21 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
                 createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration);
         classifierOptionsDatabaseModelRepository.save(classifierOptionsDatabaseModel);
-        classifierOptionsService.deleteOptions(classifierOptionsDatabaseModel.getId());
+        assertThrows(IllegalStateException.class,
+                () -> classifierOptionsService.deleteOptions(classifierOptionsDatabaseModel.getId()));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testDeleteFromBuildInConfiguration() {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(true);
-        classifierOptionsService.deleteOptions(classifierOptionsDatabaseModel.getId());
+        assertThrows(IllegalStateException.class,
+                () -> classifierOptionsService.deleteOptions(classifierOptionsDatabaseModel.getId()));
     }
 
-    @Test(expected = EntityNotFoundException.class)
+    @Test
     public void testSaveOptionsForNotExistingClassifiersConfiguration() {
-        classifierOptionsService.saveClassifierOptions(ID, TestHelperUtils.createLogisticOptions());
+        assertThrows(EntityNotFoundException.class,
+                () -> classifierOptionsService.saveClassifierOptions(ID, TestHelperUtils.createLogisticOptions()));
     }
 
     @Test
@@ -164,38 +168,42 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
         assertThat(actual.getConfiguration().getUpdated()).isNotNull();
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSaveClassifierOptionsToBuildInConfiguration() {
         ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
         classifiersConfiguration.setBuildIn(true);
         classifiersConfigurationRepository.save(classifiersConfiguration);
         LogisticOptions logisticOptions = TestHelperUtils.createLogisticOptions();
-        classifierOptionsService.saveClassifierOptions(classifiersConfiguration.getId(), logisticOptions);
+        assertThrows(IllegalStateException.class,
+                () -> classifierOptionsService.saveClassifierOptions(classifiersConfiguration.getId(),
+                        logisticOptions));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSaveEnsembleClassifierOptions() {
         ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
         classifiersConfiguration.setBuildIn(false);
         classifiersConfigurationRepository.save(classifiersConfiguration);
         AdaBoostOptions adaBoostOptions = TestHelperUtils.createAdaBoostOptions();
-        classifierOptionsService.saveClassifierOptions(classifiersConfiguration.getId(), adaBoostOptions);
+        assertThrows(IllegalStateException.class,
+                () -> classifierOptionsService.saveClassifierOptions(classifiersConfiguration.getId(),
+                        adaBoostOptions));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testUpdateNotBuildInClassifiersConfigurationOptions() {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(false);
-        classifierOptionsService.updateBuildInClassifiersConfiguration(
+        assertThrows(IllegalStateException.class, () -> classifierOptionsService.updateBuildInClassifiersConfiguration(
                 classifierOptionsDatabaseModel.getConfiguration(), Collections.singletonList(
                         createClassifierOptionsDatabaseModel(OPTIONS,
-                                classifierOptionsDatabaseModel.getConfiguration())));
+                                classifierOptionsDatabaseModel.getConfiguration()))));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testUpdateBuildInClassifiersConfigurationWithEmptyOptions() {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(true);
-        classifierOptionsService.updateBuildInClassifiersConfiguration(
-                classifierOptionsDatabaseModel.getConfiguration(), Collections.emptyList());
+        assertThrows(IllegalArgumentException.class, () -> classifierOptionsService.updateBuildInClassifiersConfiguration(
+                classifierOptionsDatabaseModel.getConfiguration(), Collections.emptyList()));
     }
 
     @Test

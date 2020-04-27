@@ -8,11 +8,11 @@ import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.ers.ErsRequestService;
 import eca.core.evaluation.EvaluationResults;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.UUID;
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class EvaluationResultsFinishedEventListenerTest {
 
     @Mock

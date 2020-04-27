@@ -17,7 +17,7 @@ import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import eca.core.evaluation.EvaluationMethod;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;

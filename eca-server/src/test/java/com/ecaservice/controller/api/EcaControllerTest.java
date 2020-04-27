@@ -2,12 +2,10 @@ package com.ecaservice.controller.api;
 
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.repository.ExperimentRepository;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
@@ -22,7 +20,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
 @WebMvcTest(controllers = EcaController.class)
 @AutoConfigureMockMvc(addFilters = false)
 public class EcaControllerTest {
@@ -31,7 +28,6 @@ public class EcaControllerTest {
     private static final String DOWNLOAD_URL = BASE_URL + "/experiment/download/{token}";
 
     private static final String TOKEN = "token";
-    private static final String MODEL_FILE = "experiment.model";
 
     @MockBean
     private ExperimentRepository experimentRepository;

@@ -22,7 +22,7 @@ import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationResults;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 import org.springframework.ws.client.WebServiceIOException;

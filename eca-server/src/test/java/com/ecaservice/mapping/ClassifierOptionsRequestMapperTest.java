@@ -6,13 +6,13 @@ import com.ecaservice.dto.InstancesRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.EvaluationMethod;
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 
@@ -21,7 +21,7 @@ import javax.inject.Inject;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @Import({ClassifierOptionsRequestMapperImpl.class, CrossValidationConfig.class, InstancesConverter.class})
@@ -34,7 +34,7 @@ public class ClassifierOptionsRequestMapperTest {
 
     private InstancesRequest instancesRequest;
 
-    @Before
+    @BeforeEach
     public void init() {
         instancesRequest = new InstancesRequest();
         instancesRequest.setData(TestHelperUtils.loadInstances());

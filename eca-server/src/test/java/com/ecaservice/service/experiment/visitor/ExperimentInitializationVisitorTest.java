@@ -15,14 +15,14 @@ import eca.dataminer.AutomatedNeuralNetwork;
 import eca.dataminer.AutomatedRandomForests;
 import eca.dataminer.AutomatedStacking;
 import eca.ensemble.ClassifiersSet;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import weka.core.Instances;
 
 import javax.inject.Inject;
@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @Import({ExperimentConfig.class, CrossValidationConfig.class})
@@ -51,7 +51,7 @@ public class ExperimentInitializationVisitorTest {
 
     private ExperimentInitializationVisitor experimentInitializationVisitor;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         experimentInitializationVisitor = new ExperimentInitializationVisitor(experimentConfig,
                 crossValidationConfig, classifiersSetSearcher);

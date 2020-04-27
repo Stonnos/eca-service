@@ -10,14 +10,12 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.util.FieldConstraints;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Collections;
 
@@ -43,7 +41,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
 @WebMvcTest(controllers = ClassifiersConfigurationController.class)
 @Import(ClassifiersConfigurationMapperImpl.class)
 public class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
@@ -109,7 +106,7 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(pageDto)));
     }
 
@@ -136,7 +133,7 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
         mockMvc.perform(get(DETAIL_URL, ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(classifiersConfigurationDto)));
     }
 
@@ -217,7 +214,7 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
                 new CreateClassifiersConfigurationDto(CONFIGURATION_NAME);
         mockMvc.perform(post(SAVE_URL)
                 .content(objectMapper.writeValueAsString(createClassifiersConfigurationDto))
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -235,7 +232,7 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
         mockMvc.perform(post(SAVE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .content(objectMapper.writeValueAsString(createClassifiersConfigurationDto))
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
@@ -246,7 +243,7 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
         mockMvc.perform(post(SAVE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .content(objectMapper.writeValueAsString(createClassifiersConfigurationDto))
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
@@ -257,7 +254,7 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
         mockMvc.perform(post(SAVE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .content(objectMapper.writeValueAsString(createClassifiersConfigurationDto))
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
@@ -267,7 +264,7 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
                 new UpdateClassifiersConfigurationDto(ID, CONFIGURATION_NAME);
         mockMvc.perform(put(UPDATE_URL)
                 .content(objectMapper.writeValueAsString(updateClassifiersConfigurationDto))
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -285,7 +282,7 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
         mockMvc.perform(put(UPDATE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .content(objectMapper.writeValueAsString(updateClassifiersConfigurationDto))
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
@@ -296,7 +293,7 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
         mockMvc.perform(put(UPDATE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .content(objectMapper.writeValueAsString(updateClassifiersConfigurationDto))
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
@@ -307,7 +304,7 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
         mockMvc.perform(put(UPDATE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .content(objectMapper.writeValueAsString(updateClassifiersConfigurationDto))
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 }

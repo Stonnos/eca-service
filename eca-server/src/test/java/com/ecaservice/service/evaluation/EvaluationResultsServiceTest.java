@@ -25,13 +25,13 @@ import eca.regression.Logistic;
 import eca.trees.CART;
 import eca.trees.J48;
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Attribute;
 import weka.core.Instances;
@@ -44,7 +44,7 @@ import java.util.List;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @Import({EvaluationResultsService.class, CrossValidationConfig.class,
@@ -58,7 +58,7 @@ public class EvaluationResultsServiceTest {
 
     private EvaluationResults evaluationResults;
 
-    @Before
+    @BeforeEach
     public void init() {
         evaluationResults = TestHelperUtils.getEvaluationResults();
     }

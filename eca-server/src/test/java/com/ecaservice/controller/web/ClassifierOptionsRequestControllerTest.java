@@ -11,8 +11,7 @@ import com.ecaservice.service.ers.ClassifierOptionsRequestService;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,7 +19,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
@@ -44,7 +42,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
 @WebMvcTest(controllers = ClassifierOptionsRequestController.class)
 @Import({ClassifierOptionsRequestModelMapperImpl.class, ErsEvaluationMethodMapperImpl.class,
         ClassifierOptionsResponseModelMapperImpl.class})
@@ -113,7 +110,7 @@ public class ClassifierOptionsRequestControllerTest extends PageRequestControlle
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(pageDto)));
     }
 }

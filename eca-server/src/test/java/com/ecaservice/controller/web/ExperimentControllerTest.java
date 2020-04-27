@@ -30,8 +30,7 @@ import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.ecaservice.web.dto.model.SendingStatus;
 import eca.core.evaluation.EvaluationMethod;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -41,7 +40,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.MimeTypeUtils;
 
 import javax.inject.Inject;
@@ -77,7 +75,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
 @WebMvcTest(controllers = ExperimentController.class)
 @Import(ExperimentMapperImpl.class)
 public class ExperimentControllerTest extends PageRequestControllerTest {
@@ -178,7 +175,7 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
         mockMvc.perform(get(DETAILS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(experimentDto)));
     }
 
@@ -207,7 +204,7 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
                 .param(EXPERIMENT_TYPE_PARAM, ExperimentType.NEURAL_NETWORKS.name())
                 .param(EVALUATION_METHOD_PARAM, EvaluationMethod.CROSS_VALIDATION.name()))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
     }
 
@@ -226,7 +223,7 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
                 .param(EXPERIMENT_TYPE_PARAM, ExperimentType.NEURAL_NETWORKS.name())
                 .param(EVALUATION_METHOD_PARAM, EvaluationMethod.CROSS_VALIDATION.name()))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
     }
 
@@ -279,7 +276,7 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
     }
 
@@ -297,7 +294,7 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
         mockMvc.perform(get(REQUEST_STATUS_STATISTICS_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(requestStatusStatisticsDto)));
     }
 
@@ -330,7 +327,7 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
         mockMvc.perform(get(EXPERIMENT_RESULTS_DETAILS_URL, EXPERIMENT_RESULTS_ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(experimentResultsDetailsDto)));
     }
 
@@ -355,7 +352,7 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
         mockMvc.perform(get(ERS_REPORT_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
     }
 
@@ -470,7 +467,7 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
         when(lockService.locked(experiment.getRequestId())).thenReturn(true);
         mockMvc.perform(get(EXPERIMENT_RESULTS_SENDING_STATUS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(sendingStatus)));
     }
 
@@ -489,7 +486,7 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
         mockMvc.perform(get(EXPERIMENT_TYPES_STATISTICS_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(chartDataDtoList)));
 
     }

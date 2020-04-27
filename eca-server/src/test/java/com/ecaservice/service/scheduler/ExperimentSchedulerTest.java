@@ -17,7 +17,7 @@ import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.experiment.mail.NotificationService;
 import eca.converters.model.ExperimentHistory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;

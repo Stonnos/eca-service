@@ -1,8 +1,8 @@
 package com.ecaservice.service.ers;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.config.cache.CacheNames;
 import com.ecaservice.config.CrossValidationConfig;
+import com.ecaservice.config.cache.CacheNames;
 import com.ecaservice.config.ws.ers.ErsConfig;
 import com.ecaservice.configuation.CacheConfiguration;
 import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
@@ -17,7 +17,7 @@ import com.ecaservice.mapping.InstancesConverter;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.evaluation.EvaluationResultsService;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Import;

@@ -13,7 +13,7 @@ import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -29,6 +29,7 @@ import java.util.UUID;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 /**
@@ -126,12 +127,12 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
         assertThat(classifierOptionsRequestModels.get(0).getRequestId()).isEqualTo(requestModel2.getRequestId());
     }
 
-    @Test(expected = InvalidDataAccessApiUsageException.class)
+    @Test
     public void testRangeFilterForIllegalFieldType() {
         FilterRequestDto filterRequestDto = new FilterRequestDto(ClassifierOptionsRequestModel_.RESPONSE_STATUS,
                 Arrays.asList(ErsResponseStatus.RESULTS_NOT_FOUND.name(), ErsResponseStatus.ERROR.name()),
                 MatchMode.RANGE);
-        testFilterForIllegalFieldType(filterRequestDto);
+        assertThrows(InvalidDataAccessApiUsageException.class, () -> testFilterForIllegalFieldType(filterRequestDto));
     }
 
     @Test
@@ -169,14 +170,14 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
         assertThat(classifierOptionsRequestModelPage.getTotalElements()).isOne();
     }
 
-    @Test(expected = InvalidDataAccessApiUsageException.class)
+    @Test
     public void testLikeFilterForNotStringField() {
         FilterRequestDto filterRequestDto = new FilterRequestDto(ClassifierOptionsRequestModel_.REQUEST_DATE,
                 Collections.singletonList("2018-11-11"), MatchMode.LIKE);
-        testFilterForIllegalFieldType(filterRequestDto);
+        assertThrows(InvalidDataAccessApiUsageException.class, () -> testFilterForIllegalFieldType(filterRequestDto));
     }
 
-    @Test(expected = InvalidDataAccessApiUsageException.class)
+    @Test
     public void testGlobalFilterForNotStringField() {
         when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST)).thenReturn(
                 Collections.singletonList(ClassifierOptionsRequestModel_.REQUEST_DATE));
@@ -187,7 +188,8 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, ClassifierOptionsRequestModel_.REQUEST_DATE, false, "query",
                         newArrayList());
-        classifierOptionsRequestService.getNextPage(pageRequestDto);
+        assertThrows(InvalidDataAccessApiUsageException.class,
+                () -> classifierOptionsRequestService.getNextPage(pageRequestDto));
     }
 
     private void testFilterForIllegalFieldType(FilterRequestDto filterRequestDto) {

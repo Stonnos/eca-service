@@ -10,10 +10,10 @@ import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
 import eca.core.evaluation.EvaluationMethod;
 import eca.metrics.KNearestNeighbours;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class,
         ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class, CrossValidationConfig.class})
 public class EvaluationLogMapperTest {

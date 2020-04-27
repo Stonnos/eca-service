@@ -7,13 +7,11 @@ import com.ecaservice.service.filter.FilterService;
 import com.ecaservice.service.filter.dictionary.FilterDictionaries;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
 @WebMvcTest(controllers = FilterTemplateController.class)
 public class FilterTemplateControllerTest extends AbstractControllerTest {
 
@@ -135,7 +132,7 @@ public class FilterTemplateControllerTest extends AbstractControllerTest {
         mockMvc.perform(get(templateUrl)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(filterFieldDtoList)));
     }
 
@@ -152,7 +149,7 @@ public class FilterTemplateControllerTest extends AbstractControllerTest {
         mockMvc.perform(get(templateUrl)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(filterDictionaryDto)));
     }
 }

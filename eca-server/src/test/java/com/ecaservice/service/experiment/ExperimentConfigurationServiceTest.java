@@ -8,7 +8,7 @@ import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.classifiers.ClassifierOptionsService;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for checking {@link ExperimentConfigurationService} functionality.
@@ -50,11 +51,11 @@ public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
         classifiersConfigurationRepository.deleteAll();
     }
 
-    @Test(expected = ClassifierOptionsException.class)
+    @Test
     public void testNotSpecifiedConfigsDirectory() {
         ExperimentConfig config = new ExperimentConfig();
         ReflectionTestUtils.setField(experimentConfigurationService, "experimentConfig", config);
-        experimentConfigurationService.saveClassifiersOptions();
+        assertThrows(ClassifierOptionsException.class, () -> experimentConfigurationService.saveClassifiersOptions());
     }
 
     @Test

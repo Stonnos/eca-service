@@ -37,7 +37,7 @@
         <jacoco-plugin.version>0.8.5</jacoco-plugin.version>
         <jacoco.minCoverage>0.70</jacoco.minCoverage>
         <maven-processor-plugin.version>3.3.3</maven-processor-plugin.version>
-        <spring.security.oauth2.version>2.1.6.RELEASE</spring.security.oauth2.version>
+        <spring.security.oauth2.version>2.2.6.RELEASE</spring.security.oauth2.version>
         <sonar.coverage.exclusions>
             **/model/**/*,
             **/dto/**/*,
