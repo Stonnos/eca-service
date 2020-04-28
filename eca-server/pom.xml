@@ -25,6 +25,7 @@
 
     <properties>
         <postresql.version>42.2.6</postresql.version>
+        <h2.version>1.4.199</h2.version>
         <eca.version>6.7</eca.version>
         <assertj.core.version>3.13.1</assertj.core.version>
         <mockito.version>3.2.4</mockito.version>
@@ -191,6 +192,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
         </dependency>
 
         <dependency>
