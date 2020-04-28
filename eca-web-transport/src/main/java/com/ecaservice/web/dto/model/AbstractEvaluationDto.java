@@ -8,6 +8,8 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+import static com.ecaservice.web.dto.util.FieldConstraints.DATE_TIME_PATTERN;
+
 /**
  * Abstract evaluation dto model.
  *
@@ -26,7 +28,7 @@ public abstract class AbstractEvaluationDto {
      * Request creation date
      */
     @ApiModelProperty(value = "Request creation date")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime creationDate;
 
@@ -34,7 +36,7 @@ public abstract class AbstractEvaluationDto {
      * Evaluation start date
      */
     @ApiModelProperty(value = "Evaluation start date")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime startDate;
 
@@ -42,7 +44,7 @@ public abstract class AbstractEvaluationDto {
      * Evaluation end date
      */
     @ApiModelProperty(value = "Evaluation end date")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime endDate;
 

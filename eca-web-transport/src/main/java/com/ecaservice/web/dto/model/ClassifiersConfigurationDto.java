@@ -9,6 +9,8 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+import static com.ecaservice.web.dto.util.FieldConstraints.DATE_TIME_PATTERN;
+
 /**
  * Classifiers configuration dto model.
  *
@@ -30,7 +32,7 @@ public class ClassifiersConfigurationDto {
     /**
      * Configuration created date
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @ApiModelProperty(value = "Configuration creation date")
     private LocalDateTime created;
@@ -38,7 +40,7 @@ public class ClassifiersConfigurationDto {
     /**
      * Configuration updated date
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @ApiModelProperty(value = "Configuration updated date")
     private LocalDateTime updated;
