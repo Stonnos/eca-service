@@ -51,7 +51,7 @@
             <column name="configuration_id" type="bigint">
                 <constraints foreignKeyName="fk_classifier_options_classifiers_configuration_id"
                              referencedTableName="classifiers_configuration"
-                             referencedColumnNames="id" nullable="true"/>
+                             referencedColumnNames="id" nullable="false"/>
             </column>
         </addColumn>
     </changeSet>
