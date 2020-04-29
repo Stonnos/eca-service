@@ -27,13 +27,7 @@
                   <span class="text-bold">{{ evaluationLogDetails?.requestId }}</span>
                 </ng-container>
                 <ng-container *ngSwitchCase="'requestStatus.description'">
-                  <div class="text-white request-status"
-                       [class.bg-info]="evaluationLogDetails?.requestStatus.value == 'NEW'"
-                       [class.bg-success]="evaluationLogDetails?.requestStatus.value == 'FINISHED'"
-                       [class.bg-warning]="evaluationLogDetails?.requestStatus.value == 'TIMEOUT'"
-                       [class.bg-danger]="evaluationLogDetails?.requestStatus.value == 'ERROR'">
-                    {{ evaluationLogDetails?.requestStatus.description }}
-                  </div>
+                  <app-request-status [requestStatus]="evaluationLogDetails?.requestStatus"></app-request-status>
                 </ng-container>
                 <ng-container *ngSwitchDefault>
                   {{ getEvaluationLogValue(field.name) }}

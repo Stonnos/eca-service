@@ -29,13 +29,7 @@
                     <span class="text-bold">{{ experimentDto?.requestId }}</span>
                   </ng-container>
                   <ng-container *ngSwitchCase="'requestStatus.description'">
-                    <div class="text-white request-status"
-                         [class.bg-info]="experimentDto?.requestStatus.value == 'NEW'"
-                         [class.bg-success]="experimentDto?.requestStatus.value == 'FINISHED'"
-                         [class.bg-warning]="experimentDto?.requestStatus.value == 'TIMEOUT'"
-                         [class.bg-danger]="experimentDto?.requestStatus.value == 'ERROR'">
-                      {{ experimentDto?.requestStatus.description }}
-                    </div>
+                    <app-request-status [requestStatus]="experimentDto?.requestStatus"></app-request-status>
                   </ng-container>
                   <ng-container *ngSwitchDefault>
                     {{ getExperimentValue(field.name) }}

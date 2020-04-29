@@ -5,12 +5,19 @@ import { UiComponentsModule } from "../ui-components.module";
 import { PageRequestService } from "./services/page-request.service";
 import { FieldService } from "./services/field.service";
 import { ReportsService } from "./services/report.service";
+import { RequestStatusComponent } from "./request-status/components/request-status.component";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     UiComponentsModule
+  ],
+  declarations: [
+    RequestStatusComponent
+  ],
+  exports: [
+    RequestStatusComponent
   ],
   providers: [
     PageRequestService,
