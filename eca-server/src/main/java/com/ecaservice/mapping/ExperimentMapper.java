@@ -14,10 +14,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 
 import static com.ecaservice.util.Utils.getEvaluationMethodDescription;
 
@@ -27,9 +24,7 @@ import static com.ecaservice.util.Utils.getEvaluationMethodDescription;
  * @author Roman Batygin
  */
 @Mapper
-public abstract class ExperimentMapper {
-
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+public abstract class ExperimentMapper extends AbstractEvaluationMapper {
 
     /**
      * Maps experiment request to experiment persistence entity.
@@ -51,6 +46,7 @@ public abstract class ExperimentMapper {
      */
     @Mapping(source = "experimentAbsolutePath", target = "experimentAbsolutePath", qualifiedByName = "toFileName")
     @Mapping(source = "trainingDataAbsolutePath", target = "trainingDataAbsolutePath", qualifiedByName = "toFileName")
+    @Mapping(source = "experiment", target = "evaluationTotalTime", qualifiedByName = "calculateEvaluationTotalTime")
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(target = "experimentType", ignore = true)
     @Mapping(target = "requestStatus", ignore = true)
@@ -134,10 +130,5 @@ public abstract class ExperimentMapper {
     @Named("toFileName")
     protected String toFileName(String path) {
         return FilenameUtils.getName(path);
-    }
-
-    @Named("formatLocalDateTime")
-    protected String formatLocalDateTime(LocalDateTime localDateTime) {
-        return Optional.ofNullable(localDateTime).map(dateTimeFormatter::format).orElse(null);
     }
 }

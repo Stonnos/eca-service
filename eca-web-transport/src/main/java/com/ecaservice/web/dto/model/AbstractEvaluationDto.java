@@ -77,4 +77,10 @@ public abstract class AbstractEvaluationDto {
      */
     @ApiModelProperty(value = "Seed value for k * V cross - validation method")
     private Integer seed;
+
+    /**
+     * Model evaluation total time
+     */
+    @ApiModelProperty(value = "Model evaluation total time")
+    private String evaluationTotalTime;
 }
