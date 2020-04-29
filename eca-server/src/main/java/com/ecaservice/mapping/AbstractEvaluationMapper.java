@@ -32,9 +32,9 @@ public abstract class AbstractEvaluationMapper {
         if (evaluationEntity.getStartDate() != null && evaluationEntity.getEndDate() != null) {
             long totalTimeMillis =
                     ChronoUnit.MILLIS.between(evaluationEntity.getStartDate(), evaluationEntity.getEndDate());
-            LocalDateTime date =
+            LocalDateTime totalTime =
                     Instant.ofEpochMilli(totalTimeMillis).atZone(ZoneId.of(GMT_TIME_ZONE)).toLocalDateTime();
-            return evaluationTimeFormatter.format(date);
+            return evaluationTimeFormatter.format(totalTime);
         }
         return null;
     }
