@@ -75,7 +75,7 @@
 <p-dialog
   [(visible)]="classifierOptionsDialogVisibility"
   header="Классификатор - {{ selectedExperimentResults?.classifierInfo?.classifierName }} № {{ selectedExperimentResults?.resultsIndex }}"
-  [width]="600"
+  [style]="{ width: '600px' }"
   appendTo="body"
   [modal]="true"
   [blockScroll]="false"
