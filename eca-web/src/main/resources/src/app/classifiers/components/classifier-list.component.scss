@@ -2,18 +2,30 @@
 
   .ui-table-tbody > tr > td {
     width: 300px;
+
     &:first-child {
       width: 330px;
       font-weight: bold;
     }
+
     &:nth-child(8) {
       width: 330px;
     }
+
+    &:nth-child(9) {
+      width: 340px;
+    }
   }
+
   .ui-table-thead > tr > th {
     width: 300px;
+
     &:first-child, &:nth-child(8) {
       width: 330px;
+    }
+
+    &:nth-child(9) {
+      width: 340px;
     }
   }
 }
