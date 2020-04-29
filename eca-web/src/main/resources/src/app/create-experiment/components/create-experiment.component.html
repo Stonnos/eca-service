@@ -51,7 +51,6 @@
           optionLabel="label"
           [(ngModel)]="item.experimentType"
           #experimentType="ngModel"
-          [autoWidth]="false"
           [style]="{'width':'100%'}">
         </p-dropdown>
         <div class="text-danger error-message" *ngIf="submitted && experimentType.invalid">
@@ -72,7 +71,6 @@
           optionLabel="label"
           [(ngModel)]="item.evaluationMethod"
           #evaluationMethod="ngModel"
-          [autoWidth]="false"
           [style]="{'width':'100%'}">
         </p-dropdown>
         <div class="text-danger error-message" *ngIf="submitted && evaluationMethod.invalid">
