@@ -54,7 +54,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     this.defaultSortField = ExperimentFields.CREATION_DATE;
     this.linkColumns = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH,
       ExperimentFields.REQUEST_ID, ExperimentFields.EVALUATION_METHOD_DESCRIPTION];
-    this.notSortableColumns = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH];
+    this.notSortableColumns = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH, ExperimentFields.EVALUATION_TOTAL_TIME];
     this.initColumns();
   }
 
@@ -262,6 +262,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       { name: ExperimentFields.EMAIL, label: "Email заявки" },
       { name: ExperimentFields.TRAINING_DATA_PATH, label: "Обучающая выборка" },
       { name: ExperimentFields.EXPERIMENT_PATH, label: "Результаты эксперимента" },
+      { name: ExperimentFields.EVALUATION_TOTAL_TIME, label: "Время построения эксперимента" },
       { name: ExperimentFields.CREATION_DATE, label: "Дата создания заявки" },
       { name: ExperimentFields.START_DATE, label: "Дата начала эксперимента" },
       { name: ExperimentFields.END_DATE, label: "Дата окончания эксперимента" },

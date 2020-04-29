@@ -43,6 +43,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     this.defaultSortField = EvaluationLogFields.CREATION_DATE;
     this.linkColumns = [EvaluationLogFields.CLASSIFIER_NAME, EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION,
       EvaluationLogFields.RELATION_NAME, EvaluationLogFields.REQUEST_ID];
+    this.notSortableColumns = [EvaluationLogFields.EVALUATION_TOTAL_TIME];
     this.initColumns();
   }
 
@@ -137,6 +138,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
       { name: EvaluationLogFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки", sortBy: EvaluationLogFields.REQUEST_STATUS },
       { name: EvaluationLogFields.RELATION_NAME, label: "Обучающая выборка" },
       { name: EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: EvaluationLogFields.EVALUATION_METHOD },
+      { name: EvaluationLogFields.EVALUATION_TOTAL_TIME, label: "Время построения модели" },
       { name: EvaluationLogFields.CREATION_DATE, label: "Дата создания заявки" },
       { name: EvaluationLogFields.START_DATE, label: "Дата начала построения модели" },
       { name: EvaluationLogFields.END_DATE, label: "Дата окончания построения модели" }

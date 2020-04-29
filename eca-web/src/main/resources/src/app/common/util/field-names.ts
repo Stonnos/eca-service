@@ -18,6 +18,7 @@ export class ExperimentFields {
   public static readonly NUM_FOLDS: string = "numFolds";
   public static readonly NUM_TESTS: string = "numTests";
   public static readonly SEED: string = "seed";
+  public static readonly EVALUATION_TOTAL_TIME: string = "evaluationTotalTime";
 }
 
 export class EvaluationLogFields {
@@ -38,6 +39,7 @@ export class EvaluationLogFields {
   public static readonly CREATION_DATE: string = "creationDate";
   public static readonly START_DATE: string = "startDate";
   public static readonly END_DATE: string = "endDate";
+  public static readonly EVALUATION_TOTAL_TIME: string = "evaluationTotalTime";
 }
 
 export class ClassifierOptionsRequestsFields {

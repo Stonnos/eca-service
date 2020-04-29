@@ -187,6 +187,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
       { name: ExperimentFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки" },
       { name: ExperimentFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности" },
       { name: ExperimentFields.EMAIL, label: "Email заявки" },
+      { name: ExperimentFields.EVALUATION_TOTAL_TIME, label: "Время построения эксперимента" },
       { name: ExperimentFields.CREATION_DATE, label: "Дата создания заявки" },
       { name: ExperimentFields.START_DATE, label: "Дата начала эксперимента" },
       { name: ExperimentFields.END_DATE, label: "Дата окончания эксперимента" },

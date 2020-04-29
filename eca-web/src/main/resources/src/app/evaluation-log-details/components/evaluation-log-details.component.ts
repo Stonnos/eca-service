@@ -73,7 +73,8 @@ export class EvaluationLogDetailsComponent implements OnInit {
       { name: EvaluationLogFields.NUM_ATTRIBUTES, label: "Число атрибутов:" },
       { name: EvaluationLogFields.NUM_CLASSES, label: "Число классов:" },
       { name: EvaluationLogFields.CLASS_NAME, label: "Атрибут класса:" },
-      { name: EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности:" }
+      { name: EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности:" },
+      { name: EvaluationLogFields.EVALUATION_TOTAL_TIME, label: "Время построения модели" },
     ];
   }
 }
