@@ -79,8 +79,8 @@ public abstract class AbstractEvaluationDto {
     private Integer seed;
 
     /**
-     * Model evaluation total time
+     * Model evaluation total time in format HH:mm:ss:SS
      */
-    @ApiModelProperty(value = "Model evaluation total time")
+    @ApiModelProperty(value = "Model evaluation total time in format HH:mm:ss:SS")
     private String evaluationTotalTime;
 }
