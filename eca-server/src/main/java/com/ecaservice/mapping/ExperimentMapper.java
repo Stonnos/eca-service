@@ -69,6 +69,7 @@ public abstract class ExperimentMapper extends AbstractEvaluationMapper {
      * @param experiment - experiment entity
      * @return experiment bean
      */
+    @Mapping(source = "experiment", target = "evaluationTotalTime", qualifiedByName = "calculateEvaluationTotalTime")
     @Mapping(source = "experimentAbsolutePath", target = "experimentAbsolutePath", qualifiedByName = "toFileName")
     @Mapping(source = "trainingDataAbsolutePath", target = "trainingDataAbsolutePath", qualifiedByName = "toFileName")
     @Mapping(target = "evaluationMethod", ignore = true)

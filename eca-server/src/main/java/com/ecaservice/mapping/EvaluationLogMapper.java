@@ -78,6 +78,7 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
      */
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(source = "requestStatus.description", target = "requestStatus")
+    @Mapping(source = "evaluationLog", target = "evaluationTotalTime", qualifiedByName = "calculateEvaluationTotalTime")
     @Mapping(source = "creationDate", target = "creationDate", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "startDate", target = "startDate", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "endDate", target = "endDate", qualifiedByName = "formatLocalDateTime")
