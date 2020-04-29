@@ -109,6 +109,7 @@ public class ExperimentMapperTest {
         assertThat(experimentDto.getNumFolds()).isEqualTo(experiment.getNumFolds());
         assertThat(experimentDto.getNumTests()).isEqualTo(experiment.getNumTests());
         assertThat(experimentDto.getSeed()).isEqualTo(experiment.getSeed());
+        assertThat(experimentDto.getEvaluationTotalTime()).isNotNull();
     }
 
     @Test
@@ -144,5 +145,6 @@ public class ExperimentMapperTest {
         assertThat(experimentBean.getTrainingDataAbsolutePath()).isEqualTo(DATA_XLS);
         assertThat(experimentBean.getExperimentAbsolutePath()).isEqualTo(EXPERIMENT_MODEL);
         assertThat(experimentBean.getRequestId()).isEqualTo(experiment.getRequestId());
+        assertThat(experimentBean.getEvaluationTotalTime()).isNotNull();
     }
 }
