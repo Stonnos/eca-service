@@ -57,10 +57,13 @@
 
         <ng-template pTemplate="header">
           <tr>
-            <th *ngFor="let column of columns" [pSortableColumn]="column.name">
-              {{ column.label }}
-              <p-sortIcon [field]="column.name"></p-sortIcon>
-            </th>
+            <ng-container *ngFor="let column of columns">
+              <th *ngIf="!notSortable(column.name)" [pSortableColumn]="column.name">
+                {{ column.label }}
+                <p-sortIcon [field]="column.name"></p-sortIcon>
+              </th>
+              <th *ngIf="notSortable(column.name)">{{ column.label }}</th>
+            </ng-container>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-item>
