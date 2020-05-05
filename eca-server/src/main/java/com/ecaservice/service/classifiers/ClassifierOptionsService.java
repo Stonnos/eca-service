@@ -146,7 +146,8 @@ public class ClassifierOptionsService {
             if (!CollectionUtils.isEmpty(newOptionsToSave)) {
                 classifierOptionsDatabaseModelRepository.saveAll(newOptionsToSave);
             }
-            if (!CollectionUtils.isEmpty(latestOptions)) {
+            if (!CollectionUtils.isEmpty(latestOptions) &&
+                    (!CollectionUtils.isEmpty(oldOptionsToDelete) || !CollectionUtils.isEmpty(newOptionsToSave))) {
                 classifiersConfiguration.setUpdated(LocalDateTime.now());
                 classifiersConfigurationRepository.save(classifiersConfiguration);
             }
