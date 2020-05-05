@@ -11,6 +11,7 @@ import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,7 @@ import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import static com.ecaservice.TestHelperUtils.createClassifierOptionsDatabaseModel;
 import static com.ecaservice.TestHelperUtils.createClassifiersConfiguration;
@@ -193,17 +195,18 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     @Test
     public void testUpdateNotBuildInClassifiersConfigurationOptions() {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(false);
+        Set<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = Sets.newHashSet(Collections.singletonList(
+                createClassifierOptionsDatabaseModel(OPTIONS, classifierOptionsDatabaseModel.getConfiguration())));
         assertThrows(IllegalStateException.class, () -> classifierOptionsService.updateBuildInClassifiersConfiguration(
-                classifierOptionsDatabaseModel.getConfiguration(), Collections.singletonList(
-                        createClassifierOptionsDatabaseModel(OPTIONS,
-                                classifierOptionsDatabaseModel.getConfiguration()))));
+                classifierOptionsDatabaseModel.getConfiguration(), classifierOptionsDatabaseModels));
     }
 
     @Test
     public void testUpdateBuildInClassifiersConfigurationWithEmptyOptions() {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(true);
-        assertThrows(IllegalArgumentException.class, () -> classifierOptionsService.updateBuildInClassifiersConfiguration(
-                classifierOptionsDatabaseModel.getConfiguration(), Collections.emptyList()));
+        assertThrows(IllegalArgumentException.class,
+                () -> classifierOptionsService.updateBuildInClassifiersConfiguration(
+                        classifierOptionsDatabaseModel.getConfiguration(), Collections.emptySet()));
     }
 
     @Test
@@ -211,8 +214,8 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
         ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
         classifiersConfiguration.setBuildIn(true);
         classifiersConfigurationRepository.save(classifiersConfiguration);
-        classifierOptionsService.updateBuildInClassifiersConfiguration(classifiersConfiguration,
-                Collections.singletonList(createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration)));
+        classifierOptionsService.updateBuildInClassifiersConfiguration(classifiersConfiguration, Sets.newHashSet(
+                Collections.singletonList(createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration))));
         assertThat(classifierOptionsDatabaseModelRepository.count()).isOne();
         ClassifiersConfiguration actualConfiguration =
                 classifiersConfigurationRepository.findById(classifiersConfiguration.getId()).orElse(null);
@@ -227,7 +230,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
                 classifierOptionsDatabaseModel.getConfiguration());
         ClassifierOptionsDatabaseModel newSecond = createClassifierOptionsDatabaseModel("config2",
                 classifierOptionsDatabaseModel.getConfiguration());
-        List<ClassifierOptionsDatabaseModel> newOptions = Arrays.asList(newFirst, newSecond);
+        Set<ClassifierOptionsDatabaseModel> newOptions = Sets.newHashSet(newFirst, newSecond);
         classifierOptionsService.updateBuildInClassifiersConfiguration(
                 classifierOptionsDatabaseModel.getConfiguration(), newOptions);
         assertThat(classifierOptionsDatabaseModelRepository.count()).isEqualTo(newOptions.size());
@@ -262,7 +265,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
         ClassifierOptionsDatabaseModel newSecond =
                 createClassifierOptionsDatabaseModel("config2", classifiersConfiguration);
         newSecond.setOptionsName("config2Name");
-        List<ClassifierOptionsDatabaseModel> newOptions = Arrays.asList(newFirst, newSecond);
+        Set<ClassifierOptionsDatabaseModel> newOptions = Sets.newHashSet(newFirst, newSecond);
         //Performs test
         classifierOptionsService.updateBuildInClassifiersConfiguration(classifiersConfiguration, newOptions);
         assertThat(classifierOptionsDatabaseModelRepository.count()).isEqualTo(newOptions.size());

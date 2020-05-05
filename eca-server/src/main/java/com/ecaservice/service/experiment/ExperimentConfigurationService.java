@@ -19,11 +19,11 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 import static com.ecaservice.util.ClassifierOptionsHelper.createClassifierOptionsDatabaseModel;
+import static com.google.common.collect.Sets.newHashSet;
 
 /**
  * Service for saving individual classifiers input options into database.
@@ -64,7 +64,7 @@ public class ExperimentConfigurationService {
         } else {
             log.info("Starting to save individual classifiers options into database for build in configuration");
             ClassifiersConfiguration classifiersConfiguration = getOrSaveBuildInClassifiersConfiguration();
-            List<ClassifierOptionsDatabaseModel> newOptions =
+            Set<ClassifierOptionsDatabaseModel> newOptions =
                     createClassifiersOptions(modelFiles, classifiersConfiguration);
             classifierOptionsService.updateBuildInClassifiersConfiguration(classifiersConfiguration, newOptions);
         }
@@ -84,9 +84,9 @@ public class ExperimentConfigurationService {
         return classifiersConfiguration;
     }
 
-    private List<ClassifierOptionsDatabaseModel> createClassifiersOptions(Collection<File> modelFiles,
-                                                                          ClassifiersConfiguration classifiersConfiguration) {
-        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = new ArrayList<>(modelFiles.size());
+    private Set<ClassifierOptionsDatabaseModel> createClassifiersOptions(Collection<File> modelFiles,
+                                                                         ClassifiersConfiguration classifiersConfiguration) {
+        Set<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = newHashSet();
         for (File modelFile : modelFiles) {
             try {
                 classifierOptionsDatabaseModels.add(

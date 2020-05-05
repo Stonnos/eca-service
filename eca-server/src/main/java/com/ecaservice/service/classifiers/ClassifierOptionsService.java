@@ -21,6 +21,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_.CREATION_DATE;
@@ -123,11 +124,11 @@ public class ClassifierOptionsService {
      * Updates build in classifiers configuration with new classifiers options.
      *
      * @param classifiersConfiguration - classifiers configuration
-     * @param newOptions               - new option list
+     * @param newOptions               - new option set
      */
     @Transactional
     public void updateBuildInClassifiersConfiguration(ClassifiersConfiguration classifiersConfiguration,
-                                                      List<ClassifierOptionsDatabaseModel> newOptions) {
+                                                      Set<ClassifierOptionsDatabaseModel> newOptions) {
         Assert.state(classifiersConfiguration.isBuildIn(), "Expected build in configuration!");
         Assert.notEmpty(newOptions, "New classifiers options list must be not empty!");
         List<ClassifierOptionsDatabaseModel> latestOptions =
