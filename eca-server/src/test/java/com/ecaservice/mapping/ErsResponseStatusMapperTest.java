@@ -28,26 +28,9 @@ public class ErsResponseStatusMapperTest {
     }
 
     @Test
-    public void testMapInvalidRequestIdStatus() {
-        Assertions.assertThat(ersResponseStatusMapper.map(ResponseStatus.INVALID_REQUEST_ID)).isEqualTo(
-                ErsResponseStatus.INVALID_REQUEST_ID);
-    }
-
-    @Test
-    public void testMapInvalidRequestParamsStatus() {
-        Assertions.assertThat(ersResponseStatusMapper.map(ResponseStatus.INVALID_REQUEST_PARAMS)).isEqualTo(
-                ErsResponseStatus.INVALID_REQUEST_PARAMS);
-    }
-
-    @Test
     public void testMapDuplicateRequestIdStatus() {
         Assertions.assertThat(ersResponseStatusMapper.map(ResponseStatus.DUPLICATE_REQUEST_ID)).isEqualTo(
                 ErsResponseStatus.DUPLICATE_REQUEST_ID);
-    }
-
-    @Test
-    public void testMapErrorStatus() {
-        Assertions.assertThat(ersResponseStatusMapper.map(ResponseStatus.ERROR)).isEqualTo(ErsResponseStatus.ERROR);
     }
 
     @Test

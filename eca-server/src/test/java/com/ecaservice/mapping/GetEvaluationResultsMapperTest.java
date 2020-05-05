@@ -54,15 +54,4 @@ public class GetEvaluationResultsMapperTest {
         assertThat(evaluationResultsDto.getEvaluationResultsStatus().getValue()).isEqualTo(
                 EvaluationResultsStatus.EVALUATION_RESULTS_NOT_FOUND.name());
     }
-
-    @Test
-    public void testMapEvaluationResultsResponseWithError() {
-        GetEvaluationResultsResponse evaluationResultsResponse =
-                TestHelperUtils.createGetEvaluationResultsResponse(UUID.randomUUID().toString(),
-                        ResponseStatus.ERROR);
-        EvaluationResultsDto evaluationResultsDto = evaluationResultsMapper.map(evaluationResultsResponse);
-        assertThat(evaluationResultsDto).isNotNull();
-        assertThat(evaluationResultsDto.getEvaluationResultsStatus().getValue()).isEqualTo(
-                EvaluationResultsStatus.ERROR.name());
-    }
 }

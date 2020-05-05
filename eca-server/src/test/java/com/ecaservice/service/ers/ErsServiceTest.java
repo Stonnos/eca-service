@@ -111,11 +111,6 @@ public class ErsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testGetExperimentResultsDetailsWithResponseErrorStatus() {
-        testGetEvaluationResults(ResponseStatus.ERROR, EvaluationResultsStatus.ERROR);
-    }
-
-    @Test
     public void testGetExperimentResultsDetailsWithServiceUnavailable() {
         when(ersRequestService.getEvaluationResults(anyString())).thenThrow(new WebServiceIOException("I/O"));
         assertEvaluationResults(EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE);

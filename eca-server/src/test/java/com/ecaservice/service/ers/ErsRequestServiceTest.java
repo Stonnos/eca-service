@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.ws.client.WebServiceFaultException;
 import org.springframework.ws.client.WebServiceIOException;
 
 import javax.inject.Inject;
@@ -110,25 +111,13 @@ public class ErsRequestServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testErrorSending() {
-        EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
-        evaluationLogRepository.save(evaluationLog);
-        EvaluationResultsResponse resultsResponse = new EvaluationResultsResponse();
-        resultsResponse.setStatus(ResponseStatus.ERROR);
-        when(ersWebServiceClient.sendEvaluationResults(any(EvaluationResults.class), anyString())).thenThrow(
-                new WebServiceIOException("I/O exception"));
-        EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
-        requestEntity.setEvaluationLog(evaluationLog);
-        ersRequestService.saveEvaluationResults(evaluationResults, requestEntity);
-        List<ErsRequest> requestEntities = ersRequestRepository.findAll();
-        AssertionUtils.hasOneElement(requestEntities);
-        ErsRequest ersRequest = requestEntities.stream().findFirst().orElse(null);
-        Assertions.assertThat(ersRequest).isNotNull();
-        Assertions.assertThat(ersRequest.getResponseStatus()).isEqualTo(ErsResponseStatus.ERROR);
-        Assertions.assertThat(ersRequest).isInstanceOf(EvaluationResultsRequestEntity.class);
-        EvaluationResultsRequestEntity actual = (EvaluationResultsRequestEntity) ersRequest;
-        Assertions.assertThat(actual.getEvaluationLog()).isNotNull();
-        Assertions.assertThat(actual.getEvaluationLog().getId()).isEqualTo(evaluationLog.getId());
+    public void testSendingWithServiceUnavailable() {
+        internalTestErrorStatus(new WebServiceIOException("I/O exception"), ErsResponseStatus.SERVICE_UNAVAILABLE);
+    }
+
+    @Test
+    public void testSendingWithSErrorStatus() {
+        internalTestErrorStatus(new WebServiceFaultException("I/O exception"), ErsResponseStatus.ERROR);
     }
 
     @Test
@@ -138,5 +127,23 @@ public class ErsRequestServiceTest extends AbstractJpaTest {
         GetEvaluationResultsResponse response =
                 ersRequestService.getEvaluationResults(UUID.randomUUID().toString());
         Assertions.assertThat(response).isNotNull();
+    }
+
+    private void internalTestErrorStatus(Exception ex, ErsResponseStatus expectedStatus) {
+        EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
+        evaluationLogRepository.save(evaluationLog);
+        when(ersWebServiceClient.sendEvaluationResults(any(EvaluationResults.class), anyString())).thenThrow(ex);
+        EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
+        requestEntity.setEvaluationLog(evaluationLog);
+        ersRequestService.saveEvaluationResults(evaluationResults, requestEntity);
+        List<ErsRequest> requestEntities = ersRequestRepository.findAll();
+        AssertionUtils.hasOneElement(requestEntities);
+        ErsRequest ersRequest = requestEntities.stream().findFirst().orElse(null);
+        Assertions.assertThat(ersRequest).isNotNull();
+        Assertions.assertThat(ersRequest.getResponseStatus()).isEqualTo(expectedStatus);
+        Assertions.assertThat(ersRequest).isInstanceOf(EvaluationResultsRequestEntity.class);
+        EvaluationResultsRequestEntity actual = (EvaluationResultsRequestEntity) ersRequest;
+        Assertions.assertThat(actual.getEvaluationLog()).isNotNull();
+        Assertions.assertThat(actual.getEvaluationLog().getId()).isEqualTo(evaluationLog.getId());
     }
 }

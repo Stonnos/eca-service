@@ -54,7 +54,7 @@ public class GetEvaluationResultsCacheTest extends AbstractJpaTest {
         ReflectionTestUtils.setField(ersRequestService, "ersWebServiceClient", ersWebServiceClient);
         String requestId = UUID.randomUUID().toString();
         GetEvaluationResultsResponse first =
-                TestHelperUtils.createGetEvaluationResultsResponse(requestId, ResponseStatus.ERROR);
+                TestHelperUtils.createGetEvaluationResultsResponse(requestId, ResponseStatus.RESULTS_NOT_FOUND);
         GetEvaluationResultsResponse second =
                 TestHelperUtils.createGetEvaluationResultsResponse(requestId, ResponseStatus.SUCCESS);
         GetEvaluationResultsResponse third =

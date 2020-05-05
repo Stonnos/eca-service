@@ -72,6 +72,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 import org.springframework.util.DigestUtils;
+import org.springframework.ws.client.WebServiceFaultException;
 import org.springframework.ws.client.WebServiceIOException;
 import weka.classifiers.AbstractClassifier;
 
@@ -173,19 +174,12 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     @Test
     public void testServiceUnavailable() {
-        when(ersWebServiceClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenThrow(
-                new WebServiceIOException("error"));
-        EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
-                instancesRequest);
-        assertThat(evaluationResponse).isNotNull();
-        assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
-        assertThat(evaluationResponse.getEvaluationResults()).isNull();
-        List<ClassifierOptionsRequestModel> optionsRequests = classifierOptionsRequestModelRepository.findAll();
-        AssertionUtils.hasOneElement(optionsRequests);
-        ClassifierOptionsRequestModel requestModel = optionsRequests.get(0);
-        assertThat(evaluationResponse.getRequestId()).isNotNull();
-        assertThat(requestModel.getResponseStatus()).isEqualTo(ErsResponseStatus.ERROR);
-        assertThat(requestModel.getClassifierOptionsResponseModels()).isNullOrEmpty();
+        internalTestErrorStatus(new WebServiceIOException("error"), ErsResponseStatus.SERVICE_UNAVAILABLE);
+    }
+
+    @Test
+    public void testErrorStatus() {
+        internalTestErrorStatus(new WebServiceFaultException("error"), ErsResponseStatus.ERROR);
     }
 
     @Test
@@ -424,6 +418,21 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         performClassifierEvaluationTest(TestHelperUtils.createHeterogeneousClassifierOptions(true),
                 ModifiedHeterogeneousClassifier.class);
 
+    }
+
+    private void internalTestErrorStatus(Exception ex, ErsResponseStatus expectedStatus) {
+        when(ersWebServiceClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenThrow(ex);
+        EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
+                instancesRequest);
+        assertThat(evaluationResponse).isNotNull();
+        assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
+        assertThat(evaluationResponse.getEvaluationResults()).isNull();
+        List<ClassifierOptionsRequestModel> optionsRequests = classifierOptionsRequestModelRepository.findAll();
+        AssertionUtils.hasOneElement(optionsRequests);
+        ClassifierOptionsRequestModel requestModel = optionsRequests.get(0);
+        assertThat(evaluationResponse.getRequestId()).isNotNull();
+        assertThat(requestModel.getResponseStatus()).isEqualTo(expectedStatus);
+        assertThat(requestModel.getClassifierOptionsResponseModels()).isNullOrEmpty();
     }
 
     private <U extends ClassifierOptions, V extends AbstractClassifier> void performClassifierEvaluationTest(U options,

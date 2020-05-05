@@ -18,7 +18,8 @@ public enum ErsResponseStatus implements DescriptiveEnum {
     ERROR(ErsResponseStatusDictionary.ERROR_DESCRIPTION),
     INVALID_REQUEST_PARAMS(ErsResponseStatusDictionary.INVALID_REQUEST_PARAMS_DESCRIPTION),
     DATA_NOT_FOUND(ErsResponseStatusDictionary.DATA_NOT_FOUND_DESCRIPTION),
-    RESULTS_NOT_FOUND(ErsResponseStatusDictionary.RESULTS_NOT_FOUND);
+    RESULTS_NOT_FOUND(ErsResponseStatusDictionary.RESULTS_NOT_FOUND_DESCRIPTION),
+    SERVICE_UNAVAILABLE(ErsResponseStatusDictionary.SERVICE_UNAVAILABLE_DESCRIPTION);
 
     private final String description;
 
