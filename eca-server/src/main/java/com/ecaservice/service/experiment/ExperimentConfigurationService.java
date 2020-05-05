@@ -10,16 +10,14 @@ import com.ecaservice.service.classifiers.ClassifierOptionsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.Set;
 
 import static com.ecaservice.util.ClassifierOptionsHelper.createClassifierOptionsDatabaseModel;
@@ -50,15 +48,14 @@ public class ExperimentConfigurationService {
      * Saves individual classifiers input options into database.
      */
     @PostConstruct
-    public void saveClassifiersOptions() {
+    public void saveClassifiersOptions() throws IOException {
         if (StringUtils.isEmpty(experimentConfig.getIndividualClassifiersStoragePath())) {
             log.error(CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_NOT_SPECIFIED);
             throw new ClassifierOptionsException(CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_NOT_SPECIFIED);
         }
-        File classifiersOptionsDir = new File(getClass().getClassLoader().getResource(
-                experimentConfig.getIndividualClassifiersStoragePath()).getFile());
-        Collection<File> modelFiles = FileUtils.listFiles(classifiersOptionsDir, null, true);
-        if (CollectionUtils.isEmpty(modelFiles)) {
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        Resource[] modelFiles = resolver.getResources(experimentConfig.getIndividualClassifiersStoragePath());
+        if (modelFiles.length == 0) {
             log.error(CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_EMPTY);
             throw new ClassifierOptionsException(CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_EMPTY);
         } else {
@@ -84,22 +81,24 @@ public class ExperimentConfigurationService {
         return classifiersConfiguration;
     }
 
-    private Set<ClassifierOptionsDatabaseModel> createClassifiersOptions(Collection<File> modelFiles,
+    private Set<ClassifierOptionsDatabaseModel> createClassifiersOptions(Resource[] modelFiles,
                                                                          ClassifiersConfiguration classifiersConfiguration) {
         Set<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = newHashSet();
-        for (File modelFile : modelFiles) {
+        for (Resource modelFile : modelFiles) {
             try {
                 classifierOptionsDatabaseModels.add(
-                        createClassifierOptionsDatabaseModel(objectMapper.readValue(modelFile, ClassifierOptions.class),
+                        createClassifierOptionsDatabaseModel(objectMapper.readValue(modelFile.getInputStream(),
+                                ClassifierOptions.class),
                                 classifiersConfiguration));
             } catch (IOException ex) {
-                log.error("There was an error while parsing json file [{}]: {}", modelFile.getAbsolutePath(),
+                log.error("There was an error while parsing json file [{}]: {}", modelFile.getFilename(),
                         ex.getMessage());
                 throw new ClassifierOptionsException(
-                        String.format("There was an error while parsing json file '%s': %s",
-                                modelFile.getAbsolutePath(), ex.getMessage()));
+                        String.format("There was an error while parsing json file '%s': %s", modelFile.getFilename(),
+                                ex.getMessage()));
             }
         }
+        log.info("DNOWNPOWNEDPOWNDWEODNWDNE {}", classifierOptionsDatabaseModels.size());
         return classifierOptionsDatabaseModels;
     }
 

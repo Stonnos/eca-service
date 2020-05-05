@@ -1,5 +1,0 @@
-{
-  "type": "decision_tree",
-  "decisionTreeType": "ID3",
-  "useBinarySplits": false
-}

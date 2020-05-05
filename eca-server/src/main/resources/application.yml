@@ -76,7 +76,7 @@ experiment:
   numIterations: 100
   fileFormat: experiment_%s.model
   storagePath: D:/experiment/
-  individualClassifiersStoragePath: classifiers
+  individualClassifiersStoragePath: classpath*:classifiers/**/*.json
   downloadUrl: http://localhost:8085/eca-server/eca-api/experiment/download/%s
   maximumFractionDigits: 4
   numberOfDaysForStorage: 14
