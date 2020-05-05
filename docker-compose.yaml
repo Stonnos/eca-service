@@ -39,6 +39,7 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
+      JAVA_OPTS: "-Xmx2g"
       DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
     networks:
       - default

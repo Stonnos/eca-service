@@ -8,6 +8,7 @@ import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.classifiers.ClassifierOptionsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -86,10 +88,9 @@ public class ExperimentConfigurationService {
         Set<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = newHashSet();
         for (Resource modelFile : modelFiles) {
             try {
-                classifierOptionsDatabaseModels.add(
-                        createClassifierOptionsDatabaseModel(objectMapper.readValue(modelFile.getInputStream(),
-                                ClassifierOptions.class),
-                                classifiersConfiguration));
+                @Cleanup InputStream inputStream = modelFile.getInputStream();
+                classifierOptionsDatabaseModels.add(createClassifierOptionsDatabaseModel(
+                        objectMapper.readValue(inputStream, ClassifierOptions.class), classifiersConfiguration));
             } catch (IOException ex) {
                 log.error("There was an error while parsing json file [{}]: {}", modelFile.getFilename(),
                         ex.getMessage());
@@ -98,7 +99,6 @@ public class ExperimentConfigurationService {
                                 ex.getMessage()));
             }
         }
-        log.info("DNOWNPOWNEDPOWNDWEODNWDNE {}", classifierOptionsDatabaseModels.size());
         return classifierOptionsDatabaseModels;
     }
 

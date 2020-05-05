@@ -20,6 +20,7 @@ import eca.data.file.FileDataLoader;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -36,6 +37,7 @@ import weka.core.Instances;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.stream.StreamResult;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import static com.ecaservice.util.ClassifierOptionsHelper.parseOptions;
@@ -148,7 +150,8 @@ public class QaController {
         EvaluationRequest evaluationRequest = new EvaluationRequest();
         evaluationRequest.setData(loadInstances(trainingData));
         evaluationRequest.setEvaluationMethod(evaluationMethod);
-        ClassifierOptions options = parseOptions(classifierOptions.getInputStream());
+        @Cleanup InputStream inputStream = classifierOptions.getInputStream();
+        ClassifierOptions options = parseOptions(inputStream);
         AbstractClassifier classifier = classifierOptionsConverter.convert(options);
         evaluationRequest.setClassifier(classifier);
         return evaluationRequest;
@@ -161,9 +164,8 @@ public class QaController {
     }
 
     private void writeXmlResult(HttpServletResponse response, Object xmlObject) throws Exception {
-        try (OutputStream outputStream = response.getOutputStream()) {
-            ersMarshaller.marshal(xmlObject, new StreamResult(outputStream));
-        }
+        @Cleanup OutputStream outputStream = response.getOutputStream();
+        ersMarshaller.marshal(xmlObject, new StreamResult(outputStream));
     }
 
     private void processResponse(EvaluationResponse evaluationResponse, HttpServletResponse response) throws Exception {

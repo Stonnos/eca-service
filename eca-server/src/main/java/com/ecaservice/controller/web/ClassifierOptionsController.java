@@ -11,6 +11,7 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.InputStream;
 import java.util.List;
 
 import static com.ecaservice.util.ClassifierOptionsHelper.parseOptions;
@@ -106,7 +108,8 @@ public class ClassifierOptionsController {
         CreateClassifierOptionsResultDto classifierOptionsResultDto = new CreateClassifierOptionsResultDto();
         classifierOptionsResultDto.setSourceFileName(classifiersOptionsFile.getOriginalFilename());
         try {
-            ClassifierOptions classifierOptions = parseOptions(classifiersOptionsFile.getInputStream());
+            @Cleanup InputStream inputStream = classifiersOptionsFile.getInputStream();
+            ClassifierOptions classifierOptions = parseOptions(inputStream);
             ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
                     classifierOptionsService.saveClassifierOptions(configurationId, classifierOptions);
             classifierOptionsResultDto.setId(classifierOptionsDatabaseModel.getId());
