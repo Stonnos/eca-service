@@ -88,7 +88,7 @@ public abstract class AbstractWebServiceConfiguration {
     }
 
     private SSLContext sslContext() throws Exception {
-        return SSLContextBuilder.create().loadTrustMaterial(getTrustStore().getFile(),
+        return SSLContextBuilder.create().loadTrustMaterial(getTrustStore().getURL(),
                 getTrustStorePassword().toCharArray()).build();
     }
 }
