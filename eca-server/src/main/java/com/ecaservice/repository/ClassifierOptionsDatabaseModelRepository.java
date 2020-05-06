@@ -1,11 +1,15 @@
 package com.ecaservice.repository;
 
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
+import com.ecaservice.model.entity.ClassifiersConfiguration;
+import com.ecaservice.model.projections.ClassifiersOptionsStatistics;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -16,27 +20,40 @@ import java.util.List;
 public interface ClassifierOptionsDatabaseModelRepository extends JpaRepository<ClassifierOptionsDatabaseModel, Long> {
 
     /**
-     * Finds the latest classifiers input options version.
+     * Finds all classifiers input options by specified configuration.
      *
-     * @return the latest classifiers input options version
-     */
-    @Query("select coalesce(max(c.version), 0) from ClassifierOptionsDatabaseModel c")
-    Integer findLatestVersion();
-
-    /**
-     * Finds all classifiers input options by specified version.
-     *
-     * @param version input options version
+     * @param configuration - classifiers configuration
      * @return classifier options database models list
      */
-    List<ClassifierOptionsDatabaseModel> findAllByVersion(int version);
+    List<ClassifierOptionsDatabaseModel> findAllByConfiguration(ClassifiersConfiguration configuration);
 
     /**
-     * Finds all classifiers input options by specified version.
+     * Gets classifiers options statistics group by classifiers configuration.
      *
-     * @param version  input options version
-     * @param pageable - pageable object
-     * @return classifier options database models page
+     * @param configurationsIds - configurations ids
+     * @return classifiers options statistics as list
      */
-    Page<ClassifierOptionsDatabaseModel> findAllByVersion(int version, Pageable pageable);
+    @Query("select c.configuration.id as configurationId, count(c.configuration.id) as classifiersOptionsCount " +
+            "from ClassifierOptionsDatabaseModel c where c.configuration.id in (:configurationsIds) " +
+            "group by c.configuration.id")
+    List<ClassifiersOptionsStatistics> getClassifiersOptionsStatistics(
+            @Param("configurationsIds") Collection<Long> configurationsIds);
+
+    /**
+     * Gets classifiers options page.
+     *
+     * @param classifiersConfiguration - classifiers configuration entity
+     * @param pageable                 - pageable object
+     * @return classifiers options page
+     */
+    Page<ClassifierOptionsDatabaseModel> findAllByConfiguration(ClassifiersConfiguration classifiersConfiguration,
+                                                                Pageable pageable);
+
+    /**
+     * Gets classifiers options count for specified configuration.
+     *
+     * @param classifiersConfiguration - classifiers configuration entity
+     * @return classifiers options count
+     */
+    long countByConfiguration(ClassifiersConfiguration classifiersConfiguration);
 }

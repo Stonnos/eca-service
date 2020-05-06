@@ -20,12 +20,13 @@ import eca.data.file.FileDataLoader;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,9 +37,10 @@ import weka.core.Instances;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.stream.StreamResult;
+import java.io.InputStream;
 import java.io.OutputStream;
 
-import static com.ecaservice.util.Utils.parseOptions;
+import static com.ecaservice.util.ClassifierOptionsHelper.parseOptions;
 
 /**
  * QA controller.
@@ -49,6 +51,7 @@ import static com.ecaservice.util.Utils.parseOptions;
 @Slf4j
 @RestController
 @RequestMapping("/qa")
+@Profile("!docker-prod")
 @RequiredArgsConstructor
 public class QaController {
 
@@ -69,7 +72,6 @@ public class QaController {
      * @param evaluationMethod    - evaluation method
      * @param httpServletResponse - http servlet response
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Evaluates classifier with specified options",
             notes = "Evaluates classifier with specified options"
@@ -99,7 +101,6 @@ public class QaController {
      * @param evaluationMethod - evaluation method
      * @return experiment request id
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Creates experiment request with specified options",
             notes = "Creates experiment request with specified options"
@@ -129,7 +130,6 @@ public class QaController {
      * @param trainingData        - training data file with format, such as csv, xls, xlsx, arff, json, docx, data, txt
      * @param httpServletResponse - http servlet response
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Evaluates classifier using optimal options",
             notes = "Evaluates classifier using optimal options"
@@ -150,7 +150,8 @@ public class QaController {
         EvaluationRequest evaluationRequest = new EvaluationRequest();
         evaluationRequest.setData(loadInstances(trainingData));
         evaluationRequest.setEvaluationMethod(evaluationMethod);
-        ClassifierOptions options = parseOptions(classifierOptions.getInputStream());
+        @Cleanup InputStream inputStream = classifierOptions.getInputStream();
+        ClassifierOptions options = parseOptions(inputStream);
         AbstractClassifier classifier = classifierOptionsConverter.convert(options);
         evaluationRequest.setClassifier(classifier);
         return evaluationRequest;
@@ -163,9 +164,8 @@ public class QaController {
     }
 
     private void writeXmlResult(HttpServletResponse response, Object xmlObject) throws Exception {
-        try (OutputStream outputStream = response.getOutputStream()) {
-            ersMarshaller.marshal(xmlObject, new StreamResult(outputStream));
-        }
+        @Cleanup OutputStream outputStream = response.getOutputStream();
+        ersMarshaller.marshal(xmlObject, new StreamResult(outputStream));
     }
 
     private void processResponse(EvaluationResponse evaluationResponse, HttpServletResponse response) throws Exception {

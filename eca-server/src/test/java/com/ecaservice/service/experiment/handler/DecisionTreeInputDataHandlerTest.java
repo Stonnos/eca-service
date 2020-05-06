@@ -2,11 +2,11 @@ package com.ecaservice.service.experiment.handler;
 
 import eca.trees.CART;
 import eca.trees.DecisionTreeClassifier;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import weka.core.Instances;
 
 import javax.inject.Inject;
@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @Import(DecisionTreeInputDataHandler.class)
 public class DecisionTreeInputDataHandlerTest {
 

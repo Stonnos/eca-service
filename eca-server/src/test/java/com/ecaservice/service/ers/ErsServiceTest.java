@@ -8,19 +8,23 @@ import com.ecaservice.mapping.GetEvaluationResultsMapper;
 import com.ecaservice.mapping.GetEvaluationResultsMapperImpl;
 import com.ecaservice.mapping.StatisticsReportMapperImpl;
 import com.ecaservice.model.entity.ErsRequest;
+import com.ecaservice.model.entity.ErsResponseStatus;
+import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
+import com.ecaservice.model.entity.ExperimentResultsRequest;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
+import com.ecaservice.repository.ExperimentRepository;
+import com.ecaservice.repository.ExperimentResultsEntityRepository;
+import com.ecaservice.repository.ExperimentResultsRequestRepository;
+import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationResults;
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.ws.client.WebServiceIOException;
 
 import javax.inject.Inject;
@@ -28,8 +32,9 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -38,43 +43,71 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
 @Import({StatisticsReportMapperImpl.class, ClassificationCostsMapperImpl.class, GetEvaluationResultsMapperImpl.class})
-public class ErsServiceTest {
+public class ErsServiceTest extends AbstractJpaTest {
 
     @Mock
     private ErsRequestService ersRequestService;
     @Inject
     private GetEvaluationResultsMapper evaluationResultsMapper;
+    @Inject
+    private ExperimentResultsRequestRepository experimentResultsRequestRepository;
+    @Inject
+    private ExperimentResultsEntityRepository experimentResultsEntityRepository;
+    @Inject
+    private ExperimentRepository experimentRepository;
 
     private ErsService ersService;
 
-    @Before
-    public void setUp() {
-        ersService = new ErsService(ersRequestService, evaluationResultsMapper);
+    @Override
+    public void init() {
+        ersService = new ErsService(ersRequestService, evaluationResultsMapper, experimentResultsRequestRepository);
+    }
+
+    @Override
+    public void deleteAll() {
+        experimentResultsRequestRepository.deleteAll();
+        experimentResultsEntityRepository.deleteAll();
+        experimentRepository.deleteAll();
     }
 
     @Test
-    public void testSentExperimentResults() throws Exception {
+    public void testSentExperimentResults() {
         ExperimentHistory experimentHistory = TestHelperUtils.createExperimentHistory();
         doNothing().when(ersRequestService).saveEvaluationResults(any(EvaluationResults.class), any(ErsRequest.class));
-        ExperimentResultsEntity experimentResultsEntity = new ExperimentResultsEntity();
-        experimentResultsEntity.setResultsIndex(0);
+        ExperimentResultsEntity experimentResultsEntity = createExperimentResults();
         ersService.sentExperimentResults(experimentResultsEntity, experimentHistory,
                 ExperimentResultsRequestSource.MANUAL);
-        verify(ersRequestService, times(experimentHistory.getExperiment().size())).saveEvaluationResults(
-                any(EvaluationResults.class), any(ErsRequest.class));
+        verify(ersRequestService, atLeastOnce()).saveEvaluationResults(any(EvaluationResults.class),
+                any(ErsRequest.class));
+    }
+
+    @Test
+    public void testAlreadySentExperimentResults() {
+        ExperimentHistory experimentHistory = TestHelperUtils.createExperimentHistory();
+        doNothing().when(ersRequestService).saveEvaluationResults(any(EvaluationResults.class), any(ErsRequest.class));
+        ExperimentResultsEntity experimentResultsEntity = createExperimentResults();
+        ExperimentResultsRequest experimentResultsRequest =
+                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity, ErsResponseStatus.SUCCESS);
+        experimentResultsRequestRepository.save(experimentResultsRequest);
+        ersService.sentExperimentResults(experimentResultsEntity, experimentHistory,
+                ExperimentResultsRequestSource.MANUAL);
+        verify(ersRequestService, never()).saveEvaluationResults(any(EvaluationResults.class), any(ErsRequest.class));
+    }
+
+    private ExperimentResultsEntity createExperimentResults() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        experimentRepository.save(experiment);
+        ExperimentResultsEntity experimentResultsEntity = new ExperimentResultsEntity();
+        experimentResultsEntity.setResultsIndex(0);
+        experimentResultsEntity.setExperiment(experiment);
+        return experimentResultsEntityRepository.save(experimentResultsEntity);
     }
 
     @Test
     public void testGetExperimentResultsDetailsWithResultsNotFoundStatus() {
         testGetEvaluationResults(ResponseStatus.RESULTS_NOT_FOUND,
                 EvaluationResultsStatus.EVALUATION_RESULTS_NOT_FOUND);
-    }
-
-    @Test
-    public void testGetExperimentResultsDetailsWithResponseErrorStatus() {
-        testGetEvaluationResults(ResponseStatus.ERROR, EvaluationResultsStatus.ERROR);
     }
 
     @Test

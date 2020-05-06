@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
@@ -16,7 +18,7 @@ import java.time.LocalDateTime;
  * @author Roman Batygin
  */
 @Data
-@EqualsAndHashCode(exclude = {"id", "version", "creationDate", "config"})
+@EqualsAndHashCode(exclude = {"id", "creationDate", "config", "configuration"})
 @Entity
 @Table(name = "classifier_options")
 public class ClassifierOptionsDatabaseModel {
@@ -24,11 +26,6 @@ public class ClassifierOptionsDatabaseModel {
     @Id
     @GeneratedValue
     private Long id;
-
-    /**
-     * Config version
-     */
-    private int version;
 
     /**
      * Options name
@@ -53,4 +50,11 @@ public class ClassifierOptionsDatabaseModel {
      */
     @Column(name = "config_md5_hash")
     private String configMd5Hash;
+
+    /**
+     * Classifiers configuration.
+     */
+    @ManyToOne
+    @JoinColumn(name = "configuration_id", nullable = false)
+    private ClassifiersConfiguration configuration;
 }

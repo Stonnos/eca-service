@@ -10,6 +10,8 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.ecaservice.web.dto.util.FieldConstraints.DATE_TIME_PATTERN;
+
 /**
  * Classifier options request dto model.
  *
@@ -22,7 +24,7 @@ public class ClassifierOptionsRequestDto {
     /**
      * ERS - service request date
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @ApiModelProperty(value = "ERS request date")
     private LocalDateTime requestDate;

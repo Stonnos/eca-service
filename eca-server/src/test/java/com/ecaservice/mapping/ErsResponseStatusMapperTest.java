@@ -3,10 +3,10 @@ package com.ecaservice.mapping;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 
@@ -15,7 +15,7 @@ import javax.inject.Inject;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @Import(ErsResponseStatusMapperImpl.class)
 public class ErsResponseStatusMapperTest {
 
@@ -28,26 +28,9 @@ public class ErsResponseStatusMapperTest {
     }
 
     @Test
-    public void testMapInvalidRequestIdStatus() {
-        Assertions.assertThat(ersResponseStatusMapper.map(ResponseStatus.INVALID_REQUEST_ID)).isEqualTo(
-                ErsResponseStatus.INVALID_REQUEST_ID);
-    }
-
-    @Test
-    public void testMapInvalidRequestParamsStatus() {
-        Assertions.assertThat(ersResponseStatusMapper.map(ResponseStatus.INVALID_REQUEST_PARAMS)).isEqualTo(
-                ErsResponseStatus.INVALID_REQUEST_PARAMS);
-    }
-
-    @Test
     public void testMapDuplicateRequestIdStatus() {
         Assertions.assertThat(ersResponseStatusMapper.map(ResponseStatus.DUPLICATE_REQUEST_ID)).isEqualTo(
                 ErsResponseStatus.DUPLICATE_REQUEST_ID);
-    }
-
-    @Test
-    public void testMapErrorStatus() {
-        Assertions.assertThat(ersResponseStatusMapper.map(ResponseStatus.ERROR)).isEqualTo(ErsResponseStatus.ERROR);
     }
 
     @Test

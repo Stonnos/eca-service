@@ -2,22 +2,22 @@ package com.ecaservice.service;
 
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.repository.EvaluationLogRepository;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * Abstract class with JPA test configuration.
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @AutoConfigureDataJpa
 @EnableJpaRepositories(basePackageClasses = EvaluationLogRepository.class)
 @EntityScan(basePackageClasses = EvaluationLog.class)
@@ -25,13 +25,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 @TestPropertySource("classpath:application.properties")
 public abstract class AbstractJpaTest {
 
-    @Before
+    @BeforeEach
     public final void before() throws Exception {
         deleteAll();
         init();
     }
 
-    @After
+    @AfterEach
     public final void after() {
         deleteAll();
     }

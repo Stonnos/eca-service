@@ -1,6 +1,5 @@
 package com.ecaservice.model.entity;
 
-import com.ecaservice.dto.mail.ResponseStatus;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -39,7 +38,7 @@ public class EmailRequestEntity {
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "response_status")
-    private ResponseStatus responseStatus;
+    private EmailResponseStatus responseStatus;
 
     /**
      * Email request date

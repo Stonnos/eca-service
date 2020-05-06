@@ -82,7 +82,7 @@ public class EvaluationController {
         EvaluationLog evaluationLog = evaluationLogRepository.findByRequestId(requestId);
         if (evaluationLog == null) {
             log.error("Evaluation log with request id [{}] not found", requestId);
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(evaluationLogService.getEvaluationLogDetails(evaluationLog));
     }

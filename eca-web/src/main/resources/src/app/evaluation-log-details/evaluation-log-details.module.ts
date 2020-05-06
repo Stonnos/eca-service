@@ -4,12 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { UiComponentsModule } from "../ui-components.module";
 import { EvaluationLogDetailsComponent } from "./components/evaluation-log-details.component";
 import { EvaluationResultsModule } from "../evaluation-results/evaluation-results.module";
+import { SharedModule } from "../common/shared.module";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     UiComponentsModule,
+    SharedModule,
     EvaluationResultsModule
   ],
   declarations: [

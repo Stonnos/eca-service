@@ -6,13 +6,11 @@ import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.model.entity.RequestStatus;
-import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.model.projections.RequestStatusStatistics;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.EvaluationMethod;
 import eca.data.file.xml.converter.XmlInstancesConverter;
 import lombok.experimental.UtilityClass;
@@ -26,7 +24,6 @@ import org.springframework.util.CollectionUtils;
 import weka.core.Instances;
 
 import java.io.File;
-import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -39,6 +36,8 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static com.ecaservice.util.ClassifierOptionsHelper.isParsableOptions;
 
 /**
  * Utility class.
@@ -53,8 +52,6 @@ public class Utils {
     private static final String CV_FORMAT = "%d - блочная кросс - проверка";
     private static final String CV_EXTENDED_FORMAT = "%d×%d - блочная кросс - проверка";
     private static final long ZERO = 0L;
-
-    private static ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * Creates evaluation response with error status.
@@ -82,53 +79,6 @@ public class Utils {
             return xmlInstancesConverter.toXmlString(data);
         } catch (Exception ex) {
             throw new IllegalStateException(ex.getMessage());
-        }
-    }
-
-    /**
-     * Parses classifier options json string.
-     *
-     * @param options - classifier options json string
-     * @return classifier options object
-     */
-    public static ClassifierOptions parseOptions(String options) {
-        try {
-            return objectMapper.readValue(options, ClassifierOptions.class);
-        } catch (Exception ex) {
-            throw new IllegalStateException(ex.getMessage());
-        }
-    }
-
-    /**
-     * Parses classifier options input stream.
-     *
-     * @param inputStream - classifier options as input stream
-     * @return classifier options object
-     */
-    public static ClassifierOptions parseOptions(InputStream inputStream) {
-        try {
-            return objectMapper.readValue(inputStream, ClassifierOptions.class);
-        } catch (Exception ex) {
-            throw new IllegalStateException(ex.getMessage());
-        }
-    }
-
-    /**
-     * Checks classifier options json string deserialization.
-     *
-     * @param options - classifier options json string
-     * @return {@code true} if classifier options json string can be deserialize
-     */
-    public static boolean isParsableOptions(String options) {
-        if (StringUtils.isEmpty(options)) {
-            return false;
-        } else {
-            try {
-                parseOptions(options);
-                return true;
-            } catch (Exception ex) {
-                return false;
-            }
         }
     }
 
@@ -164,7 +114,7 @@ public class Utils {
      * @param file - file attachment
      * @return response entity
      */
-    public static ResponseEntity buildAttachmentResponse(File file) {
+    public static ResponseEntity<FileSystemResource> buildAttachmentResponse(File file) {
         FileSystemResource resource = new FileSystemResource(file);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
@@ -233,7 +183,8 @@ public class Utils {
         requestStatusStatisticsDto.setNewRequestsCount(statusStatisticsMap.getOrDefault(RequestStatus.NEW, ZERO));
         requestStatusStatisticsDto.setFinishedRequestsCount(
                 statusStatisticsMap.getOrDefault(RequestStatus.FINISHED, ZERO));
-        requestStatusStatisticsDto.setTimeoutRequestsCount(statusStatisticsMap.getOrDefault(RequestStatus.TIMEOUT, ZERO));
+        requestStatusStatisticsDto.setTimeoutRequestsCount(
+                statusStatisticsMap.getOrDefault(RequestStatus.TIMEOUT, ZERO));
         requestStatusStatisticsDto.setErrorRequestsCount(statusStatisticsMap.getOrDefault(RequestStatus.ERROR, ZERO));
         requestStatusStatisticsDto.setTotalCount(
                 statusStatisticsMap.values().stream().mapToLong(Long::longValue).sum());

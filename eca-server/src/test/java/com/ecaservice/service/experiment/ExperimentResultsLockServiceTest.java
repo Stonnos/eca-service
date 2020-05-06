@@ -2,7 +2,7 @@ package com.ecaservice.service.experiment;
 
 import com.ecaservice.TestHelperUtils;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for checking {@link ExperimentResultsLockService} functionality.

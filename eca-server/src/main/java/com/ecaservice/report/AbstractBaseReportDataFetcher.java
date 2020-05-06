@@ -65,7 +65,12 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
         List<B> beans = convertToBeans(page);
         List<FilterBean> filterBeans = getFilterBeans(pageRequestDto);
         int totalPages = page.getTotalPages() > 0 ? page.getTotalPages() : 1;
-        return BaseReportBean.of(page.getNumber() + 1, totalPages, pageRequestDto.getSearchQuery(), filterBeans, beans);
+        return BaseReportBean.<B>builder()
+                .page(page.getNumber() + 1)
+                .totalPages(totalPages)
+                .searchQuery(pageRequestDto.getSearchQuery())
+                .filters(filterBeans)
+                .items(beans).build();
     }
 
     private List<FilterBean> getFilterBeans(PageRequestDto pageRequestDto) {

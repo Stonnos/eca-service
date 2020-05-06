@@ -57,10 +57,13 @@
 
         <ng-template pTemplate="header">
           <tr>
-            <th *ngFor="let column of columns" [pSortableColumn]="column.name">
-              {{ column.label }}
-              <p-sortIcon [field]="column.name"></p-sortIcon>
-            </th>
+            <ng-container *ngFor="let column of columns">
+              <th *ngIf="!notSortable(column.name)" [pSortableColumn]="column.name">
+                {{ column.label }}
+                <p-sortIcon [field]="column.name"></p-sortIcon>
+              </th>
+              <th *ngIf="notSortable(column.name)">{{ column.label }}</th>
+            </ng-container>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-item>
@@ -73,13 +76,7 @@
               <div *ngIf="!isLink(column.name)">
                 <ng-container [ngSwitch]="column.name">
                   <ng-container *ngSwitchCase="'requestStatus.description'">
-                    <div class="text-white request-status"
-                         [class.bg-info]="item.requestStatus.value == 'NEW'"
-                         [class.bg-success]="item.requestStatus.value == 'FINISHED'"
-                         [class.bg-warning]="item.requestStatus.value == 'TIMEOUT'"
-                         [class.bg-danger]="item.requestStatus.value == 'ERROR'">
-                      {{ getColumnValue(column.name, item) }}
-                    </div>
+                   <app-request-status [requestStatus]="item.requestStatus"></app-request-status>
                   </ng-container>
                   <ng-container *ngSwitchDefault>
                     <span>{{ getColumnValue(column.name, item) }}</span>

@@ -9,7 +9,6 @@ import com.ecaservice.exception.experiment.ResultsNotFoundException;
 import com.ecaservice.filter.ExperimentFilter;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.model.entity.Experiment_;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentType;
@@ -41,7 +40,6 @@ import javax.persistence.criteria.Root;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -55,12 +53,15 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.model.entity.AbstractEvaluationEntity_.CREATION_DATE;
+import static com.ecaservice.model.entity.Experiment_.EXPERIMENT_TYPE;
 import static com.ecaservice.util.ExperimentUtils.generateToken;
 import static com.ecaservice.util.ExperimentUtils.getExperimentFile;
 import static com.ecaservice.util.Utils.atEndOfDay;
 import static com.ecaservice.util.Utils.atStartOfDay;
 import static com.ecaservice.util.Utils.existsFile;
 import static com.ecaservice.util.Utils.toRequestStatusStatisticsMap;
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Experiment service.
@@ -202,8 +203,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
 
     @Override
     public Page<Experiment> getNextPage(PageRequestDto pageRequestDto) {
-        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), Experiment_.CREATION_DATE,
-                pageRequestDto.isAscending());
+        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
         List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT);
         ExperimentFilter filter =
                 new ExperimentFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
@@ -232,13 +232,13 @@ public class ExperimentService implements PageRequestService<Experiment> {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Tuple> criteria = builder.createQuery(Tuple.class);
         Root<Experiment> root = criteria.from(Experiment.class);
-        List<Predicate> predicates = new ArrayList<>();
+        List<Predicate> predicates = newArrayList();
         Optional.ofNullable(createdDateFrom).ifPresent(value -> predicates.add(
-                builder.greaterThanOrEqualTo(root.get(Experiment_.CREATION_DATE), atStartOfDay(value))));
+                builder.greaterThanOrEqualTo(root.get(CREATION_DATE), atStartOfDay(value))));
         Optional.ofNullable(createdDateTo).ifPresent(value -> predicates.add(
-                builder.lessThanOrEqualTo(root.get(Experiment_.CREATION_DATE), atEndOfDay(value))));
-        criteria.groupBy(root.get(Experiment_.EXPERIMENT_TYPE));
-        criteria.multiselect(root.get(Experiment_.EXPERIMENT_TYPE), builder.count(root)).where(
+                builder.lessThanOrEqualTo(root.get(CREATION_DATE), atEndOfDay(value))));
+        criteria.groupBy(root.get(EXPERIMENT_TYPE));
+        criteria.multiselect(root.get(EXPERIMENT_TYPE), builder.count(root)).where(
                 builder.and(predicates.toArray(new Predicate[0])));
         Map<ExperimentType, Long> experimentTypesMap =
                 entityManager.createQuery(criteria).getResultList().stream().collect(

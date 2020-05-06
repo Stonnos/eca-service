@@ -1,25 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            xmlns:notification="http://schemas.xmlsoap.org/soap/envelope/"
             targetNamespace="http://schemas.xmlsoap.org/soap/envelope/"
             elementFormDefault="qualified">
-
-    <xsd:simpleType name="responseStatus">
-        <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="SUCCESS"/>
-            <xsd:enumeration value="ERROR"/>
-            <xsd:enumeration value="INVALID_REQUEST_PARAMS"/>
-        </xsd:restriction>
-    </xsd:simpleType>
 
     <xsd:element name="emailRequest">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element name="sender" type="xsd:string"/>
-                <xsd:element name="receiver" type="xsd:string"/>
-                <xsd:element name="subject" type="xsd:string"/>
-                <xsd:element name="message" type="xsd:string"/>
+                <xsd:element name="sender">
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                            <xsd:maxLength value="255"/>
+                            <xsd:pattern value="[_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="receiver">
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                            <xsd:maxLength value="255"/>
+                            <xsd:pattern value="[_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="subject" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                            <xsd:maxLength value="255"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="message">
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                            <xsd:minLength value="1"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
                 <xsd:element name="html" type="xsd:boolean"/>
             </xsd:sequence>
         </xsd:complexType>
@@ -29,7 +46,6 @@
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:element name="requestId" type="xsd:string"/>
-                <xsd:element name="status" type="notification:responseStatus"/>
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>

@@ -55,12 +55,15 @@ export class EvaluationLogDetailsComponent implements OnInit {
   }
 
   public getEvaluationLogValue(field: string) {
-    if (field == EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION) {
-      return Utils.getEvaluationMethodDescription(this.evaluationLogDetails.evaluationMethod,
-        this.evaluationLogDetails.numFolds, this.evaluationLogDetails.numTests);
-    } else {
-      return this.fieldService.getFieldValue(field, this.evaluationLogDetails, Utils.MISSING_VALUE);
+    if (this.evaluationLogDetails) {
+      if (field == EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION) {
+        return Utils.getEvaluationMethodDescription(this.evaluationLogDetails.evaluationMethod,
+          this.evaluationLogDetails.numFolds, this.evaluationLogDetails.numTests);
+      } else {
+        return this.fieldService.getFieldValue(field, this.evaluationLogDetails, Utils.MISSING_VALUE);
+      }
     }
+    return null;
   }
 
   private initEvaluationLogFields(): void {
@@ -73,7 +76,8 @@ export class EvaluationLogDetailsComponent implements OnInit {
       { name: EvaluationLogFields.NUM_ATTRIBUTES, label: "Число атрибутов:" },
       { name: EvaluationLogFields.NUM_CLASSES, label: "Число классов:" },
       { name: EvaluationLogFields.CLASS_NAME, label: "Атрибут класса:" },
-      { name: EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности:" }
+      { name: EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности:" },
+      { name: EvaluationLogFields.EVALUATION_TOTAL_TIME, label: "Время построения модели" },
     ];
   }
 }

@@ -1,6 +1,7 @@
 package com.ecaservice.report.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Experiment report model.
@@ -8,27 +9,13 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
-public class ExperimentBean {
-
-    /**
-     * Request id
-     */
-    private String requestId;
+@EqualsAndHashCode(callSuper = true)
+public class ExperimentBean extends EvaluationBean {
 
     /**
      * Experiment type
      */
     private String experimentType;
-
-    /**
-     * Request status
-     */
-    private String requestStatus;
-
-    /**
-     * Evaluation method
-     */
-    private String evaluationMethod;
 
     /**
      * First name
@@ -49,21 +36,6 @@ public class ExperimentBean {
      * Training data absolute path
      */
     private String trainingDataAbsolutePath;
-
-    /**
-     * Request creation date
-     */
-    private String creationDate;
-
-    /**
-     * Experiment processing start date
-     */
-    private String startDate;
-
-    /**
-     * Experiment processing end date
-     */
-    private String endDate;
 
     /**
      * Date when experiment results is sent

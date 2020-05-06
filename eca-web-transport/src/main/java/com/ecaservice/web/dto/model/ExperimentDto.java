@@ -10,6 +10,8 @@ import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
+import static com.ecaservice.web.dto.util.FieldConstraints.DATE_TIME_PATTERN;
+
 /**
  * Experiment dto model.
  *
@@ -48,7 +50,7 @@ public class ExperimentDto extends AbstractEvaluationDto {
      * Date when experiment results is sent
      */
     @ApiModelProperty(value = "Experiment results sent date")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime sentDate;
 
@@ -56,7 +58,7 @@ public class ExperimentDto extends AbstractEvaluationDto {
      * Experiment files deleted date
      */
     @ApiModelProperty(value = "Experiment files delete date")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime deletedDate;
 

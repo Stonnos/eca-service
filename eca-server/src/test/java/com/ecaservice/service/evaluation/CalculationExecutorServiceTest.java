@@ -1,12 +1,14 @@
 package com.ecaservice.service.evaluation;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests that checks CalculationExecutorService functionality {@see CalculationExecutorService}.
@@ -19,18 +21,19 @@ public class CalculationExecutorServiceTest {
 
     private CalculationExecutorService executorService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ExecutorService executor = Executors.newCachedThreadPool();
         executorService = new CalculationExecutorServiceImpl(executor);
     }
 
-    @Test(expected = TimeoutException.class)
-    public void testTimeOut() throws Exception {
-        executorService.execute(() -> {
-            Thread.sleep(TIMEOUT + 100L);
-            return null;
-        }, TIMEOUT, TimeUnit.MILLISECONDS);
+    @Test
+    public void testTimeOut() {
+        assertThrows(TimeoutException.class, () ->
+                executorService.execute(() -> {
+                    Thread.sleep(TIMEOUT + 100L);
+                    return null;
+                }, TIMEOUT, TimeUnit.MILLISECONDS));
     }
 }
 

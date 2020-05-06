@@ -3,17 +3,17 @@ package com.ecaservice.service.experiment.mail;
 import com.ecaservice.config.ws.notification.MailConfig;
 import com.ecaservice.dto.mail.EmailRequest;
 import com.ecaservice.dto.mail.EmailResponse;
-import com.ecaservice.dto.mail.ResponseStatus;
-import com.ecaservice.exception.notification.NotificationServiceException;
 import com.ecaservice.model.entity.EmailRequestEntity;
+import com.ecaservice.model.entity.EmailResponseStatus;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.repository.EmailRequestRepository;
+import com.ecaservice.service.experiment.mail.template.TemplateEngineService;
 import com.ecaservice.service.experiment.visitor.EmailTemplateVisitor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.ws.client.WebServiceIOException;
 import org.springframework.ws.client.core.WebServiceTemplate;
-import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.time.LocalDateTime;
@@ -28,12 +28,11 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class NotificationService {
 
-    private final TemplateEngine templateEngine;
+    private final TemplateEngineService templateEngineService;
     private final MailConfig mailConfig;
     private final EmailTemplateVisitor statusTemplateVisitor;
     private final WebServiceTemplate notificationWebServiceTemplate;
     private final EmailRequestRepository emailRequestRepository;
-    private final NotificationResponseErrorHandler errorHandler;
 
     /**
      * Sends email message based on experiment status.
@@ -56,20 +55,15 @@ public class NotificationService {
                                 emailRequest);
                 log.trace("Received response [{}] from '{}'.", emailResponse, mailConfig.getServiceUrl());
                 emailRequestEntity.setRequestId(emailResponse.getRequestId());
-                emailRequestEntity.setResponseStatus(emailResponse.getStatus());
-                if (errorHandler.hasError(emailResponse)) {
-                    errorHandler.handleError(emailResponse);
-                } else {
-                    log.info("Email request has been successfully sent for experiment [{}], experiment status [{}].",
-                            experiment.getRequestId(), experiment.getRequestStatus());
-                }
-            }
-            catch (NotificationServiceException ex) {
+                emailRequestEntity.setResponseStatus(EmailResponseStatus.SUCCESS);
+                log.info("Email request has been successfully sent for experiment [{}], experiment status [{}].",
+                        experiment.getRequestId(), experiment.getRequestStatus());
+            } catch (WebServiceIOException ex) {
                 emailRequestEntity.setErrorMessage(ex.getMessage());
+                emailRequestEntity.setResponseStatus(EmailResponseStatus.SERVICE_UNAVAILABLE);
                 throw ex;
-            }
-            catch (Exception ex) {
-                emailRequestEntity.setResponseStatus(ResponseStatus.ERROR);
+            } catch (Exception ex) {
+                emailRequestEntity.setResponseStatus(EmailResponseStatus.ERROR);
                 emailRequestEntity.setErrorMessage(ex.getMessage());
                 throw ex;
             } finally {
@@ -81,7 +75,7 @@ public class NotificationService {
     private String buildEmailMessage(Experiment experiment) {
         String template = mailConfig.getMessageTemplatesMap().get(experiment.getRequestStatus());
         Context context = experiment.getRequestStatus().handle(statusTemplateVisitor, experiment);
-        return templateEngine.process(template, context);
+        return templateEngineService.process(template, context);
     }
 
     private EmailRequest createEmailRequest(Experiment experiment) {

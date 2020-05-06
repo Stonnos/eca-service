@@ -1,6 +1,6 @@
 package com.ecaservice.service.ers;
 
-import com.ecaservice.config.CacheNames;
+import com.ecaservice.config.cache.CacheNames;
 import com.ecaservice.config.ws.ers.ErsConfig;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
@@ -21,13 +21,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.ws.client.WebServiceIOException;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
 
+import static com.ecaservice.util.ClassifierOptionsHelper.parseOptions;
 import static com.ecaservice.util.Utils.isValid;
-import static com.ecaservice.util.Utils.parseOptions;
 
 /**
  * Implements service for saving evaluation results by sending request to ERS web - service.
@@ -62,10 +63,12 @@ public class ErsRequestService {
                 EvaluationResultsResponse resultsResponse =
                         ersWebServiceClient.sendEvaluationResults(evaluationResults, ersRequest.getRequestId());
                 ersRequest.setResponseStatus(ersResponseStatusMapper.map(resultsResponse.getStatus()));
+            } catch (WebServiceIOException ex) {
+                log.error("There was an error while sending evaluation results: {}", ex.getMessage());
+                handleErrorRequest(ersRequest, ErsResponseStatus.SERVICE_UNAVAILABLE, ex.getMessage());
             } catch (Exception ex) {
                 log.error("There was an error while sending evaluation results: {}", ex.getMessage());
-                ersRequest.setResponseStatus(ErsResponseStatus.ERROR);
-                ersRequest.setDetails(ex.getMessage());
+                handleErrorRequest(ersRequest, ErsResponseStatus.ERROR, ex.getMessage());
             } finally {
                 ersRequestRepository.save(ersRequest);
             }
@@ -111,7 +114,7 @@ public class ErsRequestService {
             if (ResponseStatus.SUCCESS.equals(response.getStatus())) {
                 ClassifierReport classifierReport = response.getClassifierReports().stream().findFirst().orElse(null);
                 if (!isValid(classifierReport)) {
-                    handleErrorRequest(requestModel, "Got empty classifier options string!");
+                    handleErrorRequest(requestModel, ErsResponseStatus.ERROR, "Got empty classifier options string!");
                 } else {
                     //Checks classifier options deserialization
                     parseOptions(classifierReport.getOptions());
@@ -122,17 +125,20 @@ public class ErsRequestService {
                             Collections.singletonList(classifierReportMapper.map(classifierReport)));
                 }
             }
+        } catch (WebServiceIOException ex) {
+            log.error("There was an error while sending classifier options request: {}.", ex.getMessage());
+            handleErrorRequest(requestModel, ErsResponseStatus.SERVICE_UNAVAILABLE, ex.getMessage());
         } catch (Exception ex) {
             log.error("There was an error while sending classifier options request: {}.", ex.getMessage());
-            handleErrorRequest(requestModel, ex.getMessage());
+            handleErrorRequest(requestModel, ErsResponseStatus.ERROR, ex.getMessage());
         } finally {
             classifierOptionsRequestModelRepository.save(requestModel);
         }
         return classifierOptions;
     }
 
-    private void handleErrorRequest(ClassifierOptionsRequestModel requestModel, String errorMessage) {
-        requestModel.setResponseStatus(ErsResponseStatus.ERROR);
-        requestModel.setDetails(errorMessage);
+    private void handleErrorRequest(ErsRequest ersRequest, ErsResponseStatus responseStatus, String errorMessage) {
+        ersRequest.setResponseStatus(responseStatus);
+        ersRequest.setDetails(errorMessage);
     }
 }

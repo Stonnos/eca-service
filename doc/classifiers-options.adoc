@@ -1,0 +1,252 @@
+= Описание JSON конфигураций классификаторов
+:toc: macro
+
+== Введение
+
+В данном документе описаны форматы json конфигураций классификаторов с примерами.
+
+== 1 Описание формата json конфигурации логистической регресии
+
+Ниже приведен пример json конфигурации логистической регресии:
+
+[source,json]
+----
+{
+  "type": "logistic",
+  "maxIts": 200,
+  "useConjugateGradientDescent": false
+}
+----
+
+где
+
+* maxIts - максимальное число итераций для поиска минимума функции -Log(Likelihood)
+* useConjugateGradientDescent - использование метода сопряженных градиентов вкл./выкл.
+
+== 2 Описание форматов json конфигураций деревьев решений
+
+=== 2.1 Формат json конфигурации алгоритма CART
+
+Ниже приведен пример json конфигурации алгоритма CART:
+
+[source,json]
+----
+{
+  "type": "decision_tree",
+  "decisionTreeType": "CART",
+  "minObj": 2,
+  "maxDepth": 0,
+  "randomTree": false,
+  "numRandomAttr": 0,
+  "useBinarySplits": true,
+  "useRandomSplits": false,
+  "numRandomSplits": 1,
+  "seed": 1,
+  "additionalOptions": null
+}
+----
+
+где
+
+* minObj - минимальное число объектов в листе
+* maxDepth - максимальная глубина дерева
+* randomTree - случайное дерево вкл./выкл.
+* numRandomAttr - число случайных атрибутов при расщеплении узла
+* useBinarySplits - бинарное дерево вкл./выкл.
+* useRandomSplits - использование случайных расщеплений вкл./выкл.
+* numRandomSplits - число случайных расщеплений
+* seed - начальное значение для генератора псевдослучайных чисел
+* additionalOptions - дополнительные настройки
+
+=== 2.2 Формат json конфигурации алгоритма C45
+
+Ниже приведен пример json конфигурации алгоритма C45:
+
+[source,json]
+----
+{
+  "type": "decision_tree",
+  "decisionTreeType": "C45",
+  "minObj": 2,
+  "maxDepth": 0,
+  "randomTree": false,
+  "numRandomAttr": 0,
+  "useBinarySplits": false,
+  "useRandomSplits": false,
+  "numRandomSplits": 1,
+  "seed": 1,
+  "additionalOptions": null
+}
+----
+
+=== 2.3 Формат json конфигурации алгоритма ID3
+
+Ниже приведен пример json конфигурации алгоритма ID3:
+
+[source,json]
+----
+{
+  "type": "decision_tree",
+  "decisionTreeType": "ID3",
+  "minObj": 2,
+  "maxDepth": 0,
+  "randomTree": false,
+  "numRandomAttr": 0,
+  "useBinarySplits": true,
+  "useRandomSplits": false,
+  "numRandomSplits": 1,
+  "seed": 1,
+  "additionalOptions": null
+}
+----
+
+=== 2.4 Формат json конфигурации алгоритма CHAID
+
+Ниже приведен пример json конфигурации алгоритма CHAID:
+
+[source,json]
+----
+{
+  "type": "decision_tree",
+  "decisionTreeType": "CHAID",
+  "minObj": 2,
+  "maxDepth": 0,
+  "randomTree": false,
+  "numRandomAttr": 0,
+  "useBinarySplits": true,
+  "useRandomSplits": false,
+  "numRandomSplits": 1,
+  "seed": 1,
+  "additionalOptions": {
+    "alphaValue": "0.05"
+  }
+}
+----
+
+где
+
+* alphaValue - уровень значимости &alpha;
+
+=== 2.5 Формат json конфигурации алгоритма J48
+
+Ниже приведен пример json конфигурации алгоритма J48:
+
+[source,json]
+----
+{
+  "type": "j48",
+  "minNumObj": 2,
+  "binarySplits": false,
+  "unpruned": false,
+  "numFolds": 3
+}
+----
+
+где
+
+* minNumObj - минимальное число объектов в листе
+* binarySplits - бинарное дерево вкл./выкл.
+* unpruned - неусеченное дерево вкл./выкл.
+* numFolds - число блоков для метода V - блочной кросс - проверки
+
+== 3 Формат json конфигураций нейронных сетей
+
+Ниже приведен пример json конфигурации нейронной сети:
+
+[source,json]
+----
+{
+  "type": "neural_network",
+  "numInNeurons": null,
+  "numOutNeurons": null,
+  "hiddenLayer": null,
+  "seed": 1,
+  "numIterations": 1000000,
+  "minError": 0.00001,
+  "activationFunctionOptions": {
+    "activationFunctionType": "LOGISTIC",
+    "coefficient": 1.0
+  },
+  "backPropagationOptions": {
+    "learningRate": 0.1,
+    "momentum": 0.2
+  }
+}
+----
+
+где
+
+* numInNeurons - число нейронов во входном слое
+* numOutNeurons - число нейронов в выходном слое
+* hiddenLayer - структура скрытого слоя
+* seed - начальное значение для генератора псевдослучайных чисел
+* numIterations - число итераций необходимое для обучения сети
+* minError - параметр ɛ, задающий критерий остановки обучения
+* activationFunctionType - активационная функция нейронов скрытого слоя, которая может принимать одно из значений <<Справочник значений активационных функций>>
+* coefficient - значение коэффициента активационной функции нейронов скрытого слоя
+* learningRate - коэффициент скорости обучения
+* momentum - значение момента
+
+== 4 Формат json конфигураций алгоритма K - взвешенных ближайших соседей
+
+Ниже приведен пример json конфигурации алгоритма K - взвешенных ближайших соседей:
+
+[source,json]
+----
+{
+  "type": "knn",
+  "numNeighbours": 10,
+  "weight": 1.0,
+  "distanceType": "CHEBYSHEV"
+}
+----
+
+где
+
+* numNeighbours - число ближайших соседей
+* weight - вес ближайшего соседа
+* distanceType - функция расстояния, которая может принимать одно из значений <<Справочник значений функций расстояния>>
+
+== Справочник значений функций расстояния
+
+[options="header"]
+|===
+|№|Код|Описание
+|1
+|EUCLID
+|Евклидово расстояние
+|2
+|SQUARE_EUCLID
+|Квадрат Евклидова расстояния
+|3
+|MANHATTAN
+|Манхеттенское расстояние
+|4
+|CHEBYSHEV
+|Расстояние Чебышева
+|===
+
+== Справочник значений активационных функций
+
+[options="header"]
+|===
+|№|Код|Описание
+|1
+|LOGISTIC
+|Логистическая
+|2
+|HYPERBOLIC_TANGENT
+|Гиперболический тангенс
+|3
+|SINUSOID
+|Тригонометрический синус
+|4
+|EXPONENTIAL
+|Экспоненциальная
+|5
+|SOFT_SIGN
+|Функция SoftSign
+|6
+|INVERSE_SQUARE_ROOT_UNIT
+|Функция ISRU
+|===

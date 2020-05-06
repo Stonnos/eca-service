@@ -13,13 +13,15 @@ export class PageRequestService {
       .set('sortField', pageRequest.sortField)
       .set('ascending', pageRequest.ascending.toString())
       .set('searchQuery', pageRequest.searchQuery);
-    pageRequest.filters.map((filter, index) => {
-      params = params.set(`filters['${index}'].name`, filter.name);
-      filter.values.map((value, valueIndex) => {
-        params = params.set(`filters['${index}'].values['${valueIndex}']`, value);
+    if (pageRequest.filters && pageRequest.filters.length > 0) {
+      pageRequest.filters.map((filter, index) => {
+        params = params.set(`filters['${index}'].name`, filter.name);
+        filter.values.map((value, valueIndex) => {
+          params = params.set(`filters['${index}'].values['${valueIndex}']`, value);
+        });
+        params = params.set(`filters['${index}'].matchMode`, filter.matchMode);
       });
-      params = params.set(`filters['${index}'].matchMode`, filter.matchMode);
-    });
+    }
     return params;
   }
 }

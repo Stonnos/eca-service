@@ -65,23 +65,17 @@
   <button
     pButton
     type="button"
+    label="Отправить"
     [disabled]="loading || !needSentToErs()"
     (click)="sentEvaluationResults()"
-    class="sent-button w-100">
-    <span class="sent-button-text" *ngIf="!loading">Отправить</span>
-    <p-progressSpinner
-      *ngIf="loading"
-      class="sent-button-progress-spinner"
-      strokeWidth="4"
-      animationDuration=".5s">
-    </p-progressSpinner>
+    class="w-100">
   </button>
 </div>
 
 <p-dialog
   [(visible)]="classifierOptionsDialogVisibility"
   header="Классификатор - {{ selectedExperimentResults?.classifierInfo?.classifierName }} № {{ selectedExperimentResults?.resultsIndex }}"
-  [width]="600"
+  [style]="{ width: '600px' }"
   appendTo="body"
   [modal]="true"
   [blockScroll]="false"

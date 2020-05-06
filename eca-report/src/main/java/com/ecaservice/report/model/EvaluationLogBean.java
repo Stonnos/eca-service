@@ -1,6 +1,7 @@
 package com.ecaservice.report.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Evaluation log report model.
@@ -8,42 +9,13 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
-public class EvaluationLogBean {
-
-    /**
-     * Request unique identifier
-     */
-    private String requestId;
-
-    /**
-     * Request creation date
-     */
-    private String creationDate;
-
-    /**
-     * Evaluation start date
-     */
-    private String startDate;
-
-    /**
-     * Evaluation end date
-     */
-    private String endDate;
+@EqualsAndHashCode(callSuper = true)
+public class EvaluationLogBean extends EvaluationBean {
 
     /**
      * Classifier name
      */
     private String classifierName;
-
-    /**
-     * Request status
-     */
-    private String requestStatus;
-
-    /**
-     * Evaluation method
-     */
-    private String evaluationMethod;
 
     /**
      * Training data name

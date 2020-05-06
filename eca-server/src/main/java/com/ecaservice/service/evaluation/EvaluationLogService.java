@@ -5,7 +5,6 @@ import com.ecaservice.filter.EvaluationLogFilter;
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.EvaluationLog;
-import com.ecaservice.model.entity.EvaluationLog_;
 import com.ecaservice.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.model.entity.RequestStatus;
@@ -30,6 +29,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+import static com.ecaservice.model.entity.AbstractEvaluationEntity_.CREATION_DATE;
 import static com.ecaservice.util.Utils.buildEvaluationResultsDto;
 import static com.ecaservice.util.Utils.toRequestStatusStatisticsMap;
 
@@ -52,8 +52,7 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
 
     @Override
     public Page<EvaluationLog> getNextPage(PageRequestDto pageRequestDto) {
-        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), EvaluationLog_.CREATION_DATE,
-                pageRequestDto.isAscending());
+        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
         List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG);
         EvaluationLogFilter filter = new EvaluationLogFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());

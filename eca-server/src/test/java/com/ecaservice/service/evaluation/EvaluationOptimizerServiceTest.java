@@ -7,12 +7,14 @@ import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ws.ers.ErsConfig;
 import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
 import com.ecaservice.configuation.ExecutorConfiguration;
+import com.ecaservice.conversion.ClassifierOptionsConverter;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.InstancesRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
+import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
 import com.ecaservice.mapping.ClassifierOptionsRequestMapper;
 import com.ecaservice.mapping.ClassifierOptionsRequestMapperImpl;
 import com.ecaservice.mapping.ClassifierOptionsRequestModelMapper;
@@ -23,7 +25,6 @@ import com.ecaservice.mapping.ClassifierReportMapperImpl;
 import com.ecaservice.mapping.ErsEvaluationMethodMapperImpl;
 import com.ecaservice.mapping.ErsResponseStatusMapper;
 import com.ecaservice.mapping.ErsResponseStatusMapperImpl;
-import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
 import com.ecaservice.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.mapping.EvaluationRequestMapper;
 import com.ecaservice.mapping.EvaluationRequestMapperImpl;
@@ -47,7 +48,6 @@ import com.ecaservice.repository.ClassifierOptionsRequestRepository;
 import com.ecaservice.repository.ErsRequestRepository;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.AbstractJpaTest;
-import com.ecaservice.conversion.ClassifierOptionsConverter;
 import com.ecaservice.service.ers.ErsRequestService;
 import com.ecaservice.service.ers.ErsWebServiceClient;
 import com.ecaservice.util.Utils;
@@ -68,10 +68,11 @@ import eca.regression.Logistic;
 import eca.trees.CART;
 import eca.trees.J48;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 import org.springframework.util.DigestUtils;
+import org.springframework.ws.client.WebServiceFaultException;
 import org.springframework.ws.client.WebServiceIOException;
 import weka.classifiers.AbstractClassifier;
 
@@ -173,19 +174,12 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     @Test
     public void testServiceUnavailable() {
-        when(ersWebServiceClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenThrow(
-                new WebServiceIOException("error"));
-        EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
-                instancesRequest);
-        assertThat(evaluationResponse).isNotNull();
-        assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
-        assertThat(evaluationResponse.getEvaluationResults()).isNull();
-        List<ClassifierOptionsRequestModel> optionsRequests = classifierOptionsRequestModelRepository.findAll();
-        AssertionUtils.hasOneElement(optionsRequests);
-        ClassifierOptionsRequestModel requestModel = optionsRequests.get(0);
-        assertThat(evaluationResponse.getRequestId()).isNotNull();
-        assertThat(requestModel.getResponseStatus()).isEqualTo(ErsResponseStatus.ERROR);
-        assertThat(requestModel.getClassifierOptionsResponseModels()).isNullOrEmpty();
+        internalTestErrorStatus(new WebServiceIOException("error"), ErsResponseStatus.SERVICE_UNAVAILABLE);
+    }
+
+    @Test
+    public void testErrorStatus() {
+        internalTestErrorStatus(new WebServiceFaultException("error"), ErsResponseStatus.ERROR);
     }
 
     @Test
@@ -424,6 +418,21 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         performClassifierEvaluationTest(TestHelperUtils.createHeterogeneousClassifierOptions(true),
                 ModifiedHeterogeneousClassifier.class);
 
+    }
+
+    private void internalTestErrorStatus(Exception ex, ErsResponseStatus expectedStatus) {
+        when(ersWebServiceClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenThrow(ex);
+        EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
+                instancesRequest);
+        assertThat(evaluationResponse).isNotNull();
+        assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.ERROR);
+        assertThat(evaluationResponse.getEvaluationResults()).isNull();
+        List<ClassifierOptionsRequestModel> optionsRequests = classifierOptionsRequestModelRepository.findAll();
+        AssertionUtils.hasOneElement(optionsRequests);
+        ClassifierOptionsRequestModel requestModel = optionsRequests.get(0);
+        assertThat(evaluationResponse.getRequestId()).isNotNull();
+        assertThat(requestModel.getResponseStatus()).isEqualTo(expectedStatus);
+        assertThat(requestModel.getClassifierOptionsResponseModels()).isNullOrEmpty();
     }
 
     private <U extends ClassifierOptions, V extends AbstractClassifier> void performClassifierEvaluationTest(U options,

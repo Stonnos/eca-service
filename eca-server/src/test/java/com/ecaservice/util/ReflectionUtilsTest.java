@@ -2,7 +2,7 @@ package com.ecaservice.util;
 
 import com.ecaservice.model.entity.EvaluationLog;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link ReflectionUtils} class.

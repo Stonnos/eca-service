@@ -11,7 +11,6 @@ import { HttpClientModule } from "@angular/common/http";
 import { FormsModule } from "@angular/forms";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { FilterModule } from "./filter/filter.module";
-import { ClassifierOptionsModule } from "./classifier-options/classifier-options.module";
 import { RequestStatusesStatisticsModule } from "./request-statuses-statistics/request-statuses-statistics.module";
 import { ClassifierOptionsRequestsModule } from "./classifier-options-requests/classifier-options-requests.module";
 import { ConfigService } from "./config.service";
@@ -27,6 +26,11 @@ import { EvaluationLogDetailsModule } from "./evaluation-log-details/evaluation-
 import { ExperimentErsReportModule } from "./experiment-ers-report/experiment-ers-report.module";
 import { ExperimentDetailsModule } from "./experiment-details/experiment-details.module";
 import { ExperimentResultsDetailsModule } from "./experiment-results-details/experiment-results-details.module";
+import { ClassifiersConfigurationsModule } from "./classifiers-configurations/classifiers-configurations.module";
+import { CreateClassifiersConfigurationModule } from "./create-classifiers-configuration/create-classifiers-configuration.module";
+import { UploadClassifierOptionsDialogModule } from "./upload-classifier-options-dialog/upload-classifier-options-dialog.module";
+import { ClassifiersConfigurationMenuModule } from "./classifiers-configuration-menu/classifiers-configuration-menu.module";
+import { ClassifiersConfigurationDetailsModule } from "./classifiers-configuration-details/classifiers-configuration-details.module";
 
 export function initializeApp(configService: ConfigService) {
   return () => configService.getConfigs();
@@ -45,7 +49,10 @@ export function initializeApp(configService: ConfigService) {
     ExperimentsTabsModule,
     ClassifiersModule,
     ExperimentsModule,
-    ClassifierOptionsModule,
+    ClassifiersConfigurationsModule,
+    ClassifiersConfigurationDetailsModule,
+    ClassifiersConfigurationMenuModule,
+    CreateClassifiersConfigurationModule,
     ClassifierOptionsRequestsModule,
     RequestStatusesStatisticsModule,
     FilterModule,
@@ -58,6 +65,7 @@ export function initializeApp(configService: ConfigService) {
     ExperimentStatisticsModule,
     CreateExperimentModule,
     ExperimentDetailsModule,
+    UploadClassifierOptionsDialogModule,
     UiComponentsModule,
     HttpClientModule,
     NoopAnimationsModule,

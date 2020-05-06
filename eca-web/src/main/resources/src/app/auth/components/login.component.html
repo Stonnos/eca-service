@@ -24,6 +24,7 @@
               [(ngModel)]="userModel.login"
               #login="ngModel"
               [disabled]="loading"
+              maxlength="255"
               class="form-control d-block w-100">
             <div class="text-danger error-message" *ngIf="login.invalid && (login.dirty || login.touched || submitted)">
               <div *ngIf="login?.errors?.required">
@@ -43,6 +44,7 @@
               [(ngModel)]="userModel.password"
               #password="ngModel"
               [disabled]="loading"
+              maxlength="255"
               class="form-control d-block w-100"
               [feedback]="false">
             <div class="text-danger error-message"

@@ -1,0 +1,83 @@
+<p-dialog
+  [(visible)]="visible"
+  [baseZIndex]="99999999999"
+  header="Загрузить настройки классификаторов"
+  [style]="{ width: '650px' }"
+  appendTo="body"
+  [modal]="true"
+  [blockScroll]="false"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="hide()">
+
+  <p-scrollPanel [style]="{ width: '100%', height: '350px' }">
+    <form novalidate class="form d-flex flex-column justify-content-center m-auto">
+      <div class="ui-g ui-fluid">
+        <div class="ui-g-10 mx-auto mb-5">
+          <p-fileUpload name="classifiersOptions"
+                        chooseLabel="Выбрать"
+                        uploadLabel="Загрузить"
+                        cancelLabel="Отмена"
+                        [multiple]="true"
+                        [disabled]="uploadProgress"
+                        [invalidFileSizeMessageSummary]="invalidFileSizeMessageSummary"
+                        [invalidFileSizeMessageDetail]="invalidFileSizeMessageDetail"
+                        [invalidFileTypeMessageSummary]="invalidFileTypeMessageSummary"
+                        [invalidFileTypeMessageDetail]="invalidFileTypeMessageDetail"
+                        [customUpload]="true"
+                        (uploadHandler)="onUpload($event)"
+                        (onSelect)="onSelectFiles($event)"
+                        [accept]="accept"
+                        [maxFileSize]="maxFileSize">
+            <ng-template pTemplate="content">
+              <div *ngIf="uploadProgress" class="progress-content">
+                <p-progressSpinner
+                  class="upload-progress-spinner"
+                  strokeWidth="6"
+                  animationDuration=".5s">
+                </p-progressSpinner>
+              </div>
+              <table *ngIf="!uploadProgress && !fileUpload.hasFiles() && uploadedFiles?.length > 0" class="table w-100">
+                <thead>
+                <tr>
+                  <th [colSpan]="2" scope="col" class="detail-header">
+                    <span class="upload-status-success">Успешно загружено {{getSuccessfullyUploadedFilesCount() }}</span>, <span class="upload-status-error">с ошибкой {{ getUploadedWithErrorFilesCount() }}</span>
+                  </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let uploadFile of uploadedFiles">
+                  <td>
+                    <div class="file-name">
+                      {{ uploadFile.sourceFileName }}
+                    </div>
+                  </td>
+                  <td>
+                    <span [class.upload-status-error]="!uploadFile.success"
+                          [class.upload-status-success]="uploadFile.success">
+                      {{ uploadFile.success ? 'Успешно' : 'Ошибка' }}
+                    </span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+              <div class="empty-content" *ngIf="!uploadProgress && !fileUpload.hasFiles() && uploadedFiles?.length == 0">
+                Выберите файлы
+              </div>
+            </ng-template>
+          </p-fileUpload>
+        </div>
+      </div>
+    </form>
+  </p-scrollPanel>
+  <p-footer>
+    <button
+      pButton
+      label="Закрыть"
+      type="button"
+      [disabled]="uploadProgress"
+      (click)="hide()"
+      class="ml-auto">
+    </button>
+  </p-footer>
+</p-dialog>

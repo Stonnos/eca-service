@@ -4,10 +4,10 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.evaluation.ClassificationCostsReport;
 import com.ecaservice.web.dto.model.ClassificationCostsDto;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 
@@ -16,7 +16,7 @@ import javax.inject.Inject;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @Import(ClassificationCostsMapperImpl.class)
 public class ClassificationCostsMapperTest {
 

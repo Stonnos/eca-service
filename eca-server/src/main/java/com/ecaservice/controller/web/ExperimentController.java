@@ -2,7 +2,6 @@ package com.ecaservice.controller.web;
 
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.event.model.ExperimentResultsSendingEvent;
-import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.MultipartFileResource;
 import com.ecaservice.model.entity.Experiment;
@@ -35,12 +34,12 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -81,7 +80,7 @@ public class ExperimentController {
     private static final String EXPERIMENT_RESULTS_SENT_FORMAT = "Experiment [%s] results is already sent to ERS";
     private static final String EXPERIMENT_RESULTS_FILE_DELETED_FORMAT =
             "Experiment [%s] results file has been deleted";
-    private static final String EXPERIMENT_NOT_FOUND_FORMAT = "Experiment with request id [%s] not found";
+    private static final String EXPERIMENT_NOT_FOUND_FORMAT = "Experiment with request id [{}] not found";
     private static final String EXPERIMENT_NOT_FINISHED_FORMAT =
             "Can't sent experiment [%s] results to ERS, because experiment status isn't FINISHED";
     private static final String EXPERIMENT_RESULTS_NOT_FOUND = "Can't found experiment [%s] results to ERS sent";
@@ -111,7 +110,7 @@ public class ExperimentController {
             notes = "Downloads experiment training data by specified request id"
     )
     @GetMapping(value = "/training-data/{requestId}")
-    public ResponseEntity downloadTrainingData(
+    public ResponseEntity<FileSystemResource> downloadTrainingData(
             @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
         return downloadExperimentFile(requestId, Experiment::getTrainingDataAbsolutePath,
                 String.format(EXPERIMENT_TRAINING_DATA_FILE_NOT_FOUND_FORMAT, requestId));
@@ -128,7 +127,7 @@ public class ExperimentController {
             notes = "Downloads experiment results by specified request id"
     )
     @GetMapping(value = "/results/{requestId}")
-    public ResponseEntity downloadExperiment(
+    public ResponseEntity<FileSystemResource> downloadExperiment(
             @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
         return downloadExperimentFile(requestId, Experiment::getExperimentAbsolutePath,
                 String.format(EXPERIMENT_RESULTS_FILE_NOT_FOUND, requestId));
@@ -152,7 +151,8 @@ public class ExperimentController {
             @ApiParam(value = "Training data file", required = true) @RequestParam MultipartFile trainingData,
             @ApiParam(value = "Experiment type", required = true) @RequestParam ExperimentType experimentType,
             @ApiParam(value = "Evaluation method", required = true) @RequestParam EvaluationMethod evaluationMethod) {
-        log.info("Received experiment request for data '{}'", trainingData.getOriginalFilename());
+        log.info("Received experiment request for data '{}', experiment type {}, evaluation method {}",
+                trainingData.getOriginalFilename(), experimentType, evaluationMethod);
         CreateExperimentResultDto resultDto = new CreateExperimentResultDto();
         try {
             ExperimentRequest experimentRequest =
@@ -200,10 +200,11 @@ public class ExperimentController {
     @GetMapping(value = "/details/{requestId}")
     public ResponseEntity<ExperimentDto> getExperiment(
             @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
+        log.info("Received request to get experiment details for request id [{}]", requestId);
         Experiment experiment = experimentRepository.findByRequestId(requestId);
         if (experiment == null) {
-            log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, requestId));
-            return ResponseEntity.badRequest().build();
+            log.error(EXPERIMENT_NOT_FOUND_FORMAT, requestId);
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(experimentMapper.map(experiment));
     }
@@ -222,11 +223,12 @@ public class ExperimentController {
     @GetMapping(value = "/results/details/{id}")
     public ResponseEntity<ExperimentResultsDetailsDto> getExperimentResultsDetails(
             @ApiParam(value = "Experiment results id", example = "1", required = true) @PathVariable Long id) {
+        log.info("Received request to get experiment results details for id [{}]", id);
         Optional<ExperimentResultsEntity> experimentResultsEntityOptional =
                 experimentResultsEntityRepository.findById(id);
         if (!experimentResultsEntityOptional.isPresent()) {
             log.error("Experiment results with id [{}] not found", id);
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(
                 experimentResultsService.getExperimentResultsDetails(experimentResultsEntityOptional.get()));
@@ -264,8 +266,8 @@ public class ExperimentController {
         log.info("Received request for ERS report for experiment [{}]", requestId);
         Experiment experiment = experimentRepository.findByRequestId(requestId);
         if (experiment == null) {
-            log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, requestId));
-            return ResponseEntity.badRequest().build();
+            log.error(EXPERIMENT_NOT_FOUND_FORMAT, requestId);
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(experimentResultsService.getErsReport(experiment));
     }
@@ -282,11 +284,12 @@ public class ExperimentController {
             notes = "Checks experiment results manual sending status"
     )
     @GetMapping(value = "/ers-report/sending-status/{requestId}")
-    public ResponseEntity<SendingStatus> checkExperimentResultsSendingStatus(@PathVariable String requestId) {
+    public ResponseEntity<SendingStatus> checkExperimentResultsSendingStatus(
+            @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
         Experiment experiment = experimentRepository.findByRequestId(requestId);
         if (experiment == null) {
-            log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, requestId));
-            return ResponseEntity.badRequest().build();
+            log.error(EXPERIMENT_NOT_FOUND_FORMAT, requestId);
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(new SendingStatus(experiment.getRequestId(), lockService.locked(requestId)));
     }
@@ -302,13 +305,12 @@ public class ExperimentController {
             notes = "Sent evaluation results to ERS for experiment"
     )
     @PostMapping(value = "/sent-evaluation-results")
-    public ResponseEntity sentExperimentEvaluationResults(@RequestBody String requestId) {
+    public ResponseEntity<String> sentExperimentEvaluationResults(@RequestBody String requestId) {
         log.info("Received request to send evaluation results to ERS for experiment [{}]", requestId);
         Experiment experiment = experimentRepository.findByRequestId(requestId);
         if (experiment == null) {
-            String error = String.format(EXPERIMENT_NOT_FOUND_FORMAT, requestId);
-            log.error(error);
-            return ResponseEntity.badRequest().body(error);
+            log.error(EXPERIMENT_NOT_FOUND_FORMAT, requestId);
+            return ResponseEntity.notFound().build();
         }
         if (!RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
             log.error("Can't sent experiment [{}] results to ERS, because experiment status isn't FINISHED", requestId);
@@ -317,7 +319,8 @@ public class ExperimentController {
         long resultsCount = experimentResultsEntityRepository.countByExperiment(experiment);
         if (resultsCount == 0L) {
             log.error("Can't found experiment [{}] results to ERS sent", experiment.getRequestId());
-            return ResponseEntity.badRequest().body(String.format(EXPERIMENT_RESULTS_NOT_FOUND, experiment.getRequestId()));
+            return ResponseEntity.badRequest().body(
+                    String.format(EXPERIMENT_RESULTS_NOT_FOUND, experiment.getRequestId()));
         }
         long sentResults = experimentResultsEntityRepository.getSentResultsCount(experiment);
         if (resultsCount == sentResults) {
@@ -358,18 +361,6 @@ public class ExperimentController {
                         entry.getValue())).collect(Collectors.toList());
     }
 
-    /**
-     * Handles experiments error.
-     *
-     * @param ex - experiment exception
-     * @return response entity
-     */
-    @ExceptionHandler(ExperimentException.class)
-    public ResponseEntity handleError(ExperimentException ex) {
-        log.error(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
-
     private ExperimentRequest createExperimentRequest(MultipartFile trainingData, ExperimentType experimentType,
                                                       EvaluationMethod evaluationMethod) throws Exception {
         ExperimentRequest experimentRequest = new ExperimentRequest();
@@ -384,8 +375,8 @@ public class ExperimentController {
         return experimentRequest;
     }
 
-    private ResponseEntity sentExperimentResults(Experiment experiment) {
-        ResponseEntity responseEntity;
+    private ResponseEntity<String> sentExperimentResults(Experiment experiment) {
+        ResponseEntity<String> responseEntity;
         experimentMap.putIfAbsent(experiment.getRequestId(), new Object());
         synchronized (experimentMap.get(experiment.getRequestId())) {
             if (lockService.locked(experiment.getRequestId())) {
@@ -400,17 +391,18 @@ public class ExperimentController {
         return responseEntity;
     }
 
-    private ResponseEntity downloadExperimentFile(String requestId, Function<Experiment, String> filePathFunction,
-                                                  String errorMessage) {
+    private ResponseEntity<FileSystemResource> downloadExperimentFile(String requestId,
+                                                                      Function<Experiment, String> filePathFunction,
+                                                                      String errorMessage) {
         Experiment experiment = experimentRepository.findByRequestId(requestId);
         if (experiment == null) {
-            log.error(String.format(EXPERIMENT_NOT_FOUND_FORMAT, requestId));
-            return ResponseEntity.badRequest().build();
+            log.error(EXPERIMENT_NOT_FOUND_FORMAT, requestId);
+            return ResponseEntity.notFound().build();
         }
         File experimentFile = getExperimentFile(experiment, filePathFunction);
         if (!existsFile(experimentFile)) {
             log.error(errorMessage);
-            return ResponseEntity.badRequest().body(errorMessage);
+            return ResponseEntity.notFound().build();
         }
         log.info("Downloads experiment file '{}' for request id = '{}'", filePathFunction.apply(experiment), requestId);
         return Utils.buildAttachmentResponse(experimentFile);

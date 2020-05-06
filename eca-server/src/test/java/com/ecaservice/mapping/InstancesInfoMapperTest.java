@@ -3,10 +3,10 @@ package com.ecaservice.mapping;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.model.entity.InstancesInfo;
 import com.ecaservice.web.dto.model.InstancesInfoDto;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 
@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @Import(InstancesInfoMapperImpl.class)
 public class InstancesInfoMapperTest {
 

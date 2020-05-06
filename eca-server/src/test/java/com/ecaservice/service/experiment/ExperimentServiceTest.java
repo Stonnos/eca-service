@@ -25,7 +25,7 @@ import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.converters.model.ExperimentHistory;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
@@ -46,6 +46,7 @@ import java.util.concurrent.TimeoutException;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -122,11 +123,11 @@ public class ExperimentServiceTest extends AbstractJpaTest {
         assertThat(experiment.getTrainingDataAbsolutePath()).isNotNull();
     }
 
-    @Test(expected = ExperimentException.class)
+    @Test
     public void testExperimentRequestCreationWithError() throws Exception {
         ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
         doThrow(Exception.class).when(dataService).save(any(File.class), any(Instances.class));
-        experimentService.createExperiment(experimentRequest);
+        assertThrows(ExperimentException.class, () -> experimentService.createExperiment(experimentRequest));
     }
 
     @Test

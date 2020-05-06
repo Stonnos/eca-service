@@ -1,0 +1,78 @@
+/* You can add global styles to this file, and also import other style files */
+.text-bold {
+  font-weight: bold;
+}
+
+.text-wrap {
+  word-wrap: break-word;
+}
+
+.text-ellipsis {
+  text-overflow: ellipsis;
+}
+
+.filter-sidebar {
+  width: 320px;
+  min-width: 320px;
+  max-width: 320px;
+  display: inline-block;
+}
+
+.data-table {
+  margin-left: 15px;
+  width: calc(100% - 335px);
+  display: inline-block;
+}
+
+.search-content {
+  background: rgba(226, 226, 226, 0.64);
+  border: 1px solid #d5d5d5;
+}
+
+.error-message {
+  position: absolute;
+  margin-top: 5px;
+  font-size: 12px;
+}
+
+.json-config {
+  background-color: #e6e6e6;
+  width: 500px;
+  max-height: 600px;
+  overflow-y: scroll;
+}
+
+.control-label:after {
+  content: ' *';
+  color: red;
+}
+
+.build-in-status {
+  border-radius: 4px;
+  width: 100px;
+  text-align: center;
+  display: inline-block;
+}
+
+.active-status {
+  border-radius: 4px;
+  width: 100px;
+  text-align: center;
+  display: inline-block;
+}
+
+.details-panel {
+  background: white;
+  padding: 2px;
+}
+
+.link {
+  color: #3397ff;
+}
+
+.disabled-link {
+  color: #3397ff;
+  cursor: not-allowed;
+  opacity: 0.5;
+  text-decoration: none;
+}

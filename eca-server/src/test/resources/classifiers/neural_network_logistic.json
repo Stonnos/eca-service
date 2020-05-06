@@ -1,6 +1,0 @@
-{
-  "type": "neural_network",
-  "activationFunctionOptions": {
-    "activationFunctionType": "LOGISTIC"
-  }
-}

@@ -1,4 +1,0 @@
-{
-  "type": "knn",
-  "distanceType": "CHEBYSHEV"
-}

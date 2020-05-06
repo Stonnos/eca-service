@@ -1,0 +1,64 @@
+.upload-status-error {
+  font-weight: bold;
+  color: red;
+}
+
+.upload-status-success {
+  font-weight: bold;
+  color: darkgreen;
+}
+
+.file-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 350px;
+  display: block;
+}
+
+.detail-header {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.empty-content {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  height: 210px;
+  color: #aeaeae;
+}
+
+.progress-content {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  height: 210px;
+}
+
+.upload-progress-spinner::ng-deep {
+  .ui-progress-spinner {
+    width: 50px;
+    height: 50px;
+  }
+
+  @keyframes ui-progress-spinner-color {
+    100%,
+    0% {
+      stroke: #416ee7;
+    }
+    40% {
+      stroke: #416ee7;
+    }
+    66% {
+      stroke: #416ee7;
+    }
+    80%,
+    90% {
+      stroke: #416ee7;
+    }
+  }
+}

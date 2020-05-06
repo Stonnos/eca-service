@@ -20,6 +20,7 @@ import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
+import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.Experiment;
@@ -45,10 +46,12 @@ import com.ecaservice.model.options.ExtraTreesOptions;
 import com.ecaservice.model.options.HeterogeneousClassifierOptions;
 import com.ecaservice.model.options.J48Options;
 import com.ecaservice.model.options.KNearestNeighboursOptions;
+import com.ecaservice.model.options.LogisticOptions;
 import com.ecaservice.model.options.NeuralNetworkOptions;
 import com.ecaservice.model.options.RandomForestsOptions;
 import com.ecaservice.model.options.RandomNetworkOptions;
 import com.ecaservice.model.options.StackingOptions;
+import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
@@ -79,11 +82,13 @@ import eca.trees.DecisionTreeClassifier;
 import eca.trees.J48;
 import lombok.experimental.UtilityClass;
 import org.springframework.amqp.core.MessageProperties;
+import org.springframework.util.DigestUtils;
 import weka.core.Instances;
 
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -284,16 +289,45 @@ public class TestHelperUtils {
     /**
      * Creates classifiers options database model.
      *
-     * @param config  json options configs
-     * @param version configs version
+     * @param config                   - json options configs
+     * @param classifiersConfiguration - classifiers configuration entity
      * @return classifier options db model {@see ClassifierOptionsDatabaseModel}
      */
-    public static ClassifierOptionsDatabaseModel createClassifierOptionsDatabaseModel(String config, int version) {
+    public static ClassifierOptionsDatabaseModel createClassifierOptionsDatabaseModel(String config,
+                                                                                      ClassifiersConfiguration classifiersConfiguration) {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
-        classifierOptionsDatabaseModel.setVersion(version);
+        classifierOptionsDatabaseModel.setConfiguration(classifiersConfiguration);
         classifierOptionsDatabaseModel.setConfig(config);
+        classifierOptionsDatabaseModel.setConfigMd5Hash(
+                DigestUtils.md5DigestAsHex(config.getBytes(StandardCharsets.UTF_8)));
         classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
         return classifierOptionsDatabaseModel;
+    }
+
+    /**
+     * Creates classifiers configuration entity.
+     *
+     * @return classifiers configuration entity
+     */
+    public static ClassifiersConfiguration createClassifiersConfiguration() {
+        ClassifiersConfiguration classifiersConfiguration = new ClassifiersConfiguration();
+        classifiersConfiguration.setActive(true);
+        classifiersConfiguration.setCreated(LocalDateTime.now());
+        classifiersConfiguration.setBuildIn(true);
+        return classifiersConfiguration;
+    }
+
+    /**
+     * Creates classifiers configuration dto.
+     *
+     * @return classifiers configuration dto
+     */
+    public static ClassifiersConfigurationDto createClassifiersConfigurationDto() {
+        ClassifiersConfigurationDto classifiersConfiguration = new ClassifiersConfigurationDto();
+        classifiersConfiguration.setActive(true);
+        classifiersConfiguration.setCreated(LocalDateTime.now());
+        classifiersConfiguration.setBuildIn(true);
+        return classifiersConfiguration;
     }
 
     /**
@@ -1045,7 +1079,7 @@ public class TestHelperUtils {
      *
      * @return experiment types statistics map
      */
-    public static Map<ExperimentType, Long> buildexperimentTypeStatisticMap() {
+    public static Map<ExperimentType, Long> buildExperimentTypeStatisticMap() {
         ExperimentType[] experimentTypes = ExperimentType.values();
         Map<ExperimentType, Long> experimentTypesMap = newEnumMap(ExperimentType.class);
         Stream.of(experimentTypes).forEach(
@@ -1063,5 +1097,17 @@ public class TestHelperUtils {
         messageProperties.setReplyTo(REPLY_TO);
         messageProperties.setCorrelationId(UUID.randomUUID().toString());
         return messageProperties;
+    }
+
+    /**
+     * Creates logistic options.
+     *
+     * @return logistic options
+     */
+    public LogisticOptions createLogisticOptions() {
+        LogisticOptions logisticOptions = new LogisticOptions();
+        logisticOptions.setMaxIts(NUM_ITERATIONS);
+        logisticOptions.setUseConjugateGradientDescent(false);
+        return logisticOptions;
     }
 }

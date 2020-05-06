@@ -4,7 +4,6 @@ import com.ecaservice.configuation.oauth2.Oauth2TestConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -16,7 +15,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -57,10 +55,8 @@ public class TokenService {
         String base64Credentials = Base64Utils.encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
         ResultActions result = mockMvc.perform(post(TOKEN_URL)
                 .params(params)
-                .header(HttpHeaders.AUTHORIZATION, String.format(BASIC_FORMAT, base64Credentials))
-                .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+                .header(HttpHeaders.AUTHORIZATION, String.format(BASIC_FORMAT, base64Credentials)))
+                .andExpect(status().isOk());
         String contentAsString = result.andReturn().getResponse().getContentAsString();
         return objectMapper.readValue(contentAsString, TokenResponse.class).getAccessToken();
     }

@@ -141,12 +141,15 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   }
 
   public getExperimentValue(field: string) {
-    if (field == ExperimentFields.EVALUATION_METHOD_DESCRIPTION) {
-      return Utils.getEvaluationMethodDescription(this.experimentDto.evaluationMethod,
-        this.experimentDto.numFolds, this.experimentDto.numTests);
-    } else {
-      return this.fieldService.getFieldValue(field, this.experimentDto, Utils.MISSING_VALUE);
+    if (this.experimentDto) {
+      if (field == ExperimentFields.EVALUATION_METHOD_DESCRIPTION) {
+        return Utils.getEvaluationMethodDescription(this.experimentDto.evaluationMethod,
+          this.experimentDto.numFolds, this.experimentDto.numTests);
+      } else {
+        return this.fieldService.getFieldValue(field, this.experimentDto, Utils.MISSING_VALUE);
+      }
     }
+    return null;
   }
 
   public hasValue(field: string): boolean {
@@ -187,6 +190,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
       { name: ExperimentFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки" },
       { name: ExperimentFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности" },
       { name: ExperimentFields.EMAIL, label: "Email заявки" },
+      { name: ExperimentFields.EVALUATION_TOTAL_TIME, label: "Время построения эксперимента" },
       { name: ExperimentFields.CREATION_DATE, label: "Дата создания заявки" },
       { name: ExperimentFields.START_DATE, label: "Дата начала эксперимента" },
       { name: ExperimentFields.END_DATE, label: "Дата окончания эксперимента" },

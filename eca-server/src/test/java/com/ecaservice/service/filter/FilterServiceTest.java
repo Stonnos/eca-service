@@ -1,6 +1,7 @@
 package com.ecaservice.service.filter;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.mapping.filters.FilterDictionaryMapperImpl;
 import com.ecaservice.mapping.filters.FilterDictionaryValueMapperImpl;
 import com.ecaservice.mapping.filters.FilterFieldMapperImpl;
@@ -15,13 +16,14 @@ import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.filter.dictionary.FilterDictionaries;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for checking {@link FilterService} functionality.
@@ -57,9 +59,10 @@ public class FilterServiceTest extends AbstractJpaTest {
         assertThat(filterFieldDtoList).hasSameSizeAs(filterTemplate.getFields());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testNotExistingFilterTemplate() {
-        filterService.getFilterFields(FilterTemplateType.EVALUATION_LOG);
+        assertThrows(EntityNotFoundException.class,
+                () -> filterService.getFilterFields(FilterTemplateType.EVALUATION_LOG));
     }
 
     @Test
@@ -71,9 +74,10 @@ public class FilterServiceTest extends AbstractJpaTest {
         assertThat(fields).hasSameSizeAs(filterTemplate.getFields());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testNotExistingGlobalFilterTemplate() {
-        filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG);
+        assertThrows(EntityNotFoundException.class,
+                () -> filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG));
     }
 
     @Test
@@ -87,8 +91,9 @@ public class FilterServiceTest extends AbstractJpaTest {
         assertThat(filterDictionaryDto.getName()).isEqualTo(filterDictionary.getName());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testNotExistingFilterDictionary() {
-        filterService.getFilterDictionary(FilterDictionaries.EVALUATION_METHOD);
+        assertThrows(EntityNotFoundException.class,
+                () -> filterService.getFilterDictionary(FilterDictionaries.EVALUATION_METHOD));
     }
 }

@@ -1,25 +1,18 @@
 package com.ecaservice.controller.web;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.configuation.annotation.Oauth2TestConfiguration;
+import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.service.filter.FilterService;
 import com.ecaservice.service.filter.dictionary.FilterDictionaries;
-import com.ecaservice.token.TokenService;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,10 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
 @WebMvcTest(controllers = FilterTemplateController.class)
-@Oauth2TestConfiguration
-public class FilterTemplateControllerTest {
+public class FilterTemplateControllerTest extends AbstractControllerTest {
 
     private static final String BASE_URL = "/filter-templates";
     private static final String EXPERIMENT_FILTER_TEMPLATE_URL = BASE_URL + "/experiment";
@@ -47,22 +38,8 @@ public class FilterTemplateControllerTest {
     private static final String EXPERIMENT_TYPES_URL = BASE_URL + "/experiment-types";
     private static final String EVALUATION_METHODS_URL = BASE_URL + "/evaluation-methods";
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
     @MockBean
     private FilterService filterService;
-
-    @Inject
-    private TokenService tokenService;
-    @Inject
-    private MockMvc mockMvc;
-
-    private String accessToken;
-
-    @Before
-    public void init() throws Exception {
-        accessToken = tokenService.obtainAccessToken();
-    }
 
     @Test
     public void testGetExperimentFilterTemplateUnauthorized() throws Exception {
@@ -70,8 +47,8 @@ public class FilterTemplateControllerTest {
     }
 
     @Test
-    public void testGetExperimentFilterTemplateBadRequest() throws Exception {
-        testGetFilterTemplateBadRequest(EXPERIMENT_FILTER_TEMPLATE_URL, FilterTemplateType.EXPERIMENT);
+    public void testGetExperimentFilterTemplateNotFound() throws Exception {
+        testGetFilterTemplateNotFound(EXPERIMENT_FILTER_TEMPLATE_URL, FilterTemplateType.EXPERIMENT);
     }
 
     @Test
@@ -85,8 +62,8 @@ public class FilterTemplateControllerTest {
     }
 
     @Test
-    public void testGetEvaluationLogFilterTemplateBadRequest() throws Exception {
-        testGetFilterTemplateBadRequest(EVALUATION_LOG_FILTER_TEMPLATE_URL, FilterTemplateType.EVALUATION_LOG);
+    public void testGetEvaluationLogFilterTemplateNotFound() throws Exception {
+        testGetFilterTemplateNotFound(EVALUATION_LOG_FILTER_TEMPLATE_URL, FilterTemplateType.EVALUATION_LOG);
     }
 
     @Test
@@ -100,8 +77,8 @@ public class FilterTemplateControllerTest {
     }
 
     @Test
-    public void testGetClassifierOptionsRequestFilterTemplateBadRequest() throws Exception {
-        testGetFilterTemplateBadRequest(CLASSIFIER_OPTIONS_REQUEST_FILTER_TEMPLATE_URL,
+    public void testGetClassifierOptionsRequestFilterTemplateNotFound() throws Exception {
+        testGetFilterTemplateNotFound(CLASSIFIER_OPTIONS_REQUEST_FILTER_TEMPLATE_URL,
                 FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST);
     }
 
@@ -117,8 +94,8 @@ public class FilterTemplateControllerTest {
     }
 
     @Test
-    public void testGetExperimentTypeDictionaryBadRequest() throws Exception {
-        testGetFilterDictionaryBadRequest(EXPERIMENT_TYPES_URL, FilterDictionaries.EXPERIMENT_TYPE);
+    public void testGetExperimentTypeDictionaryNotFound() throws Exception {
+        testGetFilterDictionaryNotFound(EXPERIMENT_TYPES_URL, FilterDictionaries.EXPERIMENT_TYPE);
     }
 
     @Test
@@ -132,8 +109,8 @@ public class FilterTemplateControllerTest {
     }
 
     @Test
-    public void testGetEvaluationMethodsDictionaryBadRequest() throws Exception {
-        testGetFilterDictionaryBadRequest(EVALUATION_METHODS_URL, FilterDictionaries.EVALUATION_METHOD);
+    public void testGetEvaluationMethodsDictionaryNotFound() throws Exception {
+        testGetFilterDictionaryNotFound(EVALUATION_METHODS_URL, FilterDictionaries.EVALUATION_METHOD);
     }
 
     @Test
@@ -141,38 +118,38 @@ public class FilterTemplateControllerTest {
         testGetFilterDictionaryOk(EVALUATION_METHODS_URL, FilterDictionaries.EVALUATION_METHOD);
     }
 
-    private void testGetFilterTemplateBadRequest(String templateUrl, FilterTemplateType filterTemplateType)
+    private void testGetFilterTemplateNotFound(String templateUrl, FilterTemplateType filterTemplateType)
             throws Exception {
-        when(filterService.getFilterFields(filterTemplateType)).thenThrow(new IllegalArgumentException());
+        when(filterService.getFilterFields(filterTemplateType)).thenThrow(new EntityNotFoundException());
         mockMvc.perform(get(templateUrl)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
-                .andExpect(status().isBadRequest());
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .andExpect(status().isNotFound());
     }
 
     private void testGetFilterTemplateOk(String templateUrl, FilterTemplateType filterTemplateType) throws Exception {
         List<FilterFieldDto> filterFieldDtoList = Collections.singletonList(TestHelperUtils.createFilterFieldDto());
         when(filterService.getFilterFields(filterTemplateType)).thenReturn(filterFieldDtoList);
         mockMvc.perform(get(templateUrl)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(filterFieldDtoList)));
     }
 
-    private void testGetFilterDictionaryBadRequest(String templateUrl, String filterDictionaryName) throws Exception {
-        when(filterService.getFilterDictionary(filterDictionaryName)).thenThrow(new IllegalArgumentException());
+    private void testGetFilterDictionaryNotFound(String templateUrl, String filterDictionaryName) throws Exception {
+        when(filterService.getFilterDictionary(filterDictionaryName)).thenThrow(new EntityNotFoundException());
         mockMvc.perform(get(templateUrl)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
-                .andExpect(status().isBadRequest());
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .andExpect(status().isNotFound());
     }
 
     private void testGetFilterDictionaryOk(String templateUrl, String filterDictionaryName) throws Exception {
         FilterDictionaryDto filterDictionaryDto = TestHelperUtils.createFilterDictionaryDto();
         when(filterService.getFilterDictionary(filterDictionaryName)).thenReturn(filterDictionaryDto);
         mockMvc.perform(get(templateUrl)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(accessToken)))
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(filterDictionaryDto)));
     }
 }

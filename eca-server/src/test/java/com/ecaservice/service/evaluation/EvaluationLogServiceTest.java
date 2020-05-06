@@ -30,7 +30,7 @@ import eca.trees.C45;
 import eca.trees.CART;
 import eca.trees.ID3;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;

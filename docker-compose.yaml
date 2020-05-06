@@ -34,12 +34,13 @@ services:
   eca-server:
     image: eca-server
     container_name: eca-server
-    command: ["/wait-for-it.sh", "eca-db:5432", "--timeout=${DB_CONTAINER_WAIT_TIMEOUT}", "--", "catalina.sh", "run"]
     volumes:
       - experiment-data:/home/experiment
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
+      JAVA_OPTS: "-Xmx2g"
+      DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
     networks:
       - default
     depends_on:
@@ -49,10 +50,10 @@ services:
   eca-oauth:
     image: eca-oauth
     container_name: eca-oauth
-    command: ["/wait-for-it.sh", "eca-db:5432", "--timeout=${DB_CONTAINER_WAIT_TIMEOUT}", "--", "catalina.sh", "run"]
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
+      DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
     networks:
       - default
     depends_on:

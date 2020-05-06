@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v29-create-classifiers-configuration-table.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="classifiers_configuration"/>
+            </not>
+        </preConditions>
+        <createTable tableName="classifiers_configuration">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="configuration_name" type="varchar(255)"/>
+            <column name="created" type="timestamp"/>
+            <column name="updated" type="timestamp"/>
+            <column name="build_in" type="boolean" defaultValueBoolean="false"/>
+            <column name="is_active" type="boolean" defaultValueBoolean="false"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Reset all classifiers options -->
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options"/>
+        </preConditions>
+        <delete tableName="classifier_options"/>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options"/>
+            <columnExists tableName="classifier_options" columnName="version"/>
+        </preConditions>
+        <dropColumn tableName="classifier_options" columnName="version"/>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options"/>
+            <tableExists tableName="classifiers_configuration"/>
+            <not>
+                <columnExists tableName="classifier_options" columnName="configuration_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="classifier_options">
+            <column name="configuration_id" type="bigint">
+                <constraints foreignKeyName="fk_classifier_options_classifiers_configuration_id"
+                             referencedTableName="classifiers_configuration"
+                             referencedColumnNames="id" nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

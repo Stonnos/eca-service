@@ -14,10 +14,7 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,9 +27,7 @@ import static com.ecaservice.util.Utils.getEvaluationMethodDescription;
  */
 @Mapper(uses = {InstancesInfoMapper.class, ClassifierInfoMapper.class},
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
-public abstract class EvaluationLogMapper {
-
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
 
     /**
      * Maps evaluation request to evaluation log.
@@ -53,6 +48,7 @@ public abstract class EvaluationLogMapper {
      * @param evaluationLog - evaluation log entity
      * @return evaluation log dto
      */
+    @Mapping(source = "evaluationLog", target = "evaluationTotalTime", qualifiedByName = "calculateEvaluationTotalTime")
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(target = "requestStatus", ignore = true)
     @Mapping(target = "numFolds", ignore = true)
@@ -66,6 +62,7 @@ public abstract class EvaluationLogMapper {
      * @param evaluationLog - evaluation log entity
      * @return evaluation log details dto
      */
+    @Mapping(source = "evaluationLog", target = "evaluationTotalTime", qualifiedByName = "calculateEvaluationTotalTime")
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(target = "requestStatus", ignore = true)
     @Mapping(target = "numFolds", ignore = true)
@@ -81,6 +78,7 @@ public abstract class EvaluationLogMapper {
      */
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(source = "requestStatus.description", target = "requestStatus")
+    @Mapping(source = "evaluationLog", target = "evaluationTotalTime", qualifiedByName = "calculateEvaluationTotalTime")
     @Mapping(source = "creationDate", target = "creationDate", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "startDate", target = "startDate", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "endDate", target = "endDate", qualifiedByName = "formatLocalDateTime")
@@ -149,10 +147,5 @@ public abstract class EvaluationLogMapper {
                                        @MappingTarget EvaluationLogDto evaluationLogDto) {
         evaluationLogDto.setRequestStatus(new EnumDto(evaluationLog.getRequestStatus().name(),
                 evaluationLog.getRequestStatus().getDescription()));
-    }
-
-    @Named("formatLocalDateTime")
-    protected String formatLocalDateTime(LocalDateTime localDateTime) {
-        return Optional.ofNullable(localDateTime).map(dateTimeFormatter::format).orElse(null);
     }
 }

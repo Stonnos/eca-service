@@ -1,37 +1,29 @@
 package com.ecaservice.service.experiment;
 
-import com.ecaservice.config.CacheNames;
-import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
+import com.ecaservice.exception.ClassifierOptionsException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
-import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_;
+import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.model.options.ClassifierOptions;
-import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
-import com.ecaservice.service.PageRequestService;
-import com.ecaservice.util.SortUtils;
-import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.repository.ClassifiersConfigurationRepository;
+import com.ecaservice.service.classifiers.ClassifierOptionsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.DigestUtils;
 
-import java.io.File;
+import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
-import static com.ecaservice.util.ExperimentLogUtils.logAndThrowError;
+import static com.ecaservice.util.ClassifierOptionsHelper.createClassifierOptionsDatabaseModel;
+import static com.google.common.collect.Sets.newHashSet;
 
 /**
  * Service for saving individual classifiers input options into database.
@@ -41,99 +33,73 @@ import static com.ecaservice.util.ExperimentLogUtils.logAndThrowError;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ExperimentConfigurationService implements PageRequestService<ClassifierOptionsDatabaseModel> {
+public class ExperimentConfigurationService {
 
+    private static final String DEFAULT_CONFIGURATION_NAME = "Default configuration";
+    public static final String CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_NOT_SPECIFIED =
+            "Classifiers input options directory isn't specified.";
+    public static final String CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_EMPTY =
+            "Classifiers input options directory is empty.";
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    private final CommonConfig commonConfig;
+    private final ClassifierOptionsService classifierOptionsService;
     private final ExperimentConfig experimentConfig;
-    private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
+    private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
 
     /**
      * Saves individual classifiers input options into database.
      */
-    public void saveClassifiersOptions() {
+    @PostConstruct
+    public void saveClassifiersOptions() throws IOException {
         if (StringUtils.isEmpty(experimentConfig.getIndividualClassifiersStoragePath())) {
-            logAndThrowError("Classifiers input options directory doesn't specified.", log);
+            log.error(CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_NOT_SPECIFIED);
+            throw new ClassifierOptionsException(CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_NOT_SPECIFIED);
         }
-        File classifiersOptionsDir = new File(getClass().getClassLoader().getResource(
-                experimentConfig.getIndividualClassifiersStoragePath()).getFile());
-        Collection<File> modelFiles = FileUtils.listFiles(classifiersOptionsDir, null, true);
-        if (CollectionUtils.isEmpty(modelFiles)) {
-            logAndThrowError("Classifiers input options directory is empty.", log);
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        Resource[] modelFiles = resolver.getResources(experimentConfig.getIndividualClassifiersStoragePath());
+        if (modelFiles.length == 0) {
+            log.error(CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_EMPTY);
+            throw new ClassifierOptionsException(CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_EMPTY);
         } else {
-            log.info("Starting to save individual classifiers options into database");
-            int version = classifierOptionsDatabaseModelRepository.findLatestVersion();
-            List<ClassifierOptionsDatabaseModel> latestOptions =
-                    classifierOptionsDatabaseModelRepository.findAllByVersion(version);
-            List<ClassifierOptionsDatabaseModel> newOptions = createClassifiersOptions(modelFiles, ++version);
-            if (CollectionUtils.isEmpty(latestOptions) || latestOptions.size() != newOptions.size() ||
-                    !newOptions.containsAll(latestOptions)) {
-                log.info("Saving new classifiers input options with version {}.", version);
-                classifierOptionsDatabaseModelRepository.saveAll(newOptions);
-            }
+            log.info("Starting to save individual classifiers options into database for build in configuration");
+            ClassifiersConfiguration classifiersConfiguration = getOrSaveBuildInClassifiersConfiguration();
+            Set<ClassifierOptionsDatabaseModel> newOptions =
+                    createClassifiersOptions(modelFiles, classifiersConfiguration);
+            classifierOptionsService.updateBuildInClassifiersConfiguration(classifiersConfiguration, newOptions);
         }
     }
 
-    /**
-     * Finds the last classifiers options configs.
-     *
-     * @return {@link ClassifierOptionsDatabaseModel} list
-     */
-    @Cacheable(CacheNames.CLASSIFIERS_CACHE_NAME)
-    public List<ClassifierOptionsDatabaseModel> findLastClassifiersOptions() {
-        log.info("Starting to read classifiers input options configs from database");
-        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModelList =
-                classifierOptionsDatabaseModelRepository.findAllByVersion(
-                        classifierOptionsDatabaseModelRepository.findLatestVersion());
-        log.info("{} classifiers input options configs has been successfully read from database.",
-                classifierOptionsDatabaseModelList.size());
-        return classifierOptionsDatabaseModelList;
+    private ClassifiersConfiguration getOrSaveBuildInClassifiersConfiguration() {
+        ClassifiersConfiguration classifiersConfiguration =
+                classifiersConfigurationRepository.findFirstByBuildInIsTrue();
+        if (classifiersConfiguration == null) {
+            classifiersConfiguration = new ClassifiersConfiguration();
+            classifiersConfiguration.setConfigurationName(DEFAULT_CONFIGURATION_NAME);
+            classifiersConfiguration.setBuildIn(true);
+            classifiersConfiguration.setActive(true);
+            classifiersConfiguration.setCreated(LocalDateTime.now());
+            return classifiersConfigurationRepository.save(classifiersConfiguration);
+        }
+        return classifiersConfiguration;
     }
 
-    @Override
-    public Page<ClassifierOptionsDatabaseModel> getNextPage(PageRequestDto pageRequestDto) {
-        int lastVersion = classifierOptionsDatabaseModelRepository.findLatestVersion();
-        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), ClassifierOptionsDatabaseModel_.CREATION_DATE,
-                pageRequestDto.isAscending());
-        int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
-        return classifierOptionsDatabaseModelRepository.findAllByVersion(lastVersion,
-                PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
-    }
-
-    private List<ClassifierOptionsDatabaseModel> createClassifiersOptions(Collection<File> modelFiles, int version) {
-        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = new ArrayList<>(modelFiles.size());
-        for (File modelFile : modelFiles) {
+    private Set<ClassifierOptionsDatabaseModel> createClassifiersOptions(Resource[] modelFiles,
+                                                                         ClassifiersConfiguration classifiersConfiguration) {
+        Set<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = newHashSet();
+        for (Resource modelFile : modelFiles) {
             try {
-                classifierOptionsDatabaseModels.add(
-                        createClassifierOptions(objectMapper.readValue(modelFile, ClassifierOptions.class), version));
+                @Cleanup InputStream inputStream = modelFile.getInputStream();
+                classifierOptionsDatabaseModels.add(createClassifierOptionsDatabaseModel(
+                        objectMapper.readValue(inputStream, ClassifierOptions.class), classifiersConfiguration));
             } catch (IOException ex) {
-                logAndThrowError(String.format("There was an error while parsing json file '%s': %s",
-                        modelFile.getAbsolutePath(),
-                        ex.getMessage()), log);
+                log.error("There was an error while parsing json file [{}]: {}", modelFile.getFilename(),
+                        ex.getMessage());
+                throw new ClassifierOptionsException(
+                        String.format("There was an error while parsing json file '%s': %s", modelFile.getFilename(),
+                                ex.getMessage()));
             }
         }
         return classifierOptionsDatabaseModels;
-    }
-
-    private ClassifierOptionsDatabaseModel createClassifierOptions(ClassifierOptions classifierOptions, int version) {
-        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = null;
-        try {
-            classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
-            classifierOptionsDatabaseModel.setVersion(version);
-            classifierOptionsDatabaseModel.setOptionsName(classifierOptions.getClass().getSimpleName());
-            String config = objectMapper.writeValueAsString(classifierOptions);
-            classifierOptionsDatabaseModel.setConfigMd5Hash(
-                    DigestUtils.md5DigestAsHex(config.getBytes(StandardCharsets.UTF_8)));
-            classifierOptionsDatabaseModel.setConfig(config);
-            classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
-            return classifierOptionsDatabaseModel;
-        } catch (IOException ex) {
-            logAndThrowError(String.format("There was an error while parsing object [%s]: %s", classifierOptions,
-                    ex.getMessage()),
-                    log);
-        }
-        return classifierOptionsDatabaseModel;
     }
 
 }

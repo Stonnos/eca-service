@@ -54,7 +54,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     this.defaultSortField = ExperimentFields.CREATION_DATE;
     this.linkColumns = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH,
       ExperimentFields.REQUEST_ID, ExperimentFields.EVALUATION_METHOD_DESCRIPTION];
-    this.notSortableColumns = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH];
+    this.notSortableColumns = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH, ExperimentFields.EVALUATION_TOTAL_TIME];
     this.initColumns();
   }
 
@@ -116,7 +116,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     return this.fieldService.getFieldValue(ExperimentFields.SEED, experimentDto, Utils.MISSING_VALUE);
   }
 
-  public onLink(column: string, experiment: ExperimentDto, overlayPanel: OverlayPanel) {
+  public onLink(event, column: string, experiment: ExperimentDto, overlayPanel: OverlayPanel) {
     switch (column) {
       case ExperimentFields.TRAINING_DATA_PATH:
         this.getExperimentTrainingDataFile(experiment);
@@ -191,7 +191,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
             this.messageService.add({ severity: 'success', summary: `Эксперимент был успешно создан`, detail: '' });
             this.lastCreatedExperimentRequestId = result.requestId;
             this.getRequestStatusesStatistics();
-            this.performPageRequest(0, this.pageSize, ExperimentFields.CREATION_DATE, false);
+            this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1);
           } else {
             this.messageService.add({ severity: 'error', summary: 'Не удалось создать эксперимент', detail: result.errorMessage });
           }
@@ -199,7 +199,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
-      })
+      });
   }
 
   public isBlink(item: ExperimentDto): boolean {
@@ -262,6 +262,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       { name: ExperimentFields.EMAIL, label: "Email заявки" },
       { name: ExperimentFields.TRAINING_DATA_PATH, label: "Обучающая выборка" },
       { name: ExperimentFields.EXPERIMENT_PATH, label: "Результаты эксперимента" },
+      { name: ExperimentFields.EVALUATION_TOTAL_TIME, label: "Время построения эксперимента" },
       { name: ExperimentFields.CREATION_DATE, label: "Дата создания заявки" },
       { name: ExperimentFields.START_DATE, label: "Дата начала эксперимента" },
       { name: ExperimentFields.END_DATE, label: "Дата окончания эксперимента" },

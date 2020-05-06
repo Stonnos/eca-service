@@ -7,10 +7,10 @@ import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.report.model.ExperimentBean;
 import com.ecaservice.web.dto.model.ExperimentDto;
 import eca.core.evaluation.EvaluationMethod;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @Import({ExperimentMapperImpl.class, CrossValidationConfig.class})
 public class ExperimentMapperTest {
 
@@ -109,6 +109,7 @@ public class ExperimentMapperTest {
         assertThat(experimentDto.getNumFolds()).isEqualTo(experiment.getNumFolds());
         assertThat(experimentDto.getNumTests()).isEqualTo(experiment.getNumTests());
         assertThat(experimentDto.getSeed()).isEqualTo(experiment.getSeed());
+        assertThat(experimentDto.getEvaluationTotalTime()).isNotNull();
     }
 
     @Test
@@ -144,5 +145,6 @@ public class ExperimentMapperTest {
         assertThat(experimentBean.getTrainingDataAbsolutePath()).isEqualTo(DATA_XLS);
         assertThat(experimentBean.getExperimentAbsolutePath()).isEqualTo(EXPERIMENT_MODEL);
         assertThat(experimentBean.getRequestId()).isEqualTo(experiment.getRequestId());
+        assertThat(experimentBean.getEvaluationTotalTime()).isNotNull();
     }
 }

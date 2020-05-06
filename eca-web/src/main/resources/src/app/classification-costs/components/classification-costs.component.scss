@@ -5,12 +5,8 @@
   }
 
   .ui-table-tbody > tr > td {
-    word-wrap: break-word;
     &:first-child {
       font-weight: bold;
     }
-  }
-  .ui-table-thead > tr > th {
-    word-wrap: break-word;
   }
 }

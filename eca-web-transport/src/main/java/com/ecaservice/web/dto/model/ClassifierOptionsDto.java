@@ -9,6 +9,8 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+import static com.ecaservice.web.dto.util.FieldConstraints.DATE_TIME_PATTERN;
+
 /**
  * Classifier input options dto model.
  *
@@ -18,11 +20,8 @@ import java.time.LocalDateTime;
 @ApiModel(description = "Classifier json input options model")
 public class ClassifierOptionsDto {
 
-    /**
-     * Config version
-     */
-    @ApiModelProperty(value = "Options version", required = true)
-    private int version;
+    @ApiModelProperty(value = "Options id")
+    private Long id;
 
     /**
      * Options name
@@ -34,7 +33,7 @@ public class ClassifierOptionsDto {
      * Creation date
      */
     @ApiModelProperty(value = "Creation date", required = true)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime creationDate;
 

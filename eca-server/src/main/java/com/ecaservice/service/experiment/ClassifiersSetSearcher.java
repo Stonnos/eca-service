@@ -8,6 +8,7 @@ import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.evaluation.ClassificationResult;
 import com.ecaservice.model.options.ClassifierOptions;
+import com.ecaservice.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.service.evaluation.EvaluationService;
 import com.ecaservice.service.experiment.handler.ClassifierInputDataHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,8 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.ecaservice.util.ExperimentLogUtils.logAndThrowError;
-
 /**
  * Service for searching the best individual classifiers set by the criterion of accuracy maximization.
  *
@@ -42,7 +41,7 @@ public class ClassifiersSetSearcher {
     private static ObjectMapper objectMapper = new ObjectMapper();
 
     private final EvaluationService evaluationService;
-    private final ExperimentConfigurationService experimentConfigurationService;
+    private final ClassifierOptionsService classifierOptionsService;
     private final ExperimentConfig experimentConfig;
     private final CrossValidationConfig crossValidationConfig;
     private final List<ClassifierInputDataHandler> classifierInputDataHandlers;
@@ -87,12 +86,11 @@ public class ClassifiersSetSearcher {
     }
 
     private List<AbstractClassifier> readClassifiers() {
-        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = experimentConfigurationService
-                .findLastClassifiersOptions();
+        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
+                classifierOptionsService.getActiveClassifiersOptions();
         if (CollectionUtils.isEmpty(classifierOptionsDatabaseModels)) {
-            throw new ExperimentException("Classifiers options config hasn't been found.");
+            throw new ExperimentException("Expected not empty classifiers options list.");
         }
-        log.info("{} classifiers configs has been found.", classifierOptionsDatabaseModels.size());
         List<AbstractClassifier> classifierList = new ArrayList<>(classifierOptionsDatabaseModels.size());
         try {
             for (ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel : classifierOptionsDatabaseModels) {
@@ -101,8 +99,8 @@ public class ClassifiersSetSearcher {
                 classifierList.add(classifierOptionsConverter.convert(classifierOptions));
             }
         } catch (Exception ex) {
-            logAndThrowError(String.format("There was an error while creating individual classifiers: %s",
-                    ex.getMessage()), log);
+            throw new ExperimentException(
+                    String.format("There was an error while creating individual classifiers: %s", ex.getMessage()));
         }
         log.info("{} individual classifiers has been successfully created.",
                 classifierList.size());

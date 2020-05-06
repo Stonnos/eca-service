@@ -10,17 +10,18 @@ import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.metrics.KNearestNeighbours;
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.ws.client.WebServiceIOException;
 import org.springframework.ws.client.core.WebServiceTemplate;
 
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -30,7 +31,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ErsWebServiceClientTest {
 
     private static final String WEB_SERVICE_URL = "http://localhost";
@@ -47,7 +48,7 @@ public class ErsWebServiceClientTest {
 
     private EvaluationResults evaluationResults;
 
-    @Before
+    @BeforeEach
     public void init() throws Exception {
         evaluationResults =
                 new EvaluationResults(new KNearestNeighbours(), new Evaluation(TestHelperUtils.loadInstances()));
@@ -68,10 +69,11 @@ public class ErsWebServiceClientTest {
         Assertions.assertThat(actualResponse.getStatus()).isEqualTo(expectedResponse.getStatus());
     }
 
-    @Test(expected = WebServiceIOException.class)
+    @Test
     public void testErrorSending() {
         when(ersWebServiceTemplate.marshalSendAndReceive(anyString(), any(EvaluationResultsRequest.class))).thenThrow(
                 new WebServiceIOException("I/O exception"));
-        ersWebServiceClient.sendEvaluationResults(evaluationResults, UUID.randomUUID().toString());
+        assertThrows(WebServiceIOException.class, () -> ersWebServiceClient.sendEvaluationResults(evaluationResults,
+                UUID.randomUUID().toString()));
     }
 }
