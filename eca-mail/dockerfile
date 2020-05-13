@@ -1,0 +1,5 @@
+FROM openjdk:8
+ADD wait-for-it.sh /wait-for-it.sh
+RUN chmod +x /wait-for-it.sh
+COPY target/eca-mail.war eca-mail.war
+ENTRYPOINT exec /wait-for-it.sh eca-db:5432 --timeout=$DB_CONTAINER_WAIT_TIMEOUT -- java -jar eca-mail.war

@@ -72,6 +72,19 @@ services:
       - eca-db
       - discovery-server
 
+  eca-mail:
+    image: eca-mail
+    container_name: eca-mail
+    environment:
+      TZ: ${TIME_ZONE}
+      SPRING_PROFILES_ACTIVE: "docker"
+      DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
+    networks:
+      - default
+    depends_on:
+      - eca-db
+      - discovery-server
+
   eca-web:
     image: eca-web
     container_name: eca-web

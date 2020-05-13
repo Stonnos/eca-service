@@ -20,9 +20,9 @@
     </springProfile>
 
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>notification.log</file>
+        <file>eca-mail.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>notification.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>eca-mail.%d{yyyy-MM-dd}.log</fileNamePattern>
             <!-- 30 days keep logs -->
             <maxHistory>30</maxHistory>
             <totalSizeCap>100mb</totalSizeCap>

@@ -10,10 +10,7 @@ spring:
       ddl-auto: validate
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
 
-server:
-  port: 8443
-  ssl:
-    enabled: true
-    keyStore: classpath:notification.jks
-    keyAlias: notification
-    keyStorePassword: notification
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-server:8761/eureka

@@ -2,6 +2,9 @@ package com.ecaservice.controller.api;
 
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.repository.ExperimentRepository;
+import com.ecaservice.service.experiment.mail.EmailClient;
+import com.ecaservice.service.experiment.mail.EmailRequest;
+import com.ecaservice.service.experiment.mail.EmailResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -33,6 +36,17 @@ import static com.ecaservice.util.Utils.existsFile;
 public class EcaController {
 
     private final ExperimentRepository experimentRepository;
+    private final EmailClient emailClient;
+
+    @GetMapping(value = "/send")
+    public EmailResponse send() {
+        EmailRequest emailRequest = new EmailRequest();
+        emailRequest.setHtml(false);
+        emailRequest.setMessage("Hello!");
+        emailRequest.setReceiver("roman.batygin@mail.ru");
+        emailRequest.setSender("rbatsw@gmail.com");
+        return emailClient.sendEmail(emailRequest);
+    }
 
     /**
      * Downloads experiment results by token.
