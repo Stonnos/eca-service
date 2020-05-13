@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 /**
- * Implements REST API for ECA application.
+ * Implements REST API for email application.
  *
  * @author Roman Batygin
  */
-//@Api(tags = "API for ECA application")
 @Slf4j
 @RestController
 @RequestMapping("/notifications")
@@ -24,8 +25,14 @@ public class EmailController {
 
     private final EmailService emailService;
 
+    /**
+     * Saves email request.
+     *
+     * @param emailRequest - email request
+     * @return email response
+     */
     @PostMapping(value = "/email-request")
-    public EmailResponse saveRequest(@RequestBody EmailRequest emailRequest) {
+    public EmailResponse saveRequest(@Valid @RequestBody EmailRequest emailRequest) {
         return emailService.saveEmail(emailRequest);
     }
 }

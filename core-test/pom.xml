@@ -15,6 +15,7 @@
     <properties>
         <assertj.core.version>3.13.1</assertj.core.version>
         <mockito.version>3.2.4</mockito.version>
+        <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
     </properties>
 
     <dependencies>
