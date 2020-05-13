@@ -15,6 +15,7 @@
         <module>eca-server</module>
         <module>eca-web</module>
         <module>zuul-gate</module>
+        <module>discovery-server</module>
     </modules>
 
     <parent>

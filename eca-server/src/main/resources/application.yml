@@ -35,6 +35,11 @@ spring:
         concurrency: 10
         maxConcurrency: 10
 
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
 ## Application common configs
 common:
   maxPageSize: 50

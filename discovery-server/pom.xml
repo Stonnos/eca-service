@@ -9,13 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>zuul-gate</artifactId>
+    <artifactId>discovery-server</artifactId>
     <packaging>war</packaging>
-
-    <properties>
-        <spring.cloud.zuul.version>2.2.2.RELEASE</spring.cloud.zuul.version>
-        <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
-    </properties>
 
     <dependencies>
 
@@ -37,19 +32,18 @@
         </dependency>
 
         <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
-            <version>${spring.cloud.zuul.version}</version>
+            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-sleuth</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
     </dependencies>
@@ -76,5 +70,4 @@
 
         </plugins>
     </build>
-
 </project>

@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 /**
  * Main class.
@@ -11,6 +12,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
  * @author Roman Batygin
  */
 @SpringBootApplication
+@EnableEurekaClient
 public class EcaApplication extends SpringBootServletInitializer {
 
     @Override

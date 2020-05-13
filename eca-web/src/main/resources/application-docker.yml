@@ -1,3 +1,8 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-server:8761/eureka
+
 web-config:
   apiUrl: http://localhost:8080/eca-server
   oauthUrl: http://localhost:8080/auth-server/oauth/token

@@ -7,14 +7,22 @@ zuul:
   routes:
       server:
         path: /eca-server/**
-        url: http://eca-server:8080
+        serviceId: eca-server
       oauth:
         path: /auth-server/**
-        url: http://eca-oauth:8080
+        serviceId: eca-oauth
       frontend:
         path: /**
-        url: http://eca-web:8080
+        serviceId: eca-web
   host:
     connect-timeout-millis: 60000
     socket-timeout-millis: 60000
   sensitiveHeaders: Cookie, Set-Cookie
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-server:8761/eureka
+
+ribbon:
+  ReadTimeout: 60000

@@ -1,21 +1,19 @@
-package com.ecaservice.zuul;
+package com.ecaservice.discovery;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
-import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
+import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 
 /**
- * Main class for Zuul Gate application.
+ * Main class for discovery server application.
  *
  * @author Roman Batygin
  */
 @SpringBootApplication
-@EnableZuulProxy
-@EnableEurekaClient
-public class ZuulGateApplication extends SpringBootServletInitializer {
+@EnableEurekaServer
+public class DiscoveryServerApplication extends SpringBootServletInitializer {
 
     /**
      * Runs application.
@@ -23,11 +21,11 @@ public class ZuulGateApplication extends SpringBootServletInitializer {
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        SpringApplication.run(ZuulGateApplication.class, args);
+        SpringApplication.run(DiscoveryServerApplication.class, args);
     }
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(ZuulGateApplication.class);
+        return builder.sources(DiscoveryServerApplication.class);
     }
 }
