@@ -10,6 +10,7 @@
     <modules>
         <module>core-test</module>
         <module>eca-user-model</module>
+        <module>eca-mail-transport</module>
         <module>eca-web-transport</module>
         <module>eca-report</module>
         <module>eca-oauth</module>

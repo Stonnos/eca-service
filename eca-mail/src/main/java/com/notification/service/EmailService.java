@@ -1,7 +1,7 @@
 package com.notification.service;
 
-import com.notification.dto.EmailRequest;
-import com.notification.dto.EmailResponse;
+import com.ecaservice.notification.dto.EmailRequest;
+import com.ecaservice.notification.dto.EmailResponse;
 import com.notification.mapping.EmailRequestMapper;
 import com.notification.model.Email;
 import com.notification.repository.EmailRepository;
@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-
-import static com.notification.util.Utils.buildResponse;
 
 /**
  * Email service.
@@ -41,6 +39,6 @@ public class EmailService {
         email.setSaveDate(LocalDateTime.now());
         emailRepository.save(email);
         log.info("Email request with uuid '{}' has been saved.", uuid);
-        return buildResponse(UUID.randomUUID().toString());
+        return EmailResponse.builder().requestId(UUID.randomUUID().toString()).build();
     }
 }

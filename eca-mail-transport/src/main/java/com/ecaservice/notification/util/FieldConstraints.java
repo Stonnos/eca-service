@@ -1,4 +1,4 @@
-package com.notification.util;
+package com.ecaservice.notification.util;
 
 import lombok.experimental.UtilityClass;
 

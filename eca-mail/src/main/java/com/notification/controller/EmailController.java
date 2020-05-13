@@ -1,7 +1,7 @@
 package com.notification.controller;
 
-import com.notification.dto.EmailRequest;
-import com.notification.dto.EmailResponse;
+import com.ecaservice.notification.dto.EmailRequest;
+import com.ecaservice.notification.dto.EmailResponse;
 import com.notification.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

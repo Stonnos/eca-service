@@ -1,9 +1,9 @@
 package com.notification.service;
 
+import com.ecaservice.notification.dto.EmailRequest;
+import com.ecaservice.notification.dto.EmailResponse;
 import com.notification.AbstractJpaTest;
 import com.notification.TestHelperUtils;
-import com.notification.dto.EmailRequest;
-import com.notification.dto.EmailResponse;
 import com.notification.mapping.EmailRequestMapper;
 import com.notification.mapping.EmailRequestMapperImpl;
 import com.notification.model.Email;

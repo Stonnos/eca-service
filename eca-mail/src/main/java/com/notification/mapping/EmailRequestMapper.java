@@ -1,6 +1,6 @@
 package com.notification.mapping;
 
-import com.notification.dto.EmailRequest;
+import com.ecaservice.notification.dto.EmailRequest;
 import com.notification.model.Email;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

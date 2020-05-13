@@ -2,6 +2,7 @@ package com.ecaservice.service.experiment.mail;
 
 import com.ecaservice.config.ws.notification.MailConfig;
 import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.service.experiment.mail.template.TemplateEngineService;
 import com.ecaservice.service.experiment.visitor.EmailTemplateVisitor;
 import lombok.RequiredArgsConstructor;

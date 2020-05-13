@@ -1,4 +1,4 @@
-package com.notification.dto;
+package com.ecaservice.notification.dto;
 
 import lombok.Data;
 
@@ -6,9 +6,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import static com.notification.util.FieldConstraints.EMAIL_MAX_SIZE;
-import static com.notification.util.FieldConstraints.EMAIL_REGEX;
-import static com.notification.util.FieldConstraints.SUBJECT_MAX_SIZE;
+import static com.ecaservice.notification.util.FieldConstraints.EMAIL_MAX_SIZE;
+import static com.ecaservice.notification.util.FieldConstraints.EMAIL_REGEX;
+import static com.ecaservice.notification.util.FieldConstraints.SUBJECT_MAX_SIZE;
 
 /**
  * Email request dto.
