@@ -1,0 +1,19 @@
+spring:
+  ## Datasource properties
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://postgres-db:5432/mail
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+
+server:
+  port: 8443
+  ssl:
+    enabled: true
+    keyStore: classpath:notification.jks
+    keyAlias: notification
+    keyStorePassword: notification

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v0-init-schema.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="hibernate_sequence"/>
+            </not>
+        </preConditions>
+        <createSequence sequenceName="hibernate_sequence" startValue="1" incrementBy="1" minValue="1"/>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="email"/>
+            </not>
+        </preConditions>
+        <createTable tableName="email">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="uuid" type="varchar(255)"/>
+            <column name="sender" type="varchar(255)"/>
+            <column name="receiver" type="varchar(255)"/>
+            <column name="subject" type="varchar(255)"/>
+            <column name="message" type="text"/>
+            <column name="html" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="save_date" type="timestamp"/>
+            <column name="sent_date" type="timestamp"/>
+            <column name="status" type="varchar(255)"/>
+            <column name="error_message" type="text"/>
+            <column name="failed_attempts_to_sent" type="integer"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

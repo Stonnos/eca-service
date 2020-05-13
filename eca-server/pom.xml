@@ -27,10 +27,6 @@
         <postresql.version>42.2.6</postresql.version>
         <h2.version>1.4.199</h2.version>
         <eca.version>6.7</eca.version>
-        <assertj.core.version>3.13.1</assertj.core.version>
-        <mockito.version>3.2.4</mockito.version>
-        <commons.io.version>2.5</commons.io.version>
-        <org.mapstruct.version>1.3.0.Final</org.mapstruct.version>
         <liquibase.version>3.7.0</liquibase.version>
         <xmlschema.version>2.2.3</xmlschema.version>
         <httpclient.version>4.5.11</httpclient.version>
@@ -206,35 +202,6 @@
             <version>${httpclient.version}</version>
         </dependency>
 
-        <!--test dependencies-->
-        <dependency>
-            <scope>test</scope>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-        </dependency>
-
-        <dependency>
-            <scope>test</scope>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>${assertj.core.version}</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>${mockito.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${commons.io.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -247,9 +214,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-jdk8</artifactId>
-            <version>${org.mapstruct.version}</version>
+            <groupId>eca.service</groupId>
+            <artifactId>core-test</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -269,61 +236,6 @@
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>default-compile</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>Normal compilation (excluding mappers)</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/**/mapping/**/*</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>MapStruct mappers</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <compilerVersion>${java.version}</compilerVersion>
-                            <source>${java.version}</source>
-                            <target>${java.version}</target>
-                            <annotationProcessorPaths>
-                                <path>
-                                    <groupId>org.mapstruct</groupId>
-                                    <artifactId>mapstruct-processor</artifactId>
-                                    <version>${org.mapstruct.version}</version>
-                                </path>
-                            </annotationProcessorPaths>
-                            <compilerArgs>
-                                <compilerArg>-Amapstruct.defaultComponentModel=spring</compilerArg>
-                            </compilerArgs>
-                            <includes>
-                                <include>**/**/mapping/**/*</include>
-                                <include>${project.build.directory}/classes/**/*</include>
-                            </includes>
-                            <annotationProcessors>
-                                <processor>org.mapstruct.ap.MappingProcessor</processor>
-                            </annotationProcessors>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
 
             <!-- test coverage check with jococo -->
             <plugin>
