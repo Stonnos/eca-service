@@ -9,6 +9,9 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
 
+ribbon:
+  ReadTimeout: 60000
+
 web-config:
   apiUrl: http://localhost:8085/eca-server
   oauthUrl: http://localhost:8085/eca-oauth/oauth/token

@@ -2,30 +2,25 @@ package com.ecaservice.service.experiment.mail;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.ws.notification.MailConfig;
-import com.ecaservice.dto.mail.EmailRequest;
-import com.ecaservice.dto.mail.EmailResponse;
-import com.ecaservice.model.entity.EmailRequestEntity;
-import com.ecaservice.model.entity.EmailResponseStatus;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
-import com.ecaservice.repository.EmailRequestRepository;
-import com.ecaservice.repository.ExperimentRepository;
-import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.experiment.mail.template.TemplateEngineService;
 import com.ecaservice.service.experiment.visitor.EmailTemplateVisitor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.ws.client.core.WebServiceTemplate;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.thymeleaf.context.Context;
 
-import javax.inject.Inject;
 import java.util.EnumMap;
-import java.util.List;
-import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -33,7 +28,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-public class NotificationServiceTest extends AbstractJpaTest {
+@ExtendWith(SpringExtension.class)
+public class NotificationServiceTest {
 
     private static final String TEMPLATE_HTML = "test-template.html";
     private static final String WEB_SERVICE_URL = "http://localhost";
@@ -42,21 +38,15 @@ public class NotificationServiceTest extends AbstractJpaTest {
     private MailConfig mailConfig;
     @Mock
     private EmailTemplateVisitor statusTemplateVisitor;
-    @Inject
-    private ExperimentRepository experimentRepository;
-    @Inject
-    private EmailRequestRepository emailRequestRepository;
     @Mock
-    private WebServiceTemplate notificationWebServiceTemplate;
+    private EmailClient emailClient;
     @Mock
     private TemplateEngineService templateEngineService;
-
+    @InjectMocks
     private NotificationService notificationService;
 
-    @Override
+    @BeforeEach
     public void init() {
-        notificationService = new NotificationService(templateEngineService, mailConfig, statusTemplateVisitor,
-                notificationWebServiceTemplate, emailRequestRepository);
         EnumMap<RequestStatus, String> statusMap = new EnumMap<>(RequestStatus.class);
         statusMap.put(RequestStatus.FINISHED, TEMPLATE_HTML);
         when(mailConfig.getMessageTemplatesMap()).thenReturn(statusMap);
@@ -64,43 +54,21 @@ public class NotificationServiceTest extends AbstractJpaTest {
         when(mailConfig.getServiceUrl()).thenReturn(WEB_SERVICE_URL);
     }
 
-    @Override
-    public void deleteAll() {
-        emailRequestRepository.deleteAll();
-        experimentRepository.deleteAll();
-    }
-
     @Test
     public void testNotificationDisabled() {
         when(mailConfig.getEnabled()).thenReturn(false);
-        Experiment experiment = createAndSaveExperiment();
+        Experiment experiment =  TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
         notificationService.notifyByEmail(experiment);
-        List<EmailRequestEntity> emailRequestEntities = emailRequestRepository.findAll();
-        assertThat(emailRequestEntities).isNullOrEmpty();
+        verify(emailClient, never()).sendEmail(any(EmailRequest.class));
     }
 
     @Test
     public void testSuccessNotification() {
-        Experiment experiment = createAndSaveExperiment();
-        EmailResponse emailResponse = new EmailResponse();
-        emailResponse.setRequestId(UUID.randomUUID().toString());
+        Experiment experiment =  TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
         when(statusTemplateVisitor.caseFinished(experiment)).thenReturn(new Context());
         when(templateEngineService.process(anyString(), any(Context.class))).thenReturn("message");
-        when(notificationWebServiceTemplate.marshalSendAndReceive(anyString(),
-                any(EmailRequest.class))).thenReturn(
-                emailResponse);
         notificationService.notifyByEmail(experiment);
-        EmailRequestEntity emailRequest = emailRequestRepository.findAll().stream().findFirst().orElse(null);
-        assertThat(emailRequest).isNotNull();
-        assertThat(emailRequest.getRequestDate()).isNotNull();
-        assertThat(emailRequest.getRequestId()).isEqualTo(emailResponse.getRequestId());
-        assertThat(emailRequest.getResponseStatus()).isEqualTo(EmailResponseStatus.SUCCESS);
+        verify(emailClient, atLeastOnce()).sendEmail(any(EmailRequest.class));
     }
 
-    private Experiment createAndSaveExperiment() {
-        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
-        experiment.setRequestStatus(RequestStatus.FINISHED);
-        experimentRepository.save(experiment);
-        return experiment;
-    }
 }
