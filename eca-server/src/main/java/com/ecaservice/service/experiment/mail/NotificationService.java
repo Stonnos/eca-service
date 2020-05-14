@@ -3,6 +3,7 @@ package com.ecaservice.service.experiment.mail;
 import com.ecaservice.config.MailConfig;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.notification.dto.EmailRequest;
+import com.ecaservice.notification.dto.EmailResponse;
 import com.ecaservice.service.experiment.mail.template.TemplateEngineService;
 import com.ecaservice.service.experiment.visitor.EmailTemplateVisitor;
 import lombok.RequiredArgsConstructor;
@@ -37,9 +38,9 @@ public class NotificationService {
             log.warn("Notifications sending is disabled.");
         } else {
             EmailRequest emailRequest = createEmailRequest(experiment);
-            emailClient.sendEmail(emailRequest);
-            log.info("Email request has been successfully sent for experiment [{}], experiment status [{}].",
-                    experiment.getRequestId(), experiment.getRequestStatus());
+            EmailResponse emailResponse = emailClient.sendEmail(emailRequest);
+            log.info("Email request [{}] has been successfully sent for experiment [{}], experiment status [{}].",
+                    emailResponse.getRequestId(), experiment.getRequestId(), experiment.getRequestStatus());
         }
     }
 

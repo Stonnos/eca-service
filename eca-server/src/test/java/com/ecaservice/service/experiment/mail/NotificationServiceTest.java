@@ -5,6 +5,7 @@ import com.ecaservice.config.MailConfig;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.notification.dto.EmailRequest;
+import com.ecaservice.notification.dto.EmailResponse;
 import com.ecaservice.service.experiment.mail.template.TemplateEngineService;
 import com.ecaservice.service.experiment.visitor.EmailTemplateVisitor;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,6 +68,7 @@ public class NotificationServiceTest {
     public void testSuccessNotification() {
         Experiment experiment =  TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
         when(statusTemplateVisitor.caseFinished(experiment)).thenReturn(new Context());
+        when(emailClient.sendEmail(any(EmailRequest.class))).thenReturn(new EmailResponse());
         when(templateEngineService.process(anyString(), any(Context.class))).thenReturn("message");
         notificationService.notifyByEmail(experiment);
         verify(emailClient, atLeastOnce()).sendEmail(any(EmailRequest.class));
