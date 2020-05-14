@@ -265,20 +265,6 @@
                             <clearOutputDir>false</clearOutputDir>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>notification</id>
-                        <goals>
-                            <goal>xjc</goal>
-                        </goals>
-                        <configuration>
-                            <packageName>com.ecaservice.dto.mail</packageName>
-                            <sources>
-                                <source>src/main/resources/notification/notification.xsd</source>
-                            </sources>
-                            <outputDirectory>target/generated-sources/xjb</outputDirectory>
-                            <clearOutputDir>false</clearOutputDir>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
 

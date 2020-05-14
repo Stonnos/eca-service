@@ -1,7 +1,7 @@
 package com.ecaservice.service.experiment.mail;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.config.ws.notification.MailConfig;
+import com.ecaservice.config.MailConfig;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.notification.dto.EmailRequest;
