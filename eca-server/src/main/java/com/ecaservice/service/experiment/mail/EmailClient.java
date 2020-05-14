@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * Email feign client interface.
  */
-@FeignClient(value = "eca-mail", path = "/notifications")
+@FeignClient(value = "eca-mail", path = "/emails")
 public interface EmailClient {
 
     /**

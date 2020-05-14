@@ -19,7 +19,7 @@ import javax.validation.Valid;
  */
 @Slf4j
 @RestController
-@RequestMapping("/notifications")
+@RequestMapping("/emails")
 @RequiredArgsConstructor
 public class EmailController {
 
