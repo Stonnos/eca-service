@@ -15,7 +15,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ClassifiersConfigurationsService } from "../../classifiers-configurations/services/classifiers-configurations.service";
 import { ClassifiersConfigurationModel } from "../../create-classifiers-configuration/model/classifiers-configuration.model";
 import { ExperimentTabUtils } from "../../experiments-tabs/model/experiment-tab.utils";
-import {finalize} from "rxjs/internal/operators";
+import { finalize } from "rxjs/internal/operators";
 
 declare var Prism: any;
 
