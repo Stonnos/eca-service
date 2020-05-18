@@ -30,10 +30,12 @@ public class MailSenderService {
      */
     public void sendEmail(Email email) throws MessagingException {
         Assert.notNull(email, "Mail is not specified!");
-        log.info("Starting to send email message from '{}' to '{}'.", email.getSender(), email.getReceiver());
+        log.info("Starting to send email message [{}] from '{}' to '{}'.", email.getUuid(), email.getSender(),
+                email.getReceiver());
         MimeMessage message = buildMimeMessage(email);
         mailSender.send(message);
-        log.info("Email message has been sent from '{}' to '{}'.", email.getSender(), email.getReceiver());
+        log.info("Email message [{}] has been sent from '{}' to '{}'.", email.getUuid(), email.getSender(),
+                email.getReceiver());
     }
 
     private MimeMessage buildMimeMessage(Email email) throws MessagingException {

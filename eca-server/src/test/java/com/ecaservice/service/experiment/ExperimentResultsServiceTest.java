@@ -148,7 +148,7 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
         experimentResultsRequestRepository.save(
                 TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity2, ErsResponseStatus.ERROR));
         experimentResultsRequestRepository.save(TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity2,
-                ErsResponseStatus.INVALID_REQUEST_ID));
+                ErsResponseStatus.SERVICE_UNAVAILABLE));
         testGetErsReport(experiment, ErsReportStatus.NEED_SENT);
     }
 

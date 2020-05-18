@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v32-delete-ers-response-statuses.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Deletes unused ERS response statuses -->
+    <changeSet id="1" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_dictionary_value"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_dictionary_value where filter_dictionary_id = 4 and value = 'INVALID_REQUEST_ID'
+            </sqlCheck>
+        </preConditions>
+        <delete tableName="filter_dictionary_value">
+            <where>filter_dictionary_id = 4 and value = 'INVALID_REQUEST_ID'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_dictionary_value"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from filter_dictionary_value where filter_dictionary_id = 4 and value = 'INVALID_REQUEST_PARAMS'
+            </sqlCheck>
+        </preConditions>
+        <delete tableName="filter_dictionary_value">
+            <where>filter_dictionary_id = 4 and value = 'INVALID_REQUEST_PARAMS'</where>
+        </delete>
+    </changeSet>
+
+</databaseChangeLog>
