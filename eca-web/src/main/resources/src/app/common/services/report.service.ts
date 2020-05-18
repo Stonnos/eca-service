@@ -1,15 +1,15 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from "rxjs/internal/Observable";
-import { ConfigService } from "../../config.service";
 import { AuthenticationKeys } from "../../auth/model/auth.keys";
 import { PageRequestDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { PageRequestService } from "./page-request.service";
+import { environment } from "../../../environments/environment";
 
 @Injectable()
 export class ReportsService {
 
-  private serviceUrl = ConfigService.appConfig.apiUrl + '/reports';
+  private serviceUrl = environment.serverUrl + '/reports';
 
   public constructor(private http: HttpClient, private pageRequestService: PageRequestService) {
   }

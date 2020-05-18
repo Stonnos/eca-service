@@ -9,15 +9,15 @@ import {
   RequestStatusStatisticsDto, ExperimentResultsDetailsDto, SendingStatus
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
-import { ConfigService } from "../../config.service";
 import { AuthenticationKeys } from "../../auth/model/auth.keys";
 import { ExperimentRequest } from "../../create-experiment/model/experiment-request.model";
 import { PageRequestService } from "../../common/services/page-request.service";
+import { environment } from "../../../environments/environment";
 
 @Injectable()
 export class ExperimentsService {
 
-  private serviceUrl = ConfigService.appConfig.apiUrl + '/experiment';
+  private serviceUrl = environment.serverUrl + '/experiment';
 
   public constructor(private http: HttpClient, private pageRequestService: PageRequestService) {
   }

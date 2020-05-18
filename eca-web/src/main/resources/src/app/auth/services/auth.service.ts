@@ -1,16 +1,16 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from "rxjs/internal/Observable";
-import { ConfigService } from "../../config.service";
 import { UserModel } from "../components/user.model";
 import { AuthenticationKeys } from "../model/auth.keys";
+import { environment } from "../../../environments/environment";
 
 @Injectable()
 export class AuthService {
 
-  private serviceUrl = ConfigService.appConfig.oauthUrl;
-  private clientId = ConfigService.appConfig.clientId;
-  private secret = ConfigService.appConfig.secret;
+  private serviceUrl = environment.oauthUrl;
+  private clientId = environment.clientId;
+  private secret = environment.secret;
 
   constructor(private http: HttpClient) {
   }

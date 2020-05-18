@@ -3,7 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  serverUrl: `http://${window.location.hostname}:${window.location.port}/eca-server`,
+  oauthUrl: `http://${window.location.hostname}:${window.location.port}/eca-oauth/oauth/token`,
+  clientId: "eca_web",
+  secret: "web_secret"
 };
 
 /*

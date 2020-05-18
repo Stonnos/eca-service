@@ -14,7 +14,7 @@ zuul:
         path: /eca-server/**
         serviceId: eca-server
       oauth:
-        path: /auth-server/**
+        path: /eca-oauth/**
         serviceId: eca-oauth
       frontend:
         path: /**

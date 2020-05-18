@@ -7,14 +7,14 @@ import {
   PageRequestDto, RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
-import { ConfigService } from "../../config.service";
 import { AuthenticationKeys } from "../../auth/model/auth.keys";
 import { PageRequestService } from "../../common/services/page-request.service";
+import { environment } from "../../../environments/environment";
 
 @Injectable()
 export class ClassifiersService {
 
-  private serviceUrl = ConfigService.appConfig.apiUrl + '/evaluation';
+  private serviceUrl = environment.serverUrl + '/evaluation';
 
   public constructor(private http: HttpClient, private pageRequestService: PageRequestService) {
   }

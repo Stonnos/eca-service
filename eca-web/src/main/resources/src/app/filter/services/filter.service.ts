@@ -6,16 +6,16 @@ import {
   FilterFieldDto,
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
-import { ConfigService } from "../../config.service";
 import { Filter } from "../model/filter.model";
 import { SelectItem } from "primeng/api";
 import { AuthenticationKeys } from "../../auth/model/auth.keys";
 import { FilterFieldType } from "../../common/model/filter-field-type.enum";
+import { environment } from "../../../environments/environment";
 
 @Injectable()
 export class FilterService {
 
-  private serviceUrl = ConfigService.appConfig.apiUrl + '/filter-templates';
+  private serviceUrl = environment.serverUrl + '/filter-templates';
 
   public constructor(private http: HttpClient) {
   }

@@ -16,12 +16,6 @@ eureka:
 ribbon:
   ReadTimeout: 60000
 
-web-config:
-  apiUrl: http://localhost:8085/eca-server
-  oauthUrl: http://localhost:8085/eca-oauth/oauth/token
-  clientId: eca_web
-  secret: web_secret
-
 management:
   metrics:
     tags:
