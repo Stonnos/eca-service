@@ -30,10 +30,14 @@ jobs:
         - docker push $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-oauth;
         - docker tag eca-server $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-server;
         - docker push $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-server;
+        - docker tag eca-mail $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-mail;
+        - docker push $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-mail;
         - docker tag eca-web $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-web;
         - docker push $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-web;
         - docker tag zuul-gate $DOCKER_USERNAME/$DOCKER_REPOSITORY:zuul-gate;
         - docker push $DOCKER_USERNAME/$DOCKER_REPOSITORY:zuul-gate;
+        - docker tag discovery-server $DOCKER_USERNAME/$DOCKER_REPOSITORY:discovery-server;
+        - docker push $DOCKER_USERNAME/$DOCKER_REPOSITORY:discovery-server;
 cache:
   directories:
     - $HOME/.m2

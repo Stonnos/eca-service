@@ -31,6 +31,17 @@ services:
     networks:
       - default
 
+  discovery-server:
+    image: discovery-server
+    container_name: discovery-server
+    ports:
+      - "8761:8761"
+    environment:
+      TZ: ${TIME_ZONE}
+      SPRING_PROFILES_ACTIVE: "docker"
+    networks:
+      - default
+
   eca-server:
     image: eca-server
     container_name: eca-server
@@ -40,12 +51,14 @@ services:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
       JAVA_OPTS: "-Xmx2g"
+      DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
       DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
     networks:
       - default
     depends_on:
       - eca-db
       - rabbitmq
+      - discovery-server
 
   eca-oauth:
     image: eca-oauth
@@ -53,11 +66,27 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
+      DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
       DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
     networks:
       - default
     depends_on:
       - eca-db
+      - discovery-server
+
+  eca-mail:
+    image: eca-mail
+    container_name: eca-mail
+    environment:
+      TZ: ${TIME_ZONE}
+      SPRING_PROFILES_ACTIVE: "docker"
+      DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
+      DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
+    networks:
+      - default
+    depends_on:
+      - eca-db
+      - discovery-server
 
   eca-web:
     image: eca-web
@@ -69,6 +98,7 @@ services:
       - default
     depends_on:
       - eca-server
+      - discovery-server
 
   zuul-gate:
     image: zuul-gate
@@ -80,6 +110,8 @@ services:
       - "8080:8080"
     networks:
       - default
+    depends_on:
+      - discovery-server
 
 networks:
   default:

@@ -27,16 +27,10 @@
         <postresql.version>42.2.6</postresql.version>
         <h2.version>1.4.199</h2.version>
         <eca.version>6.7</eca.version>
-        <assertj.core.version>3.13.1</assertj.core.version>
-        <mockito.version>3.2.4</mockito.version>
-        <commons.io.version>2.5</commons.io.version>
-        <org.mapstruct.version>1.3.0.Final</org.mapstruct.version>
         <liquibase.version>3.7.0</liquibase.version>
         <xmlschema.version>2.2.3</xmlschema.version>
         <httpclient.version>4.5.11</httpclient.version>
         <jaxb2-maven-plugin.version>2.3</jaxb2-maven-plugin.version>
-        <jacoco-plugin.version>0.8.5</jacoco-plugin.version>
-        <jacoco.minCoverage>0.70</jacoco.minCoverage>
         <maven-processor-plugin.version>3.3.3</maven-processor-plugin.version>
         <spring.security.oauth2.version>2.2.6.RELEASE</spring.security.oauth2.version>
         <sonar.coverage.exclusions>
@@ -155,6 +149,16 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.ws.xmlschema</groupId>
             <artifactId>xmlschema-core</artifactId>
             <version>${xmlschema.version}</version>
@@ -173,6 +177,12 @@
 
         <dependency>
             <groupId>eca.service</groupId>
+            <artifactId>swagger-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
             <artifactId>eca-user-model</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -180,6 +190,12 @@
         <dependency>
             <groupId>eca.service</groupId>
             <artifactId>eca-web-transport</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>eca-mail-transport</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -201,35 +217,6 @@
             <version>${httpclient.version}</version>
         </dependency>
 
-        <!--test dependencies-->
-        <dependency>
-            <scope>test</scope>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-        </dependency>
-
-        <dependency>
-            <scope>test</scope>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>${assertj.core.version}</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>${mockito.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${commons.io.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -242,9 +229,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-jdk8</artifactId>
-            <version>${org.mapstruct.version}</version>
+            <groupId>eca.service</groupId>
+            <artifactId>core-test</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -266,114 +253,6 @@
         <plugins>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>default-compile</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>Normal compilation (excluding mappers)</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/**/mapping/**/*</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>MapStruct mappers</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <compilerVersion>${java.version}</compilerVersion>
-                            <source>${java.version}</source>
-                            <target>${java.version}</target>
-                            <annotationProcessorPaths>
-                                <path>
-                                    <groupId>org.mapstruct</groupId>
-                                    <artifactId>mapstruct-processor</artifactId>
-                                    <version>${org.mapstruct.version}</version>
-                                </path>
-                            </annotationProcessorPaths>
-                            <compilerArgs>
-                                <compilerArg>-Amapstruct.defaultComponentModel=spring</compilerArg>
-                            </compilerArgs>
-                            <includes>
-                                <include>**/**/mapping/**/*</include>
-                                <include>${project.build.directory}/classes/**/*</include>
-                            </includes>
-                            <annotationProcessors>
-                                <processor>org.mapstruct.ap.MappingProcessor</processor>
-                            </annotationProcessors>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- test coverage check with jococo -->
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco-plugin.version}</version>
-                <configuration>
-                    <excludes>
-                        <exclude>**/model/**/*</exclude>
-                        <exclude>**/dto/**/*</exclude>
-                        <exclude>**/config/**/*</exclude>
-                        <exclude>**/exception/**/*</exclude>
-                        <exclude>**/util/**/*</exclude>
-                        <exclude>**/qa/**/*</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>default-prepare-agent</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>default-report</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>default-check</id>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <configuration>
-                            <!-- see http://automationrhapsody.com/automated-code-coverage-of-unit-tests-with-jacoco-and-maven/ for rule details-->
-                            <rules>
-                                <rule>
-                                    <element>BUNDLE</element>
-                                    <limits>
-                                        <limit>
-                                            <counter>INSTRUCTION</counter>
-                                            <value>COVEREDRATIO</value>
-                                            <minimum>${jacoco.minCoverage}</minimum>
-                                        </limit>
-                                    </limits>
-                                </rule>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxb2-maven-plugin</artifactId>
                 <version>${jaxb2-maven-plugin.version}</version>
@@ -387,20 +266,6 @@
                             <packageName>com.ecaservice.dto.evaluation</packageName>
                             <sources>
                                 <source>src/main/resources/evaluation-results/evaluation-results.xsd</source>
-                            </sources>
-                            <outputDirectory>target/generated-sources/xjb</outputDirectory>
-                            <clearOutputDir>false</clearOutputDir>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>notification</id>
-                        <goals>
-                            <goal>xjc</goal>
-                        </goals>
-                        <configuration>
-                            <packageName>com.ecaservice.dto.mail</packageName>
-                            <sources>
-                                <source>src/main/resources/notification/notification.xsd</source>
                             </sources>
                             <outputDirectory>target/generated-sources/xjb</outputDirectory>
                             <clearOutputDir>false</clearOutputDir>

@@ -35,4 +35,5 @@
     <include file="db/changelog/v28-rename-experiment-fields.xml"/>
     <include file="db/changelog/v29-create-classifiers-configuration-table.xml"/>
     <include file="db/changelog/v30-add-classifiers-configuration-global-filter-fields.xml"/>
+    <include file="db/changelog/v31-drop-email-request-table.xml"/>
 </databaseChangeLog>

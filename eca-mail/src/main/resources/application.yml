@@ -1,0 +1,59 @@
+spring:
+  application:
+    name: eca-mail
+  jmx:
+    default-domain: eca-mail
+  ## Email properties
+  mail:
+    host: smtp.gmail.com
+    port: 25
+    username: rbatsw@gmail.com
+    password: czawqizcrdxfqlrv
+    properties:
+      mail.transport.protocol: smtp
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.debug: false
+  ## Datasource properties
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/mail
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  liquibase:
+    contexts: schema,data
+    change-log: classpath:db/liquibase-changelog.xml
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+ribbon:
+  ReadTimeout: 60000
+
+mail-config:
+  maxFailedAttemptsToSent: 10
+  pageSize: 10
+  delaySeconds: 10
+
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
