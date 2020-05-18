@@ -3,7 +3,10 @@ spring:
     name: discovery-server
   jmx:
     default-domain: discovery-server
-
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
 server:
   port: 8761
 

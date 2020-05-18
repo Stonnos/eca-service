@@ -3,6 +3,10 @@ spring:
     name: eca-server
   jmx:
     default-domain: eca-server
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
   ## Eca datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver

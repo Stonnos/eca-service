@@ -3,6 +3,11 @@ spring:
     name: zuul-gate
   jmx:
     default-domain: zuul-gate
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+
 zuul:
   routes:
       server:

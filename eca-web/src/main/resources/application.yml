@@ -3,6 +3,10 @@ spring:
     name: eca-web
   jmx:
     default-domain: eca-web
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
 
 eureka:
   client:

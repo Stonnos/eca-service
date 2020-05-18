@@ -3,6 +3,10 @@ spring:
     name: eca-oauth
   jmx:
     default-domain: eca-oauth
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
   ## Datasource properties
   datasource:
     driverClassName: org.postgresql.Driver

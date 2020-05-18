@@ -3,6 +3,10 @@ spring:
     name: eca-mail
   jmx:
     default-domain: eca-mail
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
   ## Email properties
   mail:
     host: smtp.gmail.com
