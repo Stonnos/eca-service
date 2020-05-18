@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from "./routing/app-routing.module";
@@ -13,7 +13,6 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { FilterModule } from "./filter/filter.module";
 import { RequestStatusesStatisticsModule } from "./request-statuses-statistics/request-statuses-statistics.module";
 import { ClassifierOptionsRequestsModule } from "./classifier-options-requests/classifier-options-requests.module";
-import { ConfigService } from "./config.service";
 import { CookieService } from "ngx-cookie-service";
 import { AuthModule } from "./auth/auth.module";
 import { ExperimentStatisticsModule } from "./experiment-statistics/experiment-statistics.module";
@@ -31,10 +30,6 @@ import { CreateClassifiersConfigurationModule } from "./create-classifiers-confi
 import { UploadClassifierOptionsDialogModule } from "./upload-classifier-options-dialog/upload-classifier-options-dialog.module";
 import { ClassifiersConfigurationMenuModule } from "./classifiers-configuration-menu/classifiers-configuration-menu.module";
 import { ClassifiersConfigurationDetailsModule } from "./classifiers-configuration-details/classifiers-configuration-details.module";
-
-export function initializeApp(configService: ConfigService) {
-  return () => configService.getConfigs();
-}
 
 @NgModule({
   declarations: [
@@ -71,9 +66,7 @@ export function initializeApp(configService: ConfigService) {
     NoopAnimationsModule,
   ],
   providers: [
-    ConfigService,
-    CookieService,
-    { provide: APP_INITIALIZER, useFactory: initializeApp, deps: [ConfigService], multi: true }
+    CookieService
   ],
   bootstrap: [AppComponent]
 })
