@@ -1,6 +1,10 @@
-package com.ecaservice.config.swagger;
+package com.ecaservice.oauth.config.swagger;
 
-import com.ecaservice.controller.web.ExperimentController;
+import com.ecaservice.config.swagger.AbstractSwagger2Configuration;
+import com.ecaservice.config.swagger.SecuritySchemeOptions;
+import com.ecaservice.config.swagger.Swagger2ApiConfig;
+import com.ecaservice.config.swagger.SwaggerBaseConfiguration;
+import com.ecaservice.oauth.controller.UserController;
 import com.fasterxml.classmate.TypeResolver;
 import com.google.common.collect.ImmutableList;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +26,7 @@ import java.util.List;
  */
 @Configuration
 @Import(SwaggerBaseConfiguration.class)
-public class EcaWebSwagger2Configuration extends AbstractSwagger2Configuration {
+public class EcaOauthWebSwagger2Configuration extends AbstractSwagger2Configuration {
 
     private static final String SECURITY_SCHEMA_WEB = "eca-web security";
 
@@ -36,12 +40,12 @@ public class EcaWebSwagger2Configuration extends AbstractSwagger2Configuration {
      * @param swagger2ApiConfig - swagger api config bean
      */
     @Inject
-    public EcaWebSwagger2Configuration(Swagger2ApiConfig swagger2ApiConfig) {
+    public EcaOauthWebSwagger2Configuration(Swagger2ApiConfig swagger2ApiConfig) {
         super(swagger2ApiConfig);
     }
 
     @Override
-    @Bean(name = "ecaWebDocket")
+    @Bean(name = "ecaOauthWebDocket")
     public Docket docket(TypeResolver typeResolver) {
         return super.docket(typeResolver);
     }
@@ -53,7 +57,7 @@ public class EcaWebSwagger2Configuration extends AbstractSwagger2Configuration {
 
     @Override
     protected String getControllersPackage() {
-        return ExperimentController.class.getPackage().getName();
+        return UserController.class.getPackage().getName();
     }
 
     @Override

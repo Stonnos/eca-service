@@ -2,9 +2,9 @@ package com.ecaservice.config.swagger;
 
 import com.ecaservice.controller.qa.QaController;
 import com.fasterxml.classmate.TypeResolver;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import springfox.documentation.spring.web.plugins.Docket;
 
@@ -15,9 +15,9 @@ import javax.inject.Inject;
  *
  * @author Roman Batygin
  */
-@ConditionalOnBean(SwaggerBaseConfiguration.class)
-@Configuration
 @Profile("!docker-prod")
+@Configuration
+@Import(SwaggerBaseConfiguration.class)
 public class QaSwagger2Configuration extends AbstractSwagger2Configuration {
 
     private static final String QA_GROUP = "qa";

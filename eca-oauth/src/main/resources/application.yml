@@ -34,6 +34,19 @@ eureka:
 ribbon:
   ReadTimeout: 60000
 
+## Swagger properties
+swagger2:
+  projectVersion: @project.version@
+  groups:
+    eca-web:
+      title: REST API for web application
+      description: Operations for ECA web application
+      author: Roman Batygin
+      email: roman.batygin@mail.ru
+  tokenUrl: http://localhost:8080/oauth/token
+  clientId: swagger
+  secret: swagger_secret
+
 management:
   metrics:
     tags:

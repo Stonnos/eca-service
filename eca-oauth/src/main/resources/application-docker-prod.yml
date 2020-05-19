@@ -14,3 +14,7 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://discovery-server:8761/eureka
+
+## Swagger properties
+swagger2:
+  tokenUrl: http://localhost:8080/eca-oauth/oauth/token

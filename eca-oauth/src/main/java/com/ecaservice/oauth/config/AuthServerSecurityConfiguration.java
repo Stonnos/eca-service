@@ -47,7 +47,8 @@ public class AuthServerSecurityConfiguration extends WebSecurityConfigurerAdapte
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/actuator/**").permitAll()
-                .and().authorizeRequests().anyRequest().authenticated().and().csrf().disable();
+       // http.authorizeRequests().antMatchers("/actuator/**", "/users/**", "/v2/api-docs", "/configuration/**",
+       //         "/swagger-resources/**", "/swagger-ui.html", "/webjars/**").permitAll()
+       //         .and().authorizeRequests().anyRequest().authenticated().and().csrf().disable();
     }
 }
