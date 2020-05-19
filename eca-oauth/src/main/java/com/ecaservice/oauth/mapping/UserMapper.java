@@ -1,5 +1,6 @@
 package com.ecaservice.oauth.mapping;
 
+import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.UserDto;
@@ -33,6 +34,14 @@ public interface UserMapper {
      * @return user dto
      */
     UserDto map(UserEntity userEntity);
+
+    /**
+     * Maps create user dto to entity model
+     *
+     * @param createUserDto - create user dto
+     * @return user entity
+     */
+    UserEntity map(CreateUserDto createUserDto);
 
     /**
      * Maps user entities to its dto model list.
