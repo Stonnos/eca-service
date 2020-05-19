@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UniqueLogin {
 
-    String message() default "{user.login.unique}";
+    String message() default "{user.login.unique.constraint.message}";
 
     Class<?>[] groups() default {};
 

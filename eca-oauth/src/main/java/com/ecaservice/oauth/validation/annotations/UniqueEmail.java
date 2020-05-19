@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UniqueEmail {
 
-    String message() default "{user.email.unique}";
+    String message() default "{user.email.unique.constraint.message}";
 
     Class<?>[] groups() default {};
 
