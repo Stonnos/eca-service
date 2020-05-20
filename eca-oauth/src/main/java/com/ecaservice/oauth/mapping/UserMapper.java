@@ -44,6 +44,16 @@ public interface UserMapper {
     UserEntity map(CreateUserDto createUserDto);
 
     /**
+     * Maps user entity to user details.
+     *
+     * @param userEntity - user entity
+     * @return user details
+     */
+    @Mapping(source = "login", target = "userName")
+    @Mapping(source = "roles", target = "authorities")
+    UserDetailsImpl mapDetails(UserEntity userEntity);
+
+    /**
      * Maps user entities to its dto model list.
      *
      * @param userEntityList - users entities

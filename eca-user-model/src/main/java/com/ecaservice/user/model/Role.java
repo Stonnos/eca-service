@@ -1,6 +1,8 @@
 package com.ecaservice.user.model;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
@@ -8,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
  *
  * @author Roman Batygin
  */
+@NoArgsConstructor
 @AllArgsConstructor
 public class Role implements GrantedAuthority {
 
@@ -17,6 +20,7 @@ public class Role implements GrantedAuthority {
     /**
      * Role name
      */
+    @Setter
     private String authority;
 
     @Override
