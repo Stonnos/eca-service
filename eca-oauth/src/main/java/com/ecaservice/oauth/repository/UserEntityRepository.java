@@ -2,13 +2,14 @@ package com.ecaservice.oauth.repository;
 
 import com.ecaservice.oauth.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 /**
  * Repository to manage with {@link UserEntity} persistence entity.
  *
  * @author Roman Batygin
  */
-public interface UserEntityRepository extends JpaRepository<UserEntity, Long> {
+public interface UserEntityRepository extends JpaRepository<UserEntity, Long>, JpaSpecificationExecutor<UserEntity> {
 
     /**
      * Finds user by specified login.

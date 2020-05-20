@@ -1,14 +1,19 @@
 package com.ecaservice.oauth.controller;
 
 import com.ecaservice.oauth.dto.CreateUserDto;
+import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.mapping.UserMapper;
+import com.ecaservice.oauth.service.UserService;
 import com.ecaservice.user.model.UserDetailsImpl;
+import com.ecaservice.web.dto.model.PageDto;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UserDto;
 import com.ecaservice.web.dto.model.ValidationErrorDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -37,6 +42,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserController {
 
+    private final UserService userService;
     private final UserMapper userMapper;
 
     /**
@@ -52,6 +58,25 @@ public class UserController {
     @GetMapping(value = "/user-info")
     public UserDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userMapper.map(userDetails);
+    }
+
+    /**
+     * Finds all users with specified options such as filter, sorting and paging.
+     *
+     * @param pageRequestDto - page request dto
+     * @return users page
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Finds users with specified options",
+            notes = "Finds users with specified options"
+    )
+    @GetMapping(value = "/list")
+    public PageDto<UserDto> getUsers(@Valid PageRequestDto pageRequestDto) {
+        log.info("Received users page request: {}", pageRequestDto);
+        Page<UserEntity> usersPage = userService.getNextPage(pageRequestDto);
+        List<UserDto> userDtoList = userMapper.map(usersPage.getContent());
+        return PageDto.of(userDtoList, pageRequestDto.getPage(), usersPage.getTotalElements());
     }
 
     /**
