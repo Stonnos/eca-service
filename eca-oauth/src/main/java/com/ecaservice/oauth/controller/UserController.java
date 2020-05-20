@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -76,9 +77,10 @@ public class UserController {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<List<ValidationErrorDto>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
-        List<ValidationErrorDto> errors = ex.getBindingResult().getAllErrors().stream().map(
-                objectError -> new ValidationErrorDto(objectError.getCode(), objectError.getDefaultMessage())).collect(
-                Collectors.toList());
+        List<ValidationErrorDto> errors = ex.getBindingResult().getAllErrors().stream()
+                .map(FieldError.class::cast)
+                .map(fieldError -> new ValidationErrorDto(fieldError.getField(), fieldError.getCode(),
+                        fieldError.getDefaultMessage())).collect(Collectors.toList());
         return ResponseEntity.badRequest().body(errors);
     }
 }

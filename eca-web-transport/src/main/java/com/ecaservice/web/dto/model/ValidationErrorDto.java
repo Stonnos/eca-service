@@ -18,6 +18,12 @@ import lombok.NoArgsConstructor;
 public class ValidationErrorDto {
 
     /**
+     * Field name
+     */
+    @ApiModelProperty(value = "Field name")
+    private String fieldName;
+
+    /**
      * Error code
      */
     @ApiModelProperty(value = "Error code")
