@@ -38,6 +38,13 @@ ribbon:
 common:
   maxPageSize: 50
 
+## Password generator configs
+password:
+  length: 8
+  useDigits: true
+  useLowerCaseSymbols: true
+  useUpperCaseSymbols: true
+
 ## Swagger properties
 swagger2:
   projectVersion: @project.version@
