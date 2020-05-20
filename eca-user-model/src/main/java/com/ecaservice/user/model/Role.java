@@ -11,6 +11,9 @@ import org.springframework.security.core.GrantedAuthority;
 @AllArgsConstructor
 public class Role implements GrantedAuthority {
 
+    public static final String ROLE_SUPER_ADMIN = "ROLE_SUPER_ADMIN";
+    public static final String ROLE_ECA_USER = "ROLE_ECA_USER";
+
     /**
      * Role name
      */

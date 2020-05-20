@@ -11,4 +11,6 @@
     <include file="db/changelog/v4-insert-swagger-credentials.xml"/>
     <include file="db/changelog/v5-change-token-validity-time.xml"/>
     <include file="db/changelog/v6-remove-eca-credentials.xml"/>
+    <include file="db/changelog/v7-add-eca-user-role.xml"/>
+    <include file="db/changelog/v8-create-hibernate-sequence.xml"/>
 </databaseChangeLog>

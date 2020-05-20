@@ -3,6 +3,7 @@ package com.ecaservice.oauth.controller;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.mapping.UserMapper;
+import com.ecaservice.oauth.service.PasswordService;
 import com.ecaservice.oauth.service.UserService;
 import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.PageDto;
@@ -43,6 +44,7 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserService userService;
+    private final PasswordService passwordService;
     private final UserMapper userMapper;
 
     /**
@@ -66,7 +68,7 @@ public class UserController {
      * @param pageRequestDto - page request dto
      * @return users page
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
     @ApiOperation(
             value = "Finds users with specified options",
             notes = "Finds users with specified options"
@@ -84,14 +86,18 @@ public class UserController {
      *
      * @param createUserDto - create user dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
     @ApiOperation(
             value = "Creates new user",
             notes = "Creates new user"
     )
     @PostMapping(value = "/create")
     public void save(@Valid @RequestBody CreateUserDto createUserDto) {
-        log.info("User {}", createUserDto);
+        log.info("Received request for user creation {}", createUserDto);
+        String password = passwordService.generatePassword();
+        log.info("Generated password {}", password);
+        UserEntity userEntity = userService.createUser(createUserDto, password);
+        log.info("User {} has been created", userEntity);
     }
 
     /**
