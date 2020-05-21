@@ -39,7 +39,7 @@ public class NeuralNetworkOptionsMapperTest {
     private ExperimentConfig experimentConfig;
 
     @Test
-    public void testMapNeuralNetworkOptions() {
+    void testMapNeuralNetworkOptions() {
         NeuralNetworkOptions neuralNetworkOptions = TestHelperUtils.createNeuralNetworkOptions();
         neuralNetworkOptions.setActivationFunctionOptions(new ActivationFunctionOptions());
         ActivationFunctionBuilder activationFunctionBuilder = new ActivationFunctionBuilder();

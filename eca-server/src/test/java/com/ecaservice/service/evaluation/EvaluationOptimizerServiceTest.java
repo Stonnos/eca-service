@@ -173,17 +173,17 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testServiceUnavailable() {
+    void testServiceUnavailable() {
         internalTestErrorStatus(new WebServiceIOException("error"), ErsResponseStatus.SERVICE_UNAVAILABLE);
     }
 
     @Test
-    public void testErrorStatus() {
+    void testErrorStatus() {
         internalTestErrorStatus(new WebServiceFaultException("error"), ErsResponseStatus.ERROR);
     }
 
     @Test
-    public void testsInvalidClassifierOptions() {
+    void testsInvalidClassifierOptions() {
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
                 .singletonList(TestHelperUtils.createClassifierReport(StringUtils.EMPTY)), ResponseStatus.SUCCESS);
         when(ersWebServiceClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
@@ -200,7 +200,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testEvaluationWithNoClassifierOptionsRequests() {
+    void testEvaluationWithNoClassifierOptionsRequests() {
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
                 .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)), ResponseStatus.SUCCESS);
         when(ersWebServiceClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
@@ -222,7 +222,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
      * Case 5: Last response status is SUCCESS, but classifier options response model has invalid options string
      */
     @Test
-    public void testExceededClassifierOptionsCache() {
+    void testExceededClassifierOptionsCache() {
         //Case 1
         ClassifierOptionsRequestModel requestModel = TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash,
                 LocalDateTime.now().minusDays(commonConfig.getClassifierOptionsCacheDurationInDays() + 1),
@@ -311,7 +311,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testClassifierOptionsCache() {
+    void testClassifierOptionsCache() {
         ClassifierOptionsRequestModel requestModel =
                 TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash, LocalDateTime.now().minusDays(1),
                         ErsResponseStatus.SUCCESS, Collections.singletonList(
@@ -342,7 +342,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testClassifierOptionsCacheInMultiThreadEnvironment() throws Exception {
+    void testClassifierOptionsCacheInMultiThreadEnvironment() throws Exception {
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
                 .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)), ResponseStatus.SUCCESS);
         when(ersWebServiceClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
@@ -383,7 +383,7 @@ public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
      * @throws IOException in case of error
      */
     @Test
-    public void testClassifiersEvaluation() throws IOException {
+    void testClassifiersEvaluation() throws IOException {
         //Case 1
         DecisionTreeOptions treeOptions = TestHelperUtils.createDecisionTreeOptions();
         treeOptions.setDecisionTreeType(DecisionTreeType.CART);

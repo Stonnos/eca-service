@@ -58,42 +58,42 @@ public class ClassifierOptionsRequestControllerTest extends PageRequestControlle
     private ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
 
     @Test
-    public void testGetClassifierOptionsRequestsUnauthorized() throws Exception {
+    void testGetClassifierOptionsRequestsUnauthorized() throws Exception {
         testGetPageUnauthorized(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetClassifierOptionsRequestsWithNullPageNumber() throws Exception {
+    void testGetClassifierOptionsRequestsWithNullPageNumber() throws Exception {
         testGetPageWithNullPageNumber(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetClassifierOptionsRequestsWithNullPageSize() throws Exception {
+    void testGetClassifierOptionsRequestsWithNullPageSize() throws Exception {
         testGetPageWithNullPageSize(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetClassifierOptionsRequestsWithZeroPageSize() throws Exception {
+    void testGetClassifierOptionsRequestsWithZeroPageSize() throws Exception {
         testGetPageWithZeroPageSize(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetClassifierOptionsRequestsWithNegativePageNumber() throws Exception {
+    void testGetClassifierOptionsRequestsWithNegativePageNumber() throws Exception {
         testGetPageWithNegativePageNumber(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetClassifierOptionsRequestsWithEmptyFilterRequestName() throws Exception {
+    void testGetClassifierOptionsRequestsWithEmptyFilterRequestName() throws Exception {
         testGetPageWithEmptyFilterRequestName(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetClassifierOptionsRequestsPageWithNullMatchMode() throws Exception {
+    void testGetClassifierOptionsRequestsPageWithNullMatchMode() throws Exception {
         testGetPageWithNullMatchMode(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetClassifierOptionsRequestsOk() throws Exception {
+    void testGetClassifierOptionsRequestsOk() throws Exception {
         Page<ClassifierOptionsRequestModel> page = Mockito.mock(Page.class);
         when(page.getTotalElements()).thenReturn(TOTAL_ELEMENTS);
         List<ClassifierOptionsRequestModel> classifierOptionsRequestModels =

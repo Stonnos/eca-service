@@ -28,7 +28,7 @@ public class NeuralNetworkMapperTest {
     private NeuralNetworkMapper neuralNetworkMapper;
 
     @Test
-    public void testMapNeuralNetwork() {
+    void testMapNeuralNetwork() {
         LogisticFunction logisticFunction = new LogisticFunction(COEFFICIENT);
         NeuralNetwork neuralNetwork = TestHelperUtils.createNeuralNetwork(logisticFunction);
         NeuralNetworkOptions options = neuralNetworkMapper.map(neuralNetwork);

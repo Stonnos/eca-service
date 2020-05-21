@@ -29,7 +29,7 @@ public abstract class AbstractControllerTest {
     protected final ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         accessToken = tokenService.obtainAccessToken();
     }
 }

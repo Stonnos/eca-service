@@ -74,7 +74,7 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testSaveExperimentResultsForErsSent() throws Exception {
+    void testSaveExperimentResultsForErsSent() throws Exception {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experimentRepository.save(experiment);
         ExperimentHistory experimentHistory = TestHelperUtils.createExperimentHistory();
@@ -84,14 +84,14 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testErsReportWithExperimentInProgressStatus() {
+    void testErsReportWithExperimentInProgressStatus() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
         experimentRepository.save(experiment);
         testGetErsReport(experiment, ErsReportStatus.EXPERIMENT_IN_PROGRESS);
     }
 
     @Test
-    public void testErsReportWithExperimentErrorStatus() {
+    void testErsReportWithExperimentErrorStatus() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR);
         experimentRepository.save(experiment);
         testGetErsReport(experiment, ErsReportStatus.EXPERIMENT_ERROR);
@@ -101,7 +101,7 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
      * There is no one success requests to ERS service and experiment is deleted. Expected: EXPERIMENT_DELETED
      */
     @Test
-    public void testErsReportForNotSentAndDeletedExperiment() {
+    void testErsReportForNotSentAndDeletedExperiment() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experiment.setDeletedDate(LocalDateTime.now());
         experimentRepository.save(experiment);
@@ -115,7 +115,7 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
      * There are success requests to ERS service and experiment is deleted. Expected: SUCCESS_SENT
      */
     @Test
-    public void testErsReportForSentAndDeletedExperiment() {
+    void testErsReportForSentAndDeletedExperiment() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experiment.setDeletedDate(LocalDateTime.now());
         experimentRepository.save(experiment);
@@ -130,14 +130,14 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testErsReportWithExperimentResultsNotFoundStatus() {
+    void testErsReportWithExperimentResultsNotFoundStatus() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experimentRepository.save(experiment);
         testGetErsReport(experiment, ErsReportStatus.EXPERIMENT_RESULTS_NOT_FOUND);
     }
 
     @Test
-    public void testErsReportWithNeedSentStatus() {
+    void testErsReportWithNeedSentStatus() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experimentRepository.save(experiment);
         ExperimentResultsEntity experimentResultsEntity1 = TestHelperUtils.createExperimentResultsEntity(experiment);
@@ -153,7 +153,7 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testErsReportWithSendingStatus() {
+    void testErsReportWithSendingStatus() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experimentRepository.save(experiment);
         ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
@@ -165,7 +165,7 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testErsReportWithSuccessSentStatus() {
+    void testErsReportWithSuccessSentStatus() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experimentRepository.save(experiment);
         ExperimentResultsEntity experimentResultsEntity1 = TestHelperUtils.createExperimentResultsEntity(experiment);
@@ -193,7 +193,7 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
      * Case 2: There is no one ERS request with status SUCCESS
      */
     @Test
-    public void testGetExperimentResultsDetailsWithNotSentStatus() {
+    void testGetExperimentResultsDetailsWithNotSentStatus() {
         //Case 1
         ExperimentResultsEntity experimentResultsEntity = createAndSaveExperimentResults();
         testGetExperimentResultsDetails(experimentResultsEntity, EvaluationResultsStatus.RESULTS_NOT_SENT);
@@ -205,27 +205,27 @@ public class ExperimentResultsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testGetExperimentResultsDetailsWithResultsNotFoundStatus() {
+    void testGetExperimentResultsDetailsWithResultsNotFoundStatus() {
         ExperimentResultsEntity experimentResultsEntity = createAndSaveExperimentResultsWithSuccessRequest();
         testGetExperimentResultsDetailsWithEvaluationResults(experimentResultsEntity,
                 EvaluationResultsStatus.EVALUATION_RESULTS_NOT_FOUND);
     }
 
     @Test
-    public void testGetExperimentResultsDetailsWithResponseErrorStatus() {
+    void testGetExperimentResultsDetailsWithResponseErrorStatus() {
         ExperimentResultsEntity experimentResultsEntity = createAndSaveExperimentResultsWithSuccessRequest();
         testGetExperimentResultsDetailsWithEvaluationResults(experimentResultsEntity, EvaluationResultsStatus.ERROR);
     }
 
     @Test
-    public void testGetExperimentResultsDetailsWithServiceUnavailable() {
+    void testGetExperimentResultsDetailsWithServiceUnavailable() {
         ExperimentResultsEntity experimentResultsEntity = createAndSaveExperimentResultsWithSuccessRequest();
         testGetExperimentResultsDetailsWithEvaluationResults(experimentResultsEntity,
                 EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE);
     }
 
     @Test
-    public void testSuccessGetExperimentResultsDetails() {
+    void testSuccessGetExperimentResultsDetails() {
         ExperimentResultsEntity experimentResultsEntity = createAndSaveExperimentResultsWithSuccessRequest();
         testGetExperimentResultsDetailsWithEvaluationResults(experimentResultsEntity,
                 EvaluationResultsStatus.RESULTS_RECEIVED);

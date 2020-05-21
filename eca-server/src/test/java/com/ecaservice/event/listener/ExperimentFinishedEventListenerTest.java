@@ -38,7 +38,7 @@ public class ExperimentFinishedEventListenerTest {
     private ExperimentFinishedEventListener experimentFinishedEventListener;
 
     @Test
-    public void testExperimentFinishedEvent() {
+    void testExperimentFinishedEvent() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         ExperimentHistory experimentHistory = TestHelperUtils.createExperimentHistory();
         ExperimentFinishedEvent experimentFinishedEvent =

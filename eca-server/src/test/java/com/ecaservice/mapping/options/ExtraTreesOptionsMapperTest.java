@@ -25,7 +25,7 @@ public class ExtraTreesOptionsMapperTest {
     private ExtraTreesOptionsMapper extraTreesOptionsMapper;
 
     @Test
-    public void testMapExtraTreesOptions() {
+    void testMapExtraTreesOptions() {
         ExtraTreesOptions options = TestHelperUtils.createExtraTreesOptions(DecisionTreeType.CART);
         ExtraTreesClassifier extraTreesClassifier = extraTreesOptionsMapper.map(options);
         Assertions.assertThat(extraTreesClassifier.getSeed()).isEqualTo(options.getSeed());

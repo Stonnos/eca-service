@@ -36,7 +36,7 @@ public class NeuralNetworkInputDataHandlerTest {
      * Test checking successful handling.
      */
     @Test
-    public void testNeuralNetworkInputDataHandle() {
+    void testNeuralNetworkInputDataHandle() {
         NeuralNetwork neuralNetwork = new NeuralNetwork();
         when(data.numAttributes()).thenReturn(DEFAULT_NUM_ATTRIBUTES);
         when(data.numClasses()).thenReturn(DEFAULT_NUM_CLASSES);

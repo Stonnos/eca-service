@@ -24,7 +24,7 @@ public class FilterDictionaryValueMapperTest {
     private FilterDictionaryValueMapper filterDictionaryValueMapper;
 
     @Test
-    public void testMapFilterDictionaryValue() {
+    void testMapFilterDictionaryValue() {
         FilterDictionaryValue filterDictionaryValue = TestHelperUtils.createFilterDictionaryValue();
         FilterDictionaryValueDto filterDictionaryValueDto = filterDictionaryValueMapper.map(filterDictionaryValue);
         Assertions.assertThat(filterDictionaryValueDto).isNotNull();

@@ -52,7 +52,7 @@ public class ExperimentRequestListenerTest {
     private ArgumentCaptor<EcaResponse> ecaResponseArgumentCaptor;
 
     @Test
-    public void testHandleMessage() {
+    void testHandleMessage() {
         ExperimentRequest evaluationRequest = TestHelperUtils.createExperimentRequest();
         Message message = Mockito.mock(Message.class);
         when(experimentRequestService.createExperimentRequest(evaluationRequest)).thenReturn(
@@ -67,7 +67,7 @@ public class ExperimentRequestListenerTest {
     }
 
     @Test
-    public void testHandleErrorMessage() {
+    void testHandleErrorMessage() {
         ExperimentRequest evaluationRequest = TestHelperUtils.createExperimentRequest();
         Message message = Mockito.mock(Message.class);
         when(experimentRequestService.createExperimentRequest(evaluationRequest)).thenThrow(

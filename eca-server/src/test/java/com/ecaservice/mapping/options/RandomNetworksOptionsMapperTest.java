@@ -24,7 +24,7 @@ public class RandomNetworksOptionsMapperTest {
     private RandomNetworkOptionsMapper randomNetworkOptionsMapper;
 
     @Test
-    public void testMapRandomNetworksOptions() {
+    void testMapRandomNetworksOptions() {
         RandomNetworkOptions options = TestHelperUtils.createRandomNetworkOptions();
         RandomNetworks randomNetworks = randomNetworkOptionsMapper.map(options);
         Assertions.assertThat(randomNetworks.getSeed()).isEqualTo(options.getSeed());

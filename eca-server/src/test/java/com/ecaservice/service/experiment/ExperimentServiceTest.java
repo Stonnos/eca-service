@@ -103,14 +103,14 @@ public class ExperimentServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testNullTrainingDataPath() {
+    void testNullTrainingDataPath() {
         Experiment experiment = new Experiment();
         experimentService.processExperiment(experiment);
         assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.ERROR);
     }
 
     @Test
-    public void testSuccessExperimentRequestCreation() throws Exception {
+    void testSuccessExperimentRequestCreation() throws Exception {
         ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
         doNothing().when(dataService).save(any(File.class), any(Instances.class));
         experimentService.createExperiment(experimentRequest);
@@ -124,14 +124,14 @@ public class ExperimentServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testExperimentRequestCreationWithError() throws Exception {
+    void testExperimentRequestCreationWithError() throws Exception {
         ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
         doThrow(Exception.class).when(dataService).save(any(File.class), any(Instances.class));
         assertThrows(ExperimentException.class, () -> experimentService.createExperiment(experimentRequest));
     }
 
     @Test
-    public void testProcessExperimentWithSuccessStatus() throws Exception {
+    void testProcessExperimentWithSuccessStatus() throws Exception {
         when(dataService.load(any(File.class))).thenReturn(data);
         when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
                 any(InitializationParams.class))).thenReturn(new ExperimentHistory());
@@ -148,7 +148,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testProcessExperimentWithErrorStatus() throws Exception {
+    void testProcessExperimentWithErrorStatus() throws Exception {
         when(dataService.load(any(File.class))).thenThrow(new Exception());
         experimentService.processExperiment(TestHelperUtils.createExperiment(null));
         List<Experiment> experiments = experimentRepository.findAll();
@@ -160,7 +160,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testProcessExperimentWithTimeoutStatus() throws Exception {
+    void testProcessExperimentWithTimeoutStatus() throws Exception {
         when(dataService.load(any(File.class))).thenReturn(data);
         when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
                 any(InitializationParams.class))).thenReturn(new ExperimentHistory());
@@ -176,7 +176,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testSuccessRemoveExperiment() {
+    void testSuccessRemoveExperiment() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         experimentRepository.save(experiment);
         when(dataService.delete(any(File.class))).thenReturn(true);
@@ -194,7 +194,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
      * Case 2: experiment results file isn't removed. Expected -> Deleted date is null
      */
     @Test
-    public void testRemoveExperimentFailed() {
+    void testRemoveExperimentFailed() {
         //Case 1
         Experiment createdExperiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         experimentRepository.save(createdExperiment);
@@ -217,7 +217,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testRequestsStatusesStatisticsCalculation() {
+    void testRequestsStatusesStatisticsCalculation() {
         experimentRepository.save(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW));
         experimentRepository.save(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW));
         experimentRepository.save(
@@ -243,7 +243,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
      * Tests global filtering by search query and experiment status equals to FINISHED.
      */
     @Test
-    public void testGlobalFilter() {
+    void testGlobalFilter() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
         Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
@@ -266,7 +266,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
      * Tests global filtering by requests status field
      */
     @Test
-    public void testGlobalFilterByRequestStatus() {
+    void testGlobalFilterByRequestStatus() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
         Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT);
@@ -285,7 +285,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
      * Tests global filtering by requests status field with empty data result.
      */
     @Test
-    public void testGlobalFilterByRequestStatusWithEmptyData() {
+    void testGlobalFilterByRequestStatusWithEmptyData() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
         Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         Experiment experiment2 = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
@@ -303,7 +303,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
      * Test filter by experiment type and experiment status order by creation date.
      */
     @Test
-    public void testExperimentsFilterByTypeAndStatusOrderByCreationDate() {
+    void testExperimentsFilterByTypeAndStatusOrderByCreationDate() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
         experiment.setExperimentType(ExperimentType.ADA_BOOST);
         experiment.setRequestStatus(RequestStatus.NEW);
@@ -344,7 +344,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
      * Test filter by creation date between order by creation date.
      */
     @Test
-    public void testExperimentsFilterByCreationDateBetween() {
+    void testExperimentsFilterByCreationDateBetween() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
         experiment.setCreationDate(LocalDateTime.of(2018, 2, 1, 0, 0, 0));
         experimentRepository.save(experiment);
@@ -377,7 +377,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
      * Case 2: One day interval
      */
     @Test
-    public void testExperimentFilterByCreationDateSmallInterval() {
+    void testExperimentFilterByCreationDateSmallInterval() {
         //Case 1
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
         experiment.setCreationDate(LocalDateTime.of(2018, 1, 1, 0, 0, 0));
@@ -419,7 +419,7 @@ public class ExperimentServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testGetExperimentTypesStatistics() {
+    void testGetExperimentTypesStatistics() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
         experiment.setCreationDate(LocalDateTime.of(2018, 1, 1, 0, 0, 0));
         experiment.setExperimentType(ExperimentType.ADA_BOOST);

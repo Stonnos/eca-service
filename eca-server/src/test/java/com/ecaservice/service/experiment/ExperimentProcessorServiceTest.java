@@ -41,19 +41,19 @@ public class ExperimentProcessorServiceTest {
     private Instances data;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         when(experimentConfig.getResultSize()).thenReturn(RESULTS_SIZE);
         data = TestHelperUtils.loadInstances();
     }
 
     @Test
-    public void testNullInitializationParams() {
+    void testNullInitializationParams() {
         assertThrows(IllegalArgumentException.class,
                 () -> experimentProcessorService.processExperimentHistory(new Experiment(), null));
     }
 
     @Test
-    public void testProcessExperimentHistory() {
+    void testProcessExperimentHistory() {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams(data);
         AutomatedKNearestNeighbours automatedKNearestNeighbours =
                 new AutomatedKNearestNeighbours(data, new KNearestNeighbours());

@@ -36,13 +36,13 @@ public class EcaControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void testExperimentNotExists() throws Exception {
+    void testExperimentNotExists() throws Exception {
         when(experimentRepository.findByToken(anyString())).thenReturn(null);
         mockMvc.perform(get(DOWNLOAD_URL, TOKEN)).andExpect(status().isNotFound());
     }
 
     @Test
-    public void testResultsFileNotExists() throws Exception {
+    void testResultsFileNotExists() throws Exception {
         when(experimentRepository.findByToken(anyString())).thenReturn(new Experiment());
         mockMvc.perform(get(DOWNLOAD_URL, TOKEN)).andExpect(status().isNotFound());
     }

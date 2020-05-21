@@ -48,7 +48,7 @@ public class NotificationServiceTest {
     private NotificationService notificationService;
 
     @BeforeEach
-    public void init() {
+    void init() {
         EnumMap<RequestStatus, String> statusMap = new EnumMap<>(RequestStatus.class);
         statusMap.put(RequestStatus.FINISHED, TEMPLATE_HTML);
         when(mailConfig.getMessageTemplatesMap()).thenReturn(statusMap);
@@ -57,7 +57,7 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void testNotificationDisabled() {
+    void testNotificationDisabled() {
         when(mailConfig.getEnabled()).thenReturn(false);
         Experiment experiment =  TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
         notificationService.notifyByEmail(experiment);
@@ -65,7 +65,7 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void testSuccessNotification() {
+    void testSuccessNotification() {
         Experiment experiment =  TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
         when(statusTemplateVisitor.caseFinished(experiment)).thenReturn(new Context());
         when(emailClient.sendEmail(any(EmailRequest.class))).thenReturn(new EmailResponse());

@@ -55,7 +55,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testGetClassifiersOptionsPage() {
+    void testGetClassifiersOptionsPage() {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(true);
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CREATION_DATE, false, null,
@@ -68,7 +68,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testGetClassifiersOptionsPageForNotExistingConfiguration() {
+    void testGetClassifiersOptionsPageForNotExistingConfiguration() {
         PageRequestDto pageRequestDto =
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CREATION_DATE, false, null,
                         Collections.emptyList());
@@ -76,12 +76,12 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testGetActiveOptionsForNotExistsConfiguration() {
+    void testGetActiveOptionsForNotExistsConfiguration() {
         assertThrows(IllegalStateException.class, () -> classifierOptionsService.getActiveClassifiersOptions());
     }
 
     @Test
-    public void testGetActiveOptions() {
+    void testGetActiveOptions() {
         saveClassifierOptions(true);
         List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
                 classifierOptionsService.getActiveClassifiersOptions();
@@ -89,12 +89,12 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testDeleteNotExistingOptions() {
+    void testDeleteNotExistingOptions() {
         assertThrows(EntityNotFoundException.class, () -> classifierOptionsService.deleteOptions(ID));
     }
 
     @Test
-    public void testDeleteOptionsForActiveConfiguration() {
+    void testDeleteOptionsForActiveConfiguration() {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(false);
         classifierOptionsDatabaseModelRepository.save(
                 createClassifierOptionsDatabaseModel(OPTIONS, classifierOptionsDatabaseModel.getConfiguration()));
@@ -109,7 +109,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testDeleteOptionsForNotActiveConfiguration() {
+    void testDeleteOptionsForNotActiveConfiguration() {
         ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
         classifiersConfiguration.setActive(false);
         classifiersConfiguration.setBuildIn(false);
@@ -127,7 +127,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testDeleteOptionsForActiveConfigurationWithSingleOption() {
+    void testDeleteOptionsForActiveConfigurationWithSingleOption() {
         ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
         classifiersConfiguration.setActive(true);
         classifiersConfiguration.setBuildIn(false);
@@ -140,20 +140,20 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testDeleteFromBuildInConfiguration() {
+    void testDeleteFromBuildInConfiguration() {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(true);
         assertThrows(IllegalStateException.class,
                 () -> classifierOptionsService.deleteOptions(classifierOptionsDatabaseModel.getId()));
     }
 
     @Test
-    public void testSaveOptionsForNotExistingClassifiersConfiguration() {
+    void testSaveOptionsForNotExistingClassifiersConfiguration() {
         assertThrows(EntityNotFoundException.class,
                 () -> classifierOptionsService.saveClassifierOptions(ID, TestHelperUtils.createLogisticOptions()));
     }
 
     @Test
-    public void testSaveClassifierOptions() {
+    void testSaveClassifierOptions() {
         ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
         classifiersConfiguration.setBuildIn(false);
         classifiersConfigurationRepository.save(classifiersConfiguration);
@@ -171,7 +171,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testSaveClassifierOptionsToBuildInConfiguration() {
+    void testSaveClassifierOptionsToBuildInConfiguration() {
         ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
         classifiersConfiguration.setBuildIn(true);
         classifiersConfigurationRepository.save(classifiersConfiguration);
@@ -182,7 +182,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testSaveEnsembleClassifierOptions() {
+    void testSaveEnsembleClassifierOptions() {
         ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
         classifiersConfiguration.setBuildIn(false);
         classifiersConfigurationRepository.save(classifiersConfiguration);
@@ -193,7 +193,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testUpdateNotBuildInClassifiersConfigurationOptions() {
+    void testUpdateNotBuildInClassifiersConfigurationOptions() {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(false);
         Set<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = Sets.newHashSet(Collections.singletonList(
                 createClassifierOptionsDatabaseModel(OPTIONS, classifierOptionsDatabaseModel.getConfiguration())));
@@ -202,7 +202,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testUpdateBuildInClassifiersConfigurationWithEmptyOptions() {
+    void testUpdateBuildInClassifiersConfigurationWithEmptyOptions() {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(true);
         assertThrows(IllegalArgumentException.class,
                 () -> classifierOptionsService.updateBuildInClassifiersConfiguration(
@@ -210,7 +210,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testUpdateBuildInClassifiersConfigurationWithEmptyLatestOptions() {
+    void testUpdateBuildInClassifiersConfigurationWithEmptyLatestOptions() {
         ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
         classifiersConfiguration.setBuildIn(true);
         classifiersConfigurationRepository.save(classifiersConfiguration);
@@ -224,7 +224,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testUpdateBuildInClassifiersConfigurationWithOtherSize() {
+    void testUpdateBuildInClassifiersConfigurationWithOtherSize() {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = saveClassifierOptions(true);
         ClassifierOptionsDatabaseModel newFirst = createClassifierOptionsDatabaseModel("config1",
                 classifierOptionsDatabaseModel.getConfiguration());
@@ -245,7 +245,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testUpdateBuildInClassifiersConfigurationWithSameSize() {
+    void testUpdateBuildInClassifiersConfigurationWithSameSize() {
         ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
         classifiersConfiguration.setBuildIn(true);
         classifiersConfigurationRepository.save(classifiersConfiguration);

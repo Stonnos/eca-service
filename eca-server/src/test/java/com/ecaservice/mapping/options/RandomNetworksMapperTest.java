@@ -24,7 +24,7 @@ public class RandomNetworksMapperTest {
     private RandomNetworksMapper randomNetworksMapper;
 
     @Test
-    public void testMapRandomNetworks() {
+    void testMapRandomNetworks() {
         RandomNetworks randomNetworks = TestHelperUtils.createRandomNetworks();
         RandomNetworkOptions randomNetworkOptions = randomNetworksMapper.map(randomNetworks);
         Assertions.assertThat(randomNetworkOptions.getUseBootstrapSamples()).isEqualTo(

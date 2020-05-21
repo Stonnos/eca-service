@@ -24,7 +24,7 @@ public class StackingClassifierMapperTest {
     private StackingClassifierMapper stackingClassifierMapper;
 
     @Test
-    public void testMapStackingClassifier() {
+    void testMapStackingClassifier() {
         StackingClassifier stackingClassifier = TestHelperUtils.createStackingClassifier();
         StackingOptions options = stackingClassifierMapper.map(stackingClassifier);
         Assertions.assertThat(options.getNumFolds()).isEqualTo(stackingClassifier.getNumFolds());

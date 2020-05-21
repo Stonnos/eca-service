@@ -91,7 +91,7 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testRequestsStatusesStatisticsCalculation() {
+    void testRequestsStatusesStatisticsCalculation() {
         evaluationLogRepository.save(
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.NEW));
         evaluationLogRepository.save(
@@ -119,7 +119,7 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
      * Tests filter by request status and classifier name order by classifier name.
      */
     @Test
-    public void testFilterByStatusAndClassifierNameLikeOrderByClassifierName() {
+    void testFilterByStatusAndClassifierNameLikeOrderByClassifierName() {
         EvaluationLog evaluationLog =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         evaluationLog.getClassifierInfo().setClassifierName(CART.class.getSimpleName());
@@ -156,7 +156,7 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testFilterByRelationName() {
+    void testFilterByRelationName() {
         EvaluationLog evaluationLog =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         evaluationLog.setInstancesInfo(TestHelperUtils.createInstancesInfo());
@@ -180,7 +180,7 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
      * Tests global filtering by "car" search query and evaluation status equals to FINISHED.
      */
     @Test
-    public void testGlobalFilter() {
+    void testGlobalFilter() {
         EvaluationLog evaluationLog =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         evaluationLog.getClassifierInfo().setClassifierName(CART.class.getSimpleName());
@@ -207,14 +207,14 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testGetEvaluationLogDetailsWithInProgressStatus() {
+    void testGetEvaluationLogDetailsWithInProgressStatus() {
         EvaluationLog evaluationLog =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.NEW);
         testGetEvaluationLogDetails(evaluationLog, EvaluationResultsStatus.EVALUATION_IN_PROGRESS);
     }
 
     @Test
-    public void testGetEvaluationLogDetailsWithEvaluationErrorStatus() {
+    void testGetEvaluationLogDetailsWithEvaluationErrorStatus() {
         EvaluationLog evaluationLog =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR);
         testGetEvaluationLogDetails(evaluationLog, EvaluationResultsStatus.EVALUATION_ERROR);
@@ -225,7 +225,7 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
      * Case 2: There is no one ERS request with status SUCCESS
      */
     @Test
-    public void testGetEvaluationLogDetailsWithNotSentStatus() {
+    void testGetEvaluationLogDetailsWithNotSentStatus() {
         //Case 1
         EvaluationLog evaluationLog =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
@@ -242,27 +242,27 @@ public class EvaluationLogServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testGetEvaluationResultsNotFound() {
+    void testGetEvaluationResultsNotFound() {
         EvaluationLog evaluationLog = createAndSaveFinishedEvaluationLog();
         testGetEvaluationLogDetailsWithEvaluationResultsFromErs(evaluationLog,
                 EvaluationResultsStatus.EVALUATION_RESULTS_NOT_FOUND);
     }
 
     @Test
-    public void testGetEvaluationResultsWithResponseErrorStatus() {
+    void testGetEvaluationResultsWithResponseErrorStatus() {
         EvaluationLog evaluationLog = createAndSaveFinishedEvaluationLog();
         testGetEvaluationLogDetailsWithEvaluationResultsFromErs(evaluationLog, EvaluationResultsStatus.ERROR);
     }
 
     @Test
-    public void testGetEvaluationResultsWithServiceUnavailable() {
+    void testGetEvaluationResultsWithServiceUnavailable() {
         EvaluationLog evaluationLog = createAndSaveFinishedEvaluationLog();
         testGetEvaluationLogDetailsWithEvaluationResultsFromErs(evaluationLog,
                 EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE);
     }
 
     @Test
-    public void testSuccessGetEvaluationLogDetails() {
+    void testSuccessGetEvaluationLogDetails() {
         EvaluationLog evaluationLog = createAndSaveFinishedEvaluationLog();
         testGetEvaluationLogDetailsWithEvaluationResultsFromErs(evaluationLog,
                 EvaluationResultsStatus.RESULTS_RECEIVED);

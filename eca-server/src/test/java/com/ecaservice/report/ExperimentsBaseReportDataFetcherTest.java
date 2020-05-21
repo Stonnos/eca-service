@@ -92,7 +92,7 @@ public class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testFetchExperimentsData() {
+    void testFetchExperimentsData() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         experiment.setCreationDate(CREATION_DATE);
         experiment.setExperimentType(ExperimentType.ADA_BOOST);

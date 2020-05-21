@@ -27,7 +27,7 @@ public class EvaluationRequestMapperTest {
     private EvaluationRequestMapper evaluationRequestMapper;
 
     @Test
-    public void testMapClassifierOptionsRequest() {
+    void testMapClassifierOptionsRequest() {
         ClassifierOptionsRequest classifierOptionsRequest = TestHelperUtils.createClassifierOptionsRequest();
         EvaluationRequest evaluationRequest =
                 evaluationRequestMapper.map(classifierOptionsRequest);

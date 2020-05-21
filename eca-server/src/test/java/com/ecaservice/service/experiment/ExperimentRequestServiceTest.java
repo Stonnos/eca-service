@@ -36,7 +36,7 @@ public class ExperimentRequestServiceTest {
     private ExperimentRequestService experimentRequestService;
 
     @Test
-    public void testSuccessCreation() {
+    void testSuccessCreation() {
         ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         experiment.setId(1L);

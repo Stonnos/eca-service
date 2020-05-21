@@ -41,7 +41,7 @@ public class ExperimentMapperTest {
     private ExperimentMapper experimentMapper;
 
     @Test
-    public void testMapExperimentRequestWithTrainingDataEvaluationMethod() {
+    void testMapExperimentRequestWithTrainingDataEvaluationMethod() {
         ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
         Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
         assertThat(experiment).isNotNull();
@@ -55,7 +55,7 @@ public class ExperimentMapperTest {
     }
 
     @Test
-    public void testMapExperimentRequestWithCrossValidationEvaluationMethod() {
+    void testMapExperimentRequestWithCrossValidationEvaluationMethod() {
         ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
         experimentRequest.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
@@ -70,7 +70,7 @@ public class ExperimentMapperTest {
     }
 
     @Test
-    public void testMapToExperimentDto() {
+    void testMapToExperimentDto() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         experiment.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         experiment.setStartDate(LocalDateTime.now().plusHours(1L));
@@ -113,7 +113,7 @@ public class ExperimentMapperTest {
     }
 
     @Test
-    public void testMapExperimentDtoList() {
+    void testMapExperimentDtoList() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         Experiment experiment1 = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         List<Experiment> experiments = Arrays.asList(experiment, experiment1);
@@ -122,7 +122,7 @@ public class ExperimentMapperTest {
     }
 
     @Test
-    public void testMapToExperimentBean() {
+    void testMapToExperimentBean() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         experiment.setStartDate(LocalDateTime.now());
         experiment.setEndDate(LocalDateTime.now());

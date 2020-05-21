@@ -23,7 +23,7 @@ public class ClassifierInputOptionsMapperTest {
     private ClassifierInputOptionsMapper classifierInputOptionsMapper;
 
     @Test
-    public void testMapInputOptions() {
+    void testMapInputOptions() {
         ClassifierInputOptions classifierInputOptions = new ClassifierInputOptions();
         classifierInputOptions.setOptionName("option");
         classifierInputOptions.setOptionValue("value");

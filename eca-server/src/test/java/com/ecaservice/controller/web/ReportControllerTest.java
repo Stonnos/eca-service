@@ -41,42 +41,42 @@ public class ReportControllerTest extends PageRequestControllerTest {
     private EvaluationLogsBaseReportDataFetcher evaluationLogsBaseReportDataFetcher;
 
     @Test
-    public void testDownloadExperimentsReportUnauthorized() throws Exception {
+    void testDownloadExperimentsReportUnauthorized() throws Exception {
         testGetPageUnauthorized(EXPERIMENTS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testDownloadExperimentsReportWithNullPageNumber() throws Exception {
+    void testDownloadExperimentsReportWithNullPageNumber() throws Exception {
         testGetPageWithNullPageNumber(EXPERIMENTS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testDownloadExperimentsReportWithNullPageSize() throws Exception {
+    void testDownloadExperimentsReportWithNullPageSize() throws Exception {
         testGetPageWithNullPageSize(EXPERIMENTS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testDownloadExperimentsReportWithZeroPageSize() throws Exception {
+    void testDownloadExperimentsReportWithZeroPageSize() throws Exception {
         testGetPageWithZeroPageSize(EXPERIMENTS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testDownloadExperimentsReportWithNegativePageNumber() throws Exception {
+    void testDownloadExperimentsReportWithNegativePageNumber() throws Exception {
         testGetPageWithNegativePageNumber(EXPERIMENTS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testDownloadExperimentsReportWithEmptyFilterRequestName() throws Exception {
+    void testDownloadExperimentsReportWithEmptyFilterRequestName() throws Exception {
         testGetPageWithEmptyFilterRequestName(EXPERIMENTS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testDownloadExperimentsReportWithNullMatchMode() throws Exception {
+    void testDownloadExperimentsReportWithNullMatchMode() throws Exception {
         testGetPageWithNullMatchMode(EXPERIMENTS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testDownloadExperimentsReportOk() throws Exception {
+    void testDownloadExperimentsReportOk() throws Exception {
         when(experimentsBaseReportDataFetcher.fetchReportData(any(PageRequestDto.class))).thenReturn(
                 new BaseReportBean<>());
         mockMvc.perform(get(EXPERIMENTS_REPORT_URL)
@@ -88,42 +88,42 @@ public class ReportControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testDownloadEvaluationsReportUnauthorized() throws Exception {
+    void testDownloadEvaluationsReportUnauthorized() throws Exception {
         testGetPageUnauthorized(EVALUATIONS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testDownloadEvaluationsReportWithNullPageNumber() throws Exception {
+    void testDownloadEvaluationsReportWithNullPageNumber() throws Exception {
         testGetPageWithNullPageNumber(EVALUATIONS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testDownloadEvaluationsReportWithNullPageSize() throws Exception {
+    void testDownloadEvaluationsReportWithNullPageSize() throws Exception {
         testGetPageWithNullPageSize(EVALUATIONS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testDownloadEvaluationsReportWithZeroPageSize() throws Exception {
+    void testDownloadEvaluationsReportWithZeroPageSize() throws Exception {
         testGetPageWithZeroPageSize(EVALUATIONS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testDownloadEvaluationsReportWithNegativePageNumber() throws Exception {
+    void testDownloadEvaluationsReportWithNegativePageNumber() throws Exception {
         testGetPageWithNegativePageNumber(EVALUATIONS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testDownloadEvaluationsReportWithEmptyFilterRequestName() throws Exception {
+    void testDownloadEvaluationsReportWithEmptyFilterRequestName() throws Exception {
         testGetPageWithEmptyFilterRequestName(EVALUATIONS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testDownloadEvaluationsReportWithNullMatchMode() throws Exception {
+    void testDownloadEvaluationsReportWithNullMatchMode() throws Exception {
         testGetPageWithNullMatchMode(EVALUATIONS_REPORT_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testDownloadEvaluationsReportOk() throws Exception {
+    void testDownloadEvaluationsReportOk() throws Exception {
         when(evaluationLogsBaseReportDataFetcher.fetchReportData(any(PageRequestDto.class))).thenReturn(
                 new BaseReportBean<>());
         mockMvc.perform(get(EVALUATIONS_REPORT_URL)

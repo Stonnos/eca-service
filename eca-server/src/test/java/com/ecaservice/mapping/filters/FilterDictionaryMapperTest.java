@@ -27,7 +27,7 @@ public class FilterDictionaryMapperTest {
     private FilterDictionaryMapper filterDictionaryMapper;
 
     @Test
-    public void testMapFilterDictionary() {
+    void testMapFilterDictionary() {
         FilterDictionary filterDictionary = new FilterDictionary();
         filterDictionary.setName(NAME);
         filterDictionary.setValues(Collections.singletonList(TestHelperUtils.createFilterDictionaryValue()));

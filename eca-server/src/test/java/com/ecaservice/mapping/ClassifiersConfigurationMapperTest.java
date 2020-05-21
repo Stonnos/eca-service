@@ -31,7 +31,7 @@ public class ClassifiersConfigurationMapperTest {
     private ClassifiersConfigurationMapper classifiersConfigurationMapper;
 
     @Test
-    public void testMapCreateClassifiersConfigurationDto() {
+    void testMapCreateClassifiersConfigurationDto() {
         CreateClassifiersConfigurationDto classifiersConfigurationDto =
                 new CreateClassifiersConfigurationDto(CONFIGURATION_NAME);
         ClassifiersConfiguration classifiersConfiguration =
@@ -43,7 +43,7 @@ public class ClassifiersConfigurationMapperTest {
     }
 
     @Test
-    public void testMapUpdateClassifiersConfigurationDto() {
+    void testMapUpdateClassifiersConfigurationDto() {
         UpdateClassifiersConfigurationDto classifiersConfigurationDto =
                 new UpdateClassifiersConfigurationDto(ID, CONFIGURATION_NAME);
         ClassifiersConfiguration classifiersConfiguration = new ClassifiersConfiguration();
@@ -53,7 +53,7 @@ public class ClassifiersConfigurationMapperTest {
     }
 
     @Test
-    public void testMapClassifiersConfigurationEntity() {
+    void testMapClassifiersConfigurationEntity() {
         ClassifiersConfiguration classifiersConfiguration = TestHelperUtils.createClassifiersConfiguration();
         classifiersConfiguration.setId(ID);
         classifiersConfiguration.setUpdated(LocalDateTime.now());

@@ -31,7 +31,7 @@ public class ClassifierOptionsDatabaseModelMapperTest {
     private ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
 
     @Test
-    public void testMapClassifierOptionsDatabaseModel() {
+    void testMapClassifierOptionsDatabaseModel() {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
         classifierOptionsDatabaseModel.setId(ID);
         classifierOptionsDatabaseModel.setConfig(CONFIG);
@@ -47,7 +47,7 @@ public class ClassifierOptionsDatabaseModelMapperTest {
     }
 
     @Test
-    public void testMapClassifierOptionsDatabaseModelsList() {
+    void testMapClassifierOptionsDatabaseModelsList() {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
         classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel1 = new ClassifierOptionsDatabaseModel();

@@ -55,48 +55,48 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
 
     private static final String ID_PARAM = "id";
     private static final long ID = 1L;
-    public static final String CONFIGURATION_NAME = "ConfigurationName";
+    static final String CONFIGURATION_NAME = "ConfigurationName";
 
     @MockBean
     private ClassifiersConfigurationService classifiersConfigurationService;
 
     @Test
-    public void testGetClassifiersConfigurationsPageUnauthorized() throws Exception {
+    void testGetClassifiersConfigurationsPageUnauthorized() throws Exception {
         testGetPageUnauthorized(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetClassifiersConfigurationsPageWithNullPageNumber() throws Exception {
+    void testGetClassifiersConfigurationsPageWithNullPageNumber() throws Exception {
         testGetPageWithNullPageNumber(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetClassifiersConfigurationsPageWithNullPageSize() throws Exception {
+    void testGetClassifiersConfigurationsPageWithNullPageSize() throws Exception {
         testGetPageWithNullPageSize(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetClassifiersConfigurationsPageWithZeroPageSize() throws Exception {
+    void testGetClassifiersConfigurationsPageWithZeroPageSize() throws Exception {
         testGetPageWithZeroPageSize(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetClassifiersConfigurationsPageWithNegativePageNumber() throws Exception {
+    void testGetClassifiersConfigurationsPageWithNegativePageNumber() throws Exception {
         testGetPageWithNegativePageNumber(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetClassifiersConfigurationsPageWithEmptyFilterRequestName() throws Exception {
+    void testGetClassifiersConfigurationsPageWithEmptyFilterRequestName() throws Exception {
         testGetPageWithEmptyFilterRequestName(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetClassifiersConfigurationsPageWithNullMatchMode() throws Exception {
+    void testGetClassifiersConfigurationsPageWithNullMatchMode() throws Exception {
         testGetPageWithNullMatchMode(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetClassifiersConfigurationsPageOk() throws Exception {
+    void testGetClassifiersConfigurationsPageOk() throws Exception {
         PageDto<ClassifiersConfigurationDto> pageDto =
                 PageDto.of(Collections.singletonList(createClassifiersConfigurationDto()), PAGE_NUMBER, TOTAL_ELEMENTS);
         when(classifiersConfigurationService.getClassifiersConfigurations(any(PageRequestDto.class))).thenReturn(
@@ -111,13 +111,13 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
     }
 
     @Test
-    public void testGetClassifiersConfigurationDetailsUnauthorized() throws Exception {
+    void testGetClassifiersConfigurationDetailsUnauthorized() throws Exception {
         mockMvc.perform(get(DETAIL_URL, ID))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testGetClassifiersConfigurationDetailsNotFound() throws Exception {
+    void testGetClassifiersConfigurationDetailsNotFound() throws Exception {
         doThrow(new EntityNotFoundException()).when(classifiersConfigurationService).getClassifiersConfigurationDetails(
                 ID);
         mockMvc.perform(get(DETAIL_URL, ID)
@@ -126,7 +126,7 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
     }
 
     @Test
-    public void testGetClassifiersConfigurationDetailsOk() throws Exception {
+    void testGetClassifiersConfigurationDetailsOk() throws Exception {
         ClassifiersConfigurationDto classifiersConfigurationDto = createClassifiersConfigurationDto();
         when(classifiersConfigurationService.getClassifiersConfigurationDetails(ID)).thenReturn(
                 classifiersConfigurationDto);
@@ -138,21 +138,21 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
     }
 
     @Test
-    public void testDeleteClassifiersConfigurationUnauthorized() throws Exception {
+    void testDeleteClassifiersConfigurationUnauthorized() throws Exception {
         mockMvc.perform(delete(DELETE_URL)
                 .param(ID_PARAM, String.valueOf(ID)))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testDeleteClassifiersConfigurationWithNullId() throws Exception {
+    void testDeleteClassifiersConfigurationWithNullId() throws Exception {
         mockMvc.perform(delete(DELETE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void testDeleteClassifiersConfigurationOk() throws Exception {
+    void testDeleteClassifiersConfigurationOk() throws Exception {
         mockMvc.perform(delete(DELETE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(ID_PARAM, String.valueOf(ID)))
@@ -160,7 +160,7 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
     }
 
     @Test
-    public void testDeleteConfigurationWithIllegalStateException() throws Exception {
+    void testDeleteConfigurationWithIllegalStateException() throws Exception {
         doThrow(new IllegalStateException()).when(classifiersConfigurationService).delete(ID);
         mockMvc.perform(delete(DELETE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
@@ -169,21 +169,21 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
     }
 
     @Test
-    public void testSetActiveClassifiersConfigurationUnauthorized() throws Exception {
+    void testSetActiveClassifiersConfigurationUnauthorized() throws Exception {
         mockMvc.perform(post(SET_ACTIVE_URL)
                 .param(ID_PARAM, String.valueOf(ID)))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testSetActiveClassifiersConfigurationWithNullId() throws Exception {
+    void testSetActiveClassifiersConfigurationWithNullId() throws Exception {
         mockMvc.perform(post(SET_ACTIVE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void testSetActiveClassifiersConfigurationOk() throws Exception {
+    void testSetActiveClassifiersConfigurationOk() throws Exception {
         mockMvc.perform(post(SET_ACTIVE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(ID_PARAM, String.valueOf(ID)))
@@ -191,7 +191,7 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
     }
 
     @Test
-    public void testSetActiveNotExistingClassifiersConfiguration() throws Exception {
+    void testSetActiveNotExistingClassifiersConfiguration() throws Exception {
         doThrow(new EntityNotFoundException()).when(classifiersConfigurationService).setActive(ID);
         mockMvc.perform(post(SET_ACTIVE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
@@ -200,7 +200,7 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
     }
 
     @Test
-    public void testSetActiveClassifiersConfigurationWithIllegalStateException() throws Exception {
+    void testSetActiveClassifiersConfigurationWithIllegalStateException() throws Exception {
         doThrow(new IllegalStateException()).when(classifiersConfigurationService).setActive(ID);
         mockMvc.perform(post(SET_ACTIVE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
@@ -209,7 +209,7 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
     }
 
     @Test
-    public void testSaveClassifiersConfigurationUnauthorized() throws Exception {
+    void testSaveClassifiersConfigurationUnauthorized() throws Exception {
         CreateClassifiersConfigurationDto createClassifiersConfigurationDto =
                 new CreateClassifiersConfigurationDto(CONFIGURATION_NAME);
         mockMvc.perform(post(SAVE_URL)
@@ -219,14 +219,14 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
     }
 
     @Test
-    public void testSaveEmptyClassifiersConfiguration() throws Exception {
+    void testSaveEmptyClassifiersConfiguration() throws Exception {
         mockMvc.perform(post(SAVE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void testSaveClassifiersConfigurationWithEmptyName() throws Exception {
+    void testSaveClassifiersConfigurationWithEmptyName() throws Exception {
         CreateClassifiersConfigurationDto createClassifiersConfigurationDto =
                 new CreateClassifiersConfigurationDto(StringUtils.EMPTY);
         mockMvc.perform(post(SAVE_URL)
@@ -237,7 +237,7 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
     }
 
     @Test
-    public void testSaveClassifiersConfigurationWithLargeName() throws Exception {
+    void testSaveClassifiersConfigurationWithLargeName() throws Exception {
         CreateClassifiersConfigurationDto createClassifiersConfigurationDto = new CreateClassifiersConfigurationDto(
                 StringUtils.repeat('Q', FieldConstraints.CONFIGURATION_NAME_MAX_LENGTH + 1));
         mockMvc.perform(post(SAVE_URL)
@@ -248,7 +248,7 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
     }
 
     @Test
-    public void testSaveClassifiersConfigurationOk() throws Exception {
+    void testSaveClassifiersConfigurationOk() throws Exception {
         CreateClassifiersConfigurationDto createClassifiersConfigurationDto =
                 new CreateClassifiersConfigurationDto(CONFIGURATION_NAME);
         mockMvc.perform(post(SAVE_URL)
@@ -259,7 +259,7 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
     }
 
     @Test
-    public void testUpdateClassifiersConfigurationUnauthorized() throws Exception {
+    void testUpdateClassifiersConfigurationUnauthorized() throws Exception {
         UpdateClassifiersConfigurationDto updateClassifiersConfigurationDto =
                 new UpdateClassifiersConfigurationDto(ID, CONFIGURATION_NAME);
         mockMvc.perform(put(UPDATE_URL)
@@ -269,14 +269,14 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
     }
 
     @Test
-    public void testUpdateEmptyClassifiersConfiguration() throws Exception {
+    void testUpdateEmptyClassifiersConfiguration() throws Exception {
         mockMvc.perform(put(UPDATE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void testUpdateClassifiersConfigurationWithEmptyName() throws Exception {
+    void testUpdateClassifiersConfigurationWithEmptyName() throws Exception {
         UpdateClassifiersConfigurationDto updateClassifiersConfigurationDto =
                 new UpdateClassifiersConfigurationDto(ID, StringUtils.EMPTY);
         mockMvc.perform(put(UPDATE_URL)
@@ -287,7 +287,7 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
     }
 
     @Test
-    public void testUpdateClassifiersConfigurationWithLargeName() throws Exception {
+    void testUpdateClassifiersConfigurationWithLargeName() throws Exception {
         UpdateClassifiersConfigurationDto updateClassifiersConfigurationDto = new UpdateClassifiersConfigurationDto(ID,
                 StringUtils.repeat('Q', FieldConstraints.CONFIGURATION_NAME_MAX_LENGTH + 1));
         mockMvc.perform(put(UPDATE_URL)
@@ -298,7 +298,7 @@ public class ClassifiersConfigurationControllerTest extends PageRequestControlle
     }
 
     @Test
-    public void testUpdateClassifiersConfigurationOk() throws Exception {
+    void testUpdateClassifiersConfigurationOk() throws Exception {
         UpdateClassifiersConfigurationDto updateClassifiersConfigurationDto =
                 new UpdateClassifiersConfigurationDto(ID, CONFIGURATION_NAME);
         mockMvc.perform(put(UPDATE_URL)

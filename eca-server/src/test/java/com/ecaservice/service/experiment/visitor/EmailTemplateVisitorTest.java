@@ -37,12 +37,12 @@ public class EmailTemplateVisitorTest {
     private EmailTemplateVisitor emailTemplateVisitor;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         emailTemplateVisitor = new EmailTemplateVisitor(experimentConfig);
     }
 
     @Test
-    public void testNewStatusContext() {
+    void testNewStatusContext() {
         Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
         experiment.setRequestStatus(RequestStatus.NEW);
         Context context = experiment.getRequestStatus().handle(emailTemplateVisitor, experiment);
@@ -50,7 +50,7 @@ public class EmailTemplateVisitorTest {
     }
 
     @Test
-    public void testErrorStatusContext() {
+    void testErrorStatusContext() {
         Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
         experiment.setRequestStatus(RequestStatus.ERROR);
         Context context = experiment.getRequestStatus().handle(emailTemplateVisitor, experiment);
@@ -58,7 +58,7 @@ public class EmailTemplateVisitorTest {
     }
 
     @Test
-    public void testTimeoutStatusContext() {
+    void testTimeoutStatusContext() {
         Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
         experiment.setRequestStatus(RequestStatus.TIMEOUT);
         Context context = experiment.getRequestStatus().handle(emailTemplateVisitor, experiment);
@@ -68,7 +68,7 @@ public class EmailTemplateVisitorTest {
     }
 
     @Test
-    public void testFinishedStatusContext() {
+    void testFinishedStatusContext() {
         Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
         experiment.setRequestStatus(RequestStatus.FINISHED);
         Context context = experiment.getRequestStatus().handle(emailTemplateVisitor, experiment);

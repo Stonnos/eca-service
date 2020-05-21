@@ -24,7 +24,7 @@ public class ClassificationCostsMapperTest {
     private ClassificationCostsMapper classificationCostsMapper;
 
     @Test
-    public void testMapClassificationCosts() {
+    void testMapClassificationCosts() {
         ClassificationCostsReport classificationCostsReport = TestHelperUtils.createClassificationCostsReport();
         ClassificationCostsDto classificationCostsDto = classificationCostsMapper.map(classificationCostsReport);
         Assertions.assertThat(classificationCostsDto).isNotNull();

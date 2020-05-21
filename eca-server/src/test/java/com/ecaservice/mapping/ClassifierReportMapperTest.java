@@ -27,7 +27,7 @@ public class ClassifierReportMapperTest {
     private ClassifierReportMapper classifierReportMapper;
 
     @Test
-    public void testMapClassifierReport() {
+    void testMapClassifierReport() {
         ClassifierReport classifierReport = TestHelperUtils.createClassifierReport();
         ClassifierOptionsResponseModel classifierOptionsResponseModel = classifierReportMapper.map(classifierReport);
         assertThat(classifierOptionsResponseModel.getClassifierName()).isEqualTo(
@@ -38,7 +38,7 @@ public class ClassifierReportMapperTest {
     }
 
     @Test
-    public void testMapClassifierReportList() {
+    void testMapClassifierReportList() {
         ClassifierReport classifierReport = TestHelperUtils.createClassifierReport();
         ClassifierReport classifierReport1 = TestHelperUtils.createClassifierReport();
         List<ClassifierOptionsResponseModel> classifierOptionsRequestModelList =

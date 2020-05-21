@@ -37,7 +37,7 @@ public class ClassifierOptionsRequestModelMapperTest {
     private ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
 
     @Test
-    public void testMapClassifierOptionsRequest() {
+    void testMapClassifierOptionsRequest() {
         ClassifierOptionsRequest request = TestHelperUtils.createClassifierOptionsRequest();
         ClassifierOptionsRequestModel requestModel = classifierOptionsRequestModelMapper.map(request);
         Assertions.assertThat(requestModel.getEvaluationMethod()).isEqualTo(EvaluationMethod.CROSS_VALIDATION);
@@ -47,7 +47,7 @@ public class ClassifierOptionsRequestModelMapperTest {
     }
 
     @Test
-    public void testMapClassifierOptionsRequestModel() {
+    void testMapClassifierOptionsRequestModel() {
         ClassifierOptionsRequestModel requestModel =
                 TestHelperUtils.createClassifierOptionsRequestModel(DATA_MD5_HASH, LocalDateTime.now(), ErsResponseStatus.SUCCESS,
                         Collections.singletonList(TestHelperUtils.createClassifierOptionsResponseModel(OPTIONS)));
@@ -71,7 +71,7 @@ public class ClassifierOptionsRequestModelMapperTest {
     }
 
     @Test
-    public void testMapClassifierOptionsRequestModels() {
+    void testMapClassifierOptionsRequestModels() {
         ClassifierOptionsRequestModel requestModel =
                 TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
                         ErsResponseStatus.SUCCESS, Collections.emptyList());

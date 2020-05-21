@@ -24,7 +24,7 @@ public class J48MapperTest {
     private J48Mapper j48Mapper;
 
     @Test
-    public void testMapJ48() {
+    void testMapJ48() {
         J48 j48 = TestHelperUtils.createJ48();
         J48Options j48Options = j48Mapper.map(j48);
         Assertions.assertThat(j48Options.getBinarySplits()).isEqualTo(j48.getBinarySplits());

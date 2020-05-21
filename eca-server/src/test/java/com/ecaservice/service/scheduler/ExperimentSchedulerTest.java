@@ -83,7 +83,7 @@ public class ExperimentSchedulerTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testProcessExperiments() {
+    void testProcessExperiments() {
         List<Experiment> experiments = new ArrayList<>();
         experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
@@ -93,7 +93,7 @@ public class ExperimentSchedulerTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testSentExperiments() {
+    void testSentExperiments() {
         List<Experiment> experiments = new ArrayList<>();
         experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
         experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
@@ -104,7 +104,7 @@ public class ExperimentSchedulerTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testRemoveExperiments() {
+    void testRemoveExperiments() {
         List<Experiment> experiments = new ArrayList<>();
         experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
         Experiment experimentToRemove =
@@ -125,7 +125,7 @@ public class ExperimentSchedulerTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testSentExperimentsToErs() {
+    void testSentExperimentsToErs() {
         //Create finished experiment
         Experiment finishedExperiment =
                 TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);

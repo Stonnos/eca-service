@@ -23,7 +23,7 @@ public class AdaBoostMapperTest {
     private AdaBoostMapper adaBoostMapper;
 
     @Test
-    public void testMapAdaBoost() {
+    void testMapAdaBoost() {
         AdaBoostClassifier adaBoostClassifier = new AdaBoostClassifier();
         AdaBoostOptions options = adaBoostMapper.map(adaBoostClassifier);
         Assertions.assertThat(options.getSeed()).isEqualTo(adaBoostClassifier.getSeed());

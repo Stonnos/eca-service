@@ -56,42 +56,42 @@ public class ClassifierOptionsConverterTest {
     private ClassifierOptionsConverter classifierOptionsConverter;
 
     @Test
-    public void testUnsupportedClassifier() {
+    void testUnsupportedClassifier() {
         assertThrows(IllegalStateException.class, () -> classifierOptionsConverter.convert(new BayesNet()));
     }
 
     @Test
-    public void testMapLogistic() {
+    void testMapLogistic() {
         ClassifierOptions options = classifierOptionsConverter.convert(new Logistic());
         Assertions.assertThat(options).isInstanceOf(LogisticOptions.class);
     }
 
     @Test
-    public void testDecisionTree() {
+    void testDecisionTree() {
         ClassifierOptions options = classifierOptionsConverter.convert(new CART());
         Assertions.assertThat(options).isInstanceOf(DecisionTreeOptions.class);
     }
 
     @Test
-    public void testMapJ48() {
+    void testMapJ48() {
         ClassifierOptions options = classifierOptionsConverter.convert(new J48());
         Assertions.assertThat(options).isInstanceOf(J48Options.class);
     }
 
     @Test
-    public void testMapKNN() {
+    void testMapKNN() {
         ClassifierOptions options = classifierOptionsConverter.convert(new KNearestNeighbours());
         Assertions.assertThat(options).isInstanceOf(KNearestNeighboursOptions.class);
     }
 
     @Test
-    public void testMapNeuralNetwork() {
+    void testMapNeuralNetwork() {
         ClassifierOptions options = classifierOptionsConverter.convert(new NeuralNetwork());
         Assertions.assertThat(options).isInstanceOf(NeuralNetworkOptions.class);
     }
 
     @Test
-    public void testMapHeterogeneousClassifier() {
+    void testMapHeterogeneousClassifier() {
         HeterogeneousClassifier heterogeneousClassifier = new HeterogeneousClassifier();
         heterogeneousClassifier.setClassifiersSet(new ClassifiersSet());
         heterogeneousClassifier.getClassifiersSet().addClassifier(TestHelperUtils.createJ48());
@@ -111,7 +111,7 @@ public class ClassifierOptionsConverterTest {
     }
 
     @Test
-    public void testMapAdaBoost() {
+    void testMapAdaBoost() {
         AdaBoostClassifier adaBoostClassifier = new AdaBoostClassifier();
         adaBoostClassifier.setClassifiersSet(new ClassifiersSet());
         adaBoostClassifier.getClassifiersSet().addClassifier(
@@ -129,7 +129,7 @@ public class ClassifierOptionsConverterTest {
     }
 
     @Test
-    public void testMapStacking() {
+    void testMapStacking() {
         StackingClassifier stackingClassifier = TestHelperUtils.createStackingClassifier();
         stackingClassifier.setMetaClassifier(TestHelperUtils.createNeuralNetwork(new SoftSignFunction()));
         stackingClassifier.setClassifiers(new ClassifiersSet());
@@ -152,19 +152,19 @@ public class ClassifierOptionsConverterTest {
     }
 
     @Test
-    public void testMapRandomForests() {
+    void testMapRandomForests() {
         ClassifierOptions options = classifierOptionsConverter.convert(new RandomForests());
         Assertions.assertThat(options).isInstanceOf(RandomForestsOptions.class);
     }
 
     @Test
-    public void testMapExtraTrees() {
+    void testMapExtraTrees() {
         ClassifierOptions options = classifierOptionsConverter.convert(new ExtraTreesClassifier());
         Assertions.assertThat(options).isInstanceOf(ExtraTreesOptions.class);
     }
 
     @Test
-    public void testMapRandomNetworks() {
+    void testMapRandomNetworks() {
         ClassifierOptions options = classifierOptionsConverter.convert(new RandomNetworks());
         Assertions.assertThat(options).isInstanceOf(RandomNetworkOptions.class);
     }

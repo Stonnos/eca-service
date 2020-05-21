@@ -27,7 +27,7 @@ public class EcaResponseMapperTest {
     private EcaResponseMapper ecaResponseMapper;
 
     @Test
-    public void testMapExperimentToEcaResponse() {
+    void testMapExperimentToEcaResponse() {
         Experiment experiment = new Experiment();
         experiment.setRequestStatus(RequestStatus.NEW);
         experiment.setRequestId(UUID.randomUUID().toString());

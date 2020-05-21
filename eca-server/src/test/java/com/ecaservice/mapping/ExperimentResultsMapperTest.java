@@ -31,9 +31,8 @@ public class ExperimentResultsMapperTest {
     @Inject
     private ExperimentResultsMapper experimentResultsMapper;
 
-
     @Test
-    public void testMapEvaluationResultsToExperimentResults() {
+    void testMapEvaluationResultsToExperimentResults() {
         EvaluationResults evaluationResults = TestHelperUtils.getEvaluationResults();
         ExperimentResultsEntity experimentResultsEntity = experimentResultsMapper.map(evaluationResults);
         assertThat(experimentResultsEntity).isNotNull();
@@ -46,7 +45,7 @@ public class ExperimentResultsMapperTest {
     }
 
     @Test
-    public void testMapToExperimentResultsDto() {
+    void testMapToExperimentResultsDto() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
         experimentResultsEntity.setId(1L);
@@ -55,7 +54,7 @@ public class ExperimentResultsMapperTest {
     }
 
     @Test
-    public void testMapToExperimentResultsDetailsDto() {
+    void testMapToExperimentResultsDetailsDto() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
         experimentResultsEntity.setId(1L);

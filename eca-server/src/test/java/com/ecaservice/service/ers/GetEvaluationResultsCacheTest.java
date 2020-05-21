@@ -50,7 +50,7 @@ public class GetEvaluationResultsCacheTest extends AbstractJpaTest {
     private ErsWebServiceClient ersWebServiceClient;
 
     @Test
-    public void testGetEvaluationResultsCache() {
+    void testGetEvaluationResultsCache() {
         ReflectionTestUtils.setField(ersRequestService, "ersWebServiceClient", ersWebServiceClient);
         String requestId = UUID.randomUUID().toString();
         GetEvaluationResultsResponse first =

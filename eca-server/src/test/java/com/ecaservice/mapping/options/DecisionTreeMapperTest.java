@@ -27,7 +27,7 @@ public class DecisionTreeMapperTest {
     private DecisionTreeMapper decisionTreeMapper;
 
     @Test
-    public void testMapDecisionTree() {
+    void testMapDecisionTree() {
         DecisionTreeClassifier treeClassifier = TestHelperUtils.createDecisionTreeClassifier(DecisionTreeType.C45);
         DecisionTreeOptions options = decisionTreeMapper.map(treeClassifier);
         Assertions.assertThat(options.getSeed()).isEqualTo(treeClassifier.getSeed());
@@ -42,7 +42,7 @@ public class DecisionTreeMapperTest {
     }
 
     @Test
-    public void testMapChaid() {
+    void testMapChaid() {
         DecisionTreeClassifier treeClassifier = TestHelperUtils.createDecisionTreeClassifier(DecisionTreeType.CHAID);
         DecisionTreeOptions options = decisionTreeMapper.map(treeClassifier);
         Assertions.assertThat(options.getDecisionTreeType()).isEqualTo(DecisionTreeType.CHAID);

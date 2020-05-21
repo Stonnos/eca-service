@@ -35,13 +35,13 @@ public class ClassifierOptionsRequestMapperTest {
     private InstancesRequest instancesRequest;
 
     @BeforeEach
-    public void init() {
+    void init() {
         instancesRequest = new InstancesRequest();
         instancesRequest.setData(TestHelperUtils.loadInstances());
     }
 
     @Test
-    public void testMappingInstancesRequest() {
+    void testMappingInstancesRequest() {
         ClassifierOptionsRequest request = classifierOptionsRequestMapper.map(instancesRequest, crossValidationConfig);
         Assertions.assertThat(request.getEvaluationMethodReport()).isNotNull();
         Assertions.assertThat(request.getEvaluationMethodReport().getEvaluationMethod()).isEqualTo(

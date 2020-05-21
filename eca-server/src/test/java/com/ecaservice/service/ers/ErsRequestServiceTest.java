@@ -80,7 +80,7 @@ public class ErsRequestServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testErsDisabled() {
+    void testErsDisabled() {
         ReflectionTestUtils.setField(ersRequestService, "ersConfig", new ErsConfig());
         ersRequestService.saveEvaluationResults(evaluationResults, new EvaluationResultsRequestEntity());
         List<ErsRequest> requestEntities = ersRequestRepository.findAll();
@@ -88,7 +88,7 @@ public class ErsRequestServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testSuccessSaving() {
+    void testSuccessSaving() {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
         evaluationLogRepository.save(evaluationLog);
         EvaluationResultsResponse resultsResponse = new EvaluationResultsResponse();
@@ -111,17 +111,17 @@ public class ErsRequestServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testSendingWithServiceUnavailable() {
+    void testSendingWithServiceUnavailable() {
         internalTestErrorStatus(new WebServiceIOException("I/O exception"), ErsResponseStatus.SERVICE_UNAVAILABLE);
     }
 
     @Test
-    public void testSendingWithSErrorStatus() {
+    void testSendingWithSErrorStatus() {
         internalTestErrorStatus(new WebServiceFaultException("I/O exception"), ErsResponseStatus.ERROR);
     }
 
     @Test
-    public void testGetEvaluationResults() {
+    void testGetEvaluationResults() {
         when(ersWebServiceClient.getEvaluationResultsSimpleResponse(
                 any(GetEvaluationResultsRequest.class))).thenReturn(new GetEvaluationResultsResponse());
         GetEvaluationResultsResponse response =

@@ -63,7 +63,7 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testSaveClassifiersConfiguration() {
+    void testSaveClassifiersConfiguration() {
         CreateClassifiersConfigurationDto configurationDto = new CreateClassifiersConfigurationDto();
         configurationDto.setConfigurationName(TEST_CONFIGURATION_NAME);
         classifiersConfigurationService.save(configurationDto);
@@ -76,7 +76,7 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testUpdateNotExistingConfiguration() {
+    void testUpdateNotExistingConfiguration() {
         UpdateClassifiersConfigurationDto updateClassifiersConfigurationDto = new UpdateClassifiersConfigurationDto();
         updateClassifiersConfigurationDto.setId(ID);
         assertThrows(EntityNotFoundException.class,
@@ -84,7 +84,7 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testUpdateClassifiersConfiguration() {
+    void testUpdateClassifiersConfiguration() {
         ClassifiersConfiguration classifiersConfiguration = saveConfiguration(true, false);
         assertThat(classifiersConfiguration.getUpdated()).isNull();
         assertThat(classifiersConfiguration.getConfigurationName()).isEqualTo(TEST_CONFIGURATION_NAME);
@@ -100,12 +100,12 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testDeleteNotExistingConfiguration() {
+    void testDeleteNotExistingConfiguration() {
         assertThrows(EntityNotFoundException.class, () -> classifiersConfigurationService.delete(ID));
     }
 
     @Test
-    public void testDeleteConfiguration() {
+    void testDeleteConfiguration() {
         ClassifiersConfiguration classifiersConfiguration = saveConfiguration(false, false);
         classifiersConfigurationService.delete(classifiersConfiguration.getId());
         ClassifiersConfiguration actualConfiguration =
@@ -115,33 +115,33 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testDeleteActiveConfiguration() {
+    void testDeleteActiveConfiguration() {
         ClassifiersConfiguration classifiersConfiguration = saveConfiguration(true, false);
         assertThrows(IllegalStateException.class,
                 () -> classifiersConfigurationService.delete(classifiersConfiguration.getId()));
     }
 
     @Test
-    public void testDeleteBuildInConfiguration() {
+    void testDeleteBuildInConfiguration() {
         ClassifiersConfiguration classifiersConfiguration = saveConfiguration(true, false);
         assertThrows(IllegalStateException.class,
                 () -> classifiersConfigurationService.delete(classifiersConfiguration.getId()));
     }
 
     @Test
-    public void testSetActiveNotExistingConfiguration() {
+    void testSetActiveNotExistingConfiguration() {
         assertThrows(EntityNotFoundException.class, () -> classifiersConfigurationService.setActive(ID));
     }
 
     @Test
-    public void testSetActiveNotExistingActiveConfiguration() {
+    void testSetActiveNotExistingActiveConfiguration() {
         ClassifiersConfiguration classifiersConfiguration = saveConfiguration(false, false);
         assertThrows(IllegalStateException.class,
                 () -> classifiersConfigurationService.setActive(classifiersConfiguration.getId()));
     }
 
     @Test
-    public void testSetActiveConfiguration() {
+    void testSetActiveConfiguration() {
         ClassifiersConfiguration lastActive = saveConfiguration(true, false);
         ClassifiersConfiguration newActive = saveConfiguration(false, false);
         classifiersConfigurationService.setActive(newActive.getId());
@@ -156,7 +156,7 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testSetActiveConfigurationWithEmptyClassifiersOptions() {
+    void testSetActiveConfigurationWithEmptyClassifiersOptions() {
         saveConfiguration(true, false);
         ClassifiersConfiguration newActive = new ClassifiersConfiguration();
         newActive.setBuildIn(false);
@@ -167,13 +167,13 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testGetClassifiersConfigurationDetailsNotFound() {
+    void testGetClassifiersConfigurationDetailsNotFound() {
         assertThrows(EntityNotFoundException.class,
                 () -> classifiersConfigurationService.getClassifiersConfigurationDetails(ID));
     }
 
     @Test
-    public void testGetClassifiersConfigurationDetails() {
+    void testGetClassifiersConfigurationDetails() {
         ClassifiersConfiguration configuration = saveConfiguration(true, true);
         ClassifiersConfigurationDto classifiersConfigurationDto =
                 classifiersConfigurationService.getClassifiersConfigurationDetails(configuration.getId());
@@ -185,7 +185,7 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testGetClassifiersConfigurations() {
+    void testGetClassifiersConfigurations() {
         when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION)).thenReturn(
                 Collections.emptyList());
         ClassifiersConfiguration firstConfiguration = saveConfiguration(true, true);

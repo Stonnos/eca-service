@@ -26,13 +26,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 public abstract class AbstractJpaTest {
 
     @BeforeEach
-    public final void before() throws Exception {
+    final void before() throws Exception {
         deleteAll();
         init();
     }
 
     @AfterEach
-    public final void after() {
+    final void after() {
         deleteAll();
     }
 

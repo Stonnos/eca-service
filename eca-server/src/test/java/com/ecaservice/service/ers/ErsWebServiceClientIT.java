@@ -51,12 +51,12 @@ public class ErsWebServiceClientIT {
     private EvaluationResults evaluationResults;
 
     @BeforeEach
-    public void init() {
+    void init() {
         evaluationResults = TestHelperUtils.getEvaluationResults();
     }
 
     @Test
-    public void testEvaluationResultsSending() {
+    void testEvaluationResultsSending() {
         String requestId = UUID.randomUUID().toString();
         EvaluationResultsResponse resultsResponse =
                 ersWebServiceClient.sendEvaluationResults(evaluationResults, requestId);
@@ -66,7 +66,7 @@ public class ErsWebServiceClientIT {
     }
 
     @Test
-    public void testGetEvaluationResults() {
+    void testGetEvaluationResults() {
         String requestId = UUID.randomUUID().toString();
         EvaluationResultsResponse resultsResponse =
                 ersWebServiceClient.sendEvaluationResults(evaluationResults, requestId);
@@ -83,7 +83,7 @@ public class ErsWebServiceClientIT {
     }
 
     @Test
-    public void testGetClassifiersOptions() {
+    void testGetClassifiersOptions() {
         String requestId = UUID.randomUUID().toString();
         EvaluationResultsResponse resultsResponse =
                 ersWebServiceClient.sendEvaluationResults(evaluationResults, requestId);

@@ -23,24 +23,24 @@ public class ErsResponseStatusMapperTest {
     private ErsResponseStatusMapper ersResponseStatusMapper;
 
     @Test
-    public void testMapSuccessStatus() {
+    void testMapSuccessStatus() {
         Assertions.assertThat(ersResponseStatusMapper.map(ResponseStatus.SUCCESS)).isEqualTo(ErsResponseStatus.SUCCESS);
     }
 
     @Test
-    public void testMapDuplicateRequestIdStatus() {
+    void testMapDuplicateRequestIdStatus() {
         Assertions.assertThat(ersResponseStatusMapper.map(ResponseStatus.DUPLICATE_REQUEST_ID)).isEqualTo(
                 ErsResponseStatus.DUPLICATE_REQUEST_ID);
     }
 
     @Test
-    public void testMapDataNotFoundStatus() {
+    void testMapDataNotFoundStatus() {
         Assertions.assertThat(ersResponseStatusMapper.map(ResponseStatus.DATA_NOT_FOUND)).isEqualTo(
                 ErsResponseStatus.DATA_NOT_FOUND);
     }
 
     @Test
-    public void testMapResultsNotFoundStatus() {
+    void testMapResultsNotFoundStatus() {
         Assertions.assertThat(ersResponseStatusMapper.map(ResponseStatus.RESULTS_NOT_FOUND)).isEqualTo(
                 ErsResponseStatus.RESULTS_NOT_FOUND);
     }

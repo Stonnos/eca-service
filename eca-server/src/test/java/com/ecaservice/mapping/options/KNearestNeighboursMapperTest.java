@@ -25,7 +25,7 @@ public class KNearestNeighboursMapperTest {
     private KNearestNeighboursMapper kNearestNeighboursMapper;
 
     @Test
-    public void testMapKnn() {
+    void testMapKnn() {
         KNearestNeighbours kNearestNeighbours = TestHelperUtils.createKNearestNeighbours(new ManhattanDistance());
         KNearestNeighboursOptions options = kNearestNeighboursMapper.map(kNearestNeighbours);
         Assertions.assertThat(options.getWeight()).isEqualTo(kNearestNeighbours.getWeight());

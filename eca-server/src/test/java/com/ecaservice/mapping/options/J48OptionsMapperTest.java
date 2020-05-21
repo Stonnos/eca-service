@@ -25,7 +25,7 @@ public class J48OptionsMapperTest {
     private J48OptionsMapper j48OptionsMapper;
 
     @Test
-    public void testMapToJ48() {
+    void testMapToJ48() {
         J48Options j48Options = TestHelperUtils.createJ48Options();
         J48 j48 = j48OptionsMapper.map(j48Options);
         assertThat(j48.getMinNumObj()).isEqualTo(j48Options.getMinNumObj());

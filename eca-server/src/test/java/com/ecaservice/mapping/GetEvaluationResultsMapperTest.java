@@ -28,7 +28,7 @@ public class GetEvaluationResultsMapperTest {
     private GetEvaluationResultsMapper evaluationResultsMapper;
 
     @Test
-    public void testMapEvaluationResultsResponseWithSuccessStatus() {
+    void testMapEvaluationResultsResponseWithSuccessStatus() {
         GetEvaluationResultsResponse evaluationResultsResponse =
                 TestHelperUtils.createGetEvaluationResultsResponse(UUID.randomUUID().toString(),
                         ResponseStatus.SUCCESS);
@@ -45,7 +45,7 @@ public class GetEvaluationResultsMapperTest {
     }
 
     @Test
-    public void testMapEvaluationResultsResponseWithResultsNotFound() {
+    void testMapEvaluationResultsResponseWithResultsNotFound() {
         GetEvaluationResultsResponse evaluationResultsResponse =
                 TestHelperUtils.createGetEvaluationResultsResponse(UUID.randomUUID().toString(),
                         ResponseStatus.RESULTS_NOT_FOUND);

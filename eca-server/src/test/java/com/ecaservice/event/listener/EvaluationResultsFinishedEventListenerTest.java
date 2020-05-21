@@ -45,7 +45,7 @@ public class EvaluationResultsFinishedEventListenerTest {
      * Test evaluation results sent for evaluation log with status FINISHED.
      */
     @Test
-    public void testEvaluationResultsSentWithFinishedStatus() {
+    void testEvaluationResultsSentWithFinishedStatus() {
         EvaluationLog evaluationLog = createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         when(evaluationLogRepository.findByRequestIdAndRequestStatusIn(evaluationLog.getRequestId(),
                 Collections.singletonList(RequestStatus.FINISHED))).thenReturn(evaluationLog);
@@ -61,7 +61,7 @@ public class EvaluationResultsFinishedEventListenerTest {
      * Test evaluation results sent for evaluation log with status ERROR.
      */
     @Test
-    public void testEvaluationResultsSentWithErrorStatus() {
+    void testEvaluationResultsSentWithErrorStatus() {
         EvaluationLog evaluationLog = createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR);
         when(evaluationLogRepository.findByRequestIdAndRequestStatusIn(evaluationLog.getRequestId(),
                 Collections.singletonList(RequestStatus.FINISHED))).thenReturn(null);

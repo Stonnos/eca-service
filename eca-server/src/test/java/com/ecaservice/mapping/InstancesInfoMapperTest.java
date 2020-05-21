@@ -25,7 +25,7 @@ public class InstancesInfoMapperTest {
     private InstancesInfoMapper instancesInfoMapper;
 
     @Test
-    public void testMapInstancesInfo() {
+    void testMapInstancesInfo() {
         InstancesInfo instancesInfo = TestHelperUtils.createInstancesInfo();
         InstancesInfoDto instancesInfoDto = instancesInfoMapper.map(instancesInfo);
         assertThat(instancesInfoDto.getRelationName()).isEqualTo(instancesInfo.getRelationName());

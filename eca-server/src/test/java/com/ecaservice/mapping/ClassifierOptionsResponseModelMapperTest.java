@@ -24,7 +24,7 @@ public class ClassifierOptionsResponseModelMapperTest {
     private ClassifierOptionsResponseModelMapper classifierOptionsResponseModelMapper;
 
     @Test
-    public void testMapClassifierOptionsResponseModel() {
+    void testMapClassifierOptionsResponseModel() {
         ClassifierOptionsResponseModel classifierOptionsResponseModel =
                 TestHelperUtils.createClassifierOptionsResponseModel("Options");
         ClassifierOptionsResponseDto classifierOptionsResponseDto =

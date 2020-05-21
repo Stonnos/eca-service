@@ -25,7 +25,7 @@ public class RandomForestsMapperTest {
     private RandomForestsMapper randomForestsMapper;
 
     @Test
-    public void testRandomForests() {
+    void testRandomForests() {
         RandomForests randomForests = TestHelperUtils.createRandomForests(DecisionTreeType.ID3);
         RandomForestsOptions options = randomForestsMapper.map(randomForests);
         Assertions.assertThat(options.getSeed()).isEqualTo(randomForests.getSeed());

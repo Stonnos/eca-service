@@ -26,7 +26,7 @@ public class LogisticOptionsMapperTest {
     private LogisticOptionsMapper logisticOptionsMapper;
 
     @Test
-    public void testMapLogisticOptions() {
+    void testMapLogisticOptions() {
         LogisticOptions logisticOptions = new LogisticOptions();
         logisticOptions.setMaxIts(MAX_ITS);
         logisticOptions.setUseConjugateGradientDescent(true);

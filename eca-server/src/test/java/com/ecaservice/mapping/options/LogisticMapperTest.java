@@ -23,7 +23,7 @@ public class LogisticMapperTest {
     private LogisticMapper logisticMapper;
 
     @Test
-    public void testMapLogistic() {
+    void testMapLogistic() {
         Logistic logistic = new Logistic();
         LogisticOptions options = logisticMapper.map(logistic);
         Assertions.assertThat(options.getMaxIts()).isEqualTo(logistic.getMaxIts());

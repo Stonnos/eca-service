@@ -79,7 +79,7 @@ public class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testFetchEvaluationLogsData() {
+    void testFetchEvaluationLogsData() {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
         evaluationLog.setCreationDate(CREATION_DATE);
         evaluationLog.setRequestStatus(RequestStatus.FINISHED);

@@ -32,7 +32,7 @@ public class DecisionTreeOptionsMapperTest {
     private DecisionTreeOptionsMapper decisionTreeOptionsMapper;
 
     @Test
-    public void testMapDecisionTree() {
+    void testMapDecisionTree() {
         DecisionTreeOptions decisionTreeOptions = TestHelperUtils.createDecisionTreeOptions();
         DecisionTreeBuilder decisionTreeBuilder = new DecisionTreeBuilder();
         for (DecisionTreeType decisionTreeType : DecisionTreeType.values()) {
@@ -53,7 +53,7 @@ public class DecisionTreeOptionsMapperTest {
     }
 
     @Test
-    public void testMapChaid() {
+    void testMapChaid() {
         DecisionTreeOptions decisionTreeOptions = TestHelperUtils.createDecisionTreeOptions();
         decisionTreeOptions.setDecisionTreeType(DecisionTreeType.CHAID);
         decisionTreeOptions.setAdditionalOptions(

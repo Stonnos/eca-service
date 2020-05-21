@@ -56,14 +56,14 @@ public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testNotSpecifiedConfigsDirectory() {
+    void testNotSpecifiedConfigsDirectory() {
         ExperimentConfig config = new ExperimentConfig();
         ReflectionTestUtils.setField(experimentConfigurationService, "experimentConfig", config);
         assertThrows(ClassifierOptionsException.class, () -> experimentConfigurationService.saveClassifiersOptions());
     }
 
     @Test
-    public void testSaveNewConfigs() throws IOException {
+    void testSaveNewConfigs() throws IOException {
         Resource[] modelFiles = resolver.getResources(experimentConfig.getIndividualClassifiersStoragePath());
         experimentConfigurationService.saveClassifiersOptions();
         List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
@@ -73,7 +73,7 @@ public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testSaveSameConfigs() throws IOException {
+    void testSaveSameConfigs() throws IOException {
         Resource[] modelFiles = resolver.getResources(experimentConfig.getIndividualClassifiersStoragePath());
         experimentConfigurationService.saveClassifiersOptions();
         experimentConfigurationService.saveClassifiersOptions();

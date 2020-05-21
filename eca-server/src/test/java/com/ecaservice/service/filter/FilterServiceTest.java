@@ -52,7 +52,7 @@ public class FilterServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testGetFilterTemplateFields() {
+    void testGetFilterTemplateFields() {
         FilterTemplate filterTemplate = TestHelperUtils.createFilterTemplate(FilterTemplateType.EVALUATION_LOG);
         filterTemplateRepository.save(filterTemplate);
         List<FilterFieldDto> filterFieldDtoList = filterService.getFilterFields(FilterTemplateType.EVALUATION_LOG);
@@ -60,13 +60,13 @@ public class FilterServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testNotExistingFilterTemplate() {
+    void testNotExistingFilterTemplate() {
         assertThrows(EntityNotFoundException.class,
                 () -> filterService.getFilterFields(FilterTemplateType.EVALUATION_LOG));
     }
 
     @Test
-    public void testGetGlobalFilterTemplateFields() {
+    void testGetGlobalFilterTemplateFields() {
         GlobalFilterTemplate filterTemplate =
                 TestHelperUtils.createGlobalFilterTemplate(FilterTemplateType.EVALUATION_LOG);
         globalFilterTemplateRepository.save(filterTemplate);
@@ -75,13 +75,13 @@ public class FilterServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testNotExistingGlobalFilterTemplate() {
+    void testNotExistingGlobalFilterTemplate() {
         assertThrows(EntityNotFoundException.class,
                 () -> filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG));
     }
 
     @Test
-    public void testGetFilterDictionary() {
+    void testGetFilterDictionary() {
         FilterDictionary filterDictionary = new FilterDictionary();
         filterDictionary.setName(FilterDictionaries.EVALUATION_METHOD);
         filterDictionaryRepository.save(filterDictionary);
@@ -92,7 +92,7 @@ public class FilterServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testNotExistingFilterDictionary() {
+    void testNotExistingFilterDictionary() {
         assertThrows(EntityNotFoundException.class,
                 () -> filterService.getFilterDictionary(FilterDictionaries.EVALUATION_METHOD));
     }

@@ -22,13 +22,13 @@ public class CalculationExecutorServiceTest {
     private CalculationExecutorService executorService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         ExecutorService executor = Executors.newCachedThreadPool();
         executorService = new CalculationExecutorServiceImpl(executor);
     }
 
     @Test
-    public void testTimeOut() {
+    void testTimeOut() {
         assertThrows(TimeoutException.class, () ->
                 executorService.execute(() -> {
                     Thread.sleep(TIMEOUT + 100L);

@@ -34,7 +34,7 @@ public class KNearestNeighboursOptionsMapperTest {
     private ExperimentConfig experimentConfig;
 
     @Test
-    public void testMapKNearestNeighboursOptions() {
+    void testMapKNearestNeighboursOptions() {
         KNearestNeighboursOptions kNearestNeighboursOptions = TestHelperUtils.createKNearestNeighboursOptions();
         DistanceBuilder distanceBuilder = new DistanceBuilder();
         for (DistanceType distanceType : DistanceType.values()) {

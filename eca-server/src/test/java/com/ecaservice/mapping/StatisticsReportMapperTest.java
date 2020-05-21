@@ -24,7 +24,7 @@ public class StatisticsReportMapperTest {
     private StatisticsReportMapper statisticsReportMapper;
 
     @Test
-    public void testMapStatisticsReport() {
+    void testMapStatisticsReport() {
         StatisticsReport statisticsReport = TestHelperUtils.createStatisticsReport();
         EvaluationStatisticsDto evaluationStatisticsDto = statisticsReportMapper.map(statisticsReport);
         Assertions.assertThat(evaluationStatisticsDto).isNotNull();

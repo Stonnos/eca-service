@@ -39,7 +39,7 @@ public class DecisionTreeInputDataHandlerTest {
      * Case 4: Decision tree is random and random attributes number is less than data attributes number -> not 0
      */
     @Test
-    public void testDecisionTreeInputDataHandle() {
+    void testDecisionTreeInputDataHandle() {
         DecisionTreeClassifier classifier = new CART();
         classifier.setNumRandomAttr(0);
         classifier.setRandomTree(false);

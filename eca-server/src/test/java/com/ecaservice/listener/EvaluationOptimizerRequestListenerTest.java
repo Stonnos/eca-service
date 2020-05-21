@@ -47,7 +47,7 @@ public class EvaluationOptimizerRequestListenerTest {
     private ArgumentCaptor<String> replyToCaptor;
 
     @Test
-    public void testHandleMessage() {
+    void testHandleMessage() {
         InstancesRequest instancesRequest = new InstancesRequest();
         Message message = Mockito.mock(Message.class);
         when(evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest)).thenReturn(

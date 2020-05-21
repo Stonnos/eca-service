@@ -30,7 +30,7 @@ public class ExperimentCreatedEventListenerTest {
     private ExperimentCreatedEventListener experimentCreatedEventListener;
 
     @Test
-    public void testHandleExperimentCreatedEvent() {
+    void testHandleExperimentCreatedEvent() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         ExperimentCreatedEvent experimentCreatedEvent = new ExperimentCreatedEvent(this, experiment);
         experimentCreatedEventListener.handleExperimentCreatedEvent(experimentCreatedEvent);
