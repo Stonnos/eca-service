@@ -29,7 +29,6 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.ecaservice.web.dto.model.SendingStatus;
 import eca.core.evaluation.EvaluationMethod;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -194,9 +193,7 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
         CreateExperimentResultDto expected = new CreateExperimentResultDto();
         expected.setCreated(true);
         expected.setRequestId(experiment.getRequestId());
-        when(userService.getCurrentUser()).thenReturn(
-                new UserDetailsImpl(StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY,
-                        Collections.emptyList()));
+        when(userService.getCurrentUser()).thenReturn(new UserDetailsImpl());
         when(experimentRequestService.createExperimentRequest(any(ExperimentRequest.class))).thenReturn(experiment);
         mockMvc.perform(multipart(CREATE_EXPERIMENT_URL)
                 .file(trainingData)
@@ -212,9 +209,7 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
     void testCreateExperimentWithError() throws Exception {
         CreateExperimentResultDto expected = new CreateExperimentResultDto();
         expected.setErrorMessage(ERROR_MESSAGE);
-        when(userService.getCurrentUser()).thenReturn(
-                new UserDetailsImpl(StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY,
-                        Collections.emptyList()));
+        when(userService.getCurrentUser()).thenReturn(new UserDetailsImpl());
         when(experimentRequestService.createExperimentRequest(any(ExperimentRequest.class))).thenThrow(
                 new ExperimentException(ERROR_MESSAGE));
         mockMvc.perform(multipart(CREATE_EXPERIMENT_URL)
