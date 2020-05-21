@@ -46,18 +46,26 @@ public interface RoleMapper {
     Role mapRole(RoleEntity roleEntity);
 
     /**
+     * Maps role entities set to dto list.
+     *
+     * @param roles - role entities set
+     * @return dto roles list
+     */
+    List<RoleDto> mapRoles(Set<RoleEntity> roles);
+
+    /**
      * Maps roles to roles dto list.
      *
-     * @param role - roles list
+     * @param roles - roles list
      * @return roles dto list
      */
-    List<RoleDto> map(Collection<? extends GrantedAuthority> role);
+    List<RoleDto> map(Collection<? extends GrantedAuthority> roles);
 
     /**
      * Maps roles entities to roles list.
      *
-     * @param roleEntitySet - roles entities set
+     * @param roles - roles entities set
      * @return roles list
      */
-    List<Role> map(Set<RoleEntity> roleEntitySet);
+    List<Role> map(Set<RoleEntity> roles);
 }
