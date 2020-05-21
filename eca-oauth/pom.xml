@@ -18,7 +18,14 @@
         <spring.security.oauth2.version>2.2.6.RELEASE</spring.security.oauth2.version>
         <maven-processor-plugin.version>3.3.3</maven-processor-plugin.version>
         <passay.version>1.6.0</passay.version>
-        <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
+        <sonar.coverage.exclusions>
+            **/model/**/*,
+            **/dto/**/*,
+            **/config/**/*,
+            **/exception/**/*,
+            **/util/**/*,
+            **/EcaOauthApplication.java
+        </sonar.coverage.exclusions>
     </properties>
 
     <dependencies>
@@ -111,11 +118,10 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!--test dependencies-->
         <dependency>
-            <scope>test</scope>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
+            <groupId>eca.service</groupId>
+            <artifactId>core-test</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

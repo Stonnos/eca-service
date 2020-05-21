@@ -16,8 +16,11 @@
         <postresql.version>42.2.6</postresql.version>
         <liquibase.version>3.7.0</liquibase.version>
         <sonar.coverage.exclusions>
-            **/config/*,
-            **/util/*,
+            **/model/**/*,
+            **/dto/**/*,
+            **/config/**/*,
+            **/exception/**/*,
+            **/util/**/*,
             **/NotificationApplication.java
         </sonar.coverage.exclusions>
     </properties>
