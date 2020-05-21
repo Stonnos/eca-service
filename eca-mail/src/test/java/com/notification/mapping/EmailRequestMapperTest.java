@@ -24,7 +24,7 @@ public class EmailRequestMapperTest {
     private EmailRequestMapper emailRequestMapper;
 
     @Test
-    public void testMapEmailRequest() {
+    void testMapEmailRequest() {
         EmailRequest emailRequest = createEmailRequest();
         Email email = emailRequestMapper.map(emailRequest);
         Assertions.assertThat(email.getSender()).isEqualTo(emailRequest.getSender());

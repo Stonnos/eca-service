@@ -47,7 +47,7 @@ public class MailSchedulerTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testEmailSending() throws MessagingException {
+    void testEmailSending() throws MessagingException {
         Email email = createEmail(LocalDateTime.now(), EmailStatus.NEW);
         emailRepository.save(email);
         Email email1 = createEmail(LocalDateTime.now().minusHours(1L), EmailStatus.NOT_SENT);
@@ -78,7 +78,7 @@ public class MailSchedulerTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testNotSentEmail() throws MessagingException {
+    void testNotSentEmail() throws MessagingException {
         Email email = createEmail(LocalDateTime.now(), EmailStatus.NEW);
         emailRepository.save(email);
         doThrow(new MessagingException()).when(mailSenderService).sendEmail(email);

@@ -43,7 +43,7 @@ public class EmailControllerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    public void testSaveEmailRequestWithEmptyReceiverEmail() throws Exception {
+    void testSaveEmailRequestWithEmptyReceiverEmail() throws Exception {
         EmailRequest emailRequest = createEmailRequest();
         emailRequest.setReceiver(StringUtils.EMPTY);
         mockMvc.perform(post(EMAIL_REQUEST_URL)
@@ -53,7 +53,7 @@ public class EmailControllerTest {
     }
 
     @Test
-    public void testSaveEmailRequestWithInvalidReceiverEmail() throws Exception {
+    void testSaveEmailRequestWithInvalidReceiverEmail() throws Exception {
         EmailRequest emailRequest = createEmailRequest();
         emailRequest.setReceiver(INVALID_EMAIL);
         mockMvc.perform(post(EMAIL_REQUEST_URL)
@@ -63,7 +63,7 @@ public class EmailControllerTest {
     }
 
     @Test
-    public void testSaveEmailRequestWithEmptySubject() throws Exception {
+    void testSaveEmailRequestWithEmptySubject() throws Exception {
         EmailRequest emailRequest = createEmailRequest();
         emailRequest.setSubject(StringUtils.EMPTY);
         mockMvc.perform(post(EMAIL_REQUEST_URL)
@@ -73,7 +73,7 @@ public class EmailControllerTest {
     }
 
     @Test
-    public void testSaveEmailRequestWithEmptyMessage() throws Exception {
+    void testSaveEmailRequestWithEmptyMessage() throws Exception {
         EmailRequest emailRequest = createEmailRequest();
         emailRequest.setMessage(StringUtils.EMPTY);
         mockMvc.perform(post(EMAIL_REQUEST_URL)
@@ -83,7 +83,7 @@ public class EmailControllerTest {
     }
 
     @Test
-    public void testSaveEmailRequestWithLargeSubject() throws Exception {
+    void testSaveEmailRequestWithLargeSubject() throws Exception {
         EmailRequest emailRequest = createEmailRequest();
         emailRequest.setSubject(StringUtils.repeat('Q', SUBJECT_MAX_SIZE + 1));
         mockMvc.perform(post(EMAIL_REQUEST_URL)
@@ -93,7 +93,7 @@ public class EmailControllerTest {
     }
 
     @Test
-    public void testSaveEmailRequestOk() throws Exception {
+    void testSaveEmailRequestOk() throws Exception {
         EmailRequest emailRequest = createEmailRequest();
         EmailResponse emailResponse = EmailResponse.builder().requestId(UUID.randomUUID().toString()).build();
         when(emailService.saveEmail(emailRequest)).thenReturn(emailResponse);

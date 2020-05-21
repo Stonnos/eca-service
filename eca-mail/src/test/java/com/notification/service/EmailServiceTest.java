@@ -41,7 +41,7 @@ public class EmailServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testEmailSaving() {
+    void testEmailSaving() {
         EmailRequest emailRequest = TestHelperUtils.createEmailRequest();
         EmailResponse emailResponse = emailService.saveEmail(emailRequest);
         Assertions.assertThat(emailResponse).isNotNull();

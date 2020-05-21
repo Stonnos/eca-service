@@ -33,14 +33,14 @@ public class MailSenderServiceTest {
     private MailSenderService mailSenderService;
 
     @Test
-    public void testNullEmail() {
+    void testNullEmail() {
         assertThrows(IllegalArgumentException.class, () -> {
             mailSenderService.sendEmail(null);
         });
     }
 
     @Test
-    public void testSuccessSent() throws MessagingException {
+    void testSuccessSent() throws MessagingException {
         MimeMessage mimeMessage = mock(MimeMessage.class);
         when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
         mailSenderService.sendEmail(TestHelperUtils.createEmail(LocalDateTime.now(), EmailStatus.NEW));
