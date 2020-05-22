@@ -1,19 +1,16 @@
 package com.ecaservice.notification.dto;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.experimental.Tolerate;
+import lombok.NoArgsConstructor;
 
 /**
  * Email response dto.
  */
 @Data
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class EmailResponse {
-
-    @Tolerate
-    public EmailResponse() {
-    }
 
     /**
      * Email request id

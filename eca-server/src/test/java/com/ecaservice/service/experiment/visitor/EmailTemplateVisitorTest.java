@@ -5,6 +5,7 @@ import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentType;
+import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.service.experiment.dictionary.TemplateVariablesDictionary;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,9 +14,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.thymeleaf.context.Context;
 
 import javax.inject.Inject;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,46 +46,48 @@ public class EmailTemplateVisitorTest {
     void testNewStatusContext() {
         Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
         experiment.setRequestStatus(RequestStatus.NEW);
-        Context context = experiment.getRequestStatus().handle(emailTemplateVisitor, experiment);
-        assertContext(context, experiment);
+        EmailRequest emailRequest = experiment.getRequestStatus().handle(emailTemplateVisitor, experiment);
+        assertEmailRequest(emailRequest, experiment);
     }
 
     @Test
     void testErrorStatusContext() {
         Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
         experiment.setRequestStatus(RequestStatus.ERROR);
-        Context context = experiment.getRequestStatus().handle(emailTemplateVisitor, experiment);
-        assertContext(context, experiment);
+        EmailRequest emailRequest = experiment.getRequestStatus().handle(emailTemplateVisitor, experiment);
+        assertEmailRequest(emailRequest, experiment);
     }
 
     @Test
     void testTimeoutStatusContext() {
         Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
         experiment.setRequestStatus(RequestStatus.TIMEOUT);
-        Context context = experiment.getRequestStatus().handle(emailTemplateVisitor, experiment);
-        assertContext(context, experiment);
-        assertThat(Integer.valueOf(context.getVariable(TemplateVariablesDictionary.TIMEOUT_KEY).toString())).isEqualTo(
-                experimentConfig.getTimeout());
+        EmailRequest emailRequest = experiment.getRequestStatus().handle(emailTemplateVisitor, experiment);
+        assertEmailRequest(emailRequest, experiment);
+        assertThat(Integer.valueOf(emailRequest.getEmailMessageVariables().get(
+                TemplateVariablesDictionary.TIMEOUT_KEY).toString())).isEqualTo(experimentConfig.getTimeout());
     }
 
     @Test
     void testFinishedStatusContext() {
         Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
         experiment.setRequestStatus(RequestStatus.FINISHED);
-        Context context = experiment.getRequestStatus().handle(emailTemplateVisitor, experiment);
-        assertContext(context, experiment);
-        String actualUrl = context.getVariable(TemplateVariablesDictionary.DOWNLOAD_URL_KEY).toString();
+        EmailRequest emailRequest = experiment.getRequestStatus().handle(emailTemplateVisitor, experiment);
+        assertEmailRequest(emailRequest, experiment);
+        String actualUrl =
+                emailRequest.getEmailMessageVariables().get(TemplateVariablesDictionary.DOWNLOAD_URL_KEY).toString();
         assertThat(actualUrl).isNotNull();
     }
 
-    private void assertContext(Context context, Experiment experiment) {
-        assertThat(context.getVariable(TemplateVariablesDictionary.FIRST_NAME_KEY)).isEqualTo(
+    private void assertEmailRequest(EmailRequest emailRequest, Experiment experiment) {
+        Map<String, Object> variablesMap = emailRequest.getEmailMessageVariables();
+        assertThat(variablesMap.get(TemplateVariablesDictionary.FIRST_NAME_KEY)).isEqualTo(
                 experiment.getFirstName());
         ExperimentType actualExperimentType =
                 ExperimentType.findByDescription(
-                        context.getVariable(TemplateVariablesDictionary.EXPERIMENT_TYPE_KEY).toString());
+                        variablesMap.get(TemplateVariablesDictionary.EXPERIMENT_TYPE_KEY).toString());
         assertThat(actualExperimentType).isEqualTo(experiment.getExperimentType());
-        assertThat(context.getVariable(TemplateVariablesDictionary.REQUEST_ID_KEY).toString()).isEqualTo(
+        assertThat(variablesMap.get(TemplateVariablesDictionary.REQUEST_ID_KEY).toString()).isEqualTo(
                 experiment.getRequestId());
     }
 }

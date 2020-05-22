@@ -2,6 +2,8 @@ package com.notification.controller;
 
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.notification.dto.EmailResponse;
+import com.notification.mapping.EmailRequestMapper;
+import com.notification.model.Email;
 import com.notification.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,7 @@ import javax.validation.Valid;
 public class EmailController {
 
     private final EmailService emailService;
+    private final EmailRequestMapper emailRequestMapper;
 
     /**
      * Saves email request.
@@ -33,6 +36,7 @@ public class EmailController {
      */
     @PostMapping(value = "/email-request")
     public EmailResponse saveRequest(@Valid @RequestBody EmailRequest emailRequest) {
-        return emailService.saveEmail(emailRequest);
+        Email email = emailService.saveEmail(emailRequest);
+        return emailRequestMapper.map(email);
     }
 }

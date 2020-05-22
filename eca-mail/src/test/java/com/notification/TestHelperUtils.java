@@ -1,6 +1,8 @@
 package com.notification;
 
 import com.ecaservice.notification.dto.EmailRequest;
+import com.ecaservice.notification.dto.EmailTemplateType;
+import com.notification.config.MailConfig;
 import com.notification.model.Email;
 import com.notification.model.EmailStatus;
 import lombok.experimental.UtilityClass;
@@ -28,12 +30,22 @@ public class TestHelperUtils {
      */
     public static EmailRequest createEmailRequest() {
         EmailRequest emailRequest = new EmailRequest();
-        emailRequest.setMessage(MESSAGE);
-        emailRequest.setSubject(SUBJECT);
-        emailRequest.setSender(SENDER_MAIL_RU);
         emailRequest.setReceiver(RECEIVER_MAIL_RU);
+        emailRequest.setTemplateType(EmailTemplateType.NEW_EXPERIMENT_TEMPLATE);
         emailRequest.setHtml(true);
         return emailRequest;
+    }
+
+    /**
+     * Create mail config.
+     *
+     * @return mail config
+     */
+    public static MailConfig createMailConfig() {
+        MailConfig mailConfig = new MailConfig();
+        mailConfig.setSender(SENDER_MAIL_RU);
+        mailConfig.setSubject(SUBJECT);
+        return mailConfig;
     }
 
     /**

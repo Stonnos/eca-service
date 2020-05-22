@@ -1,6 +1,8 @@
 package com.notification.mapping;
 
 import com.ecaservice.notification.dto.EmailRequest;
+import com.ecaservice.notification.dto.EmailResponse;
+import com.notification.config.MailConfig;
 import com.notification.model.Email;
 import com.notification.model.EmailStatus;
 import org.assertj.core.api.Assertions;
@@ -10,8 +12,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 
+import static com.notification.TestHelperUtils.createEmail;
 import static com.notification.TestHelperUtils.createEmailRequest;
+import static com.notification.TestHelperUtils.createMailConfig;
 
 /**
  * Unit tests for checking {@link EmailRequestMapper} functionality.
@@ -26,12 +31,20 @@ public class EmailRequestMapperTest {
     @Test
     void testMapEmailRequest() {
         EmailRequest emailRequest = createEmailRequest();
-        Email email = emailRequestMapper.map(emailRequest);
-        Assertions.assertThat(email.getSender()).isEqualTo(emailRequest.getSender());
+        MailConfig mailConfig = createMailConfig();
+        Email email = emailRequestMapper.map(emailRequest, mailConfig);
+        Assertions.assertThat(email.getSender()).isEqualTo(mailConfig.getSender());
         Assertions.assertThat(email.getReceiver()).isEqualTo(emailRequest.getReceiver());
-        Assertions.assertThat(email.getSubject()).isEqualTo(emailRequest.getSubject());
-        Assertions.assertThat(email.getMessage()).isEqualTo(emailRequest.getMessage());
+        Assertions.assertThat(email.getSubject()).isEqualTo(mailConfig.getSubject());
         Assertions.assertThat(email.isHtml()).isEqualTo(emailRequest.isHtml());
         Assertions.assertThat(email.getStatus()).isEqualTo(EmailStatus.NEW);
+    }
+
+    @Test
+    void testMapEmail() {
+        Email email = createEmail(LocalDateTime.now(), EmailStatus.NEW);
+        EmailResponse emailResponse = emailRequestMapper.map(email);
+        Assertions.assertThat(emailResponse).isNotNull();
+        Assertions.assertThat(emailResponse.getRequestId()).isEqualTo(email.getUuid());
     }
 }

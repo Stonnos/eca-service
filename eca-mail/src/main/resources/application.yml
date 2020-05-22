@@ -49,6 +49,13 @@ mail-config:
   maxFailedAttemptsToSent: 10
   pageSize: 10
   delaySeconds: 10
+  sender: rbatsw@gmail.com
+  subject: Eca - service
+  messageTemplatesMap:
+    NEW_EXPERIMENT_TEMPLATE: new-experiment-template.html
+    FINISHED_EXPERIMENT_TEMPLATE: finished-experiment-template.html
+    ERROR_EXPERIMENT_TEMPLATE: error-experiment-template.html
+    TIMEOUT_EXPERIMENT_TEMPLATE: timeout-experiment-template.html
 
 management:
   metrics:

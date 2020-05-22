@@ -1,4 +1,4 @@
-package com.ecaservice.service.experiment.mail.template;
+package com.notification.service.template;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

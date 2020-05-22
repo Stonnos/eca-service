@@ -1,7 +1,10 @@
 package com.notification.config;
 
+import com.ecaservice.notification.dto.EmailTemplateType;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import java.util.Map;
 
 /**
  * Email configuration.
@@ -26,4 +29,19 @@ public class MailConfig {
      * Delay in seconds for sent email job
      */
     private Integer delaySeconds;
+
+    /**
+     * Message templates map
+     */
+    private Map<EmailTemplateType, String> messageTemplatesMap;
+
+    /**
+     * Sender email
+     */
+    private String sender;
+
+    /**
+     * Subject string
+     */
+    private String subject;
 }

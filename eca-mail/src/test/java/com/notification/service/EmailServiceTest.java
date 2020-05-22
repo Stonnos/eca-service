@@ -1,19 +1,20 @@
 package com.notification.service;
 
 import com.ecaservice.notification.dto.EmailRequest;
-import com.ecaservice.notification.dto.EmailResponse;
 import com.notification.AbstractJpaTest;
 import com.notification.TestHelperUtils;
+import com.notification.config.MailConfig;
 import com.notification.mapping.EmailRequestMapper;
 import com.notification.mapping.EmailRequestMapperImpl;
 import com.notification.model.Email;
 import com.notification.repository.EmailRepository;
+import com.notification.service.template.TemplateEngineService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
-import java.util.List;
 
 /**
  * Unit tests for checking {@link EmailService} functionality.
@@ -23,6 +24,10 @@ import java.util.List;
 @Import(EmailRequestMapperImpl.class)
 public class EmailServiceTest extends AbstractJpaTest {
 
+    @Mock
+    private MailConfig mailConfig;
+    @Mock
+    private TemplateEngineService templateEngineService;
     @Inject
     private EmailRepository emailRepository;
     @Inject
@@ -32,7 +37,7 @@ public class EmailServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        emailService = new EmailService(emailRepository, emailRequestMapper);
+        emailService = new EmailService(mailConfig, emailRequestMapper, templateEngineService, emailRepository);
     }
 
     @Override
@@ -43,10 +48,9 @@ public class EmailServiceTest extends AbstractJpaTest {
     @Test
     void testEmailSaving() {
         EmailRequest emailRequest = TestHelperUtils.createEmailRequest();
-        EmailResponse emailResponse = emailService.saveEmail(emailRequest);
-        Assertions.assertThat(emailResponse).isNotNull();
-        Assertions.assertThat(emailResponse.getRequestId()).isNotNull();
-        List<Email> emails = emailRepository.findAll();
-        Assertions.assertThat(emails).hasSize(1);
+        Email email = emailService.saveEmail(emailRequest);
+        Assertions.assertThat(email).isNotNull();
+        Assertions.assertThat(email.getUuid()).isNotNull();
+        Assertions.assertThat(emailRepository.existsById(email.getId()));
     }
 }
