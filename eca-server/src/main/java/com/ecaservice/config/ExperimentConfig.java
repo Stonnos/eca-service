@@ -76,7 +76,6 @@ public class ExperimentConfig {
      * Data configuration properties.
      */
     @Data
-    @ConfigurationProperties("experiment.data")
     public static class DataConfig {
 
         /**
@@ -99,7 +98,6 @@ public class ExperimentConfig {
      * Ensemble configuration properties.
      */
     @Data
-    @ConfigurationProperties("experiment.ensemble")
     public static class EnsembleConfig {
 
         /**
