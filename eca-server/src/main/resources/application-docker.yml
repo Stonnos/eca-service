@@ -33,11 +33,6 @@ experiment:
   downloadUrl: http://localhost:8080/eca-server/eca-api/experiment/download/%s
   data:
     storagePath: /home/experiment/data/
-  mail:
-    from: rbatsw@gmail.com
-    subject: Eca - service
-    serviceUrl: http://notification-service:8080/ws/
-    enabled: true
 
 ers:
   url: http://evaluation-results-service:8080/ws/

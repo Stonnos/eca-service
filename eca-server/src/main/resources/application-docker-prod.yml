@@ -33,14 +33,6 @@ experiment:
   downloadUrl: http://localhost:8080/eca-server/eca-api/experiment/download/%s
   data:
     storagePath: /home/experiment/data/
-  mail:
-    from: rbatsw@gmail.com
-    subject: Eca - service
-    serviceUrl: https://notification-service:8443/ws/
-    enabled: true
-    ssl:
-      trustStore: classpath:notification/notification-truststore.jks
-      trustStorePassword: notification
 
 ers:
   url: https://evaluation-results-service:9443/ws/
