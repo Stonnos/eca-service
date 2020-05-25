@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.service.mail;
 
 import com.ecaservice.notification.dto.EmailRequest;
+import com.ecaservice.notification.dto.EmailResponse;
 import com.ecaservice.notification.dto.EmailTemplateType;
 import com.ecaservice.oauth.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
@@ -32,16 +33,19 @@ public class NotificationService {
      * @param password   - user password
      */
     public void notifyUserCreated(UserEntity userEntity, String password) {
+        log.info("Starting to send email request for new user [{}].", userEntity.getLogin());
         Map<String, Object> templateVariables = newHashMap();
         templateVariables.put(USERNAME_KEY, userEntity.getLogin());
         templateVariables.put(PASSWORD_KEY, password);
-        notifyByEmail(userEntity, templateVariables, EmailTemplateType.NEW_USER_TEMPLATE);
+        EmailResponse emailResponse = notifyByEmail(userEntity, templateVariables, EmailTemplateType.NEW_USER_TEMPLATE);
+        log.info("Email request [{}] has been successfully sent for new user [{}].", emailResponse.getRequestId(),
+                userEntity.getLogin());
     }
 
-    private void notifyByEmail(UserEntity userEntity, Map<String, Object> variables,
-                               EmailTemplateType emailTemplateType) {
+    private EmailResponse notifyByEmail(UserEntity userEntity, Map<String, Object> variables,
+                                        EmailTemplateType emailTemplateType) {
         EmailRequest emailRequest = createEmailRequest(userEntity, variables, emailTemplateType);
-        emailClient.sendEmail(emailRequest);
+        return emailClient.sendEmail(emailRequest);
     }
 
     private EmailRequest createEmailRequest(UserEntity userEntity, Map<String, Object> variables,
