@@ -41,7 +41,7 @@ export class AuthService {
       'Authorization': this.getHttpBasicAuthorizationHeader()
     });
     const options = { headers: headers };
-    return this.http.post(this.serviceUrl, params.toString(), options);
+    return this.http.post(this.serviceUrl + '/oauth/token', params.toString(), options);
   }
 
   private getHttpBasicAuthorizationHeader(): string {

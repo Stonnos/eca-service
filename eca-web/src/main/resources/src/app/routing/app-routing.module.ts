@@ -9,6 +9,7 @@ import { EvaluationLogDetailsComponent } from "../evaluation-log-details/compone
 import { ExperimentDetailsComponent } from "../experiment-details/components/experiment-details.component";
 import { ExperimentResultsDetailsComponent } from "../experiment-results-details/components/experiment-results-details.component";
 import { ClassifiersConfigurationDetailsComponent } from "../classifiers-configuration-details/components/classifiers-configuration-details.component";
+import { UsersListComponent } from "../users/components/users-list.component";
 
 const routes: Routes = [
   {
@@ -26,6 +27,10 @@ const routes: Routes = [
       {
         path: 'classifiers-options-requests',
         component: ClassifierOptionsRequestsComponent
+      },
+      {
+        path: 'users',
+        component: UsersListComponent
       },
       {
         path: 'classifiers/evaluation-results/:id',

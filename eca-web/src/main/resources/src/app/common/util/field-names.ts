@@ -92,3 +92,11 @@ export class ExperimentResultsFields {
   public static readonly PCT_CORRECT: string = "pctCorrect";
   public static readonly SENT: string = "sent";
 }
+
+export class UserFields {
+  public static readonly LOGIN: string = "login";
+  public static readonly EMAIL: string = "email";
+  public static readonly FIRST_NAME: string = "firstName";
+  public static readonly CREATION_DATE: string = "creationDate";
+  public static readonly ROLES: string = "roles";
+}

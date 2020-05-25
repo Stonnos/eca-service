@@ -20,18 +20,19 @@ export class DashboardComponent implements OnInit {
     this.items = [
       {
         label: 'Эксперименты',
-        routerLink: ['/dashboard/experiments'],
-        routerLinkActiveOptions: 'ui-menuitem-active'
+        routerLink: ['/dashboard/experiments']
       },
       {
         label: 'Классификаторы',
-        routerLink: ['/dashboard/classifiers'],
-        routerLinkActiveOptions: 'ui-menuitem-active'
+        routerLink: ['/dashboard/classifiers']
       },
       {
         label: 'Оптимальные настройки классификаторов',
-        routerLink: ['/dashboard/classifiers-options-requests'],
-        routerLinkActiveOptions: 'ui-menuitem-active'
+        routerLink: ['/dashboard/classifiers-options-requests']
+      },
+      {
+        label: 'Пользователи',
+        routerLink: ['/dashboard/users']
       }
     ];
   }
