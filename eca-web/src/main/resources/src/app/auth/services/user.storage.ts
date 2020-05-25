@@ -6,10 +6,11 @@ import { UserDto } from "../../../../../../../target/generated-sources/typescrip
 export class UserStorage {
 
   public saveUser(user: UserDto) {
-    localStorage.setItem(AuthenticationKeys.USER_NAME, JSON.stringify(user));
+    localStorage.setItem(AuthenticationKeys.USER, JSON.stringify(user));
   }
 
   public getUser(): UserDto {
-    return JSON.parse(localStorage.getItem(AuthenticationKeys.USER_NAME));
+    const jsonUser: string = localStorage.getItem(AuthenticationKeys.USER);
+    return jsonUser && JSON.parse(jsonUser);
   }
 }
