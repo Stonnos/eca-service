@@ -25,5 +25,10 @@ public enum EmailTemplateType {
     /**
      * Timeout experiment template
      */
-    TIMEOUT_EXPERIMENT_TEMPLATE
+    TIMEOUT_EXPERIMENT_TEMPLATE,
+
+    /**
+     * New user template
+     */
+    NEW_USER_TEMPLATE
 }

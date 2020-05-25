@@ -56,6 +56,7 @@ mail-config:
     FINISHED_EXPERIMENT_TEMPLATE: finished-experiment-template.html
     ERROR_EXPERIMENT_TEMPLATE: error-experiment-template.html
     TIMEOUT_EXPERIMENT_TEMPLATE: timeout-experiment-template.html
+    NEW_USER_TEMPLATE: new-user-template.html
 
 management:
   metrics:

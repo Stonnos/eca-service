@@ -99,8 +99,8 @@ public class UserController {
         log.info("Received request for user creation {}", createUserDto);
         String password = passwordService.generatePassword();
         UserEntity userEntity = userService.createUser(createUserDto, password);
-        log.info("User {} has been created", userEntity);
-        applicationEventPublisher.publishEvent(new UserCreatedEvent(this, userEntity.getLogin(), password));
+        log.info("User {} has been created", userEntity.getLogin());
+        applicationEventPublisher.publishEvent(new UserCreatedEvent(this, userEntity, password));
     }
 
     /**

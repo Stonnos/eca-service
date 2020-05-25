@@ -1,5 +1,6 @@
 package com.ecaservice.oauth.event.model;
 
+import com.ecaservice.oauth.entity.UserEntity;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
@@ -11,10 +12,10 @@ import org.springframework.context.ApplicationEvent;
 public class UserCreatedEvent extends ApplicationEvent {
 
     /**
-     * User login
+     * User entity
      */
     @Getter
-    private final String login;
+    private final UserEntity userEntity;
 
     /**
      * User password
@@ -25,14 +26,14 @@ public class UserCreatedEvent extends ApplicationEvent {
     /**
      * Create a new {@code UserCreatedEvent}.
      *
-     * @param source   the object on which the event initially occurred or with
-     *                 which the event is associated (never {@code null})
-     * @param login    - user login
-     * @param password - user password
+     * @param source     the object on which the event initially occurred or with
+     *                   which the event is associated (never {@code null})
+     * @param userEntity - user entity
+     * @param password   - user password
      */
-    public UserCreatedEvent(Object source, String login, String password) {
+    public UserCreatedEvent(Object source, UserEntity userEntity, String password) {
         super(source);
-        this.login = login;
+        this.userEntity = userEntity;
         this.password = password;
     }
 }
