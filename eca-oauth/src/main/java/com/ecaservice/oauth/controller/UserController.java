@@ -2,6 +2,7 @@ package com.ecaservice.oauth.controller;
 
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.entity.UserEntity;
+import com.ecaservice.oauth.event.model.UserCreatedEvent;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.service.PasswordService;
 import com.ecaservice.oauth.service.UserService;
@@ -14,6 +15,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -46,6 +48,7 @@ public class UserController {
     private final UserService userService;
     private final PasswordService passwordService;
     private final UserMapper userMapper;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     /**
      * Gets current authenticated user info.
@@ -95,9 +98,9 @@ public class UserController {
     public void save(@Valid @RequestBody CreateUserDto createUserDto) {
         log.info("Received request for user creation {}", createUserDto);
         String password = passwordService.generatePassword();
-        log.info("Generated password {}", password);
         UserEntity userEntity = userService.createUser(createUserDto, password);
         log.info("User {} has been created", userEntity);
+        applicationEventPublisher.publishEvent(new UserCreatedEvent(this, userEntity.getLogin(), password));
     }
 
     /**
