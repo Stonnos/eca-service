@@ -31,6 +31,7 @@ import { UploadClassifierOptionsDialogModule } from "./upload-classifier-options
 import { ClassifiersConfigurationMenuModule } from "./classifiers-configuration-menu/classifiers-configuration-menu.module";
 import { ClassifiersConfigurationDetailsModule } from "./classifiers-configuration-details/classifiers-configuration-details.module";
 import { UsersModule } from "./users/users.module";
+import { CreateUserModule } from "./create-user/create-user.module";
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { UsersModule } from "./users/users.module";
     ClassifiersModule,
     ExperimentsModule,
     UsersModule,
+    CreateUserModule,
     ClassifiersConfigurationsModule,
     ClassifiersConfigurationDetailsModule,
     ClassifiersConfigurationMenuModule,

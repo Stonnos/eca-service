@@ -18,6 +18,7 @@ import { RouterPaths } from "../../routing/router-paths";
 import { UserFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
 import { UsersService } from "../services/users.service";
+import {CreateUserModel} from "../../create-user/model/create-user.model";
 
 @Component({
   selector: 'app-users-list',
@@ -27,6 +28,8 @@ import { UsersService } from "../services/users.service";
 export class UsersListComponent extends BaseListComponent<UserDto> implements OnInit {
 
   public createUserDialogVisibility: boolean = false;
+
+  public createUserModel: CreateUserModel = new CreateUserModel();
 
   public constructor(private injector: Injector,
                      private usersService: UsersService) {
@@ -61,8 +64,9 @@ export class UsersListComponent extends BaseListComponent<UserDto> implements On
     this.createUserDialogVisibility = visible;
   }
 
-  /*public onCreateUser(experimentRequest: ExperimentRequest): void {
-    this.loading = true;
+  public onCreateUser(createUser: CreateUserModel): void {
+    console.log(createUser);
+    /*this.loading = true;
     this.usersService.createExperiment(experimentRequest)
       .pipe(
         finalize(() => {
@@ -83,8 +87,8 @@ export class UsersListComponent extends BaseListComponent<UserDto> implements On
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
-      });
-  }*/
+      });*/
+  }
 
  // public isBlink(item: ExperimentDto): boolean {
  //   return this.blinkRequestId == item.requestId;

@@ -69,3 +69,10 @@
     </ng-template>
   </p-table>
 </div>
+
+<app-create-user
+  [item]="createUserModel"
+  [visible]="createUserDialogVisibility"
+  (visibilityChange)="onCreateUserDialogVisibility($event)"
+  (itemEvent)="onCreateUser($event)">
+</app-create-user>

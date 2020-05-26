@@ -1,0 +1,65 @@
+<p-dialog
+  [(visible)]="visible"
+  header="Создать пользователя"
+  [style]="{ width: '650px' }"
+  appendTo="body"
+  [modal]="true"
+  [blockScroll]="false"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="hide()">
+
+  <form novalidate class="form d-flex flex-column justify-content-center m-auto" (keydown.enter)="submit()">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-10 mx-auto mb-2">
+        <label class="text-bold control-label">Логин</label>
+        <input
+          required
+          pInputText
+          id="login"
+          name="login"
+          type="text"
+          placeholder="Введите логин"
+          [(ngModel)]="item.login"
+          maxlength="32"
+          class="form-control d-block w-100">
+      </div>
+      <div class="ui-g-10 mx-auto mb-2">
+        <label class="text-bold control-label">Email</label>
+        <input
+          required
+          pInputText
+          id="email"
+          name="email"
+          type="text"
+          placeholder="Введите Email"
+          [(ngModel)]="item.email"
+          maxlength="255"
+          class="form-control d-block w-100">
+      </div>
+      <div class="ui-g-10 mx-auto mb-2">
+        <label class="text-bold control-label">Имя пользователя</label>
+        <input
+          required
+          pInputText
+          id="firstName"
+          name="firstName"
+          type="text"
+          placeholder="Введите имя пользователя"
+          [(ngModel)]="item.firstName"
+          maxlength="255"
+          class="form-control d-block w-100">
+      </div>
+    </div>
+  </form>
+
+  <p-footer>
+    <button
+      pButton
+      label="Создать"
+      type="button"
+      (click)="submit()"
+      class="ml-auto">
+    </button>
+  </p-footer>
+</p-dialog>

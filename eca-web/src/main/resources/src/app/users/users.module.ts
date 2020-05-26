@@ -5,6 +5,7 @@ import { UiComponentsModule } from "../ui-components.module";
 import { SharedModule } from "../common/shared.module";
 import { UsersListComponent } from "./components/users-list.component";
 import { UsersService } from "./services/users.service";
+import { CreateUserModule } from "../create-user/create-user.module";
 
 @NgModule({
   imports: [
@@ -12,6 +13,7 @@ import { UsersService } from "./services/users.service";
     SharedModule,
     FormsModule,
     UiComponentsModule,
+    CreateUserModule
   ],
   declarations: [
     UsersListComponent
