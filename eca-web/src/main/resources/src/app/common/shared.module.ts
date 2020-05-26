@@ -6,6 +6,7 @@ import { PageRequestService } from "./services/page-request.service";
 import { FieldService } from "./services/field.service";
 import { ReportsService } from "./services/report.service";
 import { RequestStatusComponent } from "./request-status/components/request-status.component";
+import { ValidationService } from "./services/validation.service";
 
 @NgModule({
   imports: [
@@ -22,7 +23,8 @@ import { RequestStatusComponent } from "./request-status/components/request-stat
   providers: [
     PageRequestService,
     FieldService,
-    ReportsService
+    ReportsService,
+    ValidationService
   ]
 })
 export class SharedModule {

@@ -7,6 +7,7 @@
   [blockScroll]="false"
   [draggable]="false"
   [resizable]="false"
+  [closable]="!loading"
   (onHide)="hide()">
 
   <form novalidate class="form d-flex flex-column justify-content-center m-auto" (keydown.enter)="submit()">
@@ -33,6 +34,9 @@
             Логин может содержать только цифры и латинские символы в нижнем регистре
           </div>
         </div>
+        <div class="text-danger error-message" *ngIf="hasSameLogin && submitted">
+          Пользователь с таким именем уже существует
+        </div>
       </div>
       <div class="ui-g-10 mx-auto mb-2">
         <label class="text-bold control-label">Email</label>
@@ -55,6 +59,9 @@
           <div *ngIf="email?.errors?.pattern">
             Недопустимый формат Email
           </div>
+        </div>
+        <div class="text-danger error-message" *ngIf="hasSameEmail && submitted">
+          Пользователь с таким Email уже вуществует
         </div>
       </div>
       <div class="ui-g-10 mx-auto mb-2">

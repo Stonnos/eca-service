@@ -1,24 +1,15 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import {
-  ClassifierOptionsRequestDto,
-  CreateExperimentResultDto,
-  ExperimentDto, FilterDictionaryDto, FilterDictionaryValueDto, FilterFieldDto, PageDto,
-  PageRequestDto, RequestStatusStatisticsDto, RoleDto, UserDto
+  PageDto,
+  PageRequestDto, RoleDto, UserDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { MessageService } from "primeng/api";
-import { saveAs } from 'file-saver/dist/FileSaver';
 import { BaseListComponent } from "../../common/lists/base-list.component";
-import { OverlayPanel } from "primeng/primeng";
 import { Observable } from "rxjs/internal/Observable";
-import { FilterService } from "../../filter/services/filter.service";
-import { finalize } from "rxjs/internal/operators";
-import { ExperimentRequest } from "../../create-experiment/model/experiment-request.model";
-import { Router } from "@angular/router";
-import { RouterPaths } from "../../routing/router-paths";
 import { UserFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
 import { UsersService } from "../services/users.service";
-import {CreateUserModel} from "../../create-user/model/create-user.model";
+import { CreateUserModel } from "../../create-user/model/create-user.model";
 
 @Component({
   selector: 'app-users-list',
@@ -54,48 +45,20 @@ export class UsersListComponent extends BaseListComponent<UserDto> implements On
     }
   }
 
-  /*public setPage(pageDto: PageDto<ExperimentDto>) {
-    this.blinkRequestId = this.lastCreatedExperimentRequestId;
-    this.lastCreatedExperimentRequestId = null;
-    super.setPage(pageDto);
-  }*/
-
   public onCreateUserDialogVisibility(visible): void {
     this.createUserDialogVisibility = visible;
   }
 
-  public onCreateUser(createUser: CreateUserModel): void {
-    console.log(createUser);
-    /*this.loading = true;
-    this.usersService.createExperiment(experimentRequest)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
-      .subscribe({
-        next: (result: CreateExperimentResultDto) => {
-          if (result.created) {
-            this.messageService.add({ severity: 'success', summary: `Эксперимент был успешно создан`, detail: '' });
-            this.lastCreatedExperimentRequestId = result.requestId;
-            this.getRequestStatusesStatistics();
-            this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1);
-          } else {
-            this.messageService.add({ severity: 'error', summary: 'Не удалось создать эксперимент', detail: result.errorMessage });
-          }
-        },
-        error: (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-        }
-      });*/
+  public onCreateUser(): void {
+    this.refreshUsersPage();
   }
-
- // public isBlink(item: ExperimentDto): boolean {
- //   return this.blinkRequestId == item.requestId;
- // }
 
   public showCreateUserDialog(): void {
     this.createUserDialogVisibility = true;
+  }
+
+  private refreshUsersPage(): void {
+    this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1);
   }
 
   private initColumns() {

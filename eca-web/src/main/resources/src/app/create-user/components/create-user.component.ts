@@ -6,6 +6,7 @@ import { finalize } from "rxjs/operators";
 import { HttpErrorResponse } from "@angular/common/http";
 import { MessageService } from "primeng/api";
 import { ValidationErrorDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import { ValidationService } from "../../common/services/validation.service";
 
 @Component({
   selector: 'app-create-user',
@@ -19,7 +20,12 @@ export class CreateUserComponent extends BaseCreateDialogComponent<CreateUserMod
 
   public loading: boolean = false;
 
-  public constructor(private usersService: UsersService, private messageService: MessageService) {
+  public hasSameLogin: boolean = false;
+  public hasSameEmail: boolean = false;
+
+  public constructor(private usersService: UsersService,
+                     private messageService: MessageService,
+                     private validationService: ValidationService) {
     super();
   }
 
@@ -38,7 +44,7 @@ export class CreateUserComponent extends BaseCreateDialogComponent<CreateUserMod
         )
         .subscribe({
           next: () => {
-            this.itemEvent.emit(this.item);
+            this.itemEvent.emit();
             this.hide();
           },
           error: (error) => {
@@ -53,7 +59,8 @@ export class CreateUserComponent extends BaseCreateDialogComponent<CreateUserMod
     if (error instanceof HttpErrorResponse) {
       if (error.status === 400) {
         const errors: ValidationErrorDto[] = error.error as ValidationErrorDto[];
-        console.log(errors);
+        this.hasSameLogin = this.validationService.hasError(errors, 'login', 'UniqueLogin');
+        this.hasSameEmail = this.validationService.hasError(errors, 'email', 'UniqueEmail');
       } else {
         this.handleUnknownError(error);
       }
@@ -65,5 +72,4 @@ export class CreateUserComponent extends BaseCreateDialogComponent<CreateUserMod
   private handleUnknownError(error): void {
     this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
   }
-
 }
