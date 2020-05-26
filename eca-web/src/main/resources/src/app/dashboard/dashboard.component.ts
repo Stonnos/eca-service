@@ -34,7 +34,7 @@ export class DashboardComponent implements OnInit {
       {
         label: 'Пользователи',
         routerLink: ['/dashboard/users'],
-        visible: !this.isSuperAdmin()
+        visible: this.isSuperAdmin()
       }
     ];
   }

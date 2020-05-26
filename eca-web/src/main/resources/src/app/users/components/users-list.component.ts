@@ -45,7 +45,7 @@ export class UsersListComponent extends BaseListComponent<UserDto> implements On
 
   public getColumnValue(column: string, item: UserDto) {
     if (column == UserFields.ROLES) {
-      return item.roles && item.roles.map((role: RoleDto) => role.roleName).join(',');
+      return item.roles && item.roles.map((role: RoleDto) => role.description).join(',');
     } else {
       return super.getColumnValue(column, item);
     }

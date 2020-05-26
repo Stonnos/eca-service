@@ -60,7 +60,7 @@ public class UserDetailsImpl implements UserDetails {
     private List<Role> authorities;
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Collection<Role> getAuthorities() {
         return authorities;
     }
 

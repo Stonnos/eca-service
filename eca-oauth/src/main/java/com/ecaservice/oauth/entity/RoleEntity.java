@@ -29,4 +29,9 @@ public class RoleEntity {
      */
     @Column(name = "role_name")
     private String roleName;
+
+    /**
+     * Role description
+     */
+    private String description;
 }

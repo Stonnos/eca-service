@@ -5,7 +5,6 @@ import com.ecaservice.user.model.Role;
 import com.ecaservice.web.dto.model.RoleDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 import java.util.List;
@@ -34,7 +33,7 @@ public interface RoleMapper {
      * @return role dto
      */
     @Mapping(source = "authority", target = "roleName")
-    RoleDto map(GrantedAuthority role);
+    RoleDto map(Role role);
 
     /**
      * Map role entity ro role object.
@@ -59,7 +58,7 @@ public interface RoleMapper {
      * @param roles - roles list
      * @return roles dto list
      */
-    List<RoleDto> map(Collection<? extends GrantedAuthority> roles);
+    List<RoleDto> map(Collection<Role> roles);
 
     /**
      * Maps roles entities to roles list.

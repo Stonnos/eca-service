@@ -1,6 +1,7 @@
 package com.ecaservice.user.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,6 +23,13 @@ public class Role implements GrantedAuthority {
      */
     @Setter
     private String authority;
+
+    /**
+     * Role description
+     */
+    @Setter
+    @Getter
+    private String description;
 
     @Override
     public String getAuthority() {
