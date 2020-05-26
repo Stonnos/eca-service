@@ -30,7 +30,7 @@ export class LoginComponent implements BaseForm, OnInit {
 
   public constructor(private router: Router,
                      private authService: AuthService,
-                     public usersService: UsersService,
+                     private usersService: UsersService,
                      private userStorage: UserStorage,
                      private messageService: MessageService) {
   }

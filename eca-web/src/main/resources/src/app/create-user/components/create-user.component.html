@@ -76,10 +76,17 @@
   <p-footer>
     <button
       pButton
-      label="Создать"
       type="button"
       (click)="submit()"
-      class="ml-auto">
+      [disabled]="loading"
+      class="create-user-button ml-auto">
+      <span class="create-user-text" *ngIf="!loading">Создать</span>
+      <p-progressSpinner
+        *ngIf="loading"
+        class="create-user-progress-spinner"
+        strokeWidth="4"
+        animationDuration=".5s">
+      </p-progressSpinner>
     </button>
   </p-footer>
 </p-dialog>
