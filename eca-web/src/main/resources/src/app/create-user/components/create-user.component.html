@@ -16,26 +16,46 @@
         <input
           required
           pInputText
+          [pattern]="loginRegex"
           id="login"
           name="login"
           type="text"
           placeholder="Введите логин"
           [(ngModel)]="item.login"
+          #login = "ngModel"
           maxlength="32"
           class="form-control d-block w-100">
+        <div class="text-danger error-message" *ngIf="login.invalid && (login.dirty || login.touched || submitted)">
+          <div *ngIf="login?.errors?.required">
+            Заполните логин
+          </div>
+          <div *ngIf="login?.errors?.pattern">
+            Логин может содержать только цифры и латинские символы в нижнем регистре
+          </div>
+        </div>
       </div>
       <div class="ui-g-10 mx-auto mb-2">
         <label class="text-bold control-label">Email</label>
         <input
           required
           pInputText
+          [pattern]="emailRegex"
           id="email"
           name="email"
           type="text"
           placeholder="Введите Email"
           [(ngModel)]="item.email"
+          #email="ngModel"
           maxlength="255"
           class="form-control d-block w-100">
+        <div class="text-danger error-message" *ngIf="email.invalid && (email.dirty || email.touched || submitted)">
+          <div *ngIf="email?.errors?.required">
+            Заполните Email
+          </div>
+          <div *ngIf="email?.errors?.pattern">
+            Недопустимый формат Email
+          </div>
+        </div>
       </div>
       <div class="ui-g-10 mx-auto mb-2">
         <label class="text-bold control-label">Имя пользователя</label>
