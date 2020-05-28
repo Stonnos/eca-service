@@ -79,7 +79,7 @@
           placeholder="Введите имя пользователя"
           [(ngModel)]="item.firstName"
           #firstName="ngModel"
-          maxlength="255"
+          maxlength="30"
           class="form-control d-block w-100">
         <div class="text-danger error-message" *ngIf="firstName.invalid && (firstName.dirty || firstName.touched || submitted)">
           <div *ngIf="firstName?.errors?.required">

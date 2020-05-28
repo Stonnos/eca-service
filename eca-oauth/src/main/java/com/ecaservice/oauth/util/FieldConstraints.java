@@ -11,7 +11,17 @@ import lombok.experimental.UtilityClass;
 public class FieldConstraints {
 
     /**
-     * Configuration name max length
+     * Login regex
+     */
+    public static final String LOGIN_REGEX = "^[a-z0-9]+$";
+
+    /**
+     * Login name min length
+     */
+    public static final int LOGIN_MIN_LENGTH = 3;
+
+    /**
+     * Login name max length
      */
     public static final int LOGIN_MAX_LENGTH = 32;
 
@@ -25,6 +35,11 @@ public class FieldConstraints {
      */
     public static final String EMAIL_REGEX =
             "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+
+    /**
+     * First name regex
+     */
+    public static final String FIRST_NAME_REGEX = "^([A-Z][a-z]+)|([А-Я][а-я]+)$";
 
     /**
      * First name max size
