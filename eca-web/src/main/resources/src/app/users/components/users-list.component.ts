@@ -49,7 +49,8 @@ export class UsersListComponent extends BaseListComponent<UserDto> implements On
     this.createUserDialogVisibility = visible;
   }
 
-  public onCreateUser(): void {
+  public onCreateUser(user: UserDto): void {
+    this.lastCreatedId = user.id;
     this.refreshUsersPage();
   }
 

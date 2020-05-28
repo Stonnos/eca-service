@@ -5,7 +5,7 @@ import { UsersService } from "../../users/services/users.service";
 import { finalize } from "rxjs/operators";
 import { HttpErrorResponse } from "@angular/common/http";
 import { MessageService } from "primeng/api";
-import { ValidationErrorDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import { UserDto, ValidationErrorDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ValidationService } from "../../common/services/validation.service";
 
 @Component({
@@ -44,8 +44,8 @@ export class CreateUserComponent extends BaseCreateDialogComponent<CreateUserMod
           })
         )
         .subscribe({
-          next: () => {
-            this.itemEvent.emit();
+          next: (user: UserDto) => {
+            this.itemEvent.emit(user);
             this.hide();
           },
           error: (error) => {

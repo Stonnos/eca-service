@@ -95,13 +95,13 @@ public class UserController {
             notes = "Creates new user"
     )
     @PostMapping(value = "/create")
-    public Long save(@Valid @RequestBody CreateUserDto createUserDto) {
+    public UserDto save(@Valid @RequestBody CreateUserDto createUserDto) {
         log.info("Received request for user creation {}", createUserDto);
         String password = passwordService.generatePassword();
         UserEntity userEntity = userService.createUser(createUserDto, password);
         log.info("User {} has been created", userEntity.getLogin());
         applicationEventPublisher.publishEvent(new UserCreatedEvent(this, userEntity, password));
-        return userEntity.getId();
+        return userMapper.map(userEntity);
     }
 
     /**

@@ -54,7 +54,7 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-item>
-      <tr>
+      <tr [ngClass]="{'item-blink': isBlink(item)}">
         <td *ngFor="let column of columns">
           {{ getColumnValue(column.name, item) }}
         </td>
@@ -74,5 +74,5 @@
   [item]="createUserModel"
   [visible]="createUserDialogVisibility"
   (visibilityChange)="onCreateUserDialogVisibility($event)"
-  (itemEvent)="onCreateUser()">
+  (itemEvent)="onCreateUser($event)">
 </app-create-user>

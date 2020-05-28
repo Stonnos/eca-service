@@ -9,7 +9,7 @@ import { Observable } from "rxjs/internal/Observable";
 import { AuthenticationKeys } from "../../auth/model/auth.keys";
 import { PageRequestService } from "../../common/services/page-request.service";
 import { environment } from "../../../environments/environment";
-import {CreateUserModel} from "../../create-user/model/create-user.model";
+import { CreateUserModel } from "../../create-user/model/create-user.model";
 
 @Injectable()
 export class UsersService {
@@ -37,11 +37,11 @@ export class UsersService {
     return this.http.get<UserDto>(this.serviceUrl + '/user-info', { headers: headers });
   }
 
-  public createUser(createUser: CreateUserModel) {
+  public createUser(createUser: CreateUserModel): Observable<UserDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
     });
-    return this.http.post(this.serviceUrl + '/create', createUser, { headers: headers })
+    return this.http.post<UserDto>(this.serviceUrl + '/create', createUser, { headers: headers })
   }
 }
