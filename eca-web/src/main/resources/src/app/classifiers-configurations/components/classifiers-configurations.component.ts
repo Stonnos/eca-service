@@ -27,9 +27,6 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   public editClassifiersConfigurationDialogVisibility: boolean = false;
   public uploadClassifiersOptionsDialogVisibility: boolean = false;
 
-  public lastCreatedConfigurationId: number;
-  public blinkConfigurationId: number;
-
   public constructor(private injector: Injector,
                      private classifiersConfigurationsService: ClassifiersConfigurationsService,
                      private confirmationService: ConfirmationService,
@@ -46,12 +43,6 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<ClassifiersConfigurationDto>> {
     return this.classifiersConfigurationsService.getClassifiersConfigurations(pageRequest);
-  }
-
-  public setPage(pageDto: PageDto<ClassifiersConfigurationDto>) {
-    this.blinkConfigurationId = this.lastCreatedConfigurationId;
-    this.lastCreatedConfigurationId = null;
-    super.setPage(pageDto);
   }
 
   public onLink(event: any, column: string, item: ClassifiersConfigurationDto): void {
@@ -111,10 +102,6 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
     this.refreshClassifiersConfigurationsPage();
   }
 
-  public isBlink(item: ClassifiersConfigurationDto): boolean {
-    return this.blinkConfigurationId == item.id;
-  }
-
   private initColumns() {
     this.columns = [
       { name: ClassifiersConfigurationFields.CONFIGURATION_NAME, label: "Конфигурация" },
@@ -138,7 +125,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
       )
       .subscribe({
         next: (configuration: ClassifiersConfigurationDto) => {
-          this.lastCreatedConfigurationId = configuration.id;
+          this.lastCreatedId = configuration.id;
           this.messageService.add({ severity: 'success', summary: `Добавлена конфигурация ${configuration.configurationName}`, detail: '' });
           this.refreshClassifiersConfigurationsPage();
         },

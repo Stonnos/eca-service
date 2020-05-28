@@ -34,9 +34,6 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public createExperimentDialogVisibility: boolean = false;
 
-  public lastCreatedExperimentRequestId: string;
-  public blinkRequestId: string;
-
   public selectedExperiment: ExperimentDto;
   public selectedColumn: string;
 
@@ -67,12 +64,6 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<ExperimentDto>> {
     return this.experimentsService.getExperiments(pageRequest);
-  }
-
-  public setPage(pageDto: PageDto<ExperimentDto>) {
-    this.blinkRequestId = this.lastCreatedExperimentRequestId;
-    this.lastCreatedExperimentRequestId = null;
-    super.setPage(pageDto);
   }
 
   public getRequestStatusesStatistics() {
@@ -189,7 +180,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
         next: (result: CreateExperimentResultDto) => {
           if (result.created) {
             this.messageService.add({ severity: 'success', summary: `Эксперимент был успешно создан`, detail: '' });
-            this.lastCreatedExperimentRequestId = result.requestId;
+            this.lastCreatedId = result.requestId;
             this.getRequestStatusesStatistics();
             this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1);
           } else {
@@ -200,10 +191,6 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
       });
-  }
-
-  public isBlink(item: ExperimentDto): boolean {
-    return this.blinkRequestId == item.requestId;
   }
 
   public showCreateExperimentDialog(): void {
