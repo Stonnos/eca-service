@@ -233,6 +233,10 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       });
   }
 
+  public isBlink(item: any): boolean {
+    return this.blinkId && this.blinkId == item.requestId;
+  }
+
   private toggleOverlayPanel(event, experimentDto: ExperimentDto, column: string, overlayPanel: OverlayPanel): void {
     this.selectedExperiment = experimentDto;
     this.selectedColumn = column;

@@ -50,6 +50,7 @@ export class UsersListComponent extends BaseListComponent<UserDto> implements On
   }
 
   public onCreateUser(user: UserDto): void {
+    this.messageService.add({ severity: 'success', summary: `Создан новый пользователь ${user.login}`, detail: '' });
     this.lastCreatedId = user.id;
     this.refreshUsersPage();
   }
