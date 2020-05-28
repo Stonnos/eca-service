@@ -21,6 +21,13 @@ import java.util.List;
 public class UserDetailsImpl implements UserDetails {
 
     /**
+     * User id
+     */
+    @Setter
+    @Getter
+    private Long id;
+
+    /**
      * User login
      */
     @Setter

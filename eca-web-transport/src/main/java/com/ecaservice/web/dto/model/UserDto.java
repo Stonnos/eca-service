@@ -22,6 +22,12 @@ import static com.ecaservice.web.dto.util.FieldConstraints.DATE_TIME_PATTERN;
 public class UserDto {
 
     /**
+     * User id
+     */
+    @ApiModelProperty(value = "User id")
+    private Long id;
+
+    /**
      * User login
      */
     @ApiModelProperty(value = "User login")
