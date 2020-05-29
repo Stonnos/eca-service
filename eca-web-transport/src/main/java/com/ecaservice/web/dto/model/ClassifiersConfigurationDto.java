@@ -35,7 +35,7 @@ public class ClassifiersConfigurationDto {
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @ApiModelProperty(value = "Configuration creation date")
-    private LocalDateTime created;
+    private LocalDateTime creationDate;
 
     /**
      * Configuration updated date

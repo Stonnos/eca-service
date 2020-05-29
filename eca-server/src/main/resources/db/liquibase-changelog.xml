@@ -37,4 +37,5 @@
     <include file="db/changelog/v30-add-classifiers-configuration-global-filter-fields.xml"/>
     <include file="db/changelog/v31-drop-email-request-table.xml"/>
     <include file="db/changelog/v32-delete-ers-response-statuses.xml"/>
+    <include file="db/changelog/v33-add-classifiers-configuration-created-by-column.xml"/>
 </databaseChangeLog>

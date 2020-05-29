@@ -71,7 +71,7 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         assertThat(configurations).hasSize(1);
         ClassifiersConfiguration actual = configurations.iterator().next();
         assertThat(actual.getConfigurationName()).isEqualTo(configurationDto.getConfigurationName());
-        assertThat(actual.getCreated()).isNotNull();
+        assertThat(actual.getCreationDate()).isNotNull();
         assertThat(actual.isBuildIn()).isFalse();
     }
 

@@ -63,6 +63,6 @@ public class ClassifiersConfigurationMapperTest {
         assertThat(classifiersConfigurationDto.getId()).isEqualTo(classifiersConfiguration.getId());
         assertThat(classifiersConfigurationDto.getConfigurationName()).isEqualTo(
                 classifiersConfiguration.getConfigurationName());
-        assertThat(classifiersConfigurationDto.getCreated()).isEqualTo(classifiersConfiguration.getCreated());
+        assertThat(classifiersConfigurationDto.getCreationDate()).isEqualTo(classifiersConfiguration.getCreationDate());
     }
 }
