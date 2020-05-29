@@ -10,9 +10,12 @@ import com.ecaservice.model.options.LogisticOptions;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.AbstractJpaTest;
+import com.ecaservice.service.UserService;
+import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 
@@ -27,6 +30,7 @@ import static com.ecaservice.TestHelperUtils.createClassifiersConfiguration;
 import static com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_.CREATION_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for checking {@link ClassifierOptionsService} functionality.
@@ -40,13 +44,23 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
     private static final int PAGE_SIZE = 10;
     private static final String OPTIONS = "options";
     private static final long ID = 1L;
+    private static final String USER_NAME = "user";
 
     @Inject
     private ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
     @Inject
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
+    @MockBean
+    private UserService userService;
     @Inject
     private ClassifierOptionsService classifierOptionsService;
+
+    @Override
+    public void init() {
+        UserDetailsImpl userDetails = new UserDetailsImpl();
+        userDetails.setUserName(USER_NAME);
+        when(userService.getCurrentUser()).thenReturn(userDetails);
+    }
 
     @Override
     public void deleteAll() {
@@ -168,6 +182,7 @@ public class ClassifierOptionsServiceTest extends AbstractJpaTest {
         assertThat(actual.getConfig()).isNotNull();
         assertThat(actual.getCreationDate()).isNotNull();
         assertThat(actual.getConfiguration().getUpdated()).isNotNull();
+        assertThat(actual.getCreatedBy()).isEqualTo(USER_NAME);
     }
 
     @Test

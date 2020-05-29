@@ -9,7 +9,9 @@ import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.AbstractJpaTest;
+import com.ecaservice.service.UserService;
 import com.ecaservice.service.filter.FilterService;
+import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -43,6 +45,7 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     private static final String TEST_CONFIG = "test_config";
     private static final String TEST_CONFIGURATION_NAME = "TestConfiguration";
     private static final String TEST_CONFIGURATION_UPDATED_NAME = "UpdatedTestName";
+    private static final String USER_NAME = "user";
     private static final long ID = 1L;
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
@@ -55,6 +58,15 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     private ClassifiersConfigurationService classifiersConfigurationService;
     @MockBean
     private FilterService filterService;
+    @MockBean
+    private UserService userService;
+
+    @Override
+    public void init() {
+        UserDetailsImpl userDetails = new UserDetailsImpl();
+        userDetails.setUserName(USER_NAME);
+        when(userService.getCurrentUser()).thenReturn(userDetails);
+    }
 
     @Override
     public void deleteAll() {
@@ -71,6 +83,7 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         assertThat(configurations).hasSize(1);
         ClassifiersConfiguration actual = configurations.iterator().next();
         assertThat(actual.getConfigurationName()).isEqualTo(configurationDto.getConfigurationName());
+        assertThat(actual.getCreatedBy()).isEqualTo(USER_NAME);
         assertThat(actual.getCreationDate()).isNotNull();
         assertThat(actual.isBuildIn()).isFalse();
     }
