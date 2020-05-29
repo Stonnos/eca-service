@@ -26,6 +26,7 @@ public class ClassifiersConfigurationMapperTest {
 
     private static final String CONFIGURATION_NAME = "ConfigurationName";
     private static final long ID = 1L;
+    private static final String CREATED_BY = "user";
 
     @Inject
     private ClassifiersConfigurationMapper classifiersConfigurationMapper;
@@ -56,6 +57,7 @@ public class ClassifiersConfigurationMapperTest {
     void testMapClassifiersConfigurationEntity() {
         ClassifiersConfiguration classifiersConfiguration = TestHelperUtils.createClassifiersConfiguration();
         classifiersConfiguration.setId(ID);
+        classifiersConfiguration.setCreatedBy(CREATED_BY);
         classifiersConfiguration.setUpdated(LocalDateTime.now());
         ClassifiersConfigurationDto classifiersConfigurationDto =
                 classifiersConfigurationMapper.map(classifiersConfiguration);
@@ -64,5 +66,6 @@ public class ClassifiersConfigurationMapperTest {
         assertThat(classifiersConfigurationDto.getConfigurationName()).isEqualTo(
                 classifiersConfiguration.getConfigurationName());
         assertThat(classifiersConfigurationDto.getCreationDate()).isEqualTo(classifiersConfiguration.getCreationDate());
+        assertThat(classifiersConfigurationDto.getCreatedBy()).isEqualTo(classifiersConfiguration.getCreatedBy());
     }
 }

@@ -38,6 +38,12 @@ public class ClassifiersConfigurationDto {
     private LocalDateTime creationDate;
 
     /**
+     * User name
+     */
+    @ApiModelProperty(value = "User name")
+    private String createdBy;
+
+    /**
      * Configuration updated date
      */
     @JsonFormat(pattern = DATE_TIME_PATTERN)
