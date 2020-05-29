@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.ecaservice.model.entity.ClassifiersConfiguration_.CREATED;
+import static com.ecaservice.model.entity.BaseEntity_.CREATION_DATE;
 
 /**
  * Classifiers configuration service.
@@ -114,7 +114,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
 
     @Override
     public Page<ClassifiersConfiguration> getNextPage(PageRequestDto pageRequestDto) {
-        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), CREATED, pageRequestDto.isAscending());
+        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
         List<String> globalFilterFields =
                 filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION);
         ClassifiersConfigurationFilter filter = new ClassifiersConfigurationFilter(pageRequestDto.getSearchQuery(),

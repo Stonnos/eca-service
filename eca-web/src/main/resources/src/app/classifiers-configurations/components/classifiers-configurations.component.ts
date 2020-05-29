@@ -32,7 +32,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
                      private confirmationService: ConfirmationService,
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
-    this.defaultSortField = ClassifiersConfigurationFields.CREATED;
+    this.defaultSortField = ClassifiersConfigurationFields.CREATION_DATE;
     this.notSortableColumns = [ClassifiersConfigurationFields.CLASSIFIERS_OPTIONS_COUNT];
     this.linkColumns = [ClassifiersConfigurationFields.CONFIGURATION_NAME];
     this.initColumns();
@@ -105,8 +105,9 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   private initColumns() {
     this.columns = [
       { name: ClassifiersConfigurationFields.CONFIGURATION_NAME, label: "Конфигурация" },
-      { name: ClassifiersConfigurationFields.CREATED, label: "Дата создания" },
+      { name: ClassifiersConfigurationFields.CREATION_DATE, label: "Дата создания" },
       { name: ClassifiersConfigurationFields.UPDATED, label: "Дата обновления" },
+      { name: ClassifiersConfigurationFields.CREATED_BY, label: "Пользователь" },
       { name: ClassifiersConfigurationFields.CLASSIFIERS_OPTIONS_COUNT, label: "Число настроек классификаторов" },
     ];
   }

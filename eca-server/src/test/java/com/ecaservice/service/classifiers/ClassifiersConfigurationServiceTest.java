@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.ecaservice.model.entity.ClassifiersConfiguration_.CREATED;
+import static com.ecaservice.model.entity.BaseEntity_.CREATION_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -193,7 +193,7 @@ public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         classifierOptionsDatabaseModelRepository.save(
                 TestHelperUtils.createClassifierOptionsDatabaseModel(TEST_CONFIG, secondConfiguration));
         PageRequestDto pageRequestDto =
-                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CREATED, false, null, Collections.emptyList());
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, CREATION_DATE, false, null, Collections.emptyList());
         PageDto<ClassifiersConfigurationDto> configurationsPage =
                 classifiersConfigurationService.getClassifiersConfigurations(pageRequestDto);
         assertThat(configurationsPage).isNotNull();
