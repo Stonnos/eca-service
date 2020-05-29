@@ -51,6 +51,6 @@ public class EmailServiceTest extends AbstractJpaTest {
         Email email = emailService.saveEmail(emailRequest);
         Assertions.assertThat(email).isNotNull();
         Assertions.assertThat(email.getUuid()).isNotNull();
-        Assertions.assertThat(emailRepository.existsById(email.getId()));
+        Assertions.assertThat(emailRepository.existsById(email.getId())).isTrue();
     }
 }
