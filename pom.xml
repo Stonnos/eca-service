@@ -214,6 +214,7 @@
                 <configuration>
                     <excludes>
                         <exclude>**/model/**/*</exclude>
+                        <exclude>**/entity/**/*</exclude>
                         <exclude>**/dto/**/*</exclude>
                         <exclude>**/config/**/*</exclude>
                         <exclude>**/exception/**/*</exclude>
