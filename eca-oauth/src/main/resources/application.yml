@@ -40,7 +40,7 @@ common:
 
 ## Password generator configs
 password:
-  length: 8
+  length: 12
   useDigits: true
   useLowerCaseSymbols: true
   useUpperCaseSymbols: true

@@ -11,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The annotated element must be unique login.
+ * The annotated element must be unique email.
  *
  * @author Roman Batygin
  */
