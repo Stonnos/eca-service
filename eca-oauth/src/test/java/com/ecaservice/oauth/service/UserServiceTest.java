@@ -11,7 +11,6 @@ import com.ecaservice.oauth.mapping.UserMapperImpl;
 import com.ecaservice.oauth.repository.RoleRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
@@ -19,11 +18,9 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.inject.Inject;
-
 import java.util.Collections;
 
 import static com.ecaservice.oauth.TestHelperUtils.createRoleEntity;
-import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
 import static com.ecaservice.oauth.entity.UserEntity_.CREATION_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
