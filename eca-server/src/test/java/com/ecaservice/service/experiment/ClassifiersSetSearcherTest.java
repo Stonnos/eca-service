@@ -73,7 +73,7 @@ import static org.mockito.Mockito.when;
         DecisionTreeOptionsMapperImpl.class, KNearestNeighboursOptionsMapperImpl.class,
         J48OptionsMapperImpl.class, NeuralNetworkOptionsMapperImpl.class, LogisticOptionsMapperImpl.class,
         HeterogeneousClassifierFactory.class, DecisionTreeFactory.class, ClassifierOptionsConverter.class})
-public class ClassifiersSetSearcherTest {
+class ClassifiersSetSearcherTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final String OPTIONS = "options";

@@ -50,7 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  */
 @ExtendWith(SpringExtension.class)
 @Import({ClassifierOptionsMapperConfiguration.class, ClassifierOptionsConverter.class})
-public class ClassifierOptionsConverterTest {
+class ClassifierOptionsConverterTest {
 
     @Inject
     private ClassifierOptionsConverter classifierOptionsConverter;

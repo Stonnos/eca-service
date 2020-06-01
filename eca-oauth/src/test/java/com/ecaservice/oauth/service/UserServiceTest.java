@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Roman Batygin
  */
 @Import({CommonConfig.class, UserMapperImpl.class, RoleMapperImpl.class})
-public class UserServiceTest extends AbstractJpaTest {
+class UserServiceTest extends AbstractJpaTest {
 
     private static final String PASSWORD = "pa66word!";
 

@@ -17,7 +17,7 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(LogisticMapperImpl.class)
-public class LogisticMapperTest {
+class LogisticMapperTest {
 
     @Inject
     private LogisticMapper logisticMapper;

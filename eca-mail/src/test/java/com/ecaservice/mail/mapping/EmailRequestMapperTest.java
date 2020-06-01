@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
  */
 @ExtendWith(SpringExtension.class)
 @Import(EmailRequestMapperImpl.class)
-public class EmailRequestMapperTest {
+class EmailRequestMapperTest {
 
     @Inject
     private EmailRequestMapper emailRequestMapper;

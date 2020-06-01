@@ -17,7 +17,7 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(AdaBoostMapperImpl.class)
-public class AdaBoostMapperTest {
+class AdaBoostMapperTest {
 
     @Inject
     private AdaBoostMapper adaBoostMapper;

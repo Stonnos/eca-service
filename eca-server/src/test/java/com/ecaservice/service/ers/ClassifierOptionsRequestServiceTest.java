@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import(CommonConfig.class)
-public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
+class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
 
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 

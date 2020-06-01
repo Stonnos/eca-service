@@ -49,7 +49,7 @@ import java.util.List;
 @TestPropertySource("classpath:application.properties")
 @Import({EvaluationResultsService.class, CrossValidationConfig.class,
         InstancesConverter.class, ClassifierOptionsConverter.class, ClassifierOptionsMapperConfiguration.class})
-public class EvaluationResultsServiceTest {
+class EvaluationResultsServiceTest {
 
     @Inject
     private EvaluationResultsService evaluationResultsService;

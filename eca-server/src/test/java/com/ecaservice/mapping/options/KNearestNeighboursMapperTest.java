@@ -19,7 +19,7 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(KNearestNeighboursMapperImpl.class)
-public class KNearestNeighboursMapperTest {
+class KNearestNeighboursMapperTest {
 
     @Inject
     private KNearestNeighboursMapper kNearestNeighboursMapper;

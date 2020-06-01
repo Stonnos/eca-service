@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @WebMvcTest(controllers = EcaController.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class EcaControllerTest {
+class EcaControllerTest {
 
     private static final String BASE_URL = "/eca-api";
     private static final String DOWNLOAD_URL = BASE_URL + "/experiment/download/{token}";

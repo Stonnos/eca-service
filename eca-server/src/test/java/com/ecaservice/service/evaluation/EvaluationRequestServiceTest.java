@@ -39,7 +39,7 @@ import static org.mockito.Mockito.mock;
 @Import({ExecutorConfiguration.class, CrossValidationConfig.class,
         EvaluationLogMapperImpl.class, EvaluationService.class,
         InstancesInfoMapperImpl.class, ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class})
-public class EvaluationRequestServiceTest extends AbstractJpaTest {
+class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     @Inject
     private CrossValidationConfig crossValidationConfig;

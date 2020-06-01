@@ -18,7 +18,7 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(StackingClassifierMapperImpl.class)
-public class StackingClassifierMapperTest {
+class StackingClassifierMapperTest {
 
     @Inject
     private StackingClassifierMapper stackingClassifierMapper;

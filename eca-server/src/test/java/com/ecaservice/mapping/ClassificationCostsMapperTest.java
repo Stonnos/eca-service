@@ -18,7 +18,7 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(ClassificationCostsMapperImpl.class)
-public class ClassificationCostsMapperTest {
+class ClassificationCostsMapperTest {
 
     @Inject
     private ClassificationCostsMapper classificationCostsMapper;

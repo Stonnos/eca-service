@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ExtendWith(SpringExtension.class)
 @Import({StatisticsReportMapperImpl.class, ClassificationCostsMapperImpl.class, GetEvaluationResultsMapperImpl.class})
-public class GetEvaluationResultsMapperTest {
+class GetEvaluationResultsMapperTest {
 
     @Inject
     private GetEvaluationResultsMapper evaluationResultsMapper;

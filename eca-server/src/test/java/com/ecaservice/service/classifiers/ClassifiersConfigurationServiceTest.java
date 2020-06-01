@@ -40,7 +40,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({ClassifiersConfigurationService.class, ClassifiersConfigurationMapperImpl.class, CommonConfig.class})
-public class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
+class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     private static final String TEST_CONFIG = "test_config";
     private static final String TEST_CONFIGURATION_NAME = "TestConfiguration";

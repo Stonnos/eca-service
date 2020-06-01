@@ -18,7 +18,7 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(StackingOptionsMapperImpl.class)
-public class StackingOptionsMapperTest {
+class StackingOptionsMapperTest {
 
     @Inject
     private StackingOptionsMapper stackingOptionsMapper;

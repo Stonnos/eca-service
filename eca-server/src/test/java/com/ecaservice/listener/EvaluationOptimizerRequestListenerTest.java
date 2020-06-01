@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-public class EvaluationOptimizerRequestListenerTest {
+class EvaluationOptimizerRequestListenerTest {
 
     @Mock
     private RabbitTemplate rabbitTemplate;

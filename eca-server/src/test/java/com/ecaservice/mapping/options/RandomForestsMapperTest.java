@@ -19,7 +19,7 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(RandomForestsMapperImpl.class)
-public class RandomForestsMapperTest {
+class RandomForestsMapperTest {
 
     @Inject
     private RandomForestsMapper randomForestsMapper;

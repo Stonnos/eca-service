@@ -15,7 +15,7 @@ import javax.inject.Inject;
  * @author Roman Batygin
  */
 @Oauth2TestConfiguration
-public abstract class AbstractControllerTest {
+abstract class AbstractControllerTest {
 
     @Getter
     private String accessToken;

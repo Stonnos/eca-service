@@ -43,7 +43,7 @@ import static org.mockito.Mockito.when;
  */
 @Import({ClassifierInputOptionsMapperImpl.class, ExperimentResultsMapperImpl.class,
         ClassifierInfoMapperImpl.class, ExperimentMapperImpl.class})
-public class ExperimentResultsServiceTest extends AbstractJpaTest {
+class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     @Mock
     private ErsService ersService;

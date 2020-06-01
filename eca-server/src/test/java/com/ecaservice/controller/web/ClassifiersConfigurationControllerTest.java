@@ -43,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @WebMvcTest(controllers = ClassifiersConfigurationController.class)
 @Import(ClassifiersConfigurationMapperImpl.class)
-public class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
+class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
 
     private static final String BASE_URL = "/experiment/classifiers-configurations";
     private static final String LIST_URL = BASE_URL + "/list";

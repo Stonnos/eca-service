@@ -16,7 +16,7 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(ErsEvaluationMethodMapperImpl.class)
-public class ErsEvaluationMethodMapperTest {
+class ErsEvaluationMethodMapperTest {
 
     @Inject
     private ErsEvaluationMethodMapper ersEvaluationMethodMapper;

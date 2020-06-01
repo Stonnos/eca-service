@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-public class ExperimentProcessorServiceTest {
+class ExperimentProcessorServiceTest {
 
     private static final int RESULTS_SIZE = 5;
 

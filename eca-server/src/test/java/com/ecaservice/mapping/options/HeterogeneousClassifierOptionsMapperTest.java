@@ -19,7 +19,7 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import({HeterogeneousClassifierOptionsMapperImpl.class, HeterogeneousClassifierFactory.class})
-public class HeterogeneousClassifierOptionsMapperTest {
+class HeterogeneousClassifierOptionsMapperTest {
 
     @Inject
     private HeterogeneousClassifierOptionsMapper heterogeneousClassifierOptionsMapper;

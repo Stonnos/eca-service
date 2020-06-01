@@ -45,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = ClassifierOptionsRequestController.class)
 @Import({ClassifierOptionsRequestModelMapperImpl.class, ErsEvaluationMethodMapperImpl.class,
         ClassifierOptionsResponseModelMapperImpl.class})
-public class ClassifierOptionsRequestControllerTest extends PageRequestControllerTest {
+class ClassifierOptionsRequestControllerTest extends PageRequestControllerTest {
 
     private static final String LIST_URL = "/classifiers-options-requests";
 

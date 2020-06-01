@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-public class UniqueEmailValidatorTest {
+class UniqueEmailValidatorTest {
 
     private static final String EMAIL = "test@mail.ru";
 

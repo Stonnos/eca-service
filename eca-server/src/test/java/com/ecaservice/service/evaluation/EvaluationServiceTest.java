@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @Import(CrossValidationConfig.class)
-public class EvaluationServiceTest {
+class EvaluationServiceTest {
 
     @Inject
     private CrossValidationConfig config;

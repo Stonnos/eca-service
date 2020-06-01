@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verify;
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-public class UserCreatedEventListenerTest {
+class UserCreatedEventListenerTest {
 
     @Mock
     private NotificationService notificationService;

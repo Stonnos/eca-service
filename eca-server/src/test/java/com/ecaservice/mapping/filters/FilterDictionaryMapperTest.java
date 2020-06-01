@@ -19,7 +19,7 @@ import java.util.Collections;
  */
 @ExtendWith(SpringExtension.class)
 @Import({FilterDictionaryValueMapperImpl.class, FilterDictionaryMapperImpl.class})
-public class FilterDictionaryMapperTest {
+class FilterDictionaryMapperTest {
 
     private static final String NAME = "name";
 

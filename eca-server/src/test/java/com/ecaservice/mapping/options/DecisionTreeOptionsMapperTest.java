@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ExtendWith(SpringExtension.class)
 @Import({DecisionTreeOptionsMapperImpl.class, DecisionTreeFactory.class})
-public class DecisionTreeOptionsMapperTest {
+class DecisionTreeOptionsMapperTest {
 
     private static final double ALPHA_VALUE = 0.002d;
 

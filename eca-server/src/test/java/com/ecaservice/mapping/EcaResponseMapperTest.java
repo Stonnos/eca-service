@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ExtendWith(SpringExtension.class)
 @Import(EcaResponseMapperImpl.class)
-public class EcaResponseMapperTest {
+class EcaResponseMapperTest {
 
     @Inject
     private EcaResponseMapper ecaResponseMapper;

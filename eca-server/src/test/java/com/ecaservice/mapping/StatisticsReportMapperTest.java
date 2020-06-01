@@ -18,7 +18,7 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(StatisticsReportMapperImpl.class)
-public class StatisticsReportMapperTest {
+class StatisticsReportMapperTest {
 
     @Inject
     private StatisticsReportMapper statisticsReportMapper;

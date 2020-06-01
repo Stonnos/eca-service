@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @Import({KNearestNeighboursOptionsMapperImpl.class, ExperimentConfig.class})
-public class KNearestNeighboursOptionsMapperTest {
+class KNearestNeighboursOptionsMapperTest {
 
     @Inject
     private KNearestNeighboursOptionsMapper kNearestNeighboursOptionsMapper;

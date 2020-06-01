@@ -22,7 +22,7 @@ import javax.inject.Inject;
  * @author Roman Batygin
  */
 @Import(EmailRequestMapperImpl.class)
-public class EmailServiceTest extends AbstractJpaTest {
+class EmailServiceTest extends AbstractJpaTest {
 
     @Mock
     private MailConfig mailConfig;

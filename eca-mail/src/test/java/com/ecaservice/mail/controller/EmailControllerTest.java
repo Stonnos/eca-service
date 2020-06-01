@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @WebMvcTest(controllers = EmailController.class)
 @Import(EmailRequestMapperImpl.class)
-public class EmailControllerTest {
+class EmailControllerTest {
 
     private static final String BASE_URL = "/emails";
     private static final String EMAIL_REQUEST_URL = BASE_URL + "/email-request";

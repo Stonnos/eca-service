@@ -28,7 +28,7 @@ import java.util.List;
 @ExtendWith(SpringExtension.class)
 @Import({ClassifierOptionsRequestModelMapperImpl.class, ErsEvaluationMethodMapperImpl.class,
         ClassifierOptionsResponseModelMapperImpl.class})
-public class ClassifierOptionsRequestModelMapperTest {
+class ClassifierOptionsRequestModelMapperTest {
 
     private static final String DATA_MD5_HASH = "hash";
     private static final String OPTIONS = "options";

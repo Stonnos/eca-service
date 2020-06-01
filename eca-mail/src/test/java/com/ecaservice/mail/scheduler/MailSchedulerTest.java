@@ -25,7 +25,7 @@ import static org.mockito.Mockito.verify;
  * Unit tests for checking {@link MailScheduler} functionality.
  */
 @Import(MailConfig.class)
-public class MailSchedulerTest extends AbstractJpaTest {
+class MailSchedulerTest extends AbstractJpaTest {
 
     @Inject
     private MailConfig mailConfig;

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author Roman Batygin
  */
-public class ExperimentResultsLockServiceTest {
+class ExperimentResultsLockServiceTest {
 
     private ExperimentResultsLockService experimentResultsLockService = new ExperimentResultsLockService();
 

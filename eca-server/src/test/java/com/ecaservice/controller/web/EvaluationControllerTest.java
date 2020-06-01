@@ -53,7 +53,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = EvaluationController.class)
 @Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class,
         ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class})
-public class EvaluationControllerTest extends PageRequestControllerTest {
+class EvaluationControllerTest extends PageRequestControllerTest {
 
     private static final String BASE_URL = "/evaluation";
     private static final String DETAILS_URL = BASE_URL + "/details/{requestId}";

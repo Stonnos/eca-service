@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  */
 @Import({FilterFieldMapperImpl.class, FilterDictionaryMapperImpl.class, FilterDictionaryValueMapperImpl.class,
         FilterService.class})
-public class FilterServiceTest extends AbstractJpaTest {
+class FilterServiceTest extends AbstractJpaTest {
 
     @Inject
     private FilterTemplateRepository filterTemplateRepository;

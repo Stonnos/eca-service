@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @Import(ExperimentConfig.class)
-public class EmailTemplateVisitorTest {
+class EmailTemplateVisitorTest {
 
     @Inject
     private ExperimentConfig experimentConfig;

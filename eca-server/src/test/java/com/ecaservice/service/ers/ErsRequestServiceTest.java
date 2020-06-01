@@ -44,7 +44,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({ErsConfig.class, ClassifierReportMapperImpl.class, ErsResponseStatusMapperImpl.class})
-public class ErsRequestServiceTest extends AbstractJpaTest {
+class ErsRequestServiceTest extends AbstractJpaTest {
 
     @Inject
     private EvaluationLogRepository evaluationLogRepository;

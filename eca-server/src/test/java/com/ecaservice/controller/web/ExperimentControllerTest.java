@@ -76,7 +76,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @WebMvcTest(controllers = ExperimentController.class)
 @Import(ExperimentMapperImpl.class)
-public class ExperimentControllerTest extends PageRequestControllerTest {
+class ExperimentControllerTest extends PageRequestControllerTest {
 
     private static final String BASE_URL = "/experiment";
     private static final String DETAILS_URL = BASE_URL + "/details/{requestId}";

@@ -18,7 +18,7 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(RandomNetworkOptionsMapperImpl.class)
-public class RandomNetworksOptionsMapperTest {
+class RandomNetworksOptionsMapperTest {
 
     @Inject
     private RandomNetworkOptionsMapper randomNetworkOptionsMapper;

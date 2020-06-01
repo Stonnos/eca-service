@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ExtendWith(SpringExtension.class)
 @Import(ClassifierOptionsDatabaseModelMapperImpl.class)
-public class ClassifierOptionsDatabaseModelMapperTest {
+class ClassifierOptionsDatabaseModelMapperTest {
 
     private static final String CONFIG = "config";
     private static final long ID = 1L;

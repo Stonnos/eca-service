@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-public class UniqueLoginValidatorTest {
+class UniqueLoginValidatorTest {
 
     private static final String USER_NAME = "user";
 

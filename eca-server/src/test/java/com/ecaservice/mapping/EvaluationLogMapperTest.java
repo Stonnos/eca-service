@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class,
         ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class, CrossValidationConfig.class})
-public class EvaluationLogMapperTest {
+class EvaluationLogMapperTest {
 
     @Inject
     private CrossValidationConfig crossValidationConfig;

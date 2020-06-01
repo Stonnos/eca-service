@@ -40,7 +40,7 @@ import static org.mockito.Mockito.when;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @Import({ExperimentConfig.class, CrossValidationConfig.class})
-public class ExperimentInitializationVisitorTest {
+class ExperimentInitializationVisitorTest {
 
     @Inject
     private ExperimentConfig experimentConfig;

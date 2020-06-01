@@ -42,7 +42,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import(ExperimentConfig.class)
-public class ExperimentSchedulerTest extends AbstractJpaTest {
+class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @Inject
     private ExperimentRepository experimentRepository;

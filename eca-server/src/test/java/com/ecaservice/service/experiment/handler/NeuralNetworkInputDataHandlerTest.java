@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
  */
 @ExtendWith(SpringExtension.class)
 @Import(NeuralNetworkInputDataHandler.class)
-public class NeuralNetworkInputDataHandlerTest {
+class NeuralNetworkInputDataHandlerTest {
 
     private static final int DEFAULT_NUM_CLASSES = 5;
     private static final int DEFAULT_NUM_ATTRIBUTES = 10;

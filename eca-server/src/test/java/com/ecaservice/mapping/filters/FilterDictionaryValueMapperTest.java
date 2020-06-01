@@ -18,7 +18,7 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(FilterDictionaryValueMapperImpl.class)
-public class FilterDictionaryValueMapperTest {
+class FilterDictionaryValueMapperTest {
 
     @Inject
     private FilterDictionaryValueMapper filterDictionaryValueMapper;

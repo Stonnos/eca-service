@@ -41,7 +41,7 @@ import static com.google.common.collect.Lists.newArrayList;
  */
 @Import({CommonConfig.class, ClassifierInfoMapperImpl.class, EvaluationLogMapperImpl.class,
         InstancesInfoMapperImpl.class, ClassifierInputOptionsMapperImpl.class})
-public class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
+class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;

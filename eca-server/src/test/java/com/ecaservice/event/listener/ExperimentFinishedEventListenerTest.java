@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-public class ExperimentFinishedEventListenerTest {
+class ExperimentFinishedEventListenerTest {
 
     @Mock
     private ErsService ersService;

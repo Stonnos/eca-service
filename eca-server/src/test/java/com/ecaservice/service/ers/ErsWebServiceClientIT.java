@@ -43,7 +43,7 @@ import java.util.UUID;
 @Import({ErsWebServiceConfiguration.class, EvaluationResultsService.class,
         ErsConfig.class, ErsWebServiceClient.class, CrossValidationConfig.class,
         ClassifierOptionsConverter.class, ClassifierOptionsMapperConfiguration.class, InstancesConverter.class})
-public class ErsWebServiceClientIT {
+class ErsWebServiceClientIT {
 
     @Inject
     private ErsWebServiceClient ersWebServiceClient;

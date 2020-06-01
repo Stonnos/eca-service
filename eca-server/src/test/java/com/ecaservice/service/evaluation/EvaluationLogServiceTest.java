@@ -55,7 +55,7 @@ import static org.mockito.Mockito.when;
  */
 @Import({CommonConfig.class, ClassifierInfoMapperImpl.class, EvaluationLogMapperImpl.class,
         InstancesInfoMapperImpl.class, ClassifierInputOptionsMapperImpl.class})
-public class EvaluationLogServiceTest extends AbstractJpaTest {
+class EvaluationLogServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;

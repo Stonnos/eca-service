@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ExtendWith(SpringExtension.class)
 @Import(J48OptionsMapperImpl.class)
-public class J48OptionsMapperTest {
+class J48OptionsMapperTest {
 
     @Inject
     private J48OptionsMapper j48OptionsMapper;

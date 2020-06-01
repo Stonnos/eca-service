@@ -17,7 +17,7 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(ErsResponseStatusMapperImpl.class)
-public class ErsResponseStatusMapperTest {
+class ErsResponseStatusMapperTest {
 
     @Inject
     private ErsResponseStatusMapper ersResponseStatusMapper;

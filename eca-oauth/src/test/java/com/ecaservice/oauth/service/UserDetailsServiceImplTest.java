@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Roman Batygin
  */
 @Import({UserDetailsServiceImpl.class, UserMapperImpl.class, RoleMapperImpl.class})
-public class UserDetailsServiceImplTest extends AbstractJpaTest {
+class UserDetailsServiceImplTest extends AbstractJpaTest {
 
     private static final String USER = "user";
 

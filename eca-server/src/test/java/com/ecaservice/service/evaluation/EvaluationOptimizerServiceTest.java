@@ -103,7 +103,7 @@ import static org.mockito.Mockito.when;
         EvaluationService.class, ErsEvaluationMethodMapperImpl.class, ErsResponseStatusMapperImpl.class,
         InstancesConverter.class, ClassifierOptionsResponseModelMapperImpl.class,
         ClassifierInputOptionsMapperImpl.class, CommonConfig.class, ClassifierInfoMapperImpl.class})
-public class EvaluationOptimizerServiceTest extends AbstractJpaTest {
+class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final int NUM_THREADS = 2;

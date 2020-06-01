@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({CommonConfig.class, ClassifierOptionsService.class})
-public class ClassifierOptionsServiceTest extends AbstractJpaTest {
+class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;

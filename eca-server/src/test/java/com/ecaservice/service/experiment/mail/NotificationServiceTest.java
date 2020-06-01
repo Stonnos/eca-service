@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
  */
 @ExtendWith(SpringExtension.class)
 @Import({EmailTemplateVisitor.class, ExperimentConfig.class})
-public class NotificationServiceTest {
+class NotificationServiceTest {
 
     @Inject
     private EmailTemplateVisitor statusTemplateVisitor;

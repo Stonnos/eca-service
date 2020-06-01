@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Roman Batygin
  */
 @Import({ExperimentConfig.class, CommonConfig.class, ClassifierOptionsService.class})
-public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
+class ExperimentConfigurationServiceTest extends AbstractJpaTest {
 
     @MockBean
     private UserService userService;

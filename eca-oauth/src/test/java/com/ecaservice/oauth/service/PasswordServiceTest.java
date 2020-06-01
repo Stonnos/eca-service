@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @Import({PasswordConfig.class, PasswordGenerator.class, PasswordService.class})
-public class PasswordServiceTest {
+class PasswordServiceTest {
 
     @Inject
     private PasswordConfig passwordConfig;

@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-public class ErsWebServiceClientTest {
+class ErsWebServiceClientTest {
 
     private static final String WEB_SERVICE_URL = "http://localhost";
 

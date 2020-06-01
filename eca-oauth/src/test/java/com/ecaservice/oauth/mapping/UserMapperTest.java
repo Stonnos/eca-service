@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ExtendWith(SpringExtension.class)
 @Import({RoleMapperImpl.class, UserMapperImpl.class})
-public class UserMapperTest {
+class UserMapperTest {
 
     @Inject
     private UserMapper userMapper;

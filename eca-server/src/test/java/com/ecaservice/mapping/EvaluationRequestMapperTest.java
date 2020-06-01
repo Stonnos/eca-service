@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ExtendWith(SpringExtension.class)
 @Import({EvaluationRequestMapperImpl.class, ErsEvaluationMethodMapperImpl.class})
-public class EvaluationRequestMapperTest {
+class EvaluationRequestMapperTest {
 
     @Inject
     private EvaluationRequestMapper evaluationRequestMapper;

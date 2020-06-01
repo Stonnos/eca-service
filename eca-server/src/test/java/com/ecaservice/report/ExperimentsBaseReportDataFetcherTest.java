@@ -45,7 +45,7 @@ import static com.google.common.collect.Lists.newArrayList;
  * @author Roman Batygin
  */
 @Import({ExperimentMapperImpl.class, ExperimentConfig.class, CommonConfig.class, CrossValidationConfig.class})
-public class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
+class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;

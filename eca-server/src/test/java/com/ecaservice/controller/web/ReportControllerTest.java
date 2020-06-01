@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Roman Batygin
  */
 @WebMvcTest(controllers = ReportController.class)
-public class ReportControllerTest extends PageRequestControllerTest {
+class ReportControllerTest extends PageRequestControllerTest {
 
     private static final String BASE_URL = "/reports";
     private static final String EXPERIMENTS_REPORT_URL = BASE_URL + "/experiments";

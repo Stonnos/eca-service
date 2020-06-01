@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ExtendWith(SpringExtension.class)
 @Import(LogisticOptionsMapperImpl.class)
-public class LogisticOptionsMapperTest {
+class LogisticOptionsMapperTest {
 
     private static final int MAX_ITS = 500;
 

@@ -53,7 +53,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @WebMvcTest(controllers = ClassifierOptionsController.class)
 @Import(ClassifierOptionsDatabaseModelMapperImpl.class)
-public class ClassifierOptionsControllerTest extends PageRequestControllerTest {
+class ClassifierOptionsControllerTest extends PageRequestControllerTest {
 
     private static final String BASE_URL = "/experiment/classifiers-options";
     private static final String ACTIVE_OPTIONS_URL = BASE_URL + "/active-options";

@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-public class EvaluationResultsFinishedEventListenerTest {
+class EvaluationResultsFinishedEventListenerTest {
 
     @Mock
     private ErsRequestService ersRequestService;

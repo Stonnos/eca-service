@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ExtendWith(SpringExtension.class)
 @Import(InstancesInfoMapperImpl.class)
-public class InstancesInfoMapperTest {
+class InstancesInfoMapperTest {
 
     @Inject
     private InstancesInfoMapper instancesInfoMapper;

@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Roman Batygin
  */
 @WebMvcTest(controllers = FilterTemplateController.class)
-public class FilterTemplateControllerTest extends AbstractControllerTest {
+class FilterTemplateControllerTest extends AbstractControllerTest {
 
     private static final String BASE_URL = "/filter-templates";
     private static final String EXPERIMENT_FILTER_TEMPLATE_URL = BASE_URL + "/experiment";

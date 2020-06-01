@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
  */
 @ExtendWith(SpringExtension.class)
 @Import(DecisionTreeInputDataHandler.class)
-public class DecisionTreeInputDataHandlerTest {
+class DecisionTreeInputDataHandlerTest {
 
     private static final int DEFAULT_NUM_ATTRIBUTES = 10;
 

@@ -17,7 +17,7 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(ClassifierInputOptionsMapperImpl.class)
-public class ClassifierInputOptionsMapperTest {
+class ClassifierInputOptionsMapperTest {
 
     @Inject
     private ClassifierInputOptionsMapper classifierInputOptionsMapper;

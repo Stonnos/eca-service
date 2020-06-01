@@ -22,7 +22,7 @@ import java.util.List;
  */
 @ExtendWith(SpringExtension.class)
 @Import({FilterDictionaryValueMapperImpl.class, FilterDictionaryMapperImpl.class, FilterFieldMapperImpl.class})
-public class FilterFieldMapperTest {
+class FilterFieldMapperTest {
 
     private static final String NAME = "name";
     private static final String DESCRIPTION = "description";

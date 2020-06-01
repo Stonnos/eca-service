@@ -25,7 +25,7 @@ import javax.inject.Inject;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @Import({ClassifierOptionsRequestMapperImpl.class, CrossValidationConfig.class, InstancesConverter.class})
-public class ClassifierOptionsRequestMapperTest {
+class ClassifierOptionsRequestMapperTest {
 
     @Inject
     private ClassifierOptionsRequestMapper classifierOptionsRequestMapper;

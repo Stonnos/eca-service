@@ -19,7 +19,7 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(ExtraTreesMapperImpl.class)
-public class ExtraTreesMapperTest {
+class ExtraTreesMapperTest {
 
     @Inject
     private ExtraTreesMapper extraTreesMapper;

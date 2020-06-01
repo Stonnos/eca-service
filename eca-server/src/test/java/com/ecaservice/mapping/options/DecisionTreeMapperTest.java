@@ -21,7 +21,7 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(DecisionTreeMapperImpl.class)
-public class DecisionTreeMapperTest {
+class DecisionTreeMapperTest {
 
     @Inject
     private DecisionTreeMapper decisionTreeMapper;
