@@ -6,8 +6,10 @@ import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.UserDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Users mapper.
@@ -15,7 +17,7 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Mapper(uses = RoleMapper.class)
-public interface UserMapper {
+public abstract class UserMapper {
 
     /**
      * Maps user details to user dto.
@@ -25,7 +27,7 @@ public interface UserMapper {
      */
     @Mapping(source = "username", target = "login")
     @Mapping(source = "authorities", target = "roles")
-    UserDto map(UserDetailsImpl userDetails);
+    public abstract UserDto map(UserDetailsImpl userDetails);
 
     /**
      * Maps user entity to its dto model.
@@ -33,7 +35,7 @@ public interface UserMapper {
      * @param userEntity - user entity
      * @return user dto
      */
-    UserDto map(UserEntity userEntity);
+    public abstract UserDto map(UserEntity userEntity);
 
     /**
      * Maps create user dto to entity model
@@ -41,7 +43,10 @@ public interface UserMapper {
      * @param createUserDto - create user dto
      * @return user entity
      */
-    UserEntity map(CreateUserDto createUserDto);
+    @Mapping(source = "login", target = "login", qualifiedByName = "trim")
+    @Mapping(source = "email", target = "email", qualifiedByName = "trim")
+    @Mapping(source = "firstName", target = "firstName", qualifiedByName = "trim")
+    public abstract UserEntity map(CreateUserDto createUserDto);
 
     /**
      * Maps user entity to user details.
@@ -51,7 +56,7 @@ public interface UserMapper {
      */
     @Mapping(source = "login", target = "userName")
     @Mapping(source = "roles", target = "authorities")
-    UserDetailsImpl mapDetails(UserEntity userEntity);
+    public abstract UserDetailsImpl mapDetails(UserEntity userEntity);
 
     /**
      * Maps user entities to its dto model list.
@@ -59,5 +64,10 @@ public interface UserMapper {
      * @param userEntityList - users entities
      * @return users dto list
      */
-    List<UserDto> map(List<UserEntity> userEntityList);
+    public abstract List<UserDto> map(List<UserEntity> userEntityList);
+
+    @Named("trim")
+    protected String trim(String value) {
+        return Optional.ofNullable(value).map(String::trim).orElse(null);
+    }
 }
