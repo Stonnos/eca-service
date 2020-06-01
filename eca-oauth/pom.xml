@@ -130,6 +130,11 @@
         </dependency>
 
         <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>eca.service</groupId>
             <artifactId>core-test</artifactId>
             <version>${project.version}</version>
