@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v10-add-user-constraints.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="role_entity"/>
+            <columnExists tableName="role_entity" columnName="role_name"/>
+        </preConditions>
+        <addNotNullConstraint tableName="role_entity" columnName="role_name"/>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="role_entity"/>
+            <columnExists tableName="role_entity" columnName="role_name"/>
+        </preConditions>
+        <addUniqueConstraint tableName="role_entity" columnNames="role_name" constraintName="role_name_unique_index"/>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_entity"/>
+            <columnExists tableName="user_entity" columnName="login"/>
+        </preConditions>
+        <addNotNullConstraint tableName="user_entity" columnName="login"/>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_entity"/>
+            <columnExists tableName="user_entity" columnName="login"/>
+        </preConditions>
+        <addUniqueConstraint tableName="user_entity" columnNames="login" constraintName="login_unique_index"/>
+    </changeSet>
+
+    <changeSet id="5" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_entity"/>
+            <columnExists tableName="user_entity" columnName="email"/>
+        </preConditions>
+        <addNotNullConstraint tableName="user_entity" columnName="email"/>
+    </changeSet>
+
+    <changeSet id="6" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_entity"/>
+            <columnExists tableName="user_entity" columnName="email"/>
+        </preConditions>
+        <addUniqueConstraint tableName="user_entity" columnNames="email" constraintName="email_unique_index"/>
+    </changeSet>
+
+    <changeSet id="7" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_entity"/>
+            <columnExists tableName="user_entity" columnName="first_name"/>
+        </preConditions>
+        <addNotNullConstraint tableName="user_entity" columnName="first_name"/>
+    </changeSet>
+
+    <changeSet id="8" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_entity"/>
+            <columnExists tableName="user_entity" columnName="password"/>
+        </preConditions>
+        <addNotNullConstraint tableName="user_entity" columnName="password"/>
+    </changeSet>
+
+</databaseChangeLog>
