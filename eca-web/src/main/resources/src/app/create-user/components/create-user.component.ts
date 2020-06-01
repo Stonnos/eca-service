@@ -51,7 +51,6 @@ export class CreateUserComponent extends BaseCreateDialogComponent<CreateUserMod
             this.hide();
           },
           error: (error) => {
-            console.log(error);
             this.handleError(error);
           }
         });
