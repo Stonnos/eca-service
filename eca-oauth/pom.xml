@@ -20,7 +20,7 @@
         <maven-processor-plugin.version>3.3.3</maven-processor-plugin.version>
         <passay.version>1.6.0</passay.version>
         <sonar.coverage.exclusions>
-            **/model/**/*,
+            **/entity/**/*,
             **/dto/**/*,
             **/config/**/*,
             **/exception/**/*,
