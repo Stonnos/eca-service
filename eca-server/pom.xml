@@ -38,6 +38,7 @@
             **/dto/**/*,
             **/config/**/*,
             **/exception/**/*,
+            **/dictionary/**/*,
             **/util/**/*,
             **/qa/**/*,
             **/EcaApplication.java

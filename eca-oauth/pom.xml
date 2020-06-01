@@ -24,6 +24,7 @@
             **/dto/**/*,
             **/config/**/*,
             **/exception/**/*,
+            **/dictionary/**/*,
             **/util/**/*,
             **/EcaOauthApplication.java
         </sonar.coverage.exclusions>
