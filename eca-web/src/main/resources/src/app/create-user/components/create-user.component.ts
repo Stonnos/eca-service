@@ -7,6 +7,8 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { MessageService } from "primeng/api";
 import { UserDto, ValidationErrorDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ValidationService } from "../../common/services/validation.service";
+import { ValidationErrorCode } from "../../common/model/validation-error-code";
+import { UserFields } from "../../common/util/field-names";
 
 @Component({
   selector: 'app-create-user',
@@ -67,9 +69,9 @@ export class CreateUserComponent extends BaseCreateDialogComponent<CreateUserMod
   private handleError(error): void {
     if (error instanceof HttpErrorResponse) {
       if (error.status === 400) {
-        const errors: ValidationErrorDto[] = error.error as ValidationErrorDto[];
-        this.hasSameLogin = this.validationService.hasError(errors, 'login', 'UniqueLogin');
-        this.hasSameEmail = this.validationService.hasError(errors, 'email', 'UniqueEmail');
+        const errors: ValidationErrorDto[] = error.error;
+        this.hasSameLogin = this.validationService.hasError(errors, UserFields.LOGIN, ValidationErrorCode.UNIQUE_LOGIN);
+        this.hasSameEmail = this.validationService.hasError(errors, UserFields.EMAIL, ValidationErrorCode.UNIQUE_EMAIL);
       } else {
         this.handleUnknownError(error);
       }

@@ -3,6 +3,7 @@ import { MenuItem } from 'primeng/api';
 import { LogoutService } from "../auth/services/logout.service";
 import { UserStorage } from "../auth/services/user.storage";
 import { RoleDto, UserDto } from "../../../../../../target/generated-sources/typescript/eca-web-dto";
+import { Role } from "../common/model/roles";
 
 @Component({
   selector: 'app-dashboard',
@@ -46,7 +47,7 @@ export class DashboardComponent implements OnInit {
 
   public isSuperAdmin(): boolean {
     const user: UserDto = this.userStorage.getUser();
-    return user && user.roles && user.roles.map((role: RoleDto) => role.roleName).includes('ROLE_SUPER_ADMIN');
+    return user && user.roles && user.roles.map((role: RoleDto) => role.roleName).includes(Role.ROLE_SUPER_ADMIN);
   }
 
   public logout() {
