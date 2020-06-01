@@ -75,7 +75,7 @@ class UserServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testGetUsersPage() {
+    void testGetUsersPage() {
         roleRepository.save(createRoleEntity());
         CreateUserDto createUserDto = TestHelperUtils.createUserDto();
         UserEntity userEntity = userService.createUser(createUserDto, PASSWORD);
