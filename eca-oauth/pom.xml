@@ -15,6 +15,7 @@
     <properties>
         <postresql.version>42.2.6</postresql.version>
         <liquibase.version>3.7.0</liquibase.version>
+        <h2.version>1.4.199</h2.version>
         <spring.security.oauth2.version>2.2.6.RELEASE</spring.security.oauth2.version>
         <maven-processor-plugin.version>3.3.3</maven-processor-plugin.version>
         <passay.version>1.6.0</passay.version>
@@ -132,6 +133,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
         </dependency>
 
         <dependency>
