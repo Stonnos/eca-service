@@ -10,6 +10,7 @@ import { ExperimentDetailsComponent } from "../experiment-details/components/exp
 import { ExperimentResultsDetailsComponent } from "../experiment-results-details/components/experiment-results-details.component";
 import { ClassifiersConfigurationDetailsComponent } from "../classifiers-configuration-details/components/classifiers-configuration-details.component";
 import { UsersListComponent } from "../users/components/users-list.component";
+import { ForgotPasswordComponent } from "../change-password/components/forgot-password/forgot-password.component";
 
 const routes: Routes = [
   {
@@ -53,6 +54,10 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent
+  },
+  {
+    path: 'forgot-password',
+    component: ForgotPasswordComponent
   },
   {
     path: '',

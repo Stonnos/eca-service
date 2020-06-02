@@ -1,6 +1,6 @@
 .auth-button {
   height: 40px;
-  margin-top: 25px;
+  margin-top: 10px;
 }
 
 .login-text {
@@ -39,6 +39,10 @@
   color: rgb(2, 67, 109);
   font-weight: bold;
   text-transform: uppercase;
+}
+
+.forgot-password-link {
+  font-size: 12px;
 }
 
 .login-progress-spinner::ng-deep {
