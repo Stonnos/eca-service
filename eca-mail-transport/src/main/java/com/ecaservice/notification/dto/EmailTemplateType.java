@@ -30,5 +30,10 @@ public enum EmailTemplateType {
     /**
      * New user template
      */
-    NEW_USER_TEMPLATE
+    NEW_USER_TEMPLATE,
+
+    /**
+     * Reset password template
+     */
+    RESET_PASSWORD_TEMPLATE
 }

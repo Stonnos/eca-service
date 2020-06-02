@@ -57,6 +57,7 @@ mail-config:
     ERROR_EXPERIMENT_TEMPLATE: error-experiment-template.html
     TIMEOUT_EXPERIMENT_TEMPLATE: timeout-experiment-template.html
     NEW_USER_TEMPLATE: new-user-template.html
+    RESET_PASSWORD_TEMPLATE: reset-password-template.html
 
 management:
   metrics:
