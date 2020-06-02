@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from "../services/auth.service";
-import { UserModel } from "./user.model";
+import { UserModel } from "../model/user.model";
 import { NgForm } from "@angular/forms";
 import { Router } from "@angular/router";
 import { AuthenticationKeys } from "../model/auth.keys";
