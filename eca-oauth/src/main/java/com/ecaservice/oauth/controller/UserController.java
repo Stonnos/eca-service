@@ -103,19 +103,4 @@ public class UserController {
         applicationEventPublisher.publishEvent(new UserCreatedEvent(this, userEntity, password));
         return userMapper.map(userEntity);
     }
-
-    /**
-     * Handles validation error.
-     *
-     * @param ex -  method argument not valid exception
-     * @return response entity
-     */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<List<ValidationErrorDto>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
-        List<ValidationErrorDto> errors = ex.getBindingResult().getAllErrors().stream()
-                .map(FieldError.class::cast)
-                .map(fieldError -> new ValidationErrorDto(fieldError.getField(), fieldError.getCode(),
-                        fieldError.getDefaultMessage())).collect(Collectors.toList());
-        return ResponseEntity.badRequest().body(errors);
-    }
 }
