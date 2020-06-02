@@ -15,4 +15,5 @@
     <include file="db/changelog/v8-create-hibernate-sequence.xml"/>
     <include file="db/changelog/v9-add-role-description-column.xml"/>
     <include file="db/changelog/v10-add-user-constraints.xml"/>
+    <include file="db/changelog/v11-create-reset-password-request-table.xml"/>
 </databaseChangeLog>
