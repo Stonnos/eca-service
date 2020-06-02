@@ -4,6 +4,8 @@ import com.ecaservice.oauth.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.Optional;
+
 /**
  * Repository to manage with {@link UserEntity} persistence entity.
  *
@@ -18,6 +20,14 @@ public interface UserEntityRepository extends JpaRepository<UserEntity, Long>, J
      * @return user entity
      */
     UserEntity findByLogin(String login);
+
+    /**
+     * Finds user by specified email.
+     *
+     * @param email - user email
+     * @return user entity
+     */
+    Optional<UserEntity> findByEmail(String email);
 
     /**
      * Checks user existing with specified login.
