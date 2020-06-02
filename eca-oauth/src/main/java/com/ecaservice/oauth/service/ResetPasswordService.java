@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+import static com.ecaservice.oauth.util.Utils.generateToken;
+
 /**
  * Reset password service.
  *
@@ -42,7 +44,7 @@ public class ResetPasswordService {
                 resetPasswordRequestRepository.findByUserEntityAndExpireDateAfterAndResetDateIsNull(userEntity, now);
         if (resetPasswordRequest == null) {
             resetPasswordRequest = new ResetPasswordRequest();
-            resetPasswordRequest.setToken("");
+            resetPasswordRequest.setToken(generateToken(userEntity));
             resetPasswordRequest.setExpireDate(now.plusMinutes(resetPasswordConfig.getValidityMinutes()));
             resetPasswordRequest.setUserEntity(userEntity);
             resetPasswordRequestRepository.save(resetPasswordRequest);
