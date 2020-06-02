@@ -1,6 +1,7 @@
 package com.ecaservice.oauth;
 
 import com.ecaservice.oauth.dto.CreateUserDto;
+import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.user.model.Role;
@@ -25,6 +26,7 @@ public class TestHelperUtils {
     private static final String FIRST_NAME = "Roman";
     private static final long USER_ID = 1L;
     private static final String PASSWORD = "pa66word!";
+    private static final String TOKEN = "token";
 
     /**
      * Creates role entity.
@@ -94,5 +96,17 @@ public class TestHelperUtils {
         createUserDto.setEmail(EMAIL);
         createUserDto.setFirstName(FIRST_NAME);
         return createUserDto;
+    }
+
+    /**
+     * Creates reset password request entity.
+     *
+     * @return reset password request entity
+     */
+    public static ResetPasswordRequestEntity createResetPasswordRequestEntity() {
+        ResetPasswordRequestEntity resetPasswordRequestEntity = new ResetPasswordRequestEntity();
+        resetPasswordRequestEntity.setToken(TOKEN);
+        resetPasswordRequestEntity.setUserEntity(createUserEntity());
+        return resetPasswordRequestEntity;
     }
 }
