@@ -46,7 +46,8 @@ password:
   useUpperCaseSymbols: true
 
 reset-password:
-  validityMinutes: 2
+  validityMinutes: 30
+  resetPasswordUrl: http://localhost:8085/reset-password/%s
 
 ## Swagger properties
 swagger2:
@@ -57,7 +58,7 @@ swagger2:
       description: Operations for ECA web application
       author: Roman Batygin
       email: roman.batygin@mail.ru
-  tokenUrl: http://localhost:8080/oauth/token
+  tokenUrl: http://localhost:8085/eca-oauth/oauth/token
   clientId: swagger
   secret: swagger_secret
 

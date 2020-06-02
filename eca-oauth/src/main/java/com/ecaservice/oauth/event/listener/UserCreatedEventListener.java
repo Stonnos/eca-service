@@ -28,11 +28,6 @@ public class UserCreatedEventListener {
     @Async
     @EventListener
     public void handleUserCreatedEvent(UserCreatedEvent userCreatedEvent) {
-        try {
-            notificationService.notifyUserCreated(userCreatedEvent.getUserEntity(), userCreatedEvent.getPassword());
-        } catch (Exception ex) {
-            log.error("There was an error while sending email request for user created [{}]: {}",
-                    userCreatedEvent.getUserEntity().getLogin(), ex.getMessage());
-        }
+        notificationService.notifyUserCreated(userCreatedEvent.getUserEntity(), userCreatedEvent.getPassword());
     }
 }

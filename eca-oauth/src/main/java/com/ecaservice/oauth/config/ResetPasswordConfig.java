@@ -16,4 +16,9 @@ public class ResetPasswordConfig {
      * Reset password request validity in minutes
      */
     private Long validityMinutes;
+
+    /**
+     * Reset password url
+     */
+    private String resetPasswordUrl;
 }

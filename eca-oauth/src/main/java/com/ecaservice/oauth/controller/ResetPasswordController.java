@@ -2,11 +2,13 @@ package com.ecaservice.oauth.controller;
 
 import com.ecaservice.oauth.dto.ForgotPasswordRequest;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
+import com.ecaservice.oauth.event.model.ResetPasswordRequestCreatedEvent;
 import com.ecaservice.oauth.service.ResetPasswordService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +29,7 @@ import javax.validation.Valid;
 public class ResetPasswordController {
 
     private final ResetPasswordService resetPasswordService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     /**
      * Creates forgot password request.
@@ -44,5 +47,6 @@ public class ResetPasswordController {
                 resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest);
         log.info("Reset password request [{}] has been created for user with email [{}]",
                 resetPasswordRequestEntity.getId(), forgotPasswordRequest.getEmail());
+        applicationEventPublisher.publishEvent(new ResetPasswordRequestCreatedEvent(this, resetPasswordRequestEntity));
     }
 }

@@ -28,6 +28,6 @@ public class ResetPasswordRequestCreatedEventListener {
     @Async
     @EventListener
     public void handleResetPasswordRequestCreatedEvent(ResetPasswordRequestCreatedEvent event) {
-
+        notificationService.sendResetPasswordLink(event.getResetPasswordRequestEntity());
     }
 }
