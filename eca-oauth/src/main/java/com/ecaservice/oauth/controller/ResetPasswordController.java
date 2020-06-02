@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.controller;
 
 import com.ecaservice.oauth.dto.ForgotPasswordRequest;
+import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.service.ResetPasswordService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,6 +40,9 @@ public class ResetPasswordController {
     @PostMapping(value = "/forgot")
     public void forgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
         log.info("Received forgot password request {}", forgotPasswordRequest);
-        resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest);
+        ResetPasswordRequestEntity resetPasswordRequestEntity =
+                resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest);
+        log.info("Reset password request [{}] has been created for user with email [{}]",
+                resetPasswordRequestEntity.getId(), forgotPasswordRequest.getEmail());
     }
 }

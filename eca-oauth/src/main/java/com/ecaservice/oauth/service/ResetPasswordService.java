@@ -2,7 +2,7 @@ package com.ecaservice.oauth.service;
 
 import com.ecaservice.oauth.config.ResetPasswordConfig;
 import com.ecaservice.oauth.dto.ForgotPasswordRequest;
-import com.ecaservice.oauth.entity.ResetPasswordRequest;
+import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
@@ -34,21 +34,21 @@ public class ResetPasswordService {
      * @param forgotPasswordRequest - forgot password request
      * @return reset password request
      */
-    public ResetPasswordRequest getOrSaveResetPasswordRequest(ForgotPasswordRequest forgotPasswordRequest) {
+    public ResetPasswordRequestEntity getOrSaveResetPasswordRequest(ForgotPasswordRequest forgotPasswordRequest) {
         UserEntity userEntity = userEntityRepository.findByEmail(forgotPasswordRequest.getEmail()).orElseThrow(
                 () -> new IllegalStateException(
                         String.format("Can't create reset password request, because user with email %s doesn't exists!",
                                 forgotPasswordRequest.getEmail())));
         LocalDateTime now = LocalDateTime.now();
-        ResetPasswordRequest resetPasswordRequest =
+        ResetPasswordRequestEntity resetPasswordRequestEntity =
                 resetPasswordRequestRepository.findByUserEntityAndExpireDateAfterAndResetDateIsNull(userEntity, now);
-        if (resetPasswordRequest == null) {
-            resetPasswordRequest = new ResetPasswordRequest();
-            resetPasswordRequest.setToken(generateToken(userEntity));
-            resetPasswordRequest.setExpireDate(now.plusMinutes(resetPasswordConfig.getValidityMinutes()));
-            resetPasswordRequest.setUserEntity(userEntity);
-            resetPasswordRequestRepository.save(resetPasswordRequest);
+        if (resetPasswordRequestEntity == null) {
+            resetPasswordRequestEntity = new ResetPasswordRequestEntity();
+            resetPasswordRequestEntity.setToken(generateToken(userEntity));
+            resetPasswordRequestEntity.setExpireDate(now.plusMinutes(resetPasswordConfig.getValidityMinutes()));
+            resetPasswordRequestEntity.setUserEntity(userEntity);
+            resetPasswordRequestRepository.save(resetPasswordRequestEntity);
         }
-        return resetPasswordRequest;
+        return resetPasswordRequestEntity;
     }
 }

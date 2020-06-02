@@ -1,17 +1,17 @@
 package com.ecaservice.oauth.repository;
 
-import com.ecaservice.oauth.entity.ResetPasswordRequest;
+import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
 
 /**
- * Repository to manage with {@link ResetPasswordRequest} persistence entity.
+ * Repository to manage with {@link ResetPasswordRequestEntity} persistence entity.
  *
  * @author Roman Batygin
  */
-public interface ResetPasswordRequestRepository extends JpaRepository<ResetPasswordRequest, Long> {
+public interface ResetPasswordRequestRepository extends JpaRepository<ResetPasswordRequestEntity, Long> {
 
     /**
      * Finds active reset password request.
@@ -20,6 +20,6 @@ public interface ResetPasswordRequestRepository extends JpaRepository<ResetPassw
      * @param date       - search date
      * @return reset password request entity
      */
-    ResetPasswordRequest findByUserEntityAndExpireDateAfterAndResetDateIsNull(UserEntity userEntity,
-                                                                              LocalDateTime date);
+    ResetPasswordRequestEntity findByUserEntityAndExpireDateAfterAndResetDateIsNull(UserEntity userEntity,
+                                                                                    LocalDateTime date);
 }

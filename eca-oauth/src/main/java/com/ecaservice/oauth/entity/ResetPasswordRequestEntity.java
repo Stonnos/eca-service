@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "reset_password_request")
-public class ResetPasswordRequest {
+public class ResetPasswordRequestEntity {
 
     @Id
     @GeneratedValue

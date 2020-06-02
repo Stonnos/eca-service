@@ -3,7 +3,12 @@ import { MessageService } from "primeng/api";
 import { ValidationService } from "../../../common/services/validation.service";
 import { BaseForm } from "../../../common/form/base-form";
 import { NgForm } from "@angular/forms";
-import { ForgotPasswordRequest } from "../model/forgot-password.request";
+import { ForgotPasswordRequest } from "../../model/forgot-password.request";
+import { ResetPasswordService } from "../../services/reset-password.service";
+import { finalize } from "rxjs/operators";
+import { HttpErrorResponse } from "@angular/common/http";
+import { UserFields } from "../../../common/util/field-names";
+import { ValidationErrorCode } from "../../../common/model/validation-error-code";
 
 @Component({
   selector: 'app-forgot-password',
@@ -16,13 +21,16 @@ export class ForgotPasswordComponent implements BaseForm, OnInit {
   public loading: boolean = false;
   public sent: boolean = false;
 
+  public emailNotExists: boolean = false;
+
   @ViewChild(NgForm, { static: true })
   public form: NgForm;
 
   public forgotPasswordRequest: ForgotPasswordRequest = new ForgotPasswordRequest();
 
   public constructor(private messageService: MessageService,
-                     private validationService: ValidationService) {
+                     private validationService: ValidationService,
+                     public resetPasswordService: ResetPasswordService) {
   }
 
   public ngOnInit(): void {
@@ -39,7 +47,41 @@ export class ForgotPasswordComponent implements BaseForm, OnInit {
   public submit(): void {
     this.submitted = true;
     if (this.isValid()) {
-      this.sent = true;
+      this.loading = true;
+      this.resetPasswordService.forgotPassword(this.forgotPasswordRequest)
+        .pipe(
+          finalize(() => {
+            this.loading = false;
+          })
+        )
+        .subscribe({
+          next: () => {
+            this.sent = true;
+          },
+          error: (error) => {
+            this.handleError(error);
+          }
+        });
     }
+  }
+
+  public onEmailFocus(event): void {
+    this.emailNotExists = false;
+  }
+
+  private handleError(error): void {
+    if (error instanceof HttpErrorResponse) {
+      if (error.status === 400) {
+        this.emailNotExists = this.validationService.hasError(error.error, UserFields.EMAIL, ValidationErrorCode.USER_EMAIL);
+      } else {
+        this.handleUnknownError(error);
+      }
+    } else {
+      this.handleUnknownError(error);
+    }
+  }
+
+  private handleUnknownError(error): void {
+    this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
   }
 }
