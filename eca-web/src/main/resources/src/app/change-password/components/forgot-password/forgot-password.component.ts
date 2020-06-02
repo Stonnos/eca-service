@@ -57,6 +57,7 @@ export class ForgotPasswordComponent implements BaseForm, OnInit {
         .subscribe({
           next: () => {
             this.sent = true;
+            this.clear();
           },
           error: (error) => {
             this.handleError(error);
