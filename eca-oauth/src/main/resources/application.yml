@@ -45,6 +45,9 @@ password:
   useLowerCaseSymbols: true
   useUpperCaseSymbols: true
 
+reset-password:
+  validityMinutes: 2
+
 ## Swagger properties
 swagger2:
   projectVersion: @project.version@

@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  */
 @Configuration
 @EnableAsync
-@EnableConfigurationProperties({CommonConfig.class, PasswordConfig.class})
+@EnableConfigurationProperties({CommonConfig.class, PasswordConfig.class, ResetPasswordConfig.class})
 public class EcaOauthConfiguration {
 
     /**

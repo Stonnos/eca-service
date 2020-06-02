@@ -1,5 +1,6 @@
 package com.ecaservice.oauth.service;
 
+import com.ecaservice.oauth.config.ResetPasswordConfig;
 import com.ecaservice.oauth.dto.ForgotPasswordRequest;
 import com.ecaservice.oauth.entity.ResetPasswordRequest;
 import com.ecaservice.oauth.entity.UserEntity;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class ResetPasswordService {
 
+    private final ResetPasswordConfig resetPasswordConfig;
     private final ResetPasswordRequestRepository resetPasswordRequestRepository;
     private final UserEntityRepository userEntityRepository;
 
@@ -41,7 +43,7 @@ public class ResetPasswordService {
         if (resetPasswordRequest == null) {
             resetPasswordRequest = new ResetPasswordRequest();
             resetPasswordRequest.setToken("");
-            resetPasswordRequest.setExpireDate(null);
+            resetPasswordRequest.setExpireDate(now.plusMinutes(resetPasswordConfig.getValidityMinutes()));
             resetPasswordRequest.setUserEntity(userEntity);
             resetPasswordRequestRepository.save(resetPasswordRequest);
         }
