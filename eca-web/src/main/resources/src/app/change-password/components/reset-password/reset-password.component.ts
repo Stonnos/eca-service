@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MessageService } from "primeng/api";
 import { ValidationService } from "../../../common/services/validation.service";
 import { BaseForm } from "../../../common/form/base-form";
-import { NgForm } from "@angular/forms";
+import {NgForm, Validators} from "@angular/forms";
 import { ForgotPasswordRequest } from "../../model/forgot-password.request";
 import { ResetPasswordService } from "../../services/reset-password.service";
 import { finalize } from "rxjs/operators";
@@ -25,7 +25,12 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
   @ViewChild(NgForm, { static: true })
   public form: NgForm;
 
+  public passwordScoreCutoff: number = 3;
+  public safePassword: boolean = false;
+
   public resetPasswordRequest: ResetPasswordRequest = new ResetPasswordRequest();
+
+  public confirmPassword: string;
 
   public constructor(private messageService: MessageService,
                      private resetPasswordService: ResetPasswordService,
@@ -45,8 +50,12 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
 
   public submit(): void {
     this.submitted = true;
-    if (this.isValid()) {
+    if (this.isValid() && this.safePassword) {
 
     }
+  }
+
+  public onStrengthChange(score: number): void {
+    this.safePassword = score >= this.passwordScoreCutoff;
   }
 }

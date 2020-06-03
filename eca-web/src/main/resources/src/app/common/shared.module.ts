@@ -7,6 +7,7 @@ import { FieldService } from "./services/field.service";
 import { ReportsService } from "./services/report.service";
 import { RequestStatusComponent } from "./request-status/components/request-status.component";
 import { ValidationService } from "./services/validation.service";
+import { EqualValidator } from "./validators/equal-validator.directive";
 
 @NgModule({
   imports: [
@@ -15,10 +16,12 @@ import { ValidationService } from "./services/validation.service";
     UiComponentsModule
   ],
   declarations: [
-    RequestStatusComponent
+    RequestStatusComponent,
+    EqualValidator
   ],
   exports: [
-    RequestStatusComponent
+    RequestStatusComponent,
+    EqualValidator
   ],
   providers: [
     PageRequestService,
