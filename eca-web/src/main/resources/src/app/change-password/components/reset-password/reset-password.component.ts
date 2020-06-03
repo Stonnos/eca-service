@@ -6,7 +6,7 @@ import { ResetPasswordService } from "../../services/reset-password.service";
 import { finalize } from "rxjs/operators";
 import { HttpErrorResponse } from "@angular/common/http";
 import { ResetPasswordRequest } from "../../model/reset-password.request";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: 'app-reset-password',
@@ -31,8 +31,9 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
 
   public constructor(private messageService: MessageService,
                      private resetPasswordService: ResetPasswordService,
-                     private route: ActivatedRoute) {
-    this.token = this.route.snapshot.params.token;
+                     private route: ActivatedRoute,
+                     private router: Router) {
+    this.token = this.route.snapshot.queryParams['token'];
   }
 
   public ngOnInit(): void {
@@ -59,8 +60,9 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
         )
         .subscribe({
           next: () => {
-            this.tokenInvalid = false;
             this.clear();
+            this.router.navigate(['/login']);
+            this.messageService.add({ severity: 'success', summary: `Пароль был успешно изменен`, detail: '' });
           },
           error: (error) => {
             this.handleError(error);
