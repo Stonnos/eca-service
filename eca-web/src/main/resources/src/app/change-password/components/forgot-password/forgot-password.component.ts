@@ -30,7 +30,7 @@ export class ForgotPasswordComponent implements BaseForm, OnInit {
 
   public constructor(private messageService: MessageService,
                      private validationService: ValidationService,
-                     public resetPasswordService: ResetPasswordService) {
+                     private resetPasswordService: ResetPasswordService) {
   }
 
   public ngOnInit(): void {

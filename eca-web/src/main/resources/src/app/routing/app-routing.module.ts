@@ -11,6 +11,7 @@ import { ExperimentResultsDetailsComponent } from "../experiment-results-details
 import { ClassifiersConfigurationDetailsComponent } from "../classifiers-configuration-details/components/classifiers-configuration-details.component";
 import { UsersListComponent } from "../users/components/users-list.component";
 import { ForgotPasswordComponent } from "../change-password/components/forgot-password/forgot-password.component";
+import { ResetPasswordComponent } from "../change-password/components/reset-password/reset-password.component";
 
 const routes: Routes = [
   {
@@ -58,6 +59,10 @@ const routes: Routes = [
   {
     path: 'forgot-password',
     component: ForgotPasswordComponent
+  },
+  {
+    path: 'reset-password/:token',
+    component: ResetPasswordComponent
   },
   {
     path: '',
