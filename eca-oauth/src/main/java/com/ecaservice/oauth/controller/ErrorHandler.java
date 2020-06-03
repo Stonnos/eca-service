@@ -34,4 +34,16 @@ public class ErrorHandler {
                         fieldError.getDefaultMessage())).collect(Collectors.toList());
         return ResponseEntity.badRequest().body(errors);
     }
+
+    /**
+     * Handles bad request error.
+     *
+     * @param ex -  exception
+     * @return response entity
+     */
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
+    public ResponseEntity<String> handleBadRequest(Exception ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
 }

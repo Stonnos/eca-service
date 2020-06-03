@@ -2,15 +2,19 @@ package com.ecaservice.oauth.service;
 
 import com.ecaservice.oauth.config.ResetPasswordConfig;
 import com.ecaservice.oauth.dto.ForgotPasswordRequest;
+import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.function.Supplier;
 
 import static com.ecaservice.oauth.util.Utils.generateToken;
 
@@ -25,6 +29,7 @@ import static com.ecaservice.oauth.util.Utils.generateToken;
 public class ResetPasswordService {
 
     private final ResetPasswordConfig resetPasswordConfig;
+    private final PasswordEncoder passwordEncoder;
     private final ResetPasswordRequestRepository resetPasswordRequestRepository;
     private final UserEntityRepository userEntityRepository;
 
@@ -50,5 +55,26 @@ public class ResetPasswordService {
             resetPasswordRequestRepository.save(resetPasswordRequestEntity);
         }
         return resetPasswordRequestEntity;
+    }
+
+    /**
+     * Reset password.
+     *
+     * @param resetPasswordRequest - reset password request
+     */
+    @Transactional
+    public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
+        Supplier<IllegalStateException> invalidTokenError =
+                () -> new IllegalStateException(String.format("Invalid token [%s]", resetPasswordRequest.getToken()));
+        ResetPasswordRequestEntity resetPasswordRequestEntity =
+                resetPasswordRequestRepository.findByTokenAndExpireDateAfterAndResetDateIsNull(
+                        resetPasswordRequest.getToken(), LocalDateTime.now()).orElseThrow(invalidTokenError);
+        UserEntity userEntity = resetPasswordRequestEntity.getUserEntity();
+        userEntity.setPassword(passwordEncoder.encode(resetPasswordRequest.getPassword().trim()));
+        resetPasswordRequestEntity.setResetDate(LocalDateTime.now());
+        userEntityRepository.save(userEntity);
+        resetPasswordRequestRepository.save(resetPasswordRequestEntity);
+        log.info("New password has been set for user [{}], reset password id [{}]", userEntity.getLogin(),
+                resetPasswordRequestEntity.getId());
     }
 }

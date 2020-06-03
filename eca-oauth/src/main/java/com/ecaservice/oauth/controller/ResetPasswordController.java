@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.controller;
 
 import com.ecaservice.oauth.dto.ForgotPasswordRequest;
+import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.event.model.ResetPasswordRequestCreatedEvent;
 import com.ecaservice.oauth.service.ResetPasswordService;
@@ -48,5 +49,20 @@ public class ResetPasswordController {
         log.info("Reset password request [{}] has been created for user with email [{}]",
                 resetPasswordRequestEntity.getId(), forgotPasswordRequest.getEmail());
         applicationEventPublisher.publishEvent(new ResetPasswordRequestCreatedEvent(this, resetPasswordRequestEntity));
+    }
+
+    /**
+     * Reset password with specified token.
+     *
+     * @param resetPasswordRequest - reset password request
+     */
+    @ApiOperation(
+            value = "Reset password with specified token",
+            notes = "Reset password with specified token"
+    )
+    @PostMapping(value = "/reset")
+    public void resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
+        log.info("Received reset password request {}", resetPasswordRequest.getToken());
+        resetPasswordService.resetPassword(resetPasswordRequest);
     }
 }
