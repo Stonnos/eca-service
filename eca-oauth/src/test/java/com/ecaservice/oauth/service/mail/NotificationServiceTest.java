@@ -83,7 +83,6 @@ class NotificationServiceTest {
         assertThat(actual.getEmailMessageVariables()).isNotEmpty();
         assertThat(actual.getEmailMessageVariables()).containsEntry(TemplateVariablesDictionary.VALIDITY_MINUTES_KEY,
                 resetPasswordConfig.getValidityMinutes());
-        assertThat(actual.getEmailMessageVariables()).containsEntry(TemplateVariablesDictionary.RESET_PASSWORD_URL_KEY,
-                String.format(resetPasswordConfig.getResetPasswordUrl(), resetPasswordRequestEntity.getToken()));
+        assertThat(actual.getEmailMessageVariables()).containsKey(TemplateVariablesDictionary.RESET_PASSWORD_URL_KEY);
     }
 }

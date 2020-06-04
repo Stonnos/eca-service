@@ -16,7 +16,7 @@ eureka:
       defaultZone: http://discovery-server:8761/eureka
 
 reset-password:
-  resetPasswordUrl: http://localhost:8080/reset-password/?token=%s
+  baseUrl: http://localhost:8080
 
 ## Swagger properties
 swagger2:

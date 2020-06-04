@@ -18,7 +18,7 @@ public class ResetPasswordConfig {
     private Long validityMinutes;
 
     /**
-     * Reset password url
+     * Reset password base url
      */
-    private String resetPasswordUrl;
+    private String baseUrl;
 }

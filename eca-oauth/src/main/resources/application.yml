@@ -47,7 +47,7 @@ password:
 
 reset-password:
   validityMinutes: 30
-  resetPasswordUrl: http://localhost:8085/reset-password/?token=%s
+  baseUrl: http://localhost:8085
 
 ## Swagger properties
 swagger2:

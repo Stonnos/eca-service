@@ -28,6 +28,8 @@ import static com.google.common.collect.Maps.newHashMap;
 @RequiredArgsConstructor
 public class NotificationService {
 
+    private static final String RESET_PASSWORD_URL_FORMAT = "%s/reset-password/?token=%s";
+
     private final ResetPasswordConfig resetPasswordConfig;
     private final EmailClient emailClient;
 
@@ -53,7 +55,7 @@ public class NotificationService {
     public void sendResetPasswordLink(ResetPasswordRequestEntity resetPasswordRequestEntity) {
         log.info("Starting to send reset password link for user [{}].",
                 resetPasswordRequestEntity.getUserEntity().getEmail());
-        String resetPasswordUrl = String.format(resetPasswordConfig.getResetPasswordUrl(),
+        String resetPasswordUrl = String.format(RESET_PASSWORD_URL_FORMAT, resetPasswordConfig.getBaseUrl(),
                 resetPasswordRequestEntity.getToken());
         Map<String, Object> templateVariables = newHashMap();
         templateVariables.put(RESET_PASSWORD_URL_KEY, resetPasswordUrl);
