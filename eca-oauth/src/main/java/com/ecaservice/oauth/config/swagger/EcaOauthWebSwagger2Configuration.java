@@ -12,12 +12,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.GrantType;
-import springfox.documentation.service.ResourceOwnerPasswordCredentialsGrant;
 import springfox.documentation.spring.web.plugins.Docket;
 
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
+
+import static com.ecaservice.config.swagger.GrantTypeHelper.buildPasswordGrant;
 
 /**
  * Swagger configuration for eca - web.
@@ -28,7 +29,6 @@ import java.util.List;
 @Import(SwaggerBaseConfiguration.class)
 public class EcaOauthWebSwagger2Configuration extends AbstractSwagger2Configuration {
 
-    private static final String TOKEN_URL_FORMAT = "%s/oauth/token";
     private static final String SECURITY_SCHEMA_WEB = "eca-web security";
 
     private static final List<AuthorizationScope> ECA_WEB_SCOPES =
@@ -63,8 +63,8 @@ public class EcaOauthWebSwagger2Configuration extends AbstractSwagger2Configurat
 
     @Override
     protected List<SecuritySchemeOptions> getSecuritySchemes() {
-        String tokenUrl = String.format(TOKEN_URL_FORMAT, getSwagger2ApiConfig().getTokenBaseUrl());
-        List<GrantType> grantTypes = Collections.singletonList(new ResourceOwnerPasswordCredentialsGrant(tokenUrl));
+        List<GrantType> grantTypes =
+                Collections.singletonList(buildPasswordGrant(getSwagger2ApiConfig().getTokenBaseUrl()));
         return Collections.singletonList(new SecuritySchemeOptions(SECURITY_SCHEMA_WEB, grantTypes, ECA_WEB_SCOPES));
     }
 }
