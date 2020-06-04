@@ -4,12 +4,12 @@ import lombok.experimental.UtilityClass;
 import springfox.documentation.service.ResourceOwnerPasswordCredentialsGrant;
 
 /**
- * Oauth2 grant type helper class.
+ * Oauth2 grant type factory class.
  *
  * @author Roman Batygin
  */
 @UtilityClass
-public class GrantTypeHelper {
+public class GrantTypeFactory {
 
     private static final String TOKEN_URL_FORMAT = "%s/oauth/token";
 

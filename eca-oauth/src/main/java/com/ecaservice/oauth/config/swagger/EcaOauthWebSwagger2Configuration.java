@@ -18,7 +18,7 @@ import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 
-import static com.ecaservice.config.swagger.GrantTypeHelper.buildPasswordGrant;
+import static com.ecaservice.config.swagger.GrantTypeFactory.buildPasswordGrant;
 
 /**
  * Swagger configuration for eca - web.

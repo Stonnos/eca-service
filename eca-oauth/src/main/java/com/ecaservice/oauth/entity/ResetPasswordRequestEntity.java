@@ -28,7 +28,7 @@ public class ResetPasswordRequestEntity {
     /**
      * Reset password token
      */
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String token;
 
     /**
