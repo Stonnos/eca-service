@@ -25,7 +25,7 @@ public interface ResetPasswordRequestRepository extends JpaRepository<ResetPassw
                                                                                     LocalDateTime date);
 
     /**
-     * Finds active reset password request for specified token
+     * Finds active reset password request for specified token.
      *
      * @param token - token value
      * @param date  - search date
@@ -33,4 +33,13 @@ public interface ResetPasswordRequestRepository extends JpaRepository<ResetPassw
      */
     Optional<ResetPasswordRequestEntity> findByTokenAndExpireDateAfterAndResetDateIsNull(String token,
                                                                                          LocalDateTime date);
+
+    /**
+     * Checks token validity.
+     *
+     * @param token - token value
+     * @param date  - search date
+     * @return {@code true} if token is valid. {@code false} otherwise
+     */
+    boolean existsByTokenAndExpireDateAfterAndResetDateIsNull(String token, LocalDateTime date);
 }

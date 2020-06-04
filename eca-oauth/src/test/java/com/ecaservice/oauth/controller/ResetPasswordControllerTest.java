@@ -2,6 +2,7 @@ package com.ecaservice.oauth.controller;
 
 import com.ecaservice.oauth.dto.ForgotPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
+import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.service.ResetPasswordService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,11 +40,15 @@ class ResetPasswordControllerTest {
     private static final String BASE_URL = "/password";
     private static final String FORGOT_URL = BASE_URL + "/forgot";
     private static final String RESET_URL = BASE_URL + "/reset";
+    private static final String VERIFY_TOKEN_URL = BASE_URL + "/verify-token";
     private static final String EMAIL = "test@mail.ru";
     private static final String PASSWORD = "pa66word!";
+    public static final String TOKEN_PARAM = "token";
 
     @MockBean
     private UserEntityRepository userEntityRepository;
+    @MockBean
+    private ResetPasswordRequestRepository resetPasswordRequestRepository;
     @MockBean
     private ApplicationEventPublisher applicationEventPublisher;
     @MockBean
@@ -110,6 +115,22 @@ class ResetPasswordControllerTest {
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest(UUID.randomUUID().toString(), PASSWORD);
         mockMvc.perform(post(RESET_URL)
                 .content(objectMapper.writeValueAsString(resetPasswordRequest))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testVerifyNullToken() throws Exception {
+        mockMvc.perform(post(VERIFY_TOKEN_URL)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testVerifyTokenOk() throws Exception {
+        String token = UUID.randomUUID().toString();
+        mockMvc.perform(post(VERIFY_TOKEN_URL)
+                .param(TOKEN_PARAM, token)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
