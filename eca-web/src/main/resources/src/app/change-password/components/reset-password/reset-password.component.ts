@@ -17,7 +17,7 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
 
   public submitted: boolean = false;
   public loading: boolean = false;
-  public tokenInvalid: boolean = false;
+  public tokenValid: boolean = false;
 
   @ViewChild(NgForm, { static: true })
   public form: NgForm;
@@ -37,6 +37,7 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
   }
 
   public ngOnInit(): void {
+    this.verifyToken();
   }
 
   public clear(): void {
@@ -75,10 +76,28 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
     this.safePassword = score >= this.passwordScoreCutoff;
   }
 
+  private verifyToken(): void {
+    this.loading = true;
+    this.resetPasswordService.verifyToken(this.token)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: (tokenValid: boolean) => {
+          this.tokenValid = tokenValid;
+        },
+        error: (error) => {
+          this.handleError(error);
+        }
+      });
+  }
+
   private handleError(error): void {
     if (error instanceof HttpErrorResponse) {
       if (error.status === 400) {
-        this.tokenInvalid = true;
+        this.tokenValid = false;
       } else {
         this.handleUnknownError(error);
       }

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from "../../../environments/environment";
 import { ForgotPasswordRequest } from "../model/forgot-password.request";
 import { ResetPasswordRequest } from "../model/reset-password.request";
+import { Observable } from "rxjs/internal/Observable";
 
 @Injectable()
 export class ResetPasswordService {
@@ -24,5 +25,11 @@ export class ResetPasswordService {
       'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.post(this.serviceUrl + '/reset', resetPasswordRequest, { headers: headers })
+  }
+
+  public verifyToken(token: string): Observable<boolean> {
+    const formData = new FormData();
+    formData.append('token', token);
+    return this.http.post<boolean>(this.serviceUrl + '/verify-token', formData);
   }
 }
