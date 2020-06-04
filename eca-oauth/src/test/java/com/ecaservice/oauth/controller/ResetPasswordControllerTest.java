@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.controller;
 
 import com.ecaservice.oauth.dto.ForgotPasswordRequest;
+import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.service.ResetPasswordService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
+import java.util.UUID;
 
 import static com.ecaservice.oauth.TestHelperUtils.createResetPasswordRequestEntity;
 import static org.mockito.Mockito.when;
@@ -36,7 +38,9 @@ class ResetPasswordControllerTest {
 
     private static final String BASE_URL = "/password";
     private static final String FORGOT_URL = BASE_URL + "/forgot";
+    private static final String RESET_URL = BASE_URL + "/reset";
     private static final String EMAIL = "test@mail.ru";
+    private static final String PASSWORD = "pa66word!";
 
     @MockBean
     private UserEntityRepository userEntityRepository;
@@ -77,6 +81,35 @@ class ResetPasswordControllerTest {
                 createResetPasswordRequestEntity());
         mockMvc.perform(post(FORGOT_URL)
                 .content(objectMapper.writeValueAsString(forgotPasswordRequest))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testResetPasswordWithEmptyPassword() throws Exception {
+        ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
+        resetPasswordRequest.setToken(UUID.randomUUID().toString());
+        mockMvc.perform(post(RESET_URL)
+                .content(objectMapper.writeValueAsString(resetPasswordRequest))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testResetPasswordWithEmptyToken() throws Exception {
+        ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
+        resetPasswordRequest.setPassword(PASSWORD);
+        mockMvc.perform(post(RESET_URL)
+                .content(objectMapper.writeValueAsString(resetPasswordRequest))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testResetPassword() throws Exception {
+        ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest(UUID.randomUUID().toString(), PASSWORD);
+        mockMvc.perform(post(RESET_URL)
+                .content(objectMapper.writeValueAsString(resetPasswordRequest))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
