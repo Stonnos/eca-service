@@ -39,6 +39,7 @@ import static org.mockito.Mockito.when;
 @Import(ResetPasswordConfig.class)
 class NotificationServiceTest {
 
+    private static final String RESET_PASSWORD_URL_FORMAT = "%s/reset-password/?token=%s";
     private static final String PASSWORD = "pa66word!";
 
     @Mock
@@ -83,6 +84,8 @@ class NotificationServiceTest {
         assertThat(actual.getEmailMessageVariables()).isNotEmpty();
         assertThat(actual.getEmailMessageVariables()).containsEntry(TemplateVariablesDictionary.VALIDITY_MINUTES_KEY,
                 resetPasswordConfig.getValidityMinutes());
-        assertThat(actual.getEmailMessageVariables()).containsKey(TemplateVariablesDictionary.RESET_PASSWORD_URL_KEY);
+        assertThat(actual.getEmailMessageVariables()).containsEntry(TemplateVariablesDictionary.RESET_PASSWORD_URL_KEY,
+                String.format(RESET_PASSWORD_URL_FORMAT, resetPasswordConfig.getBaseUrl(),
+                        resetPasswordRequestEntity.getToken()));
     }
 }
