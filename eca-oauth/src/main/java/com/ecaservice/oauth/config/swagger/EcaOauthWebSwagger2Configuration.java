@@ -28,6 +28,7 @@ import java.util.List;
 @Import(SwaggerBaseConfiguration.class)
 public class EcaOauthWebSwagger2Configuration extends AbstractSwagger2Configuration {
 
+    private static final String TOKEN_URL_FORMAT = "%s/oauth/token";
     private static final String SECURITY_SCHEMA_WEB = "eca-web security";
 
     private static final List<AuthorizationScope> ECA_WEB_SCOPES =
@@ -62,8 +63,8 @@ public class EcaOauthWebSwagger2Configuration extends AbstractSwagger2Configurat
 
     @Override
     protected List<SecuritySchemeOptions> getSecuritySchemes() {
-        List<GrantType> grantTypes = Collections.singletonList(
-                new ResourceOwnerPasswordCredentialsGrant(getSwagger2ApiConfig().getTokenUrl()));
+        String tokenUrl = String.format(TOKEN_URL_FORMAT, getSwagger2ApiConfig().getTokenBaseUrl());
+        List<GrantType> grantTypes = Collections.singletonList(new ResourceOwnerPasswordCredentialsGrant(tokenUrl));
         return Collections.singletonList(new SecuritySchemeOptions(SECURITY_SCHEMA_WEB, grantTypes, ECA_WEB_SCOPES));
     }
 }

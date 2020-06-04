@@ -58,7 +58,7 @@ swagger2:
       description: Operations for ECA web application
       author: Roman Batygin
       email: roman.batygin@mail.ru
-  tokenUrl: http://localhost:8085/eca-oauth/oauth/token
+  tokenBaseUrl: http://localhost:8085/eca-oauth
   clientId: swagger
   secret: swagger_secret
 

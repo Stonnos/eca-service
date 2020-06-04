@@ -20,4 +20,4 @@ reset-password:
 
 ## Swagger properties
 swagger2:
-  tokenUrl: http://localhost:8080/eca-oauth/oauth/token
+  tokenBaseUrl: http://localhost:8080/eca-oauth

@@ -25,7 +25,7 @@ eureka:
 
 ## Swagger properties
 swagger2:
-  tokenUrl: http://localhost:8080/eca-oauth/oauth/token
+  tokenBaseUrl: http://localhost:8080/eca-oauth
 
 ## Experiment properties
 experiment:
