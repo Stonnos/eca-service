@@ -89,7 +89,7 @@ experiment:
   fileFormat: experiment_%s.model
   storagePath: D:/experiment/
   individualClassifiersStoragePath: classpath*:classifiers/**/*.json
-  downloadUrl: http://localhost:8085/eca-server/eca-api/experiment/download/%s
+  downloadBaseUrl: http://localhost:8085/eca-server
   maximumFractionDigits: 4
   numberOfDaysForStorage: 14
   ## Each day at midnight

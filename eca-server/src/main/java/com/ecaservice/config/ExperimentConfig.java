@@ -48,9 +48,9 @@ public class ExperimentConfig {
     private EnsembleConfig ensemble;
 
     /**
-     * Experiment download url
+     * Experiment download base url
      */
-    private String downloadUrl;
+    private String downloadBaseUrl;
 
     /**
      * Maximum fraction digits

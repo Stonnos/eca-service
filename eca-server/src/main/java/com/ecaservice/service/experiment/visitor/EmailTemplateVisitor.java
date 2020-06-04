@@ -22,6 +22,8 @@ import static com.google.common.collect.Maps.newHashMap;
 @RequiredArgsConstructor
 public class EmailTemplateVisitor implements RequestStatusVisitor<EmailRequest, Experiment> {
 
+    private static final String DOWNLOAD_PATH_FORMAT = "%s/eca-api/experiment/download/%s";
+
     private final ExperimentConfig experimentConfig;
 
     @Override
@@ -33,7 +35,7 @@ public class EmailTemplateVisitor implements RequestStatusVisitor<EmailRequest, 
     public EmailRequest caseFinished(Experiment parameter) {
         EmailRequest emailRequest = createEmailCommonRequest(parameter, EmailTemplateType.FINISHED_EXPERIMENT_TEMPLATE);
         emailRequest.getEmailMessageVariables().put(TemplateVariablesDictionary.DOWNLOAD_URL_KEY,
-                String.format(experimentConfig.getDownloadUrl(), parameter.getToken()));
+                String.format(DOWNLOAD_PATH_FORMAT, experimentConfig.getDownloadBaseUrl(), parameter.getToken()));
         return emailRequest;
     }
 

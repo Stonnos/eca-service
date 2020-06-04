@@ -17,6 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,6 +32,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource("classpath:application.properties")
 @Import(ExperimentConfig.class)
 class EmailTemplateVisitorTest {
+
+    private static final String DOWNLOAD_PATH_FORMAT = "%s/eca-api/experiment/download/%s";
 
     @Inject
     private ExperimentConfig experimentConfig;
@@ -71,12 +74,15 @@ class EmailTemplateVisitorTest {
     @Test
     void testFinishedStatusContext() {
         Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
+        experiment.setToken(UUID.randomUUID().toString());
         experiment.setRequestStatus(RequestStatus.FINISHED);
         EmailRequest emailRequest = experiment.getRequestStatus().handle(emailTemplateVisitor, experiment);
         assertEmailRequest(emailRequest, experiment);
         String actualUrl =
                 emailRequest.getEmailMessageVariables().get(TemplateVariablesDictionary.DOWNLOAD_URL_KEY).toString();
         assertThat(actualUrl).isNotNull();
+        assertThat(actualUrl).isEqualTo(String.format(DOWNLOAD_PATH_FORMAT, experimentConfig.getDownloadBaseUrl(),
+                experiment.getToken()));
     }
 
     private void assertEmailRequest(EmailRequest emailRequest, Experiment experiment) {

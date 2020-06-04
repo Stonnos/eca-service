@@ -30,7 +30,7 @@ swagger2:
 ## Experiment properties
 experiment:
   storagePath: /home/experiment/
-  downloadUrl: http://localhost:8080/eca-server/eca-api/experiment/download/%s
+  downloadUrl: http://localhost:8080/eca-server
   data:
     storagePath: /home/experiment/data/
 
