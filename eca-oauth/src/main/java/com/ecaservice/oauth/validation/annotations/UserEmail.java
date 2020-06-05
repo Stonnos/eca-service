@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UserEmail {
 
-    String message() default "{user.email.exists.message}";
+    String message() default "{user.email.notExists.message}";
 
     Class<?>[] groups() default {};
 
