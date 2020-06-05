@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import(CommonConfig.class)
-public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
+class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
 
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -70,7 +70,7 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
      * Tests global filtering relationName "gla" search query and response status equals to SUCCESS.
      */
     @Test
-    public void testGlobalFilter() {
+    void testGlobalFilter() {
         ClassifierOptionsRequestModel requestModel =
                 TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
                         ErsResponseStatus.ERROR, Collections.emptyList());
@@ -103,7 +103,7 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testFilterByRequestId() {
+    void testFilterByRequestId() {
         ClassifierOptionsRequestModel requestModel = new ClassifierOptionsRequestModel();
         requestModel.setRequestId(UUID.randomUUID().toString());
         classifierOptionsRequestModelRepository.save(requestModel);
@@ -128,7 +128,7 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testRangeFilterForIllegalFieldType() {
+    void testRangeFilterForIllegalFieldType() {
         FilterRequestDto filterRequestDto = new FilterRequestDto(ClassifierOptionsRequestModel_.RESPONSE_STATUS,
                 Arrays.asList(ErsResponseStatus.RESULTS_NOT_FOUND.name(), ErsResponseStatus.ERROR.name()),
                 MatchMode.RANGE);
@@ -136,7 +136,7 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testRangeFilterForStringField() {
+    void testRangeFilterForStringField() {
         ClassifierOptionsRequestModel requestModel =
                 TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
                         ErsResponseStatus.ERROR, Collections.emptyList());
@@ -154,7 +154,7 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testEqualsFilterByDateField() {
+    void testEqualsFilterByDateField() {
         ClassifierOptionsRequestModel requestModel =
                 TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),
                         ErsResponseStatus.ERROR, Collections.emptyList());
@@ -171,14 +171,14 @@ public class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testLikeFilterForNotStringField() {
+    void testLikeFilterForNotStringField() {
         FilterRequestDto filterRequestDto = new FilterRequestDto(ClassifierOptionsRequestModel_.REQUEST_DATE,
                 Collections.singletonList("2018-11-11"), MatchMode.LIKE);
         assertThrows(InvalidDataAccessApiUsageException.class, () -> testFilterForIllegalFieldType(filterRequestDto));
     }
 
     @Test
-    public void testGlobalFilterForNotStringField() {
+    void testGlobalFilterForNotStringField() {
         when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST)).thenReturn(
                 Collections.singletonList(ClassifierOptionsRequestModel_.REQUEST_DATE));
         ClassifierOptionsRequestModel requestModel =

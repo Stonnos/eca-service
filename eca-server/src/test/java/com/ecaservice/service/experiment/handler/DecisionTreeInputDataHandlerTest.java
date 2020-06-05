@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
  */
 @ExtendWith(SpringExtension.class)
 @Import(DecisionTreeInputDataHandler.class)
-public class DecisionTreeInputDataHandlerTest {
+class DecisionTreeInputDataHandlerTest {
 
     private static final int DEFAULT_NUM_ATTRIBUTES = 10;
 
@@ -39,7 +39,7 @@ public class DecisionTreeInputDataHandlerTest {
      * Case 4: Decision tree is random and random attributes number is less than data attributes number -> not 0
      */
     @Test
-    public void testDecisionTreeInputDataHandle() {
+    void testDecisionTreeInputDataHandle() {
         DecisionTreeClassifier classifier = new CART();
         classifier.setNumRandomAttr(0);
         classifier.setRandomTree(false);

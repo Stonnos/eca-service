@@ -18,13 +18,13 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(RandomNetworksMapperImpl.class)
-public class RandomNetworksMapperTest {
+class RandomNetworksMapperTest {
 
     @Inject
     private RandomNetworksMapper randomNetworksMapper;
 
     @Test
-    public void testMapRandomNetworks() {
+    void testMapRandomNetworks() {
         RandomNetworks randomNetworks = TestHelperUtils.createRandomNetworks();
         RandomNetworkOptions randomNetworkOptions = randomNetworksMapper.map(randomNetworks);
         Assertions.assertThat(randomNetworkOptions.getUseBootstrapSamples()).isEqualTo(

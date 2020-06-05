@@ -15,17 +15,21 @@
     <properties>
         <postresql.version>42.2.6</postresql.version>
         <liquibase.version>3.7.0</liquibase.version>
-        <spring.security.oauth2.version>2.2.6.RELEASE</spring.security.oauth2.version>
-        <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
+        <h2.version>1.4.199</h2.version>
+        <maven-processor-plugin.version>3.3.3</maven-processor-plugin.version>
+        <passay.version>1.6.0</passay.version>
+        <sonar.coverage.exclusions>
+            **/entity/**/*,
+            **/dto/**/*,
+            **/config/**/*,
+            **/exception/**/*,
+            **/dictionary/**/*,
+            **/util/**/*,
+            **/EcaOauthApplication.java
+        </sonar.coverage.exclusions>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>eca.service</groupId>
-            <artifactId>eca-user-model</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -36,6 +40,13 @@
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
             <version>${liquibase.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.passay/passay -->
+        <dependency>
+            <groupId>org.passay</groupId>
+            <artifactId>passay</artifactId>
+            <version>${passay.version}</version>
         </dependency>
 
         <!-- Spring Boot -->
@@ -67,7 +78,6 @@
         <dependency>
             <groupId>org.springframework.security.oauth.boot</groupId>
             <artifactId>spring-security-oauth2-autoconfigure</artifactId>
-            <version>${spring.security.oauth2.version}</version>
         </dependency>
 
         <dependency>
@@ -90,11 +100,45 @@
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
-        <!--test dependencies-->
         <dependency>
-            <scope>test</scope>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>swagger-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>eca-user-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>eca-mail-transport</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>eca-web-transport</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>core-test</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -108,6 +152,36 @@
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
+
+            <plugin>
+                <groupId>org.bsc.maven</groupId>
+                <artifactId>maven-processor-plugin</artifactId>
+                <version>${maven-processor-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>process</id>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <includes>
+                                <include>**/**/entity/**/*</include>
+                            </includes>
+                            <processors>
+                                <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
+                            </processors>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.hibernate</groupId>
+                        <artifactId>hibernate-jpamodelgen</artifactId>
+                        <version>${hibernate.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
 
             <plugin>
                 <groupId>org.springframework.boot</groupId>

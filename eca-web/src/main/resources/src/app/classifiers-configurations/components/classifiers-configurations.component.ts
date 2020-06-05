@@ -27,15 +27,12 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   public editClassifiersConfigurationDialogVisibility: boolean = false;
   public uploadClassifiersOptionsDialogVisibility: boolean = false;
 
-  public lastCreatedConfigurationId: number;
-  public blinkConfigurationId: number;
-
   public constructor(private injector: Injector,
                      private classifiersConfigurationsService: ClassifiersConfigurationsService,
                      private confirmationService: ConfirmationService,
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
-    this.defaultSortField = ClassifiersConfigurationFields.CREATED;
+    this.defaultSortField = ClassifiersConfigurationFields.CREATION_DATE;
     this.notSortableColumns = [ClassifiersConfigurationFields.CLASSIFIERS_OPTIONS_COUNT];
     this.linkColumns = [ClassifiersConfigurationFields.CONFIGURATION_NAME];
     this.initColumns();
@@ -46,12 +43,6 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<ClassifiersConfigurationDto>> {
     return this.classifiersConfigurationsService.getClassifiersConfigurations(pageRequest);
-  }
-
-  public setPage(pageDto: PageDto<ClassifiersConfigurationDto>) {
-    this.blinkConfigurationId = this.lastCreatedConfigurationId;
-    this.lastCreatedConfigurationId = null;
-    super.setPage(pageDto);
   }
 
   public onLink(event: any, column: string, item: ClassifiersConfigurationDto): void {
@@ -111,15 +102,12 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
     this.refreshClassifiersConfigurationsPage();
   }
 
-  public isBlink(item: ClassifiersConfigurationDto): boolean {
-    return this.blinkConfigurationId == item.id;
-  }
-
   private initColumns() {
     this.columns = [
       { name: ClassifiersConfigurationFields.CONFIGURATION_NAME, label: "Конфигурация" },
-      { name: ClassifiersConfigurationFields.CREATED, label: "Дата создания" },
+      { name: ClassifiersConfigurationFields.CREATION_DATE, label: "Дата создания" },
       { name: ClassifiersConfigurationFields.UPDATED, label: "Дата обновления" },
+      { name: ClassifiersConfigurationFields.CREATED_BY, label: "Пользователь" },
       { name: ClassifiersConfigurationFields.CLASSIFIERS_OPTIONS_COUNT, label: "Число настроек классификаторов" },
     ];
   }
@@ -138,7 +126,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
       )
       .subscribe({
         next: (configuration: ClassifiersConfigurationDto) => {
-          this.lastCreatedConfigurationId = configuration.id;
+          this.lastCreatedId = configuration.id;
           this.messageService.add({ severity: 'success', summary: `Добавлена конфигурация ${configuration.configurationName}`, detail: '' });
           this.refreshClassifiersConfigurationsPage();
         },

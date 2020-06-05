@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-public class ExperimentFinishedEventListenerTest {
+class ExperimentFinishedEventListenerTest {
 
     @Mock
     private ErsService ersService;
@@ -38,7 +38,7 @@ public class ExperimentFinishedEventListenerTest {
     private ExperimentFinishedEventListener experimentFinishedEventListener;
 
     @Test
-    public void testExperimentFinishedEvent() {
+    void testExperimentFinishedEvent() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         ExperimentHistory experimentHistory = TestHelperUtils.createExperimentHistory();
         ExperimentFinishedEvent experimentFinishedEvent =

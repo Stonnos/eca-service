@@ -22,7 +22,7 @@ import java.util.List;
  */
 @ExtendWith(SpringExtension.class)
 @Import({FilterDictionaryValueMapperImpl.class, FilterDictionaryMapperImpl.class, FilterFieldMapperImpl.class})
-public class FilterFieldMapperTest {
+class FilterFieldMapperTest {
 
     private static final String NAME = "name";
     private static final String DESCRIPTION = "description";
@@ -31,7 +31,7 @@ public class FilterFieldMapperTest {
     private FilterFieldMapper filterFieldMapper;
 
     @Test
-    public void testMapFilterField() {
+    void testMapFilterField() {
         FilterField filterField = new FilterField();
         filterField.setDescription(DESCRIPTION);
         filterField.setFieldOrder(1);
@@ -52,7 +52,7 @@ public class FilterFieldMapperTest {
     }
 
     @Test
-    public void testMapFilterFieldsList() {
+    void testMapFilterFieldsList() {
         FilterField filterField = new FilterField();
         filterField.setFilterFieldType(FilterFieldType.REFERENCE);
         filterField.setMatchMode(MatchMode.EQUALS);

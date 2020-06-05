@@ -21,13 +21,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ExtendWith(SpringExtension.class)
 @Import(ClassifierReportMapperImpl.class)
-public class ClassifierReportMapperTest {
+class ClassifierReportMapperTest {
 
     @Inject
     private ClassifierReportMapper classifierReportMapper;
 
     @Test
-    public void testMapClassifierReport() {
+    void testMapClassifierReport() {
         ClassifierReport classifierReport = TestHelperUtils.createClassifierReport();
         ClassifierOptionsResponseModel classifierOptionsResponseModel = classifierReportMapper.map(classifierReport);
         assertThat(classifierOptionsResponseModel.getClassifierName()).isEqualTo(
@@ -38,7 +38,7 @@ public class ClassifierReportMapperTest {
     }
 
     @Test
-    public void testMapClassifierReportList() {
+    void testMapClassifierReportList() {
         ClassifierReport classifierReport = TestHelperUtils.createClassifierReport();
         ClassifierReport classifierReport1 = TestHelperUtils.createClassifierReport();
         List<ClassifierOptionsResponseModel> classifierOptionsRequestModelList =

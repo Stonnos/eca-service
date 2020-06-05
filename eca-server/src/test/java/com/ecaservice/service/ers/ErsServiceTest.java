@@ -44,7 +44,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({StatisticsReportMapperImpl.class, ClassificationCostsMapperImpl.class, GetEvaluationResultsMapperImpl.class})
-public class ErsServiceTest extends AbstractJpaTest {
+class ErsServiceTest extends AbstractJpaTest {
 
     @Mock
     private ErsRequestService ersRequestService;
@@ -72,7 +72,7 @@ public class ErsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testSentExperimentResults() {
+    void testSentExperimentResults() {
         ExperimentHistory experimentHistory = TestHelperUtils.createExperimentHistory();
         doNothing().when(ersRequestService).saveEvaluationResults(any(EvaluationResults.class), any(ErsRequest.class));
         ExperimentResultsEntity experimentResultsEntity = createExperimentResults();
@@ -83,7 +83,7 @@ public class ErsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testAlreadySentExperimentResults() {
+    void testAlreadySentExperimentResults() {
         ExperimentHistory experimentHistory = TestHelperUtils.createExperimentHistory();
         doNothing().when(ersRequestService).saveEvaluationResults(any(EvaluationResults.class), any(ErsRequest.class));
         ExperimentResultsEntity experimentResultsEntity = createExperimentResults();
@@ -105,25 +105,25 @@ public class ErsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testGetExperimentResultsDetailsWithResultsNotFoundStatus() {
+    void testGetExperimentResultsDetailsWithResultsNotFoundStatus() {
         testGetEvaluationResults(ResponseStatus.RESULTS_NOT_FOUND,
                 EvaluationResultsStatus.EVALUATION_RESULTS_NOT_FOUND);
     }
 
     @Test
-    public void testGetExperimentResultsDetailsWithServiceUnavailable() {
+    void testGetExperimentResultsDetailsWithServiceUnavailable() {
         when(ersRequestService.getEvaluationResults(anyString())).thenThrow(new WebServiceIOException("I/O"));
         assertEvaluationResults(EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE);
     }
 
     @Test
-    public void testGetExperimentResultsDetailsWithUnknownError() {
+    void testGetExperimentResultsDetailsWithUnknownError() {
         when(ersRequestService.getEvaluationResults(anyString())).thenThrow(new RuntimeException());
         assertEvaluationResults(EvaluationResultsStatus.ERROR);
     }
 
     @Test
-    public void testSuccessGetExperimentResultsDetails() {
+    void testSuccessGetExperimentResultsDetails() {
         testGetEvaluationResults(ResponseStatus.SUCCESS, EvaluationResultsStatus.RESULTS_RECEIVED);
     }
 

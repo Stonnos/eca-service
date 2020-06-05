@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @Import({NeuralNetworkOptionsMapperImpl.class, ExperimentConfig.class})
-public class NeuralNetworkOptionsMapperTest {
+class NeuralNetworkOptionsMapperTest {
 
     private static final double COEFFICIENT = 2.0d;
 
@@ -39,7 +39,7 @@ public class NeuralNetworkOptionsMapperTest {
     private ExperimentConfig experimentConfig;
 
     @Test
-    public void testMapNeuralNetworkOptions() {
+    void testMapNeuralNetworkOptions() {
         NeuralNetworkOptions neuralNetworkOptions = TestHelperUtils.createNeuralNetworkOptions();
         neuralNetworkOptions.setActivationFunctionOptions(new ActivationFunctionOptions());
         ActivationFunctionBuilder activationFunctionBuilder = new ActivationFunctionBuilder();

@@ -1,8 +1,11 @@
 package com.ecaservice.web.config;
 
+import com.google.common.collect.ImmutableList;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 /**
  * Web MVC configuration for passing URL to Angular router.
@@ -13,12 +16,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
     private static final String FORWARD = "forward:/";
-    private static final String LOGIN_URL = "/login";
-    private static final String DASHBOARD_URLS = "/dashboard/**";
+
+    private static final List<String> URL_PATHS =
+            ImmutableList.of("/login", "/dashboard/**", "/forgot-password", "/reset-password/**");
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController(LOGIN_URL).setViewName(FORWARD);
-        registry.addViewController(DASHBOARD_URLS).setViewName(FORWARD);
+        URL_PATHS.forEach(url -> registry.addViewController(url).setViewName(FORWARD));
     }
 }

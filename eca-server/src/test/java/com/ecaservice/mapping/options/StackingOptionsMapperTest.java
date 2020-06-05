@@ -18,13 +18,13 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(StackingOptionsMapperImpl.class)
-public class StackingOptionsMapperTest {
+class StackingOptionsMapperTest {
 
     @Inject
     private StackingOptionsMapper stackingOptionsMapper;
 
     @Test
-    public void testMapStackingOptions() {
+    void testMapStackingOptions() {
         StackingOptions stackingOptions = TestHelperUtils.createStackingOptions();
         StackingClassifier stackingClassifier = stackingOptionsMapper.map(stackingOptions);
         Assertions.assertThat(stackingClassifier.getUseCrossValidation()).isEqualTo(

@@ -12,5 +12,14 @@ spring:
 
 eureka:
   client:
+    registerWithEureka: true
+    fetchRegistry: true
     serviceUrl:
       defaultZone: http://discovery-server:8761/eureka
+
+reset-password:
+  baseUrl: http://localhost:8080
+
+## Swagger properties
+swagger2:
+  tokenBaseUrl: http://localhost:8080/eca-oauth

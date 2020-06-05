@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
  */
 @ExtendWith(SpringExtension.class)
 @Import(NeuralNetworkInputDataHandler.class)
-public class NeuralNetworkInputDataHandlerTest {
+class NeuralNetworkInputDataHandlerTest {
 
     private static final int DEFAULT_NUM_CLASSES = 5;
     private static final int DEFAULT_NUM_ATTRIBUTES = 10;
@@ -36,7 +36,7 @@ public class NeuralNetworkInputDataHandlerTest {
      * Test checking successful handling.
      */
     @Test
-    public void testNeuralNetworkInputDataHandle() {
+    void testNeuralNetworkInputDataHandle() {
         NeuralNetwork neuralNetwork = new NeuralNetwork();
         when(data.numAttributes()).thenReturn(DEFAULT_NUM_ATTRIBUTES);
         when(data.numClasses()).thenReturn(DEFAULT_NUM_CLASSES);

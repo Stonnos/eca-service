@@ -29,6 +29,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { CardModule } from "primeng/card";
 import { FieldsetModule } from 'primeng/fieldset';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { PasswordStrengthMeterModule } from "angular-password-strength-meter";
 
 @NgModule({
   imports: [
@@ -67,7 +68,8 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
     InputSwitchModule,
     CheckboxModule,
     FieldsetModule,
-    ScrollPanelModule
+    ScrollPanelModule,
+    PasswordStrengthMeterModule
   ]
 })
 export class UiComponentsModule {

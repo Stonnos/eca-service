@@ -18,13 +18,13 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(StatisticsReportMapperImpl.class)
-public class StatisticsReportMapperTest {
+class StatisticsReportMapperTest {
 
     @Inject
     private StatisticsReportMapper statisticsReportMapper;
 
     @Test
-    public void testMapStatisticsReport() {
+    void testMapStatisticsReport() {
         StatisticsReport statisticsReport = TestHelperUtils.createStatisticsReport();
         EvaluationStatisticsDto evaluationStatisticsDto = statisticsReportMapper.map(statisticsReport);
         Assertions.assertThat(evaluationStatisticsDto).isNotNull();

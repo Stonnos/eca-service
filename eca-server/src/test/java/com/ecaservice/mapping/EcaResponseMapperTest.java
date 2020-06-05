@@ -21,13 +21,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ExtendWith(SpringExtension.class)
 @Import(EcaResponseMapperImpl.class)
-public class EcaResponseMapperTest {
+class EcaResponseMapperTest {
 
     @Inject
     private EcaResponseMapper ecaResponseMapper;
 
     @Test
-    public void testMapExperimentToEcaResponse() {
+    void testMapExperimentToEcaResponse() {
         Experiment experiment = new Experiment();
         experiment.setRequestStatus(RequestStatus.NEW);
         experiment.setRequestId(UUID.randomUUID().toString());

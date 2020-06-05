@@ -19,13 +19,13 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(HeterogeneousClassifierMapperImpl.class)
-public class HeterogeneousClassifierMapperTest {
+class HeterogeneousClassifierMapperTest {
 
     @Inject
     private HeterogeneousClassifierMapper heterogeneousClassifierMapper;
 
     @Test
-    public void testMapHec() {
+    void testMapHec() {
         HeterogeneousClassifier heterogeneousClassifier = new HeterogeneousClassifier();
         heterogeneousClassifier.setSamplingMethod(SamplingMethod.BAGGING);
         heterogeneousClassifier.setUseRandomClassifier(true);
@@ -44,7 +44,7 @@ public class HeterogeneousClassifierMapperTest {
     }
 
     @Test
-    public void testMapModifiedHec() {
+    void testMapModifiedHec() {
         HeterogeneousClassifierOptions options =
                 heterogeneousClassifierMapper.map(new ModifiedHeterogeneousClassifier());
         Assertions.assertThat(options.getUseRandomSubspaces()).isTrue();

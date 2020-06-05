@@ -20,7 +20,7 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(NeuralNetworkMapperImpl.class)
-public class NeuralNetworkMapperTest {
+class NeuralNetworkMapperTest {
 
     private static final double COEFFICIENT = 2d;
 
@@ -28,7 +28,7 @@ public class NeuralNetworkMapperTest {
     private NeuralNetworkMapper neuralNetworkMapper;
 
     @Test
-    public void testMapNeuralNetwork() {
+    void testMapNeuralNetwork() {
         LogisticFunction logisticFunction = new LogisticFunction(COEFFICIENT);
         NeuralNetwork neuralNetwork = TestHelperUtils.createNeuralNetwork(logisticFunction);
         NeuralNetworkOptions options = neuralNetworkMapper.map(neuralNetwork);

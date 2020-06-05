@@ -7,6 +7,8 @@ import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
+import com.ecaservice.service.UserService;
+import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +41,7 @@ import static com.ecaservice.util.ClassifierOptionsHelper.isEnsembleClassifierOp
 public class ClassifierOptionsService {
 
     private final CommonConfig commonConfig;
+    private final UserService userService;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
     private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
 
@@ -57,9 +60,11 @@ public class ClassifierOptionsService {
         Assert.state(!isEnsembleClassifierOptions(classifierOptions), "Can't save ensemble classifier options!");
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
                 createClassifierOptionsDatabaseModel(classifierOptions, classifiersConfiguration);
-        classifiersConfiguration.setUpdated(LocalDateTime.now());
+        UserDetailsImpl userDetails = userService.getCurrentUser();
+        classifierOptionsDatabaseModel.setCreatedBy(userDetails.getUsername());
         ClassifierOptionsDatabaseModel saved =
                 classifierOptionsDatabaseModelRepository.save(classifierOptionsDatabaseModel);
+        classifiersConfiguration.setUpdated(LocalDateTime.now());
         classifiersConfigurationRepository.save(classifiersConfiguration);
         log.info("New classifier options [{}, id {}] has been saved for configuration [{}]", saved.getOptionsName(),
                 saved.getId(), configurationId);

@@ -18,13 +18,13 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(ClassificationCostsMapperImpl.class)
-public class ClassificationCostsMapperTest {
+class ClassificationCostsMapperTest {
 
     @Inject
     private ClassificationCostsMapper classificationCostsMapper;
 
     @Test
-    public void testMapClassificationCosts() {
+    void testMapClassificationCosts() {
         ClassificationCostsReport classificationCostsReport = TestHelperUtils.createClassificationCostsReport();
         ClassificationCostsDto classificationCostsDto = classificationCostsMapper.map(classificationCostsReport);
         Assertions.assertThat(classificationCostsDto).isNotNull();

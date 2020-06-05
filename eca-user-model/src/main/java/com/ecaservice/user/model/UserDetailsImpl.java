@@ -1,9 +1,12 @@
 package com.ecaservice.user.model;
 
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -12,36 +15,58 @@ import java.util.List;
  *
  * @author Roman Batygin
  */
+@NoArgsConstructor
 @AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
     /**
+     * User id
+     */
+    @Setter
+    @Getter
+    private Long id;
+
+    /**
      * User login
      */
+    @Setter
     private String userName;
 
     /**
      * User password
      */
+    @Setter
     private String password;
+
+    /**
+     * User creation date
+     */
+    @Getter
+    @Setter
+    private LocalDateTime creationDate;
 
     /**
      * User email
      */
+    @Getter
+    @Setter
     private String email;
 
     /**
      * User first name
      */
+    @Getter
+    @Setter
     private String firstName;
 
     /**
      * Roles list
      */
+    @Setter
     private List<Role> authorities;
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Collection<Role> getAuthorities() {
         return authorities;
     }
 
@@ -73,13 +98,5 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getFirstName() {
-        return firstName;
     }
 }

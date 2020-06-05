@@ -3,6 +3,7 @@ package com.ecaservice.config.swagger;
 import com.fasterxml.classmate.TypeResolver;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.context.request.async.DeferredResult;
 import springfox.documentation.builders.OAuthBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -45,6 +46,7 @@ public abstract class AbstractSwagger2Configuration {
      */
     public Docket docket(TypeResolver typeResolver) {
         return new Docket(DocumentationType.SWAGGER_2)
+                .ignoredParameterTypes(AuthenticationPrincipal.class)
                 .groupName(getGroupName())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage(getControllersPackage()))

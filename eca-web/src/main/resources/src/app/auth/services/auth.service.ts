@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from "rxjs/internal/Observable";
-import { UserModel } from "../components/user.model";
+import { UserModel } from "../model/user.model";
 import { AuthenticationKeys } from "../model/auth.keys";
 import { environment } from "../../../environments/environment";
 
@@ -41,7 +41,7 @@ export class AuthService {
       'Authorization': this.getHttpBasicAuthorizationHeader()
     });
     const options = { headers: headers };
-    return this.http.post(this.serviceUrl, params.toString(), options);
+    return this.http.post(this.serviceUrl + '/oauth/token', params.toString(), options);
   }
 
   private getHttpBasicAuthorizationHeader(): string {

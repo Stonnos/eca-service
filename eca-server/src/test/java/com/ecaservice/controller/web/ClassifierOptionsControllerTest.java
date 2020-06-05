@@ -53,7 +53,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @WebMvcTest(controllers = ClassifierOptionsController.class)
 @Import(ClassifierOptionsDatabaseModelMapperImpl.class)
-public class ClassifierOptionsControllerTest extends PageRequestControllerTest {
+class ClassifierOptionsControllerTest extends PageRequestControllerTest {
 
     private static final String BASE_URL = "/experiment/classifiers-options";
     private static final String ACTIVE_OPTIONS_URL = BASE_URL + "/active-options";
@@ -75,13 +75,13 @@ public class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     private ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
 
     @Test
-    public void testGetActiveOptionsUnauthorized() throws Exception {
+    void testGetActiveOptionsUnauthorized() throws Exception {
         mockMvc.perform(get(ACTIVE_OPTIONS_URL))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testGetActiveOptionsOk() throws Exception {
+    void testGetActiveOptionsOk() throws Exception {
         ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
         List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels = Collections.singletonList(
                 TestHelperUtils.createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration));
@@ -96,12 +96,12 @@ public class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testGetClassifiersOptionsPageUnauthorized() throws Exception {
+    void testGetClassifiersOptionsPageUnauthorized() throws Exception {
         testGetPageUnauthorized(PAGE_URL, buildParamsMap());
     }
 
     @Test
-    public void testGetClassifiersOptionsPageWithNullConfigurationId() throws Exception {
+    void testGetClassifiersOptionsPageWithNullConfigurationId() throws Exception {
         mockMvc.perform(get(PAGE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
@@ -110,37 +110,37 @@ public class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testGetClassifiersOptionsPageWithNullPageNumber() throws Exception {
+    void testGetClassifiersOptionsPageWithNullPageNumber() throws Exception {
         testGetPageWithNullPageNumber(PAGE_URL, buildParamsMap());
     }
 
     @Test
-    public void testGetClassifiersOptionsPageWithNullPageSize() throws Exception {
+    void testGetClassifiersOptionsPageWithNullPageSize() throws Exception {
         testGetPageWithNullPageSize(PAGE_URL, buildParamsMap());
     }
 
     @Test
-    public void testGetClassifiersOptionsPageWithZeroPageSize() throws Exception {
+    void testGetClassifiersOptionsPageWithZeroPageSize() throws Exception {
         testGetPageWithZeroPageSize(PAGE_URL, buildParamsMap());
     }
 
     @Test
-    public void testGetClassifiersOptionsPageWithNegativePageNumber() throws Exception {
+    void testGetClassifiersOptionsPageWithNegativePageNumber() throws Exception {
         testGetPageWithNegativePageNumber(PAGE_URL, buildParamsMap());
     }
 
     @Test
-    public void testGetClassifiersOptionsPageWithEmptyFilterRequestName() throws Exception {
+    void testGetClassifiersOptionsPageWithEmptyFilterRequestName() throws Exception {
         testGetPageWithEmptyFilterRequestName(PAGE_URL, buildParamsMap());
     }
 
     @Test
-    public void testGetClassifiersOptionsPageWithNullMatchMode() throws Exception {
+    void testGetClassifiersOptionsPageWithNullMatchMode() throws Exception {
         testGetPageWithNullMatchMode(PAGE_URL, buildParamsMap());
     }
 
     @Test
-    public void testGetClassifiersOptionsPageOk() throws Exception {
+    void testGetClassifiersOptionsPageOk() throws Exception {
         Page<ClassifierOptionsDatabaseModel> page = Mockito.mock(Page.class);
         when(page.getTotalElements()).thenReturn(TOTAL_ELEMENTS);
         ClassifiersConfiguration classifiersConfiguration = createClassifiersConfiguration();
@@ -162,21 +162,21 @@ public class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testDeleteOptionsUnauthorized() throws Exception {
+    void testDeleteOptionsUnauthorized() throws Exception {
         mockMvc.perform(delete(DELETE_URL)
                 .param(ID_PARAM, String.valueOf(CONFIGURATION_ID)))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testDeleteOptionsWithNotSpecifiedConfigurationId() throws Exception {
+    void testDeleteOptionsWithNotSpecifiedConfigurationId() throws Exception {
         mockMvc.perform(delete(DELETE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void testDeleteNotExistingOptions() throws Exception {
+    void testDeleteNotExistingOptions() throws Exception {
         doThrow(new EntityNotFoundException()).when(classifierOptionsService).deleteOptions(CONFIGURATION_ID);
         mockMvc.perform(delete(DELETE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
@@ -185,7 +185,7 @@ public class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testDeleteOptionsForBuildInConfiguration() throws Exception {
+    void testDeleteOptionsForBuildInConfiguration() throws Exception {
         doThrow(new IllegalStateException()).when(classifierOptionsService).deleteOptions(CONFIGURATION_ID);
         mockMvc.perform(delete(DELETE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
@@ -194,7 +194,7 @@ public class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testDeleteOptionsOk() throws Exception {
+    void testDeleteOptionsOk() throws Exception {
         mockMvc.perform(delete(DELETE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(ID_PARAM, String.valueOf(CONFIGURATION_ID)))
@@ -202,7 +202,7 @@ public class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testSaveOptionsUnauthorized() throws Exception {
+    void testSaveOptionsUnauthorized() throws Exception {
         mockMvc.perform(multipart(SAVE_URL)
                 .file(createClassifierOptionsFileMock())
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID)))
@@ -210,7 +210,7 @@ public class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testSaveOptionsWithNotSpecifiedConfigurationId() throws Exception {
+    void testSaveOptionsWithNotSpecifiedConfigurationId() throws Exception {
         mockMvc.perform(multipart(SAVE_URL)
                 .file(createClassifierOptionsFileMock())
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
@@ -218,7 +218,7 @@ public class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testSaveOptionsWithNotSpecifiedFile() throws Exception {
+    void testSaveOptionsWithNotSpecifiedFile() throws Exception {
         mockMvc.perform(multipart(SAVE_URL)
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
@@ -226,7 +226,7 @@ public class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testSaveOptionsOk() throws Exception {
+    void testSaveOptionsOk() throws Exception {
         mockMvc.perform(multipart(SAVE_URL)
                 .file(createClassifierOptionsFileMock())
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
@@ -236,7 +236,7 @@ public class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testSaveInvalidOptions() throws Exception {
+    void testSaveInvalidOptions() throws Exception {
         MockMultipartFile multipartFile = new MockMultipartFile(CLASSIFIER_OPTIONS_FILE_PARAM, "test.json",
                 MimeTypeUtils.APPLICATION_JSON.toString(), "content".getBytes(StandardCharsets.UTF_8));
         mockMvc.perform(multipart(SAVE_URL)

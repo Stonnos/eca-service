@@ -14,7 +14,7 @@ export abstract class BaseCreateDialogComponent<T> implements BaseDialog, BaseFo
   public submitted: boolean = false;
 
   @Output()
-  public itemEvent: EventEmitter<T> = new EventEmitter<T>();
+  public itemEvent: EventEmitter<any> = new EventEmitter<any>();
 
   @Output()
   public visibilityChange: EventEmitter<boolean> = new EventEmitter();

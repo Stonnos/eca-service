@@ -29,7 +29,6 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.ecaservice.web.dto.model.SendingStatus;
 import eca.core.evaluation.EvaluationMethod;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -77,7 +76,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @WebMvcTest(controllers = ExperimentController.class)
 @Import(ExperimentMapperImpl.class)
-public class ExperimentControllerTest extends PageRequestControllerTest {
+class ExperimentControllerTest extends PageRequestControllerTest {
 
     private static final String BASE_URL = "/experiment";
     private static final String DETAILS_URL = BASE_URL + "/details/{requestId}";
@@ -125,42 +124,42 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
                     MimeTypeUtils.TEXT_PLAIN.toString(), "file-content".getBytes(StandardCharsets.UTF_8));
     
     @Test
-    public void testDownloadTrainingDataUnauthorized() throws Exception {
+    void testDownloadTrainingDataUnauthorized() throws Exception {
         mockMvc.perform(get(DOWNLOAD_TRAINING_DATA_URL, TEST_UUID)).andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testDownloadTrainingDataForNotExistingExperiment() throws Exception {
+    void testDownloadTrainingDataForNotExistingExperiment() throws Exception {
         testDownloadFileForNotExistingExperiment(DOWNLOAD_TRAINING_DATA_URL);
     }
 
     @Test
-    public void testDownloadNotExistingTrainingDataFile() throws Exception {
+    void testDownloadNotExistingTrainingDataFile() throws Exception {
         testDownloadNotExistingExperimentFile(DOWNLOAD_TRAINING_DATA_URL);
     }
 
     @Test
-    public void testDownloadExperimentResultsUnauthorized() throws Exception {
+    void testDownloadExperimentResultsUnauthorized() throws Exception {
         mockMvc.perform(get(DOWNLOAD_EXPERIMENT_RESULTS_URL, TEST_UUID)).andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testDownloadExperimentResultsForNotExistingExperiment() throws Exception {
+    void testDownloadExperimentResultsForNotExistingExperiment() throws Exception {
         testDownloadFileForNotExistingExperiment(DOWNLOAD_EXPERIMENT_RESULTS_URL);
     }
 
     @Test
-    public void testDownloadExperimentResultsFile() throws Exception {
+    void testDownloadExperimentResultsFile() throws Exception {
         testDownloadNotExistingExperimentFile(DOWNLOAD_EXPERIMENT_RESULTS_URL);
     }
 
     @Test
-    public void testGetExperimentDetailsUnauthorized() throws Exception {
+    void testGetExperimentDetailsUnauthorized() throws Exception {
         mockMvc.perform(get(DETAILS_URL, TEST_UUID)).andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testGetExperimentDetailsNotFound() throws Exception {
+    void testGetExperimentDetailsNotFound() throws Exception {
         when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(null);
         mockMvc.perform(get(DETAILS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
@@ -168,7 +167,7 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testGetExperimentDetailsOk() throws Exception {
+    void testGetExperimentDetailsOk() throws Exception {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(experiment);
         ExperimentDto experimentDto = experimentMapper.map(experiment);
@@ -180,7 +179,7 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testCreateExperimentUnauthorized() throws Exception {
+    void testCreateExperimentUnauthorized() throws Exception {
         mockMvc.perform(multipart(CREATE_EXPERIMENT_URL)
                 .file(trainingData)
                 .param(EXPERIMENT_TYPE_PARAM, ExperimentType.NEURAL_NETWORKS.name())
@@ -189,14 +188,12 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testCreateExperimentSuccess() throws Exception {
+    void testCreateExperimentSuccess() throws Exception {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         CreateExperimentResultDto expected = new CreateExperimentResultDto();
         expected.setCreated(true);
         expected.setRequestId(experiment.getRequestId());
-        when(userService.getCurrentUser()).thenReturn(
-                new UserDetailsImpl(StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY,
-                        Collections.emptyList()));
+        when(userService.getCurrentUser()).thenReturn(new UserDetailsImpl());
         when(experimentRequestService.createExperimentRequest(any(ExperimentRequest.class))).thenReturn(experiment);
         mockMvc.perform(multipart(CREATE_EXPERIMENT_URL)
                 .file(trainingData)
@@ -209,12 +206,10 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testCreateExperimentWithError() throws Exception {
+    void testCreateExperimentWithError() throws Exception {
         CreateExperimentResultDto expected = new CreateExperimentResultDto();
         expected.setErrorMessage(ERROR_MESSAGE);
-        when(userService.getCurrentUser()).thenReturn(
-                new UserDetailsImpl(StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY,
-                        Collections.emptyList()));
+        when(userService.getCurrentUser()).thenReturn(new UserDetailsImpl());
         when(experimentRequestService.createExperimentRequest(any(ExperimentRequest.class))).thenThrow(
                 new ExperimentException(ERROR_MESSAGE));
         mockMvc.perform(multipart(CREATE_EXPERIMENT_URL)
@@ -228,42 +223,42 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testGetExperimentsUnauthorized() throws Exception {
+    void testGetExperimentsUnauthorized() throws Exception {
         testGetPageUnauthorized(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetExperimentsWithNullPageNumber() throws Exception {
+    void testGetExperimentsWithNullPageNumber() throws Exception {
         testGetPageWithNullPageNumber(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetExperimentsWithNullPageSize() throws Exception {
+    void testGetExperimentsWithNullPageSize() throws Exception {
         testGetPageWithNullPageSize(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetExperimentsWithZeroPageSize() throws Exception {
+    void testGetExperimentsWithZeroPageSize() throws Exception {
         testGetPageWithZeroPageSize(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetExperimentsWithNegativePageNumber() throws Exception {
+    void testGetExperimentsWithNegativePageNumber() throws Exception {
         testGetPageWithNegativePageNumber(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetExperimentsWithEmptyFilterRequestName() throws Exception {
+    void testGetExperimentsWithEmptyFilterRequestName() throws Exception {
         testGetPageWithEmptyFilterRequestName(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetExperimentsWithNullMatchMode() throws Exception {
+    void testGetExperimentsWithNullMatchMode() throws Exception {
         testGetPageWithNullMatchMode(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetExperimentsLogsOk() throws Exception {
+    void testGetExperimentsLogsOk() throws Exception {
         Page<Experiment> experimentPage = Mockito.mock(Page.class);
         when(experimentPage.getTotalElements()).thenReturn(TOTAL_ELEMENTS);
         List<Experiment> experiments =
@@ -281,13 +276,13 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testExperimentsRequestStatusesStatisticsUnauthorized() throws Exception {
+    void testExperimentsRequestStatusesStatisticsUnauthorized() throws Exception {
         mockMvc.perform(get(REQUEST_STATUS_STATISTICS_URL))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testExperimentsRequestStatusesStatisticsOk() throws Exception {
+    void testExperimentsRequestStatusesStatisticsOk() throws Exception {
         Map<RequestStatus, Long> requestStatusMap = buildRequestStatusStatisticsMap();
         RequestStatusStatisticsDto requestStatusStatisticsDto = Utils.toRequestStatusesStatistics(requestStatusMap);
         when(experimentService.getRequestStatusesStatistics()).thenReturn(requestStatusMap);
@@ -299,13 +294,13 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testGetExperimentResultsDetailsUnauthorized() throws Exception {
+    void testGetExperimentResultsDetailsUnauthorized() throws Exception {
         mockMvc.perform(get(EXPERIMENT_RESULTS_DETAILS_URL, EXPERIMENT_RESULTS_ID))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testGetExperimentResultsDetailsNotFound() throws Exception {
+    void testGetExperimentResultsDetailsNotFound() throws Exception {
         when(experimentResultsEntityRepository.findById(EXPERIMENT_RESULTS_ID)).thenReturn(Optional.empty());
         mockMvc.perform(get(EXPERIMENT_RESULTS_DETAILS_URL, EXPERIMENT_RESULTS_ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
@@ -313,7 +308,7 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testGetExperimentResultsDetailsOk() throws Exception {
+    void testGetExperimentResultsDetailsOk() throws Exception {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
         ExperimentResultsDetailsDto experimentResultsDetailsDto = new ExperimentResultsDetailsDto();
@@ -332,12 +327,12 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testGetErsReportUnauthorized() throws Exception {
+    void testGetErsReportUnauthorized() throws Exception {
         mockMvc.perform(get(ERS_REPORT_URL, TEST_UUID)).andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testGetErsReportForNotExistingExperiment() throws Exception {
+    void testGetErsReportForNotExistingExperiment() throws Exception {
         when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(null);
         mockMvc.perform(get(ERS_REPORT_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
@@ -345,7 +340,7 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testGetErsReportOk() throws Exception {
+    void testGetErsReportOk() throws Exception {
         ExperimentErsReportDto expected = new ExperimentErsReportDto();
         when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(new Experiment());
         when(experimentResultsService.getErsReport(any(Experiment.class))).thenReturn(expected);
@@ -357,14 +352,14 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testSentEvaluationResultsUnauthorized() throws Exception {
+    void testSentEvaluationResultsUnauthorized() throws Exception {
         mockMvc.perform(post(SENT_EVALUATION_RESULTS_URL)
                 .content(TEST_UUID))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testSentEvaluationResultsForNotExistingExperiment() throws Exception {
+    void testSentEvaluationResultsForNotExistingExperiment() throws Exception {
         when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(null);
         mockMvc.perform(post(SENT_EVALUATION_RESULTS_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
@@ -373,7 +368,7 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testSentEvaluationResultsForNotFinishedExperiment() throws Exception {
+    void testSentEvaluationResultsForNotFinishedExperiment() throws Exception {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         experiment.setRequestStatus(RequestStatus.ERROR);
         when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(experiment);
@@ -384,7 +379,7 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testSentEmptyEvaluationResults() throws Exception {
+    void testSentEmptyEvaluationResults() throws Exception {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(experiment);
         when(experimentResultsEntityRepository.countByExperiment(experiment)).thenReturn(0L);
@@ -395,7 +390,7 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testAlreadySentEvaluationResults() throws Exception {
+    void testAlreadySentEvaluationResults() throws Exception {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(experiment);
         when(experimentResultsEntityRepository.countByExperiment(experiment)).thenReturn(RESULTS_COUNT);
@@ -407,7 +402,7 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testSentEvaluationResultsForDeletedExperiment() throws Exception {
+    void testSentEvaluationResultsForDeletedExperiment() throws Exception {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experiment.setDeletedDate(LocalDateTime.now());
         when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(experiment);
@@ -420,7 +415,7 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testSentEvaluationResultsWithConflict() throws Exception {
+    void testSentEvaluationResultsWithConflict() throws Exception {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(experiment);
         when(experimentResultsEntityRepository.countByExperiment(experiment)).thenReturn(RESULTS_COUNT + 1);
@@ -433,7 +428,7 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testSentEvaluationResultsOk() throws Exception {
+    void testSentEvaluationResultsOk() throws Exception {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(experiment);
         when(experimentResultsEntityRepository.countByExperiment(experiment)).thenReturn(RESULTS_COUNT + 1);
@@ -447,12 +442,12 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testGetExperimentResultsSendingStatusUnauthorized() throws Exception {
+    void testGetExperimentResultsSendingStatusUnauthorized() throws Exception {
         mockMvc.perform(get(EXPERIMENT_RESULTS_SENDING_STATUS_URL, TEST_UUID)).andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testGetExperimentResultsSendingStatusNotFound() throws Exception {
+    void testGetExperimentResultsSendingStatusNotFound() throws Exception {
         when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(null);
         mockMvc.perform(get(EXPERIMENT_RESULTS_SENDING_STATUS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
@@ -460,7 +455,7 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testGetExperimentResultsSendingStatusOk() throws Exception {
+    void testGetExperimentResultsSendingStatusOk() throws Exception {
         Experiment experiment = TestHelperUtils.createExperiment(TEST_UUID);
         SendingStatus sendingStatus = new SendingStatus(experiment.getRequestId(), true);
         when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(experiment);
@@ -472,12 +467,12 @@ public class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testGetExperimentTypesStatisticsUnauthorized() throws Exception {
+    void testGetExperimentTypesStatisticsUnauthorized() throws Exception {
         mockMvc.perform(get(EXPERIMENT_TYPES_STATISTICS_URL)).andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testGetExperimentTypesStatisticsOk() throws Exception {
+    void testGetExperimentTypesStatisticsOk() throws Exception {
         Map<ExperimentType, Long> experimentTypesMap = TestHelperUtils.buildExperimentTypeStatisticMap();
         when(experimentService.getExperimentTypesStatistics(null, null)).thenReturn(experimentTypesMap);
         List<ChartDataDto> chartDataDtoList = experimentTypesMap.entrySet().stream().map(

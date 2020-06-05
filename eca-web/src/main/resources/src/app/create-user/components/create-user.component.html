@@ -1,0 +1,113 @@
+<p-dialog
+  [(visible)]="visible"
+  header="Создать пользователя"
+  [style]="{ width: '650px' }"
+  appendTo="body"
+  [modal]="true"
+  [blockScroll]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="!loading"
+  (onHide)="hide()">
+
+  <form novalidate class="form d-flex flex-column justify-content-center m-auto" (keydown.enter)="submit()">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-10 mx-auto mb-4">
+        <label class="text-bold control-label">Логин</label>
+        <input
+          required
+          pInputText
+          [pattern]="loginRegex"
+          id="login"
+          name="login"
+          type="text"
+          placeholder="Введите логин"
+          [(ngModel)]="item.login"
+          #login = "ngModel"
+          maxlength="32"
+          (focus)="onLoginFocus($event)"
+          class="form-control d-block w-100">
+        <div class="text-danger error-message" *ngIf="login.invalid && (login.dirty || login.touched || submitted)">
+          <div *ngIf="login?.errors?.required">
+            Заполните логин
+          </div>
+          <div *ngIf="login?.errors?.pattern">
+            <span>Логин должен содержать не менее 3-х символов.</span>
+            <span class="d-block">Разрешены только цифры и латинские символы в нижнем регистре</span>
+          </div>
+        </div>
+        <div class="text-danger error-message" *ngIf="hasSameLogin && submitted">
+          Пользователь с таким именем уже существует
+        </div>
+      </div>
+      <div class="ui-g-10 mx-auto mb-4">
+        <label class="text-bold control-label">Email</label>
+        <input
+          required
+          pInputText
+          [pattern]="emailRegex"
+          id="email"
+          name="email"
+          type="text"
+          placeholder="Введите Email"
+          [(ngModel)]="item.email"
+          #email="ngModel"
+          maxlength="255"
+          (focus)="onEmailFocus($event)"
+          class="form-control d-block w-100">
+        <div class="text-danger error-message" *ngIf="email.invalid && (email.dirty || email.touched || submitted)">
+          <div *ngIf="email?.errors?.required">
+            Заполните Email
+          </div>
+          <div *ngIf="email?.errors?.pattern">
+            Недопустимый формат Email
+          </div>
+        </div>
+        <div class="text-danger error-message" *ngIf="hasSameEmail && submitted">
+          Пользователь с таким Email уже вуществует
+        </div>
+      </div>
+      <div class="ui-g-10 mx-auto mb-4">
+        <label class="text-bold control-label">Имя пользователя</label>
+        <input
+          required
+          pInputText
+          [pattern]="firstNameRegex"
+          id="firstName"
+          name="firstName"
+          type="text"
+          placeholder="Введите имя пользователя"
+          [(ngModel)]="item.firstName"
+          #firstName="ngModel"
+          maxlength="30"
+          class="form-control d-block w-100">
+        <div class="text-danger error-message" *ngIf="firstName.invalid && (firstName.dirty || firstName.touched || submitted)">
+          <div *ngIf="firstName?.errors?.required">
+            Заполните имя
+          </div>
+          <div *ngIf="firstName?.errors?.pattern">
+            <span>Имя должно содержать не менее 2-х символов и начинаться с заглавной буквы.</span>
+            <span class="d-block">Разрешены только буквы одного алфавита</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <p-footer>
+    <button
+      pButton
+      type="button"
+      (click)="submit()"
+      [disabled]="loading"
+      class="create-user-button ml-auto">
+      <span class="create-user-text" *ngIf="!loading">Создать</span>
+      <p-progressSpinner
+        *ngIf="loading"
+        class="create-user-progress-spinner"
+        strokeWidth="4"
+        animationDuration=".5s">
+      </p-progressSpinner>
+    </button>
+  </p-footer>
+</p-dialog>

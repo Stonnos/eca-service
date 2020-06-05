@@ -14,7 +14,7 @@ public class ReflectionUtilsTest {
     private static final String INSTANCES_INFO_RELATION_NAME = "instancesInfo.relationName";
 
     @Test
-    public void testGetGetterReturnType() {
+    void testGetGetterReturnType() {
         Class<?> actual = ReflectionUtils.getFieldType(INSTANCES_INFO_RELATION_NAME, EvaluationLog.class);
         Assertions.assertThat(actual).isAssignableFrom(String.class);
     }

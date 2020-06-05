@@ -28,11 +28,39 @@ spring:
 
 eureka:
   client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka
+    registerWithEureka: false
+    fetchRegistry: false
 
 ribbon:
   ReadTimeout: 60000
+
+## Application common configs
+common:
+  maxPageSize: 50
+
+## Password generator configs
+password:
+  length: 12
+  useDigits: true
+  useLowerCaseSymbols: true
+  useUpperCaseSymbols: true
+
+reset-password:
+  validityMinutes: 30
+  baseUrl: http://localhost:8085
+
+## Swagger properties
+swagger2:
+  projectVersion: @project.version@
+  groups:
+    eca-web:
+      title: REST API for web application
+      description: Operations for ECA web application
+      author: Roman Batygin
+      email: roman.batygin@mail.ru
+  tokenBaseUrl: http://localhost:8085/eca-oauth
+  clientId: swagger
+  secret: swagger_secret
 
 management:
   metrics:

@@ -1,13 +1,13 @@
 .options-table::ng-deep {
 
   .ui-table-tbody > tr > td {
-    &:nth-child(3) {
+    &:nth-child(4) {
       width: 100px;
     }
   }
 
   .ui-table-thead > tr > th {
-    &:nth-child(3) {
+    &:nth-child(4) {
       width: 100px;
     }
   }

@@ -40,7 +40,7 @@ import static org.mockito.Mockito.when;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @Import({ExperimentConfig.class, CrossValidationConfig.class})
-public class ExperimentInitializationVisitorTest {
+class ExperimentInitializationVisitorTest {
 
     @Inject
     private ExperimentConfig experimentConfig;
@@ -52,7 +52,7 @@ public class ExperimentInitializationVisitorTest {
     private ExperimentInitializationVisitor experimentInitializationVisitor;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         experimentInitializationVisitor = new ExperimentInitializationVisitor(experimentConfig,
                 crossValidationConfig, classifiersSetSearcher);
         when(classifiersSetSearcher.findBestClassifiers(any(Instances.class), any(EvaluationMethod.class))).thenReturn(
@@ -60,7 +60,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeNeuralNetwork() {
+    void testInitializeNeuralNetwork() {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedNeuralNetwork automatedNeuralNetwork =
                 (AutomatedNeuralNetwork) experimentInitializationVisitor.caseNeuralNetwork(initializationParams);
@@ -71,7 +71,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeHeterogeneousEnsemble() {
+    void testInitializeHeterogeneousEnsemble() {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedHeterogeneousEnsemble automatedHeterogeneousEnsemble =
                 (AutomatedHeterogeneousEnsemble) experimentInitializationVisitor.caseHeterogeneousEnsemble(
@@ -80,7 +80,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeModifiedHeterogeneousEnsemble() {
+    void testInitializeModifiedHeterogeneousEnsemble() {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedHeterogeneousEnsemble automatedHeterogeneousEnsemble =
                 (AutomatedHeterogeneousEnsemble) experimentInitializationVisitor.caseModifiedHeterogeneousEnsemble(
@@ -89,7 +89,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeAdaBoost() {
+    void testInitializeAdaBoost() {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedHeterogeneousEnsemble automatedHeterogeneousEnsemble =
                 (AutomatedHeterogeneousEnsemble) experimentInitializationVisitor.caseAdaBoost(initializationParams);
@@ -97,7 +97,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeStacking() {
+    void testInitializeStacking() {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedStacking automatedStacking =
                 (AutomatedStacking) experimentInitializationVisitor.caseStacking(initializationParams);
@@ -107,7 +107,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeKNearestNeighbours() {
+    void testInitializeKNearestNeighbours() {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedKNearestNeighbours automatedKNearestNeighbours =
                 (AutomatedKNearestNeighbours) experimentInitializationVisitor.caseKNearestNeighbours(
@@ -120,7 +120,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeRandomForests() {
+    void testInitializeRandomForests() {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedRandomForests automatedRandomForests =
                 (AutomatedRandomForests) experimentInitializationVisitor.caseRandomForests(
@@ -132,7 +132,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeStackingCV() {
+    void testInitializeStackingCV() {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedStacking automatedStacking =
                 (AutomatedStacking) experimentInitializationVisitor.caseStackingCV(initializationParams);
@@ -144,7 +144,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testInitializeDecisionTree() {
+    void testInitializeDecisionTree() {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         AutomatedDecisionTree automatedDecisionTree =
                 (AutomatedDecisionTree) experimentInitializationVisitor.caseDecisionTree(
@@ -155,7 +155,7 @@ public class ExperimentInitializationVisitorTest {
     }
 
     @Test
-    public void testAfterHandle() {
+    void testAfterHandle() {
         InitializationParams initializationParams = TestHelperUtils.createInitializationParams();
         initializationParams.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         AbstractExperiment experiment =

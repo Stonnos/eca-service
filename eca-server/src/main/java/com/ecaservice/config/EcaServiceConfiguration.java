@@ -24,7 +24,7 @@ import java.util.concurrent.Executors;
 @EnableCaching
 @EnableAsync
 @EnableConfigurationProperties(
-        {CommonConfig.class, CrossValidationConfig.class, ExperimentConfig.class, MailConfig.class})
+        {CommonConfig.class, CrossValidationConfig.class, ExperimentConfig.class})
 public class EcaServiceConfiguration {
 
     public static final String ECA_THREAD_POOL_TASK_EXECUTOR = "ecaThreadPoolTaskExecutor";

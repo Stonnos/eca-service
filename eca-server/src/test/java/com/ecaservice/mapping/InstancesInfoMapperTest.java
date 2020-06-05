@@ -19,13 +19,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ExtendWith(SpringExtension.class)
 @Import(InstancesInfoMapperImpl.class)
-public class InstancesInfoMapperTest {
+class InstancesInfoMapperTest {
 
     @Inject
     private InstancesInfoMapper instancesInfoMapper;
 
     @Test
-    public void testMapInstancesInfo() {
+    void testMapInstancesInfo() {
         InstancesInfo instancesInfo = TestHelperUtils.createInstancesInfo();
         InstancesInfoDto instancesInfoDto = instancesInfoMapper.map(instancesInfo);
         assertThat(instancesInfoDto.getRelationName()).isEqualTo(instancesInfo.getRelationName());

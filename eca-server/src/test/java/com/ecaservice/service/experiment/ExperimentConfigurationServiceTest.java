@@ -7,8 +7,10 @@ import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.AbstractJpaTest;
+import com.ecaservice.service.UserService;
 import com.ecaservice.service.classifiers.ClassifierOptionsService;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -27,8 +29,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Roman Batygin
  */
 @Import({ExperimentConfig.class, CommonConfig.class, ClassifierOptionsService.class})
-public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
+class ExperimentConfigurationServiceTest extends AbstractJpaTest {
 
+    @MockBean
+    private UserService userService;
     @Inject
     private ClassifierOptionsService classifierOptionsService;
     @Inject
@@ -56,14 +60,14 @@ public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testNotSpecifiedConfigsDirectory() {
+    void testNotSpecifiedConfigsDirectory() {
         ExperimentConfig config = new ExperimentConfig();
         ReflectionTestUtils.setField(experimentConfigurationService, "experimentConfig", config);
         assertThrows(ClassifierOptionsException.class, () -> experimentConfigurationService.saveClassifiersOptions());
     }
 
     @Test
-    public void testSaveNewConfigs() throws IOException {
+    void testSaveNewConfigs() throws IOException {
         Resource[] modelFiles = resolver.getResources(experimentConfig.getIndividualClassifiersStoragePath());
         experimentConfigurationService.saveClassifiersOptions();
         List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
@@ -73,7 +77,7 @@ public class ExperimentConfigurationServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testSaveSameConfigs() throws IOException {
+    void testSaveSameConfigs() throws IOException {
         Resource[] modelFiles = resolver.getResources(experimentConfig.getIndividualClassifiersStoragePath());
         experimentConfigurationService.saveClassifiersOptions();
         experimentConfigurationService.saveClassifiersOptions();

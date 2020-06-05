@@ -77,7 +77,7 @@ public class ExperimentConfigurationService {
             classifiersConfiguration.setConfigurationName(DEFAULT_CONFIGURATION_NAME);
             classifiersConfiguration.setBuildIn(true);
             classifiersConfiguration.setActive(true);
-            classifiersConfiguration.setCreated(LocalDateTime.now());
+            classifiersConfiguration.setCreationDate(LocalDateTime.now());
             return classifiersConfigurationRepository.save(classifiersConfiguration);
         }
         return classifiersConfiguration;

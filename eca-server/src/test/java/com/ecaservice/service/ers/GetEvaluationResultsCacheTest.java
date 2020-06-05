@@ -40,7 +40,7 @@ import static org.mockito.Mockito.when;
         EvaluationResultsService.class, ErsWebServiceConfiguration.class, ErsResponseStatusMapperImpl.class,
         CacheConfiguration.class, CrossValidationConfig.class, ErsRequestService.class,
         ClassifierOptionsConverter.class, ClassifierOptionsMapperConfiguration.class, InstancesConverter.class})
-public class GetEvaluationResultsCacheTest extends AbstractJpaTest {
+class GetEvaluationResultsCacheTest extends AbstractJpaTest {
 
     @Inject
     private ErsRequestService ersRequestService;
@@ -50,7 +50,7 @@ public class GetEvaluationResultsCacheTest extends AbstractJpaTest {
     private ErsWebServiceClient ersWebServiceClient;
 
     @Test
-    public void testGetEvaluationResultsCache() {
+    void testGetEvaluationResultsCache() {
         ReflectionTestUtils.setField(ersRequestService, "ersWebServiceClient", ersWebServiceClient);
         String requestId = UUID.randomUUID().toString();
         GetEvaluationResultsResponse first =

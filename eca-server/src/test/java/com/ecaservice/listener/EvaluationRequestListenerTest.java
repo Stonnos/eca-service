@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-public class EvaluationRequestListenerTest {
+class EvaluationRequestListenerTest {
 
     @Mock
     private RabbitTemplate rabbitTemplate;
@@ -47,7 +47,7 @@ public class EvaluationRequestListenerTest {
     private ArgumentCaptor<String> replyToCaptor;
 
     @Test
-    public void testHandleMessage() {
+    void testHandleMessage() {
         EvaluationRequest evaluationRequest = TestHelperUtils.createEvaluationRequest();
         Message message = Mockito.mock(Message.class);
         when(evaluationRequestService.processRequest(evaluationRequest)).thenReturn(new EvaluationResponse());

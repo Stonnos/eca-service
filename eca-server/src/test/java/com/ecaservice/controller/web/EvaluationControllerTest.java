@@ -53,7 +53,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = EvaluationController.class)
 @Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class,
         ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class})
-public class EvaluationControllerTest extends PageRequestControllerTest {
+class EvaluationControllerTest extends PageRequestControllerTest {
 
     private static final String BASE_URL = "/evaluation";
     private static final String DETAILS_URL = BASE_URL + "/details/{requestId}";
@@ -69,13 +69,13 @@ public class EvaluationControllerTest extends PageRequestControllerTest {
     private EvaluationLogMapper evaluationLogMapper;
 
     @Test
-    public void testGetEvaluationLogDetailsUnauthorized() throws Exception {
+    void testGetEvaluationLogDetailsUnauthorized() throws Exception {
         mockMvc.perform(get(DETAILS_URL, TEST_UUID))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testGetEvaluationLogDetailsNotFound() throws Exception {
+    void testGetEvaluationLogDetailsNotFound() throws Exception {
         when(evaluationLogRepository.findByRequestId(TEST_UUID)).thenReturn(null);
         mockMvc.perform(get(DETAILS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
@@ -83,7 +83,7 @@ public class EvaluationControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testGetEvaluationLogDetailsOk() throws Exception {
+    void testGetEvaluationLogDetailsOk() throws Exception {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog(TEST_UUID, RequestStatus.FINISHED);
         when(evaluationLogRepository.findByRequestId(TEST_UUID)).thenReturn(evaluationLog);
         EvaluationLogDetailsDto evaluationLogDetailsDto = evaluationLogMapper.mapDetails(evaluationLog);
@@ -96,42 +96,42 @@ public class EvaluationControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testGetEvaluationLogsUnauthorized() throws Exception {
+    void testGetEvaluationLogsUnauthorized() throws Exception {
         testGetPageUnauthorized(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetEvaluationLogsWithNullPageNumber() throws Exception {
+    void testGetEvaluationLogsWithNullPageNumber() throws Exception {
         testGetPageWithNullPageNumber(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetEvaluationLogsWithNullPageSize() throws Exception {
+    void testGetEvaluationLogsWithNullPageSize() throws Exception {
         testGetPageWithNullPageSize(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetEvaluationLogsWithZeroPageSize() throws Exception {
+    void testGetEvaluationLogsWithZeroPageSize() throws Exception {
         testGetPageWithZeroPageSize(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetEvaluationLogsWithNegativePageNumber() throws Exception {
+    void testGetEvaluationLogsWithNegativePageNumber() throws Exception {
         testGetPageWithNegativePageNumber(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetEvaluationLogsWithEmptyFilterRequestName() throws Exception {
+    void testGetEvaluationLogsWithEmptyFilterRequestName() throws Exception {
         testGetPageWithEmptyFilterRequestName(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetEvaluationLogsWithNullMatchMode() throws Exception {
+    void testGetEvaluationLogsWithNullMatchMode() throws Exception {
         testGetPageWithNullMatchMode(LIST_URL, Collections.emptyMap());
     }
 
     @Test
-    public void testGetEvaluationLogsOk() throws Exception {
+    void testGetEvaluationLogsOk() throws Exception {
         Page<EvaluationLog> evaluationLogPage = Mockito.mock(Page.class);
         when(evaluationLogPage.getTotalElements()).thenReturn(TOTAL_ELEMENTS);
         List<EvaluationLog> evaluationLogs = Collections.singletonList(TestHelperUtils.createEvaluationLog());
@@ -151,13 +151,13 @@ public class EvaluationControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    public void testEvaluationRequestStatusesStatisticsUnauthorized() throws Exception {
+    void testEvaluationRequestStatusesStatisticsUnauthorized() throws Exception {
         mockMvc.perform(get(REQUEST_STATUS_STATISTICS_URL))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testEvaluationRequestStatusesStatisticsOk() throws Exception {
+    void testEvaluationRequestStatusesStatisticsOk() throws Exception {
         Map<RequestStatus, Long> requestStatusMap = buildRequestStatusStatisticsMap();
         RequestStatusStatisticsDto requestStatusStatisticsDto = Utils.toRequestStatusesStatistics(requestStatusMap);
         when(evaluationLogService.getRequestStatusesStatistics()).thenReturn(requestStatusMap);

@@ -19,13 +19,13 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import({HeterogeneousClassifierOptionsMapperImpl.class, HeterogeneousClassifierFactory.class})
-public class HeterogeneousClassifierOptionsMapperTest {
+class HeterogeneousClassifierOptionsMapperTest {
 
     @Inject
     private HeterogeneousClassifierOptionsMapper heterogeneousClassifierOptionsMapper;
 
     @Test
-    public void testMapHecOptions() {
+    void testMapHecOptions() {
         HeterogeneousClassifierOptions options = TestHelperUtils.createHeterogeneousClassifierOptions(false);
         HeterogeneousClassifier classifier = heterogeneousClassifierOptionsMapper.map(options);
         Assertions.assertThat(classifier.getSeed()).isEqualTo(options.getSeed());
@@ -39,7 +39,7 @@ public class HeterogeneousClassifierOptionsMapperTest {
     }
 
     @Test
-    public void testMapModifiedHecOptions() {
+    void testMapModifiedHecOptions() {
         HeterogeneousClassifierOptions options = TestHelperUtils.createHeterogeneousClassifierOptions(true);
         HeterogeneousClassifier classifier = heterogeneousClassifierOptionsMapper.map(options);
         Assertions.assertThat(classifier).isInstanceOf(ModifiedHeterogeneousClassifier.class);

@@ -35,7 +35,7 @@ public class Swagger2ApiConfig {
     private String secret;
 
     /**
-     * Oauth2 token url
+     * Oauth2 base token url
      */
-    private String tokenUrl;
+    private String tokenBaseUrl;
 }

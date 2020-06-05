@@ -16,8 +16,11 @@
         <postresql.version>42.2.6</postresql.version>
         <liquibase.version>3.7.0</liquibase.version>
         <sonar.coverage.exclusions>
-            **/config/*,
-            **/util/*,
+            **/model/**/*,
+            **/dto/**/*,
+            **/config/**/*,
+            **/exception/**/*,
+            **/util/**/*,
             **/NotificationApplication.java
         </sonar.coverage.exclusions>
     </properties>
@@ -91,6 +94,17 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
         </dependency>
 
         <dependency>

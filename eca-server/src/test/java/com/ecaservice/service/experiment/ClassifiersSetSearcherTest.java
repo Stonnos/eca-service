@@ -73,7 +73,7 @@ import static org.mockito.Mockito.when;
         DecisionTreeOptionsMapperImpl.class, KNearestNeighboursOptionsMapperImpl.class,
         J48OptionsMapperImpl.class, NeuralNetworkOptionsMapperImpl.class, LogisticOptionsMapperImpl.class,
         HeterogeneousClassifierFactory.class, DecisionTreeFactory.class, ClassifierOptionsConverter.class})
-public class ClassifiersSetSearcherTest {
+class ClassifiersSetSearcherTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final String OPTIONS = "options";
@@ -96,7 +96,7 @@ public class ClassifiersSetSearcherTest {
     private EvaluationResults evaluationResults;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         testInstances = TestHelperUtils.loadInstances();
         classifiersSetSearcher =
                 new ClassifiersSetSearcher(evaluationService, classifierOptionsService, experimentConfig,
@@ -105,14 +105,14 @@ public class ClassifiersSetSearcherTest {
     }
 
     @Test
-    public void testEmptyConfigs() {
+    void testEmptyConfigs() {
         when(classifierOptionsService.getActiveClassifiersOptions()).thenReturn(Collections.emptyList());
         assertThrows(ExperimentException.class,
                 () -> classifiersSetSearcher.findBestClassifiers(testInstances, EvaluationMethod.TRAINING_DATA));
     }
 
     @Test
-    public void testErrorConfigs() {
+    void testErrorConfigs() {
         ClassifiersConfiguration classifiersConfiguration = TestHelperUtils.createClassifiersConfiguration();
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
                 TestHelperUtils.createClassifierOptionsDatabaseModel(OPTIONS, classifiersConfiguration);
@@ -123,7 +123,7 @@ public class ClassifiersSetSearcherTest {
     }
 
     @Test
-    public void testEmptySet() throws Exception {
+    void testEmptySet() throws Exception {
         ClassificationResult classificationResult = new ClassificationResult();
         ClassifiersConfiguration classifiersConfiguration = TestHelperUtils.createClassifiersConfiguration();
         ClassifierOptionsDatabaseModel logisticModel = TestHelperUtils.createClassifierOptionsDatabaseModel(
@@ -143,7 +143,7 @@ public class ClassifiersSetSearcherTest {
      * Case 2: the classifiers size is less than best classifiers number specified in configs.
      */
     @Test
-    public void testSuccessBuilt() throws Exception {
+    void testSuccessBuilt() throws Exception {
         ClassificationResult classificationResult = new ClassificationResult();
         classificationResult.setSuccess(true);
         classificationResult.setEvaluationResults(evaluationResults);

@@ -17,13 +17,13 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(ClassifierInputOptionsMapperImpl.class)
-public class ClassifierInputOptionsMapperTest {
+class ClassifierInputOptionsMapperTest {
 
     @Inject
     private ClassifierInputOptionsMapper classifierInputOptionsMapper;
 
     @Test
-    public void testMapInputOptions() {
+    void testMapInputOptions() {
         ClassifierInputOptions classifierInputOptions = new ClassifierInputOptions();
         classifierInputOptions.setOptionName("option");
         classifierInputOptions.setOptionValue("value");

@@ -9,18 +9,18 @@ import org.junit.jupiter.api.Test;
  *
  * @author Roman Batygin
  */
-public class ExperimentResultsLockServiceTest {
+class ExperimentResultsLockServiceTest {
 
     private ExperimentResultsLockService experimentResultsLockService = new ExperimentResultsLockService();
 
     @Test
-    public void testLock() {
+    void testLock() {
         experimentResultsLockService.lock(TestHelperUtils.TEST_UUID);
         Assertions.assertThat(experimentResultsLockService.locked(TestHelperUtils.TEST_UUID)).isTrue();
     }
 
     @Test
-    public void testUnlock() {
+    void testUnlock() {
         experimentResultsLockService.lock(TestHelperUtils.TEST_UUID);
         experimentResultsLockService.unlock(TestHelperUtils.TEST_UUID);
         Assertions.assertThat(experimentResultsLockService.locked(TestHelperUtils.TEST_UUID)).isFalse();

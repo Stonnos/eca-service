@@ -38,6 +38,12 @@ public class ClassifierOptionsDto {
     private LocalDateTime creationDate;
 
     /**
+     * User name
+     */
+    @ApiModelProperty(value = "User name")
+    private String createdBy;
+
+    /**
      * Json config
      */
     @ApiModelProperty(value = "Json config", required = true)

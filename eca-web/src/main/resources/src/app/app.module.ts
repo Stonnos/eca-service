@@ -30,6 +30,9 @@ import { CreateClassifiersConfigurationModule } from "./create-classifiers-confi
 import { UploadClassifierOptionsDialogModule } from "./upload-classifier-options-dialog/upload-classifier-options-dialog.module";
 import { ClassifiersConfigurationMenuModule } from "./classifiers-configuration-menu/classifiers-configuration-menu.module";
 import { ClassifiersConfigurationDetailsModule } from "./classifiers-configuration-details/classifiers-configuration-details.module";
+import { UsersModule } from "./users/users.module";
+import { CreateUserModule } from "./create-user/create-user.module";
+import { ChangePasswordModule } from "./change-password/change-password.module";
 
 @NgModule({
   declarations: [
@@ -44,6 +47,8 @@ import { ClassifiersConfigurationDetailsModule } from "./classifiers-configurati
     ExperimentsTabsModule,
     ClassifiersModule,
     ExperimentsModule,
+    UsersModule,
+    CreateUserModule,
     ClassifiersConfigurationsModule,
     ClassifiersConfigurationDetailsModule,
     ClassifiersConfigurationMenuModule,
@@ -61,6 +66,7 @@ import { ClassifiersConfigurationDetailsModule } from "./classifiers-configurati
     CreateExperimentModule,
     ExperimentDetailsModule,
     UploadClassifierOptionsDialogModule,
+    ChangePasswordModule,
     UiComponentsModule,
     HttpClientModule,
     NoopAnimationsModule,

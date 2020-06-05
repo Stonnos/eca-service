@@ -7,6 +7,7 @@ import { AuthService } from "./services/auth.service";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { AuthInterceptor } from "./interceptors/auth-interceptor";
 import { LogoutService } from "./services/logout.service";
+import { UserStorage } from "./services/user.storage";
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import { LogoutService } from "./services/logout.service";
   providers: [
     AuthService,
     LogoutService,
+    UserStorage,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

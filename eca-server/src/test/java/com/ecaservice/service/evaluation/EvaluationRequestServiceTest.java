@@ -39,7 +39,7 @@ import static org.mockito.Mockito.mock;
 @Import({ExecutorConfiguration.class, CrossValidationConfig.class,
         EvaluationLogMapperImpl.class, EvaluationService.class,
         InstancesInfoMapperImpl.class, ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class})
-public class EvaluationRequestServiceTest extends AbstractJpaTest {
+class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     @Inject
     private CrossValidationConfig crossValidationConfig;
@@ -67,7 +67,7 @@ public class EvaluationRequestServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testSuccessClassification() throws Exception {
+    void testSuccessClassification() {
         EvaluationRequest request = TestHelperUtils.createEvaluationRequest();
         EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.SUCCESS);
@@ -81,7 +81,7 @@ public class EvaluationRequestServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testClassificationWithException() throws Exception {
+    void testClassificationWithException() throws Exception {
         EvaluationRequest request = TestHelperUtils.createEvaluationRequest();
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
         EvaluationRequestService service =
@@ -99,7 +99,7 @@ public class EvaluationRequestServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testClassificationWithError() {
+    void testClassificationWithError() {
         EvaluationRequest request = TestHelperUtils.createEvaluationRequest();
         request.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         request.setNumFolds(1);
@@ -113,7 +113,7 @@ public class EvaluationRequestServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    public void testTimeoutInClassification() throws Exception {
+    void testTimeoutInClassification() throws Exception {
         EvaluationRequest request = TestHelperUtils.createEvaluationRequest();
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
         EvaluationRequestService service =

@@ -20,21 +20,21 @@ public class RangeUtilsTest {
     private static final String DATE_RANGE_WITH_UPPER_BOUND_FORMAT = "по %s";
 
     @Test
-    public void testFullEnclosedDateRange() {
+    void testFullEnclosedDateRange() {
         String expected = String.format(DATE_RANGE_FORMAT, LOWER_BOUND_VALUE, UPPER_BOUND_VALUE);
         String actual = formatDateRange(LOWER_BOUND_VALUE, UPPER_BOUND_VALUE);
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    public void testLowerBoundDateRange() {
+    void testLowerBoundDateRange() {
         String expected = String.format(DATE_RANGE_WITH_LOWER_BOUND_FORMAT, LOWER_BOUND_VALUE);
         String actual = formatDateRange(LOWER_BOUND_VALUE, null);
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    public void testUpperBoundDateRange() {
+    void testUpperBoundDateRange() {
         String expected = String.format(DATE_RANGE_WITH_UPPER_BOUND_FORMAT, UPPER_BOUND_VALUE);
         String actual = formatDateRange(null, UPPER_BOUND_VALUE);
         assertThat(actual).isEqualTo(expected);

@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-public class ErsWebServiceClientTest {
+class ErsWebServiceClientTest {
 
     private static final String WEB_SERVICE_URL = "http://localhost";
 
@@ -49,7 +49,7 @@ public class ErsWebServiceClientTest {
     private EvaluationResults evaluationResults;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         evaluationResults =
                 new EvaluationResults(new KNearestNeighbours(), new Evaluation(TestHelperUtils.loadInstances()));
         when(evaluationResultsService.proceed(any(EvaluationResults.class))).thenReturn(new EvaluationResultsRequest());
@@ -57,7 +57,7 @@ public class ErsWebServiceClientTest {
     }
 
     @Test
-    public void testSuccessSending() {
+    void testSuccessSending() {
         EvaluationResultsResponse expectedResponse = new EvaluationResultsResponse();
         expectedResponse.setStatus(ResponseStatus.SUCCESS);
         expectedResponse.setRequestId(UUID.randomUUID().toString());
@@ -70,7 +70,7 @@ public class ErsWebServiceClientTest {
     }
 
     @Test
-    public void testErrorSending() {
+    void testErrorSending() {
         when(ersWebServiceTemplate.marshalSendAndReceive(anyString(), any(EvaluationResultsRequest.class))).thenThrow(
                 new WebServiceIOException("I/O exception"));
         assertThrows(WebServiceIOException.class, () -> ersWebServiceClient.sendEvaluationResults(evaluationResults,

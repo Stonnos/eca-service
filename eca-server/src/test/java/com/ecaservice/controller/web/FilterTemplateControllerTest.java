@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Roman Batygin
  */
 @WebMvcTest(controllers = FilterTemplateController.class)
-public class FilterTemplateControllerTest extends AbstractControllerTest {
+class FilterTemplateControllerTest extends AbstractControllerTest {
 
     private static final String BASE_URL = "/filter-templates";
     private static final String EXPERIMENT_FILTER_TEMPLATE_URL = BASE_URL + "/experiment";
@@ -42,79 +42,79 @@ public class FilterTemplateControllerTest extends AbstractControllerTest {
     private FilterService filterService;
 
     @Test
-    public void testGetExperimentFilterTemplateUnauthorized() throws Exception {
+    void testGetExperimentFilterTemplateUnauthorized() throws Exception {
         mockMvc.perform(get(EXPERIMENT_FILTER_TEMPLATE_URL)).andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testGetExperimentFilterTemplateNotFound() throws Exception {
+    void testGetExperimentFilterTemplateNotFound() throws Exception {
         testGetFilterTemplateNotFound(EXPERIMENT_FILTER_TEMPLATE_URL, FilterTemplateType.EXPERIMENT);
     }
 
     @Test
-    public void testGetExperimentFilterTemplateOk() throws Exception {
+    void testGetExperimentFilterTemplateOk() throws Exception {
         testGetFilterTemplateOk(EXPERIMENT_FILTER_TEMPLATE_URL, FilterTemplateType.EXPERIMENT);
     }
 
     @Test
-    public void testGetEvaluationLogFilterTemplateUnauthorized() throws Exception {
+    void testGetEvaluationLogFilterTemplateUnauthorized() throws Exception {
         mockMvc.perform(get(EVALUATION_LOG_FILTER_TEMPLATE_URL)).andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testGetEvaluationLogFilterTemplateNotFound() throws Exception {
+    void testGetEvaluationLogFilterTemplateNotFound() throws Exception {
         testGetFilterTemplateNotFound(EVALUATION_LOG_FILTER_TEMPLATE_URL, FilterTemplateType.EVALUATION_LOG);
     }
 
     @Test
-    public void testGetEvaluationLogFilterTemplateOk() throws Exception {
+    void testGetEvaluationLogFilterTemplateOk() throws Exception {
         testGetFilterTemplateOk(EVALUATION_LOG_FILTER_TEMPLATE_URL, FilterTemplateType.EVALUATION_LOG);
     }
 
     @Test
-    public void testGetClassifierOptionsRequestFilterTemplateUnauthorized() throws Exception {
+    void testGetClassifierOptionsRequestFilterTemplateUnauthorized() throws Exception {
         mockMvc.perform(get(CLASSIFIER_OPTIONS_REQUEST_FILTER_TEMPLATE_URL)).andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testGetClassifierOptionsRequestFilterTemplateNotFound() throws Exception {
+    void testGetClassifierOptionsRequestFilterTemplateNotFound() throws Exception {
         testGetFilterTemplateNotFound(CLASSIFIER_OPTIONS_REQUEST_FILTER_TEMPLATE_URL,
                 FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST);
     }
 
     @Test
-    public void testGetClassifierOptionsRequestFilterTemplateOk() throws Exception {
+    void testGetClassifierOptionsRequestFilterTemplateOk() throws Exception {
         testGetFilterTemplateOk(CLASSIFIER_OPTIONS_REQUEST_FILTER_TEMPLATE_URL,
                 FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST);
     }
 
     @Test
-    public void testGetExperimentTypeDictionaryUnauthorized() throws Exception {
+    void testGetExperimentTypeDictionaryUnauthorized() throws Exception {
         mockMvc.perform(get(EXPERIMENT_TYPES_URL)).andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testGetExperimentTypeDictionaryNotFound() throws Exception {
+    void testGetExperimentTypeDictionaryNotFound() throws Exception {
         testGetFilterDictionaryNotFound(EXPERIMENT_TYPES_URL, FilterDictionaries.EXPERIMENT_TYPE);
     }
 
     @Test
-    public void testGetExperimentTypeDictionaryOk() throws Exception {
+    void testGetExperimentTypeDictionaryOk() throws Exception {
         testGetFilterDictionaryOk(EXPERIMENT_TYPES_URL, FilterDictionaries.EXPERIMENT_TYPE);
     }
 
     @Test
-    public void testGetEvaluationMethodsDictionaryUnauthorized() throws Exception {
+    void testGetEvaluationMethodsDictionaryUnauthorized() throws Exception {
         mockMvc.perform(get(EVALUATION_METHODS_URL)).andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testGetEvaluationMethodsDictionaryNotFound() throws Exception {
+    void testGetEvaluationMethodsDictionaryNotFound() throws Exception {
         testGetFilterDictionaryNotFound(EVALUATION_METHODS_URL, FilterDictionaries.EVALUATION_METHOD);
     }
 
     @Test
-    public void testGetEvaluationMethodsDictionaryOk() throws Exception {
+    void testGetEvaluationMethodsDictionaryOk() throws Exception {
         testGetFilterDictionaryOk(EVALUATION_METHODS_URL, FilterDictionaries.EVALUATION_METHOD);
     }
 

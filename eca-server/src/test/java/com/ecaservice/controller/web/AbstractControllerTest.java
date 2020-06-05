@@ -15,7 +15,7 @@ import javax.inject.Inject;
  * @author Roman Batygin
  */
 @Oauth2TestConfiguration
-public abstract class AbstractControllerTest {
+abstract class AbstractControllerTest {
 
     @Getter
     private String accessToken;
@@ -29,7 +29,7 @@ public abstract class AbstractControllerTest {
     protected final ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         accessToken = tokenService.obtainAccessToken();
     }
 }

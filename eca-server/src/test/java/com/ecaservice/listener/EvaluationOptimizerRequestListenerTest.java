@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-public class EvaluationOptimizerRequestListenerTest {
+class EvaluationOptimizerRequestListenerTest {
 
     @Mock
     private RabbitTemplate rabbitTemplate;
@@ -47,7 +47,7 @@ public class EvaluationOptimizerRequestListenerTest {
     private ArgumentCaptor<String> replyToCaptor;
 
     @Test
-    public void testHandleMessage() {
+    void testHandleMessage() {
         InstancesRequest instancesRequest = new InstancesRequest();
         Message message = Mockito.mock(Message.class);
         when(evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest)).thenReturn(

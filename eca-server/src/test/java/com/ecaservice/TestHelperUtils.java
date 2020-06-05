@@ -312,7 +312,7 @@ public class TestHelperUtils {
     public static ClassifiersConfiguration createClassifiersConfiguration() {
         ClassifiersConfiguration classifiersConfiguration = new ClassifiersConfiguration();
         classifiersConfiguration.setActive(true);
-        classifiersConfiguration.setCreated(LocalDateTime.now());
+        classifiersConfiguration.setCreationDate(LocalDateTime.now());
         classifiersConfiguration.setBuildIn(true);
         return classifiersConfiguration;
     }
@@ -325,7 +325,7 @@ public class TestHelperUtils {
     public static ClassifiersConfigurationDto createClassifiersConfigurationDto() {
         ClassifiersConfigurationDto classifiersConfiguration = new ClassifiersConfigurationDto();
         classifiersConfiguration.setActive(true);
-        classifiersConfiguration.setCreated(LocalDateTime.now());
+        classifiersConfiguration.setCreationDate(LocalDateTime.now());
         classifiersConfiguration.setBuildIn(true);
         return classifiersConfiguration;
     }

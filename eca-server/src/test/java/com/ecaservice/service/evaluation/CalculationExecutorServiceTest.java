@@ -15,20 +15,20 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  *
  * @author Roman Batygin
  */
-public class CalculationExecutorServiceTest {
+class CalculationExecutorServiceTest {
 
     private static final long TIMEOUT = 1000L;
 
     private CalculationExecutorService executorService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         ExecutorService executor = Executors.newCachedThreadPool();
         executorService = new CalculationExecutorServiceImpl(executor);
     }
 
     @Test
-    public void testTimeOut() {
+    void testTimeOut() {
         assertThrows(TimeoutException.class, () ->
                 executorService.execute(() -> {
                     Thread.sleep(TIMEOUT + 100L);

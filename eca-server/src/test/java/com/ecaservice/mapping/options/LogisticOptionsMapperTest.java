@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ExtendWith(SpringExtension.class)
 @Import(LogisticOptionsMapperImpl.class)
-public class LogisticOptionsMapperTest {
+class LogisticOptionsMapperTest {
 
     private static final int MAX_ITS = 500;
 
@@ -26,7 +26,7 @@ public class LogisticOptionsMapperTest {
     private LogisticOptionsMapper logisticOptionsMapper;
 
     @Test
-    public void testMapLogisticOptions() {
+    void testMapLogisticOptions() {
         LogisticOptions logisticOptions = new LogisticOptions();
         logisticOptions.setMaxIts(MAX_ITS);
         logisticOptions.setUseConjugateGradientDescent(true);

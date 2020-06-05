@@ -32,6 +32,9 @@ export abstract class BaseListComponent<T> implements FieldLink {
 
   public pageRequestDto: PageRequestDto;
 
+  public lastCreatedId: any;
+  public blinkId: any;
+
   @ViewChild(Table, { static: true })
   public table: Table;
 
@@ -82,6 +85,8 @@ export abstract class BaseListComponent<T> implements FieldLink {
   }
 
   public setPage(pageDto: PageDto<T>) {
+    this.blinkId = this.lastCreatedId;
+    this.lastCreatedId = null;
     this.items = pageDto.content;
     this.table.totalRecords = pageDto.totalCount;
     if (pageDto.page == 0) {
@@ -116,6 +121,10 @@ export abstract class BaseListComponent<T> implements FieldLink {
       filters: this.filterRequests
     };
     this.getNextPage(this.pageRequestDto);
+  }
+
+  public isBlink(item: any): boolean {
+    return this.blinkId && this.blinkId == item.id;
   }
 
   private getSortField(columnName: string): string {

@@ -19,7 +19,7 @@ import static com.ecaservice.TestHelperUtils.bearerHeader;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public abstract class PageRequestControllerTest extends AbstractControllerTest {
+abstract class PageRequestControllerTest extends AbstractControllerTest {
 
     public void testGetPageUnauthorized(String url, Map<String, List<String>> params) throws Exception {
         mockMvc.perform(get(url)

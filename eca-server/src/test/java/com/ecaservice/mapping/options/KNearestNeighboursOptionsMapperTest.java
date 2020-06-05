@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @Import({KNearestNeighboursOptionsMapperImpl.class, ExperimentConfig.class})
-public class KNearestNeighboursOptionsMapperTest {
+class KNearestNeighboursOptionsMapperTest {
 
     @Inject
     private KNearestNeighboursOptionsMapper kNearestNeighboursOptionsMapper;
@@ -34,7 +34,7 @@ public class KNearestNeighboursOptionsMapperTest {
     private ExperimentConfig experimentConfig;
 
     @Test
-    public void testMapKNearestNeighboursOptions() {
+    void testMapKNearestNeighboursOptions() {
         KNearestNeighboursOptions kNearestNeighboursOptions = TestHelperUtils.createKNearestNeighboursOptions();
         DistanceBuilder distanceBuilder = new DistanceBuilder();
         for (DistanceType distanceType : DistanceType.values()) {

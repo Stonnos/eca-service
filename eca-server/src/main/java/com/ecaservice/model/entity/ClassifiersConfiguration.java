@@ -1,13 +1,12 @@
 package com.ecaservice.model.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
@@ -19,24 +18,17 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Data
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "classifiers_configuration")
-public class ClassifiersConfiguration {
-
-    @Id
-    @GeneratedValue
-    private Long id;
+public class ClassifiersConfiguration extends BaseEntity {
 
     /**
      * Configuration name
      */
     @Column(name = "configuration_name")
     private String configurationName;
-
-    /**
-     * Configuration created date
-     */
-    private LocalDateTime created;
 
     /**
      * Configuration updated date

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v7-add-eca-user-role.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Add ROLE_ECA_USER -->
+    <changeSet id="1" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="role_entity"/>
+            <sqlCheck expectedResult="0">
+                select count(*) from role_entity where id = 2
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="role_entity">
+            <column name="id" valueNumeric="2"/>
+            <column name="role_name" value="ROLE_ECA_USER"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

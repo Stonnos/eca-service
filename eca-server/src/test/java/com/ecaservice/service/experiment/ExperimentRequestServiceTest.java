@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-public class ExperimentRequestServiceTest {
+class ExperimentRequestServiceTest {
 
     @Mock
     private ExperimentService experimentService;
@@ -36,7 +36,7 @@ public class ExperimentRequestServiceTest {
     private ExperimentRequestService experimentRequestService;
 
     @Test
-    public void testSuccessCreation() {
+    void testSuccessCreation() {
         ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         experiment.setId(1L);

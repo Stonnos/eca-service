@@ -56,11 +56,13 @@ export class ClassifierOptionsRequestsFields {
 export class ClassifierOptionsFields {
   public static readonly OPTIONS_NAME: string = "optionsName";
   public static readonly CREATION_DATE: string = "creationDate";
+  public static readonly CREATED_BY: string = "createdBy";
 }
 
 export class ClassifiersConfigurationFields {
   public static readonly CONFIGURATION_NAME: string = "configurationName";
-  public static readonly CREATED: string = "created";
+  public static readonly CREATION_DATE: string = "creationDate";
+  public static readonly CREATED_BY: string = "createdBy";
   public static readonly UPDATED: string = "updated";
   public static readonly CLASSIFIERS_OPTIONS_COUNT: string = "classifiersOptionsCount";
 }
@@ -91,4 +93,12 @@ export class ExperimentResultsFields {
   public static readonly CLASSIFIER_NAME: string = "classifierInfo.classifierName";
   public static readonly PCT_CORRECT: string = "pctCorrect";
   public static readonly SENT: string = "sent";
+}
+
+export class UserFields {
+  public static readonly LOGIN: string = "login";
+  public static readonly EMAIL: string = "email";
+  public static readonly FIRST_NAME: string = "firstName";
+  public static readonly CREATION_DATE: string = "creationDate";
+  public static readonly ROLES: string = "roles";
 }

@@ -3,25 +3,18 @@ package com.ecaservice.notification.dto;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Map;
 
 import static com.ecaservice.notification.util.FieldConstraints.EMAIL_MAX_SIZE;
 import static com.ecaservice.notification.util.FieldConstraints.EMAIL_REGEX;
-import static com.ecaservice.notification.util.FieldConstraints.SUBJECT_MAX_SIZE;
 
 /**
  * Email request dto.
  */
 @Data
 public class EmailRequest {
-
-    /**
-     * Sender email
-     */
-    @Email(regexp = EMAIL_REGEX)
-    @Size(max = EMAIL_MAX_SIZE)
-    private String sender;
 
     /**
      * Receiver email
@@ -31,17 +24,15 @@ public class EmailRequest {
     private String receiver;
 
     /**
-     * Subject string
+     * Email template type
      */
-    @NotBlank
-    @Size(max = SUBJECT_MAX_SIZE)
-    private String subject;
+    @NotNull
+    private EmailTemplateType templateType;
 
     /**
-     * Email message
+     * Email message variables
      */
-    @NotBlank
-    private String message;
+    private Map<String, Object> emailMessageVariables;
 
     /**
      * Is html message?

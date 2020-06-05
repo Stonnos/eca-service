@@ -18,13 +18,13 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(ClassifierOptionsResponseModelMapperImpl.class)
-public class ClassifierOptionsResponseModelMapperTest {
+class ClassifierOptionsResponseModelMapperTest {
 
     @Inject
     private ClassifierOptionsResponseModelMapper classifierOptionsResponseModelMapper;
 
     @Test
-    public void testMapClassifierOptionsResponseModel() {
+    void testMapClassifierOptionsResponseModel() {
         ClassifierOptionsResponseModel classifierOptionsResponseModel =
                 TestHelperUtils.createClassifierOptionsResponseModel("Options");
         ClassifierOptionsResponseDto classifierOptionsResponseDto =

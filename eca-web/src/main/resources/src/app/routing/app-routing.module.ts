@@ -9,6 +9,9 @@ import { EvaluationLogDetailsComponent } from "../evaluation-log-details/compone
 import { ExperimentDetailsComponent } from "../experiment-details/components/experiment-details.component";
 import { ExperimentResultsDetailsComponent } from "../experiment-results-details/components/experiment-results-details.component";
 import { ClassifiersConfigurationDetailsComponent } from "../classifiers-configuration-details/components/classifiers-configuration-details.component";
+import { UsersListComponent } from "../users/components/users-list.component";
+import { ForgotPasswordComponent } from "../change-password/components/forgot-password/forgot-password.component";
+import { ResetPasswordComponent } from "../change-password/components/reset-password/reset-password.component";
 
 const routes: Routes = [
   {
@@ -26,6 +29,10 @@ const routes: Routes = [
       {
         path: 'classifiers-options-requests',
         component: ClassifierOptionsRequestsComponent
+      },
+      {
+        path: 'users',
+        component: UsersListComponent
       },
       {
         path: 'classifiers/evaluation-results/:id',
@@ -48,6 +55,14 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent
+  },
+  {
+    path: 'forgot-password',
+    component: ForgotPasswordComponent
+  },
+  {
+    path: 'reset-password',
+    component: ResetPasswordComponent
   },
   {
     path: '',

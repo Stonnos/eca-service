@@ -39,8 +39,8 @@ spring:
 
 eureka:
   client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka
+    registerWithEureka: false
+    fetchRegistry: false
 
 ribbon:
   ReadTimeout: 60000
@@ -49,6 +49,15 @@ mail-config:
   maxFailedAttemptsToSent: 10
   pageSize: 10
   delaySeconds: 10
+  sender: rbatsw@gmail.com
+  subject: Eca - service
+  messageTemplatesMap:
+    NEW_EXPERIMENT_TEMPLATE: new-experiment-template.html
+    FINISHED_EXPERIMENT_TEMPLATE: finished-experiment-template.html
+    ERROR_EXPERIMENT_TEMPLATE: error-experiment-template.html
+    TIMEOUT_EXPERIMENT_TEMPLATE: timeout-experiment-template.html
+    NEW_USER_TEMPLATE: new-user-template.html
+    RESET_PASSWORD_TEMPLATE: reset-password-template.html
 
 management:
   metrics:

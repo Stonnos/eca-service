@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class,
         ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class, CrossValidationConfig.class})
-public class EvaluationLogMapperTest {
+class EvaluationLogMapperTest {
 
     @Inject
     private CrossValidationConfig crossValidationConfig;
@@ -36,7 +36,7 @@ public class EvaluationLogMapperTest {
     private EvaluationLogMapper evaluationLogMapper;
 
     @Test
-    public void testMapToEvaluationLogWithTrainingDataEvaluationMethod() {
+    void testMapToEvaluationLogWithTrainingDataEvaluationMethod() {
         EvaluationRequest evaluationRequest = new EvaluationRequest();
         evaluationRequest.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         evaluationRequest.setData(TestHelperUtils.loadInstances());
@@ -64,7 +64,7 @@ public class EvaluationLogMapperTest {
     }
 
     @Test
-    public void testMapToEvaluationLogWithCrossValidationEvaluationMethod() {
+    void testMapToEvaluationLogWithCrossValidationEvaluationMethod() {
         EvaluationRequest evaluationRequest = new EvaluationRequest();
         evaluationRequest.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         evaluationRequest.setNumFolds(TestHelperUtils.NUM_FOLDS);
@@ -78,7 +78,7 @@ public class EvaluationLogMapperTest {
     }
 
     @Test
-    public void testMapToEvaluationLogWithDefaultOptions() {
+    void testMapToEvaluationLogWithDefaultOptions() {
         EvaluationRequest evaluationRequest = new EvaluationRequest();
         evaluationRequest.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequest, crossValidationConfig);
@@ -89,21 +89,21 @@ public class EvaluationLogMapperTest {
     }
 
     @Test
-    public void testMapToEvaluationLogDto() {
+    void testMapToEvaluationLogDto() {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
         EvaluationLogDto evaluationLogDto = evaluationLogMapper.map(evaluationLog);
         assertEvaluationLogDto(evaluationLogDto, evaluationLog);
     }
 
     @Test
-    public void testMapToEvaluationLogDetailsDto() {
+    void testMapToEvaluationLogDetailsDto() {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
         EvaluationLogDetailsDto evaluationLogDetailsDto = evaluationLogMapper.mapDetails(evaluationLog);
         assertEvaluationLogDto(evaluationLogDetailsDto, evaluationLog);
     }
 
     @Test
-    public void testMapToEvaluationBean() {
+    void testMapToEvaluationBean() {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
         EvaluationLogBean evaluationLogBean = evaluationLogMapper.mapToBean(evaluationLog);
         assertThat(evaluationLogBean).isNotNull();

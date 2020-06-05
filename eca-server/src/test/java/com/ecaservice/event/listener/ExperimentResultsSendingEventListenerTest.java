@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-public class ExperimentResultsSendingEventListenerTest {
+class ExperimentResultsSendingEventListenerTest {
 
     @Mock
     private ExperimentService experimentService;
@@ -49,7 +49,7 @@ public class ExperimentResultsSendingEventListenerTest {
     private ExperimentResultsSendingEventListener experimentResultsSendingEventListener;
 
     @Test
-    public void testExperimentResultsSendingEvent() {
+    void testExperimentResultsSendingEvent() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         List<ExperimentResultsEntity> experimentResultsEntityList =
                 Collections.singletonList(TestHelperUtils.createExperimentResultsEntity(experiment));
@@ -65,7 +65,7 @@ public class ExperimentResultsSendingEventListenerTest {
     }
 
     @Test
-    public void testExperimentResultsSendingEventWithException() {
+    void testExperimentResultsSendingEventWithException() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         List<ExperimentResultsEntity> experimentResultsEntityList =
                 Collections.singletonList(TestHelperUtils.createExperimentResultsEntity(experiment));

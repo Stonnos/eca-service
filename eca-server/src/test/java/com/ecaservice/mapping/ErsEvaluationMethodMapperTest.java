@@ -16,19 +16,19 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(ErsEvaluationMethodMapperImpl.class)
-public class ErsEvaluationMethodMapperTest {
+class ErsEvaluationMethodMapperTest {
 
     @Inject
     private ErsEvaluationMethodMapper ersEvaluationMethodMapper;
 
     @Test
-    public void testMapTrainingDataMethod() {
+    void testMapTrainingDataMethod() {
         Assertions.assertThat(ersEvaluationMethodMapper.map(EvaluationMethod.TRAINING_DATA)).isEqualTo(
                 eca.core.evaluation.EvaluationMethod.TRAINING_DATA);
     }
 
     @Test
-    public void testMapCrossValidationMethod() {
+    void testMapCrossValidationMethod() {
         Assertions.assertThat(ersEvaluationMethodMapper.map(EvaluationMethod.CROSS_VALIDATION)).isEqualTo(
                 eca.core.evaluation.EvaluationMethod.CROSS_VALIDATION);
     }

@@ -19,13 +19,13 @@ import javax.inject.Inject;
  */
 @ExtendWith(SpringExtension.class)
 @Import(RandomForestsOptionsMapperImpl.class)
-public class RandomForestsOptionsMapperTest {
+class RandomForestsOptionsMapperTest {
 
     @Inject
     private RandomForestsOptionsMapper randomForestsOptionsMapper;
 
     @Test
-    public void testMapRandomForestsOptions() {
+    void testMapRandomForestsOptions() {
         RandomForestsOptions randomForestsOptions = TestHelperUtils.createRandomForestsOptions(DecisionTreeType.C45);
         RandomForests randomForests = randomForestsOptionsMapper.map(randomForestsOptions);
         Assertions.assertThat(randomForests.getSeed()).isEqualTo(randomForestsOptions.getSeed());

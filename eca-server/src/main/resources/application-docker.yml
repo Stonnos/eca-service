@@ -20,24 +20,21 @@ spring:
 
 eureka:
   client:
+    registerWithEureka: true
+    fetchRegistry: true
     serviceUrl:
       defaultZone: http://discovery-server:8761/eureka
 
 ## Swagger properties
 swagger2:
-  tokenUrl: http://localhost:8080/eca-oauth/oauth/token
+  tokenBaseUrl: http://localhost:8080/eca-oauth
 
 ## Experiment properties
 experiment:
   storagePath: /home/experiment/
-  downloadUrl: http://localhost:8080/eca-server/eca-api/experiment/download/%s
+  downloadBaseUrl: http://localhost:8080/eca-server
   data:
     storagePath: /home/experiment/data/
-  mail:
-    from: rbatsw@gmail.com
-    subject: Eca - service
-    serviceUrl: http://notification-service:8080/ws/
-    enabled: true
 
 ers:
   url: http://evaluation-results-service:8080/ws/

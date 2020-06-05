@@ -31,11 +31,13 @@ public class UserEntity {
     /**
      * User login
      */
+    @Column(nullable = false, unique = true)
     private String login;
 
     /**
      * User password
      */
+    @Column(nullable = false)
     private String password;
 
     /**
@@ -47,12 +49,13 @@ public class UserEntity {
     /**
      * User email
      */
+    @Column(nullable = false, unique = true)
     private String email;
 
     /**
      * User first name
      */
-    @Column(name = "first_name")
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
     /**

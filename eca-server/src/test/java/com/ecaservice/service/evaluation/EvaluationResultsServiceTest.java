@@ -49,7 +49,7 @@ import java.util.List;
 @TestPropertySource("classpath:application.properties")
 @Import({EvaluationResultsService.class, CrossValidationConfig.class,
         InstancesConverter.class, ClassifierOptionsConverter.class, ClassifierOptionsMapperConfiguration.class})
-public class EvaluationResultsServiceTest {
+class EvaluationResultsServiceTest {
 
     @Inject
     private EvaluationResultsService evaluationResultsService;
@@ -59,12 +59,12 @@ public class EvaluationResultsServiceTest {
     private EvaluationResults evaluationResults;
 
     @BeforeEach
-    public void init() {
+    void init() {
         evaluationResults = TestHelperUtils.getEvaluationResults();
     }
 
     @Test
-    public void testMapEvaluationResults() {
+    void testMapEvaluationResults() {
         EvaluationResultsRequest resultsRequest = evaluationResultsService.proceed(evaluationResults);
         Assertions.assertThat(resultsRequest).isNotNull();
         //Instances report assertion
@@ -155,7 +155,7 @@ public class EvaluationResultsServiceTest {
     }
 
     @Test
-    public void testHeterogeneousClassifierMap() {
+    void testHeterogeneousClassifierMap() {
         HeterogeneousClassifier heterogeneousClassifier = new HeterogeneousClassifier();
         heterogeneousClassifier.setClassifiersSet(new ClassifiersSet());
         heterogeneousClassifier.getClassifiersSet().addClassifier(new CART());
@@ -171,7 +171,7 @@ public class EvaluationResultsServiceTest {
     }
 
     @Test
-    public void testStackingClassifierMap() {
+    void testStackingClassifierMap() {
         StackingClassifier stackingClassifier = new StackingClassifier();
         stackingClassifier.setClassifiers(new ClassifiersSet());
         stackingClassifier.getClassifiers().addClassifier(new CART());

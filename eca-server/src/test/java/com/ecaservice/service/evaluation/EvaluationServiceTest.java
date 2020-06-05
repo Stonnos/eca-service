@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @Import(CrossValidationConfig.class)
-public class EvaluationServiceTest {
+class EvaluationServiceTest {
 
     @Inject
     private CrossValidationConfig config;
@@ -34,12 +34,12 @@ public class EvaluationServiceTest {
     private EvaluationService evaluationService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         evaluationService = new EvaluationService(config);
     }
 
     @Test
-    public void testTrainingDataMethod() {
+    void testTrainingDataMethod() {
         EvaluationRequest evaluationRequest = TestHelperUtils.createEvaluationRequest();
         ClassificationResult result = evaluationService.evaluateModel(evaluationRequest);
         assertThat(result.isSuccess()).isTrue();
@@ -47,7 +47,7 @@ public class EvaluationServiceTest {
     }
 
     @Test
-    public void testCrossValidationMethod() {
+    void testCrossValidationMethod() {
         EvaluationRequest evaluationRequest = TestHelperUtils.createEvaluationRequest();
         evaluationRequest.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         evaluationRequest.setNumFolds(TestHelperUtils.NUM_FOLDS);

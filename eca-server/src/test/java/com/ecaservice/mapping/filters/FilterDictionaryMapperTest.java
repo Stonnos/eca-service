@@ -19,7 +19,7 @@ import java.util.Collections;
  */
 @ExtendWith(SpringExtension.class)
 @Import({FilterDictionaryValueMapperImpl.class, FilterDictionaryMapperImpl.class})
-public class FilterDictionaryMapperTest {
+class FilterDictionaryMapperTest {
 
     private static final String NAME = "name";
 
@@ -27,7 +27,7 @@ public class FilterDictionaryMapperTest {
     private FilterDictionaryMapper filterDictionaryMapper;
 
     @Test
-    public void testMapFilterDictionary() {
+    void testMapFilterDictionary() {
         FilterDictionary filterDictionary = new FilterDictionary();
         filterDictionary.setName(NAME);
         filterDictionary.setValues(Collections.singletonList(TestHelperUtils.createFilterDictionaryValue()));

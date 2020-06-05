@@ -22,21 +22,23 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ExtendWith(SpringExtension.class)
 @Import(ClassifierOptionsDatabaseModelMapperImpl.class)
-public class ClassifierOptionsDatabaseModelMapperTest {
+class ClassifierOptionsDatabaseModelMapperTest {
 
     private static final String CONFIG = "config";
     private static final long ID = 1L;
+    private static final String CREATED_BY = "user";
 
     @Inject
     private ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
 
     @Test
-    public void testMapClassifierOptionsDatabaseModel() {
+    void testMapClassifierOptionsDatabaseModel() {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
         classifierOptionsDatabaseModel.setId(ID);
         classifierOptionsDatabaseModel.setConfig(CONFIG);
         classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
         classifierOptionsDatabaseModel.setOptionsName(DecisionTreeOptions.class.getSimpleName());
+        classifierOptionsDatabaseModel.setCreatedBy(CREATED_BY);
         ClassifierOptionsDto classifierOptionsDto =
                 classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModel);
         assertThat(classifierOptionsDto).isNotNull();
@@ -44,10 +46,11 @@ public class ClassifierOptionsDatabaseModelMapperTest {
         assertThat(classifierOptionsDto.getConfig()).isEqualTo(classifierOptionsDatabaseModel.getConfig());
         assertThat(classifierOptionsDto.getCreationDate()).isEqualTo(classifierOptionsDatabaseModel.getCreationDate());
         assertThat(classifierOptionsDto.getOptionsName()).isEqualTo(classifierOptionsDatabaseModel.getOptionsName());
+        assertThat(classifierOptionsDto.getCreatedBy()).isEqualTo(classifierOptionsDatabaseModel.getCreatedBy());
     }
 
     @Test
-    public void testMapClassifierOptionsDatabaseModelsList() {
+    void testMapClassifierOptionsDatabaseModelsList() {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
         classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel1 = new ClassifierOptionsDatabaseModel();
