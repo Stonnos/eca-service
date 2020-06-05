@@ -20,9 +20,9 @@ spring:
 
 eureka:
   client:
+    registerWithEureka: true
+    fetchRegistry: true
     serviceUrl:
-      registerWithEureka: true
-      fetchRegistry: true
       defaultZone: http://discovery-server:8761/eureka
 
 ## Swagger properties
