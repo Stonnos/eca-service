@@ -13,14 +13,13 @@ ECA server v5.0
 отправки результатов классификации во внешних сервис для последующего анализа, а также нахождение
 оптимальных конфигураций классификаторов для конкретной обучающей выборки на
 основе истории результатов классификации.
-4. Интеграция с внешним сервисом Notification service для отправки почты. 
 
 Необходимый софт
 ----------------------------------------
 * jdk 1.8
 * maven => 3.3.9
 * Rabbit MQ => 3
-* eca-core 6.6
+* eca-core 6.7
 * Postgres Database для хранения информации => 9.6
 * Контейнер сервлетов Tomcat 8
 
@@ -41,7 +40,7 @@ ECA server v5.0
    * experiment.storagePath - путь к папке на файловой системе для хранения файлов с историей экспериментов
    * experiment.individualClassifiersStoragePath - путь к папке в ресурсах для хранения json - конфигураций классификаторов,
    которые впоследствии будут использоваться при построении эксперимента
-   * experiment.downloadUrl - url ссылки на скачивание файла с результатами эксперимента
+   * experiment.downloadBaseUrl - базовый url ссылки на скачивание файла с результатами эксперимента
    * experiment.maximumFractionDigits - число десятичных знаков после запятой
    * experiment.numberOfDaysForStorage - кол-во дней для хранения файлов с результатами экспериментов
    * experiment.removeExperimentCron - крон выражение для удаления файлов с результатами экспериментов
@@ -55,10 +54,6 @@ ECA server v5.0
    * experiment.ensemble.multiThreadModeEnabled - многопоточный режим для ансамблевых алгоритмов (вкл./выкл.)
    * experiment.ensemble.numThreads - число используемых потоков
    * experiment.ensemble.numFoldsForStacking - число блоков V - блочной кросс - проверки для алгоритма Stacking
-   * experiment.mail.from - email отправителя
-   * experiment.mail.subject - тема письма
-   * experiment.mail.serviceUrl - url конечной точки Notification service
-   * experiment.mail.enabled - выключатель для отправки нотификаций во внешний сервис
 4) ers - настройки интеграции с сервисом evaluation-results-service
    * ers.url - url конечной точки ERS сервиса
    * ers.enabled - выключатель для отправки результатов классификации (вкл./выкл.)
@@ -67,12 +62,12 @@ ECA server v5.0
       полученных от внешнего сервиса ERS
    * common.threadPoolSize - число потоков для асинхронных задач
    * common.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
-6) spring.boot.admin.client - настройки клиента для сервиса мониторинга
-   * instance.service-url - url клиентского приложения
-   * url - url сервиса мониторинга
-   * username - логин пользователя для авторизации в сервисе мониторинга
-   * password - пароль пользователя для авторизации в сервисе мониторинга
-7) cache.specs - настройки spring cache
+6) cache.specs - настройки spring cache
+7) swagger2 - настройки Swagger
+   * swagger2.tokenBaseUrl - базовый url - сервера авторизации
+   * swagger2.clientId - идентификатор клиента
+   * swagger2.secret - пароль клиента
+   * swagger2.groups - Groups map с мета информацией для swagger
 
 Инструкция по развертыванию
 ----------------------------------------
