@@ -31,3 +31,17 @@ eureka:
 
 ribbon:
   ReadTimeout: 60000
+
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+  server:
+    port: 8030
