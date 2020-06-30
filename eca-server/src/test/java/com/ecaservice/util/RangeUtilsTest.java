@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-public class RangeUtilsTest {
+class RangeUtilsTest {
 
     private static final String LOWER_BOUND_VALUE = "2018-01-01";
     private static final String UPPER_BOUND_VALUE = "2019-01-01";

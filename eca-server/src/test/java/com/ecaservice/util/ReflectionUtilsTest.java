@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author Roman Batygin
  */
-public class ReflectionUtilsTest {
+class ReflectionUtilsTest {
 
     private static final String INSTANCES_INFO_RELATION_NAME = "instancesInfo.relationName";
 
