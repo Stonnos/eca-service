@@ -107,6 +107,7 @@ public class ClassifiersSetSearcher {
         return classifierList;
     }
 
+    @SuppressWarnings("unchecked")
     private void initializeClassifiers(List<AbstractClassifier> classifiers, Instances data) {
         //Initialize classifiers options based on training data
         classifiers.forEach(classifier -> {
