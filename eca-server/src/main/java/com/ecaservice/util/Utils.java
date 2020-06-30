@@ -3,9 +3,11 @@ package com.ecaservice.util;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.dto.evaluation.ClassifierReport;
 import com.ecaservice.model.TechnicalStatus;
+import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.model.entity.RequestStatus;
+import com.ecaservice.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.model.projections.RequestStatusStatistics;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
@@ -240,5 +242,19 @@ public class Utils {
                     String.format(CV_EXTENDED_FORMAT, numFolds, numTests);
         }
         return evaluationMethod.getDescription();
+    }
+
+    /**
+     * Creates classifier options request entity.
+     *
+     * @param source - classifier options request source
+     * @return classifier options request entity
+     */
+    public static ClassifierOptionsRequestEntity createClassifierOptionsRequestEntity(
+            ClassifierOptionsRequestSource source) {
+        ClassifierOptionsRequestEntity requestEntity = new ClassifierOptionsRequestEntity();
+        requestEntity.setCreationDate(LocalDateTime.now());
+        requestEntity.setSource(source);
+        return requestEntity;
     }
 }

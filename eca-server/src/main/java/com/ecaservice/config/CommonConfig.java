@@ -18,11 +18,6 @@ public class CommonConfig {
     private Integer maxPageSize;
 
     /**
-     * Classifier options cache duration in days
-     */
-    private Integer classifierOptionsCacheDurationInDays;
-
-    /**
      * Thread pool size for async tasks
      */
     private Integer threadPoolSize;
