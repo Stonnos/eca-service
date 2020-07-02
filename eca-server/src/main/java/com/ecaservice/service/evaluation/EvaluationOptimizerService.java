@@ -73,8 +73,11 @@ public class EvaluationOptimizerService {
         ClassifierOptionsRequest classifierOptionsRequest =
                 classifierOptionsRequestMapper.map(instancesRequest, crossValidationConfig);
         String optimalOptions = getOptimalClassifierOptions(classifierOptionsRequest);
-        return optimalOptions != null ? evaluateModel(classifierOptionsRequest, optimalOptions, data) :
-                buildErrorResponse(String.format(RESULTS_NOT_FOUND_MESSAGE, data.relationName()));
+        if (optimalOptions == null) {
+            return buildErrorResponse(String.format(RESULTS_NOT_FOUND_MESSAGE, data.relationName()));
+        } else {
+            return evaluateModel(classifierOptionsRequest, optimalOptions, data);
+        }
     }
 
     private String getOptimalClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
