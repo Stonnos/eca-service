@@ -50,7 +50,6 @@ ribbon:
 ## Application common configs
 common:
   maxPageSize: 50
-  classifierOptionsCacheDurationInDays: 2
   threadPoolSize: 10
 
 ## Cross - validation properties
@@ -115,6 +114,8 @@ experiment:
 ers:
   url: http://localhost:8089/evaluation-results-service/ws/
   enabled: true
+  useClassifierOptionsCache: true
+  classifierOptionsCacheDurationInDays: 2
 
 cache:
   specs:

@@ -24,6 +24,16 @@ public class ErsConfig {
     private Boolean enabled;
 
     /**
+     * Use optimal classifier options cache?
+     */
+    private Boolean useClassifierOptionsCache;
+
+    /**
+     * Classifier options cache duration in days
+     */
+    private Integer classifierOptionsCacheDurationInDays;
+
+    /**
      * Ssl config
      */
     private SslConfig ssl;
@@ -32,7 +42,6 @@ public class ErsConfig {
      * Ssl config.
      */
     @Data
-    @ConfigurationProperties("ers-config.ssl")
     public static class SslConfig {
 
         /**

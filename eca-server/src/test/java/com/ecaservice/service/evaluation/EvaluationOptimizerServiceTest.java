@@ -2,7 +2,6 @@ package com.ecaservice.service.evaluation;
 
 import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ws.ers.ErsConfig;
 import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
@@ -71,6 +70,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.DigestUtils;
 import org.springframework.ws.client.WebServiceFaultException;
 import org.springframework.ws.client.WebServiceIOException;
@@ -102,7 +102,7 @@ import static org.mockito.Mockito.when;
         ErsConfig.class, ClassifierOptionsConverter.class, EvaluationLogMapperImpl.class,
         EvaluationService.class, ErsEvaluationMethodMapperImpl.class, ErsResponseStatusMapperImpl.class,
         InstancesConverter.class, ClassifierOptionsResponseModelMapperImpl.class,
-        ClassifierInputOptionsMapperImpl.class, CommonConfig.class, ClassifierInfoMapperImpl.class})
+        ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class})
 class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -110,8 +110,6 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     @Inject
     private CrossValidationConfig crossValidationConfig;
-    @Inject
-    private CommonConfig commonConfig;
     @Inject
     private EvaluationRequestService evaluationRequestService;
     @Mock
@@ -154,7 +152,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         ErsRequestService ersRequestService = new ErsRequestService(ersWebServiceClient, ersRequestRepository,
                 classifierOptionsRequestModelRepository, classifierReportMapper, ersResponseStatusMapper, ersConfig);
         evaluationOptimizerService =
-                new EvaluationOptimizerService(crossValidationConfig, commonConfig, evaluationRequestService,
+                new EvaluationOptimizerService(crossValidationConfig,ersConfig, evaluationRequestService,
                         ersRequestService, classifierOptionsRequestModelMapper, evaluationRequestMapper,
                         classifierOptionsRequestMapper, classifierOptionsConverter, classifierOptionsRequestRepository);
         dataMd5Hash = DigestUtils.md5DigestAsHex(
@@ -213,6 +211,17 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         assertErsSource();
     }
 
+    @Test
+    void testDisabledCache() {
+        ErsConfig ersConfig = new ErsConfig();
+        ersConfig.setUseClassifierOptionsCache(false);
+        ReflectionTestUtils.setField(evaluationOptimizerService, "ersConfig", ersConfig);
+        evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
+        evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
+        assertThat(classifierOptionsRequestModelRepository.count()).isEqualTo(2L);
+        assertThat(classifierOptionsRequestRepository.count()).isEqualTo(2L);
+    }
+
     /**
      * Tests for checking exceeded cache cases:
      * Case 1: It's already been N days after last request
@@ -225,7 +234,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     void testExceededClassifierOptionsCache() {
         //Case 1
         ClassifierOptionsRequestModel requestModel = TestHelperUtils.createClassifierOptionsRequestModel(dataMd5Hash,
-                LocalDateTime.now().minusDays(commonConfig.getClassifierOptionsCacheDurationInDays() + 1),
+                LocalDateTime.now().minusDays(ersConfig.getClassifierOptionsCacheDurationInDays() + 1),
                 ErsResponseStatus.SUCCESS, Collections.emptyList());
         ClassifierOptionsRequestEntity requestEntity = TestHelperUtils.createClassifierOptionsRequestEntity
                 (requestModel.getRequestDate(), requestModel);

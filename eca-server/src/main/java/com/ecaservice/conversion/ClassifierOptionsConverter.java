@@ -25,6 +25,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@SuppressWarnings("unchecked")
 public class ClassifierOptionsConverter {
 
     private final List<AbstractClassifierMapper> classifierMappers;
