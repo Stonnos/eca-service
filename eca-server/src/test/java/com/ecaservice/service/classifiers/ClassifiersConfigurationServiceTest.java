@@ -165,7 +165,7 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         assertThat(actualActive).isNotNull();
         assertThat(actualActive.isActive()).isTrue();
         assertThat(actualNotActive).isNotNull();
-        assertThat(actualNotActive.isActive()).isNotNull();
+        assertThat(actualNotActive.isActive()).isFalse();
     }
 
     @Test
