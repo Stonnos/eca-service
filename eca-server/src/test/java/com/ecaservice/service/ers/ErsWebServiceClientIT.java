@@ -13,7 +13,6 @@ import com.ecaservice.dto.evaluation.EvaluationMethodReport;
 import com.ecaservice.dto.evaluation.EvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.GetEvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
-import com.ecaservice.dto.evaluation.InstancesReport;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.InstancesConverter;
 import com.ecaservice.service.evaluation.EvaluationResultsService;
@@ -45,6 +44,8 @@ import java.util.UUID;
         ClassifierOptionsConverter.class, ClassifierOptionsMapperConfiguration.class, InstancesConverter.class})
 class ErsWebServiceClientIT {
 
+    @Inject
+    private InstancesConverter instancesConverter;
     @Inject
     private ErsWebServiceClient ersWebServiceClient;
 
@@ -97,7 +98,7 @@ class ErsWebServiceClientIT {
         request.getEvaluationMethodReport().setNumTests(
                 BigInteger.valueOf(evaluationResults.getEvaluation().getValidationsNum()));
         request.getEvaluationMethodReport().setSeed(BigInteger.valueOf(TestHelperUtils.SEED));
-        request.setInstances(new InstancesReport());
+        request.setInstances(instancesConverter.convert(evaluationResults.getEvaluation().getData()));
         request.getInstances().setXmlInstances(Utils.toXmlInstances(evaluationResults.getEvaluation().getData()));
         ClassifierOptionsResponse response = ersWebServiceClient.getClassifierOptions(request);
         Assertions.assertThat(response).isNotNull();

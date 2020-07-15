@@ -229,22 +229,8 @@
                     </xsd:restriction>
                 </xsd:simpleType>
             </xsd:element>
-            <xsd:element name="confidenceIntervalLowerBound" minOccurs="0">
-                <xsd:simpleType>
-                    <xsd:restriction base="xsd:decimal">
-                        <xsd:minInclusive value="0"/>
-                        <xsd:maxInclusive value="1"/>
-                    </xsd:restriction>
-                </xsd:simpleType>
-            </xsd:element>
-            <xsd:element name="confidenceIntervalUpperBound" minOccurs="0">
-                <xsd:simpleType>
-                    <xsd:restriction base="xsd:decimal">
-                        <xsd:minInclusive value="0"/>
-                        <xsd:maxInclusive value="1"/>
-                    </xsd:restriction>
-                </xsd:simpleType>
-            </xsd:element>
+            <xsd:element name="confidenceIntervalLowerBound" type="xsd:decimal" minOccurs="0"/>
+            <xsd:element name="confidenceIntervalUpperBound" type="xsd:decimal" minOccurs="0"/>
         </xsd:sequence>
     </xsd:complexType>
 

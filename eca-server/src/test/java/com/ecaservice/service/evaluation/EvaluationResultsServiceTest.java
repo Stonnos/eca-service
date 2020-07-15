@@ -114,9 +114,9 @@ class EvaluationResultsServiceTest {
             RocCurveReport rocCurveReport = costsReports.get(i).getRocCurve();
             Assertions.assertThat(rocCurveReport).isNotNull();
             Assertions.assertThat(rocCurveReport.getAucValue().doubleValue()).isEqualTo(evaluation.areaUnderROC(i));
-            Assertions.assertThat(rocCurveReport.getSpecificity().doubleValue()).isNotNull();
-            Assertions.assertThat(rocCurveReport.getSensitivity().doubleValue()).isNotNull();
-            Assertions.assertThat(rocCurveReport.getThresholdValue().doubleValue()).isNotNull();
+            Assertions.assertThat(rocCurveReport.getSpecificity()).isNotNull();
+            Assertions.assertThat(rocCurveReport.getSensitivity()).isNotNull();
+            Assertions.assertThat(rocCurveReport.getThresholdValue()).isNotNull();
         }
         //Confusion matrix report assertion
         List<ConfusionMatrixReport> confusionMatrixReports = resultsRequest.getConfusionMatrix();
