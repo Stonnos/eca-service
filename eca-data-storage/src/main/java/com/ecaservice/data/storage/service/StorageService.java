@@ -36,25 +36,25 @@ public class StorageService {
      * @param dataResource - data source
      * @param tableName    - table name
      */
-    public <S> void saveData(@NotNull DataResource<S> dataResource, @NotBlank String tableName) {
+    public <S> InstancesEntity saveData(@NotNull DataResource<S> dataResource, @NotBlank String tableName) {
         fileDataLoader.setSource(dataResource);
         log.info("Starting to save file '{}'.", dataResource.getFile());
         try {
             Instances instances = fileDataLoader.loadInstances();
             log.info("Data has been loaded from file '{}'", dataResource.getFile());
             instancesService.saveInstances(tableName, instances);
-            saveInstancesEntity(tableName, instances);
+            return saveInstancesEntity(tableName, instances);
         } catch (Exception ex) {
             throw new DataStorageException(ex.getMessage());
         }
     }
 
-    private void saveInstancesEntity(String tableName, Instances instances) {
+    private InstancesEntity saveInstancesEntity(String tableName, Instances instances) {
         InstancesEntity instancesEntity = new InstancesEntity();
         instancesEntity.setTableName(tableName);
         instancesEntity.setNumAttributes(instances.numAttributes());
         instancesEntity.setNumInstances(instances.numInstances());
         instancesEntity.setCreated(LocalDateTime.now());
-        instancesRepository.save(instancesEntity);
+        return instancesRepository.save(instancesEntity);
     }
 }

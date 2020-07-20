@@ -27,7 +27,7 @@ public class CreateExperimentResultDto {
      * Is experiment created?
      */
     @ApiModelProperty(value = "Experiment creation boolean flag", required = true)
-    private Boolean created;
+    private boolean created;
 
     /**
      * Error message

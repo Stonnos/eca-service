@@ -3,6 +3,7 @@ package com.ecaservice.data.storage.config.swagger;
 import com.ecaservice.config.swagger.AbstractEcaWebSwagger2Configuration;
 import com.ecaservice.config.swagger.Swagger2ApiConfig;
 import com.ecaservice.config.swagger.SwaggerBaseConfiguration;
+import com.ecaservice.data.storage.controller.DataStorageController;
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +39,6 @@ public class EcaDsWebSwagger2Configuration extends AbstractEcaWebSwagger2Configu
 
     @Override
     protected String getControllersPackage() {
-        return "";
+        return DataStorageController.class.getPackage().getName();
     }
 }
