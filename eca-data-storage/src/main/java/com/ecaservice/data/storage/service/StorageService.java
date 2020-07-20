@@ -8,11 +8,8 @@ import eca.data.file.resource.DataResource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 import weka.core.Instances;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
@@ -20,7 +17,6 @@ import java.time.LocalDateTime;
  *
  * @author Roman Batygin
  */
-@Validated
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -36,7 +32,7 @@ public class StorageService {
      * @param dataResource - data source
      * @param tableName    - table name
      */
-    public <S> InstancesEntity saveData(@NotNull DataResource<S> dataResource, @NotBlank String tableName) {
+    public <S> InstancesEntity saveData(DataResource<S> dataResource, String tableName) {
         fileDataLoader.setSource(dataResource);
         log.info("Starting to save file '{}'.", dataResource.getFile());
         try {
