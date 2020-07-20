@@ -1,0 +1,55 @@
+package com.ecaservice.data.storage.entity;
+
+import lombok.Data;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import java.time.LocalDateTime;
+
+/**
+ * Instances persistence entity.
+ *
+ * @author Roman Batygin
+ */
+@Data
+@Entity
+@Table(name = "instances")
+public class InstancesEntity {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    /**
+     * Table name in database
+     */
+    @Column(name = "table_name", unique = true)
+    private String tableName;
+
+    /**
+     * Instances number
+     */
+    @Column(name = "num_instances")
+    private Integer numInstances;
+
+    /**
+     * Attributes number
+     */
+    @Column(name = "num_attributes")
+    private Integer numAttributes;
+
+    /**
+     * Creation date
+     */
+    @Column(name = "creation_date")
+    private LocalDateTime created;
+
+    /**
+     * User name
+     */
+    @Column(name = "created_by")
+    private String createdBy;
+}

@@ -17,6 +17,7 @@
         <module>eca-oauth</module>
         <module>eca-server</module>
         <module>eca-mail</module>
+        <module>eca-data-storage</module>
         <module>eca-web</module>
         <module>zuul-gate</module>
         <module>discovery-server</module>
@@ -30,6 +31,17 @@
 
     <packaging>pom</packaging>
 
+    <repositories>
+        <repository>
+            <id>eca-mvn-repo</id>
+            <url>https://raw.github.com/Stonnos/eca/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
@@ -37,8 +49,13 @@
         <inject.version>1</inject.version>
         <logback.version>1.2.3</logback.version>
         <slf4j.version>1.7.25</slf4j.version>
+        <eca.version>6.7</eca.version>
+        <h2.version>1.4.199</h2.version>
+        <postresql.version>42.2.6</postresql.version>
+        <liquibase.version>3.7.0</liquibase.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <docker-maven-plugin.version>1.4.3</docker-maven-plugin.version>
+        <maven-processor-plugin.version>3.3.3</maven-processor-plugin.version>
         <spring-cloud-sleuth.version>2.2.2.RELEASE</spring-cloud-sleuth.version>
         <spring.security.oauth2.version>2.2.6.RELEASE</spring.security.oauth2.version>
         <logstash-encoder.version>6.2</logstash-encoder.version>
@@ -53,6 +70,26 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>eca</groupId>
+                <artifactId>eca-core</artifactId>
+                <version>${eca.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postresql.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-core</artifactId>
+                <version>${liquibase.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-sleuth</artifactId>
