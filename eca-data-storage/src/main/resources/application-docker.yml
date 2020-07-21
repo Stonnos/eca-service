@@ -1,0 +1,22 @@
+spring:
+  ## Datasource properties
+  datasource:
+    driverClassName: org.postgresql.Driver
+    jdbc-url: jdbc:postgresql://eca-db:5432/data_storage
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://discovery-server:8761/eureka
+
+## Swagger properties
+swagger2:
+  tokenBaseUrl: http://localhost:8080/eca-oauth
