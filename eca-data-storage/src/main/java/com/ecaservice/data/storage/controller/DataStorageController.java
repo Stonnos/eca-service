@@ -3,6 +3,7 @@ package com.ecaservice.data.storage.controller;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.model.MultipartFileResource;
 import com.ecaservice.data.storage.service.StorageService;
+import com.ecaservice.data.storage.validation.annotations.UniqueTableName;
 import com.ecaservice.web.dto.model.CreateInstancesResultDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -54,7 +55,7 @@ public class DataStorageController {
             @ApiParam(value = "Table name", required = true)
             @Pattern(regexp = TABLE_NAME_REGEX)
             @Size(max = MAX_TABLE_NAME_LENGTH)
-            @RequestParam String tableName) {
+            @UniqueTableName @RequestParam String tableName) {
         log.info("Received request for saving instances '{}' into table [{}]",
                 trainingData.getOriginalFilename(), tableName);
         CreateInstancesResultDto createInstancesResultDto = new CreateInstancesResultDto();
