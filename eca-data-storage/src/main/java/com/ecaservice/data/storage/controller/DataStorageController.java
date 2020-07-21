@@ -1,24 +1,32 @@
 package com.ecaservice.data.storage.controller;
 
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.data.storage.mapping.InstancesMapper;
 import com.ecaservice.data.storage.model.MultipartFileResource;
 import com.ecaservice.data.storage.service.StorageService;
 import com.ecaservice.data.storage.validation.annotations.UniqueTableName;
 import com.ecaservice.web.dto.model.CreateInstancesResultDto;
+import com.ecaservice.web.dto.model.InstancesDto;
+import com.ecaservice.web.dto.model.PageDto;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * Data storage API for web application.
@@ -37,6 +45,25 @@ public class DataStorageController {
     private static final int MAX_TABLE_NAME_LENGTH = 30;
 
     private final StorageService storageService;
+    private final InstancesMapper instancesMapper;
+
+    /**
+     * Finds instances tables with specified options such as filter, sorting and paging.
+     *
+     * @param pageRequestDto - page request dto
+     * @return instances tables page
+     */
+    @ApiOperation(
+            value = "Finds instances tables with specified options such as filter, sorting and paging",
+            notes = "Finds instances tables with specified options such as filter, sorting and paging"
+    )
+    @GetMapping(value = "/list")
+    public PageDto<InstancesDto> getInstancesPage(@Valid PageRequestDto pageRequestDto) {
+        log.info("Received instances page request: {}", pageRequestDto);
+        Page<InstancesEntity> instancesPage = storageService.getNextPage(pageRequestDto);
+        List<InstancesDto> instancesDtoList = instancesMapper.map(instancesPage.getContent());
+        return PageDto.of(instancesDtoList, pageRequestDto.getPage(), instancesPage.getTotalElements());
+    }
 
     /**
      * Saves instances into database.

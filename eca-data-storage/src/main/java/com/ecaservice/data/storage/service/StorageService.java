@@ -1,16 +1,26 @@
 package com.ecaservice.data.storage.service;
 
+import com.ecaservice.data.storage.config.EcaDsConfig;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.exception.DataStorageException;
 import com.ecaservice.data.storage.repository.InstancesRepository;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.file.FileDataLoader;
 import eca.data.file.resource.DataResource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import weka.core.Instances;
 
 import java.time.LocalDateTime;
+
+import static com.ecaservice.data.storage.entity.InstancesEntity_.CREATED;
+import static com.ecaservice.data.storage.util.FilterUtils.buildSort;
+import static com.ecaservice.data.storage.util.FilterUtils.buildSpecification;
 
 /**
  * Service for saving data file into database.
@@ -22,9 +32,23 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class StorageService {
 
+    private final EcaDsConfig ecaDsConfig;
     private final FileDataLoader fileDataLoader;
     private final InstancesService instancesService;
     private final InstancesRepository instancesRepository;
+
+    /**
+     * Gets the next page for specified page request.
+     *
+     * @param pageRequestDto - page request
+     * @return entities page
+     */
+    public Page<InstancesEntity> getNextPage(PageRequestDto pageRequestDto) {
+        Sort sort = buildSort(pageRequestDto.getSortField(), CREATED, pageRequestDto.isAscending());
+        Specification<InstancesEntity> specification = buildSpecification(pageRequestDto);
+        int pageSize = Integer.min(pageRequestDto.getSize(), ecaDsConfig.getMaxPageSize());
+        return instancesRepository.findAll(specification, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+    }
 
     /**
      * Saves training data file into database.
