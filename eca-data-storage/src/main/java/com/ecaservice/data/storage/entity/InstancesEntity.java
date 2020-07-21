@@ -26,7 +26,7 @@ public class InstancesEntity {
     /**
      * Table name in database
      */
-    @Column(name = "table_name", unique = true)
+    @Column(name = "table_name", unique = true, nullable = false)
     private String tableName;
 
     /**
@@ -44,12 +44,12 @@ public class InstancesEntity {
     /**
      * Creation date
      */
-    @Column(name = "creation_date")
+    @Column(name = "creation_date", nullable = false)
     private LocalDateTime created;
 
     /**
      * User name
      */
-    @Column(name = "created_by")
+    @Column(name = "created_by", nullable = false)
     private String createdBy;
 }
