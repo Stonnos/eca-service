@@ -7,7 +7,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 /**
- * Main class for Oauth application.
+ * Main class for Eca data storage application.
  *
  * @author Roman Batygin
  */
