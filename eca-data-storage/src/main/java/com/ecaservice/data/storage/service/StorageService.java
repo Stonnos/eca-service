@@ -109,6 +109,7 @@ public class StorageService {
         instancesEntity.setTableName(tableName);
         instancesEntity.setNumAttributes(instances.numAttributes());
         instancesEntity.setNumInstances(instances.numInstances());
+        instancesEntity.setCreatedBy("SYSTEM");
         instancesEntity.setCreated(LocalDateTime.now());
         return instancesRepository.save(instancesEntity);
     }

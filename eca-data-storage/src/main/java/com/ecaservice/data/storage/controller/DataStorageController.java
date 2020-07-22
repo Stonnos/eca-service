@@ -16,8 +16,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -99,5 +101,38 @@ public class DataStorageController {
             createInstancesResultDto.setErrorMessage(ex.getMessage());
         }
         return createInstancesResultDto;
+    }
+
+    /**
+     * Renames data with specified id.
+     *
+     * @param id      - instances id
+     * @param newName - new name
+     */
+    @ApiOperation(
+            value = "Renames data with specified id",
+            notes = "Renames data with specified id"
+    )
+    @PutMapping(value = "/rename")
+    public void rename(@ApiParam(value = "Instances id", example = "1", required = true) @RequestParam long id,
+                       @ApiParam(value = "Table name", required = true)
+                       @Pattern(regexp = TABLE_NAME_REGEX)
+                       @Size(max = MAX_TABLE_NAME_LENGTH)
+                       @UniqueTableName @RequestParam String newName) {
+        storageService.renameData(id, newName);
+    }
+
+    /**
+     * Deletes instances with specified id.
+     *
+     * @param id - instances id
+     */
+    @ApiOperation(
+            value = "Deletes instances with specified id",
+            notes = "Deletes instances with specified id"
+    )
+    @DeleteMapping(value = "/delete")
+    public void delete(@ApiParam(value = "Instances id", example = "1", required = true) @RequestParam long id) {
+        storageService.deleteData(id);
     }
 }
