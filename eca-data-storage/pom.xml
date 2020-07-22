@@ -90,7 +90,6 @@
         <dependency>
             <groupId>eca</groupId>
             <artifactId>eca-core</artifactId>
-            <version>${eca.version}</version>
         </dependency>
 
         <dependency>
@@ -114,7 +113,6 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>${h2.version}</version>
         </dependency>
 
         <dependency>
