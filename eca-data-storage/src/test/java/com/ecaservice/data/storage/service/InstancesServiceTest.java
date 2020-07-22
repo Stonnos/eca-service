@@ -1,21 +1,12 @@
 package com.ecaservice.data.storage.service;
 
+import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.config.EcaDsConfig;
-import com.ecaservice.data.storage.entity.InstancesEntity;
-import com.ecaservice.data.storage.repository.InstancesRepository;
 import eca.data.db.SqlQueryHelper;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import weka.core.Instances;
 
 import javax.inject.Inject;
@@ -27,14 +18,8 @@ import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
  *
  * @author Roman Batygin
  */
-@ExtendWith(SpringExtension.class)
-@AutoConfigureDataJpa
-@EnableJpaRepositories(basePackageClasses = InstancesRepository.class)
-@EntityScan(basePackageClasses = InstancesEntity.class)
-@EnableConfigurationProperties
-@TestPropertySource("classpath:application.properties")
 @Import({InstancesService.class, TransactionalService.class, SqlQueryHelper.class, EcaDsConfig.class})
-class InstancesServiceTest {
+class InstancesServiceTest extends AbstractJpaTest {
 
     private static final String TABLE_NAME = "test_table";
     private static final String SELECT_COUNT_FORMAT = "SELECT count(*) FROM %s";
@@ -46,8 +31,8 @@ class InstancesServiceTest {
 
     private Instances instances;
 
-    @BeforeEach
-    void init() throws Exception {
+    @Override
+    public void init() throws Exception {
         instances = loadInstances();
     }
 
