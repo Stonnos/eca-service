@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import weka.core.Instances;
 
 import java.time.LocalDateTime;
@@ -67,6 +68,40 @@ public class StorageService {
         } catch (Exception ex) {
             throw new DataStorageException(ex.getMessage());
         }
+    }
+
+    /**
+     * Deletes data with specified id.
+     *
+     * @param id - instances id
+     */
+    @Transactional
+    public void deleteData(long id) {
+        log.info("Starting to delete instances with id [{}]", id);
+        InstancesEntity instancesEntity = getById(id);
+        instancesService.deleteInstances(instancesEntity.getTableName());
+        instancesRepository.deleteById(id);
+        log.info("Instances [{}] has been deleted", id);
+    }
+
+    /**
+     * Renames data with specified id.
+     *
+     * @param id      - instances id
+     * @param newName - new instances name
+     */
+    @Transactional
+    public void renameData(long id, String newName) {
+        log.info("Starting to rename instances [{}] with new name [{}]", id, newName);
+        InstancesEntity instancesEntity = getById(id);
+        instancesService.renameInstances(instancesEntity.getTableName(), newName);
+        instancesEntity.setTableName(newName);
+        instancesRepository.save(instancesEntity);
+        log.info("Instances [{}] has been renamed to [{}]", id, newName);
+    }
+
+    private InstancesEntity getById(long id) {
+        return instancesRepository.findById(id).orElseThrow(IllegalStateException::new);
     }
 
     private InstancesEntity saveInstancesEntity(String tableName, Instances instances) {

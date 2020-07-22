@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import weka.core.Instances;
 
 /**
- * Instances migration service.
+ * Instances service.
  *
  * @author Roman Batygin
  */
@@ -17,6 +17,9 @@ import weka.core.Instances;
 @Service
 @RequiredArgsConstructor
 public class InstancesService {
+
+    private static final String DROP_TABLE_QUERY_FORMAT = "DROP TABLE IF EXISTS %s";
+    public static final String RENAME_TABLE_QUERY_FORMAT = "ALTER TABLE IF EXISTS %s RENAME TO %s";
 
     private final JdbcTemplate jdbcTemplate;
     private final TransactionalService transactionalMigrationService;
@@ -48,5 +51,28 @@ public class InstancesService {
         log.info("Data has been saved into table '{}'.", tableName);
         log.info("Data saving has been successfully completed. Instances '{}' has been saved into table '{}.",
                 instances.relationName(), tableName);
+    }
+
+    /**
+     * Deletes specified table from database.
+     *
+     * @param tableName - table name
+     */
+    public void deleteInstances(String tableName) {
+        log.info("Starting to delete table with name [{}]", tableName);
+        jdbcTemplate.execute(String.format(DROP_TABLE_QUERY_FORMAT, tableName));
+        log.info("Table [{}] has been deleted", tableName);
+    }
+
+    /**
+     * Renames specified table.
+     *
+     * @param tableName    - table name
+     * @param newTableName - new table name
+     */
+    public void renameInstances(String tableName, String newTableName) {
+        log.info("Starting to rename table [{}] with new name [{}]", tableName, newTableName);
+        jdbcTemplate.execute(String.format(RENAME_TABLE_QUERY_FORMAT, tableName, newTableName));
+        log.info("Table [{}] has been renamed to [{}]", tableName, newTableName);
     }
 }
