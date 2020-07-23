@@ -9,14 +9,18 @@ import com.ecaservice.web.dto.model.CreateInstancesResultDto;
 import com.ecaservice.web.dto.model.InstancesDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.ValidationErrorDto;
+import com.google.common.collect.Iterables;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -25,10 +29,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.ConstraintViolationException;
+import javax.validation.Path;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Data storage API for web application.
@@ -134,5 +141,26 @@ public class DataStorageController {
     @DeleteMapping(value = "/delete")
     public void delete(@ApiParam(value = "Instances id", example = "1", required = true) @RequestParam long id) {
         storageService.deleteData(id);
+    }
+
+    /**
+     * Handles constraint violation error.
+     *
+     * @param ex - constraint violation exception
+     * @return response entity
+     */
+    @ExceptionHandler(value = ConstraintViolationException.class)
+    protected ResponseEntity<List<ValidationErrorDto>> handleConstraintViolation(ConstraintViolationException ex) {
+        List<ValidationErrorDto> validationErrors = ex.getConstraintViolations().stream()
+                .map(constraintViolation -> {
+                    Path.Node node = Iterables.getLast(constraintViolation.getPropertyPath());
+                    ValidationErrorDto validationErrorDto = new ValidationErrorDto();
+                    validationErrorDto.setFieldName(node.getName());
+                    validationErrorDto.setCode(
+                            constraintViolation.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName());
+                    validationErrorDto.setErrorMessage(constraintViolation.getMessage());
+                    return validationErrorDto;
+                }).collect(Collectors.toList());
+        return ResponseEntity.badRequest().body(validationErrors);
     }
 }
