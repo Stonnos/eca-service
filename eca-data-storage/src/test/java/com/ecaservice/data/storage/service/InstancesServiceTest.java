@@ -40,7 +40,6 @@ class InstancesServiceTest extends AbstractJpaTest {
     void testSaveInstances() {
         instancesService.saveInstances(TABLE_NAME, instances);
         Integer result = jdbcTemplate.queryForObject(String.format(SELECT_COUNT_FORMAT, TABLE_NAME), Integer.class);
-        Assertions.assertThat(result).isNotNull();
-        Assertions.assertThat(result).isEqualTo(instances.numInstances());
+        Assertions.assertThat(result).isNotNull().isEqualTo(instances.numInstances());
     }
 }
