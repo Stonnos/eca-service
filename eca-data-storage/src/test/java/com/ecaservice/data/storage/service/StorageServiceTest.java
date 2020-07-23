@@ -4,6 +4,7 @@ import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.config.StorageTestConfiguration;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.exception.DataStorageException;
+import com.ecaservice.data.storage.exception.EntityNotFoundException;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.db.SqlQueryHelper;
@@ -39,6 +40,7 @@ class StorageServiceTest extends AbstractJpaTest {
     private static final String DATA_PATH = "german_credit.xls";
     private static final String TEST_TABLE = "test_table";
     private static final String NEW_TABLE_NAME = "new_table_name";
+    private static final long ID = 2L;
 
     @Inject
     private StorageService storageService;
@@ -88,6 +90,14 @@ class StorageServiceTest extends AbstractJpaTest {
         InstancesEntity instancesEntity = createAndSaveInstancesEntity();
         storageService.deleteData(instancesEntity.getId());
         assertThat(instancesRepository.existsById(instancesEntity.getId())).isFalse();
+    }
+
+    @Test
+    void testDeleteNotExistingData() {
+        createAndSaveInstancesEntity();
+        assertThrows(EntityNotFoundException.class, () -> {
+            storageService.deleteData(ID);
+        });
     }
 
     @Test
