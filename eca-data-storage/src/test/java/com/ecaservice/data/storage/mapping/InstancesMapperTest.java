@@ -47,6 +47,6 @@ class InstancesMapperTest {
         InstancesEntity instancesEntity = createInstancesEntity();
         List<InstancesDto> instancesDtoList = instancesMapper.map(Collections.singletonList(instancesEntity));
         assertThat(instancesDtoList).isNotNull();
-        assertThat(instancesDtoList.size()).isOne();
+        assertThat(instancesDtoList).hasSize(1);
     }
 }

@@ -5,18 +5,23 @@ import com.ecaservice.data.storage.config.StorageTestConfiguration;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.exception.DataStorageException;
 import com.ecaservice.data.storage.repository.InstancesRepository;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.db.SqlQueryHelper;
 import eca.data.file.resource.FileResource;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.util.Collections;
 
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
+import static com.ecaservice.data.storage.entity.InstancesEntity_.CREATED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -83,6 +88,16 @@ class StorageServiceTest extends AbstractJpaTest {
         InstancesEntity instancesEntity = createAndSaveInstancesEntity();
         storageService.deleteData(instancesEntity.getId());
         assertThat(instancesRepository.existsById(instancesEntity.getId())).isFalse();
+    }
+
+    @Test
+    void testGetInstancesPage() {
+        createAndSaveInstancesEntity();
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(0, 10, CREATED, true, StringUtils.EMPTY, Collections.emptyList());
+        Page<InstancesEntity> instancesEntityPage = storageService.getNextPage(pageRequestDto);
+        assertThat(instancesEntityPage).isNotNull();
+        assertThat(instancesEntityPage.getContent()).hasSize(1);
     }
 
     private InstancesEntity createAndSaveInstancesEntity() {
