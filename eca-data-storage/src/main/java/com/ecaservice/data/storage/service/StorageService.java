@@ -3,6 +3,7 @@ package com.ecaservice.data.storage.service;
 import com.ecaservice.data.storage.config.EcaDsConfig;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.exception.DataStorageException;
+import com.ecaservice.data.storage.exception.EntityNotFoundException;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.file.FileDataLoader;
@@ -101,7 +102,8 @@ public class StorageService {
     }
 
     private InstancesEntity getById(long id) {
-        return instancesRepository.findById(id).orElseThrow(IllegalStateException::new);
+        return instancesRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(InstancesEntity.class, id));
     }
 
     private InstancesEntity saveInstancesEntity(String tableName, Instances instances) {
