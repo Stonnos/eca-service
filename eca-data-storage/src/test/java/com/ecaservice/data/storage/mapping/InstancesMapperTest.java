@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
+import java.util.Collections;
+import java.util.List;
 
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,5 +40,13 @@ class InstancesMapperTest {
         assertThat(instancesDto.getCreated()).isEqualTo(instancesEntity.getCreated());
         assertThat(instancesDto.getCreatedBy()).isEqualTo(instancesEntity.getCreatedBy());
         assertThat(instancesDto.getId()).isEqualTo(instancesEntity.getId());
+    }
+
+    @Test
+    void testMapInstancesEntities() {
+        InstancesEntity instancesEntity = createInstancesEntity();
+        List<InstancesDto> instancesDtoList = instancesMapper.map(Collections.singletonList(instancesEntity));
+        assertThat(instancesDtoList).isNotNull();
+        assertThat(instancesDtoList.size()).isOne();
     }
 }

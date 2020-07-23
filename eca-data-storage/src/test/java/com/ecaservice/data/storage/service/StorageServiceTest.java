@@ -3,12 +3,14 @@ package com.ecaservice.data.storage.service;
 import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.config.StorageTestConfiguration;
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.data.storage.exception.DataStorageException;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import eca.data.db.SqlQueryHelper;
 import eca.data.file.resource.FileResource;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
@@ -16,6 +18,9 @@ import java.io.File;
 
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 
 /**
  * Unit tests for checking {@link StorageService} functionality.
@@ -52,6 +57,16 @@ class StorageServiceTest extends AbstractJpaTest {
         InstancesEntity actual = instancesRepository.findById(expected.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.getTableName()).isEqualTo(TEST_TABLE);
+    }
+
+    @Test
+    void testSaveDataWithError() {
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+        FileResource fileResource = new FileResource(new File(classLoader.getResource(DATA_PATH).getFile()));
+        doThrow(DataIntegrityViolationException.class).when(jdbcTemplate).execute(anyString());
+        assertThrows(DataStorageException.class, () -> {
+            storageService.saveData(fileResource, TEST_TABLE);
+        });
     }
 
     @Test
