@@ -43,7 +43,7 @@ class ResetPasswordControllerTest {
     private static final String VERIFY_TOKEN_URL = BASE_URL + "/verify-token";
     private static final String EMAIL = "test@mail.ru";
     private static final String PASSWORD = "pa66word!";
-    public static final String TOKEN_PARAM = "token";
+    private static final String TOKEN_PARAM = "token";
 
     @MockBean
     private UserEntityRepository userEntityRepository;
