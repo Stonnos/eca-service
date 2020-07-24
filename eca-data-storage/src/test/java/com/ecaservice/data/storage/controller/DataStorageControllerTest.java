@@ -169,6 +169,7 @@ class DataStorageControllerTest {
                 .param(ID_PARAM, String.valueOf(ID)))
                 .andExpect(status().isNotFound());
     }
+
     @Test
     void testGetInstancesPage() throws Exception {
         Page<InstancesEntity> instancesEntityPage = Mockito.mock(Page.class);
@@ -184,5 +185,4 @@ class DataStorageControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
     }
-
 }
