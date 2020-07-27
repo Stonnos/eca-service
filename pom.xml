@@ -10,6 +10,7 @@
     <modules>
         <module>core-test</module>
         <module>swagger-core</module>
+        <module>oauth2-core</module>
         <module>eca-user-model</module>
         <module>eca-mail-transport</module>
         <module>eca-web-transport</module>

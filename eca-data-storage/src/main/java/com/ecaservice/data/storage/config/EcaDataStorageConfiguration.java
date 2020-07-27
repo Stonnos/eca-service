@@ -1,5 +1,6 @@
 package com.ecaservice.data.storage.config;
 
+import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
 import eca.data.db.SqlQueryHelper;
 import eca.data.db.SqlTypeUtils;
 import eca.data.file.FileDataLoader;
@@ -17,6 +18,7 @@ import static org.springframework.web.context.WebApplicationContext.SCOPE_REQUES
  * @author Roman Batygin
  */
 @Configuration
+@Oauth2ResourceServer
 @EnableConfigurationProperties(EcaDsConfig.class)
 public class EcaDataStorageConfiguration {
 

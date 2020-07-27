@@ -1,5 +1,6 @@
 package com.ecaservice.config;
 
+import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
 import eca.data.file.FileDataLoader;
 import eca.data.file.FileDataSaver;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -23,6 +24,7 @@ import java.util.concurrent.Executors;
 @EnableScheduling
 @EnableCaching
 @EnableAsync
+@Oauth2ResourceServer
 @EnableConfigurationProperties(
         {CommonConfig.class, CrossValidationConfig.class, ExperimentConfig.class})
 public class EcaServiceConfiguration {

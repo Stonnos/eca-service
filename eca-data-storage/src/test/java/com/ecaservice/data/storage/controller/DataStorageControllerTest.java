@@ -2,7 +2,6 @@ package com.ecaservice.data.storage.controller;
 
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.exception.DataStorageException;
-import com.ecaservice.data.storage.exception.EntityNotFoundException;
 import com.ecaservice.data.storage.mapping.InstancesMapper;
 import com.ecaservice.data.storage.mapping.InstancesMapperImpl;
 import com.ecaservice.data.storage.repository.InstancesRepository;
@@ -14,8 +13,11 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
@@ -30,9 +32,7 @@ import java.util.List;
 
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -46,7 +46,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@WebMvcTest(controllers = DataStorageController.class)
+@WebMvcTest(controllers = DataStorageController.class,
+        useDefaultFilters = false,
+        includeFilters = {
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = DataStorageController.class)
+        })
+@AutoConfigureMockMvc(addFilters = false)
 @Import(InstancesMapperImpl.class)
 class DataStorageControllerTest {
 
@@ -147,27 +152,10 @@ class DataStorageControllerTest {
     }
 
     @Test
-    void testRenameDataNotFound() throws Exception {
-        doThrow(new EntityNotFoundException()).when(storageService).renameData(anyLong(), anyString());
-        mockMvc.perform(put(RENAME_URL)
-                .param(ID_PARAM, String.valueOf(ID))
-                .param(NEW_NAME_PARAM, TABLE_NAME)).andExpect(status().isNotFound());
-    }
-
-
-    @Test
     void testDeleteData() throws Exception {
         mockMvc.perform(delete(DELETE_URL)
                 .param(ID_PARAM, String.valueOf(ID)))
                 .andExpect(status().isOk());
-    }
-
-    @Test
-    void testDeleteDataNotFound() throws Exception {
-        doThrow(new EntityNotFoundException()).when(storageService).deleteData(anyLong());
-        mockMvc.perform(delete(DELETE_URL)
-                .param(ID_PARAM, String.valueOf(ID)))
-                .andExpect(status().isNotFound());
     }
 
     @Test

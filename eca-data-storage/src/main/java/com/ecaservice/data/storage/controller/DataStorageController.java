@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -62,6 +63,7 @@ public class DataStorageController {
      * @param pageRequestDto - page request dto
      * @return instances tables page
      */
+    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Finds instances tables with specified options such as filter, sorting and paging",
             notes = "Finds instances tables with specified options such as filter, sorting and paging"
@@ -81,6 +83,7 @@ public class DataStorageController {
      * @param tableName    - table name
      * @return create instances results dto
      */
+    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Saves instances into database",
             notes = "Saves instances into database"
@@ -116,6 +119,7 @@ public class DataStorageController {
      * @param id      - instances id
      * @param newName - new name
      */
+    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Renames data with specified id",
             notes = "Renames data with specified id"
@@ -134,6 +138,7 @@ public class DataStorageController {
      *
      * @param id - instances id
      */
+    @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Deletes instances with specified id",
             notes = "Deletes instances with specified id"
