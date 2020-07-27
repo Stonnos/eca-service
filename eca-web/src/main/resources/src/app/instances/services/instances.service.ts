@@ -27,4 +27,13 @@ export class InstancesService {
     const options = { headers: headers, params: params };
     return this.http.get<PageDto<InstancesDto>>(this.serviceUrl + '/list', options);
   }
+
+  public deleteInstances(id: number): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+    });
+    let params = new HttpParams().set('id', id.toString());
+    const options = { headers: headers, params: params };
+    return this.http.delete(this.serviceUrl + '/delete', options);
+  }
 }
