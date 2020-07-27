@@ -8,6 +8,7 @@ import { ReportsService } from "./services/report.service";
 import { RequestStatusComponent } from "./request-status/components/request-status.component";
 import { ValidationService } from "./services/validation.service";
 import { EqualValidator } from "./validators/equal-validator.directive";
+import { SearchQueryComponent } from "./search-query/search-query.component";
 
 @NgModule({
   imports: [
@@ -17,10 +18,12 @@ import { EqualValidator } from "./validators/equal-validator.directive";
   ],
   declarations: [
     RequestStatusComponent,
+    SearchQueryComponent,
     EqualValidator
   ],
   exports: [
     RequestStatusComponent,
+    SearchQueryComponent,
     EqualValidator
   ],
   providers: [

@@ -16,8 +16,6 @@ import { ColumnModel } from "../model/column.model";
 
 export abstract class BaseListComponent<T> implements FieldLink {
 
-  private static readonly MIN_QUERY_SIZE: number = 3;
-
   public defaultSortField: string;
   public defaultSortOrder: number = -1;
   public pageSize: number = 25;
@@ -73,10 +71,9 @@ export abstract class BaseListComponent<T> implements FieldLink {
     this.performPageRequest(page, event.rows, event.sortField, event.sortOrder == 1);
   }
 
-  public onSearch() {
-    if (this.searchQuery.length == 0 || this.searchQuery.length >= BaseListComponent.MIN_QUERY_SIZE) {
-      this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1);
-    }
+  public onSearch(searchQuery: string) {
+    this.searchQuery = searchQuery;
+    this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1);
   }
 
   public onApplyFilter() {
@@ -104,11 +101,6 @@ export abstract class BaseListComponent<T> implements FieldLink {
 
   public notSortable(column: string): boolean {
     return this.notSortableColumns.includes(column);
-  }
-
-  public clearSearchQuery(): void {
-    this.searchQuery = '';
-    this.onSearch();
   }
 
   public performPageRequest(page: number, size: number, sortField: string, ascending: boolean) {

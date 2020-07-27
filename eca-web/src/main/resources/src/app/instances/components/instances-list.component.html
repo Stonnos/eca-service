@@ -10,24 +10,8 @@
       </button>
     </div>
     <div class="col-6">
-      <div class="ui-inputgroup mr-2 mt-2 mb-2">
-      <span class="ui-inputgroup-addon">
-        <i class="fa fa-search"></i>
-      </span>
-        <input
-          type="text"
-          pInputText
-          placeholder="Поиск"
-          maxlength="255"
-          [(ngModel)]="searchQuery"
-          (input)="onSearch()"
-          class="w-100">
-        <a *ngIf="searchQuery?.length > 0" [routerLink]="" (click)="clearSearchQuery()">
-        <span class="ui-inputgroup-addon">
-          <i class="fa fa-close"></i>
-        </span>
-        </a>
-      </div>
+      <app-search-query (search)="onSearch($event)">
+      </app-search-query>
     </div>
   </div>
   <p-table
