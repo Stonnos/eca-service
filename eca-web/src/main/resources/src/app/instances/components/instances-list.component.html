@@ -59,7 +59,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage" *ngIf="items.length == 0">
       <tr>
-        <td [attr.colspan]="columns.length" class="text-center">
+        <td [attr.colspan]="columns.length + 1" class="text-center">
           Не найдено ни одного датасета
         </td>
       </tr>
