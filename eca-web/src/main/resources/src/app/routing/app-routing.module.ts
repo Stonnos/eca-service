@@ -12,6 +12,7 @@ import { ClassifiersConfigurationDetailsComponent } from "../classifiers-configu
 import { UsersListComponent } from "../users/components/users-list.component";
 import { ForgotPasswordComponent } from "../change-password/components/forgot-password/forgot-password.component";
 import { ResetPasswordComponent } from "../change-password/components/reset-password/reset-password.component";
+import { InstancesListComponent } from "../instances/components/instances-list.component";
 
 const routes: Routes = [
   {
@@ -29,6 +30,10 @@ const routes: Routes = [
       {
         path: 'classifiers-options-requests',
         component: ClassifierOptionsRequestsComponent
+      },
+      {
+        path: 'instances',
+        component: InstancesListComponent
       },
       {
         path: 'users',
