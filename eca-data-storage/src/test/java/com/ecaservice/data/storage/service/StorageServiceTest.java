@@ -6,6 +6,7 @@ import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.exception.DataStorageException;
 import com.ecaservice.data.storage.exception.EntityNotFoundException;
 import com.ecaservice.data.storage.repository.InstancesRepository;
+import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.db.SqlQueryHelper;
 import eca.data.file.resource.FileResource;
@@ -27,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for checking {@link StorageService} functionality.
@@ -41,6 +43,7 @@ class StorageServiceTest extends AbstractJpaTest {
     private static final String TEST_TABLE = "test_table";
     private static final String NEW_TABLE_NAME = "new_table_name";
     private static final long ID = 2L;
+    private static final String USER_NAME = "admin";
 
     @Inject
     private StorageService storageService;
@@ -50,6 +53,8 @@ class StorageServiceTest extends AbstractJpaTest {
 
     @MockBean
     private JdbcTemplate jdbcTemplate;
+    @MockBean
+    private UserService userService;
 
     @Override
     public void deleteAll() {
@@ -58,12 +63,16 @@ class StorageServiceTest extends AbstractJpaTest {
 
     @Test
     void testSaveData() {
+        UserDetailsImpl userDetails = new UserDetailsImpl();
+        userDetails.setUserName(USER_NAME);
+        when(userService.getCurrentUser()).thenReturn(userDetails);
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
         FileResource fileResource = new FileResource(new File(classLoader.getResource(DATA_PATH).getFile()));
         InstancesEntity expected = storageService.saveData(fileResource, TEST_TABLE);
         InstancesEntity actual = instancesRepository.findById(expected.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.getTableName()).isEqualTo(TEST_TABLE);
+        assertThat(actual.getCreatedBy()).isEqualTo(USER_NAME);
     }
 
     @Test

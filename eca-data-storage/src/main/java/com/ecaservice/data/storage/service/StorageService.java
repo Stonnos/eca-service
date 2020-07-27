@@ -37,6 +37,7 @@ public class StorageService {
     private final EcaDsConfig ecaDsConfig;
     private final FileDataLoader fileDataLoader;
     private final InstancesService instancesService;
+    private final UserService userService;
     private final InstancesRepository instancesRepository;
 
     /**
@@ -111,7 +112,7 @@ public class StorageService {
         instancesEntity.setTableName(tableName);
         instancesEntity.setNumAttributes(instances.numAttributes());
         instancesEntity.setNumInstances(instances.numInstances());
-        instancesEntity.setCreatedBy("SYSTEM");
+        instancesEntity.setCreatedBy(userService.getCurrentUser().getUsername());
         instancesEntity.setCreated(LocalDateTime.now());
         return instancesRepository.save(instancesEntity);
     }
