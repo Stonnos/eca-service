@@ -9,10 +9,10 @@ import {
   RequestStatusStatisticsDto, ExperimentResultsDetailsDto, SendingStatus
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
-import { AuthenticationKeys } from "../../auth/model/auth.keys";
 import { ExperimentRequest } from "../../create-experiment/model/experiment-request.model";
 import { PageRequestService } from "../../common/services/page-request.service";
 import { environment } from "../../../environments/environment";
+import { Utils } from "../../common/util/utils";
 
 @Injectable()
 export class ExperimentsService {
@@ -25,7 +25,7 @@ export class ExperimentsService {
   public getExperiments(pageRequest: PageRequestDto): Observable<PageDto<ExperimentDto>> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     const params: HttpParams = this.pageRequestService.convertToHttpRequestParams(pageRequest);
     const options = { headers: headers, params: params };
@@ -35,7 +35,7 @@ export class ExperimentsService {
   public getExperiment(requestId: string): Observable<ExperimentDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.get<ExperimentDto>(this.serviceUrl + '/details/' + requestId, { headers: headers });
   }
@@ -43,7 +43,7 @@ export class ExperimentsService {
   public getExperimentResultsDetails(id: number): Observable<ExperimentResultsDetailsDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.get<ExperimentResultsDetailsDto>(this.serviceUrl + '/results/details/' + id, { headers: headers });
   }
@@ -51,14 +51,14 @@ export class ExperimentsService {
   public getRequestStatusesStatistics(): Observable<RequestStatusStatisticsDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.get<RequestStatusStatisticsDto>(this.serviceUrl + '/request-statuses-statistics', { headers: headers });
   }
 
   public getExperimentResultsFile(requestId: string): Observable<Blob> {
     const headers = new HttpHeaders({
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     const options = { headers: headers, responseType: 'blob' as 'json' };
     return this.http.get<Blob>(this.serviceUrl + '/results/' + requestId, options);
@@ -66,7 +66,7 @@ export class ExperimentsService {
 
   public getExperimentTrainingDataFile(requestId: string): Observable<Blob> {
     const headers = new HttpHeaders({
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     const options = { headers: headers, responseType: 'blob' as 'json' };
     return this.http.get<Blob>(this.serviceUrl + '/training-data/' + requestId, options);
@@ -75,7 +75,7 @@ export class ExperimentsService {
   public getExperimentErsReport(requestId: string): Observable<ExperimentErsReportDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.get<ExperimentErsReportDto>(this.serviceUrl + '/ers-report/' + requestId, { headers: headers });
   }
@@ -83,7 +83,7 @@ export class ExperimentsService {
   public checkExperimentResultsSendingStatus(requestId: string): Observable<SendingStatus> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.get<SendingStatus>(this.serviceUrl + '/ers-report/sending-status/' + requestId, { headers: headers });
   }
@@ -91,7 +91,7 @@ export class ExperimentsService {
   public sentEvaluationResults(requestId: string) {
     const headers = new HttpHeaders({
       'Content-type': 'application/json',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.post(this.serviceUrl + '/sent-evaluation-results', requestId, { headers: headers });
   }
@@ -99,7 +99,7 @@ export class ExperimentsService {
   public getExperimentTypesStatistics(createdDateFrom: string, createdDateTo: string): Observable<ChartDataDto[]> {
     const headers = new HttpHeaders({
       'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     let params = new HttpParams().set('createdDateFrom', createdDateFrom).set('createdDateTo', createdDateTo);
     const options = { headers: headers, params: params };
@@ -108,7 +108,7 @@ export class ExperimentsService {
 
   public createExperiment(experimentRequest: ExperimentRequest): Observable<CreateExperimentResultDto> {
     const headers = new HttpHeaders({
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     const formData = new FormData();
     formData.append('trainingData', experimentRequest.trainingDataFile, experimentRequest.trainingDataFile.name);

@@ -6,10 +6,10 @@ import {
   UserDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
-import { AuthenticationKeys } from "../../auth/model/auth.keys";
 import { PageRequestService } from "../../common/services/page-request.service";
 import { environment } from "../../../environments/environment";
 import { CreateUserModel } from "../../create-user/model/create-user.model";
+import { Utils } from "../../common/util/utils";
 
 @Injectable()
 export class UsersService {
@@ -22,7 +22,7 @@ export class UsersService {
   public getUsers(pageRequest: PageRequestDto): Observable<PageDto<UserDto>> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     const params: HttpParams = this.pageRequestService.convertToHttpRequestParams(pageRequest);
     const options = { headers: headers, params: params };
@@ -32,7 +32,7 @@ export class UsersService {
   public getCurrentUser(): Observable<UserDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.get<UserDto>(this.serviceUrl + '/user-info', { headers: headers });
   }
@@ -40,7 +40,7 @@ export class UsersService {
   public createUser(createUser: CreateUserModel): Observable<UserDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.post<UserDto>(this.serviceUrl + '/create', createUser, { headers: headers })
   }

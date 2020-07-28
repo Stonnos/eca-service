@@ -6,9 +6,9 @@ import {
   PageRequestDto, UpdateClassifiersConfigurationDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
-import { AuthenticationKeys } from "../../auth/model/auth.keys";
 import { PageRequestService } from "../../common/services/page-request.service";
 import { environment } from "../../../environments/environment";
+import { Utils } from "../../common/util/utils";
 
 @Injectable()
 export class ClassifiersConfigurationsService {
@@ -21,7 +21,7 @@ export class ClassifiersConfigurationsService {
   public getClassifiersConfigurations(pageRequest: PageRequestDto): Observable<PageDto<ClassifiersConfigurationDto>> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     const params: HttpParams = this.pageRequestService.convertToHttpRequestParams(pageRequest);
     const options = { headers: headers, params: params };
@@ -31,7 +31,7 @@ export class ClassifiersConfigurationsService {
   public getClassifiersConfigurationDetails(configurationId: number): Observable<ClassifiersConfigurationDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.get<ClassifiersConfigurationDto>(this.serviceUrl + '/details/' + configurationId.toString(), { headers: headers });
   }
@@ -39,7 +39,7 @@ export class ClassifiersConfigurationsService {
   public saveConfiguration(configuration: CreateClassifiersConfigurationDto): Observable<ClassifiersConfigurationDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.post<ClassifiersConfigurationDto>(this.serviceUrl + '/save', configuration, { headers: headers })
   }
@@ -47,14 +47,14 @@ export class ClassifiersConfigurationsService {
   public updateConfiguration(configuration: UpdateClassifiersConfigurationDto): Observable<any> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.put(this.serviceUrl + '/update', configuration, { headers: headers })
   }
 
   public deleteConfiguration(id: number): Observable<any> {
     const headers = new HttpHeaders({
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     let params = new HttpParams().set('id', id.toString());
     const options = { headers: headers, params: params };
@@ -63,7 +63,7 @@ export class ClassifiersConfigurationsService {
 
   public setActive(id: number): Observable<any> {
     const headers = new HttpHeaders({
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     const formData = new FormData();
     formData.append('id', id.toString());
