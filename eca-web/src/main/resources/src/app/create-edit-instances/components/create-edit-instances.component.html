@@ -1,6 +1,6 @@
 <p-dialog
   [(visible)]="visible"
-  header="Добавить датасет"
+  header="{{ item.id ? 'Переименовать' : 'Добавить' }} датасет"
   [style]="{ width: '650px' }"
   appendTo="body"
   [modal]="true"
@@ -15,6 +15,7 @@
         <label class="text-bold control-label">Обучающая выборка</label>
         <app-upload-training-data
           [submitted]="submitted"
+          [disabled]="isEditMode()"
           (upload)="onUpload($event)">
         </app-upload-training-data>
       </div>
@@ -52,7 +53,7 @@
   <p-footer>
     <button
       pButton
-      label="Добавить"
+      label="{{ item.id ? 'Переименовать' : 'Добавить' }}"
       type="button"
       (click)="submit()"
       class="ml-auto">

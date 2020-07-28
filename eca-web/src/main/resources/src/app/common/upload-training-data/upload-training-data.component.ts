@@ -20,6 +20,9 @@ export class UploadTrainingDataComponent implements OnInit {
   @Input()
   public submitted: boolean = false;
 
+  @Input()
+  public disabled: boolean = false;
+
   public trainingDataFile: File;
 
   @ViewChild(FileUpload, { static: true })
