@@ -1,0 +1,24 @@
+<p-fileUpload #fileUpload
+              name="trainingData"
+              mode="basic"
+              chooseLabel="{{ trainingDataFile?.name || 'Выбрать'}}"
+              [invalidFileSizeMessageSummary]="invalidFileSizeMessageSummary"
+              [invalidFileSizeMessageDetail]="invalidFileSizeMessageDetail"
+              [invalidFileTypeMessageSummary]="invalidFileTypeMessageSummary"
+              [invalidFileTypeMessageDetail]="invalidFileTypeMessageDetail"
+              [auto]="true"
+              [customUpload]="true"
+              (uploadHandler)="onUpload($event)"
+              [accept]="accept"
+              [maxFileSize]="maxFileSize">
+</p-fileUpload>
+<div class="text-danger error-message">
+  <div *ngIf="submitted && !isSelected()">
+    Выберите файл
+  </div>
+  <div *ngIf="fileUpload.msgs?.length > 0">
+    <div *ngFor="let msg of fileUpload.msgs">
+      {{ msg.summary }} {{ msg.detail }}
+    </div>
+  </div>
+</div>

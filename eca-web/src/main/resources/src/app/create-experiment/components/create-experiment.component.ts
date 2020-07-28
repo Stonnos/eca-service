@@ -2,7 +2,7 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ExperimentRequest } from "../model/experiment-request.model";
 import { FilterDictionaryValueDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { BaseCreateDialogComponent } from "../../common/dialog/base-create-dialog.component";
-import { FileUpload } from "primeng/primeng";
+import { UploadTrainingDataComponent } from "../../common/upload-training-data/upload-training-data.component";
 
 @Component({
   selector: 'app-create-experiment',
@@ -11,17 +11,8 @@ import { FileUpload } from "primeng/primeng";
 })
 export class CreateExperimentComponent extends BaseCreateDialogComponent<ExperimentRequest> implements OnInit {
 
-  //Max file size: 10MB
-  public maxFileSize: number = 10000000;
-  //Files formats
-  public accept: string = '.csv,.xls,.xlsx,.arff,.xml,.json,.txt,.data,.docx';
-  public invalidFileSizeMessageSummary: string = 'Недопустимый размер файла,';
-  public invalidFileSizeMessageDetail: string = 'максимальный допустимый размер: {0}.';
-  public invalidFileTypeMessageSummary: string = 'Некорректный тип файла,';
-  public invalidFileTypeMessageDetail: string = 'допускаются только файлы форматов: {0}.';
-
-  @ViewChild(FileUpload, { static: true })
-  public fileUpload: FileUpload;
+  @ViewChild(UploadTrainingDataComponent, { static: true })
+  public fileUpload: UploadTrainingDataComponent;
 
   @Input()
   public experimentTypes: FilterDictionaryValueDto[] = [];
@@ -33,22 +24,17 @@ export class CreateExperimentComponent extends BaseCreateDialogComponent<Experim
   }
 
   public isValid(): boolean {
-    return super.isValid() && this.isTrainingDataSelected();
+    return super.isValid() && this.fileUpload.isSelected();
   }
 
   public clear(): void {
     this.item.trainingDataFile = null;
-    this.fileUpload.msgs = [];
-    this.fileUpload.clear();
+    this.fileUpload.clearAll();
     super.clear();
   }
 
-  public isTrainingDataSelected(): boolean {
-    return this.item.trainingDataFile != null;
-  }
-
-  public onUpload(event: any): void {
-    this.item.trainingDataFile = event.files[0];
-    this.fileUpload.clear();
+  public onUpload(file: File): void {
+    this.item.trainingDataFile = file;
+    this.fileUpload.resetUpload();
   }
 }

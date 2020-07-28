@@ -9,6 +9,7 @@ import { RequestStatusComponent } from "./request-status/components/request-stat
 import { ValidationService } from "./services/validation.service";
 import { EqualValidator } from "./validators/equal-validator.directive";
 import { SearchQueryComponent } from "./search-query/search-query.component";
+import { UploadTrainingDataComponent } from "./upload-training-data/upload-training-data.component";
 
 @NgModule({
   imports: [
@@ -19,11 +20,13 @@ import { SearchQueryComponent } from "./search-query/search-query.component";
   declarations: [
     RequestStatusComponent,
     SearchQueryComponent,
+    UploadTrainingDataComponent,
     EqualValidator
   ],
   exports: [
     RequestStatusComponent,
     SearchQueryComponent,
+    UploadTrainingDataComponent,
     EqualValidator
   ],
   providers: [
