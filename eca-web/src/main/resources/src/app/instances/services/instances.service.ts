@@ -54,7 +54,7 @@ export class InstancesService {
     });
     const formData = new FormData();
     formData.append('id', id.toString());
-    formData.append('newName', newTableName);
+    formData.append('tableName', newTableName);
     return this.http.put(this.serviceUrl + '/rename', formData, { headers: headers });
   }
 }
