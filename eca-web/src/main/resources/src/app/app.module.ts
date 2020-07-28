@@ -34,6 +34,7 @@ import { UsersModule } from "./users/users.module";
 import { CreateUserModule } from "./create-user/create-user.module";
 import { ChangePasswordModule } from "./change-password/change-password.module";
 import { InstancesModule } from "./instances/instances.module";
+import { CreateEditInstancesModule } from "./create-edit-instances/create-edit-instances.module";
 
 @NgModule({
   declarations: [
@@ -68,6 +69,7 @@ import { InstancesModule } from "./instances/instances.module";
     ExperimentDetailsModule,
     UploadClassifierOptionsDialogModule,
     InstancesModule,
+    CreateEditInstancesModule,
     ChangePasswordModule,
     UiComponentsModule,
     HttpClientModule,

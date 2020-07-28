@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
+  CreateInstancesResultDto,
   InstancesDto,
   PageDto,
   PageRequestDto,
@@ -35,5 +36,25 @@ export class InstancesService {
     let params = new HttpParams().set('id', id.toString());
     const options = { headers: headers, params: params };
     return this.http.delete(this.serviceUrl + '/delete', options);
+  }
+
+  public saveData(file: File, tableName: string): Observable<CreateInstancesResultDto> {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    const formData = new FormData();
+    formData.append('trainingData', file, file.name);
+    formData.append('tableName', tableName);
+    return this.http.post<CreateInstancesResultDto>(this.serviceUrl + '/save', formData, { headers: headers });
+  }
+
+  public renameData(id: number, newTableName: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    const formData = new FormData();
+    formData.append('id', id.toString());
+    formData.append('newName', newTableName);
+    return this.http.put(this.serviceUrl + '/rename', formData, { headers: headers });
   }
 }

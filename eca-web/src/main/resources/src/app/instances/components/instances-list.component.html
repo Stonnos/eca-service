@@ -6,6 +6,7 @@
         label="Добавить датасет"
         icon="pi pi-plus"
         type="button"
+        (click)="showCreateEditInstancesDialog()"
         class="ml-2 mt-2 mb-2">
       </button>
     </div>
@@ -46,6 +47,7 @@
           <button pButton
                   type="button"
                   class="ui-button-primary round-button mr-1"
+                  (click)="showCreateEditInstancesDialog(item)"
                   icon="pi pi-fw pi-pencil">
           </button>
           <button pButton
@@ -66,3 +68,11 @@
     </ng-template>
   </p-table>
 </div>
+
+<app-create-edit-instances
+  [item]="createEditInstancesModel"
+  [visible]="createEditInstancesDialogVisibility"
+  (visibilityChange)="onCreateEditInstancesDialogVisibility($event)"
+  (itemEvent)="onCreateInstances($event)"
+  (renameEvent)="onRenameInstances($event)">
+</app-create-edit-instances>

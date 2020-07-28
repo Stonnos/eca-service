@@ -116,8 +116,8 @@ public class DataStorageController {
     /**
      * Renames data with specified id.
      *
-     * @param id      - instances id
-     * @param newName - new name
+     * @param id        - instances id
+     * @param tableName - new table name
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
@@ -129,8 +129,8 @@ public class DataStorageController {
                        @ApiParam(value = "Table name", required = true)
                        @Pattern(regexp = TABLE_NAME_REGEX)
                        @Size(max = MAX_TABLE_NAME_LENGTH)
-                       @UniqueTableName @RequestParam String newName) {
-        storageService.renameData(id, newName);
+                       @UniqueTableName @RequestParam String tableName) {
+        storageService.renameData(id, tableName);
     }
 
     /**

@@ -64,7 +64,6 @@ class DataStorageControllerTest {
     private static final String TRAINING_DATA_PARAM = "trainingData";
     private static final String TABLE_NAME = "table";
     private static final String TABLE_NAME_PARAM = "tableName";
-    private static final String NEW_NAME_PARAM = "newName";
     private static final String PAGE_PARAM = "page";
     private static final String SIZE_PARAM = "size";
 
@@ -140,7 +139,7 @@ class DataStorageControllerTest {
     void testRenameData() throws Exception {
         mockMvc.perform(put(RENAME_URL)
                 .param(ID_PARAM, String.valueOf(ID))
-                .param(NEW_NAME_PARAM, TABLE_NAME)).andExpect(status().isOk());
+                .param(TABLE_NAME_PARAM, TABLE_NAME)).andExpect(status().isOk());
     }
 
     @Test
@@ -148,7 +147,7 @@ class DataStorageControllerTest {
         when(instancesRepository.existsByTableName(anyString())).thenReturn(true);
         mockMvc.perform(put(RENAME_URL)
                 .param(ID_PARAM, String.valueOf(ID))
-                .param(NEW_NAME_PARAM, TABLE_NAME)).andExpect(status().isBadRequest());
+                .param(TABLE_NAME_PARAM, TABLE_NAME)).andExpect(status().isBadRequest());
     }
 
     @Test

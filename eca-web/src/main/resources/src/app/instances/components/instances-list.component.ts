@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import {
-  ClassifiersConfigurationDto,
+  CreateInstancesResultDto,
   InstancesDto,
   PageDto,
   PageRequestDto,
@@ -10,9 +10,9 @@ import { BaseListComponent } from "../../common/lists/base-list.component";
 import { Observable } from "rxjs/internal/Observable";
 import { InstancesFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
-import { CreateUserModel } from "../../create-user/model/create-user.model";
 import { InstancesService } from "../services/instances.service";
 import { finalize } from "rxjs/internal/operators";
+import { CreateEditInstancesModel } from "../../create-edit-instances/model/create-edit-instances.model";
 
 @Component({
   selector: 'app-instances-list',
@@ -21,9 +21,9 @@ import { finalize } from "rxjs/internal/operators";
 })
 export class InstancesListComponent extends BaseListComponent<InstancesDto> implements OnInit {
 
-  public createUserDialogVisibility: boolean = false;
+  public createEditInstancesDialogVisibility: boolean = false;
 
-  public createUserModel: CreateUserModel = new CreateUserModel();
+  public createEditInstancesModel: CreateEditInstancesModel = new CreateEditInstancesModel();
 
   public constructor(private injector: Injector,
                      private confirmationService: ConfirmationService,
@@ -40,19 +40,28 @@ export class InstancesListComponent extends BaseListComponent<InstancesDto> impl
     return this.instancesService.getInstancesPage(pageRequest);
   }
 
-  /*public onCreateUserDialogVisibility(visible): void {
-    this.createUserDialogVisibility = visible;
+  public onCreateEditInstancesDialogVisibility(visible): void {
+    this.createEditInstancesDialogVisibility = visible;
   }
 
-  public onCreateUser(user: UserDto): void {
-    this.messageService.add({ severity: 'success', summary: `Создан новый пользователь ${user.login}`, detail: '' });
-    this.lastCreatedId = user.id;
-    this.refreshUsersPage();
+  public showCreateEditInstancesDialog(item?: InstancesDto): void {
+    if (item && item.id) {
+      this.createEditInstancesModel = new CreateEditInstancesModel(item.id, item.tableName);
+    } else {
+      this.createEditInstancesModel = new CreateEditInstancesModel();
+    }
+    this.createEditInstancesDialogVisibility = true;
   }
 
-  public showCreateUserDialog(): void {
-    this.createUserDialogVisibility = true;
-  }*/
+  public onRenameInstances(event): void {
+    this.refreshInstancesPage();
+  }
+
+  public onCreateInstances(createInstancesResultDto: CreateInstancesResultDto): void {
+    this.messageService.add({ severity: 'success', summary: `Добавлен новый датасет ${createInstancesResultDto.tableName}`, detail: '' });
+    this.lastCreatedId = createInstancesResultDto.id;
+    this.refreshInstancesPage();
+  }
 
   private refreshInstancesPage(): void {
     this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1);

@@ -5,13 +5,15 @@ import { UiComponentsModule } from "../ui-components.module";
 import { SharedModule } from "../common/shared.module";
 import { InstancesListComponent } from "./components/instances-list.component";
 import { InstancesService } from "./services/instances.service";
+import { CreateEditInstancesModule } from "../create-edit-instances/create-edit-instances.module";
 
 @NgModule({
   imports: [
     CommonModule,
     SharedModule,
     FormsModule,
-    UiComponentsModule
+    UiComponentsModule,
+    CreateEditInstancesModule
   ],
   declarations: [
     InstancesListComponent
