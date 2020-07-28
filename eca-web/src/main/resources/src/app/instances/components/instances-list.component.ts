@@ -23,6 +23,7 @@ export class InstancesListComponent extends BaseListComponent<InstancesDto> impl
 
   public createEditInstancesDialogVisibility: boolean = false;
 
+  public previousInstancesModel: CreateEditInstancesModel;
   public createEditInstancesModel: CreateEditInstancesModel = new CreateEditInstancesModel();
 
   public constructor(private injector: Injector,
@@ -46,6 +47,7 @@ export class InstancesListComponent extends BaseListComponent<InstancesDto> impl
 
   public showCreateEditInstancesDialog(item?: InstancesDto): void {
     if (item && item.id) {
+      this.previousInstancesModel = new CreateEditInstancesModel(item.id, item.tableName);
       this.createEditInstancesModel = new CreateEditInstancesModel(item.id, item.tableName);
     } else {
       this.createEditInstancesModel = new CreateEditInstancesModel();

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import { BaseCreateDialogComponent } from "../../common/dialog/base-create-dialog.component";
 import { UploadTrainingDataComponent } from "../../common/upload-training-data/upload-training-data.component";
 import { CreateEditInstancesModel } from "../model/create-edit-instances.model";
@@ -26,6 +26,9 @@ export class CreateEditInstancesComponent extends BaseCreateDialogComponent<Crea
   public loading: boolean = false;
 
   public hasSameTableName: boolean = false;
+
+  @Input()
+  public prevItem: CreateEditInstancesModel;
 
   @ViewChild(UploadTrainingDataComponent, { static: true })
   public fileUpload: UploadTrainingDataComponent;
@@ -58,22 +61,26 @@ export class CreateEditInstancesComponent extends BaseCreateDialogComponent<Crea
   }
 
   private renameData(): void {
-    this.loading = true;
-    this.instancesService.renameData(this.item.id, this.item.tableName)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
-      .subscribe({
-        next: () => {
-          this.renameEvent.emit();
-          this.hide();
-        },
-        error: (error) => {
-          this.handleError(error);
-        }
-      });
+    if (this.prevItem.tableName == this.item.tableName) {
+      this.hide();
+    } else {
+      this.loading = true;
+      this.instancesService.renameData(this.item.id, this.item.tableName)
+        .pipe(
+          finalize(() => {
+            this.loading = false;
+          })
+        )
+        .subscribe({
+          next: () => {
+            this.renameEvent.emit();
+            this.hide();
+          },
+          error: (error) => {
+            this.handleError(error);
+          }
+        });
+    }
   }
 
   private saveData(): void {
