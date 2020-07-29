@@ -23,6 +23,7 @@
           type="text"
           placeholder="Введите логин"
           [(ngModel)]="item.login"
+          [disabled]="loading"
           #login = "ngModel"
           maxlength="32"
           (focus)="onLoginFocus($event)"
@@ -51,6 +52,7 @@
           type="text"
           placeholder="Введите Email"
           [(ngModel)]="item.email"
+          [disabled]="loading"
           #email="ngModel"
           maxlength="255"
           (focus)="onEmailFocus($event)"
@@ -78,6 +80,7 @@
           type="text"
           placeholder="Введите имя пользователя"
           [(ngModel)]="item.firstName"
+          [disabled]="loading"
           #firstName="ngModel"
           maxlength="30"
           class="form-control d-block w-100">

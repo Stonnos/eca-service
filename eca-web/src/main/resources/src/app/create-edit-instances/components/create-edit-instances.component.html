@@ -16,7 +16,7 @@
         <label class="text-bold control-label">Файл</label>
         <app-upload-training-data
           [submitted]="submitted"
-          [disabled]="isEditMode()"
+          [disabled]="loading || isEditMode()"
           (upload)="onUpload($event)">
         </app-upload-training-data>
       </div>
@@ -32,6 +32,7 @@
           placeholder="Введите название таблицы"
           [(ngModel)]="item.tableName"
           #tableName="ngModel"
+          [disabled]="loading"
           maxlength="30"
           (focus)="onTableNameFocus($event)"
           class="form-control d-block w-100">
