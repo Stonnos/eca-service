@@ -21,4 +21,9 @@ export class Utils {
   public static getBearerTokenHeader() {
     return 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN);
   }
+
+  public static getFileNameWithoutExtension(fileName: string): string {
+    const extIndex: number = fileName.lastIndexOf('.');
+    return extIndex > 0 && fileName.substring(0, extIndex);
+  }
 }

@@ -13,6 +13,7 @@ import {
 import { HttpErrorResponse} from "@angular/common/http";
 import { InstancesFields } from "../../common/util/field-names";
 import { ValidationErrorCode} from "../../common/model/validation-error-code";
+import { Utils } from "../../common/util/utils";
 
 @Component({
   selector: 'app-create-edit-instances',
@@ -127,6 +128,7 @@ export class CreateEditInstancesComponent extends BaseCreateDialogComponent<Crea
 
   public onUpload(file: File): void {
     this.item.file = file;
+    this.item.tableName = Utils.getFileNameWithoutExtension(file.name);
     this.fileUpload.resetUpload();
   }
 
