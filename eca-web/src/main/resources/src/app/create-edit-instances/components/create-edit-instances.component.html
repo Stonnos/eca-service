@@ -7,6 +7,7 @@
   [blockScroll]="false"
   [draggable]="false"
   [resizable]="false"
+  [closable]="!loading"
   (onHide)="hide()">
 
   <form novalidate class="form d-flex flex-column justify-content-center m-auto" (keydown.enter)="submit()">
@@ -53,10 +54,17 @@
   <p-footer>
     <button
       pButton
-      label="{{ item.id ? 'Переименовать' : 'Добавить' }}"
       type="button"
       (click)="submit()"
-      class="ml-auto">
+      [disabled]="loading"
+      class="save-instances-button ml-auto">
+      <span class="save-instances-text" *ngIf="!loading">{{ item.id ? 'Переименовать' : 'Добавить' }}</span>
+      <p-progressSpinner
+        *ngIf="loading"
+        class="save-instances-progress-spinner"
+        strokeWidth="4"
+        animationDuration=".5s">
+      </p-progressSpinner>
     </button>
   </p-footer>
 </p-dialog>
