@@ -127,6 +127,7 @@ export class CreateEditInstancesComponent extends BaseCreateDialogComponent<Crea
   }
 
   public onUpload(file: File): void {
+    this.hasSameTableName = false;
     this.item.file = file;
     this.item.tableName = Utils.getFileNameWithoutExtension(file.name);
     this.fileUpload.resetUpload();
