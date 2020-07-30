@@ -1,4 +1,4 @@
-package com.ecaservice.config.oauth2;
+package com.ecaservice.oauth2;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;

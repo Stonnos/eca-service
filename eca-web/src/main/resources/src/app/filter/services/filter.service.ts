@@ -8,9 +8,9 @@ import {
 import { Observable } from "rxjs/internal/Observable";
 import { Filter } from "../model/filter.model";
 import { SelectItem } from "primeng/api";
-import { AuthenticationKeys } from "../../auth/model/auth.keys";
 import { FilterFieldType } from "../../common/model/filter-field-type.enum";
 import { environment } from "../../../environments/environment";
+import { Utils } from "../../common/util/utils";
 
 @Injectable()
 export class FilterService {
@@ -23,7 +23,7 @@ export class FilterService {
   public getExperimentFilterFields(): Observable<FilterFieldDto[]> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.get<FilterFieldDto[]>(this.serviceUrl + '/experiment', { headers: headers });
   }
@@ -31,7 +31,7 @@ export class FilterService {
   public getEvaluationLogFilterFields(): Observable<FilterFieldDto[]> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.get<FilterFieldDto[]>(this.serviceUrl + '/evaluation', { headers: headers });
   }
@@ -39,7 +39,7 @@ export class FilterService {
   public getClassifierOptionsRequestFilterFields(): Observable<FilterFieldDto[]> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.get<FilterFieldDto[]>(this.serviceUrl + '/classifier-options-request', { headers: headers });
   }
@@ -47,7 +47,7 @@ export class FilterService {
   public getExperimentTypeDictionary(): Observable<FilterDictionaryDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.get<FilterDictionaryDto>(this.serviceUrl + '/experiment-types', { headers: headers });
   }
@@ -55,7 +55,7 @@ export class FilterService {
   public getEvaluationMethodDictionary(): Observable<FilterDictionaryDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.get<FilterDictionaryDto>(this.serviceUrl + '/evaluation-methods', { headers: headers });
   }

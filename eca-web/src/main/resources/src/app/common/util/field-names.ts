@@ -102,3 +102,11 @@ export class UserFields {
   public static readonly CREATION_DATE: string = "creationDate";
   public static readonly ROLES: string = "roles";
 }
+
+export class InstancesFields {
+  public static readonly TABLE_NAME: string = "tableName";
+  public static readonly NUM_INSTANCES: string = "numInstances";
+  public static readonly NUM_ATTRIBUTES: string = "numAttributes";
+  public static readonly CREATED: string = "created";
+  public static readonly CREATED_BY: string = "createdBy";
+}

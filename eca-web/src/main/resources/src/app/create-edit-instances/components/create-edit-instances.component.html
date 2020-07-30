@@ -1,0 +1,71 @@
+<p-dialog
+  [(visible)]="visible"
+  header="{{ item.id ? 'Переименовать' : 'Добавить' }} датасет"
+  [style]="{ width: '650px' }"
+  appendTo="body"
+  [modal]="true"
+  [blockScroll]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="!loading"
+  (onHide)="hide()">
+
+  <form novalidate class="form d-flex flex-column justify-content-center m-auto" (keydown.enter)="submit()">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-10 mx-auto mb-5">
+        <label class="text-bold control-label">Файл</label>
+        <app-upload-training-data
+          [submitted]="submitted"
+          [disabled]="loading || isEditMode()"
+          (upload)="onUpload($event)">
+        </app-upload-training-data>
+      </div>
+      <div class="ui-g-10 mx-auto mb-5">
+        <label class="text-bold control-label">Название таблицы</label>
+        <input
+          required
+          pInputText
+          [pattern]="tableNameRegex"
+          id="tableName"
+          name="tableName"
+          type="text"
+          placeholder="Введите название таблицы"
+          [(ngModel)]="item.tableName"
+          #tableName="ngModel"
+          [disabled]="loading"
+          maxlength="30"
+          (focus)="onTableNameFocus($event)"
+          class="form-control d-block w-100">
+        <div class="text-danger error-message" *ngIf="tableName.invalid && (tableName.dirty || tableName.touched || submitted)">
+          <div *ngIf="tableName?.errors?.required">
+            Заполните название таблицы
+          </div>
+          <div *ngIf="tableName?.errors?.pattern">
+            <span>Разрешены только цифры, символ подчеркивания</span>
+            <span class="d-block">и латинские символы в нижнем регистре</span>
+          </div>
+        </div>
+        <div class="text-danger error-message" *ngIf="hasSameTableName && submitted">
+          Таблица с таким именем уже существует в БД
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <p-footer>
+    <button
+      pButton
+      type="button"
+      (click)="submit()"
+      [disabled]="loading"
+      class="save-instances-button ml-auto">
+      <span class="save-instances-text" *ngIf="!loading">{{ item.id ? 'Переименовать' : 'Добавить' }}</span>
+      <p-progressSpinner
+        *ngIf="loading"
+        class="save-instances-progress-spinner"
+        strokeWidth="4"
+        animationDuration=".5s">
+      </p-progressSpinner>
+    </button>
+  </p-footer>
+</p-dialog>

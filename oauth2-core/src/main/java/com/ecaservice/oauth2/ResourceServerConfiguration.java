@@ -1,4 +1,4 @@
-package com.ecaservice.config.oauth2;
+package com.ecaservice.oauth2;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;

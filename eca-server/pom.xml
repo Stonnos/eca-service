@@ -12,26 +12,10 @@
     <artifactId>eca-server</artifactId>
     <packaging>war</packaging>
 
-    <repositories>
-        <repository>
-            <id>eca-mvn-repo</id>
-            <url>https://raw.github.com/Stonnos/eca/mvn-repo/</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <properties>
-        <postresql.version>42.2.6</postresql.version>
-        <h2.version>1.4.199</h2.version>
-        <eca.version>6.7</eca.version>
-        <liquibase.version>3.7.0</liquibase.version>
         <xmlschema.version>2.2.3</xmlschema.version>
         <httpclient.version>4.5.11</httpclient.version>
         <jaxb2-maven-plugin.version>2.3</jaxb2-maven-plugin.version>
-        <maven-processor-plugin.version>3.3.3</maven-processor-plugin.version>
         <sonar.coverage.exclusions>
             **/model/**/*,
             **/dto/**/*,
@@ -79,7 +63,6 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>${postresql.version}</version>
         </dependency>
 
         <!-- Spring Boot -->
@@ -118,8 +101,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.security.oauth.boot</groupId>
-            <artifactId>spring-security-oauth2-autoconfigure</artifactId>
+            <groupId>eca.service</groupId>
+            <artifactId>oauth2-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -171,7 +155,6 @@
         <dependency>
             <groupId>eca</groupId>
             <artifactId>eca-core</artifactId>
-            <version>${eca.version}</version>
         </dependency>
 
         <dependency>
@@ -207,7 +190,6 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>${h2.version}</version>
         </dependency>
 
         <dependency>
@@ -225,7 +207,6 @@
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
-            <version>${liquibase.version}</version>
         </dependency>
 
         <dependency>

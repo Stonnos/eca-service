@@ -1,10 +1,10 @@
 package com.ecaservice.configuation.annotation;
 
-import com.ecaservice.config.oauth2.MethodSecurityConfiguration;
 import com.ecaservice.configuation.oauth2.Oauth2BaseConfiguration;
 import com.ecaservice.configuation.oauth2.Oauth2ResourceServerConfiguration;
 import com.ecaservice.configuation.oauth2.Oauth2ServerConfiguration;
 import com.ecaservice.configuation.oauth2.Oauth2ServerSecurityConfiguration;
+import com.ecaservice.oauth2.MethodSecurityConfiguration;
 import com.ecaservice.token.TokenService;
 import org.springframework.context.annotation.Import;
 

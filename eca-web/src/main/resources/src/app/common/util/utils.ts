@@ -1,5 +1,6 @@
 import { EvaluationMethod } from "../model/evaluation-method.enum";
 import { EnumDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import {AuthenticationKeys} from "../../auth/model/auth.keys";
 
 export class Utils {
 
@@ -15,5 +16,14 @@ export class Utils {
     } else {
       return evaluationMethod.description;
     }
+  }
+
+  public static getBearerTokenHeader() {
+    return 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN);
+  }
+
+  public static getFileNameWithoutExtension(fileName: string): string {
+    const extIndex: number = fileName.lastIndexOf('.');
+    return extIndex > 0 && fileName.substring(0, extIndex);
   }
 }

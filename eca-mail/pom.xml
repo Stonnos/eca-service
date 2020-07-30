@@ -13,8 +13,6 @@
     <packaging>war</packaging>
 
     <properties>
-        <postresql.version>42.2.6</postresql.version>
-        <liquibase.version>3.7.0</liquibase.version>
         <sonar.coverage.exclusions>
             **/model/**/*,
             **/dto/**/*,
@@ -36,13 +34,11 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>${postresql.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
-            <version>${liquibase.version}</version>
         </dependency>
 
         <!-- Spring Boot -->

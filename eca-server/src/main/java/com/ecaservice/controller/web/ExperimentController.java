@@ -161,7 +161,8 @@ public class ExperimentController {
             resultDto.setRequestId(experiment.getRequestId());
             resultDto.setCreated(true);
         } catch (Exception ex) {
-            log.error("There was an error while experiment creation for data '{}'", trainingData.getOriginalFilename());
+            log.error("There was an error while experiment creation for data '{}': {}",
+                    trainingData.getOriginalFilename(), ex.getMessage());
             resultDto.setErrorMessage(ex.getMessage());
         }
         return resultDto;

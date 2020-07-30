@@ -7,11 +7,13 @@ import { ClassifiersConfigurationsService } from "./services/classifiers-configu
 import { CreateClassifiersConfigurationModule } from "../create-classifiers-configuration/create-classifiers-configuration.module";
 import { UploadClassifierOptionsDialogModule } from "../upload-classifier-options-dialog/upload-classifier-options-dialog.module";
 import { ClassifiersConfigurationMenuModule } from "../classifiers-configuration-menu/classifiers-configuration-menu.module";
+import { SharedModule } from "../common/shared.module";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
+    SharedModule,
     UiComponentsModule,
     CreateClassifiersConfigurationModule,
     ClassifiersConfigurationMenuModule,

@@ -7,9 +7,9 @@ import {
   PageRequestDto, RequestStatusStatisticsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
-import { AuthenticationKeys } from "../../auth/model/auth.keys";
 import { PageRequestService } from "../../common/services/page-request.service";
 import { environment } from "../../../environments/environment";
+import { Utils } from "../../common/util/utils";
 
 @Injectable()
 export class ClassifiersService {
@@ -22,7 +22,7 @@ export class ClassifiersService {
   public getEvaluations(pageRequest: PageRequestDto): Observable<PageDto<EvaluationLogDto>> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     const params: HttpParams = this.pageRequestService.convertToHttpRequestParams(pageRequest);
     const options = { headers: headers, params: params };
@@ -32,7 +32,7 @@ export class ClassifiersService {
   public getRequestStatusesStatistics(): Observable<RequestStatusStatisticsDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.get<RequestStatusStatisticsDto>(this.serviceUrl + '/request-statuses-statistics', { headers: headers });
   }
@@ -40,7 +40,7 @@ export class ClassifiersService {
   public getEvaluationLogDetails(requestId: string): Observable<EvaluationLogDetailsDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)
+      'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.get<EvaluationLogDetailsDto>(this.serviceUrl + '/details/' + requestId, { headers: headers });
   }

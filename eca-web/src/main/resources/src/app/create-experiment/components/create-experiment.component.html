@@ -14,30 +14,10 @@
     <div class="ui-g ui-fluid">
       <div class="ui-g-10 mx-auto mb-5">
         <label class="text-bold control-label">Обучающая выборка</label>
-        <p-fileUpload #fileUpload
-                      name="trainingData"
-                      mode="basic"
-                      chooseLabel="{{ item?.trainingDataFile?.name || 'Выбрать'}}"
-                      [invalidFileSizeMessageSummary]="invalidFileSizeMessageSummary"
-                      [invalidFileSizeMessageDetail]="invalidFileSizeMessageDetail"
-                      [invalidFileTypeMessageSummary]="invalidFileTypeMessageSummary"
-                      [invalidFileTypeMessageDetail]="invalidFileTypeMessageDetail"
-                      [auto]="true"
-                      [customUpload]="true"
-                      (uploadHandler)="onUpload($event)"
-                      [accept]="accept"
-                      [maxFileSize]="maxFileSize">
-        </p-fileUpload>
-        <div class="text-danger error-message">
-          <div *ngIf="submitted && !isTrainingDataSelected()">
-            Выберите файл
-          </div>
-          <div *ngIf="fileUpload.msgs?.length > 0">
-            <div *ngFor="let msg of fileUpload.msgs">
-              {{ msg.summary }} {{ msg.detail }}
-            </div>
-          </div>
-        </div>
+        <app-upload-training-data
+          [submitted]="submitted"
+          (upload)="onUpload($event)">
+        </app-upload-training-data>
       </div>
       <div class="ui-g-10 mx-auto mb-3">
         <label class="text-bold control-label">Тип эксперимента</label>

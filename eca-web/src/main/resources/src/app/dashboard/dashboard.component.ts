@@ -33,6 +33,10 @@ export class DashboardComponent implements OnInit {
         routerLink: ['/dashboard/classifiers-options-requests']
       },
       {
+        label: 'Датасеты',
+        routerLink: ['/dashboard/instances']
+      },
+      {
         label: 'Пользователи',
         routerLink: ['/dashboard/users'],
         visible: this.isSuperAdmin()

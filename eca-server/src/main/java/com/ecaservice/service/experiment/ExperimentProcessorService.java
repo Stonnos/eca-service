@@ -67,7 +67,9 @@ public class ExperimentProcessorService {
         List<EvaluationResults> evaluationResults = findBestResults(abstractExperiment.getHistory());
         log.info("Experiment [{}] processing has been finished with {} best models!",
                 experiment.getRequestId(), evaluationResults.size());
-        return buildExperimentHistory(evaluationResults, abstractExperiment);
+        ExperimentHistory experimentHistory = buildExperimentHistory(evaluationResults, abstractExperiment);
+        abstractExperiment.clearHistory();
+        return experimentHistory;
     }
 
     private ExperimentHistory buildExperimentHistory(List<EvaluationResults> evaluationResults,
