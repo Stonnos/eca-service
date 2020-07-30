@@ -48,8 +48,9 @@ class ExperimentProcessorServiceTest {
 
     @Test
     void testNullInitializationParams() {
+        Experiment experiment = new Experiment();
         assertThrows(IllegalArgumentException.class,
-                () -> experimentProcessorService.processExperimentHistory(new Experiment(), null));
+                () -> experimentProcessorService.processExperimentHistory(experiment, null));
     }
 
     @Test

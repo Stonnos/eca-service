@@ -33,7 +33,6 @@ class PasswordServiceTest {
     @Test
     void testGeneratedPasswordLength() {
         String password = passwordService.generatePassword();
-        assertThat(password).isNotNull();
-        assertThat(password).hasSize(passwordConfig.getLength());
+        assertThat(password).isNotNull().hasSize(passwordConfig.getLength());
     }
 }

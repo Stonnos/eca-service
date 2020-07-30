@@ -57,7 +57,8 @@ class ClassifierOptionsConverterTest {
 
     @Test
     void testUnsupportedClassifier() {
-        assertThrows(IllegalStateException.class, () -> classifierOptionsConverter.convert(new BayesNet()));
+        BayesNet bayesNet = new BayesNet();
+        assertThrows(IllegalStateException.class, () -> classifierOptionsConverter.convert(bayesNet));
     }
 
     @Test
