@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
+import static com.ecaservice.data.storage.config.Constants.INSTANCES_TABLE_NAME;
+
 /**
  * Instances persistence entity.
  *
@@ -16,7 +18,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @Entity
-@Table(name = "instances")
+@Table(name = INSTANCES_TABLE_NAME)
 public class InstancesEntity {
 
     @Id

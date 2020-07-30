@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import static com.ecaservice.data.storage.config.Constants.INSTANCES_TABLE_NAME;
+
 /**
  * Unique table name validation.
  *
@@ -20,6 +22,7 @@ public class UniqueTableNameValidator implements ConstraintValidator<UniqueTable
 
     @Override
     public boolean isValid(String tableName, ConstraintValidatorContext constraintValidatorContext) {
-        return StringUtils.isNotBlank(tableName) && !instancesRepository.existsByTableName(tableName.trim());
+        return StringUtils.isNotBlank(tableName) && !INSTANCES_TABLE_NAME.equals(tableName.trim()) &&
+                !instancesRepository.existsByTableName(tableName.trim());
     }
 }

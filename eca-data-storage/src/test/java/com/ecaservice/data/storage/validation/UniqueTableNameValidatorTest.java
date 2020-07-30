@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static com.ecaservice.data.storage.config.Constants.INSTANCES_TABLE_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -40,6 +41,11 @@ class UniqueTableNameValidatorTest {
     void testTableNameExists() {
         when(instancesRepository.existsByTableName(TABLE_NAME)).thenReturn(true);
         assertThat(uniqueTableNameValidator.isValid(TABLE_NAME, null)).isFalse();
+    }
+
+    @Test
+    void testTableNameSameAsMetaInfoTableName() {
+        assertThat(uniqueTableNameValidator.isValid(INSTANCES_TABLE_NAME, null)).isFalse();
     }
 
     @Test
