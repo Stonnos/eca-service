@@ -231,12 +231,13 @@ class ExperimentServiceTest extends AbstractJpaTest {
         experimentRepository.save(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
         experimentRepository.save(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
         Map<RequestStatus, Long> requestStatusesMap = experimentService.getRequestStatusesStatistics();
-        assertThat(requestStatusesMap).isNotNull();
-        assertThat(requestStatusesMap.size()).isEqualTo(RequestStatus.values().length);
-        assertThat(requestStatusesMap.get(RequestStatus.NEW)).isEqualTo(2L);
-        assertThat(requestStatusesMap.get(RequestStatus.FINISHED)).isEqualTo(3L);
-        assertThat(requestStatusesMap.get(RequestStatus.ERROR)).isEqualTo(4L);
-        assertThat(requestStatusesMap.get(RequestStatus.TIMEOUT)).isZero();
+        assertThat(requestStatusesMap)
+                .isNotNull()
+                .hasSameSizeAs(RequestStatus.values())
+                .containsEntry(RequestStatus.NEW, 2L)
+                .containsEntry(RequestStatus.FINISHED, 3L)
+                .containsEntry(RequestStatus.ERROR, 4L)
+                .containsEntry(RequestStatus.TIMEOUT, 0L);
     }
 
     /**

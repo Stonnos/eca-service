@@ -80,15 +80,15 @@ class EmailTemplateVisitorTest {
         assertEmailRequest(emailRequest, experiment);
         String actualUrl =
                 emailRequest.getEmailMessageVariables().get(TemplateVariablesDictionary.DOWNLOAD_URL_KEY).toString();
-        assertThat(actualUrl).isNotNull();
-        assertThat(actualUrl).isEqualTo(String.format(DOWNLOAD_PATH_FORMAT, experimentConfig.getDownloadBaseUrl(),
-                experiment.getToken()));
+        assertThat(actualUrl)
+                .isNotNull()
+                .isEqualTo(String.format(DOWNLOAD_PATH_FORMAT, experimentConfig.getDownloadBaseUrl(),
+                        experiment.getToken()));
     }
 
     private void assertEmailRequest(EmailRequest emailRequest, Experiment experiment) {
         Map<String, Object> variablesMap = emailRequest.getEmailMessageVariables();
-        assertThat(variablesMap.get(TemplateVariablesDictionary.FIRST_NAME_KEY)).isEqualTo(
-                experiment.getFirstName());
+        assertThat(variablesMap).containsEntry(TemplateVariablesDictionary.FIRST_NAME_KEY, experiment.getFirstName());
         ExperimentType actualExperimentType =
                 ExperimentType.findByDescription(
                         variablesMap.get(TemplateVariablesDictionary.EXPERIMENT_TYPE_KEY).toString());

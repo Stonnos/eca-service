@@ -73,7 +73,8 @@ class ErsWebServiceClientTest {
     void testErrorSending() {
         when(ersWebServiceTemplate.marshalSendAndReceive(anyString(), any(EvaluationResultsRequest.class))).thenThrow(
                 new WebServiceIOException("I/O exception"));
-        assertThrows(WebServiceIOException.class, () -> ersWebServiceClient.sendEvaluationResults(evaluationResults,
-                UUID.randomUUID().toString()));
+        String uuid = UUID.randomUUID().toString();
+        assertThrows(WebServiceIOException.class,
+                () -> ersWebServiceClient.sendEvaluationResults(evaluationResults, uuid));
     }
 }
