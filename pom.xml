@@ -45,11 +45,11 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <lombok.version>1.18.12</lombok.version>
         <inject.version>1</inject.version>
         <logback.version>1.2.3</logback.version>
-        <slf4j.version>1.7.25</slf4j.version>
+        <slf4j.version>1.7.30</slf4j.version>
         <eca.version>6.7</eca.version>
         <h2.version>1.4.199</h2.version>
         <postresql.version>42.2.6</postresql.version>

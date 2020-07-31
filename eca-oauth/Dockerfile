@@ -1,4 +1,4 @@
-FROM openjdk:8
+FROM openjdk:11-jdk-slim
 ADD wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 COPY target/eca-oauth.war eca-oauth.war
