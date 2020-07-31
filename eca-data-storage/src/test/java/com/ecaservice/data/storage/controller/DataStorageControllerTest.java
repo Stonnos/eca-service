@@ -21,6 +21,7 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.MimeTypeUtils;
@@ -33,6 +34,7 @@ import java.util.List;
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -77,6 +79,8 @@ class DataStorageControllerTest {
     private StorageService storageService;
     @MockBean
     private InstancesRepository instancesRepository;
+    @MockBean
+    private JdbcTemplate jdbcTemplate;
 
     @Inject
     private InstancesMapper instancesMapper;
@@ -94,6 +98,7 @@ class DataStorageControllerTest {
     void testSaveInstances() throws Exception {
         InstancesEntity instancesEntity = createInstancesEntity();
         instancesEntity.setTableName(TABLE_NAME);
+        when(jdbcTemplate.queryForObject(anyString(), eq(Boolean.class))).thenReturn(true);
         when(storageService.saveData(any(), anyString())).thenReturn(instancesEntity);
         CreateInstancesResultDto expected = new CreateInstancesResultDto();
         expected.setId(instancesEntity.getId());
@@ -112,6 +117,7 @@ class DataStorageControllerTest {
     void testSaveInstancesWithError() throws Exception {
         InstancesEntity instancesEntity = createInstancesEntity();
         instancesEntity.setTableName(TABLE_NAME);
+        when(jdbcTemplate.queryForObject(anyString(), eq(Boolean.class))).thenReturn(true);
         when(storageService.saveData(any(), anyString())).thenThrow(new DataStorageException(ERROR_MESSAGE));
         CreateInstancesResultDto expected = new CreateInstancesResultDto();
         expected.setTableName(instancesEntity.getTableName());
@@ -128,7 +134,7 @@ class DataStorageControllerTest {
 
     @Test
     void testSaveExistingInstances() throws Exception {
-        when(instancesRepository.existsByTableName(anyString())).thenReturn(true);
+        when(jdbcTemplate.queryForObject(anyString(), eq(Boolean.class))).thenReturn(false);
         mockMvc.perform(multipart(SAVE_URL)
                 .file(trainingData)
                 .param(TABLE_NAME_PARAM, TABLE_NAME))
@@ -137,6 +143,7 @@ class DataStorageControllerTest {
 
     @Test
     void testRenameData() throws Exception {
+        when(jdbcTemplate.queryForObject(anyString(), eq(Boolean.class))).thenReturn(true);
         mockMvc.perform(put(RENAME_URL)
                 .param(ID_PARAM, String.valueOf(ID))
                 .param(TABLE_NAME_PARAM, TABLE_NAME)).andExpect(status().isOk());
@@ -144,7 +151,7 @@ class DataStorageControllerTest {
 
     @Test
     void testRenameDataWithExistingTableName() throws Exception {
-        when(instancesRepository.existsByTableName(anyString())).thenReturn(true);
+        when(jdbcTemplate.queryForObject(anyString(), eq(Boolean.class))).thenReturn(false);
         mockMvc.perform(put(RENAME_URL)
                 .param(ID_PARAM, String.valueOf(ID))
                 .param(TABLE_NAME_PARAM, TABLE_NAME)).andExpect(status().isBadRequest());
