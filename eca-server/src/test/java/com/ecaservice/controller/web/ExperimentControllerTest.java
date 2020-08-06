@@ -13,7 +13,6 @@ import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.UserService;
 import com.ecaservice.service.experiment.ExperimentRequestService;
-import com.ecaservice.service.experiment.ExperimentResultsLockService;
 import com.ecaservice.service.experiment.ExperimentResultsService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.user.model.UserDetailsImpl;
@@ -27,13 +26,11 @@ import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
-import com.ecaservice.web.dto.model.SendingStatus;
 import eca.core.evaluation.EvaluationMethod;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -43,7 +40,6 @@ import org.springframework.util.MimeTypeUtils;
 
 import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -60,12 +56,9 @@ import static com.ecaservice.TestHelperUtils.TEST_UUID;
 import static com.ecaservice.TestHelperUtils.bearerHeader;
 import static com.ecaservice.TestHelperUtils.buildRequestStatusStatisticsMap;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -86,9 +79,6 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     private static final String CREATE_EXPERIMENT_URL = BASE_URL + "/create";
     private static final String EXPERIMENT_RESULTS_DETAILS_URL = BASE_URL + "/results/details/{id}";
     private static final String ERS_REPORT_URL = BASE_URL + "/ers-report/{requestId}";
-    private static final String EXPERIMENT_RESULTS_SENDING_STATUS_URL =
-            BASE_URL + "/ers-report/sending-status/{requestId}";
-    private static final String SENT_EVALUATION_RESULTS_URL = BASE_URL + "/sent-evaluation-results";
     private static final String REQUEST_STATUS_STATISTICS_URL = BASE_URL + "/request-statuses-statistics";
     private static final String EXPERIMENT_TYPES_STATISTICS_URL = BASE_URL + "/statistics";
 
@@ -97,16 +87,11 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     private static final String TRAINING_DATA_PARAM = "trainingData";
     private static final String ERROR_MESSAGE = "Error";
     private static final long EXPERIMENT_RESULTS_ID = 1L;
-    private static final long RESULTS_COUNT = 1L;
     
     @MockBean
     private ExperimentService experimentService;
     @MockBean
     private ExperimentRequestService experimentRequestService;
-    @MockBean
-    private ApplicationEventPublisher applicationEventPublisher;
-    @MockBean
-    private ExperimentResultsLockService lockService;
     @MockBean
     private ExperimentResultsService experimentResultsService;
     @MockBean
@@ -349,121 +334,6 @@ class ExperimentControllerTest extends PageRequestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
-    }
-
-    @Test
-    void testSentEvaluationResultsUnauthorized() throws Exception {
-        mockMvc.perform(post(SENT_EVALUATION_RESULTS_URL)
-                .content(TEST_UUID))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void testSentEvaluationResultsForNotExistingExperiment() throws Exception {
-        when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(null);
-        mockMvc.perform(post(SENT_EVALUATION_RESULTS_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .content(TEST_UUID))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void testSentEvaluationResultsForNotFinishedExperiment() throws Exception {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
-        experiment.setRequestStatus(RequestStatus.ERROR);
-        when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(experiment);
-        mockMvc.perform(post(SENT_EVALUATION_RESULTS_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .content(TEST_UUID))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void testSentEmptyEvaluationResults() throws Exception {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(experiment);
-        when(experimentResultsEntityRepository.countByExperiment(experiment)).thenReturn(0L);
-        mockMvc.perform(post(SENT_EVALUATION_RESULTS_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .content(TEST_UUID))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void testAlreadySentEvaluationResults() throws Exception {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(experiment);
-        when(experimentResultsEntityRepository.countByExperiment(experiment)).thenReturn(RESULTS_COUNT);
-        when(experimentResultsEntityRepository.getSentResultsCount(experiment)).thenReturn(RESULTS_COUNT);
-        mockMvc.perform(post(SENT_EVALUATION_RESULTS_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .content(TEST_UUID))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void testSentEvaluationResultsForDeletedExperiment() throws Exception {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        experiment.setDeletedDate(LocalDateTime.now());
-        when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(experiment);
-        when(experimentResultsEntityRepository.countByExperiment(experiment)).thenReturn(RESULTS_COUNT + 1);
-        when(experimentResultsEntityRepository.getSentResultsCount(experiment)).thenReturn(RESULTS_COUNT);
-        mockMvc.perform(post(SENT_EVALUATION_RESULTS_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .content(TEST_UUID))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void testSentEvaluationResultsWithConflict() throws Exception {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(experiment);
-        when(experimentResultsEntityRepository.countByExperiment(experiment)).thenReturn(RESULTS_COUNT + 1);
-        when(experimentResultsEntityRepository.getSentResultsCount(experiment)).thenReturn(RESULTS_COUNT);
-        when(lockService.locked(experiment.getRequestId())).thenReturn(true);
-        mockMvc.perform(post(SENT_EVALUATION_RESULTS_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .content(TEST_UUID))
-                .andExpect(status().isConflict());
-    }
-
-    @Test
-    void testSentEvaluationResultsOk() throws Exception {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(experiment);
-        when(experimentResultsEntityRepository.countByExperiment(experiment)).thenReturn(RESULTS_COUNT + 1);
-        when(experimentResultsEntityRepository.getSentResultsCount(experiment)).thenReturn(RESULTS_COUNT);
-        when(lockService.locked(experiment.getRequestId())).thenReturn(false);
-        mockMvc.perform(post(SENT_EVALUATION_RESULTS_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .content(TEST_UUID))
-                .andExpect(status().isOk());
-        verify(lockService, atLeastOnce()).lock(experiment.getRequestId());
-    }
-
-    @Test
-    void testGetExperimentResultsSendingStatusUnauthorized() throws Exception {
-        mockMvc.perform(get(EXPERIMENT_RESULTS_SENDING_STATUS_URL, TEST_UUID)).andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void testGetExperimentResultsSendingStatusNotFound() throws Exception {
-        when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(null);
-        mockMvc.perform(get(EXPERIMENT_RESULTS_SENDING_STATUS_URL, TEST_UUID)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void testGetExperimentResultsSendingStatusOk() throws Exception {
-        Experiment experiment = TestHelperUtils.createExperiment(TEST_UUID);
-        SendingStatus sendingStatus = new SendingStatus(experiment.getRequestId(), true);
-        when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(experiment);
-        when(lockService.locked(experiment.getRequestId())).thenReturn(true);
-        mockMvc.perform(get(EXPERIMENT_RESULTS_SENDING_STATUS_URL, TEST_UUID)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(objectMapper.writeValueAsString(sendingStatus)));
     }
 
     @Test

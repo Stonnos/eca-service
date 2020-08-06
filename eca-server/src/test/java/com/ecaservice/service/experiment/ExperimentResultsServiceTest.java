@@ -47,8 +47,6 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     @Mock
     private ErsService ersService;
-    @Mock
-    private ExperimentResultsLockService lockService;
     @Inject
     private ExperimentResultsRequestRepository experimentResultsRequestRepository;
     @Inject
@@ -62,7 +60,7 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        experimentResultsService = new ExperimentResultsService(ersService, lockService, experimentResultsMapper,
+        experimentResultsService = new ExperimentResultsService(ersService, experimentResultsMapper,
                 experimentResultsEntityRepository, experimentResultsRequestRepository);
     }
 
@@ -74,7 +72,7 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testSaveExperimentResultsForErsSent() throws Exception {
+    void testSaveExperimentResultsForErsSent() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experimentRepository.save(experiment);
         ExperimentHistory experimentHistory = TestHelperUtils.createExperimentHistory();
@@ -150,18 +148,6 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
         experimentResultsRequestRepository.save(TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity2,
                 ErsResponseStatus.SERVICE_UNAVAILABLE));
         testGetErsReport(experiment, ErsReportStatus.NEED_SENT);
-    }
-
-    @Test
-    void testErsReportWithSendingStatus() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        experimentRepository.save(experiment);
-        ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
-        experimentResultsEntityRepository.save(experimentResultsEntity);
-        experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity, ErsResponseStatus.ERROR));
-        when(lockService.locked(experiment.getRequestId())).thenReturn(true);
-        testGetErsReport(experiment, ErsReportStatus.SENDING);
     }
 
     @Test

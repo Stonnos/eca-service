@@ -6,7 +6,7 @@ import {
   ExperimentDto,
   PageDto,
   PageRequestDto,
-  RequestStatusStatisticsDto, ExperimentResultsDetailsDto, SendingStatus
+  RequestStatusStatisticsDto, ExperimentResultsDetailsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { ExperimentRequest } from "../../create-experiment/model/experiment-request.model";
@@ -78,22 +78,6 @@ export class ExperimentsService {
       'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.get<ExperimentErsReportDto>(this.serviceUrl + '/ers-report/' + requestId, { headers: headers });
-  }
-
-  public checkExperimentResultsSendingStatus(requestId: string): Observable<SendingStatus> {
-    const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
-    });
-    return this.http.get<SendingStatus>(this.serviceUrl + '/ers-report/sending-status/' + requestId, { headers: headers });
-  }
-
-  public sentEvaluationResults(requestId: string) {
-    const headers = new HttpHeaders({
-      'Content-type': 'application/json',
-      'Authorization': Utils.getBearerTokenHeader()
-    });
-    return this.http.post(this.serviceUrl + '/sent-evaluation-results', requestId, { headers: headers });
   }
 
   public getExperimentTypesStatistics(createdDateFrom: string, createdDateTo: string): Observable<ChartDataDto[]> {
