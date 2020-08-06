@@ -122,7 +122,7 @@ public class ExperimentResultsService {
         } else if (experiment.getDeletedDate() != null) {
             ersReportStatus = ErsReportStatus.EXPERIMENT_DELETED;
         } else {
-            ersReportStatus = ErsReportStatus.NEED_SENT;
+            ersReportStatus = ErsReportStatus.NOT_SENT;
         }
         experimentErsReportDto.setErsReportStatus(
                 new EnumDto(ersReportStatus.name(), ersReportStatus.getDescription()));
