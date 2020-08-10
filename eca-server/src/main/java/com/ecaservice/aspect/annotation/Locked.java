@@ -7,6 +7,8 @@ import java.lang.annotation.Target;
 
 /**
  * Annotated method must be locked.
+ *
+ * @author Roman Batygin
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -29,14 +31,14 @@ public @interface Locked {
      *
      * @return lock expiration in millis
      */
-    long expiration() default -1L;
+    long expiration() default 5000L;
 
     /**
      * Gets waiting lock timeout in millis.
      *
      * @return waiting lock timeout in millis
      */
-    long timeout() default -1L;
+    long timeout() default 10000L;
 
     /**
      * Gets interval in millis for next attempt locking.
