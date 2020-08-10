@@ -14,6 +14,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Locked {
 
+    long MILLIS_IN_SECOND = 1000L;
+
     /**
      * Gets lock name.
      *
@@ -31,19 +33,19 @@ public @interface Locked {
      *
      * @return lock expiration in millis
      */
-    long expiration() default 5000L;
+    long expiration() default 60 * MILLIS_IN_SECOND;
 
     /**
      * Gets waiting lock timeout in millis.
      *
      * @return waiting lock timeout in millis
      */
-    long timeout() default 10000L;
+    long timeout() default 120 * MILLIS_IN_SECOND;
 
     /**
      * Gets interval in millis for next attempt locking.
      *
      * @return retry interval
      */
-    long retry() default 1000L;
+    long retry() default 10L;
 }
