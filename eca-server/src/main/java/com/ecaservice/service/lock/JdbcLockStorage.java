@@ -11,6 +11,8 @@ import java.time.temporal.ChronoField;
 
 /**
  * Implements jdbc lock storage.
+ *
+ * @author Roman Batygin
  */
 @Slf4j
 @Service
@@ -29,7 +31,7 @@ public class JdbcLockStorage implements LockStorage {
     @Override
     public boolean lock(String name, String key, long expiration) {
         try {
-            LocalDateTime expireAt = LocalDateTime.now().plus(expiration, ChronoField.MILLI_OF_DAY.getBaseUnit());;
+            LocalDateTime expireAt = LocalDateTime.now().plus(expiration, ChronoField.MILLI_OF_DAY.getBaseUnit());
             String sql = String.format(INSERT_LOCK_QUERY, LOCK_TABLE);
             jdbcTemplate.update(sql, name, key, expireAt);
             return true;

@@ -2,6 +2,8 @@ package com.ecaservice.service.lock;
 
 /**
  * Lock storage interface.
+ *
+ * @author Roman Batygin
  */
 public interface LockStorage {
 

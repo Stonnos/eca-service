@@ -19,6 +19,11 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
+/**
+ * Aspect for lock execution.
+ *
+ * @author Roman Batygin
+ */
 @Slf4j
 @Aspect
 @Component

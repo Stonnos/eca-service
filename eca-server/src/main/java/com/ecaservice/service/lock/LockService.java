@@ -8,6 +8,11 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 
+/**
+ * Service to manage with locks.
+ *
+ * @author Roman Batygin
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
