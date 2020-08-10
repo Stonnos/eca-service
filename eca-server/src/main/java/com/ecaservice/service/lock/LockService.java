@@ -41,6 +41,8 @@ public class LockService {
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
+                //Try to reset lock in case if machine which obtained the lock died before releasing it
+                lockStorage.resetLockIfExpired(name, key);
             }
         }
         if (!locked) {
@@ -56,15 +58,5 @@ public class LockService {
      */
     public void unlock(String name, String key) {
         lockStorage.unlock(name, key);
-    }
-
-    /**
-     * Reset lock if expired.
-     *
-     * @param name - lock name
-     * @param key  - lock key
-     */
-    public void resetLockIfExpired(String name, String key) {
-        lockStorage.resetLockIfExpired(name, key);
     }
 }

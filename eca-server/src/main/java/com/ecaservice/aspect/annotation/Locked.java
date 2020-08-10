@@ -29,7 +29,9 @@ public @interface Locked {
     String key() default "";
 
     /**
-     * Gets lock expiration in millis.
+     * How long (in ms) the lock should be kept in case the machine which obtained the lock died before releasing it.
+     * This is just a fallback, under normal circumstances the lock is released as soon the tasks finishes. Negative
+     * value means default
      *
      * @return lock expiration in millis
      */

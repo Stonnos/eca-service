@@ -1,7 +1,6 @@
 package com.ecaservice.aspect;
 
 import com.ecaservice.aspect.annotation.Locked;
-import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.service.lock.LockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,8 +14,6 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 /**
@@ -31,7 +28,6 @@ import java.util.stream.IntStream;
 public class LockExecutionAspect {
 
     private final LockService lockService;
-    private final CalculationExecutorService calculationExecutorService;
 
     private ExpressionParser expressionParser = new SpelExpressionParser();
 
@@ -43,26 +39,14 @@ public class LockExecutionAspect {
      * @return result object
      */
     @Around("execution(@com.ecaservice.aspect.annotation.Locked * * (..)) && @annotation(locked)")
-    public Object around(ProceedingJoinPoint joinPoint, Locked locked) throws Exception {
+    public Object around(ProceedingJoinPoint joinPoint, Locked locked) throws Throwable {
         String lockKey = getLockKey(joinPoint, locked);
-        lockService.resetLockIfExpired(locked.lockName(), lockKey);
         lockService.waitForLock(locked.lockName(), lockKey, locked.expiration(), locked.timeout(), locked.retry());
         try {
-            Callable<Object> callable = getCallable(joinPoint);
-            return calculationExecutorService.execute(callable, locked.expiration(), TimeUnit.MILLISECONDS);
+            return joinPoint.proceed();
         } finally {
             lockService.unlock(locked.lockName(), lockKey);
         }
-    }
-
-    private Callable<Object> getCallable(ProceedingJoinPoint joinPoint) {
-        return () -> {
-            try {
-                return joinPoint.proceed();
-            } catch (Throwable ex) {
-                throw new IllegalStateException(ex);
-            }
-        };
     }
 
     private String getLockKey(ProceedingJoinPoint joinPoint, Locked locked) {
