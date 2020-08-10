@@ -2,6 +2,7 @@ package com.ecaservice.service.evaluation;
 
 import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.aspect.LockExecutionAspect;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ws.ers.ErsConfig;
 import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
@@ -14,18 +15,13 @@ import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
-import com.ecaservice.mapping.ClassifierOptionsRequestMapper;
 import com.ecaservice.mapping.ClassifierOptionsRequestMapperImpl;
-import com.ecaservice.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.mapping.ClassifierOptionsRequestModelMapperImpl;
 import com.ecaservice.mapping.ClassifierOptionsResponseModelMapperImpl;
-import com.ecaservice.mapping.ClassifierReportMapper;
 import com.ecaservice.mapping.ClassifierReportMapperImpl;
 import com.ecaservice.mapping.ErsEvaluationMethodMapperImpl;
-import com.ecaservice.mapping.ErsResponseStatusMapper;
 import com.ecaservice.mapping.ErsResponseStatusMapperImpl;
 import com.ecaservice.mapping.EvaluationLogMapperImpl;
-import com.ecaservice.mapping.EvaluationRequestMapper;
 import com.ecaservice.mapping.EvaluationRequestMapperImpl;
 import com.ecaservice.mapping.InstancesConverter;
 import com.ecaservice.mapping.InstancesInfoMapperImpl;
@@ -49,6 +45,8 @@ import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.ers.ErsRequestService;
 import com.ecaservice.service.ers.ErsWebServiceClient;
+import com.ecaservice.service.lock.JdbcLockStorage;
+import com.ecaservice.service.lock.LockService;
 import com.ecaservice.util.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.EvaluationResults;
@@ -68,7 +66,8 @@ import eca.trees.CART;
 import eca.trees.J48;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.DigestUtils;
@@ -95,39 +94,25 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
+@EnableAspectJAutoProxy
 @Import({ExecutorConfiguration.class, ClassifierOptionsMapperConfiguration.class,
         CrossValidationConfig.class, EvaluationRequestService.class, InstancesInfoMapperImpl.class,
         ClassifierOptionsRequestModelMapperImpl.class, ClassifierReportMapperImpl.class,
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class,
         ErsConfig.class, ClassifierOptionsConverter.class, EvaluationLogMapperImpl.class,
         EvaluationService.class, ErsEvaluationMethodMapperImpl.class, ErsResponseStatusMapperImpl.class,
-        InstancesConverter.class, ClassifierOptionsResponseModelMapperImpl.class,
-        ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class})
+        InstancesConverter.class, ClassifierOptionsResponseModelMapperImpl.class, ErsRequestService.class,
+        EvaluationOptimizerService.class, ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class,
+        ClassifierOptionsCacheService.class, LockExecutionAspect.class, LockService.class, JdbcLockStorage.class})
 class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final int NUM_THREADS = 2;
 
-    @Inject
-    private CrossValidationConfig crossValidationConfig;
-    @Inject
-    private EvaluationRequestService evaluationRequestService;
-    @Mock
+    @MockBean
     private ErsWebServiceClient ersWebServiceClient;
     @Inject
-    private ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
-    @Inject
-    private ClassifierReportMapper classifierReportMapper;
-    @Inject
-    private EvaluationRequestMapper evaluationRequestMapper;
-    @Inject
-    private ClassifierOptionsRequestMapper classifierOptionsRequestMapper;
-    @Inject
-    private ErsResponseStatusMapper ersResponseStatusMapper;
-    @Inject
     private ErsConfig ersConfig;
-    @Inject
-    private ClassifierOptionsConverter classifierOptionsConverter;
     @Inject
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
     @Inject
@@ -136,7 +121,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     private EvaluationLogRepository evaluationLogRepository;
     @Inject
     private ClassifierOptionsRequestRepository classifierOptionsRequestRepository;
-
+    @Inject
     private EvaluationOptimizerService evaluationOptimizerService;
 
     private InstancesRequest instancesRequest;
@@ -149,12 +134,6 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     public void init() throws Exception {
         instancesRequest = new InstancesRequest();
         instancesRequest.setData(TestHelperUtils.loadInstances());
-        ErsRequestService ersRequestService = new ErsRequestService(ersWebServiceClient, ersRequestRepository,
-                classifierOptionsRequestModelRepository, classifierReportMapper, ersResponseStatusMapper, ersConfig);
-        evaluationOptimizerService =
-                new EvaluationOptimizerService(crossValidationConfig,ersConfig, evaluationRequestService,
-                        ersRequestService, classifierOptionsRequestModelMapper, evaluationRequestMapper,
-                        classifierOptionsRequestMapper, classifierOptionsConverter, classifierOptionsRequestRepository);
         dataMd5Hash = DigestUtils.md5DigestAsHex(
                 Utils.toXmlInstances(instancesRequest.getData()).getBytes(StandardCharsets.UTF_8));
         DecisionTreeOptions treeOptions = TestHelperUtils.createDecisionTreeOptions();
@@ -366,8 +345,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         }
         finishedLatch.await();
         executorService.shutdownNow();
-        List<ClassifierOptionsRequestEntity> requestEntities = classifierOptionsRequestRepository.findAll();
-        assertThat(requestEntities.size()).isEqualTo(2);
+        List<ClassifierOptionsRequestEntity> requestEntities = classifierOptionsRequestRepository.findAll();assertThat(requestEntities.size()).isEqualTo(2);
         assertThat(classifierOptionsRequestModelRepository.count()).isOne();
         assertThat(requestEntities.get(0).getSource()).isEqualTo(ClassifierOptionsRequestSource.ERS);
         assertThat(requestEntities.get(1).getSource()).isEqualTo(ClassifierOptionsRequestSource.CACHE);
