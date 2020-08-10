@@ -1,5 +1,6 @@
 package com.ecaservice.service.experiment;
 
+import com.ecaservice.aspect.annotation.Locked;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.exception.ClassifierOptionsException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
@@ -16,7 +17,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -49,7 +49,7 @@ public class ExperimentConfigurationService {
     /**
      * Saves individual classifiers input options into database.
      */
-    @PostConstruct
+    @Locked(lockName = "saveExperimentClassifiersOptions")
     public void saveClassifiersOptions() throws IOException {
         if (StringUtils.isEmpty(experimentConfig.getIndividualClassifiersStoragePath())) {
             log.error(CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_NOT_SPECIFIED);
