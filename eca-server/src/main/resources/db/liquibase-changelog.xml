@@ -39,4 +39,5 @@
     <include file="db/changelog/v32-delete-ers-response-statuses.xml"/>
     <include file="db/changelog/v33-add-classifiers-configuration-created-by-column.xml"/>
     <include file="db/changelog/v34-add-classifiers-configuration-created-by-global-filter.xml"/>
+    <include file="db/changelog/v35-create-lock-table.xml"/>
 </databaseChangeLog>
