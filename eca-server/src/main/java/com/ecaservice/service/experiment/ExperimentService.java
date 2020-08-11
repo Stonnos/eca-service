@@ -8,6 +8,7 @@ import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.exception.experiment.ResultsNotFoundException;
 import com.ecaservice.filter.ExperimentFilter;
 import com.ecaservice.mapping.ExperimentMapper;
+import com.ecaservice.model.entity.AppInstanceEntity;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.model.entity.RequestStatus;
@@ -15,6 +16,7 @@ import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.model.projections.RequestStatusStatistics;
 import com.ecaservice.repository.ExperimentRepository;
+import com.ecaservice.service.AppInstanceService;
 import com.ecaservice.service.PageRequestService;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.service.filter.FilterService;
@@ -83,6 +85,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
     private final EntityManager entityManager;
     private final CommonConfig commonConfig;
     private final FilterService filterService;
+    private final AppInstanceService appInstanceService;
 
     /**
      * Creates experiment request.
@@ -92,10 +95,11 @@ public class ExperimentService implements PageRequestService<Experiment> {
      */
     public Experiment createExperiment(ExperimentRequest experimentRequest) {
         try {
+            AppInstanceEntity appInstanceEntity = appInstanceService.getOrSaveAppInstance();
             Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
             experiment.setRequestStatus(RequestStatus.NEW);
             experiment.setRequestId(UUID.randomUUID().toString());
-            experiment.setInstanceName(commonConfig.getInstance());
+            experiment.setAppInstanceEntity(appInstanceEntity);
             File dataFile = new File(experimentConfig.getData().getStoragePath(),
                     String.format(experimentConfig.getData().getFileFormat(), experiment.getRequestId()));
             dataService.save(dataFile, experimentRequest.getData());

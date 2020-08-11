@@ -17,6 +17,7 @@ import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.AbstractJpaTest;
+import com.ecaservice.service.AppInstanceService;
 import eca.core.evaluation.EvaluationMethod;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
@@ -37,13 +38,11 @@ import static org.mockito.Mockito.mock;
  *
  * @author Roman Batygin
  */
-@Import({ExecutorConfiguration.class, CrossValidationConfig.class,
+@Import({ExecutorConfiguration.class, CrossValidationConfig.class, AppInstanceService.class,
         EvaluationLogMapperImpl.class, EvaluationService.class, CommonConfig.class,
         InstancesInfoMapperImpl.class, ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class})
 class EvaluationRequestServiceTest extends AbstractJpaTest {
 
-    @Inject
-    private CommonConfig commonConfig;
     @Inject
     private CrossValidationConfig crossValidationConfig;
     @Inject
@@ -53,6 +52,8 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     @Inject
     private EvaluationService evaluationService;
     @Inject
+    private AppInstanceService appInstanceService;
+    @Inject
     private CalculationExecutorService calculationExecutorService;
 
     private EvaluationRequestService evaluationRequestService;
@@ -60,8 +61,8 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         evaluationRequestService =
-                new EvaluationRequestService(commonConfig, crossValidationConfig, calculationExecutorService,
-                        evaluationService, evaluationLogRepository, evaluationLogMapper);
+                new EvaluationRequestService(crossValidationConfig, calculationExecutorService, evaluationService,
+                        appInstanceService, evaluationLogRepository, evaluationLogMapper);
     }
 
     @Override
@@ -88,8 +89,8 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         EvaluationRequest request = TestHelperUtils.createEvaluationRequest();
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
         EvaluationRequestService service =
-                new EvaluationRequestService(commonConfig, crossValidationConfig, executorService, evaluationService,
-                        evaluationLogRepository, evaluationLogMapper);
+                new EvaluationRequestService(crossValidationConfig, executorService, evaluationService,
+                        appInstanceService, evaluationLogRepository, evaluationLogMapper);
         doThrow(new RuntimeException("Error")).when(executorService)
                 .execute(any(), anyLong(), any(TimeUnit.class));
         EvaluationResponse evaluationResponse = service.processRequest(request);
@@ -120,8 +121,8 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         EvaluationRequest request = TestHelperUtils.createEvaluationRequest();
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
         EvaluationRequestService service =
-                new EvaluationRequestService(commonConfig, crossValidationConfig, executorService, evaluationService,
-                        evaluationLogRepository, evaluationLogMapper);
+                new EvaluationRequestService(crossValidationConfig, executorService, evaluationService,
+                        appInstanceService, evaluationLogRepository, evaluationLogMapper);
         doThrow(TimeoutException.class).when(executorService).execute(any(), anyLong(), any(TimeUnit.class));
         EvaluationResponse evaluationResponse = service.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.TIMEOUT);

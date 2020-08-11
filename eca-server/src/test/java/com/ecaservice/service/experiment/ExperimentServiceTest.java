@@ -17,6 +17,7 @@ import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.AbstractJpaTest;
+import com.ecaservice.service.AppInstanceService;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.service.evaluation.CalculationExecutorServiceImpl;
 import com.ecaservice.service.filter.FilterService;
@@ -58,7 +59,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentMapperImpl.class, ExperimentConfig.class, CommonConfig.class, CrossValidationConfig.class})
+@Import({ExperimentMapperImpl.class, ExperimentConfig.class, CommonConfig.class, CrossValidationConfig.class,
+        AppInstanceService.class})
 class ExperimentServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
@@ -77,6 +79,8 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @Inject
     private EntityManager entityManager;
     @Inject
+    private AppInstanceService appInstanceService;
+    @Inject
     private CommonConfig commonConfig;
     @Mock
     private FilterService filterService;
@@ -94,7 +98,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
                 new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
         experimentService = new ExperimentService(experimentRepository, executorService, experimentMapper, dataService,
                 crossValidationConfig, experimentConfig, experimentProcessorService, entityManager, commonConfig,
-                filterService);
+                filterService, appInstanceService);
     }
 
     @Override
@@ -121,7 +125,8 @@ class ExperimentServiceTest extends AbstractJpaTest {
         assertThat(experiment.getRequestId()).isNotNull();
         assertThat(experiment.getCreationDate()).isNotNull();
         assertThat(experiment.getTrainingDataAbsolutePath()).isNotNull();
-        assertThat(experiment.getInstanceName()).isEqualTo(commonConfig.getInstance());
+        assertThat(experiment.getAppInstanceEntity()).isNotNull();
+        assertThat(experiment.getAppInstanceEntity().getInstanceName()).isEqualTo(commonConfig.getInstance());
     }
 
     @Test

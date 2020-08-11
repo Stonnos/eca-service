@@ -1,5 +1,6 @@
 package com.ecaservice.repository;
 
+import com.ecaservice.model.entity.AppInstanceEntity;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -55,10 +56,11 @@ public interface ExperimentResultsEntityRepository extends JpaRepository<Experim
      * @return experiments results list
      */
     @Query("select er from ExperimentResultsEntity er join er.experiment exp where " +
-            "exp.instanceName = :instanceName and exp.requestStatus = 'FINISHED' and exp.deletedDate is null " +
+            "exp.appInstanceEntity = :appInstance and exp.requestStatus = 'FINISHED' and exp.deletedDate is null " +
             "and (select count(err) from ExperimentResultsRequest err where " +
             "err.experimentResults = er and err.responseStatus = 'SUCCESS') = 0")
-    List<ExperimentResultsEntity> findExperimentsResultsToErsSent(@Param("instanceName") String instanceName);
+    List<ExperimentResultsEntity> findExperimentsResultsToErsSent(
+            @Param("appInstance") AppInstanceEntity appInstanceEntity);
 
     /**
      * Finds experiments results for sending to ERS service.
