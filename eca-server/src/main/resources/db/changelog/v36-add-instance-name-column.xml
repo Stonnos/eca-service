@@ -30,4 +30,17 @@
             <column name="instance_name" type="varchar(255)"/>
         </addColumn>
     </changeSet>
+
+    <!-- Add instance name column to classifier_options_request_model table -->
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options_request_model"/>
+            <not>
+                <columnExists tableName="classifier_options_request_model" columnName="instance_name"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="classifier_options_request_model">
+            <column name="instance_name" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

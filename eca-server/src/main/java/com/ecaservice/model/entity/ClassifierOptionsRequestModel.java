@@ -65,6 +65,12 @@ public class ClassifierOptionsRequestModel extends ErsRequest {
     private Integer seed;
 
     /**
+     * Instance name for request processing (used in cluster environment)
+     */
+    @Column(name = "instance_name")
+    private String instanceName;
+
+    /**
      * Classifier options response
      */
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

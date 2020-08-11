@@ -1,6 +1,7 @@
 package com.ecaservice.service.evaluation;
 
 import com.ecaservice.aspect.annotation.Locked;
+import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ws.ers.ErsConfig;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.mapping.ClassifierOptionsRequestModelMapper;
@@ -33,6 +34,7 @@ import static com.ecaservice.util.Utils.getFirstResponseModel;
 @RequiredArgsConstructor
 public class ClassifierOptionsCacheService {
 
+    private final CommonConfig commonConfig;
     private final ErsConfig ersConfig;
     private final ErsRequestService ersRequestService;
     private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
@@ -90,6 +92,7 @@ public class ClassifierOptionsCacheService {
                 classifierOptionsRequestModelMapper.map(classifierOptionsRequest);
         requestModel.setRelationName(classifierOptionsRequest.getInstances().getRelationName());
         requestModel.setDataMd5Hash(dataMd5Hash);
+        requestModel.setInstanceName(commonConfig.getInstance());
         return requestModel;
     }
 
