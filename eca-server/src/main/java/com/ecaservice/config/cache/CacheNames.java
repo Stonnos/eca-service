@@ -29,4 +29,9 @@ public class CacheNames {
      * Filter dictionaries cache name
      */
     public static final String FILTER_DICTIONARIES_CACHE_NAME = "filter-dictionaries";
+
+    /**
+     * App instance cache name
+     */
+    public static final String APP_INSTANCE_CACHE_NAME = "app-instance";
 }

@@ -132,6 +132,9 @@ cache:
     filter-dictionaries:
       expireAfterWriteSeconds: 18000
       maxSize: 100
+    app-instance:
+      expireAfterWriteSeconds: 36000
+      maxSize: 10
 
 management:
   metrics:
