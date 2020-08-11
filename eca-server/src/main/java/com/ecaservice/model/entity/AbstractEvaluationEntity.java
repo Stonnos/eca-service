@@ -8,6 +8,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
@@ -31,10 +33,11 @@ public abstract class AbstractEvaluationEntity {
     private String requestId;
 
     /**
-     * Instance name for request processing (used in cluster environment)
+     * Linked app instance
      */
-    @Column(name = "instance_name")
-    private String instanceName;
+    @ManyToOne
+    @JoinColumn(name = "app_instance_id")
+    private AppInstanceEntity appInstanceEntity;
 
     /**
      * Request creation date

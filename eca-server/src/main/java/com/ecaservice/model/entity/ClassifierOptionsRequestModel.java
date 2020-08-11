@@ -12,6 +12,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
@@ -65,10 +66,11 @@ public class ClassifierOptionsRequestModel extends ErsRequest {
     private Integer seed;
 
     /**
-     * Instance name for request processing (used in cluster environment)
+     * Linked app instance
      */
-    @Column(name = "instance_name")
-    private String instanceName;
+    @ManyToOne
+    @JoinColumn(name = "app_instance_id")
+    private AppInstanceEntity appInstanceEntity;
 
     /**
      * Classifier options response
