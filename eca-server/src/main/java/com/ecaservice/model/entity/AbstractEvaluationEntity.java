@@ -31,6 +31,12 @@ public abstract class AbstractEvaluationEntity {
     private String requestId;
 
     /**
+     * Instance name for request processing (used in cluster environment)
+     */
+    @Column(name = "instance_name")
+    private String instanceName;
+
+    /**
      * Request creation date
      */
     @Column(name = "creation_date")

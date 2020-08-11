@@ -121,6 +121,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         assertThat(experiment.getRequestId()).isNotNull();
         assertThat(experiment.getCreationDate()).isNotNull();
         assertThat(experiment.getTrainingDataAbsolutePath()).isNotNull();
+        assertThat(experiment.getInstanceName()).isEqualTo(commonConfig.getInstance());
     }
 
     @Test

@@ -51,6 +51,7 @@ ribbon:
 common:
   maxPageSize: 50
   threadPoolSize: 10
+  instance: eca-server-instance-1
 
 ## Cross - validation properties
 cross-validation:

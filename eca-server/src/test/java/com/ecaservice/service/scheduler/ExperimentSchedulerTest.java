@@ -1,6 +1,7 @@
 package com.ecaservice.service.scheduler;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.Experiment;
@@ -25,11 +26,11 @@ import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -41,7 +42,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import(ExperimentConfig.class)
+@Import({ExperimentConfig.class, CommonConfig.class})
 class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @Inject
@@ -65,6 +66,8 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @Inject
     private ExperimentConfig experimentConfig;
+    @Inject
+    private CommonConfig commonConfig;
 
     private ExperimentScheduler experimentScheduler;
 
@@ -72,7 +75,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     public void init() {
         experimentScheduler =
                 new ExperimentScheduler(experimentRepository, experimentResultsEntityRepository, experimentService,
-                        notificationService, eventPublisher, ersService, experimentConfig);
+                        notificationService, eventPublisher, ersService, experimentConfig, commonConfig);
     }
 
     @Override
@@ -84,9 +87,11 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @Test
     void testProcessExperiments() {
-        List<Experiment> experiments = new ArrayList<>();
-        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
-        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
+        List<Experiment> experiments = newArrayList();
+        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW,
+                commonConfig.getInstance()));
+        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW,
+                commonConfig.getInstance()));
         experimentRepository.saveAll(experiments);
         experimentScheduler.processNewRequests();
         verify(experimentService, times(experiments.size())).processExperiment(any(Experiment.class));
@@ -94,10 +99,13 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @Test
     void testSentExperiments() {
-        List<Experiment> experiments = new ArrayList<>();
-        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
-        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
-        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT));
+        List<Experiment> experiments = newArrayList();
+        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED,
+                commonConfig.getInstance()));
+        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR,
+                commonConfig.getInstance()));
+        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT,
+                commonConfig.getInstance()));
         experimentRepository.saveAll(experiments);
         experimentScheduler.processRequestsToSent();
         verify(notificationService, times(experiments.size())).notifyByEmail(any(Experiment.class));
@@ -105,19 +113,25 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @Test
     void testRemoveExperiments() {
-        List<Experiment> experiments = new ArrayList<>();
-        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
+        List<Experiment> experiments = newArrayList();
+        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED,
+                commonConfig.getInstance()));
         Experiment experimentToRemove =
                 TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR,
                         LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage() + 1));
+        experimentToRemove.setInstanceName(commonConfig.getInstance());
         experiments.add(experimentToRemove);
-        experiments.add(TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED,
-                LocalDateTime.now()));
-        Experiment experiment =
+        Experiment sentExperiment =
+                TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED,
+                        LocalDateTime.now());
+        sentExperiment.setInstanceName(commonConfig.getInstance());
+        experiments.add(sentExperiment);
+        Experiment timeoutExperiment =
                 TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT,
                         LocalDateTime.now());
-        experiment.setDeletedDate(LocalDateTime.now());
-        experiments.add(experiment);
+        timeoutExperiment.setInstanceName(commonConfig.getInstance());
+        timeoutExperiment.setDeletedDate(LocalDateTime.now());
+        experiments.add(timeoutExperiment);
         experimentRepository.saveAll(experiments);
         experimentScheduler.processRequestsToRemove();
         verify(experimentService).removeExperimentData(argumentCaptor.capture());
@@ -128,7 +142,8 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     void testSentExperimentsToErs() {
         //Create finished experiment
         Experiment finishedExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED,
+                        commonConfig.getInstance());
         experimentRepository.save(finishedExperiment);
         ExperimentResultsEntity firstResults = TestHelperUtils.createExperimentResultsEntity(finishedExperiment);
         ExperimentResultsEntity secondResults = TestHelperUtils.createExperimentResultsEntity(finishedExperiment);
@@ -142,16 +157,18 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
                 TestHelperUtils.createExperimentResultsRequest(secondResults, ErsResponseStatus.SUCCESS));
         //Created deleted experiment
         Experiment removedExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED,
+                        commonConfig.getInstance());
         removedExperiment.setDeletedDate(LocalDateTime.now());
         experimentRepository.save(removedExperiment);
         //Create error experiment
         Experiment errorExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT);
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT,
+                        commonConfig.getInstance());
         experimentRepository.save(errorExperiment);
         //Create another finished experiment
-        finishedExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
+        finishedExperiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED,
+                commonConfig.getInstance());
         experimentRepository.save(finishedExperiment);
         experimentResultsEntityRepository.save(TestHelperUtils.createExperimentResultsEntity(finishedExperiment));
         when(experimentService.getExperimentHistory(any(Experiment.class))).thenReturn(new ExperimentHistory());

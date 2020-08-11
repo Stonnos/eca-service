@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v36-add-instance-name-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Add instance name column to experiment table -->
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <not>
+                <columnExists tableName="experiment" columnName="instance_name"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="experiment">
+            <column name="instance_name" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <!-- Add instance name column to evaluation_log table -->
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <not>
+                <columnExists tableName="evaluation_log" columnName="instance_name"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_log">
+            <column name="instance_name" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

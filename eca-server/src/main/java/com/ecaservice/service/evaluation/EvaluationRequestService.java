@@ -1,5 +1,6 @@
 package com.ecaservice.service.evaluation;
 
+import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
@@ -29,6 +30,7 @@ import java.util.concurrent.TimeoutException;
 @RequiredArgsConstructor
 public class EvaluationRequestService {
 
+    private final CommonConfig commonConfig;
     private final CrossValidationConfig crossValidationConfig;
     private final CalculationExecutorService executorService;
     private final EvaluationService evaluationService;
@@ -45,6 +47,7 @@ public class EvaluationRequestService {
         EvaluationLog evaluationLog = evaluationLogMapper.map(request, crossValidationConfig);
         evaluationLog.setRequestStatus(RequestStatus.NEW);
         evaluationLog.setRequestId(UUID.randomUUID().toString());
+        evaluationLog.setInstanceName(commonConfig.getInstance());
         evaluationLog.setCreationDate(LocalDateTime.now());
         evaluationLog.setStartDate(LocalDateTime.now());
         evaluationLogRepository.save(evaluationLog);

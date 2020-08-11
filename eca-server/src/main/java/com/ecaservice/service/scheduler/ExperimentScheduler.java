@@ -1,5 +1,6 @@
 package com.ecaservice.service.scheduler;
 
+import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.event.model.ExperimentFinishedEvent;
 import com.ecaservice.model.entity.Experiment;
@@ -42,6 +43,7 @@ public class ExperimentScheduler {
     private final ApplicationEventPublisher eventPublisher;
     private final ErsService ersService;
     private final ExperimentConfig experimentConfig;
+    private final CommonConfig commonConfig;
 
     /**
      * Processing new experiment requests.
@@ -49,13 +51,13 @@ public class ExperimentScheduler {
     @Scheduled(fixedDelayString = "${experiment.delaySeconds}000")
     public void processNewRequests() {
         log.trace("Starting to process new experiments.");
-        List<Experiment> experiments =
-                experimentRepository.findNotSentExperiments(Collections.singletonList(RequestStatus.NEW));
+        List<Experiment> experiments = experimentRepository.findExperimentsForProcessing(commonConfig.getInstance(),
+                Collections.singletonList(RequestStatus.NEW));
         log.trace("Obtained {} new experiments", experiments.size());
         experiments.forEach(experiment -> {
             ExperimentHistory experimentHistory = experimentService.processExperiment(experiment);
             if (RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
-               eventPublisher.publishEvent(new ExperimentFinishedEvent(this, experiment, experimentHistory));
+                eventPublisher.publishEvent(new ExperimentFinishedEvent(this, experiment, experimentHistory));
             }
         });
         log.trace("New experiments processing has been successfully finished.");
@@ -67,7 +69,7 @@ public class ExperimentScheduler {
     @Scheduled(fixedDelayString = "${experiment.delaySeconds}000")
     public void processRequestsToSent() {
         log.trace("Starting to sent experiment results.");
-        List<Experiment> experiments = experimentRepository.findNotSentExperiments(
+        List<Experiment> experiments = experimentRepository.findExperimentsForProcessing(commonConfig.getInstance(),
                 Arrays.asList(RequestStatus.FINISHED, RequestStatus.ERROR, RequestStatus.TIMEOUT));
         log.trace("Obtained {} experiments to sent results", experiments.size());
         for (Experiment experiment : experiments) {
@@ -90,7 +92,7 @@ public class ExperimentScheduler {
     public void processRequestsToErs() {
         log.info("Starting to sent experiment results to ERS service");
         List<ExperimentResultsEntity> experimentResultsEntities =
-                experimentResultsEntityRepository.findExperimentsResultsToErsSent();
+                experimentResultsEntityRepository.findExperimentsResultsToErsSent(commonConfig.getInstance());
         log.trace("Obtained {} experiments results sending to ERS service", experimentResultsEntities.size());
         Map<Experiment, List<ExperimentResultsEntity>> experimentResultsMap =
                 experimentResultsEntities.stream().collect(
@@ -116,7 +118,8 @@ public class ExperimentScheduler {
     public void processRequestsToRemove() {
         log.info("Starting to remove experiments data.");
         LocalDateTime dateTime = LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage());
-        List<Experiment> experiments = experimentRepository.findNotDeletedExperiments(dateTime);
+        List<Experiment> experiments =
+                experimentRepository.findNotDeletedExperiments(commonConfig.getInstance(), dateTime);
         log.trace("Obtained {} experiments to remove data", experiments.size());
         experiments.forEach(experimentService::removeExperimentData);
         log.info("Experiments data removing has been finished.");

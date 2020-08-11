@@ -247,6 +247,20 @@ public class TestHelperUtils {
     }
 
     /**
+     * Creates experiment.
+     *
+     * @param requestId        - request id
+     * @param experimentStatus - experiment status
+     * @param instanceName     - instance name
+     * @return created experiment
+     */
+    public static Experiment createExperiment(String requestId, RequestStatus experimentStatus, String instanceName) {
+        Experiment experiment = createExperiment(requestId, experimentStatus);
+        experiment.setInstanceName(instanceName);
+        return experiment;
+    }
+
+    /**
      * Creates sent experiment.
      *
      * @param requestId        - request id

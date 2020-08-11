@@ -95,6 +95,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
             Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
             experiment.setRequestStatus(RequestStatus.NEW);
             experiment.setRequestId(UUID.randomUUID().toString());
+            experiment.setInstanceName(commonConfig.getInstance());
             File dataFile = new File(experimentConfig.getData().getStoragePath(),
                     String.format(experimentConfig.getData().getFileFormat(), experiment.getRequestId()));
             dataService.save(dataFile, experimentRequest.getData());

@@ -41,8 +41,10 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
      * @param statuses - {@link RequestStatus} collection
      * @return experiments list
      */
-    @Query("select exp from Experiment exp where exp.requestStatus in (:statuses) and exp.sentDate is null order by exp.creationDate")
-    List<Experiment> findNotSentExperiments(@Param("statuses") Collection<RequestStatus> statuses);
+    @Query("select exp from Experiment exp where exp.instanceName = :instanceName and exp.requestStatus " +
+            "in (:statuses) and exp.sentDate is null order by exp.creationDate")
+    List<Experiment> findExperimentsForProcessing(@Param("instanceName") String instanceName,
+                                                  @Param("statuses") Collection<RequestStatus> statuses);
 
     /**
      * Finds experiments which sent date is after N days.
@@ -50,9 +52,10 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
      * @param dateTime date time threshold value
      * @return experiments list
      */
-    @Query("select exp from Experiment exp where exp.sentDate is not null and exp.deletedDate is null and " +
-            "exp.sentDate < :dateTime order by exp.sentDate")
-    List<Experiment> findNotDeletedExperiments(@Param("dateTime") LocalDateTime dateTime);
+    @Query("select exp from Experiment exp where exp.instanceName = :instanceName and " +
+            "exp.sentDate is not null and exp.deletedDate is null and exp.sentDate < :dateTime order by exp.sentDate")
+    List<Experiment> findNotDeletedExperiments(@Param("instanceName") String instanceName,
+                                               @Param("dateTime") LocalDateTime dateTime);
 
     /**
      * Calculates requests status counting statistics.
