@@ -70,7 +70,7 @@ class ErsServiceTest extends AbstractJpaTest {
         doNothing().when(ersRequestService).saveEvaluationResults(any(EvaluationResults.class), any(ErsRequest.class));
         ExperimentResultsEntity experimentResultsEntity = createExperimentResults();
         ersService.sentExperimentResults(experimentResultsEntity, experimentHistory,
-                ExperimentResultsRequestSource.MANUAL);
+                ExperimentResultsRequestSource.SYSTEM);
         verify(ersRequestService, atLeastOnce()).saveEvaluationResults(any(EvaluationResults.class),
                 any(ErsRequest.class));
     }
