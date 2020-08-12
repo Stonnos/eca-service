@@ -35,7 +35,7 @@ public class LockService {
         while (!locked && LocalDateTime.now().isBefore(timeToGiveUp)) {
             locked = lockStorage.lock(name, key, expiration);
             if (!locked) {
-                log.info("Waiting for lock with name [{}], key [{}]....", name, key);
+                log.trace("Waiting for lock with name [{}], key [{}]....", name, key);
                 try {
                     Thread.sleep(retry);
                 } catch (InterruptedException e) {
