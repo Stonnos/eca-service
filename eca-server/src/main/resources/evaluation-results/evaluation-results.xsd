@@ -236,7 +236,7 @@
 
     <xsd:complexType name="rocCurveReport">
         <xsd:sequence>
-            <xsd:element name="aucValue">
+            <xsd:element name="aucValue" minOccurs="0">
                 <xsd:simpleType>
                     <xsd:restriction base="xsd:decimal">
                         <xsd:minInclusive value="0"/>
@@ -244,7 +244,7 @@
                     </xsd:restriction>
                 </xsd:simpleType>
             </xsd:element>
-            <xsd:element name="specificity">
+            <xsd:element name="specificity" minOccurs="0">
                 <xsd:simpleType>
                     <xsd:restriction base="xsd:decimal">
                         <xsd:minInclusive value="0"/>
@@ -252,7 +252,7 @@
                     </xsd:restriction>
                 </xsd:simpleType>
             </xsd:element>
-            <xsd:element name="sensitivity">
+            <xsd:element name="sensitivity" minOccurs="0">
                 <xsd:simpleType>
                     <xsd:restriction base="xsd:decimal">
                         <xsd:minInclusive value="0"/>
@@ -260,7 +260,7 @@
                     </xsd:restriction>
                 </xsd:simpleType>
             </xsd:element>
-            <xsd:element name="thresholdValue">
+            <xsd:element name="thresholdValue" minOccurs="0">
                 <xsd:simpleType>
                     <xsd:restriction base="xsd:decimal">
                         <xsd:minInclusive value="0"/>
@@ -313,7 +313,7 @@
                     </xsd:restriction>
                 </xsd:simpleType>
             </xsd:element>
-            <xsd:element name="rocCurve" type="evaluation:rocCurveReport"/>
+            <xsd:element name="rocCurve" minOccurs="0" type="evaluation:rocCurveReport"/>
         </xsd:sequence>
     </xsd:complexType>
 
@@ -351,7 +351,8 @@
                 <xsd:element name="requestId">
                     <xsd:simpleType>
                         <xsd:restriction base="xsd:string">
-                            <xsd:pattern value="[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"/>
+                            <xsd:pattern
+                                    value="[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"/>
                         </xsd:restriction>
                     </xsd:simpleType>
                 </xsd:element>
@@ -402,7 +403,8 @@
                 <xsd:element name="requestId">
                     <xsd:simpleType>
                         <xsd:restriction base="xsd:string">
-                            <xsd:pattern value="[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"/>
+                            <xsd:pattern
+                                    value="[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"/>
                         </xsd:restriction>
                     </xsd:simpleType>
                 </xsd:element>
