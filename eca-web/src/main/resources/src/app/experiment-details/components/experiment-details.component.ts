@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   ExperimentDto,
   ExperimentErsReportDto
@@ -11,23 +11,20 @@ import { ExperimentFields } from "../../common/util/field-names";
 import { FieldLink } from "../../common/model/field-link";
 import { FieldService } from "../../common/services/field.service";
 import { Utils } from "../../common/util/utils";
-import { Subscription, timer } from "rxjs";
-import { filter, finalize, take } from "rxjs/internal/operators";
+import { finalize } from "rxjs/internal/operators";
 
 @Component({
   selector: 'app-experiment-details',
   templateUrl: './experiment-details.component.html',
   styleUrls: ['./experiment-details.component.scss']
 })
-export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink {
+export class ExperimentDetailsComponent implements OnInit, FieldLink {
 
   private readonly experimentRequestId: string;
 
   private readonly loadingFieldsMap = new Map<string, boolean>()
     .set(ExperimentFields.TRAINING_DATA_PATH, false)
     .set(ExperimentFields.EXPERIMENT_PATH, false);
-
-  private readonly refreshInterval = 1000;
 
   public experimentFields: any[] = [];
 
@@ -36,8 +33,6 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   public experimentErsReport: ExperimentErsReportDto;
 
   public linkColumns: string[] = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH];
-
-  private refreshSubscription: Subscription = new Subscription();
 
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService,
@@ -50,10 +45,6 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   public ngOnInit(): void {
     this.getExperiment();
     this.getExperimentErsReport();
-  }
-
-  public ngOnDestroy(): void {
-    this.unSubscribe();
   }
 
   public getExperiment(): void {
@@ -109,9 +100,6 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
       .subscribe({
         next: (experimentErsReport: ExperimentErsReportDto) => {
           this.experimentErsReport = experimentErsReport;
-          if (this.experimentErsReport.ersReportStatus.value == "SENDING") {
-            this.refreshExperimentErsReport();
-          }
         },
         error: (error) => {
           this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
@@ -154,34 +142,6 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
 
   public hasValue(field: string): boolean {
     return this.fieldService.hasValue(field, this.experimentDto);
-  }
-
-  private refreshExperimentErsReport(): void {
-    this.refreshSubscription = timer(0, this.refreshInterval).subscribe({
-      next: () => {
-        this.experimentsService.checkExperimentResultsSendingStatus(this.experimentDto.requestId)
-          .pipe(
-            filter(result => !result.sending),
-            take(1)
-          )
-          .subscribe({
-            next: () => {
-              this.getExperimentErsReport();
-              this.unSubscribe();
-            },
-            error: (error) => {
-              this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
-            }
-          });
-      },
-      error: (error) => {
-        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
-      }
-    });
-  }
-
-  private unSubscribe(): void {
-    this.refreshSubscription.unsubscribe();
   }
 
   private initExperimentFields(): void {

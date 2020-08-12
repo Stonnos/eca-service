@@ -32,25 +32,6 @@ public interface ExperimentResultsEntityRepository extends JpaRepository<Experim
     List<ExperimentResultsEntity> findByExperimentOrderByResultsIndex(Experiment experiment);
 
     /**
-     * Gets experiment results count for specified experiment.
-     *
-     * @param experiment - experiment entity
-     * @return experiment results count
-     */
-    long countByExperiment(Experiment experiment);
-
-    /**
-     * Gets sent experiment results count for specified experiment.
-     *
-     * @param experiment - experiment entity
-     * @return sent experiment results count
-     */
-    @Query("select count(er) from ExperimentResultsEntity er where " +
-            "er.experiment = :experiment and (select count(err) from ExperimentResultsRequest err " +
-            "where err.experimentResults = er and err.responseStatus = 'SUCCESS') > 0")
-    long getSentResultsCount(@Param("experiment") Experiment experiment);
-
-    /**
      * Finds experiments results for sending to ERS service.
      *
      * @return experiments results list
@@ -61,17 +42,6 @@ public interface ExperimentResultsEntityRepository extends JpaRepository<Experim
             "err.experimentResults = er and err.responseStatus = 'SUCCESS') = 0")
     List<ExperimentResultsEntity> findExperimentsResultsToErsSent(
             @Param("appInstance") AppInstanceEntity appInstanceEntity);
-
-    /**
-     * Finds experiments results for sending to ERS service.
-     *
-     * @param experiment - experiment entity
-     * @return experiments results list
-     */
-    @Query("select er from ExperimentResultsEntity er where er.experiment = :experiment " +
-            "and (select count(err) from ExperimentResultsRequest err where " +
-            "err.experimentResults = er and err.responseStatus = 'SUCCESS') = 0")
-    List<ExperimentResultsEntity> findExperimentsResultsToErsSent(@Param("experiment") Experiment experiment);
 
     /**
      * Finds experiment results ids successfully sent to ERS service.

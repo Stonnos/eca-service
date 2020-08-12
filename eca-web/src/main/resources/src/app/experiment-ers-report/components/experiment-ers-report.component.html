@@ -45,31 +45,13 @@
   <div class="ui-g-12 text-center text-wrap justify-content-center align-items-center">
     <div [class.text-success]="experimentErsReport?.ersReportStatus.value == 'SUCCESS_SENT'"
          [class.text-info]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_IN_PROGRESS' ||
-                            experimentErsReport?.ersReportStatus.value == 'NEED_SENT'"
-         [class.text-primary]="experimentErsReport?.ersReportStatus.value == 'SENDING'"
+                            experimentErsReport?.ersReportStatus.value == 'NOT_SENT'"
          [class.text-danger]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_ERROR'"
          [class.text-warning]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_RESULTS_NOT_FOUND' ||
                                experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_DELETED'">
-      <p-progressSpinner
-        *ngIf="experimentErsReport?.ersReportStatus.value == 'SENDING'"
-        class="sent-results-progress-spinner mr-1"
-        strokeWidth="6"
-        animationDuration=".5s">
-      </p-progressSpinner>
       {{ experimentErsReport?.ersReportStatus.description }}
     </div>
   </div>
-</div>
-
-<div class="ui-g-4 offset-4">
-  <button
-    pButton
-    type="button"
-    label="Отправить"
-    [disabled]="loading || !needSentToErs()"
-    (click)="sentEvaluationResults()"
-    class="w-100">
-  </button>
 </div>
 
 <p-dialog

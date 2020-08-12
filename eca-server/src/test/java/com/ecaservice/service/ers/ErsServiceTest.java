@@ -8,14 +8,11 @@ import com.ecaservice.mapping.GetEvaluationResultsMapper;
 import com.ecaservice.mapping.GetEvaluationResultsMapperImpl;
 import com.ecaservice.mapping.StatisticsReportMapperImpl;
 import com.ecaservice.model.entity.ErsRequest;
-import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
-import com.ecaservice.model.entity.ExperimentResultsRequest;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
-import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
@@ -34,7 +31,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -51,8 +47,6 @@ class ErsServiceTest extends AbstractJpaTest {
     @Inject
     private GetEvaluationResultsMapper evaluationResultsMapper;
     @Inject
-    private ExperimentResultsRequestRepository experimentResultsRequestRepository;
-    @Inject
     private ExperimentResultsEntityRepository experimentResultsEntityRepository;
     @Inject
     private ExperimentRepository experimentRepository;
@@ -61,12 +55,11 @@ class ErsServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        ersService = new ErsService(ersRequestService, evaluationResultsMapper, experimentResultsRequestRepository);
+        ersService = new ErsService(ersRequestService, evaluationResultsMapper);
     }
 
     @Override
     public void deleteAll() {
-        experimentResultsRequestRepository.deleteAll();
         experimentResultsEntityRepository.deleteAll();
         experimentRepository.deleteAll();
     }
@@ -80,19 +73,6 @@ class ErsServiceTest extends AbstractJpaTest {
                 ExperimentResultsRequestSource.MANUAL);
         verify(ersRequestService, atLeastOnce()).saveEvaluationResults(any(EvaluationResults.class),
                 any(ErsRequest.class));
-    }
-
-    @Test
-    void testAlreadySentExperimentResults() {
-        ExperimentHistory experimentHistory = TestHelperUtils.createExperimentHistory();
-        doNothing().when(ersRequestService).saveEvaluationResults(any(EvaluationResults.class), any(ErsRequest.class));
-        ExperimentResultsEntity experimentResultsEntity = createExperimentResults();
-        ExperimentResultsRequest experimentResultsRequest =
-                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity, ErsResponseStatus.SUCCESS);
-        experimentResultsRequestRepository.save(experimentResultsRequest);
-        ersService.sentExperimentResults(experimentResultsEntity, experimentHistory,
-                ExperimentResultsRequestSource.MANUAL);
-        verify(ersRequestService, never()).saveEvaluationResults(any(EvaluationResults.class), any(ErsRequest.class));
     }
 
     private ExperimentResultsEntity createExperimentResults() {
