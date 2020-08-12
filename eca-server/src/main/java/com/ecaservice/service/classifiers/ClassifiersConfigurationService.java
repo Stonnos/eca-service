@@ -1,5 +1,6 @@
 package com.ecaservice.service.classifiers;
 
+import com.ecaservice.aspect.annotation.Locked;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.filter.ClassifiersConfigurationFilter;
@@ -101,7 +102,8 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      *
      * @param id - configuration id
      */
-    public synchronized void setActive(long id) {
+    @Locked(lockName = "setActiveClassifiersConfiguration")
+    public void setActive(long id) {
         ClassifiersConfiguration classifiersConfiguration = getById(id);
         ClassifiersConfiguration activeConfiguration =
                 classifiersConfigurationRepository.findFirstByActiveTrue().orElseThrow(

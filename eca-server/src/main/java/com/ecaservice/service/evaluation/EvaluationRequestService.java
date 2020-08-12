@@ -1,14 +1,17 @@
 package com.ecaservice.service.evaluation;
 
+import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.model.TechnicalStatus;
+import com.ecaservice.model.entity.AppInstanceEntity;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.evaluation.ClassificationResult;
 import com.ecaservice.repository.EvaluationLogRepository;
+import com.ecaservice.service.AppInstanceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,6 +35,7 @@ public class EvaluationRequestService {
     private final CrossValidationConfig crossValidationConfig;
     private final CalculationExecutorService executorService;
     private final EvaluationService evaluationService;
+    private final AppInstanceService appInstanceService;
     private final EvaluationLogRepository evaluationLogRepository;
     private final EvaluationLogMapper evaluationLogMapper;
 
@@ -42,9 +46,11 @@ public class EvaluationRequestService {
      * @return evaluation response
      */
     public EvaluationResponse processRequest(final EvaluationRequest request) {
+        AppInstanceEntity appInstanceEntity = appInstanceService.getOrSaveAppInstance();
         EvaluationLog evaluationLog = evaluationLogMapper.map(request, crossValidationConfig);
         evaluationLog.setRequestStatus(RequestStatus.NEW);
         evaluationLog.setRequestId(UUID.randomUUID().toString());
+        evaluationLog.setAppInstanceEntity(appInstanceEntity);
         evaluationLog.setCreationDate(LocalDateTime.now());
         evaluationLog.setStartDate(LocalDateTime.now());
         evaluationLogRepository.save(evaluationLog);
