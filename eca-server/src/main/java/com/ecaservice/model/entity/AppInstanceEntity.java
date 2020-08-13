@@ -23,7 +23,7 @@ public class AppInstanceEntity {
     private Long id;
 
     /**
-     * Field name
+     * Unique instance name
      */
     @Column(name = "instance_name", nullable = false, unique = true)
     private String instanceName;
