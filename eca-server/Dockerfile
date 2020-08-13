@@ -1,4 +1,4 @@
-FROM openjdk:8
+FROM openjdk:8-jdk-slim
 RUN mkdir -p /home/experiment/data
 ADD wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
