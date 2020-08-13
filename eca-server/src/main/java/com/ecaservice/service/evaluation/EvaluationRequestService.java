@@ -1,6 +1,5 @@
 package com.ecaservice.service.evaluation;
 
-import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.dto.EvaluationResponse;
