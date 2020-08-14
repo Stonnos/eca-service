@@ -10,10 +10,5 @@ public enum ExperimentResultsRequestSource {
     /**
      * Request has been created by system
      */
-    SYSTEM,
-
-    /**
-     * Request has been created manually
-     */
-    MANUAL
+    SYSTEM
 }

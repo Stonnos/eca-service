@@ -13,6 +13,7 @@ import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.ExperimentBean;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.AbstractJpaTest;
+import com.ecaservice.service.AppInstanceService;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.service.evaluation.CalculationExecutorServiceImpl;
 import com.ecaservice.service.experiment.DataService;
@@ -44,7 +45,8 @@ import static com.google.common.collect.Lists.newArrayList;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentMapperImpl.class, ExperimentConfig.class, CommonConfig.class, CrossValidationConfig.class})
+@Import({ExperimentMapperImpl.class, ExperimentConfig.class, CommonConfig.class, CrossValidationConfig.class,
+        AppInstanceService.class})
 class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
@@ -59,6 +61,8 @@ class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
     @Mock
     private ExperimentProcessorService experimentProcessorService;
 
+    @Inject
+    private AppInstanceService appInstanceService;
     @Inject
     private ExperimentMapper experimentMapper;
     @Inject
@@ -81,7 +85,7 @@ class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
         ExperimentService experimentService =
                 new ExperimentService(experimentRepository, executorService, experimentMapper, dataService,
                         crossValidationConfig, experimentConfig, experimentProcessorService, entityManager,
-                        commonConfig, filterService);
+                        commonConfig, filterService, appInstanceService);
         experimentsBaseReportDataFetcher =
                 new ExperimentsBaseReportDataFetcher(filterService, experimentService, experimentMapper);
     }

@@ -1,4 +1,4 @@
-FROM openjdk:8
+FROM openjdk:8-jdk-slim
 ADD wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 COPY target/eca-data-storage.war eca-data-storage.war

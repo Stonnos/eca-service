@@ -14,6 +14,7 @@ import com.ecaservice.dto.evaluation.ResponseStatus;
 import com.ecaservice.dto.evaluation.RocCurveReport;
 import com.ecaservice.dto.evaluation.StatisticsReport;
 import com.ecaservice.model.TechnicalStatus;
+import com.ecaservice.model.entity.AppInstanceEntity;
 import com.ecaservice.model.entity.ClassifierInfo;
 import com.ecaservice.model.entity.ClassifierInputOptions;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
@@ -243,6 +244,21 @@ public class TestHelperUtils {
         experiment.setTrainingDataAbsolutePath(TRAINING_DATA_ABSOLUTE_PATH);
         experiment.setExperimentAbsolutePath(EXPERIMENT_ABSOLUTE_PATH);
         experiment.setRequestId(requestId);
+        return experiment;
+    }
+
+    /**
+     * Creates experiment.
+     *
+     * @param requestId         - request id
+     * @param experimentStatus  - experiment status
+     * @param appInstanceEntity - app instance entity
+     * @return created experiment
+     */
+    public static Experiment createExperiment(String requestId, RequestStatus experimentStatus,
+                                              AppInstanceEntity appInstanceEntity) {
+        Experiment experiment = createExperiment(requestId, experimentStatus);
+        experiment.setAppInstanceEntity(appInstanceEntity);
         return experiment;
     }
 

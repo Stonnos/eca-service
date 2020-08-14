@@ -1,18 +1,15 @@
 package com.ecaservice.controller.web;
 
 import com.ecaservice.dto.ExperimentRequest;
-import com.ecaservice.event.model.ExperimentResultsSendingEvent;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.MultipartFileResource;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
-import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.UserService;
 import com.ecaservice.service.experiment.ExperimentRequestService;
-import com.ecaservice.service.experiment.ExperimentResultsLockService;
 import com.ecaservice.service.experiment.ExperimentResultsService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.user.model.UserDetailsImpl;
@@ -25,7 +22,6 @@ import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
-import com.ecaservice.web.dto.model.SendingStatus;
 import eca.core.evaluation.EvaluationMethod;
 import eca.data.file.FileDataLoader;
 import io.swagger.annotations.Api;
@@ -33,17 +29,14 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,7 +48,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -77,13 +69,7 @@ public class ExperimentController {
 
     private static final String EXPERIMENT_RESULTS_FILE_NOT_FOUND =
             "Experiment results file for request id = '%s' not found!";
-    private static final String EXPERIMENT_RESULTS_SENT_FORMAT = "Experiment [%s] results is already sent to ERS";
-    private static final String EXPERIMENT_RESULTS_FILE_DELETED_FORMAT =
-            "Experiment [%s] results file has been deleted";
     private static final String EXPERIMENT_NOT_FOUND_FORMAT = "Experiment with request id [{}] not found";
-    private static final String EXPERIMENT_NOT_FINISHED_FORMAT =
-            "Can't sent experiment [%s] results to ERS, because experiment status isn't FINISHED";
-    private static final String EXPERIMENT_RESULTS_NOT_FOUND = "Can't found experiment [%s] results to ERS sent";
     private static final String EXPERIMENT_TRAINING_DATA_FILE_NOT_FOUND_FORMAT =
             "Experiment training data file for request id = '%s' not found!";
 
@@ -92,12 +78,8 @@ public class ExperimentController {
     private final ExperimentResultsService experimentResultsService;
     private final ExperimentMapper experimentMapper;
     private final UserService userService;
-    private final ExperimentResultsLockService lockService;
-    private final ApplicationEventPublisher applicationEventPublisher;
     private final ExperimentRepository experimentRepository;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
-
-    private final ConcurrentHashMap<String, Object> experimentMap = new ConcurrentHashMap<>();
 
     /**
      * Downloads experiment training data by specified request id.
@@ -274,68 +256,6 @@ public class ExperimentController {
     }
 
     /**
-     * Checks experiment results manual sending status.
-     *
-     * @param requestId - experiment request id
-     * @return response entity
-     */
-    @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Checks experiment results manual sending status",
-            notes = "Checks experiment results manual sending status"
-    )
-    @GetMapping(value = "/ers-report/sending-status/{requestId}")
-    public ResponseEntity<SendingStatus> checkExperimentResultsSendingStatus(
-            @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
-        Experiment experiment = experimentRepository.findByRequestId(requestId);
-        if (experiment == null) {
-            log.error(EXPERIMENT_NOT_FOUND_FORMAT, requestId);
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(new SendingStatus(experiment.getRequestId(), lockService.locked(requestId)));
-    }
-
-    /**
-     * Sent evaluation results to ERS for experiment.
-     *
-     * @param requestId - experiment request id
-     */
-    @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Sent evaluation results to ERS for experiment",
-            notes = "Sent evaluation results to ERS for experiment"
-    )
-    @PostMapping(value = "/sent-evaluation-results")
-    public ResponseEntity<String> sentExperimentEvaluationResults(@RequestBody String requestId) {
-        log.info("Received request to send evaluation results to ERS for experiment [{}]", requestId);
-        Experiment experiment = experimentRepository.findByRequestId(requestId);
-        if (experiment == null) {
-            log.error(EXPERIMENT_NOT_FOUND_FORMAT, requestId);
-            return ResponseEntity.notFound().build();
-        }
-        if (!RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
-            log.error("Can't sent experiment [{}] results to ERS, because experiment status isn't FINISHED", requestId);
-            return ResponseEntity.badRequest().body(String.format(EXPERIMENT_NOT_FINISHED_FORMAT, requestId));
-        }
-        long resultsCount = experimentResultsEntityRepository.countByExperiment(experiment);
-        if (resultsCount == 0L) {
-            log.error("Can't found experiment [{}] results to ERS sent", experiment.getRequestId());
-            return ResponseEntity.badRequest().body(
-                    String.format(EXPERIMENT_RESULTS_NOT_FOUND, experiment.getRequestId()));
-        }
-        long sentResults = experimentResultsEntityRepository.getSentResultsCount(experiment);
-        if (resultsCount == sentResults) {
-            return ResponseEntity.ok(String.format(EXPERIMENT_RESULTS_SENT_FORMAT, experiment.getRequestId()));
-        }
-        if (experiment.getDeletedDate() != null) {
-            log.error("Experiment [{}] results file has been deleted", experiment.getRequestId());
-            return ResponseEntity.badRequest().body(
-                    String.format(EXPERIMENT_RESULTS_FILE_DELETED_FORMAT, experiment.getRequestId()));
-        }
-        return sentExperimentResults(experiment);
-    }
-
-    /**
      * Calculates experiments types counting statistics.
      *
      * @param createdDateFrom - experiment created date from
@@ -374,22 +294,6 @@ public class ExperimentController {
         experimentRequest.setExperimentType(experimentType);
         experimentRequest.setEvaluationMethod(evaluationMethod);
         return experimentRequest;
-    }
-
-    private ResponseEntity<String> sentExperimentResults(Experiment experiment) {
-        ResponseEntity<String> responseEntity;
-        experimentMap.putIfAbsent(experiment.getRequestId(), new Object());
-        synchronized (experimentMap.get(experiment.getRequestId())) {
-            if (lockService.locked(experiment.getRequestId())) {
-                responseEntity = ResponseEntity.status(HttpStatus.CONFLICT).build();
-            } else {
-                lockService.lock(experiment.getRequestId());
-                applicationEventPublisher.publishEvent(new ExperimentResultsSendingEvent(this, experiment));
-                responseEntity = ResponseEntity.ok().build();
-            }
-        }
-        experimentMap.remove(experiment.getRequestId());
-        return responseEntity;
     }
 
     private ResponseEntity<FileSystemResource> downloadExperimentFile(String requestId,

@@ -51,6 +51,7 @@ ribbon:
 common:
   maxPageSize: 50
   threadPoolSize: 10
+  instance: eca-server-instance-1
 
 ## Cross - validation properties
 cross-validation:
@@ -131,6 +132,9 @@ cache:
     filter-dictionaries:
       expireAfterWriteSeconds: 18000
       maxSize: 100
+    app-instance:
+      expireAfterWriteSeconds: 36000
+      maxSize: 10
 
 management:
   metrics:
