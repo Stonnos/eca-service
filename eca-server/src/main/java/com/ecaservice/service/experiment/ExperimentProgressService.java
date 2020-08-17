@@ -1,6 +1,5 @@
 package com.ecaservice.service.experiment;
 
-import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentProgressEntity;
 import com.ecaservice.repository.ExperimentProgressRepository;
@@ -36,7 +35,7 @@ public class ExperimentProgressService {
      * @param progress   - progress bar value
      */
     public void onProgress(Experiment experiment, @NotNull @Min(MIN_PROGRESS) @Max(MAX_PROGRESS) Integer progress) {
-        ExperimentProgressEntity experimentProgressEntity = getByExperiment(experiment);
+        ExperimentProgressEntity experimentProgressEntity = getOrCreateExperimentProgress(experiment);
         experimentProgressEntity.setProgress(progress);
         experimentProgressRepository.save(experimentProgressEntity);
     }
@@ -47,14 +46,20 @@ public class ExperimentProgressService {
      * @param experiment - experiment entity
      */
     public void done(Experiment experiment) {
-        ExperimentProgressEntity experimentProgressEntity = getByExperiment(experiment);
+        ExperimentProgressEntity experimentProgressEntity = getOrCreateExperimentProgress(experiment);
         experimentProgressEntity.setFinished(true);
         experimentProgressEntity.setProgress(MAX_PROGRESS);
         experimentProgressRepository.save(experimentProgressEntity);
     }
 
-    public ExperimentProgressEntity getByExperiment(Experiment experiment) {
-        return experimentProgressRepository.findByExperiment(experiment).orElseThrow(
-                () -> new EntityNotFoundException(ExperimentProgressEntity.class, experiment.getId()));
+    private ExperimentProgressEntity getOrCreateExperimentProgress(Experiment experiment) {
+        ExperimentProgressEntity experimentProgressEntity =
+                experimentProgressRepository.findByExperiment(experiment).orElse(null);
+        if (experimentProgressEntity == null) {
+            experimentProgressEntity = new ExperimentProgressEntity();
+            experimentProgressEntity.setExperiment(experiment);
+            experimentProgressRepository.save(experimentProgressEntity);
+        }
+        return experimentProgressEntity;
     }
 }
