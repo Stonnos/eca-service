@@ -38,7 +38,8 @@ public abstract class ExperimentProgressMapper {
     protected void mapEstimatedTimeLeft(ExperimentProgressEntity experimentProgressEntity,
                                         @MappingTarget ExperimentProgressDto experimentProgressDto) {
         Experiment experiment = experimentProgressEntity.getExperiment();
-        if (experiment.getStartDate() != null && experimentProgressEntity.getProgress() > 0) {
+        if (!experimentProgressEntity.isFinished() &&
+                experimentProgressEntity.getProgress() > 0 && experiment.getStartDate() != null) {
             long totalTimeMillis =
                     ChronoUnit.MILLIS.between(experiment.getStartDate(), LocalDateTime.now());
             int progressLeft = FULL_PROGRESS - experimentProgressEntity.getProgress();

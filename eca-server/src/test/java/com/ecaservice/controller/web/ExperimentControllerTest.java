@@ -92,7 +92,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     private static final String TRAINING_DATA_PARAM = "trainingData";
     private static final String ERROR_MESSAGE = "Error";
     private static final long EXPERIMENT_RESULTS_ID = 1L;
-    private static final int PROGRESS_VALUE = 25;
+    private static final int PROGRESS_VALUE = 100;
 
     @MockBean
     private ExperimentService experimentService;
@@ -389,11 +389,11 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     @Test
     void testGetExperimentProgressOk() throws Exception {
         ExperimentProgressDto expected = new ExperimentProgressDto();
-        expected.setFinished(false);
+        expected.setFinished(true);
         expected.setProgress(PROGRESS_VALUE);
         when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(new Experiment());
         ExperimentProgressEntity experimentProgressEntity = new ExperimentProgressEntity();
-        experimentProgressEntity.setFinished(false);
+        experimentProgressEntity.setFinished(true);
         experimentProgressEntity.setProgress(PROGRESS_VALUE);
         when(experimentProgressRepository.findByExperiment(any(Experiment.class))).thenReturn(experimentProgressEntity);
         mockMvc.perform(get(EXPERIMENT_PROGRESS_URL, TEST_UUID)
