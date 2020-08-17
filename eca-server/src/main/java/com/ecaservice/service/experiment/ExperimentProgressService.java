@@ -64,8 +64,7 @@ public class ExperimentProgressService {
     }
 
     private ExperimentProgressEntity getOrCreateExperimentProgress(Experiment experiment) {
-        ExperimentProgressEntity experimentProgressEntity =
-                experimentProgressRepository.findByExperiment(experiment).orElse(null);
+        ExperimentProgressEntity experimentProgressEntity = experimentProgressRepository.findByExperiment(experiment);
         if (experimentProgressEntity == null) {
             experimentProgressEntity = new ExperimentProgressEntity();
             experimentProgressEntity.setExperiment(experiment);

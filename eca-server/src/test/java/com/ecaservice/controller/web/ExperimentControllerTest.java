@@ -5,10 +5,13 @@ import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentMapperImpl;
+import com.ecaservice.mapping.ExperimentProgressMapperImpl;
 import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.model.entity.ExperimentProgressEntity;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentType;
+import com.ecaservice.repository.ExperimentProgressRepository;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.UserService;
@@ -22,6 +25,7 @@ import com.ecaservice.web.dto.model.CreateExperimentResultDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.ExperimentDto;
 import com.ecaservice.web.dto.model.ExperimentErsReportDto;
+import com.ecaservice.web.dto.model.ExperimentProgressDto;
 import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -68,7 +72,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Roman Batygin
  */
 @WebMvcTest(controllers = ExperimentController.class)
-@Import(ExperimentMapperImpl.class)
+@Import({ExperimentMapperImpl.class, ExperimentProgressMapperImpl.class})
 class ExperimentControllerTest extends PageRequestControllerTest {
 
     private static final String BASE_URL = "/experiment";
@@ -81,13 +85,15 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     private static final String ERS_REPORT_URL = BASE_URL + "/ers-report/{requestId}";
     private static final String REQUEST_STATUS_STATISTICS_URL = BASE_URL + "/request-statuses-statistics";
     private static final String EXPERIMENT_TYPES_STATISTICS_URL = BASE_URL + "/statistics";
+    private static final String EXPERIMENT_PROGRESS_URL = BASE_URL + "/progress/{requestId}";
 
     private static final String EXPERIMENT_TYPE_PARAM = "experimentType";
     private static final String EVALUATION_METHOD_PARAM = "evaluationMethod";
     private static final String TRAINING_DATA_PARAM = "trainingData";
     private static final String ERROR_MESSAGE = "Error";
     private static final long EXPERIMENT_RESULTS_ID = 1L;
-    
+    private static final int PROGRESS_VALUE = 25;
+
     @MockBean
     private ExperimentService experimentService;
     @MockBean
@@ -99,6 +105,8 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     @MockBean
     private ExperimentRepository experimentRepository;
     @MockBean
+    private ExperimentProgressRepository experimentProgressRepository;
+    @MockBean
     private ExperimentResultsEntityRepository experimentResultsEntityRepository;
 
     @Inject
@@ -107,7 +115,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     private final MockMultipartFile trainingData =
             new MockMultipartFile(TRAINING_DATA_PARAM, "iris.txt",
                     MimeTypeUtils.TEXT_PLAIN.toString(), "file-content".getBytes(StandardCharsets.UTF_8));
-    
+
     @Test
     void testDownloadTrainingDataUnauthorized() throws Exception {
         mockMvc.perform(get(DOWNLOAD_TRAINING_DATA_URL, TEST_UUID)).andExpect(status().isUnauthorized());
@@ -354,6 +362,45 @@ class ExperimentControllerTest extends PageRequestControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(chartDataDtoList)));
 
+    }
+
+    @Test
+    void testGetExperimentProgressUnauthorized() throws Exception {
+        mockMvc.perform(get(EXPERIMENT_PROGRESS_URL, TEST_UUID)).andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetExperimentProgressForNotExistingExperiment() throws Exception {
+        when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(null);
+        mockMvc.perform(get(EXPERIMENT_PROGRESS_URL, TEST_UUID)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testGetExperimentProgressForNotExistingExperimentProgress() throws Exception {
+        when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(new Experiment());
+        when(experimentProgressRepository.findByExperiment(any(Experiment.class))).thenReturn(null);
+        mockMvc.perform(get(EXPERIMENT_PROGRESS_URL, TEST_UUID)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testGetExperimentProgressOk() throws Exception {
+        ExperimentProgressDto expected = new ExperimentProgressDto();
+        expected.setFinished(false);
+        expected.setProgress(PROGRESS_VALUE);
+        when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(new Experiment());
+        ExperimentProgressEntity experimentProgressEntity = new ExperimentProgressEntity();
+        experimentProgressEntity.setFinished(false);
+        experimentProgressEntity.setProgress(PROGRESS_VALUE);
+        when(experimentProgressRepository.findByExperiment(any(Experiment.class))).thenReturn(experimentProgressEntity);
+        mockMvc.perform(get(EXPERIMENT_PROGRESS_URL, TEST_UUID)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(expected)));
     }
 
     private void testDownloadFileForNotExistingExperiment(String url) throws Exception {

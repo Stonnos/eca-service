@@ -4,8 +4,6 @@ import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentProgressEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
-
 /**
  * Repository to manage with {@link ExperimentProgressEntity} persistence entity.
  *
@@ -19,5 +17,5 @@ public interface ExperimentProgressRepository extends JpaRepository<ExperimentPr
      * @param experiment - experiment entity
      * @return experiment progress entity
      */
-    Optional<ExperimentProgressEntity> findByExperiment(Experiment experiment);
+    ExperimentProgressEntity findByExperiment(Experiment experiment);
 }
