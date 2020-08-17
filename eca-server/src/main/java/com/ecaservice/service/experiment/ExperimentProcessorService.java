@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ExperimentProcessorService {
 
-    private static final int PROGRESS_STEP = 5;
+    private static final int PROGRESS_STEP = 2;
 
     private final ExperimentInitializationVisitor experimentInitializer;
     private final ApplicationEventPublisher applicationEventPublisher;

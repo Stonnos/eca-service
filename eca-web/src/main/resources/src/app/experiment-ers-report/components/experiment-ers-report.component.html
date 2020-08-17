@@ -42,7 +42,7 @@
 </div>
 
 <div class="ui-g">
-  <div class="ui-g-12 text-center text-wrap justify-content-center align-items-center">
+  <div class="ui-g-12 text-center">
     <div [class.text-success]="experimentErsReport?.ersReportStatus.value == 'SUCCESS_SENT'"
          [class.text-primary]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_NEW'"
          [class.text-info]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_IN_PROGRESS'"
@@ -53,11 +53,14 @@
       {{ experimentErsReport?.ersReportStatus.description }}
     </div>
   </div>
-  <div class="ui-g-12 justify-content-center align-items-center">
+  <div *ngIf="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_IN_PROGRESS'"
+       class="ui-g-12 text-center justify-content-center align-items-center">
     <p-progressBar
-      *ngIf="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_IN_PROGRESS'"
       [value]="experimentProgress?.progress">
     </p-progressBar>
+    <div class="mt-1">
+      Осталось времени: {{ experimentProgress?.estimatedTimeLeft || 'неизвестно' }}
+    </div>
   </div>
 </div>
 

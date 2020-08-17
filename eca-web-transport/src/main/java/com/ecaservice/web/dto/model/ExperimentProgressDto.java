@@ -24,4 +24,10 @@ public class ExperimentProgressDto {
      */
     @ApiModelProperty(value = "Experiment progress bar value")
     private Integer progress;
+
+    /**
+     * Estimated time left
+     */
+    @ApiModelProperty(value = "Estimated time left")
+    private String estimatedTimeLeft;
 }

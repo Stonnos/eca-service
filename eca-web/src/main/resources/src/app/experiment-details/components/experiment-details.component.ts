@@ -27,7 +27,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
     .set(ExperimentFields.TRAINING_DATA_PATH, false)
     .set(ExperimentFields.EXPERIMENT_PATH, false);
 
-  private readonly updateProgressInterval = 2000;
+  private readonly updateProgressInterval = 1000;
 
   public experimentFields: any[] = [];
 
