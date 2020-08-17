@@ -58,8 +58,8 @@ public class ExperimentProgressService {
      */
     public void finish(Experiment experiment) {
         ExperimentProgressEntity experimentProgressEntity = getOrCreateExperimentProgress(experiment);
-        experimentProgressEntity.setFinished(true);
         experimentProgressEntity.setProgress(MAX_PROGRESS);
+        experimentProgressEntity.setFinished(true);
         experimentProgressRepository.save(experimentProgressEntity);
     }
 

@@ -41,4 +41,5 @@
     <include file="db/changelog/v34-add-classifiers-configuration-created-by-global-filter.xml"/>
     <include file="db/changelog/v35-create-lock-table.xml"/>
     <include file="db/changelog/v36-create-app-instance-table.xml"/>
+    <include file="db/changelog/v37-create-experiment-progress-table.xml"/>
 </databaseChangeLog>

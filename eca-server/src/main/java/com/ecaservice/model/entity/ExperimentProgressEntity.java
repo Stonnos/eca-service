@@ -3,11 +3,13 @@ package com.ecaservice.model.entity;
 import lombok.Data;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 /**
  * Experiment progress persistence entity.
@@ -15,6 +17,8 @@ import javax.persistence.OneToOne;
  * @author Roman Batygin
  */
 @Data
+@Entity
+@Table(name = "experiment_progress")
 public class ExperimentProgressEntity {
 
     @Id
