@@ -53,6 +53,12 @@
       {{ experimentErsReport?.ersReportStatus.description }}
     </div>
   </div>
+  <div class="ui-g-12 justify-content-center align-items-center">
+    <p-progressBar
+      *ngIf="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_IN_PROGRESS'"
+      [value]="experimentProgress?.progress">
+    </p-progressBar>
+  </div>
 </div>
 
 <p-dialog
