@@ -112,8 +112,7 @@ public class ExperimentResultsService {
     private void populateErsReportStatus(Experiment experiment, ExperimentErsReportDto experimentErsReportDto) {
         ErsReportStatus ersReportStatus;
         if (!RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
-            ersReportStatus = RequestStatus.NEW.equals(experiment.getRequestStatus()) ?
-                    ErsReportStatus.EXPERIMENT_IN_PROGRESS : ErsReportStatus.EXPERIMENT_ERROR;
+            ersReportStatus = handleNotFinishedExperiment(experiment);
             //else handle ERS report status for experiment with FINISHED status
         } else if (experimentErsReportDto.getClassifiersCount() == 0L) {
             ersReportStatus = ErsReportStatus.EXPERIMENT_RESULTS_NOT_FOUND;
@@ -126,6 +125,18 @@ public class ExperimentResultsService {
         }
         experimentErsReportDto.setErsReportStatus(
                 new EnumDto(ersReportStatus.name(), ersReportStatus.getDescription()));
+    }
+
+    private ErsReportStatus handleNotFinishedExperiment(Experiment experiment) {
+        if (RequestStatus.NEW.equals(experiment.getRequestStatus())) {
+            if (experiment.getStartDate() != null) {
+               return ErsReportStatus.EXPERIMENT_IN_PROGRESS;
+            } else {
+                return ErsReportStatus.EXPERIMENT_NEW;
+            }
+        } else {
+            return ErsReportStatus.EXPERIMENT_ERROR;
+        }
     }
 
     private EvaluationResultsDto getEvaluationResults(ExperimentResultsEntity experimentResultsEntity) {
