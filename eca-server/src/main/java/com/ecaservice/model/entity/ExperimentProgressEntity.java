@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -40,7 +39,6 @@ public class ExperimentProgressEntity {
      * Linked experiment
      */
     @OneToOne
-    @MapsId
     @JoinColumn(name = "experiment_id", nullable = false)
     private Experiment experiment;
 }

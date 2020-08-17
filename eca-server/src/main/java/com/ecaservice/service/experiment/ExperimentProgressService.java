@@ -69,7 +69,6 @@ public class ExperimentProgressService {
         if (experimentProgressEntity == null) {
             experimentProgressEntity = new ExperimentProgressEntity();
             experimentProgressEntity.setExperiment(experiment);
-            experimentProgressRepository.save(experimentProgressEntity);
         }
         return experimentProgressEntity;
     }
