@@ -44,11 +44,12 @@
 <div class="ui-g">
   <div class="ui-g-12 text-center text-wrap justify-content-center align-items-center">
     <div [class.text-success]="experimentErsReport?.ersReportStatus.value == 'SUCCESS_SENT'"
-         [class.text-info]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_IN_PROGRESS' ||
-                            experimentErsReport?.ersReportStatus.value == 'NOT_SENT'"
+         [class.text-primary]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_NEW'"
+         [class.text-info]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_IN_PROGRESS'"
          [class.text-danger]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_ERROR'"
          [class.text-warning]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_RESULTS_NOT_FOUND' ||
-                               experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_DELETED'">
+                               experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_DELETED' ||
+                               experimentErsReport?.ersReportStatus.value == 'NOT_SENT'">
       {{ experimentErsReport?.ersReportStatus.description }}
     </div>
   </div>
