@@ -17,6 +17,7 @@ import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.AppInstanceService;
 import com.ecaservice.service.ers.ErsService;
+import com.ecaservice.service.experiment.ExperimentProgressService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.experiment.mail.NotificationService;
 import eca.converters.model.ExperimentHistory;
@@ -67,6 +68,8 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     @Mock
     private ErsService ersService;
     @Mock
+    private ExperimentProgressService experimentProgressService;
+    @Mock
     private ApplicationEventPublisher eventPublisher;
     @Captor
     private ArgumentCaptor<Experiment> argumentCaptor;
@@ -84,7 +87,8 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     public void init() {
         experimentScheduler =
                 new ExperimentScheduler(experimentRepository, experimentResultsEntityRepository, experimentService,
-                        notificationService, eventPublisher, ersService, appInstanceService, experimentConfig);
+                        notificationService, eventPublisher, ersService, appInstanceService, experimentProgressService,
+                        experimentConfig);
         appInstanceEntity = saveAppInstance();
     }
 

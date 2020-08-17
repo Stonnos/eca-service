@@ -56,7 +56,7 @@ public class ExperimentProgressService {
      *
      * @param experiment - experiment entity
      */
-    public void done(Experiment experiment) {
+    public void finish(Experiment experiment) {
         ExperimentProgressEntity experimentProgressEntity = getOrCreateExperimentProgress(experiment);
         experimentProgressEntity.setFinished(true);
         experimentProgressEntity.setProgress(MAX_PROGRESS);
