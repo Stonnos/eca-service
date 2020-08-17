@@ -1,6 +1,7 @@
 package com.ecaservice.event.listener;
 
 import com.ecaservice.event.model.ExperimentProgressEvent;
+import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.service.experiment.ExperimentProgressService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,8 @@ public class ExperimentProgressEventListener {
      */
     @EventListener
     public void handleExperimentProgressEvent(ExperimentProgressEvent experimentProgressEvent) {
-        experimentProgressService.onProgress(experimentProgressEvent.getExperiment(),
-                experimentProgressEvent.getProgress());
+        Experiment experiment = experimentProgressEvent.getExperiment();
+        log.info("Experiment [{}] progress: {} %.", experiment.getRequestId(), experimentProgressEvent.getProgress());
+        experimentProgressService.onProgress(experiment, experimentProgressEvent.getProgress());
     }
 }
