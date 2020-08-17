@@ -29,6 +29,17 @@ public class ExperimentProgressService {
     private final ExperimentProgressRepository experimentProgressRepository;
 
     /**
+     * Starts experiment progress.
+     *
+     * @param experiment - experiment entity
+     */
+    public void start(Experiment experiment) {
+        ExperimentProgressEntity experimentProgressEntity = getOrCreateExperimentProgress(experiment);
+        experimentProgressEntity.setProgress(MIN_PROGRESS);
+        experimentProgressRepository.save(experimentProgressEntity);
+    }
+
+    /**
      * Updates experiment progress.
      *
      * @param experiment - experiment entity
