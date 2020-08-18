@@ -12,7 +12,7 @@ public class ErsReportStatusDictionary {
 
     public static final String SUCCESS_SENT_DESCRIPTION =
             "Результаты эксперимента были успешно отправлены в ERS сервис";
-    public static final String NEW_EXPERIMENT_DESCRIPTION = "Эксперимент находится в очереди на обработку";
+    public static final String NEW_EXPERIMENT_DESCRIPTION = "Эксперимент находится в очереди на обработку...";
     public static final String EXPERIMENT_IN_PROGRESS_DESCRIPTION = "Идет построение эксперимента...";
     public static final String EXPERIMENT_ERROR_DESCRIPTION =
             "Невозможно отправить результаты эксперимента в ERS сервис. В ходе построения эксперимента возникла ошибка";
