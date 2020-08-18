@@ -2,10 +2,13 @@ package com.ecaservice.controller.web;
 
 import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.mapping.ExperimentMapper;
+import com.ecaservice.mapping.ExperimentProgressMapper;
 import com.ecaservice.model.MultipartFileResource;
 import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.model.entity.ExperimentProgressEntity;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.experiment.ExperimentType;
+import com.ecaservice.repository.ExperimentProgressRepository;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.UserService;
@@ -18,6 +21,7 @@ import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
 import com.ecaservice.web.dto.model.ExperimentErsReportDto;
+import com.ecaservice.web.dto.model.ExperimentProgressDto;
 import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -77,9 +81,11 @@ public class ExperimentController {
     private final ExperimentRequestService experimentRequestService;
     private final ExperimentResultsService experimentResultsService;
     private final ExperimentMapper experimentMapper;
+    private final ExperimentProgressMapper experimentProgressMapper;
     private final UserService userService;
     private final ExperimentRepository experimentRepository;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
+    private final ExperimentProgressRepository experimentProgressRepository;
 
     /**
      * Downloads experiment training data by specified request id.
@@ -280,6 +286,34 @@ public class ExperimentController {
         return experimentTypesMap.entrySet().stream().map(
                 entry -> new ChartDataDto(entry.getKey().name(), entry.getKey().getDescription(),
                         entry.getValue())).collect(Collectors.toList());
+    }
+
+    /**
+     * Finds experiment progress with specified request id.
+     *
+     * @param requestId - experiment request id
+     * @return experiment progress dto
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Finds experiment progress with specified request id",
+            notes = "Finds experiment progress with specified request id"
+    )
+    @GetMapping(value = "/progress/{requestId}")
+    public ResponseEntity<ExperimentProgressDto> getExperimentProgress(
+            @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
+        log.trace("Received request to get experiment progress for request id [{}]", requestId);
+        Experiment experiment = experimentRepository.findByRequestId(requestId);
+        if (experiment == null) {
+            log.error(EXPERIMENT_NOT_FOUND_FORMAT, requestId);
+            return ResponseEntity.notFound().build();
+        }
+        ExperimentProgressEntity experimentProgressEntity = experimentProgressRepository.findByExperiment(experiment);
+        if (experimentProgressEntity == null) {
+            log.error("Can't find experiment progress for request id [{}]", experiment.getRequestId());
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(experimentProgressMapper.map(experimentProgressEntity));
     }
 
     private ExperimentRequest createExperimentRequest(MultipartFile trainingData, ExperimentType experimentType,

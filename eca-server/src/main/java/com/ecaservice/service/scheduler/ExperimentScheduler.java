@@ -11,6 +11,7 @@ import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.AppInstanceService;
 import com.ecaservice.service.ers.ErsService;
+import com.ecaservice.service.experiment.ExperimentProgressService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.experiment.mail.NotificationService;
 import eca.converters.model.ExperimentHistory;
@@ -44,6 +45,7 @@ public class ExperimentScheduler {
     private final ApplicationEventPublisher eventPublisher;
     private final ErsService ersService;
     private final AppInstanceService appInstanceService;
+    private final ExperimentProgressService experimentProgressService;
     private final ExperimentConfig experimentConfig;
 
     /**
@@ -57,10 +59,12 @@ public class ExperimentScheduler {
                 Collections.singletonList(RequestStatus.NEW));
         log.trace("Obtained {} new experiments", experiments.size());
         experiments.forEach(experiment -> {
+            experimentProgressService.start(experiment);
             ExperimentHistory experimentHistory = experimentService.processExperiment(experiment);
             if (RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
                 eventPublisher.publishEvent(new ExperimentFinishedEvent(this, experiment, experimentHistory));
             }
+            experimentProgressService.finish(experiment);
         });
         log.trace("New experiments processing has been successfully finished.");
     }

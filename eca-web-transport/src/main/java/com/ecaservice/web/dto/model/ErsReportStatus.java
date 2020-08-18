@@ -17,6 +17,11 @@ public enum ErsReportStatus {
     SUCCESS_SENT(ErsReportStatusDictionary.SUCCESS_SENT_DESCRIPTION),
 
     /**
+     * New experiment (ready to process)
+     */
+    EXPERIMENT_NEW(ErsReportStatusDictionary.NEW_EXPERIMENT_DESCRIPTION),
+
+    /**
      * Experiment in progress status
      */
     EXPERIMENT_IN_PROGRESS(ErsReportStatusDictionary.EXPERIMENT_IN_PROGRESS_DESCRIPTION),

@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   ExperimentDto,
-  ExperimentErsReportDto
+  ExperimentErsReportDto, ExperimentProgressDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { MessageService } from "primeng/api";
 import { ActivatedRoute } from "@angular/router";
@@ -11,6 +11,7 @@ import { ExperimentFields } from "../../common/util/field-names";
 import { FieldLink } from "../../common/model/field-link";
 import { FieldService } from "../../common/services/field.service";
 import { Utils } from "../../common/util/utils";
+import { Subscription, timer } from "rxjs";
 import { finalize } from "rxjs/internal/operators";
 
 @Component({
@@ -18,7 +19,7 @@ import { finalize } from "rxjs/internal/operators";
   templateUrl: './experiment-details.component.html',
   styleUrls: ['./experiment-details.component.scss']
 })
-export class ExperimentDetailsComponent implements OnInit, FieldLink {
+export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink {
 
   private readonly experimentRequestId: string;
 
@@ -26,11 +27,17 @@ export class ExperimentDetailsComponent implements OnInit, FieldLink {
     .set(ExperimentFields.TRAINING_DATA_PATH, false)
     .set(ExperimentFields.EXPERIMENT_PATH, false);
 
+  private readonly updateProgressInterval = 1000;
+
   public experimentFields: any[] = [];
 
   public experimentDto: ExperimentDto;
 
   public experimentErsReport: ExperimentErsReportDto;
+
+  public experimentProgress: ExperimentProgressDto;
+
+  private updateProgressSubscription: Subscription = new Subscription();
 
   public linkColumns: string[] = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH];
 
@@ -45,6 +52,10 @@ export class ExperimentDetailsComponent implements OnInit, FieldLink {
   public ngOnInit(): void {
     this.getExperiment();
     this.getExperimentErsReport();
+  }
+
+  public ngOnDestroy(): void {
+    this.unSubscribe();
   }
 
   public getExperiment(): void {
@@ -100,6 +111,9 @@ export class ExperimentDetailsComponent implements OnInit, FieldLink {
       .subscribe({
         next: (experimentErsReport: ExperimentErsReportDto) => {
           this.experimentErsReport = experimentErsReport;
+          if (this.experimentErsReport.ersReportStatus.value == "EXPERIMENT_IN_PROGRESS") {
+            this.updateExperimentProgress();
+          }
         },
         error: (error) => {
           this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
@@ -142,6 +156,35 @@ export class ExperimentDetailsComponent implements OnInit, FieldLink {
 
   public hasValue(field: string): boolean {
     return this.fieldService.hasValue(field, this.experimentDto);
+  }
+
+  private updateExperimentProgress(): void {
+    this.updateProgressSubscription = timer(0, this.updateProgressInterval).subscribe({
+      next: () => {
+        this.experimentsService.getExperimentProgress(this.experimentDto.requestId)
+          .subscribe({
+            next: (experimentProgress: ExperimentProgressDto) => {
+              if (!experimentProgress.finished) {
+                this.experimentProgress = experimentProgress;
+              } else {
+                this.getExperiment();
+                this.getExperimentErsReport();
+                this.unSubscribe();
+              }
+            },
+            error: (error) => {
+              this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
+            }
+          });
+      },
+      error: (error) => {
+        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
+      }
+    });
+  }
+
+  private unSubscribe(): void {
+    this.updateProgressSubscription.unsubscribe();
   }
 
   private initExperimentFields(): void {

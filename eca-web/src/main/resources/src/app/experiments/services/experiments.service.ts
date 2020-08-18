@@ -6,7 +6,7 @@ import {
   ExperimentDto,
   PageDto,
   PageRequestDto,
-  RequestStatusStatisticsDto, ExperimentResultsDetailsDto
+  RequestStatusStatisticsDto, ExperimentResultsDetailsDto, ExperimentProgressDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { ExperimentRequest } from "../../create-experiment/model/experiment-request.model";
@@ -99,5 +99,13 @@ export class ExperimentsService {
     formData.append('experimentType', experimentRequest.experimentType.value);
     formData.append('evaluationMethod', experimentRequest.evaluationMethod.value);
     return this.http.post<CreateExperimentResultDto>(this.serviceUrl + '/create', formData, { headers: headers });
+  }
+
+  public getExperimentProgress(requestId: string): Observable<ExperimentProgressDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    return this.http.get<ExperimentProgressDto>(this.serviceUrl + '/progress/' + requestId, { headers: headers });
   }
 }

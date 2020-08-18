@@ -23,9 +23,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        UserEntity userEntity = userEntityRepository.findByLogin(username);
+        UserEntity userEntity = userEntityRepository.findUser(username);
         if (userEntity == null) {
-            throw new UsernameNotFoundException(String.format("User with login %s doesn't exists!", username));
+            throw new UsernameNotFoundException(
+                    String.format("User with login or email [%s] doesn't exists!", username));
         }
         return userMapper.mapDetails(userEntity);
     }

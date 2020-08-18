@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {
-  ExperimentErsReportDto,
+  ExperimentErsReportDto, ExperimentProgressDto,
   ExperimentResultsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ExperimentsService } from "../../experiments/services/experiments.service";
@@ -21,6 +21,8 @@ export class ExperimentErsReportComponent implements OnInit, FieldLink {
 
   @Input()
   public experimentErsReport: ExperimentErsReportDto;
+  @Input()
+  public experimentProgress: ExperimentProgressDto;
 
   public linkColumns: string[] = [ExperimentResultsFields.RESULTS_INDEX, ExperimentResultsFields.CLASSIFIER_NAME];
   public experimentResultsColumns: any[] = [];
