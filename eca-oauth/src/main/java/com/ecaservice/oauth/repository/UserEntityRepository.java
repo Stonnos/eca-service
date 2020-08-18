@@ -3,6 +3,8 @@ package com.ecaservice.oauth.repository;
 import com.ecaservice.oauth.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
@@ -14,12 +16,13 @@ import java.util.Optional;
 public interface UserEntityRepository extends JpaRepository<UserEntity, Long>, JpaSpecificationExecutor<UserEntity> {
 
     /**
-     * Finds user by specified login.
+     * Finds user by specified login or email address.
      *
-     * @param login - user login
+     * @param userName - user name or email address
      * @return user entity
      */
-    UserEntity findByLogin(String login);
+    @Query("select u from UserEntity u where u.login = :userName or u.email = :userName")
+    UserEntity findUser(@Param("userName") String userName);
 
     /**
      * Finds user by specified email.
