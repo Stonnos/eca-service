@@ -13,14 +13,14 @@
             <div *ngIf="form.valid && errorMessage" class="text-danger text-center mb-1">{{ errorMessage }}</div>
           </div>
           <div class="ui-g-10 mx-auto">
-            <label class="text-bold">Логин</label>
+            <label class="text-bold">Логин или email</label>
             <input
               required
               pInputText
               id="login"
               name="login"
               type="text"
-              placeholder="Введите логин"
+              placeholder="Введите логин или email"
               [(ngModel)]="userModel.login"
               #login="ngModel"
               [disabled]="loading"
@@ -28,7 +28,7 @@
               class="form-control d-block w-100">
             <div class="text-danger error-message" *ngIf="login.invalid && (login.dirty || login.touched || submitted)">
               <div *ngIf="login?.errors?.required">
-                Заполните логин
+                Заполните логин или email
               </div>
             </div>
           </div>
