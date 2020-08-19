@@ -2,10 +2,11 @@ package com.ecaservice.util;
 
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.validator.internal.engine.path.PathImpl;
 
+import javax.validation.Path;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.ecaservice.util.Utils.splitByPointSeparator;
 import static org.springframework.util.ReflectionUtils.doWithFields;
 
 /**
@@ -41,14 +42,14 @@ public class ReflectionUtils {
         if (StringUtils.isBlank(fieldName)) {
             throw new IllegalArgumentException("Field name is blank string!");
         }
-        String[] fieldLevels = splitByPointSeparator(fieldName);
-        return getTargetClazz(fieldLevels, clazz);
+        Path path = PathImpl.createPathFromString(fieldName);
+        return getTargetClazz(path, clazz);
     }
 
-    private static Class<?> getTargetClazz(String[] fieldLevels, Class<?> clazz) {
+    private static Class<?> getTargetClazz(Path path, Class<?> clazz) {
         Class<?> currentClazz = clazz;
-        for (int i = 0; i < fieldLevels.length; i++) {
-            currentClazz = getInternalFieldType(fieldLevels[i], currentClazz);
+        for (Path.Node node : path) {
+            currentClazz = getInternalFieldType(node.getName(), currentClazz);
         }
         return currentClazz;
     }

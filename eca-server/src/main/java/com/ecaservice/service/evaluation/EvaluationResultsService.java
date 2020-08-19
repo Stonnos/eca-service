@@ -206,7 +206,7 @@ public class EvaluationResultsService {
             metaClassifierReport.setMetaClassifier(true);
             classifierReportList.add(metaClassifierReport);
         } else {
-            throw new IllegalArgumentException(
+            throw new IllegalStateException(
                     String.format("Unexpected ensemble classifier: %s!", classifier.getClass().getSimpleName()));
         }
     }
