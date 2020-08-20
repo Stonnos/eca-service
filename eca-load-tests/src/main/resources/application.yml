@@ -5,3 +5,13 @@ eca-load-tests:
 queue:
   evaluationRequestQueue: evaluation-request-queue
   replyToQueue: load-tests-response-queue
+
+## Swagger properties
+swagger2:
+  projectVersion: @project.version@
+  groups:
+    eca-load-tests:
+      title: API for load tests execution
+      description: Operations for load tests managment
+      author: Roman Batygin
+      email: roman.batygin@mail.ru
