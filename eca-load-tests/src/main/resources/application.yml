@@ -1,0 +1,7 @@
+eca-load-tests:
+  numRequests: 100
+  numThreads: 10
+
+queue:
+  evaluationRequestQueue: evaluation-request-queue
+  replyToQueue: load-tests-response-queue

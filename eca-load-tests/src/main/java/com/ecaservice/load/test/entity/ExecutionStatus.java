@@ -8,6 +8,11 @@ package com.ecaservice.load.test.entity;
 public enum ExecutionStatus {
 
     /**
+     * New status
+     */
+    NEW,
+
+    /**
      * Test in progress
      */
     IN_PROGRESS,
