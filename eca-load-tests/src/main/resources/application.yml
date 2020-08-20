@@ -1,3 +1,24 @@
+spring:
+  application:
+    name: eca-load-tests
+  jmx:
+    default-domain: eca-load-tests
+  ## Datasource properties
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/eca_load_tests
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
 eca-load-tests:
   numRequests: 100
   numThreads: 10
