@@ -1,6 +1,8 @@
 package com.ecaservice.load.test.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,9 +19,11 @@ import java.time.LocalDateTime;
  * @author Roman Batygin
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @Entity
 @Table(name = "load_test")
-public class LoadTestEntity {
+public class LoadTestEntity extends BaseEntity {
 
     @Id
     @GeneratedValue
