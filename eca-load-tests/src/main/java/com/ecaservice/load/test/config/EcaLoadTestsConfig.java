@@ -11,4 +11,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 @ConfigurationProperties("eca-load-tests")
 public class EcaLoadTestsConfig {
+
+    /**
+     * Requests number to eca - server
+     */
+    private Integer numRequests;
+
+    /**
+     * Threads number for requests sending
+     */
+    private Integer numThreads;
 }
