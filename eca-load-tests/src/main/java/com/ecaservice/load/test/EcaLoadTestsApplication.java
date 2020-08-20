@@ -11,11 +11,11 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
  * @author Roman Batygin
  */
 @SpringBootApplication
-public class LoadTestsApplication extends SpringBootServletInitializer {
+public class EcaLoadTestsApplication extends SpringBootServletInitializer {
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(LoadTestsApplication.class);
+        return builder.sources(EcaLoadTestsApplication.class);
     }
 
     /**
@@ -24,7 +24,7 @@ public class LoadTestsApplication extends SpringBootServletInitializer {
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        SpringApplication.run(LoadTestsApplication.class, args);
+        SpringApplication.run(EcaLoadTestsApplication.class, args);
     }
 
 }
