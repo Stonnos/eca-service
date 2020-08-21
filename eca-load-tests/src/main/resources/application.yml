@@ -25,6 +25,7 @@ eca-load-tests:
   numFolds: 10
   numTests: 1
   seed: 1
+  delaySeconds: 30
 
 queue:
   evaluationRequestQueue: evaluation-request-queue
