@@ -70,33 +70,37 @@ public class LoadTestScheduler {
     private void sendRequests(LoadTestEntity loadTestEntity) {
         ThreadPoolTaskExecutor executor = initThreadPoolTaskExecutor(loadTestEntity.getNumThreads());
         for (int i = 0; i < loadTestEntity.getNumRequests(); i++) {
-            executor.submit(() -> {
-                String correlationId = UUID.randomUUID().toString();
-                EvaluationRequestEntity evaluationRequestEntity = new EvaluationRequestEntity();
-                evaluationRequestEntity.setCorrelationId(correlationId);
-                evaluationRequestEntity.setLoadTestEntity(loadTestEntity);
-                try {
-                    rabbitTemplate.convertAndSend(queueConfig.getEvaluationRequestQueue(), "", message -> {
-                        message.getMessageProperties().setCorrelationId(evaluationRequestEntity.getCorrelationId());
-                        message.getMessageProperties().setReplyTo(queueConfig.getReplyToQueue());
-                        return message;
-                    });
-                    evaluationRequestEntity.setStageType(RequestStageType.REQUEST_SENT);
-                    log.info("Request with correlation id [{}] has been sent", correlationId);
-                } catch (AmqpException ex) {
-                    log.error("AMQP error while sending request with correlation id [{}]: {}", correlationId,
-                            ex.getMessage());
-                    evaluationRequestEntity.setStageType(RequestStageType.NOT_SEND);
-                } catch (Exception ex) {
-                    log.error("Unknown error while sending request with correlation id [{}]: {}", correlationId,
-                            ex.getMessage());
-                    evaluationRequestEntity.setStageType(RequestStageType.ERROR);
-                } finally {
-                    evaluationRequestEntity.setStarted(LocalDateTime.now());
-                    evaluationRequestRepository.save(evaluationRequestEntity);
-                }
-            });
+            executor.submit(createSendRequestTask(loadTestEntity));
         }
+    }
+
+    private Runnable createSendRequestTask(LoadTestEntity loadTestEntity) {
+        return () -> {
+            String correlationId = UUID.randomUUID().toString();
+            EvaluationRequestEntity evaluationRequestEntity = new EvaluationRequestEntity();
+            evaluationRequestEntity.setCorrelationId(correlationId);
+            evaluationRequestEntity.setLoadTestEntity(loadTestEntity);
+            try {
+                rabbitTemplate.convertAndSend(queueConfig.getEvaluationRequestQueue(), "", message -> {
+                    message.getMessageProperties().setCorrelationId(evaluationRequestEntity.getCorrelationId());
+                    message.getMessageProperties().setReplyTo(queueConfig.getReplyToQueue());
+                    return message;
+                });
+                evaluationRequestEntity.setStageType(RequestStageType.REQUEST_SENT);
+                log.info("Request with correlation id [{}] has been sent", correlationId);
+            } catch (AmqpException ex) {
+                log.error("AMQP error while sending request with correlation id [{}]: {}", correlationId,
+                        ex.getMessage());
+                evaluationRequestEntity.setStageType(RequestStageType.NOT_SEND);
+            } catch (Exception ex) {
+                log.error("Unknown error while sending request with correlation id [{}]: {}", correlationId,
+                        ex.getMessage());
+                evaluationRequestEntity.setStageType(RequestStageType.ERROR);
+            } finally {
+                evaluationRequestEntity.setStarted(LocalDateTime.now());
+                evaluationRequestRepository.save(evaluationRequestEntity);
+            }
+        };
     }
 
     private ThreadPoolTaskExecutor initThreadPoolTaskExecutor(int poolSize) {
