@@ -1,5 +1,6 @@
 package com.ecaservice.load.test.entity;
 
+import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -41,11 +42,6 @@ public class LoadTestEntity extends BaseEntity {
     private LocalDateTime created;
 
     /**
-     * Test finished date
-     */
-    private LocalDateTime finished;
-
-    /**
      * Requests number to eca - server
      */
     @Column(name = "num_requests")
@@ -58,10 +54,52 @@ public class LoadTestEntity extends BaseEntity {
     private Integer numThreads;
 
     /**
+     * Evaluation method
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "evaluation_method")
+    private EvaluationMethod evaluationMethod;
+
+    /**
+     * Folds number for k * V cross - validation method
+     */
+    @Column(name = "num_folds")
+    private Integer numFolds;
+
+    /**
+     * Tests number for k * V cross - validation method
+     */
+    @Column(name = "num_tests")
+    private Integer numTests;
+
+    /**
+     * Seed value for k * V cross - validation method
+     */
+    private Integer seed;
+
+    /**
      * Test total time
      */
     @Column(name = "total_time")
     private Long totalTime;
+
+    /**
+     * Responses number received from eca - server
+     */
+    @Column(name = "num_responses")
+    private Long numResponses;
+
+    /**
+     * Responses number with success status
+     */
+    @Column(name = "num_success_responses")
+    private Long numSuccessRequests;
+
+    /**
+     * Responses number with error status
+     */
+    @Column(name = "num_error_responses")
+    private Long numErrorRequests;
 
     /**
      * Test execution status

@@ -1,5 +1,6 @@
 package com.ecaservice.load.test.config;
 
+import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -21,4 +22,24 @@ public class EcaLoadTestsConfig {
      * Threads number for requests sending
      */
     private Integer numThreads;
+
+    /**
+     * Evaluation method
+     */
+    private EvaluationMethod evaluationMethod;
+
+    /**
+     * Folds number for k * V cross - validation method
+     */
+    private Integer numFolds;
+
+    /**
+     * Tests number for k * V cross - validation method
+     */
+    private Integer numTests;
+
+    /**
+     * Seed value for k * V cross - validation method
+     */
+    private Integer seed;
 }
