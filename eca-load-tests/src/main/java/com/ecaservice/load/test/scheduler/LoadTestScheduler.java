@@ -88,7 +88,7 @@ public class LoadTestScheduler {
     }
 
     private void sendRequests(LoadTestEntity loadTestEntity) {
-        ThreadPoolTaskExecutor executor = initThreadPoolTaskExecutor(loadTestEntity.getNumThreads());
+        ThreadPoolTaskExecutor executor = initializeThreadPoolTaskExecutor(loadTestEntity.getNumThreads());
         executorMap.put(loadTestEntity.getTestUuid(), executor);
         for (int i = 0; i < loadTestEntity.getNumRequests(); i++) {
             executor.submit(createSendRequestTask(loadTestEntity));
@@ -124,7 +124,7 @@ public class LoadTestScheduler {
         };
     }
 
-    private ThreadPoolTaskExecutor initThreadPoolTaskExecutor(int poolSize) {
+    private ThreadPoolTaskExecutor initializeThreadPoolTaskExecutor(int poolSize) {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
         threadPoolTaskExecutor.setCorePoolSize(poolSize);
         threadPoolTaskExecutor.setMaxPoolSize(poolSize);
