@@ -20,7 +20,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
+
+import static com.google.common.collect.Maps.newHashMap;
 
 /**
  * Load tests scheduler.
@@ -38,6 +41,8 @@ public class LoadTestScheduler {
     private final LoadTestRepository loadTestRepository;
     private final EvaluationRequestRepository evaluationRequestRepository;
 
+    private Map<String, ThreadPoolTaskExecutor> executorMap = newHashMap();
+
     /**
      * Starts new tests.
      */
@@ -51,6 +56,21 @@ public class LoadTestScheduler {
         }
         startTest(page.getContent().iterator().next());
         log.trace("Finished new tests starting");
+    }
+
+    /**
+     * Shutdown executors if not alive.
+     */
+    @Scheduled(fixedDelayString = "${eca-load-tests.delaySeconds}000")
+    public void shutdown() {
+        executorMap.entrySet().removeIf(entry -> {
+            ThreadPoolTaskExecutor executor = entry.getValue();
+            if (executor.getActiveCount() == 0) {
+                executor.shutdown();
+                return true;
+            }
+            return false;
+        });
     }
 
     private Page<LoadTestEntity> getNextTest() {
@@ -69,6 +89,7 @@ public class LoadTestScheduler {
 
     private void sendRequests(LoadTestEntity loadTestEntity) {
         ThreadPoolTaskExecutor executor = initThreadPoolTaskExecutor(loadTestEntity.getNumThreads());
+        executorMap.put(loadTestEntity.getTestUuid(), executor);
         for (int i = 0; i < loadTestEntity.getNumRequests(); i++) {
             executor.submit(createSendRequestTask(loadTestEntity));
         }
