@@ -132,6 +132,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
                     new StopWatch(String.format("Stop watching for experiment [%s]", experiment.getRequestId()));
             stopWatch.start(String.format("Loading data for experiment [%s]", experiment.getRequestId()));
             Instances data = dataService.load(new File(experiment.getTrainingDataAbsolutePath()));
+            data.setClassIndex(experiment.getClassIndex());
             stopWatch.stop();
 
             final InitializationParams initializationParams =

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v38-add-experiment-class-index-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Add class_index column to experiment table -->
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <not>
+                <columnExists tableName="experiment" columnName="class_index"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="experiment">
+            <column name="class_index" type="integer"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

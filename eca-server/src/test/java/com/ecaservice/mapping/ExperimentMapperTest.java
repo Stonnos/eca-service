@@ -52,6 +52,7 @@ class ExperimentMapperTest {
         assertThat(experiment.getNumTests()).isNull();
         assertThat(experiment.getSeed()).isNull();
         assertThat(experiment.getExperimentType()).isEqualTo(experimentRequest.getExperimentType());
+        assertThat(experiment.getClassIndex()).isEqualTo(experimentRequest.getData().classIndex());
     }
 
     @Test

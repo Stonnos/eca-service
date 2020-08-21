@@ -244,6 +244,7 @@ public class TestHelperUtils {
         experiment.setTrainingDataAbsolutePath(TRAINING_DATA_ABSOLUTE_PATH);
         experiment.setExperimentAbsolutePath(EXPERIMENT_ABSOLUTE_PATH);
         experiment.setRequestId(requestId);
+        experiment.setClassIndex(0);
         return experiment;
     }
 

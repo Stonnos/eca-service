@@ -91,14 +91,19 @@ public abstract class ExperimentMapper extends AbstractEvaluationMapper {
     public abstract List<ExperimentBean> mapToBeans(List<Experiment> experiments);
 
     @AfterMapping
-    protected void mapEvaluationMethodOptions(ExperimentRequest experimentRequest,
-                                              CrossValidationConfig crossValidationConfig,
+    protected void mapEvaluationMethodOptions(CrossValidationConfig crossValidationConfig,
                                               @MappingTarget Experiment experiment) {
         if (EvaluationMethod.CROSS_VALIDATION.equals(experiment.getEvaluationMethod())) {
             experiment.setNumFolds(crossValidationConfig.getNumFolds());
             experiment.setNumTests(crossValidationConfig.getNumTests());
             experiment.setSeed(crossValidationConfig.getSeed());
         }
+    }
+
+    @AfterMapping
+    protected void postMappingExperimentRequest(ExperimentRequest experimentRequest,
+                                                @MappingTarget Experiment experiment) {
+       experiment.setClassIndex(experimentRequest.getData().classIndex());
     }
 
     @AfterMapping

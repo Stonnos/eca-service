@@ -52,6 +52,12 @@ public class Experiment extends AbstractEvaluationEntity {
     private String trainingDataAbsolutePath;
 
     /**
+     * Class attribute index
+     */
+    @Column(name = "class_index")
+    private Integer classIndex;
+
+    /**
      * Date when experiment results notification is sent to email service
      */
     @Column(name = "sent_date")
