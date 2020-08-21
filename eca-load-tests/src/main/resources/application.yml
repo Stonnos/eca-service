@@ -22,6 +22,9 @@ spring:
 eca-load-tests:
   numRequests: 100
   numThreads: 10
+  numFolds: 10
+  numTests: 1
+  seed: 1
 
 queue:
   evaluationRequestQueue: evaluation-request-queue
