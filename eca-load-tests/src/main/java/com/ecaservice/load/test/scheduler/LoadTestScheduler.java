@@ -59,6 +59,15 @@ public class LoadTestScheduler {
     }
 
     private void startTest(LoadTestEntity loadTestEntity) {
+        log.info("Found new test to start with uuid [{}]", loadTestEntity.getTestUuid());
+        loadTestEntity.setStarted(LocalDateTime.now());
+        loadTestEntity.setExecutionStatus(ExecutionStatus.IN_PROGRESS);
+        loadTestRepository.save(loadTestEntity);
+        sendRequests(loadTestEntity);
+        log.info("Test [{}] has been started", loadTestEntity.getTestUuid());
+    }
+
+    private void sendRequests(LoadTestEntity loadTestEntity) {
         ThreadPoolTaskExecutor executor = initThreadPoolTaskExecutor(loadTestEntity.getNumThreads());
         for (int i = 0; i < loadTestEntity.getNumRequests(); i++) {
             executor.submit(() -> {
