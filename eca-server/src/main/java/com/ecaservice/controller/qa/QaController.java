@@ -1,15 +1,15 @@
 package com.ecaservice.controller.qa;
 
-import com.ecaservice.conversion.ClassifierOptionsConverter;
-import com.ecaservice.dto.EvaluationRequest;
-import com.ecaservice.dto.EvaluationResponse;
-import com.ecaservice.dto.ExperimentRequest;
-import com.ecaservice.dto.InstancesRequest;
+import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.base.model.EvaluationResponse;
+import com.ecaservice.base.model.ExperimentRequest;
+import com.ecaservice.base.model.ExperimentType;
+import com.ecaservice.base.model.InstancesRequest;
+import com.ecaservice.base.model.TechnicalStatus;
+import com.ecaservice.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
 import com.ecaservice.model.MultipartFileResource;
-import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.service.evaluation.EvaluationOptimizerService;
 import com.ecaservice.service.evaluation.EvaluationRequestService;
@@ -59,7 +59,7 @@ public class QaController {
 
     private final EvaluationRequestService evaluationRequestService;
     private final EvaluationResultsService evaluationResultsService;
-    private final ClassifierOptionsConverter classifierOptionsConverter;
+    private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final ExperimentRequestService experimentRequestService;
     private final EvaluationOptimizerService evaluationOptimizerService;
     private final Jaxb2Marshaller ersMarshaller;
@@ -152,7 +152,7 @@ public class QaController {
         evaluationRequest.setEvaluationMethod(evaluationMethod);
         @Cleanup InputStream inputStream = classifierOptions.getInputStream();
         ClassifierOptions options = parseOptions(inputStream);
-        AbstractClassifier classifier = classifierOptionsConverter.convert(options);
+        AbstractClassifier classifier = classifierOptionsAdapter.convert(options);
         evaluationRequest.setClassifier(classifier);
         return evaluationRequest;
     }

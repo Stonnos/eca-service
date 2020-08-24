@@ -1,7 +1,7 @@
 package com.ecaservice.mapping;
 
+import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.config.CrossValidationConfig;
-import com.ecaservice.dto.InstancesRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;

@@ -153,8 +153,9 @@
         </dependency>
 
         <dependency>
-            <groupId>eca</groupId>
-            <artifactId>eca-core</artifactId>
+            <groupId>eca.service</groupId>
+            <artifactId>eca-model</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

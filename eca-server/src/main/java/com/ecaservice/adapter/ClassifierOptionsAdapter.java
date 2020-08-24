@@ -1,4 +1,4 @@
-package com.ecaservice.conversion;
+package com.ecaservice.adapter;
 
 import com.ecaservice.mapping.options.AbstractClassifierMapper;
 import com.ecaservice.mapping.options.ClassifierOptionsMapper;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Implements classifier options conversion.
+ * Implements classifier options adapter class.
  *
  * @author Roman Batygin
  */
@@ -26,7 +26,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @SuppressWarnings("unchecked")
-public class ClassifierOptionsConverter {
+public class ClassifierOptionsAdapter {
 
     private final List<AbstractClassifierMapper> classifierMappers;
     private final List<ClassifierOptionsMapper> classifierOptionsMappers;

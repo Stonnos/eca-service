@@ -1,6 +1,6 @@
 package com.ecaservice.service.experiment;
 
-import com.ecaservice.dto.ExperimentRequest;
+import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.event.model.ExperimentCreatedEvent;
 import com.ecaservice.model.entity.Experiment;
 import lombok.RequiredArgsConstructor;

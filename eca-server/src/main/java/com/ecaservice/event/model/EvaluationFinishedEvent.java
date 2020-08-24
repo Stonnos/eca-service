@@ -1,6 +1,6 @@
 package com.ecaservice.event.model;
 
-import com.ecaservice.dto.EvaluationResponse;
+import com.ecaservice.base.model.EvaluationResponse;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 

@@ -1,6 +1,6 @@
 package com.ecaservice.model.entity;
 
-import com.ecaservice.model.experiment.ExperimentType;
+import com.ecaservice.base.model.ExperimentType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

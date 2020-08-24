@@ -1,4 +1,4 @@
-package com.ecaservice.model.experiment;
+package com.ecaservice.base.model.visitor;
 
 /**
  * Interface for visitor pattern.

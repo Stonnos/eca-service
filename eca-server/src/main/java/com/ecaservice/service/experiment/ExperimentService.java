@@ -1,9 +1,10 @@
 package com.ecaservice.service.experiment;
 
+import com.ecaservice.base.model.ExperimentRequest;
+import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.exception.experiment.ResultsNotFoundException;
 import com.ecaservice.filter.ExperimentFilter;
@@ -12,7 +13,6 @@ import com.ecaservice.model.entity.AppInstanceEntity;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.model.entity.RequestStatus;
-import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.model.projections.RequestStatusStatistics;
 import com.ecaservice.repository.ExperimentRepository;

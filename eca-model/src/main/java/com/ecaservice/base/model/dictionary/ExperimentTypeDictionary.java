@@ -1,4 +1,4 @@
-package com.ecaservice.model.dictionary;
+package com.ecaservice.base.model.dictionary;
 
 import lombok.experimental.UtilityClass;
 

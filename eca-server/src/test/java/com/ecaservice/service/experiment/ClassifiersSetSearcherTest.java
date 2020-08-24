@@ -1,10 +1,10 @@
 package com.ecaservice.service.experiment;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.conversion.ClassifierOptionsConverter;
-import com.ecaservice.dto.EvaluationRequest;
+import com.ecaservice.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.mapping.options.AdaBoostOptionsMapperImpl;
 import com.ecaservice.mapping.options.DecisionTreeFactory;
@@ -72,7 +72,7 @@ import static org.mockito.Mockito.when;
         RandomForestsOptionsMapperImpl.class, RandomNetworkOptionsMapperImpl.class,
         DecisionTreeOptionsMapperImpl.class, KNearestNeighboursOptionsMapperImpl.class,
         J48OptionsMapperImpl.class, NeuralNetworkOptionsMapperImpl.class, LogisticOptionsMapperImpl.class,
-        HeterogeneousClassifierFactory.class, DecisionTreeFactory.class, ClassifierOptionsConverter.class})
+        HeterogeneousClassifierFactory.class, DecisionTreeFactory.class, ClassifierOptionsAdapter.class})
 class ClassifiersSetSearcherTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -85,7 +85,7 @@ class ClassifiersSetSearcherTest {
     @Inject
     private List<ClassifierInputDataHandler> classifierInputDataHandlers;
     @Inject
-    private ClassifierOptionsConverter classifierOptionsConverter;
+    private ClassifierOptionsAdapter classifierOptionsAdapter;
     @Mock
     private EvaluationService evaluationService;
     @Mock
@@ -100,7 +100,7 @@ class ClassifiersSetSearcherTest {
         testInstances = TestHelperUtils.loadInstances();
         classifiersSetSearcher =
                 new ClassifiersSetSearcher(evaluationService, classifierOptionsService, experimentConfig,
-                        crossValidationConfig, classifierInputDataHandlers, classifierOptionsConverter);
+                        crossValidationConfig, classifierInputDataHandlers, classifierOptionsAdapter);
         evaluationResults = new EvaluationResults(new KNearestNeighbours(), new Evaluation(testInstances));
     }
 

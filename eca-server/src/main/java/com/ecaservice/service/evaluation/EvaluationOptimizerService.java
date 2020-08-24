@@ -1,11 +1,11 @@
 package com.ecaservice.service.evaluation;
 
+import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.base.model.EvaluationResponse;
+import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ws.ers.ErsConfig;
-import com.ecaservice.conversion.ClassifierOptionsConverter;
-import com.ecaservice.dto.EvaluationRequest;
-import com.ecaservice.dto.EvaluationResponse;
-import com.ecaservice.dto.InstancesRequest;
+import com.ecaservice.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.mapping.ClassifierOptionsRequestMapper;
 import com.ecaservice.mapping.EvaluationRequestMapper;
@@ -38,7 +38,7 @@ public class EvaluationOptimizerService {
     private final EvaluationRequestService evaluationRequestService;
     private final EvaluationRequestMapper evaluationRequestMapper;
     private final ClassifierOptionsRequestMapper classifierOptionsRequestMapper;
-    private final ClassifierOptionsConverter classifierOptionsConverter;
+    private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final ClassifierOptionsCacheService classifierOptionsCacheService;
 
     /**
@@ -79,7 +79,7 @@ public class EvaluationOptimizerService {
 
     private EvaluationResponse evaluateModel(ClassifierOptionsRequest classifierOptionsRequest, String options,
                                              Instances data) {
-        AbstractClassifier classifier = classifierOptionsConverter.convert(parseOptions(options));
+        AbstractClassifier classifier = classifierOptionsAdapter.convert(parseOptions(options));
         EvaluationRequest evaluationRequest = evaluationRequestMapper.map(classifierOptionsRequest);
         evaluationRequest.setData(data);
         evaluationRequest.setClassifier(classifier);

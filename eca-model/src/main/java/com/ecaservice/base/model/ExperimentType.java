@@ -1,6 +1,7 @@
-package com.ecaservice.model.experiment;
+package com.ecaservice.base.model;
 
-import com.ecaservice.model.dictionary.ExperimentTypeDictionary;
+import com.ecaservice.base.model.dictionary.ExperimentTypeDictionary;
+import com.ecaservice.base.model.visitor.ExperimentTypeVisitor;
 import eca.core.DescriptiveEnum;
 import lombok.RequiredArgsConstructor;
 

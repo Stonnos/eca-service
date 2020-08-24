@@ -1,4 +1,4 @@
-package com.ecaservice.dto.json;
+package com.ecaservice.base.model.databind;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;

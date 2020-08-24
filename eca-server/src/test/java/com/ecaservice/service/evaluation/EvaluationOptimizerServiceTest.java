@@ -3,14 +3,15 @@ package com.ecaservice.service.evaluation;
 import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.aspect.LockExecutionAspect;
+import com.ecaservice.base.model.EvaluationResponse;
+import com.ecaservice.base.model.InstancesRequest;
+import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ws.ers.ErsConfig;
 import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
 import com.ecaservice.configuation.ExecutorConfiguration;
-import com.ecaservice.conversion.ClassifierOptionsConverter;
-import com.ecaservice.dto.EvaluationResponse;
-import com.ecaservice.dto.InstancesRequest;
+import com.ecaservice.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
@@ -26,7 +27,6 @@ import com.ecaservice.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.mapping.EvaluationRequestMapperImpl;
 import com.ecaservice.mapping.InstancesConverter;
 import com.ecaservice.mapping.InstancesInfoMapperImpl;
-import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ErsResponseStatus;
@@ -101,7 +101,7 @@ import static org.mockito.Mockito.when;
         CrossValidationConfig.class, EvaluationRequestService.class, InstancesInfoMapperImpl.class,
         ClassifierOptionsRequestModelMapperImpl.class, ClassifierReportMapperImpl.class,
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class,
-        ErsConfig.class, ClassifierOptionsConverter.class, EvaluationLogMapperImpl.class,
+        ErsConfig.class, ClassifierOptionsAdapter.class, EvaluationLogMapperImpl.class,
         EvaluationService.class, ErsEvaluationMethodMapperImpl.class, ErsResponseStatusMapperImpl.class,
         InstancesConverter.class, ClassifierOptionsResponseModelMapperImpl.class, ErsRequestService.class,
         EvaluationOptimizerService.class, ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class,
