@@ -1,6 +1,6 @@
 package com.ecaservice.event.listener;
 
-import com.ecaservice.dto.EvaluationResponse;
+import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.event.model.EvaluationFinishedEvent;
 import com.ecaservice.model.entity.ErsRequest;
 import com.ecaservice.model.entity.EvaluationLog;

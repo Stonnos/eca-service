@@ -1,11 +1,11 @@
 package com.ecaservice.service.evaluation;
 
+import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.base.model.EvaluationResponse;
+import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ws.ers.ErsConfig;
 import com.ecaservice.conversion.ClassifierOptionsConverter;
-import com.ecaservice.dto.EvaluationRequest;
-import com.ecaservice.dto.EvaluationResponse;
-import com.ecaservice.dto.InstancesRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.mapping.ClassifierOptionsRequestMapper;
 import com.ecaservice.mapping.EvaluationRequestMapper;

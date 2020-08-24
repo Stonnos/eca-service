@@ -1,8 +1,8 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.config.CrossValidationConfig;
-import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.report.model.ExperimentBean;
 import com.ecaservice.web.dto.model.ExperimentDto;

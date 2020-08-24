@@ -1,6 +1,5 @@
-package com.ecaservice.dto;
+package com.ecaservice.base.model;
 
-import com.ecaservice.model.TechnicalStatus;
 import lombok.Data;
 
 /**

@@ -1,15 +1,15 @@
 package com.ecaservice.controller.qa;
 
+import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.base.model.EvaluationResponse;
+import com.ecaservice.base.model.ExperimentRequest;
+import com.ecaservice.base.model.ExperimentType;
+import com.ecaservice.base.model.InstancesRequest;
+import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.conversion.ClassifierOptionsConverter;
-import com.ecaservice.dto.EvaluationRequest;
-import com.ecaservice.dto.EvaluationResponse;
-import com.ecaservice.dto.ExperimentRequest;
-import com.ecaservice.dto.InstancesRequest;
 import com.ecaservice.dto.evaluation.EvaluationResultsRequest;
 import com.ecaservice.model.MultipartFileResource;
-import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.service.evaluation.EvaluationOptimizerService;
 import com.ecaservice.service.evaluation.EvaluationRequestService;

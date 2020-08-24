@@ -1,7 +1,8 @@
 package com.ecaservice.controller.web;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.dto.ExperimentRequest;
+import com.ecaservice.base.model.ExperimentRequest;
+import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentMapperImpl;
@@ -10,7 +11,6 @@ import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentProgressEntity;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.RequestStatus;
-import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.repository.ExperimentProgressRepository;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;

@@ -1,7 +1,7 @@
-package com.ecaservice.dto;
+package com.ecaservice.base.model;
 
-import com.ecaservice.dto.json.ClassifierDeserializer;
-import com.ecaservice.dto.json.InstancesDeserializer;
+import com.ecaservice.base.model.databind.ClassifierDeserializer;
+import com.ecaservice.base.model.databind.InstancesDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;

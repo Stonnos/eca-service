@@ -1,7 +1,7 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.dto.EcaResponse;
-import com.ecaservice.model.TechnicalStatus;
+import com.ecaservice.base.model.EcaResponse;
+import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
 import org.junit.jupiter.api.Test;

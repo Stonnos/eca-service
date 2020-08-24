@@ -1,6 +1,6 @@
-package com.ecaservice.dto;
+package com.ecaservice.base.model;
 
-import com.ecaservice.dto.json.InstancesDeserializer;
+import com.ecaservice.base.model.databind.InstancesDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,10 +1,10 @@
 package com.ecaservice.service.evaluation;
 
+import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.base.model.EvaluationResponse;
+import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.config.CrossValidationConfig;
-import com.ecaservice.dto.EvaluationRequest;
-import com.ecaservice.dto.EvaluationResponse;
 import com.ecaservice.mapping.EvaluationLogMapper;
-import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.AppInstanceEntity;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.RequestStatus;

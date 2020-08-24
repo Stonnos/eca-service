@@ -1,7 +1,7 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.dto.EvaluationRequest;
+import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import eca.core.evaluation.EvaluationMethod;
 import org.assertj.core.api.Assertions;

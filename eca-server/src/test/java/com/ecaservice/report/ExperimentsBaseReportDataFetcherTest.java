@@ -1,6 +1,7 @@
 package com.ecaservice.report;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
@@ -8,7 +9,6 @@ import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentMapperImpl;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.Experiment_;
-import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.ExperimentBean;
 import com.ecaservice.repository.ExperimentRepository;

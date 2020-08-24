@@ -1,10 +1,10 @@
 package com.ecaservice.service.experiment.visitor;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
-import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.service.experiment.dictionary.TemplateVariablesDictionary;
 import org.junit.jupiter.api.BeforeEach;

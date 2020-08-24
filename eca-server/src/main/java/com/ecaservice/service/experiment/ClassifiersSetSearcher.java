@@ -1,9 +1,9 @@
 package com.ecaservice.service.experiment;
 
+import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.conversion.ClassifierOptionsConverter;
-import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.evaluation.ClassificationResult;

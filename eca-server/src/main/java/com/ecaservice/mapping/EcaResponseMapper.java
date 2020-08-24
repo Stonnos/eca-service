@@ -1,6 +1,6 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.dto.EcaResponse;
+import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.model.entity.Experiment;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

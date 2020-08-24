@@ -1,6 +1,6 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.dto.EvaluationRequest;
+import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.EvaluationMethodReport;
 import org.mapstruct.AfterMapping;

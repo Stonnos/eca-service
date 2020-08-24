@@ -1,7 +1,6 @@
-package com.ecaservice.dto;
+package com.ecaservice.base.model;
 
-import com.ecaservice.dto.json.InstancesDeserializer;
-import com.ecaservice.model.experiment.ExperimentType;
+import com.ecaservice.base.model.databind.InstancesDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
@@ -12,9 +11,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import static com.ecaservice.util.FieldConstraints.EMAIL_MAX_SIZE;
-import static com.ecaservice.util.FieldConstraints.EMAIL_REGEX;
-import static com.ecaservice.util.FieldConstraints.FIRST_NAME_MAX_SIZE;
+import static com.ecaservice.base.model.util.FieldConstraints.EMAIL_MAX_SIZE;
+import static com.ecaservice.base.model.util.FieldConstraints.EMAIL_REGEX;
+import static com.ecaservice.base.model.util.FieldConstraints.FIRST_NAME_MAX_SIZE;
 
 /**
  * Experiment request transport model.

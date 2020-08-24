@@ -1,9 +1,8 @@
 package com.ecaservice.service.experiment.visitor;
 
-
+import com.ecaservice.base.model.visitor.ExperimentTypeVisitor;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.model.experiment.ExperimentTypeVisitor;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.service.experiment.ClassifiersSetSearcher;
 import eca.dataminer.AbstractExperiment;

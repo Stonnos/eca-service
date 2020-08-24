@@ -1,8 +1,8 @@
 package com.ecaservice.listener;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.dto.EvaluationRequest;
-import com.ecaservice.dto.EvaluationResponse;
+import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.event.model.EvaluationFinishedEvent;
 import com.ecaservice.service.evaluation.EvaluationRequestService;
 import org.assertj.core.api.Assertions;
