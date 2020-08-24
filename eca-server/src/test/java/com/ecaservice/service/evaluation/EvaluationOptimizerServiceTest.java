@@ -11,7 +11,7 @@ import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ws.ers.ErsConfig;
 import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
 import com.ecaservice.configuation.ExecutorConfiguration;
-import com.ecaservice.conversion.ClassifierOptionsConverter;
+import com.ecaservice.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
@@ -101,7 +101,7 @@ import static org.mockito.Mockito.when;
         CrossValidationConfig.class, EvaluationRequestService.class, InstancesInfoMapperImpl.class,
         ClassifierOptionsRequestModelMapperImpl.class, ClassifierReportMapperImpl.class,
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class,
-        ErsConfig.class, ClassifierOptionsConverter.class, EvaluationLogMapperImpl.class,
+        ErsConfig.class, ClassifierOptionsAdapter.class, EvaluationLogMapperImpl.class,
         EvaluationService.class, ErsEvaluationMethodMapperImpl.class, ErsResponseStatusMapperImpl.class,
         InstancesConverter.class, ClassifierOptionsResponseModelMapperImpl.class, ErsRequestService.class,
         EvaluationOptimizerService.class, ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class,
