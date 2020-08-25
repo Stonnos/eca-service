@@ -12,6 +12,12 @@
     <artifactId>classifiers-options-adapter</artifactId>
     <packaging>jar</packaging>
 
+    <properties>
+        <sonar.coverage.exclusions>
+            **/model/**/*,
+            **/config/**/*
+        </sonar.coverage.exclusions>
+    </properties>
 
     <dependencies>
 
@@ -28,6 +34,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>core-test</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

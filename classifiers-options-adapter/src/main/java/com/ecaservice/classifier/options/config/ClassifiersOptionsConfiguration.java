@@ -1,4 +1,4 @@
-package com.ecaservice.classifier.options.configuration;
+package com.ecaservice.classifier.options.config;
 
 import com.ecaservice.classifier.options.mapping.AbstractClassifierMapper;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

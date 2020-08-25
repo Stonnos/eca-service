@@ -1,6 +1,6 @@
 package com.ecaservice.classifier.options.mapping;
 
-import com.ecaservice.classifier.options.configuration.ClassifiersOptionsConfig;
+import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
 import com.ecaservice.classifier.options.model.KNearestNeighboursOptions;
 import eca.metrics.KNearestNeighbours;
 import eca.metrics.distances.DistanceBuilder;

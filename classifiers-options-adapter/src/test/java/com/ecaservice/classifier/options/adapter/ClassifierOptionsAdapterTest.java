@@ -1,19 +1,19 @@
-package com.ecaservice.adapter;
+package com.ecaservice.classifier.options.adapter;
 
-import com.ecaservice.TestHelperUtils;
-import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
-import com.ecaservice.model.options.AdaBoostOptions;
-import com.ecaservice.model.options.ClassifierOptions;
-import com.ecaservice.model.options.DecisionTreeOptions;
-import com.ecaservice.model.options.ExtraTreesOptions;
-import com.ecaservice.model.options.HeterogeneousClassifierOptions;
-import com.ecaservice.model.options.J48Options;
-import com.ecaservice.model.options.KNearestNeighboursOptions;
-import com.ecaservice.model.options.LogisticOptions;
-import com.ecaservice.model.options.NeuralNetworkOptions;
-import com.ecaservice.model.options.RandomForestsOptions;
-import com.ecaservice.model.options.RandomNetworkOptions;
-import com.ecaservice.model.options.StackingOptions;
+import com.ecaservice.classifier.options.TestHelperUtils;
+import com.ecaservice.classifier.options.config.ClassifiersOptionsConfiguration;
+import com.ecaservice.classifier.options.model.AdaBoostOptions;
+import com.ecaservice.classifier.options.model.ClassifierOptions;
+import com.ecaservice.classifier.options.model.DecisionTreeOptions;
+import com.ecaservice.classifier.options.model.ExtraTreesOptions;
+import com.ecaservice.classifier.options.model.HeterogeneousClassifierOptions;
+import com.ecaservice.classifier.options.model.J48Options;
+import com.ecaservice.classifier.options.model.KNearestNeighboursOptions;
+import com.ecaservice.classifier.options.model.LogisticOptions;
+import com.ecaservice.classifier.options.model.NeuralNetworkOptions;
+import com.ecaservice.classifier.options.model.RandomForestsOptions;
+import com.ecaservice.classifier.options.model.RandomNetworkOptions;
+import com.ecaservice.classifier.options.model.StackingOptions;
 import eca.ensemble.AdaBoostClassifier;
 import eca.ensemble.ClassifiersSet;
 import eca.ensemble.HeterogeneousClassifier;
@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import({ClassifierOptionsMapperConfiguration.class, ClassifierOptionsAdapter.class})
+@Import({ClassifiersOptionsConfiguration.class, ClassifierOptionsAdapter.class})
 class ClassifierOptionsAdapterTest {
 
     @Inject

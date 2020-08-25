@@ -1,4 +1,4 @@
-package com.ecaservice.classifier.options.configuration;
+package com.ecaservice.classifier.options.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
