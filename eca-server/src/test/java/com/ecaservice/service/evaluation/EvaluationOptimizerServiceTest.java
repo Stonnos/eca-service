@@ -2,16 +2,16 @@ package com.ecaservice.service.evaluation;
 
 import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.aspect.LockExecutionAspect;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.base.model.TechnicalStatus;
+import com.ecaservice.classifier.options.config.ClassifiersOptionsConfiguration;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ws.ers.ErsConfig;
-import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
 import com.ecaservice.configuation.ExecutorConfiguration;
-import com.ecaservice.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
@@ -97,7 +97,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @EnableAspectJAutoProxy
-@Import({ExecutorConfiguration.class, ClassifierOptionsMapperConfiguration.class, CommonConfig.class,
+@Import({ExecutorConfiguration.class, ClassifiersOptionsConfiguration.class, CommonConfig.class,
         CrossValidationConfig.class, EvaluationRequestService.class, InstancesInfoMapperImpl.class,
         ClassifierOptionsRequestModelMapperImpl.class, ClassifierReportMapperImpl.class,
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class,

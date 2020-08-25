@@ -1,11 +1,11 @@
 package com.ecaservice.service.ers;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.adapter.ClassifierOptionsAdapter;
+import com.ecaservice.classifier.options.config.ClassifiersOptionsConfiguration;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ws.ers.ErsConfig;
-import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
 import com.ecaservice.configuation.ErsWebServiceConfiguration;
-import com.ecaservice.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
 import com.ecaservice.dto.evaluation.EvaluationMethod;
@@ -41,7 +41,7 @@ import java.util.UUID;
 @TestPropertySource("classpath:application.properties")
 @Import({ErsWebServiceConfiguration.class, EvaluationResultsService.class,
         ErsConfig.class, ErsWebServiceClient.class, CrossValidationConfig.class,
-        ClassifierOptionsAdapter.class, ClassifierOptionsMapperConfiguration.class, InstancesConverter.class})
+        ClassifierOptionsAdapter.class, ClassifiersOptionsConfiguration.class, InstancesConverter.class})
 class ErsWebServiceClientIT {
 
     @Inject
