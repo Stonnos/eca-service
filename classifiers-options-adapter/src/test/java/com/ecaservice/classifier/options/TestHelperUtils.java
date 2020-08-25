@@ -38,7 +38,6 @@ import java.util.List;
 public class TestHelperUtils {
 
     private static final int NUM_FOLDS = 3;
-    private static final int NUM_TESTS = 1;
     private static final int SEED = 1;
     private static final int NUM_OBJ = 2;
     private static final double KNN_WEIGHT = 0.55d;
@@ -58,18 +57,6 @@ public class TestHelperUtils {
     private static final double MOMENTUM = 0.23d;
     private static final double MIN_ERROR_THRESHOLD = 0.0d;
     private static final double MAX_ERROR_THRESHOLD = 0.5d;
-    private static final String RELATION_NAME = "Relation";
-    private static final String CLASS_NAME = "Class";
-    private static final int NUM_INSTANCES = 100;
-    private static final int NUM_ATTRIBUTES = 10;
-    private static final int NUM_CLASSES = 2;
-    private static final String LABEL = "label";
-    private static final String VALUE = "value";
-    private static final String BEARER_HEADER_FORMAT = "Bearer %s";
-    private static final String FILTER_NAME = "name";
-    private static final String FILTER_DESCRIPTION = "description";
-    private static final String REPLY_TO = "replyTo";
-    private static final int FILTER_TEMPLATE_FIELDS = 5;
 
     /**
      * Creates J48 classifier.

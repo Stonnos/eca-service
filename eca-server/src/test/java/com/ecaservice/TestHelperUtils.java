@@ -5,6 +5,18 @@ import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.base.model.TechnicalStatus;
+import com.ecaservice.classifier.options.model.AdaBoostOptions;
+import com.ecaservice.classifier.options.model.BackPropagationOptions;
+import com.ecaservice.classifier.options.model.ClassifierOptions;
+import com.ecaservice.classifier.options.model.DecisionTreeOptions;
+import com.ecaservice.classifier.options.model.ExtraTreesOptions;
+import com.ecaservice.classifier.options.model.HeterogeneousClassifierOptions;
+import com.ecaservice.classifier.options.model.J48Options;
+import com.ecaservice.classifier.options.model.KNearestNeighboursOptions;
+import com.ecaservice.classifier.options.model.LogisticOptions;
+import com.ecaservice.classifier.options.model.NeuralNetworkOptions;
+import com.ecaservice.classifier.options.model.RandomForestsOptions;
+import com.ecaservice.classifier.options.model.StackingOptions;
 import com.ecaservice.dto.evaluation.ClassificationCostsReport;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
@@ -39,19 +51,6 @@ import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.model.experiment.InitializationParams;
-import com.ecaservice.model.options.AdaBoostOptions;
-import com.ecaservice.model.options.BackPropagationOptions;
-import com.ecaservice.model.options.ClassifierOptions;
-import com.ecaservice.model.options.DecisionTreeOptions;
-import com.ecaservice.model.options.ExtraTreesOptions;
-import com.ecaservice.model.options.HeterogeneousClassifierOptions;
-import com.ecaservice.model.options.J48Options;
-import com.ecaservice.model.options.KNearestNeighboursOptions;
-import com.ecaservice.model.options.LogisticOptions;
-import com.ecaservice.model.options.NeuralNetworkOptions;
-import com.ecaservice.model.options.RandomForestsOptions;
-import com.ecaservice.model.options.RandomNetworkOptions;
-import com.ecaservice.model.options.StackingOptions;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
@@ -67,20 +66,10 @@ import eca.core.evaluation.EvaluationResults;
 import eca.core.evaluation.EvaluationService;
 import eca.data.file.resource.FileResource;
 import eca.data.file.xls.XLSLoader;
-import eca.ensemble.RandomNetworks;
-import eca.ensemble.StackingClassifier;
-import eca.ensemble.forests.DecisionTreeBuilder;
 import eca.ensemble.forests.DecisionTreeType;
-import eca.ensemble.forests.ExtraTreesClassifier;
-import eca.ensemble.forests.RandomForests;
 import eca.ensemble.sampling.SamplingMethod;
 import eca.metrics.KNearestNeighbours;
-import eca.metrics.distances.Distance;
-import eca.neural.NeuralNetwork;
-import eca.neural.functions.AbstractFunction;
 import eca.trees.CART;
-import eca.trees.DecisionTreeClassifier;
-import eca.trees.J48;
 import lombok.experimental.UtilityClass;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.util.DigestUtils;
@@ -129,11 +118,8 @@ public class TestHelperUtils {
     private static final int NUM_RANDOM_ATTR = 10;
     private static final int NUM_RANDOM_SPLITS = 25;
     private static final String HIDDEN_LAYER = "5,8,9";
-    private static final int IN_LAYER_NEURONS_NUM = 12;
-    private static final int OUT_LAYER_NEURONS_NUM = 7;
     private static final int MAX_DEPTH = 10;
     private static final int NUM_ITERATIONS = 5;
-    private static final int NUM_THREADS = 2;
     private static final double MIN_ERROR = 0.00001d;
     private static final int NUM_IN_NEURONS = 10;
     private static final int NUM_OUT_NEURONS = 12;
@@ -410,134 +396,6 @@ public class TestHelperUtils {
     }
 
     /**
-     * Creates J48 classifier.
-     *
-     * @return J48 classifier
-     */
-    public static J48 createJ48() {
-        J48 j48 = new J48();
-        j48.setUnpruned(true);
-        j48.setNumFolds(NUM_FOLDS);
-        j48.setMinNumObj(NUM_OBJ);
-        j48.setBinarySplits(true);
-        return j48;
-    }
-
-    /**
-     * Creates KNN with specified distance function.
-     *
-     * @param distance - distance function
-     * @return KNN object
-     */
-    public static KNearestNeighbours createKNearestNeighbours(Distance distance) {
-        KNearestNeighbours kNearestNeighbours = new KNearestNeighbours();
-        kNearestNeighbours.setDistance(distance);
-        kNearestNeighbours.setWeight(KNN_WEIGHT);
-        kNearestNeighbours.setNumNeighbours(NUM_NEIGHBOURS);
-        return kNearestNeighbours;
-    }
-
-    /**
-     * Creates decision tree.
-     *
-     * @param treeType - tree type.
-     * @return decision tree object
-     */
-    public static DecisionTreeClassifier createDecisionTreeClassifier(DecisionTreeType treeType) {
-        DecisionTreeClassifier treeClassifier = treeType.handle(new DecisionTreeBuilder());
-        treeClassifier.setSeed(SEED);
-        treeClassifier.setMinObj(NUM_OBJ);
-        treeClassifier.setUseBinarySplits(true);
-        treeClassifier.setRandomTree(true);
-        treeClassifier.setNumRandomAttr(NUM_RANDOM_ATTR);
-        treeClassifier.setNumRandomSplits(NUM_RANDOM_SPLITS);
-        return treeClassifier;
-    }
-
-    /**
-     * Creates neural network with specified activation function.
-     *
-     * @param abstractFunction - activation function
-     * @return neural network object
-     */
-    public static NeuralNetwork createNeuralNetwork(AbstractFunction abstractFunction) {
-        NeuralNetwork neuralNetwork = new NeuralNetwork();
-        neuralNetwork.setSeed(SEED);
-        neuralNetwork.getMultilayerPerceptron().setNumInNeurons(IN_LAYER_NEURONS_NUM);
-        neuralNetwork.getMultilayerPerceptron().setNumOutNeurons(OUT_LAYER_NEURONS_NUM);
-        neuralNetwork.getMultilayerPerceptron().setHiddenLayer(HIDDEN_LAYER);
-        neuralNetwork.getMultilayerPerceptron().setActivationFunction(abstractFunction);
-        return neuralNetwork;
-    }
-
-    /**
-     * Creates random forests classifier.
-     *
-     * @param decisionTreeType - decision tree type
-     * @return random forests classifier
-     */
-    public static RandomForests createRandomForests(DecisionTreeType decisionTreeType) {
-        RandomForests randomForests = new RandomForests();
-        randomForests.setSeed(SEED);
-        randomForests.setNumThreads(NUM_THREADS);
-        randomForests.setNumIterations(NUM_ITERATIONS);
-        randomForests.setDecisionTreeType(decisionTreeType);
-        randomForests.setMaxDepth(MAX_DEPTH);
-        randomForests.setMinObj(NUM_OBJ);
-        randomForests.setNumRandomAttr(NUM_RANDOM_ATTR);
-        return randomForests;
-    }
-
-    /**
-     * Creates extra trees classifier.
-     *
-     * @param decisionTreeType - decision tree type
-     * @return extra trees classifier
-     */
-    public static ExtraTreesClassifier createExtraTreesClassifier(DecisionTreeType decisionTreeType) {
-        ExtraTreesClassifier treesClassifier = new ExtraTreesClassifier();
-        treesClassifier.setSeed(SEED);
-        treesClassifier.setNumThreads(NUM_THREADS);
-        treesClassifier.setNumIterations(NUM_ITERATIONS);
-        treesClassifier.setDecisionTreeType(decisionTreeType);
-        treesClassifier.setMaxDepth(MAX_DEPTH);
-        treesClassifier.setMinObj(NUM_OBJ);
-        treesClassifier.setNumRandomAttr(NUM_RANDOM_ATTR);
-        treesClassifier.setUseBootstrapSamples(true);
-        treesClassifier.setNumRandomSplits(NUM_RANDOM_SPLITS);
-        return treesClassifier;
-    }
-
-    /**
-     * Creates random networks object.
-     *
-     * @return random networks object
-     */
-    public static RandomNetworks createRandomNetworks() {
-        RandomNetworks randomNetworks = new RandomNetworks();
-        randomNetworks.setSeed(SEED);
-        randomNetworks.setNumThreads(NUM_THREADS);
-        randomNetworks.setUseBootstrapSamples(true);
-        randomNetworks.setNumIterations(NUM_ITERATIONS);
-        randomNetworks.setMinError(MIN_ERROR_THRESHOLD);
-        randomNetworks.setMaxError(MAX_ERROR_THRESHOLD);
-        return randomNetworks;
-    }
-
-    /**
-     * Creates stacking classifier.
-     *
-     * @return stacking classifier
-     */
-    public static StackingClassifier createStackingClassifier() {
-        StackingClassifier stackingClassifier = new StackingClassifier();
-        stackingClassifier.setSeed(SEED);
-        stackingClassifier.setUseCrossValidation(true);
-        stackingClassifier.setNumFolds(NUM_FOLDS);
-        return stackingClassifier;
-    }
-
-    /**
      * Creates decision tree options.
      *
      * @return decision tree options
@@ -634,21 +492,6 @@ public class TestHelperUtils {
         options.setUseBootstrapSamples(true);
         options.setNumRandomSplits(NUM_RANDOM_SPLITS);
         return options;
-    }
-
-    /**
-     * Creates random networks options.
-     *
-     * @return random networks options
-     */
-    public static RandomNetworkOptions createRandomNetworkOptions() {
-        RandomNetworkOptions randomNetworkOptions = new RandomNetworkOptions();
-        randomNetworkOptions.setUseBootstrapSamples(true);
-        randomNetworkOptions.setNumIterations(NUM_ITERATIONS);
-        randomNetworkOptions.setSeed(SEED);
-        randomNetworkOptions.setMinError(MIN_ERROR_THRESHOLD);
-        randomNetworkOptions.setMaxError(MAX_ERROR_THRESHOLD);
-        return randomNetworkOptions;
     }
 
     /**

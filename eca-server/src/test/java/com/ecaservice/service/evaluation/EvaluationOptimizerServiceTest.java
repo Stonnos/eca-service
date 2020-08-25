@@ -2,12 +2,19 @@ package com.ecaservice.service.evaluation;
 
 import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.aspect.LockExecutionAspect;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsConfiguration;
+import com.ecaservice.classifier.options.model.ActivationFunctionOptions;
+import com.ecaservice.classifier.options.model.ClassifierOptions;
+import com.ecaservice.classifier.options.model.DecisionTreeOptions;
+import com.ecaservice.classifier.options.model.ExtraTreesOptions;
+import com.ecaservice.classifier.options.model.KNearestNeighboursOptions;
+import com.ecaservice.classifier.options.model.LogisticOptions;
+import com.ecaservice.classifier.options.model.NeuralNetworkOptions;
+import com.ecaservice.classifier.options.model.RandomForestsOptions;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ws.ers.ErsConfig;
@@ -31,14 +38,6 @@ import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.evaluation.ClassifierOptionsRequestSource;
-import com.ecaservice.model.options.ActivationFunctionOptions;
-import com.ecaservice.model.options.ClassifierOptions;
-import com.ecaservice.model.options.DecisionTreeOptions;
-import com.ecaservice.model.options.ExtraTreesOptions;
-import com.ecaservice.model.options.KNearestNeighboursOptions;
-import com.ecaservice.model.options.LogisticOptions;
-import com.ecaservice.model.options.NeuralNetworkOptions;
-import com.ecaservice.model.options.RandomForestsOptions;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.repository.ClassifierOptionsRequestRepository;
 import com.ecaservice.repository.ErsRequestRepository;
@@ -101,7 +100,7 @@ import static org.mockito.Mockito.when;
         CrossValidationConfig.class, EvaluationRequestService.class, InstancesInfoMapperImpl.class,
         ClassifierOptionsRequestModelMapperImpl.class, ClassifierReportMapperImpl.class,
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class,
-        ErsConfig.class, ClassifierOptionsAdapter.class, EvaluationLogMapperImpl.class,
+        ErsConfig.class, EvaluationLogMapperImpl.class,
         EvaluationService.class, ErsEvaluationMethodMapperImpl.class, ErsResponseStatusMapperImpl.class,
         InstancesConverter.class, ClassifierOptionsResponseModelMapperImpl.class, ErsRequestService.class,
         EvaluationOptimizerService.class, ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class,

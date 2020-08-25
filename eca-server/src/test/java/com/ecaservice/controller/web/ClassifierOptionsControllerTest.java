@@ -1,12 +1,12 @@
 package com.ecaservice.controller.web;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.mapping.ClassifierOptionsDatabaseModelMapperImpl;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
-import com.ecaservice.model.options.LogisticOptions;
 import com.ecaservice.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.PageDto;

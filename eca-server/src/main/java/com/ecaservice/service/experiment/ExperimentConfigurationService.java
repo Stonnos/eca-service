@@ -1,11 +1,11 @@
 package com.ecaservice.service.experiment;
 
 import com.ecaservice.aspect.annotation.Locked;
+import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.exception.ClassifierOptionsException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
-import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.classifiers.ClassifierOptionsService;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,12 +1,12 @@
 package com.ecaservice.service.classifiers;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.classifier.options.model.AdaBoostOptions;
+import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
-import com.ecaservice.model.options.AdaBoostOptions;
-import com.ecaservice.model.options.LogisticOptions;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.AbstractJpaTest;
