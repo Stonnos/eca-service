@@ -54,8 +54,7 @@ import static org.mockito.Mockito.when;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @Import({ExperimentConfig.class, CrossValidationConfig.class,
-        DecisionTreeInputDataHandler.class, NeuralNetworkInputDataHandler.class,
-        ClassifiersOptionsConfiguration.class, ClassifierOptionsAdapter.class})
+        DecisionTreeInputDataHandler.class, NeuralNetworkInputDataHandler.class, ClassifiersOptionsConfiguration.class})
 class ClassifiersSetSearcherTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
