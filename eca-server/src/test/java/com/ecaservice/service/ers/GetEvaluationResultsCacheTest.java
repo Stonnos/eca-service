@@ -1,13 +1,12 @@
 package com.ecaservice.service.ers;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.classifier.options.config.ClassifiersOptionsConfiguration;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.cache.CacheNames;
 import com.ecaservice.config.ws.ers.ErsConfig;
 import com.ecaservice.configuation.CacheConfiguration;
-import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
 import com.ecaservice.configuation.ErsWebServiceConfiguration;
-import com.ecaservice.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.dto.evaluation.GetEvaluationResultsRequest;
 import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
 import com.ecaservice.dto.evaluation.ResponseStatus;
@@ -39,7 +38,7 @@ import static org.mockito.Mockito.when;
 @Import({ErsConfig.class, ClassifierReportMapperImpl.class, ErsWebServiceClient.class,
         EvaluationResultsService.class, ErsWebServiceConfiguration.class, ErsResponseStatusMapperImpl.class,
         CacheConfiguration.class, CrossValidationConfig.class, ErsRequestService.class,
-        ClassifierOptionsAdapter.class, ClassifierOptionsMapperConfiguration.class, InstancesConverter.class})
+        ClassifiersOptionsConfiguration.class, InstancesConverter.class})
 class GetEvaluationResultsCacheTest extends AbstractJpaTest {
 
     @Inject

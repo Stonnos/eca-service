@@ -1,7 +1,7 @@
 package com.ecaservice.mapping;
 
+import com.ecaservice.classifier.options.model.DecisionTreeOptions;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
-import com.ecaservice.model.options.DecisionTreeOptions;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

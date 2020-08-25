@@ -61,6 +61,9 @@ cross-validation:
   ## Cross validation timeout in minutes
   timeout: 60
 
+classifiers-options:
+  maximum-fraction-digits: 4
+
 ## Swagger properties
 swagger2:
   projectVersion: @project.version@
@@ -90,7 +93,7 @@ experiment:
   storagePath: D:/experiment/
   individualClassifiersStoragePath: classpath*:classifiers/**/*.json
   downloadBaseUrl: http://localhost:8085/eca-server
-  maximumFractionDigits: 4
+  maximumFractionDigits: ${classifiers-options.maximum-fraction-digits}
   numberOfDaysForStorage: 14
   ## Each day at midnight
   removeExperimentCron: 0 0 0 * * *

@@ -1,11 +1,11 @@
 package com.ecaservice.util;
 
+import com.ecaservice.classifier.options.model.ClassifierOptions;
+import com.ecaservice.classifier.options.model.IterativeEnsembleOptions;
+import com.ecaservice.classifier.options.model.StackingOptions;
 import com.ecaservice.exception.ClassifierOptionsException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
-import com.ecaservice.model.options.ClassifierOptions;
-import com.ecaservice.model.options.IterativeEnsembleOptions;
-import com.ecaservice.model.options.StackingOptions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
