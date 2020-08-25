@@ -62,7 +62,7 @@ cross-validation:
   timeout: 60
 
 classifiers-options:
-  maximum-fraction-digits: 4
+  maximumFractionDigits: 4
 
 ## Swagger properties
 swagger2:
@@ -93,7 +93,7 @@ experiment:
   storagePath: D:/experiment/
   individualClassifiersStoragePath: classpath*:classifiers/**/*.json
   downloadBaseUrl: http://localhost:8085/eca-server
-  maximumFractionDigits: ${classifiers-options.maximum-fraction-digits}
+  maximumFractionDigits: ${classifiers-options.maximumFractionDigits}
   numberOfDaysForStorage: 14
   ## Each day at midnight
   removeExperimentCron: 0 0 0 * * *
