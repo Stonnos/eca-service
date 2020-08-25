@@ -37,6 +37,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import weka.classifiers.AbstractClassifier;
 import weka.classifiers.bayes.BayesNet;
 
 import javax.inject.Inject;
@@ -168,5 +169,27 @@ class ClassifierOptionsAdapterTest {
     void testMapRandomNetworks() {
         ClassifierOptions options = classifierOptionsAdapter.convert(new RandomNetworks());
         Assertions.assertThat(options).isInstanceOf(RandomNetworkOptions.class);
+    }
+
+    @Test
+    void testMapHeterogeneousClassifierOptions() {
+        HeterogeneousClassifierOptions heterogeneousClassifierOptions =
+                TestHelperUtils.createHeterogeneousClassifierOptions(false);
+        AbstractClassifier classifier = classifierOptionsAdapter.convert(heterogeneousClassifierOptions);
+        Assertions.assertThat(classifier).isInstanceOf(HeterogeneousClassifier.class);
+        HeterogeneousClassifier heterogeneousClassifier = (HeterogeneousClassifier) classifier;
+        Assertions.assertThat(heterogeneousClassifier.getClassifiersSet().size()).isEqualTo(
+                heterogeneousClassifierOptions.getClassifierOptions().size());
+    }
+
+    @Test
+    void testMapStackingClassifierOptions() {
+        StackingOptions stackingOptions = TestHelperUtils.createStackingOptions();
+        AbstractClassifier classifier = classifierOptionsAdapter.convert(stackingOptions);
+        Assertions.assertThat(classifier).isInstanceOf(StackingClassifier.class);
+        StackingClassifier stackingClassifier = (StackingClassifier) classifier;
+        Assertions.assertThat(stackingClassifier.getClassifiers().size()).isEqualTo(
+                stackingOptions.getClassifierOptions().size());
+        Assertions.assertThat(stackingClassifier.getMetaClassifier()).isInstanceOf(J48.class);
     }
 }
