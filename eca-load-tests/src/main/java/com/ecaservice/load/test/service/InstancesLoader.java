@@ -5,10 +5,9 @@ import eca.data.file.FileDataLoader;
 import eca.data.file.resource.FileResource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import weka.core.Instances;
-
-import java.io.File;
 
 /**
  * Service for loading data from file.
@@ -22,17 +21,17 @@ public class InstancesLoader {
     /**
      * Loads training data from file.
      *
-     * @param file - training data file
+     * @param resource - training data resource
      * @return instances object
      */
-    @Cacheable(value = "instances", key = "#file.name")
-    public Instances loadInstances(File file) {
+    @Cacheable(value = "instances", key = "#resource.filename")
+    public Instances loadInstances(Resource resource) {
         try {
-            log.info("Starting to load data from file {}", file.getName());
+            log.info("Starting to load data from file {}", resource.getFilename());
             FileDataLoader dataLoader = new FileDataLoader();
-            dataLoader.setSource(new FileResource(file));
+            dataLoader.setSource(new FileResource(resource.getFile()));
             Instances data = dataLoader.loadInstances();
-            log.info("{} data has been successfully loaded from file {}", data.relationName(), file.getName());
+            log.info("{} data has been successfully loaded from file {}", data.relationName(), resource.getFilename());
             return data;
         } catch (Exception ex) {
             throw new ConfigException(ex.getMessage());

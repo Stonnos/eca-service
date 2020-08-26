@@ -5,7 +5,6 @@ import com.ecaservice.load.test.config.EcaLoadTestsConfig;
 import com.ecaservice.load.test.exception.ConfigException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Cleanup;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -20,14 +19,14 @@ import java.util.List;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
- * Classifiers options service.
+ * Classifiers config service.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ClassifiersOptionsService {
+public class ClassifiersConfigService implements ConfigService<ClassifierOptions> {
 
     private static final String CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_EMPTY =
             "Classifiers input options directory is empty.";
@@ -36,7 +35,6 @@ public class ClassifiersOptionsService {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    @Getter
     private List<ClassifierOptions> classifierOptionsList = newArrayList();
 
     /**
@@ -68,5 +66,15 @@ public class ClassifiersOptionsService {
             }
             log.info("All classifiers options has been read from configs");
         }
+    }
+
+    @Override
+    public int size() {
+        return classifierOptionsList.size();
+    }
+
+    @Override
+    public ClassifierOptions getConfig(int index) {
+        return classifierOptionsList.get(index);
     }
 }

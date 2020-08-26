@@ -16,6 +16,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.AmqpException;
+import org.springframework.core.io.Resource;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
@@ -38,6 +39,7 @@ public abstract class AbstractTestExecutor {
     protected final EcaLoadTestsConfig ecaLoadTestsConfig;
     private final RabbitSender rabbitSender;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
+    private final InstancesLoader instancesLoader;
     private final EvaluationRequestMapper evaluationRequestMapper;
     private final LoadTestRepository loadTestRepository;
     private final EvaluationRequestRepository evaluationRequestRepository;
@@ -52,18 +54,18 @@ public abstract class AbstractTestExecutor {
     }
 
     /**
-     * Gets next instances (training data set).
+     * Gets next instances (training data set) resource.
      *
-     * @return instances object
+     * @return instances resource
      */
-    protected abstract Instances getNextInstances();
+    protected abstract Resource getNextSample();
 
     /**
      * Gets next classifier.
      *
      * @return classifier object
      */
-    protected abstract ClassifierOptions getNextClassifier();
+    protected abstract ClassifierOptions getNextClassifierOptions();
 
     private void sendRequests(LoadTestEntity loadTestEntity) {
         ThreadPoolTaskExecutor executor = initializeThreadPoolTaskExecutor(loadTestEntity.getNumThreads());
@@ -89,10 +91,11 @@ public abstract class AbstractTestExecutor {
     }
 
     private EvaluationRequest createEvaluationRequest(LoadTestEntity loadTestEntity) {
-        final Instances instances = getNextInstances();
-        ClassifierOptions classifierOptions = getNextClassifier();
-        final AbstractClassifier classifier = classifierOptionsAdapter.convert(classifierOptions);
-        final EvaluationRequest evaluationRequest = evaluationRequestMapper.map(loadTestEntity);
+        Resource resource = getNextSample();
+        Instances instances = instancesLoader.loadInstances(resource);
+        ClassifierOptions classifierOptions = getNextClassifierOptions();
+        AbstractClassifier classifier = classifierOptionsAdapter.convert(classifierOptions);
+        EvaluationRequest evaluationRequest = evaluationRequestMapper.map(loadTestEntity);
         evaluationRequest.setData(instances);
         evaluationRequest.setClassifier(classifier);
         return evaluationRequest;
