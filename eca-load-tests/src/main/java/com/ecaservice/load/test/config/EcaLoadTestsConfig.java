@@ -2,6 +2,10 @@ package com.ecaservice.load.test.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * Eca load tests config model.
@@ -9,6 +13,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author Roman Batygin
  */
 @Data
+@Validated
 @ConfigurationProperties("eca-load-tests")
 public class EcaLoadTestsConfig {
 
@@ -25,6 +30,7 @@ public class EcaLoadTestsConfig {
     /**
      * Worker thread timeout in seconds
      */
+    @NotNull
     private Long workerThreadTimeOutInSeconds;
 
     /**
@@ -41,4 +47,16 @@ public class EcaLoadTestsConfig {
      * Seed value for k * V cross - validation method
      */
     private Integer seed;
+
+    /**
+     * Training data storage path
+     */
+    @NotEmpty
+    private String trainingDataStoragePath;
+
+    /**
+     * Classifiers options storage path
+     */
+    @NotEmpty
+    private String classifiersStoragePath;
 }
