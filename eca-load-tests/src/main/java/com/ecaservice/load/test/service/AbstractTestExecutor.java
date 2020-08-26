@@ -20,6 +20,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
+import weka.core.Randomizable;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
@@ -100,12 +101,20 @@ public abstract class AbstractTestExecutor {
     private EvaluationRequest createEvaluationRequest(LoadTestEntity loadTestEntity) {
         Resource resource = getNextSample();
         Instances instances = instancesLoader.loadInstances(resource);
-        ClassifierOptions classifierOptions = getNextClassifierOptions();
-        AbstractClassifier classifier = classifierOptionsAdapter.convert(classifierOptions);
+        AbstractClassifier classifier = initializeNextClassifier();
         EvaluationRequest evaluationRequest = evaluationRequestMapper.map(loadTestEntity);
         evaluationRequest.setData(instances);
         evaluationRequest.setClassifier(classifier);
         return evaluationRequest;
+    }
+
+    private AbstractClassifier initializeNextClassifier() {
+        ClassifierOptions classifierOptions = getNextClassifierOptions();
+        AbstractClassifier classifier = classifierOptionsAdapter.convert(classifierOptions);
+        if (classifier instanceof Randomizable) {
+            ((Randomizable) classifier).setSeed(ecaLoadTestsConfig.getSeed());
+        }
+        return classifier;
     }
 
     private Runnable createTask(EvaluationRequest evaluationRequest,
