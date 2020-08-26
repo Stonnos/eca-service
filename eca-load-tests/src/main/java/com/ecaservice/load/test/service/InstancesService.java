@@ -5,10 +5,8 @@ import eca.data.file.FileDataLoader;
 import eca.data.file.resource.FileResource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 import weka.core.Instances;
 
-import javax.validation.constraints.NotEmpty;
 import java.io.File;
 
 /**
@@ -17,24 +15,22 @@ import java.io.File;
  * @author Roman Batygin
  */
 @Slf4j
-@Validated
 @Service
 public class InstancesService {
 
     /**
      * Loads training data from file.
      *
-     * @param fileName - file name
+     * @param file - training data file
      * @return instances object
      */
-    public Instances loadInstances(@NotEmpty String fileName) {
+    public Instances loadInstances(File file) {
         try {
-            File file = new File(fileName);
-            log.info("Starting to load data from file {}", file.getAbsolutePath());
+            log.info("Starting to load data from file {}", file.getName());
             FileDataLoader dataLoader = new FileDataLoader();
             dataLoader.setSource(new FileResource(file));
             Instances data = dataLoader.loadInstances();
-            log.info("{} data has been successfully loaded from file {}", data.relationName(), file.getAbsolutePath());
+            log.info("{} data has been successfully loaded from file {}", data.relationName(), file.getName());
             return data;
         } catch (Exception ex) {
             throw new ConfigException(ex.getMessage());
