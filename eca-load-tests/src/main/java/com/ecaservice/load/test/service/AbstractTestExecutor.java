@@ -72,7 +72,14 @@ public abstract class AbstractTestExecutor {
         CountDownLatch countDownLatch = new CountDownLatch(loadTestEntity.getNumRequests());
         try {
             for (int i = 0; i < loadTestEntity.getNumRequests(); i++) {
-                executor.submit(createTask(loadTestEntity, countDownLatch));
+                EvaluationRequest evaluationRequest = createEvaluationRequest(loadTestEntity);
+                ClassifierOptions classifierOptions =
+                        classifierOptionsAdapter.convert(evaluationRequest.getClassifier());
+                EvaluationRequestEntity evaluationRequestEntity =
+                        createEvaluationRequestEntity(loadTestEntity, classifierOptions, evaluationRequest.getData());
+                evaluationRequestEntity.setClassifierName(evaluationRequest.getClassifier().getClass().getSimpleName());
+                Runnable task = createTask(evaluationRequest, evaluationRequestEntity, countDownLatch);
+                executor.submit(task);
             }
             countDownLatch.await(ecaLoadTestsConfig.getWorkerThreadTimeOutInSeconds(), TimeUnit.SECONDS);
         } catch (Exception ex) {
@@ -101,10 +108,9 @@ public abstract class AbstractTestExecutor {
         return evaluationRequest;
     }
 
-    private Runnable createTask(final LoadTestEntity loadTestEntity, final CountDownLatch countDownLatch) {
-        final EvaluationRequest evaluationRequest = createEvaluationRequest(loadTestEntity);
+    private Runnable createTask(EvaluationRequest evaluationRequest,
+                                EvaluationRequestEntity evaluationRequestEntity, CountDownLatch countDownLatch) {
         return () -> {
-            EvaluationRequestEntity evaluationRequestEntity = createEvaluationRequestEntity(loadTestEntity);
             try {
                 rabbitSender.send(evaluationRequest, evaluationRequestEntity.getCorrelationId());
                 evaluationRequestEntity.setStageType(RequestStageType.REQUEST_SENT);
