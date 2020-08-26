@@ -34,6 +34,11 @@ public class EcaLoadTestsConfig {
     private Long workerThreadTimeOutInSeconds;
 
     /**
+     * Request processing timeout in seconds
+     */
+    private Long requestTimeoutInSeconds;
+
+    /**
      * Folds number for k * V cross - validation method
      */
     private Integer numFolds;
@@ -59,4 +64,9 @@ public class EcaLoadTestsConfig {
      */
     @NotEmpty
     private String classifiersStoragePath;
+
+    /**
+     * Page size for paging processing
+     */
+    private Integer pageSize;
 }

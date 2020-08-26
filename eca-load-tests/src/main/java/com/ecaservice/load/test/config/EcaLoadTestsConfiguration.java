@@ -6,6 +6,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,6 +18,7 @@ import java.util.concurrent.Executors;
  */
 @Configuration
 @EnableCaching
+@EnableScheduling
 @EnableConfigurationProperties(EcaLoadTestsConfig.class)
 @Import(ClassifiersOptionsConfiguration.class)
 public class EcaLoadTestsConfiguration {

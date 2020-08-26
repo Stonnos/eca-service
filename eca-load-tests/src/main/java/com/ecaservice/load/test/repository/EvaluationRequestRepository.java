@@ -2,9 +2,15 @@ package com.ecaservice.load.test.repository;
 
 import com.ecaservice.load.test.entity.EvaluationRequestEntity;
 import com.ecaservice.load.test.entity.RequestStageType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Repository to manage with {@link EvaluationRequestEntity} persistence entity.
@@ -20,6 +26,24 @@ public interface EvaluationRequestRepository extends JpaRepository<EvaluationReq
      * @param requestStageType - request stage
      * @return evaluation request entity
      */
-   EvaluationRequestEntity findByCorrelationIdAndStageTypeEquals(String correlationId,
-                                                                            RequestStageType requestStageType);
+    EvaluationRequestEntity findByCorrelationIdAndStageTypeEquals(String correlationId,
+                                                                  RequestStageType requestStageType);
+
+    /**
+     * Finds exceeded requests ids.
+     *
+     * @param dateTime - date time value
+     * @return requests ids list
+     */
+    @Query("select er.id from EvaluationRequestEntity er where er.stageType = 'REQUEST_SENT' and er.started < :dateTime")
+    List<Long> findExceededRequestIds(@Param("dateTime") LocalDateTime dateTime);
+
+    /**
+     * Finds evaluation requests page with specified ids.
+     *
+     * @param ids      - ids list
+     * @param pageable - pageable object
+     * @return evaluation requests page
+     */
+    Page<EvaluationRequestEntity> findByIdIn(Collection<Long> ids, Pageable pageable);
 }

@@ -78,30 +78,6 @@ public class LoadTestEntity extends BaseEntity {
     private Integer seed;
 
     /**
-     * Test total time
-     */
-    @Column(name = "total_time")
-    private Long totalTime;
-
-    /**
-     * Responses number received from eca - server
-     */
-    @Column(name = "responses_count")
-    private Long responsesCount;
-
-    /**
-     * Passed tests count
-     */
-    @Column(name = "num_passed")
-    private Long passedCount;
-
-    /**
-     * Failed tests count
-     */
-    @Column(name = "num_error_responses")
-    private Long failedCount;
-
-    /**
      * Test execution status
      */
     @Enumerated(EnumType.STRING)

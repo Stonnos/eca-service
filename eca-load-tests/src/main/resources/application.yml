@@ -27,11 +27,14 @@ eca-load-tests:
   numRequests: 100
   numThreads: 10
   workerThreadTimeOutInSeconds: 180
+  requestTimeoutInSeconds: 120
   numFolds: 10
   numTests: 1
   seed: 1
   trainingDataStoragePath: classpath*:data/**/*
   classifiersStoragePath: classpath*:classifiers/**/*.json
+  pageSize: 25
+  delaySeconds: 1
 
 queue:
   evaluationRequestQueue: evaluation-request-queue

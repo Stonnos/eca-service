@@ -65,5 +65,6 @@ public class LoadTestService {
             loadTestEntity.setNumTests(numTests);
             loadTestEntity.setSeed(seed);
         }
+        loadTestEntity.setEvaluationMethod(evaluationMethod);
     }
 }
