@@ -18,6 +18,10 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
+  cache:
+    cache-names: instances
+    caffeine:
+      spec: maximumSize=10, expireAfterWrite=180s
 
 eca-load-tests:
   numRequests: 100

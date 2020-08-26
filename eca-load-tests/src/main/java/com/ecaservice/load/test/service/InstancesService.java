@@ -4,6 +4,7 @@ import com.ecaservice.load.test.exception.ConfigException;
 import eca.data.file.FileDataLoader;
 import eca.data.file.resource.FileResource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import weka.core.Instances;
 
@@ -24,6 +25,7 @@ public class InstancesService {
      * @param file - training data file
      * @return instances object
      */
+    @Cacheable(value = "instances", key = "#file.name")
     public Instances loadInstances(File file) {
         try {
             log.info("Starting to load data from file {}", file.getName());
