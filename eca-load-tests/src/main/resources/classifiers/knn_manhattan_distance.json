@@ -1,0 +1,5 @@
+{
+  "type": "knn",
+  "distanceType": "MANHATTAN",
+  "weight": 1.0
+}

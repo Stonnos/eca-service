@@ -1,0 +1,6 @@
+{
+  "type": "decision_tree",
+  "decisionTreeType": "C45",
+  "useBinarySplits": false,
+  "minObj": 2
+}

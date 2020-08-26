@@ -1,0 +1,5 @@
+{
+  "type": "decision_tree",
+  "decisionTreeType": "CART",
+  "minObj": 2
+}

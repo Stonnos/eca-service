@@ -1,0 +1,6 @@
+{
+  "type": "neural_network",
+  "activationFunctionOptions": {
+    "activationFunctionType": "INVERSE_SQUARE_ROOT_UNIT"
+  }
+}

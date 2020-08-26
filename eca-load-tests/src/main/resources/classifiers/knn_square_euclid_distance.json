@@ -1,0 +1,5 @@
+{
+  "type": "knn",
+  "distanceType": "SQUARE_EUCLID",
+  "weight": 1.0
+}

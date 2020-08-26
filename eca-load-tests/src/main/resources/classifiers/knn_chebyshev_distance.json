@@ -1,0 +1,5 @@
+{
+  "type": "knn",
+  "distanceType": "CHEBYSHEV",
+  "weight": 1.0
+}
