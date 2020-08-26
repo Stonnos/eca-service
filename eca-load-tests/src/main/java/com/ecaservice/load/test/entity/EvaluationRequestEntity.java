@@ -38,6 +38,13 @@ public class EvaluationRequestEntity extends BaseEntity {
     private RequestStageType stageType;
 
     /**
+     * Test result
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "test_result")
+    private TestResult testResult;
+
+    /**
      * Classifier name
      */
     @Column(name = "classifier_name")

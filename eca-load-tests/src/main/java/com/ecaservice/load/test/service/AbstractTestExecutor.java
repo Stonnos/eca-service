@@ -6,6 +6,7 @@ import com.ecaservice.load.test.entity.EvaluationRequestEntity;
 import com.ecaservice.load.test.entity.ExecutionStatus;
 import com.ecaservice.load.test.entity.LoadTestEntity;
 import com.ecaservice.load.test.entity.RequestStageType;
+import com.ecaservice.load.test.entity.TestResult;
 import com.ecaservice.load.test.mapping.EvaluationRequestMapper;
 import com.ecaservice.load.test.repository.EvaluationRequestRepository;
 import com.ecaservice.load.test.repository.LoadTestRepository;
@@ -100,11 +101,13 @@ public abstract class AbstractTestExecutor {
                 log.error("AMQP error while sending request with correlation id [{}]: {}",
                         evaluationRequestEntity.getCorrelationId(),
                         ex.getMessage());
+                evaluationRequestEntity.setTestResult(TestResult.ERROR);
                 evaluationRequestEntity.setStageType(RequestStageType.NOT_SEND);
             } catch (Exception ex) {
                 log.error("Unknown error while sending request with correlation id [{}]: {}",
                         evaluationRequestEntity.getCorrelationId(),
                         ex.getMessage());
+                evaluationRequestEntity.setTestResult(TestResult.ERROR);
                 evaluationRequestEntity.setStageType(RequestStageType.ERROR);
             } finally {
                 evaluationRequestEntity.setStarted(LocalDateTime.now());
