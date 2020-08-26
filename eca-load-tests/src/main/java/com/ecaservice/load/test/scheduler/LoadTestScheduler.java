@@ -7,7 +7,7 @@ import com.ecaservice.load.test.entity.LoadTestEntity;
 import com.ecaservice.load.test.entity.RequestStageType;
 import com.ecaservice.load.test.repository.EvaluationRequestRepository;
 import com.ecaservice.load.test.repository.LoadTestRepository;
-import com.ecaservice.load.test.service.InstancesService;
+import com.ecaservice.load.test.service.InstancesLoader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.AmqpException;
@@ -36,7 +36,7 @@ import static com.google.common.collect.Maps.newHashMap;
 public class LoadTestScheduler {
 
     private final QueueConfig queueConfig;
-    private final InstancesService instancesService;
+    private final InstancesLoader instancesLoader;
     private final RabbitTemplate rabbitTemplate;
     private final LoadTestRepository loadTestRepository;
     private final EvaluationRequestRepository evaluationRequestRepository;

@@ -17,7 +17,7 @@ import java.io.File;
  */
 @Slf4j
 @Service
-public class InstancesService {
+public class InstancesLoader {
 
     /**
      * Loads training data from file.
