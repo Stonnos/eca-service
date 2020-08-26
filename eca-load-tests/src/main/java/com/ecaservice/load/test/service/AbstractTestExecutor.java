@@ -73,11 +73,12 @@ public abstract class AbstractTestExecutor {
                 executor.submit(createTask(loadTestEntity, countDownLatch));
             }
             countDownLatch.await(ecaLoadTestsConfig.getWorkerThreadTimeOutInSeconds(), TimeUnit.SECONDS);
-            executor.shutdown();
         } catch (Exception ex) {
             log.error("There was an error while sending requests for test [{}]: {}", loadTestEntity.getTestUuid(),
                     ex.getMessage());
             failed(loadTestEntity, ex);
+        } finally {
+            executor.shutdown();
         }
     }
 
