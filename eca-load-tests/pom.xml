@@ -12,6 +12,10 @@
     <artifactId>eca-load-tests</artifactId>
     <packaging>war</packaging>
 
+    <properties>
+        <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
+    </properties>
+
     <dependencies>
 
         <dependency>
