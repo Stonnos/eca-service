@@ -82,7 +82,9 @@ public abstract class AbstractTestExecutor {
                 Runnable task = createTask(evaluationRequest, evaluationRequestEntity, countDownLatch);
                 executor.submit(task);
             }
-            countDownLatch.await(ecaLoadTestsConfig.getWorkerThreadTimeOutInSeconds(), TimeUnit.SECONDS);
+            if (!countDownLatch.await(ecaLoadTestsConfig.getWorkerThreadTimeOutInSeconds(), TimeUnit.SECONDS)) {
+                log.warn("Worker thread timeout occurred for test [{}]", loadTestEntity.getTestUuid());
+            }
         } catch (Exception ex) {
             log.error("There was an error while sending requests for test [{}]: {}", loadTestEntity.getTestUuid(),
                     ex.getMessage());
