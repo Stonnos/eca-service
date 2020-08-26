@@ -1,6 +1,8 @@
 package com.ecaservice.load.test.service;
 
 import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
+import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.load.test.config.EcaLoadTestsConfig;
 import com.ecaservice.load.test.entity.EvaluationRequestEntity;
 import com.ecaservice.load.test.entity.ExecutionStatus;
@@ -33,8 +35,9 @@ import static com.ecaservice.load.test.util.Utils.createEvaluationRequestEntity;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractTestExecutor {
 
-    private final EcaLoadTestsConfig ecaLoadTestsConfig;
+    protected final EcaLoadTestsConfig ecaLoadTestsConfig;
     private final RabbitSender rabbitSender;
+    private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final EvaluationRequestMapper evaluationRequestMapper;
     private final LoadTestRepository loadTestRepository;
     private final EvaluationRequestRepository evaluationRequestRepository;
@@ -60,7 +63,7 @@ public abstract class AbstractTestExecutor {
      *
      * @return classifier object
      */
-    protected abstract AbstractClassifier getNextClassifier();
+    protected abstract ClassifierOptions getNextClassifier();
 
     private void sendRequests(LoadTestEntity loadTestEntity) {
         ThreadPoolTaskExecutor executor = initializeThreadPoolTaskExecutor(loadTestEntity.getNumThreads());
@@ -84,12 +87,18 @@ public abstract class AbstractTestExecutor {
         loadTestRepository.save(loadTestEntity);
     }
 
-    private Runnable createTask(final LoadTestEntity loadTestEntity, final CountDownLatch countDownLatch) {
+    private EvaluationRequest createEvaluationRequest(LoadTestEntity loadTestEntity) {
         final Instances instances = getNextInstances();
-        final AbstractClassifier classifier = getNextClassifier();
+        ClassifierOptions classifierOptions = getNextClassifier();
+        final AbstractClassifier classifier = classifierOptionsAdapter.convert(classifierOptions);
         final EvaluationRequest evaluationRequest = evaluationRequestMapper.map(loadTestEntity);
         evaluationRequest.setData(instances);
         evaluationRequest.setClassifier(classifier);
+        return evaluationRequest;
+    }
+
+    private Runnable createTask(final LoadTestEntity loadTestEntity, final CountDownLatch countDownLatch) {
+        final EvaluationRequest evaluationRequest = createEvaluationRequest(loadTestEntity);
         return () -> {
             EvaluationRequestEntity evaluationRequestEntity = createEvaluationRequestEntity(loadTestEntity);
             try {

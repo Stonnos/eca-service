@@ -1,5 +1,6 @@
 package com.ecaservice.load.test.service;
 
+import com.ecaservice.load.test.exception.ConfigException;
 import eca.data.file.FileDataLoader;
 import eca.data.file.resource.FileResource;
 import lombok.extern.slf4j.Slf4j;
@@ -25,15 +26,18 @@ public class InstancesService {
      *
      * @param fileName - file name
      * @return instances object
-     * @throws Exception in case of error
      */
-    public Instances loadInstances(@NotEmpty String fileName) throws Exception {
-        File file = new File(fileName);
-        log.info("Starting to load data from file {}", file.getAbsolutePath());
-        FileDataLoader dataLoader = new FileDataLoader();
-        dataLoader.setSource(new FileResource(file));
-        Instances data = dataLoader.loadInstances();
-        log.info("{} data has been successfully loaded from file {}", data.relationName(), file.getAbsolutePath());
-        return data;
+    public Instances loadInstances(@NotEmpty String fileName) {
+        try {
+            File file = new File(fileName);
+            log.info("Starting to load data from file {}", file.getAbsolutePath());
+            FileDataLoader dataLoader = new FileDataLoader();
+            dataLoader.setSource(new FileResource(file));
+            Instances data = dataLoader.loadInstances();
+            log.info("{} data has been successfully loaded from file {}", data.relationName(), file.getAbsolutePath());
+            return data;
+        } catch (Exception ex) {
+            throw new ConfigException(ex.getMessage());
+        }
     }
 }

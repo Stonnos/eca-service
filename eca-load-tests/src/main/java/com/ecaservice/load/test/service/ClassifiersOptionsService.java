@@ -66,6 +66,7 @@ public class ClassifiersOptionsService {
                                     classifierOptionsFile.getFilename(), ex.getMessage()));
                 }
             }
+            log.info("All classifiers options has been read from configs");
         }
     }
 }
