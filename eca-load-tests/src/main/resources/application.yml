@@ -26,7 +26,7 @@ eca-load-tests:
   numFolds: 10
   numTests: 1
   seed: 1
-  trainingDataStoragePath: classpath*:classifiers/**/*
+  trainingDataStoragePath: classpath*:data/**/*
   classifiersStoragePath: classpath*:classifiers/**/*.json
 
 queue:
