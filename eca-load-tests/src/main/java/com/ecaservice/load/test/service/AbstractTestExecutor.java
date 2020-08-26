@@ -1,9 +1,11 @@
 package com.ecaservice.load.test.service;
 
+import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.load.test.entity.EvaluationRequestEntity;
 import com.ecaservice.load.test.entity.ExecutionStatus;
 import com.ecaservice.load.test.entity.LoadTestEntity;
 import com.ecaservice.load.test.entity.RequestStageType;
+import com.ecaservice.load.test.mapping.EvaluationRequestMapper;
 import com.ecaservice.load.test.repository.EvaluationRequestRepository;
 import com.ecaservice.load.test.repository.LoadTestRepository;
 import lombok.AccessLevel;
@@ -29,6 +31,7 @@ import static com.ecaservice.load.test.util.Utils.createEvaluationRequestEntity;
 public abstract class AbstractTestExecutor {
 
     private final RabbitSender rabbitSender;
+    private final EvaluationRequestMapper evaluationRequestMapper;
     private final LoadTestRepository loadTestRepository;
     private final EvaluationRequestRepository evaluationRequestRepository;
 
@@ -73,10 +76,13 @@ public abstract class AbstractTestExecutor {
     private Runnable createTask(final LoadTestEntity loadTestEntity, final CountDownLatch countDownLatch) {
         final Instances instances = getNextInstances();
         final AbstractClassifier classifier = getNextClassifier();
+        final EvaluationRequest evaluationRequest = evaluationRequestMapper.map(loadTestEntity);
+        evaluationRequest.setData(instances);
+        evaluationRequest.setClassifier(classifier);
         return () -> {
             EvaluationRequestEntity evaluationRequestEntity = createEvaluationRequestEntity(loadTestEntity);
             try {
-                rabbitSender.send(null, evaluationRequestEntity.getCorrelationId());
+                rabbitSender.send(evaluationRequest, evaluationRequestEntity.getCorrelationId());
                 evaluationRequestEntity.setStageType(RequestStageType.REQUEST_SENT);
                 log.info("Request with correlation id [{}] has been sent",
                         evaluationRequestEntity.getCorrelationId());

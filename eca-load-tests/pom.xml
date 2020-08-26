@@ -56,8 +56,15 @@
         </dependency>
 
         <dependency>
-            <groupId>eca</groupId>
-            <artifactId>eca-core</artifactId>
+            <groupId>eca.service</groupId>
+            <artifactId>eca-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>classifiers-options-adapter</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
