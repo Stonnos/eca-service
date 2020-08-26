@@ -20,5 +20,10 @@ public enum ExecutionStatus {
     /**
      * Tests finished status
      */
-    FINISHED
+    FINISHED,
+
+    /**
+     * Unknown error
+     */
+    ERROR
 }

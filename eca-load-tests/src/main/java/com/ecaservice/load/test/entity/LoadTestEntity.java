@@ -107,4 +107,10 @@ public class LoadTestEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "execution_status")
     private ExecutionStatus executionStatus;
+
+    /**
+     * Details string
+     */
+    @Column(columnDefinition = "text")
+    private String details;
 }

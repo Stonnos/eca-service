@@ -1,6 +1,7 @@
 package com.ecaservice.load.test.service;
 
 import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.load.test.config.EcaLoadTestsConfig;
 import com.ecaservice.load.test.entity.EvaluationRequestEntity;
 import com.ecaservice.load.test.entity.ExecutionStatus;
 import com.ecaservice.load.test.entity.LoadTestEntity;
@@ -18,6 +19,7 @@ import weka.core.Instances;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static com.ecaservice.load.test.util.Utils.createEvaluationRequestEntity;
 
@@ -30,6 +32,7 @@ import static com.ecaservice.load.test.util.Utils.createEvaluationRequestEntity;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractTestExecutor {
 
+    private final EcaLoadTestsConfig ecaLoadTestsConfig;
     private final RabbitSender rabbitSender;
     private final EvaluationRequestMapper evaluationRequestMapper;
     private final LoadTestRepository loadTestRepository;
@@ -65,12 +68,19 @@ public abstract class AbstractTestExecutor {
             for (int i = 0; i < loadTestEntity.getNumRequests(); i++) {
                 executor.submit(createTask(loadTestEntity, countDownLatch));
             }
-            countDownLatch.await();
+            countDownLatch.await(ecaLoadTestsConfig.getWorkerThreadTimeOutInSeconds(), TimeUnit.SECONDS);
             executor.shutdown();
         } catch (Exception ex) {
             log.error("There was an error while sending requests for test [{}]: {}", loadTestEntity.getTestUuid(),
                     ex.getMessage());
+            failed(loadTestEntity, ex);
         }
+    }
+
+    private void failed(LoadTestEntity loadTestEntity, Exception ex) {
+        loadTestEntity.setDetails(ex.getMessage());
+        loadTestEntity.setExecutionStatus(ExecutionStatus.ERROR);
+        loadTestRepository.save(loadTestEntity);
     }
 
     private Runnable createTask(final LoadTestEntity loadTestEntity, final CountDownLatch countDownLatch) {

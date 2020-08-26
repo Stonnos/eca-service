@@ -23,6 +23,11 @@ public class EcaLoadTestsConfig {
     private Integer numThreads;
 
     /**
+     * Worker thread timeout in seconds
+     */
+    private Long workerThreadTimeOutInSeconds;
+
+    /**
      * Folds number for k * V cross - validation method
      */
     private Integer numFolds;
