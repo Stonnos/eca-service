@@ -86,20 +86,20 @@ public class LoadTestEntity extends BaseEntity {
     /**
      * Responses number received from eca - server
      */
-    @Column(name = "num_responses")
-    private Long numResponses;
+    @Column(name = "responses_count")
+    private Long responsesCount;
 
     /**
-     * Responses number with success status
+     * Passed tests count
      */
-    @Column(name = "num_success_responses")
-    private Long numSuccessRequests;
+    @Column(name = "num_passed")
+    private Long passedCount;
 
     /**
-     * Responses number with error status
+     * Failed tests count
      */
     @Column(name = "num_error_responses")
-    private Long numErrorRequests;
+    private Long failedCount;
 
     /**
      * Test execution status

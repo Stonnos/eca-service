@@ -49,11 +49,11 @@ public class LoadTestService {
         loadTestEntity.setNumRequests(numRequests);
         loadTestEntity.setNumThreads(numThreads);
         loadTestEntity.setExecutionStatus(ExecutionStatus.NEW);
-        populateEvaluationOptions(loadTestEntity, loadTestRequest);
+        initializeOptions(loadTestEntity, loadTestRequest);
         return loadTestEntity;
     }
 
-    private void populateEvaluationOptions(LoadTestEntity loadTestEntity, LoadTestRequest loadTestRequest) {
+    private void initializeOptions(LoadTestEntity loadTestEntity, LoadTestRequest loadTestRequest) {
         EvaluationMethod evaluationMethod = loadTestRequest.getEvaluationMethod();
         if (EvaluationMethod.CROSS_VALIDATION.equals(evaluationMethod)) {
             Integer numFolds =
