@@ -26,10 +26,6 @@ import java.time.LocalDateTime;
 @Table(name = "load_test")
 public class LoadTestEntity extends BaseEntity {
 
-    @Id
-    @GeneratedValue
-    private Long id;
-
     /**
      * Load test uuid
      */
