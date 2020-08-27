@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository to manage with {@link LoadTestEntity} persistence entity.
@@ -15,6 +16,14 @@ import java.util.List;
  * @author Roman Batygin
  */
 public interface LoadTestRepository extends JpaRepository<LoadTestEntity, Long> {
+
+    /**
+     * Gets load test entity by uuid.
+     *
+     * @param testUuid - test uuid
+     * @return load test entity
+     */
+    Optional<LoadTestEntity> findByTestUuid(String testUuid);
 
     /**
      * Gets new tests for processing.

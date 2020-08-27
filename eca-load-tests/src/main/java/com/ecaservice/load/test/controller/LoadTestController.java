@@ -2,17 +2,31 @@ package com.ecaservice.load.test.controller;
 
 import com.ecaservice.load.test.dto.LoadTestRequest;
 import com.ecaservice.load.test.entity.LoadTestEntity;
+import com.ecaservice.load.test.exception.EntityNotFoundException;
+import com.ecaservice.load.test.report.bean.LoadTestBean;
+import com.ecaservice.load.test.report.service.TestResultsReportDataFetcher;
+import com.ecaservice.load.test.report.service.TestResultsReportGenerator;
+import com.ecaservice.load.test.repository.LoadTestRepository;
 import com.ecaservice.load.test.service.LoadTestService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Load tests controller.
@@ -26,7 +40,13 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class LoadTestController {
 
+    private static final String ATTACHMENT_FORMAT = "attachment; filename=%s";
+    private static final String LOAD_TEST_REPORT_NAME = "load-test-report%s.xlsx";
+
     private final LoadTestService loadTestService;
+    private final TestResultsReportDataFetcher testResultsReportDataFetcher;
+    private final TestResultsReportGenerator testResultsReportGenerator;
+    private final LoadTestRepository loadTestRepository;
 
     /**
      * Creates load test.
@@ -46,4 +66,29 @@ public class LoadTestController {
         return ResponseEntity.ok(loadTestEntity.getTestUuid());
     }
 
+    /**
+     * Downloads load test report in xlsx format.
+     *
+     * @param testUuid - test uuid
+     * @param httpServletResponse - http servlet response
+     * @throws IOException in case of I/O error
+     */
+    @ApiOperation(
+            value = "Downloads load test report in xlsx format",
+            notes = "Downloads load test report in xlsx format"
+    )
+    @GetMapping(value = "/report/{testUuid}")
+    public void downloadLoadTestReport(@ApiParam(value = "Test uuid", required = true) @PathVariable String testUuid,
+                                       HttpServletResponse httpServletResponse)
+            throws IOException {
+        LoadTestEntity loadTestEntity = loadTestRepository.findByTestUuid(testUuid).orElseThrow(
+                () -> new EntityNotFoundException(LoadTestEntity.class, testUuid));
+        @Cleanup OutputStream outputStream = httpServletResponse.getOutputStream();
+        httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+        String reportName = String.format(LOAD_TEST_REPORT_NAME, loadTestEntity.getTestUuid());
+        httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(ATTACHMENT_FORMAT, reportName));
+        LoadTestBean loadTestBean = testResultsReportDataFetcher.fetchReportData(loadTestEntity);
+        testResultsReportGenerator.generateReport(loadTestBean, outputStream);
+        outputStream.flush();
+    }
 }
