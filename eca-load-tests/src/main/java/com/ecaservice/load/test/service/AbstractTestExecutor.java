@@ -9,7 +9,7 @@ import com.ecaservice.load.test.entity.ExecutionStatus;
 import com.ecaservice.load.test.entity.LoadTestEntity;
 import com.ecaservice.load.test.entity.RequestStageType;
 import com.ecaservice.load.test.entity.TestResult;
-import com.ecaservice.load.test.mapping.EvaluationRequestMapper;
+import com.ecaservice.load.test.mapping.LoadTestMapper;
 import com.ecaservice.load.test.model.TestDataModel;
 import com.ecaservice.load.test.repository.EvaluationRequestRepository;
 import com.ecaservice.load.test.repository.LoadTestRepository;
@@ -44,7 +44,7 @@ public abstract class AbstractTestExecutor {
     private final RabbitSender rabbitSender;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final InstancesLoader instancesLoader;
-    private final EvaluationRequestMapper evaluationRequestMapper;
+    private final LoadTestMapper loadTestMapper;
     private final LoadTestRepository loadTestRepository;
     private final EvaluationRequestRepository evaluationRequestRepository;
 
@@ -112,7 +112,7 @@ public abstract class AbstractTestExecutor {
     private EvaluationRequest createEvaluationRequest(LoadTestEntity loadTestEntity, TestDataModel testDataModel) {
         Instances instances = instancesLoader.loadInstances(testDataModel.getDataResource());
         AbstractClassifier classifier = initializeNextClassifier(testDataModel);
-        EvaluationRequest evaluationRequest = evaluationRequestMapper.map(loadTestEntity);
+        EvaluationRequest evaluationRequest = loadTestMapper.map(loadTestEntity);
         evaluationRequest.setData(instances);
         evaluationRequest.setClassifier(classifier);
         return evaluationRequest;

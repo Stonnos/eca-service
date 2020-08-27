@@ -3,7 +3,7 @@ package com.ecaservice.load.test.service;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.load.test.config.EcaLoadTestsConfig;
 import com.ecaservice.load.test.entity.LoadTestEntity;
-import com.ecaservice.load.test.mapping.EvaluationRequestMapper;
+import com.ecaservice.load.test.mapping.LoadTestMapper;
 import com.ecaservice.load.test.model.TestDataModel;
 import com.ecaservice.load.test.repository.EvaluationRequestRepository;
 import com.ecaservice.load.test.repository.LoadTestRepository;
@@ -29,7 +29,7 @@ public class LoadTestExecutor extends AbstractTestExecutor {
      * @param rabbitSender                - rabbit sender bean
      * @param classifierOptionsAdapter    - classifier options adapter bean
      * @param instancesLoader             - instances loader bean
-     * @param evaluationRequestMapper     - evaluation request mapper bean
+     * @param loadTestMapper              - load test mapper bean
      * @param loadTestRepository          - load test repository bean
      * @param evaluationRequestRepository - evaluation request repository bean
      */
@@ -39,11 +39,11 @@ public class LoadTestExecutor extends AbstractTestExecutor {
                             RabbitSender rabbitSender,
                             ClassifierOptionsAdapter classifierOptionsAdapter,
                             InstancesLoader instancesLoader,
-                            EvaluationRequestMapper evaluationRequestMapper,
+                            LoadTestMapper loadTestMapper,
                             LoadTestRepository loadTestRepository,
                             EvaluationRequestRepository evaluationRequestRepository) {
         super(ecaLoadTestsConfig, instancesConfigService, classifiersConfigService, rabbitSender,
-                classifierOptionsAdapter, instancesLoader, evaluationRequestMapper, loadTestRepository,
+                classifierOptionsAdapter, instancesLoader, loadTestMapper, loadTestRepository,
                 evaluationRequestRepository);
     }
 
