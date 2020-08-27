@@ -4,7 +4,6 @@ import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.load.test.entity.LoadTestEntity;
 import com.ecaservice.load.test.model.TestDataModel;
 import lombok.RequiredArgsConstructor;
-import org.bouncycastle.util.Arrays;
 import org.springframework.core.io.Resource;
 
 import java.util.Iterator;
@@ -17,7 +16,7 @@ import java.util.Random;
  * @author Roman Batygin
  */
 @RequiredArgsConstructor
-public class LoadTestDataIterator implements Arrays.Iterator<TestDataModel> {
+public class LoadTestDataIterator implements Iterator<TestDataModel> {
 
     private final LoadTestEntity loadTestEntity;
     private final Random sampleRandom;
