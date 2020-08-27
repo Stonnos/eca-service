@@ -131,6 +131,7 @@ public abstract class AbstractTestExecutor {
                                 EvaluationRequestEntity evaluationRequestEntity, CountDownLatch countDownLatch) {
         return () -> {
             try {
+                evaluationRequestEntity.setStarted(LocalDateTime.now());
                 rabbitSender.send(evaluationRequest, evaluationRequestEntity.getCorrelationId());
                 evaluationRequestEntity.setStageType(RequestStageType.REQUEST_SENT);
                 log.info("Request with correlation id [{}] has been sent",
@@ -139,20 +140,24 @@ public abstract class AbstractTestExecutor {
                 log.error("AMQP error while sending request with correlation id [{}]: {}",
                         evaluationRequestEntity.getCorrelationId(),
                         ex.getMessage());
-                evaluationRequestEntity.setTestResult(TestResult.ERROR);
-                evaluationRequestEntity.setStageType(RequestStageType.NOT_SEND);
+                handleErrorRequest(evaluationRequestEntity, RequestStageType.NOT_SEND);
             } catch (Exception ex) {
                 log.error("Unknown error while sending request with correlation id [{}]: {}",
                         evaluationRequestEntity.getCorrelationId(),
                         ex.getMessage());
-                evaluationRequestEntity.setTestResult(TestResult.ERROR);
-                evaluationRequestEntity.setStageType(RequestStageType.ERROR);
+                handleErrorRequest(evaluationRequestEntity, RequestStageType.ERROR);
             } finally {
-                evaluationRequestEntity.setStarted(LocalDateTime.now());
                 evaluationRequestRepository.save(evaluationRequestEntity);
                 countDownLatch.countDown();
             }
         };
+    }
+
+    private void handleErrorRequest(EvaluationRequestEntity evaluationRequestEntity,
+                                    RequestStageType requestStageType) {
+        evaluationRequestEntity.setTestResult(TestResult.ERROR);
+        evaluationRequestEntity.setStageType(requestStageType);
+        evaluationRequestEntity.setFinished(LocalDateTime.now());
     }
 
     private ThreadPoolTaskExecutor initializeThreadPoolTaskExecutor(int poolSize) {
