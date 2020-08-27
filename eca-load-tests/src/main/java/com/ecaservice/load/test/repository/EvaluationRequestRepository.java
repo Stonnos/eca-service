@@ -1,6 +1,7 @@
 package com.ecaservice.load.test.repository;
 
 import com.ecaservice.load.test.entity.EvaluationRequestEntity;
+import com.ecaservice.load.test.entity.LoadTestEntity;
 import com.ecaservice.load.test.entity.RequestStageType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,15 @@ import java.util.List;
  * @author Roman Batygin
  */
 public interface EvaluationRequestRepository extends JpaRepository<EvaluationRequestEntity, Long> {
+
+    /**
+     * Finds evaluation requests for specified load test entity.
+     *
+     * @param loadTestEntity - load test entity
+     * @param pageable - pageable object
+     * @return evaluation requests page
+     */
+    Page<EvaluationRequestEntity> findByLoadTestEntity(LoadTestEntity loadTestEntity, Pageable pageable);
 
     /**
      * Finds evaluation request with correlation id and stage.

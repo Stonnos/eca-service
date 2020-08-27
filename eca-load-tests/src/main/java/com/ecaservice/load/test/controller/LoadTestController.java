@@ -81,6 +81,7 @@ public class LoadTestController {
     public void downloadLoadTestReport(@ApiParam(value = "Test uuid", required = true) @PathVariable String testUuid,
                                        HttpServletResponse httpServletResponse)
             throws IOException {
+        log.info("Starting to download load test [{}] report", testUuid);
         LoadTestEntity loadTestEntity = loadTestRepository.findByTestUuid(testUuid).orElseThrow(
                 () -> new EntityNotFoundException(LoadTestEntity.class, testUuid));
         @Cleanup OutputStream outputStream = httpServletResponse.getOutputStream();
@@ -88,7 +89,9 @@ public class LoadTestController {
         String reportName = String.format(LOAD_TEST_REPORT_NAME, loadTestEntity.getTestUuid());
         httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(ATTACHMENT_FORMAT, reportName));
         LoadTestBean loadTestBean = testResultsReportDataFetcher.fetchReportData(loadTestEntity);
+        log.info("Load test [{}] report data has been fetched", testUuid);
         testResultsReportGenerator.generateReport(loadTestBean, outputStream);
         outputStream.flush();
+        log.info("Load test [{}] report has been generated", testUuid);
     }
 }
