@@ -5,8 +5,11 @@ import com.ecaservice.load.test.entity.EvaluationRequestEntity;
 import com.ecaservice.load.test.entity.LoadTestEntity;
 import com.ecaservice.load.test.report.bean.EvaluationTestBean;
 import com.ecaservice.load.test.report.bean.LoadTestBean;
+import eca.core.evaluation.EvaluationMethod;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 import java.time.LocalDateTime;
@@ -24,6 +27,9 @@ public abstract class LoadTestMapper {
 
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+    private static final String CV_FORMAT = "%d - блочная кросс - проверка";
+    private static final String CV_EXTENDED_FORMAT = "%d×%d - блочная кросс - проверка";
+
     /**
      * Maps load test entity to evaluation request.
      *
@@ -40,6 +46,7 @@ public abstract class LoadTestMapper {
      */
     @Mapping(source = "started", target = "started", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "finished", target = "finished", qualifiedByName = "formatLocalDateTime")
+    @Mapping(target = "evaluationMethod", ignore = true)
     public abstract LoadTestBean mapToBean(LoadTestEntity loadTestEntity);
 
     /**
@@ -59,6 +66,21 @@ public abstract class LoadTestMapper {
      * @return evaluation tests beans list
      */
     public abstract List<EvaluationTestBean> map(List<EvaluationRequestEntity> evaluationRequestEntities);
+
+    @AfterMapping
+    protected void mapEvaluationMethod(LoadTestEntity loadTestEntity, @MappingTarget LoadTestBean loadTestBean) {
+        if (EvaluationMethod.CROSS_VALIDATION.equals(loadTestEntity.getEvaluationMethod())) {
+            String crossValidationMethodDetails;
+            if (loadTestEntity.getNumTests() == 1) {
+                crossValidationMethodDetails = String.format(CV_FORMAT, loadTestEntity.getNumFolds());
+            } else {
+                crossValidationMethodDetails =
+                        String.format(CV_EXTENDED_FORMAT, loadTestEntity.getNumFolds(), loadTestEntity.getNumTests());
+            }
+            loadTestBean.setEvaluationMethod(crossValidationMethodDetails);
+        }
+        loadTestBean.setEvaluationMethod(loadTestEntity.getEvaluationMethod().getDescription());
+    }
 
     @Named("formatLocalDateTime")
     protected String formatLocalDateTime(LocalDateTime localDateTime) {
