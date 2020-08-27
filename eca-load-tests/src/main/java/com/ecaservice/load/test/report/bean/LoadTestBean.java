@@ -29,11 +29,6 @@ public class LoadTestBean {
     private String finished;
 
     /**
-     * Requests number to eca - server
-     */
-    private Integer numRequests;
-
-    /**
      * Threads number for requests sending
      */
     private Integer numThreads;
@@ -57,6 +52,11 @@ public class LoadTestBean {
      * Request total time
      */
     private String totalTime;
+
+    /**
+     * Total tests
+     */
+    private Integer total;
 
     /**
      * Passed tests count

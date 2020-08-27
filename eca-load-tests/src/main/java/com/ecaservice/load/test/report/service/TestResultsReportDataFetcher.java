@@ -65,5 +65,6 @@ public class TestResultsReportDataFetcher {
         loadTestBean.setPassedCount(counter.getPassed());
         loadTestBean.setFailedCount(counter.getFailed());
         loadTestBean.setErrorCount(counter.getErrors());
+        loadTestBean.setTotal(evaluationTestBeans.size());
     }
 }
