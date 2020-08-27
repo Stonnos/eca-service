@@ -11,6 +11,7 @@ import org.jxls.util.JxlsHelper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collections;
 
 /**
  * Class for base reports generation.
@@ -62,13 +63,7 @@ public class BaseReportGenerator {
                                            BaseReportBean<T> baseReportBean,
                                            OutputStream outputStream) throws IOException {
         @Cleanup InputStream inputStream = BaseReportGenerator.class.getClassLoader().getResourceAsStream(template);
-        Context context = buildContext(baseReportBean);
+        Context context = new Context(Collections.singletonMap(REPORT_VARIABLE, baseReportBean));
         JxlsHelper.getInstance().processTemplate(inputStream, outputStream, context);
-    }
-
-    private static <T> Context buildContext(BaseReportBean<T> baseReportBean) {
-        Context context = new Context();
-        context.putVar(REPORT_VARIABLE, baseReportBean);
-        return context;
     }
 }
