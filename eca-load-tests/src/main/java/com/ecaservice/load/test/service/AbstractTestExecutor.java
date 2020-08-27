@@ -10,19 +10,20 @@ import com.ecaservice.load.test.entity.LoadTestEntity;
 import com.ecaservice.load.test.entity.RequestStageType;
 import com.ecaservice.load.test.entity.TestResult;
 import com.ecaservice.load.test.mapping.EvaluationRequestMapper;
+import com.ecaservice.load.test.model.TestDataModel;
 import com.ecaservice.load.test.repository.EvaluationRequestRepository;
 import com.ecaservice.load.test.repository.LoadTestRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.AmqpException;
-import org.springframework.core.io.Resource;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 import weka.core.Randomizable;
 
 import java.time.LocalDateTime;
+import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -38,6 +39,8 @@ import static com.ecaservice.load.test.util.Utils.createEvaluationRequestEntity;
 public abstract class AbstractTestExecutor {
 
     protected final EcaLoadTestsConfig ecaLoadTestsConfig;
+    private final InstancesConfigService instancesConfigService;
+    private final ClassifiersConfigService classifiersConfigService;
     private final RabbitSender rabbitSender;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final InstancesLoader instancesLoader;
@@ -60,25 +63,26 @@ public abstract class AbstractTestExecutor {
     }
 
     /**
-     * Gets next instances (training data set) resource.
+     * Gets test data iterator.
      *
-     * @return instances resource
+     * @param loadTestEntity           - load test entity
+     * @param instancesConfigService   - instances config service
+     * @param classifiersConfigService - classifiers config service
+     * @return test data iterator
      */
-    protected abstract Resource getNextSample();
-
-    /**
-     * Gets next classifier.
-     *
-     * @return classifier object
-     */
-    protected abstract ClassifierOptions getNextClassifierOptions();
+    protected abstract Iterator<TestDataModel> testDataIterator(LoadTestEntity loadTestEntity,
+                                                                InstancesConfigService instancesConfigService,
+                                                                ClassifiersConfigService classifiersConfigService);
 
     private void sendRequests(LoadTestEntity loadTestEntity) {
         ThreadPoolTaskExecutor executor = initializeThreadPoolTaskExecutor(loadTestEntity.getNumThreads());
         CountDownLatch countDownLatch = new CountDownLatch(loadTestEntity.getNumRequests());
         try {
-            for (int i = 0; i < loadTestEntity.getNumRequests(); i++) {
-                EvaluationRequest evaluationRequest = createEvaluationRequest(loadTestEntity);
+            Iterator<TestDataModel> iterator =
+                    testDataIterator(loadTestEntity, instancesConfigService, classifiersConfigService);
+            while (iterator.hasNext()) {
+                TestDataModel testDataModel = iterator.next();
+                EvaluationRequest evaluationRequest = createEvaluationRequest(loadTestEntity, testDataModel);
                 ClassifierOptions classifierOptions =
                         classifierOptionsAdapter.convert(evaluationRequest.getClassifier());
                 EvaluationRequestEntity evaluationRequestEntity =
@@ -105,18 +109,17 @@ public abstract class AbstractTestExecutor {
         loadTestRepository.save(loadTestEntity);
     }
 
-    private EvaluationRequest createEvaluationRequest(LoadTestEntity loadTestEntity) {
-        Resource resource = getNextSample();
-        Instances instances = instancesLoader.loadInstances(resource);
-        AbstractClassifier classifier = initializeNextClassifier();
+    private EvaluationRequest createEvaluationRequest(LoadTestEntity loadTestEntity, TestDataModel testDataModel) {
+        Instances instances = instancesLoader.loadInstances(testDataModel.getDataResource());
+        AbstractClassifier classifier = initializeNextClassifier(testDataModel);
         EvaluationRequest evaluationRequest = evaluationRequestMapper.map(loadTestEntity);
         evaluationRequest.setData(instances);
         evaluationRequest.setClassifier(classifier);
         return evaluationRequest;
     }
 
-    private AbstractClassifier initializeNextClassifier() {
-        ClassifierOptions classifierOptions = getNextClassifierOptions();
+    private AbstractClassifier initializeNextClassifier(TestDataModel testDataModel) {
+        ClassifierOptions classifierOptions = testDataModel.getClassifierOptions();
         AbstractClassifier classifier = classifierOptionsAdapter.convert(classifierOptions);
         if (classifier instanceof Randomizable) {
             ((Randomizable) classifier).setSeed(ecaLoadTestsConfig.getSeed());

@@ -69,4 +69,9 @@ public class EcaLoadTestsConfig {
      * Page size for paging processing
      */
     private Integer pageSize;
+
+    /**
+     * Delay in sec. for scheduler
+     */
+    private Integer delaySeconds;
 }
