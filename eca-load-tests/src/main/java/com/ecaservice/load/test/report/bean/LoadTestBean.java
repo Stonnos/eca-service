@@ -54,6 +54,11 @@ public class LoadTestBean {
     private ExecutionStatus executionStatus;
 
     /**
+     * Request total time
+     */
+    private String totalTime;
+
+    /**
      * Evaluation tests list
      */
     private List<EvaluationTestBean> evaluationTests;

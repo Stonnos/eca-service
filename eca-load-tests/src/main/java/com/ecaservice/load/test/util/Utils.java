@@ -8,6 +8,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
 import weka.core.Instances;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 /**
@@ -17,6 +22,10 @@ import java.util.UUID;
  */
 @UtilityClass
 public class Utils {
+
+    private static final String GMT_TIME_ZONE = "GMT";
+
+    private final DateTimeFormatter evaluationTimeFormatter = DateTimeFormatter.ofPattern("mm:ss:SS");
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -44,5 +53,22 @@ public class Utils {
         } catch (JsonProcessingException ex) {
             throw new IllegalStateException(ex);
         }
+    }
+
+    /**
+     * Gets total time between two dates in format mm:ss:SS.
+     *
+     * @param start - start date
+     * @param end   - end date
+     * @return total time string
+     */
+    public static String totalTime(LocalDateTime start, LocalDateTime end) {
+        if (start != null && end != null) {
+            long totalTimeMillis = ChronoUnit.MILLIS.between(start, end);
+            LocalDateTime totalTime =
+                    Instant.ofEpochMilli(totalTimeMillis).atZone(ZoneId.of(GMT_TIME_ZONE)).toLocalDateTime();
+            return evaluationTimeFormatter.format(totalTime);
+        }
+        return null;
     }
 }

@@ -61,4 +61,9 @@ public class EvaluationTestBean {
      * Attributes number
      */
     private Integer numAttributes;
+
+    /**
+     * Request total time
+     */
+    private String totalTime;
 }

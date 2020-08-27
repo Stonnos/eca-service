@@ -17,6 +17,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
+import static com.ecaservice.load.test.util.Utils.totalTime;
+
 /**
  * Load test mapper.
  *
@@ -80,6 +82,18 @@ public abstract class LoadTestMapper {
             loadTestBean.setEvaluationMethod(crossValidationMethodDetails);
         }
         loadTestBean.setEvaluationMethod(loadTestEntity.getEvaluationMethod().getDescription());
+    }
+
+    @AfterMapping
+    protected void mapTotalTime(LoadTestEntity loadTestEntity, @MappingTarget LoadTestBean loadTestBean) {
+        loadTestBean.setTotalTime(totalTime(loadTestEntity.getStarted(), loadTestEntity.getFinished()));
+    }
+
+    @AfterMapping
+    protected void mapTotalTime(EvaluationRequestEntity evaluationRequestEntity,
+                                @MappingTarget EvaluationTestBean evaluationTestBean) {
+        evaluationTestBean.setTotalTime(
+                totalTime(evaluationRequestEntity.getStarted(), evaluationRequestEntity.getFinished()));
     }
 
     @Named("formatLocalDateTime")
