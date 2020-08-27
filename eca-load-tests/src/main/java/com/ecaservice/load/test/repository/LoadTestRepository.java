@@ -17,6 +17,14 @@ import java.util.List;
 public interface LoadTestRepository extends JpaRepository<LoadTestEntity, Long> {
 
     /**
+     * Gets new tests for processing.
+     *
+     * @return tests ids list
+     */
+    @Query("select t.id from LoadTestEntity t where t.executionStatus = 'NEW'")
+    List<Long> findNewTests();
+
+    /**
      * Gets finished tests.
      *
      * @return tests ids list

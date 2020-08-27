@@ -45,6 +45,11 @@ public abstract class AbstractTestExecutor {
     private final LoadTestRepository loadTestRepository;
     private final EvaluationRequestRepository evaluationRequestRepository;
 
+    /**
+     * Runs load test.
+     *
+     * @param loadTestEntity - load test entity
+     */
     public void runTest(LoadTestEntity loadTestEntity) {
         log.info("Runs new test with uuid [{}]", loadTestEntity.getTestUuid());
         loadTestEntity.setStarted(LocalDateTime.now());

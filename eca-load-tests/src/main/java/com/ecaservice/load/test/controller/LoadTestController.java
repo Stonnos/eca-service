@@ -2,7 +2,6 @@ package com.ecaservice.load.test.controller;
 
 import com.ecaservice.load.test.dto.LoadTestRequest;
 import com.ecaservice.load.test.entity.LoadTestEntity;
-import com.ecaservice.load.test.service.LoadTestExecutor;
 import com.ecaservice.load.test.service.LoadTestService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Load tests controller.
@@ -29,8 +27,6 @@ import java.util.concurrent.ExecutorService;
 public class LoadTestController {
 
     private final LoadTestService loadTestService;
-    private final LoadTestExecutor loadTestExecutor;
-    private final ExecutorService executorService;
 
     /**
      * Creates load test.
@@ -47,7 +43,6 @@ public class LoadTestController {
         log.info("Request for load test with params: {}", loadTestRequest);
         LoadTestEntity loadTestEntity = loadTestService.createTest(loadTestRequest);
         log.info("Load test has been created with uuid [{}]", loadTestEntity.getTestUuid());
-        executorService.submit(() -> loadTestExecutor.runTest(loadTestEntity));
         return ResponseEntity.ok(loadTestEntity.getTestUuid());
     }
 
