@@ -111,6 +111,7 @@ public abstract class AbstractTestExecutor {
     private void failed(LoadTestEntity loadTestEntity, Exception ex) {
         loadTestEntity.setDetails(ex.getMessage());
         loadTestEntity.setExecutionStatus(ExecutionStatus.ERROR);
+        loadTestEntity.setFinished(LocalDateTime.now());
         loadTestRepository.save(loadTestEntity);
     }
 

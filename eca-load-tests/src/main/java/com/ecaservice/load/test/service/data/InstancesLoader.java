@@ -1,8 +1,8 @@
 package com.ecaservice.load.test.service.data;
 
 import com.ecaservice.load.test.exception.ConfigException;
+import com.ecaservice.load.test.model.ResourceReader;
 import eca.data.file.FileDataLoader;
-import eca.data.file.resource.FileResource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
@@ -29,7 +29,7 @@ public class InstancesLoader {
         try {
             log.info("Starting to load data from file {}", resource.getFilename());
             FileDataLoader dataLoader = new FileDataLoader();
-            dataLoader.setSource(new FileResource(resource.getFile()));
+            dataLoader.setSource(new ResourceReader(resource));
             Instances data = dataLoader.loadInstances();
             log.info("{} data has been successfully loaded from file {}", data.relationName(), resource.getFilename());
             return data;
