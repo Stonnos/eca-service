@@ -49,7 +49,7 @@ public class EcaLoadTestsConfig {
     private Integer numTests;
 
     /**
-     * Seed value for k * V cross - validation method
+     * Seed value for random generator
      */
     private Integer seed;
 

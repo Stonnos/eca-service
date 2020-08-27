@@ -44,6 +44,11 @@ public class LoadTestBean {
     private String evaluationMethod;
 
     /**
+     * Seed value for random generator
+     */
+    private Integer seed;
+
+    /**
      * Test execution status
      */
     private ExecutionStatus executionStatus;
