@@ -10,15 +10,47 @@ public enum TestResult {
     /**
      * Test passed
      */
-    PASSED,
+    PASSED {
+        @Override
+        public void apply(TestResultVisitor visitor) {
+            visitor.casePassed();
+        }
+    },
 
     /**
      * Test failed
      */
-    FAILED,
+    FAILED {
+        @Override
+        public void apply(TestResultVisitor visitor) {
+            visitor.caseFailed();
+        }
+    },
 
     /**
      * Unknown error
      */
-    ERROR
+    ERROR {
+        @Override
+        public void apply(TestResultVisitor visitor) {
+            visitor.caseError();
+        }
+    },
+
+    /**
+     * Unknown result
+     */
+    UNKNOWN {
+        @Override
+        public void apply(TestResultVisitor visitor) {
+            visitor.caseUnknown();
+        }
+    };
+
+    /**
+     * Apply visitor.
+     *
+     * @param visitor - visitor object
+     */
+    public abstract void apply(TestResultVisitor visitor);
 }

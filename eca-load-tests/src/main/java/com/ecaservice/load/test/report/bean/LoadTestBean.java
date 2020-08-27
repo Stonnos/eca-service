@@ -59,6 +59,21 @@ public class LoadTestBean {
     private String totalTime;
 
     /**
+     * Passed tests count
+     */
+    private Integer passedCount;
+
+    /**
+     * Completed tests count
+     */
+    private Integer failedCount;
+
+    /**
+     * Error tests count
+     */
+    private Integer errorCount;
+
+    /**
      * Evaluation tests list
      */
     private List<EvaluationTestBean> evaluationTests;

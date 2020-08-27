@@ -40,12 +40,12 @@ public class TestResultsReportDataFetcher {
      */
     public LoadTestBean fetchReportData(LoadTestEntity loadTestEntity) {
         LoadTestBean loadTestBean = loadTestMapper.mapToBean(loadTestEntity);
-        List<EvaluationTestBean> evaluationTestBeans = fetchEvaluationTests(loadTestEntity);
-        loadTestBean.setEvaluationTests(evaluationTestBeans);
+        fetchEvaluationTestsResults(loadTestEntity, loadTestBean);
         return loadTestBean;
     }
 
-    private List<EvaluationTestBean> fetchEvaluationTests(LoadTestEntity loadTestEntity) {
+    private void fetchEvaluationTestsResults(LoadTestEntity loadTestEntity, LoadTestBean loadTestBean) {
+        TestResultsCounter counter = new TestResultsCounter();
         List<EvaluationTestBean> evaluationTestBeans = newArrayList();
         Pageable pageRequest = PageRequest.of(0, ecaLoadTestsConfig.getPageSize());
         Page<EvaluationRequestEntity> page;
@@ -54,10 +54,16 @@ public class TestResultsReportDataFetcher {
             if (page == null || !page.hasContent()) {
                 break;
             } else {
-                evaluationTestBeans.addAll(loadTestMapper.map(page.getContent()));
+                for (EvaluationRequestEntity evaluationRequestEntity : page.getContent()) {
+                    evaluationRequestEntity.getTestResult().apply(counter);
+                    evaluationTestBeans.add(loadTestMapper.map(evaluationRequestEntity));
+                }
             }
             pageRequest = page.nextPageable();
         } while (page.hasNext());
-        return evaluationTestBeans;
+        loadTestBean.setEvaluationTests(evaluationTestBeans);
+        loadTestBean.setPassedCount(counter.getPassed());
+        loadTestBean.setFailedCount(counter.getFailed());
+        loadTestBean.setErrorCount(counter.getErrors());
     }
 }

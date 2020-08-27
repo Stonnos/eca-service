@@ -87,6 +87,7 @@ public abstract class AbstractTestExecutor {
                         classifierOptionsAdapter.convert(evaluationRequest.getClassifier());
                 EvaluationRequestEntity evaluationRequestEntity =
                         createEvaluationRequestEntity(loadTestEntity, classifierOptions, evaluationRequest.getData());
+                evaluationRequestEntity.setTestResult(TestResult.UNKNOWN);
                 evaluationRequestEntity.setClassifierName(evaluationRequest.getClassifier().getClass().getSimpleName());
                 Runnable task = createTask(evaluationRequest, evaluationRequestEntity, countDownLatch);
                 executor.submit(task);

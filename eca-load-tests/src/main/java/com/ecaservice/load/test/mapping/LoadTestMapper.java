@@ -14,7 +14,6 @@ import org.mapstruct.Named;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Optional;
 
 import static com.ecaservice.load.test.util.Utils.totalTime;
@@ -60,14 +59,6 @@ public abstract class LoadTestMapper {
     @Mapping(source = "started", target = "started", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "finished", target = "finished", qualifiedByName = "formatLocalDateTime")
     public abstract EvaluationTestBean map(EvaluationRequestEntity evaluationRequestEntity);
-
-    /**
-     * Maps evaluation requests entities list to evaluation tests beans.
-     *
-     * @param evaluationRequestEntities - evaluation requests entities list
-     * @return evaluation tests beans list
-     */
-    public abstract List<EvaluationTestBean> map(List<EvaluationRequestEntity> evaluationRequestEntities);
 
     @AfterMapping
     protected void mapEvaluationMethod(LoadTestEntity loadTestEntity, @MappingTarget LoadTestBean loadTestBean) {
