@@ -69,7 +69,7 @@ public class LoadTestController {
     /**
      * Downloads load test report in xlsx format.
      *
-     * @param testUuid - test uuid
+     * @param testUuid            - test uuid
      * @param httpServletResponse - http servlet response
      * @throws IOException in case of I/O error
      */
@@ -78,9 +78,8 @@ public class LoadTestController {
             notes = "Downloads load test report in xlsx format"
     )
     @GetMapping(value = "/report/{testUuid}")
-    public void downloadLoadTestReport(@ApiParam(value = "Test uuid", required = true) @PathVariable String testUuid,
-                                       HttpServletResponse httpServletResponse)
-            throws IOException {
+    public void downloadReport(@ApiParam(value = "Test uuid", required = true) @PathVariable String testUuid,
+                               HttpServletResponse httpServletResponse) throws IOException {
         log.info("Starting to download load test [{}] report", testUuid);
         LoadTestEntity loadTestEntity = loadTestRepository.findByTestUuid(testUuid).orElseThrow(
                 () -> new EntityNotFoundException(LoadTestEntity.class, testUuid));

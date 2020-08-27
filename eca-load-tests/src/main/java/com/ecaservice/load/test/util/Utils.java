@@ -25,7 +25,7 @@ public class Utils {
 
     private static final String GMT_TIME_ZONE = "GMT";
 
-    private final DateTimeFormatter evaluationTimeFormatter = DateTimeFormatter.ofPattern("mm:ss:SS");
+    private final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("mm:ss:SS");
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -67,7 +67,7 @@ public class Utils {
             long totalTimeMillis = ChronoUnit.MILLIS.between(start, end);
             LocalDateTime totalTime =
                     Instant.ofEpochMilli(totalTimeMillis).atZone(ZoneId.of(GMT_TIME_ZONE)).toLocalDateTime();
-            return evaluationTimeFormatter.format(totalTime);
+            return TIME_FORMATTER.format(totalTime);
         }
         return null;
     }
