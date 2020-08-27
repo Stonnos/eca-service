@@ -27,7 +27,7 @@ public interface EvaluationRequestRepository extends JpaRepository<EvaluationReq
      * @param pageable - pageable object
      * @return evaluation requests page
      */
-    Page<EvaluationRequestEntity> findByLoadTestEntity(LoadTestEntity loadTestEntity, Pageable pageable);
+    Page<EvaluationRequestEntity> findByLoadTestEntityOrderByStarted(LoadTestEntity loadTestEntity, Pageable pageable);
 
     /**
      * Finds evaluation request with correlation id and stage.
@@ -45,7 +45,8 @@ public interface EvaluationRequestRepository extends JpaRepository<EvaluationReq
      * @param dateTime - date time value
      * @return requests ids list
      */
-    @Query("select er.id from EvaluationRequestEntity er where er.stageType = 'REQUEST_SENT' and er.started < :dateTime")
+    @Query("select er.id from EvaluationRequestEntity er where er.stageType = 'REQUEST_SENT' " +
+            "and er.started < :dateTime order by er.started")
     List<Long> findExceededRequestIds(@Param("dateTime") LocalDateTime dateTime);
 
     /**

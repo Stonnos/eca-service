@@ -30,7 +30,7 @@ public interface LoadTestRepository extends JpaRepository<LoadTestEntity, Long> 
      *
      * @return tests ids list
      */
-    @Query("select t.id from LoadTestEntity t where t.executionStatus = 'NEW'")
+    @Query("select t.id from LoadTestEntity t where t.executionStatus = 'NEW' order by t.created")
     List<Long> findNewTests();
 
     /**
@@ -40,7 +40,7 @@ public interface LoadTestRepository extends JpaRepository<LoadTestEntity, Long> 
      */
     @Query("select t.id from LoadTestEntity t where t.executionStatus = 'IN_PROGRESS' and " +
             "(select count(er) from EvaluationRequestEntity er where er.loadTestEntity = t " +
-            "and er.stageType = 'REQUEST_SENT') = 0")
+            "and er.stageType = 'REQUEST_SENT') = 0 order by t.created")
     List<Long> findFinishedTests();
 
     /**

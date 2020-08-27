@@ -6,7 +6,7 @@ import com.ecaservice.load.test.entity.RequestStageType;
 import com.ecaservice.load.test.entity.TestResult;
 import com.ecaservice.load.test.repository.EvaluationRequestRepository;
 import com.ecaservice.load.test.repository.LoadTestRepository;
-import com.ecaservice.load.test.service.LoadTestExecutor;
+import com.ecaservice.load.test.service.executor.LoadTestExecutor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

@@ -1,4 +1,4 @@
-package com.ecaservice.load.test.service;
+package com.ecaservice.load.test.service.executor;
 
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
@@ -13,6 +13,10 @@ import com.ecaservice.load.test.mapping.LoadTestMapper;
 import com.ecaservice.load.test.model.TestDataModel;
 import com.ecaservice.load.test.repository.EvaluationRequestRepository;
 import com.ecaservice.load.test.repository.LoadTestRepository;
+import com.ecaservice.load.test.service.ClassifiersConfigService;
+import com.ecaservice.load.test.service.InstancesConfigService;
+import com.ecaservice.load.test.service.data.InstancesLoader;
+import com.ecaservice.load.test.service.rabbit.RabbitSender;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

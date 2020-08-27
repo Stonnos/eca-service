@@ -1,4 +1,4 @@
-package com.ecaservice.load.test.service;
+package com.ecaservice.load.test.service.data;
 
 import com.ecaservice.load.test.exception.ConfigException;
 import eca.data.file.FileDataLoader;

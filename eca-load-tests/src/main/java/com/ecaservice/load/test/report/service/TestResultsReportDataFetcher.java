@@ -50,7 +50,7 @@ public class TestResultsReportDataFetcher {
         Pageable pageRequest = PageRequest.of(0, ecaLoadTestsConfig.getPageSize());
         Page<EvaluationRequestEntity> page;
         do {
-            page = evaluationRequestRepository.findByLoadTestEntity(loadTestEntity, pageRequest);
+            page = evaluationRequestRepository.findByLoadTestEntityOrderByStarted(loadTestEntity, pageRequest);
             if (page == null || !page.hasContent()) {
                 break;
             } else {

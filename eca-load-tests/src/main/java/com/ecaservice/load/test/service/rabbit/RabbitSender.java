@@ -1,4 +1,4 @@
-package com.ecaservice.load.test.service;
+package com.ecaservice.load.test.service.rabbit;
 
 import com.ecaservice.load.test.config.rabbit.QueueConfig;
 import lombok.RequiredArgsConstructor;
