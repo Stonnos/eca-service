@@ -60,11 +60,11 @@ public class LoadTestService {
                     Optional.ofNullable(loadTestRequest.getNumFolds()).orElse(ecaLoadTestsConfig.getNumFolds());
             Integer numTests =
                     Optional.ofNullable(loadTestRequest.getNumTests()).orElse(ecaLoadTestsConfig.getNumTests());
-            Integer seed = Optional.ofNullable(loadTestRequest.getSeed()).orElse(ecaLoadTestsConfig.getSeed());
             loadTestEntity.setNumFolds(numFolds);
             loadTestEntity.setNumTests(numTests);
-            loadTestEntity.setSeed(seed);
         }
+        Integer seed = Optional.ofNullable(loadTestRequest.getSeed()).orElse(ecaLoadTestsConfig.getSeed());
+        loadTestEntity.setSeed(seed);
         loadTestEntity.setEvaluationMethod(evaluationMethod);
     }
 }
