@@ -1,6 +1,7 @@
 package com.ecaservice.load.test.mapping;
 
 import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.load.test.dto.LoadTestDto;
 import com.ecaservice.load.test.entity.EvaluationRequestEntity;
 import com.ecaservice.load.test.entity.LoadTestEntity;
 import com.ecaservice.load.test.report.bean.EvaluationTestBean;
@@ -30,6 +31,14 @@ public abstract class LoadTestMapper {
 
     private static final String CV_FORMAT = "%d - блочная кросс - проверка";
     private static final String CV_EXTENDED_FORMAT = "%d×%d - блочная кросс - проверка";
+
+    /**
+     * Maps load test entity to dto model.
+     *
+     * @param loadTestEntity - load test entity
+     * @return load test dto
+     */
+    public abstract LoadTestDto mapToDto(LoadTestEntity loadTestEntity);
 
     /**
      * Maps load test entity to evaluation request.

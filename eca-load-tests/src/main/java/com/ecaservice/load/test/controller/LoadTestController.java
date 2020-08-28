@@ -1,12 +1,12 @@
 package com.ecaservice.load.test.controller;
 
+import com.ecaservice.load.test.dto.LoadTestDto;
 import com.ecaservice.load.test.dto.LoadTestRequest;
 import com.ecaservice.load.test.entity.LoadTestEntity;
-import com.ecaservice.load.test.exception.EntityNotFoundException;
+import com.ecaservice.load.test.mapping.LoadTestMapper;
 import com.ecaservice.load.test.report.bean.LoadTestBean;
 import com.ecaservice.load.test.report.service.TestResultsReportDataFetcher;
 import com.ecaservice.load.test.report.service.TestResultsReportGenerator;
-import com.ecaservice.load.test.repository.LoadTestRepository;
 import com.ecaservice.load.test.service.LoadTestService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,7 +45,7 @@ public class LoadTestController {
     private final LoadTestService loadTestService;
     private final TestResultsReportDataFetcher testResultsReportDataFetcher;
     private final TestResultsReportGenerator testResultsReportGenerator;
-    private final LoadTestRepository loadTestRepository;
+    private final LoadTestMapper loadTestMapper;
 
     /**
      * Creates load test.
@@ -59,11 +58,28 @@ public class LoadTestController {
             notes = "Creates load test"
     )
     @PostMapping(value = "/create")
-    public ResponseEntity<String> createTest(@Valid LoadTestRequest loadTestRequest) {
+    public LoadTestDto createTest(@Valid LoadTestRequest loadTestRequest) {
         log.info("Request for load test with params: {}", loadTestRequest);
         LoadTestEntity loadTestEntity = loadTestService.createTest(loadTestRequest);
         log.info("Load test has been created with uuid [{}]", loadTestEntity.getTestUuid());
-        return ResponseEntity.ok(loadTestEntity.getTestUuid());
+        return loadTestMapper.mapToDto(loadTestEntity);
+    }
+
+    /**
+     * Gets load test details.
+     *
+     * @param testUuid - test uuid
+     */
+    @ApiOperation(
+            value = "Gets load test details",
+            notes = "Gets load test details"
+    )
+    @GetMapping(value = "/details/{testUuid}")
+    public LoadTestDto getLoadTestDetails(
+            @ApiParam(value = "Test uuid", required = true) @PathVariable String testUuid) {
+        log.info("Gets load test [{}] details", testUuid);
+        LoadTestEntity loadTestEntity = loadTestService.getLoadTest(testUuid);
+        return loadTestMapper.mapToDto(loadTestEntity);
     }
 
     /**
@@ -81,8 +97,7 @@ public class LoadTestController {
     public void downloadReport(@ApiParam(value = "Test uuid", required = true) @PathVariable String testUuid,
                                HttpServletResponse httpServletResponse) throws IOException {
         log.info("Starting to download load test [{}] report", testUuid);
-        LoadTestEntity loadTestEntity = loadTestRepository.findByTestUuid(testUuid).orElseThrow(
-                () -> new EntityNotFoundException(LoadTestEntity.class, testUuid));
+        LoadTestEntity loadTestEntity = loadTestService.getLoadTest(testUuid);
         @Cleanup OutputStream outputStream = httpServletResponse.getOutputStream();
         httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
         String reportName = String.format(LOAD_TEST_REPORT_NAME, loadTestEntity.getTestUuid());

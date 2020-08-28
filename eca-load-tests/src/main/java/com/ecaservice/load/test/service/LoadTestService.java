@@ -4,6 +4,7 @@ import com.ecaservice.load.test.config.EcaLoadTestsConfig;
 import com.ecaservice.load.test.dto.LoadTestRequest;
 import com.ecaservice.load.test.entity.ExecutionStatus;
 import com.ecaservice.load.test.entity.LoadTestEntity;
+import com.ecaservice.load.test.exception.EntityNotFoundException;
 import com.ecaservice.load.test.repository.LoadTestRepository;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,17 @@ public class LoadTestService {
         LoadTestEntity loadTestEntity = createLoadTestEntity(loadTestRequest);
         loadTestEntity.setCreated(LocalDateTime.now());
         return loadTestRepository.save(loadTestEntity);
+    }
+
+    /**
+     * Gets load test entity by uuid.
+     *
+     * @param testUuid - test uuid
+     * @return load test entity
+     */
+    public LoadTestEntity getLoadTest(String testUuid) {
+        return loadTestRepository.findByTestUuid(testUuid).orElseThrow(
+                () -> new EntityNotFoundException(LoadTestEntity.class, testUuid));
     }
 
     private LoadTestEntity createLoadTestEntity(LoadTestRequest loadTestRequest) {
