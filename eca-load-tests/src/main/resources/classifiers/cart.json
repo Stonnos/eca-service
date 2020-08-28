@@ -1,5 +1,9 @@
 {
   "type": "decision_tree",
   "decisionTreeType": "CART",
-  "minObj": 2
+  "minObj": 2,
+  "maxDepth": 0,
+  "randomTree": false,
+  "useBinarySplits": true,
+  "useRandomSplits": false
 }

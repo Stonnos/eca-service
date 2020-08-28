@@ -1,6 +1,12 @@
 {
   "type": "decision_tree",
   "decisionTreeType": "CHAID",
-  "useBinarySplits": false,
-  "minObj": 2
+  "minObj": 2,
+  "maxDepth": 0,
+  "randomTree": false,
+  "useBinarySplits": true,
+  "useRandomSplits": false,
+  "additionalOptions": {
+    "alphaValue": "0.05"
+  }
 }

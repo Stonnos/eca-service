@@ -1,5 +1,6 @@
 {
   "type": "knn",
+  "numNeighbours": 10,
   "distanceType": "MANHATTAN",
   "weight": 1.0
 }

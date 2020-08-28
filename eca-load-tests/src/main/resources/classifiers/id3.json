@@ -1,6 +1,9 @@
 {
   "type": "decision_tree",
   "decisionTreeType": "ID3",
+  "minObj": 2,
+  "maxDepth": 0,
+  "randomTree": false,
   "useBinarySplits": false,
-  "minObj": 2
+  "useRandomSplits": false
 }

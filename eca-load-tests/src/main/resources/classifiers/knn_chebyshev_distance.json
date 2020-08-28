@@ -1,5 +1,6 @@
 {
   "type": "knn",
+  "numNeighbours": 10,
   "distanceType": "CHEBYSHEV",
   "weight": 1.0
 }
