@@ -22,6 +22,12 @@ spring:
     cache-names: instances
     caffeine:
       spec: maximumSize=10, expireAfterWrite=180s
+  rabbitmq:
+    listener:
+      simple:
+        concurrency: 10
+        maxConcurrency: 10
+
 
 eca-load-tests:
   numRequests: 100
