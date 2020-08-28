@@ -24,7 +24,7 @@ public interface EvaluationRequestRepository extends JpaRepository<EvaluationReq
      * Finds evaluation requests for specified load test entity.
      *
      * @param loadTestEntity - load test entity
-     * @param pageable - pageable object
+     * @param pageable       - pageable object
      * @return evaluation requests page
      */
     Page<EvaluationRequestEntity> findByLoadTestEntityOrderByStarted(LoadTestEntity loadTestEntity, Pageable pageable);
@@ -57,4 +57,13 @@ public interface EvaluationRequestRepository extends JpaRepository<EvaluationReq
      * @return evaluation requests page
      */
     Page<EvaluationRequestEntity> findByIdIn(Collection<Long> ids, Pageable pageable);
+
+    /**
+     * Gets max evaluation request finished date for specified load test.
+     *
+     * @param loadTestEntity - load test entity
+     * @return max finished date
+     */
+    @Query("select max(er.finished) from EvaluationRequestEntity er where er.loadTestEntity = :loadTestEntity")
+    LocalDateTime getMaxFinishedDate(@Param("loadTestEntity") LoadTestEntity loadTestEntity);
 }

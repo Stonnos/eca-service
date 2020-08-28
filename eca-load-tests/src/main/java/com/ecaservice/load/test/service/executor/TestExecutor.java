@@ -43,7 +43,7 @@ import static com.ecaservice.load.test.util.Utils.createEvaluationRequestEntity;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public abstract class TestExecutor {
+public class TestExecutor {
 
     private final EcaLoadTestsConfig ecaLoadTestsConfig;
     private final InstancesConfigService instancesConfigService;
