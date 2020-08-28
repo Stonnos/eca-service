@@ -1,34 +1,45 @@
 package com.ecaservice.load.test.entity;
 
+import eca.core.DescriptiveEnum;
+import lombok.RequiredArgsConstructor;
+
 /**
  * Request stage type.
  *
  * @author Roman Batygin
  */
-public enum RequestStageType {
+@RequiredArgsConstructor
+public enum RequestStageType implements DescriptiveEnum {
 
     /**
      * Request sent
      */
-    REQUEST_SENT,
+    REQUEST_SENT("Запрос отправлен"),
 
     /**
      * Response received
      */
-    RESPONSE_RECEIVED,
+    RESPONSE_RECEIVED("Получен ответ"),
 
     /**
      * Error status
      */
-    ERROR,
+    ERROR("Ошибка"),
 
     /**
      * Request not send
      */
-    NOT_SEND,
+    NOT_SEND("Запрос не был отправлен"),
 
     /**
      * Request exceeded
      */
-    EXCEEDED
+    EXCEEDED("Истелко время ожидания ответа");
+
+    private final String description;
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
 }

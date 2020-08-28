@@ -1,7 +1,5 @@
 package com.ecaservice.load.test.report.bean;
 
-import com.ecaservice.load.test.entity.RequestStageType;
-import com.ecaservice.load.test.entity.TestResult;
 import lombok.Data;
 
 /**
@@ -20,7 +18,7 @@ public class EvaluationTestBean {
     /**
      * Request stage
      */
-    private RequestStageType stageType;
+    private String stageType;
 
     /**
      * Started date
@@ -35,7 +33,7 @@ public class EvaluationTestBean {
     /**
      * Test result
      */
-    private TestResult testResult;
+    private String testResult;
 
     /**
      * Classifier name

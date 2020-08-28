@@ -1,6 +1,5 @@
 package com.ecaservice.load.test.report.bean;
 
-import com.ecaservice.load.test.entity.ExecutionStatus;
 import lombok.Data;
 
 import java.util.List;
@@ -46,7 +45,7 @@ public class LoadTestBean {
     /**
      * Test execution status
      */
-    private ExecutionStatus executionStatus;
+    private String executionStatus;
 
     /**
      * Request total time

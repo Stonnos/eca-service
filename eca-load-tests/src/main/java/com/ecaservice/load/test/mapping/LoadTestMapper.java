@@ -45,6 +45,7 @@ public abstract class LoadTestMapper {
      * @param loadTestEntity - load test entity
      * @return load test bean
      */
+    @Mapping(source = "executionStatus.description", target = "executionStatus")
     @Mapping(source = "started", target = "started", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "finished", target = "finished", qualifiedByName = "formatLocalDateTime")
     @Mapping(target = "evaluationMethod", ignore = true)
@@ -56,6 +57,8 @@ public abstract class LoadTestMapper {
      * @param evaluationRequestEntity - evaluation request entity
      * @return evaluation test bean
      */
+    @Mapping(source = "testResult.description", target = "testResult")
+    @Mapping(source = "stageType.description", target = "stageType")
     @Mapping(source = "started", target = "started", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "finished", target = "finished", qualifiedByName = "formatLocalDateTime")
     public abstract EvaluationTestBean map(EvaluationRequestEntity evaluationRequestEntity);
@@ -71,8 +74,9 @@ public abstract class LoadTestMapper {
                         String.format(CV_EXTENDED_FORMAT, loadTestEntity.getNumFolds(), loadTestEntity.getNumTests());
             }
             loadTestBean.setEvaluationMethod(crossValidationMethodDetails);
+        } else {
+            loadTestBean.setEvaluationMethod(loadTestEntity.getEvaluationMethod().getDescription());
         }
-        loadTestBean.setEvaluationMethod(loadTestEntity.getEvaluationMethod().getDescription());
     }
 
     @AfterMapping
