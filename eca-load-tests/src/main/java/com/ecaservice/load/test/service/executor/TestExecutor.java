@@ -15,19 +15,21 @@ import com.ecaservice.load.test.repository.EvaluationRequestRepository;
 import com.ecaservice.load.test.repository.LoadTestRepository;
 import com.ecaservice.load.test.service.ClassifiersConfigService;
 import com.ecaservice.load.test.service.InstancesConfigService;
+import com.ecaservice.load.test.service.LoadTestDataIterator;
 import com.ecaservice.load.test.service.data.InstancesLoader;
 import com.ecaservice.load.test.service.rabbit.RabbitSender;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.AmqpException;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Service;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 import weka.core.Randomizable;
 
 import java.time.LocalDateTime;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -39,10 +41,11 @@ import static com.ecaservice.load.test.util.Utils.createEvaluationRequestEntity;
  * @author Roman Batygin
  */
 @Slf4j
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class AbstractTestExecutor {
+@Service
+@RequiredArgsConstructor
+public abstract class TestExecutor {
 
-    protected final EcaLoadTestsConfig ecaLoadTestsConfig;
+    private final EcaLoadTestsConfig ecaLoadTestsConfig;
     private final InstancesConfigService instancesConfigService;
     private final ClassifiersConfigService classifiersConfigService;
     private final RabbitSender rabbitSender;
@@ -66,17 +69,14 @@ public abstract class AbstractTestExecutor {
         log.info("Test [{}] has been started", loadTestEntity.getTestUuid());
     }
 
-    /**
-     * Gets test data iterator.
-     *
-     * @param loadTestEntity           - load test entity
-     * @param instancesConfigService   - instances config service
-     * @param classifiersConfigService - classifiers config service
-     * @return test data iterator
-     */
-    protected abstract Iterator<TestDataModel> testDataIterator(LoadTestEntity loadTestEntity,
-                                                                InstancesConfigService instancesConfigService,
-                                                                ClassifiersConfigService classifiersConfigService);
+    private Iterator<TestDataModel> testDataIterator(LoadTestEntity loadTestEntity,
+                                                     InstancesConfigService instancesConfigService,
+                                                     ClassifiersConfigService classifiersConfigService) {
+        Random sampleRandom = new Random(ecaLoadTestsConfig.getSeed());
+        Random classifiersRandom = new Random(ecaLoadTestsConfig.getSeed());
+        return new LoadTestDataIterator(loadTestEntity, sampleRandom, classifiersRandom, instancesConfigService,
+                classifiersConfigService);
+    }
 
     private void sendRequests(LoadTestEntity loadTestEntity) {
         ThreadPoolTaskExecutor executor = initializeThreadPoolTaskExecutor(loadTestEntity.getNumThreads());

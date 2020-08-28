@@ -6,7 +6,7 @@ import com.ecaservice.load.test.entity.RequestStageType;
 import com.ecaservice.load.test.entity.TestResult;
 import com.ecaservice.load.test.repository.EvaluationRequestRepository;
 import com.ecaservice.load.test.repository.LoadTestRepository;
-import com.ecaservice.load.test.service.executor.LoadTestExecutor;
+import com.ecaservice.load.test.service.executor.TestExecutor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -31,7 +31,7 @@ import java.util.function.Consumer;
 public class LoadTestScheduler {
 
     private final EcaLoadTestsConfig ecaLoadTestsConfig;
-    private final LoadTestExecutor loadTestExecutor;
+    private final TestExecutor testExecutor;
     private final LoadTestRepository loadTestRepository;
     private final EvaluationRequestRepository evaluationRequestRepository;
 
@@ -43,7 +43,7 @@ public class LoadTestScheduler {
         log.trace("Starting to processed new tests");
         List<Long> testIds = loadTestRepository.findNewTests();
         processPaging(testIds, loadTestRepository::findByIdIn,
-                pageContent -> pageContent.forEach(loadTestExecutor::runTest));
+                pageContent -> pageContent.forEach(testExecutor::runTest));
         log.trace("New tests has been processed");
     }
 
