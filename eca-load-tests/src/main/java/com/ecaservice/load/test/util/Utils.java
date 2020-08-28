@@ -25,7 +25,7 @@ public class Utils {
 
     private static final String GMT_TIME_ZONE = "GMT";
 
-    private final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("mm:ss:SS");
+    private final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss:SS");
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -56,7 +56,7 @@ public class Utils {
     }
 
     /**
-     * Gets total time between two dates in format mm:ss:SS.
+     * Gets total time between two dates in format HH:mm:ss:SS.
      *
      * @param start - start date
      * @param end   - end date
