@@ -51,6 +51,7 @@ import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.model.experiment.InitializationParams;
+import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
@@ -969,5 +970,18 @@ public class TestHelperUtils {
         logisticOptions.setMaxIts(NUM_ITERATIONS);
         logisticOptions.setUseConjugateGradientDescent(false);
         return logisticOptions;
+    }
+
+    /**
+     * Creates report bean.
+     *
+     * @param <T> - item generic type
+     * @return base report bean
+     */
+    public static <T> BaseReportBean<T> createReportBean() {
+        return BaseReportBean.<T>builder()
+                .items(Collections.emptyList())
+                .filters(Collections.emptyList())
+                .build();
     }
 }
