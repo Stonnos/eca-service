@@ -10,15 +10,12 @@ addons:
     token: $SONAR_TOKEN
 
 stages:
-  - name: test
   - name: sonar_analysis
   - name: build_image
     if: branch = master
 
 jobs:
   include:
-    - stage: test
-      script: mvn clean test
     - stage: sonar_analysis
       script: mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=$PROJECT_KEY
     - stage: build_image
