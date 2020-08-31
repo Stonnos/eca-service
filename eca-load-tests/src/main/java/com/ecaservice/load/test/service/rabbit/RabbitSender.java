@@ -26,7 +26,7 @@ public class RabbitSender {
      * @param correlationId - message correlation id
      */
     public void send(Object payload, String correlationId) {
-        rabbitTemplate.convertAndSend(queueConfig.getEvaluationRequestQueue(), "", message -> {
+        rabbitTemplate.convertAndSend(queueConfig.getEvaluationRequestQueue(), payload, message -> {
             message.getMessageProperties().setCorrelationId(correlationId);
             message.getMessageProperties().setReplyTo(queueConfig.getReplyToQueue());
             return message;
