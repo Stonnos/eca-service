@@ -2,6 +2,8 @@ package com.ecaservice.mapping;
 
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
+import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
+import com.ecaservice.report.model.ClassifierOptionsRequestBean;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
 import com.ecaservice.web.dto.model.EnumDto;
 import org.mapstruct.AfterMapping;
@@ -9,8 +11,15 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
+import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
+
+import static com.ecaservice.util.Utils.getEvaluationMethodDescription;
 
 /**
  * Implements mapping classifier options request to classifier options request entity.
@@ -20,6 +29,8 @@ import java.util.List;
 @Mapper(uses = {ErsEvaluationMethodMapper.class, ClassifierOptionsResponseModelMapper.class},
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class ClassifierOptionsRequestModelMapper {
+
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Maps classifier options request to classifier options request entity.
@@ -41,6 +52,17 @@ public abstract class ClassifierOptionsRequestModelMapper {
      */
     @Mapping(target = "evaluationMethod", ignore = true)
     public abstract ClassifierOptionsRequestDto map(ClassifierOptionsRequestModel classifierOptionsRequestModel);
+
+    /**
+     * Maps classifier options request model entity to report bean model.
+     *
+     * @param classifierOptionsRequestModel - classifier options request model
+     * @return classifier options request bean
+     */
+    @Mapping(target = "evaluationMethod", ignore = true)
+    @Mapping(source = "requestDate", target = "requestDate", qualifiedByName = "formatLocalDateTime")
+    @Mapping(source = "responseStatus.description", target = "responseStatus")
+    public abstract ClassifierOptionsRequestBean mapToBean(ClassifierOptionsRequestModel classifierOptionsRequestModel);
 
     /**
      * Maps classifiers options requests models entities to its dto models.
@@ -65,5 +87,30 @@ public abstract class ClassifierOptionsRequestModelMapper {
         classifierOptionsRequestDto.setEvaluationMethod(
                 new EnumDto(classifierOptionsRequestModel.getEvaluationMethod().name(),
                         classifierOptionsRequestModel.getEvaluationMethod().getDescription()));
+    }
+
+    @AfterMapping
+    protected void mapEvaluationMethodOptions(ClassifierOptionsRequestModel requestModel, @MappingTarget
+            ClassifierOptionsRequestBean classifierOptionsRequestBean) {
+        String evaluationMethodDescription =
+                getEvaluationMethodDescription(requestModel.getEvaluationMethod(), requestModel.getNumFolds(),
+                        requestModel.getNumTests());
+        classifierOptionsRequestBean.setEvaluationMethod(evaluationMethodDescription);
+    }
+
+    @AfterMapping
+    protected void mapClassifierOptions(ClassifierOptionsRequestModel requestModel,
+                                        @MappingTarget ClassifierOptionsRequestBean classifierOptionsRequestBean) {
+        if (!CollectionUtils.isEmpty(requestModel.getClassifierOptionsResponseModels())) {
+            ClassifierOptionsResponseModel classifierOptionsResponseModel =
+                    requestModel.getClassifierOptionsResponseModels().iterator().next();
+            classifierOptionsRequestBean.setClassifierName(classifierOptionsResponseModel.getClassifierName());
+            classifierOptionsRequestBean.setOptimalClassifierOptions(classifierOptionsResponseModel.getOptions());
+        }
+    }
+
+    @Named("formatLocalDateTime")
+    protected String formatLocalDateTime(LocalDateTime localDateTime) {
+        return Optional.ofNullable(localDateTime).map(dateTimeFormatter::format).orElse(null);
     }
 }
