@@ -114,7 +114,7 @@ public abstract class ClassifierOptionsRequestModelMapper {
             ClassifierOptionsResponseModel classifierOptionsResponseModel =
                     requestModel.getClassifierOptionsResponseModels().iterator().next();
             classifierOptionsRequestBean.setClassifierName(classifierOptionsResponseModel.getClassifierName());
-            classifierOptionsRequestBean.setOptimalClassifierOptions(classifierOptionsResponseModel.getOptions());
+            classifierOptionsRequestBean.setClassifierOptions(classifierOptionsResponseModel.getOptions());
         }
     }
 

@@ -43,5 +43,5 @@ public class ClassifierOptionsRequestBean {
     /**
      * Optimal classifier options
      */
-    private String optimalClassifierOptions;
+    private String classifierOptions;
 }

@@ -1,17 +1,19 @@
 <div class="container-fluid mb-5">
-  <div class="col-6 justify-content-start">
-    <button
-      pButton
-      label="Сформировать отчет"
-      icon="pi pi-file"
-      type="button"
-      (click)="generateReport()"
-      class="ml-2 mt-2 mb-2">
-    </button>
-  </div>
-  <div class="col-6">
-    <app-search-query (search)="onSearch($event)">
-    </app-search-query>
+  <div class="row search-content mt-2">
+    <div class="col-6 justify-content-start">
+      <button
+        pButton
+        label="Сформировать отчет"
+        icon="pi pi-file"
+        type="button"
+        (click)="generateReport()"
+        class="ml-2 mt-2 mb-2">
+      </button>
+    </div>
+    <div class="col-6">
+      <app-search-query (search)="onSearch($event)">
+      </app-search-query>
+    </div>
   </div>
   <div class="row">
     <div class="filter-sidebar">

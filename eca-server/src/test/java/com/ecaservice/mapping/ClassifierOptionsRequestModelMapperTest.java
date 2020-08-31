@@ -104,7 +104,7 @@ class ClassifierOptionsRequestModelMapperTest {
                 requestModel.getResponseStatus().getDescription());
         Assertions.assertThat(classifierOptionsRequestBean.getClassifierName()).isEqualTo(
                 responseModel.getClassifierName());
-        Assertions.assertThat(classifierOptionsRequestBean.getOptimalClassifierOptions()).isEqualTo(
+        Assertions.assertThat(classifierOptionsRequestBean.getClassifierOptions()).isEqualTo(
                 responseModel.getOptions());
     }
 }
