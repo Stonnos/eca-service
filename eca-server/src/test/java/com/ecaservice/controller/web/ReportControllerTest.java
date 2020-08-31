@@ -1,5 +1,6 @@
 package com.ecaservice.controller.web;
 
+import com.ecaservice.report.ClassifierOptionsRequestsBaseReportDataFetcher;
 import com.ecaservice.report.EvaluationLogsBaseReportDataFetcher;
 import com.ecaservice.report.ExperimentsBaseReportDataFetcher;
 import com.ecaservice.report.model.ReportType;
@@ -39,11 +40,14 @@ class ReportControllerTest extends PageRequestControllerTest {
     private ExperimentsBaseReportDataFetcher experimentsBaseReportDataFetcher;
     @MockBean
     private EvaluationLogsBaseReportDataFetcher evaluationLogsBaseReportDataFetcher;
+    @MockBean
+    private ClassifierOptionsRequestsBaseReportDataFetcher classifierOptionsRequestsBaseReportDataFetcher;
 
     @Override
     public void before() {
         when(experimentsBaseReportDataFetcher.getReportType()).thenReturn(ReportType.EXPERIMENTS);
         when(evaluationLogsBaseReportDataFetcher.getReportType()).thenReturn(ReportType.EVALUATION_LOGS);
+        when(classifierOptionsRequestsBaseReportDataFetcher.getReportType()).thenReturn(ReportType.CLASSIFIERS_OPTIONS_REQUESTS);
     }
 
     @Test
@@ -110,6 +114,13 @@ class ReportControllerTest extends PageRequestControllerTest {
         when(evaluationLogsBaseReportDataFetcher.fetchReportData(any(PageRequestDto.class))).thenReturn(
                 createReportBean());
         testDownloadReportOk(ReportType.EVALUATION_LOGS);
+    }
+
+    @Test
+    void testDownloadClassifierOptionsRequestsReportOk() throws Exception {
+        when(classifierOptionsRequestsBaseReportDataFetcher.fetchReportData(any(PageRequestDto.class))).thenReturn(
+                createReportBean());
+        testDownloadReportOk(ReportType.CLASSIFIERS_OPTIONS_REQUESTS);
     }
 
     private void testDownloadReportOk(ReportType reportType) throws Exception {

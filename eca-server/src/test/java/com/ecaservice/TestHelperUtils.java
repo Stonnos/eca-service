@@ -639,6 +639,7 @@ public class TestHelperUtils {
                                                                                     ErsResponseStatus responseStatus,
                                                                                     List<ClassifierOptionsResponseModel> classifierOptionsResponseModels) {
         ClassifierOptionsRequestModel requestModel = new ClassifierOptionsRequestModel();
+        requestModel.setRequestId(UUID.randomUUID().toString());
         requestModel.setRelationName(RELATION_NAME);
         requestModel.setDataMd5Hash(dataMd5Hash);
         requestModel.setRequestDate(requestDate);
