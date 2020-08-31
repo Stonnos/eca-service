@@ -33,7 +33,7 @@ eca-load-tests:
   numRequests: 100
   numThreads: 10
   workerThreadTimeOutInSeconds: 180
-  requestTimeoutInSeconds: 120
+  requestTimeoutInSeconds: 180
   numFolds: 10
   numTests: 1
   seed: 1
