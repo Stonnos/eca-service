@@ -46,12 +46,12 @@ public class LoadTestDataIterator implements Iterator<TestDataModel> {
     }
 
     private Resource getNextSample() {
-        int sampleIndex = sampleRandom.nextInt(instancesConfigService.size());
+        int sampleIndex = sampleRandom.nextInt(instancesConfigService.count());
         return instancesConfigService.getConfig(sampleIndex);
     }
 
     private ClassifierOptions getNextClassifierOptions() {
-        int classifierIndex = classifiersRandom.nextInt(classifiersConfigService.size());
+        int classifierIndex = classifiersRandom.nextInt(classifiersConfigService.count());
         return classifiersConfigService.getConfig(classifierIndex);
     }
 }

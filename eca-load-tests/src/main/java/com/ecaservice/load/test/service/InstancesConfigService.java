@@ -47,7 +47,7 @@ public class InstancesConfigService implements ConfigService<Resource> {
     }
 
     @Override
-    public int size() {
+    public int count() {
         return samplesFiles.length;
     }
 

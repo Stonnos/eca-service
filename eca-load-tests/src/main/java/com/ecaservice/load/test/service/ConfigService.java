@@ -9,11 +9,11 @@ package com.ecaservice.load.test.service;
 public interface ConfigService<T> {
 
     /**
-     * Gets total configs size.
+     * Gets total configs count.
      *
-     * @return configs size
+     * @return configs count
      */
-    int size();
+    int count();
 
     /**
      * Gets config by specified index.

@@ -69,7 +69,7 @@ public class ClassifiersConfigService implements ConfigService<ClassifierOptions
     }
 
     @Override
-    public int size() {
+    public int count() {
         return classifierOptionsList.size();
     }
 
