@@ -60,8 +60,9 @@ public class LoadTestScheduler {
                 evaluationRequestEntity.setStageType(RequestStageType.EXCEEDED);
                 evaluationRequestEntity.setTestResult(TestResult.ERROR);
                 evaluationRequestEntity.setFinished(LocalDateTime.now());
+                evaluationRequestRepository.save(evaluationRequestEntity);
+                log.info("Exceeded request with correlation id [{}]", evaluationRequestEntity.getCorrelationId());
             });
-            evaluationRequestRepository.saveAll(pageContent);
         });
         log.trace("Exceeded requests has been processed");
     }
@@ -77,8 +78,9 @@ public class LoadTestScheduler {
             pageContent.forEach(loadTestEntity -> {
                 loadTestEntity.setExecutionStatus(ExecutionStatus.FINISHED);
                 loadTestEntity.setFinished(evaluationRequestRepository.getMaxFinishedDate(loadTestEntity));
+                loadTestRepository.save(loadTestEntity);
+                log.info("Load test [{}] has been finished", loadTestEntity.getTestUuid());
             });
-            loadTestRepository.saveAll(pageContent);
         });
         log.trace("Finished tests has been processed");
     }
