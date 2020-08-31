@@ -53,8 +53,8 @@ public class LoadTestScheduler {
     @Scheduled(fixedDelayString = "${eca-load-tests.delaySeconds}000")
     public void processExceededRequests() {
         log.trace("Starting to processed exceeded requests");
-        LocalDateTime dateTime = LocalDateTime.now().plusSeconds(ecaLoadTestsConfig.getRequestTimeoutInSeconds());
-        List<Long> exceededIds = evaluationRequestRepository.findExceededRequestIds(dateTime);
+        LocalDateTime exceededTime = LocalDateTime.now().minusSeconds(ecaLoadTestsConfig.getRequestTimeoutInSeconds());
+        List<Long> exceededIds = evaluationRequestRepository.findExceededRequestIds(exceededTime);
         processPaging(exceededIds, evaluationRequestRepository::findByIdIn, pageContent -> {
             pageContent.forEach(evaluationRequestEntity -> {
                 evaluationRequestEntity.setStageType(RequestStageType.EXCEEDED);
