@@ -40,7 +40,7 @@ eca-load-tests:
   trainingDataStoragePath: classpath*:data/**/*
   classifiersStoragePath: classpath*:classifiers/**/*.json
   pageSize: 25
-  delaySeconds: 1
+  delaySeconds: 2
 
 queue:
   evaluationRequestQueue: evaluation-request-queue
