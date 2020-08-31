@@ -41,9 +41,8 @@ public class Utils {
                                                                         ClassifierOptions classifierOptions,
                                                                         Instances instances) {
         try {
-            String correlationId = UUID.randomUUID().toString();
             EvaluationRequestEntity evaluationRequestEntity = new EvaluationRequestEntity();
-            evaluationRequestEntity.setCorrelationId(correlationId);
+            evaluationRequestEntity.setCorrelationId(UUID.randomUUID().toString());
             evaluationRequestEntity.setLoadTestEntity(loadTestEntity);
             evaluationRequestEntity.setClassifierOptions(OBJECT_MAPPER.writeValueAsString(classifierOptions));
             evaluationRequestEntity.setRelationName(instances.relationName());
