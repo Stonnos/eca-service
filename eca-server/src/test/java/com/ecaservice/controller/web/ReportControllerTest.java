@@ -1,8 +1,9 @@
 package com.ecaservice.controller.web;
 
+import com.ecaservice.report.ClassifierOptionsRequestsBaseReportDataFetcher;
 import com.ecaservice.report.EvaluationLogsBaseReportDataFetcher;
 import com.ecaservice.report.ExperimentsBaseReportDataFetcher;
-import com.ecaservice.report.model.BaseReportBean;
+import com.ecaservice.report.model.ReportType;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -17,6 +18,7 @@ import static com.ecaservice.PageRequestUtils.PAGE_NUMBER_PARAM;
 import static com.ecaservice.PageRequestUtils.PAGE_SIZE;
 import static com.ecaservice.PageRequestUtils.PAGE_SIZE_PARAM;
 import static com.ecaservice.TestHelperUtils.bearerHeader;
+import static com.ecaservice.TestHelperUtils.createReportBean;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,103 +33,100 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = ReportController.class)
 class ReportControllerTest extends PageRequestControllerTest {
 
-    private static final String BASE_URL = "/reports";
-    private static final String EXPERIMENTS_REPORT_URL = BASE_URL + "/experiments";
-    private static final String EVALUATIONS_REPORT_URL = BASE_URL + "/evaluations";
+    private static final String DOWNLOAD_REPORT_URL = "/reports/download";
+    private static final String REPORT_TYPE_PARAM = "reportType";
 
     @MockBean
     private ExperimentsBaseReportDataFetcher experimentsBaseReportDataFetcher;
     @MockBean
     private EvaluationLogsBaseReportDataFetcher evaluationLogsBaseReportDataFetcher;
+    @MockBean
+    private ClassifierOptionsRequestsBaseReportDataFetcher classifierOptionsRequestsBaseReportDataFetcher;
 
-    @Test
-    void testDownloadExperimentsReportUnauthorized() throws Exception {
-        testGetPageUnauthorized(EXPERIMENTS_REPORT_URL, Collections.emptyMap());
+    @Override
+    public void before() {
+        when(experimentsBaseReportDataFetcher.getReportType()).thenReturn(ReportType.EXPERIMENTS);
+        when(evaluationLogsBaseReportDataFetcher.getReportType()).thenReturn(ReportType.EVALUATION_LOGS);
+        when(classifierOptionsRequestsBaseReportDataFetcher.getReportType()).thenReturn(ReportType.CLASSIFIERS_OPTIONS_REQUESTS);
     }
 
     @Test
-    void testDownloadExperimentsReportWithNullPageNumber() throws Exception {
-        testGetPageWithNullPageNumber(EXPERIMENTS_REPORT_URL, Collections.emptyMap());
+    void testDownloadReportUnauthorized() throws Exception {
+        testGetPageUnauthorized(DOWNLOAD_REPORT_URL,
+                Collections.singletonMap(REPORT_TYPE_PARAM,
+                        Collections.singletonList(ReportType.EVALUATION_LOGS.name())));
     }
 
     @Test
-    void testDownloadExperimentsReportWithNullPageSize() throws Exception {
-        testGetPageWithNullPageSize(EXPERIMENTS_REPORT_URL, Collections.emptyMap());
+    void testDownloadReportWithNullPageNumber() throws Exception {
+        testGetPageWithNullPageNumber(DOWNLOAD_REPORT_URL, Collections.singletonMap(REPORT_TYPE_PARAM,
+                Collections.singletonList(ReportType.EVALUATION_LOGS.name())));
     }
 
     @Test
-    void testDownloadExperimentsReportWithZeroPageSize() throws Exception {
-        testGetPageWithZeroPageSize(EXPERIMENTS_REPORT_URL, Collections.emptyMap());
+    void testDownloadReportWithNullPageSize() throws Exception {
+        testGetPageWithNullPageSize(DOWNLOAD_REPORT_URL, Collections.singletonMap(REPORT_TYPE_PARAM,
+                Collections.singletonList(ReportType.EVALUATION_LOGS.name())));
     }
 
     @Test
-    void testDownloadExperimentsReportWithNegativePageNumber() throws Exception {
-        testGetPageWithNegativePageNumber(EXPERIMENTS_REPORT_URL, Collections.emptyMap());
+    void testDownloadReportWithZeroPageSize() throws Exception {
+        testGetPageWithZeroPageSize(DOWNLOAD_REPORT_URL, Collections.singletonMap(REPORT_TYPE_PARAM,
+                Collections.singletonList(ReportType.EVALUATION_LOGS.name())));
     }
 
     @Test
-    void testDownloadExperimentsReportWithEmptyFilterRequestName() throws Exception {
-        testGetPageWithEmptyFilterRequestName(EXPERIMENTS_REPORT_URL, Collections.emptyMap());
+    void testDownloadReportWithNegativePageNumber() throws Exception {
+        testGetPageWithNegativePageNumber(DOWNLOAD_REPORT_URL, Collections.singletonMap(REPORT_TYPE_PARAM,
+                Collections.singletonList(ReportType.EVALUATION_LOGS.name())));
     }
 
     @Test
-    void testDownloadExperimentsReportWithNullMatchMode() throws Exception {
-        testGetPageWithNullMatchMode(EXPERIMENTS_REPORT_URL, Collections.emptyMap());
+    void testDownloadReportWithEmptyFilterRequestName() throws Exception {
+        testGetPageWithEmptyFilterRequestName(DOWNLOAD_REPORT_URL, Collections.singletonMap(REPORT_TYPE_PARAM,
+                Collections.singletonList(ReportType.EVALUATION_LOGS.name())));
+    }
+
+    @Test
+    void testDownloadReportWithNullMatchMode() throws Exception {
+        testGetPageWithNullMatchMode(DOWNLOAD_REPORT_URL, Collections.singletonMap(REPORT_TYPE_PARAM,
+                Collections.singletonList(ReportType.EVALUATION_LOGS.name())));
+    }
+
+    @Test
+    void testDownloadReportWithNullReportType() throws Exception {
+        mockMvc.perform(get(DOWNLOAD_REPORT_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
+                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     void testDownloadExperimentsReportOk() throws Exception {
         when(experimentsBaseReportDataFetcher.fetchReportData(any(PageRequestDto.class))).thenReturn(
-                new BaseReportBean<>());
-        mockMvc.perform(get(EXPERIMENTS_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE));
-    }
-
-    @Test
-    void testDownloadEvaluationsReportUnauthorized() throws Exception {
-        testGetPageUnauthorized(EVALUATIONS_REPORT_URL, Collections.emptyMap());
-    }
-
-    @Test
-    void testDownloadEvaluationsReportWithNullPageNumber() throws Exception {
-        testGetPageWithNullPageNumber(EVALUATIONS_REPORT_URL, Collections.emptyMap());
-    }
-
-    @Test
-    void testDownloadEvaluationsReportWithNullPageSize() throws Exception {
-        testGetPageWithNullPageSize(EVALUATIONS_REPORT_URL, Collections.emptyMap());
-    }
-
-    @Test
-    void testDownloadEvaluationsReportWithZeroPageSize() throws Exception {
-        testGetPageWithZeroPageSize(EVALUATIONS_REPORT_URL, Collections.emptyMap());
-    }
-
-    @Test
-    void testDownloadEvaluationsReportWithNegativePageNumber() throws Exception {
-        testGetPageWithNegativePageNumber(EVALUATIONS_REPORT_URL, Collections.emptyMap());
-    }
-
-    @Test
-    void testDownloadEvaluationsReportWithEmptyFilterRequestName() throws Exception {
-        testGetPageWithEmptyFilterRequestName(EVALUATIONS_REPORT_URL, Collections.emptyMap());
-    }
-
-    @Test
-    void testDownloadEvaluationsReportWithNullMatchMode() throws Exception {
-        testGetPageWithNullMatchMode(EVALUATIONS_REPORT_URL, Collections.emptyMap());
+                createReportBean());
+        testDownloadReportOk(ReportType.EXPERIMENTS);
     }
 
     @Test
     void testDownloadEvaluationsReportOk() throws Exception {
         when(evaluationLogsBaseReportDataFetcher.fetchReportData(any(PageRequestDto.class))).thenReturn(
-                new BaseReportBean<>());
-        mockMvc.perform(get(EVALUATIONS_REPORT_URL)
+                createReportBean());
+        testDownloadReportOk(ReportType.EVALUATION_LOGS);
+    }
+
+    @Test
+    void testDownloadClassifierOptionsRequestsReportOk() throws Exception {
+        when(classifierOptionsRequestsBaseReportDataFetcher.fetchReportData(any(PageRequestDto.class))).thenReturn(
+                createReportBean());
+        testDownloadReportOk(ReportType.CLASSIFIERS_OPTIONS_REQUESTS);
+    }
+
+    private void testDownloadReportOk(ReportType reportType) throws Exception {
+        mockMvc.perform(get(DOWNLOAD_REPORT_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .param(REPORT_TYPE_PARAM, reportType.name())
                 .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
                 .andExpect(status().isOk())

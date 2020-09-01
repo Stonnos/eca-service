@@ -38,6 +38,8 @@ import java.util.UUID;
 import java.util.concurrent.Executors;
 
 import static com.ecaservice.AssertionUtils.assertBaseReportBean;
+import static com.ecaservice.PageRequestUtils.PAGE_NUMBER;
+import static com.ecaservice.PageRequestUtils.PAGE_SIZE;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
@@ -49,8 +51,6 @@ import static com.google.common.collect.Lists.newArrayList;
         AppInstanceService.class})
 class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
 
-    private static final int PAGE_NUMBER = 0;
-    private static final int PAGE_SIZE = 10;
     private static final List<String> DATE_RANGE_VALUES = ImmutableList.of("2018-01-01", "2018-01-07");
     private static final LocalDateTime CREATION_DATE = LocalDateTime.of(2018, 1, 5, 0, 0, 0);
 

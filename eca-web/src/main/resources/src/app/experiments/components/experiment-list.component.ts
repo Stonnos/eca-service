@@ -20,6 +20,7 @@ import { FieldService } from "../../common/services/field.service";
 import { ReportsService } from "../../common/services/report.service";
 import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
 import { Utils } from "../../common/util/utils";
+import { ReportType } from "../../common/model/report-type.enum";
 
 @Component({
   selector: 'app-experiment-list',
@@ -79,7 +80,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public generateReport() {
     this.loading = true;
-    this.reportsService.getExperimentsBaseReport(this.pageRequestDto)
+    this.reportsService.getBaseReport(this.pageRequestDto, ReportType.EXPERIMENTS)
       .pipe(
         finalize(() => {
           this.loading = false;

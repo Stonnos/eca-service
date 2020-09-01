@@ -1,8 +1,9 @@
 package com.ecaservice.report;
 
+import com.ecaservice.report.exception.ReportException;
 import com.ecaservice.report.model.BaseReportBean;
-import com.ecaservice.report.model.EvaluationLogBean;
-import com.ecaservice.report.model.ExperimentBean;
+import com.ecaservice.report.model.ReportType;
+import com.ecaservice.report.model.ReportTypeVisitor;
 import lombok.Cleanup;
 import lombok.experimental.UtilityClass;
 import org.jxls.common.Context;
@@ -29,41 +30,51 @@ public class BaseReportGenerator {
     private static final String EXPERIMENTS_REPORT_TEMPLATE = REPORTS_DIRECTORY + "/experiments-report-template.xlsx";
     private static final String EVALUATION_LOGS_REPORT_TEMPLATE =
             REPORTS_DIRECTORY + "/evaluation-logs-report-template.xlsx";
+    private static final String CLASSIFIER_OPTIONS_REQUESTS_TEMPLATE =
+            REPORTS_DIRECTORY + "/classifier-options-requests-report-template.xlsx";
 
     /**
      * Context variables
      */
     private static final String REPORT_VARIABLE = "report";
 
-    /**
-     * Generates experiments base report.
-     *
-     * @param beanBaseReportBean - experiments data for report
-     * @param outputStream       - output stream
-     * @throws IOException in case of I/O errors
-     */
-    public static void generateExperimentsReport(BaseReportBean<ExperimentBean> beanBaseReportBean,
-                                                 OutputStream outputStream) throws IOException {
-        generateReport(EXPERIMENTS_REPORT_TEMPLATE, beanBaseReportBean, outputStream);
-    }
 
     /**
-     * Generates evaluation logs base report.
+     * Generates report.
      *
-     * @param beanBaseReportBean - evaluation logs data for report
-     * @param outputStream       - output stream
-     * @throws IOException in case of I/O errors
+     * @param reportType     - report type
+     * @param baseReportBean - report bean
+     * @param outputStream   - output stream object
+     * @param <T>            - item generic type
      */
-    public static void generateEvaluationLogsReport(BaseReportBean<EvaluationLogBean> beanBaseReportBean,
-                                                    OutputStream outputStream) throws IOException {
-        generateReport(EVALUATION_LOGS_REPORT_TEMPLATE, beanBaseReportBean, outputStream);
+    public static <T> void generateReport(ReportType reportType, BaseReportBean<T> baseReportBean,
+                                          OutputStream outputStream) {
+        reportType.handle(new ReportTypeVisitor() {
+            @Override
+            public void caseExperiments() {
+                generateReport(EXPERIMENTS_REPORT_TEMPLATE, baseReportBean, outputStream);
+            }
+
+            @Override
+            public void caseEvaluationLogs() {
+                generateReport(EVALUATION_LOGS_REPORT_TEMPLATE, baseReportBean, outputStream);
+            }
+
+            @Override
+            public void caseClassifierOptionsRequests() {
+                generateReport(CLASSIFIER_OPTIONS_REQUESTS_TEMPLATE, baseReportBean, outputStream);
+            }
+        });
     }
 
-    private static <T> void generateReport(String template,
-                                           BaseReportBean<T> baseReportBean,
-                                           OutputStream outputStream) throws IOException {
-        @Cleanup InputStream inputStream = BaseReportGenerator.class.getClassLoader().getResourceAsStream(template);
-        Context context = new Context(Collections.singletonMap(REPORT_VARIABLE, baseReportBean));
-        JxlsHelper.getInstance().processTemplate(inputStream, outputStream, context);
+    private static <T> void generateReport(String template, BaseReportBean<T> baseReportBean,
+                                           OutputStream outputStream) {
+        try {
+            @Cleanup InputStream inputStream = BaseReportGenerator.class.getClassLoader().getResourceAsStream(template);
+            Context context = new Context(Collections.singletonMap(REPORT_VARIABLE, baseReportBean));
+            JxlsHelper.getInstance().processTemplate(inputStream, outputStream, context);
+        } catch (IOException ex) {
+            throw new ReportException(ex.getMessage());
+        }
     }
 }

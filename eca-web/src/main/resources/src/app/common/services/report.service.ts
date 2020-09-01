@@ -5,6 +5,7 @@ import { PageRequestDto } from "../../../../../../../target/generated-sources/ty
 import { PageRequestService } from "./page-request.service";
 import { environment } from "../../../environments/environment";
 import { Utils } from "../util/utils";
+import { ReportType } from "../model/report-type.enum";
 
 @Injectable()
 export class ReportsService {
@@ -14,21 +15,13 @@ export class ReportsService {
   public constructor(private http: HttpClient, private pageRequestService: PageRequestService) {
   }
 
-  public getExperimentsBaseReport(pageRequest: PageRequestDto): Observable<Blob> {
+  public getBaseReport(pageRequest: PageRequestDto, reportType: ReportType): Observable<Blob> {
     const headers = new HttpHeaders({
       'Authorization': Utils.getBearerTokenHeader()
     });
-    const params: HttpParams = this.pageRequestService.convertToHttpRequestParams(pageRequest);
+    const params: HttpParams = this.pageRequestService.convertToHttpRequestParams(pageRequest)
+        .set('reportType', reportType);
     const options = { headers: headers, params: params, responseType: 'blob' as 'json' };
-    return this.http.get<Blob>(this.serviceUrl + '/experiments', options);
-  }
-
-  public getEvaluationLogsBaseReport(pageRequest: PageRequestDto): Observable<Blob> {
-    const headers = new HttpHeaders({
-      'Authorization': Utils.getBearerTokenHeader()
-    });
-    const params: HttpParams = this.pageRequestService.convertToHttpRequestParams(pageRequest);
-    const options = { headers: headers, params: params, responseType: 'blob' as 'json' };
-    return this.http.get<Blob>(this.serviceUrl + '/evaluations', options);
+    return this.http.get<Blob>(this.serviceUrl + '/download', options);
   }
 }

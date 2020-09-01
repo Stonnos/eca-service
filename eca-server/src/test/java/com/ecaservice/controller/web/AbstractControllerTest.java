@@ -31,5 +31,9 @@ abstract class AbstractControllerTest {
     @BeforeEach
     void init() throws Exception {
         accessToken = tokenService.obtainAccessToken();
+        before();
+    }
+
+    public void before() {
     }
 }
