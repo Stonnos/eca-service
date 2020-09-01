@@ -1,0 +1,57 @@
+spring:
+  application:
+    name: eca-load-tests
+  jmx:
+    default-domain: eca-load-tests
+  ## Datasource properties
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/eca_load_tests
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  cache:
+    cache-names: instances
+    caffeine:
+      spec: maximumSize=10, expireAfterWrite=180s
+  rabbitmq:
+    listener:
+      simple:
+        concurrency: 10
+        maxConcurrency: 10
+
+
+eca-load-tests:
+  numRequests: 100
+  numThreads: 10
+  workerThreadTimeOutInSeconds: 180
+  requestTimeoutInSeconds: 180
+  numFolds: 10
+  numTests: 1
+  seed: 1
+  trainingDataStoragePath: classpath*:data/**/*
+  classifiersStoragePath: classpath*:classifiers/**/*.json
+  pageSize: 25
+  delaySeconds: 2
+
+queue:
+  evaluationRequestQueue: evaluation-request-queue
+  replyToQueue: load-tests-response-queue
+
+## Swagger properties
+swagger2:
+  projectVersion: @project.version@
+  groups:
+    eca-load-tests:
+      title: API for load tests execution
+      description: Operations for load tests managment
+      author: Roman Batygin
+      email: roman.batygin@mail.ru

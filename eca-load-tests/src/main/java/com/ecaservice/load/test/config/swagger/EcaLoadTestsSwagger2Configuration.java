@@ -1,26 +1,27 @@
-package com.ecaservice.config.swagger;
+package com.ecaservice.load.test.config.swagger;
 
-import com.ecaservice.controller.qa.QaController;
+import com.ecaservice.config.swagger.AbstractSwagger2Configuration;
+import com.ecaservice.config.swagger.Swagger2ApiConfig;
+import com.ecaservice.config.swagger.SwaggerBaseConfiguration;
+import com.ecaservice.load.test.controller.LoadTestController;
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
 import springfox.documentation.spring.web.plugins.Docket;
 
 import javax.inject.Inject;
 
 /**
- * Swagger configuration for ECA.
+ * Swagger configuration for eca load tests.
  *
  * @author Roman Batygin
  */
-@Profile("!docker-prod")
 @Configuration
 @Import(SwaggerBaseConfiguration.class)
-public class QaSwagger2Configuration extends AbstractSwagger2Configuration {
+public class EcaLoadTestsSwagger2Configuration extends AbstractSwagger2Configuration {
 
-    private static final String QA_GROUP = "qa";
+    private static final String ECA_LOAD_TESTS_GROUP = "eca-load-tests";
 
     /**
      * Constructor with spring dependency injection.
@@ -28,23 +29,23 @@ public class QaSwagger2Configuration extends AbstractSwagger2Configuration {
      * @param swagger2ApiConfig - swagger api config bean
      */
     @Inject
-    public QaSwagger2Configuration(Swagger2ApiConfig swagger2ApiConfig) {
+    public EcaLoadTestsSwagger2Configuration(Swagger2ApiConfig swagger2ApiConfig) {
         super(swagger2ApiConfig);
     }
 
     @Override
-    @Bean(value = "qaDocket")
+    @Bean(name = "ecaLoadTestsDocket")
     public Docket docket(TypeResolver typeResolver) {
         return super.docket(typeResolver);
     }
 
     @Override
     protected String getGroupName() {
-        return QA_GROUP;
+        return ECA_LOAD_TESTS_GROUP;
     }
 
     @Override
     protected String getControllersPackage() {
-        return QaController.class.getPackage().getName();
+        return LoadTestController.class.getPackage().getName();
     }
 }

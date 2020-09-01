@@ -1,7 +1,9 @@
 package com.ecaservice.base.model;
 
 import com.ecaservice.base.model.databind.InstancesDeserializer;
+import com.ecaservice.base.model.databind.InstancesSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +25,7 @@ public class InstancesRequest {
      * Training data
      */
     @NotNull
+    @JsonSerialize(using = InstancesSerializer.class)
     @JsonDeserialize(using = InstancesDeserializer.class)
     private Instances data;
 }

@@ -1,0 +1,6 @@
+{
+  "type": "knn",
+  "numNeighbours": 10,
+  "distanceType": "SQUARE_EUCLID",
+  "weight": 1.0
+}

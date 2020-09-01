@@ -1,8 +1,11 @@
 package com.ecaservice.base.model;
 
 import com.ecaservice.base.model.databind.ClassifierDeserializer;
+import com.ecaservice.base.model.databind.ClassifierSerializer;
 import com.ecaservice.base.model.databind.InstancesDeserializer;
+import com.ecaservice.base.model.databind.InstancesSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
 import weka.classifiers.AbstractClassifier;
@@ -22,6 +25,7 @@ public class EvaluationRequest {
      * Classifier model
      */
     @NotNull
+    @JsonSerialize(using = ClassifierSerializer.class)
     @JsonDeserialize(using = ClassifierDeserializer.class)
     private AbstractClassifier classifier;
 
@@ -29,6 +33,7 @@ public class EvaluationRequest {
      * Training data
      */
     @NotNull
+    @JsonSerialize(using = InstancesSerializer.class)
     @JsonDeserialize(using = InstancesDeserializer.class)
     private Instances data;
 

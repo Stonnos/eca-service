@@ -1,0 +1,8 @@
+{
+  "type": "RandomForestsOptions",
+  "numIterations": 10,
+  "numThreads": 4,
+  "minObj": 2,
+  "maxDepth": 0,
+  "decisionTreeType": "CART"
+}

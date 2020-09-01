@@ -24,6 +24,7 @@
         <module>eca-web</module>
         <module>zuul-gate</module>
         <module>discovery-server</module>
+        <module>eca-load-tests</module>
     </modules>
 
     <parent>
