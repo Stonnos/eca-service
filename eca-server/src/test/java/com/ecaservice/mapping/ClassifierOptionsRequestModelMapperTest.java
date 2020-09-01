@@ -4,7 +4,9 @@ package com.ecaservice.mapping;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
+import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.model.entity.ErsResponseStatus;
+import com.ecaservice.report.model.ClassifierOptionsRequestBean;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
 import eca.core.evaluation.EvaluationMethod;
 import org.apache.commons.lang3.StringUtils;
@@ -49,7 +51,8 @@ class ClassifierOptionsRequestModelMapperTest {
     @Test
     void testMapClassifierOptionsRequestModel() {
         ClassifierOptionsRequestModel requestModel =
-                TestHelperUtils.createClassifierOptionsRequestModel(DATA_MD5_HASH, LocalDateTime.now(), ErsResponseStatus.SUCCESS,
+                TestHelperUtils.createClassifierOptionsRequestModel(DATA_MD5_HASH, LocalDateTime.now(),
+                        ErsResponseStatus.SUCCESS,
                         Collections.singletonList(TestHelperUtils.createClassifierOptionsResponseModel(OPTIONS)));
         ClassifierOptionsRequestDto classifierOptionsRequestDto = classifierOptionsRequestModelMapper.map(requestModel);
         Assertions.assertThat(classifierOptionsRequestDto).isNotNull();
@@ -81,5 +84,27 @@ class ClassifierOptionsRequestModelMapperTest {
         List<ClassifierOptionsRequestDto> classifierOptionsRequestDtoList = classifierOptionsRequestModelMapper.map
                 (Arrays.asList(requestModel, requestModel1));
         Assertions.assertThat(classifierOptionsRequestDtoList).hasSize(2);
+    }
+
+    @Test
+    void testMapToClassifierOptionsRequestBean() {
+        ClassifierOptionsResponseModel responseModel = TestHelperUtils.createClassifierOptionsResponseModel(OPTIONS);
+        ClassifierOptionsRequestModel requestModel =
+                TestHelperUtils.createClassifierOptionsRequestModel(DATA_MD5_HASH, LocalDateTime.now(),
+                        ErsResponseStatus.SUCCESS,
+                        Collections.singletonList(responseModel));
+        ClassifierOptionsRequestBean classifierOptionsRequestBean =
+                classifierOptionsRequestModelMapper.mapToBean(requestModel);
+        Assertions.assertThat(classifierOptionsRequestBean).isNotNull();
+        Assertions.assertThat(classifierOptionsRequestBean.getRequestDate()).isNotNull();
+        Assertions.assertThat(classifierOptionsRequestBean.getEvaluationMethod()).isNotNull();
+        Assertions.assertThat(classifierOptionsRequestBean.getRelationName()).isEqualTo(requestModel.getRelationName());
+        Assertions.assertThat(classifierOptionsRequestBean.getRequestId()).isEqualTo(requestModel.getRequestId());
+        Assertions.assertThat(classifierOptionsRequestBean.getResponseStatus()).isEqualTo(
+                requestModel.getResponseStatus().getDescription());
+        Assertions.assertThat(classifierOptionsRequestBean.getClassifierName()).isEqualTo(
+                responseModel.getClassifierName());
+        Assertions.assertThat(classifierOptionsRequestBean.getClassifierOptions()).isEqualTo(
+                responseModel.getOptions());
     }
 }

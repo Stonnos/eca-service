@@ -3,6 +3,7 @@ package com.ecaservice.report;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.FilterBean;
+import com.ecaservice.report.model.ReportType;
 import com.ecaservice.service.filter.FilterService;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.FilterRequestDto;
@@ -10,6 +11,7 @@ import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.core.DescriptiveEnum;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -34,6 +36,8 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
 
     private static final String VALUES_SEPARATOR = ", ";
 
+    @Getter
+    private final ReportType reportType;
     private final Class<E> entityClazz;
     private final FilterTemplateType filterTemplateType;
     private final FilterService filterService;

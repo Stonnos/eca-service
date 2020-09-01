@@ -13,6 +13,9 @@ import { saveAs } from 'file-saver/dist/FileSaver';
 import { FilterService } from "../../filter/services/filter.service";
 import { ClassifierOptionsRequestsFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
+import { ReportType } from "../../common/model/report-type.enum";
+import { finalize } from "rxjs/internal/operators";
+import { ReportsService } from "../../common/services/report.service";
 
 declare var Prism: any;
 
@@ -23,12 +26,15 @@ declare var Prism: any;
 })
 export class ClassifierOptionsRequestsComponent extends BaseListComponent<ClassifierOptionsRequestDto> implements OnInit {
 
+  private static readonly CLASSIFIER_OPTIONS_REQUESTS_REPORT_FILE_NAME = 'classifier-options-requests-report.xlsx';
+
   public selectedRequest: ClassifierOptionsRequestDto;
   public selectedColumn: string;
 
   public constructor(private injector: Injector,
                      private classifierOptionsService: ClassifierOptionsRequestService,
-                     private filterService: FilterService) {
+                     private filterService: FilterService,
+                     private reportsService: ReportsService) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ClassifierOptionsRequestsFields.REQUEST_DATE;
     this.linkColumns = [ClassifierOptionsRequestsFields.CLASSIFIER_NAME, ClassifierOptionsRequestsFields.EVALUATION_METHOD_DESCRIPTION];
@@ -54,6 +60,24 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<ClassifierOptionsRequestDto>> {
     return this.classifierOptionsService.getClassifiersOptionsRequests(pageRequest);
+  }
+
+  public generateReport() {
+    this.loading = true;
+    this.reportsService.getBaseReport(this.pageRequestDto, ReportType.CLASSIFIERS_OPTIONS_REQUESTS)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: (blob: Blob) => {
+          saveAs(blob, ClassifierOptionsRequestsComponent.CLASSIFIER_OPTIONS_REQUESTS_REPORT_FILE_NAME);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
   }
 
   public getColumnValue(column: string, item: ClassifierOptionsRequestDto) {

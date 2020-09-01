@@ -4,6 +4,7 @@ import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.report.model.ExperimentBean;
+import com.ecaservice.report.model.ReportType;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.service.filter.FilterService;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -35,7 +36,7 @@ public class ExperimentsBaseReportDataFetcher extends AbstractBaseReportDataFetc
     public ExperimentsBaseReportDataFetcher(FilterService filterService,
                                             ExperimentService experimentService,
                                             ExperimentMapper experimentMapper) {
-        super(Experiment.class, FilterTemplateType.EXPERIMENT, filterService);
+        super(ReportType.EXPERIMENTS, Experiment.class, FilterTemplateType.EXPERIMENT, filterService);
         this.experimentService = experimentService;
         this.experimentMapper = experimentMapper;
     }

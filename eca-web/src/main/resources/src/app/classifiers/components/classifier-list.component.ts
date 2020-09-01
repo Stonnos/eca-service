@@ -19,6 +19,7 @@ import { FieldService } from "../../common/services/field.service";
 import { finalize } from "rxjs/operators";
 import { ReportsService } from "../../common/services/report.service";
 import { Utils} from "../../common/util/utils";
+import { ReportType } from "../../common/model/report-type.enum";
 
 @Component({
   selector: 'app-classifier-list',
@@ -82,7 +83,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
 
   public generateReport() {
     this.loading = true;
-    this.reportsService.getEvaluationLogsBaseReport(this.pageRequestDto)
+    this.reportsService.getBaseReport(this.pageRequestDto, ReportType.EVALUATION_LOGS)
       .pipe(
         finalize(() => {
           this.loading = false;
