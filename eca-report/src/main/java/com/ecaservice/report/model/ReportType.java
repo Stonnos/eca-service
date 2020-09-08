@@ -39,6 +39,16 @@ public enum ReportType {
         public void handle(ReportTypeVisitor visitor) {
             visitor.caseClassifierOptionsRequests();
         }
+    },
+
+    /**
+     * Classifiers configuration report
+     */
+    CLASSIFIERS_CONFIGURATION("classifiers-configuration") {
+        @Override
+        public void handle(ReportTypeVisitor visitor) {
+            visitor.caseClassifiersConfiguration();
+        }
     };
 
     /**

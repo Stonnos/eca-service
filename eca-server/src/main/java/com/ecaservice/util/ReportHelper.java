@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import static com.ecaservice.report.BaseReportGenerator.generateReport;
+import static com.ecaservice.report.ReportGenerator.generateReport;
 
 /**
  * Report helper class.
