@@ -1,7 +1,8 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.classifier.options.model.DecisionTreeOptions;
+import com.ecaservice.TestHelperUtils;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
+import com.ecaservice.report.model.ClassifierOptionsBean;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,7 +10,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,21 +24,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import({ClassifierOptionsDatabaseModelMapperImpl.class, DateTimeConverter.class})
 class ClassifierOptionsDatabaseModelMapperTest {
 
-    private static final String CONFIG = "config";
     private static final long ID = 1L;
-    private static final String CREATED_BY = "user";
 
     @Inject
     private ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
 
     @Test
     void testMapClassifierOptionsDatabaseModel() {
-        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
+        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
+                TestHelperUtils.createClassifierOptionsDatabaseModel();
         classifierOptionsDatabaseModel.setId(ID);
-        classifierOptionsDatabaseModel.setConfig(CONFIG);
-        classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
-        classifierOptionsDatabaseModel.setOptionsName(DecisionTreeOptions.class.getSimpleName());
-        classifierOptionsDatabaseModel.setCreatedBy(CREATED_BY);
         ClassifierOptionsDto classifierOptionsDto =
                 classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModel);
         assertThat(classifierOptionsDto).isNotNull();
@@ -51,12 +46,26 @@ class ClassifierOptionsDatabaseModelMapperTest {
 
     @Test
     void testMapClassifierOptionsDatabaseModelsList() {
-        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
-        classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
-        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel1 = new ClassifierOptionsDatabaseModel();
-        classifierOptionsDatabaseModel1.setCreationDate(LocalDateTime.now().plusDays(1L));
-        List<ClassifierOptionsDto> classifierOptionsDtoList = classifierOptionsDatabaseModelMapper.map(
-                Arrays.asList(classifierOptionsDatabaseModel, classifierOptionsDatabaseModel1));
-        assertThat(classifierOptionsDtoList).hasSize(2);
+        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
+                Arrays.asList(TestHelperUtils.createClassifierOptionsDatabaseModel(),
+                        TestHelperUtils.createClassifierOptionsDatabaseModel());
+        List<ClassifierOptionsDto> classifierOptionsDtoList =
+                classifierOptionsDatabaseModelMapper.map(classifierOptionsDatabaseModels);
+        assertThat(classifierOptionsDtoList).hasSameSizeAs(classifierOptionsDatabaseModels);
+    }
+
+    @Test
+    void testMapToClassifierOptionsBean() {
+        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
+                TestHelperUtils.createClassifierOptionsDatabaseModel();
+        ClassifierOptionsBean classifiersConfigurationBean =
+                classifierOptionsDatabaseModelMapper.mapToBean(classifierOptionsDatabaseModel);
+        assertThat(classifiersConfigurationBean).isNotNull();
+        assertThat(classifiersConfigurationBean.getConfig()).isEqualTo(classifierOptionsDatabaseModel.getConfig());
+        assertThat(classifiersConfigurationBean.getCreatedBy()).isEqualTo(
+                classifierOptionsDatabaseModel.getCreatedBy());
+        assertThat(classifiersConfigurationBean.getOptionsName()).isEqualTo(
+                classifierOptionsDatabaseModel.getOptionsName());
+        assertThat(classifiersConfigurationBean.getCreationDate()).isNotNull();
     }
 }

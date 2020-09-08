@@ -140,6 +140,8 @@ public class TestHelperUtils {
     private static final String FILTER_DESCRIPTION = "description";
     private static final String REPLY_TO = "replyTo";
     private static final int FILTER_TEMPLATE_FIELDS = 5;
+    private static final String CREATED_BY = "user";
+    private static final String CONFIG = "config";
 
     /**
      * Generates the test data set.
@@ -985,5 +987,19 @@ public class TestHelperUtils {
                 .items(Collections.emptyList())
                 .filters(Collections.emptyList())
                 .build();
+    }
+
+    /**
+     * Creates classifier options database model.
+     *
+     * @return classifier options database model
+     */
+    public static ClassifierOptionsDatabaseModel createClassifierOptionsDatabaseModel() {
+        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
+        classifierOptionsDatabaseModel.setConfig(CONFIG);
+        classifierOptionsDatabaseModel.setCreationDate(LocalDateTime.now());
+        classifierOptionsDatabaseModel.setOptionsName(DecisionTreeOptions.class.getSimpleName());
+        classifierOptionsDatabaseModel.setCreatedBy(CREATED_BY);
+        return classifierOptionsDatabaseModel;
     }
 }
