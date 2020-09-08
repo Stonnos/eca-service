@@ -45,7 +45,7 @@ public class ClassifiersConfigurationBean {
     /**
      * Classifiers options count associated with configuration
      */
-    private long classifiersOptionsCount;
+    private int classifiersOptionsCount;
 
     /**
      * Classifier options list associated with configuration

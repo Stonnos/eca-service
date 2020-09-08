@@ -40,7 +40,7 @@ public interface ClassifierOptionsDatabaseModelMapper {
      * @param classifierOptionsDatabaseModels classifier options database model
      * @return classifier options report beans
      */
-    List<ClassifierOptionsBean> mapTpBeans(List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels);
+    List<ClassifierOptionsBean> mapToBeans(List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels);
 
     /**
      * Maps classifier options database models list to dto models list.

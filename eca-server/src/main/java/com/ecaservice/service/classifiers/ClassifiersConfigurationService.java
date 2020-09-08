@@ -4,10 +4,13 @@ import com.ecaservice.aspect.annotation.Locked;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.filter.ClassifiersConfigurationFilter;
+import com.ecaservice.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.mapping.ClassifiersConfigurationMapper;
+import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.model.projections.ClassifiersOptionsStatistics;
+import com.ecaservice.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.PageRequestService;
@@ -50,6 +53,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
     private final UserService userService;
     private final FilterService filterService;
     private final ClassifiersConfigurationMapper classifiersConfigurationMapper;
+    private final ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
     private final CommonConfig commonConfig;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
     private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
@@ -173,6 +177,24 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
         classifiersConfigurationDto.setClassifiersOptionsCount(
                 classifierOptionsDatabaseModelRepository.countByConfiguration(classifiersConfiguration));
         return classifiersConfigurationDto;
+    }
+
+    /**
+     * Gets classifiers configuration report by id.
+     *
+     * @param id - configuration id
+     * @return classifiers configuration report
+     */
+    public ClassifiersConfigurationBean getClassifiersConfigurationReport(long id) {
+        ClassifiersConfiguration classifiersConfiguration = getById(id);
+        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
+                classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration);
+        ClassifiersConfigurationBean classifiersConfigurationBean =
+                classifiersConfigurationMapper.mapToBean(classifiersConfiguration);
+        classifiersConfigurationBean.setClassifiersOptionsCount(classifierOptionsDatabaseModels.size());
+        classifiersConfigurationBean.setClassifierOptions(
+                classifierOptionsDatabaseModelMapper.mapToBeans(classifierOptionsDatabaseModels));
+        return classifiersConfigurationBean;
     }
 
     private ClassifiersConfiguration getById(long id) {
