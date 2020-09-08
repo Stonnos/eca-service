@@ -50,5 +50,5 @@ public class ClassifiersConfigurationBean {
     /**
      * Classifier options list associated with configuration
      */
-    private List<ClassifierOptionsBean> classifierOptions;
+    private List<ClassifierOptionsBean> classifiersOptions;
 }

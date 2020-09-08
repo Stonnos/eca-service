@@ -192,7 +192,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
         ClassifiersConfigurationBean classifiersConfigurationBean =
                 classifiersConfigurationMapper.mapToBean(classifiersConfiguration);
         classifiersConfigurationBean.setClassifiersOptionsCount(classifierOptionsDatabaseModels.size());
-        classifiersConfigurationBean.setClassifierOptions(
+        classifiersConfigurationBean.setClassifiersOptions(
                 classifierOptionsDatabaseModelMapper.mapToBeans(classifierOptionsDatabaseModels));
         return classifiersConfigurationBean;
     }
