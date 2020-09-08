@@ -70,7 +70,7 @@ public class ReportGenerator {
         });
     }
 
-    private static <T> void generateReport(String template, Object reportBean, OutputStream outputStream) {
+    private static void generateReport(String template, Object reportBean, OutputStream outputStream) {
         try {
             @Cleanup InputStream inputStream = ReportGenerator.class.getClassLoader().getResourceAsStream(template);
             Context context = new Context(Collections.singletonMap(REPORT_VARIABLE, reportBean));
