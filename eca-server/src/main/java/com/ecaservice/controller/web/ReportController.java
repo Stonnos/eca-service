@@ -55,7 +55,7 @@ public class ReportController {
             throws IOException {
         AbstractBaseReportDataFetcher reportDataFetcher = getReportDataFetcher(reportType);
         BaseReportBean<?> baseReportBean = reportDataFetcher.fetchReportData(pageRequestDto);
-        download(reportType, httpServletResponse, baseReportBean);
+        download(reportType, reportType.getName(), httpServletResponse, baseReportBean);
     }
 
     private AbstractBaseReportDataFetcher getReportDataFetcher(ReportType reportType) {
