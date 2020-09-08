@@ -6,7 +6,6 @@ import {
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { BaseListComponent } from "../../common/lists/base-list.component";
 import { MessageService } from "primeng/api";
-import { saveAs } from 'file-saver/dist/FileSaver';
 import { ClassifiersService } from "../services/classifiers.service";
 import { OverlayPanel } from "primeng/primeng";
 import { Observable } from "rxjs/internal/Observable";
@@ -16,7 +15,6 @@ import { Router } from "@angular/router";
 import { RouterPaths } from "../../routing/router-paths";
 import { EvaluationLogFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
-import { finalize } from "rxjs/operators";
 import { ReportsService } from "../../common/services/report.service";
 import { Utils} from "../../common/util/utils";
 import { ReportType } from "../../common/model/report-type.enum";
@@ -82,21 +80,8 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   }
 
   public generateReport() {
-    this.loading = true;
-    this.reportsService.getBaseReport(this.pageRequestDto, ReportType.EVALUATION_LOGS)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
-      .subscribe({
-        next: (blob: Blob) => {
-          saveAs(blob, ClassifierListComponent.EVALUATION_LOGS_REPORT_FILE_NAME);
-        },
-        error: (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-        }
-      });
+    const observable = this.reportsService.getBaseReport(this.pageRequestDto, ReportType.EVALUATION_LOGS);
+    this.downloadReport(observable, ClassifierListComponent.EVALUATION_LOGS_REPORT_FILE_NAME);
   }
 
   public getNumFolds(evaluationLog: EvaluationLogDto): number {

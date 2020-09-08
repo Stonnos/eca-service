@@ -88,7 +88,13 @@ export class ClassifiersConfigurationMenuComponent implements OnInit, OnChanges 
         {
           icon: 'pi pi-fw pi-cog',
           styleClass: 'main-menu-item',
-          items: [this.renameMenuItem, this.deleteMenuItem, this.setActiveMenuItem, this.uploadClassifiersOptionsMenu]
+          items: [
+            this.renameMenuItem,
+            this.deleteMenuItem,
+            this.setActiveMenuItem,
+            this.uploadClassifiersOptionsMenu,
+            this.downloadReportMenu
+          ]
         }
       ];
     }

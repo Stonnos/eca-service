@@ -13,7 +13,6 @@ import { finalize } from "rxjs/internal/operators";
 import { ClassifiersConfigurationModel } from "../../create-classifiers-configuration/model/classifiers-configuration.model";
 import { Router } from "@angular/router";
 import { RouterPaths } from "../../routing/router-paths";
-import { saveAs } from 'file-saver/dist/FileSaver';
 import { Utils } from "../../common/util/utils";
 
 @Component({
@@ -101,21 +100,8 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   }
 
   public onDownloadReport(item: ClassifiersConfigurationDto): void {
-    this.loading = true;
-    this.classifiersConfigurationsService.getClassifiersConfigurationReport(item.id)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
-      .subscribe({
-        next: (blob: Blob) => {
-          saveAs(blob, Utils.getClassifiersConfigurationFile(item));
-        },
-        error: (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-        }
-      });
+    const observable = this.classifiersConfigurationsService.getClassifiersConfigurationReport(item.id);
+    this.downloadReport(observable, Utils.getClassifiersConfigurationFile(item));
   }
 
   public onUploadedClassifiersOptions(event): void {

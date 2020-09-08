@@ -14,7 +14,6 @@ import { FilterService } from "../../filter/services/filter.service";
 import { ClassifierOptionsRequestsFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
 import { ReportType } from "../../common/model/report-type.enum";
-import { finalize } from "rxjs/internal/operators";
 import { ReportsService } from "../../common/services/report.service";
 
 declare var Prism: any;
@@ -63,21 +62,8 @@ export class ClassifierOptionsRequestsComponent extends BaseListComponent<Classi
   }
 
   public generateReport() {
-    this.loading = true;
-    this.reportsService.getBaseReport(this.pageRequestDto, ReportType.CLASSIFIERS_OPTIONS_REQUESTS)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
-      .subscribe({
-        next: (blob: Blob) => {
-          saveAs(blob, ClassifierOptionsRequestsComponent.CLASSIFIER_OPTIONS_REQUESTS_REPORT_FILE_NAME);
-        },
-        error: (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-        }
-      });
+    const observable = this.reportsService.getBaseReport(this.pageRequestDto, ReportType.CLASSIFIERS_OPTIONS_REQUESTS);
+    this.downloadReport(observable, ClassifierOptionsRequestsComponent.CLASSIFIER_OPTIONS_REQUESTS_REPORT_FILE_NAME);
   }
 
   public getColumnValue(column: string, item: ClassifierOptionsRequestDto) {
