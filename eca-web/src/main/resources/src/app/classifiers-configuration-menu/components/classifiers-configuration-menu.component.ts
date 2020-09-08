@@ -77,7 +77,7 @@ export class ClassifiersConfigurationMenuComponent implements OnInit, OnChanges 
         }
       };
       this.downloadReportMenu = {
-        label: 'Экспортировать',
+        label: 'Сформировать отчет',
         icon: 'pi pi-file',
         styleClass: 'menu-item',
         command: () => {
