@@ -11,13 +11,9 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 
 import static com.ecaservice.util.Utils.getEvaluationMethodDescription;
 
@@ -26,11 +22,9 @@ import static com.ecaservice.util.Utils.getEvaluationMethodDescription;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = {ErsEvaluationMethodMapper.class, ClassifierOptionsResponseModelMapper.class},
+@Mapper(uses = {ErsEvaluationMethodMapper.class, ClassifierOptionsResponseModelMapper.class, DateTimeConverter.class},
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class ClassifierOptionsRequestModelMapper {
-
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Maps classifier options request to classifier options request entity.
@@ -116,10 +110,5 @@ public abstract class ClassifierOptionsRequestModelMapper {
             classifierOptionsRequestBean.setClassifierName(classifierOptionsResponseModel.getClassifierName());
             classifierOptionsRequestBean.setClassifierOptions(classifierOptionsResponseModel.getOptions());
         }
-    }
-
-    @Named("formatLocalDateTime")
-    protected String formatLocalDateTime(LocalDateTime localDateTime) {
-        return Optional.ofNullable(localDateTime).map(dateTimeFormatter::format).orElse(null);
     }
 }

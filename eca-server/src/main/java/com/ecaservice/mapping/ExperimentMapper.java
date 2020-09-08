@@ -9,6 +9,7 @@ import com.ecaservice.web.dto.model.ExperimentDto;
 import eca.core.evaluation.EvaluationMethod;
 import org.apache.commons.io.FilenameUtils;
 import org.mapstruct.AfterMapping;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -23,7 +24,7 @@ import static com.ecaservice.util.Utils.getEvaluationMethodDescription;
  *
  * @author Roman Batygin
  */
-@Mapper
+@Mapper(uses = DateTimeConverter.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class ExperimentMapper extends AbstractEvaluationMapper {
 
     /**

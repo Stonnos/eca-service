@@ -1,6 +1,7 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.model.entity.ClassifiersConfiguration;
+import com.ecaservice.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
@@ -38,7 +39,7 @@ public abstract class ClassifiersConfigurationMapper {
     @Mapping(source = "configurationName", target = "configurationName", qualifiedByName = "trim")
     @Mapping(target = "id", ignore = true)
     public abstract void update(UpdateClassifiersConfigurationDto configurationDto,
-                @MappingTarget ClassifiersConfiguration classifiersConfiguration);
+                                @MappingTarget ClassifiersConfiguration classifiersConfiguration);
 
     /**
      * Maps classifiers configuration entity to its dto model.
@@ -47,6 +48,14 @@ public abstract class ClassifiersConfigurationMapper {
      * @return classifiers configuration dto
      */
     public abstract ClassifiersConfigurationDto map(ClassifiersConfiguration classifiersConfiguration);
+
+    /**
+     * Maps classifiers configuration entity to report bean model.
+     *
+     * @param classifiersConfiguration - classifiers configuration entity
+     * @return classifiers configuration report bean model
+     */
+    public abstract ClassifiersConfigurationBean mapToBean(ClassifiersConfiguration classifiersConfiguration);
 
     /**
      * Maps classifiers configuration entities to its dto models.

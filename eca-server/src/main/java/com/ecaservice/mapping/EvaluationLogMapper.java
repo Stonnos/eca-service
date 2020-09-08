@@ -25,7 +25,7 @@ import static com.ecaservice.util.Utils.getEvaluationMethodDescription;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = {InstancesInfoMapper.class, ClassifierInfoMapper.class},
+@Mapper(uses = {InstancesInfoMapper.class, ClassifierInfoMapper.class, DateTimeConverter.class},
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
 
