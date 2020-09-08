@@ -23,7 +23,6 @@
             **/exception/**/*,
             **/dictionary/**/*,
             **/util/**/*,
-            **/qa/**/*,
             **/EcaApplication.java
         </sonar.coverage.exclusions>
     </properties>
