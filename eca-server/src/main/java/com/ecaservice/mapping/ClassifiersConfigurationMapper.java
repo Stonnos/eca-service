@@ -5,6 +5,7 @@ import com.ecaservice.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -18,7 +19,7 @@ import java.util.Optional;
  *
  * @author Roman Batygin
  */
-@Mapper
+@Mapper(uses = DateTimeConverter.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class ClassifiersConfigurationMapper {
 
     /**
@@ -55,6 +56,8 @@ public abstract class ClassifiersConfigurationMapper {
      * @param classifiersConfiguration - classifiers configuration entity
      * @return classifiers configuration report bean model
      */
+    @Mapping(source = "creationDate", target = "creationDate", qualifiedByName = "formatLocalDateTime")
+    @Mapping(source = "updated", target = "updated", qualifiedByName = "formatLocalDateTime")
     public abstract ClassifiersConfigurationBean mapToBean(ClassifiersConfiguration classifiersConfiguration);
 
     /**

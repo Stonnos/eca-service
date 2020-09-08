@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import(ClassifiersConfigurationMapperImpl.class)
+@Import({ClassifiersConfigurationMapperImpl.class, DateTimeConverter.class})
 class ClassifiersConfigurationMapperTest {
 
     private static final String CONFIGURATION_NAME = "ConfigurationName";

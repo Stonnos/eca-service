@@ -2,6 +2,7 @@ package com.ecaservice.controller.web;
 
 import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.mapping.ClassifiersConfigurationMapperImpl;
+import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.service.classifiers.ClassifiersConfigurationService;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
@@ -42,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Roman Batygin
  */
 @WebMvcTest(controllers = ClassifiersConfigurationController.class)
-@Import(ClassifiersConfigurationMapperImpl.class)
+@Import({ClassifiersConfigurationMapperImpl.class, DateTimeConverter.class})
 class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
 
     private static final String BASE_URL = "/experiment/classifiers-configurations";
