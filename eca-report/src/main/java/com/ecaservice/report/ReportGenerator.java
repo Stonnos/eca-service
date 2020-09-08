@@ -45,9 +45,8 @@ public class ReportGenerator {
      * @param reportType   - report type
      * @param reportBean   - report bean
      * @param outputStream - output stream object
-     * @param <T>          - item generic type
      */
-    public static <T> void generateReport(ReportType reportType, Object reportBean, OutputStream outputStream) {
+    public static void generateReport(ReportType reportType, Object reportBean, OutputStream outputStream) {
         reportType.handle(new ReportTypeVisitor() {
             @Override
             public void caseExperiments() {
