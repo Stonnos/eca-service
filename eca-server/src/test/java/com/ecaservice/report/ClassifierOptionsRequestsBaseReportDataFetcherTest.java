@@ -4,6 +4,7 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.mapping.ClassifierOptionsRequestModelMapperImpl;
 import com.ecaservice.mapping.ClassifierOptionsResponseModelMapperImpl;
+import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.mapping.ErsEvaluationMethodMapperImpl;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ErsRequest_;
@@ -36,7 +37,7 @@ import static com.google.common.collect.Lists.newArrayList;
  *
  * @author Roman Batygin
  */
-@Import({CommonConfig.class, ClassifierOptionsRequestModelMapperImpl.class,
+@Import({CommonConfig.class, ClassifierOptionsRequestModelMapperImpl.class, DateTimeConverter.class,
         ClassifierOptionsRequestsBaseReportDataFetcher.class, ErsEvaluationMethodMapperImpl.class,
         ClassifierOptionsResponseModelMapperImpl.class, ClassifierOptionsRequestService.class})
 class ClassifierOptionsRequestsBaseReportDataFetcherTest extends AbstractJpaTest {

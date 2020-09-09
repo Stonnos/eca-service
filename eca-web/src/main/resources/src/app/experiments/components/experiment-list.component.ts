@@ -79,21 +79,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   }
 
   public generateReport() {
-    this.loading = true;
-    this.reportsService.getBaseReport(this.pageRequestDto, ReportType.EXPERIMENTS)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
-      .subscribe({
-        next: (blob: Blob) => {
-          saveAs(blob, ExperimentListComponent.EXPERIMENTS_REPORT_FILE_NAME);
-        },
-        error: (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-        }
-      });
+    const observable = this.reportsService.getBaseReport(this.pageRequestDto, ReportType.EXPERIMENTS);
+    this.downloadReport(observable, ExperimentListComponent.EXPERIMENTS_REPORT_FILE_NAME);
   }
 
   public getNumFolds(experimentDto: ExperimentDto): number {

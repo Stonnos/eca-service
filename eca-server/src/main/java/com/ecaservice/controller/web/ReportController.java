@@ -7,11 +7,8 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,10 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
 
-import static com.ecaservice.report.BaseReportGenerator.generateReport;
+import static com.ecaservice.util.ReportHelper.download;
 
 /**
  * Controller for reports downloading.
@@ -37,9 +33,6 @@ import static com.ecaservice.report.BaseReportGenerator.generateReport;
 @RequestMapping("/reports")
 @RequiredArgsConstructor
 public class ReportController {
-
-    private static final String ATTACHMENT_FORMAT = "attachment; filename=%s";
-    private static final String FILE_NAME_FORMAT = "%s.xlsx";
 
     private final List<AbstractBaseReportDataFetcher> reportDataFetchers;
 
@@ -62,12 +55,7 @@ public class ReportController {
             throws IOException {
         AbstractBaseReportDataFetcher reportDataFetcher = getReportDataFetcher(reportType);
         BaseReportBean<?> baseReportBean = reportDataFetcher.fetchReportData(pageRequestDto);
-        String fileName = String.format(FILE_NAME_FORMAT, reportType.getName());
-        @Cleanup OutputStream outputStream = httpServletResponse.getOutputStream();
-        httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
-        httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(ATTACHMENT_FORMAT, fileName));
-        generateReport(reportType, baseReportBean, outputStream);
-        outputStream.flush();
+        download(reportType, reportType.getName(), httpServletResponse, baseReportBean);
     }
 
     private AbstractBaseReportDataFetcher getReportDataFetcher(ReportType reportType) {

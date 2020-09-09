@@ -3,6 +3,7 @@ package com.ecaservice.service.experiment;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
+import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.mapping.ExperimentMapperImpl;
 import com.ecaservice.mapping.ExperimentResultsMapper;
 import com.ecaservice.mapping.ExperimentResultsMapperImpl;
@@ -42,7 +43,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({ClassifierInputOptionsMapperImpl.class, ExperimentResultsMapperImpl.class,
-        ClassifierInfoMapperImpl.class, ExperimentMapperImpl.class})
+        ClassifierInfoMapperImpl.class, ExperimentMapperImpl.class, DateTimeConverter.class})
 class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     @Mock

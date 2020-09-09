@@ -4,6 +4,7 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
+import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.mapping.InstancesInfoMapperImpl;
@@ -54,7 +55,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({CommonConfig.class, ClassifierInfoMapperImpl.class, EvaluationLogMapperImpl.class,
-        InstancesInfoMapperImpl.class, ClassifierInputOptionsMapperImpl.class})
+        InstancesInfoMapperImpl.class, ClassifierInputOptionsMapperImpl.class, DateTimeConverter.class})
 class EvaluationLogServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;

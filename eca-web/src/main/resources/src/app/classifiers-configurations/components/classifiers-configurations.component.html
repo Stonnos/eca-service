@@ -47,7 +47,8 @@
             (onDelete)="onDeleteClassifiersConfiguration($event)"
             (onSetActive)="onSetActiveClassifiersConfiguration($event)"
             (onUploadClassifiers)="showUploadClassifiersOptionsDialogVisibility($event)"
-            (onRename)="showEditClassifiersConfigurationDialog($event)">
+            (onRename)="showEditClassifiersConfigurationDialog($event)"
+            (onDownloadReport)="onDownloadReport($event)">
           </app-classifiers-configuration-menu>
         </td>
         <td *ngFor="let column of columns">

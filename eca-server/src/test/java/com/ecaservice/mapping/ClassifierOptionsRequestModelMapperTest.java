@@ -29,7 +29,7 @@ import java.util.List;
  */
 @ExtendWith(SpringExtension.class)
 @Import({ClassifierOptionsRequestModelMapperImpl.class, ErsEvaluationMethodMapperImpl.class,
-        ClassifierOptionsResponseModelMapperImpl.class})
+        ClassifierOptionsResponseModelMapperImpl.class, DateTimeConverter.class})
 class ClassifierOptionsRequestModelMapperTest {
 
     private static final String DATA_MD5_HASH = "hash";

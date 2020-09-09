@@ -13,6 +13,7 @@ import {
 import { FieldService } from "../services/field.service";
 import { FieldLink } from "../model/field-link";
 import { ColumnModel } from "../model/column.model";
+import { saveAs } from 'file-saver/dist/FileSaver';
 
 export abstract class BaseListComponent<T> implements FieldLink {
 
@@ -65,6 +66,24 @@ export abstract class BaseListComponent<T> implements FieldLink {
   }
 
   public abstract getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<T>>;
+
+  public downloadReport(observable: Observable<Blob>, fileName: string): void {
+    this.loading = true;
+    observable
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: (blob: Blob) => {
+          saveAs(blob, fileName);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
 
   public onLazyLoad(event: LazyLoadEvent) {
     const page: number = Math.round(event.first / event.rows);

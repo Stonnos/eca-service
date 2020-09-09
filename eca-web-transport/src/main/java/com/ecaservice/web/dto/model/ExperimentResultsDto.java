@@ -40,7 +40,7 @@ public class ExperimentResultsDto {
     private BigDecimal pctCorrect;
 
     /**
-     * s experiment results sent to ERS?
+     * Is experiment results sent to ERS?
      */
     @ApiModelProperty("Is experiment results sent to ERS?")
     private boolean sent;

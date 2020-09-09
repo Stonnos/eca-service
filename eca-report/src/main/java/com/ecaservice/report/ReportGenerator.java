@@ -1,7 +1,6 @@
 package com.ecaservice.report;
 
 import com.ecaservice.report.exception.ReportException;
-import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.ReportType;
 import com.ecaservice.report.model.ReportTypeVisitor;
 import lombok.Cleanup;
@@ -15,12 +14,12 @@ import java.io.OutputStream;
 import java.util.Collections;
 
 /**
- * Class for base reports generation.
+ * Class for reports generation.
  *
  * @author Roman Batygin
  */
 @UtilityClass
-public class BaseReportGenerator {
+public class ReportGenerator {
 
     /**
      * Templates paths
@@ -32,46 +31,49 @@ public class BaseReportGenerator {
             REPORTS_DIRECTORY + "/evaluation-logs-report-template.xlsx";
     private static final String CLASSIFIER_OPTIONS_REQUESTS_TEMPLATE =
             REPORTS_DIRECTORY + "/classifier-options-requests-report-template.xlsx";
+    private static final String CLASSIFIERS_CONFIGURATION_TEMPLATE =
+            REPORTS_DIRECTORY + "/classifiers-configuration-report-template.xlsx";
 
     /**
      * Context variables
      */
     private static final String REPORT_VARIABLE = "report";
 
-
     /**
      * Generates report.
      *
-     * @param reportType     - report type
-     * @param baseReportBean - report bean
-     * @param outputStream   - output stream object
-     * @param <T>            - item generic type
+     * @param reportType   - report type
+     * @param reportBean   - report bean
+     * @param outputStream - output stream object
      */
-    public static <T> void generateReport(ReportType reportType, BaseReportBean<T> baseReportBean,
-                                          OutputStream outputStream) {
+    public static void generateReport(ReportType reportType, Object reportBean, OutputStream outputStream) {
         reportType.handle(new ReportTypeVisitor() {
             @Override
             public void caseExperiments() {
-                generateReport(EXPERIMENTS_REPORT_TEMPLATE, baseReportBean, outputStream);
+                generateReport(EXPERIMENTS_REPORT_TEMPLATE, reportBean, outputStream);
             }
 
             @Override
             public void caseEvaluationLogs() {
-                generateReport(EVALUATION_LOGS_REPORT_TEMPLATE, baseReportBean, outputStream);
+                generateReport(EVALUATION_LOGS_REPORT_TEMPLATE, reportBean, outputStream);
             }
 
             @Override
             public void caseClassifierOptionsRequests() {
-                generateReport(CLASSIFIER_OPTIONS_REQUESTS_TEMPLATE, baseReportBean, outputStream);
+                generateReport(CLASSIFIER_OPTIONS_REQUESTS_TEMPLATE, reportBean, outputStream);
+            }
+
+            @Override
+            public void caseClassifiersConfiguration() {
+                generateReport(CLASSIFIERS_CONFIGURATION_TEMPLATE, reportBean, outputStream);
             }
         });
     }
 
-    private static <T> void generateReport(String template, BaseReportBean<T> baseReportBean,
-                                           OutputStream outputStream) {
+    private static void generateReport(String template, Object reportBean, OutputStream outputStream) {
         try {
-            @Cleanup InputStream inputStream = BaseReportGenerator.class.getClassLoader().getResourceAsStream(template);
-            Context context = new Context(Collections.singletonMap(REPORT_VARIABLE, baseReportBean));
+            @Cleanup InputStream inputStream = ReportGenerator.class.getClassLoader().getResourceAsStream(template);
+            Context context = new Context(Collections.singletonMap(REPORT_VARIABLE, reportBean));
             JxlsHelper.getInstance().processTemplate(inputStream, outputStream, context);
         } catch (IOException ex) {
             throw new ReportException(ex.getMessage());

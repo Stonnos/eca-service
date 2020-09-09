@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import({ExperimentMapperImpl.class, CrossValidationConfig.class})
+@Import({ExperimentMapperImpl.class, CrossValidationConfig.class, DateTimeConverter.class})
 class ExperimentMapperTest {
 
     private static final String TRAINING_DATA_ABSOLUTE_PATH = "/home/data.xls";
