@@ -3,6 +3,7 @@ package com.ecaservice.controller.web;
 import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.mapping.ClassifiersConfigurationMapperImpl;
 import com.ecaservice.mapping.DateTimeConverter;
+import com.ecaservice.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.service.classifiers.ClassifiersConfigurationService;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
@@ -53,6 +54,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
     private static final String SET_ACTIVE_URL = BASE_URL + "/set-active";
     private static final String SAVE_URL = BASE_URL + "/save";
     private static final String UPDATE_URL = BASE_URL + "/update";
+    private static final String REPORT_URL = BASE_URL + "/report/{id}";
 
     private static final String ID_PARAM = "id";
     private static final long ID = 1L;
@@ -307,5 +309,32 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
                 .content(objectMapper.writeValueAsString(updateClassifiersConfigurationDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void testDownloadClassifiersConfigurationReportUnauthorized() throws Exception {
+        mockMvc.perform(get(REPORT_URL, ID))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testDownloadClassifiersConfigurationReportNotFound() throws Exception {
+        doThrow(new EntityNotFoundException()).when(classifiersConfigurationService).getClassifiersConfigurationReport(
+                ID);
+        mockMvc.perform(get(REPORT_URL, ID)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testDownloadClassifiersConfigurationReportOk() throws Exception {
+        ClassifiersConfigurationBean classifiersConfigurationBean = new ClassifiersConfigurationBean();
+        classifiersConfigurationBean.setClassifiersOptions(Collections.emptyList());
+        when(classifiersConfigurationService.getClassifiersConfigurationReport(ID)).thenReturn(
+                classifiersConfigurationBean);
+        mockMvc.perform(get(REPORT_URL, ID)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE));
     }
 }
