@@ -50,7 +50,7 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx2g"
+      JAVA_OPTS: "-Xmx1g"
       DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
       DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
     networks:
@@ -68,6 +68,7 @@ services:
       SPRING_PROFILES_ACTIVE: "docker"
       DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
       DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
+      JAVA_OPTS: "-Xmx756m"
     networks:
       - default
     depends_on:
@@ -82,6 +83,7 @@ services:
       SPRING_PROFILES_ACTIVE: "docker"
       DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
       DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
+      JAVA_OPTS: "-Xmx756m"
     networks:
       - default
     depends_on:
@@ -96,6 +98,7 @@ services:
       SPRING_PROFILES_ACTIVE: "docker"
       DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
       DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
+      JAVA_OPTS: "-Xmx756m"
     networks:
       - default
     depends_on:
@@ -108,6 +111,7 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
+      JAVA_OPTS: "-Xmx512m"
     networks:
       - default
     depends_on:
@@ -120,6 +124,7 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
+      JAVA_OPTS: "-Xmx756m"
     ports:
       - "8080:8080"
     networks:
