@@ -18,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import static com.ecaservice.load.test.util.Utils.totalTime;
+import static com.ecaservice.load.test.util.Utils.tps;
 
 /**
  * Load test mapper.
@@ -91,6 +92,11 @@ public abstract class LoadTestMapper {
     @AfterMapping
     protected void mapTotalTime(LoadTestEntity loadTestEntity, @MappingTarget LoadTestBean loadTestBean) {
         loadTestBean.setTotalTime(totalTime(loadTestEntity.getStarted(), loadTestEntity.getFinished()));
+    }
+
+    @AfterMapping
+    protected void mapTps(LoadTestEntity jobEntity, @MappingTarget LoadTestBean loadTestBean) {
+        loadTestBean.setTps(tps(jobEntity));
     }
 
     @AfterMapping

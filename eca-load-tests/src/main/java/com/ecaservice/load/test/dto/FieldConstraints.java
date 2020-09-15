@@ -13,7 +13,7 @@ public class FieldConstraints {
     public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     public static final int MIN_NUM_REQUESTS = 1;
-    public static final int MAX_NUM_REQUESTS = 500;
+    public static final int MAX_NUM_REQUESTS = 5000;
 
     public static final int MIN_NUM_THREADS = 1;
     public static final int MAX_NUM_THREADS = 10;

@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
 import weka.core.Instances;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -24,6 +26,7 @@ import java.util.UUID;
 public class Utils {
 
     private static final String GMT_TIME_ZONE = "GMT";
+    private static final int SCALE = 2;
 
     private final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss:SS");
 
@@ -69,5 +72,25 @@ public class Utils {
             return TIME_FORMATTER.format(totalTime);
         }
         return null;
+    }
+
+    /**
+     * Calculates tps value.
+     *
+     * @param loadTestEntity - load tests entity
+     * @return tps value
+     */
+    public static BigDecimal tps(LoadTestEntity loadTestEntity) {
+        if (loadTestEntity.getStarted() != null && loadTestEntity.getFinished() != null) {
+            long totalTimeSec = ChronoUnit.SECONDS.between(loadTestEntity.getStarted(), loadTestEntity.getFinished());
+            if (totalTimeSec > 0) {
+                return BigDecimal.valueOf(loadTestEntity.getNumRequests()).divide(BigDecimal.valueOf(totalTimeSec),
+                        SCALE, RoundingMode.HALF_UP);
+            } else {
+                return BigDecimal.valueOf(loadTestEntity.getNumRequests());
+            }
+        } else {
+            return null;
+        }
     }
 }
