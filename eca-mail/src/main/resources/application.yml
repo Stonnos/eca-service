@@ -58,6 +58,7 @@ mail-config:
     TIMEOUT_EXPERIMENT_TEMPLATE: timeout-experiment-template.html
     NEW_USER_TEMPLATE: new-user-template.html
     RESET_PASSWORD_TEMPLATE: reset-password-template.html
+    TFA_CODE_TEMPLATE: tfa-code-template.html
 
 management:
   metrics:
