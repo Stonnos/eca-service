@@ -2,6 +2,7 @@ package com.ecaservice.oauth.config.granter;
 
 import com.ecaservice.oauth.exception.TfaRequiredException;
 import com.ecaservice.oauth.repository.UserEntityRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -19,6 +20,7 @@ import org.springframework.security.oauth2.provider.token.AuthorizationServerTok
  *
  * @author Roman Batygin
  */
+@Slf4j
 public class TfaResourceOwnerPasswordTokenGranter extends ResourceOwnerPasswordTokenGranter {
 
     private final UserEntityRepository userEntityRepository;
@@ -43,6 +45,7 @@ public class TfaResourceOwnerPasswordTokenGranter extends ResourceOwnerPasswordT
                 (UsernamePasswordAuthenticationToken) oAuth2Authentication.getUserAuthentication();
         if (userEntityRepository.isTfaEnabled(usernamePasswordAuthenticationToken.getName())) {
             String code = authorizationCodeServices.createAuthorizationCode(oAuth2Authentication);
+            log.info("Code [{}]", code);
             throw new TfaRequiredException();
         }
         return getTokenServices().createAccessToken(oAuth2Authentication);
