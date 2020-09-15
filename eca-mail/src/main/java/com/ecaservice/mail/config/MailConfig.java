@@ -1,6 +1,6 @@
 package com.ecaservice.mail.config;
 
-import com.ecaservice.notification.dto.EmailTemplateType;
+import com.ecaservice.notification.dto.EmailType;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -33,7 +33,7 @@ public class MailConfig {
     /**
      * Message templates map
      */
-    private Map<EmailTemplateType, String> messageTemplatesMap;
+    private Map<EmailType, String> messageTemplatesMap;
 
     /**
      * Sender email

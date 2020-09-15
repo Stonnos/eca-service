@@ -1,7 +1,7 @@
 package com.ecaservice.mail;
 
 import com.ecaservice.notification.dto.EmailRequest;
-import com.ecaservice.notification.dto.EmailTemplateType;
+import com.ecaservice.notification.dto.EmailType;
 import com.ecaservice.mail.config.MailConfig;
 import com.ecaservice.mail.model.Email;
 import com.ecaservice.mail.model.EmailStatus;
@@ -31,7 +31,7 @@ public class TestHelperUtils {
     public static EmailRequest createEmailRequest() {
         EmailRequest emailRequest = new EmailRequest();
         emailRequest.setReceiver(RECEIVER_MAIL_RU);
-        emailRequest.setTemplateType(EmailTemplateType.NEW_EXPERIMENT_TEMPLATE);
+        emailRequest.setTemplateType(EmailType.NEW_EXPERIMENT);
         emailRequest.setHtml(true);
         return emailRequest;
     }

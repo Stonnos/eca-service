@@ -4,7 +4,7 @@ import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatusVisitor;
 import com.ecaservice.notification.dto.EmailRequest;
-import com.ecaservice.notification.dto.EmailTemplateType;
+import com.ecaservice.notification.dto.EmailType;
 import com.ecaservice.service.experiment.dictionary.TemplateVariablesDictionary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -28,12 +28,12 @@ public class EmailTemplateVisitor implements RequestStatusVisitor<EmailRequest, 
 
     @Override
     public EmailRequest caseNew(Experiment parameter) {
-        return createEmailCommonRequest(parameter, EmailTemplateType.NEW_EXPERIMENT_TEMPLATE);
+        return createEmailCommonRequest(parameter, EmailType.NEW_EXPERIMENT);
     }
 
     @Override
     public EmailRequest caseFinished(Experiment parameter) {
-        EmailRequest emailRequest = createEmailCommonRequest(parameter, EmailTemplateType.FINISHED_EXPERIMENT_TEMPLATE);
+        EmailRequest emailRequest = createEmailCommonRequest(parameter, EmailType.FINISHED_EXPERIMENT);
         emailRequest.getEmailMessageVariables().put(TemplateVariablesDictionary.DOWNLOAD_URL_KEY,
                 String.format(DOWNLOAD_PATH_FORMAT, experimentConfig.getDownloadBaseUrl(), parameter.getToken()));
         return emailRequest;
@@ -41,7 +41,7 @@ public class EmailTemplateVisitor implements RequestStatusVisitor<EmailRequest, 
 
     @Override
     public EmailRequest caseTimeout(Experiment parameter) {
-        EmailRequest emailRequest = createEmailCommonRequest(parameter, EmailTemplateType.TIMEOUT_EXPERIMENT_TEMPLATE);
+        EmailRequest emailRequest = createEmailCommonRequest(parameter, EmailType.TIMEOUT_EXPERIMENT);
         emailRequest.getEmailMessageVariables().put(TemplateVariablesDictionary.TIMEOUT_KEY,
                 experimentConfig.getTimeout());
         return emailRequest;
@@ -49,7 +49,7 @@ public class EmailTemplateVisitor implements RequestStatusVisitor<EmailRequest, 
 
     @Override
     public EmailRequest caseError(Experiment parameter) {
-        return createEmailCommonRequest(parameter, EmailTemplateType.ERROR_EXPERIMENT_TEMPLATE);
+        return createEmailCommonRequest(parameter, EmailType.ERROR_EXPERIMENT);
     }
 
     private Map<String, Object> createCommonVariablesMap(Experiment parameter) {
@@ -61,7 +61,7 @@ public class EmailTemplateVisitor implements RequestStatusVisitor<EmailRequest, 
         return variablesMap;
     }
 
-    private EmailRequest createEmailCommonRequest(Experiment experiment, EmailTemplateType templateType) {
+    private EmailRequest createEmailCommonRequest(Experiment experiment, EmailType templateType) {
         EmailRequest emailRequest = new EmailRequest();
         emailRequest.setReceiver(experiment.getEmail());
         emailRequest.setTemplateType(templateType);

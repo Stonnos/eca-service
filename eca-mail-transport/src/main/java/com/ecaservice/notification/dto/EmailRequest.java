@@ -24,10 +24,10 @@ public class EmailRequest {
     private String receiver;
 
     /**
-     * Email template type
+     * Email type
      */
     @NotNull
-    private EmailTemplateType templateType;
+    private EmailType templateType;
 
     /**
      * Email message variables

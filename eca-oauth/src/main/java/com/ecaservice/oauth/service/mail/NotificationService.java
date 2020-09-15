@@ -2,7 +2,7 @@ package com.ecaservice.oauth.service.mail;
 
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.notification.dto.EmailResponse;
-import com.ecaservice.notification.dto.EmailTemplateType;
+import com.ecaservice.notification.dto.EmailType;
 import com.ecaservice.oauth.config.ResetPasswordConfig;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
@@ -46,7 +46,7 @@ public class NotificationService {
         Map<String, Object> templateVariables = newHashMap();
         templateVariables.put(USERNAME_KEY, userEntity.getLogin());
         templateVariables.put(PASSWORD_KEY, password);
-        notifyByEmail(userEntity, templateVariables, EmailTemplateType.NEW_USER_TEMPLATE);
+        notifyByEmail(userEntity, templateVariables, EmailType.NEW_USER);
     }
 
     /**
@@ -63,7 +63,7 @@ public class NotificationService {
         templateVariables.put(RESET_PASSWORD_URL_KEY, resetPasswordUrl);
         templateVariables.put(VALIDITY_MINUTES_KEY, resetPasswordConfig.getValidityMinutes());
         notifyByEmail(resetPasswordRequestEntity.getUserEntity(), templateVariables,
-                EmailTemplateType.RESET_PASSWORD_TEMPLATE);
+                EmailType.RESET_PASSWORD);
     }
 
     /**
@@ -75,27 +75,27 @@ public class NotificationService {
     public void sendTfaCode(UserEntity userEntity, String code) {
         log.info("Starting to send tfa code for user [{}].", userEntity.getEmail());
         Map<String, Object> templateVariables = Collections.singletonMap(TFA_CODE, code);
-        notifyByEmail(userEntity, templateVariables, EmailTemplateType.TFA_CODE_TEMPLATE);
+        notifyByEmail(userEntity, templateVariables, EmailType.TFA_CODE);
     }
 
     private void notifyByEmail(UserEntity userEntity, Map<String, Object> variables,
-                               EmailTemplateType emailTemplateType) {
+                               EmailType emailType) {
         try {
-            EmailRequest emailRequest = createEmailRequest(userEntity, variables, emailTemplateType);
+            EmailRequest emailRequest = createEmailRequest(userEntity, variables, emailType);
             EmailResponse emailResponse = emailClient.sendEmail(emailRequest);
             log.info("Email request [{}] has been successfully sent for user [{}] with response id [{}]",
-                    emailTemplateType, userEntity.getEmail(), emailResponse.getRequestId());
+                    emailType, userEntity.getEmail(), emailResponse.getRequestId());
         } catch (Exception ex) {
-            log.error("There was an error while sending email request [{}] for user [{}]: {}", emailTemplateType,
+            log.error("There was an error while sending email request [{}] for user [{}]: {}", emailType,
                     userEntity.getEmail(), ex.getMessage());
         }
     }
 
     private EmailRequest createEmailRequest(UserEntity userEntity, Map<String, Object> variables,
-                                            EmailTemplateType emailTemplateType) {
+                                            EmailType emailType) {
         EmailRequest emailRequest = new EmailRequest();
         emailRequest.setReceiver(userEntity.getEmail());
-        emailRequest.setTemplateType(emailTemplateType);
+        emailRequest.setTemplateType(emailType);
         emailRequest.setEmailMessageVariables(variables);
         emailRequest.setHtml(true);
         return emailRequest;
