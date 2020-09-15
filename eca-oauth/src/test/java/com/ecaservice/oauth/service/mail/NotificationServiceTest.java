@@ -19,6 +19,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
+import java.util.UUID;
 
 import static com.ecaservice.oauth.TestHelperUtils.createResetPasswordRequestEntity;
 import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
@@ -87,5 +88,19 @@ class NotificationServiceTest {
         assertThat(actual.getEmailMessageVariables()).containsEntry(TemplateVariablesDictionary.RESET_PASSWORD_URL_KEY,
                 String.format(RESET_PASSWORD_URL_FORMAT, resetPasswordConfig.getBaseUrl(),
                         resetPasswordRequestEntity.getToken()));
+    }
+
+    @Test
+    void testSendTfaCode() {
+        when(emailClient.sendEmail(any(EmailRequest.class))).thenReturn(new EmailResponse());
+        UserEntity userEntity = createUserEntity();
+        String code = UUID.randomUUID().toString();
+        notificationService.sendTfaCode(userEntity, code);
+        verify(emailClient, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
+        EmailRequest actual = emailRequestArgumentCaptor.getValue();
+        assertThat(actual).isNotNull();
+        assertThat(actual.getTemplateType()).isEqualTo(EmailTemplateType.TFA_CODE);
+        assertThat(actual.getEmailMessageVariables()).isNotEmpty();
+        assertThat(actual.getEmailMessageVariables()).containsEntry(TemplateVariablesDictionary.TFA_CODE, code);
     }
 }
