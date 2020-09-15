@@ -58,3 +58,22 @@
     docker-compose up -d
 
 ВАЖНО! Данную команду необходимо выполнять из корневой папки проекта.
+
+Примеры запросов для получения токенов
+-------------------------------------------------------
+
+1. Пример запроса на получение access token:
+
+    curl eca_web:web_secret@localhost:8080/eca-oauth/token -d grant_type=password -d username=admin -d password=secret
+    
+    где eca_web:web_secret - пара clientId и clientSecret
+
+2. Пример запроса на обновление access token на основе refresh token:
+
+    curl eca_web:web_secret@localhost:8080/eca-oauth/token -d grant_type=refresh_token -d refresh_token=7321ab3a-ee63-4e2e-bdfd-58aaca9fb263d
+
+3. Пример запроса на получение токена с использованием двухфакторной аутентификации:
+
+    curl eca_web:web_secret@localhost:8080/eca-oauth/token -d grant_type=tfa_code -d tfa_code=AJTUa2
+    
+   Важно! Сначала необходимо вызвать метод из п.1
