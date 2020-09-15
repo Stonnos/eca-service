@@ -27,6 +27,17 @@ public class TfaResourceOwnerPasswordTokenGranter extends ResourceOwnerPasswordT
     private final NotificationService notificationService;
     private final AuthorizationCodeServices authorizationCodeServices;
 
+    /**
+     * Constructor with spring dependency injection.
+     *
+     * @param authenticationManager     - authentication manager
+     * @param tokenServices             - token services
+     * @param clientDetailsService      - client details service
+     * @param requestFactory            - request factory
+     * @param userEntityRepository      - user entity repository
+     * @param notificationService       - notification service
+     * @param authorizationCodeServices - authorization code services
+     */
     public TfaResourceOwnerPasswordTokenGranter(AuthenticationManager authenticationManager,
                                                 AuthorizationServerTokenServices tokenServices,
                                                 ClientDetailsService clientDetailsService,

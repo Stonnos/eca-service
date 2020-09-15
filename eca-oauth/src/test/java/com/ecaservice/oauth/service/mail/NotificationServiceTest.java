@@ -99,7 +99,7 @@ class NotificationServiceTest {
         verify(emailClient, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
         EmailRequest actual = emailRequestArgumentCaptor.getValue();
         assertThat(actual).isNotNull();
-        assertThat(actual.getTemplateType()).isEqualTo(EmailTemplateType.TFA_CODE);
+        assertThat(actual.getTemplateType()).isEqualTo(EmailTemplateType.TFA_CODE_TEMPLATE);
         assertThat(actual.getEmailMessageVariables()).isNotEmpty();
         assertThat(actual.getEmailMessageVariables()).containsEntry(TemplateVariablesDictionary.TFA_CODE, code);
     }

@@ -75,7 +75,7 @@ public class NotificationService {
     public void sendTfaCode(UserEntity userEntity, String code) {
         log.info("Starting to send tfa code for user [{}].", userEntity.getEmail());
         Map<String, Object> templateVariables = Collections.singletonMap(TFA_CODE, code);
-        notifyByEmail(userEntity, templateVariables, EmailTemplateType.TFA_CODE);
+        notifyByEmail(userEntity, templateVariables, EmailTemplateType.TFA_CODE_TEMPLATE);
     }
 
     private void notifyByEmail(UserEntity userEntity, Map<String, Object> variables,

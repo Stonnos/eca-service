@@ -40,5 +40,5 @@ public enum EmailTemplateType {
     /**
      * Two factor authentication code
      */
-    TFA_CODE
+    TFA_CODE_TEMPLATE
 }

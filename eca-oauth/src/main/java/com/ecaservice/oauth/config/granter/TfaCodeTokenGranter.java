@@ -29,6 +29,14 @@ public class TfaCodeTokenGranter extends AbstractTokenGranter {
 
     private final AuthorizationCodeServices authorizationCodeServices;
 
+    /**
+     * Constructor with spring dependency injection.
+     *
+     * @param tokenServices             - token services
+     * @param clientDetailsService      - client details service
+     * @param requestFactory            - request factory
+     * @param authorizationCodeServices - authorization code services
+     */
     public TfaCodeTokenGranter(AuthorizationServerTokenServices tokenServices,
                                ClientDetailsService clientDetailsService,
                                OAuth2RequestFactory requestFactory,
@@ -56,11 +64,11 @@ public class TfaCodeTokenGranter extends AbstractTokenGranter {
         if (storedAuth == null) {
             throw new InvalidGrantException(String.format("Invalid tfa code: %s", tfaCode));
         }
-        return createNewOauth2RAuthentication(tokenRequest, storedAuth);
+        return createNewOauth2Authentication(tokenRequest, storedAuth);
     }
 
-    private OAuth2Authentication createNewOauth2RAuthentication(TokenRequest tokenRequest,
-                                                                OAuth2Authentication storedAuth) {
+    private OAuth2Authentication createNewOauth2Authentication(TokenRequest tokenRequest,
+                                                               OAuth2Authentication storedAuth) {
         OAuth2Request pendingOAuth2Request = storedAuth.getOAuth2Request();
         String pendingClientId = pendingOAuth2Request.getClientId();
         String clientId = tokenRequest.getClientId();
