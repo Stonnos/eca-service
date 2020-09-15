@@ -35,5 +35,10 @@ public enum EmailTemplateType {
     /**
      * Reset password template
      */
-    RESET_PASSWORD_TEMPLATE
+    RESET_PASSWORD_TEMPLATE,
+
+    /**
+     * Two factor authentication code
+     */
+    TFA_CODE
 }

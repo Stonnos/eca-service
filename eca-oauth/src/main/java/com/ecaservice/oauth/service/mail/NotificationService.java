@@ -10,10 +10,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Map;
 
 import static com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary.PASSWORD_KEY;
 import static com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary.RESET_PASSWORD_URL_KEY;
+import static com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary.TFA_CODE;
 import static com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary.USERNAME_KEY;
 import static com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary.VALIDITY_MINUTES_KEY;
 import static com.google.common.collect.Maps.newHashMap;
@@ -62,6 +64,18 @@ public class NotificationService {
         templateVariables.put(VALIDITY_MINUTES_KEY, resetPasswordConfig.getValidityMinutes());
         notifyByEmail(resetPasswordRequestEntity.getUserEntity(), templateVariables,
                 EmailTemplateType.RESET_PASSWORD_TEMPLATE);
+    }
+
+    /**
+     * Sends email with two factor authentication code.
+     *
+     * @param userEntity - user entity
+     * @param code       - code value
+     */
+    public void sendTfaCode(UserEntity userEntity, String code) {
+        log.info("Starting to send tfa code for user [{}].", userEntity.getEmail());
+        Map<String, Object> templateVariables = Collections.singletonMap(TFA_CODE, code);
+        notifyByEmail(userEntity, templateVariables, EmailTemplateType.TFA_CODE);
     }
 
     private void notifyByEmail(UserEntity userEntity, Map<String, Object> variables,

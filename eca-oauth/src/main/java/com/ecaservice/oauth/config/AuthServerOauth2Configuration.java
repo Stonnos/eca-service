@@ -4,6 +4,7 @@ import com.ecaservice.oauth.config.granter.TfaCodeTokenGranter;
 import com.ecaservice.oauth.config.granter.TfaResourceOwnerPasswordTokenGranter;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.service.UserDetailsServiceImpl;
+import com.ecaservice.oauth.service.mail.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +39,7 @@ import static com.google.common.collect.Lists.newArrayList;
 public class AuthServerOauth2Configuration extends AuthorizationServerConfigurerAdapter {
 
     private final UserEntityRepository userEntityRepository;
+    private final NotificationService notificationService;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsServiceImpl userDetailsService;
     private final DataSource oauthDataSource;
@@ -96,7 +98,7 @@ public class AuthServerOauth2Configuration extends AuthorizationServerConfigurer
         tokenGranters.add(endpoints.getTokenGranter());
         tokenGranters.add(new TfaResourceOwnerPasswordTokenGranter(authenticationManager, endpoints.getTokenServices(),
                 endpoints.getClientDetailsService(), endpoints.getOAuth2RequestFactory(), userEntityRepository,
-                authorizationCodeServices()));
+                notificationService, authorizationCodeServices()));
         tokenGranters.add(new TfaCodeTokenGranter(endpoints.getTokenServices(), endpoints.getClientDetailsService(),
                 endpoints.getOAuth2RequestFactory(), authorizationCodeServices()));
         return new CompositeTokenGranter(tokenGranters);
