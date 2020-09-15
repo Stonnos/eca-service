@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.config.granter;
 
 import com.ecaservice.oauth.exception.TfaRequiredException;
+import com.ecaservice.oauth.repository.UserEntityRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -20,6 +21,7 @@ import org.springframework.security.oauth2.provider.token.AuthorizationServerTok
  */
 public class TfaResourceOwnerPasswordTokenGranter extends ResourceOwnerPasswordTokenGranter {
 
+    private final UserEntityRepository userEntityRepository;
     private final AuthorizationCodeServices authorizationCodeServices;
 
     public TfaResourceOwnerPasswordTokenGranter(
@@ -27,8 +29,10 @@ public class TfaResourceOwnerPasswordTokenGranter extends ResourceOwnerPasswordT
             AuthorizationServerTokenServices tokenServices,
             ClientDetailsService clientDetailsService,
             OAuth2RequestFactory requestFactory,
+            UserEntityRepository userEntityRepository,
             AuthorizationCodeServices authorizationCodeServices) {
         super(authenticationManager, tokenServices, clientDetailsService, requestFactory);
+        this.userEntityRepository = userEntityRepository;
         this.authorizationCodeServices = authorizationCodeServices;
     }
 
@@ -37,7 +41,7 @@ public class TfaResourceOwnerPasswordTokenGranter extends ResourceOwnerPasswordT
         OAuth2Authentication oAuth2Authentication = getOAuth2Authentication(client, tokenRequest);
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                 (UsernamePasswordAuthenticationToken) oAuth2Authentication.getUserAuthentication();
-        if (usernamePasswordAuthenticationToken.getName().equals("admin")) {
+        if (userEntityRepository.isTfaEnabled(usernamePasswordAuthenticationToken.getName())) {
             String code = authorizationCodeServices.createAuthorizationCode(oAuth2Authentication);
             throw new TfaRequiredException();
         }

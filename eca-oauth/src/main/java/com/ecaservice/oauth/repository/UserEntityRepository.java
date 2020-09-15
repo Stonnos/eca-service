@@ -47,4 +47,13 @@ public interface UserEntityRepository extends JpaRepository<UserEntity, Long>, J
      * @return {@code true} if user with specified email exists, otherwise {@code false}
      */
     boolean existsByEmail(String email);
+
+    /**
+     * Checks two factor authentication enabled for specified user.
+     *
+     * @param login - user login
+     * @return {@code true} if user with specified login exists, otherwise {@code false}
+     */
+    @Query("select u.tfaEnabled from UserEntity u where u.login = :login")
+    boolean isTfaEnabled(@Param("login") String login);
 }

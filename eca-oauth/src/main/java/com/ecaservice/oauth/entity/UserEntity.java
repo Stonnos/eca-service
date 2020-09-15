@@ -59,6 +59,12 @@ public class UserEntity {
     private String firstName;
 
     /**
+     * Two factor authentication enabled?
+     */
+    @Column(name = "tfa_enabled")
+    private boolean tfaEnabled;
+
+    /**
      * User roles
      */
     @ManyToMany(fetch = FetchType.EAGER)
