@@ -37,7 +37,7 @@ public class TfaResourceOwnerPasswordTokenGranter extends ResourceOwnerPasswordT
         OAuth2Authentication oAuth2Authentication = getOAuth2Authentication(client, tokenRequest);
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                 (UsernamePasswordAuthenticationToken) oAuth2Authentication.getUserAuthentication();
-        if (usernamePasswordAuthenticationToken.getPrincipal().equals("admin")) {
+        if (usernamePasswordAuthenticationToken.getName().equals("admin")) {
             String code = authorizationCodeServices.createAuthorizationCode(oAuth2Authentication);
             throw new TfaRequiredException();
         }

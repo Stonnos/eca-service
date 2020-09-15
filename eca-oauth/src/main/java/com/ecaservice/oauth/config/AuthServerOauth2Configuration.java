@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.CompositeTokenGranter;
+import org.springframework.security.oauth2.provider.TokenGranter;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
@@ -21,6 +22,9 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
 import javax.sql.DataSource;
+import java.util.List;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Oauth2 authorization server configuration.
@@ -48,8 +52,7 @@ public class AuthServerOauth2Configuration extends AuthorizationServerConfigurer
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
-        endpoints.tokenStore(tokenStore()).userDetailsService(userDetailsService);
-        addTokenGranters(endpoints);
+        endpoints.tokenStore(tokenStore()).tokenGranter(tokenGranter(endpoints)).userDetailsService(userDetailsService);
     }
 
     /**
@@ -86,15 +89,14 @@ public class AuthServerOauth2Configuration extends AuthorizationServerConfigurer
         return defaultTokenServices;
     }
 
-    private void addTokenGranters(AuthorizationServerEndpointsConfigurer endpoints) {
-        CompositeTokenGranter compositeTokenGranter = (CompositeTokenGranter) endpoints.getTokenGranter();
-        compositeTokenGranter.addTokenGranter(
-                new TfaResourceOwnerPasswordTokenGranter(authenticationManager, endpoints.getTokenServices(),
-                        endpoints.getClientDetailsService(), endpoints.getOAuth2RequestFactory(),
-                        authorizationCodeServices()));
-        compositeTokenGranter.addTokenGranter(
-                new TfaCodeTokenGranter(endpoints.getTokenServices(), endpoints.getClientDetailsService(),
-                        endpoints.getOAuth2RequestFactory(), authorizationCodeServices()));
+    private TokenGranter tokenGranter(AuthorizationServerEndpointsConfigurer endpoints) {
+        List<TokenGranter> tokenGranters = newArrayList();
+        tokenGranters.add(endpoints.getTokenGranter());
+        tokenGranters.add(new TfaResourceOwnerPasswordTokenGranter(authenticationManager, endpoints.getTokenServices(),
+                endpoints.getClientDetailsService(), endpoints.getOAuth2RequestFactory(), authorizationCodeServices()));
+        tokenGranters.add(new TfaCodeTokenGranter(endpoints.getTokenServices(), endpoints.getClientDetailsService(),
+                endpoints.getOAuth2RequestFactory(), authorizationCodeServices()));
+        return new CompositeTokenGranter(tokenGranters);
     }
 }
 
