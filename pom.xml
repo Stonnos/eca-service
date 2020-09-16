@@ -68,6 +68,7 @@
         <org.apache.commons.lang3.version>3.10</org.apache.commons.lang3.version>
         <javax-validation-api.version>2.0.1.Final</javax-validation-api.version>
         <swagger-version>2.9.2</swagger-version>
+        <guava.version>29.0-jre</guava.version>
         <jacoco-plugin.version>0.8.5</jacoco-plugin.version>
         <jacoco.minCoverage>0.70</jacoco.minCoverage>
     </properties>
@@ -189,6 +190,12 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${org.apache.commons.lang3.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
         </dependency>
 
     </dependencies>
