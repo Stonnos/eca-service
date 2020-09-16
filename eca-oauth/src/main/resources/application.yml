@@ -49,6 +49,10 @@ reset-password:
   validityMinutes: 30
   baseUrl: http://localhost:8085
 
+tfa:
+  codeValiditySeconds: 120
+  codeLength: 6
+
 ## Swagger properties
 swagger2:
   projectVersion: @project.version@
