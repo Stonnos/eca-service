@@ -14,7 +14,7 @@ import javax.annotation.PostConstruct;
 import java.util.concurrent.TimeUnit;
 
 /**
- * TFA code service abstract class.
+ * TFA code service.
  *
  * @author Roman Batygin
  */
