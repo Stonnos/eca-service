@@ -22,10 +22,13 @@ export class LoginComponent implements BaseForm, OnInit {
   public errorMessage: string;
   public submitted: boolean = false;
   public loading: boolean = false;
+  public tfaCodeVerificationStep: boolean = false;
 
   public userModel: UserModel = new UserModel();
 
-  @ViewChild(NgForm, { static: true })
+  public tfaVerificationCode: string;
+
+  @ViewChild(NgForm, { static: false })
   public form: NgForm;
 
   public constructor(private router: Router,
@@ -50,28 +53,17 @@ export class LoginComponent implements BaseForm, OnInit {
   }
 
   public isValid(): boolean {
-    return this.form.valid;
+    return this.form && this.form.valid;
   }
 
   public submit(): void {
     this.submitted = true;
     if (this.isValid()) {
-      this.loading = true;
-      this.authService.obtainAccessToken(this.userModel)
-        .pipe(
-          finalize(() => {
-            this.loading = false;
-          })
-        )
-        .subscribe({
-          next: (token) => {
-            this.authService.saveToken(token);
-            this.saveUser();
-          },
-          error: (error) => {
-            this.handleError(error);
-          }
-        });
+      if (this.tfaCodeVerificationStep) {
+        this.verifyCode();
+      } else {
+        this.obtainToken();
+      }
       this.clear();
     }
   }
@@ -88,10 +80,63 @@ export class LoginComponent implements BaseForm, OnInit {
     })
   }
 
-  private handleError(error): void {
+  public obtainToken(): void {
+    this.loading = true;
+    this.authService.obtainAccessToken(this.userModel)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: (token) => {
+          this.authService.saveToken(token);
+          this.saveUser();
+        },
+        error: (error) => {
+          this.handleObtainTokenError(error);
+        }
+      });
+  }
+
+  public verifyCode(): void {
+    this.loading = true;
+    this.authService.verifyTfaCode(this.tfaVerificationCode)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: (token) => {
+          this.authService.saveToken(token);
+          this.saveUser();
+        },
+        error: (error) => {
+          this.handleTfaVerificationError(error);
+        }
+      });
+  }
+
+  private handleObtainTokenError(error): void {
     if (error instanceof HttpErrorResponse) {
       if (error.status === 400) {
         this.errorMessage = 'Неправильный логин или пароль';
+      } else if (error.status === 403) {
+        this.errorMessage = null;
+        this.tfaCodeVerificationStep = true;
+      } else {
+        this.errorMessage = 'Возникла неизвестная ошибка';
+      }
+    } else {
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+    }
+  }
+
+  private handleTfaVerificationError(error): void {
+    if (error instanceof HttpErrorResponse) {
+      if (error.status === 400) {
+        this.errorMessage = 'Неправильный код';
       } else {
         this.errorMessage = 'Возникла неизвестная ошибка';
       }
