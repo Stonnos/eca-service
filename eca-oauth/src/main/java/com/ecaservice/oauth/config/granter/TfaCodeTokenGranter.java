@@ -4,15 +4,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.common.exceptions.InvalidClientException;
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
 import org.springframework.security.oauth2.common.exceptions.InvalidRequestException;
+import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetails;
-import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
-import org.springframework.security.oauth2.provider.OAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.TokenRequest;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.AbstractTokenGranter;
-import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,24 +30,19 @@ public class TfaCodeTokenGranter extends AbstractTokenGranter {
     /**
      * Constructor with spring dependency injection.
      *
-     * @param tokenServices             - token services
-     * @param clientDetailsService      - client details service
-     * @param requestFactory            - request factory
+     * @param endpoints                 - authorization server endpoints configurer bean
      * @param authorizationCodeServices - authorization code services
      */
-    public TfaCodeTokenGranter(AuthorizationServerTokenServices tokenServices,
-                               ClientDetailsService clientDetailsService,
-                               OAuth2RequestFactory requestFactory,
+    public TfaCodeTokenGranter(AuthorizationServerEndpointsConfigurer endpoints,
                                AuthorizationCodeServices authorizationCodeServices) {
-        this(tokenServices, clientDetailsService, requestFactory, authorizationCodeServices, GRANT_TYPE);
+        this(endpoints, authorizationCodeServices, GRANT_TYPE);
     }
 
-    protected TfaCodeTokenGranter(AuthorizationServerTokenServices tokenServices,
-                                  ClientDetailsService clientDetailsService,
-                                  OAuth2RequestFactory requestFactory,
+    protected TfaCodeTokenGranter(AuthorizationServerEndpointsConfigurer endpoints,
                                   AuthorizationCodeServices authorizationCodeServices,
                                   String grantType) {
-        super(tokenServices, clientDetailsService, requestFactory, grantType);
+        super(endpoints.getTokenServices(), endpoints.getClientDetailsService(), endpoints.getOAuth2RequestFactory(),
+                grantType);
         this.authorizationCodeServices = authorizationCodeServices;
     }
 

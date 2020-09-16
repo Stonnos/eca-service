@@ -38,6 +38,7 @@ import static com.google.common.collect.Lists.newArrayList;
 @RequiredArgsConstructor
 public class AuthServerOauth2Configuration extends AuthorizationServerConfigurerAdapter {
 
+    private final TfaConfig tfaConfig;
     private final UserEntityRepository userEntityRepository;
     private final NotificationService notificationService;
     private final AuthenticationManager authenticationManager;
@@ -96,11 +97,9 @@ public class AuthServerOauth2Configuration extends AuthorizationServerConfigurer
     private TokenGranter tokenGranter(AuthorizationServerEndpointsConfigurer endpoints) {
         List<TokenGranter> tokenGranters = newArrayList();
         tokenGranters.add(endpoints.getTokenGranter());
-        tokenGranters.add(new TfaResourceOwnerPasswordTokenGranter(authenticationManager, endpoints.getTokenServices(),
-                endpoints.getClientDetailsService(), endpoints.getOAuth2RequestFactory(), userEntityRepository,
-                notificationService, authorizationCodeServices()));
-        tokenGranters.add(new TfaCodeTokenGranter(endpoints.getTokenServices(), endpoints.getClientDetailsService(),
-                endpoints.getOAuth2RequestFactory(), authorizationCodeServices()));
+        tokenGranters.add(new TfaResourceOwnerPasswordTokenGranter(authenticationManager, endpoints, tfaConfig,
+                userEntityRepository, notificationService, authorizationCodeServices()));
+        tokenGranters.add(new TfaCodeTokenGranter(endpoints, authorizationCodeServices()));
         return new CompositeTokenGranter(tokenGranters);
     }
 }

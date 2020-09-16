@@ -1,5 +1,6 @@
 package com.ecaservice.oauth.config.granter;
 
+import com.ecaservice.oauth.config.TfaConfig;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.TfaRequiredException;
 import com.ecaservice.oauth.repository.UserEntityRepository;
@@ -7,14 +8,12 @@ import com.ecaservice.oauth.service.mail.NotificationService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetails;
-import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.OAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.TokenRequest;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.password.ResourceOwnerPasswordTokenGranter;
-import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 
 /**
  * Resource owner password granter implementation for two factor authentication support.
@@ -23,6 +22,7 @@ import org.springframework.security.oauth2.provider.token.AuthorizationServerTok
  */
 public class TfaResourceOwnerPasswordTokenGranter extends ResourceOwnerPasswordTokenGranter {
 
+    private final TfaConfig tfaConfig;
     private final UserEntityRepository userEntityRepository;
     private final NotificationService notificationService;
     private final AuthorizationCodeServices authorizationCodeServices;
@@ -31,21 +31,21 @@ public class TfaResourceOwnerPasswordTokenGranter extends ResourceOwnerPasswordT
      * Constructor with spring dependency injection.
      *
      * @param authenticationManager     - authentication manager
-     * @param tokenServices             - token services
-     * @param clientDetailsService      - client details service
-     * @param requestFactory            - request factory
+     * @param endpoints                 - authorization server endpoints configurer bean
+     * @param tfaConfig                 - tfa config bean
      * @param userEntityRepository      - user entity repository
      * @param notificationService       - notification service
      * @param authorizationCodeServices - authorization code services
      */
     public TfaResourceOwnerPasswordTokenGranter(AuthenticationManager authenticationManager,
-                                                AuthorizationServerTokenServices tokenServices,
-                                                ClientDetailsService clientDetailsService,
-                                                OAuth2RequestFactory requestFactory,
+                                                AuthorizationServerEndpointsConfigurer endpoints,
+                                                TfaConfig tfaConfig,
                                                 UserEntityRepository userEntityRepository,
                                                 NotificationService notificationService,
                                                 AuthorizationCodeServices authorizationCodeServices) {
-        super(authenticationManager, tokenServices, clientDetailsService, requestFactory);
+        super(authenticationManager, endpoints.getTokenServices(), endpoints.getClientDetailsService(),
+                endpoints.getOAuth2RequestFactory());
+        this.tfaConfig = tfaConfig;
         this.userEntityRepository = userEntityRepository;
         this.notificationService = notificationService;
         this.authorizationCodeServices = authorizationCodeServices;
@@ -60,7 +60,7 @@ public class TfaResourceOwnerPasswordTokenGranter extends ResourceOwnerPasswordT
         if (userEntity.isTfaEnabled()) {
             String code = authorizationCodeServices.createAuthorizationCode(oAuth2Authentication);
             notificationService.sendTfaCode(userEntity, code);
-            throw new TfaRequiredException();
+            throw new TfaRequiredException(tfaConfig.getCodeValiditySeconds());
         }
         return getTokenServices().createAccessToken(oAuth2Authentication);
     }
