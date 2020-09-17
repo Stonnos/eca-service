@@ -65,6 +65,7 @@ public class TestHelperUtils {
         userDetails.setId(USER_ID);
         userDetails.setAuthorities(Collections.singletonList(createRole()));
         userDetails.setCreationDate(LocalDateTime.now());
+        userDetails.setTfaEnabled(true);
         return userDetails;
     }
 
@@ -82,6 +83,7 @@ public class TestHelperUtils {
         userEntity.setRoles(Sets.newHashSet(createRoleEntity()));
         userEntity.setPassword(PASSWORD);
         userEntity.setCreationDate(LocalDateTime.now());
+        userEntity.setTfaEnabled(true);
         return userEntity;
     }
 

@@ -60,6 +60,13 @@ public class UserDetailsImpl implements UserDetails {
     private String firstName;
 
     /**
+     * Two factor authentication enabled?
+     */
+    @Getter
+    @Setter
+    private boolean tfaEnabled;
+
+    /**
      * Roles list
      */
     @Setter

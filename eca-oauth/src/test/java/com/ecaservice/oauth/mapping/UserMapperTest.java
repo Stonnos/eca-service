@@ -40,6 +40,7 @@ class UserMapperTest {
         assertThat(userDto.getRoles()).isNotEmpty();
         assertThat(userDto.getRoles()).hasSameSizeAs(userDetails.getAuthorities());
         assertThat(userDto.getCreationDate()).isEqualTo(userDetails.getCreationDate());
+        assertThat(userDto.isTfaEnabled()).isEqualTo(userDetails.isTfaEnabled());
     }
 
     @Test
@@ -54,6 +55,7 @@ class UserMapperTest {
         assertThat(userDto.getRoles()).isNotEmpty();
         assertThat(userDto.getRoles()).hasSameSizeAs(userEntity.getRoles());
         assertThat(userDto.getCreationDate()).isEqualTo(userEntity.getCreationDate());
+        assertThat(userDto.isTfaEnabled()).isEqualTo(userEntity.isTfaEnabled());
     }
 
     @Test
@@ -78,5 +80,6 @@ class UserMapperTest {
         assertThat(userDetails.getAuthorities()).isNotEmpty();
         assertThat(userDetails.getAuthorities()).hasSameSizeAs(userEntity.getRoles());
         assertThat(userDetails.getCreationDate()).isEqualTo(userEntity.getCreationDate());
+        assertThat(userDetails.isTfaEnabled()).isEqualTo(userEntity.isTfaEnabled());
     }
 }
