@@ -105,12 +105,6 @@
                 [disabled]="loading || codeExpired"
                 maxlength="255"
                 class="form-control d-block w-100">
-              <div class="text-danger error-message"
-                   *ngIf="tfaCode.invalid && (tfaCode.dirty || tfaCode.touched || submitted)">
-                <div *ngIf="tfaCode?.errors?.required">
-                  Заполните код подтверждения
-                </div>
-              </div>
             </div>
             <div class="ui-g-10 mt-2 mx-auto d-flex align-items-end justify-content-end">
               <span *ngIf="!codeExpired" class="tfa-code-timer">
@@ -126,7 +120,7 @@
                 *ngIf="!codeExpired"
                 pButton
                 type="submit"
-                [disabled]="loading"
+                [disabled]="!tfaVerificationCode || loading"
                 class="auth-button w-100 mb-1 mb-sm-3">
                 <span class="button-text" *ngIf="!loading">Подтвердить</span>
                 <p-progressSpinner

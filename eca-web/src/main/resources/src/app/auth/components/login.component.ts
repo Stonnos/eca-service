@@ -84,6 +84,8 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
   public resetTfaCodeVerification(): void {
     this.tfaCodeVerificationStep = false;
     this.tfaVerificationCode = null;
+    this.errorMessage = null;
+    this.userModel = new UserModel();
   }
 
   public getFormattedCurrentTokenValidityTime(): string {
@@ -182,6 +184,7 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
         this.codeValidityCurrentTime--;
         if (this.codeValidityCurrentTime <= 0) {
           this.codeExpired = true;
+          this.errorMessage = null;
           this.updateCodeValidityTimeSubscription.unsubscribe();
         }
       },
