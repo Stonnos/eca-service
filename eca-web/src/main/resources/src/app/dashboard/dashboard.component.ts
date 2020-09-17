@@ -15,10 +15,31 @@ export class DashboardComponent implements OnInit {
 
   public items: MenuItem[];
 
+  public userMenuItems: MenuItem[];
+
   constructor(private logoutService: LogoutService, private userStorage: UserStorage) {
   }
 
   public ngOnInit() {
+    this.initBaseMenu();
+    this.initUserMenu();
+  }
+
+  public getUserLogin(): string {
+    const user: UserDto = this.userStorage.getUser();
+    return user && user.login;
+  }
+
+  public isSuperAdmin(): boolean {
+    const user: UserDto = this.userStorage.getUser();
+    return user && user.roles && user.roles.map((role: RoleDto) => role.roleName).includes(Role.ROLE_SUPER_ADMIN);
+  }
+
+  public logout() {
+    this.logoutService.logout();
+  }
+
+  private initBaseMenu(): void {
     this.items = [
       {
         label: 'Эксперименты',
@@ -44,17 +65,19 @@ export class DashboardComponent implements OnInit {
     ];
   }
 
-  public getUserLogin(): string {
-    const user: UserDto = this.userStorage.getUser();
-    return user && user.login;
-  }
-
-  public isSuperAdmin(): boolean {
-    const user: UserDto = this.userStorage.getUser();
-    return user && user.roles && user.roles.map((role: RoleDto) => role.roleName).includes(Role.ROLE_SUPER_ADMIN);
-  }
-
-  public logout() {
-    this.logoutService.logout();
+  private initUserMenu(): void {
+    this.userMenuItems = [
+      {
+        label: 'Профиль',
+        icon: 'pi pi-info'
+      },
+      {
+        label: 'Выход',
+        icon: 'pi pi-sign-out',
+        command: () => {
+          this.logout();
+        }
+      }
+    ];
   }
 }
