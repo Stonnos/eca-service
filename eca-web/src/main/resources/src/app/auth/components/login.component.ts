@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from "../services/auth.service";
 import { UserModel } from "../model/user.model";
 import { NgForm } from "@angular/forms";
@@ -9,15 +9,16 @@ import { BaseForm } from "../../common/form/base-form";
 import { HttpErrorResponse } from "@angular/common/http";
 import { UserStorage } from "../services/user.storage";
 import { MessageService } from "primeng/api";
-import { UserDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { UsersService } from "../../users/services/users.service";
+import { Subscription, timer } from "rxjs";
+import { UserDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements BaseForm, OnInit {
+export class LoginComponent implements BaseForm, OnInit, OnDestroy {
 
   public errorMessage: string;
   public submitted: boolean = false;
@@ -31,6 +32,10 @@ export class LoginComponent implements BaseForm, OnInit {
   @ViewChild(NgForm, { static: false })
   public form: NgForm;
 
+  public codeValidityCurrentTime: number;
+
+  private updateCodeValiditySubscription: Subscription = new Subscription();
+
   public constructor(private router: Router,
                      private authService: AuthService,
                      private usersService: UsersService,
@@ -42,6 +47,10 @@ export class LoginComponent implements BaseForm, OnInit {
     if (localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)) {
       this.enter();
     }
+  }
+
+  public ngOnDestroy(): void {
+    this.updateCodeValiditySubscription.unsubscribe();
   }
 
   public enter(): void {
@@ -68,6 +77,16 @@ export class LoginComponent implements BaseForm, OnInit {
     }
   }
 
+  public getFormattedCurrentTokenValidityTime(): string {
+    const minutes = Math.floor(this.codeValidityCurrentTime / 60);
+    if (minutes == 0) {
+      return `${this.codeValidityCurrentTime} сек `;
+    } else {
+      const seconds = this.codeValidityCurrentTime % 60;
+      return `${minutes} мин ${seconds} сек`;
+    }
+  }
+
   private saveUser(): void {
     this.usersService.getCurrentUser().subscribe({
       next: (user: UserDto) => {
@@ -80,7 +99,7 @@ export class LoginComponent implements BaseForm, OnInit {
     })
   }
 
-  public obtainToken(): void {
+  private obtainToken(): void {
     this.loading = true;
     this.authService.obtainAccessToken(this.userModel)
       .pipe(
@@ -99,7 +118,7 @@ export class LoginComponent implements BaseForm, OnInit {
       });
   }
 
-  public verifyCode(): void {
+  private verifyCode(): void {
     this.loading = true;
     this.authService.verifyTfaCode(this.tfaVerificationCode)
       .pipe(
@@ -125,6 +144,7 @@ export class LoginComponent implements BaseForm, OnInit {
       } else if (error.status === 403) {
         this.errorMessage = null;
         this.tfaCodeVerificationStep = true;
+        this.startTfaCodeValidityTimer(error.error.expires_in);
       } else {
         this.errorMessage = 'Возникла неизвестная ошибка';
       }
@@ -143,5 +163,21 @@ export class LoginComponent implements BaseForm, OnInit {
     } else {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     }
+  }
+
+  private startTfaCodeValidityTimer(expiresIn: number): void {
+    this.codeValidityCurrentTime = expiresIn;
+    this.updateCodeValiditySubscription = timer(0, 1000).subscribe({
+      next: () => {
+        this.codeValidityCurrentTime--;
+        if (this.codeValidityCurrentTime <= 0) {
+          this.codeValidityCurrentTime = null;
+          this.updateCodeValiditySubscription.unsubscribe();
+        }
+      },
+      error: (error) => {
+        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
+      }
+    });
   }
 }
