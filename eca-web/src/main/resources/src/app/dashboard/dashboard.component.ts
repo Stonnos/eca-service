@@ -70,7 +70,7 @@ export class DashboardComponent implements OnInit {
       {
         label: 'Настройки',
         icon: 'pi pi-cog',
-        routerLink: ['/me']
+        routerLink: ['/dashboard/profile']
       },
       {
         label: 'Выход',

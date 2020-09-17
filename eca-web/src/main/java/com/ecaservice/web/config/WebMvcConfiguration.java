@@ -18,7 +18,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     private static final String FORWARD = "forward:/";
 
     private static final List<String> URL_PATHS =
-            ImmutableList.of("/login", "/dashboard/**", "/forgot-password", "/reset-password/**", "/me");
+            ImmutableList.of("/login", "/dashboard/**", "/forgot-password", "/reset-password/**");
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {

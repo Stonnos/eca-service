@@ -55,7 +55,11 @@ const routes: Routes = [
       {
         path: 'experiments/classifiers-configuration/details/:id',
         component: ClassifiersConfigurationDetailsComponent
-      }
+      },
+      {
+        path: 'profile',
+        component: UserProfileComponent
+      },
     ]
   },
   {
@@ -69,10 +73,6 @@ const routes: Routes = [
   {
     path: 'reset-password',
     component: ResetPasswordComponent
-  },
-  {
-    path: 'me',
-    component: UserProfileComponent
   },
   {
     path: '',
