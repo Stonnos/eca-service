@@ -68,7 +68,8 @@ export class DashboardComponent implements OnInit {
   private initUserMenu(): void {
     this.userMenuItems = [
       {
-        label: 'Профиль',
+        label: 'Настройки',
+        icon: 'pi pi-cog',
         routerLink: ['/me']
       },
       {
