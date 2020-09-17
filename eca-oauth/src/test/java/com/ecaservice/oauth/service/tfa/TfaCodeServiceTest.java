@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.service.tfa;
 
 import com.ecaservice.oauth.config.TfaConfig;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -17,6 +18,8 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import static org.mockito.Mockito.when;
+
 /**
  * Unit tests for {@link TfaCodeService} class.
  *
@@ -28,6 +31,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Import({TfaCodeService.class, TfaConfig.class})
 class TfaCodeServiceTest {
 
+    private static final String USER = "user";
+
     @Inject
     private TfaConfig tfaConfig;
     @Inject
@@ -35,6 +40,11 @@ class TfaCodeServiceTest {
 
     @Mock
     private OAuth2Authentication oAuth2Authentication;
+
+    @BeforeEach
+    void init() {
+        when(oAuth2Authentication.getName()).thenReturn(USER);
+    }
 
     @Test
     void testCreateAuthorizationCode() {
