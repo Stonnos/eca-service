@@ -69,7 +69,7 @@ export class DashboardComponent implements OnInit {
     this.userMenuItems = [
       {
         label: 'Профиль',
-        icon: 'pi pi-info'
+        routerLink: ['/me']
       },
       {
         label: 'Выход',

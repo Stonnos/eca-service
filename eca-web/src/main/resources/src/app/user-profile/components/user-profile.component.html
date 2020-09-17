@@ -1,0 +1,48 @@
+<div class="container-fluid">
+  <div class="row mt-2">
+      <div class="col-6 offset-3 align-items-center justify-content-center">
+        <div class="h-100 user-header w-100">
+          <div class="abbreviated-user-name">{{ getAbbreviatedUserName() }}</div>
+          <div class="user-name text-center mb-2">{{ user?.login }}</div>
+        </div>
+      </div>
+  </div>
+  <div class="row">
+    <div class="col-6 offset-3">
+      <div class="h-100 user-info-panel">
+        <p-fieldset legend="Основная информация" class="details-fieldset">
+          <div class="ui-g" *ngFor="let field of commonFields">
+            <div class="ui-g-3 text-left text-bold text-wrap">
+              {{ field.label }}
+            </div>
+            <div class="ui-g-6 text-left text-wrap">
+              {{ getValue(field.name) }}
+              <!--<ng-container [ngSwitch]="field.name">
+                <ng-container *ngSwitchCase="'requestId'">
+                  <span class="text-bold">{{ evaluationLogDetails?.requestId }}</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="'requestStatus.description'">
+                  <app-request-status [requestStatus]="evaluationLogDetails?.requestStatus"></app-request-status>
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                  {{ getEvaluationLogValue(field.name) }}
+                </ng-container>
+              </ng-container>-->
+            </div>
+          </div>
+        </p-fieldset>
+
+        <p-fieldset legend="Контакты" class="details-fieldset">
+            <div class="ui-g">
+              <div class="ui-g-3 text-left text-bold text-wrap">
+                Email:
+              </div>
+              <div class="ui-g-6 text-left text-wrap">
+                {{ user?.email }}
+              </div>
+            </div>
+        </p-fieldset>
+      </div>
+    </div>
+  </div>
+</div>
