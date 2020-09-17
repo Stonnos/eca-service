@@ -17,6 +17,8 @@ export class UserProfileComponent implements OnInit {
 
   public user: UserDto;
 
+  public tfaEnabled: boolean = false;
+
   public commonFields: any[] = [];
 
   public constructor(private usersService: UsersService,
@@ -27,17 +29,6 @@ export class UserProfileComponent implements OnInit {
 
   public ngOnInit() {
     this.getUser();
-  }
-
-  private getUser(): void {
-    this.usersService.getCurrentUser().subscribe({
-      next: (user: UserDto) => {
-       this.user = user;
-      },
-      error: (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-      }
-    })
   }
 
   public getAbbreviatedUserName(): string {
@@ -55,10 +46,26 @@ export class UserProfileComponent implements OnInit {
     return null;
   }
 
+  public changedTfaSwitch(event): void {
+  }
+
+  private getUser(): void {
+    this.usersService.getCurrentUser().subscribe({
+      next: (user: UserDto) => {
+        this.user = user;
+        this.tfaEnabled = user.tfaEnabled;
+      },
+      error: (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      }
+    })
+  }
+
   private initCommonFields(): void {
     this.commonFields = [
       { name: UserFields.FIRST_NAME, label: "Имя:" },
-      { name: UserFields.ROLES, label: "Роли:" }
+      { name: UserFields.ROLES, label: "Роли:" },
+      { name: UserFields.TFA_ENABLED, label: "Двухфакторная аутентификация:" }
     ];
   }
 }
