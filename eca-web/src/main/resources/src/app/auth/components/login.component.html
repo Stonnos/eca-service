@@ -86,7 +86,7 @@
             (submit)="submit()"
             (keydown.enter)="submit()">
 
-        <p-panel header="Подтверждение email - пароля">
+        <p-panel header="Подтверждение email - кода">
           <div class="ui-g ui-fluid">
             <div class="ui-g-10 auth-error mx-auto">
               <div *ngIf="errorMessage" class="text-danger text-center mb-1">{{ errorMessage }}</div>
@@ -101,23 +101,33 @@
                 type="text"
                 placeholder="Введите код подтверждения"
                 [(ngModel)]="tfaVerificationCode"
-                [disabled]="loading"
+                #tfaCode="ngModel"
+                [disabled]="loading || codeExpired"
                 maxlength="255"
                 class="form-control d-block w-100">
+              <div class="text-danger error-message"
+                   *ngIf="tfaCode.invalid && (tfaCode.dirty || tfaCode.touched || submitted)">
+                <div *ngIf="tfaCode?.errors?.required">
+                  Заполните код подтверждения
+                </div>
+              </div>
             </div>
-
-            <div *ngIf="codeValidityCurrentTime" class="ui-g-10 mt-1 mx-auto d-flex align-items-end justify-content-end">
-            <span class="tfa-code-timer">
-              Время действия кода: <span class="ml-2 pi pi-clock"> {{ getFormattedCurrentTokenValidityTime() }} </span>
-            </span>
+            <div class="ui-g-10 mt-2 mx-auto d-flex align-items-end justify-content-end">
+              <span *ngIf="!codeExpired" class="tfa-code-timer">
+                Время действия кода: <span class="ml-2 mr-2 pi pi-clock">{{ getFormattedCurrentTokenValidityTime() }}</span>
+              </span>
+              <span *ngIf="codeExpired" class="tfa-code-timer-expired">
+                Время действия кода истекло
+              </span>
             </div>
 
             <div class="ui-g-10 mx-auto">
               <button
+                *ngIf="!codeExpired"
                 pButton
                 type="submit"
-                [disabled]="!isValid() || loading"
-                class="auth-button w-100 mb-2 mb-sm-3">
+                [disabled]="loading"
+                class="auth-button w-100 mb-1 mb-sm-3">
                 <span class="button-text" *ngIf="!loading">Подтвердить</span>
                 <p-progressSpinner
                   *ngIf="loading"
@@ -125,6 +135,14 @@
                   strokeWidth="4"
                   animationDuration=".5s">
                 </p-progressSpinner>
+              </button>
+              <button
+                *ngIf="codeExpired"
+                pButton
+                (click)="resetTfaCodeVerification()"
+                type="button"
+                label="На страницу входа"
+                class="w-100 mb-1 mb-sm-3">
               </button>
             </div>
 

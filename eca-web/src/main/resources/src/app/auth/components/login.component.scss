@@ -50,6 +50,11 @@
   color: grey;
 }
 
+.tfa-code-timer-expired {
+  font-size: 12px;
+  color: #ff1e4d;
+}
+
 .login-progress-spinner::ng-deep {
   .ui-progress-spinner {
     width: 30px;

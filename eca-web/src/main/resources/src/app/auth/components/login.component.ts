@@ -34,7 +34,11 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
 
   public codeValidityCurrentTime: number;
 
-  private updateCodeValiditySubscription: Subscription = new Subscription();
+  public codeExpired: boolean = false;
+
+  private readonly timerInterval = 1000;
+
+  private updateCodeValidityTimeSubscription: Subscription = new Subscription();
 
   public constructor(private router: Router,
                      private authService: AuthService,
@@ -50,7 +54,7 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.updateCodeValiditySubscription.unsubscribe();
+    this.updateCodeValidityTimeSubscription.unsubscribe();
   }
 
   public enter(): void {
@@ -75,6 +79,11 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
       }
       this.clear();
     }
+  }
+
+  public resetTfaCodeVerification(): void {
+    this.tfaCodeVerificationStep = false;
+    this.tfaVerificationCode = null;
   }
 
   public getFormattedCurrentTokenValidityTime(): string {
@@ -144,6 +153,7 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
       } else if (error.status === 403) {
         this.errorMessage = null;
         this.tfaCodeVerificationStep = true;
+        this.codeExpired = false;
         this.startTfaCodeValidityTimer(error.error.expires_in);
       } else {
         this.errorMessage = 'Возникла неизвестная ошибка';
@@ -167,12 +177,12 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
 
   private startTfaCodeValidityTimer(expiresIn: number): void {
     this.codeValidityCurrentTime = expiresIn;
-    this.updateCodeValiditySubscription = timer(0, 1000).subscribe({
+    this.updateCodeValidityTimeSubscription = timer(0, this.timerInterval).subscribe({
       next: () => {
         this.codeValidityCurrentTime--;
         if (this.codeValidityCurrentTime <= 0) {
-          this.codeValidityCurrentTime = null;
-          this.updateCodeValiditySubscription.unsubscribe();
+          this.codeExpired = true;
+          this.updateCodeValidityTimeSubscription.unsubscribe();
         }
       },
       error: (error) => {
