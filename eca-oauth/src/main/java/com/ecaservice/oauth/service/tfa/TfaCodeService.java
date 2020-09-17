@@ -58,7 +58,7 @@ public class TfaCodeService implements AuthorizationCodeServices {
     }
 
     @Override
-    public OAuth2Authentication consumeAuthorizationCode(String code) throws InvalidGrantException {
+    public OAuth2Authentication consumeAuthorizationCode(String code) {
         OAuth2Authentication authentication = codesCache.getIfPresent(code);
         if (authentication == null) {
             throw new InvalidGrantException(String.format("Invalid authorization code: %s", code));
