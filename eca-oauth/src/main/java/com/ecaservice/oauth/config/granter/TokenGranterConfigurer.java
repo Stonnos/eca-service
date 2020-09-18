@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.config.granter;
 
 import com.ecaservice.oauth.config.TfaConfig;
+import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.service.mail.NotificationService;
 import com.ecaservice.oauth.service.tfa.TfaCodeService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class TokenGranterConfigurer {
     private final NotificationService notificationService;
     private final AuthenticationManager authenticationManager;
     private final TfaCodeService tfaCodeService;
+    private final UserEntityRepository userEntityRepository;
 
     /**
      * Extends token granters.
@@ -37,7 +39,7 @@ public class TokenGranterConfigurer {
         List<TokenGranter> tokenGranters = newArrayList();
         tokenGranters.add(endpoints.getTokenGranter());
         tokenGranters.add(new TfaResourceOwnerPasswordTokenGranter(authenticationManager, endpoints, tfaConfig,
-                notificationService, tfaCodeService));
+                notificationService, tfaCodeService, userEntityRepository));
         tokenGranters.add(new TfaCodeTokenGranter(endpoints, tfaCodeService));
         CompositeTokenGranter compositeTokenGranter = new CompositeTokenGranter(tokenGranters);
         endpoints.tokenGranter(compositeTokenGranter);

@@ -64,6 +64,5 @@ class UserMapperTest {
         assertThat(userDetails.getAuthorities()).isNotEmpty();
         assertThat(userDetails.getAuthorities()).hasSameSizeAs(userEntity.getRoles());
         assertThat(userDetails.getCreationDate()).isEqualTo(userEntity.getCreationDate());
-        assertThat(userDetails.isTfaEnabled()).isEqualTo(userEntity.isTfaEnabled());
     }
 }
