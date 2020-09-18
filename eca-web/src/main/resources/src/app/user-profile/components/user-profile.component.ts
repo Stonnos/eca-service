@@ -47,6 +47,14 @@ export class UserProfileComponent implements OnInit {
   }
 
   public changedTfaSwitch(event): void {
+    this.usersService.setTfaEnabled(event.checked).subscribe({
+      next: () => {
+        this.getUser();
+      },
+      error: (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      }
+    })
   }
 
   private getUser(): void {
