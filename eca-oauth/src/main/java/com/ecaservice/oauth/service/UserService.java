@@ -69,7 +69,7 @@ public class UserService {
     }
 
     /**
-     * Sets tfa enabled for user.
+     * Enable/Disable two factor authentication for user.
      *
      * @param userId     - user id
      * @param tfaEnabled - tfa enabled?
