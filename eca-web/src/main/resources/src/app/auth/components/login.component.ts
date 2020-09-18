@@ -189,7 +189,7 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
         }
       },
       error: (error) => {
-        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
+        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
       }
     });
   }
