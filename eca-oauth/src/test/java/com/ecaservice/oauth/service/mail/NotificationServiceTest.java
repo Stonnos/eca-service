@@ -95,7 +95,7 @@ class NotificationServiceTest {
         when(emailClient.sendEmail(any(EmailRequest.class))).thenReturn(new EmailResponse());
         UserEntity userEntity = createUserEntity();
         String code = UUID.randomUUID().toString();
-        notificationService.sendTfaCode(userEntity, code);
+        notificationService.sendTfaCode(userEntity.getEmail(), code);
         verify(emailClient, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
         EmailRequest actual = emailRequestArgumentCaptor.getValue();
         assertThat(actual).isNotNull();
