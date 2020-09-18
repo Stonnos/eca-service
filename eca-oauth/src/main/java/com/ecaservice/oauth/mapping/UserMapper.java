@@ -20,16 +20,6 @@ import java.util.Optional;
 public abstract class UserMapper {
 
     /**
-     * Maps user details to user dto.
-     *
-     * @param userDetails - user details
-     * @return user dto
-     */
-    @Mapping(source = "username", target = "login")
-    @Mapping(source = "authorities", target = "roles")
-    public abstract UserDto map(UserDetailsImpl userDetails);
-
-    /**
      * Maps user entity to its dto model.
      *
      * @param userEntity - user entity

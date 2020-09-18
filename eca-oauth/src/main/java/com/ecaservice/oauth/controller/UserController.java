@@ -58,13 +58,14 @@ public class UserController {
     )
     @GetMapping(value = "/user-info")
     public UserDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userMapper.map(userDetails);
+        UserEntity userEntity = userService.getById(userDetails.getId());
+        return userMapper.map(userEntity);
     }
 
     /**
      * Sets tfa enabled for current authenticated user.
      *
-     * @param enabled     - tfa enabled?
+     * @param enabled - tfa enabled?
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
@@ -72,8 +73,9 @@ public class UserController {
             notes = "Sets tfa enabled for current authenticated user"
     )
     @PostMapping(value = "/tfa-enabled")
-    public void setTfaEnabled(@ApiParam(value = "Tfa enabled flag", required = true) @RequestParam boolean enabled) {
-        userService.setTfaEnabled(enabled);
+    public void setTfaEnabled(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                              @ApiParam(value = "Tfa enabled flag", required = true) @RequestParam boolean enabled) {
+        userService.setTfaEnabled(userDetails.getId(), enabled);
     }
 
     /**

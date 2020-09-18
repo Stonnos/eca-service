@@ -11,7 +11,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 
-import static com.ecaservice.oauth.TestHelperUtils.createUserDetails;
 import static com.ecaservice.oauth.TestHelperUtils.createUserDto;
 import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,21 +26,6 @@ class UserMapperTest {
 
     @Inject
     private UserMapper userMapper;
-
-    @Test
-    void testMapUserDetailsToUSerDto() {
-        UserDetailsImpl userDetails = createUserDetails();
-        UserDto userDto = userMapper.map(userDetails);
-        assertThat(userDto).isNotNull();
-        assertThat(userDto.getId()).isEqualTo(userDetails.getId());
-        assertThat(userDto.getLogin()).isEqualTo(userDetails.getUsername());
-        assertThat(userDto.getEmail()).isEqualTo(userDetails.getEmail());
-        assertThat(userDto.getFirstName()).isEqualTo(userDetails.getFirstName());
-        assertThat(userDto.getRoles()).isNotEmpty();
-        assertThat(userDto.getRoles()).hasSameSizeAs(userDetails.getAuthorities());
-        assertThat(userDto.getCreationDate()).isEqualTo(userDetails.getCreationDate());
-        assertThat(userDto.isTfaEnabled()).isEqualTo(userDetails.isTfaEnabled());
-    }
 
     @Test
     void testMapUserEntityToUserDto() {

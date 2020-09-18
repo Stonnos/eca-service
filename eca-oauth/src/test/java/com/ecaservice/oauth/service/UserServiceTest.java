@@ -5,6 +5,7 @@ import com.ecaservice.oauth.TestHelperUtils;
 import com.ecaservice.oauth.config.CommonConfig;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.entity.UserEntity;
+import com.ecaservice.oauth.exception.EntityNotFoundException;
 import com.ecaservice.oauth.mapping.RoleMapperImpl;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.mapping.UserMapperImpl;
@@ -34,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class UserServiceTest extends AbstractJpaTest {
 
     private static final String PASSWORD = "pa66word!";
+    private static final long USER_ID = 1L;
 
     @Inject
     private CommonConfig commonConfig;
@@ -84,5 +86,21 @@ class UserServiceTest extends AbstractJpaTest {
         Page<UserEntity> usersPage = userService.getNextPage(pageRequestDto);
         assertThat(usersPage).isNotNull();
         assertThat(usersPage.getContent()).hasSize(1);
+    }
+
+    @Test
+    void testSetTfaEnabled() {
+        roleRepository.save(createRoleEntity());
+        CreateUserDto createUserDto = TestHelperUtils.createUserDto();
+        UserEntity userEntity = userService.createUser(createUserDto, PASSWORD);
+        userService.setTfaEnabled(userEntity.getId(), true);
+        UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
+        assertThat(actual).isNotNull();
+        assertThat(actual.isTfaEnabled()).isTrue();
+    }
+
+    @Test
+    void testSetTfaEnabledForNotExistingUser() {
+        assertThrows(EntityNotFoundException.class, () -> userService.setTfaEnabled(USER_ID, true));
     }
 }
