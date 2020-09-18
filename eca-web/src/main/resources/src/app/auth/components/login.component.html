@@ -1,7 +1,9 @@
 <div class="container">
   <div class="row h-100">
     <div class="col-12 d-flex py-4">
-      <form novalidate class="form d-flex flex-column justify-content-center m-auto"
+      <form *ngIf="!tfaCodeVerificationStep"
+            novalidate
+            class="form d-flex flex-column justify-content-center m-auto"
             (submit)="submit()"
             (keydown.enter)="submit()">
         <div class="ui-g-10 text-center mx-auto">
@@ -10,7 +12,7 @@
         </div>
         <div class="ui-g ui-fluid">
           <div class="ui-g-10 auth-error mx-auto">
-            <div *ngIf="form.valid && errorMessage" class="text-danger text-center mb-1">{{ errorMessage }}</div>
+            <div *ngIf="errorMessage" class="text-danger text-center mb-1">{{ errorMessage }}</div>
           </div>
           <div class="ui-g-10 mx-auto">
             <label class="text-bold">Логин или email</label>
@@ -65,7 +67,7 @@
               type="submit"
               [disabled]="loading"
               class="auth-button w-100 mb-2 mb-sm-3">
-              <span class="login-text" *ngIf="!loading">Войти</span>
+              <span class="button-text" *ngIf="!loading">Войти</span>
               <p-progressSpinner
                 *ngIf="loading"
                 class="login-progress-spinner"
@@ -77,6 +79,71 @@
 
         </div>
       </form>
+
+      <form *ngIf="tfaCodeVerificationStep"
+            novalidate
+            class="form d-flex flex-column justify-content-center m-auto"
+            (submit)="submit()"
+            (keydown.enter)="submit()">
+
+        <p-panel header="Подтверждение email - кода">
+          <div class="ui-g ui-fluid">
+            <div class="ui-g-10 auth-error mx-auto">
+              <div *ngIf="errorMessage" class="text-danger text-center mb-1">{{ errorMessage }}</div>
+            </div>
+            <div class="ui-g-10 mx-auto">
+              <label class="text-bold">Код подтверждения</label>
+              <input
+                required
+                pInputText
+                id="tfaCode"
+                name="tfaCode"
+                type="text"
+                placeholder="Введите код подтверждения"
+                [(ngModel)]="tfaVerificationCode"
+                #tfaCode="ngModel"
+                [disabled]="loading || codeExpired"
+                maxlength="255"
+                class="form-control d-block w-100">
+            </div>
+            <div class="ui-g-10 mt-2 mx-auto d-flex align-items-end justify-content-end">
+              <span *ngIf="!codeExpired" class="tfa-code-timer">
+                Время действия кода: <span class="ml-2 mr-2 pi pi-clock">{{ getFormattedCurrentTokenValidityTime() }}</span>
+              </span>
+              <span *ngIf="codeExpired" class="tfa-code-timer-expired">
+                Время действия кода истекло
+              </span>
+            </div>
+
+            <div class="ui-g-10 mx-auto">
+              <button
+                *ngIf="!codeExpired"
+                pButton
+                type="submit"
+                [disabled]="!tfaVerificationCode || loading"
+                class="auth-button w-100 mb-1 mb-sm-3">
+                <span class="button-text" *ngIf="!loading">Подтвердить</span>
+                <p-progressSpinner
+                  *ngIf="loading"
+                  class="login-progress-spinner"
+                  strokeWidth="4"
+                  animationDuration=".5s">
+                </p-progressSpinner>
+              </button>
+              <button
+                *ngIf="codeExpired"
+                pButton
+                (click)="resetTfaCodeVerification()"
+                type="button"
+                label="На страницу входа"
+                class="w-100 mb-1 mb-sm-3">
+              </button>
+            </div>
+
+          </div>
+        </p-panel>
+      </form>
+
     </div>
   </div>
 </div>

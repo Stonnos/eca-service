@@ -12,6 +12,7 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UserDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -56,7 +58,24 @@ public class UserController {
     )
     @GetMapping(value = "/user-info")
     public UserDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userMapper.map(userDetails);
+        UserEntity userEntity = userService.getById(userDetails.getId());
+        return userMapper.map(userEntity);
+    }
+
+    /**
+     * Sets tfa enabled for current authenticated user.
+     *
+     * @param enabled - tfa enabled?
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Sets tfa enabled for current authenticated user",
+            notes = "Sets tfa enabled for current authenticated user"
+    )
+    @PostMapping(value = "/tfa-enabled")
+    public void setTfaEnabled(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                              @ApiParam(value = "Tfa enabled flag", required = true) @RequestParam boolean enabled) {
+        userService.setTfaEnabled(userDetails.getId(), enabled);
     }
 
     /**

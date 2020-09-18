@@ -1,11 +1,11 @@
 package com.ecaservice.oauth.config;
 
+import com.ecaservice.oauth.config.granter.TokenGranterConfigurer;
 import com.ecaservice.oauth.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -27,7 +27,7 @@ import javax.sql.DataSource;
 @RequiredArgsConstructor
 public class AuthServerOauth2Configuration extends AuthorizationServerConfigurerAdapter {
 
-    private final AuthenticationManager authenticationManager;
+    private final TokenGranterConfigurer tokenGranterConfigurer;
     private final UserDetailsServiceImpl userDetailsService;
     private final DataSource oauthDataSource;
 
@@ -43,8 +43,8 @@ public class AuthServerOauth2Configuration extends AuthorizationServerConfigurer
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
-        endpoints.tokenStore(tokenStore()).authenticationManager(authenticationManager).userDetailsService(
-                userDetailsService);
+        endpoints.tokenStore(tokenStore()).userDetailsService(userDetailsService);
+        tokenGranterConfigurer.configure(endpoints);
     }
 
     /**

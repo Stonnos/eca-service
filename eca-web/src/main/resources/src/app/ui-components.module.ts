@@ -20,7 +20,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { PanelModule } from 'primeng/panel';
 import { PasswordModule } from 'primeng/password';
-import { InputSwitchModule, ListboxModule, TooltipModule } from 'primeng/primeng';
+import { InputSwitchModule, ListboxModule, MenuModule, TooltipModule } from 'primeng/primeng';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { RadioButtonModule } from 'primeng/radiobutton';
@@ -69,7 +69,8 @@ import { PasswordStrengthMeterModule } from "angular-password-strength-meter";
     CheckboxModule,
     FieldsetModule,
     ScrollPanelModule,
-    PasswordStrengthMeterModule
+    PasswordStrengthMeterModule,
+    MenuModule
   ]
 })
 export class UiComponentsModule {

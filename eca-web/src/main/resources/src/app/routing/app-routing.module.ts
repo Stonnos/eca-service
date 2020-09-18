@@ -13,6 +13,7 @@ import { UsersListComponent } from "../users/components/users-list.component";
 import { ForgotPasswordComponent } from "../change-password/components/forgot-password/forgot-password.component";
 import { ResetPasswordComponent } from "../change-password/components/reset-password/reset-password.component";
 import { InstancesListComponent } from "../instances/components/instances-list.component";
+import { UserProfileComponent } from "../user-profile/components/user-profile.component";
 
 const routes: Routes = [
   {
@@ -54,7 +55,11 @@ const routes: Routes = [
       {
         path: 'experiments/classifiers-configuration/details/:id',
         component: ClassifiersConfigurationDetailsComponent
-      }
+      },
+      {
+        path: 'profile',
+        component: UserProfileComponent
+      },
     ]
   },
   {

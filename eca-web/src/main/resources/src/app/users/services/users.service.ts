@@ -44,4 +44,13 @@ export class UsersService {
     });
     return this.http.post<UserDto>(this.serviceUrl + '/create', createUser, { headers: headers })
   }
+
+  public setTfaEnabled(tfaEnabled: boolean) {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    const formData = new FormData();
+    formData.append('enabled', tfaEnabled.toString());
+    return this.http.post(this.serviceUrl + '/tfa-enabled', formData, { headers: headers })
+  }
 }

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ErrorHandler {
 
     /**
-     * Handles bad request error.
+     * Handles not found error.
      *
      * @param ex -  exception
      * @return response entity
