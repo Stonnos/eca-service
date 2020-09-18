@@ -4,6 +4,7 @@ import com.ecaservice.oauth.config.CommonConfig;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
+import com.ecaservice.oauth.exception.EntityNotFoundException;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.repository.RoleRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
@@ -65,6 +66,19 @@ public class UserService {
         populateUserRole(userEntity);
         userEntity.setCreationDate(LocalDateTime.now());
         return userEntityRepository.save(userEntity);
+    }
+
+    /**
+     * Sets tfa enabled for user.
+     *
+     * @param userId     - user id
+     * @param tfaEnabled - tfa enabled?
+     */
+    public void setTfaEnabled(long userId, boolean tfaEnabled) {
+        UserEntity userEntity = userEntityRepository.findById(userId).orElseThrow(
+                () -> new EntityNotFoundException(UserEntity.class, userId));
+        userEntity.setTfaEnabled(tfaEnabled);
+        userEntityRepository.save(userEntity);
     }
 
     private void populateUserRole(UserEntity userEntity) {
