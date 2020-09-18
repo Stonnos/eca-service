@@ -52,6 +52,7 @@ reset-password:
 tfa:
   codeValiditySeconds: 120
   codeLength: 6
+  enabled: true
 
 ## Swagger properties
 swagger2:

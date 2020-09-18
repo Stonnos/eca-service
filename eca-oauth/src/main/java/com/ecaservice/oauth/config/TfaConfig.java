@@ -21,4 +21,9 @@ public class TfaConfig {
      * TFA code length
      */
     private Integer codeLength;
+
+    /**
+     * Tfa enabled global setting
+     */
+    private Boolean enabled;
 }

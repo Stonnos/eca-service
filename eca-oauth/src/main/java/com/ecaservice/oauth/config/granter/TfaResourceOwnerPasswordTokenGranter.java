@@ -49,13 +49,15 @@ public class TfaResourceOwnerPasswordTokenGranter extends ResourceOwnerPasswordT
     @Override
     protected OAuth2AccessToken getAccessToken(ClientDetails client, TokenRequest tokenRequest) {
         OAuth2Authentication oAuth2Authentication = getOAuth2Authentication(client, tokenRequest);
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                (UsernamePasswordAuthenticationToken) oAuth2Authentication.getUserAuthentication();
-        UserDetailsImpl userDetails = (UserDetailsImpl) usernamePasswordAuthenticationToken.getPrincipal();
-        if (userDetails.isTfaEnabled()) {
-            String code = authorizationCodeServices.createAuthorizationCode(oAuth2Authentication);
-            notificationService.sendTfaCode(userDetails.getEmail(), code);
-            throw new TfaRequiredException(tfaConfig.getCodeValiditySeconds());
+        if (Boolean.TRUE.equals(tfaConfig.getEnabled())) {
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                    (UsernamePasswordAuthenticationToken) oAuth2Authentication.getUserAuthentication();
+            UserDetailsImpl userDetails = (UserDetailsImpl) usernamePasswordAuthenticationToken.getPrincipal();
+            if (userDetails.isTfaEnabled()) {
+                String code = authorizationCodeServices.createAuthorizationCode(oAuth2Authentication);
+                notificationService.sendTfaCode(userDetails.getEmail(), code);
+                throw new TfaRequiredException(tfaConfig.getCodeValiditySeconds());
+            }
         }
         return getTokenServices().createAccessToken(oAuth2Authentication);
     }
