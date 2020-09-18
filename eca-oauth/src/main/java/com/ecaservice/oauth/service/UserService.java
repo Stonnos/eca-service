@@ -8,13 +8,18 @@ import com.ecaservice.oauth.exception.EntityNotFoundException;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.repository.RoleRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
+import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +35,7 @@ import static com.ecaservice.user.model.Role.ROLE_ECA_USER;
  *
  * @author Roman Batygin
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -71,19 +77,30 @@ public class UserService {
     /**
      * Enable/Disable two factor authentication for user.
      *
-     * @param userId     - user id
      * @param tfaEnabled - tfa enabled?
      */
-    public void setTfaEnabled(long userId, boolean tfaEnabled) {
-        UserEntity userEntity = userEntityRepository.findById(userId).orElseThrow(
-                () -> new EntityNotFoundException(UserEntity.class, userId));
+    public void setTfaEnabled(boolean tfaEnabled) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        UserEntity userEntity = userEntityRepository.findById(userDetails.getId()).orElseThrow(
+                () -> new EntityNotFoundException(UserEntity.class, userDetails.getId()));
         userEntity.setTfaEnabled(tfaEnabled);
         userEntityRepository.save(userEntity);
+        updateAuthentication(authentication, userEntity);
+        log.info("Sets two factor authentication flag [{}] for user [{}]", tfaEnabled, userEntity.getLogin());
     }
 
     private void populateUserRole(UserEntity userEntity) {
         RoleEntity roleEntity = roleRepository.findByRoleName(ROLE_ECA_USER).orElseThrow(
                 () -> new IllegalStateException(String.format("Role with name [%s] doesn't exists", ROLE_ECA_USER)));
         userEntity.setRoles(Sets.newHashSet(roleEntity));
+    }
+
+    private void updateAuthentication(Authentication authentication, UserEntity userEntity) {
+        UserDetailsImpl userDetails = userMapper.mapDetails(userEntity);
+        Authentication newAuthentication =
+                new UsernamePasswordAuthenticationToken(userDetails, authentication.getCredentials(),
+                        authentication.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(newAuthentication);
     }
 }

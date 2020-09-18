@@ -64,7 +64,6 @@ public class UserController {
     /**
      * Sets tfa enabled for current authenticated user.
      *
-     * @param userDetails - user details
      * @param enabled     - tfa enabled?
      */
     @PreAuthorize("#oauth2.hasScope('web')")
@@ -73,10 +72,8 @@ public class UserController {
             notes = "Sets tfa enabled for current authenticated user"
     )
     @PostMapping(value = "/tfa-enabled")
-    public void setTfaEnabled(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                              @ApiParam(value = "Tfa enabled flag", required = true) @RequestParam boolean enabled) {
-        log.info("Sets two factor authentication flag [{}] for user [{}]", enabled, userDetails.getUsername());
-        userService.setTfaEnabled(userDetails.getId(), enabled);
+    public void setTfaEnabled(@ApiParam(value = "Tfa enabled flag", required = true) @RequestParam boolean enabled) {
+        userService.setTfaEnabled(enabled);
     }
 
     /**
