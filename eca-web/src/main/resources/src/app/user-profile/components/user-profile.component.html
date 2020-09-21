@@ -2,7 +2,29 @@
   <div class="row mt-2">
       <div class="col-6 offset-3 align-items-center justify-content-center">
         <div class="h-100 user-header w-100">
-          <div class="abbreviated-user-name mt-1">{{ getAbbreviatedUserName() }}</div>
+
+          <ng-container *ngIf="hasPhoto()">
+            <div class="user-photo-container">
+              <img class="user-photo" [src]="getBlobUrl()">
+              <button
+                pButton
+                class="overlay"
+                icon="fo-close"
+                (click)="deletePhoto()">
+              </button>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="!hasPhoto()">
+            <p-fileUpload #fileUpload
+                          class="user-photo-upload"
+                          mode="basic"
+                          chooseLabel="{{ getAbbreviatedUserName() }}"
+                          customUpload="true"
+                          (uploadHandler)="onPhotoUpload($event, fileUpload)"
+                          [auto]="true"
+                          accept="image/*">
+            </p-fileUpload>
+          </ng-container>
           <div class="user-name text-center mb-1">{{ user?.login }}</div>
         </div>
       </div>

@@ -7,6 +7,7 @@ import { MessageService } from "primeng/api";
 import { UserFields } from "../../common/util/field-names";
 import { Utils } from "../../common/util/utils";
 import { FieldService } from "../../common/services/field.service";
+import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-user-profile',
@@ -21,14 +22,34 @@ export class UserProfileComponent implements OnInit {
 
   public commonFields: any[] = [];
 
+  private file: File;
+
   public constructor(private usersService: UsersService,
                      private fieldService: FieldService,
+                     private sanitizer: DomSanitizer,
                      private messageService: MessageService) {
     this.initCommonFields();
   }
 
   public ngOnInit() {
     this.getUser();
+  }
+
+  public hasPhoto(): boolean {
+    return this.file != null;
+  }
+
+  public onPhotoUpload(event: any, fileUpload: any): void {
+    this.file = event.files[0];
+    fileUpload.clear();
+  }
+
+  public deletePhoto(): void {
+    this.file = null;
+  }
+
+  public getBlobUrl(): SafeResourceUrl {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(this.file));
   }
 
   public getAbbreviatedUserName(): string {
