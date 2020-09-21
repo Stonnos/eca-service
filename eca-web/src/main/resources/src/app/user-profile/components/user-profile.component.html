@@ -2,15 +2,14 @@
   <div class="row mt-2">
       <div class="col-6 offset-3 align-items-center justify-content-center">
         <div class="h-100 user-header w-100">
-
           <ng-container *ngIf="hasPhoto()">
             <div class="user-photo-container">
               <img class="user-photo" [src]="getBlobUrl()">
               <button
                 pButton
                 class="overlay"
-                icon="fo-close"
-                (click)="deletePhoto()">
+                icon="pi pi-camera"
+                (click)="userPhotoMenu.toggle($event)">
               </button>
             </div>
           </ng-container>
@@ -63,4 +62,5 @@
       </div>
     </div>
   </div>
+  <p-menu #userPhotoMenu [popup]="true" [model]="userMenuItems"></p-menu>
 </div>

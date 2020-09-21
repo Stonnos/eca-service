@@ -3,11 +3,11 @@ import {
   RoleDto, UserDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { UsersService } from "../../users/services/users.service";
-import { MessageService } from "primeng/api";
+import { MenuItem, MessageService } from "primeng/api";
 import { UserFields } from "../../common/util/field-names";
 import { Utils } from "../../common/util/utils";
 import { FieldService } from "../../common/services/field.service";
-import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
+import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 
 @Component({
   selector: 'app-user-profile',
@@ -22,6 +22,8 @@ export class UserProfileComponent implements OnInit {
 
   public commonFields: any[] = [];
 
+  public userMenuItems: MenuItem[];
+
   private file: File;
 
   public constructor(private usersService: UsersService,
@@ -33,6 +35,7 @@ export class UserProfileComponent implements OnInit {
 
   public ngOnInit() {
     this.getUser();
+    this.initUserPhotoMenu();
   }
 
   public hasPhoto(): boolean {
@@ -42,10 +45,6 @@ export class UserProfileComponent implements OnInit {
   public onPhotoUpload(event: any, fileUpload: any): void {
     this.file = event.files[0];
     fileUpload.clear();
-  }
-
-  public deletePhoto(): void {
-    this.file = null;
   }
 
   public getBlobUrl(): SafeResourceUrl {
@@ -95,6 +94,22 @@ export class UserProfileComponent implements OnInit {
       { name: UserFields.FIRST_NAME, label: "Имя:" },
       { name: UserFields.ROLES, label: "Роли:" },
       { name: UserFields.TFA_ENABLED, label: "Двухфакторная аутентификация:" }
+    ];
+  }
+
+  private initUserPhotoMenu(): void {
+    this.userMenuItems = [
+      {
+        label: 'Обновить фотографию',
+        icon: 'pi pi-upload'
+      },
+      {
+        label: 'Удалить фотографию',
+        icon: 'pi pi-fw pi-trash',
+        command: () => {
+          this.file = null;
+        }
+      }
     ];
   }
 }

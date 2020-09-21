@@ -122,8 +122,6 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 100%;
-  width: 100%;
   opacity: 0;
   transition: .3s ease;
   background-color: #000000;
@@ -134,6 +132,8 @@
   margin: auto;
 
   &.ui-button {
+    width: 50%;
+    height: 50%;
     &.ui-state-default {
       border-color: #000000;
       background-color: #000000;
