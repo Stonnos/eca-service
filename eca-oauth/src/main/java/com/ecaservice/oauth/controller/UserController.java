@@ -19,12 +19,14 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -115,5 +117,37 @@ public class UserController {
         log.info("User {} has been created", userEntity.getLogin());
         applicationEventPublisher.publishEvent(new UserCreatedEvent(this, userEntity, password));
         return userMapper.map(userEntity);
+    }
+
+    /**
+     * Uploads photo for current authenticated user.
+     *
+     * @param userDetails - user details
+     * @param file        - user photo file
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Uploads photo for current authenticated user",
+            notes = "Uploads photo for current authenticated user"
+    )
+    @PostMapping(value = "/upload-photo")
+    public void uploadPhoto(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                            @ApiParam(value = "Photo file", required = true) @RequestParam MultipartFile file) {
+
+    }
+
+    /**
+     * Deletes photo for current authenticated user
+     *
+     * @param userDetails - user details
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Deletes photo for current authenticated user",
+            notes = "Deletes photo for current authenticated user"
+    )
+    @DeleteMapping(value = "/delete-photo")
+    public void deletePhoto(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+
     }
 }
