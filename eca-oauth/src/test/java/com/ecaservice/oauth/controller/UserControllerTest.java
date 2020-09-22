@@ -91,6 +91,7 @@ class UserControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
     }
+
     @Test
     void testGetUsersPage() throws Exception {
         Page<UserEntity> userEntityPage = Mockito.mock(Page.class);
