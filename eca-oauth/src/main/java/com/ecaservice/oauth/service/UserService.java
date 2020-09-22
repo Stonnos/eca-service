@@ -113,15 +113,7 @@ public class UserService {
             userPhoto = new UserPhoto();
             userPhoto.setUserEntity(userEntity);
         }
-        try {
-            String fileName = file.getOriginalFilename();
-            userPhoto.setFileName(fileName);
-            userPhoto.setFileExtension(FilenameUtils.getExtension(fileName));
-            userPhoto.setPhoto(file.getBytes());
-            userPhotoRepository.save(userPhoto);
-        } catch (IOException ex) {
-            throw new IllegalStateException(ex);
-        }
+        updatePhoto(userPhoto, file);
     }
 
     /**
@@ -143,5 +135,17 @@ public class UserService {
         RoleEntity roleEntity = roleRepository.findByRoleName(ROLE_ECA_USER).orElseThrow(
                 () -> new IllegalStateException(String.format("Role with name [%s] doesn't exists", ROLE_ECA_USER)));
         userEntity.setRoles(Sets.newHashSet(roleEntity));
+    }
+
+    private void updatePhoto(UserPhoto userPhoto, MultipartFile file) {
+        try {
+            String fileName = file.getOriginalFilename();
+            userPhoto.setFileName(fileName);
+            userPhoto.setFileExtension(FilenameUtils.getExtension(fileName));
+            userPhoto.setPhoto(file.getBytes());
+            userPhotoRepository.save(userPhoto);
+        } catch (IOException ex) {
+            throw new IllegalStateException(ex);
+        }
     }
 }
