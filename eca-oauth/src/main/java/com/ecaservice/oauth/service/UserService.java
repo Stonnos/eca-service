@@ -21,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -128,8 +129,14 @@ public class UserService {
      *
      * @param userId - user id
      */
+    @Transactional
     public void deletePhoto(long userId) {
-
+        UserEntity userEntity = getById(userId);
+        UserPhoto userPhoto = userPhotoRepository.findByUserEntity(userEntity);
+        if (userPhoto == null) {
+            throw new EntityNotFoundException(UserPhoto.class, String.format("User %s", userEntity.getLogin()));
+        }
+        userPhotoRepository.delete(userPhoto);
     }
 
     private void populateUserRole(UserEntity userEntity) {

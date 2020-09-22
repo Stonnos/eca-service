@@ -149,6 +149,7 @@ public class UserController {
     )
     @DeleteMapping(value = "/delete-photo")
     public void deletePhoto(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-
+        log.info("Deletes photo for user [{}]", userDetails.getUsername());
+        userService.deletePhoto(userDetails.getId());
     }
 }

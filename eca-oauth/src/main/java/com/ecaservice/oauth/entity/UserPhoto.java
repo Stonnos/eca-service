@@ -3,8 +3,10 @@ package com.ecaservice.oauth.entity;
 import lombok.Data;
 import org.hibernate.annotations.Type;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -41,6 +43,7 @@ public class UserPhoto {
     /**
      * User photo byte array
      */
+    @Basic(fetch = FetchType.LAZY)
     @Lob
     @Type(type = "org.hibernate.type.BinaryType")
     private byte[] photo;
