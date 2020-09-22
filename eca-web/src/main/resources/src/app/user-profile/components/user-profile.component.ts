@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   RoleDto, UserDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -8,6 +8,7 @@ import { UserFields } from "../../common/util/field-names";
 import { Utils } from "../../common/util/utils";
 import { FieldService } from "../../common/services/field.service";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
+import { FileUpload } from "primeng/primeng";
 
 @Component({
   selector: 'app-user-profile',
@@ -26,6 +27,9 @@ export class UserProfileComponent implements OnInit {
 
   private file: File;
 
+  @ViewChild(FileUpload, { static: true })
+  private fileUpload: FileUpload;
+
   public constructor(private usersService: UsersService,
                      private fieldService: FieldService,
                      private sanitizer: DomSanitizer,
@@ -42,9 +46,9 @@ export class UserProfileComponent implements OnInit {
     return this.file != null;
   }
 
-  public onPhotoUpload(event: any, fileUpload: any): void {
+  public onPhotoUpload(event: any): void {
     this.file = event.files[0];
-    fileUpload.clear();
+    this.fileUpload.clear();
   }
 
   public getBlobUrl(): SafeResourceUrl {
@@ -100,11 +104,14 @@ export class UserProfileComponent implements OnInit {
   private initUserPhotoMenu(): void {
     this.userMenuItems = [
       {
-        label: 'Обновить фотографию',
-        icon: 'pi pi-upload'
+        label: 'Обновить',
+        icon: 'pi pi-upload',
+        command: () => {
+          this.fileUpload.basicFileInput.nativeElement.click();
+        }
       },
       {
-        label: 'Удалить фотографию',
+        label: 'Удалить',
         icon: 'pi pi-fw pi-trash',
         command: () => {
           this.file = null;

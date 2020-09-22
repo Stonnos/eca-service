@@ -1,32 +1,30 @@
 <div class="container-fluid">
   <div class="row mt-2">
-      <div class="col-6 offset-3 align-items-center justify-content-center">
-        <div class="h-100 user-header w-100">
-          <ng-container *ngIf="hasPhoto()">
-            <div class="user-photo-container">
-              <img class="user-photo" [src]="getBlobUrl()">
-              <button
-                pButton
-                class="overlay"
-                icon="pi pi-camera"
-                (click)="userPhotoMenu.toggle($event)">
-              </button>
-            </div>
-          </ng-container>
-          <ng-container *ngIf="!hasPhoto()">
-            <p-fileUpload #fileUpload
-                          class="user-photo-upload"
-                          mode="basic"
-                          chooseLabel="{{ getAbbreviatedUserName() }}"
-                          customUpload="true"
-                          (uploadHandler)="onPhotoUpload($event, fileUpload)"
-                          [auto]="true"
-                          accept="image/*">
-            </p-fileUpload>
-          </ng-container>
-          <div class="user-name text-center mb-1">{{ user?.login }}</div>
-        </div>
+    <div class="col-6 offset-3 align-items-center justify-content-center">
+      <div class="h-100 user-header w-100">
+        <ng-container *ngIf="hasPhoto()">
+          <div class="user-photo-container">
+            <img class="user-photo" [src]="getBlobUrl()">
+            <button
+              pButton
+              class="overlay"
+              icon="pi pi-camera"
+              (click)="userPhotoMenu.toggle($event)">
+            </button>
+          </div>
+        </ng-container>
+        <p-fileUpload [class.user-photo-upload]="!hasPhoto()"
+                      [class.hidden-user-photo-upload]="hasPhoto()"
+                      mode="basic"
+                      chooseLabel="{{ getAbbreviatedUserName() }}"
+                      customUpload="true"
+                      (uploadHandler)="onPhotoUpload($event)"
+                      [auto]="true"
+                      accept="image/*">
+        </p-fileUpload>
+        <div class="user-name text-center mb-1">{{ user?.login }}</div>
       </div>
+    </div>
   </div>
   <div class="row">
     <div class="col-6 offset-3">
@@ -50,14 +48,14 @@
         </p-fieldset>
 
         <p-fieldset legend="Контакты" class="details-fieldset">
-            <div class="ui-g ml-1 mr-1">
-              <div class="ui-g-4 text-left text-bold text-wrap">
-                Email:
-              </div>
-              <div class="ui-g-6 text-left text-wrap">
-                {{ user?.email }}
-              </div>
+          <div class="ui-g ml-1 mr-1">
+            <div class="ui-g-4 text-left text-bold text-wrap">
+              Email:
             </div>
+            <div class="ui-g-6 text-left text-wrap">
+              {{ user?.email }}
+            </div>
+          </div>
         </p-fieldset>
       </div>
     </div>

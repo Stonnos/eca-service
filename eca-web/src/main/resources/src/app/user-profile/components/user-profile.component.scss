@@ -81,7 +81,9 @@
     font-size: 36px;
     font-weight: bold;
 
-    &:hover {
+    &:hover,
+    &:focus,
+    &:enabled:active {
       background-color: #c9c9c9;
       border: 1px solid #c9c9c9;
     }
@@ -92,6 +94,20 @@
   .ui-button-text-icon-right .ui-button-icon-right {
     display: none;
   }
+}
+
+.hidden-user-photo-upload::ng-deep {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  z-index: 998;
 }
 
 .user-photo-container {
@@ -116,6 +132,7 @@
 }
 
 .overlay {
+  z-index: 999;
   position: absolute;
   border-radius: 50%;
   top: 0;
