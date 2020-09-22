@@ -133,7 +133,8 @@ public class UserController {
     @PostMapping(value = "/upload-photo")
     public void uploadPhoto(@AuthenticationPrincipal UserDetailsImpl userDetails,
                             @ApiParam(value = "Photo file", required = true) @RequestParam MultipartFile file) {
-
+        log.info("Uploads photo [{}] for user [{}]", file.getOriginalFilename(), userDetails.getUsername());
+        userService.updatePhoto(userDetails.getId(), file);
     }
 
     /**

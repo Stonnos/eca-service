@@ -11,6 +11,7 @@ import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.mapping.UserMapperImpl;
 import com.ecaservice.oauth.repository.RoleRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
+import com.ecaservice.oauth.repository.UserPhotoRepository;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
@@ -45,13 +46,16 @@ class UserServiceTest extends AbstractJpaTest {
     private UserEntityRepository userEntityRepository;
     @Inject
     private RoleRepository roleRepository;
+    @Inject
+    private UserPhotoRepository userPhotoRepository;
 
     private UserService userService;
 
     @Override
     public void init() {
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        userService = new UserService(commonConfig, passwordEncoder, userMapper, userEntityRepository, roleRepository);
+        userService = new UserService(commonConfig, passwordEncoder, userMapper, userEntityRepository, roleRepository,
+                userPhotoRepository);
     }
 
     @Override

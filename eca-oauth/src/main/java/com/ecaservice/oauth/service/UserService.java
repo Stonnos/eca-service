@@ -4,21 +4,26 @@ import com.ecaservice.oauth.config.CommonConfig;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
+import com.ecaservice.oauth.entity.UserPhoto;
 import com.ecaservice.oauth.exception.EntityNotFoundException;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.repository.RoleRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
+import com.ecaservice.oauth.repository.UserPhotoRepository;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.oauth.entity.UserEntity_.CREATION_DATE;
@@ -41,6 +46,7 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserEntityRepository userEntityRepository;
     private final RoleRepository roleRepository;
+    private final UserPhotoRepository userPhotoRepository;
 
     /**
      * Gets the next page for specified page request.
@@ -91,6 +97,39 @@ public class UserService {
         userEntity.setTfaEnabled(tfaEnabled);
         userEntityRepository.save(userEntity);
         log.info("Sets two factor authentication flag [{}] for user [{}]", tfaEnabled, userEntity.getLogin());
+    }
+
+    /**
+     * Updates photo for specified user.
+     *
+     * @param userId - user id
+     * @param file   - user photo file
+     */
+    public void updatePhoto(long userId, MultipartFile file) {
+        UserEntity userEntity = getById(userId);
+        UserPhoto userPhoto = userPhotoRepository.findByUserEntity(userEntity);
+        if (userPhoto == null) {
+            userPhoto = new UserPhoto();
+            userPhoto.setUserEntity(userEntity);
+        }
+        try {
+            String fileName = file.getOriginalFilename();
+            userPhoto.setFileName(fileName);
+            userPhoto.setFileExtension(FilenameUtils.getExtension(fileName));
+            userPhoto.setPhoto(file.getBytes());
+            userPhotoRepository.save(userPhoto);
+        } catch (IOException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
+    /**
+     * Deletes photo for specified user.
+     *
+     * @param userId - user id
+     */
+    public void deletePhoto(long userId) {
+
     }
 
     private void populateUserRole(UserEntity userEntity) {
