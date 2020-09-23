@@ -3,10 +3,12 @@ package com.ecaservice.oauth.controller;
 import com.ecaservice.oauth.TestHelperUtils;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.entity.UserEntity;
+import com.ecaservice.oauth.entity.UserPhoto;
 import com.ecaservice.oauth.mapping.RoleMapperImpl;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.mapping.UserMapperImpl;
 import com.ecaservice.oauth.repository.UserEntityRepository;
+import com.ecaservice.oauth.repository.UserPhotoRepository;
 import com.ecaservice.oauth.service.PasswordService;
 import com.ecaservice.oauth.service.UserService;
 import com.ecaservice.web.dto.model.PageDto;
@@ -29,6 +31,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
 import static org.mockito.ArgumentMatchers.any;
@@ -55,12 +58,16 @@ class UserControllerTest {
     private static final String BASE_URL = "/users";
     private static final String CREATE_URL = BASE_URL + "/create";
     private static final String LIST_URL = BASE_URL + "/list";
+    private static final String DOWNLOAD_PHOTO_URL = BASE_URL + "/photo/{id}";
 
     private static final String PAGE_PARAM = "page";
     private static final String SIZE_PARAM = "size";
 
     private static final long TOTAL_ELEMENTS = 1L;
     private static final int PAGE_NUMBER = 0;
+    private static final long PHOTO_ID = 1L;
+    private static final String PHOTO_PNG = "photo.png";
+    private static final int CONTENT_LENGTH = 32;
 
     @MockBean
     private UserService userService;
@@ -72,6 +79,8 @@ class UserControllerTest {
     private ApplicationEventPublisher applicationEventPublisher;
     @MockBean
     private UserEntityRepository userEntityRepository;
+    @MockBean
+    private UserPhotoRepository userPhotoRepository;
 
     @Inject
     private MockMvc mockMvc;
@@ -108,4 +117,22 @@ class UserControllerTest {
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
     }
 
+    @Test
+    void testDownloadUserPhotoNotFound() throws Exception {
+        when(userPhotoRepository.findById(PHOTO_ID)).thenReturn(Optional.empty());
+        mockMvc.perform(get(DOWNLOAD_PHOTO_URL, PHOTO_ID))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testDownloadUserPhoto() throws Exception {
+        UserPhoto userPhoto = new UserPhoto();
+        userPhoto.setFileName(PHOTO_PNG);
+        userPhoto.setPhoto(new byte[CONTENT_LENGTH]);
+        when(userPhotoRepository.findById(PHOTO_ID)).thenReturn(Optional.of(userPhoto));
+        mockMvc.perform(get(DOWNLOAD_PHOTO_URL, PHOTO_ID))
+                .andExpect(status().isOk())
+                .andExpect(content().bytes(userPhoto.getPhoto()))
+                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE));
+    }
 }
