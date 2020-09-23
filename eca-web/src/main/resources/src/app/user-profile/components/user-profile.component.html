@@ -22,6 +22,12 @@
                       [auto]="true"
                       accept="image/*">
         </p-fileUpload>
+        <p-progressSpinner
+          class="upload-progress-spinner"
+          strokeWidth="4"
+          animationDuration=".5s"
+          *ngIf="uploading">
+        </p-progressSpinner>
         <div class="user-name text-center mb-1">{{ user?.login }}</div>
       </div>
     </div>
