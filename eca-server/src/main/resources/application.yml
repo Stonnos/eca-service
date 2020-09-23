@@ -38,6 +38,9 @@ spring:
       simple:
         concurrency: 10
         maxConcurrency: 10
+  servlet:
+    multipart:
+      max-file-size: 10MB
 
 eureka:
   client:

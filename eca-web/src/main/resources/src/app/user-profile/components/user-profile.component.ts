@@ -9,6 +9,7 @@ import { Utils } from "../../common/util/utils";
 import { FieldService } from "../../common/services/field.service";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { FileUpload } from "primeng/primeng";
+import { finalize } from "rxjs/internal/operators";
 
 @Component({
   selector: 'app-user-profile',
@@ -24,6 +25,8 @@ export class UserProfileComponent implements OnInit {
   public commonFields: any[] = [];
 
   public userMenuItems: MenuItem[];
+
+  public uploading = true;
 
   private photo: Blob;
 
@@ -103,7 +106,13 @@ export class UserProfileComponent implements OnInit {
   }
 
   private uploadPhoto(file: File): void {
+    this.uploading = true;
     this.usersService.uploadPhoto(file)
+      .pipe(
+        finalize(() => {
+          this.uploading = false;
+        })
+      )
       .subscribe({
         next: () => {
           this.getUser();
@@ -115,7 +124,13 @@ export class UserProfileComponent implements OnInit {
   }
 
   private downloadPhoto(id: number): void {
+    this.uploading = true;
     this.usersService.downloadPhoto(id)
+      .pipe(
+        finalize(() => {
+          this.uploading = false;
+        })
+      )
       .subscribe({
         next: (photo: Blob) => {
           this.photo = photo;
@@ -127,7 +142,13 @@ export class UserProfileComponent implements OnInit {
   }
 
   private deletePhoto(): void {
+    this.uploading = true;
     this.usersService.deletePhoto()
+      .pipe(
+        finalize(() => {
+          this.uploading = false;
+        })
+      )
       .subscribe({
         next: () => {
           this.getUser();
