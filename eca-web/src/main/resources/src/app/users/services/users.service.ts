@@ -53,4 +53,28 @@ export class UsersService {
     formData.append('enabled', tfaEnabled.toString());
     return this.http.post(this.serviceUrl + '/tfa-enabled', formData, { headers: headers })
   }
+
+  public uploadPhoto(file: File): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    return this.http.post(this.serviceUrl + '/upload-photo', formData, { headers: headers });
+  }
+
+  public deletePhoto(): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    return this.http.delete(this.serviceUrl + '/delete-photo', { headers: headers });
+  }
+
+  public downloadPhoto(id: number): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    const options = { headers: headers, responseType: 'blob' as 'json' };
+    return this.http.get<Blob>(this.serviceUrl + '/photo/' + id.toString(), options);
+  }
 }

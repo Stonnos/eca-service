@@ -25,7 +25,7 @@ export class UserProfileComponent implements OnInit {
 
   public userMenuItems: MenuItem[];
 
-  private file: File;
+  private photo: Blob;
 
   @ViewChild(FileUpload, { static: true })
   private fileUpload: FileUpload;
@@ -43,16 +43,16 @@ export class UserProfileComponent implements OnInit {
   }
 
   public hasPhoto(): boolean {
-    return this.file != null;
+    return this.photo != null;
   }
 
   public onPhotoUpload(event: any): void {
-    this.file = event.files[0];
+    this.uploadPhoto(event.files[0]);
     this.fileUpload.clear();
   }
 
   public getBlobUrl(): SafeResourceUrl {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(this.file));
+    return this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(this.photo));
   }
 
   public getAbbreviatedUserName(): string {
@@ -86,11 +86,56 @@ export class UserProfileComponent implements OnInit {
       next: (user: UserDto) => {
         this.user = user;
         this.tfaEnabled = user.tfaEnabled;
+        this.updatePhoto();
       },
       error: (error) => {
         this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
       }
     })
+  }
+
+  private updatePhoto(): void {
+    if (this.user.photoId) {
+      this.downloadPhoto(this.user.photoId);
+    } else {
+      this.photo = null;
+    }
+  }
+
+  private uploadPhoto(file: File): void {
+    this.usersService.uploadPhoto(file)
+      .subscribe({
+        next: () => {
+          this.getUser();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private downloadPhoto(id: number): void {
+    this.usersService.downloadPhoto(id)
+      .subscribe({
+        next: (photo: Blob) => {
+          this.photo = photo;
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private deletePhoto(): void {
+    this.usersService.deletePhoto()
+      .subscribe({
+        next: () => {
+          this.getUser();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
   }
 
   private initCommonFields(): void {
@@ -114,7 +159,7 @@ export class UserProfileComponent implements OnInit {
         label: 'Удалить',
         icon: 'pi pi-fw pi-trash',
         command: () => {
-          this.file = null;
+          this.deletePhoto();
         }
       }
     ];
