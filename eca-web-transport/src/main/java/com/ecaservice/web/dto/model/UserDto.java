@@ -60,6 +60,12 @@ public class UserDto {
     private boolean tfaEnabled;
 
     /**
+     * User photo id
+     */
+    @ApiModelProperty(value = "User photo id")
+    private Long photoId;
+
+    /**
      * Roles list
      */
     @ApiModelProperty(value = "User roles")

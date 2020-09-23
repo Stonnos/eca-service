@@ -69,7 +69,9 @@ public class UserController {
     @GetMapping(value = "/user-info")
     public UserDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         UserEntity userEntity = userService.getById(userDetails.getId());
-        return userMapper.map(userEntity);
+        UserDto userDto = userMapper.map(userEntity);
+        userDto.setPhotoId(userPhotoRepository.getUserPhotoId(userEntity));
+        return userDto;
     }
 
     /**
