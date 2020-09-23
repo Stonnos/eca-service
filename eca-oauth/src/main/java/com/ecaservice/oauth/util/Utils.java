@@ -2,6 +2,11 @@ package com.ecaservice.oauth.util;
 
 import com.ecaservice.oauth.entity.UserEntity;
 import lombok.experimental.UtilityClass;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.DigestUtils;
 
@@ -18,6 +23,7 @@ import java.util.UUID;
 @UtilityClass
 public class Utils {
 
+    private static final String ATTACHMENT = "attachment";
     private static final String SALT_FORMAT = "%s:%d";
 
     /**
@@ -47,5 +53,20 @@ public class Utils {
         String md5Salt = DigestUtils.md5DigestAsHex(salt.getBytes(StandardCharsets.UTF_8));
         String stringToEncode = String.format(SALT_FORMAT, md5Salt, toMillis(tokenCreationDate));
         return Base64Utils.encodeToString(stringToEncode.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Creates response with attachment.
+     *
+     * @param data     - data as bytes array
+     * @param fileName - attachment file name
+     * @return response entity
+     */
+    public static ResponseEntity<ByteArrayResource> buildAttachmentResponse(byte[] data, String fileName) {
+        ByteArrayResource resource = new ByteArrayResource(data);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData(ATTACHMENT, fileName);
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 }
