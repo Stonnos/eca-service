@@ -31,7 +31,7 @@ export class UserProfileComponent implements OnInit {
   //Max file size: 10MB
   public maxFileSize: number = 10000000;
   public invalidFileSizeMessageSummary: string = 'Недопустимый размер файла,';
-  public invalidFileSizeMessageDetail: string = 'максимальный допустимый размер: {0}.';
+  public invalidFileSizeMessageDetail: string = 'максимальный допустимый размер: 10 MB.';
   public invalidFileTypeMessageSummary: string = 'Некорректный тип файла,';
   public invalidFileTypeMessageDetail: string = 'допускаются только файлы графических форматов.';
 
