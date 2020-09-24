@@ -28,10 +28,17 @@ export class UserProfileComponent implements OnInit {
 
   public uploading = true;
 
+  //Max file size: 10MB
+  public maxFileSize: number = 10000000;
+  public invalidFileSizeMessageSummary: string = 'Недопустимый размер файла,';
+  public invalidFileSizeMessageDetail: string = 'максимальный допустимый размер: {0}.';
+  public invalidFileTypeMessageSummary: string = 'Некорректный тип файла,';
+  public invalidFileTypeMessageDetail: string = 'допускаются только файлы графических форматов.';
+
   private photo: Blob;
 
   @ViewChild(FileUpload, { static: true })
-  private fileUpload: FileUpload;
+  public fileUpload: FileUpload;
 
   public constructor(private usersService: UsersService,
                      private fieldService: FieldService,
@@ -47,6 +54,10 @@ export class UserProfileComponent implements OnInit {
 
   public hasPhoto(): boolean {
     return this.photo != null;
+  }
+
+  public hasErrors(): boolean {
+    return this.fileUpload.msgs && this.fileUpload.msgs.length > 0;
   }
 
   public onPhotoUpload(event: any): void {
@@ -82,6 +93,10 @@ export class UserProfileComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
       }
     })
+  }
+
+  public hide(): void {
+    this.fileUpload.msgs = [];
   }
 
   private getUser(): void {

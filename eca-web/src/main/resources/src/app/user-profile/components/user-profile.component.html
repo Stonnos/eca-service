@@ -16,6 +16,11 @@
         <p-fileUpload [class.user-photo-upload]="!hasPhoto()"
                       [class.hidden-user-photo-upload]="hasPhoto()"
                       mode="basic"
+                      [maxFileSize]="maxFileSize"
+                      [invalidFileSizeMessageSummary]="invalidFileSizeMessageSummary"
+                      [invalidFileSizeMessageDetail]="invalidFileSizeMessageDetail"
+                      [invalidFileTypeMessageSummary]="invalidFileTypeMessageSummary"
+                      [invalidFileTypeMessageDetail]="invalidFileTypeMessageDetail"
                       chooseLabel="{{ getAbbreviatedUserName() }}"
                       customUpload="true"
                       (uploadHandler)="onPhotoUpload($event)"
@@ -68,3 +73,29 @@
   </div>
   <p-menu #userPhotoMenu [popup]="true" [model]="userMenuItems"></p-menu>
 </div>
+
+<p-dialog
+  [visible]="hasErrors()"
+  header="Не удалось загрузить фото"
+  [style]="{ width: '600px' }"
+  appendTo="body"
+  [modal]="true"
+  [blockScroll]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="false">
+  <div class="text-danger">
+    <div *ngFor="let msg of fileUpload.msgs">
+      {{ msg.summary }} {{ msg.detail }}
+    </div>
+  </div>
+  <p-footer>
+    <button
+      pButton
+      label="Закрыть"
+      type="button"
+      (click)="hide()"
+      class="ml-auto">
+    </button>
+  </p-footer>
+</p-dialog>
