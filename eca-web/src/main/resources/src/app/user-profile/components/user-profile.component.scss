@@ -33,6 +33,7 @@
 }
 
 .user-name {
+  height: 20px;
   font-size: 16px;
   font-weight: bold;
 }
@@ -52,4 +53,152 @@
 .bottom-border {
   margin-bottom: 1px;
   border-bottom: 0.5px solid lightgrey ;
+}
+
+.user-photo-upload::ng-deep {
+
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  .ui-button {
+    border: 3px solid #a2a2a2;
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    background: #a2a2a2;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-right: 34px;
+    font-size: 36px;
+    font-weight: bold;
+
+    &:hover,
+    &:focus,
+    &:enabled:active {
+      background-color: #c9c9c9;
+      border: 1px solid #c9c9c9;
+    }
+  }
+
+  .ui-button-icon-only .ui-button-icon-left,
+  .ui-button-text-icon-left .ui-button-icon-left,
+  .ui-button-text-icon-right .ui-button-icon-right {
+    display: none;
+  }
+}
+
+.hidden-user-photo-upload::ng-deep {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  z-index: 998;
+}
+
+.upload-progress-spinner::ng-deep {
+  .ui-progress-spinner {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 20px;
+    width: 75px;
+    height: 75px;
+    z-index: 100000;
+  }
+
+  @keyframes ui-progress-spinner-color {
+    100%,
+    0% {
+      stroke: #416ee7;
+    }
+    40% {
+      stroke: #416ee7;
+    }
+    66% {
+      stroke: #416ee7;
+    }
+    80%,
+    90% {
+      stroke: #416ee7;
+    }
+  }
+}
+
+.user-photo-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.user-photo {
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.overlay {
+  z-index: 999;
+  position: absolute;
+  border-radius: 50%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  transition: .3s ease;
+  background-color: #000000;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+
+  &.ui-button {
+    width: 50%;
+    height: 50%;
+    &.ui-state-default {
+      border-color: #000000;
+      background-color: #000000;
+      &:hover,
+      &:focus,
+      &:enabled:active {
+        border-color: #000000;
+        background-color: #000000;
+      }
+    }
+  }
+}
+
+.user-photo-container:hover .overlay {
+  opacity: 0.6;
 }

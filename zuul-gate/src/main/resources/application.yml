@@ -7,6 +7,9 @@ spring:
     loadbalancer:
       ribbon:
         enabled: false
+  servlet:
+    multipart:
+      max-file-size: 10MB
 
 zuul:
   routes:

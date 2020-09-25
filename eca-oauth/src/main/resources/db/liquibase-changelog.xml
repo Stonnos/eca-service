@@ -17,4 +17,5 @@
     <include file="db/changelog/v10-add-user-constraints.xml"/>
     <include file="db/changelog/v11-create-reset-password-request-table.xml"/>
     <include file="db/changelog/v12-create-tfa-enabled-column.xml"/>
+    <include file="db/changelog/v13-create-user-photo-table.xml"/>
 </databaseChangeLog>

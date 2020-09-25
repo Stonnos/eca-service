@@ -19,7 +19,7 @@ export class UploadClassifierOptionsDialogComponent implements OnInit {
   //Files formats
   public accept: string = '.json';
   public invalidFileSizeMessageSummary: string = 'Недопустимый размер файла,';
-  public invalidFileSizeMessageDetail: string = 'максимальный допустимый размер: {0}.';
+  public invalidFileSizeMessageDetail: string = 'максимальный допустимый размер: 10 kb.';
   public invalidFileTypeMessageSummary: string = 'Некорректный тип файла,';
   public invalidFileTypeMessageDetail: string = 'допускаются только файлы форматов: {0}.';
 

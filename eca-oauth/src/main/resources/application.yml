@@ -25,6 +25,9 @@ spring:
   liquibase:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
+  servlet:
+    multipart:
+      max-file-size: 10MB
 
 eureka:
   client:

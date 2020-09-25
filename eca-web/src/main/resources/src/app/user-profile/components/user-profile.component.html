@@ -1,11 +1,41 @@
 <div class="container-fluid">
   <div class="row mt-2">
-      <div class="col-6 offset-3 align-items-center justify-content-center">
-        <div class="h-100 user-header w-100">
-          <div class="abbreviated-user-name mt-1">{{ getAbbreviatedUserName() }}</div>
-          <div class="user-name text-center mb-1">{{ user?.login }}</div>
-        </div>
+    <div class="col-6 offset-3 align-items-center justify-content-center">
+      <div class="h-100 user-header w-100">
+        <ng-container *ngIf="hasPhoto()">
+          <div class="user-photo-container">
+            <img class="user-photo" [src]="getBlobUrl()">
+            <button
+              pButton
+              class="overlay"
+              icon="pi pi-camera"
+              (click)="userPhotoMenu.toggle($event)">
+            </button>
+          </div>
+        </ng-container>
+        <p-fileUpload [class.user-photo-upload]="!hasPhoto()"
+                      [class.hidden-user-photo-upload]="hasPhoto()"
+                      mode="basic"
+                      [maxFileSize]="maxFileSize"
+                      [invalidFileSizeMessageSummary]="invalidFileSizeMessageSummary"
+                      [invalidFileSizeMessageDetail]="invalidFileSizeMessageDetail"
+                      [invalidFileTypeMessageSummary]="invalidFileTypeMessageSummary"
+                      [invalidFileTypeMessageDetail]="invalidFileTypeMessageDetail"
+                      chooseLabel="{{ getAbbreviatedUserName() }}"
+                      customUpload="true"
+                      (uploadHandler)="onPhotoUpload($event)"
+                      [auto]="true"
+                      accept="image/*">
+        </p-fileUpload>
+        <p-progressSpinner
+          class="upload-progress-spinner"
+          strokeWidth="4"
+          animationDuration=".5s"
+          *ngIf="uploading">
+        </p-progressSpinner>
+        <div class="user-name text-center mb-1">{{ user?.login }}</div>
       </div>
+    </div>
   </div>
   <div class="row">
     <div class="col-6 offset-3">
@@ -29,16 +59,43 @@
         </p-fieldset>
 
         <p-fieldset legend="Контакты" class="details-fieldset">
-            <div class="ui-g ml-1 mr-1">
-              <div class="ui-g-4 text-left text-bold text-wrap">
-                Email:
-              </div>
-              <div class="ui-g-6 text-left text-wrap">
-                {{ user?.email }}
-              </div>
+          <div class="ui-g ml-1 mr-1">
+            <div class="ui-g-4 text-left text-bold text-wrap">
+              Email:
             </div>
+            <div class="ui-g-6 text-left text-wrap">
+              {{ user?.email }}
+            </div>
+          </div>
         </p-fieldset>
       </div>
     </div>
   </div>
+  <p-menu #userPhotoMenu [popup]="true" [model]="userMenuItems"></p-menu>
 </div>
+
+<p-dialog
+  [visible]="hasErrors()"
+  header="Не удалось загрузить фото"
+  [style]="{ width: '600px' }"
+  appendTo="body"
+  [modal]="true"
+  [blockScroll]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="false">
+  <div class="text-danger">
+    <div *ngFor="let msg of fileUpload.msgs">
+      {{ msg.summary }} {{ msg.detail }}
+    </div>
+  </div>
+  <p-footer>
+    <button
+      pButton
+      label="Закрыть"
+      type="button"
+      (click)="hide()"
+      class="ml-auto">
+    </button>
+  </p-footer>
+</p-dialog>

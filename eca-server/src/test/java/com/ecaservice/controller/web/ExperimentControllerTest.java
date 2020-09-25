@@ -143,7 +143,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     @Test
-    void testDownloadExperimentResultsFile() throws Exception {
+    void testDownloadNotExistingExperimentResultsFile() throws Exception {
         testDownloadNotExistingExperimentFile(DOWNLOAD_EXPERIMENT_RESULTS_URL);
     }
 
