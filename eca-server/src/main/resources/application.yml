@@ -118,7 +118,7 @@ experiment:
 ers:
   url: http://localhost:8089/evaluation-results-service/ws/
   enabled: true
-  useClassifierOptionsCache: true
+  useClassifierOptionsCache: false
   classifierOptionsCacheDurationInDays: 2
 
 cache:
