@@ -100,7 +100,7 @@ public abstract class AbstractWebServiceConfiguration {
                 RegistryBuilder.<ConnectionSocketFactory>create()
                         .register("https", new SSLConnectionSocketFactory(sslContext(),
                                 NoopHostnameVerifier.INSTANCE))
-                        .register("http", new PlainConnectionSocketFactory()).build();
+                        .register("http", PlainConnectionSocketFactory.getSocketFactory()).build();
         return new PoolingHttpClientConnectionManager(socketFactoryRegistry);
     }
 }
