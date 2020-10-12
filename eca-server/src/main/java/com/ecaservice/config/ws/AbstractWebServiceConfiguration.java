@@ -17,6 +17,7 @@ import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.transport.http.ClientHttpRequestMessageSender;
 
 import javax.net.ssl.SSLContext;
+import java.util.Optional;
 
 /**
  * Abstract configuration for external web - service.
@@ -76,12 +77,21 @@ public abstract class AbstractWebServiceConfiguration {
         return null;
     }
 
+    /**
+     * Trust self signed certificate?
+     *
+     * @return {@code true} if trust self signed certificate
+     */
+    protected boolean isTrustSelfSigned() {
+        return false;
+    }
+
     private SSLContext sslContext() throws Exception {
-        if (getTrustStore() == null) {
+        if (isTrustSelfSigned()) {
             return SSLContextBuilder.create().loadTrustMaterial(new TrustSelfSignedStrategy()).build();
         } else {
-            return SSLContextBuilder.create().loadTrustMaterial(getTrustStore().getURL(),
-                    getTrustStorePassword().toCharArray()).build();
+            char[] password = Optional.ofNullable(getTrustStorePassword()).map(String::toCharArray).orElse(null);
+            return SSLContextBuilder.create().loadTrustMaterial(getTrustStore().getURL(), password).build();
         }
     }
 

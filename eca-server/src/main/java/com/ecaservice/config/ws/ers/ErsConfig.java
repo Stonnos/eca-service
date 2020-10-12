@@ -45,6 +45,11 @@ public class ErsConfig {
     public static class SslConfig {
 
         /**
+         * Trust self signed certificate?
+         */
+        private Boolean trustSelfSigned;
+
+        /**
          * Trust store resource
          */
         private Resource trustStore;

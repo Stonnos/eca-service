@@ -120,6 +120,8 @@ ers:
   enabled: true
   useClassifierOptionsCache: false
   classifierOptionsCacheDurationInDays: 2
+  ssl:
+    trustSelfSigned: true
 
 cache:
   specs:

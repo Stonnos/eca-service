@@ -47,6 +47,11 @@ public class ErsWebServiceConfiguration extends AbstractWebServiceConfiguration 
     }
 
     @Override
+    protected boolean isTrustSelfSigned() {
+        return Optional.ofNullable(ersConfig.getSsl()).map(ErsConfig.SslConfig::getTrustSelfSigned).orElse(false);
+    }
+
+    @Override
     protected String getTrustStorePassword() {
         return Optional.ofNullable(ersConfig.getSsl()).map(ErsConfig.SslConfig::getTrustStorePassword).orElse(null);
     }
