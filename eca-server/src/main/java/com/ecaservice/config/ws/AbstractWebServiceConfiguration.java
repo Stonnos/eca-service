@@ -88,7 +88,7 @@ public abstract class AbstractWebServiceConfiguration {
 
     private SSLContext sslContext() throws Exception {
         if (isTrustSelfSigned()) {
-            return SSLContextBuilder.create().loadTrustMaterial(new TrustSelfSignedStrategy()).build();
+            return SSLContextBuilder.create().loadTrustMaterial(TrustSelfSignedStrategy.INSTANCE).build();
         } else {
             char[] password = Optional.ofNullable(getTrustStorePassword()).map(String::toCharArray).orElse(null);
             return SSLContextBuilder.create().loadTrustMaterial(getTrustStore().getURL(), password).build();
