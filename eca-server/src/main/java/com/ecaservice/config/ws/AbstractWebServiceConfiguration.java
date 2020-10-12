@@ -1,14 +1,20 @@
 package com.ecaservice.config.ws;
 
-import org.apache.http.client.HttpClient;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.core.io.Resource;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.client.core.WebServiceTemplate;
-import org.springframework.ws.transport.http.HttpComponentsMessageSender;
+import org.springframework.ws.transport.http.ClientHttpRequestMessageSender;
 
 import javax.net.ssl.SSLContext;
 
@@ -35,21 +41,13 @@ public abstract class AbstractWebServiceConfiguration {
      *
      * @return web service template
      */
-    public WebServiceTemplate webServiceTemplate() {
-        Jaxb2Marshaller jaxb2Marshaller = jaxb2Marshaller();
-        return new WebServiceTemplate(jaxb2Marshaller, jaxb2Marshaller);
-    }
-
-    /**
-     * Creates ssl web service template.
-     *
-     * @return ssl web service template
-     * @throws Exception in case of error
-     */
-    public WebServiceTemplate sslWebServiceTemplate() throws Exception {
+    public WebServiceTemplate webServiceTemplate() throws Exception {
         Jaxb2Marshaller jaxb2Marshaller = jaxb2Marshaller();
         WebServiceTemplate webServiceTemplate = new WebServiceTemplate(jaxb2Marshaller, jaxb2Marshaller);
-        webServiceTemplate.setMessageSender(httpComponentsMessageSender());
+        HttpComponentsClientHttpRequestFactory requestFactory = httpComponentsClientHttpRequestFactory();
+        ClientHttpRequestMessageSender clientHttpRequestMessageSender =
+                new ClientHttpRequestMessageSender(requestFactory);
+        webServiceTemplate.setMessageSender(clientHttpRequestMessageSender);
         return webServiceTemplate;
     }
 
@@ -65,30 +63,44 @@ public abstract class AbstractWebServiceConfiguration {
      *
      * @return trust store resource
      */
-    protected abstract Resource getTrustStore();
+    protected Resource getTrustStore() {
+        return null;
+    }
 
     /**
      * Gets trust store password.
      *
      * @return trust store password
      */
-    protected abstract String getTrustStorePassword();
-
-    private HttpComponentsMessageSender httpComponentsMessageSender() throws Exception {
-        return new HttpComponentsMessageSender(httpClient());
-    }
-
-    private HttpClient httpClient() throws Exception {
-        return HttpClientBuilder.create().setSSLSocketFactory(sslConnectionSocketFactory()).addInterceptorFirst(
-                new HttpComponentsMessageSender.RemoveSoapHeadersInterceptor()).build();
-    }
-
-    private SSLConnectionSocketFactory sslConnectionSocketFactory() throws Exception {
-        return new SSLConnectionSocketFactory(sslContext(), NoopHostnameVerifier.INSTANCE);
+    protected String getTrustStorePassword() {
+        return null;
     }
 
     private SSLContext sslContext() throws Exception {
-        return SSLContextBuilder.create().loadTrustMaterial(getTrustStore().getURL(),
-                getTrustStorePassword().toCharArray()).build();
+        if (getTrustStore() == null) {
+            return SSLContextBuilder.create().loadTrustMaterial(new TrustSelfSignedStrategy()).build();
+        } else {
+            return SSLContextBuilder.create().loadTrustMaterial(getTrustStore().getURL(),
+                    getTrustStorePassword().toCharArray()).build();
+        }
+    }
+
+    private HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory() throws Exception {
+        PoolingHttpClientConnectionManager connectionManager = poolingHttpClientConnectionManager();
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+        requestFactory.setHttpClient(HttpClients
+                .custom()
+                .setConnectionManager(connectionManager)
+                .build());
+        return requestFactory;
+    }
+
+    private PoolingHttpClientConnectionManager poolingHttpClientConnectionManager() throws Exception {
+        Registry<ConnectionSocketFactory> socketFactoryRegistry =
+                RegistryBuilder.<ConnectionSocketFactory>create()
+                        .register("https", new SSLConnectionSocketFactory(sslContext(),
+                                NoopHostnameVerifier.INSTANCE))
+                        .register("http", new PlainConnectionSocketFactory()).build();
+        return new PoolingHttpClientConnectionManager(socketFactoryRegistry);
     }
 }

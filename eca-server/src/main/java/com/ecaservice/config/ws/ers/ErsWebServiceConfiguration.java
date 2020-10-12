@@ -6,10 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.client.core.WebServiceTemplate;
+
+import java.util.Optional;
 
 /**
  * ERS web - service configuration.
@@ -29,18 +30,10 @@ public class ErsWebServiceConfiguration extends AbstractWebServiceConfiguration 
         return super.jaxb2Marshaller();
     }
 
-    @Profile("!docker-prod")
     @Bean(name = "ersWebServiceTemplate")
     @Override
-    public WebServiceTemplate webServiceTemplate() {
+    public WebServiceTemplate webServiceTemplate() throws Exception {
         return super.webServiceTemplate();
-    }
-
-    @Profile("docker-prod")
-    @Bean(name = "ersWebServiceTemplate")
-    @Override
-    public WebServiceTemplate sslWebServiceTemplate() throws Exception {
-        return super.sslWebServiceTemplate();
     }
 
     @Override
@@ -50,11 +43,11 @@ public class ErsWebServiceConfiguration extends AbstractWebServiceConfiguration 
 
     @Override
     protected Resource getTrustStore() {
-        return ersConfig.getSsl().getTrustStore();
+        return Optional.ofNullable(ersConfig.getSsl()).map(ErsConfig.SslConfig::getTrustStore).orElse(null);
     }
 
     @Override
     protected String getTrustStorePassword() {
-        return ersConfig.getSsl().getTrustStorePassword();
+        return Optional.ofNullable(ersConfig.getSsl()).map(ErsConfig.SslConfig::getTrustStorePassword).orElse(null);
     }
 }
