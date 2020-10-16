@@ -303,7 +303,6 @@ class ExperimentServiceTest extends AbstractJpaTest {
         when(filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT)).thenReturn(
                 Collections.singletonList(Experiment_.REQUEST_STATUS));
         Page<Experiment> evaluationLogPage = experimentService.getNextPage(pageRequestDto);
-        assertThat(evaluationLogPage).isNotNull();
         assertThat(evaluationLogPage).isEmpty();
     }
 
@@ -446,8 +445,8 @@ class ExperimentServiceTest extends AbstractJpaTest {
         Map<ExperimentType, Long> experimentTypesMap =
                 experimentService.getExperimentTypesStatistics(LocalDate.of(2018, 1, 1), LocalDate.of(2018, 1, 3));
         Assertions.assertThat(experimentTypesMap).isNotNull();
-        Assertions.assertThat(experimentTypesMap.size()).isEqualTo(ExperimentType.values().length);
-        Assertions.assertThat(experimentTypesMap.get(ExperimentType.ADA_BOOST)).isEqualTo(2L);
+        Assertions.assertThat(experimentTypesMap).hasSameSizeAs(ExperimentType.values());
+        Assertions.assertThat(experimentTypesMap).containsEntry(ExperimentType.ADA_BOOST, 2L);
         Assertions.assertThat(experimentTypesMap.get(ExperimentType.KNN)).isOne();
         Assertions.assertThat(experimentTypesMap.get(ExperimentType.DECISION_TREE)).isZero();
     }
