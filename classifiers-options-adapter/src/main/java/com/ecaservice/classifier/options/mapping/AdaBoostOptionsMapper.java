@@ -12,7 +12,7 @@ import org.mapstruct.Mapper;
 @Mapper
 public abstract class AdaBoostOptionsMapper extends ClassifierOptionsMapper<AdaBoostOptions, AdaBoostClassifier> {
 
-    public AdaBoostOptionsMapper() {
+    protected AdaBoostOptionsMapper() {
         super(AdaBoostOptions.class);
     }
 }

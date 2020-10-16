@@ -12,7 +12,7 @@ import org.mapstruct.Mapper;
 @Mapper
 public abstract class RandomNetworkOptionsMapper extends ClassifierOptionsMapper<RandomNetworkOptions, RandomNetworks> {
 
-    public RandomNetworkOptionsMapper() {
+    protected RandomNetworkOptionsMapper() {
         super(RandomNetworkOptions.class);
     }
 }

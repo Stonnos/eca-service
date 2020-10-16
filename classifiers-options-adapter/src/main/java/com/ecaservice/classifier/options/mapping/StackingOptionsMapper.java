@@ -12,7 +12,7 @@ import org.mapstruct.Mapper;
 @Mapper
 public abstract class StackingOptionsMapper extends ClassifierOptionsMapper<StackingOptions, StackingClassifier> {
 
-    public StackingOptionsMapper() {
+    protected StackingOptionsMapper() {
         super(StackingOptions.class);
     }
 }

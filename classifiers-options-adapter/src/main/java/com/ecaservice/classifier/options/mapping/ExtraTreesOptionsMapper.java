@@ -14,7 +14,7 @@ import org.springframework.core.annotation.Order;
 @Order(Ordered.EXTRA_TREES_ORDER)
 public abstract class ExtraTreesOptionsMapper extends ClassifierOptionsMapper<ExtraTreesOptions, ExtraTreesClassifier> {
 
-    public ExtraTreesOptionsMapper() {
+    protected ExtraTreesOptionsMapper() {
         super(ExtraTreesOptions.class);
     }
 }

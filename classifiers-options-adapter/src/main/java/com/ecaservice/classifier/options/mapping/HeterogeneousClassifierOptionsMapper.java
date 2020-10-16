@@ -14,7 +14,7 @@ import org.mapstruct.Mapper;
 public abstract class HeterogeneousClassifierOptionsMapper
         extends ClassifierOptionsMapper<HeterogeneousClassifierOptions, HeterogeneousClassifier> {
 
-    public HeterogeneousClassifierOptionsMapper() {
+    protected HeterogeneousClassifierOptionsMapper() {
         super(HeterogeneousClassifierOptions.class);
     }
 }

@@ -14,7 +14,7 @@ import org.springframework.core.annotation.Order;
 @Order(Ordered.RANDOM_FORESTS_ORDER)
 public abstract class RandomForestsOptionsMapper extends ClassifierOptionsMapper<RandomForestsOptions, RandomForests> {
 
-    public RandomForestsOptionsMapper() {
+    protected RandomForestsOptionsMapper() {
         super(RandomForestsOptions.class);
     }
 }
