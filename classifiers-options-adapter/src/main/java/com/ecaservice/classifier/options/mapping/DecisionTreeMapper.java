@@ -22,7 +22,7 @@ import java.util.Collections;
 @Mapper
 public abstract class DecisionTreeMapper extends AbstractClassifierMapper<DecisionTreeClassifier, DecisionTreeOptions> {
 
-    public DecisionTreeMapper() {
+    protected DecisionTreeMapper() {
         super(DecisionTreeClassifier.class);
     }
 

@@ -55,15 +55,15 @@ public class LoadTestScheduler {
         log.trace("Starting to processed exceeded requests");
         LocalDateTime exceededTime = LocalDateTime.now().minusSeconds(ecaLoadTestsConfig.getRequestTimeoutInSeconds());
         List<Long> exceededIds = evaluationRequestRepository.findExceededRequestIds(exceededTime);
-        processPaging(exceededIds, evaluationRequestRepository::findByIdIn, pageContent -> {
-            pageContent.forEach(evaluationRequestEntity -> {
-                evaluationRequestEntity.setStageType(RequestStageType.EXCEEDED);
-                evaluationRequestEntity.setTestResult(TestResult.ERROR);
-                evaluationRequestEntity.setFinished(LocalDateTime.now());
-                evaluationRequestRepository.save(evaluationRequestEntity);
-                log.info("Exceeded request with correlation id [{}]", evaluationRequestEntity.getCorrelationId());
-            });
-        });
+        processPaging(exceededIds, evaluationRequestRepository::findByIdIn, pageContent ->
+                pageContent.forEach(evaluationRequestEntity -> {
+                    evaluationRequestEntity.setStageType(RequestStageType.EXCEEDED);
+                    evaluationRequestEntity.setTestResult(TestResult.ERROR);
+                    evaluationRequestEntity.setFinished(LocalDateTime.now());
+                    evaluationRequestRepository.save(evaluationRequestEntity);
+                    log.info("Exceeded request with correlation id [{}]", evaluationRequestEntity.getCorrelationId());
+                })
+        );
         log.trace("Exceeded requests has been processed");
     }
 
@@ -74,14 +74,14 @@ public class LoadTestScheduler {
     public void processFinishedTests() {
         log.trace("Starting to processed finished tests");
         List<Long> testIds = loadTestRepository.findFinishedTests();
-        processPaging(testIds, loadTestRepository::findByIdIn, pageContent -> {
-            pageContent.forEach(loadTestEntity -> {
-                loadTestEntity.setExecutionStatus(ExecutionStatus.FINISHED);
-                loadTestEntity.setFinished(evaluationRequestRepository.getMaxFinishedDate(loadTestEntity));
-                loadTestRepository.save(loadTestEntity);
-                log.info("Load test [{}] has been finished", loadTestEntity.getTestUuid());
-            });
-        });
+        processPaging(testIds, loadTestRepository::findByIdIn, pageContent ->
+                pageContent.forEach(loadTestEntity -> {
+                    loadTestEntity.setExecutionStatus(ExecutionStatus.FINISHED);
+                    loadTestEntity.setFinished(evaluationRequestRepository.getMaxFinishedDate(loadTestEntity));
+                    loadTestRepository.save(loadTestEntity);
+                    log.info("Load test [{}] has been finished", loadTestEntity.getTestUuid());
+                })
+        );
         log.trace("Finished tests has been processed");
     }
 

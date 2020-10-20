@@ -93,7 +93,6 @@ class EmailTemplateVisitorTest {
                 ExperimentType.findByDescription(
                         variablesMap.get(TemplateVariablesDictionary.EXPERIMENT_TYPE_KEY).toString());
         assertThat(actualExperimentType).isEqualTo(experiment.getExperimentType());
-        assertThat(variablesMap.get(TemplateVariablesDictionary.REQUEST_ID_KEY).toString()).isEqualTo(
-                experiment.getRequestId());
+        assertThat(variablesMap.get(TemplateVariablesDictionary.REQUEST_ID_KEY)).hasToString(experiment.getRequestId());
     }
 }
