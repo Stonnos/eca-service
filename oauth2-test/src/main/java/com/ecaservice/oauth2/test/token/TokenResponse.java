@@ -1,4 +1,4 @@
-package com.ecaservice.token;
+package com.ecaservice.oauth2.test.token;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

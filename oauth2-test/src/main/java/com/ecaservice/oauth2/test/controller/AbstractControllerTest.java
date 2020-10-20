@@ -1,7 +1,7 @@
-package com.ecaservice.controller.web;
+package com.ecaservice.oauth2.test.controller;
 
-import com.ecaservice.configuation.annotation.Oauth2TestConfiguration;
-import com.ecaservice.token.TokenService;
+import com.ecaservice.oauth2.test.configuration.annotation.Oauth2TestConfiguration;
+import com.ecaservice.oauth2.test.token.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +15,7 @@ import javax.inject.Inject;
  * @author Roman Batygin
  */
 @Oauth2TestConfiguration
-abstract class AbstractControllerTest {
+public abstract class AbstractControllerTest {
 
     @Getter
     private String accessToken;

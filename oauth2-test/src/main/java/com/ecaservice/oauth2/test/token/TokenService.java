@@ -1,6 +1,6 @@
-package com.ecaservice.token;
+package com.ecaservice.oauth2.test.token;
 
-import com.ecaservice.configuation.oauth2.Oauth2TestConfig;
+import com.ecaservice.oauth2.test.configuration.Oauth2TestConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

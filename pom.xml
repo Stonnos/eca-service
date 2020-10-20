@@ -9,6 +9,7 @@
     <version>5.1</version>
     <modules>
         <module>core-test</module>
+        <module>oauth2-test</module>
         <module>eca-model</module>
         <module>eca-user-model</module>
         <module>eca-mail-transport</module>

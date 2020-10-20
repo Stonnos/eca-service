@@ -1,4 +1,4 @@
-package com.ecaservice.configuation.oauth2;
+package com.ecaservice.oauth2.test.configuration;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.TestConfiguration;
