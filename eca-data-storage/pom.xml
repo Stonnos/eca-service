@@ -113,7 +113,7 @@
 
         <dependency>
             <groupId>eca.service</groupId>
-            <artifactId>core-test</artifactId>
+            <artifactId>oauth2-test</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>

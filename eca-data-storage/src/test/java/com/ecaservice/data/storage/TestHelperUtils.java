@@ -22,6 +22,7 @@ public class TestHelperUtils {
     private static final String CREATED_BY = "user";
     private static final int NUM_INSTANCES = 100;
     private static final int NUM_ATTRIBUTES = 14;
+    private static final String BEARER_HEADER_FORMAT = "Bearer %s";
 
     /**
      * Loads test data set.
@@ -33,6 +34,16 @@ public class TestHelperUtils {
         XLSLoader dataLoader = new XLSLoader();
         dataLoader.setSource(new FileResource(new File(classLoader.getResource(DATA_PATH).getFile())));
         return dataLoader.loadInstances();
+    }
+
+    /**
+     * Creates authorization header with bearer token.
+     *
+     * @param token - token
+     * @return authorization header with bearer token
+     */
+    public static String bearerHeader(String token) {
+        return String.format(BEARER_HEADER_FORMAT, token);
     }
 
     /**

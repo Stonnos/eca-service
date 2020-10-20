@@ -6,24 +6,21 @@ import com.ecaservice.data.storage.mapping.InstancesMapper;
 import com.ecaservice.data.storage.mapping.InstancesMapperImpl;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.StorageService;
+import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.ecaservice.web.dto.model.CreateInstancesResultDto;
 import com.ecaservice.web.dto.model.InstancesDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.MimeTypeUtils;
 
 import javax.inject.Inject;
@@ -31,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
+import static com.ecaservice.data.storage.TestHelperUtils.bearerHeader;
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -48,14 +46,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@WebMvcTest(controllers = DataStorageController.class,
-        useDefaultFilters = false,
-        includeFilters = {
-                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = DataStorageController.class)
-        })
-@AutoConfigureMockMvc(addFilters = false)
+@WebMvcTest(controllers = DataStorageController.class)
 @Import(InstancesMapperImpl.class)
-class DataStorageControllerTest {
+class DataStorageControllerTest extends AbstractControllerTest {
 
     private static final String BASE_URL = "/instances";
     private static final String SAVE_URL = BASE_URL + "/save";
@@ -85,14 +78,17 @@ class DataStorageControllerTest {
     @Inject
     private InstancesMapper instancesMapper;
 
-    @Inject
-    private MockMvc mockMvc;
-
-    private ObjectMapper objectMapper = new ObjectMapper();
-
     private final MockMultipartFile trainingData =
             new MockMultipartFile(TRAINING_DATA_PARAM, "iris.txt",
                     MimeTypeUtils.TEXT_PLAIN.toString(), "file-content".getBytes(StandardCharsets.UTF_8));
+
+    @Test
+    void testSaveInstancesUnauthorized() throws Exception {
+        mockMvc.perform(multipart(SAVE_URL)
+                .file(trainingData)
+                .param(TABLE_NAME_PARAM, TABLE_NAME))
+                .andExpect(status().isUnauthorized());
+    }
 
     @Test
     void testSaveInstances() throws Exception {
@@ -107,6 +103,7 @@ class DataStorageControllerTest {
         expected.setCreated(true);
         mockMvc.perform(multipart(SAVE_URL)
                 .file(trainingData)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(TABLE_NAME_PARAM, TABLE_NAME))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -126,6 +123,7 @@ class DataStorageControllerTest {
         expected.setErrorMessage(ERROR_MESSAGE);
         mockMvc.perform(multipart(SAVE_URL)
                 .file(trainingData)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(TABLE_NAME_PARAM, TABLE_NAME))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -137,14 +135,24 @@ class DataStorageControllerTest {
         when(jdbcTemplate.queryForObject(anyString(), eq(Boolean.class))).thenReturn(false);
         mockMvc.perform(multipart(SAVE_URL)
                 .file(trainingData)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(TABLE_NAME_PARAM, TABLE_NAME))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testRenameDataUnauthorized() throws Exception {
+        when(jdbcTemplate.queryForObject(anyString(), eq(Boolean.class))).thenReturn(true);
+        mockMvc.perform(put(RENAME_URL)
+                .param(ID_PARAM, String.valueOf(ID))
+                .param(TABLE_NAME_PARAM, TABLE_NAME)).andExpect(status().isUnauthorized());
     }
 
     @Test
     void testRenameData() throws Exception {
         when(jdbcTemplate.queryForObject(anyString(), eq(Boolean.class))).thenReturn(true);
         mockMvc.perform(put(RENAME_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(ID_PARAM, String.valueOf(ID))
                 .param(TABLE_NAME_PARAM, TABLE_NAME)).andExpect(status().isOk());
     }
@@ -153,15 +161,32 @@ class DataStorageControllerTest {
     void testRenameDataWithExistingTableName() throws Exception {
         when(jdbcTemplate.queryForObject(anyString(), eq(Boolean.class))).thenReturn(false);
         mockMvc.perform(put(RENAME_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(ID_PARAM, String.valueOf(ID))
                 .param(TABLE_NAME_PARAM, TABLE_NAME)).andExpect(status().isBadRequest());
     }
 
     @Test
-    void testDeleteData() throws Exception {
+    void testDeleteDataUnauthorized() throws Exception {
         mockMvc.perform(delete(DELETE_URL)
                 .param(ID_PARAM, String.valueOf(ID)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testDeleteData() throws Exception {
+        mockMvc.perform(delete(DELETE_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .param(ID_PARAM, String.valueOf(ID)))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void testGetInstancesPageUnauthorized() throws Exception {
+        mockMvc.perform(get(LIST_URL)
+                .param(PAGE_PARAM, String.valueOf(PAGE_NUMBER))
+                .param(SIZE_PARAM, String.valueOf(TOTAL_ELEMENTS)))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -173,6 +198,7 @@ class DataStorageControllerTest {
         when(instancesEntityPage.getContent()).thenReturn(instancesDtoList);
         when(storageService.getNextPage(any(PageRequestDto.class))).thenReturn(instancesEntityPage);
         mockMvc.perform(get(LIST_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(PAGE_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(SIZE_PARAM, String.valueOf(TOTAL_ELEMENTS)))
                 .andExpect(status().isOk())
