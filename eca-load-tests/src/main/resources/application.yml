@@ -46,6 +46,9 @@ queue:
   evaluationRequestQueue: evaluation-request-queue
   replyToQueue: load-tests-response-queue
 
+classifiers-options:
+  maximumFractionDigits: 4
+
 ## Swagger properties
 swagger2:
   projectVersion: @project.version@

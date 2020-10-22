@@ -19,7 +19,7 @@ ECA server
 * jdk 1.8
 * maven => 3.3.9
 * Rabbit MQ => 3
-* eca-core 6.7
+* eca-core 6.8
 * Postgres Database для хранения информации => 9.6
 * Контейнер сервлетов Tomcat 8
 

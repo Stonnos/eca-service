@@ -9,26 +9,22 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>classifiers-options-adapter</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>oauth2-test</artifactId>
 
     <properties>
-        <sonar.coverage.exclusions>
-            **/model/**/*,
-            **/config/**/*
-        </sonar.coverage.exclusions>
+        <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
     </properties>
 
     <dependencies>
-
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot</artifactId>
+            <groupId>eca.service</groupId>
+            <artifactId>core-test</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>eca</groupId>
-            <artifactId>eca-core</artifactId>
+            <groupId>org.springframework.security.oauth.boot</groupId>
+            <artifactId>spring-security-oauth2-autoconfigure</artifactId>
         </dependency>
 
         <dependency>
@@ -37,10 +33,9 @@
         </dependency>
 
         <dependency>
-            <groupId>eca.service</groupId>
-            <artifactId>core-test</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -57,4 +52,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

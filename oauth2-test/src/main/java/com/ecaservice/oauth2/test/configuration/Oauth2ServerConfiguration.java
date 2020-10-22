@@ -1,4 +1,4 @@
-package com.ecaservice.configuation.oauth2;
+package com.ecaservice.oauth2.test.configuration;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.test.context.TestConfiguration;

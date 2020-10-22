@@ -1,6 +1,7 @@
 package com.ecaservice.controller.web;
 
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_;
+import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.ecaservice.web.dto.model.MatchMode;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;

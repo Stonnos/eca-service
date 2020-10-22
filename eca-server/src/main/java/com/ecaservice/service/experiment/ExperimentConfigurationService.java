@@ -37,9 +37,9 @@ public class ExperimentConfigurationService {
 
     private static final long LOCK_RETRY_INTERVAL = 1000L;
     private static final String DEFAULT_CONFIGURATION_NAME = "Default configuration";
-    public static final String CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_NOT_SPECIFIED =
+    private static final String CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_NOT_SPECIFIED =
             "Classifiers input options directory isn't specified.";
-    public static final String CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_EMPTY =
+    private static final String CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_EMPTY =
             "Classifiers input options directory is empty.";
     private static ObjectMapper objectMapper = new ObjectMapper();
 
