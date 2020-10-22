@@ -11,6 +11,10 @@
 
     <artifactId>oauth2-test</artifactId>
 
+    <properties>
+        <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>eca.service</groupId>
