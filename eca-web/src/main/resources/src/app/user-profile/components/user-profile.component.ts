@@ -26,7 +26,7 @@ export class UserProfileComponent implements OnInit {
 
   public userMenuItems: MenuItem[];
 
-  public uploading = true;
+  public uploading = false;
 
   //Max file size: 10MB
   public maxFileSize: number = 10000000;
