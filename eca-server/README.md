@@ -57,11 +57,13 @@ ECA server
 4) ers - настройки интеграции с сервисом evaluation-results-service
    * ers.url - url конечной точки ERS сервиса
    * ers.enabled - выключатель для отправки результатов классификации (вкл./выкл.)
+   * ers.useClassifierOptionsCache - вкл./выкл. кеширование оптимальных настроек классификатора
+   * ers.classifierOptionsCacheDurationInDays - период хранения оптимальных настроек классификатора,
+         полученных от внешнего сервиса ERS
 5) common - общие настройки
-   * common.classifierOptionsCacheDurationInDays - период хранения оптимальных настроек классификатора
-      полученных от внешнего сервиса ERS
    * common.threadPoolSize - число потоков для асинхронных задач
    * common.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
+   * common.instance - уникальное имя инстанса (используется для кластерной среды)
 6) cache.specs - настройки spring cache
 7) swagger2 - настройки Swagger
    * swagger2.tokenBaseUrl - базовый url - сервера авторизации
