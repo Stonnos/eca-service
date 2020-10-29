@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * Cache configuration for tests.
+ * Caffeine cache configuration.
  *
  * @author Roman Batygin
  */
