@@ -33,6 +33,8 @@ spring:
   liquibase:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
+  cache:
+    type: caffeine
   rabbitmq:
     listener:
       simple:
@@ -137,9 +139,6 @@ cache:
     filter-dictionaries:
       expireAfterWriteSeconds: 18000
       maxSize: 100
-    app-instance:
-      expireAfterWriteSeconds: 36000
-      maxSize: 10
 
 management:
   metrics:

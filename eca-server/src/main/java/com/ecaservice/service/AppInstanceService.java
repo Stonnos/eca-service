@@ -1,11 +1,9 @@
 package com.ecaservice.service;
 
 import com.ecaservice.config.CommonConfig;
-import com.ecaservice.config.cache.CacheNames;
 import com.ecaservice.model.entity.AppInstanceEntity;
 import com.ecaservice.repository.AppInstanceRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -39,7 +37,6 @@ public class AppInstanceService {
      *
      * @return current app instance entity
      */
-    @Cacheable(CacheNames.APP_INSTANCE_CACHE_NAME)
     public AppInstanceEntity getOrSaveAppInstance() {
         AppInstanceEntity appInstanceEntity = appInstanceRepository.findByInstanceName(commonConfig.getInstance());
         if (appInstanceEntity == null) {
