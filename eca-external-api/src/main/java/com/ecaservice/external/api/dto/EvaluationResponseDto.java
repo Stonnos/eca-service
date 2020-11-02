@@ -1,5 +1,6 @@
 package com.ecaservice.external.api.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -8,6 +9,7 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
+@Builder
 public class EvaluationResponseDto {
 
     /**

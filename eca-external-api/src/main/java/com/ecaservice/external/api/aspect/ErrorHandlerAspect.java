@@ -1,5 +1,8 @@
 package com.ecaservice.external.api.aspect;
 
+import com.ecaservice.external.api.dto.EvaluationResponseDto;
+import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.exception.ExceptionTranslator;
 import com.ecaservice.external.api.service.MessageCorrelationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +12,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
+import java.util.UUID;
 
 
 /**
@@ -25,6 +29,7 @@ public class ErrorHandlerAspect {
     private static final int CORRELATION_ID_INDEX = 0;
 
     private final MessageCorrelationService messageCorrelationService;
+    private final ExceptionTranslator exceptionTranslator;
 
     /**
      * Handles error. Send error response back to client.
@@ -46,7 +51,12 @@ public class ErrorHandlerAspect {
     private void handleError(ProceedingJoinPoint joinPoint, Exception ex) {
         String correlationId = getInputParameter(joinPoint.getArgs(), CORRELATION_ID_INDEX, String.class);
         messageCorrelationService.pop(correlationId).ifPresent(sink -> {
-
+            RequestStatus requestStatus = exceptionTranslator.translate(ex);
+            EvaluationResponseDto evaluationResponseDto = EvaluationResponseDto.builder()
+                    .requestId(UUID.randomUUID().toString())
+                    .status(requestStatus)
+                    .build();
+            sink.success(evaluationResponseDto);
         });
     }
 
