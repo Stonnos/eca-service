@@ -26,4 +26,9 @@ public class ExternalApiConfig {
      * Batch size for data saving
      */
     private Integer batchSize;
+
+    /**
+     * Request cache duration minutes (used for message correlation)
+     */
+    private Long requestCacheDurationMinutes;
 }

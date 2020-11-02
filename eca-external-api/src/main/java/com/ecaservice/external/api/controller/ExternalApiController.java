@@ -2,6 +2,8 @@ package com.ecaservice.external.api.controller;
 
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
+import com.ecaservice.external.api.service.EvaluationApiService;
+import com.ecaservice.external.api.service.MessageCorrelationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
+import java.util.UUID;
 
 /**
  * External API controller.
@@ -25,6 +28,9 @@ import javax.validation.Valid;
 @RequestMapping("/external")
 @RequiredArgsConstructor
 public class ExternalApiController {
+
+    private final MessageCorrelationService messageCorrelationService;
+    private final EvaluationApiService evaluationApiService;
 
     /**
      * Processes evaluation request.
@@ -39,6 +45,10 @@ public class ExternalApiController {
     )
     @PostMapping(value = "/evaluate")
     public Mono<EvaluationResponseDto> evaluateModel(@Valid EvaluationRequestDto evaluationRequestDto) {
-        return Mono.create(sink -> {});
+        return Mono.create(sink -> {
+            String correlationId = UUID.randomUUID().toString();
+            messageCorrelationService.push(correlationId, sink);
+            evaluationApiService.processRequest(correlationId, evaluationRequestDto);
+        });
     }
 }

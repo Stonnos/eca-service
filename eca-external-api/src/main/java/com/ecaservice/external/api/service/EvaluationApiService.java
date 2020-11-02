@@ -33,28 +33,31 @@ public class EvaluationApiService {
      *
      * @param correlationId        - correlation id
      * @param evaluationRequestDto - evaluation request dto.
-     * @throws Exception in case of error
      */
-    public void processRequest(String correlationId, EvaluationRequestDto evaluationRequestDto) throws Exception {
+    public void processRequest(String correlationId, EvaluationRequestDto evaluationRequestDto) {
         EvaluationRequest evaluationRequest = createEvaluationRequest(evaluationRequestDto);
         rabbitSender.sendEvaluationRequest(evaluationRequest, correlationId);
     }
 
-    private EvaluationRequest createEvaluationRequest(EvaluationRequestDto evaluationRequestDto) throws Exception {
-        UrlResource urlResource = new UrlResource(new URL(evaluationRequestDto.getTrainDataUrl()));
-        fileDataLoader.setSource(urlResource);
-        Instances instances = fileDataLoader.loadInstances();
-        AbstractClassifier classifier =
-                classifierOptionsAdapter.convert(evaluationRequestDto.getClassifierOptions());
-        EvaluationRequest evaluationRequest = new EvaluationRequest();
-        evaluationRequest.setData(instances);
-        evaluationRequest.setClassifier(classifier);
-        evaluationRequest.setEvaluationMethod(evaluationRequestDto.getEvaluationMethod());
-        if (EvaluationMethod.CROSS_VALIDATION.equals(evaluationRequestDto.getEvaluationMethod())) {
-            evaluationRequest.setNumFolds(evaluationRequestDto.getNumFolds());
-            evaluationRequest.setNumTests(evaluationRequestDto.getNumTests());
-            evaluationRequest.setSeed(evaluationRequestDto.getSeed());
+    private EvaluationRequest createEvaluationRequest(EvaluationRequestDto evaluationRequestDto) {
+        try {
+            UrlResource urlResource = new UrlResource(new URL(evaluationRequestDto.getTrainDataUrl()));
+            fileDataLoader.setSource(urlResource);
+            Instances instances = fileDataLoader.loadInstances();
+            AbstractClassifier classifier =
+                    classifierOptionsAdapter.convert(evaluationRequestDto.getClassifierOptions());
+            EvaluationRequest evaluationRequest = new EvaluationRequest();
+            evaluationRequest.setData(instances);
+            evaluationRequest.setClassifier(classifier);
+            evaluationRequest.setEvaluationMethod(evaluationRequestDto.getEvaluationMethod());
+            if (EvaluationMethod.CROSS_VALIDATION.equals(evaluationRequestDto.getEvaluationMethod())) {
+                evaluationRequest.setNumFolds(evaluationRequestDto.getNumFolds());
+                evaluationRequest.setNumTests(evaluationRequestDto.getNumTests());
+                evaluationRequest.setSeed(evaluationRequestDto.getSeed());
+            }
+            return evaluationRequest;
+        } catch (Exception ex) {
+            throw new IllegalStateException(ex);
         }
-        return evaluationRequest;
     }
 }
