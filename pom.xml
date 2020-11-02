@@ -22,6 +22,7 @@
         <module>eca-server</module>
         <module>eca-mail</module>
         <module>eca-data-storage</module>
+        <module>eca-external-api</module>
         <module>eca-web</module>
         <module>zuul-gate</module>
         <module>discovery-server</module>
