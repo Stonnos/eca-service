@@ -2,6 +2,7 @@ package com.ecaservice.external.api.service;
 
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
+import com.ecaservice.external.api.aspect.ErrorExecution;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import eca.core.evaluation.EvaluationMethod;
 import eca.data.file.FileDataLoader;
@@ -34,6 +35,7 @@ public class EvaluationApiService {
      * @param correlationId        - correlation id
      * @param evaluationRequestDto - evaluation request dto.
      */
+    @ErrorExecution
     public void processRequest(String correlationId, EvaluationRequestDto evaluationRequestDto) {
         EvaluationRequest evaluationRequest = createEvaluationRequest(evaluationRequestDto);
         rabbitSender.sendEvaluationRequest(evaluationRequest, correlationId);
