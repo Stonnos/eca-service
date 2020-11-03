@@ -46,7 +46,8 @@ external-api:
   maxPageSize: 50
   dateFormat: yyyy-MM-dd HH:mm:ss
   batchSize: 100
-  requestCacheDurationMinutes: 30
+  requestTimeoutMinutes: 60
+  requestCacheDurationMinutes: 60
 
 ## Swagger properties
 swagger2:

@@ -1,5 +1,6 @@
 package com.ecaservice.external.api.controller;
 
+import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.RequestStatus;
@@ -37,6 +38,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ExternalApiController {
 
+    private final ExternalApiConfig externalApiConfig;
     private final MessageCorrelationService messageCorrelationService;
     private final EvaluationApiService evaluationApiService;
     private final EcaRequestMapper ecaRequestMapper;
@@ -60,7 +62,7 @@ public class ExternalApiController {
         return Mono.<EvaluationResponseDto>create(sink -> {
             messageCorrelationService.push(ecaRequestEntity.getCorrelationId(), sink);
             evaluationApiService.processRequest(ecaRequestEntity.getCorrelationId(), evaluationRequestDto);
-        }).timeout(Duration.ofMinutes(2), Mono.create(timeoutSink -> {
+        }).timeout(Duration.ofMinutes(externalApiConfig.getRequestTimeoutMinutes()), Mono.create(timeoutSink -> {
             requestStageHandler.handleTimeout(ecaRequestEntity.getCorrelationId());
             EvaluationResponseDto evaluationResponseDto = EvaluationResponseDto.builder()
                     .requestId(UUID.randomUUID().toString())

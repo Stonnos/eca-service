@@ -1,5 +1,6 @@
 package com.ecaservice.external.api.service;
 
+import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.exception.EntityNotFoundException;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class RequestStageHandler {
 
+    private final ExternalApiConfig externalApiConfig;
     private final EcaRequestRepository ecaRequestRepository;
 
     /**
@@ -36,7 +38,8 @@ public class RequestStageHandler {
      * @param correlationId - correlation id
      */
     public void handleTimeout(String correlationId) {
-        internalHandle(correlationId, RequestStageType.EXCEEDED, "");
+        internalHandle(correlationId, RequestStageType.EXCEEDED,
+                String.format("Timeout after %d minutes", externalApiConfig.getRequestTimeoutMinutes()));
     }
 
     private void internalHandle(String correlationId, RequestStageType requestStageType, String errorMessage) {

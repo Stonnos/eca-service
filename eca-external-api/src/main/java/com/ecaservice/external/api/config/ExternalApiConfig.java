@@ -28,6 +28,11 @@ public class ExternalApiConfig {
     private Integer batchSize;
 
     /**
+     * Request timeout in minutes
+     */
+    private Long requestTimeoutMinutes;
+
+    /**
      * Request cache duration minutes (used for message correlation)
      */
     private Long requestCacheDurationMinutes;
