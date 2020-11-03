@@ -41,7 +41,7 @@ public class TestWorkerService {
             evaluationRequestEntity.setStarted(LocalDateTime.now());
             rabbitSender.send(evaluationRequest, evaluationRequestEntity.getCorrelationId());
             evaluationRequestEntity.setStageType(RequestStageType.REQUEST_SENT);
-            log.info("Request with correlation id [{}] has been sent", evaluationRequestEntity.getCorrelationId());
+            log.trace("Request with correlation id [{}] has been sent", evaluationRequestEntity.getCorrelationId());
         } catch (Exception ex) {
             log.error("Unknown error while sending request with correlation id [{}]: {}",
                     evaluationRequestEntity.getCorrelationId(), ex.getMessage());
