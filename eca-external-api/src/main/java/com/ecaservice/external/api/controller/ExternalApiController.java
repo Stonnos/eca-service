@@ -2,12 +2,14 @@ package com.ecaservice.external.api.controller;
 
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
+import com.ecaservice.external.api.dto.RequestStatus;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.mapping.EcaRequestMapper;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.external.api.service.EvaluationApiService;
 import com.ecaservice.external.api.service.MessageCorrelationService;
+import com.ecaservice.external.api.service.RequestStageHandler;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -37,6 +40,7 @@ public class ExternalApiController {
     private final MessageCorrelationService messageCorrelationService;
     private final EvaluationApiService evaluationApiService;
     private final EcaRequestMapper ecaRequestMapper;
+    private final RequestStageHandler requestStageHandler;
     private final EcaRequestRepository ecaRequestRepository;
 
     /**
@@ -52,11 +56,18 @@ public class ExternalApiController {
     )
     @PostMapping(value = "/evaluate")
     public Mono<EvaluationResponseDto> evaluateModel(@Valid EvaluationRequestDto evaluationRequestDto) {
-        return Mono.create(sink -> {
-            EcaRequestEntity ecaRequestEntity = createAndSaveRequestEntity(evaluationRequestDto);
+        EcaRequestEntity ecaRequestEntity = createAndSaveRequestEntity(evaluationRequestDto);
+        return Mono.<EvaluationResponseDto>create(sink -> {
             messageCorrelationService.push(ecaRequestEntity.getCorrelationId(), sink);
             evaluationApiService.processRequest(ecaRequestEntity.getCorrelationId(), evaluationRequestDto);
-        });
+        }).timeout(Duration.ofMinutes(2), Mono.create(timeoutSink -> {
+            requestStageHandler.handleTimeout(ecaRequestEntity.getCorrelationId());
+            EvaluationResponseDto evaluationResponseDto = EvaluationResponseDto.builder()
+                    .requestId(UUID.randomUUID().toString())
+                    .status(RequestStatus.TIMEOUT)
+                    .build();
+            timeoutSink.success(evaluationResponseDto);
+        }));
     }
 
     private EcaRequestEntity createAndSaveRequestEntity(EvaluationRequestDto evaluationRequestDto) {

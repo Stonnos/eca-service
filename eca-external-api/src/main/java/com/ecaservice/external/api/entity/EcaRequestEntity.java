@@ -31,7 +31,7 @@ public abstract class EcaRequestEntity {
     private String correlationId;
 
     /**
-     * Request id
+     * Request id from eca - server
      */
     @Column(name = "request_id")
     private String requestId;

@@ -2,12 +2,9 @@ package com.ecaservice.external.api.aspect;
 
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.RequestStatus;
-import com.ecaservice.external.api.entity.EcaRequestEntity;
-import com.ecaservice.external.api.entity.RequestStageType;
-import com.ecaservice.external.api.exception.EntityNotFoundException;
 import com.ecaservice.external.api.exception.ExceptionTranslator;
-import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.external.api.service.MessageCorrelationService;
+import com.ecaservice.external.api.service.RequestStageHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -16,7 +13,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 
@@ -35,7 +31,7 @@ public class ErrorHandlerAspect {
 
     private final MessageCorrelationService messageCorrelationService;
     private final ExceptionTranslator exceptionTranslator;
-    private final EcaRequestRepository ecaRequestRepository;
+    private final RequestStageHandler requestStageHandler;
 
     /**
      * Handles error. Send error response back to client.
@@ -56,25 +52,15 @@ public class ErrorHandlerAspect {
 
     private void handleError(ProceedingJoinPoint joinPoint, Exception ex) {
         String correlationId = getInputParameter(joinPoint.getArgs(), CORRELATION_ID_INDEX, String.class);
-        EcaRequestEntity ecaRequestEntity = updateRequestEntity(correlationId, ex.getMessage());
+        requestStageHandler.handleError(correlationId, ex);
         messageCorrelationService.pop(correlationId).ifPresent(sink -> {
             RequestStatus requestStatus = exceptionTranslator.translate(ex);
             EvaluationResponseDto evaluationResponseDto = EvaluationResponseDto.builder()
-                    .requestId(ecaRequestEntity.getRequestId())
+                    .requestId(UUID.randomUUID().toString())
                     .status(requestStatus)
                     .build();
             sink.success(evaluationResponseDto);
         });
-    }
-
-    private EcaRequestEntity updateRequestEntity(String correlationId, String errorMessage) {
-        EcaRequestEntity ecaRequestEntity = ecaRequestRepository.findByCorrelationId(correlationId).orElseThrow(
-                () -> new EntityNotFoundException(EcaRequestEntity.class, correlationId));
-        ecaRequestEntity.setRequestId(UUID.randomUUID().toString());
-        ecaRequestEntity.setRequestStage(RequestStageType.ERROR);
-        ecaRequestEntity.setErrorMessage(errorMessage);
-        ecaRequestEntity.setEndDate(LocalDateTime.now());
-        return ecaRequestRepository.save(ecaRequestEntity);
     }
 
     private <T> T getInputParameter(Object[] inputArgs, int index, Class<T> clazz) {

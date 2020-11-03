@@ -23,6 +23,11 @@ public enum RequestStatus {
     ERROR,
 
     /**
+     * Request timeout
+     */
+    TIMEOUT,
+
+    /**
      * Internal system unavailable
      */
     SERVICE_UNAVAILABLE
