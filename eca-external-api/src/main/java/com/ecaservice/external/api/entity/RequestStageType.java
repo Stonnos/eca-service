@@ -18,6 +18,11 @@ public enum RequestStageType {
     RESPONSE_RECEIVED,
 
     /**
+     * Request completed
+     */
+    COMPLETED,
+
+    /**
      * Error status
      */
     ERROR,
