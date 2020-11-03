@@ -2,6 +2,7 @@ package com.ecaservice.external.api.aspect;
 
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.exception.ExceptionTranslator;
 import com.ecaservice.external.api.service.MessageCorrelationService;
 import com.ecaservice.external.api.service.RequestStageHandler;
@@ -27,7 +28,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ErrorHandlerAspect {
 
-    private static final int CORRELATION_ID_INDEX = 0;
+    private static final int ECA_REQUEST_INDEX = 0;
 
     private final MessageCorrelationService messageCorrelationService;
     private final ExceptionTranslator exceptionTranslator;
@@ -51,9 +52,9 @@ public class ErrorHandlerAspect {
     }
 
     private void handleError(ProceedingJoinPoint joinPoint, Exception ex) {
-        String correlationId = getInputParameter(joinPoint.getArgs(), CORRELATION_ID_INDEX, String.class);
-        requestStageHandler.handleError(correlationId, ex);
-        messageCorrelationService.pop(correlationId).ifPresent(sink -> {
+        EcaRequestEntity ecaRequestEntity = getInputParameter(joinPoint.getArgs(), ECA_REQUEST_INDEX, EcaRequestEntity.class);
+        requestStageHandler.handleError(ecaRequestEntity.getCorrelationId(), ex);
+        messageCorrelationService.pop(ecaRequestEntity.getCorrelationId()).ifPresent(sink -> {
             RequestStatus requestStatus = exceptionTranslator.translate(ex);
             EvaluationResponseDto evaluationResponseDto = EvaluationResponseDto.builder()
                     .requestId(UUID.randomUUID().toString())

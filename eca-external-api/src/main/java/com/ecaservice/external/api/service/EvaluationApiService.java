@@ -4,6 +4,9 @@ import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.external.api.aspect.ErrorExecution;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
+import com.ecaservice.external.api.entity.EcaRequestEntity;
+import com.ecaservice.external.api.entity.RequestStageType;
+import com.ecaservice.external.api.repository.EcaRequestRepository;
 import eca.core.evaluation.EvaluationMethod;
 import eca.data.file.FileDataLoader;
 import eca.data.file.resource.UrlResource;
@@ -14,6 +17,7 @@ import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
 import java.net.URL;
+import java.time.LocalDateTime;
 
 /**
  * Evaluation API service.
@@ -28,17 +32,21 @@ public class EvaluationApiService {
     private final FileDataLoader fileDataLoader;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final RabbitSender rabbitSender;
+    private final EcaRequestRepository ecaRequestRepository;
 
     /**
      * Processes evaluation request.
      *
-     * @param correlationId        - correlation id
+     * @param ecaRequestEntity     - eca request entity
      * @param evaluationRequestDto - evaluation request dto.
      */
     @ErrorExecution
-    public void processRequest(String correlationId, EvaluationRequestDto evaluationRequestDto) {
+    public void processRequest(EcaRequestEntity ecaRequestEntity, EvaluationRequestDto evaluationRequestDto) {
         EvaluationRequest evaluationRequest = createEvaluationRequest(evaluationRequestDto);
-        rabbitSender.sendEvaluationRequest(evaluationRequest, correlationId);
+        rabbitSender.sendEvaluationRequest(evaluationRequest, ecaRequestEntity.getCorrelationId());
+        ecaRequestEntity.setRequestStage(RequestStageType.REQUEST_SENT);
+        ecaRequestEntity.setRequestDate(LocalDateTime.now());
+        ecaRequestRepository.save(ecaRequestEntity);
     }
 
     private EvaluationRequest createEvaluationRequest(EvaluationRequestDto evaluationRequestDto) {

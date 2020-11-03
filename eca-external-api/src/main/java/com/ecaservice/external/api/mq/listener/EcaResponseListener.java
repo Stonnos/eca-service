@@ -1,6 +1,7 @@
 package com.ecaservice.external.api.mq.listener;
 
 import com.ecaservice.base.model.EvaluationResponse;
+import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.RequestStatus;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
@@ -41,19 +42,31 @@ public class EcaResponseListener {
         log.info("Received message with correlation id [{}]", correlationId);
         EcaRequestEntity ecaRequestEntity = ecaRequestRepository.findByCorrelationId(correlationId).orElseThrow(
                 () -> new EntityNotFoundException(EcaRequestEntity.class, correlationId));
-        if (RequestStageType.REQUEST_SENT.equals(ecaRequestEntity.getRequestStage())) {
+        if (!RequestStageType.REQUEST_SENT.equals(ecaRequestEntity.getRequestStage())) {
+            log.warn("Got response [{}] with invalid request status [{}]. ", correlationId,
+                    ecaRequestEntity.getRequestStage());
+        } else {
             ecaRequestEntity.setRequestStage(RequestStageType.RESPONSE_RECEIVED);
             ecaRequestRepository.save(ecaRequestEntity);
             messageCorrelationService.pop(correlationId).ifPresent(sink -> {
+                EvaluationResponseDto evaluationResponseDto = handleResponse(evaluationResponse);
                 ecaRequestEntity.setRequestStage(RequestStageType.COMPLETED);
                 ecaRequestEntity.setEndDate(LocalDateTime.now());
                 ecaRequestRepository.save(ecaRequestEntity);
-                EvaluationResponseDto evaluationResponseDto = EvaluationResponseDto.builder()
-                        .requestId(evaluationResponse.getRequestId())
-                        .status(RequestStatus.SUCCESS)
-                        .build();
                 sink.success(evaluationResponseDto);
             });
         }
+    }
+
+    private EvaluationResponseDto handleResponse(EvaluationResponse evaluationResponse) {
+        EvaluationResponseDto evaluationResponseDto = EvaluationResponseDto.builder()
+                .requestId(evaluationResponse.getRequestId())
+                .build();
+        if (TechnicalStatus.SUCCESS.equals(evaluationResponse.getStatus())) {
+            evaluationResponseDto.setStatus(RequestStatus.SUCCESS);
+        } else {
+            evaluationResponseDto.setStatus(RequestStatus.ERROR);
+        }
+        return evaluationResponseDto;
     }
 }
