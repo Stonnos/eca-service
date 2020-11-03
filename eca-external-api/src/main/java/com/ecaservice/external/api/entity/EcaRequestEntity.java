@@ -49,6 +49,12 @@ public abstract class EcaRequestEntity {
     private LocalDateTime requestDate;
 
     /**
+     * Request processing end date
+     */
+    @Column(name = "end_date")
+    private LocalDateTime endDate;
+
+    /**
      * Request stage
      */
     @Enumerated(EnumType.STRING)

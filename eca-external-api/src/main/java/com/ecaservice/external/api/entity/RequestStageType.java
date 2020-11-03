@@ -25,5 +25,10 @@ public enum RequestStageType {
     /**
      * Request not send
      */
-    NOT_SEND
+    NOT_SEND,
+
+    /**
+     * Request exceeded
+     */
+    EXCEEDED
 }
