@@ -7,8 +7,6 @@ import com.ecaservice.load.test.config.EcaLoadTestsConfig;
 import com.ecaservice.load.test.entity.EvaluationRequestEntity;
 import com.ecaservice.load.test.entity.ExecutionStatus;
 import com.ecaservice.load.test.entity.LoadTestEntity;
-import com.ecaservice.load.test.entity.RequestStageType;
-import com.ecaservice.load.test.entity.TestResult;
 import com.ecaservice.load.test.mapping.LoadTestMapper;
 import com.ecaservice.load.test.model.TestDataModel;
 import com.ecaservice.load.test.repository.EvaluationRequestRepository;
@@ -16,11 +14,10 @@ import com.ecaservice.load.test.repository.LoadTestRepository;
 import com.ecaservice.load.test.service.ClassifiersConfigService;
 import com.ecaservice.load.test.service.InstancesConfigService;
 import com.ecaservice.load.test.service.LoadTestDataIterator;
+import com.ecaservice.load.test.service.TestWorkerService;
 import com.ecaservice.load.test.service.data.InstancesLoader;
-import com.ecaservice.load.test.service.rabbit.RabbitSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.AmqpException;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import weka.classifiers.AbstractClassifier;
@@ -48,7 +45,7 @@ public class TestExecutor {
     private final EcaLoadTestsConfig ecaLoadTestsConfig;
     private final InstancesConfigService instancesConfigService;
     private final ClassifiersConfigService classifiersConfigService;
-    private final RabbitSender rabbitSender;
+    private final TestWorkerService testWorkerService;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final InstancesLoader instancesLoader;
     private final LoadTestMapper loadTestMapper;
@@ -90,10 +87,8 @@ public class TestExecutor {
                 ClassifierOptions classifierOptions =
                         classifierOptionsAdapter.convert(evaluationRequest.getClassifier());
                 EvaluationRequestEntity evaluationRequestEntity =
-                        createEvaluationRequestEntity(loadTestEntity, classifierOptions, evaluationRequest.getData());
-                evaluationRequestEntity.setTestResult(TestResult.UNKNOWN);
-                evaluationRequestEntity.setClassifierName(evaluationRequest.getClassifier().getClass().getSimpleName());
-                Runnable task = createTask(evaluationRequest, evaluationRequestEntity, countDownLatch);
+                        createAndSaveEvaluationRequest(loadTestEntity, classifierOptions, evaluationRequest);
+                Runnable task = createTask(evaluationRequestEntity.getId(), evaluationRequest, countDownLatch);
                 executor.submit(task);
             }
             if (!countDownLatch.await(ecaLoadTestsConfig.getWorkerThreadTimeOutInSeconds(), TimeUnit.SECONDS)) {
@@ -133,37 +128,16 @@ public class TestExecutor {
         return classifier;
     }
 
-    private Runnable createTask(EvaluationRequest evaluationRequest,
-                                EvaluationRequestEntity evaluationRequestEntity, CountDownLatch countDownLatch) {
-        return () -> {
-            try {
-                evaluationRequestEntity.setStarted(LocalDateTime.now());
-                rabbitSender.send(evaluationRequest, evaluationRequestEntity.getCorrelationId());
-                evaluationRequestEntity.setStageType(RequestStageType.REQUEST_SENT);
-                log.info("Request with correlation id [{}] has been sent",
-                        evaluationRequestEntity.getCorrelationId());
-            } catch (AmqpException ex) {
-                log.error("AMQP error while sending request with correlation id [{}]: {}",
-                        evaluationRequestEntity.getCorrelationId(),
-                        ex.getMessage());
-                handleErrorRequest(evaluationRequestEntity, RequestStageType.NOT_SEND);
-            } catch (Exception ex) {
-                log.error("Unknown error while sending request with correlation id [{}]: {}",
-                        evaluationRequestEntity.getCorrelationId(),
-                        ex.getMessage());
-                handleErrorRequest(evaluationRequestEntity, RequestStageType.ERROR);
-            } finally {
-                evaluationRequestRepository.save(evaluationRequestEntity);
-                countDownLatch.countDown();
-            }
-        };
+    private EvaluationRequestEntity createAndSaveEvaluationRequest(LoadTestEntity loadTestEntity,
+                                                                   ClassifierOptions classifierOptions,
+                                                                   EvaluationRequest evaluationRequest) {
+        EvaluationRequestEntity evaluationRequestEntity =
+                createEvaluationRequestEntity(loadTestEntity, classifierOptions, evaluationRequest);
+        return evaluationRequestRepository.save(evaluationRequestEntity);
     }
 
-    private void handleErrorRequest(EvaluationRequestEntity evaluationRequestEntity,
-                                    RequestStageType requestStageType) {
-        evaluationRequestEntity.setTestResult(TestResult.ERROR);
-        evaluationRequestEntity.setStageType(requestStageType);
-        evaluationRequestEntity.setFinished(LocalDateTime.now());
+    private Runnable createTask(long testId, EvaluationRequest evaluationRequest, CountDownLatch countDownLatch) {
+        return () -> testWorkerService.sendRequest(testId, evaluationRequest, countDownLatch);
     }
 
     private ThreadPoolTaskExecutor initializeThreadPoolTaskExecutor(int poolSize) {

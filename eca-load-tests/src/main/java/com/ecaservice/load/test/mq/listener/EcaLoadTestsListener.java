@@ -43,9 +43,11 @@ public class EcaLoadTestsListener {
         if (evaluationRequestEntity == null) {
             log.warn("Can't find request entity for sent message [{}]", correlationId);
         } else {
+            evaluationRequestEntity.setStageType(RequestStageType.RESPONSE_RECEIVED);
+            evaluationRequestRepository.save(evaluationRequestEntity);
             try {
-                evaluationRequestEntity.setStageType(RequestStageType.RESPONSE_RECEIVED);
                 evaluationRequestEntity.setTestResult(testResultMapper.map(evaluationResponse.getStatus()));
+                evaluationRequestEntity.setStageType(RequestStageType.COMPLETED);
             } catch (Exception ex) {
                 log.error("There was an error while handle message [{}]: {}", correlationId, ex.getMessage());
                 evaluationRequestEntity.setStageType(RequestStageType.ERROR);

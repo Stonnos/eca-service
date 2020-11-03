@@ -34,7 +34,12 @@ public enum RequestStageType implements DescriptiveEnum {
     /**
      * Request exceeded
      */
-    EXCEEDED("Истелко время ожидания ответа");
+    EXCEEDED("Истелко время ожидания ответа"),
+
+    /**
+     * Request processing completed
+     */
+    COMPLETED("Завершен");
 
     private final String description;
 
