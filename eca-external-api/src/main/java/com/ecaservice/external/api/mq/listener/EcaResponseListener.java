@@ -4,7 +4,6 @@ import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
-import com.ecaservice.external.api.exception.EntityNotFoundException;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.external.api.service.EcaResponseHandler;
 import com.ecaservice.external.api.service.MessageCorrelationService;
@@ -40,8 +39,11 @@ public class EcaResponseListener {
     public void handleEvaluationMessage(EvaluationResponse evaluationResponse, Message message) {
         String correlationId = message.getMessageProperties().getCorrelationId();
         log.info("Received message with correlation id [{}]", correlationId);
-        EcaRequestEntity ecaRequestEntity = ecaRequestRepository.findByCorrelationId(correlationId).orElseThrow(
-                () -> new EntityNotFoundException(EcaRequestEntity.class, correlationId));
+        EcaRequestEntity ecaRequestEntity = ecaRequestRepository.findByCorrelationId(correlationId).orElse(null);
+        if (ecaRequestEntity == null) {
+            log.warn("Can't find request entity with correlation id [{}]. ", correlationId);
+            return;
+        }
         if (RequestStageType.EXCEEDED.equals(ecaRequestEntity.getRequestStage())) {
             log.warn("Got exceeded eca request entity [{}]. ", correlationId);
         } else {

@@ -63,7 +63,7 @@ public class ExternalApiController {
             messageCorrelationService.push(ecaRequestEntity.getCorrelationId(), sink);
             evaluationApiService.processRequest(ecaRequestEntity, evaluationRequestDto);
         }).timeout(Duration.ofMinutes(externalApiConfig.getRequestTimeoutMinutes()), Mono.create(timeoutSink -> {
-            requestStageHandler.handleTimeout(ecaRequestEntity.getCorrelationId());
+            requestStageHandler.handleExceeded(ecaRequestEntity.getCorrelationId());
             EvaluationResponseDto evaluationResponseDto = EvaluationResponseDto.builder()
                     .requestId(ecaRequestEntity.getCorrelationId())
                     .status(RequestStatus.TIMEOUT)

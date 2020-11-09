@@ -33,11 +33,11 @@ public class RequestStageHandler {
     }
 
     /**
-     * Handle timeout request.
+     * Handle exceeded request.
      *
      * @param correlationId - correlation id
      */
-    public void handleTimeout(String correlationId) {
+    public void handleExceeded(String correlationId) {
         internalHandle(correlationId, RequestStageType.EXCEEDED,
                 String.format("Timeout after %d minutes", externalApiConfig.getRequestTimeoutMinutes()));
     }
