@@ -36,16 +36,19 @@ public class EcaLoadTestsListener {
     @RabbitListener(queues = "${queue.replyToQueue}")
     public void handleMessage(EvaluationResponse evaluationResponse, Message message) {
         String correlationId = message.getMessageProperties().getCorrelationId();
-        log.info("Received message with correlation id [{}]", correlationId);
+        log.trace("Received message with correlation id [{}]", correlationId);
         EvaluationRequestEntity evaluationRequestEntity =
                 evaluationRequestRepository.findByCorrelationIdAndStageTypeEquals(correlationId,
                         RequestStageType.REQUEST_SENT);
         if (evaluationRequestEntity == null) {
             log.warn("Can't find request entity for sent message [{}]", correlationId);
         } else {
+            evaluationRequestEntity.setStageType(RequestStageType.RESPONSE_RECEIVED);
+            evaluationRequestRepository.save(evaluationRequestEntity);
             try {
-                evaluationRequestEntity.setStageType(RequestStageType.RESPONSE_RECEIVED);
                 evaluationRequestEntity.setTestResult(testResultMapper.map(evaluationResponse.getStatus()));
+                evaluationRequestEntity.setStageType(RequestStageType.COMPLETED);
+                log.trace("Request with correlation id [{}] has been processed", correlationId);
             } catch (Exception ex) {
                 log.error("There was an error while handle message [{}]: {}", correlationId, ex.getMessage());
                 evaluationRequestEntity.setStageType(RequestStageType.ERROR);
