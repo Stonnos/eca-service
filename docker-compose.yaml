@@ -105,6 +105,24 @@ services:
       - eca-db
       - discovery-server
 
+  eca-external-api:
+    image: eca-external-api
+    container_name: eca-external-api
+    volumes:
+      - classifiers-data:/home/classifiers
+    environment:
+      TZ: ${TIME_ZONE}
+      SPRING_PROFILES_ACTIVE: "docker"
+      JAVA_OPTS: "-Xmx1g"
+      DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
+      DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
+    networks:
+      - default
+    depends_on:
+      - eca-db
+      - rabbitmq
+      - discovery-server
+
   eca-web:
     image: eca-web
     container_name: eca-web
@@ -144,3 +162,5 @@ volumes:
     name: rabbit-data
   experiment-data:
     name: experiment-data
+  classifiers-data:
+    name: classifiers-data
