@@ -44,7 +44,7 @@ public abstract class EcaRequestEntity {
     private LocalDateTime creationDate;
 
     /**
-     * Request creation date
+     * Request date
      */
     @Column(name = "request_date")
     private LocalDateTime requestDate;
@@ -61,6 +61,12 @@ public abstract class EcaRequestEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private TechnicalStatus status;
+
+    /**
+     * Classifier model absolute path
+     */
+    @Column(name = "classifier_absolute_path")
+    private String classifierAbsolutePath;
 
     /**
      * Request stage

@@ -3,6 +3,7 @@ package com.ecaservice.external.api.service;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
+import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import weka.classifiers.AbstractClassifier;
 
+import java.io.File;
 import java.time.LocalDateTime;
 
 /**
@@ -27,6 +29,7 @@ public class EcaResponseHandler {
 
     private static final String MODEL_FILE_FORMAT = "%s_%s";
 
+    private final ExternalApiConfig externalApiConfig;
     private final ClassifiersOptionsConfig classifiersOptionsConfig;
     private final DataService dataService;
     private final EcaRequestRepository ecaRequestRepository;
@@ -40,7 +43,6 @@ public class EcaResponseHandler {
     public void handleResponse(EcaRequestEntity ecaRequestEntity,
                                EvaluationResponse evaluationResponse) {
         try {
-            ecaRequestEntity.setStatus(evaluationResponse.getStatus());
             if (TechnicalStatus.SUCCESS.equals(evaluationResponse.getStatus())) {
                 EvaluationResults evaluationResults = evaluationResponse.getEvaluationResults();
                 ClassificationModel classifierModel =
@@ -51,7 +53,9 @@ public class EcaResponseHandler {
                 String fileName =
                         String.format(MODEL_FILE_FORMAT, evaluationResults.getClassifier().getClass().getSimpleName(),
                                 evaluationResponse.getRequestId());
-                dataService.saveModel(classifierModel, fileName);
+                File classifierFile = new File(externalApiConfig.getClassifiersPath(), fileName);
+                dataService.saveModel(classifierModel, classifierFile);
+                ecaRequestEntity.setClassifierAbsolutePath(classifierFile.getAbsolutePath());
             }
             ecaRequestEntity.setRequestStage(RequestStageType.COMPLETED);
         } catch (Exception ex) {

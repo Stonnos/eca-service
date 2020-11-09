@@ -53,6 +53,7 @@ public class EcaResponseListener {
                     ecaRequestEntity.getRequestStage());
         } else {
             ecaRequestEntity.setRequestId(evaluationResponse.getRequestId());
+            ecaRequestEntity.setStatus(evaluationResponse.getStatus());
             ecaRequestEntity.setRequestStage(RequestStageType.RESPONSE_RECEIVED);
             ecaRequestRepository.save(ecaRequestEntity);
             messageCorrelationService.pop(correlationId).ifPresent(sink -> {
