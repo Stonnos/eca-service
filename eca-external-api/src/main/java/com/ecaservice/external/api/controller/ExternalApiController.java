@@ -65,7 +65,7 @@ public class ExternalApiController {
         }).timeout(Duration.ofMinutes(externalApiConfig.getRequestTimeoutMinutes()), Mono.create(timeoutSink -> {
             requestStageHandler.handleTimeout(ecaRequestEntity.getCorrelationId());
             EvaluationResponseDto evaluationResponseDto = EvaluationResponseDto.builder()
-                    .requestId(UUID.randomUUID().toString())
+                    .requestId(ecaRequestEntity.getCorrelationId())
                     .status(RequestStatus.TIMEOUT)
                     .build();
             timeoutSink.success(evaluationResponseDto);

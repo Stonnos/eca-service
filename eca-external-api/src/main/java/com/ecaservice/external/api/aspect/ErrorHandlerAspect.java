@@ -57,7 +57,7 @@ public class ErrorHandlerAspect {
         messageCorrelationService.pop(ecaRequestEntity.getCorrelationId()).ifPresent(sink -> {
             RequestStatus requestStatus = exceptionTranslator.translate(ex);
             EvaluationResponseDto evaluationResponseDto = EvaluationResponseDto.builder()
-                    .requestId(UUID.randomUUID().toString())
+                    .requestId(ecaRequestEntity.getCorrelationId())
                     .status(requestStatus)
                     .build();
             sink.success(evaluationResponseDto);

@@ -27,8 +27,7 @@ public class ResponseHelper {
      * @return evaluation response dto
      */
     public static EvaluationResponseDto buildResponse(EvaluationResponse evaluationResponse) {
-        EvaluationResponseDto.EvaluationResponseDtoBuilder builder = EvaluationResponseDto.builder()
-                .requestId(evaluationResponse.getRequestId());
+        EvaluationResponseDto.EvaluationResponseDtoBuilder builder = EvaluationResponseDto.builder();
         if (TechnicalStatus.SUCCESS.equals(evaluationResponse.getStatus()) &&
                 Optional.ofNullable(evaluationResponse.getEvaluationResults()).map(
                         EvaluationResults::getEvaluation).isPresent()) {
