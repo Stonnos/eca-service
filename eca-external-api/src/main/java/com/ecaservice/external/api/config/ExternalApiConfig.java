@@ -36,4 +36,9 @@ public class ExternalApiConfig {
      * Request cache duration minutes (used for message correlation)
      */
     private Long requestCacheDurationMinutes;
+
+    /**
+     * Classifiers path on file system
+     */
+    private String classifiersPath;
 }

@@ -1,5 +1,6 @@
 package com.ecaservice.external.api.entity;
 
+import com.ecaservice.base.model.TechnicalStatus;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
 
@@ -53,6 +54,13 @@ public abstract class EcaRequestEntity {
      */
     @Column(name = "end_date")
     private LocalDateTime endDate;
+
+    /**
+     * Request processing status
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private TechnicalStatus status;
 
     /**
      * Request stage

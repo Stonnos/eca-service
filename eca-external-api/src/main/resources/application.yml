@@ -48,6 +48,10 @@ external-api:
   batchSize: 100
   requestTimeoutMinutes: 60
   requestCacheDurationMinutes: 60
+  classifiersPath: D:/classifiers/
+
+classifiers-options:
+  maximumFractionDigits: 4
 
 ## Swagger properties
 swagger2:

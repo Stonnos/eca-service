@@ -2,21 +2,18 @@ package com.ecaservice.external.api.service;
 
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.TechnicalStatus;
-import com.ecaservice.external.api.dto.EvaluationResponseDto;
-import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
-import eca.core.evaluation.Evaluation;
+import eca.converters.model.ClassificationModel;
 import eca.core.evaluation.EvaluationResults;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import weka.classifiers.AbstractClassifier;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 /**
  * Eca response handler.
@@ -28,6 +25,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EcaResponseHandler {
 
+    private static final String MODEL_FILE_FORMAT = "%s_%s";
+
+    private final ClassifiersOptionsConfig classifiersOptionsConfig;
+    private final DataService dataService;
     private final EcaRequestRepository ecaRequestRepository;
 
     /**
@@ -35,28 +36,22 @@ public class EcaResponseHandler {
      *
      * @param ecaRequestEntity   - eca request entity
      * @param evaluationResponse - evaluation response
-     * @return evaluation response dto
      */
-    public EvaluationResponseDto handleResponse(EcaRequestEntity ecaRequestEntity,
-                                                EvaluationResponse evaluationResponse) {
-        EvaluationResponseDto evaluationResponseDto = EvaluationResponseDto.builder()
-                .requestId(evaluationResponse.getRequestId())
-                .build();
+    public void handleResponse(EcaRequestEntity ecaRequestEntity,
+                               EvaluationResponse evaluationResponse) {
         try {
+            ecaRequestEntity.setStatus(evaluationResponse.getStatus());
             if (TechnicalStatus.SUCCESS.equals(evaluationResponse.getStatus())) {
-                if (Optional.ofNullable(evaluationResponse.getEvaluationResults()).map(
-                        EvaluationResults::getEvaluation).isPresent()) {
-                    Evaluation evaluation = evaluationResponse.getEvaluationResults().getEvaluation();
-                    evaluationResponseDto.setNumTestInstances(BigInteger.valueOf((long) evaluation.numInstances()));
-                    evaluationResponseDto.setNumCorrect(BigInteger.valueOf((long) evaluation.correct()));
-                    evaluationResponseDto.setNumIncorrect(BigInteger.valueOf((long) evaluation.incorrect()));
-                    evaluationResponseDto.setPctCorrect(BigDecimal.valueOf(evaluation.pctCorrect()));
-                    evaluationResponseDto.setPctIncorrect(BigDecimal.valueOf(evaluation.pctIncorrect()));
-                    evaluationResponseDto.setMeanAbsoluteError(BigDecimal.valueOf(evaluation.meanAbsoluteError()));
-                }
-                evaluationResponseDto.setStatus(RequestStatus.SUCCESS);
-            } else {
-                evaluationResponseDto.setStatus(RequestStatus.ERROR);
+                EvaluationResults evaluationResults = evaluationResponse.getEvaluationResults();
+                ClassificationModel classifierModel =
+                        new ClassificationModel((AbstractClassifier) evaluationResults.getClassifier(),
+                                evaluationResults.getEvaluation().getData(), evaluationResults.getEvaluation(),
+                                classifiersOptionsConfig.getMaximumFractionDigits(),
+                                evaluationResults.getClassifier().getClass().getSimpleName());
+                String fileName =
+                        String.format(MODEL_FILE_FORMAT, evaluationResults.getClassifier().getClass().getSimpleName(),
+                                evaluationResponse.getRequestId());
+                dataService.saveModel(classifierModel, fileName);
             }
             ecaRequestEntity.setRequestStage(RequestStageType.COMPLETED);
         } catch (Exception ex) {
@@ -68,6 +63,5 @@ public class EcaResponseHandler {
             ecaRequestEntity.setEndDate(LocalDateTime.now());
             ecaRequestRepository.save(ecaRequestEntity);
         }
-        return evaluationResponseDto;
     }
 }
