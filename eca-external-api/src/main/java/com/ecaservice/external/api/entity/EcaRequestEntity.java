@@ -28,7 +28,7 @@ public abstract class EcaRequestEntity {
     /**
      * Correlation id header
      */
-    @Column(name = "correlation_id", nullable = false)
+    @Column(name = "correlation_id", nullable = false, unique = true)
     private String correlationId;
 
     /**
