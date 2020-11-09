@@ -50,8 +50,8 @@ public class EcaResponseListener {
             ecaRequestEntity.setStatus(evaluationResponse.getStatus());
             ecaRequestEntity.setRequestStage(RequestStageType.RESPONSE_RECEIVED);
             ecaRequestRepository.save(ecaRequestEntity);
+            ecaResponseHandler.handleResponse(ecaRequestEntity, evaluationResponse);
             messageCorrelationService.pop(correlationId).ifPresent(sink -> {
-                ecaResponseHandler.handleResponse(ecaRequestEntity, evaluationResponse);
                 EvaluationResponseDto evaluationResponseDto = buildResponse(evaluationResponse);
                 sink.success(evaluationResponseDto);
             });
