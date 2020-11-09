@@ -38,25 +38,28 @@ public class EcaLoadTestsListener {
         String correlationId = message.getMessageProperties().getCorrelationId();
         log.trace("Received message with correlation id [{}]", correlationId);
         EvaluationRequestEntity evaluationRequestEntity =
-                evaluationRequestRepository.findByCorrelationIdAndStageTypeEquals(correlationId,
-                        RequestStageType.REQUEST_SENT);
+                evaluationRequestRepository.findByCorrelationId(correlationId);
         if (evaluationRequestEntity == null) {
-            log.warn("Can't find request entity for sent message [{}]", correlationId);
-        } else {
-            evaluationRequestEntity.setStageType(RequestStageType.RESPONSE_RECEIVED);
+            log.warn("Can't find request entity with correlation id [{}]", correlationId);
+            return;
+        }
+        if (RequestStageType.EXCEEDED.equals(evaluationRequestEntity.getStageType())) {
+            log.warn("Got exceeded request entity with correlation id [{}]", correlationId);
+            return;
+        }
+        evaluationRequestEntity.setStageType(RequestStageType.RESPONSE_RECEIVED);
+        evaluationRequestRepository.save(evaluationRequestEntity);
+        try {
+            evaluationRequestEntity.setTestResult(testResultMapper.map(evaluationResponse.getStatus()));
+            evaluationRequestEntity.setStageType(RequestStageType.COMPLETED);
+            log.trace("Request with correlation id [{}] has been processed", correlationId);
+        } catch (Exception ex) {
+            log.error("There was an error while handle message [{}]: {}", correlationId, ex.getMessage());
+            evaluationRequestEntity.setStageType(RequestStageType.ERROR);
+            evaluationRequestEntity.setTestResult(TestResult.ERROR);
+        } finally {
+            evaluationRequestEntity.setFinished(LocalDateTime.now());
             evaluationRequestRepository.save(evaluationRequestEntity);
-            try {
-                evaluationRequestEntity.setTestResult(testResultMapper.map(evaluationResponse.getStatus()));
-                evaluationRequestEntity.setStageType(RequestStageType.COMPLETED);
-                log.trace("Request with correlation id [{}] has been processed", correlationId);
-            } catch (Exception ex) {
-                log.error("There was an error while handle message [{}]: {}", correlationId, ex.getMessage());
-                evaluationRequestEntity.setStageType(RequestStageType.ERROR);
-                evaluationRequestEntity.setTestResult(TestResult.ERROR);
-            } finally {
-                evaluationRequestEntity.setFinished(LocalDateTime.now());
-                evaluationRequestRepository.save(evaluationRequestEntity);
-            }
         }
     }
 }
