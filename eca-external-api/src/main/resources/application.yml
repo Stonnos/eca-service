@@ -10,7 +10,7 @@ spring:
   ## Datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://localhost:5432/data_storage
+    jdbc-url: jdbc:postgresql://localhost:5432/eca_external_api
     username: postgres
     password: postgres
   ## Token datasource properties
@@ -21,7 +21,7 @@ spring:
     password: postgres
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     properties:
       hibernate:
