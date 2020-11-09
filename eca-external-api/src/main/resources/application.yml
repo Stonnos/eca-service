@@ -33,6 +33,11 @@ spring:
   liquibase:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
+  rabbitmq:
+    listener:
+      simple:
+        concurrency: 10
+        maxConcurrency: 10
 
 eureka:
   client:
