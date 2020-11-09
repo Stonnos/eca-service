@@ -154,7 +154,8 @@
                 <version>${docker-maven-plugin.version}</version>
                 <inherited>false</inherited>
                 <configuration>
-                    <skip>true</skip>
+                    <skip>false</skip>
+                    <repository>${project.artifactId}</repository>
                 </configuration>
             </plugin>
 
