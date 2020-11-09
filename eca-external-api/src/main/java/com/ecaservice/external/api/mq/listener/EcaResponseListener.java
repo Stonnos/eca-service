@@ -42,9 +42,8 @@ public class EcaResponseListener {
         log.info("Received message with correlation id [{}]", correlationId);
         EcaRequestEntity ecaRequestEntity = ecaRequestRepository.findByCorrelationId(correlationId).orElseThrow(
                 () -> new EntityNotFoundException(EcaRequestEntity.class, correlationId));
-        if (!RequestStageType.REQUEST_SENT.equals(ecaRequestEntity.getRequestStage())) {
-            log.warn("Got eca request entity [{}] with invalid status [{}]. ", correlationId,
-                    ecaRequestEntity.getRequestStage());
+        if (RequestStageType.EXCEEDED.equals(ecaRequestEntity.getRequestStage())) {
+            log.warn("Got exceeded eca request entity [{}]. ", correlationId);
         } else {
             ecaRequestEntity.setRequestId(evaluationResponse.getRequestId());
             ecaRequestEntity.setStatus(evaluationResponse.getStatus());
