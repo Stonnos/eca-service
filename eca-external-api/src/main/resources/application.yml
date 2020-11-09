@@ -53,6 +53,10 @@ external-api:
 classifiers-options:
   maximumFractionDigits: 4
 
+queue:
+  evaluationRequestQueue: evaluation-request-queue
+  evaluationRequestReplyToQueue: external-api-evaluation-response-queue
+
 ## Swagger properties
 swagger2:
   projectVersion: @project.version@
