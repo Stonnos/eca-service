@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class EcaResponseHandler {
 
-    private static final String MODEL_FILE_FORMAT = "%s_%s";
+    private static final String MODEL_FILE_FORMAT = "%s_%s.model";
 
     private final ExternalApiConfig externalApiConfig;
     private final ClassifiersOptionsConfig classifiersOptionsConfig;
