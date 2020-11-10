@@ -72,8 +72,8 @@ swagger2:
       author: Roman Batygin
       email: roman.batygin@mail.ru
   tokenBaseUrl: http://localhost:8085/eca-oauth
-  clientId: swagger
-  secret: swagger_secret
+  clientId: external-api
+  secret: external_api_secret
 
 management:
   metrics:
