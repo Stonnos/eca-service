@@ -43,16 +43,23 @@ public class ErrorHandlerAspect {
      */
     @Around("execution(@com.ecaservice.external.api.aspect.ErrorExecution * * (..)) && @annotation(errorExecution)")
     public Object around(ProceedingJoinPoint joinPoint, ErrorExecution errorExecution) throws Throwable {
+        EcaRequestEntity ecaRequestEntity =
+                getInputParameter(joinPoint.getArgs(), ECA_REQUEST_INDEX, EcaRequestEntity.class);
         try {
-            return joinPoint.proceed();
+            log.trace("Starting to process request with correlation id [{}], evaluationMethod [{}]",
+                    ecaRequestEntity.getCorrelationId(), ecaRequestEntity.getEvaluationMethod());
+            Object result = joinPoint.proceed();
+            log.trace("Request [{}] has been sent to eca - server", ecaRequestEntity.getCorrelationId());
+            return result;
         } catch (Exception ex) {
-            handleError(joinPoint, ex);
+            log.error("There was an error while request processing with correlation id [{}]: {}",
+                    ecaRequestEntity.getCorrelationId(), ex.getMessage(), ex);
+            handleError(ecaRequestEntity, ex);
         }
         return null;
     }
 
-    private void handleError(ProceedingJoinPoint joinPoint, Exception ex) {
-        EcaRequestEntity ecaRequestEntity = getInputParameter(joinPoint.getArgs(), ECA_REQUEST_INDEX, EcaRequestEntity.class);
+    private void handleError(EcaRequestEntity ecaRequestEntity, Exception ex) {
         requestStageHandler.handleError(ecaRequestEntity.getCorrelationId(), ex);
         messageCorrelationService.pop(ecaRequestEntity.getCorrelationId()).ifPresent(sink -> {
             RequestStatus requestStatus = exceptionTranslator.translate(ex);
@@ -60,6 +67,7 @@ public class ErrorHandlerAspect {
                     .requestId(ecaRequestEntity.getCorrelationId())
                     .status(requestStatus)
                     .build();
+            log.debug("Send error response for correlation id [{}]", ecaRequestEntity.getCorrelationId());
             sink.success(evaluationResponseDto);
         });
     }

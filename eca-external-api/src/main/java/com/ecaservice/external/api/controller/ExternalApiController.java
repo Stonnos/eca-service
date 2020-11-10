@@ -69,6 +69,7 @@ public class ExternalApiController {
                     .requestId(ecaRequestEntity.getCorrelationId())
                     .status(RequestStatus.TIMEOUT)
                     .build();
+            log.debug("Send response with timeout for correlation id [{}]", ecaRequestEntity.getCorrelationId());
             timeoutSink.success(evaluationResponseDto);
         }));
     }

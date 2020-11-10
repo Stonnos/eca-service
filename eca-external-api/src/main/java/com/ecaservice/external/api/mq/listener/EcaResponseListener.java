@@ -38,7 +38,7 @@ public class EcaResponseListener {
     @RabbitListener(queues = "${queue.evaluationRequestReplyToQueue}")
     public void handleEvaluationMessage(EvaluationResponse evaluationResponse, Message message) {
         String correlationId = message.getMessageProperties().getCorrelationId();
-        log.info("Received message with correlation id [{}]", correlationId);
+        log.debug("Received response from eca - server with correlation id [{}]", correlationId);
         EcaRequestEntity ecaRequestEntity = ecaRequestRepository.findByCorrelationId(correlationId).orElse(null);
         if (ecaRequestEntity == null) {
             log.warn("Can't find request entity with correlation id [{}]. ", correlationId);
@@ -55,6 +55,7 @@ public class EcaResponseListener {
             messageCorrelationService.pop(correlationId).ifPresent(sink -> {
                 EvaluationResponseDto evaluationResponseDto = buildResponse(evaluationResponse);
                 evaluationResponseDto.setRequestId(correlationId);
+                log.debug("Send response back for correlation id [{}]", correlationId);
                 sink.success(evaluationResponseDto);
             });
         }

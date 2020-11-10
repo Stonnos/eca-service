@@ -37,6 +37,14 @@
 
     <logger name="org.jxls" level="OFF"/>
 
+    <logger name="com.ecaservice.external.api" level="TRACE" additivity="false">
+        <appender-ref ref="console" />
+    </logger>
+
+    <logger name="com.ecaservice.external.api" level="DEBUG" additivity="false">
+        <appender-ref ref="console" />
+    </logger>
+
     <root level="INFO">
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>

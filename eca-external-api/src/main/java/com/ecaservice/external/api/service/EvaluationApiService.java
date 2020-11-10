@@ -42,18 +42,23 @@ public class EvaluationApiService {
      */
     @ErrorExecution
     public void processRequest(EcaRequestEntity ecaRequestEntity, EvaluationRequestDto evaluationRequestDto) {
-        EvaluationRequest evaluationRequest = createEvaluationRequest(evaluationRequestDto);
+        EvaluationRequest evaluationRequest = createEvaluationRequest(ecaRequestEntity, evaluationRequestDto);
         rabbitSender.sendEvaluationRequest(evaluationRequest, ecaRequestEntity.getCorrelationId());
         ecaRequestEntity.setRequestStage(RequestStageType.REQUEST_SENT);
         ecaRequestEntity.setRequestDate(LocalDateTime.now());
         ecaRequestRepository.save(ecaRequestEntity);
     }
 
-    private EvaluationRequest createEvaluationRequest(EvaluationRequestDto evaluationRequestDto) {
+    private EvaluationRequest createEvaluationRequest(EcaRequestEntity ecaRequestEntity,
+                                                      EvaluationRequestDto evaluationRequestDto) {
         try {
+            log.debug("Starting to load train data from {} for request [{}]", evaluationRequestDto.getTrainDataUrl(),
+                    ecaRequestEntity.getCorrelationId());
             UrlResource urlResource = new UrlResource(new URL(evaluationRequestDto.getTrainDataUrl()));
             fileDataLoader.setSource(urlResource);
             Instances instances = fileDataLoader.loadInstances();
+            log.debug("Train data has been loaded from {} for request [{}]", evaluationRequestDto.getTrainDataUrl(),
+                    ecaRequestEntity.getCorrelationId());
             AbstractClassifier classifier =
                     classifierOptionsAdapter.convert(evaluationRequestDto.getClassifierOptions());
             EvaluationRequest evaluationRequest = new EvaluationRequest();
