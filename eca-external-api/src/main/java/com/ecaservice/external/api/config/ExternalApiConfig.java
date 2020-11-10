@@ -41,4 +41,9 @@ public class ExternalApiConfig {
      * Classifiers path on file system
      */
     private String classifiersPath;
+
+    /**
+     * Models downloading base url
+     */
+    private String downloadBaseUrl;
 }

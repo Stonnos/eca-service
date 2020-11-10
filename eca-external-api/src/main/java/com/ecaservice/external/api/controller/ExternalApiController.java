@@ -5,6 +5,7 @@ import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.RequestStatus;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
+import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.mapping.EcaRequestMapper;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
@@ -77,7 +78,7 @@ public class ExternalApiController {
     }
 
     private EcaRequestEntity createAndSaveRequestEntity(EvaluationRequestDto evaluationRequestDto) {
-        EcaRequestEntity ecaRequestEntity = ecaRequestMapper.map(evaluationRequestDto);
+        EvaluationRequestEntity ecaRequestEntity = ecaRequestMapper.map(evaluationRequestDto);
         ecaRequestEntity.setCorrelationId(UUID.randomUUID().toString());
         ecaRequestEntity.setRequestStage(RequestStageType.NOT_SEND);
         ecaRequestEntity.setClassifierOptionsJson(toJson(evaluationRequestDto.getClassifierOptions()));

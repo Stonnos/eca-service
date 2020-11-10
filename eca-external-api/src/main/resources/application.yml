@@ -54,6 +54,7 @@ external-api:
   requestTimeoutMinutes: 60
   requestCacheDurationMinutes: 60
   classifiersPath: D:/classifiers/
+  downloadBaseUrl: http://localhost:8085/eca-external-api
 
 classifiers-options:
   maximumFractionDigits: 4

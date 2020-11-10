@@ -31,3 +31,4 @@ swagger2:
 
 external-api:
   classifiersPath: /home/classifiers/
+  downloadBaseUrl: http://localhost:8080/eca-external-api
