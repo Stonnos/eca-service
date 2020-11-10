@@ -5,11 +5,13 @@ import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import java.time.LocalDateTime;
 
 /**
@@ -18,7 +20,8 @@ import java.time.LocalDateTime;
  * @author Roman Batygin
  */
 @Data
-@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class EcaRequestEntity {
 
     @Id
