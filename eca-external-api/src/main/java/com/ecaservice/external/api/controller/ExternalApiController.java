@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
@@ -57,7 +58,7 @@ public class ExternalApiController {
             notes = "Processes evaluation request"
     )
     @PostMapping(value = "/evaluate")
-    public Mono<EvaluationResponseDto> evaluateModel(@Valid EvaluationRequestDto evaluationRequestDto) {
+    public Mono<EvaluationResponseDto> evaluateModel(@Valid @RequestBody EvaluationRequestDto evaluationRequestDto) {
         EcaRequestEntity ecaRequestEntity = createAndSaveRequestEntity(evaluationRequestDto);
         return Mono.<EvaluationResponseDto>create(sink -> {
             messageCorrelationService.push(ecaRequestEntity.getCorrelationId(), sink);
