@@ -14,7 +14,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
-import java.util.UUID;
 
 
 /**
@@ -46,11 +45,11 @@ public class ErrorHandlerAspect {
         EcaRequestEntity ecaRequestEntity =
                 getInputParameter(joinPoint.getArgs(), ECA_REQUEST_INDEX, EcaRequestEntity.class);
         try {
-            log.trace("Starting to process request with correlation id [{}], options [{}], evaluationMethod [{}]",
+            log.debug("Starting to process request with correlation id [{}], options [{}], evaluationMethod [{}]",
                     ecaRequestEntity.getCorrelationId(), ecaRequestEntity.getClassifierOptionsJson(),
                     ecaRequestEntity.getEvaluationMethod());
             Object result = joinPoint.proceed();
-            log.trace("Request [{}] has been sent to eca - server", ecaRequestEntity.getCorrelationId());
+            log.debug("Request [{}] has been sent to eca - server", ecaRequestEntity.getCorrelationId());
             return result;
         } catch (Exception ex) {
             log.error("There was an error while request processing with correlation id [{}]: {}",

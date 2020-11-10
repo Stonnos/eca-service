@@ -56,10 +56,10 @@ public class EcaResponseHandler {
                         String.format(MODEL_FILE_FORMAT, evaluationResults.getClassifier().getClass().getSimpleName(),
                                 evaluationResponse.getRequestId());
                 File classifierFile = new File(externalApiConfig.getClassifiersPath(), fileName);
-                log.trace("Starting to save model [{}] into file {}", ecaRequestEntity.getCorrelationId(),
+                log.debug("Starting to save model [{}] into file {}", ecaRequestEntity.getCorrelationId(),
                         classifierFile.getAbsolutePath());
                 dataService.saveModel(classifierModel, classifierFile);
-                log.trace("Model [{}] has been saved into file {}", ecaRequestEntity.getCorrelationId(),
+                log.debug("Model [{}] has been saved into file {}", ecaRequestEntity.getCorrelationId(),
                         classifierFile.getAbsolutePath());
                 ecaRequestEntity.setClassifierAbsolutePath(classifierFile.getAbsolutePath());
                 ecaRequestEntity.setRequestStage(RequestStageType.COMPLETED);
