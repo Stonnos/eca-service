@@ -37,8 +37,8 @@ public abstract class EcaRequestEntity {
     /**
      * Classifier options
      */
-    @Column(name = "classifier_options", columnDefinition = "text")
-    private String classifierOptions;
+    @Column(name = "classifier_options_json", columnDefinition = "text")
+    private String classifierOptionsJson;
 
     /**
      * Request id from eca - server
