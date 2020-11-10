@@ -62,6 +62,8 @@ public class ExternalApiController {
     )
     @PostMapping(value = "/evaluate")
     public Mono<EvaluationResponseDto> evaluateModel(@Valid @RequestBody EvaluationRequestDto evaluationRequestDto) {
+        log.debug("Received request with options [{}], evaluation method [{}]",
+                toJson(evaluationRequestDto.getClassifierOptions()), evaluationRequestDto.getEvaluationMethod());
         EcaRequestEntity ecaRequestEntity = createAndSaveRequestEntity(evaluationRequestDto);
         return Mono.<EvaluationResponseDto>create(sink -> {
             messageCorrelationService.push(ecaRequestEntity.getCorrelationId(), sink);
