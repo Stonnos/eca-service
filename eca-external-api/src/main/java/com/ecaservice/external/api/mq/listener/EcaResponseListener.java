@@ -7,13 +7,12 @@ import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.external.api.service.EcaResponseHandler;
 import com.ecaservice.external.api.service.MessageCorrelationService;
+import com.ecaservice.external.api.service.ResponseBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
-
-import static com.ecaservice.external.api.util.ResponseHelper.buildResponse;
 
 /**
  * Eca response message listener.
@@ -26,6 +25,7 @@ import static com.ecaservice.external.api.util.ResponseHelper.buildResponse;
 public class EcaResponseListener {
 
     private final EcaResponseHandler ecaResponseHandler;
+    private final ResponseBuilder responseBuilder;
     private final MessageCorrelationService messageCorrelationService;
     private final EcaRequestRepository ecaRequestRepository;
 
@@ -54,7 +54,8 @@ public class EcaResponseListener {
             ecaRequestRepository.save(ecaRequestEntity);
             ecaResponseHandler.handleResponse(ecaRequestEntity, evaluationResponse);
             messageCorrelationService.pop(correlationId).ifPresent(sink -> {
-                EvaluationResponseDto evaluationResponseDto = buildResponse(evaluationResponse, ecaRequestEntity);
+                EvaluationResponseDto evaluationResponseDto =
+                        responseBuilder.buildResponse(evaluationResponse, ecaRequestEntity);
                 evaluationResponseDto.setRequestId(correlationId);
                 log.debug("Send response back for correlation id [{}]", correlationId);
                 sink.success(evaluationResponseDto);
