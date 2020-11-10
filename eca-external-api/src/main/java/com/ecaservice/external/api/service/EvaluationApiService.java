@@ -6,6 +6,7 @@ import com.ecaservice.external.api.aspect.ErrorExecution;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
+import com.ecaservice.external.api.exception.DataNotFoundException;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import eca.core.evaluation.EvaluationMethod;
 import eca.data.file.FileDataLoader;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 
@@ -71,8 +73,10 @@ public class EvaluationApiService {
                 evaluationRequest.setSeed(evaluationRequestDto.getSeed());
             }
             return evaluationRequest;
+        } catch (IOException ex) {
+            throw new DataNotFoundException(ex.getMessage());
         } catch (Exception ex) {
-            throw new IllegalStateException(ex);
+            throw new IllegalStateException(ex.getMessage());
         }
     }
 }

@@ -22,6 +22,9 @@ public class ExceptionTranslator {
         if (ex instanceof AmqpException) {
             return RequestStatus.SERVICE_UNAVAILABLE;
         }
+        if (ex instanceof DataNotFoundException) {
+            return RequestStatus.DATA_NOT_FOUND;
+        }
         return RequestStatus.ERROR;
     }
 }
