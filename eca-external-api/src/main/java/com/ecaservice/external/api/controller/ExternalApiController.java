@@ -27,6 +27,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static com.ecaservice.external.api.util.Utils.toJson;
+
 /**
  * External API controller.
  *
@@ -78,6 +80,7 @@ public class ExternalApiController {
         EcaRequestEntity ecaRequestEntity = ecaRequestMapper.map(evaluationRequestDto);
         ecaRequestEntity.setCorrelationId(UUID.randomUUID().toString());
         ecaRequestEntity.setRequestStage(RequestStageType.NOT_SEND);
+        ecaRequestEntity.setClassifierOptions(toJson(evaluationRequestDto.getClassifierOptions()));
         ecaRequestEntity.setCreationDate(LocalDateTime.now());
         return ecaRequestRepository.save(ecaRequestEntity);
     }

@@ -35,6 +35,12 @@ public abstract class EcaRequestEntity {
     private String correlationId;
 
     /**
+     * Classifier options
+     */
+    @Column(name = "classifier_options", columnDefinition = "text")
+    private String classifierOptions;
+
+    /**
      * Request id from eca - server
      */
     @Column(name = "request_id")
