@@ -4,7 +4,7 @@ import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
 import com.ecaservice.external.api.config.ExternalApiConfig;
-import com.ecaservice.external.api.entity.EcaRequestEntity;
+import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import eca.converters.model.ClassificationModel;
@@ -37,14 +37,14 @@ public class EcaResponseHandler {
     /**
      * Handles response from eca - server.
      *
-     * @param ecaRequestEntity   - eca request entity
-     * @param evaluationResponse - evaluation response
+     * @param evaluationRequestEntity - evaluation request entity
+     * @param evaluationResponse      - evaluation response
      */
-    public void handleResponse(EcaRequestEntity ecaRequestEntity,
+    public void handleResponse(EvaluationRequestEntity evaluationRequestEntity,
                                EvaluationResponse evaluationResponse) {
         try {
             if (!TechnicalStatus.SUCCESS.equals(evaluationResponse.getStatus())) {
-                ecaRequestEntity.setRequestStage(RequestStageType.ERROR);
+                evaluationRequestEntity.setRequestStage(RequestStageType.ERROR);
             } else {
                 EvaluationResults evaluationResults = evaluationResponse.getEvaluationResults();
                 ClassificationModel classifierModel =
@@ -54,24 +54,24 @@ public class EcaResponseHandler {
                                 evaluationResults.getClassifier().getClass().getSimpleName());
                 String fileName =
                         String.format(MODEL_FILE_FORMAT, evaluationResults.getClassifier().getClass().getSimpleName(),
-                                ecaRequestEntity.getCorrelationId());
+                                evaluationRequestEntity.getCorrelationId());
                 File classifierFile = new File(externalApiConfig.getClassifiersPath(), fileName);
-                log.debug("Starting to save model [{}] into file {}", ecaRequestEntity.getCorrelationId(),
+                log.debug("Starting to save model [{}] into file {}", evaluationRequestEntity.getCorrelationId(),
                         classifierFile.getAbsolutePath());
                 dataService.saveModel(classifierModel, classifierFile);
-                log.debug("Model [{}] has been saved into file {}", ecaRequestEntity.getCorrelationId(),
+                log.debug("Model [{}] has been saved into file {}", evaluationRequestEntity.getCorrelationId(),
                         classifierFile.getAbsolutePath());
-                ecaRequestEntity.setClassifierAbsolutePath(classifierFile.getAbsolutePath());
-                ecaRequestEntity.setRequestStage(RequestStageType.COMPLETED);
+                evaluationRequestEntity.setClassifierAbsolutePath(classifierFile.getAbsolutePath());
+                evaluationRequestEntity.setRequestStage(RequestStageType.COMPLETED);
             }
         } catch (Exception ex) {
-            log.error("There was an error while response [{}] handling: {}", ecaRequestEntity.getCorrelationId(),
+            log.error("There was an error while response [{}] handling: {}", evaluationRequestEntity.getCorrelationId(),
                     ex.getMessage(), ex);
-            ecaRequestEntity.setRequestStage(RequestStageType.ERROR);
-            ecaRequestEntity.setErrorMessage(ex.getMessage());
+            evaluationRequestEntity.setRequestStage(RequestStageType.ERROR);
+            evaluationRequestEntity.setErrorMessage(ex.getMessage());
         } finally {
-            ecaRequestEntity.setEndDate(LocalDateTime.now());
-            ecaRequestRepository.save(ecaRequestEntity);
+            evaluationRequestEntity.setEndDate(LocalDateTime.now());
+            ecaRequestRepository.save(evaluationRequestEntity);
         }
     }
 }

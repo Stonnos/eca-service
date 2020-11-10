@@ -2,9 +2,9 @@ package com.ecaservice.external.api.mq.listener;
 
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
-import com.ecaservice.external.api.entity.EcaRequestEntity;
+import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
-import com.ecaservice.external.api.repository.EcaRequestRepository;
+import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.service.EcaResponseHandler;
 import com.ecaservice.external.api.service.MessageCorrelationService;
 import com.ecaservice.external.api.service.ResponseBuilder;
@@ -27,7 +27,7 @@ public class EcaResponseListener {
     private final EcaResponseHandler ecaResponseHandler;
     private final ResponseBuilder responseBuilder;
     private final MessageCorrelationService messageCorrelationService;
-    private final EcaRequestRepository ecaRequestRepository;
+    private final EvaluationRequestRepository evaluationRequestRepository;
 
     /**
      * Handles evaluation response message from eca - server.
@@ -40,7 +40,7 @@ public class EcaResponseListener {
         String correlationId = message.getMessageProperties().getCorrelationId();
         log.debug("Received response from eca - server with correlation id [{}], status [{}]", correlationId,
                 evaluationResponse.getStatus());
-        EcaRequestEntity ecaRequestEntity = ecaRequestRepository.findByCorrelationId(correlationId).orElse(null);
+        EvaluationRequestEntity ecaRequestEntity = evaluationRequestRepository.findByCorrelationId(correlationId);
         if (ecaRequestEntity == null) {
             log.warn("Can't find request entity with correlation id [{}]. ", correlationId);
             return;
@@ -51,7 +51,7 @@ public class EcaResponseListener {
             ecaRequestEntity.setRequestId(evaluationResponse.getRequestId());
             ecaRequestEntity.setTechnicalStatus(evaluationResponse.getStatus());
             ecaRequestEntity.setRequestStage(RequestStageType.RESPONSE_RECEIVED);
-            ecaRequestRepository.save(ecaRequestEntity);
+            evaluationRequestRepository.save(ecaRequestEntity);
             ecaResponseHandler.handleResponse(ecaRequestEntity, evaluationResponse);
             messageCorrelationService.pop(correlationId).ifPresent(sink -> {
                 EvaluationResponseDto evaluationResponseDto =

@@ -9,24 +9,34 @@ import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.mapping.EcaRequestMapper;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
+import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.service.EvaluationApiService;
 import com.ecaservice.external.api.service.MessageCorrelationService;
 import com.ecaservice.external.api.service.RequestStageHandler;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
+import java.io.File;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
+import static com.ecaservice.external.api.util.Utils.buildAttachmentResponse;
+import static com.ecaservice.external.api.util.Utils.existsFile;
 import static com.ecaservice.external.api.util.Utils.toJson;
 
 /**
@@ -46,6 +56,7 @@ public class ExternalApiController {
     private final EcaRequestMapper ecaRequestMapper;
     private final RequestStageHandler requestStageHandler;
     private final EcaRequestRepository ecaRequestRepository;
+    private final EvaluationRequestRepository evaluationRequestRepository;
 
     /**
      * Processes evaluation request.
@@ -75,6 +86,35 @@ public class ExternalApiController {
             log.debug("Send response with timeout for correlation id [{}]", ecaRequestEntity.getCorrelationId());
             timeoutSink.success(evaluationResponseDto);
         }));
+    }
+
+    /**
+     * Downloads classifier model.
+     *
+     * @param requestId - request id
+     */
+    @PreAuthorize("#oauth2.hasScope('external-api')")
+    @ApiOperation(
+            value = "Downloads classifier model",
+            notes = "Downloads classifier model"
+    )
+    @GetMapping(value = "/download-model/{requestId}")
+    public ResponseEntity<FileSystemResource> downloadModel(
+            @ApiParam(value = "Request id", required = true) @PathVariable String requestId) {
+        EvaluationRequestEntity evaluationRequestEntity = evaluationRequestRepository.findByCorrelationId(requestId);
+        if (evaluationRequestEntity == null) {
+            log.error("Evaluation request with id [{}] not found", requestId);
+            return ResponseEntity.notFound().build();
+        }
+        File modelFile =
+                Optional.ofNullable(evaluationRequestEntity.getClassifierAbsolutePath()).map(File::new).orElse(null);
+        if (!existsFile(modelFile)) {
+            log.error("Classifier model file not found for request id [{}]", requestId);
+            return ResponseEntity.notFound().build();
+        }
+        log.debug("Downloads classifier model file {} for request id [{}]",
+                evaluationRequestEntity.getClassifierAbsolutePath(), evaluationRequestEntity.getCorrelationId());
+        return buildAttachmentResponse(modelFile);
     }
 
     private EcaRequestEntity createAndSaveRequestEntity(EvaluationRequestDto evaluationRequestDto) {

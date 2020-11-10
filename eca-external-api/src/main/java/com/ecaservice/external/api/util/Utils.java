@@ -4,6 +4,13 @@ import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+
+import java.io.File;
 
 /**
  * Utility class.
@@ -12,6 +19,8 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 public class Utils {
+
+    private static final String ATTACHMENT = "attachment";
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -27,5 +36,29 @@ public class Utils {
         } catch (JsonProcessingException ex) {
             throw new IllegalStateException(ex);
         }
+    }
+
+    /**
+     * Creates response with attachment.
+     *
+     * @param file - file attachment
+     * @return response entity
+     */
+    public static ResponseEntity<FileSystemResource> buildAttachmentResponse(File file) {
+        FileSystemResource resource = new FileSystemResource(file);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData(ATTACHMENT, resource.getFilename());
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+    }
+
+    /**
+     * Checks file existing.
+     *
+     * @param file - file
+     * @return {@code true} if file is existing
+     */
+    public static boolean existsFile(File file) {
+        return file != null && file.isFile();
     }
 }

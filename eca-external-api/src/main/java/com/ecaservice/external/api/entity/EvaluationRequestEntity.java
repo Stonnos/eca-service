@@ -25,4 +25,10 @@ public class EvaluationRequestEntity extends EcaRequestEntity {
      */
     @Column(name = "classifier_options_json", columnDefinition = "text")
     private String classifierOptionsJson;
+
+    /**
+     * Classifier model absolute path
+     */
+    @Column(name = "classifier_absolute_path")
+    private String classifierAbsolutePath;
 }
