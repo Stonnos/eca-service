@@ -43,7 +43,9 @@ public class EcaResponseHandler {
     public void handleResponse(EcaRequestEntity ecaRequestEntity,
                                EvaluationResponse evaluationResponse) {
         try {
-            if (TechnicalStatus.SUCCESS.equals(evaluationResponse.getStatus())) {
+            if (!TechnicalStatus.SUCCESS.equals(evaluationResponse.getStatus())) {
+                ecaRequestEntity.setRequestStage(RequestStageType.ERROR);
+            } else {
                 EvaluationResults evaluationResults = evaluationResponse.getEvaluationResults();
                 ClassificationModel classifierModel =
                         new ClassificationModel((AbstractClassifier) evaluationResults.getClassifier(),
@@ -60,8 +62,8 @@ public class EcaResponseHandler {
                 log.trace("Model [{}] has been saved into file {}", ecaRequestEntity.getCorrelationId(),
                         classifierFile.getAbsolutePath());
                 ecaRequestEntity.setClassifierAbsolutePath(classifierFile.getAbsolutePath());
+                ecaRequestEntity.setRequestStage(RequestStageType.COMPLETED);
             }
-            ecaRequestEntity.setRequestStage(RequestStageType.COMPLETED);
         } catch (Exception ex) {
             log.error("There was an error while response [{}] handling: {}", ecaRequestEntity.getCorrelationId(),
                     ex.getMessage(), ex);
