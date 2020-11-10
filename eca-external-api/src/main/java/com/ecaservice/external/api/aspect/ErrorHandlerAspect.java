@@ -47,7 +47,7 @@ public class ErrorHandlerAspect {
                 getInputParameter(joinPoint.getArgs(), ECA_REQUEST_INDEX, EcaRequestEntity.class);
         try {
             log.trace("Starting to process request with correlation id [{}], options [{}], evaluationMethod [{}]",
-                    ecaRequestEntity.getCorrelationId(), ecaRequestEntity.getClassifierOptions(),
+                    ecaRequestEntity.getCorrelationId(), ecaRequestEntity.getClassifierOptionsJson(),
                     ecaRequestEntity.getEvaluationMethod());
             Object result = joinPoint.proceed();
             log.trace("Request [{}] has been sent to eca - server", ecaRequestEntity.getCorrelationId());
