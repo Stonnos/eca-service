@@ -54,7 +54,7 @@ public class EcaResponseHandler {
                                 evaluationResults.getClassifier().getClass().getSimpleName());
                 String fileName =
                         String.format(MODEL_FILE_FORMAT, evaluationResults.getClassifier().getClass().getSimpleName(),
-                                evaluationResponse.getRequestId());
+                                ecaRequestEntity.getCorrelationId());
                 File classifierFile = new File(externalApiConfig.getClassifiersPath(), fileName);
                 log.debug("Starting to save model [{}] into file {}", ecaRequestEntity.getCorrelationId(),
                         classifierFile.getAbsolutePath());

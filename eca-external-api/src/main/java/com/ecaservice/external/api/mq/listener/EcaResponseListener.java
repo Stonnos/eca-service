@@ -49,7 +49,7 @@ public class EcaResponseListener {
             log.warn("Got exceeded eca request entity [{}]. ", correlationId);
         } else {
             ecaRequestEntity.setRequestId(evaluationResponse.getRequestId());
-            ecaRequestEntity.setStatus(evaluationResponse.getStatus());
+            ecaRequestEntity.setTechnicalStatus(evaluationResponse.getStatus());
             ecaRequestEntity.setRequestStage(RequestStageType.RESPONSE_RECEIVED);
             ecaRequestRepository.save(ecaRequestEntity);
             ecaResponseHandler.handleResponse(ecaRequestEntity, evaluationResponse);

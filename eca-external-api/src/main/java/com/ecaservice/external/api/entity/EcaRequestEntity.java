@@ -35,16 +35,17 @@ public abstract class EcaRequestEntity {
     private String correlationId;
 
     /**
-     * Classifier options
-     */
-    @Column(name = "classifier_options_json", columnDefinition = "text")
-    private String classifierOptionsJson;
-
-    /**
      * Request id from eca - server
      */
     @Column(name = "request_id")
     private String requestId;
+
+    /**
+     * Request technical status from eca - server
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "technicas_status")
+    private TechnicalStatus technicalStatus;
 
     /**
      * Request creation date
@@ -63,13 +64,6 @@ public abstract class EcaRequestEntity {
      */
     @Column(name = "end_date")
     private LocalDateTime endDate;
-
-    /**
-     * Request processing status
-     */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    private TechnicalStatus status;
 
     /**
      * Classifier model absolute path
