@@ -38,6 +38,11 @@ public class ClassifiersCleanerTask {
         LocalDateTime dateTime = LocalDateTime.now().minusDays(externalApiConfig.getNumberOfDaysForStorage());
         List<Long> ids = evaluationRequestRepository.findNotDeletedModels(dateTime);
         log.info("Obtained {} classifiers files to remove", ids.size());
+        processWithPaging(ids);
+        log.info("Classifiers data removing has been finished.");
+    }
+
+    private void processWithPaging(List<Long> ids) {
         Pageable pageRequest = PageRequest.of(0, externalApiConfig.getBatchSize());
         Page<EvaluationRequestEntity> page;
         do {
@@ -57,6 +62,5 @@ public class ClassifiersCleanerTask {
             }
             pageRequest = page.nextPageable();
         } while (page.hasNext());
-        log.info("Classifiers data removing has been finished.");
     }
 }
