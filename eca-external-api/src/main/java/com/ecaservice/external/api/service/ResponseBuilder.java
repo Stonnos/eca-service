@@ -36,7 +36,8 @@ public class ResponseBuilder {
      */
     public EvaluationResponseDto buildResponse(EvaluationResponse evaluationResponse,
                                                EcaRequestEntity ecaRequestEntity) {
-        EvaluationResponseDto.EvaluationResponseDtoBuilder builder = EvaluationResponseDto.builder();
+        EvaluationResponseDto.EvaluationResponseDtoBuilder builder =
+                EvaluationResponseDto.builder().requestId(ecaRequestEntity.getCorrelationId());
         if (!RequestStageType.ERROR.equals(ecaRequestEntity.getRequestStage())) {
             Evaluation evaluation = evaluationResponse.getEvaluationResults().getEvaluation();
             builder.numTestInstances(BigInteger.valueOf((long) evaluation.numInstances()))

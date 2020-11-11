@@ -56,7 +56,6 @@ public class EcaResponseListener {
             messageCorrelationService.pop(correlationId).ifPresent(sink -> {
                 EvaluationResponseDto evaluationResponseDto =
                         responseBuilder.buildResponse(evaluationResponse, ecaRequestEntity);
-                evaluationResponseDto.setRequestId(correlationId);
                 log.debug("Send response back for correlation id [{}]", correlationId);
                 sink.success(evaluationResponseDto);
             });
