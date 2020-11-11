@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import static org.springframework.web.context.WebApplicationContext.SCOPE_REQUEST;
 
@@ -19,6 +20,7 @@ import static org.springframework.web.context.WebApplicationContext.SCOPE_REQUES
  */
 @Configuration
 @Oauth2ResourceServer
+@EnableScheduling
 @EnableConfigurationProperties(ExternalApiConfig.class)
 @Import(ClassifiersOptionsConfiguration.class)
 public class ExternalApiConfiguration {

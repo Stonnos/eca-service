@@ -48,13 +48,15 @@ ribbon:
   ReadTimeout: 60000
 
 external-api:
-  maxPageSize: 50
   dateFormat: yyyy-MM-dd HH:mm:ss
-  batchSize: 100
+  batchSize: 25
   requestTimeoutMinutes: 60
   requestCacheDurationMinutes: 60
   classifiersPath: D:/classifiers/
   downloadBaseUrl: http://localhost:8085/eca-external-api
+  numberOfDaysForStorage: 14
+  ## Each day at midnight
+  removeClassifiersCron: 0 0 0 * * *
 
 classifiers-options:
   maximumFractionDigits: 4

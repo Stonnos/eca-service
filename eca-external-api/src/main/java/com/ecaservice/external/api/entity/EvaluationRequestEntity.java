@@ -7,6 +7,7 @@ import lombok.ToString;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 /**
  * Evaluation request persistence entity.
@@ -31,4 +32,10 @@ public class EvaluationRequestEntity extends EcaRequestEntity {
      */
     @Column(name = "classifier_absolute_path")
     private String classifierAbsolutePath;
+
+    /**
+     * Classifier model file deleted date
+     */
+    @Column(name = "deleted_date")
+    private LocalDateTime deletedDate;
 }

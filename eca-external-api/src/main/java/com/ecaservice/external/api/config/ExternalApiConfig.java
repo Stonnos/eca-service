@@ -13,17 +13,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ExternalApiConfig {
 
     /**
-     * Maximum page size for paging requests
-     */
-    private Integer maxPageSize;
-
-    /**
      * Date format for date attributes
      */
     private String dateFormat;
 
     /**
-     * Batch size for data saving
+     * Batch size for pagination
      */
     private Integer batchSize;
 
@@ -46,4 +41,9 @@ public class ExternalApiConfig {
      * Models downloading base url
      */
     private String downloadBaseUrl;
+
+    /**
+     * Days number for classifiers models files storage
+     */
+    private Integer numberOfDaysForStorage;
 }
