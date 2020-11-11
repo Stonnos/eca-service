@@ -49,6 +49,7 @@ public class ClassifiersCleanerTask {
                 page.forEach(evaluationRequestEntity -> {
                     boolean deleted = dataService.delete(evaluationRequestEntity.getClassifierAbsolutePath());
                     if (deleted) {
+                        evaluationRequestEntity.setClassifierAbsolutePath(null);
                         evaluationRequestEntity.setDeletedDate(LocalDateTime.now());
                         evaluationRequestRepository.save(evaluationRequestEntity);
                     }
