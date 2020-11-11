@@ -37,7 +37,7 @@ public class ClassifiersCleanerTask {
         log.info("Starting to remove classifiers data.");
         LocalDateTime dateTime = LocalDateTime.now().minusDays(externalApiConfig.getNumberOfDaysForStorage());
         List<Long> ids = evaluationRequestRepository.findNotDeletedModels(dateTime);
-        log.trace("Obtained {} classifiers files to remove", ids.size());
+        log.info("Obtained {} classifiers files to remove", ids.size());
         Pageable pageRequest = PageRequest.of(0, externalApiConfig.getBatchSize());
         Page<EvaluationRequestEntity> page;
         do {
