@@ -4,6 +4,7 @@ import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.exception.DataNotFoundException;
 import com.ecaservice.external.api.exception.EntityNotFoundException;
+import com.ecaservice.external.api.exception.InvalidUrlException;
 import com.ecaservice.external.api.repository.InstancesRepository;
 import eca.data.file.FileDataLoader;
 import eca.data.file.resource.DataResource;
@@ -80,6 +81,8 @@ public class InstancesService {
             DataResource<?> dataResource = createDataResource(url);
             fileDataLoader.setSource(dataResource);
             return fileDataLoader.loadInstances();
+        } catch (MalformedURLException ex) {
+            throw new InvalidUrlException(ex.getMessage());
         } catch (Exception ex) {
             throw new DataNotFoundException(ex.getMessage());
         }

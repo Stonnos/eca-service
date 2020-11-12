@@ -13,6 +13,11 @@ public enum RequestStatus {
     SUCCESS,
 
     /**
+     * Invalid train data url
+     */
+    INVALID_URL,
+
+    /**
      * Train data not found for specified url
      */
     DATA_NOT_FOUND,

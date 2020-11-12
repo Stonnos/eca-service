@@ -31,6 +31,6 @@ public class InstancesEntity {
     /**
      * Instances absolute path on file system
      */
-    @Column(name = "absolute_path")
+    @Column(name = "absolute_path", nullable = false)
     private String absolutePath;
 }
