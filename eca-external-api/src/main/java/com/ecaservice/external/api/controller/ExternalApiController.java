@@ -91,7 +91,7 @@ public class ExternalApiController {
         InstancesEntity instancesEntity = instancesService.uploadInstances(trainingData);
         InstancesDto instancesDto = InstancesDto.builder()
                 .dataId(instancesEntity.getUuid())
-                .dataUrl(String.format("%s/%s", DATA_URL_PREFIX, instancesEntity.getUuid()))
+                .dataUrl(String.format("%s%s", DATA_URL_PREFIX, instancesEntity.getUuid()))
                 .build();
         return ResponseEntity.ok(instancesDto);
     }
