@@ -59,9 +59,10 @@ public class InstancesService {
         String extension = FilenameUtils.getExtension(fileName);
         String baseName = FilenameUtils.getBaseName(fileName);
         String trainDataPath = String.format(FILE_PATH_FORMAT, baseName, dataUuid, extension);
-        FileUtils.copyInputStreamToFile(inputStream, new File(externalApiConfig.getTrainDataPath(), trainDataPath));
+        File file = new File(externalApiConfig.getTrainDataPath(), trainDataPath);
+        FileUtils.copyInputStreamToFile(inputStream, file);
         InstancesEntity instancesEntity = new InstancesEntity();
-        instancesEntity.setAbsolutePath(trainDataPath);
+        instancesEntity.setAbsolutePath(file.getAbsolutePath());
         instancesEntity.setUuid(dataUuid);
         instancesRepository.save(instancesEntity);
         log.debug("Train data [{}] has been uploaded to file system with uuid [{}]", fileName, dataUuid);
@@ -94,5 +95,4 @@ public class InstancesService {
         }
         return new UrlResource(new URL(urlString));
     }
-
 }
