@@ -61,6 +61,7 @@ external-api:
   numberOfDaysForStorage: 14
   ## Each day at midnight
   removeClassifiersCron: 0 0 0 * * *
+  removeDataCron: 0 0 0 * * *
 
 classifiers-options:
   maximumFractionDigits: 4

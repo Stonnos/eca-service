@@ -29,7 +29,7 @@ public interface EvaluationRequestRepository extends JpaRepository<EvaluationReq
     /**
      * Finds evaluation requests ids with not deleted classifiers models.
      *
-     * @param dateTime date time threshold value
+     * @param dateTime - date time threshold value
      * @return evaluation requests ids
      */
     @Query("select evr.id from EvaluationRequestEntity evr where evr.requestStage = 'COMPLETED' " +

@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 /**
  * Instances persistence entity.
@@ -33,4 +34,10 @@ public class InstancesEntity {
      */
     @Column(name = "absolute_path", nullable = false)
     private String absolutePath;
+
+    /**
+     * Creation date
+     */
+    @Column(name = "creation_date", nullable = false)
+    private LocalDateTime creationDate;
 }
