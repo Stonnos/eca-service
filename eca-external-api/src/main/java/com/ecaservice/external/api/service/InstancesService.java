@@ -13,6 +13,7 @@ import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,7 +38,7 @@ import static com.ecaservice.external.api.util.Constants.DATA_URL_PREFIX;
 @RequiredArgsConstructor
 public class InstancesService {
 
-    private static final String FILE_PATH_FORMAT = "%s/%s_%s";
+    private static final String FILE_PATH_FORMAT = "%s_%s.%s";
 
     private final ExternalApiConfig externalApiConfig;
     private final FileDataLoader fileDataLoader;
@@ -51,18 +52,19 @@ public class InstancesService {
      * @throws IOException in case of error
      */
     public InstancesEntity uploadInstances(MultipartFile multipartFile) throws IOException {
-        log.debug("Starting to upload train data [{}] to file system", multipartFile.getOriginalFilename());
+        String fileName = multipartFile.getOriginalFilename();
+        log.debug("Starting to upload train data [{}] to file system", fileName);
         @Cleanup InputStream inputStream = multipartFile.getInputStream();
         String dataUuid = UUID.randomUUID().toString();
-        String trainDataPath = String.format(FILE_PATH_FORMAT, externalApiConfig.getTrainDataPath(),
-                multipartFile.getOriginalFilename(), dataUuid);
-        FileUtils.copyInputStreamToFile(inputStream, new File(trainDataPath));
+        String extension = FilenameUtils.getExtension(fileName);
+        String baseName = FilenameUtils.getBaseName(fileName);
+        String trainDataPath = String.format(FILE_PATH_FORMAT, baseName, dataUuid, extension);
+        FileUtils.copyInputStreamToFile(inputStream, new File(externalApiConfig.getTrainDataPath(), trainDataPath));
         InstancesEntity instancesEntity = new InstancesEntity();
         instancesEntity.setAbsolutePath(trainDataPath);
         instancesEntity.setUuid(dataUuid);
         instancesRepository.save(instancesEntity);
-        log.debug("Train data [{}] has been uploaded to file system with uuid [{}]",
-                multipartFile.getOriginalFilename(), dataUuid);
+        log.debug("Train data [{}] has been uploaded to file system with uuid [{}]", fileName, dataUuid);
         return instancesEntity;
     }
 
