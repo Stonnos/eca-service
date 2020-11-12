@@ -3,9 +3,11 @@ package com.ecaservice.external.api.controller;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
+import com.ecaservice.external.api.dto.InstancesDto;
 import com.ecaservice.external.api.dto.RequestStatus;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
+import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.mapping.EcaRequestMapper;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
@@ -33,6 +35,7 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -66,6 +69,8 @@ public class ExternalApiController {
      * Uploads train data file.
      *
      * @param trainingData - training data file with format, such as csv, xls, xlsx, arff, json, docx, data, txt
+     * @return instances dto
+     * @throws IOException in case of I/O error
      */
     @PreAuthorize("#oauth2.hasScope('external-api')")
     @ApiOperation(
@@ -73,10 +78,10 @@ public class ExternalApiController {
             notes = "Uploads train data file"
     )
     @PostMapping(value = "/uploads-train-data")
-    public void uploadInstances(
-            @ApiParam(value = "Training data file", required = true) @RequestParam MultipartFile trainingData) {
+    public InstancesDto uploadInstances(@ApiParam(value = "Training data file", required = true) @RequestParam MultipartFile trainingData) throws IOException {
         log.debug("Received request for train data [{}] uploading", trainingData.getOriginalFilename());
-
+        InstancesEntity instancesEntity = instancesService.uploadInstances(trainingData);
+        return InstancesDto.builder().dataId(instancesEntity.getUuid()).build();
     }
 
     /**
