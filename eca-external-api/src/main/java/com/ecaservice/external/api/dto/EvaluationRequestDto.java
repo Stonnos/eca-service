@@ -4,7 +4,6 @@ import com.ecaservice.classifier.options.model.ClassifierOptions;
 import eca.core.evaluation.EvaluationMethod;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -25,7 +24,6 @@ public class EvaluationRequestDto {
      * Training data url
      */
     @NotEmpty
-    @URL
     @ApiModelProperty(value = "Train data url")
     private String trainDataUrl;
 
