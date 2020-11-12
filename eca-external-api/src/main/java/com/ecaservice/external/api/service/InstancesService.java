@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static com.ecaservice.external.api.util.Constants.DATA_URL_PREFIX;
@@ -65,6 +66,7 @@ public class InstancesService {
         InstancesEntity instancesEntity = new InstancesEntity();
         instancesEntity.setAbsolutePath(file.getAbsolutePath());
         instancesEntity.setUuid(dataUuid);
+        instancesEntity.setCreationDate(LocalDateTime.now());
         instancesRepository.save(instancesEntity);
         log.debug("Train data [{}] has been uploaded to file system with uuid [{}]", fileName, dataUuid);
         return instancesEntity;
