@@ -25,6 +25,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.UUID;
 
+import static com.ecaservice.external.api.util.Constants.DATA_URL_PREFIX;
+
 /**
  * Instances service.
  *
@@ -35,7 +37,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class InstancesService {
 
-    private static final String DATA_URL_PREFIX = "data://";
     private static final String FILE_PATH_FORMAT = "%s/%s_%s";
 
     private final ExternalApiConfig externalApiConfig;
