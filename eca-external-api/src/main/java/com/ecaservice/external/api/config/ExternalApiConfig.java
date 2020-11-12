@@ -38,6 +38,11 @@ public class ExternalApiConfig {
     private String classifiersPath;
 
     /**
+     * Train data path on file system
+     */
+    private String trainDataPath;
+
+    /**
      * Models downloading base url
      */
     private String downloadBaseUrl;

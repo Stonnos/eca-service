@@ -11,6 +11,7 @@ import com.ecaservice.external.api.mapping.EcaRequestMapper;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.service.EvaluationApiService;
+import com.ecaservice.external.api.service.InstancesService;
 import com.ecaservice.external.api.service.MessageCorrelationService;
 import com.ecaservice.external.api.service.RequestStageHandler;
 import io.swagger.annotations.Api;
@@ -25,7 +26,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
@@ -55,8 +58,26 @@ public class ExternalApiController {
     private final EvaluationApiService evaluationApiService;
     private final EcaRequestMapper ecaRequestMapper;
     private final RequestStageHandler requestStageHandler;
+    private final InstancesService instancesService;
     private final EcaRequestRepository ecaRequestRepository;
     private final EvaluationRequestRepository evaluationRequestRepository;
+
+    /**
+     * Uploads train data file.
+     *
+     * @param trainingData - training data file with format, such as csv, xls, xlsx, arff, json, docx, data, txt
+     */
+    @PreAuthorize("#oauth2.hasScope('external-api')")
+    @ApiOperation(
+            value = "Uploads train data file",
+            notes = "Uploads train data file"
+    )
+    @PostMapping(value = "/uploads-train-data")
+    public void uploadInstances(
+            @ApiParam(value = "Training data file", required = true) @RequestParam MultipartFile trainingData) {
+        log.debug("Received request for train data [{}] uploading", trainingData.getOriginalFilename());
+
+    }
 
     /**
      * Processes evaluation request.
