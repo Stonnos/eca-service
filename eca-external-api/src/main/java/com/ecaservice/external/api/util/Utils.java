@@ -3,7 +3,10 @@ package com.ecaservice.external.api.util;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eca.data.DataFileExtension;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -11,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import java.io.File;
+import java.util.stream.Stream;
 
 /**
  * Utility class.
@@ -60,5 +64,20 @@ public class Utils {
      */
     public static boolean existsFile(File file) {
         return file != null && file.isFile();
+    }
+
+    /**
+     * Validates training data extension. Must be one of xls, xlsx, csv, arff, json, xml, txt, data, docx.
+     *
+     * @param fileName - file name
+     * @return {@code true} if file train data extension is valid
+     */
+    public static boolean isValidTrainData(String fileName) {
+        if (!StringUtils.isEmpty(fileName)) {
+            String extension = FilenameUtils.getExtension(fileName);
+            return Stream.of(DataFileExtension.values()).anyMatch(
+                    dataFileExtension -> dataFileExtension.getExtension().equals(extension));
+        }
+        return false;
     }
 }
