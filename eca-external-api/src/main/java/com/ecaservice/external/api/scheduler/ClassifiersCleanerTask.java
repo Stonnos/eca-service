@@ -3,7 +3,7 @@ package com.ecaservice.external.api.scheduler;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
-import com.ecaservice.external.api.service.DataService;
+import com.ecaservice.external.api.service.FileDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,7 +26,7 @@ import java.util.List;
 public class ClassifiersCleanerTask {
 
     private final ExternalApiConfig externalApiConfig;
-    private final DataService dataService;
+    private final FileDataService fileDataService;
     private final EvaluationRequestRepository evaluationRequestRepository;
 
     /**
@@ -52,7 +52,7 @@ public class ClassifiersCleanerTask {
                 break;
             } else {
                 page.forEach(evaluationRequestEntity -> {
-                    boolean deleted = dataService.delete(evaluationRequestEntity.getClassifierAbsolutePath());
+                    boolean deleted = fileDataService.delete(evaluationRequestEntity.getClassifierAbsolutePath());
                     if (deleted) {
                         evaluationRequestEntity.setClassifierAbsolutePath(null);
                         evaluationRequestEntity.setDeletedDate(LocalDateTime.now());

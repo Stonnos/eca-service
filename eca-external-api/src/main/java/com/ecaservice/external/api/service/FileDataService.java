@@ -17,7 +17,7 @@ import java.io.File;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DataService {
+public class FileDataService {
 
     /**
      * Saves classifier model to file.

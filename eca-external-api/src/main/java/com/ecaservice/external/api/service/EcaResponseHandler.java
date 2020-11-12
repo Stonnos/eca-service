@@ -31,7 +31,7 @@ public class EcaResponseHandler {
 
     private final ExternalApiConfig externalApiConfig;
     private final ClassifiersOptionsConfig classifiersOptionsConfig;
-    private final DataService dataService;
+    private final FileDataService fileDataService;
     private final EcaRequestRepository ecaRequestRepository;
 
     /**
@@ -58,7 +58,7 @@ public class EcaResponseHandler {
                 File classifierFile = new File(externalApiConfig.getClassifiersPath(), fileName);
                 log.debug("Starting to save model [{}] into file {}", evaluationRequestEntity.getCorrelationId(),
                         classifierFile.getAbsolutePath());
-                dataService.saveModel(classifierModel, classifierFile);
+                fileDataService.saveModel(classifierModel, classifierFile);
                 log.debug("Model [{}] has been saved into file {}", evaluationRequestEntity.getCorrelationId(),
                         classifierFile.getAbsolutePath());
                 evaluationRequestEntity.setClassifierAbsolutePath(classifierFile.getAbsolutePath());
