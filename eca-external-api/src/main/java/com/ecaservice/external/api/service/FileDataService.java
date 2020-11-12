@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Implements data service.
@@ -28,6 +30,17 @@ public class FileDataService {
      */
     public void saveModel(Object classifier, File file) throws Exception {
         ModelConverter.saveModel(file, classifier);
+    }
+
+    /**
+     * Copies input stream to file.
+     *
+     * @param inputStream - input stream
+     * @param destination - destination file
+     * @throws IOException in case of I/O error
+     */
+    public void copyToFile(InputStream inputStream, File destination) throws IOException {
+        FileUtils.copyInputStreamToFile(inputStream, destination);
     }
 
     /**

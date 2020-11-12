@@ -13,7 +13,6 @@ import eca.data.file.resource.UrlResource;
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -44,6 +43,7 @@ public class InstancesService {
 
     private final ExternalApiConfig externalApiConfig;
     private final FileDataLoader fileDataLoader;
+    private final FileDataService fileDataService;
     private final InstancesRepository instancesRepository;
 
     /**
@@ -87,12 +87,12 @@ public class InstancesService {
 
     private File copyToFile(MultipartFile multipartFile, String dataUuid) throws IOException {
         String fileName = multipartFile.getOriginalFilename();
-        @Cleanup InputStream inputStream = multipartFile.getInputStream();
         String extension = FilenameUtils.getExtension(fileName);
         String baseName = FilenameUtils.getBaseName(fileName);
         String trainDataPath = String.format(FILE_PATH_FORMAT, baseName, dataUuid, extension);
         File destination = new File(externalApiConfig.getTrainDataPath(), trainDataPath);
-        FileUtils.copyInputStreamToFile(inputStream, destination);
+        @Cleanup InputStream inputStream = multipartFile.getInputStream();
+        fileDataService.copyToFile(inputStream, destination);
         return destination;
     }
 
