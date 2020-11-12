@@ -54,21 +54,16 @@ public class InstancesService {
      * @throws IOException in case of error
      */
     public InstancesEntity uploadInstances(MultipartFile multipartFile) throws IOException {
-        String fileName = multipartFile.getOriginalFilename();
-        log.debug("Starting to upload train data [{}] to file system", fileName);
-        @Cleanup InputStream inputStream = multipartFile.getInputStream();
+        log.debug("Starting to upload train data [{}] to file system", multipartFile.getOriginalFilename());
         String dataUuid = UUID.randomUUID().toString();
-        String extension = FilenameUtils.getExtension(fileName);
-        String baseName = FilenameUtils.getBaseName(fileName);
-        String trainDataPath = String.format(FILE_PATH_FORMAT, baseName, dataUuid, extension);
-        File file = new File(externalApiConfig.getTrainDataPath(), trainDataPath);
-        FileUtils.copyInputStreamToFile(inputStream, file);
+        File file = copyToFile(multipartFile, dataUuid);
         InstancesEntity instancesEntity = new InstancesEntity();
         instancesEntity.setAbsolutePath(file.getAbsolutePath());
         instancesEntity.setUuid(dataUuid);
         instancesEntity.setCreationDate(LocalDateTime.now());
         instancesRepository.save(instancesEntity);
-        log.debug("Train data [{}] has been uploaded to file system with uuid [{}]", fileName, dataUuid);
+        log.debug("Train data [{}] has been uploaded to file system with uuid [{}]",
+                multipartFile.getOriginalFilename(), dataUuid);
         return instancesEntity;
     }
 
@@ -88,7 +83,17 @@ public class InstancesService {
         } catch (Exception ex) {
             throw new DataNotFoundException(ex.getMessage());
         }
+    }
 
+    private File copyToFile(MultipartFile multipartFile, String dataUuid) throws IOException {
+        String fileName = multipartFile.getOriginalFilename();
+        @Cleanup InputStream inputStream = multipartFile.getInputStream();
+        String extension = FilenameUtils.getExtension(fileName);
+        String baseName = FilenameUtils.getBaseName(fileName);
+        String trainDataPath = String.format(FILE_PATH_FORMAT, baseName, dataUuid, extension);
+        File destination = new File(externalApiConfig.getTrainDataPath(), trainDataPath);
+        FileUtils.copyInputStreamToFile(inputStream, destination);
+        return destination;
     }
 
     private DataResource<?> createDataResource(String urlString) throws MalformedURLException {
