@@ -58,7 +58,7 @@ class DataSchedulerTest extends AbstractJpaTest {
         ecaRequestRepository.save(createEvaluationRequestEntity(RequestStageType.COMPLETED, dateTime));
         ecaRequestRepository.save(createEvaluationRequestEntity(RequestStageType.COMPLETED, LocalDateTime.now()));
         ecaRequestRepository.save(createEvaluationRequestEntity(RequestStageType.EXCEEDED, dateTime));
-        when(fileDataService.delete(anyString())).thenReturn(true);
+        when(fileDataService.delete(any())).thenReturn(true);
         dataScheduler.clearClassifiers();
         verify(fileDataService, atLeastOnce()).delete(any());
     }
