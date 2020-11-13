@@ -161,7 +161,6 @@ public class ExternalApiController {
         EvaluationRequestEntity ecaRequestEntity = ecaRequestMapper.map(evaluationRequestDto);
         ecaRequestEntity.setCorrelationId(UUID.randomUUID().toString());
         ecaRequestEntity.setRequestStage(RequestStageType.NOT_SEND);
-        ecaRequestEntity.setClassifierOptionsJson(toJson(evaluationRequestDto.getClassifierOptions()));
         ecaRequestEntity.setCreationDate(LocalDateTime.now());
         return ecaRequestRepository.save(ecaRequestEntity);
     }
