@@ -3,7 +3,7 @@ package com.ecaservice.external.api.aspect;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.RequestStatus;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
-import com.ecaservice.external.api.exception.ExceptionTranslator;
+import com.ecaservice.external.api.error.ExceptionTranslator;
 import com.ecaservice.external.api.service.MessageCorrelationService;
 import com.ecaservice.external.api.service.RequestStageHandler;
 import lombok.RequiredArgsConstructor;

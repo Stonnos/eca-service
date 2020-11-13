@@ -1,6 +1,8 @@
-package com.ecaservice.external.api.exception;
+package com.ecaservice.external.api.error;
 
 import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.exception.DataNotFoundException;
+import com.ecaservice.external.api.exception.InvalidUrlException;
 import org.springframework.amqp.AmqpException;
 import org.springframework.stereotype.Component;
 
