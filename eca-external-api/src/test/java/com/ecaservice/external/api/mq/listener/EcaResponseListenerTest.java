@@ -98,6 +98,6 @@ class EcaResponseListenerTest {
         ecaResponseListener.handleEvaluationMessage(new EvaluationResponse(), message);
         verify(ecaResponseHandler, atLeastOnce()).handleResponse(any(EvaluationRequestEntity.class),
                 any(EvaluationResponse.class));
-        verify(sink, atLeastOnce()).success(evaluationResponseDto);
+        verify(sink).success(evaluationResponseDto);
     }
 }
