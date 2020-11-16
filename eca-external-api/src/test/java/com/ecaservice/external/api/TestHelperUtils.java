@@ -18,12 +18,12 @@ import lombok.Cleanup;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.springframework.amqp.core.MessageProperties;
+import org.springframework.mock.web.MockMultipartFile;
 import weka.core.Instances;
 
 import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -40,6 +40,7 @@ public class TestHelperUtils {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String REPLY_TO = "reply-to";
     private static final String ABSOLUTE_PATH = "data.csv";
+    private static final String IRIS_XLS = "iris.xls";
 
     /**
      * Generates the test data set.
@@ -52,6 +53,18 @@ public class TestHelperUtils {
         XLSLoader dataLoader = new XLSLoader();
         dataLoader.setSource(new FileResource(new File(classLoader.getResource(DATA_PATH).getFile())));
         return dataLoader.loadInstances();
+    }
+
+    /**
+     * Creates instances mock multipart file.
+     *
+     * @return instances mock multipart file
+     */
+    @SneakyThrows
+    public static MockMultipartFile createInstancesMockMultipartFile() {
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+        @Cleanup InputStream inputStream = classLoader.getResourceAsStream(DATA_PATH);
+        return new MockMultipartFile(IRIS_XLS, IRIS_XLS, null, inputStream);
     }
 
     /**
