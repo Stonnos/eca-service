@@ -7,9 +7,7 @@ import com.ecaservice.external.api.error.ExceptionTranslator;
 import com.ecaservice.external.api.exception.DataNotFoundException;
 import com.ecaservice.external.api.service.MessageCorrelationService;
 import com.ecaservice.external.api.service.RequestStageHandler;
-import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -24,6 +22,7 @@ import java.util.UUID;
 
 import static com.ecaservice.external.api.TestHelperUtils.createEvaluationRequestEntity;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
@@ -52,21 +51,14 @@ class ErrorHandlerAspectTest {
     @Captor
     private ArgumentCaptor<EvaluationResponseDto> evaluationResponseDtoArgumentCaptor;
 
-    private EvaluationRequestEntity evaluationRequestEntity;
-    private ProceedingJoinPoint joinPoint;
-    private MonoSink<EvaluationResponseDto> sink;
-
-    @BeforeEach
-    void init() throws Throwable {
-        evaluationRequestEntity = createEvaluationRequestEntity(UUID.randomUUID().toString());
-        joinPoint = createProceedingJoinPoint(evaluationRequestEntity);
-        when(exceptionTranslator.translate(any(Exception.class))).thenReturn(RequestStatus.ERROR);
-        sink = mock(MonoSink.class);
-        when(messageCorrelationService.pop(evaluationRequestEntity.getCorrelationId())).thenReturn(Optional.of(sink));
-    }
-
     @Test
     void testMethodExecutionWithError() throws Throwable {
+        EvaluationRequestEntity evaluationRequestEntity = createEvaluationRequestEntity(UUID.randomUUID().toString());
+        ProceedingJoinPoint joinPoint = createProceedingJoinPoint(evaluationRequestEntity);
+        doThrow(DataNotFoundException.class).when(joinPoint).proceed();
+        when(exceptionTranslator.translate(any(Exception.class))).thenReturn(RequestStatus.ERROR);
+        MonoSink<EvaluationResponseDto> sink = mock(MonoSink.class);
+        when(messageCorrelationService.pop(evaluationRequestEntity.getCorrelationId())).thenReturn(Optional.of(sink));
         errorHandlerAspect.around(joinPoint, null);
         verify(requestStageHandler).handleError(anyString(), any(Exception.class));
         verify(sink).success(evaluationResponseDtoArgumentCaptor.capture());
@@ -76,13 +68,28 @@ class ErrorHandlerAspectTest {
         assertThat(evaluationResponseDto.getStatus()).isEqualTo(RequestStatus.ERROR);
     }
 
-    private ProceedingJoinPoint createProceedingJoinPoint(EvaluationRequestEntity evaluationRequestEntity)
-            throws Throwable {
+    @Test
+    void testMethodExecutionWithNullArgs() {
         ProceedingJoinPoint proceedingJoinPoint = mock(ProceedingJoinPoint.class);
-        when(proceedingJoinPoint.getArgs()).thenReturn(new Object[] {
-                evaluationRequestEntity
-        });
-        doThrow(DataNotFoundException.class).when(proceedingJoinPoint).proceed();
+        when(proceedingJoinPoint.getArgs()).thenReturn(null);
+        assertThrows(IllegalStateException.class, () -> errorHandlerAspect.around(proceedingJoinPoint, null));
+    }
+
+    @Test
+    void testMethodExecutionWithNullArg() {
+        ProceedingJoinPoint proceedingJoinPoint = createProceedingJoinPoint(null);
+        assertThrows(IllegalStateException.class, () -> errorHandlerAspect.around(proceedingJoinPoint, null));
+    }
+
+    @Test
+    void testMethodExecutionWithInvalidArgType() {
+        ProceedingJoinPoint proceedingJoinPoint = createProceedingJoinPoint(new Object());
+        assertThrows(IllegalStateException.class, () -> errorHandlerAspect.around(proceedingJoinPoint, null));
+    }
+
+    private ProceedingJoinPoint createProceedingJoinPoint(Object arg) {
+        ProceedingJoinPoint proceedingJoinPoint = mock(ProceedingJoinPoint.class);
+        when(proceedingJoinPoint.getArgs()).thenReturn(new Object[] {arg});
         return proceedingJoinPoint;
     }
 }
