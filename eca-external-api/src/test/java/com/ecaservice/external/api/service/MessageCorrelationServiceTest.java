@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
-@TestPropertySource("classpath:application-test.properties")
+@TestPropertySource("classpath:application.properties")
 @Import({ExternalApiConfig.class, MessageCorrelationService.class})
 class MessageCorrelationServiceTest {
 

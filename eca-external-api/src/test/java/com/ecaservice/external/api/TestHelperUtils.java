@@ -40,6 +40,7 @@ public class TestHelperUtils {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String REPLY_TO = "reply-to";
     private static final String ABSOLUTE_PATH = "data.csv";
+    private static final String TRAINING_DATA_PARAM = "trainingData";
     private static final String IRIS_XLS = "iris.xls";
 
     /**
@@ -62,9 +63,20 @@ public class TestHelperUtils {
      */
     @SneakyThrows
     public static MockMultipartFile createInstancesMockMultipartFile() {
+        return createInstancesMockMultipartFile(IRIS_XLS);
+    }
+
+    /**
+     * Creates instances mock multipart file.
+     *
+     * @param fileName - file name
+     * @return instances mock multipart file
+     */
+    @SneakyThrows
+    public static MockMultipartFile createInstancesMockMultipartFile(String fileName) {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
         @Cleanup InputStream inputStream = classLoader.getResourceAsStream(DATA_PATH);
-        return new MockMultipartFile(IRIS_XLS, IRIS_XLS, null, inputStream);
+        return new MockMultipartFile(TRAINING_DATA_PARAM, fileName, null, inputStream);
     }
 
     /**

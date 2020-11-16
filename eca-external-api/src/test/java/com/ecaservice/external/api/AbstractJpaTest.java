@@ -22,7 +22,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @EnableJpaRepositories(basePackageClasses = EcaRequestRepository.class)
 @EntityScan(basePackageClasses = EcaRequestEntity.class)
 @EnableConfigurationProperties
-@TestPropertySource("classpath:application-test.properties")
+@TestPropertySource("classpath:application.properties")
 public abstract class AbstractJpaTest {
 
     @BeforeEach
