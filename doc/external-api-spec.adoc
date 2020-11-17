@@ -92,7 +92,7 @@ curl external-api:external_api_secret@eca-service:8080/eca-oauth/oauth/token -d 
 |ClassifierOptions
 |+
 |JSON конфигурация классификатора
-|подробнее в link:_includes/classifiers-options.adoc[]
+|подробнее в link:classifiers-options.adoc[]
 |evaluationMethod
 |string
 |+
