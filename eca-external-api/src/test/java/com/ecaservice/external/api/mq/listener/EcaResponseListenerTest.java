@@ -20,6 +20,7 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import reactor.core.publisher.MonoSink;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.ecaservice.external.api.TestHelperUtils.buildMessageProperties;
@@ -86,6 +87,7 @@ class EcaResponseListenerTest {
         when(message.getMessageProperties()).thenReturn(messageProperties);
         EvaluationRequestEntity evaluationRequestEntity =
                 createEvaluationRequestEntity(messageProperties.getCorrelationId());
+        evaluationRequestEntity.setEndDate(LocalDateTime.now());
         evaluationRequestEntity.setRequestStage(RequestStageType.REQUEST_SENT);
         //Mock methods
         when(evaluationRequestRepository.findByCorrelationId(messageProperties.getCorrelationId())).thenReturn(

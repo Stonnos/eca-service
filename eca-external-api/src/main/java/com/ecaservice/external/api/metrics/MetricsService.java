@@ -44,7 +44,7 @@ public class MetricsService {
         requestDurationCounter = meterRegistry.counter(REQUEST_DURATION_METRIC);
         requestsTotalCounter = meterRegistry.counter(REQUESTS_TOTAL_METRIC);
         responsesTotalCounter = meterRegistry.counter(RESPONSES_TOTAL_METRIC);
-        configureRequestStatsCountersMap();
+        configureRequestStatusedCountersMap();
     }
 
     /**
@@ -84,7 +84,7 @@ public class MetricsService {
         }
     }
 
-    private void configureRequestStatsCountersMap() {
+    private void configureRequestStatusedCountersMap() {
         Stream.of(RequestStatus.values()).forEach(requestType -> {
             Counter counter = meterRegistry.counter(REQUESTS_METRIC, REQUEST_STATUS_TAG, requestType.name());
             requestStatusCounterMap.put(requestType, counter);
