@@ -12,7 +12,7 @@
         <module>oauth2-test</module>
         <module>eca-model</module>
         <module>eca-user-model</module>
-        <module>eca-mail-transport</module>
+        <module>eca-transport</module>
         <module>eca-web-transport</module>
         <module>swagger-core</module>
         <module>oauth2-core</module>
