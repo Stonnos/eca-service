@@ -46,7 +46,7 @@ public class MetricsService {
         requestDurationCounter = meterRegistry.counter(REQUEST_DURATION_METRIC);
         requestsTotalCounter = meterRegistry.counter(REQUESTS_TOTAL_METRIC);
         responsesTotalCounter = meterRegistry.counter(RESPONSES_TOTAL_METRIC);
-        configureRequestStatusedCountersMap();
+        configureRequestStatusCountersMap();
     }
 
     /**
@@ -99,10 +99,10 @@ public class MetricsService {
         }
     }
 
-    private void configureRequestStatusedCountersMap() {
-        Stream.of(RequestStatus.values()).forEach(requestType -> {
-            Counter counter = meterRegistry.counter(REQUESTS_METRIC, REQUEST_STATUS_TAG, requestType.name());
-            requestStatusCounterMap.put(requestType, counter);
+    private void configureRequestStatusCountersMap() {
+        Stream.of(RequestStatus.values()).forEach(requestStatus -> {
+            Counter counter = meterRegistry.counter(REQUESTS_METRIC, REQUEST_STATUS_TAG, requestStatus.name());
+            requestStatusCounterMap.put(requestStatus, counter);
         });
     }
 }
