@@ -1,0 +1,154 @@
+= ECA EXTERNAL API
+:toc: macro
+
+== Введение
+
+В данном документе приведено описание внешнего REST API для построения одиночных и ансамблевых моделей классификаторов.
+API предоставляет следующие методы:
+
+* Загрузка обучающей выборки на сервер
+* Построение модели классификатора с заданными настройками для конкретной обучающей выборки.
+* Скачивание файла с построенной моделью классификатора
+
+== 1. Список доступных методов
+
+|===
+|Endpoint|Тип запроса|Описание|Формат запроса|Формат ответа
+|http://eca-service:8080/eca-external-api/uploads-train-data
+|POST
+|Загрузка файла с обучающей выборкой на сервер
+|multipart/form-data
+|application/json
+|http://eca-service:8080/eca-external-api/evaluate
+|POST
+|Запрос на построение модели классификатора
+|application/json
+|application/json
+|http://eca-service:8080/eca-external-api/download-model/{requestId}
+|GET
+|Скачивание модели классификатора
+|-
+|application/octet-stream
+|===
+
+== 2. Получение токена доступа к API
+
+Все запросы к API должны выполняться с использованием авторизационного токена в заголовке запроса:
+
+Authorization: Bearer YOUR_TOKEN
+
+Для получения авторизационного токена необходимо выполнить следующий запрос:
+
+Пример запроса на получение access token:
+
+curl external-api:external_api_secret@eca-service:8080/eca-oauth/oauth/token -d grant_type=client_credentials
+
+где external-api:external_api_secret - пара clientId и clientSecret
+
+Запрос возвращает пару access_token/refresh_token:
+
+[source,json]
+----
+{
+  "access_token": "cf4cd583-b9f1-4dce-8dcc-afefd1510974",
+  "token_type": "bearer",
+  "refresh_token": "7321ab3a-ee63-4e2e-bdfd-58aaca9fb263",
+  "expires_in": 1799,
+  "scope": "external-api"
+}
+----
+
+
+== 3. Описание формата запросов
+
+==== 3.1. Пример запроса на построение модели классификатора
+
+[source,json]
+----
+{
+  "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+  "classifierOptions": {
+    "type": "logistic",
+    "maxIts": 200,
+    "useConjugateGradientDescent": false
+  },
+  "evaluationMethod": "CROSS_VALIDATION",
+  "numFolds": 10,
+  "numTests": 1,
+  "seed": 1
+}
+----
+
+==== 3.2. Описание параметров запроса на построение модели классификатора
+
+|===
+|Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
+|trainDataUrl
+|string
+|+
+|Ссылка на обучающую выборку
+|Может быть передана ссылка на внешний источник, например http или ftp, так и ссылка на файл с данными на сервере в формате data://DATA_ID
+|classifierOptions
+|ClassifierOptions
+|+
+|JSON конфигурация классификатора
+|подробнее в link:_includes/classifiers-options.adoc[]
+|evaluationMethod
+|string
+|+
+|Метод оценки точности
+|Заполняется по справочнику <<Справочник значений EvaluationMethod>>
+|numFolds
+|integer
+|-
+|Число блоков для метода V - блочной кросс проверки
+|
+|numTests
+|integer
+|-
+|Число тестов для метода V - блочной кросс проверки
+|
+|seed
+|integer
+|-
+|Начальное значение для генератора псевдослучайных чисел
+|
+|===
+
+== Справочник значений EvaluationMethod
+
+[options="header"]
+|===
+|№|Значение|Описание
+|1
+|TRAINING_DATA
+|Использование всей обучающей выборки для оценки точности классификатора
+|2
+|CROSS_VALIDATION
+|Метод k * V - блочной кросс проверки на тестовой выборке
+|===
+
+== Справочник кодов ответа
+
+[options="header"]
+|===
+|№|Код|Описание
+|1
+|SUCCESS
+|Успешный запрос
+|2
+|INVALID_URL
+|Некорректный url для обучающей выборки, например неизвестный протокол
+|3
+|DATA_NOT_FOUND
+|Данные не найдены для заданного url
+|4
+|ERROR
+|Неизвестная ошибка
+|5
+|TIMEOUT
+|Превышено макс. допустимое время выполнения запроса
+|6
+|SERVICE_UNAVAILABLE
+|Сервис недоступен
+|===
