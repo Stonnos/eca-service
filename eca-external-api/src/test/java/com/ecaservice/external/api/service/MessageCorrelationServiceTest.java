@@ -40,7 +40,7 @@ class MessageCorrelationServiceTest {
         messageCorrelationService.push(correlationId, sink);
         Optional<MonoSink<EvaluationResponseDto>> evaluationResponseDtoOptional =
                 messageCorrelationService.pop(correlationId);
-        assertThat(evaluationResponseDtoOptional.isPresent()).isTrue();
-        assertThat(messageCorrelationService.pop(correlationId).isPresent()).isFalse();
+        assertThat(evaluationResponseDtoOptional).isPresent();
+        assertThat(messageCorrelationService.pop(correlationId)).isNotPresent();
     }
 }
