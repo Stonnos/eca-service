@@ -277,6 +277,7 @@
                         <exclude>**/config/**/*</exclude>
                         <exclude>**/exception/**/*</exclude>
                         <exclude>**/util/**/*</exclude>
+                        <exclude>**/metrics/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>

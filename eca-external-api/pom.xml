@@ -19,6 +19,7 @@
             **/config/**/*,
             **/exception/**/*,
             **/util/**/*,
+            **/metrics/**/*,
             **/EcaExternalApiApplication.java
         </sonar.coverage.exclusions>
     </properties>
