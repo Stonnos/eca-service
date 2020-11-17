@@ -1,6 +1,7 @@
 package com.ecaservice.external.api.metrics;
 
 import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.entity.EcaRequestEntity;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -68,6 +70,19 @@ public class MetricsService {
      */
     public void trackResponsesTotal() {
         responsesTotalCounter.increment();
+    }
+
+    /**
+     * Tracks response.
+     *
+     * @param ecaRequestEntity - eca request entity
+     * @param requestStatus    - request status
+     */
+    public void trackResponse(EcaRequestEntity ecaRequestEntity, RequestStatus requestStatus) {
+        trackRequestStatus(requestStatus);
+        long duration = ChronoUnit.MILLIS.between(ecaRequestEntity.getCreationDate(), ecaRequestEntity.getEndDate());
+        trackRequestDuration(duration);
+        trackResponsesTotal();
     }
 
     /**

@@ -87,7 +87,6 @@ class EcaResponseListenerTest {
         when(message.getMessageProperties()).thenReturn(messageProperties);
         EvaluationRequestEntity evaluationRequestEntity =
                 createEvaluationRequestEntity(messageProperties.getCorrelationId());
-        evaluationRequestEntity.setEndDate(LocalDateTime.now());
         evaluationRequestEntity.setRequestStage(RequestStageType.REQUEST_SENT);
         //Mock methods
         when(evaluationRequestRepository.findByCorrelationId(messageProperties.getCorrelationId())).thenReturn(

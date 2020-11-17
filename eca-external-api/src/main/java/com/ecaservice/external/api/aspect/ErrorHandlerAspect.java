@@ -68,8 +68,7 @@ public class ErrorHandlerAspect {
                     .requestId(ecaRequestEntity.getCorrelationId())
                     .status(requestStatus)
                     .build();
-            metricsService.trackRequestStatus(requestStatus);
-            metricsService.trackResponsesTotal();
+            metricsService.trackResponse(ecaRequestEntity, requestStatus);
             log.debug("Send error response for correlation id [{}]", ecaRequestEntity.getCorrelationId());
             sink.success(evaluationResponseDto);
         });

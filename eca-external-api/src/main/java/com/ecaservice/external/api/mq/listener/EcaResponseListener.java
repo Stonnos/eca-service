@@ -61,10 +61,7 @@ public class EcaResponseListener {
             messageCorrelationService.pop(correlationId).ifPresent(sink -> {
                 EvaluationResponseDto evaluationResponseDto =
                         responseBuilder.buildResponse(evaluationResponse, evaluationRequestEntity);
-                metricsService.trackRequestStatus(evaluationResponseDto.getStatus());
-                metricsService.trackRequestDuration(ChronoUnit.MILLIS.between(evaluationRequestEntity.getCreationDate(),
-                        evaluationRequestEntity.getEndDate()));
-                metricsService.trackResponsesTotal();
+                metricsService.trackResponse(evaluationRequestEntity, evaluationResponseDto.getStatus());
                 log.debug("Send response back for correlation id [{}]", correlationId);
                 sink.success(evaluationResponseDto);
             });
