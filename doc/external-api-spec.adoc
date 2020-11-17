@@ -41,7 +41,10 @@ Authorization: Bearer YOUR_TOKEN
 
 Пример запроса на получение access token:
 
+[source,bash]
+----
 curl external-api:external_api_secret@eca-service:8080/eca-oauth/oauth/token -d grant_type=client_credentials
+----
 
 где external-api:external_api_secret - пара clientId и clientSecret
 
@@ -63,10 +66,13 @@ curl external-api:external_api_secret@eca-service:8080/eca-oauth/oauth/token -d 
 
 ==== 3.1. Пример загрузки обучающей выборки на сервер
 
+[source,bash]
+----
 curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept: */*" -H "authorization: Bearer c166b245-b38b-49a7-8d92-5ec713f46faf" -H "Content-Type: multipart/form-data" -F "trainingData=@iris.xls;type=application/vnd.ms-excel"
+----
 
-Примечание: размер файла не должен превышать 10мб.
-Примечание: допускаются только файлы форматов csv, xls, xlsx, arff, json, docx, data, txt
+* Примечание: размер файла не должен превышать 10мб.
+* Примечание: допускаются только файлы форматов csv, xls, xlsx, arff, json, docx, data, txt
 
 ==== 3.2. Пример ответа на запрос о загрузке обучающей выборки на сервер
 
@@ -78,7 +84,7 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 }
 ----
 
-==== 3.3. Описание параметров ответа на запрос на построение модели классификатора
+==== 3.3. Описание параметров ответа на запрос о загрузке обучающей выборки на сервер
 
 |===
 |Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
