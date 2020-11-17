@@ -222,6 +222,13 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 |
 |===
 
+==== 3.8. Пример запроса на скачивания модели классификатопа
+
+[source,bash]
+----
+curl -X GET "http://localhost:8080/external-api/download-model/bd7a833a-46d0-41cf-ae15-696c39c98c44" -H "accept: */*" -H "authorization: Bearer c166b245-b38b-49a7-8d92-5ec713f46faf"
+----
+
 == Справочник значений EvaluationMethod
 
 [options="header"]
