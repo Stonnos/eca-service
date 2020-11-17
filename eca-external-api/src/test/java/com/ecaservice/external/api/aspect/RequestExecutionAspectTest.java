@@ -32,12 +32,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for checking {@link ErrorHandlerAspect} functionality.
+ * Unit tests for checking {@link RequestExecutionAspect} functionality.
  *
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-class ErrorHandlerAspectTest {
+class RequestExecutionAspectTest {
 
     @Mock
     private MessageCorrelationService messageCorrelationService;
@@ -49,7 +49,7 @@ class ErrorHandlerAspectTest {
     private RequestStageHandler requestStageHandler;
 
     @InjectMocks
-    private ErrorHandlerAspect errorHandlerAspect;
+    private RequestExecutionAspect requestExecutionAspect;
 
     @Captor
     private ArgumentCaptor<EvaluationResponseDto> evaluationResponseDtoArgumentCaptor;
@@ -62,7 +62,7 @@ class ErrorHandlerAspectTest {
         when(exceptionTranslator.translate(any(Exception.class))).thenReturn(RequestStatus.ERROR);
         MonoSink<EvaluationResponseDto> sink = mock(MonoSink.class);
         when(messageCorrelationService.pop(evaluationRequestEntity.getCorrelationId())).thenReturn(Optional.of(sink));
-        errorHandlerAspect.around(joinPoint, null);
+        requestExecutionAspect.around(joinPoint, null);
         verify(requestStageHandler).handleError(anyString(), any(Exception.class));
         verify(sink).success(evaluationResponseDtoArgumentCaptor.capture());
         EvaluationResponseDto evaluationResponseDto = evaluationResponseDtoArgumentCaptor.getValue();
@@ -75,19 +75,19 @@ class ErrorHandlerAspectTest {
     void testMethodExecutionWithNullArgs() {
         ProceedingJoinPoint proceedingJoinPoint = mock(ProceedingJoinPoint.class);
         when(proceedingJoinPoint.getArgs()).thenReturn(null);
-        assertThrows(IllegalStateException.class, () -> errorHandlerAspect.around(proceedingJoinPoint, null));
+        assertThrows(IllegalStateException.class, () -> requestExecutionAspect.around(proceedingJoinPoint, null));
     }
 
     @Test
     void testMethodExecutionWithNullArg() {
         ProceedingJoinPoint proceedingJoinPoint = createProceedingJoinPoint(null);
-        assertThrows(IllegalStateException.class, () -> errorHandlerAspect.around(proceedingJoinPoint, null));
+        assertThrows(IllegalStateException.class, () -> requestExecutionAspect.around(proceedingJoinPoint, null));
     }
 
     @Test
     void testMethodExecutionWithInvalidArgType() {
         ProceedingJoinPoint proceedingJoinPoint = createProceedingJoinPoint(new Object());
-        assertThrows(IllegalStateException.class, () -> errorHandlerAspect.around(proceedingJoinPoint, null));
+        assertThrows(IllegalStateException.class, () -> requestExecutionAspect.around(proceedingJoinPoint, null));
     }
 
     private ProceedingJoinPoint createProceedingJoinPoint(Object arg) {

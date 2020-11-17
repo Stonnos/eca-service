@@ -2,7 +2,7 @@ package com.ecaservice.external.api.service;
 
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
-import com.ecaservice.external.api.aspect.ErrorExecution;
+import com.ecaservice.external.api.aspect.RequestExecution;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
@@ -37,7 +37,7 @@ public class EvaluationApiService {
      * @param ecaRequestEntity     - eca request entity
      * @param evaluationRequestDto - evaluation request dto.
      */
-    @ErrorExecution
+    @RequestExecution
     public void processRequest(EcaRequestEntity ecaRequestEntity, EvaluationRequestDto evaluationRequestDto) {
         EvaluationRequest evaluationRequest = createEvaluationRequest(ecaRequestEntity, evaluationRequestDto);
         rabbitSender.sendEvaluationRequest(evaluationRequest, ecaRequestEntity.getCorrelationId());

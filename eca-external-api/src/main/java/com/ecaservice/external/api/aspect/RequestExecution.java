@@ -6,11 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation used for handling errors.
+ * Annotation used for handling requests.
  *
  * @author Roman Batygin
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ErrorExecution {
+public @interface RequestExecution {
 }
