@@ -14,17 +14,17 @@ API предоставляет следующие методы:
 
 |===
 |Endpoint|Тип запроса|Описание|Формат запроса|Формат ответа
-|http://eca-service:8080/eca-external-api/uploads-train-data
+|http://eca-service:8080/external-api/uploads-train-data
 |POST
 |Загрузка файла с обучающей выборкой на сервер
 |multipart/form-data
 |application/json
-|http://eca-service:8080/eca-external-api/evaluate
+|http://eca-service:8080/external-api/evaluate
 |POST
 |Запрос на построение модели классификатора
 |application/json
 |application/json
-|http://eca-service:8080/eca-external-api/download-model/{requestId}
+|http://eca-service:8080/external-api/download-model/{requestId}
 |GET
 |Скачивание модели классификатора
 |-
@@ -61,7 +61,40 @@ curl external-api:external_api_secret@eca-service:8080/eca-oauth/oauth/token -d 
 
 == 3. Описание формата запросов
 
-==== 3.1. Пример запроса на построение модели классификатора
+==== 3.1. Пример загрузки обучающей выборки на сервер
+
+curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept: */*" -H "authorization: Bearer c166b245-b38b-49a7-8d92-5ec713f46faf" -H "Content-Type: multipart/form-data" -F "trainingData=@iris.xls;type=application/vnd.ms-excel"
+
+Примечание: размер файла не должен превышать 10мб.
+Примечание: допускаются только файлы форматов csv, xls, xlsx, arff, json, docx, data, txt
+
+==== 3.2. Пример ответа на запрос о загрузке обучающей выборки на сервер
+
+[source,json]
+----
+{
+  "dataId": "7d2ea162-62b1-4f71-9186-5cd5b36709b8",
+  "dataUrl": "data://7d2ea162-62b1-4f71-9186-5cd5b36709b8"
+}
+----
+
+==== 3.3. Описание параметров ответа на запрос на построение модели классификатора
+
+|===
+|Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
+|dataId
+|string
+|+
+|Уникальный идентификатор данных
+|
+|dataUrl
+|string
+|+
+|Внутренняя ссылка на данные в формате data://dataId
+|Ссылка может быть передана в поле trainDataUrl в запросе на построение модели классификатора
+|===
+
+==== 3.4. Пример запроса на построение модели классификатора
 
 [source,json]
 ----
@@ -79,7 +112,7 @@ curl external-api:external_api_secret@eca-service:8080/eca-oauth/oauth/token -d 
 }
 ----
 
-==== 3.2. Описание параметров запроса на построение модели классификатора
+==== 3.5. Описание параметров запроса на построение модели классификатора
 
 |===
 |Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
@@ -112,6 +145,74 @@ curl external-api:external_api_secret@eca-service:8080/eca-oauth/oauth/token -d 
 |integer
 |-
 |Начальное значение для генератора псевдослучайных чисел
+|
+|===
+
+==== 3.6. Пример ответа на запрос на построение модели классификатора
+
+[source,json]
+----
+{
+  "requestId": "bd7a833a-46d0-41cf-ae15-696c39c98c44",
+  "status": "SUCCESS",
+  "modelUrl": "http://localhost:8080/external-api/download-model/bd7a833a-46d0-41cf-ae15-696c39c98c44",
+  "numTestInstances": 150,
+  "numCorrect": 144,
+  "numIncorrect": 6,
+  "pctCorrect": 96,
+  "pctIncorrect": 4,
+  "meanAbsoluteError": 0.02869334024628254
+}
+----
+
+==== 3.7. Описание параметров ответа на запрос на построение модели классификатора
+
+|===
+|Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
+|requestId
+|string
+|+
+|Уникальный идентификатор запроса
+|
+|status
+|string
+|+
+|Статус ответа
+|Заполняется по справочнику <<Справочник кодов ответа>>
+|modelUrl
+|string
+|-
+|Ссылка на скачивание модели
+|
+|numTestInstances
+|integer
+|-
+|Число объектов тестовых данных
+|
+|numCorrect
+|integer
+|-
+|Число верно классифицированных объектов
+|
+|numIncorrect
+|integer
+|-
+|Число неверно классифицированных объектов
+|
+|pctCorrect
+|decimal
+|-
+|Точность классификатора
+|Доля верно классифицированных объектов
+|pctIncorrect
+|decimal
+|-
+|Ошибка классификатора
+|Доля неверно классифицированных объектов
+|meanAbsoluteError
+|decimal
+|-
+|Средняя абсолютная ошибка классификации
 |
 |===
 
