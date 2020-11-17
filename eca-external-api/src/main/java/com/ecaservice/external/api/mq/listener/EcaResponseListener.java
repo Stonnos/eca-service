@@ -4,6 +4,7 @@ import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
+import com.ecaservice.external.api.metrics.MetricsService;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.service.EcaResponseHandler;
 import com.ecaservice.external.api.service.MessageCorrelationService;
@@ -13,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
+
+import java.time.temporal.ChronoUnit;
 
 /**
  * Eca response message listener.
@@ -27,6 +30,7 @@ public class EcaResponseListener {
     private final EcaResponseHandler ecaResponseHandler;
     private final ResponseBuilder responseBuilder;
     private final MessageCorrelationService messageCorrelationService;
+    private final MetricsService metricsService;
     private final EvaluationRequestRepository evaluationRequestRepository;
 
     /**
@@ -40,22 +44,27 @@ public class EcaResponseListener {
         String correlationId = message.getMessageProperties().getCorrelationId();
         log.debug("Received response from eca - server with correlation id [{}], status [{}]", correlationId,
                 evaluationResponse.getStatus());
-        EvaluationRequestEntity ecaRequestEntity = evaluationRequestRepository.findByCorrelationId(correlationId);
-        if (ecaRequestEntity == null) {
+        EvaluationRequestEntity evaluationRequestEntity =
+                evaluationRequestRepository.findByCorrelationId(correlationId);
+        if (evaluationRequestEntity == null) {
             log.warn("Can't find request entity with correlation id [{}]. ", correlationId);
             return;
         }
-        if (RequestStageType.EXCEEDED.equals(ecaRequestEntity.getRequestStage())) {
+        if (RequestStageType.EXCEEDED.equals(evaluationRequestEntity.getRequestStage())) {
             log.warn("Got exceeded eca request entity [{}]. ", correlationId);
         } else {
-            ecaRequestEntity.setRequestId(evaluationResponse.getRequestId());
-            ecaRequestEntity.setTechnicalStatus(evaluationResponse.getStatus());
-            ecaRequestEntity.setRequestStage(RequestStageType.RESPONSE_RECEIVED);
-            evaluationRequestRepository.save(ecaRequestEntity);
-            ecaResponseHandler.handleResponse(ecaRequestEntity, evaluationResponse);
+            evaluationRequestEntity.setRequestId(evaluationResponse.getRequestId());
+            evaluationRequestEntity.setTechnicalStatus(evaluationResponse.getStatus());
+            evaluationRequestEntity.setRequestStage(RequestStageType.RESPONSE_RECEIVED);
+            evaluationRequestRepository.save(evaluationRequestEntity);
+            ecaResponseHandler.handleResponse(evaluationRequestEntity, evaluationResponse);
             messageCorrelationService.pop(correlationId).ifPresent(sink -> {
                 EvaluationResponseDto evaluationResponseDto =
-                        responseBuilder.buildResponse(evaluationResponse, ecaRequestEntity);
+                        responseBuilder.buildResponse(evaluationResponse, evaluationRequestEntity);
+                metricsService.trackRequestStatus(evaluationResponseDto.getStatus());
+                metricsService.trackRequestDuration(ChronoUnit.MILLIS.between(evaluationRequestEntity.getCreationDate(),
+                        evaluationRequestEntity.getEndDate()));
+                metricsService.trackResponsesTotal();
                 log.debug("Send response back for correlation id [{}]", correlationId);
                 sink.success(evaluationResponseDto);
             });

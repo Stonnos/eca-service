@@ -10,6 +10,7 @@ import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.mapping.EcaRequestMapper;
+import com.ecaservice.external.api.metrics.MetricsService;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.service.EvaluationApiService;
@@ -64,6 +65,7 @@ public class ExternalApiController {
     private final EcaRequestMapper ecaRequestMapper;
     private final RequestStageHandler requestStageHandler;
     private final InstancesService instancesService;
+    private final MetricsService metricsService;
     private final EcaRequestRepository ecaRequestRepository;
     private final EvaluationRequestRepository evaluationRequestRepository;
 
@@ -123,6 +125,8 @@ public class ExternalApiController {
                     .requestId(ecaRequestEntity.getCorrelationId())
                     .status(RequestStatus.TIMEOUT)
                     .build();
+            metricsService.trackRequestStatus(evaluationResponseDto.getStatus());
+            metricsService.trackResponsesTotal();
             log.debug("Send response with timeout for correlation id [{}]", ecaRequestEntity.getCorrelationId());
             timeoutSink.success(evaluationResponseDto);
         }));

@@ -70,11 +70,11 @@ public class MetricsService {
     }
 
     /**
-     * Tracks request.
+     * Tracks request status.
      *
      * @param requestStatus - request status
      */
-    public void trackRequest(RequestStatus requestStatus) {
+    public void trackRequestStatus(RequestStatus requestStatus) {
         Counter counter = requestStatusCounterMap.get(requestStatus);
         if (counter == null) {
             log.warn("Counter not specified for request status [{}]", requestStatus);

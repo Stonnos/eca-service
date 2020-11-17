@@ -5,6 +5,7 @@ import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.RequestStatus;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
+import com.ecaservice.external.api.metrics.MetricsService;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.service.EcaResponseHandler;
 import com.ecaservice.external.api.service.MessageCorrelationService;
@@ -43,6 +44,8 @@ class EcaResponseListenerTest {
     private ResponseBuilder responseBuilder;
     @Mock
     private MessageCorrelationService messageCorrelationService;
+    @Mock
+    private MetricsService metricsService;
     @Mock
     private EvaluationRequestRepository evaluationRequestRepository;
 

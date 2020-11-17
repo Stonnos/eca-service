@@ -5,6 +5,7 @@ import com.ecaservice.external.api.dto.RequestStatus;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.error.ExceptionTranslator;
 import com.ecaservice.external.api.exception.DataNotFoundException;
+import com.ecaservice.external.api.metrics.MetricsService;
 import com.ecaservice.external.api.service.MessageCorrelationService;
 import com.ecaservice.external.api.service.RequestStageHandler;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -40,6 +41,8 @@ class ErrorHandlerAspectTest {
 
     @Mock
     private MessageCorrelationService messageCorrelationService;
+    @Mock
+    private MetricsService metricsService;
     @Mock
     private ExceptionTranslator exceptionTranslator;
     @Mock

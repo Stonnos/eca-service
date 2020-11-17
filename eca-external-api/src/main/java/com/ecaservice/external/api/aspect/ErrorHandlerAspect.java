@@ -4,6 +4,7 @@ import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.RequestStatus;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.error.ExceptionTranslator;
+import com.ecaservice.external.api.metrics.MetricsService;
 import com.ecaservice.external.api.service.MessageCorrelationService;
 import com.ecaservice.external.api.service.RequestStageHandler;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class ErrorHandlerAspect {
     private static final int ECA_REQUEST_INDEX = 0;
 
     private final MessageCorrelationService messageCorrelationService;
+    private final MetricsService metricsService;
     private final ExceptionTranslator exceptionTranslator;
     private final RequestStageHandler requestStageHandler;
 
@@ -42,6 +44,7 @@ public class ErrorHandlerAspect {
      */
     @Around("execution(@com.ecaservice.external.api.aspect.ErrorExecution * * (..)) && @annotation(errorExecution)")
     public Object around(ProceedingJoinPoint joinPoint, ErrorExecution errorExecution) throws Throwable {
+        metricsService.trackRequestsTotal();
         EcaRequestEntity ecaRequestEntity =
                 getInputParameter(joinPoint.getArgs(), ECA_REQUEST_INDEX, EcaRequestEntity.class);
         try {
@@ -65,6 +68,8 @@ public class ErrorHandlerAspect {
                     .requestId(ecaRequestEntity.getCorrelationId())
                     .status(requestStatus)
                     .build();
+            metricsService.trackRequestStatus(requestStatus);
+            metricsService.trackResponsesTotal();
             log.debug("Send error response for correlation id [{}]", ecaRequestEntity.getCorrelationId());
             sink.success(evaluationResponseDto);
         });
