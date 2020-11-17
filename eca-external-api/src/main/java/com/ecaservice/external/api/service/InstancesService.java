@@ -10,6 +10,7 @@ import eca.data.file.FileDataLoader;
 import eca.data.file.resource.DataResource;
 import eca.data.file.resource.FileResource;
 import eca.data.file.resource.UrlResource;
+import io.micrometer.core.annotation.Timed;
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static com.ecaservice.external.api.config.metrics.MetricConstants.UPLOAD_INSTANCES_METRIC;
 import static com.ecaservice.external.api.util.Constants.DATA_URL_PREFIX;
 
 /**
@@ -53,6 +55,7 @@ public class InstancesService {
      * @return instance entity
      * @throws IOException in case of error
      */
+    @Timed(value = UPLOAD_INSTANCES_METRIC)
     public InstancesEntity uploadInstances(MultipartFile multipartFile) throws IOException {
         log.debug("Starting to upload train data [{}] to file system", multipartFile.getOriginalFilename());
         String dataUuid = UUID.randomUUID().toString();

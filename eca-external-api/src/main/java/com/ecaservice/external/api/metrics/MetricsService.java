@@ -11,11 +11,12 @@ import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static com.ecaservice.external.api.metrics.MetricConstants.REQUESTS_METRIC;
-import static com.ecaservice.external.api.metrics.MetricConstants.REQUESTS_TOTAL_METRIC;
-import static com.ecaservice.external.api.metrics.MetricConstants.REQUEST_DURATION_METRIC;
-import static com.ecaservice.external.api.metrics.MetricConstants.REQUEST_STATUS_TAG;
-import static com.ecaservice.external.api.metrics.MetricConstants.RESPONSES_TOTAL_METRIC;
+import static com.ecaservice.external.api.config.metrics.MetricConstants.REQUESTS_METRIC;
+import static com.ecaservice.external.api.config.metrics.MetricConstants.REQUESTS_TOTAL_METRIC;
+import static com.ecaservice.external.api.config.metrics.MetricConstants.REQUEST_DURATION_METRIC;
+import static com.ecaservice.external.api.config.metrics.MetricConstants.REQUEST_STATUS_TAG;
+import static com.ecaservice.external.api.config.metrics.MetricConstants.RESPONSES_TOTAL_METRIC;
+import static com.google.common.collect.Maps.newHashMap;
 
 /**
  * Metrics service.
@@ -33,7 +34,7 @@ public class MetricsService {
     private Counter requestsTotalCounter;
     private Counter responsesTotalCounter;
 
-    private Map<RequestStatus, Counter> requestStatusCounterMap;
+    private Map<RequestStatus, Counter> requestStatusCounterMap = newHashMap();
 
     /**
      * Initialize metrics.
