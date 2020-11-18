@@ -13,6 +13,7 @@
         <module>eca-model</module>
         <module>eca-user-model</module>
         <module>eca-transport</module>
+        <module>classifiers-options</module>
         <module>eca-web-transport</module>
         <module>swagger-core</module>
         <module>oauth2-core</module>

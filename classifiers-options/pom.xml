@@ -9,39 +9,17 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>classifiers-options-adapter</artifactId>
+    <artifactId>classifiers-options</artifactId>
     <packaging>jar</packaging>
 
     <properties>
-        <sonar.coverage.exclusions>
-            **/model/**/*,
-            **/config/**/*
-        </sonar.coverage.exclusions>
+        <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
     </properties>
 
     <dependencies>
-
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>eca.service</groupId>
-            <artifactId>classifiers-options</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>eca.service</groupId>
-            <artifactId>core-test</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
+            <groupId>eca</groupId>
+            <artifactId>eca-core</artifactId>
         </dependency>
     </dependencies>
 
@@ -58,4 +36,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
