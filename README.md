@@ -34,7 +34,7 @@
 * eca-data-storage - модуль для хранения обучающих выборок в виде таблиц БД
 * eca-external-api - предоставляет внешний API (web proxy) для обучения моделей классификаторов
 * eca-web - реализует web клиент для администрирования
-* zuul-gate - Zuul proxy
+* zuul-gate - Zuul proxy  (API gateway)
 * discovery-server - Eureka discovery server
 * eca-load-tests - модуль для нагрузочного тестирования eca-server
 
