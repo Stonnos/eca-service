@@ -1,6 +1,5 @@
 package com.ecaservice.oauth.controller;
 
-import com.ecaservice.oauth.exception.EntityNotFoundException;
 import com.ecaservice.web.dto.model.ValidationErrorDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -46,17 +45,5 @@ public class ErrorHandler {
     public ResponseEntity<String> handleBadRequest(Exception ex) {
         log.error(ex.getMessage());
         return ResponseEntity.badRequest().body(ex.getMessage());
-    }
-
-    /**
-     * Handles not found error.
-     *
-     * @param ex -  exception
-     * @return response entity
-     */
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<String> handleNotFound(EntityNotFoundException ex) {
-        log.error(ex.getMessage());
-        return ResponseEntity.notFound().build();
     }
 }

@@ -1,6 +1,8 @@
 package com.ecaservice.oauth.exception;
 
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * Entity not found exception class.
@@ -8,6 +10,7 @@ import lombok.NoArgsConstructor;
  * @author Roman Batygin
  */
 @NoArgsConstructor
+@ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Entity not found")
 public class EntityNotFoundException extends RuntimeException {
 
     /**
