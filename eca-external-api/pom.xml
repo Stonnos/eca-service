@@ -14,7 +14,6 @@
 
     <properties>
         <sonar.coverage.exclusions>
-            **/dto/**/*,
             **/entity/**/*,
             **/config/**/*,
             **/exception/**/*,
@@ -55,6 +54,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>eca-external-api-transport</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
