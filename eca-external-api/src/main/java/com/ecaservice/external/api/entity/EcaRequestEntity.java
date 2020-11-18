@@ -44,7 +44,7 @@ public abstract class EcaRequestEntity {
      * Request technical status from eca - server
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "technicas_status")
+    @Column(name = "technical_status")
     private TechnicalStatus technicalStatus;
 
     /**
