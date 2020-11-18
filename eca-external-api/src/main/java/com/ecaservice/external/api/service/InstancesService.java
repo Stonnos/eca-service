@@ -41,7 +41,7 @@ import static com.ecaservice.external.api.util.Constants.DATA_URL_PREFIX;
 @RequiredArgsConstructor
 public class InstancesService {
 
-    private static final String FILE_PATH_FORMAT = "%s_%s.%s";
+    private static final String FILE_NAME_FORMAT = "%s_%s.%s";
 
     private final ExternalApiConfig externalApiConfig;
     private final FileDataLoader fileDataLoader;
@@ -92,7 +92,7 @@ public class InstancesService {
         String fileName = multipartFile.getOriginalFilename();
         String extension = FilenameUtils.getExtension(fileName);
         String baseName = FilenameUtils.getBaseName(fileName);
-        String trainDataFinalName = String.format(FILE_PATH_FORMAT, baseName, dataUuid, extension);
+        String trainDataFinalName = String.format(FILE_NAME_FORMAT, baseName, dataUuid, extension);
         File destination = new File(externalApiConfig.getTrainDataPath(), trainDataFinalName);
         @Cleanup InputStream inputStream = multipartFile.getInputStream();
         fileDataService.copyToFile(inputStream, destination);
