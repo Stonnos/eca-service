@@ -17,4 +17,5 @@ public class MetricConstants {
     public static final String RESPONSES_TOTAL_METRIC = BASE_METRIC_PREFIX + ".responses.total";
     public static final String REQUESTS_METRIC = BASE_METRIC_PREFIX + ".request";
     public static final String UPLOAD_INSTANCES_METRIC = BASE_METRIC_PREFIX + ".instances.upload";
+    public static final String LOAD_INSTANCES_METRIC = BASE_METRIC_PREFIX + ".instances.load";
 }

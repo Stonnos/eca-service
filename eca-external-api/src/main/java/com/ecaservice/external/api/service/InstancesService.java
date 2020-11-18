@@ -28,6 +28,7 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static com.ecaservice.external.api.config.metrics.MetricConstants.LOAD_INSTANCES_METRIC;
 import static com.ecaservice.external.api.config.metrics.MetricConstants.UPLOAD_INSTANCES_METRIC;
 import static com.ecaservice.external.api.util.Constants.DATA_URL_PREFIX;
 
@@ -76,6 +77,7 @@ public class InstancesService {
      * @param url - url string
      * @return instances object
      */
+    @Timed(value = LOAD_INSTANCES_METRIC)
     public Instances loadInstances(String url) {
         try {
             DataResource<?> dataResource = createDataResource(url);
