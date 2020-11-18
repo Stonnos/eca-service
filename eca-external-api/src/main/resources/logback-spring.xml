@@ -35,8 +35,6 @@
         </layout>
     </appender>
 
-    <logger name="org.jxls" level="OFF"/>
-
     <logger name="com.ecaservice.external.api" level="DEBUG" additivity="false">
         <appender-ref ref="console"/>
     </logger>

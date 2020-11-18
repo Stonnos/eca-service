@@ -92,8 +92,8 @@ public class InstancesService {
         String fileName = multipartFile.getOriginalFilename();
         String extension = FilenameUtils.getExtension(fileName);
         String baseName = FilenameUtils.getBaseName(fileName);
-        String trainDataPath = String.format(FILE_PATH_FORMAT, baseName, dataUuid, extension);
-        File destination = new File(externalApiConfig.getTrainDataPath(), trainDataPath);
+        String trainDataFinalName = String.format(FILE_PATH_FORMAT, baseName, dataUuid, extension);
+        File destination = new File(externalApiConfig.getTrainDataPath(), trainDataFinalName);
         @Cleanup InputStream inputStream = multipartFile.getInputStream();
         fileDataService.copyToFile(inputStream, destination);
         return destination;
