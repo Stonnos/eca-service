@@ -207,6 +207,217 @@
 * weight - вес ближайшего соседа
 * distanceType - функция расстояния, которая может принимать одно из значений <<Справочник значений функций расстояния>>
 
+== 5 Описание формата json конфигурации алгоритма RandomForests
+
+Ниже приведен пример json конфигурации алгоритма RandomForests:
+
+[source,json]
+----
+{
+  "type": "RandomForestsOptions",
+  "numIterations": 10,
+  "numThreads": 4,
+  "minObj": 2,
+  "maxDepth": 0,
+  "decisionTreeType": "CART"
+}
+----
+
+где
+
+* numIterations - число деревьев
+* numThreads - число потоков для параллельного исполнения алгоритмов
+* minObj - минимальное число объектов в листе
+* maxDepth - максимальная глубина дерева
+* decisionTreeType - алгоритм построения дерева решений, см <<Справочник деревьев решений>>
+* seed - начальное значение для генератора псевдослучайных чисел
+
+== 6 Описание формата json конфигурации алгоритма ExtraTrees
+
+Ниже приведен пример json конфигурации алгоритма ExtraTrees:
+
+[source,json]
+----
+{
+  "type": "extra_trees",
+  "numIterations": 10,
+  "numThreads": 4,
+  "minObj": 2,
+  "maxDepth": 0,
+  "decisionTreeType": "C45",
+  "numRandomSplits": 15,
+  "useBootstrapSamples": false
+}
+----
+
+где
+
+* numIterations - число деревьев
+* numThreads - число потоков для параллельного исполнения алгоритмов
+* minObj - минимальное число объектов в листе
+* maxDepth - максимальная глубина дерева
+* decisionTreeType - алгоритм построения дерева решений, см <<Справочник деревьев решений>>
+* numRandomSplits - число случайных расщеплений атрибута
+* useBootstrapSamples - использовать генерацию бутстреп выборок
+* seed - начальное значение для генератора псевдослучайных чисел
+
+== 7 Описание формата json конфигурации алгоритма AdaBoost
+
+Ниже приведен пример json конфигурации алгоритма AdaBoost:
+
+[source,json]
+----
+{
+  "type": "ada_boost",
+  "numIterations": 10,
+  "minError": 0.0,
+  "maxError": 0.5,
+  "classifierOptions": [
+    {
+      "type": "decision_tree",
+      "decisionTreeType": "CART",
+      "minObj": 2,
+      "maxDepth": 0,
+      "randomTree": false,
+      "useBinarySplits": true,
+      "useRandomSplits": false
+    },
+    {
+      "type": "decision_tree",
+      "decisionTreeType": "C45",
+      "minObj": 2,
+      "maxDepth": 0,
+      "randomTree": false,
+      "useBinarySplits": false,
+      "useRandomSplits": false
+    }
+  ]
+}
+----
+
+где
+
+* numIterations - число итераций
+* minError - минимальная допустимая ошибка классификатора для включения в ансамбль
+* maxError - максимальная допустимая ошибка классификатора для включения в ансамбль
+* classifierOptions - массив настроек для индивидуальных классификаторов
+* seed - начальное значение для генератора псевдослучайных чисел
+
+== 8 Описание формата json конфигурации неоднородного ансамблевого алгоритма
+
+Ниже приведен пример json конфигурации неоднородного ансамблевого алгоритма:
+
+[source,json]
+----
+{
+  "type": "heterogeneous_classifier",
+  "numIterations": 10,
+  "numThreads": 4,
+  "minError": 0.0,
+  "maxError": 0.5,
+  "classifierOptions": [
+    {
+      "type": "decision_tree",
+      "decisionTreeType": "CART",
+      "minObj": 2,
+      "maxDepth": 0,
+      "randomTree": false,
+      "useBinarySplits": true,
+      "useRandomSplits": false
+    },
+    {
+      "type": "decision_tree",
+      "decisionTreeType": "ID3",
+      "minObj": 2,
+      "maxDepth": 0,
+      "randomTree": false,
+      "useBinarySplits": false,
+      "useRandomSplits": false
+    }
+  ],
+  "useWeightedVotes": true,
+  "useRandomClassifier": false,
+  "samplingMethod": "BAGGING",
+  "useRandomSubspaces": false
+}
+----
+
+где
+
+* numIterations - число итераций
+* numThreads - число потоков для параллельного исполнения алгоритмов
+* minError - минимальная допустимая ошибка классификатора для включения в ансамбль
+* maxError - максимальная допустимая ошибка классификатора для включения в ансамбль
+* classifierOptions - массив настроек для индивидуальных классификаторов
+* useWeightedVotes - использовать метод взвешенного голосования
+* useRandomClassifier - использовать генерацию случайного классификатора на каждой итерации
+* samplingMethod - алгоритм сэмплинга, см <<Справочник значений сэмплинга>>
+* useRandomSubspaces - использование метода случайных подпространств
+* seed - начальное значение для генератора псевдослучайных чисел
+
+== 8 Описание формата json конфигурации алгоритма Stacking
+
+Ниже приведен пример json конфигурации Stacking:
+
+[source,json]
+----
+{
+  "type": "stacking",
+  "useCrossValidation": false,
+  "classifierOptions": [
+    {
+      "type": "decision_tree",
+      "decisionTreeType": "CART",
+      "minObj": 2,
+      "maxDepth": 0,
+      "randomTree": false,
+      "useBinarySplits": true,
+      "useRandomSplits": false
+    },
+    {
+      "type": "decision_tree",
+      "decisionTreeType": "ID3",
+      "minObj": 2,
+      "maxDepth": 0,
+      "randomTree": false,
+      "useBinarySplits": false,
+      "useRandomSplits": false
+    },
+    {
+      "type": "decision_tree",
+      "decisionTreeType": "C45",
+      "minObj": 2,
+      "maxDepth": 0,
+      "randomTree": false,
+      "useBinarySplits": false,
+      "useRandomSplits": false
+    },
+    {
+      "type": "logistic",
+      "maxIts": 200,
+      "useConjugateGradientDescent": false
+    }
+  ],
+  "metaClassifierOptions": {
+    "type": "decision_tree",
+    "decisionTreeType": "ID3",
+    "minObj": 2,
+    "maxDepth": 0,
+    "randomTree": false,
+    "useBinarySplits": false,
+    "useRandomSplits": false
+  }
+}
+----
+
+где
+
+* useCrossValidation - использование метода V - блочной кросс - проверки для построения мета данных
+* numFolds - число блоков для метода V - блочной кросс - проверки
+* seed - начальное значение для генератора псевдослучайных чисел
+* classifierOptions - массив настроек для индивидуальных классификаторов
+* metaClassifierOptions - настройки для мета классификатора
+
 == Справочник значений функций расстояния
 
 [options="header"]
@@ -249,4 +460,38 @@
 |6
 |INVERSE_SQUARE_ROOT_UNIT
 |Функция ISRU
+|===
+
+== Справочник деревьев решений
+
+[options="header"]
+|===
+|№|Код
+|1
+|CART
+|2
+|C45
+|3
+|ID3
+|4
+|CHAID
+|===
+
+== Справочник значений сэмплинга
+
+[options="header"]
+|===
+|№|Код|Описание
+|1
+|INITIAL
+|Использование исходной выборки
+|2
+|BAGGING
+|Бутстрэп выборки
+|3
+|RANDOM
+|Случайные подвыборки
+|4
+|RANDOM_BAGGING
+|Бутстрэп выборки случайного размера
 |===
