@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: eca-external-api-tests
+  jmx:
+    default-domain: eca-external-api-tests
+  ## Datasource properties
+  datasource:
+    url: jdbc:h2:mem:test
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.H2Dialect
+  cache:
+    cache-names: instances
+    caffeine:
+      spec: maximumSize=10, expireAfterWrite=180s
+
+## Swagger properties
+swagger2:
+  projectVersion: @project.version@
+  groups:
+    eca-external-api-tests:
+      title: External API tests execution
+      description: Operations for external API tests managment
+      author: Roman Batygin
+      email: roman.batygin@mail.ru
