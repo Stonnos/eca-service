@@ -1,6 +1,8 @@
 package com.ecaservice.external.api.util;
 
 import com.ecaservice.classifier.options.model.ClassifierOptions;
+import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.data.DataFileExtension;
@@ -79,5 +81,31 @@ public class Utils {
                     dataFileExtension -> dataFileExtension.getExtension().equals(extension));
         }
         return false;
+    }
+
+    /**
+     * Builds response with specified fields.
+     *
+     * @param requestStatus - request status
+     * @param <T>           - payload generic type
+     * @return response object
+     */
+    public static <T> ResponseDto<T> buildResponse(RequestStatus requestStatus) {
+        return buildResponse(requestStatus, null);
+    }
+
+    /**
+     * Builds response with specified fields.
+     *
+     * @param requestStatus - request status
+     * @param payload       - payload object
+     * @param <T>           - payload generic type
+     * @return response object
+     */
+    public static <T> ResponseDto<T> buildResponse(RequestStatus requestStatus, T payload) {
+        return ResponseDto.<T>builder()
+                .requestStatus(requestStatus)
+                .payload(payload)
+                .build();
     }
 }

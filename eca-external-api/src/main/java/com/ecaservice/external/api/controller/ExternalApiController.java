@@ -5,6 +5,7 @@ import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.InstancesDto;
 import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.InstancesEntity;
@@ -44,6 +45,7 @@ import java.util.UUID;
 
 import static com.ecaservice.external.api.util.Constants.DATA_URL_PREFIX;
 import static com.ecaservice.external.api.util.Utils.buildAttachmentResponse;
+import static com.ecaservice.external.api.util.Utils.buildResponse;
 import static com.ecaservice.external.api.util.Utils.existsFile;
 import static com.ecaservice.external.api.util.Utils.isValidTrainData;
 import static com.ecaservice.external.api.util.Utils.toJson;
@@ -82,24 +84,18 @@ public class ExternalApiController {
             notes = "Uploads train data file"
     )
     @PostMapping(value = "/uploads-train-data")
-    public ResponseEntity<InstancesDto> uploadInstances(
+    public ResponseDto<InstancesDto> uploadInstances(
             @ApiParam(value = "Training data file", required = true) @RequestParam MultipartFile trainingData)
             throws IOException {
         log.debug("Received request to upload train data [{}]", trainingData.getOriginalFilename());
         if (!isValidTrainData(trainingData.getOriginalFilename())) {
             log.error("Got training data with invalid extension: [{}]", trainingData.getOriginalFilename());
-            InstancesDto instancesDto = InstancesDto.builder()
-                    .status(RequestStatus.INVALID_TRAIN_DATA_EXTENSION)
-                    .build();
-            return ResponseEntity.ok(instancesDto);
+            return buildResponse(RequestStatus.INVALID_TRAIN_DATA_EXTENSION);
         }
         InstancesEntity instancesEntity = instancesService.uploadInstances(trainingData);
-        InstancesDto instancesDto = InstancesDto.builder()
-                .dataId(instancesEntity.getUuid())
-                .dataUrl(String.format("%s%s", DATA_URL_PREFIX, instancesEntity.getUuid()))
-                .status(RequestStatus.SUCCESS)
-                .build();
-        return ResponseEntity.ok(instancesDto);
+        InstancesDto instancesDto = new InstancesDto(instancesEntity.getUuid(),
+                String.format("%s%s", DATA_URL_PREFIX, instancesEntity.getUuid()));
+        return buildResponse(RequestStatus.SUCCESS, instancesDto);
     }
 
     /**
