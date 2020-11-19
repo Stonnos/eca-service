@@ -4,6 +4,7 @@ import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import org.junit.jupiter.api.Test;
@@ -40,11 +41,13 @@ class ResponseBuilderTest {
         EvaluationResponse evaluationResponse = errorEvaluationResponse();
         EvaluationRequestEntity evaluationRequestEntity =
                 createEvaluationRequestEntity(RequestStageType.ERROR, LocalDateTime.now());
-        EvaluationResponseDto evaluationResponseDto =
+        ResponseDto<EvaluationResponseDto> evaluationResponseDto =
                 responseBuilder.buildResponse(evaluationResponse, evaluationRequestEntity);
         assertThat(evaluationResponseDto).isNotNull();
-        assertThat(evaluationResponseDto.getRequestId()).isEqualTo(evaluationRequestEntity.getCorrelationId());
-        assertThat(evaluationResponseDto.getStatus()).isEqualTo(RequestStatus.ERROR);
+        assertThat(evaluationResponseDto.getPayload()).isNotNull();
+        assertThat(evaluationResponseDto.getPayload().getRequestId()).isEqualTo(
+                evaluationRequestEntity.getCorrelationId());
+        assertThat(evaluationResponseDto.getRequestStatus()).isEqualTo(RequestStatus.ERROR);
     }
 
     @Test
@@ -54,11 +57,13 @@ class ResponseBuilderTest {
                 createEvaluationRequestEntity(RequestStageType.COMPLETED, LocalDateTime.now());
         String expectedModelUrl = String.format(MODEL_DOWNLOAD_URL_FORMAT, externalApiConfig.getDownloadBaseUrl(),
                 evaluationRequestEntity.getCorrelationId());
-        EvaluationResponseDto evaluationResponseDto =
+        ResponseDto<EvaluationResponseDto> evaluationResponseDto =
                 responseBuilder.buildResponse(evaluationResponse, evaluationRequestEntity);
         assertThat(evaluationResponseDto).isNotNull();
-        assertThat(evaluationResponseDto.getRequestId()).isEqualTo(evaluationRequestEntity.getCorrelationId());
-        assertThat(evaluationResponseDto.getStatus()).isEqualTo(RequestStatus.SUCCESS);
-        assertThat(evaluationResponseDto.getModelUrl()).isEqualTo(expectedModelUrl);
+        assertThat(evaluationResponseDto.getRequestStatus()).isEqualTo(RequestStatus.SUCCESS);
+        assertThat(evaluationResponseDto.getPayload()).isNotNull();
+        assertThat(evaluationResponseDto.getPayload().getRequestId()).isEqualTo(
+                evaluationRequestEntity.getCorrelationId());
+        assertThat(evaluationResponseDto.getPayload().getModelUrl()).isEqualTo(expectedModelUrl);
     }
 }

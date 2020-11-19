@@ -17,16 +17,10 @@ import java.math.BigInteger;
 public class EvaluationResponseDto {
 
     /**
-     * Request id
+     * Evaluation request id
      */
-    @ApiModelProperty(value = "Request id")
+    @ApiModelProperty(value = "Evaluation request id")
     private String requestId;
-
-    /**
-     * Request status
-     */
-    @ApiModelProperty(value = "Request status")
-    private RequestStatus status;
 
     /**
      * Classifier model url

@@ -2,6 +2,7 @@ package com.ecaservice.external.api.aspect;
 
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.error.ExceptionTranslator;
 import com.ecaservice.external.api.exception.DataNotFoundException;
@@ -52,7 +53,7 @@ class RequestExecutionAspectTest {
     private RequestExecutionAspect requestExecutionAspect;
 
     @Captor
-    private ArgumentCaptor<EvaluationResponseDto> evaluationResponseDtoArgumentCaptor;
+    private ArgumentCaptor<ResponseDto<EvaluationResponseDto>> evaluationResponseDtoArgumentCaptor;
 
     @Test
     void testMethodExecutionWithError() throws Throwable {
@@ -60,15 +61,17 @@ class RequestExecutionAspectTest {
         ProceedingJoinPoint joinPoint = createProceedingJoinPoint(evaluationRequestEntity);
         doThrow(DataNotFoundException.class).when(joinPoint).proceed();
         when(exceptionTranslator.translate(any(Exception.class))).thenReturn(RequestStatus.ERROR);
-        MonoSink<EvaluationResponseDto> sink = mock(MonoSink.class);
+        MonoSink<ResponseDto<EvaluationResponseDto>> sink = mock(MonoSink.class);
         when(messageCorrelationService.pop(evaluationRequestEntity.getCorrelationId())).thenReturn(Optional.of(sink));
         requestExecutionAspect.around(joinPoint, null);
         verify(requestStageHandler).handleError(anyString(), any(Exception.class));
         verify(sink).success(evaluationResponseDtoArgumentCaptor.capture());
-        EvaluationResponseDto evaluationResponseDto = evaluationResponseDtoArgumentCaptor.getValue();
+        ResponseDto<EvaluationResponseDto> evaluationResponseDto = evaluationResponseDtoArgumentCaptor.getValue();
         assertThat(evaluationResponseDto).isNotNull();
-        assertThat(evaluationResponseDto.getRequestId()).isEqualTo(evaluationRequestEntity.getCorrelationId());
-        assertThat(evaluationResponseDto.getStatus()).isEqualTo(RequestStatus.ERROR);
+        assertThat(evaluationResponseDto.getPayload()).isNotNull();
+        assertThat(evaluationResponseDto.getPayload().getRequestId()).isEqualTo(
+                evaluationRequestEntity.getCorrelationId());
+        assertThat(evaluationResponseDto.getRequestStatus()).isEqualTo(RequestStatus.ERROR);
     }
 
     @Test

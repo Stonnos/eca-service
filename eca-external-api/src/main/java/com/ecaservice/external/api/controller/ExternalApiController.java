@@ -110,24 +110,26 @@ public class ExternalApiController {
             notes = "Processes evaluation request"
     )
     @PostMapping(value = "/evaluate")
-    public Mono<EvaluationResponseDto> evaluateModel(@Valid @RequestBody EvaluationRequestDto evaluationRequestDto) {
+    public Mono<ResponseDto<EvaluationResponseDto>> evaluateModel(
+            @Valid @RequestBody EvaluationRequestDto evaluationRequestDto) {
         if (log.isDebugEnabled()) {
             log.debug("Received request with options [{}], evaluation method [{}]",
                     toJson(evaluationRequestDto.getClassifierOptions()), evaluationRequestDto.getEvaluationMethod());
         }
         EcaRequestEntity ecaRequestEntity = createAndSaveRequestEntity(evaluationRequestDto);
-        return Mono.<EvaluationResponseDto>create(sink -> {
+        return Mono.<ResponseDto<EvaluationResponseDto>>create(sink -> {
             messageCorrelationService.push(ecaRequestEntity.getCorrelationId(), sink);
             evaluationApiService.processRequest(ecaRequestEntity, evaluationRequestDto);
         }).timeout(Duration.ofMinutes(externalApiConfig.getRequestTimeoutMinutes()), Mono.create(timeoutSink -> {
             requestStageHandler.handleExceeded(ecaRequestEntity.getCorrelationId());
             EvaluationResponseDto evaluationResponseDto = EvaluationResponseDto.builder()
                     .requestId(ecaRequestEntity.getCorrelationId())
-                    .status(RequestStatus.TIMEOUT)
                     .build();
-            metricsService.trackResponse(ecaRequestEntity, evaluationResponseDto.getStatus());
+            ResponseDto<EvaluationResponseDto> responseDto =
+                    buildResponse(RequestStatus.TIMEOUT, evaluationResponseDto);
+            metricsService.trackResponse(ecaRequestEntity, responseDto.getRequestStatus());
             log.debug("Send response with timeout for correlation id [{}]", ecaRequestEntity.getCorrelationId());
-            timeoutSink.success(evaluationResponseDto);
+            timeoutSink.success(responseDto);
         }));
     }
 

@@ -4,8 +4,10 @@ import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
+import com.ecaservice.external.api.util.Utils;
 import eca.core.evaluation.Evaluation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,8 +36,9 @@ public class ResponseBuilder {
      * @param evaluationResponse - evaluation response from eca - server
      * @return evaluation response dto
      */
-    public EvaluationResponseDto buildResponse(EvaluationResponse evaluationResponse,
-                                               EcaRequestEntity ecaRequestEntity) {
+    public ResponseDto<EvaluationResponseDto> buildResponse(EvaluationResponse evaluationResponse,
+                                                           EcaRequestEntity ecaRequestEntity) {
+        RequestStatus requestStatus = RequestStatus.SUCCESS;
         EvaluationResponseDto.EvaluationResponseDtoBuilder builder =
                 EvaluationResponseDto.builder().requestId(ecaRequestEntity.getCorrelationId());
         if (!RequestStageType.ERROR.equals(ecaRequestEntity.getRequestStage())) {
@@ -47,11 +50,10 @@ public class ResponseBuilder {
                     .pctIncorrect(BigDecimal.valueOf(evaluation.pctIncorrect()))
                     .meanAbsoluteError(BigDecimal.valueOf(evaluation.meanAbsoluteError()))
                     .modelUrl(String.format(MODEL_DOWNLOAD_URL_FORMAT, externalApiConfig.getDownloadBaseUrl(),
-                            ecaRequestEntity.getCorrelationId()))
-                    .status(RequestStatus.SUCCESS);
+                            ecaRequestEntity.getCorrelationId()));
         } else {
-            builder.status(RequestStatus.ERROR);
+            requestStatus = RequestStatus.ERROR;
         }
-        return builder.build();
+        return Utils.buildResponse(requestStatus, builder.build());
     }
 }

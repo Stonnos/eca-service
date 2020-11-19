@@ -2,6 +2,7 @@ package com.ecaservice.external.api.mq.listener;
 
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
+import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.metrics.MetricsService;
@@ -57,9 +58,9 @@ public class EcaResponseListener {
             evaluationRequestRepository.save(evaluationRequestEntity);
             ecaResponseHandler.handleResponse(evaluationRequestEntity, evaluationResponse);
             messageCorrelationService.pop(correlationId).ifPresent(sink -> {
-                EvaluationResponseDto evaluationResponseDto =
+                ResponseDto<EvaluationResponseDto> evaluationResponseDto =
                         responseBuilder.buildResponse(evaluationResponse, evaluationRequestEntity);
-                metricsService.trackResponse(evaluationRequestEntity, evaluationResponseDto.getStatus());
+                metricsService.trackResponse(evaluationRequestEntity, evaluationResponseDto.getRequestStatus());
                 log.debug("Send response back for correlation id [{}]", correlationId);
                 sink.success(evaluationResponseDto);
             });
