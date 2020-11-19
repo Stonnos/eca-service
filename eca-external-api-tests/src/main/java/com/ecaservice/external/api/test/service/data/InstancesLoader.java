@@ -1,4 +1,4 @@
-package com.ecaservice.external.api.test.service;
+package com.ecaservice.external.api.test.service.data;
 
 import eca.data.file.FileDataLoader;
 import eca.data.file.resource.AbstractResource;
