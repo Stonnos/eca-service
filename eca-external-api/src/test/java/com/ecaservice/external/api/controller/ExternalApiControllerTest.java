@@ -2,6 +2,7 @@ package com.ecaservice.external.api.controller;
 
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.InstancesDto;
+import com.ecaservice.external.api.dto.RequestStatus;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.mapping.EcaRequestMapper;
@@ -76,10 +77,15 @@ class ExternalApiControllerTest extends AbstractControllerTest {
     @Test
     void testUploadDataWithInvalidExtension() throws Exception {
         MockMultipartFile trainingData = createInstancesMockMultipartFile(INVALID_DATA);
+        InstancesDto expected = InstancesDto.builder()
+                .status(RequestStatus.INVALID_TRAIN_DATA_EXTENSION)
+                .build();
         mockMvc.perform(multipart(UPLOAD_DATA_URL)
                 .file(trainingData)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(expected)));
     }
 
     @Test
@@ -89,7 +95,9 @@ class ExternalApiControllerTest extends AbstractControllerTest {
         when(instancesService.uploadInstances(trainingData)).thenReturn(instancesEntity);
         InstancesDto expected = InstancesDto.builder()
                 .dataId(instancesEntity.getUuid())
-                .dataUrl(String.format("%s%s", DATA_URL_PREFIX, instancesEntity.getUuid())).build();
+                .dataUrl(String.format("%s%s", DATA_URL_PREFIX, instancesEntity.getUuid()))
+                .status(RequestStatus.SUCCESS)
+                .build();
         mockMvc.perform(multipart(UPLOAD_DATA_URL)
                 .file(trainingData)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))

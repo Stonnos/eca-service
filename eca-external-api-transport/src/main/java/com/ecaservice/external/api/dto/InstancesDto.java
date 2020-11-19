@@ -24,4 +24,10 @@ public class InstancesDto {
      */
     @ApiModelProperty(value = "Train data url in internal format data://dataId")
     private String dataUrl;
+
+    /**
+     * Request status
+     */
+    @ApiModelProperty(value = "Request status")
+    private RequestStatus status;
 }

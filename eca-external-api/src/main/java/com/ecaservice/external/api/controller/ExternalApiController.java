@@ -88,12 +88,16 @@ public class ExternalApiController {
         log.debug("Received request to upload train data [{}]", trainingData.getOriginalFilename());
         if (!isValidTrainData(trainingData.getOriginalFilename())) {
             log.error("Got training data with invalid extension: [{}]", trainingData.getOriginalFilename());
-            return ResponseEntity.badRequest().build();
+            InstancesDto instancesDto = InstancesDto.builder()
+                    .status(RequestStatus.INVALID_TRAIN_DATA_EXTENSION)
+                    .build();
+            return ResponseEntity.ok(instancesDto);
         }
         InstancesEntity instancesEntity = instancesService.uploadInstances(trainingData);
         InstancesDto instancesDto = InstancesDto.builder()
                 .dataId(instancesEntity.getUuid())
                 .dataUrl(String.format("%s%s", DATA_URL_PREFIX, instancesEntity.getUuid()))
+                .status(RequestStatus.SUCCESS)
                 .build();
         return ResponseEntity.ok(instancesDto);
     }
