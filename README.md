@@ -39,6 +39,7 @@
 * zuul-gate - Zuul proxy  (API gateway)
 * discovery-server - Eureka discovery server
 * eca-load-tests - модуль для нагрузочного тестирования eca-server
+* eca-external-api-tests - модуль автоматических тестов для внешнего API
 
 Интеграционные тесты
 ------------------------------------------------------
