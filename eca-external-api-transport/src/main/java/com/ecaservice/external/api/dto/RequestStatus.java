@@ -18,6 +18,11 @@ public enum RequestStatus {
     INVALID_URL,
 
     /**
+     * Validation error
+     */
+    VALIDATION_ERROR,
+
+    /**
      * Invalid train data extension
      */
     INVALID_TRAIN_DATA_EXTENSION,
