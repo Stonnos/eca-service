@@ -3,6 +3,7 @@ package com.ecaservice.external.api.test.config.swagger;
 import com.ecaservice.config.swagger.AbstractSwagger2Configuration;
 import com.ecaservice.config.swagger.Swagger2ApiConfig;
 import com.ecaservice.config.swagger.SwaggerBaseConfiguration;
+import com.ecaservice.external.api.test.controller.AutoTestController;
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,6 +46,6 @@ public class ExternalApiTestsSwagger2Configuration extends AbstractSwagger2Confi
 
     @Override
     protected String getControllersPackage() {
-        return null;
+        return AutoTestController.class.getPackage().getName();
     }
 }

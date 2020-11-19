@@ -27,6 +27,11 @@ public enum ExecutionStatus implements DescriptiveEnum {
     FINISHED("Завершен"),
 
     /**
+     * Timeout status
+     */
+    TIMEOUT("Таймаут"),
+
+    /**
      * Unknown error
      */
     ERROR("Ошибка");

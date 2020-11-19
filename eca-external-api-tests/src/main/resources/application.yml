@@ -18,6 +18,12 @@ spring:
     caffeine:
       spec: maximumSize=10, expireAfterWrite=180s
 
+external-api-tests:
+  numThreads: 3
+  workerThreadTimeoutInSeconds: 180
+  pageSize: 25
+  delaySeconds: 2
+
 ## Swagger properties
 swagger2:
   projectVersion: @project.version@
