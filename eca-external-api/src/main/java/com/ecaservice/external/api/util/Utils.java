@@ -105,6 +105,7 @@ public class Utils {
     public static <T> ResponseDto<T> buildResponse(RequestStatus requestStatus, T payload) {
         return ResponseDto.<T>builder()
                 .requestStatus(requestStatus)
+                .errorDescription(requestStatus.getDescription())
                 .payload(payload)
                 .build();
     }
