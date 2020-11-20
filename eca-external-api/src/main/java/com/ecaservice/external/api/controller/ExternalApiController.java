@@ -47,7 +47,6 @@ import static com.ecaservice.external.api.util.Constants.DATA_URL_PREFIX;
 import static com.ecaservice.external.api.util.Utils.buildAttachmentResponse;
 import static com.ecaservice.external.api.util.Utils.buildResponse;
 import static com.ecaservice.external.api.util.Utils.existsFile;
-import static com.ecaservice.external.api.util.Utils.isValidTrainData;
 import static com.ecaservice.external.api.util.Utils.toJson;
 
 /**
@@ -88,10 +87,6 @@ public class ExternalApiController {
             @ApiParam(value = "Training data file", required = true) @RequestParam MultipartFile trainingData)
             throws IOException {
         log.debug("Received request to upload train data [{}]", trainingData.getOriginalFilename());
-        if (!isValidTrainData(trainingData.getOriginalFilename())) {
-            log.error("Got training data with invalid extension: [{}]", trainingData.getOriginalFilename());
-            return buildResponse(RequestStatus.INVALID_TRAIN_DATA_EXTENSION);
-        }
         InstancesEntity instancesEntity = instancesService.uploadInstances(trainingData);
         InstancesDto instancesDto = new InstancesDto(instancesEntity.getUuid(),
                 String.format("%s%s", DATA_URL_PREFIX, instancesEntity.getUuid()));

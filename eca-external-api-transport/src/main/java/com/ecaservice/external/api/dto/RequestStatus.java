@@ -16,11 +16,6 @@ public enum RequestStatus {
     SUCCESS(null),
 
     /**
-     * Invalid train data url
-     */
-    INVALID_URL(""),
-
-    /**
      * Validation error
      */
     VALIDATION_ERROR("Validation errors"),

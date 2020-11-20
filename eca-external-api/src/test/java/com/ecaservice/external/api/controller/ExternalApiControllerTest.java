@@ -46,7 +46,6 @@ class ExternalApiControllerTest extends AbstractControllerTest {
     private static final String BASE_URL = "/";
     private static final String UPLOAD_DATA_URL = BASE_URL + "uploads-train-data";
     private static final String DOWNLOAD_MODEL_URL = BASE_URL + "download-model/{requestId}";
-    private static final String INVALID_DATA = "data.png";
 
     @MockBean
     private ExternalApiConfig externalApiConfig;
@@ -73,20 +72,6 @@ class ExternalApiControllerTest extends AbstractControllerTest {
         mockMvc.perform(multipart(UPLOAD_DATA_URL)
                 .file(trainingData))
                 .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void testUploadDataWithInvalidExtension() throws Exception {
-        MockMultipartFile trainingData = createInstancesMockMultipartFile(INVALID_DATA);
-        ResponseDto<InstancesDto> expected = ResponseDto.<InstancesDto>builder()
-                .requestStatus(RequestStatus.INVALID_TRAIN_DATA_EXTENSION)
-                .build();
-        mockMvc.perform(multipart(UPLOAD_DATA_URL)
-                .file(trainingData)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(objectMapper.writeValueAsString(expected)));
     }
 
     @Test

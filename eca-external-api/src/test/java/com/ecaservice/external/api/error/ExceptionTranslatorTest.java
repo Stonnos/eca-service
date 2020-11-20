@@ -2,7 +2,6 @@ package com.ecaservice.external.api.error;
 
 import com.ecaservice.external.api.dto.RequestStatus;
 import com.ecaservice.external.api.exception.DataNotFoundException;
-import com.ecaservice.external.api.exception.InvalidUrlException;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.AmqpException;
@@ -17,11 +16,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ExceptionTranslatorTest {
 
     private ExceptionTranslator exceptionTranslator = new ExceptionTranslator();
-
-    @Test
-    void testInvalidUrl() {
-        internalTestException(new InvalidUrlException(StringUtils.EMPTY), RequestStatus.INVALID_URL);
-    }
 
     @Test
     void testDataNotFound() {
