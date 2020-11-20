@@ -6,9 +6,12 @@ import eca.core.evaluation.EvaluationMethod;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import static com.ecaservice.external.api.dto.Constraints.MAX_FOLDS;
+import static com.ecaservice.external.api.dto.Constraints.MAX_TESTS;
 import static com.ecaservice.external.api.dto.Constraints.MIN_FOLDS;
 import static com.ecaservice.external.api.dto.Constraints.MIN_TESTS;
 
@@ -45,6 +48,7 @@ public class EvaluationRequestDto {
      * Folds number for k * V cross - validation method
      */
     @Min(MIN_FOLDS)
+    @Max(MAX_FOLDS)
     @ApiModelProperty(value = "Folds number for k * V cross - validation method")
     private Integer numFolds;
 
@@ -52,6 +56,7 @@ public class EvaluationRequestDto {
      * Tests number for k * V cross - validation method
      */
     @Min(MIN_TESTS)
+    @Max(MAX_TESTS)
     @ApiModelProperty(value = "Tests number for k * V cross - validation method")
     private Integer numTests;
 
