@@ -1,12 +1,12 @@
 package com.ecaservice.external.api.dto;
 
 import com.ecaservice.classifier.options.model.ClassifierOptions;
+import com.ecaservice.external.api.dto.annotations.DataURL;
 import eca.core.evaluation.EvaluationMethod;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import static com.ecaservice.external.api.dto.Constraints.MIN_FOLDS;
@@ -23,7 +23,7 @@ public class EvaluationRequestDto {
     /**
      * Training data url
      */
-    @NotEmpty
+    @DataURL
     @ApiModelProperty(value = "Train data url")
     private String trainDataUrl;
 
