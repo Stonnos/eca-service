@@ -51,7 +51,8 @@ public class ErrorHandler {
      * @return response entity
      */
     @ExceptionHandler(value = ConstraintViolationException.class)
-    public ResponseEntity<List<ValidationErrorDto>> handleConstraintViolation(ConstraintViolationException ex) {
+    public ResponseEntity<ResponseDto<List<ValidationErrorDto>>> handleConstraintViolation(
+            ConstraintViolationException ex) {
         List<ValidationErrorDto> validationErrors = ex.getConstraintViolations().stream()
                 .map(constraintViolation -> {
                     Path.Node node = Iterables.getLast(constraintViolation.getPropertyPath());
@@ -60,6 +61,8 @@ public class ErrorHandler {
                     validationErrorDto.setErrorMessage(constraintViolation.getMessage());
                     return validationErrorDto;
                 }).collect(Collectors.toList());
-        return ResponseEntity.badRequest().body(validationErrors);
+        ResponseDto<List<ValidationErrorDto>> responseDto =
+                buildResponse(RequestStatus.VALIDATION_ERROR, validationErrors);
+        return ResponseEntity.ok(responseDto);
     }
 }
