@@ -21,11 +21,6 @@ public enum RequestStatus {
     VALIDATION_ERROR("Validation errors"),
 
     /**
-     * Invalid train data extension
-     */
-    INVALID_TRAIN_DATA_EXTENSION(""),
-
-    /**
      * Train data not found for specified url
      */
     DATA_NOT_FOUND("Train data not found for specified url"),

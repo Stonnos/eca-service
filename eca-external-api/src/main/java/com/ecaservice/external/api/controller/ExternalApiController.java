@@ -18,6 +18,7 @@ import com.ecaservice.external.api.service.EvaluationApiService;
 import com.ecaservice.external.api.service.InstancesService;
 import com.ecaservice.external.api.service.MessageCorrelationService;
 import com.ecaservice.external.api.service.RequestStageHandler;
+import com.ecaservice.external.api.validation.annotations.ValidTrainData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -26,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,6 +58,7 @@ import static com.ecaservice.external.api.util.Utils.toJson;
  */
 @Api(tags = "Operations for external API")
 @Slf4j
+@Validated
 @RestController
 @RequiredArgsConstructor
 public class ExternalApiController {
@@ -84,8 +87,9 @@ public class ExternalApiController {
     )
     @PostMapping(value = "/uploads-train-data")
     public ResponseDto<InstancesDto> uploadInstances(
-            @ApiParam(value = "Training data file", required = true) @RequestParam MultipartFile trainingData)
-            throws IOException {
+            @ApiParam(value = "Training data file", required = true)
+            @ValidTrainData
+            @RequestParam MultipartFile trainingData) throws IOException {
         log.debug("Received request to upload train data [{}]", trainingData.getOriginalFilename());
         InstancesEntity instancesEntity = instancesService.uploadInstances(trainingData);
         InstancesDto instancesDto = new InstancesDto(instancesEntity.getUuid(),

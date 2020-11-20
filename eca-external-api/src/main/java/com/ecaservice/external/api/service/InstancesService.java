@@ -5,7 +5,6 @@ import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.exception.DataNotFoundException;
 import com.ecaservice.external.api.exception.EntityNotFoundException;
 import com.ecaservice.external.api.repository.InstancesRepository;
-import com.ecaservice.external.api.validation.annotations.ValidTrainData;
 import eca.data.file.FileDataLoader;
 import eca.data.file.resource.DataResource;
 import eca.data.file.resource.FileResource;
@@ -32,7 +31,6 @@ import java.util.UUID;
 import static com.ecaservice.external.api.config.metrics.MetricConstants.LOAD_INSTANCES_METRIC;
 import static com.ecaservice.external.api.config.metrics.MetricConstants.UPLOAD_INSTANCES_METRIC;
 import static com.ecaservice.external.api.util.Constants.DATA_URL_PREFIX;
-import static com.ecaservice.external.api.util.Utils.isValidTrainData;
 
 /**
  * Instances service.
@@ -60,7 +58,7 @@ public class InstancesService {
      * @throws IOException in case of error
      */
     @Timed(value = UPLOAD_INSTANCES_METRIC)
-    public InstancesEntity uploadInstances(@ValidTrainData MultipartFile trainingData) throws IOException {
+    public InstancesEntity uploadInstances(MultipartFile trainingData) throws IOException {
         log.debug("Starting to upload train data [{}] to file system", trainingData.getOriginalFilename());
         String dataUuid = UUID.randomUUID().toString();
         File file = copyToFile(trainingData, dataUuid);

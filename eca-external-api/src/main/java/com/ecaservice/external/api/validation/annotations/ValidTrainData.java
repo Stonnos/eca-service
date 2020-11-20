@@ -1,5 +1,7 @@
 package com.ecaservice.external.api.validation.annotations;
 
+import com.ecaservice.external.api.validation.TrainDataFileValidator;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.Documented;
@@ -14,7 +16,7 @@ import java.lang.annotation.Target;
  * @author Roman Batygin
  */
 @Documented
-@Constraint(validatedBy = {})
+@Constraint(validatedBy = TrainDataFileValidator.class)
 @Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidTrainData {
