@@ -5,6 +5,7 @@ import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.exception.DataNotFoundException;
 import com.ecaservice.external.api.exception.EntityNotFoundException;
 import com.ecaservice.external.api.repository.InstancesRepository;
+import com.ecaservice.external.api.validation.annotations.ValidTrainData;
 import eca.data.file.FileDataLoader;
 import eca.data.file.resource.DataResource;
 import eca.data.file.resource.FileResource;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 import weka.core.Instances;
 
@@ -38,6 +40,7 @@ import static com.ecaservice.external.api.util.Utils.isValidTrainData;
  * @author Roman Batygin
  */
 @Slf4j
+@Validated
 @Service
 @RequiredArgsConstructor
 public class InstancesService {
@@ -57,11 +60,7 @@ public class InstancesService {
      * @throws IOException in case of error
      */
     @Timed(value = UPLOAD_INSTANCES_METRIC)
-    public InstancesEntity uploadInstances(MultipartFile trainingData) throws IOException {
-        if (!isValidTrainData(trainingData.getOriginalFilename())) {
-            log.error("Got training data with invalid extension: [{}]", trainingData.getOriginalFilename());
-            throw new IllegalStateException();
-        }
+    public InstancesEntity uploadInstances(@ValidTrainData MultipartFile trainingData) throws IOException {
         log.debug("Starting to upload train data [{}] to file system", trainingData.getOriginalFilename());
         String dataUuid = UUID.randomUUID().toString();
         File file = copyToFile(trainingData, dataUuid);
