@@ -1,8 +1,9 @@
 package com.ecaservice.external.api.dto;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Instances dto.
@@ -10,7 +11,8 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class InstancesDto {
 
     /**

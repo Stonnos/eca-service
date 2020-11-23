@@ -3,6 +3,7 @@ package com.ecaservice.external.api.mq.listener;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.metrics.MetricsService;
@@ -20,11 +21,11 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import reactor.core.publisher.MonoSink;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.ecaservice.external.api.TestHelperUtils.buildMessageProperties;
 import static com.ecaservice.external.api.TestHelperUtils.createEvaluationRequestEntity;
+import static com.ecaservice.external.api.util.Utils.buildResponse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
@@ -81,7 +82,7 @@ class EcaResponseListenerTest {
 
     @Test
     void testHandleMessage() {
-        MonoSink<EvaluationResponseDto> sink = Mockito.mock(MonoSink.class);
+        MonoSink<ResponseDto<EvaluationResponseDto>> sink = Mockito.mock(MonoSink.class);
         Message message = Mockito.mock(Message.class);
         MessageProperties messageProperties = buildMessageProperties();
         when(message.getMessageProperties()).thenReturn(messageProperties);
@@ -94,14 +95,14 @@ class EcaResponseListenerTest {
         when(messageCorrelationService.pop(messageProperties.getCorrelationId())).thenReturn(Optional.of(sink));
         EvaluationResponseDto evaluationResponseDto = EvaluationResponseDto.builder()
                 .requestId(messageProperties.getCorrelationId())
-                .status(RequestStatus.SUCCESS)
                 .build();
+        ResponseDto<EvaluationResponseDto> responseDto = buildResponse(RequestStatus.SUCCESS, evaluationResponseDto);
         when(responseBuilder.buildResponse(any(EvaluationResponse.class),
-                any(EvaluationRequestEntity.class))).thenReturn(evaluationResponseDto);
+                any(EvaluationRequestEntity.class))).thenReturn(responseDto);
         //Verify that response is being sent to client
         ecaResponseListener.handleEvaluationMessage(new EvaluationResponse(), message);
         verify(ecaResponseHandler, atLeastOnce()).handleResponse(any(EvaluationRequestEntity.class),
                 any(EvaluationResponse.class));
-        verify(sink).success(evaluationResponseDto);
+        verify(sink).success(responseDto);
     }
 }

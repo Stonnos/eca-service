@@ -4,7 +4,6 @@ import com.ecaservice.external.api.AbstractJpaTest;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.exception.DataNotFoundException;
-import com.ecaservice.external.api.exception.InvalidUrlException;
 import com.ecaservice.external.api.repository.InstancesRepository;
 import eca.data.file.FileDataLoader;
 import org.junit.jupiter.api.Test;
@@ -69,11 +68,6 @@ class InstancesServiceTest extends AbstractJpaTest {
         String expectedDataPath =
                 String.format(FILE_PATH_FORMAT, externalApiConfig.getTrainDataPath(), instancesEntity.getUuid());
         assertThat(actual.getAbsolutePath()).isEqualTo(expectedDataPath);
-    }
-
-    @Test
-    void testInvalidUrl() {
-        assertThrows(InvalidUrlException.class, () -> instancesService.loadInstances(INVALID_URL));
     }
 
     @Test

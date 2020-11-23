@@ -2,6 +2,8 @@ package com.ecaservice.external.api.controller;
 
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.InstancesDto;
+import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.mapping.EcaRequestMapper;
@@ -44,7 +46,6 @@ class ExternalApiControllerTest extends AbstractControllerTest {
     private static final String BASE_URL = "/";
     private static final String UPLOAD_DATA_URL = BASE_URL + "uploads-train-data";
     private static final String DOWNLOAD_MODEL_URL = BASE_URL + "download-model/{requestId}";
-    private static final String INVALID_DATA = "data.png";
 
     @MockBean
     private ExternalApiConfig externalApiConfig;
@@ -74,22 +75,16 @@ class ExternalApiControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void testUploadDataWithInvalidExtension() throws Exception {
-        MockMultipartFile trainingData = createInstancesMockMultipartFile(INVALID_DATA);
-        mockMvc.perform(multipart(UPLOAD_DATA_URL)
-                .file(trainingData)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     void testUploadInstances() throws Exception {
         MockMultipartFile trainingData = createInstancesMockMultipartFile();
         InstancesEntity instancesEntity = createInstancesEntity(LocalDateTime.now());
         when(instancesService.uploadInstances(trainingData)).thenReturn(instancesEntity);
-        InstancesDto expected = InstancesDto.builder()
-                .dataId(instancesEntity.getUuid())
-                .dataUrl(String.format("%s%s", DATA_URL_PREFIX, instancesEntity.getUuid())).build();
+        InstancesDto instancesDto = new InstancesDto(instancesEntity.getUuid(),
+                String.format("%s%s", DATA_URL_PREFIX, instancesEntity.getUuid()));
+        ResponseDto<InstancesDto> expected = ResponseDto.<InstancesDto>builder()
+                .requestStatus(RequestStatus.SUCCESS)
+                .payload(instancesDto)
+                .build();
         mockMvc.perform(multipart(UPLOAD_DATA_URL)
                 .file(trainingData)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))

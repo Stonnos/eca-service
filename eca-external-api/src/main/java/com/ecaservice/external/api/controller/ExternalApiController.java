@@ -5,6 +5,7 @@ import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.InstancesDto;
 import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.InstancesEntity;
@@ -17,6 +18,7 @@ import com.ecaservice.external.api.service.EvaluationApiService;
 import com.ecaservice.external.api.service.InstancesService;
 import com.ecaservice.external.api.service.MessageCorrelationService;
 import com.ecaservice.external.api.service.RequestStageHandler;
+import com.ecaservice.external.api.validation.annotations.ValidTrainData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -25,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,8 +47,8 @@ import java.util.UUID;
 
 import static com.ecaservice.external.api.util.Constants.DATA_URL_PREFIX;
 import static com.ecaservice.external.api.util.Utils.buildAttachmentResponse;
+import static com.ecaservice.external.api.util.Utils.buildResponse;
 import static com.ecaservice.external.api.util.Utils.existsFile;
-import static com.ecaservice.external.api.util.Utils.isValidTrainData;
 import static com.ecaservice.external.api.util.Utils.toJson;
 
 /**
@@ -55,6 +58,7 @@ import static com.ecaservice.external.api.util.Utils.toJson;
  */
 @Api(tags = "Operations for external API")
 @Slf4j
+@Validated
 @RestController
 @RequiredArgsConstructor
 public class ExternalApiController {
@@ -82,20 +86,15 @@ public class ExternalApiController {
             notes = "Uploads train data file"
     )
     @PostMapping(value = "/uploads-train-data")
-    public ResponseEntity<InstancesDto> uploadInstances(
-            @ApiParam(value = "Training data file", required = true) @RequestParam MultipartFile trainingData)
-            throws IOException {
+    public ResponseDto<InstancesDto> uploadInstances(
+            @ApiParam(value = "Training data file", required = true)
+            @ValidTrainData
+            @RequestParam MultipartFile trainingData) throws IOException {
         log.debug("Received request to upload train data [{}]", trainingData.getOriginalFilename());
-        if (!isValidTrainData(trainingData.getOriginalFilename())) {
-            log.error("Got training data with invalid extension: [{}]", trainingData.getOriginalFilename());
-            return ResponseEntity.badRequest().build();
-        }
         InstancesEntity instancesEntity = instancesService.uploadInstances(trainingData);
-        InstancesDto instancesDto = InstancesDto.builder()
-                .dataId(instancesEntity.getUuid())
-                .dataUrl(String.format("%s%s", DATA_URL_PREFIX, instancesEntity.getUuid()))
-                .build();
-        return ResponseEntity.ok(instancesDto);
+        InstancesDto instancesDto = new InstancesDto(instancesEntity.getUuid(),
+                String.format("%s%s", DATA_URL_PREFIX, instancesEntity.getUuid()));
+        return buildResponse(RequestStatus.SUCCESS, instancesDto);
     }
 
     /**
@@ -110,24 +109,26 @@ public class ExternalApiController {
             notes = "Processes evaluation request"
     )
     @PostMapping(value = "/evaluate")
-    public Mono<EvaluationResponseDto> evaluateModel(@Valid @RequestBody EvaluationRequestDto evaluationRequestDto) {
+    public Mono<ResponseDto<EvaluationResponseDto>> evaluateModel(
+            @Valid @RequestBody EvaluationRequestDto evaluationRequestDto) {
         if (log.isDebugEnabled()) {
             log.debug("Received request with options [{}], evaluation method [{}]",
                     toJson(evaluationRequestDto.getClassifierOptions()), evaluationRequestDto.getEvaluationMethod());
         }
         EcaRequestEntity ecaRequestEntity = createAndSaveRequestEntity(evaluationRequestDto);
-        return Mono.<EvaluationResponseDto>create(sink -> {
+        return Mono.<ResponseDto<EvaluationResponseDto>>create(sink -> {
             messageCorrelationService.push(ecaRequestEntity.getCorrelationId(), sink);
             evaluationApiService.processRequest(ecaRequestEntity, evaluationRequestDto);
         }).timeout(Duration.ofMinutes(externalApiConfig.getRequestTimeoutMinutes()), Mono.create(timeoutSink -> {
             requestStageHandler.handleExceeded(ecaRequestEntity.getCorrelationId());
             EvaluationResponseDto evaluationResponseDto = EvaluationResponseDto.builder()
                     .requestId(ecaRequestEntity.getCorrelationId())
-                    .status(RequestStatus.TIMEOUT)
                     .build();
-            metricsService.trackResponse(ecaRequestEntity, evaluationResponseDto.getStatus());
+            ResponseDto<EvaluationResponseDto> responseDto =
+                    buildResponse(RequestStatus.TIMEOUT, evaluationResponseDto);
+            metricsService.trackResponse(ecaRequestEntity, responseDto.getRequestStatus());
             log.debug("Send response with timeout for correlation id [{}]", ecaRequestEntity.getCorrelationId());
-            timeoutSink.success(evaluationResponseDto);
+            timeoutSink.success(responseDto);
         }));
     }
 

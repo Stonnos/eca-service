@@ -2,6 +2,7 @@ package com.ecaservice.external.api.service;
 
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
+import com.ecaservice.external.api.dto.ResponseDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -32,13 +33,13 @@ class MessageCorrelationServiceTest {
     private MessageCorrelationService messageCorrelationService;
 
     @Mock
-    private MonoSink<EvaluationResponseDto> sink;
+    private MonoSink<ResponseDto<EvaluationResponseDto>> sink;
 
     @Test
     void testPopMethod() {
         String correlationId = UUID.randomUUID().toString();
         messageCorrelationService.push(correlationId, sink);
-        Optional<MonoSink<EvaluationResponseDto>> evaluationResponseDtoOptional =
+        Optional<MonoSink<ResponseDto<EvaluationResponseDto>>> evaluationResponseDtoOptional =
                 messageCorrelationService.pop(correlationId);
         assertThat(evaluationResponseDtoOptional).isPresent();
         assertThat(messageCorrelationService.pop(correlationId)).isNotPresent();

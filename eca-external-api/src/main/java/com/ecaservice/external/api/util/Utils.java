@@ -1,12 +1,11 @@
 package com.ecaservice.external.api.util;
 
 import com.ecaservice.classifier.options.model.ClassifierOptions;
+import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eca.data.DataFileExtension;
 import lombok.experimental.UtilityClass;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import java.io.File;
-import java.util.stream.Stream;
 
 /**
  * Utility class.
@@ -67,17 +65,29 @@ public class Utils {
     }
 
     /**
-     * Validates training data extension. Must be one of xls, xlsx, csv, arff, json, xml, txt, data, docx.
+     * Builds response with specified fields.
      *
-     * @param fileName - file name
-     * @return {@code true} if file train data extension is valid
+     * @param requestStatus - request status
+     * @param <T>           - payload generic type
+     * @return response object
      */
-    public static boolean isValidTrainData(String fileName) {
-        if (!StringUtils.isEmpty(fileName)) {
-            String extension = FilenameUtils.getExtension(fileName);
-            return Stream.of(DataFileExtension.values()).anyMatch(
-                    dataFileExtension -> dataFileExtension.getExtension().equals(extension));
-        }
-        return false;
+    public static <T> ResponseDto<T> buildResponse(RequestStatus requestStatus) {
+        return buildResponse(requestStatus, null);
+    }
+
+    /**
+     * Builds response with specified fields.
+     *
+     * @param requestStatus - request status
+     * @param payload       - payload object
+     * @param <T>           - payload generic type
+     * @return response object
+     */
+    public static <T> ResponseDto<T> buildResponse(RequestStatus requestStatus, T payload) {
+        return ResponseDto.<T>builder()
+                .requestStatus(requestStatus)
+                .errorDescription(requestStatus.getDescription())
+                .payload(payload)
+                .build();
     }
 }

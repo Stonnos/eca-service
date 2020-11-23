@@ -4,7 +4,6 @@ import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.exception.DataNotFoundException;
 import com.ecaservice.external.api.exception.EntityNotFoundException;
-import com.ecaservice.external.api.exception.InvalidUrlException;
 import com.ecaservice.external.api.repository.InstancesRepository;
 import eca.data.file.FileDataLoader;
 import eca.data.file.resource.DataResource;
@@ -17,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 import weka.core.Instances;
 
@@ -38,6 +38,7 @@ import static com.ecaservice.external.api.util.Constants.DATA_URL_PREFIX;
  * @author Roman Batygin
  */
 @Slf4j
+@Validated
 @Service
 @RequiredArgsConstructor
 public class InstancesService {
@@ -52,22 +53,22 @@ public class InstancesService {
     /**
      * Upload train data file to file system.
      *
-     * @param multipartFile - train data file
+     * @param trainingData - train data file
      * @return instance entity
      * @throws IOException in case of error
      */
     @Timed(value = UPLOAD_INSTANCES_METRIC)
-    public InstancesEntity uploadInstances(MultipartFile multipartFile) throws IOException {
-        log.debug("Starting to upload train data [{}] to file system", multipartFile.getOriginalFilename());
+    public InstancesEntity uploadInstances(MultipartFile trainingData) throws IOException {
+        log.debug("Starting to upload train data [{}] to file system", trainingData.getOriginalFilename());
         String dataUuid = UUID.randomUUID().toString();
-        File file = copyToFile(multipartFile, dataUuid);
+        File file = copyToFile(trainingData, dataUuid);
         InstancesEntity instancesEntity = new InstancesEntity();
         instancesEntity.setAbsolutePath(file.getAbsolutePath());
         instancesEntity.setUuid(dataUuid);
         instancesEntity.setCreationDate(LocalDateTime.now());
         instancesRepository.save(instancesEntity);
         log.debug("Train data [{}] has been uploaded to file system with uuid [{}]",
-                multipartFile.getOriginalFilename(), dataUuid);
+                trainingData.getOriginalFilename(), dataUuid);
         return instancesEntity;
     }
 
@@ -83,8 +84,6 @@ public class InstancesService {
             DataResource<?> dataResource = createDataResource(url);
             fileDataLoader.setSource(dataResource);
             return fileDataLoader.loadInstances();
-        } catch (MalformedURLException ex) {
-            throw new InvalidUrlException(ex.getMessage());
         } catch (Exception ex) {
             throw new DataNotFoundException(ex.getMessage());
         }

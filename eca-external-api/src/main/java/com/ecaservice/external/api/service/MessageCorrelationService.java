@@ -2,6 +2,7 @@ package com.ecaservice.external.api.service;
 
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
+import com.ecaservice.external.api.dto.ResponseDto;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class MessageCorrelationService {
 
     private final ExternalApiConfig externalApiConfig;
 
-    private Cache<String, MonoSink<EvaluationResponseDto>> messagesCache;
+    private Cache<String, MonoSink<ResponseDto<EvaluationResponseDto>>> messagesCache;
 
     /**
      * Initialize cache.
@@ -47,7 +48,7 @@ public class MessageCorrelationService {
      * @param correlationId - correlation id
      * @param sink          - response sink
      */
-    public void push(@NotBlank String correlationId, @NotNull MonoSink<EvaluationResponseDto> sink) {
+    public void push(@NotBlank String correlationId, @NotNull MonoSink<ResponseDto<EvaluationResponseDto>> sink) {
         messagesCache.put(correlationId, sink);
     }
 
@@ -57,8 +58,8 @@ public class MessageCorrelationService {
      * @param correlationId - correlation id
      * @return response sink optional wrapper
      */
-    public Optional<MonoSink<EvaluationResponseDto>> pop(@NotBlank String correlationId) {
-        MonoSink<EvaluationResponseDto> sink = messagesCache.getIfPresent(correlationId);
+    public Optional<MonoSink<ResponseDto<EvaluationResponseDto>>> pop(@NotBlank String correlationId) {
+        MonoSink<ResponseDto<EvaluationResponseDto>> sink = messagesCache.getIfPresent(correlationId);
         if (sink == null) {
             log.warn("Can't retrieve sink with correlation id [{}]", correlationId);
         } else {

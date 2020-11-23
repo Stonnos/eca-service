@@ -1,39 +1,53 @@
 package com.ecaservice.external.api.dto;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * Request status enum.
  *
  * @author Roman Batygin
  */
+@RequiredArgsConstructor
 public enum RequestStatus {
 
     /**
      * Success request
      */
-    SUCCESS,
+    SUCCESS(null),
 
     /**
-     * Invalid train data url
+     * Validation error
      */
-    INVALID_URL,
+    VALIDATION_ERROR("Validation errors"),
 
     /**
      * Train data not found for specified url
      */
-    DATA_NOT_FOUND,
+    DATA_NOT_FOUND("Train data not found for specified url"),
 
     /**
      * Unknown error
      */
-    ERROR,
+    ERROR("Unknown error"),
 
     /**
      * Request timeout
      */
-    TIMEOUT,
+    TIMEOUT("Request timeout"),
 
     /**
      * Internal system unavailable
      */
-    SERVICE_UNAVAILABLE
+    SERVICE_UNAVAILABLE("Internal service unavailable");
+
+    private final String description;
+
+    /**
+     * ERS report status description.
+     *
+     * @return ERS report status status description
+     */
+    public String getDescription() {
+        return description;
+    }
 }

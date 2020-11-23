@@ -80,8 +80,12 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 [source,json]
 ----
 {
-  "dataId": "7d2ea162-62b1-4f71-9186-5cd5b36709b8",
-  "dataUrl": "data://7d2ea162-62b1-4f71-9186-5cd5b36709b8"
+  "payload": {
+    "dataId": "2a35bffe-27ad-4a50-a7e0-8c871cfd7cc5",
+    "dataUrl": "data://2a35bffe-27ad-4a50-a7e0-8c871cfd7cc5"
+  },
+  "requestStatus": "SUCCESS",
+  "errorDescription": null
 }
 ----
 
@@ -99,6 +103,11 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 |+
 |Внутренняя ссылка на данные в формате data://dataId
 |Ссылка может быть передана в поле trainDataUrl для запроса на построение модели классификатора
+|requestStatus
+|string
+|+
+|Статус ответа
+|Заполняется по справочнику <<Справочник кодов ответа>>
 |===
 
 ==== 3.4. Пример запроса на построение модели классификатора
@@ -160,15 +169,18 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 [source,json]
 ----
 {
-  "requestId": "bd7a833a-46d0-41cf-ae15-696c39c98c44",
-  "status": "SUCCESS",
-  "modelUrl": "http://localhost:8080/external-api/download-model/bd7a833a-46d0-41cf-ae15-696c39c98c44",
-  "numTestInstances": 150,
-  "numCorrect": 144,
-  "numIncorrect": 6,
-  "pctCorrect": 96,
-  "pctIncorrect": 4,
-  "meanAbsoluteError": 0.02869334024628254
+  "payload": {
+    "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+    "modelUrl": "http://localhost:8080/external-api/download-model/1cbe6c49-8432-4c81-9afa-90f04a803fed",
+    "numTestInstances": 150,
+    "numCorrect": 144,
+    "numIncorrect": 6,
+    "pctCorrect": 96,
+    "pctIncorrect": 4,
+    "meanAbsoluteError": 0.02869334024628254
+  },
+  "requestStatus": "SUCCESS",
+  "errorDescription": null
 }
 ----
 
@@ -181,7 +193,7 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 |+
 |Уникальный идентификатор запроса
 |
-|status
+|requestStatus
 |string
 |+
 |Статус ответа
@@ -229,7 +241,7 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 
 [source,bash]
 ----
-curl -X GET "http://localhost:8080/external-api/download-model/bd7a833a-46d0-41cf-ae15-696c39c98c44" -H "accept: */*" -H "authorization: Bearer c166b245-b38b-49a7-8d92-5ec713f46faf"
+curl -X GET "http://localhost:8080/external-api/download-model/1cbe6c49-8432-4c81-9afa-90f04a803fed" -H "accept: */*" -H "authorization: Bearer c166b245-b38b-49a7-8d92-5ec713f46faf"
 ----
 
 == Справочник значений EvaluationMethod
@@ -253,9 +265,6 @@ curl -X GET "http://localhost:8080/external-api/download-model/bd7a833a-46d0-41c
 |1
 |SUCCESS
 |Успешный запрос
-|2
-|INVALID_URL
-|Некорректный url для обучающей выборки, например неизвестный протокол
 |3
 |DATA_NOT_FOUND
 |Данные не найдены для заданного url

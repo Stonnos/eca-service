@@ -2,6 +2,7 @@ package com.ecaservice.external.api.aspect;
 
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.error.ExceptionTranslator;
 import com.ecaservice.external.api.metrics.MetricsService;
@@ -15,6 +16,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
+
+import static com.ecaservice.external.api.util.Utils.buildResponse;
 
 
 /**
@@ -38,7 +41,7 @@ public class RequestExecutionAspect {
     /**
      * Handles request. Send error response back to client if occurs.
      *
-     * @param joinPoint      - joint point
+     * @param joinPoint        - joint point
      * @param requestExecution - error execution
      * @return any object
      */
@@ -64,13 +67,12 @@ public class RequestExecutionAspect {
         requestStageHandler.handleError(ecaRequestEntity.getCorrelationId(), ex);
         messageCorrelationService.pop(ecaRequestEntity.getCorrelationId()).ifPresent(sink -> {
             RequestStatus requestStatus = exceptionTranslator.translate(ex);
-            EvaluationResponseDto evaluationResponseDto = EvaluationResponseDto.builder()
-                    .requestId(ecaRequestEntity.getCorrelationId())
-                    .status(requestStatus)
-                    .build();
+            EvaluationResponseDto evaluationResponseDto =
+                    EvaluationResponseDto.builder().requestId(ecaRequestEntity.getCorrelationId()).build();
+            ResponseDto<EvaluationResponseDto> responseDto = buildResponse(requestStatus, evaluationResponseDto);
             metricsService.trackResponse(ecaRequestEntity, requestStatus);
             log.debug("Send error response for correlation id [{}]", ecaRequestEntity.getCorrelationId());
-            sink.success(evaluationResponseDto);
+            sink.success(responseDto);
         });
     }
 
