@@ -1,11 +1,11 @@
 package com.ecaservice.external.api.test.service.executor;
 
-import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.test.config.ExternalApiTestsConfig;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
 import com.ecaservice.external.api.test.entity.ExecutionStatus;
 import com.ecaservice.external.api.test.entity.JobEntity;
 import com.ecaservice.external.api.test.entity.TestResult;
+import com.ecaservice.external.api.test.model.TestDataModel;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
 import com.ecaservice.external.api.test.repository.JobRepository;
 import com.ecaservice.external.api.test.service.TestDataService;
@@ -52,12 +52,12 @@ public class AutoTestsExecutor {
 
     private void runTests(JobEntity jobEntity) {
         ThreadPoolTaskExecutor executor = initializeThreadPoolTaskExecutor(jobEntity.getNumThreads());
-        List<EvaluationRequestDto> requests = testDataService.getRequests();
-        CountDownLatch countDownLatch = new CountDownLatch(requests.size());
+        List<TestDataModel> testDataModels = testDataService.getTestDataModels();
+        CountDownLatch countDownLatch = new CountDownLatch(testDataModels.size());
         try {
-            requests.forEach(evaluationRequestDto -> {
+            testDataModels.forEach(testDataModel -> {
                 AutoTestEntity autoTestEntity = createAndSaveAutoTest(jobEntity);
-                Runnable task = createTask(autoTestEntity.getId(), evaluationRequestDto, countDownLatch);
+                Runnable task = createTask(autoTestEntity.getId(), testDataModel, countDownLatch);
                 executor.submit(task);
             });
             if (!countDownLatch.await(externalApiTestsConfig.getWorkerThreadTimeoutInSeconds(), TimeUnit.SECONDS)) {
@@ -91,8 +91,8 @@ public class AutoTestsExecutor {
         jobEntity.setExecutionStatus(ExecutionStatus.ERROR);
     }
 
-    private Runnable createTask(long testId, EvaluationRequestDto evaluationRequestDto, CountDownLatch countDownLatch) {
-        return () -> testWorkerService.execute(testId, evaluationRequestDto, countDownLatch);
+    private Runnable createTask(long testId, TestDataModel testDataModel, CountDownLatch countDownLatch) {
+        return () -> testWorkerService.execute(testId, testDataModel, countDownLatch);
     }
 
     private ThreadPoolTaskExecutor initializeThreadPoolTaskExecutor(int poolSize) {

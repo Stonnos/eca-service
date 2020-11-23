@@ -1,17 +1,15 @@
 package com.ecaservice.external.api.test.service;
 
-import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
 import com.ecaservice.external.api.test.entity.ExecutionStatus;
 import com.ecaservice.external.api.test.entity.TestResult;
+import com.ecaservice.external.api.test.exception.EntityNotFoundException;
+import com.ecaservice.external.api.test.model.TestDataModel;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
 
@@ -27,14 +25,14 @@ public class TestWorkerService {
 
     private final AutoTestRepository autoTestRepository;
 
-    public void execute(long testId, EvaluationRequestDto evaluationRequestDto, CountDownLatch countDownLatch) {
+    public void execute(long testId, TestDataModel testDataModel, CountDownLatch countDownLatch) {
         AutoTestEntity autoTestEntity = autoTestRepository.findById(testId).orElseThrow(
-                IllegalStateException::new);
+                () -> new EntityNotFoundException(AutoTestEntity.class, testId));
         try {
             autoTestEntity.setStarted(LocalDateTime.now());
             autoTestEntity.setExecutionStatus(ExecutionStatus.IN_PROGRESS);
             autoTestRepository.save(autoTestEntity);
-            sendRequest(autoTestEntity, evaluationRequestDto);
+            sendRequest(autoTestEntity, testDataModel);
         } catch (Exception ex) {
             log.error("Unknown error while auto test [{}] execution: {}", autoTestEntity.getId(), ex.getMessage(), ex);
             handleError(autoTestEntity, ex);
@@ -45,7 +43,7 @@ public class TestWorkerService {
         }
     }
 
-    private void sendRequest(AutoTestEntity autoTestEntity , EvaluationRequestDto evaluationRequestDto) {
+    private void sendRequest(AutoTestEntity autoTestEntity, TestDataModel testDataModel) {
 
     }
 
