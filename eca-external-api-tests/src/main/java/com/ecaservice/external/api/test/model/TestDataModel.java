@@ -2,6 +2,7 @@ package com.ecaservice.external.api.test.model;
 
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
+import com.ecaservice.external.api.dto.ResponseDto;
 import lombok.Data;
 
 /**
@@ -30,5 +31,5 @@ public class TestDataModel {
     /**
      * Expected response model
      */
-    private EvaluationResponseDto expectedResponse;
+    private ResponseDto<EvaluationResponseDto> expectedResponse;
 }

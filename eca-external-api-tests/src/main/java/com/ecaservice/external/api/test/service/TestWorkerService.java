@@ -70,6 +70,7 @@ public class TestWorkerService {
     }
 
     private void internalExecuteTest(AutoTestEntity autoTestEntity, TestDataModel testDataModel) throws Exception {
+        TestResultsMatcher matcher = new TestResultsMatcher();
         testDataModel.getDataSourceType().apply(new DataSourceTypeVisitor() {
             @Override
             public void visitExternal() throws IOException {
@@ -92,8 +93,23 @@ public class TestWorkerService {
             public void visitInternal() throws JsonProcessingException {
                 ResponseDto<EvaluationResponseDto> evaluationResponseDto =
                         processEvaluationRequest(autoTestEntity, testDataModel);
+                matcher.compareMatchAndReport(testDataModel.getExpectedResponse().getRequestStatus(),
+                        evaluationResponseDto.getRequestStatus());
+                if (RequestStatus.SUCCESS.equals(evaluationResponseDto.getRequestStatus())) {
+
+                }
+                updateFinalTestResult(autoTestEntity, matcher);
             }
         });
+    }
+
+    private void updateFinalTestResult(AutoTestEntity autoTestEntity, TestResultsMatcher matcher) {
+        if (matcher.getTotalNotMatched() == 0 && matcher.getTotalNotFound() == 0) {
+            autoTestEntity.setTestResult(TestResult.PASSED);
+        } else {
+            autoTestEntity.setTestResult(TestResult.FAILED);
+        }
+        autoTestEntity.setExecutionStatus(ExecutionStatus.FINISHED);
     }
 
     private void updateTrainDataUrl(TestDataModel testDataModel, InstancesDto instancesDto,
