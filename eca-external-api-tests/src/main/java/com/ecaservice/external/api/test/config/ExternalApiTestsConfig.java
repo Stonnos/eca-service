@@ -18,6 +18,12 @@ import javax.validation.constraints.NotNull;
 public class ExternalApiTestsConfig {
 
     /**
+     * Test data path
+     */
+    @NotEmpty
+    private String testDataPath;
+
+    /**
      * Threads number for requests sending
      */
     @NotNull
