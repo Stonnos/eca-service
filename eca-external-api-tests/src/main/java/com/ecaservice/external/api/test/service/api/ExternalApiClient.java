@@ -5,7 +5,10 @@ import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.InstancesDto;
 import com.ecaservice.external.api.dto.ResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -16,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
  *
  * @author Roman Batygin
  */
-@FeignClient(name = "external-api-client", url = "http://localhost:8080/external-api")
+@FeignClient(name = "external-api-client", url = "${external-api-tests.url}")
 public interface ExternalApiClient {
 
     /**
@@ -37,4 +40,7 @@ public interface ExternalApiClient {
      */
     @PostMapping(value = "/evaluate")
     ResponseDto<EvaluationResponseDto> evaluateModel(@RequestBody EvaluationRequestDto evaluationRequestDto);
+
+    @GetMapping(value = "/download-model/{requestId}")
+    Resource downloadModel(@PathVariable String requestId);
 }

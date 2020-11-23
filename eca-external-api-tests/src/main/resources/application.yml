@@ -27,6 +27,7 @@ security:
       grant-type: client_credentials
 
 external-api-tests:
+  url: http://localhost:8080/external-api
   testDataPath: classpath*:requests/**/*.json
   numThreads: 3
   workerThreadTimeoutInSeconds: 180

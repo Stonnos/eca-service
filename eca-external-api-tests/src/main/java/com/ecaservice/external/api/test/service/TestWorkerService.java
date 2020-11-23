@@ -4,6 +4,7 @@ import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.InstancesDto;
 import com.ecaservice.external.api.dto.RequestStatus;
 import com.ecaservice.external.api.dto.ResponseDto;
+import com.ecaservice.external.api.test.config.ExternalApiTestsConfig;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
 import com.ecaservice.external.api.test.entity.ExecutionStatus;
 import com.ecaservice.external.api.test.entity.TestResult;
@@ -15,8 +16,10 @@ import com.ecaservice.external.api.test.service.api.ExternalApiClient;
 import com.ecaservice.external.api.test.service.data.ExternalApiService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eca.converters.model.ClassificationModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
@@ -36,6 +39,9 @@ import java.util.concurrent.CountDownLatch;
 @RequiredArgsConstructor
 public class TestWorkerService {
 
+    private static final String DOWNLOAD_URL_FORMAT = "%s/download-model/%s";
+
+    private final ExternalApiTestsConfig externalApiTestsConfig;
     private final ExternalApiClient externalApiClient;
     private final ExternalApiService externalApiService;
     private final ObjectMapper objectMapper;
@@ -74,6 +80,32 @@ public class TestWorkerService {
         testDataModel.getDataSourceType().apply(new DataSourceTypeVisitor() {
             @Override
             public void visitExternal() throws IOException {
+                ResponseDto<EvaluationResponseDto> responseDto =
+                        processEvaluationRequest(autoTestEntity, testDataModel);
+                EvaluationResponseDto evaluationResponseDto = responseDto.getPayload();
+                matcher.compareMatchAndReport(responseDto.getRequestStatus(), responseDto.getRequestStatus());
+                String expectedUrl = String.format(DOWNLOAD_URL_FORMAT, externalApiTestsConfig.getUrl(),
+                        evaluationResponseDto.getRequestId());
+                matcher.compareMatchAndReport(expectedUrl, evaluationResponseDto.getModelUrl());
+                if (RequestStatus.SUCCESS.equals(responseDto.getRequestStatus())) {
+                    log.debug("Starting to download model for test [{}]", autoTestEntity.getId());
+                    Resource modelResource =
+                            externalApiClient.downloadModel(responseDto.getPayload().getRequestId());
+                    ClassificationModel classificationModel =
+                            SerializationUtils.deserialize(modelResource.getInputStream());
+                    log.debug("Classifier model has been downloaded for test [{}]", autoTestEntity.getId());
+                    matcher.compareMatchAndReport(evaluationResponseDto.getNumCorrect().doubleValue(),
+                            classificationModel.getEvaluation().correct());
+                    matcher.compareMatchAndReport(evaluationResponseDto.getPctCorrect().doubleValue(),
+                            classificationModel.getEvaluation().pctCorrect());
+                    matcher.compareMatchAndReport(evaluationResponseDto.getMeanAbsoluteError().doubleValue(),
+                            classificationModel.getEvaluation().meanAbsoluteError());
+                }
+                updateFinalTestResult(autoTestEntity, matcher);
+            }
+
+            @Override
+            public void visitInternal() throws IOException {
                 log.debug("Starting to uploads train data [{}] to server for test [{}]",
                         testDataModel.getTrainDataPath(), autoTestEntity.getId());
                 Resource resource = resolver.getResource(testDataModel.getTrainDataPath());
@@ -84,21 +116,8 @@ public class TestWorkerService {
                     finishWithError(autoTestEntity, instancesDto.getErrorDescription());
                 } else {
                     updateTrainDataUrl(testDataModel, instancesDto.getPayload(), autoTestEntity);
-                    ResponseDto<EvaluationResponseDto> evaluationResponseDto =
-                            processEvaluationRequest(autoTestEntity, testDataModel);
+                    visitExternal();
                 }
-            }
-
-            @Override
-            public void visitInternal() throws JsonProcessingException {
-                ResponseDto<EvaluationResponseDto> evaluationResponseDto =
-                        processEvaluationRequest(autoTestEntity, testDataModel);
-                matcher.compareMatchAndReport(testDataModel.getExpectedResponse().getRequestStatus(),
-                        evaluationResponseDto.getRequestStatus());
-                if (RequestStatus.SUCCESS.equals(evaluationResponseDto.getRequestStatus())) {
-
-                }
-                updateFinalTestResult(autoTestEntity, matcher);
             }
         });
     }
