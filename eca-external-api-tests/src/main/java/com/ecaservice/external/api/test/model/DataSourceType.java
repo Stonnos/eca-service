@@ -10,10 +10,27 @@ public enum DataSourceType {
     /**
      * External data source (from http or ftp server)
      */
-    EXTERNAL,
+    EXTERNAL {
+        @Override
+        public void apply(DataSourceTypeVisitor visitor) throws Exception {
+            visitor.visitExternal();
+        }
+    },
 
     /**
      * Data uploaded to the api server will be used
      */
-    INTERNAL
+    INTERNAL {
+        @Override
+        public void apply(DataSourceTypeVisitor visitor) throws Exception {
+            visitor.visitInternal();
+        }
+    };
+
+    /**
+     * Visitor method.
+     *
+     * @param visitor - visitor interface
+     */
+    public abstract void apply(DataSourceTypeVisitor visitor) throws Exception;
 }

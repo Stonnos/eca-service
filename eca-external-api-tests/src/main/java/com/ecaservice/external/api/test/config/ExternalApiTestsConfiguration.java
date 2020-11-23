@@ -1,7 +1,9 @@
 package com.ecaservice.external.api.test.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -15,4 +17,14 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableConfigurationProperties(ExternalApiTestsConfig.class)
 public class ExternalApiTestsConfiguration {
+
+    /**
+     * Creates object mapper bean.
+     *
+     * @return object mapper bean
+     */
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
 }
