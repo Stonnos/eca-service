@@ -13,6 +13,7 @@
     <packaging>war</packaging>
 
     <properties>
+        <spring.cloud.oauth2.version>2.2.1.RELEASE</spring.cloud.oauth2.version>
         <commons.csv.version>1.8</commons.csv.version>
         <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
     </properties>
@@ -54,6 +55,12 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-sleuth</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-oauth2</artifactId>
+            <version>${spring.cloud.oauth2.version}</version>
         </dependency>
 
         <dependency>

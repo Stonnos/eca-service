@@ -30,12 +30,6 @@ public class ExternalApiTestsConfig {
     private Long workerThreadTimeoutInSeconds;
 
     /**
-     * Classifiers options storage path
-     */
-    @NotEmpty
-    private String classifiersStoragePath;
-
-    /**
      * Page size for paging processing
      */
     @NotNull

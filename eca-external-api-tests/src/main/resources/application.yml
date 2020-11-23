@@ -18,6 +18,14 @@ spring:
     caffeine:
       spec: maximumSize=10, expireAfterWrite=180s
 
+security:
+  oauth2:
+    client:
+      clientId: external-api
+      clientSecret: external_api_secret
+      accessTokenUri: http://localhost:8080/eca-oauth/oauth/token
+      grant-type: client_credentials
+
 external-api-tests:
   numThreads: 3
   workerThreadTimeoutInSeconds: 180
@@ -33,3 +41,6 @@ swagger2:
       description: Operations for external API tests managment
       author: Roman Batygin
       email: roman.batygin@mail.ru
+
+server:
+  port: 8090
