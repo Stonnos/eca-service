@@ -129,7 +129,7 @@ public class CsvTestResultsReportGenerator implements TestResultsReportGenerator
         printer.printRecord(Arrays.asList(
                 jobEntity.getJobUuid(),
                 jobEntity.getExecutionStatus(),
-                null,
+                jobEntity.getNumThreads(),
                 totalTime(jobEntity.getStarted(), jobEntity.getFinished()),
                 testResultsCounter.getPassed(),
                 testResultsCounter.getFailed(),

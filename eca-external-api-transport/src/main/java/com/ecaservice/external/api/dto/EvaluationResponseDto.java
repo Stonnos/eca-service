@@ -3,6 +3,7 @@ package com.ecaservice.external.api.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.Tolerate;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -15,6 +16,10 @@ import java.math.BigInteger;
 @Data
 @Builder
 public class EvaluationResponseDto {
+
+    @Tolerate
+    public EvaluationResponseDto() {
+    }
 
     /**
      * Evaluation request id

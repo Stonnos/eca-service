@@ -30,6 +30,7 @@ public class JobService {
     public JobEntity createAndSaveNewJob() {
         JobEntity jobEntity = new JobEntity();
         jobEntity.setJobUuid(UUID.randomUUID().toString());
+        jobEntity.setNumThreads(1);
         jobEntity.setExecutionStatus(ExecutionStatus.NEW);
         jobEntity.setCreated(LocalDateTime.now());
         return jobRepository.save(jobEntity);
