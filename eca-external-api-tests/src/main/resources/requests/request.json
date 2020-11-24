@@ -12,7 +12,7 @@
     "numTests": 1,
     "seed": 1
   },
-  "response": {
+  "expectedResponse": {
     "requestStatus": "SUCCESS"
   }
 }

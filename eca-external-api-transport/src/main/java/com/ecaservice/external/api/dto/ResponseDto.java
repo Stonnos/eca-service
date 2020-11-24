@@ -3,6 +3,7 @@ package com.ecaservice.external.api.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.Tolerate;
 
 /**
  * Base response dto model.
@@ -12,6 +13,10 @@ import lombok.Data;
 @Data
 @Builder
 public class ResponseDto<T> {
+
+    @Tolerate
+    public ResponseDto() {
+    }
 
     /**
      * Response payload
