@@ -32,13 +32,6 @@ public class AutoTestEntity extends BaseEntity {
     private String requestId;
 
     /**
-     * Request status
-     */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "request_status")
-    private RequestStatus requestStatus;
-
-    /**
      * Request json
      */
     @Column(columnDefinition = "text")
@@ -49,6 +42,64 @@ public class AutoTestEntity extends BaseEntity {
      */
     @Column(columnDefinition = "text")
     private String response;
+
+    /**
+     * Total matched
+     */
+    @Column(name = "total_matched")
+    private int totalMatched;
+
+    /**
+     * Total not matched
+     */
+    @Column(name = "total_not_matched")
+    private int totalNotMatched;
+
+    /**
+     * Total not found
+     */
+    @Column(name = "total_not_found")
+    private int totalNotFound;
+
+    /**
+     * Expected request status
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "expected_request_status")
+    private RequestStatus expectedRequestStatus;
+
+    /**
+     * Actual request status
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "actual_request_status")
+    private RequestStatus actualRequestStatus;
+
+    /**
+     * Request status match result
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "request_status_match_result")
+    private MatchResult requestStatusMatchResult;
+
+    /**
+     * Expected model url
+     */
+    @Column(name = "expected_model_url")
+    private String expectedModelUrl;
+
+    /**
+     * Actual model url
+     */
+    @Column(name = "actual_model_url")
+    private String actualModelUrl;
+
+    /**
+     * Model url match result
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "model_url_match_result")
+    private MatchResult modelUrlMatchResult;
 
     /**
      * Test result
