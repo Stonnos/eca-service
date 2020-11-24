@@ -17,6 +17,7 @@ import com.ecaservice.external.api.test.service.api.ExternalApiClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.converters.model.ClassificationModel;
+import eca.core.evaluation.Evaluation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -25,9 +26,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
 
+import static com.ecaservice.external.api.test.util.Utils.getScaledValue;
 import static com.ecaservice.external.api.test.util.Utils.getValueSafe;
 
 /**
@@ -83,7 +86,7 @@ public class TestWorkerService {
             public void testUsingExternalDataUrl() throws IOException {
                 ResponseDto<EvaluationResponseDto> responseDto =
                         processEvaluationRequest(autoTestEntity, testDataModel);
-                //Compare and match evaluation response fields
+                //Compare and match evaluation response status
                 autoTestEntity.setExpectedRequestStatus(testDataModel.getExpectedResponse().getRequestStatus());
                 autoTestEntity.setActualRequestStatus(responseDto.getRequestStatus());
                 MatchResult statusMatchResult =
@@ -128,12 +131,34 @@ public class TestWorkerService {
                         externalApiService.downloadModel(responseDto.getPayload().getRequestId());
                 log.debug("Classifier model has been downloaded for test [{}]", autoTestEntity.getId());
                 //Compare and match classifier model fields
-                matcher.compareAndMatch(evaluationResponseDto.getNumCorrect().doubleValue(),
-                        classificationModel.getEvaluation().correct());
-                matcher.compareAndMatch(evaluationResponseDto.getPctCorrect().doubleValue(),
-                        classificationModel.getEvaluation().pctCorrect());
-                matcher.compareAndMatch(evaluationResponseDto.getMeanAbsoluteError().doubleValue(),
-                        classificationModel.getEvaluation().meanAbsoluteError());
+                compareAndMatchEvaluationFields(evaluationResponseDto, classificationModel);
+            }
+
+            void compareAndMatchEvaluationFields(EvaluationResponseDto evaluationResponseDto,
+                                                 ClassificationModel classificationModel) {
+                BigDecimal expectedPctCorrect = getScaledValue(evaluationResponseDto,
+                        EvaluationResponseDto::getPctCorrect);
+                BigDecimal actualPctCorrect = getScaledValue(classificationModel, Evaluation::pctCorrect);
+                MatchResult pctCorrectMatchResult = matcher.compareAndMatch(expectedPctCorrect, actualPctCorrect);
+                BigDecimal expectedPctIncorrect = getScaledValue(evaluationResponseDto,
+                        EvaluationResponseDto::getPctIncorrect);
+                BigDecimal actualPctIncorrect = getScaledValue(classificationModel, Evaluation::pctIncorrect);
+                MatchResult pctIncorrectMatchResult = matcher.compareAndMatch(expectedPctIncorrect, actualPctIncorrect);
+                BigDecimal expectedMeanAbsoluteError = getScaledValue(evaluationResponseDto,
+                        EvaluationResponseDto::getMeanAbsoluteError);
+                BigDecimal actualMeanAbsoluteError = getScaledValue(classificationModel, Evaluation::meanAbsoluteError);
+                MatchResult meanAbsoluteErrorMatchResult =
+                        matcher.compareAndMatch(expectedMeanAbsoluteError, actualMeanAbsoluteError);
+
+                autoTestEntity.setExpectedPctCorrect(expectedPctCorrect);
+                autoTestEntity.setActualPctCorrect(actualPctCorrect);
+                autoTestEntity.setPctCorrectMatchResult(pctCorrectMatchResult);
+                autoTestEntity.setExpectedPctIncorrect(expectedPctIncorrect);
+                autoTestEntity.setActualPctIncorrect(actualPctIncorrect);
+                autoTestEntity.setPctIncorrectMatchResult(pctIncorrectMatchResult);
+                autoTestEntity.setExpectedMeanAbsoluteError(expectedMeanAbsoluteError);
+                autoTestEntity.setActualMeanAbsoluteError(actualMeanAbsoluteError);
+                autoTestEntity.setMeanAbsoluteErrorMatchResult(meanAbsoluteErrorMatchResult);
             }
         });
     }

@@ -12,6 +12,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.math.BigDecimal;
+
+import static com.ecaservice.external.api.test.entity.Constraints.PRECISION;
+import static com.ecaservice.external.api.test.entity.Constraints.SCALE;
 
 /**
  * Auto test persistence entity.
@@ -100,6 +104,63 @@ public class AutoTestEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "model_url_match_result")
     private MatchResult modelUrlMatchResult;
+
+    /**
+     * Expected pct correct
+     */
+    @Column(name = "expected_pct_correct", precision = PRECISION, scale = SCALE)
+    private BigDecimal expectedPctCorrect;
+
+    /**
+     * Actual pct correct
+     */
+    @Column(name = "actual_pct_correct", precision = PRECISION, scale = SCALE)
+    private BigDecimal actualPctCorrect;
+
+    /**
+     * Pct correct match result
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "pct_correct_match_result")
+    private MatchResult pctCorrectMatchResult;
+
+    /**
+     * Expected pct incorrect
+     */
+    @Column(name = "expected_pct_incorrect", precision = PRECISION, scale = SCALE)
+    private BigDecimal expectedPctIncorrect;
+
+    /**
+     * Actual pct incorrect
+     */
+    @Column(name = "actual_pct_incorrect", precision = PRECISION, scale = SCALE)
+    private BigDecimal actualPctIncorrect;
+
+    /**
+     * Pct incorrect match result
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "pct_incorrect_match_result")
+    private MatchResult pctIncorrectMatchResult;
+
+    /**
+     * Expected mean absolute error
+     */
+    @Column(name = "expected_mean_absolute_error", precision = PRECISION, scale = SCALE)
+    private BigDecimal expectedMeanAbsoluteError;
+
+    /**
+     * Actual mean absolute error
+     */
+    @Column(name = "actual_mean_absolute_error", precision = PRECISION, scale = SCALE)
+    private BigDecimal actualMeanAbsoluteError;
+
+    /**
+     * Mean absolute error match result
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "mean_absolute_error_match_result")
+    private MatchResult meanAbsoluteErrorMatchResult;
 
     /**
      * Test result
