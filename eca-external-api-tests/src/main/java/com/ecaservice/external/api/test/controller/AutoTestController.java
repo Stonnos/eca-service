@@ -1,13 +1,18 @@
 package com.ecaservice.external.api.test.controller;
 
 import com.ecaservice.external.api.test.entity.JobEntity;
+import com.ecaservice.external.api.test.exception.EntityNotFoundException;
+import com.ecaservice.external.api.test.report.TestResultsReportGenerator;
 import com.ecaservice.external.api.test.repository.JobRepository;
 import com.ecaservice.external.api.test.service.JobService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Auto tests controller.
@@ -30,9 +36,10 @@ import java.io.IOException;
 public class AutoTestController {
 
     private static final String ATTACHMENT_FORMAT = "attachment; filename=%s";
-    private static final String LOAD_TEST_REPORT_NAME = "auto-tests-report%s.zip";
+    private static final String AUTO_TEST_REPORT_NAME = "auto-tests-report%s.zip";
 
     private final JobService jobService;
+    private final TestResultsReportGenerator testResultsReportGenerator;
     private final JobRepository jobRepository;
 
     /**
@@ -67,15 +74,14 @@ public class AutoTestController {
     public void downloadReport(@ApiParam(value = "Test uuid", required = true) @PathVariable String jobUuid,
                                HttpServletResponse httpServletResponse) throws IOException {
         log.info("Starting to download auto tests [{}] report", jobUuid);
-       /* JobEntity loadTestEntity = loadTestService.getLoadTest(jobUuid);
+        JobEntity jobEntity =
+                jobRepository.findByJobUuid(jobUuid).orElseThrow(() -> new EntityNotFoundException(JobEntity.class, jobUuid));
         @Cleanup OutputStream outputStream = httpServletResponse.getOutputStream();
         httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
-        String reportName = String.format(LOAD_TEST_REPORT_NAME, loadTestEntity.getjobUuid());
+        String reportName = String.format(AUTO_TEST_REPORT_NAME, jobEntity.getJobUuid());
         httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(ATTACHMENT_FORMAT, reportName));
-        LoadTestBean loadTestBean = testResultsReportDataFetcher.fetchReportData(loadTestEntity);
-        log.info("Load test [{}] report data has been fetched", jobUuid);
-        testResultsReportGenerator.generateReport(loadTestBean, outputStream);
-        outputStream.flush();*/
+        testResultsReportGenerator.generateReport(jobEntity, outputStream);
+        outputStream.flush();
         log.info("Auto tests [{}] report has been generated", jobUuid);
     }
 }
