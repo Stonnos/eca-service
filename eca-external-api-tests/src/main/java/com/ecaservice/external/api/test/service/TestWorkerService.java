@@ -13,13 +13,11 @@ import com.ecaservice.external.api.test.model.DataSourceTypeVisitor;
 import com.ecaservice.external.api.test.model.TestDataModel;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
 import com.ecaservice.external.api.test.service.api.ExternalApiClient;
-import com.ecaservice.external.api.test.service.data.ExternalApiService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.converters.model.ClassificationModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
@@ -89,10 +87,8 @@ public class TestWorkerService {
                 matcher.compareMatchAndReport(expectedUrl, evaluationResponseDto.getModelUrl());
                 if (RequestStatus.SUCCESS.equals(responseDto.getRequestStatus())) {
                     log.debug("Starting to download model for test [{}]", autoTestEntity.getId());
-                    Resource modelResource =
-                            externalApiClient.downloadModel(responseDto.getPayload().getRequestId());
                     ClassificationModel classificationModel =
-                            SerializationUtils.deserialize(modelResource.getInputStream());
+                            externalApiService.downloadModel(responseDto.getPayload().getRequestId());
                     log.debug("Classifier model has been downloaded for test [{}]", autoTestEntity.getId());
                     matcher.compareMatchAndReport(evaluationResponseDto.getNumCorrect().doubleValue(),
                             classificationModel.getEvaluation().correct());
