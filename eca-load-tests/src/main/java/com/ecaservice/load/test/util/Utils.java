@@ -31,7 +31,7 @@ public class Utils {
     private static final String GMT_TIME_ZONE = "GMT";
     private static final int SCALE = 2;
 
-    private final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss:SS");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss:SS");
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 

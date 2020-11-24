@@ -14,6 +14,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -26,6 +31,10 @@ import static com.ecaservice.external.api.test.entity.Constraints.SCALE;
  */
 @UtilityClass
 public class Utils {
+
+    private static final String GMT_TIME_ZONE = "GMT";
+
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss:SS");
 
     /**
      * Copy resource into byte array.
@@ -87,5 +96,22 @@ public class Utils {
                 .map(BigDecimal::new)
                 .map(decimal -> decimal.setScale(SCALE, RoundingMode.HALF_UP))
                 .orElse(null);
+    }
+
+    /**
+     * Gets total time between two dates in format HH:mm:ss:SS.
+     *
+     * @param start - start date
+     * @param end   - end date
+     * @return total time string
+     */
+    public static String totalTime(LocalDateTime start, LocalDateTime end) {
+        if (start != null && end != null) {
+            long totalTimeMillis = ChronoUnit.MILLIS.between(start, end);
+            LocalDateTime totalTime =
+                    Instant.ofEpochMilli(totalTimeMillis).atZone(ZoneId.of(GMT_TIME_ZONE)).toLocalDateTime();
+            return TIME_FORMATTER.format(totalTime);
+        }
+        return null;
     }
 }
