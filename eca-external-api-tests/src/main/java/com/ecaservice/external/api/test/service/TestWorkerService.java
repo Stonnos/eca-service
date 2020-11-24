@@ -82,7 +82,7 @@ public class TestWorkerService {
                         processEvaluationRequest(autoTestEntity, testDataModel);
                 EvaluationResponseDto evaluationResponseDto = responseDto.getPayload();
                 matcher.compareMatchAndReport(responseDto.getRequestStatus(), responseDto.getRequestStatus());
-                String expectedUrl = String.format(DOWNLOAD_URL_FORMAT, externalApiTestsConfig.getUrl(),
+                String expectedUrl = String.format(DOWNLOAD_URL_FORMAT, externalApiTestsConfig.getDownloadBaseUrl(),
                         evaluationResponseDto.getRequestId());
                 matcher.compareMatchAndReport(expectedUrl, evaluationResponseDto.getModelUrl());
                 if (RequestStatus.SUCCESS.equals(responseDto.getRequestStatus())) {
