@@ -41,6 +41,12 @@ public interface ExternalApiClient {
     @PostMapping(value = "/evaluate")
     ResponseDto<EvaluationResponseDto> evaluateModel(@RequestBody EvaluationRequestDto evaluationRequestDto);
 
+    /**
+     * Downloads model with specified request id
+     *
+     * @param requestId - request id
+     * @return resource object
+     */
     @GetMapping(value = "/download-model/{requestId}")
     Resource downloadModel(@PathVariable String requestId);
 }
