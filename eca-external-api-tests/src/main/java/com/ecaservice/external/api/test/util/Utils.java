@@ -34,7 +34,7 @@ public class Utils {
 
     private static final String GMT_TIME_ZONE = "GMT";
 
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss:SS");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss:SSSS");
 
     /**
      * Copy resource into byte array.
