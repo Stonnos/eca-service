@@ -1,4 +1,5 @@
 {
+  "displayName": "Empty train data url request",
   "testType": "USING_EXTERNAL_DATA_URL",
   "request": {
     "classifierOptions": {

@@ -56,7 +56,7 @@ public class AutoTestsExecutor {
         CountDownLatch countDownLatch = new CountDownLatch(testDataModels.size());
         try {
             testDataModels.forEach(testDataModel -> {
-                AutoTestEntity autoTestEntity = createAndSaveAutoTest(jobEntity);
+                AutoTestEntity autoTestEntity = createAndSaveAutoTest(jobEntity, testDataModel);
                 Runnable task = createTask(autoTestEntity.getId(), testDataModel, countDownLatch);
                 executor.submit(task);
             });
@@ -77,9 +77,10 @@ public class AutoTestsExecutor {
         }
     }
 
-    private AutoTestEntity createAndSaveAutoTest(JobEntity jobEntity) {
+    private AutoTestEntity createAndSaveAutoTest(JobEntity jobEntity, TestDataModel testDataModel) {
         AutoTestEntity autoTestEntity = new AutoTestEntity();
         autoTestEntity.setJob(jobEntity);
+        autoTestEntity.setDisplayName(testDataModel.getDisplayName());
         autoTestEntity.setExecutionStatus(ExecutionStatus.NEW);
         autoTestEntity.setTestResult(TestResult.UNKNOWN);
         autoTestEntity.setCreated(LocalDateTime.now());

@@ -36,6 +36,12 @@ public class AutoTestEntity extends BaseEntity {
     private String requestId;
 
     /**
+     * Display name (Test description)
+     */
+    @Column(name = "display_name")
+    private String displayName;
+
+    /**
      * Request json
      */
     @Column(columnDefinition = "text")

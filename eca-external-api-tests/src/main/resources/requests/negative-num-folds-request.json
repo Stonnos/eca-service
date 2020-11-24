@@ -1,4 +1,5 @@
 {
+  "displayName": "Request with negative num folds",
   "testType": "USING_EXTERNAL_DATA_URL",
   "request": {
     "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",

@@ -26,6 +26,7 @@ import static com.ecaservice.external.api.test.util.Utils.totalTime;
 
 /**
  * Csv report generator
+ *
  * @author Roman Batygin
  */
 @Slf4j
@@ -38,6 +39,7 @@ public class CsvTestResultsReportGenerator implements TestResultsReportGenerator
     private static final String TEST_RUN_TOTALS_CSV = "test-run-totals.csv";
 
     private static final String[] TEST_RESULTS_HEADERS = {
+            "Display name",
             "started",
             "finished",
             "total time",
@@ -113,6 +115,7 @@ public class CsvTestResultsReportGenerator implements TestResultsReportGenerator
                 for (AutoTestEntity autoTestEntity : page.getContent()) {
                     autoTestEntity.getTestResult().apply(testResultsCounter);
                     printer.printRecord(Arrays.asList(
+                            autoTestEntity.getDisplayName(),
                             autoTestEntity.getStarted(),
                             autoTestEntity.getFinished(),
                             totalTime(autoTestEntity.getStarted(), autoTestEntity.getFinished()),

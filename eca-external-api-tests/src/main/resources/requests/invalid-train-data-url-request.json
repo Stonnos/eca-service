@@ -1,4 +1,5 @@
 {
+  "displayName": "Request with invalid train data url protocol",
   "testType": "USING_EXTERNAL_DATA_URL",
   "request": {
     "trainDataUrl": "ppp://Iris.xls",

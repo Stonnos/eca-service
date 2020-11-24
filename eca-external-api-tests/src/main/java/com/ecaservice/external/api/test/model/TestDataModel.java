@@ -14,6 +14,11 @@ import lombok.Data;
 public class TestDataModel {
 
     /**
+     * Display name (Test description)
+     */
+    private String displayName;
+
+    /**
      * Test type
      */
     private TestType testType;
