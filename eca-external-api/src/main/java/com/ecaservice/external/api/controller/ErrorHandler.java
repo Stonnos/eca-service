@@ -41,7 +41,7 @@ public class ErrorHandler {
                 .map(fieldError -> new ValidationErrorDto(fieldError.getField(),
                         fieldError.getDefaultMessage())).collect(Collectors.toList());
         ResponseDto<List<ValidationErrorDto>> responseDto = buildResponse(RequestStatus.VALIDATION_ERROR, errors);
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity.badRequest().body(responseDto);
     }
 
     /**
@@ -63,6 +63,6 @@ public class ErrorHandler {
                 }).collect(Collectors.toList());
         ResponseDto<List<ValidationErrorDto>> responseDto =
                 buildResponse(RequestStatus.VALIDATION_ERROR, validationErrors);
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity.badRequest().body(responseDto);
     }
 }
