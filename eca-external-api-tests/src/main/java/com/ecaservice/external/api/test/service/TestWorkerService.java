@@ -9,7 +9,7 @@ import com.ecaservice.external.api.test.entity.AutoTestEntity;
 import com.ecaservice.external.api.test.entity.ExecutionStatus;
 import com.ecaservice.external.api.test.entity.TestResult;
 import com.ecaservice.external.api.test.exception.EntityNotFoundException;
-import com.ecaservice.external.api.test.model.DataSourceTypeVisitor;
+import com.ecaservice.external.api.test.model.TestTypeVisitor;
 import com.ecaservice.external.api.test.model.TestDataModel;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
 import com.ecaservice.external.api.test.service.api.ExternalApiClient;
@@ -75,9 +75,9 @@ public class TestWorkerService {
 
     private void internalExecuteTest(AutoTestEntity autoTestEntity, TestDataModel testDataModel) throws Exception {
         TestResultsMatcher matcher = new TestResultsMatcher();
-        testDataModel.getDataSourceType().apply(new DataSourceTypeVisitor() {
+        testDataModel.getTestType().apply(new TestTypeVisitor() {
             @Override
-            public void visitExternal() throws IOException {
+            public void testUsingExternalDataUrl() throws IOException {
                 ResponseDto<EvaluationResponseDto> responseDto =
                         processEvaluationRequest(autoTestEntity, testDataModel);
                 EvaluationResponseDto evaluationResponseDto = responseDto.getPayload();
@@ -101,7 +101,7 @@ public class TestWorkerService {
             }
 
             @Override
-            public void visitInternal() throws IOException {
+            public void testUsingApiDataStorage() throws IOException {
                 log.debug("Starting to uploads train data [{}] to server for test [{}]",
                         testDataModel.getTrainDataPath(), autoTestEntity.getId());
                 Resource resource = resolver.getResource(testDataModel.getTrainDataPath());
@@ -112,7 +112,7 @@ public class TestWorkerService {
                     finishWithError(autoTestEntity, instancesDto.getErrorDescription());
                 } else {
                     updateTrainDataUrl(testDataModel, instancesDto.getPayload(), autoTestEntity);
-                    visitExternal();
+                    testUsingExternalDataUrl();
                 }
             }
         });

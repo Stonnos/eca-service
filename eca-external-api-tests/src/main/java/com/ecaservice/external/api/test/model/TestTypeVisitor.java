@@ -5,15 +5,15 @@ package com.ecaservice.external.api.test.model;
  *
  * @author Roman Batygin
  */
-public interface DataSourceTypeVisitor {
+public interface TestTypeVisitor {
 
     /**
      * Visit in case id datasource type is EXTERNAL.
      */
-    void visitExternal() throws Exception;
+    void testUsingExternalDataUrl() throws Exception;
 
     /**
      * Visit in case id datasource type is INTERNAL.
      */
-    void visitInternal() throws Exception;
+    void testUsingApiDataStorage() throws Exception;
 }

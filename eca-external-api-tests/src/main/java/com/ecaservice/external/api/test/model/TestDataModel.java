@@ -14,9 +14,9 @@ import lombok.Data;
 public class TestDataModel {
 
     /**
-     * Datasource type
+     * Test type
      */
-    private DataSourceType dataSourceType;
+    private TestType testType;
 
     /**
      * Train data path on file system
