@@ -72,7 +72,7 @@ public class TestWorkerService {
             autoTestEntity.setExecutionStatus(ExecutionStatus.IN_PROGRESS);
             autoTestEntity.setStarted(LocalDateTime.now());
             autoTestRepository.save(autoTestEntity);
-            internalExecuteTest(autoTestEntity, testDataModel);
+            executeNextTest(autoTestEntity, testDataModel);
         } catch (Exception ex) {
             log.error("Unknown error while auto test [{}] execution: {}", autoTestEntity.getId(), ex.getMessage(), ex);
             finishWithError(autoTestEntity, ex.getMessage());
@@ -83,23 +83,29 @@ public class TestWorkerService {
         }
     }
 
-    private void internalExecuteTest(AutoTestEntity autoTestEntity, TestDataModel testDataModel) throws Exception {
+    private void executeNextTest(AutoTestEntity autoTestEntity, TestDataModel testDataModel) throws Exception {
         TestResultsMatcher matcher = new TestResultsMatcher();
+        try {
+            internalExecuteTest(autoTestEntity, testDataModel, matcher);
+        } catch (FeignException.BadRequest ex) {
+            handleBadRequest(autoTestEntity, ex, testDataModel.getExpectedResponse().getRequestStatus(), matcher);
+        }
+        updateFinalTestResult(autoTestEntity, matcher);
+    }
+
+    private void internalExecuteTest(AutoTestEntity autoTestEntity, TestDataModel testDataModel,
+                                     TestResultsMatcher matcher) throws Exception {
         testDataModel.getTestType().apply(new TestTypeVisitor() {
             @Override
             public void testUsingExternalDataUrl() throws IOException {
-                try {
-                    ResponseDto<EvaluationResponseDto> responseDto =
-                            processEvaluationRequest(autoTestEntity, testDataModel);
-                    //Compare and match evaluation response status
-                    compareAndMatchRequestStatus(responseDto.getRequestStatus());
-                    if (RequestStatus.SUCCESS.equals(responseDto.getRequestStatus())) {
-                        testDownloadModel(responseDto);
-                    }
-                } catch (FeignException.BadRequest ex) {
-                    handleBadRequest(ex);
+                ResponseDto<EvaluationResponseDto> responseDto =
+                        processEvaluationRequest(autoTestEntity, testDataModel);
+                //Compare and match evaluation response status
+                compareAndMatchRequestStatus(autoTestEntity, testDataModel.getExpectedResponse().getRequestStatus(),
+                        responseDto.getRequestStatus(), matcher);
+                if (RequestStatus.SUCCESS.equals(responseDto.getRequestStatus())) {
+                    testDownloadModel(responseDto);
                 }
-                updateFinalTestResult(autoTestEntity, matcher);
             }
 
             @Override
@@ -134,53 +140,7 @@ public class TestWorkerService {
                         externalApiService.downloadModel(responseDto.getPayload().getRequestId());
                 log.debug("Classifier model has been downloaded for test [{}]", autoTestEntity.getId());
                 //Compare and match classifier model fields
-                compareAndMatchEvaluationFields(evaluationResponseDto, classificationModel);
-            }
-
-            void handleBadRequest(FeignException.BadRequest ex) throws JsonProcessingException {
-                String responseBody = ex.contentUTF8();
-                Assert.notNull(responseBody, "Expected not empty response body");
-                autoTestEntity.setResponse(responseBody);
-                ResponseDto<List<ValidationErrorDto>> responseDto = objectMapper.readValue(responseBody,
-                        new TypeReference<ResponseDto<List<ValidationErrorDto>>>() {
-                        });
-                compareAndMatchRequestStatus(responseDto.getRequestStatus());
-            }
-
-            void compareAndMatchRequestStatus(RequestStatus actualRequestStatus) {
-                autoTestEntity.setExpectedRequestStatus(testDataModel.getExpectedResponse().getRequestStatus());
-                autoTestEntity.setActualRequestStatus(actualRequestStatus);
-                MatchResult statusMatchResult =
-                        matcher.compareAndMatch(testDataModel.getExpectedResponse().getRequestStatus(),
-                                actualRequestStatus);
-                autoTestEntity.setRequestStatusMatchResult(statusMatchResult);
-            }
-
-            void compareAndMatchEvaluationFields(EvaluationResponseDto evaluationResponseDto,
-                                                 ClassificationModel classificationModel) {
-                BigDecimal expectedPctCorrect = getScaledValue(evaluationResponseDto,
-                        EvaluationResponseDto::getPctCorrect);
-                BigDecimal actualPctCorrect = getScaledValue(classificationModel, Evaluation::pctCorrect);
-                MatchResult pctCorrectMatchResult = matcher.compareAndMatch(expectedPctCorrect, actualPctCorrect);
-                BigDecimal expectedPctIncorrect = getScaledValue(evaluationResponseDto,
-                        EvaluationResponseDto::getPctIncorrect);
-                BigDecimal actualPctIncorrect = getScaledValue(classificationModel, Evaluation::pctIncorrect);
-                MatchResult pctIncorrectMatchResult = matcher.compareAndMatch(expectedPctIncorrect, actualPctIncorrect);
-                BigDecimal expectedMeanAbsoluteError = getScaledValue(evaluationResponseDto,
-                        EvaluationResponseDto::getMeanAbsoluteError);
-                BigDecimal actualMeanAbsoluteError = getScaledValue(classificationModel, Evaluation::meanAbsoluteError);
-                MatchResult meanAbsoluteErrorMatchResult =
-                        matcher.compareAndMatch(expectedMeanAbsoluteError, actualMeanAbsoluteError);
-
-                autoTestEntity.setExpectedPctCorrect(expectedPctCorrect);
-                autoTestEntity.setActualPctCorrect(actualPctCorrect);
-                autoTestEntity.setPctCorrectMatchResult(pctCorrectMatchResult);
-                autoTestEntity.setExpectedPctIncorrect(expectedPctIncorrect);
-                autoTestEntity.setActualPctIncorrect(actualPctIncorrect);
-                autoTestEntity.setPctIncorrectMatchResult(pctIncorrectMatchResult);
-                autoTestEntity.setExpectedMeanAbsoluteError(expectedMeanAbsoluteError);
-                autoTestEntity.setActualMeanAbsoluteError(actualMeanAbsoluteError);
-                autoTestEntity.setMeanAbsoluteErrorMatchResult(meanAbsoluteErrorMatchResult);
+                compareAndMatchEvaluationFields(autoTestEntity, evaluationResponseDto, classificationModel, matcher);
             }
         });
     }
@@ -196,6 +156,59 @@ public class TestWorkerService {
         }
         autoTestEntity.setExecutionStatus(ExecutionStatus.FINISHED);
     }
+
+    private void compareAndMatchRequestStatus(AutoTestEntity autoTestEntity,
+                                              RequestStatus expectedStatus,
+                                              RequestStatus actualStatus,
+                                              TestResultsMatcher matcher) {
+        autoTestEntity.setExpectedRequestStatus(expectedStatus);
+        autoTestEntity.setActualRequestStatus(actualStatus);
+        MatchResult statusMatchResult = matcher.compareAndMatch(expectedStatus, actualStatus);
+        autoTestEntity.setRequestStatusMatchResult(statusMatchResult);
+    }
+
+    private void compareAndMatchEvaluationFields(AutoTestEntity autoTestEntity,
+                                         EvaluationResponseDto evaluationResponseDto,
+                                         ClassificationModel classificationModel,
+                                         TestResultsMatcher matcher) {
+        BigDecimal expectedPctCorrect = getScaledValue(evaluationResponseDto,
+                EvaluationResponseDto::getPctCorrect);
+        BigDecimal actualPctCorrect = getScaledValue(classificationModel, Evaluation::pctCorrect);
+        MatchResult pctCorrectMatchResult = matcher.compareAndMatch(expectedPctCorrect, actualPctCorrect);
+        BigDecimal expectedPctIncorrect = getScaledValue(evaluationResponseDto,
+                EvaluationResponseDto::getPctIncorrect);
+        BigDecimal actualPctIncorrect = getScaledValue(classificationModel, Evaluation::pctIncorrect);
+        MatchResult pctIncorrectMatchResult = matcher.compareAndMatch(expectedPctIncorrect, actualPctIncorrect);
+        BigDecimal expectedMeanAbsoluteError = getScaledValue(evaluationResponseDto,
+                EvaluationResponseDto::getMeanAbsoluteError);
+        BigDecimal actualMeanAbsoluteError = getScaledValue(classificationModel, Evaluation::meanAbsoluteError);
+        MatchResult meanAbsoluteErrorMatchResult =
+                matcher.compareAndMatch(expectedMeanAbsoluteError, actualMeanAbsoluteError);
+
+        autoTestEntity.setExpectedPctCorrect(expectedPctCorrect);
+        autoTestEntity.setActualPctCorrect(actualPctCorrect);
+        autoTestEntity.setPctCorrectMatchResult(pctCorrectMatchResult);
+        autoTestEntity.setExpectedPctIncorrect(expectedPctIncorrect);
+        autoTestEntity.setActualPctIncorrect(actualPctIncorrect);
+        autoTestEntity.setPctIncorrectMatchResult(pctIncorrectMatchResult);
+        autoTestEntity.setExpectedMeanAbsoluteError(expectedMeanAbsoluteError);
+        autoTestEntity.setActualMeanAbsoluteError(actualMeanAbsoluteError);
+        autoTestEntity.setMeanAbsoluteErrorMatchResult(meanAbsoluteErrorMatchResult);
+    }
+
+    private void handleBadRequest(AutoTestEntity autoTestEntity,
+                          FeignException.BadRequest ex,
+                          RequestStatus expectedStatus,
+                          TestResultsMatcher matcher) throws JsonProcessingException {
+        String responseBody = ex.contentUTF8();
+        Assert.notNull(responseBody, "Expected not empty response body");
+        autoTestEntity.setResponse(responseBody);
+        ResponseDto<List<ValidationErrorDto>> responseDto = objectMapper.readValue(responseBody,
+                new TypeReference<ResponseDto<List<ValidationErrorDto>>>() {
+                });
+        compareAndMatchRequestStatus(autoTestEntity, expectedStatus, responseDto.getRequestStatus(), matcher);
+    }
+
 
     private void updateTrainDataUrl(TestDataModel testDataModel, InstancesDto instancesDto,
                                     AutoTestEntity autoTestEntity) throws JsonProcessingException {
