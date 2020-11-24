@@ -9,8 +9,8 @@ import com.ecaservice.external.api.test.entity.AutoTestEntity;
 import com.ecaservice.external.api.test.entity.ExecutionStatus;
 import com.ecaservice.external.api.test.entity.TestResult;
 import com.ecaservice.external.api.test.exception.EntityNotFoundException;
-import com.ecaservice.external.api.test.model.TestTypeVisitor;
 import com.ecaservice.external.api.test.model.TestDataModel;
+import com.ecaservice.external.api.test.model.TestTypeVisitor;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
 import com.ecaservice.external.api.test.service.api.ExternalApiClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -81,6 +81,7 @@ public class TestWorkerService {
                 ResponseDto<EvaluationResponseDto> responseDto =
                         processEvaluationRequest(autoTestEntity, testDataModel);
                 EvaluationResponseDto evaluationResponseDto = responseDto.getPayload();
+                //Compare and match evaluation response fields
                 matcher.compareMatchAndReport(responseDto.getRequestStatus(), responseDto.getRequestStatus());
                 String expectedUrl = String.format(DOWNLOAD_URL_FORMAT, externalApiTestsConfig.getDownloadBaseUrl(),
                         evaluationResponseDto.getRequestId());
@@ -90,6 +91,7 @@ public class TestWorkerService {
                     ClassificationModel classificationModel =
                             externalApiService.downloadModel(responseDto.getPayload().getRequestId());
                     log.debug("Classifier model has been downloaded for test [{}]", autoTestEntity.getId());
+                    //Compare and match classifier model fields
                     matcher.compareMatchAndReport(evaluationResponseDto.getNumCorrect().doubleValue(),
                             classificationModel.getEvaluation().correct());
                     matcher.compareMatchAndReport(evaluationResponseDto.getPctCorrect().doubleValue(),
@@ -106,8 +108,8 @@ public class TestWorkerService {
                         testDataModel.getTrainDataPath(), autoTestEntity.getId());
                 Resource resource = resolver.getResource(testDataModel.getTrainDataPath());
                 ResponseDto<InstancesDto> instancesDto = externalApiService.uploadInstances(resource);
-                log.debug("Train data uploading status [{}] for test [{}]", instancesDto.getRequestStatus(),
-                        autoTestEntity.getId());
+                log.debug("Train data has been uploaded with status [{}] for test [{}]",
+                        instancesDto.getRequestStatus(), autoTestEntity.getId());
                 if (!RequestStatus.SUCCESS.equals(instancesDto.getRequestStatus())) {
                     finishWithError(autoTestEntity, instancesDto.getErrorDescription());
                 } else {
