@@ -1,6 +1,9 @@
 package com.ecaservice.external.api.test.util;
 
+import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.ResponseDto;
+import eca.converters.model.ClassificationModel;
+import eca.core.evaluation.Evaluation;
 import lombok.Cleanup;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.io.IOUtils;
@@ -9,8 +12,12 @@ import org.springframework.core.io.Resource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Optional;
 import java.util.function.Function;
+
+import static com.ecaservice.external.api.test.entity.Constraints.SCALE;
 
 /**
  * Utility class.
@@ -34,7 +41,51 @@ public class Utils {
         return outputStream.toByteArray();
     }
 
-    public static <P, V> V getValue(ResponseDto<P> responseDto, Function<P, V> valueFunction) {
-        return Optional.ofNullable(responseDto).map(ResponseDto::getPayload).map(valueFunction).orElse(null);
+    /**
+     * Gets value safe.
+     *
+     * @param responseDto   - response dto
+     * @param valueFunction - value function
+     * @param <P>           - payload type
+     * @param <V>           - value type
+     * @return value
+     */
+    public static <P, V> V getValueSafe(ResponseDto<P> responseDto, Function<P, V> valueFunction) {
+        return Optional.ofNullable(responseDto)
+                .map(ResponseDto::getPayload)
+                .map(valueFunction)
+                .orElse(null);
+    }
+
+    /**
+     * Gets scaled decimal value.
+     *
+     * @param evaluationResponseDto - evaluation response
+     * @param valueFunction         value function
+     * @return scaled decimal value
+     */
+    public static BigDecimal getScaledValue(EvaluationResponseDto evaluationResponseDto,
+                                            Function<EvaluationResponseDto, BigDecimal> valueFunction) {
+        return Optional.ofNullable(evaluationResponseDto)
+                .map(valueFunction)
+                .map(decimal -> decimal.setScale(SCALE, RoundingMode.HALF_UP))
+                .orElse(null);
+    }
+
+    /**
+     * Gets scaled decimal value.
+     *
+     * @param classificationModel - classification model
+     * @param valueFunction       value function
+     * @return scaled decimal value
+     */
+    public static BigDecimal getScaledValue(ClassificationModel classificationModel,
+                                            Function<Evaluation, Double> valueFunction) {
+        return Optional.ofNullable(classificationModel)
+                .map(ClassificationModel::getEvaluation)
+                .map(valueFunction)
+                .map(BigDecimal::new)
+                .map(decimal -> decimal.setScale(SCALE, RoundingMode.HALF_UP))
+                .orElse(null);
     }
 }

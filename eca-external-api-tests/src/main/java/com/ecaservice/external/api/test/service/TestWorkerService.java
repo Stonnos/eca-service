@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
 
-import static com.ecaservice.external.api.test.util.Utils.getValue;
+import static com.ecaservice.external.api.test.util.Utils.getValueSafe;
 
 /**
  * Test worker service.
@@ -115,7 +115,7 @@ public class TestWorkerService {
             void testDownloadModel(ResponseDto<EvaluationResponseDto> responseDto) throws IOException {
                 Assert.notNull(responseDto.getPayload(), "Expected not null evaluation response payload");
                 EvaluationResponseDto evaluationResponseDto = responseDto.getPayload();
-                String actualModelUrl = getValue(responseDto, EvaluationResponseDto::getModelUrl);
+                String actualModelUrl = getValueSafe(responseDto, EvaluationResponseDto::getModelUrl);
                 String expectedModelUrl =
                         String.format(DOWNLOAD_URL_FORMAT, externalApiTestsConfig.getDownloadBaseUrl(),
                                 evaluationResponseDto.getRequestId());
@@ -164,7 +164,7 @@ public class TestWorkerService {
         ResponseDto<EvaluationResponseDto> response = externalApiClient.evaluateModel(testDataModel.getRequest());
         log.debug("Received evaluation response for test [{}]", autoTestEntity.getId());
         autoTestEntity.setResponse(objectMapper.writeValueAsString(response));
-        String requestId = getValue(response, EvaluationResponseDto::getRequestId);
+        String requestId = getValueSafe(response, EvaluationResponseDto::getRequestId);
         autoTestEntity.setRequestId(requestId);
         autoTestRepository.save(autoTestEntity);
         return response;
