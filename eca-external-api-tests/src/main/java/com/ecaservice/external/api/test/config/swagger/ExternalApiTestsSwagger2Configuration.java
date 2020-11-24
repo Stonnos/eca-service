@@ -13,7 +13,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import javax.inject.Inject;
 
 /**
- * Swagger configuration for eca load tests.
+ * Swagger configuration for external api tests.
  *
  * @author Roman Batygin
  */
