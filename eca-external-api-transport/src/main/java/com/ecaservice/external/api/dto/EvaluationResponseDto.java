@@ -19,6 +19,7 @@ public class EvaluationResponseDto {
 
     @Tolerate
     public EvaluationResponseDto() {
+        //default constructor
     }
 
     /**

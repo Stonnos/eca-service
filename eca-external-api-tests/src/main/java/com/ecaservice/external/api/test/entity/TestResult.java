@@ -1,20 +1,16 @@
 package com.ecaservice.external.api.test.entity;
 
-import eca.core.DescriptiveEnum;
-import lombok.RequiredArgsConstructor;
-
 /**
  * Test result enum.
  *
  * @author Roman Batygin
  */
-@RequiredArgsConstructor
-public enum TestResult implements DescriptiveEnum {
+public enum TestResult {
 
     /**
      * Test passed
      */
-    PASSED("Успешно") {
+    PASSED {
         @Override
         public void apply(TestResultVisitor visitor) {
             visitor.casePassed();
@@ -24,7 +20,7 @@ public enum TestResult implements DescriptiveEnum {
     /**
      * Test failed
      */
-    FAILED("Неуспешно") {
+    FAILED {
         @Override
         public void apply(TestResultVisitor visitor) {
             visitor.caseFailed();
@@ -34,7 +30,7 @@ public enum TestResult implements DescriptiveEnum {
     /**
      * Unknown error
      */
-    ERROR("Ошибка") {
+    ERROR {
         @Override
         public void apply(TestResultVisitor visitor) {
             visitor.caseError();
@@ -44,14 +40,12 @@ public enum TestResult implements DescriptiveEnum {
     /**
      * Unknown result
      */
-    UNKNOWN("Неизвестно") {
+    UNKNOWN {
         @Override
         public void apply(TestResultVisitor visitor) {
             visitor.caseUnknown();
         }
     };
-
-    private final String description;
 
     /**
      * Apply visitor.
@@ -59,9 +53,4 @@ public enum TestResult implements DescriptiveEnum {
      * @param visitor - visitor object
      */
     public abstract void apply(TestResultVisitor visitor);
-
-    @Override
-    public String getDescription() {
-        return description;
-    }
 }

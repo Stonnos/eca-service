@@ -16,6 +16,7 @@ public class ResponseDto<T> {
 
     @Tolerate
     public ResponseDto() {
+        //default constructor
     }
 
     /**

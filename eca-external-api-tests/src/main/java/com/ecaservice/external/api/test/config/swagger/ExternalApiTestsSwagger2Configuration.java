@@ -21,7 +21,7 @@ import javax.inject.Inject;
 @Import(SwaggerBaseConfiguration.class)
 public class ExternalApiTestsSwagger2Configuration extends AbstractSwagger2Configuration {
 
-    private static final String ECA_LOAD_TESTS_GROUP = "eca-external-api-tests";
+    private static final String EXTERNAL_API_AUTO_TESTS_GROUP = "eca-external-api-tests";
 
     /**
      * Constructor with spring dependency injection.
@@ -41,7 +41,7 @@ public class ExternalApiTestsSwagger2Configuration extends AbstractSwagger2Confi
 
     @Override
     protected String getGroupName() {
-        return ECA_LOAD_TESTS_GROUP;
+        return EXTERNAL_API_AUTO_TESTS_GROUP;
     }
 
     @Override
