@@ -4,6 +4,7 @@ import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.InstancesDto;
 import com.ecaservice.external.api.dto.RequestStatus;
 import com.ecaservice.external.api.dto.ResponseDto;
+import com.ecaservice.external.api.dto.ValidationErrorDto;
 import com.ecaservice.external.api.test.config.ExternalApiTestsConfig;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
 import com.ecaservice.external.api.test.entity.ExecutionStatus;
@@ -15,9 +16,11 @@ import com.ecaservice.external.api.test.model.TestTypeVisitor;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
 import com.ecaservice.external.api.test.service.api.ExternalApiClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.converters.model.ClassificationModel;
 import eca.core.evaluation.Evaluation;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -28,6 +31,7 @@ import org.springframework.util.Assert;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import static com.ecaservice.external.api.test.util.Utils.getScaledValue;
@@ -84,17 +88,16 @@ public class TestWorkerService {
         testDataModel.getTestType().apply(new TestTypeVisitor() {
             @Override
             public void testUsingExternalDataUrl() throws IOException {
-                ResponseDto<EvaluationResponseDto> responseDto =
-                        processEvaluationRequest(autoTestEntity, testDataModel);
-                //Compare and match evaluation response status
-                autoTestEntity.setExpectedRequestStatus(testDataModel.getExpectedResponse().getRequestStatus());
-                autoTestEntity.setActualRequestStatus(responseDto.getRequestStatus());
-                MatchResult statusMatchResult =
-                        matcher.compareAndMatch(testDataModel.getExpectedResponse().getRequestStatus(),
-                                responseDto.getRequestStatus());
-                autoTestEntity.setRequestStatusMatchResult(statusMatchResult);
-                if (RequestStatus.SUCCESS.equals(responseDto.getRequestStatus())) {
-                    testDownloadModel(responseDto);
+                try {
+                    ResponseDto<EvaluationResponseDto> responseDto =
+                            processEvaluationRequest(autoTestEntity, testDataModel);
+                    //Compare and match evaluation response status
+                    compareAndMatchRequestStatus(responseDto.getRequestStatus());
+                    if (RequestStatus.SUCCESS.equals(responseDto.getRequestStatus())) {
+                        testDownloadModel(responseDto);
+                    }
+                } catch (FeignException.BadRequest ex) {
+                    handleBadRequest(ex);
                 }
                 updateFinalTestResult(autoTestEntity, matcher);
             }
@@ -132,6 +135,25 @@ public class TestWorkerService {
                 log.debug("Classifier model has been downloaded for test [{}]", autoTestEntity.getId());
                 //Compare and match classifier model fields
                 compareAndMatchEvaluationFields(evaluationResponseDto, classificationModel);
+            }
+
+            void handleBadRequest(FeignException.BadRequest ex) throws JsonProcessingException {
+                String responseBody = ex.contentUTF8();
+                Assert.notNull(responseBody, "Expected not empty response body");
+                autoTestEntity.setResponse(responseBody);
+                ResponseDto<List<ValidationErrorDto>> responseDto = objectMapper.readValue(responseBody,
+                        new TypeReference<ResponseDto<List<ValidationErrorDto>>>() {
+                        });
+                compareAndMatchRequestStatus(responseDto.getRequestStatus());
+            }
+
+            void compareAndMatchRequestStatus(RequestStatus actualRequestStatus) {
+                autoTestEntity.setExpectedRequestStatus(testDataModel.getExpectedResponse().getRequestStatus());
+                autoTestEntity.setActualRequestStatus(actualRequestStatus);
+                MatchResult statusMatchResult =
+                        matcher.compareAndMatch(testDataModel.getExpectedResponse().getRequestStatus(),
+                                actualRequestStatus);
+                autoTestEntity.setRequestStatusMatchResult(statusMatchResult);
             }
 
             void compareAndMatchEvaluationFields(EvaluationResponseDto evaluationResponseDto,
