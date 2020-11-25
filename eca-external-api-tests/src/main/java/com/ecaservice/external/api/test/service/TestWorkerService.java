@@ -168,9 +168,9 @@ public class TestWorkerService {
     }
 
     private void compareAndMatchEvaluationFields(AutoTestEntity autoTestEntity,
-                                         EvaluationResponseDto evaluationResponseDto,
-                                         ClassificationModel classificationModel,
-                                         TestResultsMatcher matcher) {
+                                                 EvaluationResponseDto evaluationResponseDto,
+                                                 ClassificationModel classificationModel,
+                                                 TestResultsMatcher matcher) {
         BigDecimal expectedPctCorrect = getScaledValue(evaluationResponseDto,
                 EvaluationResponseDto::getPctCorrect);
         BigDecimal actualPctCorrect = getScaledValue(classificationModel, Evaluation::pctCorrect);
@@ -197,9 +197,9 @@ public class TestWorkerService {
     }
 
     private void handleBadRequest(AutoTestEntity autoTestEntity,
-                          FeignException.BadRequest ex,
-                          RequestStatus expectedStatus,
-                          TestResultsMatcher matcher) throws JsonProcessingException {
+                                  FeignException.BadRequest ex,
+                                  RequestStatus expectedStatus,
+                                  TestResultsMatcher matcher) throws JsonProcessingException {
         String responseBody = ex.contentUTF8();
         Assert.notNull(responseBody, "Expected not empty response body");
         autoTestEntity.setResponse(responseBody);
