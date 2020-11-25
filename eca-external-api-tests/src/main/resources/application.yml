@@ -13,10 +13,6 @@ spring:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.H2Dialect
-  cache:
-    cache-names: instances
-    caffeine:
-      spec: maximumSize=10, expireAfterWrite=180s
 
 security:
   oauth2:

@@ -2,6 +2,7 @@ package com.ecaservice.external.api.test.entity;
 
 /**
  * Field values match result enum.
+ *
  * @author Roman Batygin
  */
 public enum MatchResult {

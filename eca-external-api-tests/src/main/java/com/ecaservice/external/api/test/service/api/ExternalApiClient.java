@@ -42,7 +42,7 @@ public interface ExternalApiClient {
     ResponseDto<EvaluationResponseDto> evaluateModel(@RequestBody EvaluationRequestDto evaluationRequestDto);
 
     /**
-     * Downloads model with specified request id
+     * Downloads model with specified request id.
      *
      * @param requestId - request id
      * @return resource object

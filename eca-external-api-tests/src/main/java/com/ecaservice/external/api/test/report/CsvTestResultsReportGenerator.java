@@ -25,7 +25,7 @@ import java.util.zip.ZipOutputStream;
 import static com.ecaservice.external.api.test.util.Utils.totalTime;
 
 /**
- * Csv report generator
+ * Csv report generator.
  *
  * @author Roman Batygin
  */
