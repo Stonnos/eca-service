@@ -1,7 +1,6 @@
 package com.ecaservice.external.api.test.multipart;
 
 import lombok.AllArgsConstructor;
-import lombok.Cleanup;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
@@ -60,7 +59,8 @@ public class ByteArrayMultipartFile implements MultipartFile {
 
     @Override
     public void transferTo(File destination) throws IOException {
-        @Cleanup OutputStream outputStream = new FileOutputStream(destination);
-        outputStream.write(bytes);
+        try (OutputStream outputStream = new FileOutputStream(destination)) {
+            outputStream.write(bytes);
+        }
     }
 }
