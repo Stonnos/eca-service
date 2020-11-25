@@ -3,6 +3,7 @@ package com.ecaservice.external.api.aspect;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.RequestStatus;
 import com.ecaservice.external.api.dto.ResponseDto;
+import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.error.ExceptionTranslator;
 import com.ecaservice.external.api.exception.DataNotFoundException;
@@ -26,7 +27,6 @@ import static com.ecaservice.external.api.TestHelperUtils.createEvaluationReques
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -64,7 +64,7 @@ class RequestExecutionAspectTest {
         MonoSink<ResponseDto<EvaluationResponseDto>> sink = mock(MonoSink.class);
         when(messageCorrelationService.pop(evaluationRequestEntity.getCorrelationId())).thenReturn(Optional.of(sink));
         requestExecutionAspect.around(joinPoint, null);
-        verify(requestStageHandler).handleError(anyString(), any(Exception.class));
+        verify(requestStageHandler).handleError(any(EcaRequestEntity.class), any(Exception.class));
         verify(sink).success(evaluationResponseDtoArgumentCaptor.capture());
         ResponseDto<EvaluationResponseDto> evaluationResponseDto = evaluationResponseDtoArgumentCaptor.getValue();
         assertThat(evaluationResponseDto).isNotNull();

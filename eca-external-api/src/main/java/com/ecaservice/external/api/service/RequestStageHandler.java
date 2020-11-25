@@ -3,7 +3,6 @@ package com.ecaservice.external.api.service;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
-import com.ecaservice.external.api.exception.EntityNotFoundException;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,33 +24,28 @@ public class RequestStageHandler {
     /**
      * Handle error request.
      *
-     * @param correlationId - correlation id
-     * @param ex            - exception
+     * @param ecaRequestEntity - eca request entity
+     * @param ex               - exception
      */
-    public void handleError(String correlationId, Exception ex) {
-        internalHandle(correlationId, RequestStageType.ERROR, ex.getMessage());
+    public void handleError(EcaRequestEntity ecaRequestEntity, Exception ex) {
+        internalHandle(ecaRequestEntity, RequestStageType.ERROR, ex.getMessage());
     }
 
     /**
      * Handle exceeded request.
      *
-     * @param correlationId - correlation id
+     * @param ecaRequestEntity - eca request entity
      */
-    public void handleExceeded(String correlationId) {
-        internalHandle(correlationId, RequestStageType.EXCEEDED,
+    public void handleExceeded(EcaRequestEntity ecaRequestEntity) {
+        internalHandle(ecaRequestEntity, RequestStageType.EXCEEDED,
                 String.format("Timeout after %d minutes", externalApiConfig.getRequestTimeoutMinutes()));
     }
 
-    private void internalHandle(String correlationId, RequestStageType requestStageType, String errorMessage) {
-        EcaRequestEntity ecaRequestEntity = getByCorrelationId(correlationId);
+    private void internalHandle(EcaRequestEntity ecaRequestEntity, RequestStageType requestStageType,
+                                String errorMessage) {
         ecaRequestEntity.setRequestStage(requestStageType);
         ecaRequestEntity.setErrorMessage(errorMessage);
         ecaRequestEntity.setEndDate(LocalDateTime.now());
         ecaRequestRepository.save(ecaRequestEntity);
-    }
-
-    private EcaRequestEntity getByCorrelationId(String correlationId) {
-        return ecaRequestRepository.findByCorrelationId(correlationId).orElseThrow(
-                () -> new EntityNotFoundException(EcaRequestEntity.class, correlationId));
     }
 }

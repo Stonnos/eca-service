@@ -10,6 +10,7 @@ import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
+import com.ecaservice.external.api.exception.EntityNotFoundException;
 import com.ecaservice.external.api.mapping.EcaRequestMapper;
 import com.ecaservice.external.api.metrics.MetricsService;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
@@ -119,17 +120,8 @@ public class ExternalApiController {
         return Mono.<ResponseDto<EvaluationResponseDto>>create(sink -> {
             messageCorrelationService.push(ecaRequestEntity.getCorrelationId(), sink);
             evaluationApiService.processRequest(ecaRequestEntity, evaluationRequestDto);
-        }).timeout(Duration.ofMinutes(externalApiConfig.getRequestTimeoutMinutes()), Mono.create(timeoutSink -> {
-            requestStageHandler.handleExceeded(ecaRequestEntity.getCorrelationId());
-            EvaluationResponseDto evaluationResponseDto = EvaluationResponseDto.builder()
-                    .requestId(ecaRequestEntity.getCorrelationId())
-                    .build();
-            ResponseDto<EvaluationResponseDto> responseDto =
-                    buildResponse(RequestStatus.TIMEOUT, evaluationResponseDto);
-            metricsService.trackResponse(ecaRequestEntity, responseDto.getRequestStatus());
-            log.debug("Send response with timeout for correlation id [{}]", ecaRequestEntity.getCorrelationId());
-            timeoutSink.success(responseDto);
-        }));
+        }).timeout(Duration.ofMinutes(externalApiConfig.getRequestTimeoutMinutes()),
+                timeoutFallback(ecaRequestEntity.getCorrelationId()));
     }
 
     /**
@@ -159,6 +151,26 @@ public class ExternalApiController {
         log.debug("Downloads classifier model file {} for request id [{}]",
                 evaluationRequestEntity.getClassifierAbsolutePath(), evaluationRequestEntity.getCorrelationId());
         return buildAttachmentResponse(modelFile);
+    }
+
+    private Mono<ResponseDto<EvaluationResponseDto>> timeoutFallback(String correlationId) {
+        return Mono.create(timeoutSink -> {
+            EcaRequestEntity ecaRequestEntity = getByCorrelationId(correlationId);
+            requestStageHandler.handleExceeded(ecaRequestEntity);
+            EvaluationResponseDto evaluationResponseDto = EvaluationResponseDto.builder()
+                    .requestId(ecaRequestEntity.getCorrelationId())
+                    .build();
+            ResponseDto<EvaluationResponseDto> responseDto =
+                    buildResponse(RequestStatus.TIMEOUT, evaluationResponseDto);
+            metricsService.trackResponse(ecaRequestEntity, responseDto.getRequestStatus());
+            log.debug("Send response with timeout for correlation id [{}]", ecaRequestEntity.getCorrelationId());
+            timeoutSink.success(responseDto);
+        });
+    }
+
+    private EcaRequestEntity getByCorrelationId(String correlationId) {
+        return ecaRequestRepository.findByCorrelationId(correlationId).orElseThrow(
+                () -> new EntityNotFoundException(EcaRequestEntity.class, correlationId));
     }
 
     private EcaRequestEntity createAndSaveRequestEntity(EvaluationRequestDto evaluationRequestDto) {
