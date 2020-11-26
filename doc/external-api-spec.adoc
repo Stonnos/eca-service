@@ -33,7 +33,7 @@ API предоставляет следующие методы:
 
 == 2. Получение токена доступа к API
 
-Все запросы к API должны выполняться с использованием авторизационного токена в заголовке запроса:
+В API используется авторизация по протоколу oauth2. Все запросы к API должны выполняться с использованием авторизационного токена в заголовке запроса:
 
 Authorization: Bearer YOUR_TOKEN
 
@@ -48,19 +48,19 @@ curl external-api:external_api_secret@eca-service:8080/eca-oauth/oauth/token -d 
 
 где external-api:external_api_secret - пара clientId и clientSecret
 
-Запрос возвращает пару access_token/refresh_token:
+Запрос возвращает access_token для доступа к API:
 
 [source,json]
 ----
 {
   "access_token": "cf4cd583-b9f1-4dce-8dcc-afefd1510974",
   "token_type": "bearer",
-  "refresh_token": "7321ab3a-ee63-4e2e-bdfd-58aaca9fb263",
-  "expires_in": 1799,
+  "expires_in": 2591999,
   "scope": "external-api"
 }
 ----
 
+где expires_in - время жизни access_token в секундах.
 
 == 3. Описание формата запросов
 
