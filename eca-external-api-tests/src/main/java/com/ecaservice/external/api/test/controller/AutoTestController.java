@@ -59,7 +59,7 @@ public class AutoTestController {
             notes = "Creates auto tests job"
     )
     @PostMapping(value = "/create-job")
-    public String createJob(@ApiParam(value = "Threads number")
+    public String createJob(@ApiParam(value = "Threads number", example = "1")
                             @Min(MIN_THREADS)
                             @Max(MAX_THREADS)
                             @RequestParam(required = false) Integer numThreads) {
