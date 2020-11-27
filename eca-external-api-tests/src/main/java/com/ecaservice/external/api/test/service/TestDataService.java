@@ -31,9 +31,8 @@ public class TestDataService {
 
     private static final String TEST_DATA_DIRECTORY_IS_EMPTY = "Test data directory is empty.";
 
-    private static ObjectMapper objectMapper = new ObjectMapper();
-
     private final ExternalApiTestsConfig externalApiTestsConfig;
+    private final ObjectMapper objectMapper;
 
     @Getter
     private final List<TestDataModel> testDataModels = newArrayList();
