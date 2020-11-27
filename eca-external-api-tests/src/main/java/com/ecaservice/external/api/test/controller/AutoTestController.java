@@ -13,22 +13,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import java.io.IOException;
 import java.io.OutputStream;
-
-import static com.ecaservice.external.api.test.util.Constraints.MAX_THREADS;
-import static com.ecaservice.external.api.test.util.Constraints.MIN_THREADS;
 
 /**
  * Auto tests controller.
@@ -37,7 +30,6 @@ import static com.ecaservice.external.api.test.util.Constraints.MIN_THREADS;
  */
 @Api(tags = "API for auto tests execution")
 @Slf4j
-@Validated
 @RestController
 @RequestMapping("/auto-tests")
 @RequiredArgsConstructor
@@ -53,7 +45,6 @@ public class AutoTestController {
     /**
      * Creates auto tests job.
      *
-     * @param numThreads - threads number
      * @return job uuid
      */
     @ApiOperation(
@@ -61,12 +52,9 @@ public class AutoTestController {
             notes = "Creates auto tests job"
     )
     @PostMapping(value = "/create-job")
-    public String createJob(@ApiParam(value = "Threads number", example = "1")
-                            @Min(MIN_THREADS)
-                            @Max(MAX_THREADS)
-                            @RequestParam(required = false) Integer numThreads) {
+    public String createJob() {
         log.info("Received auto tests request");
-        JobEntity jobEntity = jobService.createAndSaveNewJob(numThreads);
+        JobEntity jobEntity = jobService.createAndSaveNewJob();
         log.info("Auto tests job has been created with uuid [{}]", jobEntity.getJobUuid());
         return jobEntity.getJobUuid();
     }
