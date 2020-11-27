@@ -17,11 +17,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import static com.ecaservice.external.api.test.util.Constraints.MAX_THREADS;
+import static com.ecaservice.external.api.test.util.Constraints.MIN_THREADS;
 
 /**
  * Auto tests controller.
@@ -45,6 +51,7 @@ public class AutoTestController {
     /**
      * Creates auto tests job.
      *
+     * @param numThreads - threads number
      * @return job uuid
      */
     @ApiOperation(
@@ -52,9 +59,12 @@ public class AutoTestController {
             notes = "Creates auto tests job"
     )
     @PostMapping(value = "/create-job")
-    public String createJob() {
+    public String createJob(@ApiParam(value = "Threads number")
+                            @Min(MIN_THREADS)
+                            @Max(MAX_THREADS)
+                            @RequestParam(required = false) Integer numThreads) {
         log.info("Received auto tests request");
-        JobEntity jobEntity = jobService.createAndSaveNewJob();
+        JobEntity jobEntity = jobService.createAndSaveNewJob(numThreads);
         log.info("Auto tests job has been created with uuid [{}]", jobEntity.getJobUuid());
         return jobEntity.getJobUuid();
     }
@@ -75,7 +85,8 @@ public class AutoTestController {
                                HttpServletResponse httpServletResponse) throws IOException {
         log.info("Starting to download auto tests [{}] report", jobUuid);
         JobEntity jobEntity =
-                jobRepository.findByJobUuid(jobUuid).orElseThrow(() -> new EntityNotFoundException(JobEntity.class, jobUuid));
+                jobRepository.findByJobUuid(jobUuid).orElseThrow(
+                        () -> new EntityNotFoundException(JobEntity.class, jobUuid));
         @Cleanup OutputStream outputStream = httpServletResponse.getOutputStream();
         httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
         String reportName = String.format(AUTO_TEST_REPORT_NAME, jobEntity.getJobUuid());

@@ -1,4 +1,4 @@
-package com.ecaservice.external.api.test.entity;
+package com.ecaservice.external.api.test.util;
 
 import lombok.experimental.UtilityClass;
 
@@ -9,6 +9,9 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 public class Constraints {
+
+    public static final int MIN_THREADS = 1;
+    public static final int MAX_THREADS = 10;
 
     public static final int PRECISION = 19;
 

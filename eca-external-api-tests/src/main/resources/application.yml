@@ -26,7 +26,7 @@ external-api-tests:
   url: http://localhost:8080/external-api
   downloadBaseUrl: http://localhost:8080/external-api
   testDataPath: classpath*:requests/**/*.json
-  numThreads: 3
+  numThreads: 1
   workerThreadTimeoutInSeconds: 180
   pageSize: 25
   delaySeconds: 2

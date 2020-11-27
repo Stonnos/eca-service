@@ -14,8 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 
-import static com.ecaservice.external.api.test.entity.Constraints.PRECISION;
-import static com.ecaservice.external.api.test.entity.Constraints.SCALE;
+import static com.ecaservice.external.api.test.util.Constraints.PRECISION;
+import static com.ecaservice.external.api.test.util.Constraints.SCALE;
 
 /**
  * Auto test persistence entity.

@@ -22,7 +22,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static com.ecaservice.external.api.test.entity.Constraints.SCALE;
+import static com.ecaservice.external.api.test.util.Constraints.SCALE;
 
 /**
  * Utility class.
