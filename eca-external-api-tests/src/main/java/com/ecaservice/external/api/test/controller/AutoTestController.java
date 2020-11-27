@@ -71,7 +71,7 @@ public class AutoTestController {
             notes = "Downloads auto tests report zip file"
     )
     @GetMapping(value = "/report/{jobUuid}")
-    public void downloadReport(@ApiParam(value = "Test uuid", required = true) @PathVariable String jobUuid,
+    public void downloadReport(@ApiParam(value = "Job uuid", required = true) @PathVariable String jobUuid,
                                HttpServletResponse httpServletResponse) throws IOException {
         log.info("Starting to download auto tests [{}] report", jobUuid);
         JobEntity jobEntity =
