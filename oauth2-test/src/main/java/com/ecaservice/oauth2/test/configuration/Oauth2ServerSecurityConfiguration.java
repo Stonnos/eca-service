@@ -1,6 +1,8 @@
 package com.ecaservice.oauth2.test.configuration;
 
+import com.ecaservice.user.model.Role;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,7 +32,7 @@ public class Oauth2ServerSecurityConfiguration extends WebSecurityConfigurerAdap
         auth.inMemoryAuthentication()
                 .withUser(oauth2TestConfig.getUsername())
                 .password(passwordEncoder().encode(oauth2TestConfig.getPassword()))
-                .authorities(Collections.emptyList());
+                .authorities(Collections.singletonList(new Role(Role.ROLE_SUPER_ADMIN, StringUtils.EMPTY)));
     }
 
     /**

@@ -1,0 +1,19 @@
+{
+  "displayName": "Request with num tests exceeded maximum",
+  "testType": "USING_EXTERNAL_DATA_URL",
+  "request": {
+    "trainDataUrl": "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+    "classifierOptions": {
+      "type": "logistic",
+      "maxIts": 200,
+      "useConjugateGradientDescent": false
+    },
+    "evaluationMethod": "CROSS_VALIDATION",
+    "numFolds": 10,
+    "numTests": 20,
+    "seed": 1
+  },
+  "expectedResponse": {
+    "requestStatus": "VALIDATION_ERROR"
+  }
+}

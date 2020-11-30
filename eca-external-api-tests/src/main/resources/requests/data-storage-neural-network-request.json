@@ -1,0 +1,17 @@
+{
+  "displayName": "Neural network request using data storage API",
+  "testType": "USING_API_DATA_STORAGE",
+  "trainDataPath": "classpath:/data/credit.xlsx",
+  "request": {
+    "classifierOptions": {
+      "type": "neural_network",
+      "activationFunctionOptions": {
+        "activationFunctionType": "LOGISTIC"
+      }
+    },
+    "evaluationMethod": "TRAINING_DATA"
+  },
+  "expectedResponse": {
+    "requestStatus": "SUCCESS"
+  }
+}

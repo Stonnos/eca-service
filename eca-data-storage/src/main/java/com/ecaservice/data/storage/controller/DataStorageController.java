@@ -155,7 +155,7 @@ public class DataStorageController {
      * @return response entity
      */
     @ExceptionHandler(value = ConstraintViolationException.class)
-    protected ResponseEntity<List<ValidationErrorDto>> handleConstraintViolation(ConstraintViolationException ex) {
+    public ResponseEntity<List<ValidationErrorDto>> handleConstraintViolation(ConstraintViolationException ex) {
         List<ValidationErrorDto> validationErrors = ex.getConstraintViolations().stream()
                 .map(constraintViolation -> {
                     Path.Node node = Iterables.getLast(constraintViolation.getPropertyPath());

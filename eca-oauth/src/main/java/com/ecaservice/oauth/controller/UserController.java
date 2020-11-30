@@ -160,7 +160,7 @@ public class UserController {
     )
     @GetMapping(value = "/photo/{id}")
     public ResponseEntity<ByteArrayResource> downloadPhoto(
-            @ApiParam(value = "Photo id", required = true) @PathVariable Long id) {
+            @ApiParam(value = "Photo id", required = true, example = "1") @PathVariable Long id) {
         UserPhoto userPhoto = userPhotoRepository.findById(id).orElse(null);
         if (userPhoto == null) {
             log.error("Can't find user photo with id [{}]", id);

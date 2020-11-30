@@ -1,0 +1,20 @@
+{
+  "displayName": "KNN request using data storage API",
+  "testType": "USING_API_DATA_STORAGE",
+  "trainDataPath": "classpath:/data/credit.xlsx",
+  "request": {
+    "classifierOptions": {
+      "type": "knn",
+      "numNeighbours": 10,
+      "distanceType": "EUCLID",
+      "weight": 1.0
+    },
+    "evaluationMethod": "CROSS_VALIDATION",
+    "numFolds": 10,
+    "numTests": 1,
+    "seed": 1
+  },
+  "expectedResponse": {
+    "requestStatus": "SUCCESS"
+  }
+}

@@ -11,22 +11,19 @@ import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.repository.UserPhotoRepository;
 import com.ecaservice.oauth.service.PasswordService;
 import com.ecaservice.oauth.service.UserService;
+import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UserDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
 import java.util.Collections;
@@ -46,14 +43,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@WebMvcTest(controllers = UserController.class,
-        useDefaultFilters = false,
-        includeFilters = {
-                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = UserController.class)
-        })
-@AutoConfigureMockMvc(addFilters = false)
+@WebMvcTest(controllers = UserController.class)
 @Import({UserMapperImpl.class, RoleMapperImpl.class})
-class UserControllerTest {
+class UserControllerTest extends AbstractControllerTest {
 
     private static final String BASE_URL = "/users";
     private static final String CREATE_URL = BASE_URL + "/create";
@@ -82,10 +74,14 @@ class UserControllerTest {
     @MockBean
     private UserPhotoRepository userPhotoRepository;
 
-    @Inject
-    private MockMvc mockMvc;
-
-    private ObjectMapper objectMapper = new ObjectMapper();
+    @Test
+    void testCreateUserUnauthorized() throws Exception {
+        CreateUserDto createUserDto = TestHelperUtils.createUserDto();
+        mockMvc.perform(post(CREATE_URL)
+                .content(objectMapper.writeValueAsString(createUserDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
 
     @Test
     void testCreateUser() throws Exception {
@@ -94,12 +90,22 @@ class UserControllerTest {
         UserDto expected = userMapper.map(userEntity);
         when(userService.createUser(any(CreateUserDto.class), any())).thenReturn(userEntity);
         mockMvc.perform(post(CREATE_URL)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(createUserDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
     }
+
+    @Test
+    void testGetUsersPageUnauthorized() throws Exception {
+        mockMvc.perform(get(LIST_URL)
+                .param(PAGE_PARAM, String.valueOf(PAGE_NUMBER))
+                .param(SIZE_PARAM, String.valueOf(TOTAL_ELEMENTS)))
+                .andExpect(status().isUnauthorized());
+    }
+
 
     @Test
     void testGetUsersPage() throws Exception {
@@ -110,6 +116,7 @@ class UserControllerTest {
         when(userEntityPage.getContent()).thenReturn(userEntityList);
         when(userService.getNextPage(any(PageRequestDto.class))).thenReturn(userEntityPage);
         mockMvc.perform(get(LIST_URL)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .param(PAGE_PARAM, String.valueOf(PAGE_NUMBER))
                 .param(SIZE_PARAM, String.valueOf(TOTAL_ELEMENTS)))
                 .andExpect(status().isOk())
@@ -118,9 +125,16 @@ class UserControllerTest {
     }
 
     @Test
+    void testDownloadUserPhotoUnauthorized() throws Exception {
+        mockMvc.perform(get(DOWNLOAD_PHOTO_URL, PHOTO_ID))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void testDownloadUserPhotoNotFound() throws Exception {
         when(userPhotoRepository.findById(PHOTO_ID)).thenReturn(Optional.empty());
-        mockMvc.perform(get(DOWNLOAD_PHOTO_URL, PHOTO_ID))
+        mockMvc.perform(get(DOWNLOAD_PHOTO_URL, PHOTO_ID)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isNotFound());
     }
 
@@ -130,7 +144,8 @@ class UserControllerTest {
         userPhoto.setFileName(PHOTO_PNG);
         userPhoto.setPhoto(new byte[CONTENT_LENGTH]);
         when(userPhotoRepository.findById(PHOTO_ID)).thenReturn(Optional.of(userPhoto));
-        mockMvc.perform(get(DOWNLOAD_PHOTO_URL, PHOTO_ID))
+        mockMvc.perform(get(DOWNLOAD_PHOTO_URL, PHOTO_ID)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().bytes(userPhoto.getPhoto()))
                 .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE));

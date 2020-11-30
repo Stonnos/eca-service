@@ -12,20 +12,25 @@
         <module>oauth2-test</module>
         <module>eca-model</module>
         <module>eca-user-model</module>
-        <module>eca-mail-transport</module>
+        <module>eca-transport</module>
+        <module>classifiers-options</module>
+        <module>eca-external-api-transport</module>
         <module>eca-web-transport</module>
         <module>swagger-core</module>
         <module>oauth2-core</module>
+        <module>rabbit-core</module>
         <module>classifiers-options-adapter</module>
         <module>eca-report</module>
         <module>eca-oauth</module>
         <module>eca-server</module>
         <module>eca-mail</module>
         <module>eca-data-storage</module>
+        <module>eca-external-api</module>
         <module>eca-web</module>
         <module>zuul-gate</module>
         <module>discovery-server</module>
         <module>eca-load-tests</module>
+        <module>eca-external-api-tests</module>
     </modules>
 
     <parent>
@@ -120,6 +125,36 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <profiles>
+
+        <profile>
+            <id>quality</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-integration-test</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
 
     <dependencies>
 
@@ -275,6 +310,7 @@
                         <exclude>**/config/**/*</exclude>
                         <exclude>**/exception/**/*</exclude>
                         <exclude>**/util/**/*</exclude>
+                        <exclude>**/metrics/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
