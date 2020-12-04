@@ -22,6 +22,9 @@ zuul:
       ds:
         path: /eca-ds/**
         serviceId: eca-data-storage
+      external-api:
+        path: /external-api/**
+        serviceId: eca-external-api
       frontend:
         path: /**
         serviceId: eca-web

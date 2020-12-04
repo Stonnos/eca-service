@@ -17,6 +17,8 @@ import javax.inject.Inject;
 @Oauth2TestConfiguration
 public abstract class AbstractControllerTest {
 
+    private static final String BEARER_TOKEN_FORMAT = "Bearer %s";
+
     @Getter
     private String accessToken;
 
@@ -32,6 +34,10 @@ public abstract class AbstractControllerTest {
     void init() throws Exception {
         accessToken = tokenService.obtainAccessToken();
         before();
+    }
+
+    public String getBearerToken() {
+        return String.format(BEARER_TOKEN_FORMAT, getAccessToken());
     }
 
     public void before() {

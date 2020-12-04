@@ -1,8 +1,11 @@
 package com.ecaservice.load.test.util;
 
+import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.load.test.entity.EvaluationRequestEntity;
 import com.ecaservice.load.test.entity.LoadTestEntity;
+import com.ecaservice.load.test.entity.RequestStageType;
+import com.ecaservice.load.test.entity.TestResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
@@ -28,7 +31,7 @@ public class Utils {
     private static final String GMT_TIME_ZONE = "GMT";
     private static final int SCALE = 2;
 
-    private final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss:SS");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss:SS");
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -37,20 +40,24 @@ public class Utils {
      *
      * @param loadTestEntity    - load test entity
      * @param classifierOptions - classifier options
-     * @param instances         - instances object
+     * @param evaluationRequest - evaluation request object
      * @return evaluation request entity
      */
     public static EvaluationRequestEntity createEvaluationRequestEntity(LoadTestEntity loadTestEntity,
                                                                         ClassifierOptions classifierOptions,
-                                                                        Instances instances) {
+                                                                        EvaluationRequest evaluationRequest) {
         try {
             EvaluationRequestEntity evaluationRequestEntity = new EvaluationRequestEntity();
             evaluationRequestEntity.setCorrelationId(UUID.randomUUID().toString());
+            evaluationRequestEntity.setStageType(RequestStageType.NOT_SEND);
+            evaluationRequestEntity.setTestResult(TestResult.UNKNOWN);
             evaluationRequestEntity.setLoadTestEntity(loadTestEntity);
             evaluationRequestEntity.setClassifierOptions(OBJECT_MAPPER.writeValueAsString(classifierOptions));
+            Instances instances = evaluationRequest.getData();
             evaluationRequestEntity.setRelationName(instances.relationName());
             evaluationRequestEntity.setNumAttributes(instances.numAttributes());
             evaluationRequestEntity.setNumInstances(instances.numInstances());
+            evaluationRequestEntity.setClassifierName(evaluationRequest.getClassifier().getClass().getSimpleName());
             return evaluationRequestEntity;
         } catch (JsonProcessingException ex) {
             throw new IllegalStateException(ex);

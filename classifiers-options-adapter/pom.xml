@@ -27,8 +27,9 @@
         </dependency>
 
         <dependency>
-            <groupId>eca</groupId>
-            <artifactId>eca-core</artifactId>
+            <groupId>eca.service</groupId>
+            <artifactId>classifiers-options</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

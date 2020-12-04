@@ -2,7 +2,6 @@ package com.ecaservice.load.test.repository;
 
 import com.ecaservice.load.test.entity.EvaluationRequestEntity;
 import com.ecaservice.load.test.entity.LoadTestEntity;
-import com.ecaservice.load.test.entity.RequestStageType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -33,11 +32,9 @@ public interface EvaluationRequestRepository extends JpaRepository<EvaluationReq
      * Finds evaluation request with correlation id and stage.
      *
      * @param correlationId    - correlation id
-     * @param requestStageType - request stage
      * @return evaluation request entity
      */
-    EvaluationRequestEntity findByCorrelationIdAndStageTypeEquals(String correlationId,
-                                                                  RequestStageType requestStageType);
+    EvaluationRequestEntity findByCorrelationId(String correlationId);
 
     /**
      * Finds exceeded requests ids.

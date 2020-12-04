@@ -1,0 +1,96 @@
+spring:
+  application:
+    name: eca-external-api
+  jmx:
+    default-domain: eca-external-api
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+  ## Datasource properties
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    jdbc-url: jdbc:postgresql://localhost:5432/eca_external_api
+    username: postgres
+    password: postgres
+  ## Token datasource properties
+  tokendatasource:
+    driver-class-name: org.postgresql.Driver
+    jdbc-url: jdbc:postgresql://localhost:5432/eca_oauth
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        order_by:
+          default_null_ordering: last
+  liquibase:
+    contexts: schema,data
+    change-log: classpath:db/liquibase-changelog.xml
+  servlet:
+    multipart:
+      max-file-size: 10MB
+  rabbitmq:
+    listener:
+      simple:
+        concurrency: 10
+        maxConcurrency: 10
+
+eureka:
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+
+ribbon:
+  ReadTimeout: 60000
+
+external-api:
+  dateFormat: yyyy-MM-dd HH:mm:ss
+  batchSize: 25
+  requestTimeoutMinutes: 60
+  requestCacheDurationMinutes: 60
+  classifiersPath: D:/classifiers/
+  trainDataPath: D:/data/
+  downloadBaseUrl: http://localhost:8085/eca-external-api
+  numberOfDaysForStorage: 14
+  ## Each day at midnight
+  removeClassifiersCron: 0 0 0 * * *
+  removeDataCron: 0 0 0 * * *
+
+classifiers-options:
+  maximumFractionDigits: 4
+
+queue:
+  evaluationRequestQueue: evaluation-request-queue
+  evaluationRequestReplyToQueue: external-api-evaluation-response-queue
+
+## Swagger properties
+swagger2:
+  projectVersion: @project.version@
+  groups:
+    eca-external-api:
+      title: External API
+      description: Operations for external systems
+      author: Roman Batygin
+      email: roman.batygin@mail.ru
+  tokenBaseUrl: http://localhost:8085/eca-oauth
+  clientId: external-api
+  secret: external_api_secret
+
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always

@@ -29,8 +29,8 @@
    * eca-load-tests.numFolds -  число блоков для метода k * V блочной кросс - проверки
    * eca-load-tests.numTests - число тестов для метода k * V блочной кросс - проверки
    * eca-load-tests.seed - начальное значение для генератора псевдослучайных чисел
-   * eca-load-tests.trainingDataStoragePath - путь к директории с датасетами
-   * eca-load-tests.classifiersStoragePath - путь к директории с настройками классификаторов
+   * eca-load-tests.trainingDataStoragePath - относительный путь к директории (в resources) с датасетами
+   * eca-load-tests.classifiersStoragePath - относительный путь к директории (в resources) с настройками классификаторов
    * eca-load-tests.pageSize - размер страницы для постраничной обработки
    * eca-load-tests.delaySeconds - интервал между запусками scheduler для обработки тестов
 3) swagger2 - настройки Swagger

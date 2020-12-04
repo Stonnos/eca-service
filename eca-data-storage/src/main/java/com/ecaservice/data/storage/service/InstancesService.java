@@ -19,7 +19,7 @@ import weka.core.Instances;
 public class InstancesService {
 
     private static final String DROP_TABLE_QUERY_FORMAT = "DROP TABLE IF EXISTS %s";
-    public static final String RENAME_TABLE_QUERY_FORMAT = "ALTER TABLE IF EXISTS %s RENAME TO %s";
+    private static final String RENAME_TABLE_QUERY_FORMAT = "ALTER TABLE IF EXISTS %s RENAME TO %s";
 
     private final JdbcTemplate jdbcTemplate;
     private final TransactionalService transactionalMigrationService;
