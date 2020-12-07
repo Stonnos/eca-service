@@ -35,7 +35,7 @@ public class RedisCacheConfigurer {
      */
     @Bean
     public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
-        return (builder) -> {
+        return builder -> {
             Map<String, RedisCacheConfiguration> configurationMap = newHashMap();
             cacheConfig.getSpecs().forEach(
                     (key, value) -> configurationMap.put(key, RedisCacheConfiguration.defaultCacheConfig()
