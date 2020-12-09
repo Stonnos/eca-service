@@ -2,21 +2,23 @@ package com.ecaservice.service.experiment;
 
 import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.base.model.ExperimentRequest;
+import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.exception.experiment.ExperimentException;
+import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentMapperImpl;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.Experiment_;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.model.entity.RequestStatus;
-import com.ecaservice.model.experiment.ExperimentType;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.AbstractJpaTest;
+import com.ecaservice.service.AppInstanceService;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.service.evaluation.CalculationExecutorServiceImpl;
 import com.ecaservice.service.filter.FilterService;
@@ -58,7 +60,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentMapperImpl.class, ExperimentConfig.class, CommonConfig.class, CrossValidationConfig.class})
+@Import({ExperimentMapperImpl.class, ExperimentConfig.class, CommonConfig.class, CrossValidationConfig.class,
+        AppInstanceService.class, DateTimeConverter.class})
 class ExperimentServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
@@ -77,6 +80,8 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @Inject
     private EntityManager entityManager;
     @Inject
+    private AppInstanceService appInstanceService;
+    @Inject
     private CommonConfig commonConfig;
     @Mock
     private FilterService filterService;
@@ -94,7 +99,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
                 new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
         experimentService = new ExperimentService(experimentRepository, executorService, experimentMapper, dataService,
                 crossValidationConfig, experimentConfig, experimentProcessorService, entityManager, commonConfig,
-                filterService);
+                filterService, appInstanceService);
     }
 
     @Override
@@ -121,6 +126,8 @@ class ExperimentServiceTest extends AbstractJpaTest {
         assertThat(experiment.getRequestId()).isNotNull();
         assertThat(experiment.getCreationDate()).isNotNull();
         assertThat(experiment.getTrainingDataAbsolutePath()).isNotNull();
+        assertThat(experiment.getAppInstanceEntity()).isNotNull();
+        assertThat(experiment.getAppInstanceEntity().getInstanceName()).isEqualTo(commonConfig.getInstance());
     }
 
     @Test
@@ -136,7 +143,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
                 any(InitializationParams.class))).thenReturn(new ExperimentHistory());
         doNothing().when(dataService).saveExperimentHistory(any(File.class), any(ExperimentHistory.class));
-        experimentService.processExperiment(TestHelperUtils.createExperiment(null));
+        experimentService.processExperiment(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.hasOneElement(experiments);
         Experiment experiment = experiments.get(0);
@@ -150,7 +157,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @Test
     void testProcessExperimentWithErrorStatus() throws Exception {
         when(dataService.load(any(File.class))).thenThrow(new Exception());
-        experimentService.processExperiment(TestHelperUtils.createExperiment(null));
+        experimentService.processExperiment(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.hasOneElement(experiments);
         Experiment experiment = experiments.get(0);
@@ -296,7 +303,6 @@ class ExperimentServiceTest extends AbstractJpaTest {
         when(filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT)).thenReturn(
                 Collections.singletonList(Experiment_.REQUEST_STATUS));
         Page<Experiment> evaluationLogPage = experimentService.getNextPage(pageRequestDto);
-        assertThat(evaluationLogPage).isNotNull();
         assertThat(evaluationLogPage).isEmpty();
     }
 
@@ -439,8 +445,8 @@ class ExperimentServiceTest extends AbstractJpaTest {
         Map<ExperimentType, Long> experimentTypesMap =
                 experimentService.getExperimentTypesStatistics(LocalDate.of(2018, 1, 1), LocalDate.of(2018, 1, 3));
         Assertions.assertThat(experimentTypesMap).isNotNull();
-        Assertions.assertThat(experimentTypesMap.size()).isEqualTo(ExperimentType.values().length);
-        Assertions.assertThat(experimentTypesMap.get(ExperimentType.ADA_BOOST)).isEqualTo(2L);
+        Assertions.assertThat(experimentTypesMap).hasSameSizeAs(ExperimentType.values());
+        Assertions.assertThat(experimentTypesMap).containsEntry(ExperimentType.ADA_BOOST, 2L);
         Assertions.assertThat(experimentTypesMap.get(ExperimentType.KNN)).isOne();
         Assertions.assertThat(experimentTypesMap.get(ExperimentType.DECISION_TREE)).isZero();
     }

@@ -2,6 +2,7 @@ package com.ecaservice.oauth.config;
 
 import com.ecaservice.oauth.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @author Roman Batygin
  */
 @Configuration
+@ConditionalOnBean(UserDetailsServiceImpl.class)
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class AuthServerSecurityConfiguration extends WebSecurityConfigurerAdapter {

@@ -16,6 +16,7 @@ import { ClassifiersConfigurationsService } from "../../classifiers-configuratio
 import { ClassifiersConfigurationModel } from "../../create-classifiers-configuration/model/classifiers-configuration.model";
 import { ExperimentTabUtils } from "../../experiments-tabs/model/experiment-tab.utils";
 import { finalize } from "rxjs/internal/operators";
+import { Utils } from "../../common/util/utils";
 
 declare var Prism: any;
 
@@ -115,6 +116,11 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
         this.deleteConfiguration(item);
       }
     });
+  }
+
+  public onDownloadReport(item: ClassifiersConfigurationDto): void {
+    const observable = this.classifiersConfigurationService.getClassifiersConfigurationReport(item.id);
+    this.downloadReport(observable, Utils.getClassifiersConfigurationFile(item));
   }
 
   public onSetActiveClassifiersConfiguration(item: ClassifiersConfigurationDto): void {

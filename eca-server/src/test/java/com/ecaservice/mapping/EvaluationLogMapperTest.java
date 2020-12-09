@@ -1,8 +1,8 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.config.CrossValidationConfig;
-import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.model.entity.ClassifierInputOptions;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.report.model.EvaluationLogBean;
@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class,
+@Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class, DateTimeConverter.class,
         ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class, CrossValidationConfig.class})
 class EvaluationLogMapperTest {
 

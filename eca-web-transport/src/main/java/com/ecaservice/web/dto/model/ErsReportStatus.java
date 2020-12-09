@@ -17,6 +17,11 @@ public enum ErsReportStatus {
     SUCCESS_SENT(ErsReportStatusDictionary.SUCCESS_SENT_DESCRIPTION),
 
     /**
+     * New experiment (ready to process)
+     */
+    EXPERIMENT_NEW(ErsReportStatusDictionary.NEW_EXPERIMENT_DESCRIPTION),
+
+    /**
      * Experiment in progress status
      */
     EXPERIMENT_IN_PROGRESS(ErsReportStatusDictionary.EXPERIMENT_IN_PROGRESS_DESCRIPTION),
@@ -39,12 +44,7 @@ public enum ErsReportStatus {
     /**
      * Some experiment results must be sent to ERS service
      */
-    NEED_SENT(ErsReportStatusDictionary.NEED_SENT_DESCRIPTION),
-
-    /**
-     * Experiment results sending in progress
-     */
-    SENDING(ErsReportStatusDictionary.SENDING_DESCRIPTION);
+    NOT_SENT(ErsReportStatusDictionary.NOT_SENT_DESCRIPTION);
 
     private final String description;
 

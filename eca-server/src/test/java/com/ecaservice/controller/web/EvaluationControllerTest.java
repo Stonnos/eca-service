@@ -3,6 +3,7 @@ package com.ecaservice.controller.web;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
+import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.mapping.InstancesInfoMapperImpl;
@@ -51,7 +52,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Roman Batygin
  */
 @WebMvcTest(controllers = EvaluationController.class)
-@Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class,
+@Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class, DateTimeConverter.class,
         ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class})
 class EvaluationControllerTest extends PageRequestControllerTest {
 

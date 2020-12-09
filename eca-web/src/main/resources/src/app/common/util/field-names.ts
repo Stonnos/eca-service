@@ -100,6 +100,7 @@ export class UserFields {
   public static readonly EMAIL: string = "email";
   public static readonly FIRST_NAME: string = "firstName";
   public static readonly CREATION_DATE: string = "creationDate";
+  public static readonly TFA_ENABLED: string = "tfaEnabled";
   public static readonly ROLES: string = "roles";
 }
 

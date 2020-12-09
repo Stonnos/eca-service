@@ -15,6 +15,7 @@ export class ClassifiersConfigurationMenuComponent implements OnInit, OnChanges 
   public deleteMenuItem: MenuItem;
   public renameMenuItem: MenuItem;
   public uploadClassifiersOptionsMenu: MenuItem;
+  public downloadReportMenu: MenuItem;
   public optionsMenu: MenuItem[] = [];
 
   @Input()
@@ -28,6 +29,8 @@ export class ClassifiersConfigurationMenuComponent implements OnInit, OnChanges 
   public onDelete: EventEmitter<ClassifiersConfigurationDto> = new EventEmitter<ClassifiersConfigurationDto>();
   @Output()
   public onSetActive: EventEmitter<ClassifiersConfigurationDto> = new EventEmitter<ClassifiersConfigurationDto>();
+  @Output()
+  public onDownloadReport: EventEmitter<ClassifiersConfigurationDto> = new EventEmitter<ClassifiersConfigurationDto>();
 
   public ngOnInit() {
   }
@@ -39,7 +42,7 @@ export class ClassifiersConfigurationMenuComponent implements OnInit, OnChanges 
   private initMenu() {
     if (this.classifiersConfiguration) {
       this.uploadClassifiersOptionsMenu = {
-        label: ' Загрузить классификаторы',
+        label: 'Загрузить классификаторы',
         icon: 'pi pi-upload',
         styleClass: 'menu-item',
         visible: !this.classifiersConfiguration.buildIn,
@@ -73,11 +76,25 @@ export class ClassifiersConfigurationMenuComponent implements OnInit, OnChanges 
           this.onRename.emit(this.classifiersConfiguration);
         }
       };
+      this.downloadReportMenu = {
+        label: 'Сформировать отчет',
+        icon: 'pi pi-file',
+        styleClass: 'menu-item',
+        command: () => {
+          this.onDownloadReport.emit(this.classifiersConfiguration);
+        }
+      };
       this.optionsMenu = [
         {
           icon: 'pi pi-fw pi-cog',
           styleClass: 'main-menu-item',
-          items: [this.renameMenuItem, this.deleteMenuItem, this.setActiveMenuItem, this.uploadClassifiersOptionsMenu]
+          items: [
+            this.renameMenuItem,
+            this.deleteMenuItem,
+            this.setActiveMenuItem,
+            this.uploadClassifiersOptionsMenu,
+            this.downloadReportMenu
+          ]
         }
       ];
     }

@@ -1,0 +1,27 @@
+package com.ecaservice.base.model;
+
+import lombok.Data;
+
+/**
+ * Response basic model.
+ *
+ * @author Roman Batygin
+ */
+@Data
+public class EcaResponse {
+
+    /**
+     * Request unique identifier
+     */
+    private String requestId;
+
+    /**
+     * Technical status
+     */
+    private TechnicalStatus status;
+
+    /**
+     * Error message
+     */
+    private String errorMessage;
+}

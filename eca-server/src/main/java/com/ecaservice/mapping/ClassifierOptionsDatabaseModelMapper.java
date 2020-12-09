@@ -1,8 +1,11 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
+import com.ecaservice.report.model.ClassifierOptionsBean;
+import com.ecaservice.web.dto.model.ClassifierOptionsDto;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
@@ -11,7 +14,7 @@ import java.util.List;
  *
  * @author Roman Batygin
  */
-@Mapper
+@Mapper(uses = DateTimeConverter.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface ClassifierOptionsDatabaseModelMapper {
 
     /**
@@ -21,6 +24,23 @@ public interface ClassifierOptionsDatabaseModelMapper {
      * @return classifier options dto model
      */
     ClassifierOptionsDto map(ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel);
+
+    /**
+     * Maps classifier options database model to report bean model.
+     *
+     * @param classifierOptionsDatabaseModel classifier options database model
+     * @return classifier options report bean model
+     */
+    @Mapping(source = "creationDate", target = "creationDate", qualifiedByName = "formatLocalDateTime")
+    ClassifierOptionsBean mapToBean(ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel);
+
+    /**
+     * Maps classifier options database models list to report beans list.
+     *
+     * @param classifierOptionsDatabaseModels classifier options database model
+     * @return classifier options report beans
+     */
+    List<ClassifierOptionsBean> mapToBeans(List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels);
 
     /**
      * Maps classifier options database models list to dto models list.

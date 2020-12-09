@@ -21,14 +21,4 @@ public interface ExperimentResultsRequestRepository extends JpaRepository<Experi
      */
     ExperimentResultsRequest findByExperimentResultsAndResponseStatusEquals(ExperimentResultsEntity experimentResults,
                                                                             ErsResponseStatus responseStatus);
-
-    /**
-     * Checks experiment results request existing with specified params.
-     *
-     * @param experimentResults - experiment results entity
-     * @param responseStatus    - response status
-     * @return {@code true} if experiment results request exists, {@code false} otherwise
-     */
-    boolean existsByExperimentResultsAndResponseStatusEquals(ExperimentResultsEntity experimentResults,
-                                                             ErsResponseStatus responseStatus);
 }

@@ -1,9 +1,8 @@
 package com.ecaservice.service.evaluation;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.classifier.options.config.ClassifiersOptionsConfiguration;
 import com.ecaservice.config.CrossValidationConfig;
-import com.ecaservice.configuation.ClassifierOptionsMapperConfiguration;
-import com.ecaservice.conversion.ClassifierOptionsConverter;
 import com.ecaservice.dto.evaluation.ClassificationCostsReport;
 import com.ecaservice.dto.evaluation.ClassifierReport;
 import com.ecaservice.dto.evaluation.ConfusionMatrixReport;
@@ -48,7 +47,7 @@ import java.util.List;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @Import({EvaluationResultsService.class, CrossValidationConfig.class,
-        InstancesConverter.class, ClassifierOptionsConverter.class, ClassifierOptionsMapperConfiguration.class})
+        InstancesConverter.class, ClassifiersOptionsConfiguration.class})
 class EvaluationResultsServiceTest {
 
     @Inject

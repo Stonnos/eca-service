@@ -1,7 +1,7 @@
 package com.ecaservice.mapping;
 
+import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.config.CrossValidationConfig;
-import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.InstancesInfo;
 import com.ecaservice.report.model.EvaluationLogBean;
@@ -25,7 +25,7 @@ import static com.ecaservice.util.Utils.getEvaluationMethodDescription;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = {InstancesInfoMapper.class, ClassifierInfoMapper.class},
+@Mapper(uses = {InstancesInfoMapper.class, ClassifierInfoMapper.class, DateTimeConverter.class},
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
 

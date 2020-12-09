@@ -1,8 +1,8 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.config.CrossValidationConfig;
-import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.report.model.ExperimentBean;
 import com.ecaservice.web.dto.model.ExperimentDto;
@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import({ExperimentMapperImpl.class, CrossValidationConfig.class})
+@Import({ExperimentMapperImpl.class, CrossValidationConfig.class, DateTimeConverter.class})
 class ExperimentMapperTest {
 
     private static final String TRAINING_DATA_ABSOLUTE_PATH = "/home/data.xls";
@@ -52,6 +52,7 @@ class ExperimentMapperTest {
         assertThat(experiment.getNumTests()).isNull();
         assertThat(experiment.getSeed()).isNull();
         assertThat(experiment.getExperimentType()).isEqualTo(experimentRequest.getExperimentType());
+        assertThat(experiment.getClassIndex()).isEqualTo(experimentRequest.getData().classIndex());
     }
 
     @Test

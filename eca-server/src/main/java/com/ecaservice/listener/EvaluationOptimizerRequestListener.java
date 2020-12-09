@@ -1,8 +1,8 @@
 package com.ecaservice.listener;
 
+import com.ecaservice.base.model.EvaluationResponse;
+import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.config.rabbit.Queues;
-import com.ecaservice.dto.EvaluationResponse;
-import com.ecaservice.dto.InstancesRequest;
 import com.ecaservice.event.model.EvaluationFinishedEvent;
 import com.ecaservice.service.evaluation.EvaluationOptimizerService;
 import lombok.RequiredArgsConstructor;

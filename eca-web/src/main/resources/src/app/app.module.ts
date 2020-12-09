@@ -35,6 +35,7 @@ import { CreateUserModule } from "./create-user/create-user.module";
 import { ChangePasswordModule } from "./change-password/change-password.module";
 import { InstancesModule } from "./instances/instances.module";
 import { CreateEditInstancesModule } from "./create-edit-instances/create-edit-instances.module";
+import { UserProfileModule } from "./user-profile/user-profile.module";
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { CreateEditInstancesModule } from "./create-edit-instances/create-edit-i
     ClassifiersModule,
     ExperimentsModule,
     UsersModule,
+    UserProfileModule,
     CreateUserModule,
     ClassifiersConfigurationsModule,
     ClassifiersConfigurationDetailsModule,

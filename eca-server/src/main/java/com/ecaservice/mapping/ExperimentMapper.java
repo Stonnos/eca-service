@@ -1,7 +1,7 @@
 package com.ecaservice.mapping;
 
+import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.config.CrossValidationConfig;
-import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.report.model.ExperimentBean;
 import com.ecaservice.web.dto.model.EnumDto;
@@ -9,6 +9,7 @@ import com.ecaservice.web.dto.model.ExperimentDto;
 import eca.core.evaluation.EvaluationMethod;
 import org.apache.commons.io.FilenameUtils;
 import org.mapstruct.AfterMapping;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -23,7 +24,7 @@ import static com.ecaservice.util.Utils.getEvaluationMethodDescription;
  *
  * @author Roman Batygin
  */
-@Mapper
+@Mapper(uses = DateTimeConverter.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class ExperimentMapper extends AbstractEvaluationMapper {
 
     /**
@@ -91,14 +92,19 @@ public abstract class ExperimentMapper extends AbstractEvaluationMapper {
     public abstract List<ExperimentBean> mapToBeans(List<Experiment> experiments);
 
     @AfterMapping
-    protected void mapEvaluationMethodOptions(ExperimentRequest experimentRequest,
-                                              CrossValidationConfig crossValidationConfig,
+    protected void mapEvaluationMethodOptions(CrossValidationConfig crossValidationConfig,
                                               @MappingTarget Experiment experiment) {
         if (EvaluationMethod.CROSS_VALIDATION.equals(experiment.getEvaluationMethod())) {
             experiment.setNumFolds(crossValidationConfig.getNumFolds());
             experiment.setNumTests(crossValidationConfig.getNumTests());
             experiment.setSeed(crossValidationConfig.getSeed());
         }
+    }
+
+    @AfterMapping
+    protected void postMappingExperimentRequest(ExperimentRequest experimentRequest,
+                                                @MappingTarget Experiment experiment) {
+       experiment.setClassIndex(experimentRequest.getData().classIndex());
     }
 
     @AfterMapping

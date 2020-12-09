@@ -1,10 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {
-  ExperimentErsReportDto,
+  ExperimentErsReportDto, ExperimentProgressDto,
   ExperimentResultsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ExperimentsService } from "../../experiments/services/experiments.service";
-import { finalize } from "rxjs/operators";
 import { MessageService } from "primeng/api";
 import { Router } from "@angular/router";
 import { RouterPaths } from "../../routing/router-paths";
@@ -22,9 +21,8 @@ export class ExperimentErsReportComponent implements OnInit, FieldLink {
 
   @Input()
   public experimentErsReport: ExperimentErsReportDto;
-
-  @Output()
-  public evaluationResultsSent: EventEmitter<void> = new EventEmitter();
+  @Input()
+  public experimentProgress: ExperimentProgressDto;
 
   public linkColumns: string[] = [ExperimentResultsFields.RESULTS_INDEX, ExperimentResultsFields.CLASSIFIER_NAME];
   public experimentResultsColumns: any[] = [];
@@ -65,28 +63,6 @@ export class ExperimentErsReportComponent implements OnInit, FieldLink {
 
   public hideClassifierOptionsDialog(): void {
     this.classifierOptionsDialogVisibility = false;
-  }
-
-  public needSentToErs(): boolean {
-    return this.experimentErsReport && this.experimentErsReport.ersReportStatus.value == "NEED_SENT";
-  }
-
-  public sentEvaluationResults(): void {
-    this.loading = true;
-    this.experimentsService.sentEvaluationResults(this.experimentErsReport.experimentRequestId)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
-      .subscribe({
-        next: () => {
-          this.evaluationResultsSent.emit();
-        },
-        error: (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-        }
-      });
   }
 
   public getColumnValue(column: string, item: ExperimentResultsDto) {

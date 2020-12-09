@@ -2,7 +2,7 @@ package com.ecaservice.oauth.service.mail;
 
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.notification.dto.EmailResponse;
-import com.ecaservice.notification.dto.EmailTemplateType;
+import com.ecaservice.notification.dto.EmailType;
 import com.ecaservice.oauth.config.ResetPasswordConfig;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
@@ -19,6 +19,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
+import java.util.UUID;
 
 import static com.ecaservice.oauth.TestHelperUtils.createResetPasswordRequestEntity;
 import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
@@ -65,7 +66,7 @@ class NotificationServiceTest {
         verify(emailClient, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
         EmailRequest actual = emailRequestArgumentCaptor.getValue();
         assertThat(actual).isNotNull();
-        assertThat(actual.getTemplateType()).isEqualTo(EmailTemplateType.NEW_USER_TEMPLATE);
+        assertThat(actual.getTemplateType()).isEqualTo(EmailType.NEW_USER);
         assertThat(actual.getEmailMessageVariables()).isNotEmpty();
         assertThat(actual.getEmailMessageVariables()).containsEntry(TemplateVariablesDictionary.USERNAME_KEY,
                 userEntity.getLogin());
@@ -80,12 +81,26 @@ class NotificationServiceTest {
         verify(emailClient, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
         EmailRequest actual = emailRequestArgumentCaptor.getValue();
         assertThat(actual).isNotNull();
-        assertThat(actual.getTemplateType()).isEqualTo(EmailTemplateType.RESET_PASSWORD_TEMPLATE);
+        assertThat(actual.getTemplateType()).isEqualTo(EmailType.RESET_PASSWORD);
         assertThat(actual.getEmailMessageVariables()).isNotEmpty();
         assertThat(actual.getEmailMessageVariables()).containsEntry(TemplateVariablesDictionary.VALIDITY_MINUTES_KEY,
                 resetPasswordConfig.getValidityMinutes());
         assertThat(actual.getEmailMessageVariables()).containsEntry(TemplateVariablesDictionary.RESET_PASSWORD_URL_KEY,
                 String.format(RESET_PASSWORD_URL_FORMAT, resetPasswordConfig.getBaseUrl(),
                         resetPasswordRequestEntity.getToken()));
+    }
+
+    @Test
+    void testSendTfaCode() {
+        when(emailClient.sendEmail(any(EmailRequest.class))).thenReturn(new EmailResponse());
+        UserEntity userEntity = createUserEntity();
+        String code = UUID.randomUUID().toString();
+        notificationService.sendTfaCode(userEntity, code);
+        verify(emailClient, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
+        EmailRequest actual = emailRequestArgumentCaptor.getValue();
+        assertThat(actual).isNotNull();
+        assertThat(actual.getTemplateType()).isEqualTo(EmailType.TFA_CODE);
+        assertThat(actual.getEmailMessageVariables()).isNotEmpty();
+        assertThat(actual.getEmailMessageVariables()).containsEntry(TemplateVariablesDictionary.TFA_CODE, code);
     }
 }

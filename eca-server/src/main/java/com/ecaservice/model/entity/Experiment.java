@@ -1,6 +1,6 @@
 package com.ecaservice.model.entity;
 
-import com.ecaservice.model.experiment.ExperimentType;
+import com.ecaservice.base.model.ExperimentType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -50,6 +50,12 @@ public class Experiment extends AbstractEvaluationEntity {
      */
     @Column(name = "training_data_absolute_path")
     private String trainingDataAbsolutePath;
+
+    /**
+     * Class attribute index
+     */
+    @Column(name = "class_index")
+    private Integer classIndex;
 
     /**
      * Date when experiment results notification is sent to email service

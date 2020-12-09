@@ -69,4 +69,12 @@ export class ClassifiersConfigurationsService {
     formData.append('id', id.toString());
     return this.http.post(this.serviceUrl + '/set-active', formData, { headers: headers });
   }
+
+  public getClassifiersConfigurationReport(configurationId: number): Observable<Blob>  {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    const options = { headers: headers, responseType: 'blob' as 'json' };
+    return this.http.get<Blob>(this.serviceUrl + '/report/' + configurationId.toString(), options);
+  }
 }

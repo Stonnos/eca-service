@@ -32,22 +32,5 @@
    
 2. Развернуть target/eca-mail.war на одном из контейнеров сервлетов (например, Tomcat 8)
    с префиксом /eca-mail.
-   
-Инструкция по развертыванию в Docker
--------------------------------------------------------
-
-1. Для Windows 10 достаточно скачать и установить дистрибутив Docker Desktop (https://www.docker.com/products/docker-desktop).
-   Для Linux сначала необходимо установить Docker CE (https://docs.docker.com/install/linux/docker-ce/ubuntu/),
-   затем Docker compose (https://docs.docker.com/compose/install/).
-
-2. Далее для сборки проекта и создания образа проекта нужно выполнить команду
-
-    mvn clean install dockerfile:build
-
-3. Используя пакетный менеджер docker-compose, создать docker контейнеры с помощью команды:
-
-    docker-compose up -d
-
-ВАЖНО! Данную команду необходимо выполнять из корневой папки проекта.
 
    

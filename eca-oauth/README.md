@@ -44,17 +44,31 @@
     
 2. Развернуть target/eca-oauth.war на одном из контейнеров сервлетов (например, Tomcat 8) с контекстом /eca-oauth.
 
-Инструкция по развертыванию в Docker
+Примеры запросов для получения токенов
 -------------------------------------------------------
 
-1. Для Windows достаточно скачать и установить дистрибутив Docker Desktop (https://www.docker.com/products/docker-desktop).
+1. Пример запроса на получение access token:
 
-2. Далее для сборки проекта и создания образа проекта нужно выполнить команду:
+    curl eca_web:web_secret@localhost:8080/eca-oauth/oauth/token -d grant_type=password -d username=admin -d password=secret
+    
+    где eca_web:web_secret - пара clientId и clientSecret
 
-    mvn clean install dockerfile:build
+    Запрос возвращает пару access_token/refresh_token:
+    
+    {"access_token":"cf4cd583-b9f1-4dce-8dcc-afefd1510974","token_type":"bearer","refresh_token":"7321ab3a-ee63-4e2e-bdfd-58aaca9fb263","expires_in":1799,"scope":"web"}
+    
+    В случае, если настроена двухфакторная аутентификация, то запрос возвращает 403 ошибку с телом ответа:
+    
+    {"error":"tfa_required","error_description":"Two-factor authentication required","expires_in":"120"}
+    
+    где expires_in - время действия одноразового пароля, который должен прийти по почте, привязанной к учетной записи пользователя
 
-3. Используя пакетный менеджер docker-compose, создать docker контейнеры с помощью команды:
+2. Пример запроса на обновление access token на основе refresh token:
 
-    docker-compose up -d
+    curl eca_web:web_secret@localhost:8080/eca-oauth/oauth/token -d grant_type=refresh_token -d refresh_token=7321ab3a-ee63-4e2e-bdfd-58aaca9fb263d
 
-ВАЖНО! Данную команду необходимо выполнять из корневой папки проекта.
+3. Пример запроса на получение токена с использованием двухфакторной аутентификации:
+
+    curl eca_web:web_secret@localhost:8080/eca-oauth/oauth/token -d grant_type=tfa_code -d tfa_code=hFgU5G
+    
+    где tfa_code - одноразовый пароль для двухфакторной аутентификации

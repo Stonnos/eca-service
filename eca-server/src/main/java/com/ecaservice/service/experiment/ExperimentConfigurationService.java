@@ -1,10 +1,11 @@
 package com.ecaservice.service.experiment;
 
+import com.ecaservice.aspect.annotation.Locked;
+import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.exception.ClassifierOptionsException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
-import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.classifiers.ClassifierOptionsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +17,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -35,10 +35,11 @@ import static com.google.common.collect.Sets.newHashSet;
 @RequiredArgsConstructor
 public class ExperimentConfigurationService {
 
+    private static final long LOCK_RETRY_INTERVAL = 1000L;
     private static final String DEFAULT_CONFIGURATION_NAME = "Default configuration";
-    public static final String CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_NOT_SPECIFIED =
+    private static final String CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_NOT_SPECIFIED =
             "Classifiers input options directory isn't specified.";
-    public static final String CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_EMPTY =
+    private static final String CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_EMPTY =
             "Classifiers input options directory is empty.";
     private static ObjectMapper objectMapper = new ObjectMapper();
 
@@ -49,7 +50,7 @@ public class ExperimentConfigurationService {
     /**
      * Saves individual classifiers input options into database.
      */
-    @PostConstruct
+    @Locked(lockName = "saveExperimentClassifiersOptions", retry = LOCK_RETRY_INTERVAL)
     public void saveClassifiersOptions() throws IOException {
         if (StringUtils.isEmpty(experimentConfig.getIndividualClassifiersStoragePath())) {
             log.error(CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_NOT_SPECIFIED);

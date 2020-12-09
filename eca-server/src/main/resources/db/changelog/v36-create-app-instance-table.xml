@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v36-create-app-instance-table.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="app_instance"/>
+            </not>
+        </preConditions>
+        <createTable tableName="app_instance">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="instance_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint tableName="app_instance" columnNames="instance_name" constraintName="instance_name_unique_idx"/>
+    </changeSet>
+
+    <!-- Add app instance id column to experiment table -->
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <tableExists tableName="app_instance"/>
+            <not>
+                <columnExists tableName="experiment" columnName="app_instance_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="experiment">
+            <column name="app_instance_id" type="bigint">
+                <constraints foreignKeyName="fk_experiment_app_instance_id"
+                             referencedTableName="app_instance"
+                             referencedColumnNames="id" nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <!-- Add app instance id column to evaluation_log table -->
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <tableExists tableName="app_instance"/>
+            <not>
+                <columnExists tableName="evaluation_log" columnName="app_instance_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_log">
+            <column name="app_instance_id" type="bigint">
+                <constraints foreignKeyName="fk_evaluation_log_app_instance_id"
+                             referencedTableName="app_instance"
+                             referencedColumnNames="id" nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <!-- Add app instance id column to classifier_options_request_model table -->
+    <changeSet id="4" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options_request_model"/>
+            <tableExists tableName="app_instance"/>
+            <not>
+                <columnExists tableName="classifier_options_request_model" columnName="app_instance_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="classifier_options_request_model">
+            <column name="app_instance_id" type="bigint">
+                <constraints foreignKeyName="fk_classifier_options_request_model_app_instance_id"
+                             referencedTableName="app_instance"
+                             referencedColumnNames="id" nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

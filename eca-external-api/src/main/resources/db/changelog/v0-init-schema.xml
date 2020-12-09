@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v0-init-schema.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="hibernate_sequence"/>
+            </not>
+        </preConditions>
+        <createSequence sequenceName="hibernate_sequence" startValue="1" incrementBy="1" minValue="1"/>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="evaluation_request"/>
+            </not>
+        </preConditions>
+        <createTable tableName="evaluation_request">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="correlation_id" type="varchar(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="correlation_id_unique_index"/>
+            </column>
+            <column name="request_id" type="varchar(255)"/>
+            <column name="technical_status" type="varchar(255)"/>
+            <column name="creation_date" type="timestamp"/>
+            <column name="request_date" type="timestamp"/>
+            <column name="end_date" type="timestamp"/>
+            <column name="request_stage" type="varchar(255)"/>
+            <column name="evaluation_method" type="varchar(255)"/>
+            <column name="num_folds" type="integer"/>
+            <column name="num_tests" type="integer"/>
+            <column name="seed" type="integer"/>
+            <column name="classifier_options_json" type="text"/>
+            <column name="classifier_absolute_path" type="varchar(255)"/>
+            <column name="deleted_date" type="timestamp"/>
+            <column name="error_message" type="text"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="instances"/>
+            </not>
+        </preConditions>
+        <createTable tableName="instances">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="uuid" type="varchar(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="instances_uuid_unique_index"/>
+            </column>
+            <column name="creation_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="absolute_path" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

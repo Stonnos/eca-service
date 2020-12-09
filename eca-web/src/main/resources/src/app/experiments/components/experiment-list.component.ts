@@ -20,6 +20,7 @@ import { FieldService } from "../../common/services/field.service";
 import { ReportsService } from "../../common/services/report.service";
 import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
 import { Utils } from "../../common/util/utils";
+import { ReportType } from "../../common/model/report-type.enum";
 
 @Component({
   selector: 'app-experiment-list',
@@ -78,21 +79,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   }
 
   public generateReport() {
-    this.loading = true;
-    this.reportsService.getExperimentsBaseReport(this.pageRequestDto)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
-      .subscribe({
-        next: (blob: Blob) => {
-          saveAs(blob, ExperimentListComponent.EXPERIMENTS_REPORT_FILE_NAME);
-        },
-        error: (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-        }
-      });
+    const observable = this.reportsService.getBaseReport(this.pageRequestDto, ReportType.EXPERIMENTS);
+    this.downloadReport(observable, ExperimentListComponent.EXPERIMENTS_REPORT_FILE_NAME);
   }
 
   public getNumFolds(experimentDto: ExperimentDto): number {

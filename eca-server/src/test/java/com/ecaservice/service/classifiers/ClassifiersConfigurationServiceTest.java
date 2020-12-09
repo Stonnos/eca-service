@@ -3,9 +3,12 @@ package com.ecaservice.service.classifiers;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.exception.EntityNotFoundException;
+import com.ecaservice.mapping.ClassifierOptionsDatabaseModelMapperImpl;
 import com.ecaservice.mapping.ClassifiersConfigurationMapperImpl;
+import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.model.entity.FilterTemplateType;
+import com.ecaservice.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.AbstractJpaTest;
@@ -39,7 +42,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ClassifiersConfigurationService.class, ClassifiersConfigurationMapperImpl.class, CommonConfig.class})
+@Import({ClassifiersConfigurationService.class, ClassifiersConfigurationMapperImpl.class, CommonConfig.class,
+        DateTimeConverter.class, ClassifierOptionsDatabaseModelMapperImpl.class})
 class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     private static final String TEST_CONFIG = "test_config";
@@ -224,6 +228,17 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         ClassifiersConfigurationDto actualSecond = classifiersConfigurationDtoMap.get(secondConfiguration.getId());
         assertThat(actualSecond.getId()).isEqualTo(secondConfiguration.getId());
         assertThat(actualSecond.getClassifiersOptionsCount()).isEqualTo(3);
+    }
+
+    @Test
+    void testGetClassifiersConfigurationReport() {
+        ClassifiersConfiguration configuration = saveConfiguration(true, true);
+        ClassifiersConfigurationBean classifiersConfigurationBean =
+                classifiersConfigurationService.getClassifiersConfigurationReport(configuration.getId());
+        assertThat(classifiersConfigurationBean).isNotNull();
+        assertThat(classifiersConfigurationBean.getConfigurationName()).isEqualTo(configuration.getConfigurationName());
+        long expectedCount = classifierOptionsDatabaseModelRepository.countByConfiguration(configuration);
+        assertThat(classifiersConfigurationBean.getClassifiersOptionsCount()).isEqualTo(expectedCount);
     }
 
     private ClassifiersConfiguration saveConfiguration(boolean active, boolean buildIn) {

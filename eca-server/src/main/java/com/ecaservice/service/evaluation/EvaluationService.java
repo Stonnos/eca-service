@@ -1,8 +1,8 @@
 package com.ecaservice.service.evaluation;
 
 
+import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.config.CrossValidationConfig;
-import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.model.evaluation.ClassificationResult;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationMethodVisitor;

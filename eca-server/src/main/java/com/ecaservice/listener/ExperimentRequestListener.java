@@ -1,8 +1,8 @@
 package com.ecaservice.listener;
 
+import com.ecaservice.base.model.EcaResponse;
+import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.config.rabbit.Queues;
-import com.ecaservice.dto.EcaResponse;
-import com.ecaservice.dto.ExperimentRequest;
 import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.mapping.EcaResponseMapper;
 import com.ecaservice.model.entity.Experiment;

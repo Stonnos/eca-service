@@ -21,4 +21,9 @@ public class CommonConfig {
      * Thread pool size for async tasks
      */
     private Integer threadPoolSize;
+
+    /**
+     * Get instance name (used in cluster environment)
+     */
+    private String instance;
 }

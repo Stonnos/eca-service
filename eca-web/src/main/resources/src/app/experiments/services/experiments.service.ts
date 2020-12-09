@@ -6,7 +6,7 @@ import {
   ExperimentDto,
   PageDto,
   PageRequestDto,
-  RequestStatusStatisticsDto, ExperimentResultsDetailsDto, SendingStatus
+  RequestStatusStatisticsDto, ExperimentResultsDetailsDto, ExperimentProgressDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { ExperimentRequest } from "../../create-experiment/model/experiment-request.model";
@@ -80,22 +80,6 @@ export class ExperimentsService {
     return this.http.get<ExperimentErsReportDto>(this.serviceUrl + '/ers-report/' + requestId, { headers: headers });
   }
 
-  public checkExperimentResultsSendingStatus(requestId: string): Observable<SendingStatus> {
-    const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
-    });
-    return this.http.get<SendingStatus>(this.serviceUrl + '/ers-report/sending-status/' + requestId, { headers: headers });
-  }
-
-  public sentEvaluationResults(requestId: string) {
-    const headers = new HttpHeaders({
-      'Content-type': 'application/json',
-      'Authorization': Utils.getBearerTokenHeader()
-    });
-    return this.http.post(this.serviceUrl + '/sent-evaluation-results', requestId, { headers: headers });
-  }
-
   public getExperimentTypesStatistics(createdDateFrom: string, createdDateTo: string): Observable<ChartDataDto[]> {
     const headers = new HttpHeaders({
       'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
@@ -115,5 +99,13 @@ export class ExperimentsService {
     formData.append('experimentType', experimentRequest.experimentType.value);
     formData.append('evaluationMethod', experimentRequest.evaluationMethod.value);
     return this.http.post<CreateExperimentResultDto>(this.serviceUrl + '/create', formData, { headers: headers });
+  }
+
+  public getExperimentProgress(requestId: string): Observable<ExperimentProgressDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    return this.http.get<ExperimentProgressDto>(this.serviceUrl + '/progress/' + requestId, { headers: headers });
   }
 }

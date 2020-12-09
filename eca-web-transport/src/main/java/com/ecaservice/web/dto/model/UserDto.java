@@ -54,6 +54,18 @@ public class UserDto {
     private LocalDateTime creationDate;
 
     /**
+     * Two factor authentication enabled?
+     */
+    @ApiModelProperty(value = "Two factor authentication enabled")
+    private boolean tfaEnabled;
+
+    /**
+     * User photo id
+     */
+    @ApiModelProperty(value = "User photo id")
+    private Long photoId;
+
+    /**
      * Roles list
      */
     @ApiModelProperty(value = "User roles")

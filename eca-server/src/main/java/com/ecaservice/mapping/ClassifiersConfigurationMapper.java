@@ -1,9 +1,11 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.model.entity.ClassifiersConfiguration;
+import com.ecaservice.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -17,7 +19,7 @@ import java.util.Optional;
  *
  * @author Roman Batygin
  */
-@Mapper
+@Mapper(uses = DateTimeConverter.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class ClassifiersConfigurationMapper {
 
     /**
@@ -38,7 +40,7 @@ public abstract class ClassifiersConfigurationMapper {
     @Mapping(source = "configurationName", target = "configurationName", qualifiedByName = "trim")
     @Mapping(target = "id", ignore = true)
     public abstract void update(UpdateClassifiersConfigurationDto configurationDto,
-                @MappingTarget ClassifiersConfiguration classifiersConfiguration);
+                                @MappingTarget ClassifiersConfiguration classifiersConfiguration);
 
     /**
      * Maps classifiers configuration entity to its dto model.
@@ -47,6 +49,16 @@ public abstract class ClassifiersConfigurationMapper {
      * @return classifiers configuration dto
      */
     public abstract ClassifiersConfigurationDto map(ClassifiersConfiguration classifiersConfiguration);
+
+    /**
+     * Maps classifiers configuration entity to report bean model.
+     *
+     * @param classifiersConfiguration - classifiers configuration entity
+     * @return classifiers configuration report bean model
+     */
+    @Mapping(source = "creationDate", target = "creationDate", qualifiedByName = "formatLocalDateTime")
+    @Mapping(source = "updated", target = "updated", qualifiedByName = "formatLocalDateTime")
+    public abstract ClassifiersConfigurationBean mapToBean(ClassifiersConfiguration classifiersConfiguration);
 
     /**
      * Maps classifiers configuration entities to its dto models.

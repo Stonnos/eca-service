@@ -1,29 +1,17 @@
 package com.ecaservice.service.experiment;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
+import com.ecaservice.classifier.options.config.ClassifiersOptionsConfiguration;
+import com.ecaservice.classifier.options.model.KNearestNeighboursOptions;
+import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.conversion.ClassifierOptionsConverter;
-import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.exception.experiment.ExperimentException;
-import com.ecaservice.mapping.options.AdaBoostOptionsMapperImpl;
-import com.ecaservice.mapping.options.DecisionTreeFactory;
-import com.ecaservice.mapping.options.DecisionTreeOptionsMapperImpl;
-import com.ecaservice.mapping.options.ExtraTreesOptionsMapperImpl;
-import com.ecaservice.mapping.options.HeterogeneousClassifierFactory;
-import com.ecaservice.mapping.options.HeterogeneousClassifierOptionsMapperImpl;
-import com.ecaservice.mapping.options.J48OptionsMapperImpl;
-import com.ecaservice.mapping.options.KNearestNeighboursOptionsMapperImpl;
-import com.ecaservice.mapping.options.LogisticOptionsMapperImpl;
-import com.ecaservice.mapping.options.NeuralNetworkOptionsMapperImpl;
-import com.ecaservice.mapping.options.RandomForestsOptionsMapperImpl;
-import com.ecaservice.mapping.options.RandomNetworkOptionsMapperImpl;
-import com.ecaservice.mapping.options.StackingOptionsMapperImpl;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.model.evaluation.ClassificationResult;
-import com.ecaservice.model.options.KNearestNeighboursOptions;
-import com.ecaservice.model.options.LogisticOptions;
 import com.ecaservice.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.service.evaluation.EvaluationService;
 import com.ecaservice.service.experiment.handler.ClassifierInputDataHandler;
@@ -66,13 +54,7 @@ import static org.mockito.Mockito.when;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @Import({ExperimentConfig.class, CrossValidationConfig.class,
-        DecisionTreeInputDataHandler.class, NeuralNetworkInputDataHandler.class,
-        AdaBoostOptionsMapperImpl.class, HeterogeneousClassifierOptionsMapperImpl.class,
-        StackingOptionsMapperImpl.class, ExtraTreesOptionsMapperImpl.class,
-        RandomForestsOptionsMapperImpl.class, RandomNetworkOptionsMapperImpl.class,
-        DecisionTreeOptionsMapperImpl.class, KNearestNeighboursOptionsMapperImpl.class,
-        J48OptionsMapperImpl.class, NeuralNetworkOptionsMapperImpl.class, LogisticOptionsMapperImpl.class,
-        HeterogeneousClassifierFactory.class, DecisionTreeFactory.class, ClassifierOptionsConverter.class})
+        DecisionTreeInputDataHandler.class, NeuralNetworkInputDataHandler.class, ClassifiersOptionsConfiguration.class})
 class ClassifiersSetSearcherTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -85,7 +67,7 @@ class ClassifiersSetSearcherTest {
     @Inject
     private List<ClassifierInputDataHandler> classifierInputDataHandlers;
     @Inject
-    private ClassifierOptionsConverter classifierOptionsConverter;
+    private ClassifierOptionsAdapter classifierOptionsAdapter;
     @Mock
     private EvaluationService evaluationService;
     @Mock
@@ -100,7 +82,7 @@ class ClassifiersSetSearcherTest {
         testInstances = TestHelperUtils.loadInstances();
         classifiersSetSearcher =
                 new ClassifiersSetSearcher(evaluationService, classifierOptionsService, experimentConfig,
-                        crossValidationConfig, classifierInputDataHandlers, classifierOptionsConverter);
+                        crossValidationConfig, classifierInputDataHandlers, classifierOptionsAdapter);
         evaluationResults = new EvaluationResults(new KNearestNeighbours(), new Evaluation(testInstances));
     }
 

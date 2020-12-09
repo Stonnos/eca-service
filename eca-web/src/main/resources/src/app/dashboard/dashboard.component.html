@@ -1,4 +1,5 @@
 <p-menubar [model]="items">
-  <button pButton label="{{ getUserLogin() }}" icon="fa fa-sign-out" (click)="logout()"></button>
+  <button type="button" pButton icon="pi pi-user" label="{{ getUserLogin() }}" (click)="userMenu.toggle($event)"></button>
+  <p-menu #userMenu [popup]="true" [model]="userMenuItems"></p-menu>
 </p-menubar>
 <router-outlet></router-outlet>

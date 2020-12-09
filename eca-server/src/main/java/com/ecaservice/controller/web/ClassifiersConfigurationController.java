@@ -2,6 +2,8 @@ package com.ecaservice.controller.web;
 
 import com.ecaservice.mapping.ClassifiersConfigurationMapper;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
+import com.ecaservice.report.model.ClassifiersConfigurationBean;
+import com.ecaservice.report.model.ReportType;
 import com.ecaservice.service.classifiers.ClassifiersConfigurationService;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
@@ -24,7 +26,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
+
+import static com.ecaservice.util.ReportHelper.download;
 
 /**
  * Implements API to manage experiment classifiers configurations.
@@ -37,6 +43,8 @@ import javax.validation.Valid;
 @RequestMapping("/experiment/classifiers-configurations")
 @RequiredArgsConstructor
 public class ClassifiersConfigurationController {
+
+    private static final String CONFIGURATION_FILE_NAME_FORMAT = "%s configuration";
 
     private final ClassifiersConfigurationService classifiersConfigurationService;
     private final ClassifiersConfigurationMapper classifiersConfigurationMapper;
@@ -135,5 +143,29 @@ public class ClassifiersConfigurationController {
     @PostMapping(value = "/set-active")
     public void setActive(@ApiParam(value = "Configuration id", example = "1", required = true) @RequestParam long id) {
         classifiersConfigurationService.setActive(id);
+    }
+
+    /**
+     * Downloads classifiers configuration report in xlsx format.
+     *
+     * @param id                  - classifiers configuration id
+     * @param httpServletResponse - http servlet response
+     * @throws IOException in case of I/O error
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Downloads classifiers configuration report in xlsx format",
+            notes = "Downloads classifiers configuration report in xlsx format"
+    )
+    @GetMapping(value = "/report/{id}")
+    public void downloadReport(
+            @ApiParam(value = "Configuration id", example = "1", required = true) @PathVariable Long id,
+            HttpServletResponse httpServletResponse) throws IOException {
+        log.info("Downloads classifier configuration report by id {}", id);
+        ClassifiersConfigurationBean classifiersConfigurationBean =
+                classifiersConfigurationService.getClassifiersConfigurationReport(id);
+        String fileName =
+                String.format(CONFIGURATION_FILE_NAME_FORMAT, classifiersConfigurationBean.getConfigurationName());
+        download(ReportType.CLASSIFIERS_CONFIGURATION, fileName, httpServletResponse, classifiersConfigurationBean);
     }
 }

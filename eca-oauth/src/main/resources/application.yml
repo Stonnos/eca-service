@@ -25,6 +25,9 @@ spring:
   liquibase:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
+  servlet:
+    multipart:
+      max-file-size: 10MB
 
 eureka:
   client:
@@ -48,6 +51,11 @@ password:
 reset-password:
   validityMinutes: 30
   baseUrl: http://localhost:8085
+
+tfa:
+  codeValiditySeconds: 120
+  codeLength: 6
+  enabled: true
 
 ## Swagger properties
 swagger2:

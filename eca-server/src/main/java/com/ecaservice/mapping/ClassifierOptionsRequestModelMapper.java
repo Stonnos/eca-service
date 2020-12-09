@@ -2,6 +2,8 @@ package com.ecaservice.mapping;
 
 import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
+import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
+import com.ecaservice.report.model.ClassifierOptionsRequestBean;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
 import com.ecaservice.web.dto.model.EnumDto;
 import org.mapstruct.AfterMapping;
@@ -9,15 +11,18 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+
+import static com.ecaservice.util.Utils.getEvaluationMethodDescription;
 
 /**
  * Implements mapping classifier options request to classifier options request entity.
  *
  * @author Roman Batygin
  */
-@Mapper(uses = {ErsEvaluationMethodMapper.class, ClassifierOptionsResponseModelMapper.class},
+@Mapper(uses = {ErsEvaluationMethodMapper.class, ClassifierOptionsResponseModelMapper.class, DateTimeConverter.class},
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class ClassifierOptionsRequestModelMapper {
 
@@ -43,6 +48,26 @@ public abstract class ClassifierOptionsRequestModelMapper {
     public abstract ClassifierOptionsRequestDto map(ClassifierOptionsRequestModel classifierOptionsRequestModel);
 
     /**
+     * Maps classifier options request model entity to report bean model.
+     *
+     * @param classifierOptionsRequestModel - classifier options request model
+     * @return classifier options request bean
+     */
+    @Mapping(target = "evaluationMethod", ignore = true)
+    @Mapping(source = "requestDate", target = "requestDate", qualifiedByName = "formatLocalDateTime")
+    @Mapping(source = "responseStatus.description", target = "responseStatus")
+    public abstract ClassifierOptionsRequestBean mapToBean(ClassifierOptionsRequestModel classifierOptionsRequestModel);
+
+    /**
+     * Maps classifier options request models entities to report beans models.
+     *
+     * @param classifierOptionsRequestModels - classifier options request models list
+     * @return classifier options request beans list
+     */
+    public abstract List<ClassifierOptionsRequestBean> mapToBeans(
+            List<ClassifierOptionsRequestModel> classifierOptionsRequestModels);
+
+    /**
      * Maps classifiers options requests models entities to its dto models.
      *
      * @param classifierOptionsRequestModels - classifiers options requests models entities
@@ -65,5 +90,25 @@ public abstract class ClassifierOptionsRequestModelMapper {
         classifierOptionsRequestDto.setEvaluationMethod(
                 new EnumDto(classifierOptionsRequestModel.getEvaluationMethod().name(),
                         classifierOptionsRequestModel.getEvaluationMethod().getDescription()));
+    }
+
+    @AfterMapping
+    protected void mapEvaluationMethodOptions(ClassifierOptionsRequestModel requestModel, @MappingTarget
+            ClassifierOptionsRequestBean classifierOptionsRequestBean) {
+        String evaluationMethodDescription =
+                getEvaluationMethodDescription(requestModel.getEvaluationMethod(), requestModel.getNumFolds(),
+                        requestModel.getNumTests());
+        classifierOptionsRequestBean.setEvaluationMethod(evaluationMethodDescription);
+    }
+
+    @AfterMapping
+    protected void mapClassifierOptions(ClassifierOptionsRequestModel requestModel,
+                                        @MappingTarget ClassifierOptionsRequestBean classifierOptionsRequestBean) {
+        if (!CollectionUtils.isEmpty(requestModel.getClassifierOptionsResponseModels())) {
+            ClassifierOptionsResponseModel classifierOptionsResponseModel =
+                    requestModel.getClassifierOptionsResponseModels().iterator().next();
+            classifierOptionsRequestBean.setClassifierName(classifierOptionsResponseModel.getClassifierName());
+            classifierOptionsRequestBean.setClassifierOptions(classifierOptionsResponseModel.getOptions());
+        }
     }
 }

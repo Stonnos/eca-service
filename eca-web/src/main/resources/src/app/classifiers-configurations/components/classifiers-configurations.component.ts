@@ -13,6 +13,7 @@ import { finalize } from "rxjs/internal/operators";
 import { ClassifiersConfigurationModel } from "../../create-classifiers-configuration/model/classifiers-configuration.model";
 import { Router } from "@angular/router";
 import { RouterPaths } from "../../routing/router-paths";
+import { Utils } from "../../common/util/utils";
 
 @Component({
   selector: 'app-classifiers-configurations',
@@ -96,6 +97,11 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   public onSetActiveClassifiersConfiguration(item: ClassifiersConfigurationDto): void {
     this.setActiveConfiguration(item);
+  }
+
+  public onDownloadReport(item: ClassifiersConfigurationDto): void {
+    const observable = this.classifiersConfigurationsService.getClassifiersConfigurationReport(item.id);
+    this.downloadReport(observable, Utils.getClassifiersConfigurationFile(item));
   }
 
   public onUploadedClassifiersOptions(event): void {

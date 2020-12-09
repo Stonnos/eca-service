@@ -38,6 +38,9 @@ spring:
       simple:
         concurrency: 10
         maxConcurrency: 10
+  servlet:
+    multipart:
+      max-file-size: 10MB
 
 eureka:
   client:
@@ -51,6 +54,7 @@ ribbon:
 common:
   maxPageSize: 50
   threadPoolSize: 10
+  instance: eca-server-instance-1
 
 ## Cross - validation properties
 cross-validation:
@@ -59,6 +63,9 @@ cross-validation:
   seed: 1
   ## Cross validation timeout in minutes
   timeout: 60
+
+classifiers-options:
+  maximumFractionDigits: 4
 
 ## Swagger properties
 swagger2:
@@ -74,9 +81,6 @@ swagger2:
       description: Operations for ECA web application
       author: Roman Batygin
       email: roman.batygin@mail.ru
-    qa:
-      title: REST API for QA
-      description: Operations for QA
   tokenBaseUrl: http://localhost:8085/eca-oauth
   clientId: swagger
   secret: swagger_secret
@@ -89,7 +93,7 @@ experiment:
   storagePath: D:/experiment/
   individualClassifiersStoragePath: classpath*:classifiers/**/*.json
   downloadBaseUrl: http://localhost:8085/eca-server
-  maximumFractionDigits: 4
+  maximumFractionDigits: ${classifiers-options.maximumFractionDigits}
   numberOfDaysForStorage: 14
   ## Each day at midnight
   removeExperimentCron: 0 0 0 * * *
@@ -114,8 +118,10 @@ experiment:
 ers:
   url: http://localhost:8089/evaluation-results-service/ws/
   enabled: true
-  useClassifierOptionsCache: true
+  useClassifierOptionsCache: false
   classifierOptionsCacheDurationInDays: 2
+  ssl:
+    trustSelfSigned: true
 
 cache:
   specs:
@@ -131,6 +137,9 @@ cache:
     filter-dictionaries:
       expireAfterWriteSeconds: 18000
       maxSize: 100
+    app-instance:
+      expireAfterWriteSeconds: 36000
+      maxSize: 10
 
 management:
   metrics:

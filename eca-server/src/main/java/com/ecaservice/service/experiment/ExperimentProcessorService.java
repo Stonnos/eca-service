@@ -1,6 +1,7 @@
 package com.ecaservice.service.experiment;
 
 import com.ecaservice.config.ExperimentConfig;
+import com.ecaservice.event.model.ExperimentProgressEvent;
 import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.InitializationParams;
@@ -14,6 +15,7 @@ import eca.dataminer.ClassifierComparator;
 import eca.dataminer.IterativeExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -31,9 +33,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ExperimentProcessorService {
 
-    private static final int PROGRESS_STEP = 10;
+    private static final int PROGRESS_STEP = 2;
 
     private final ExperimentInitializationVisitor experimentInitializer;
+    private final ApplicationEventPublisher applicationEventPublisher;
     private final ExperimentConfig experimentConfig;
 
     /**
@@ -57,8 +60,9 @@ public class ExperimentProcessorService {
                 iterativeExperiment.next();
                 int percent = iterativeExperiment.getPercent();
                 if (percent != currentPercent && percent % PROGRESS_STEP == 0) {
-                    log.info("Experiment [{}] progress: {} %.", experiment.getRequestId(), percent);
                     currentPercent = percent;
+                    applicationEventPublisher.publishEvent(
+                            new ExperimentProgressEvent(this, experiment, currentPercent));
                 }
             } catch (Exception ex) {
                 log.warn("Warning for experiment [{}]: {}", experiment.getRequestId(), ex.getMessage());

@@ -5,12 +5,10 @@ import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.user.model.Role;
-import com.ecaservice.user.model.UserDetailsImpl;
 import com.google.common.collect.Sets;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 
 /**
  * Test helper utility class.
@@ -53,22 +51,6 @@ public class TestHelperUtils {
     }
 
     /**
-     * Creates user details.
-     *
-     * @return user details
-     */
-    public static UserDetailsImpl createUserDetails() {
-        UserDetailsImpl userDetails = new UserDetailsImpl();
-        userDetails.setUserName(USER_NAME);
-        userDetails.setEmail(EMAIL);
-        userDetails.setFirstName(FIRST_NAME);
-        userDetails.setId(USER_ID);
-        userDetails.setAuthorities(Collections.singletonList(createRole()));
-        userDetails.setCreationDate(LocalDateTime.now());
-        return userDetails;
-    }
-
-    /**
      * Creates user entity.
      *
      * @return user entity
@@ -82,6 +64,7 @@ public class TestHelperUtils {
         userEntity.setRoles(Sets.newHashSet(createRoleEntity()));
         userEntity.setPassword(PASSWORD);
         userEntity.setCreationDate(LocalDateTime.now());
+        userEntity.setTfaEnabled(true);
         return userEntity;
     }
 

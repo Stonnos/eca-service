@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v12-create-tfa-enabled-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Add tfa_enabled column to user table -->
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_entity"/>
+            <not>
+                <columnExists tableName="user_entity" columnName="tfa_enabled"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="user_entity">
+            <column name="tfa_enabled" type="boolean" defaultValueBoolean="false"/>
+        </addColumn>
+    </changeSet>
+
+    <!-- Sets tfa_code grant type for eca-web -->
+    <changeSet id="2" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="oauth_client_details"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from oauth_client_details where client_id = 'eca_web'
+            </sqlCheck>
+        </preConditions>
+
+        <update tableName="oauth_client_details">
+            <column name="authorized_grant_types" value="password,refresh_token,tfa_code"/>
+            <where>client_id = 'eca_web'</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>

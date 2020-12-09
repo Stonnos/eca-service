@@ -1,7 +1,8 @@
 package com.ecaservice.service.evaluation;
 
+import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
+import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.config.CrossValidationConfig;
-import com.ecaservice.conversion.ClassifierOptionsConverter;
 import com.ecaservice.dto.evaluation.ClassificationCostsReport;
 import com.ecaservice.dto.evaluation.ClassifierReport;
 import com.ecaservice.dto.evaluation.ConfusionMatrixReport;
@@ -13,7 +14,6 @@ import com.ecaservice.dto.evaluation.InputOptionsMap;
 import com.ecaservice.dto.evaluation.RocCurveReport;
 import com.ecaservice.dto.evaluation.StatisticsReport;
 import com.ecaservice.mapping.InstancesConverter;
-import com.ecaservice.model.options.ClassifierOptions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
@@ -47,7 +47,7 @@ public class EvaluationResultsService {
     private static final int CONFIDENCE_INTERVAL_UPPER_INDEX = 1;
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final ClassifierOptionsConverter classifierOptionsConverter;
+    private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final CrossValidationConfig crossValidationConfig;
     private final InstancesConverter instancesConverter;
 
@@ -206,13 +206,13 @@ public class EvaluationResultsService {
             metaClassifierReport.setMetaClassifier(true);
             classifierReportList.add(metaClassifierReport);
         } else {
-            throw new IllegalArgumentException(
+            throw new IllegalStateException(
                     String.format("Unexpected ensemble classifier: %s!", classifier.getClass().getSimpleName()));
         }
     }
 
     private String getClassifierOptionsAsJsonString(AbstractClassifier classifier) {
-        ClassifierOptions classifierOptions = classifierOptionsConverter.convert(classifier);
+        ClassifierOptions classifierOptions = classifierOptionsAdapter.convert(classifier);
         try {
             return objectMapper.writeValueAsString(classifierOptions);
         } catch (IOException ex) {

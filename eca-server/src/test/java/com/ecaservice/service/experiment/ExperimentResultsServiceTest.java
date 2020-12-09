@@ -3,6 +3,7 @@ package com.ecaservice.service.experiment;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
+import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.mapping.ExperimentMapperImpl;
 import com.ecaservice.mapping.ExperimentResultsMapper;
 import com.ecaservice.mapping.ExperimentResultsMapperImpl;
@@ -42,13 +43,11 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({ClassifierInputOptionsMapperImpl.class, ExperimentResultsMapperImpl.class,
-        ClassifierInfoMapperImpl.class, ExperimentMapperImpl.class})
+        ClassifierInfoMapperImpl.class, ExperimentMapperImpl.class, DateTimeConverter.class})
 class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     @Mock
     private ErsService ersService;
-    @Mock
-    private ExperimentResultsLockService lockService;
     @Inject
     private ExperimentResultsRequestRepository experimentResultsRequestRepository;
     @Inject
@@ -62,7 +61,7 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        experimentResultsService = new ExperimentResultsService(ersService, lockService, experimentResultsMapper,
+        experimentResultsService = new ExperimentResultsService(ersService, experimentResultsMapper,
                 experimentResultsEntityRepository, experimentResultsRequestRepository);
     }
 
@@ -74,7 +73,7 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testSaveExperimentResultsForErsSent() throws Exception {
+    void testSaveExperimentResultsForErsSent() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experimentRepository.save(experiment);
         ExperimentHistory experimentHistory = TestHelperUtils.createExperimentHistory();
@@ -86,8 +85,16 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
     @Test
     void testErsReportWithExperimentInProgressStatus() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experiment.setStartDate(LocalDateTime.now());
         experimentRepository.save(experiment);
         testGetErsReport(experiment, ErsReportStatus.EXPERIMENT_IN_PROGRESS);
+    }
+
+    @Test
+    void testErsReportWithNewExperimentStatus() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        experimentRepository.save(experiment);
+        testGetErsReport(experiment, ErsReportStatus.EXPERIMENT_NEW);
     }
 
     @Test
@@ -149,19 +156,7 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
                 TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity2, ErsResponseStatus.ERROR));
         experimentResultsRequestRepository.save(TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity2,
                 ErsResponseStatus.SERVICE_UNAVAILABLE));
-        testGetErsReport(experiment, ErsReportStatus.NEED_SENT);
-    }
-
-    @Test
-    void testErsReportWithSendingStatus() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        experimentRepository.save(experiment);
-        ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
-        experimentResultsEntityRepository.save(experimentResultsEntity);
-        experimentResultsRequestRepository.save(
-                TestHelperUtils.createExperimentResultsRequest(experimentResultsEntity, ErsResponseStatus.ERROR));
-        when(lockService.locked(experiment.getRequestId())).thenReturn(true);
-        testGetErsReport(experiment, ErsReportStatus.SENDING);
+        testGetErsReport(experiment, ErsReportStatus.NOT_SENT);
     }
 
     @Test

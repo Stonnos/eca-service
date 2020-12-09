@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 
 /**
  * Abstract evaluation mapper.
@@ -19,13 +18,7 @@ public abstract class AbstractEvaluationMapper {
 
     private static final String GMT_TIME_ZONE = "GMT";
 
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final DateTimeFormatter evaluationTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss:SS");
-
-    @Named("formatLocalDateTime")
-    protected String formatLocalDateTime(LocalDateTime localDateTime) {
-        return Optional.ofNullable(localDateTime).map(dateTimeFormatter::format).orElse(null);
-    }
 
     @Named("calculateEvaluationTotalTime")
     protected String calculateEvaluationTotalTime(AbstractEvaluationEntity evaluationEntity) {

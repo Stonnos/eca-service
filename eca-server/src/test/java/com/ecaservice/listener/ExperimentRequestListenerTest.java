@@ -1,11 +1,11 @@
 package com.ecaservice.listener;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.dto.EcaResponse;
-import com.ecaservice.dto.ExperimentRequest;
+import com.ecaservice.base.model.EcaResponse;
+import com.ecaservice.base.model.ExperimentRequest;
+import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.mapping.EcaResponseMapper;
-import com.ecaservice.model.TechnicalStatus;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.service.experiment.ExperimentRequestService;
 import org.assertj.core.api.Assertions;

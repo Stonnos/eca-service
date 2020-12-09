@@ -4,6 +4,7 @@ import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.report.model.EvaluationLogBean;
+import com.ecaservice.report.model.ReportType;
 import com.ecaservice.service.evaluation.EvaluationLogService;
 import com.ecaservice.service.filter.FilterService;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -35,7 +36,7 @@ public class EvaluationLogsBaseReportDataFetcher extends AbstractBaseReportDataF
     public EvaluationLogsBaseReportDataFetcher(FilterService filterService,
                                                EvaluationLogService evaluationLogService,
                                                EvaluationLogMapper evaluationLogMapper) {
-        super(EvaluationLog.class, FilterTemplateType.EVALUATION_LOG, filterService);
+        super(ReportType.EVALUATION_LOGS, EvaluationLog.class, FilterTemplateType.EVALUATION_LOG, filterService);
         this.evaluationLogService = evaluationLogService;
         this.evaluationLogMapper = evaluationLogMapper;
     }

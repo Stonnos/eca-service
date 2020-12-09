@@ -44,12 +44,24 @@ class UserDetailsServiceImplTest extends AbstractJpaTest {
     }
 
     @Test
-    void testLoadUserDetails() {
-        UserEntity userEntity = createUserEntity();
-        userEntity.setRoles(Collections.emptySet());
-        userEntityRepository.save(userEntity);
+    void testLoadUserDetailsByLogin() {
+        UserEntity userEntity = createAndSaveUser();
         UserDetails userDetails = userDetailsService.loadUserByUsername(userEntity.getLogin());
         assertThat(userDetails).isNotNull();
         assertThat(userDetails.getUsername()).isEqualTo(userEntity.getLogin());
+    }
+
+    @Test
+    void testLoadUserDetailsByEmail() {
+        UserEntity userEntity = createAndSaveUser();
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userEntity.getEmail());
+        assertThat(userDetails).isNotNull();
+        assertThat(userDetails.getUsername()).isEqualTo(userEntity.getLogin());
+    }
+
+    private UserEntity createAndSaveUser() {
+        UserEntity userEntity = createUserEntity();
+        userEntity.setRoles(Collections.emptySet());
+        return userEntityRepository.save(userEntity);
     }
 }

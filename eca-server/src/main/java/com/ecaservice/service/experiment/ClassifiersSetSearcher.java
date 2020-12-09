@@ -1,13 +1,13 @@
 package com.ecaservice.service.experiment;
 
+import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
+import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.conversion.ClassifierOptionsConverter;
-import com.ecaservice.dto.EvaluationRequest;
 import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.evaluation.ClassificationResult;
-import com.ecaservice.model.options.ClassifierOptions;
 import com.ecaservice.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.service.evaluation.EvaluationService;
 import com.ecaservice.service.experiment.handler.ClassifierInputDataHandler;
@@ -45,7 +45,7 @@ public class ClassifiersSetSearcher {
     private final ExperimentConfig experimentConfig;
     private final CrossValidationConfig crossValidationConfig;
     private final List<ClassifierInputDataHandler> classifierInputDataHandlers;
-    private final ClassifierOptionsConverter classifierOptionsConverter;
+    private final ClassifierOptionsAdapter classifierOptionsAdapter;
 
     /**
      * Finds the best individual classifiers set by the criterion of accuracy maximization.
@@ -96,7 +96,7 @@ public class ClassifiersSetSearcher {
             for (ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel : classifierOptionsDatabaseModels) {
                 ClassifierOptions classifierOptions =
                         objectMapper.readValue(classifierOptionsDatabaseModel.getConfig(), ClassifierOptions.class);
-                classifierList.add(classifierOptionsConverter.convert(classifierOptions));
+                classifierList.add(classifierOptionsAdapter.convert(classifierOptions));
             }
         } catch (Exception ex) {
             throw new ExperimentException(

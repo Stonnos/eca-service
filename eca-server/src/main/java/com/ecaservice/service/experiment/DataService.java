@@ -78,7 +78,7 @@ public class DataService {
      */
     public ExperimentHistory loadExperimentHistory(File file) throws Exception {
         log.info("Starting to load experiment history from file {}", file.getAbsolutePath());
-        ExperimentHistory experimentHistory = (ExperimentHistory) ModelConverter.loadModel(file);
+        ExperimentHistory experimentHistory = ModelConverter.loadModel(file, ExperimentHistory.class);
         log.info("Experiment history has been loaded from file {}", file.getAbsolutePath());
         return experimentHistory;
     }

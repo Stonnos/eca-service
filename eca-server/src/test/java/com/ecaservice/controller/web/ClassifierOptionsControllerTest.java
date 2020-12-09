@@ -1,12 +1,13 @@
 package com.ecaservice.controller.web;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.mapping.ClassifierOptionsDatabaseModelMapperImpl;
+import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
-import com.ecaservice.model.options.LogisticOptions;
 import com.ecaservice.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -47,12 +48,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Unit tests fro checking {@link ClassifierOptionsController} functionality.
+ * Unit tests for checking {@link ClassifierOptionsController} functionality.
  *
  * @author Roman Batygin
  */
 @WebMvcTest(controllers = ClassifierOptionsController.class)
-@Import(ClassifierOptionsDatabaseModelMapperImpl.class)
+@Import({ClassifierOptionsDatabaseModelMapperImpl.class, DateTimeConverter.class})
 class ClassifierOptionsControllerTest extends PageRequestControllerTest {
 
     private static final String BASE_URL = "/experiment/classifiers-options";

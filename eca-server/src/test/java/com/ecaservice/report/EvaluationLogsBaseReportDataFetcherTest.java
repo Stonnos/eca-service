@@ -4,6 +4,7 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
+import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.mapping.InstancesInfoMapperImpl;
@@ -32,6 +33,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.ecaservice.AssertionUtils.assertBaseReportBean;
+import static com.ecaservice.PageRequestUtils.PAGE_NUMBER;
+import static com.ecaservice.PageRequestUtils.PAGE_SIZE;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
@@ -40,11 +43,9 @@ import static com.google.common.collect.Lists.newArrayList;
  * @author Roman Batygin
  */
 @Import({CommonConfig.class, ClassifierInfoMapperImpl.class, EvaluationLogMapperImpl.class,
-        InstancesInfoMapperImpl.class, ClassifierInputOptionsMapperImpl.class})
+        InstancesInfoMapperImpl.class, ClassifierInputOptionsMapperImpl.class, DateTimeConverter.class})
 class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
 
-    private static final int PAGE_NUMBER = 0;
-    private static final int PAGE_SIZE = 10;
     private static final List<String> DATE_RANGE_VALUES = ImmutableList.of("2018-01-01", "2018-01-07");
     private static final LocalDateTime CREATION_DATE = LocalDateTime.of(2018, 1, 5, 0, 0, 0);
 
