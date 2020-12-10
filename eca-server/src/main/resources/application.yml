@@ -43,7 +43,10 @@ spring:
   servlet:
     multipart:
       max-file-size: 10MB
-
+  data:
+    redis:
+      repositories:
+        enabled: false
 eureka:
   client:
     registerWithEureka: false
