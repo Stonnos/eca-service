@@ -95,7 +95,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
      */
     public Experiment createExperiment(ExperimentRequest experimentRequest) {
         try {
-            AppInstanceEntity appInstanceEntity = appInstanceService.getOrSaveAppInstance();
+            AppInstanceEntity appInstanceEntity = appInstanceService.getAppInstanceEntity();
             Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
             experiment.setRequestStatus(RequestStatus.NEW);
             experiment.setRequestId(UUID.randomUUID().toString());

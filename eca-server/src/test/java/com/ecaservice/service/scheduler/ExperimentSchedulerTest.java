@@ -46,11 +46,9 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentConfig.class, AppInstanceService.class, CommonConfig.class})
+@Import({ExperimentConfig.class, CommonConfig.class})
 class ExperimentSchedulerTest extends AbstractJpaTest {
 
-    @Inject
-    private AppInstanceService appInstanceService;
     @Inject
     private ExperimentRepository experimentRepository;
     @Inject
@@ -79,17 +77,21 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     @Inject
     private CommonConfig commonConfig;
 
+    private  AppInstanceService appInstanceService;
+
     private ExperimentScheduler experimentScheduler;
 
     private AppInstanceEntity appInstanceEntity;
 
     @Override
     public void init() {
+        appInstanceService = new AppInstanceService(commonConfig, appInstanceRepository);
         experimentScheduler =
                 new ExperimentScheduler(experimentRepository, experimentResultsEntityRepository, experimentService,
                         notificationService, eventPublisher, ersService, appInstanceService, experimentProgressService,
                         experimentConfig);
-        appInstanceEntity = saveAppInstance();
+        appInstanceService.saveAppInstance();
+        appInstanceEntity = appInstanceService.getAppInstanceEntity();
     }
 
     @Override
@@ -190,11 +192,5 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         experimentScheduler.processRequestsToErs();
         verify(ersService, times(3)).sentExperimentResults(any(ExperimentResultsEntity.class),
                 any(ExperimentHistory.class), any(ExperimentResultsRequestSource.class));
-    }
-
-    private AppInstanceEntity saveAppInstance() {
-        AppInstanceEntity appInstanceEntity = new AppInstanceEntity();
-        appInstanceEntity.setInstanceName(commonConfig.getInstance());
-        return appInstanceRepository.save(appInstanceEntity);
     }
 }
