@@ -16,6 +16,7 @@ import com.ecaservice.model.entity.Experiment_;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.InitializationParams;
+import com.ecaservice.repository.AppInstanceRepository;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.AppInstanceService;
@@ -61,7 +62,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({ExperimentMapperImpl.class, ExperimentConfig.class, CommonConfig.class, CrossValidationConfig.class,
-        AppInstanceService.class, DateTimeConverter.class})
+        DateTimeConverter.class})
 class ExperimentServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
@@ -69,6 +70,8 @@ class ExperimentServiceTest extends AbstractJpaTest {
 
     @Inject
     private ExperimentRepository experimentRepository;
+    @Inject
+    private AppInstanceRepository appInstanceRepository;
     @Inject
     private ExperimentMapper experimentMapper;
     @Mock
@@ -79,8 +82,6 @@ class ExperimentServiceTest extends AbstractJpaTest {
     private ExperimentConfig experimentConfig;
     @Inject
     private EntityManager entityManager;
-    @Inject
-    private AppInstanceService appInstanceService;
     @Inject
     private CommonConfig commonConfig;
     @Mock
@@ -97,14 +98,17 @@ class ExperimentServiceTest extends AbstractJpaTest {
         data = TestHelperUtils.loadInstances();
         CalculationExecutorService executorService =
                 new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
+        AppInstanceService appInstanceService = new AppInstanceService(commonConfig, appInstanceRepository);
         experimentService = new ExperimentService(experimentRepository, executorService, experimentMapper, dataService,
                 crossValidationConfig, experimentConfig, experimentProcessorService, entityManager, commonConfig,
                 filterService, appInstanceService);
+        appInstanceService.saveAppInstance();
     }
 
     @Override
     public void deleteAll() {
         experimentRepository.deleteAll();
+        appInstanceRepository.deleteAll();
     }
 
     @Test
