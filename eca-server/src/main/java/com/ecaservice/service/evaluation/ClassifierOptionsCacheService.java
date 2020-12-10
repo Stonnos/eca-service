@@ -89,7 +89,7 @@ public class ClassifierOptionsCacheService {
 
     private ClassifierOptionsRequestModel createClassifierOptionsRequestModel(
             ClassifierOptionsRequest classifierOptionsRequest, String dataMd5Hash) {
-        AppInstanceEntity appInstanceEntity = appInstanceService.getOrSaveAppInstance();
+        AppInstanceEntity appInstanceEntity = appInstanceService.getAppInstanceEntity();
         ClassifierOptionsRequestModel requestModel =
                 classifierOptionsRequestModelMapper.map(classifierOptionsRequest);
         requestModel.setRelationName(classifierOptionsRequest.getInstances().getRelationName());
