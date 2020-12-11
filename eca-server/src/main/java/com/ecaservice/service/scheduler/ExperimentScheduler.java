@@ -54,7 +54,7 @@ public class ExperimentScheduler {
     @Scheduled(fixedDelayString = "${experiment.delaySeconds}000")
     public void processNewRequests() {
         log.trace("Starting to process new experiments.");
-        AppInstanceEntity appInstanceEntity = appInstanceService.getOrSaveAppInstance();
+        AppInstanceEntity appInstanceEntity = appInstanceService.getAppInstanceEntity();
         List<Experiment> experiments = experimentRepository.findExperimentsForProcessing(appInstanceEntity,
                 Collections.singletonList(RequestStatus.NEW));
         log.trace("Obtained {} new experiments", experiments.size());
@@ -75,7 +75,7 @@ public class ExperimentScheduler {
     @Scheduled(fixedDelayString = "${experiment.delaySeconds}000")
     public void processRequestsToSent() {
         log.trace("Starting to sent experiment results.");
-        AppInstanceEntity appInstanceEntity = appInstanceService.getOrSaveAppInstance();
+        AppInstanceEntity appInstanceEntity = appInstanceService.getAppInstanceEntity();
         List<Experiment> experiments = experimentRepository.findExperimentsForProcessing(appInstanceEntity,
                 Arrays.asList(RequestStatus.FINISHED, RequestStatus.ERROR, RequestStatus.TIMEOUT));
         log.trace("Obtained {} experiments to sent results", experiments.size());
@@ -98,7 +98,7 @@ public class ExperimentScheduler {
     @Scheduled(cron = "${experiment.ersSendingCron}")
     public void processRequestsToErs() {
         log.info("Starting to sent experiment results to ERS service");
-        AppInstanceEntity appInstanceEntity = appInstanceService.getOrSaveAppInstance();
+        AppInstanceEntity appInstanceEntity = appInstanceService.getAppInstanceEntity();
         List<ExperimentResultsEntity> experimentResultsEntities =
                 experimentResultsEntityRepository.findExperimentsResultsToErsSent(appInstanceEntity);
         log.trace("Obtained {} experiments results sending to ERS service", experimentResultsEntities.size());
@@ -125,7 +125,7 @@ public class ExperimentScheduler {
     @Scheduled(cron = "${experiment.removeExperimentCron}")
     public void processRequestsToRemove() {
         log.info("Starting to remove experiments data.");
-        AppInstanceEntity appInstanceEntity = appInstanceService.getOrSaveAppInstance();
+        AppInstanceEntity appInstanceEntity = appInstanceService.getAppInstanceEntity();
         LocalDateTime dateTime = LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage());
         List<Experiment> experiments = experimentRepository.findNotDeletedExperiments(appInstanceEntity, dateTime);
         log.trace("Obtained {} experiments to remove data", experiments.size());

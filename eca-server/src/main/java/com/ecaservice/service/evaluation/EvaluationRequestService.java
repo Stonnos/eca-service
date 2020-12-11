@@ -45,7 +45,7 @@ public class EvaluationRequestService {
      * @return evaluation response
      */
     public EvaluationResponse processRequest(final EvaluationRequest request) {
-        AppInstanceEntity appInstanceEntity = appInstanceService.getOrSaveAppInstance();
+        AppInstanceEntity appInstanceEntity = appInstanceService.getAppInstanceEntity();
         EvaluationLog evaluationLog = evaluationLogMapper.map(request, crossValidationConfig);
         evaluationLog.setRequestStatus(RequestStatus.NEW);
         evaluationLog.setRequestId(UUID.randomUUID().toString());

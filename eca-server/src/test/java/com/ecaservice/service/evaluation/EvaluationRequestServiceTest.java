@@ -16,6 +16,7 @@ import com.ecaservice.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.RequestStatus;
+import com.ecaservice.repository.AppInstanceRepository;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.AppInstanceService;
@@ -39,13 +40,17 @@ import static org.mockito.Mockito.mock;
  *
  * @author Roman Batygin
  */
-@Import({ExecutorConfiguration.class, CrossValidationConfig.class, AppInstanceService.class,
+@Import({ExecutorConfiguration.class, CrossValidationConfig.class,
         EvaluationLogMapperImpl.class, EvaluationService.class, CommonConfig.class, DateTimeConverter.class,
         InstancesInfoMapperImpl.class, ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class})
 class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     @Inject
+    private CommonConfig commonConfig;
+    @Inject
     private CrossValidationConfig crossValidationConfig;
+    @Inject
+    private AppInstanceRepository appInstanceRepository;
     @Inject
     private EvaluationLogRepository evaluationLogRepository;
     @Inject
@@ -53,14 +58,15 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     @Inject
     private EvaluationService evaluationService;
     @Inject
-    private AppInstanceService appInstanceService;
-    @Inject
     private CalculationExecutorService calculationExecutorService;
+
+    private AppInstanceService appInstanceService;
 
     private EvaluationRequestService evaluationRequestService;
 
     @Override
     public void init() {
+        appInstanceService = new AppInstanceService(commonConfig, appInstanceRepository);
         evaluationRequestService =
                 new EvaluationRequestService(crossValidationConfig, calculationExecutorService, evaluationService,
                         appInstanceService, evaluationLogRepository, evaluationLogMapper);
@@ -69,6 +75,7 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     @Override
     public void deleteAll() {
         evaluationLogRepository.deleteAll();
+        appInstanceRepository.deleteAll();
     }
 
     @Test

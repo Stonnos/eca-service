@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Ticker;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.caffeine.CaffeineCache;
@@ -16,14 +17,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * Cache configuration for tests.
+ * Caffeine cache configuration.
  *
  * @author Roman Batygin
  */
 @Configuration
 @EnableConfigurationProperties(CacheConfig.class)
+@ConditionalOnProperty(value = "spring.cache.type", havingValue = "caffeine")
 @RequiredArgsConstructor
-public class CacheConfiguration {
+public class CaffeineCacheConfiguration {
 
     private final CacheConfig cacheConfig;
 
