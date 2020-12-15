@@ -9,7 +9,7 @@ ECA external API
 
 Необходимый софт
 ----------------------------------------
-* jdk 1.8
+* Openjdk 1.11
 * maven => 3.3.9
 * Rabbit MQ => 3
 * eca-core 6.8

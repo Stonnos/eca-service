@@ -6,7 +6,7 @@
 
     <groupId>eca.service</groupId>
     <artifactId>eca-service</artifactId>
-    <version>5.1</version>
+    <version>6.0</version>
     <modules>
         <module>core-test</module>
         <module>oauth2-test</module>
@@ -54,27 +54,27 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <lombok.version>1.18.12</lombok.version>
         <inject.version>1</inject.version>
         <logback.version>1.2.3</logback.version>
-        <slf4j.version>1.7.25</slf4j.version>
+        <slf4j.version>1.7.30</slf4j.version>
         <eca.version>6.8</eca.version>
         <h2.version>1.4.199</h2.version>
         <postresql.version>42.2.6</postresql.version>
         <liquibase.version>3.7.0</liquibase.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <docker-maven-plugin.version>1.4.3</docker-maven-plugin.version>
+        <docker-maven-plugin.version>1.4.13</docker-maven-plugin.version>
         <maven-processor-plugin.version>3.3.3</maven-processor-plugin.version>
         <spring-cloud-sleuth.version>2.2.2.RELEASE</spring-cloud-sleuth.version>
         <spring.security.oauth2.version>2.2.6.RELEASE</spring.security.oauth2.version>
         <logstash-encoder.version>6.2</logstash-encoder.version>
-        <org.mapstruct.version>1.3.0.Final</org.mapstruct.version>
+        <org.mapstruct.version>1.4.1.Final</org.mapstruct.version>
         <commons.io.version>2.6</commons.io.version>
         <org.apache.commons.lang3.version>3.10</org.apache.commons.lang3.version>
         <javax-validation-api.version>2.0.1.Final</javax-validation-api.version>
         <swagger-version>2.9.2</swagger-version>
-        <guava.version>29.0-jre</guava.version>
+        <guava.version>30.0-jre</guava.version>
         <jacoco-plugin.version>0.8.5</jacoco-plugin.version>
         <jacoco.minCoverage>0.70</jacoco.minCoverage>
     </properties>
@@ -211,7 +211,7 @@
 
         <dependency>
             <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-jdk8</artifactId>
+            <artifactId>mapstruct</artifactId>
             <version>${org.mapstruct.version}</version>
         </dependency>
 
