@@ -1,5 +1,6 @@
 package com.ecaservice.external.api.test;
 
+import org.camunda.bpm.spring.boot.starter.annotation.EnableProcessApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -12,6 +13,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * @author Roman Batygin
  */
 @SpringBootApplication
+@EnableProcessApplication
 @EnableFeignClients
 public class ExternalApiTestsApplication extends SpringBootServletInitializer {
 

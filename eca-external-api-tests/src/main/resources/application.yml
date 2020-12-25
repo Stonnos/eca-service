@@ -5,7 +5,12 @@ spring:
     default-domain: eca-external-api-tests
   ## Datasource properties
   datasource:
-    url: jdbc:h2:mem:test
+    jdbc-url: jdbc:h2:mem:autotestdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  camunda:
+    jdbc-url: jdbc:h2:mem:camundadb
     driverClassName: org.h2.Driver
     username: sa
     password: password
