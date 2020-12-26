@@ -1,6 +1,7 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
 import com.ecaservice.external.api.dto.InstancesDto;
+import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
 import com.ecaservice.external.api.test.exception.EntityNotFoundException;
@@ -41,13 +42,14 @@ public class InstancesResponseHandler extends SimpleTaskHandler {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void internalHandle(DelegateExecution execution) throws JsonProcessingException {
         Long autoTestId = getVariable(execution, AUTO_TEST_ID, Long.class);
         TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
-        InstancesDto instancesDto = getVariable(execution, INSTANCES_RESPONSE, InstancesDto.class);
+        ResponseDto<InstancesDto> responseDto = getVariable(execution, INSTANCES_RESPONSE, ResponseDto.class);
         AutoTestEntity autoTestEntity = autoTestRepository.findById(autoTestId)
                 .orElseThrow(() -> new EntityNotFoundException(AutoTestEntity.class, autoTestId));
-        testDataModel.getRequest().setTrainDataUrl(instancesDto.getDataUrl());
+        testDataModel.getRequest().setTrainDataUrl(responseDto.getPayload().getDataUrl());
         autoTestEntity.setRequest(objectMapper.writeValueAsString(testDataModel.getRequest()));
         autoTestRepository.save(autoTestEntity);
         execution.setVariable(TEST_DATA_MODEL, testDataModel);

@@ -1,6 +1,7 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
+import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.config.ExternalApiTestsConfig;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
@@ -31,7 +32,7 @@ public class EvaluationResponseComparisonHandler extends ComparisonTaskHandler {
     /**
      * Constructor with parameters.
      *
-     * @param autoTestRepository - auto test repository bean
+     * @param autoTestRepository     - auto test repository bean
      * @param externalApiTestsConfig - external api config bean
      */
     public EvaluationResponseComparisonHandler(AutoTestRepository autoTestRepository,
@@ -41,17 +42,18 @@ public class EvaluationResponseComparisonHandler extends ComparisonTaskHandler {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void compareAndMatchFields(DelegateExecution execution,
                                          AutoTestEntity autoTestEntity,
                                          TestResultsMatcher matcher) {
         TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
-        EvaluationResponseDto evaluationResponseDto =
-                getVariable(execution, EVALUATION_RESPONSE, EvaluationResponseDto.class);
+        ResponseDto<EvaluationResponseDto> responseDto = getVariable(execution, EVALUATION_RESPONSE, ResponseDto.class);
+        EvaluationResponseDto evaluationResponseDto = responseDto.getPayload();
         //Compare and match evaluation response status
         compareAndMatchRequestStatus(autoTestEntity, testDataModel.getExpectedResponse().getRequestStatus(),
-                null, matcher);
+                responseDto.getRequestStatus(), matcher);
         //Compare and match model url
-        String actualModelUrl = getValueSafe(null, EvaluationResponseDto::getModelUrl);
+        String actualModelUrl = getValueSafe(responseDto, EvaluationResponseDto::getModelUrl);
         String expectedModelUrl =
                 String.format(DOWNLOAD_URL_FORMAT, externalApiTestsConfig.getDownloadBaseUrl(),
                         evaluationResponseDto.getRequestId());

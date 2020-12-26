@@ -59,6 +59,6 @@ public class UploadTrainDataHandler extends ExternalApiTaskHandler {
         }
         Assert.notNull(instancesDto.getPayload(),
                 String.format("Expected not null instances response for auto test [%d]", autoTestId));
-        execution.setVariable(INSTANCES_RESPONSE, instancesDto.getPayload());
+        execution.setVariable(INSTANCES_RESPONSE, instancesDto);
     }
 }
