@@ -1,7 +1,6 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
 import com.ecaservice.external.api.dto.RequestStatus;
-import com.ecaservice.external.api.test.bpm.model.ExecutionResult;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
 import com.ecaservice.external.api.test.entity.MatchResult;
@@ -13,14 +12,13 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.AUTO_TEST_ID;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.TEST_RESULTS_MATCHER;
 import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
-import static com.ecaservice.external.api.test.util.CamundaUtils.successResult;
 
 /**
  * Abstract handler for comparison operations.
  *
  * @author Roman Batygin
  */
-public abstract class ComparisonTaskHandler extends AbstractTaskHandler {
+public abstract class ComparisonTaskHandler extends SimpleTaskHandler {
 
     private final AutoTestRepository autoTestRepository;
 
@@ -39,14 +37,13 @@ public abstract class ComparisonTaskHandler extends AbstractTaskHandler {
     //FIXME подумать над сохранением итогового значения totalMatched, totalNotMatched
 
     @Override
-    public ExecutionResult handle(DelegateExecution execution) throws Exception {
+    public void internalHandle(DelegateExecution execution) throws Exception {
         Long autoTestId = getVariable(execution, AUTO_TEST_ID, Long.class);
         TestResultsMatcher matcher = getVariable(execution, TEST_RESULTS_MATCHER, TestResultsMatcher.class);
         AutoTestEntity autoTestEntity = autoTestRepository.findById(autoTestId)
                 .orElseThrow(() -> new EntityNotFoundException(AutoTestEntity.class, autoTestId));
         compareAndMatchFields(execution, autoTestEntity, matcher);
         autoTestRepository.save(autoTestEntity);
-        return successResult();
     }
 
     protected abstract void compareAndMatchFields(DelegateExecution execution,

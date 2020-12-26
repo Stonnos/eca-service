@@ -1,7 +1,6 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
 import com.ecaservice.external.api.dto.InstancesDto;
-import com.ecaservice.external.api.test.bpm.model.ExecutionResult;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
 import com.ecaservice.external.api.test.exception.EntityNotFoundException;
@@ -16,20 +15,22 @@ import static com.ecaservice.external.api.test.bpm.CamundaVariables.AUTO_TEST_ID
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.INSTANCES_RESPONSE;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.TEST_DATA_MODEL;
 import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
-import static com.ecaservice.external.api.test.util.CamundaUtils.successResult;
 
 /**
  * Handler for processing instances response.
+ *
+ * @author Roman Batygin
  */
 @Component
-public class InstancesResponseHandler extends AbstractTaskHandler {
+public class InstancesResponseHandler extends SimpleTaskHandler {
 
     private final ObjectMapper objectMapper;
     private final AutoTestRepository autoTestRepository;
 
     /**
      * Constructor with parameters.
-     * @param objectMapper - object mapper bean
+     *
+     * @param objectMapper       - object mapper bean
      * @param autoTestRepository - auto test repository bean.
      */
     public InstancesResponseHandler(ObjectMapper objectMapper,
@@ -40,7 +41,7 @@ public class InstancesResponseHandler extends AbstractTaskHandler {
     }
 
     @Override
-    public ExecutionResult handle(DelegateExecution execution) throws JsonProcessingException {
+    public void internalHandle(DelegateExecution execution) throws JsonProcessingException {
         Long autoTestId = getVariable(execution, AUTO_TEST_ID, Long.class);
         TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
         InstancesDto instancesDto = getVariable(execution, INSTANCES_RESPONSE, InstancesDto.class);
@@ -50,6 +51,5 @@ public class InstancesResponseHandler extends AbstractTaskHandler {
         autoTestEntity.setRequest(objectMapper.writeValueAsString(testDataModel.getRequest()));
         autoTestRepository.save(autoTestEntity);
         execution.setVariable(TEST_DATA_MODEL, testDataModel);
-        return successResult();
     }
 }
