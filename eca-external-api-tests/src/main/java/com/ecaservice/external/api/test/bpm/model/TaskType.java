@@ -33,6 +33,11 @@ public enum TaskType {
     COMPARE_EVALUATION_RESPONSE_RESULT,
 
     /**
+     * Process final test result
+     */
+    PROCESS_FINAL_TEST_RESULTS,
+
+    /**
      * Finish auto test with error
      */
     FINISH_WITH_ERROR

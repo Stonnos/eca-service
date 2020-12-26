@@ -41,5 +41,26 @@ public class AutoTestService {
         autoTestEntity.setTestResult(TestResult.ERROR);
         autoTestEntity.setExecutionStatus(ExecutionStatus.ERROR);
         autoTestEntity.setDetails(errorMessage);
+        autoTestRepository.save(autoTestEntity);
+    }
+
+    /**
+     * Calculates final test result.
+     *
+     * @param id      - auto test id
+     * @param matcher - matcher object
+     */
+    public void calculateFinalTestResult(Long id, TestResultsMatcher matcher) {
+        AutoTestEntity autoTestEntity = getById(id);
+        autoTestEntity.setTotalMatched(matcher.getTotalMatched());
+        autoTestEntity.setTotalNotMatched(matcher.getTotalNotMatched());
+        autoTestEntity.setTotalNotFound(matcher.getTotalNotFound());
+        if (matcher.getTotalNotMatched() == 0 && matcher.getTotalNotFound() == 0) {
+            autoTestEntity.setTestResult(TestResult.PASSED);
+        } else {
+            autoTestEntity.setTestResult(TestResult.FAILED);
+        }
+        autoTestEntity.setExecutionStatus(ExecutionStatus.FINISHED);
+        autoTestRepository.save(autoTestEntity);
     }
 }

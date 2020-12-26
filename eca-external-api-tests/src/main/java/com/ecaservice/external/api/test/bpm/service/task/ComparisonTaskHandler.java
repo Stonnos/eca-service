@@ -44,6 +44,7 @@ public abstract class ComparisonTaskHandler extends SimpleTaskHandler {
                 .orElseThrow(() -> new EntityNotFoundException(AutoTestEntity.class, autoTestId));
         compareAndMatchFields(execution, autoTestEntity, matcher);
         autoTestRepository.save(autoTestEntity);
+        execution.setVariable(TEST_RESULTS_MATCHER, matcher);
     }
 
     protected abstract void compareAndMatchFields(DelegateExecution execution,
