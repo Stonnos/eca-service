@@ -8,7 +8,12 @@ package com.ecaservice.external.api.test.bpm.model;
 public enum TaskType {
 
     /**
-     * Upload train data file to server.
+     * Upload train data file to server
      */
-    UPLOAD_TRAINING_DATA
+    UPLOAD_TRAINING_DATA,
+
+    /**
+     * Send evaluation request
+     */
+    EVALUATION_REQUEST
 }

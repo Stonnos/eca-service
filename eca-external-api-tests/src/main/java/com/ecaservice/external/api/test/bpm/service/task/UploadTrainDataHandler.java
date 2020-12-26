@@ -17,7 +17,7 @@ import org.springframework.util.Assert;
 import java.io.IOException;
 
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.AUTO_TEST_ID;
-import static com.ecaservice.external.api.test.bpm.CamundaVariables.INSTANCES_PAYLOAD;
+import static com.ecaservice.external.api.test.bpm.CamundaVariables.INSTANCES_RESPONSE;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.TEST_DATA_MODEL;
 import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
 
@@ -59,6 +59,6 @@ public class UploadTrainDataHandler extends ExternalApiTaskHandler {
         }
         Assert.notNull(instancesDto.getPayload(),
                 String.format("Expected not null instances response for auto test [%d]", autoTestId));
-        execution.setVariable(INSTANCES_PAYLOAD, instancesDto.getPayload());
+        execution.setVariable(INSTANCES_RESPONSE, instancesDto.getPayload());
     }
 }

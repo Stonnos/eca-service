@@ -31,9 +31,14 @@ public class CamundaVariables {
     public static final String TEST_DATA_MODEL = "testDataModel";
 
     /**
-     * Instances payload variable
+     * Instances response variable
      */
-    public static final String INSTANCES_PAYLOAD = "instancesPayload";
+    public static final String INSTANCES_RESPONSE = "instancesResponse";
+
+    /**
+     * Evaluation response variable
+     */
+    public static final String EVALUATION_RESPONSE = "evaluationResponse";
 
     /**
      * Validation error response variable
