@@ -36,6 +36,8 @@ public abstract class ComparisonTaskHandler extends AbstractTaskHandler {
         this.autoTestRepository = autoTestRepository;
     }
 
+    //FIXME подумать над сохранением итогового значения totalMatched, totalNotMatched
+
     @Override
     public ExecutionResult handle(DelegateExecution execution) throws Exception {
         Long autoTestId = getVariable(execution, AUTO_TEST_ID, Long.class);
