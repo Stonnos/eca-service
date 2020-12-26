@@ -18,6 +18,11 @@ public enum TaskType {
     EVALUATION_REQUEST,
 
     /**
+     * Process instances response
+     */
+    PROCESS_INSTANCES_RESPONSE,
+
+    /**
      * Compare validation error result
      */
     COMPARE_VALIDATION_ERROR_RESULT,
