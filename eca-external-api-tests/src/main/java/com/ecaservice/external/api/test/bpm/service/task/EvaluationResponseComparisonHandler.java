@@ -11,6 +11,7 @@ import com.ecaservice.external.api.test.repository.AutoTestRepository;
 import com.ecaservice.external.api.test.service.TestResultsMatcher;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +25,7 @@ import static com.ecaservice.external.api.test.util.Utils.getValueSafe;
  *
  * @author Roman Batygin
  */
+@Slf4j
 @Component
 public class EvaluationResponseComparisonHandler extends ComparisonTaskHandler {
 
@@ -52,6 +54,8 @@ public class EvaluationResponseComparisonHandler extends ComparisonTaskHandler {
     protected void compareAndMatchFields(DelegateExecution execution,
                                          AutoTestEntity autoTestEntity,
                                          TestResultsMatcher matcher) throws JsonProcessingException {
+        log.debug("Compare evaluation response for execution id [{}], process key [{}]", execution.getId(),
+                execution.getProcessBusinessKey());
         TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
         ResponseDto<EvaluationResponseDto> responseDto = getVariable(execution, EVALUATION_RESPONSE, ResponseDto.class);
         saveResponse(autoTestEntity, responseDto);
@@ -60,11 +64,13 @@ public class EvaluationResponseComparisonHandler extends ComparisonTaskHandler {
                 responseDto.getRequestStatus(), matcher);
         //Compare and match model url
         compareAndMatchModelUrl(responseDto, autoTestEntity, matcher);
+        log.debug("Compare evaluation response has been finished for execution id [{}], process key [{}]", execution.getId(), execution.getProcessBusinessKey());
     }
 
     private void compareAndMatchModelUrl(ResponseDto<EvaluationResponseDto> responseDto,
                                          AutoTestEntity autoTestEntity,
                                          TestResultsMatcher matcher) {
+        log.debug("Compare model url field for auto test [{}]", autoTestEntity.getId());
         String actualModelUrl = getValueSafe(responseDto, EvaluationResponseDto::getModelUrl);
         String expectedModelUrl =
                 String.format(DOWNLOAD_URL_FORMAT, externalApiTestsConfig.getDownloadBaseUrl(),
@@ -73,6 +79,8 @@ public class EvaluationResponseComparisonHandler extends ComparisonTaskHandler {
         autoTestEntity.setActualModelUrl(actualModelUrl);
         MatchResult modelUrlMatchResult = matcher.compareAndMatch(expectedModelUrl, actualModelUrl);
         autoTestEntity.setModelUrlMatchResult(modelUrlMatchResult);
+        log.debug("Auto test [{}], expected model url [{}], actual model url [{}], match result [{}]",
+                autoTestEntity.getId(), expectedModelUrl, actualModelUrl, modelUrlMatchResult);
     }
 
     private void saveResponse(AutoTestEntity autoTestEntity, ResponseDto<EvaluationResponseDto> response)

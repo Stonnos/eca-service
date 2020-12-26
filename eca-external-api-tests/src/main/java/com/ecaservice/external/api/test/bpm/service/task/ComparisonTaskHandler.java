@@ -7,6 +7,7 @@ import com.ecaservice.external.api.test.entity.MatchResult;
 import com.ecaservice.external.api.test.exception.EntityNotFoundException;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
 import com.ecaservice.external.api.test.service.TestResultsMatcher;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.AUTO_TEST_ID;
@@ -18,6 +19,7 @@ import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
  *
  * @author Roman Batygin
  */
+@Slf4j
 public abstract class ComparisonTaskHandler extends SimpleTaskHandler {
 
     private final AutoTestRepository autoTestRepository;
@@ -34,10 +36,10 @@ public abstract class ComparisonTaskHandler extends SimpleTaskHandler {
         this.autoTestRepository = autoTestRepository;
     }
 
-    //FIXME подумать над сохранением итогового значения totalMatched, totalNotMatched
-
     @Override
     public void internalHandle(DelegateExecution execution) throws Exception {
+        log.debug("Compare fields for execution with id [{}], process id [{}]", execution.getId(),
+                execution.getProcessBusinessKey());
         Long autoTestId = getVariable(execution, AUTO_TEST_ID, Long.class);
         TestResultsMatcher matcher = getVariable(execution, TEST_RESULTS_MATCHER, TestResultsMatcher.class);
         AutoTestEntity autoTestEntity = autoTestRepository.findById(autoTestId)
@@ -45,6 +47,8 @@ public abstract class ComparisonTaskHandler extends SimpleTaskHandler {
         compareAndMatchFields(execution, autoTestEntity, matcher);
         autoTestRepository.save(autoTestEntity);
         execution.setVariable(TEST_RESULTS_MATCHER, matcher);
+        log.debug("Compare fields has been finished for execution with id [{}], process id [{}]", execution.getId(),
+                execution.getProcessBusinessKey());
     }
 
     protected abstract void compareAndMatchFields(DelegateExecution execution,
@@ -55,9 +59,12 @@ public abstract class ComparisonTaskHandler extends SimpleTaskHandler {
                                                 RequestStatus expectedStatus,
                                                 RequestStatus actualStatus,
                                                 TestResultsMatcher matcher) {
+        log.debug("Compare status field for auto test [{}]", autoTestEntity.getId());
         autoTestEntity.setExpectedRequestStatus(expectedStatus);
         autoTestEntity.setActualRequestStatus(actualStatus);
         MatchResult statusMatchResult = matcher.compareAndMatch(expectedStatus, actualStatus);
         autoTestEntity.setRequestStatusMatchResult(statusMatchResult);
+        log.debug("Auto test [{}] expected request status [{}], actual request status [{}], match result [{}]",
+                autoTestEntity.getId(), expectedStatus, actualStatus, statusMatchResult);
     }
 }

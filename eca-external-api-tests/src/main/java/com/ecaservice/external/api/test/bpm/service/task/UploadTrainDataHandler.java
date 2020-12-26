@@ -46,6 +46,8 @@ public class UploadTrainDataHandler extends ExternalApiTaskHandler {
 
     @Override
     protected void internalHandle(DelegateExecution execution) throws IOException {
+        log.debug("Handles upload train data for execution [{}], process key [{}]", execution.getId(),
+                execution.getProcessBusinessKey());
         Long autoTestId = getVariable(execution, AUTO_TEST_ID, Long.class);
         TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
         log.debug("Starting to uploads train data [{}] to server for test [{}]",
@@ -60,5 +62,7 @@ public class UploadTrainDataHandler extends ExternalApiTaskHandler {
         Assert.notNull(instancesDto.getPayload(),
                 String.format("Expected not null instances response for auto test [%d]", autoTestId));
         execution.setVariable(INSTANCES_RESPONSE, instancesDto);
+        log.debug("Train data uploading has been finished for execution [{}], process key [{}]", execution.getId(),
+                execution.getProcessBusinessKey());
     }
 }

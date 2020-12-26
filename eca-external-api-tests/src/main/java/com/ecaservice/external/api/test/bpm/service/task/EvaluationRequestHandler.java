@@ -40,6 +40,8 @@ public class EvaluationRequestHandler extends ExternalApiTaskHandler {
 
     @Override
     protected void internalHandle(DelegateExecution execution) {
+        log.debug("Evaluation request execution [{}], process key [{}]", execution.getId(),
+                execution.getProcessBusinessKey());
         Long autoTestId = getVariable(execution, AUTO_TEST_ID, Long.class);
         TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
         log.debug("Starting to send evaluation request for test [{}]", autoTestId);
@@ -51,5 +53,7 @@ public class EvaluationRequestHandler extends ExternalApiTaskHandler {
         Assert.notNull(response.getPayload(),
                 String.format("Expected not null evaluation response for auto test [%d]", autoTestId));
         execution.setVariable(EVALUATION_RESPONSE, response);
+        log.debug("Evaluation request execution [{}], process key [{}] has been finished", execution.getId(),
+                execution.getProcessBusinessKey());
     }
 }

@@ -4,6 +4,7 @@ import com.ecaservice.external.api.test.bpm.model.ExecutionResult;
 import com.ecaservice.external.api.test.bpm.model.TaskExecutionStatus;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.util.Assert;
 
@@ -14,6 +15,7 @@ import static com.ecaservice.external.api.test.bpm.CamundaVariables.VALIDATION_E
  *
  * @author Roman Batygin
  */
+@Slf4j
 public abstract class ExternalApiTaskHandler extends AbstractTaskHandler {
 
     /**
@@ -27,6 +29,8 @@ public abstract class ExternalApiTaskHandler extends AbstractTaskHandler {
 
     @Override
     public ExecutionResult handle(DelegateExecution execution) throws Exception {
+        log.debug("External api task execution [{}], process key [{}]", execution.getId(),
+                execution.getProcessBusinessKey());
         ExecutionResult executionResult = new ExecutionResult();
         try {
             internalHandle(execution);
@@ -34,6 +38,8 @@ public abstract class ExternalApiTaskHandler extends AbstractTaskHandler {
         } catch (FeignException.BadRequest ex) {
             handleBadRequest(execution, ex, executionResult);
         }
+        log.debug("External api task execution [{}], process key [{}] result: {}", execution.getId(),
+                execution.getProcessBusinessKey(), executionResult);
         return executionResult;
     }
 
@@ -42,6 +48,8 @@ public abstract class ExternalApiTaskHandler extends AbstractTaskHandler {
     private void handleBadRequest(DelegateExecution execution,
                                   FeignException.BadRequest ex,
                                   ExecutionResult executionResult) {
+        log.debug("Got bad request for execution [{}], process key [{}]", execution.getId(),
+                execution.getProcessBusinessKey());
         String responseBody = ex.contentUTF8();
         Assert.notNull(responseBody, "Expected not empty response body");
         executionResult.setStatus(TaskExecutionStatus.INVALID_DATA);

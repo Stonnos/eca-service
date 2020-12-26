@@ -6,6 +6,7 @@ import com.ecaservice.external.api.test.entity.TestResult;
 import com.ecaservice.external.api.test.exception.EntityNotFoundException;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
  *
  * @author Roman Batygin
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AutoTestService {
@@ -42,6 +44,7 @@ public class AutoTestService {
         autoTestEntity.setExecutionStatus(ExecutionStatus.ERROR);
         autoTestEntity.setDetails(errorMessage);
         autoTestRepository.save(autoTestEntity);
+        log.debug("Auto test [{}] has been finished with error", autoTestEntity.getId());
     }
 
     /**
@@ -51,6 +54,7 @@ public class AutoTestService {
      * @param matcher - matcher object
      */
     public void calculateFinalTestResult(Long id, TestResultsMatcher matcher) {
+        log.debug("Calculates final test result for auto test [{}]", id);
         AutoTestEntity autoTestEntity = getById(id);
         autoTestEntity.setTotalMatched(matcher.getTotalMatched());
         autoTestEntity.setTotalNotMatched(matcher.getTotalNotMatched());

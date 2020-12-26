@@ -10,6 +10,7 @@ import com.ecaservice.external.api.test.service.TestResultsMatcher;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +25,7 @@ import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
  *
  * @author Roman Batygin
  */
+@Slf4j
 @Component
 public class ValidationErrorComparisonHandler extends ComparisonTaskHandler {
 
@@ -45,6 +47,8 @@ public class ValidationErrorComparisonHandler extends ComparisonTaskHandler {
     protected void compareAndMatchFields(DelegateExecution execution,
                                          AutoTestEntity autoTestEntity,
                                          TestResultsMatcher matcher) throws JsonProcessingException {
+        log.debug("Compare validation error status for execution id [{}], process key [{}]", execution.getId(),
+                execution.getProcessBusinessKey());
         TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
         String responseBody = getVariable(execution, VALIDATION_ERROR_RESPONSE, String.class);
         autoTestEntity.setResponse(responseBody);
@@ -52,5 +56,7 @@ public class ValidationErrorComparisonHandler extends ComparisonTaskHandler {
         });
         compareAndMatchRequestStatus(autoTestEntity, testDataModel.getExpectedResponse().getRequestStatus(),
                 responseDto.getRequestStatus(), matcher);
+        log.debug("Comparison validation error status has been finished for execution id [{}], process key [{}]",
+                execution.getId(), execution.getProcessBusinessKey());
     }
 }

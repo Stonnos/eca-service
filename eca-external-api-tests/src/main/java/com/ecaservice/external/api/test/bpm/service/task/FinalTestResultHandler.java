@@ -3,6 +3,7 @@ package com.ecaservice.external.api.test.bpm.service.task;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.service.AutoTestService;
 import com.ecaservice.external.api.test.service.TestResultsMatcher;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
  *
  * @author Roman Batygin
  */
+@Slf4j
 @Component
 public class FinalTestResultHandler extends SimpleTaskHandler {
 
@@ -32,8 +34,12 @@ public class FinalTestResultHandler extends SimpleTaskHandler {
 
     @Override
     public void internalHandle(DelegateExecution execution) {
+        log.debug("Process final test results for execution [{}], process key [{}]", execution.getId(),
+                execution.getProcessBusinessKey());
         Long autoTestId = getVariable(execution, AUTO_TEST_ID, Long.class);
         TestResultsMatcher matcher = getVariable(execution, TEST_RESULTS_MATCHER, TestResultsMatcher.class);
         autoTestService.calculateFinalTestResult(autoTestId, matcher);
+        log.debug("Final test results for execution [{}], process key [{}] has been processed", execution.getId(),
+                execution.getProcessBusinessKey());
     }
 }
