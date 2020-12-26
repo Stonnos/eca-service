@@ -20,5 +20,10 @@ public enum TaskType {
     /**
      * Compare validation error result
      */
-    COMPARE_VALIDATION_ERROR_RESULT
+    COMPARE_VALIDATION_ERROR_RESULT,
+
+    /**
+     * Compare evaluation response result
+     */
+    COMPARE_EVALUATION_RESPONSE_RESULT
 }
