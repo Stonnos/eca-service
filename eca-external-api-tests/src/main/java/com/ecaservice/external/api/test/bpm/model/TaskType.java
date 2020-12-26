@@ -15,5 +15,10 @@ public enum TaskType {
     /**
      * Send evaluation request
      */
-    EVALUATION_REQUEST
+    EVALUATION_REQUEST,
+
+    /**
+     * Compare validation error result
+     */
+    COMPARE_VALIDATION_ERROR_RESULT
 }

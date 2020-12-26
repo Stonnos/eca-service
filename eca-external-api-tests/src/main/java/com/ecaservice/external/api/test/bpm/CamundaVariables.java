@@ -31,6 +31,11 @@ public class CamundaVariables {
     public static final String TEST_DATA_MODEL = "testDataModel";
 
     /**
+     * Test results matcher variable
+     */
+    public static final String TEST_RESULTS_MATCHER = "testResultsMatcher";
+
+    /**
      * Instances response variable
      */
     public static final String INSTANCES_RESPONSE = "instancesResponse";

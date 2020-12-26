@@ -4,6 +4,7 @@ import com.ecaservice.external.api.test.entity.MatchResult;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -12,7 +13,7 @@ import java.util.Objects;
  * @author Roman Batygin
  */
 @Getter
-public class TestResultsMatcher {
+public class TestResultsMatcher implements Serializable {
 
     private int totalNotMatched;
     private int totalMatched;
