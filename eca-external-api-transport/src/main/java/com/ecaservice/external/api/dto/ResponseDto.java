@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Tolerate;
 
+import java.io.Serializable;
+
 /**
  * Base response dto model.
  *
@@ -12,7 +14,7 @@ import lombok.experimental.Tolerate;
  */
 @Data
 @Builder
-public class ResponseDto<T> {
+public class ResponseDto<T> implements Serializable {
 
     @Tolerate
     public ResponseDto() {
