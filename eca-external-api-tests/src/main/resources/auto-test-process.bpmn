@@ -4,13 +4,14 @@
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_0mpzo1a</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:exclusiveGateway id="Gateway_1uq9ik9">
+    <bpmn:exclusiveGateway id="Gateway_1uq9ik9" default="Flow_1p30snr">
       <bpmn:incoming>Flow_0mpzo1a</bpmn:incoming>
       <bpmn:outgoing>Flow_0rhzdbq</bpmn:outgoing>
       <bpmn:outgoing>Flow_1ckv5ax</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1p30snr</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0mpzo1a" sourceRef="StartEvent_1" targetRef="Gateway_1uq9ik9" />
-    <bpmn:serviceTask id="Activity_0jkpz24" name="Загрузить обучающую выборку на сервер">
+    <bpmn:serviceTask id="Activity_0jkpz24" name="Загрузить обучающую выборку на сервер" camunda:modelerTemplate="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">UPLOAD_TRAINING_DATA</camunda:inputParameter>
@@ -19,7 +20,9 @@
       <bpmn:incoming>Flow_0rhzdbq</bpmn:incoming>
       <bpmn:outgoing>Flow_0wtkcw0</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0rhzdbq" sourceRef="Gateway_1uq9ik9" targetRef="Activity_0jkpz24" />
+    <bpmn:sequenceFlow id="Flow_0rhzdbq" sourceRef="Gateway_1uq9ik9" targetRef="Activity_0jkpz24">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${testDataModel.testType == 'USING_API_DATA_STORAGE'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_1dj2b2n" default="Flow_08maqh1">
       <bpmn:incoming>Flow_0wtkcw0</bpmn:incoming>
       <bpmn:outgoing>Flow_08maqh1</bpmn:outgoing>
@@ -27,7 +30,7 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0wtkcw0" sourceRef="Activity_0jkpz24" targetRef="Gateway_1dj2b2n" />
     <bpmn:sequenceFlow id="Flow_08maqh1" sourceRef="Gateway_1dj2b2n" targetRef="Activity_0au6vxc" />
-    <bpmn:serviceTask id="Activity_0au6vxc" name="Завершить тест с ошибкой">
+    <bpmn:serviceTask id="Activity_0au6vxc" name="Завершить тест с ошибкой" camunda:modelerTemplate="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">FINISH_WITH_ERROR</camunda:inputParameter>
@@ -37,9 +40,10 @@
       <bpmn:incoming>Flow_1klxt8x</bpmn:incoming>
       <bpmn:incoming>Flow_0lzmeky</bpmn:incoming>
       <bpmn:incoming>Flow_1sl6q04</bpmn:incoming>
+      <bpmn:incoming>Flow_1p30snr</bpmn:incoming>
       <bpmn:outgoing>Flow_063j6fq</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_09gcibm" name="Сравнение результатов для ошибки валидации">
+    <bpmn:serviceTask id="Activity_09gcibm" name="Сравнение результатов для ошибки валидации" camunda:modelerTemplate="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">COMPARE_VALIDATION_ERROR_RESULT</camunda:inputParameter>
@@ -48,7 +52,7 @@
       <bpmn:incoming>Flow_0pf83we</bpmn:incoming>
       <bpmn:outgoing>Flow_1jn34ba</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_0wck1ym" name="Обработка ответа от сервиса загрузки данных">
+    <bpmn:serviceTask id="Activity_0wck1ym" name="Обработка ответа от сервиса загрузки данных" camunda:modelerTemplate="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">PROCESS_INSTANCES_RESPONSE</camunda:inputParameter>
@@ -62,7 +66,7 @@
       <bpmn:outgoing>Flow_1g48o3n</bpmn:outgoing>
       <bpmn:outgoing>Flow_1sl6q04</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Activity_0sw2wnj" name="Сравнение результатов для ошибки валидации">
+    <bpmn:serviceTask id="Activity_0sw2wnj" name="Сравнение результатов для ошибки валидации" camunda:modelerTemplate="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">COMPARE_VALIDATION_ERROR_RESULT</camunda:inputParameter>
@@ -71,7 +75,7 @@
       <bpmn:incoming>Flow_10iwz9d</bpmn:incoming>
       <bpmn:outgoing>Flow_0cve2qf</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_0dsn777" name="Сравнить результаты ответа">
+    <bpmn:serviceTask id="Activity_0dsn777" name="Сравнить результаты ответа" camunda:modelerTemplate="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">COMPARE_EVALUATION_RESPONSE_RESULT</camunda:inputParameter>
@@ -80,7 +84,7 @@
       <bpmn:incoming>Flow_146f0cb</bpmn:incoming>
       <bpmn:outgoing>Flow_0ydfsak</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_1vk8gb4" name="Окончательный результат теста">
+    <bpmn:serviceTask id="Activity_1vk8gb4" name="Окончательный результат теста" camunda:modelerTemplate="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">PROCESS_FINAL_TEST_RESULTS</camunda:inputParameter>
@@ -99,7 +103,7 @@
     <bpmn:sequenceFlow id="Flow_063j6fq" sourceRef="Activity_0au6vxc" targetRef="Event_1n8quue" />
     <bpmn:sequenceFlow id="Flow_1jn34ba" sourceRef="Activity_09gcibm" targetRef="Activity_1vk8gb4" />
     <bpmn:sequenceFlow id="Flow_1s0pylq" sourceRef="Activity_1vk8gb4" targetRef="Event_1n8quue" />
-    <bpmn:serviceTask id="Activity_0i734h5" name="Отправить запрос на построение модели">
+    <bpmn:serviceTask id="Activity_0i734h5" name="Отправить запрос на построение модели" camunda:modelerTemplate="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">EVALUATION_REQUEST</camunda:inputParameter>
@@ -109,7 +113,9 @@
       <bpmn:incoming>Flow_039t8tp</bpmn:incoming>
       <bpmn:outgoing>Flow_0quqlte</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1ckv5ax" sourceRef="Gateway_1uq9ik9" targetRef="Activity_0i734h5" />
+    <bpmn:sequenceFlow id="Flow_1ckv5ax" sourceRef="Gateway_1uq9ik9" targetRef="Activity_0i734h5">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${testDataModel.testType == 'USING_EXTERNAL_DATA_URL'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0quqlte" sourceRef="Activity_0i734h5" targetRef="Gateway_1dr8c3s" />
     <bpmn:exclusiveGateway id="Gateway_0me8elr" default="Flow_1klxt8x">
       <bpmn:incoming>Flow_0mwr9jw</bpmn:incoming>
@@ -147,7 +153,7 @@
     <bpmn:sequenceFlow id="Flow_0lzmeky" sourceRef="Gateway_1rkjop3" targetRef="Activity_0au6vxc" />
     <bpmn:sequenceFlow id="Flow_1sl6q04" sourceRef="Gateway_1dr8c3s" targetRef="Activity_0au6vxc" />
     <bpmn:sequenceFlow id="Flow_0cve2qf" sourceRef="Activity_0sw2wnj" targetRef="Activity_1vk8gb4" />
-    <bpmn:serviceTask id="Activity_10bazct" name="Обучающая выборка не найдена">
+    <bpmn:serviceTask id="Activity_10bazct" name="Обучающая выборка не найдена" camunda:modelerTemplate="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">COMPARE_DATA_NOT_FOUND_RESULT</camunda:inputParameter>
@@ -160,7 +166,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${apiResponse.requestStatus == 'DATA_NOT_FOUND'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0pn1vrx" sourceRef="Activity_10bazct" targetRef="Activity_1vk8gb4" />
-    <bpmn:serviceTask id="Activity_070x360" name="Скачать модель с сервера и сравнить результаты">
+    <bpmn:serviceTask id="Activity_070x360" name="Скачать модель с сервера и сравнить результаты" camunda:modelerTemplate="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">COMPARE_CLASSIFIER_MODEL_RESULT</camunda:inputParameter>
@@ -171,6 +177,7 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0ydfsak" sourceRef="Activity_0dsn777" targetRef="Activity_070x360" />
     <bpmn:sequenceFlow id="Flow_1x8d5f3" sourceRef="Activity_070x360" targetRef="Activity_1vk8gb4" />
+    <bpmn:sequenceFlow id="Flow_1p30snr" sourceRef="Gateway_1uq9ik9" targetRef="Activity_0au6vxc" />
     <bpmn:textAnnotation id="TextAnnotation_05fl470">
       <bpmn:text>Тест с загрузкой обучающей выборки на сервер</bpmn:text>
     </bpmn:textAnnotation>
@@ -235,9 +242,19 @@
       <bpmn:text>Обработка ответа со статусом DATA_NOT_FOUND</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1psbg5p" sourceRef="Activity_10bazct" targetRef="TextAnnotation_1hfvyfa" />
+    <bpmn:textAnnotation id="TextAnnotation_18hr8sg">
+      <bpmn:text>Неизвестный тип теста</bpmn:text>
+    </bpmn:textAnnotation>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ExternalApiAutoTestProcess">
+      <bpmndi:BPMNEdge id="Flow_1p30snr_di" bpmnElement="Flow_1p30snr">
+        <di:waypoint x="420" y="582" />
+        <di:waypoint x="420" y="1040" />
+        <di:waypoint x="1880" y="1040" />
+        <di:waypoint x="1880" y="120" />
+        <di:waypoint x="1660" y="120" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1x8d5f3_di" bpmnElement="Flow_1x8d5f3">
         <di:waypoint x="1510" y="780" />
         <di:waypoint x="1610" y="780" />
@@ -407,7 +424,7 @@
         <dc:Bounds x="470" y="170" width="160" height="40" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_18dauj8_di" bpmnElement="TextAnnotation_18dauj8">
-        <dc:Bounds x="200" y="680" width="200" height="40" />
+        <dc:Bounds x="210" y="672" width="200" height="40" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0h8qbk3_di" bpmnElement="TextAnnotation_0h8qbk3">
         <dc:Bounds x="1740" y="350" width="100" height="82" />
@@ -453,6 +470,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1hfvyfa_di" bpmnElement="TextAnnotation_1hfvyfa">
         <dc:Bounds x="1370" y="860" width="140" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_18hr8sg_di" bpmnElement="TextAnnotation_18hr8sg">
+        <dc:Bounds x="270" y="930" width="140" height="27" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_00abtc2_di" bpmnElement="Association_00abtc2">
         <di:waypoint x="1660" y="412" />
