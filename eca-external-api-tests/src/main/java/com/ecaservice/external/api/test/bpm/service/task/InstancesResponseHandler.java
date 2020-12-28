@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.AUTO_TEST_ID;
-import static com.ecaservice.external.api.test.bpm.CamundaVariables.INSTANCES_RESPONSE;
+import static com.ecaservice.external.api.test.bpm.CamundaVariables.API_RESPONSE;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.TEST_DATA_MODEL;
 import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
 import static com.ecaservice.external.api.test.util.CamundaUtils.setVariableSafe;
@@ -53,7 +53,7 @@ public class InstancesResponseHandler extends AbstractTaskHandler {
         Long autoTestId = getVariable(execution, AUTO_TEST_ID, Long.class);
         TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
         ResponseDto<InstancesDto> responseDto =
-                getVariable(execution, INSTANCES_RESPONSE, new ParameterizedTypeReference<>() {
+                getVariable(execution, API_RESPONSE, new ParameterizedTypeReference<>() {
                 });
         Assert.notNull(responseDto.getPayload(),
                 String.format("Expected not null instances response for auto test [%d]", autoTestId));

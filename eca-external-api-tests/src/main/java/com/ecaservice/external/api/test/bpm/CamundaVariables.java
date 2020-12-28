@@ -36,17 +36,7 @@ public class CamundaVariables {
     public static final String TEST_RESULTS_MATCHER = "testResultsMatcher";
 
     /**
-     * Instances response variable
+     * API response variable
      */
-    public static final String INSTANCES_RESPONSE = "instancesResponse";
-
-    /**
-     * Evaluation response variable
-     */
-    public static final String EVALUATION_RESPONSE = "evaluationResponse";
-
-    /**
-     * Validation error response variable
-     */
-    public static final String VALIDATION_ERROR_RESPONSE = "validationErrorResponse";
+    public static final String API_RESPONSE = "apiResponse";
 }

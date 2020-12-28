@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.ecaservice.external.api.test.bpm.CamundaVariables.API_RESPONSE;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.TEST_DATA_MODEL;
-import static com.ecaservice.external.api.test.bpm.CamundaVariables.VALIDATION_ERROR_RESPONSE;
 import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
 
 /**
@@ -48,7 +48,7 @@ public class ValidationErrorComparisonHandler extends ComparisonTaskHandler {
                 execution.getProcessBusinessKey());
         TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
         ResponseDto<List<ValidationErrorDto>> responseDto =
-                getVariable(execution, VALIDATION_ERROR_RESPONSE, new ParameterizedTypeReference<>() {
+                getVariable(execution, API_RESPONSE, new ParameterizedTypeReference<>() {
                 });
         autoTestEntity.setResponse(OBJECT_MAPPER.writeValueAsString(responseDto));
         compareAndMatchRequestStatus(autoTestEntity, testDataModel.getExpectedResponse().getRequestStatus(),

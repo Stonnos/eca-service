@@ -13,7 +13,7 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 
-import static com.ecaservice.external.api.test.bpm.CamundaVariables.VALIDATION_ERROR_RESPONSE;
+import static com.ecaservice.external.api.test.bpm.CamundaVariables.API_RESPONSE;
 import static com.ecaservice.external.api.test.util.CamundaUtils.setVariableSafe;
 
 /**
@@ -59,6 +59,6 @@ public abstract class ExternalApiTaskHandler extends AbstractTaskHandler {
         ResponseDto<List<ValidationErrorDto>> responseDto =
                 OBJECT_MAPPER.readValue(responseBody, new TypeReference<>() {
                 });
-        setVariableSafe(execution, VALIDATION_ERROR_RESPONSE, responseDto);
+        setVariableSafe(execution, API_RESPONSE, responseDto);
     }
 }

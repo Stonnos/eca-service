@@ -9,8 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.stereotype.Component;
 
+import static com.ecaservice.external.api.test.bpm.CamundaVariables.API_RESPONSE;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.AUTO_TEST_ID;
-import static com.ecaservice.external.api.test.bpm.CamundaVariables.EVALUATION_RESPONSE;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.TEST_DATA_MODEL;
 import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
 import static com.ecaservice.external.api.test.util.CamundaUtils.setVariableSafe;
@@ -45,7 +45,7 @@ public class EvaluationRequestHandler extends ExternalApiTaskHandler {
         log.debug("Starting to send evaluation request for test [{}]", autoTestId);
         ResponseDto<EvaluationResponseDto> response = externalApiClient.evaluateModel(testDataModel.getRequest());
         log.debug("Received evaluation response for test [{}]: {}", autoTestId, response);
-        setVariableSafe(execution, EVALUATION_RESPONSE, response);
+        setVariableSafe(execution, API_RESPONSE, response);
         log.debug("Evaluation request execution [{}], process key [{}] has been finished", execution.getId(),
                 execution.getProcessBusinessKey());
     }

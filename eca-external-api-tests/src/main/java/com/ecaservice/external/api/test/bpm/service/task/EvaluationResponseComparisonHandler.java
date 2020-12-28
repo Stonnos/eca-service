@@ -16,7 +16,7 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 
-import static com.ecaservice.external.api.test.bpm.CamundaVariables.EVALUATION_RESPONSE;
+import static com.ecaservice.external.api.test.bpm.CamundaVariables.API_RESPONSE;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.TEST_DATA_MODEL;
 import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
 import static com.ecaservice.external.api.test.util.Utils.getValueSafe;
@@ -58,7 +58,7 @@ public class EvaluationResponseComparisonHandler extends ComparisonTaskHandler {
                 execution.getProcessBusinessKey());
         TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
         ResponseDto<EvaluationResponseDto> responseDto =
-                getVariable(execution, EVALUATION_RESPONSE, new ParameterizedTypeReference<>() {
+                getVariable(execution, API_RESPONSE, new ParameterizedTypeReference<>() {
                 });
         saveResponse(autoTestEntity, responseDto);
         //Compare and match evaluation response status

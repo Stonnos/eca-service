@@ -1,10 +1,8 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
 import com.ecaservice.external.api.dto.InstancesDto;
-import com.ecaservice.external.api.dto.RequestStatus;
 import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
-import com.ecaservice.external.api.test.exception.UploadTrainDataException;
 import com.ecaservice.external.api.test.model.TestDataModel;
 import com.ecaservice.external.api.test.service.ExternalApiService;
 import lombok.extern.slf4j.Slf4j;
@@ -12,12 +10,11 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
 import java.io.IOException;
 
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.AUTO_TEST_ID;
-import static com.ecaservice.external.api.test.bpm.CamundaVariables.INSTANCES_RESPONSE;
+import static com.ecaservice.external.api.test.bpm.CamundaVariables.API_RESPONSE;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.TEST_DATA_MODEL;
 import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
 import static com.ecaservice.external.api.test.util.CamundaUtils.setVariableSafe;
@@ -57,7 +54,7 @@ public class UploadTrainDataHandler extends ExternalApiTaskHandler {
         ResponseDto<InstancesDto> instancesDto = externalApiService.uploadInstances(resource);
         log.debug("Train data has been uploaded with status [{}] for test [{}]",
                 instancesDto.getRequestStatus(), autoTestId);
-        setVariableSafe(execution, INSTANCES_RESPONSE, instancesDto);
+        setVariableSafe(execution, API_RESPONSE, instancesDto);
         log.debug("Train data uploading has been finished for execution [{}], process key [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
     }
