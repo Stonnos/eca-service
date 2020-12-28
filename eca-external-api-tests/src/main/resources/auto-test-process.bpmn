@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0uznkhk" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.7.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_0uznkhk" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.7.1">
   <bpmn:process id="Process_1lzqirm" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_0mpzo1a</bpmn:outgoing>
@@ -11,6 +11,11 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0mpzo1a" sourceRef="StartEvent_1" targetRef="Gateway_1uq9ik9" />
     <bpmn:serviceTask id="Activity_0jkpz24" name="Загрузить обучающую выборку на сервер">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">UPLOAD_TRAINING_DATA</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0rhzdbq</bpmn:incoming>
       <bpmn:outgoing>Flow_0wtkcw0</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -23,6 +28,11 @@
     <bpmn:sequenceFlow id="Flow_0wtkcw0" sourceRef="Activity_0jkpz24" targetRef="Gateway_1dj2b2n" />
     <bpmn:sequenceFlow id="Flow_08maqh1" sourceRef="Gateway_1dj2b2n" targetRef="Activity_0au6vxc" />
     <bpmn:serviceTask id="Activity_0au6vxc" name="Завершить тест с ошибкой">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">FINISH_WITH_ERROR</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_08maqh1</bpmn:incoming>
       <bpmn:incoming>Flow_1klxt8x</bpmn:incoming>
       <bpmn:incoming>Flow_0lzmeky</bpmn:incoming>
@@ -30,10 +40,20 @@
       <bpmn:outgoing>Flow_063j6fq</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="Activity_09gcibm" name="Сравнение результатов для ошибки валидации">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">COMPARE_VALIDATION_ERROR_RESULT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0pf83we</bpmn:incoming>
       <bpmn:outgoing>Flow_1jn34ba</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="Activity_0wck1ym" name="Обработка ответа от сервиса загрузки данных">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">PROCESS_INSTANCES_RESPONSE</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ofm4fx</bpmn:incoming>
       <bpmn:outgoing>Flow_039t8tp</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -43,18 +63,33 @@
       <bpmn:outgoing>Flow_1sl6q04</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:serviceTask id="Activity_0sw2wnj" name="Сравнение результатов для ошибки валидации">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">COMPARE_VALIDATION_ERROR_RESULT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_10iwz9d</bpmn:incoming>
       <bpmn:outgoing>Flow_0cve2qf</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="Activity_0dsn777" name="Сравнить результаты ответа">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">COMPARE_EVALUATION_RESPONSE_RESULT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_146f0cb</bpmn:incoming>
-      <bpmn:outgoing>Flow_0ozh2ev</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0ydfsak</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="Activity_1vk8gb4" name="Окончательный результат теста">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">PROCESS_FINAL_TEST_RESULTS</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1jn34ba</bpmn:incoming>
       <bpmn:incoming>Flow_0cve2qf</bpmn:incoming>
-      <bpmn:incoming>Flow_0ozh2ev</bpmn:incoming>
       <bpmn:incoming>Flow_0pn1vrx</bpmn:incoming>
+      <bpmn:incoming>Flow_1x8d5f3</bpmn:incoming>
       <bpmn:outgoing>Flow_1s0pylq</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="Event_1n8quue">
@@ -65,6 +100,11 @@
     <bpmn:sequenceFlow id="Flow_1jn34ba" sourceRef="Activity_09gcibm" targetRef="Activity_1vk8gb4" />
     <bpmn:sequenceFlow id="Flow_1s0pylq" sourceRef="Activity_1vk8gb4" targetRef="Event_1n8quue" />
     <bpmn:serviceTask id="Activity_0i734h5" name="Отправить запрос на построение модели">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">EVALUATION_REQUEST</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1ckv5ax</bpmn:incoming>
       <bpmn:incoming>Flow_039t8tp</bpmn:incoming>
       <bpmn:outgoing>Flow_0quqlte</bpmn:outgoing>
@@ -107,8 +147,12 @@
     <bpmn:sequenceFlow id="Flow_0lzmeky" sourceRef="Gateway_1rkjop3" targetRef="Activity_0au6vxc" />
     <bpmn:sequenceFlow id="Flow_1sl6q04" sourceRef="Gateway_1dr8c3s" targetRef="Activity_0au6vxc" />
     <bpmn:sequenceFlow id="Flow_0cve2qf" sourceRef="Activity_0sw2wnj" targetRef="Activity_1vk8gb4" />
-    <bpmn:sequenceFlow id="Flow_0ozh2ev" sourceRef="Activity_0dsn777" targetRef="Activity_1vk8gb4" />
     <bpmn:serviceTask id="Activity_10bazct" name="Обучающая выборка не найдена">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">COMPARE_DATA_NOT_FOUND_RESULT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0mgrdwc</bpmn:incoming>
       <bpmn:outgoing>Flow_0pn1vrx</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -116,6 +160,17 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${apiResponse.requestStatus == 'DATA_NOT_FOUND'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0pn1vrx" sourceRef="Activity_10bazct" targetRef="Activity_1vk8gb4" />
+    <bpmn:serviceTask id="Activity_070x360" name="Скачать модель с сервера и сравнить результаты">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">COMPARE_CLASSIFIER_MODEL_RESULT</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ydfsak</bpmn:incoming>
+      <bpmn:outgoing>Flow_1x8d5f3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0ydfsak" sourceRef="Activity_0dsn777" targetRef="Activity_070x360" />
+    <bpmn:sequenceFlow id="Flow_1x8d5f3" sourceRef="Activity_070x360" targetRef="Activity_1vk8gb4" />
     <bpmn:textAnnotation id="TextAnnotation_05fl470">
       <bpmn:text>Тест с загрузкой обучающей выборки на сервер</bpmn:text>
     </bpmn:textAnnotation>
@@ -183,6 +238,15 @@
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1lzqirm">
+      <bpmndi:BPMNShape id="TextAnnotation_1hfvyfa_di" bpmnElement="TextAnnotation_1hfvyfa">
+        <dc:Bounds x="1370" y="860" width="140" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0z0adwf_di" bpmnElement="TextAnnotation_0z0adwf">
+        <dc:Bounds x="1300" y="450" width="180" height="53" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1v7jjsh_di" bpmnElement="TextAnnotation_1v7jjsh">
+        <dc:Bounds x="1260" y="665" width="150" height="37" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0pn1vrx_di" bpmnElement="Flow_0pn1vrx">
         <di:waypoint x="1330" y="930" />
         <di:waypoint x="1610" y="930" />
@@ -193,14 +257,9 @@
         <di:waypoint x="1100" y="930" />
         <di:waypoint x="1230" y="930" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ozh2ev_di" bpmnElement="Flow_0ozh2ev">
-        <di:waypoint x="1330" y="780" />
-        <di:waypoint x="1610" y="780" />
-        <di:waypoint x="1610" y="460" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0cve2qf_di" bpmnElement="Flow_0cve2qf">
-        <di:waypoint x="1330" y="610" />
-        <di:waypoint x="1610" y="610" />
+        <di:waypoint x="1330" y="570" />
+        <di:waypoint x="1610" y="570" />
         <di:waypoint x="1610" y="460" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1sl6q04_di" bpmnElement="Flow_1sl6q04">
@@ -223,8 +282,8 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_10iwz9d_di" bpmnElement="Flow_10iwz9d">
         <di:waypoint x="1100" y="755" />
-        <di:waypoint x="1100" y="610" />
-        <di:waypoint x="1230" y="610" />
+        <di:waypoint x="1100" y="570" />
+        <di:waypoint x="1230" y="570" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1g48o3n_di" bpmnElement="Flow_1g48o3n">
         <di:waypoint x="975" y="780" />
@@ -290,6 +349,15 @@
         <di:waypoint x="188" y="557" />
         <di:waypoint x="395" y="557" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ydfsak_di" bpmnElement="Flow_0ydfsak">
+        <di:waypoint x="1330" y="780" />
+        <di:waypoint x="1410" y="780" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1x8d5f3_di" bpmnElement="Flow_1x8d5f3">
+        <di:waypoint x="1510" y="780" />
+        <di:waypoint x="1610" y="780" />
+        <di:waypoint x="1610" y="460" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="152" y="539" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -313,9 +381,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1dr8c3s_di" bpmnElement="Gateway_1dr8c3s" isMarkerVisible="true">
         <dc:Bounds x="925" y="755" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0sw2wnj_di" bpmnElement="Activity_0sw2wnj">
-        <dc:Bounds x="1230" y="570" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1939o8p_di" bpmnElement="Activity_0dsn777">
         <dc:Bounds x="1230" y="740" width="100" height="80" />
@@ -374,12 +439,6 @@
       <bpmndi:BPMNShape id="TextAnnotation_0umpvij_di" bpmnElement="TextAnnotation_0umpvij">
         <dc:Bounds x="980" y="790" width="70" height="26" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1v7jjsh_di" bpmnElement="TextAnnotation_1v7jjsh">
-        <dc:Bounds x="1340" y="673" width="150" height="37" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0z0adwf_di" bpmnElement="TextAnnotation_0z0adwf">
-        <dc:Bounds x="1300" y="480" width="179.99325236167343" height="52.631578947368425" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_01l9lmc_di" bpmnElement="TextAnnotation_01l9lmc">
         <dc:Bounds x="1120" y="690" width="99.99274099883856" height="39.48896631823461" />
       </bpmndi:BPMNShape>
@@ -389,8 +448,11 @@
       <bpmndi:BPMNShape id="TextAnnotation_06053rt_di" bpmnElement="TextAnnotation_06053rt">
         <dc:Bounds x="840" y="860" width="99.99156545209176" height="39.13630229419703" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1hfvyfa_di" bpmnElement="TextAnnotation_1hfvyfa">
-        <dc:Bounds x="1350" y="820" width="140" height="50" />
+      <bpmndi:BPMNShape id="Activity_0sw2wnj_di" bpmnElement="Activity_0sw2wnj">
+        <dc:Bounds x="1230" y="530" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_070x360_di" bpmnElement="Activity_070x360">
+        <dc:Bounds x="1410" y="740" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_00abtc2_di" bpmnElement="Association_00abtc2">
         <di:waypoint x="1660" y="412" />
@@ -416,21 +478,21 @@
         <di:waypoint x="956" y="761" />
         <di:waypoint x="971" y="718" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_0ze88k1_di" bpmnElement="Association_0ze88k1">
-        <di:waypoint x="1329" y="748" />
-        <di:waypoint x="1387" y="710" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_033dk9d_di" bpmnElement="Association_033dk9d">
-        <di:waypoint x="1322" y="570" />
-        <di:waypoint x="1362" y="533" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_1yhr2uf_di" bpmnElement="Association_1yhr2uf">
         <di:waypoint x="1113" y="768" />
         <di:waypoint x="1151" y="729" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_1psbg5p_di" bpmnElement="Association_1psbg5p">
-        <di:waypoint x="1330" y="900" />
-        <di:waypoint x="1379" y="870" />
+        <di:waypoint x="1330" y="917" />
+        <di:waypoint x="1370" y="905" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_033dk9d_di" bpmnElement="Association_033dk9d">
+        <di:waypoint x="1325" y="531" />
+        <di:waypoint x="1359" y="503" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0ze88k1_di" bpmnElement="Association_0ze88k1">
+        <di:waypoint x="1303" y="740" />
+        <di:waypoint x="1325" y="702" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
