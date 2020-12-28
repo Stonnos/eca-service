@@ -20,6 +20,7 @@ import java.util.concurrent.CountDownLatch;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.AUTO_TEST_ID;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.TEST_DATA_MODEL;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.TEST_RESULTS_MATCHER;
+import static com.ecaservice.external.api.test.bpm.CamundaVariables.TEST_TYPE;
 import static com.google.common.collect.Maps.newHashMap;
 
 /**
@@ -66,6 +67,7 @@ public class TestWorkerService {
         TestResultsMatcher matcher = new TestResultsMatcher();
         Map<String, Object> variables = newHashMap();
         variables.put(AUTO_TEST_ID, autoTestEntity.getId());
+        variables.put(TEST_TYPE, testDataModel.getTestType().name());
         variables.put(TEST_DATA_MODEL, testDataModel);
         variables.put(TEST_RESULTS_MATCHER, matcher);
         processManager.startProcess(processConfig.getProcessId(), UUID.randomUUID().toString(), variables);

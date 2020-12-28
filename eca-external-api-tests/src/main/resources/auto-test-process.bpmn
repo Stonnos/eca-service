@@ -21,7 +21,7 @@
       <bpmn:outgoing>Flow_0wtkcw0</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0rhzdbq" sourceRef="Gateway_1uq9ik9" targetRef="Activity_0jkpz24">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${testDataModel.testType == 'USING_API_DATA_STORAGE'}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${testType == 'USING_API_DATA_STORAGE'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_1dj2b2n" default="Flow_08maqh1">
       <bpmn:incoming>Flow_0wtkcw0</bpmn:incoming>
@@ -114,7 +114,7 @@
       <bpmn:outgoing>Flow_0quqlte</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1ckv5ax" sourceRef="Gateway_1uq9ik9" targetRef="Activity_0i734h5">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${testDataModel.testType == 'USING_EXTERNAL_DATA_URL'}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${testType == 'USING_EXTERNAL_DATA_URL'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0quqlte" sourceRef="Activity_0i734h5" targetRef="Gateway_1dr8c3s" />
     <bpmn:exclusiveGateway id="Gateway_0me8elr" default="Flow_1klxt8x">

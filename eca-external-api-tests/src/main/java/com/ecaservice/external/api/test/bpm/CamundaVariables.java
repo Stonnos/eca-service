@@ -26,6 +26,11 @@ public class CamundaVariables {
     public static final String AUTO_TEST_ID = "autoTestId";
 
     /**
+     * Test type variable
+     */
+    public static final String TEST_TYPE = "testType";
+
+    /**
      * Test data model variable
      */
     public static final String TEST_DATA_MODEL = "testDataModel";
