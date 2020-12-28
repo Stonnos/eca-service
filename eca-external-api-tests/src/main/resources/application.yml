@@ -36,6 +36,9 @@ external-api-tests:
   pageSize: 25
   delaySeconds: 2
 
+process:
+  processId: ExternalApiAutoTestProcess
+
 ## Swagger properties
 swagger2:
   projectVersion: @project.version@

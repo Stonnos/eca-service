@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @Configuration
 @EnableScheduling
-@EnableConfigurationProperties(ExternalApiTestsConfig.class)
+@EnableConfigurationProperties({ExternalApiTestsConfig.class, ProcessConfig.class})
 public class ExternalApiTestsConfiguration {
 
     /**
