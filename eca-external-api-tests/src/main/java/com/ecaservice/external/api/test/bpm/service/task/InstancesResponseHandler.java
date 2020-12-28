@@ -59,8 +59,8 @@ public class InstancesResponseHandler extends AbstractTaskHandler {
                 String.format("Expected not null instances response for auto test [%d]", autoTestId));
         AutoTestEntity autoTestEntity = autoTestRepository.findById(autoTestId)
                 .orElseThrow(() -> new EntityNotFoundException(AutoTestEntity.class, autoTestId));
-        log.debug("Update train data url [{}] for execution [{}], process key [{}]", execution.getId(),
-                execution.getProcessBusinessKey(), responseDto.getPayload().getDataUrl());
+        log.debug("Update train data url [{}] for execution [{}], process key [{}]",
+                responseDto.getPayload().getDataUrl(), execution.getId(), execution.getProcessBusinessKey());
         testDataModel.getRequest().setTrainDataUrl(responseDto.getPayload().getDataUrl());
         autoTestEntity.setRequest(objectMapper.writeValueAsString(testDataModel.getRequest()));
         autoTestRepository.save(autoTestEntity);
