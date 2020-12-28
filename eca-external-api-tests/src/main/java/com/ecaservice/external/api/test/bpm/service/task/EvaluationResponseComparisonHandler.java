@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.EVALUATION_RESPONSE;
@@ -50,21 +51,23 @@ public class EvaluationResponseComparisonHandler extends ComparisonTaskHandler {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void compareAndMatchFields(DelegateExecution execution,
                                          AutoTestEntity autoTestEntity,
                                          TestResultsMatcher matcher) throws JsonProcessingException {
         log.debug("Compare evaluation response for execution id [{}], process key [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
         TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
-        ResponseDto<EvaluationResponseDto> responseDto = getVariable(execution, EVALUATION_RESPONSE, ResponseDto.class);
+        ResponseDto<EvaluationResponseDto> responseDto =
+                getVariable(execution, EVALUATION_RESPONSE, new ParameterizedTypeReference<>() {
+                });
         saveResponse(autoTestEntity, responseDto);
         //Compare and match evaluation response status
         compareAndMatchRequestStatus(autoTestEntity, testDataModel.getExpectedResponse().getRequestStatus(),
                 responseDto.getRequestStatus(), matcher);
         //Compare and match model url
         compareAndMatchModelUrl(responseDto, autoTestEntity, matcher);
-        log.debug("Compare evaluation response has been finished for execution id [{}], process key [{}]", execution.getId(), execution.getProcessBusinessKey());
+        log.debug("Compare evaluation response has been finished for execution id [{}], process key [{}]",
+                execution.getId(), execution.getProcessBusinessKey());
     }
 
     private void compareAndMatchModelUrl(ResponseDto<EvaluationResponseDto> responseDto,

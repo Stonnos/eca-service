@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -40,7 +41,6 @@ public class ValidationErrorComparisonHandler extends ComparisonTaskHandler {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void compareAndMatchFields(DelegateExecution execution,
                                          AutoTestEntity autoTestEntity,
                                          TestResultsMatcher matcher) throws JsonProcessingException {
@@ -48,7 +48,8 @@ public class ValidationErrorComparisonHandler extends ComparisonTaskHandler {
                 execution.getProcessBusinessKey());
         TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
         ResponseDto<List<ValidationErrorDto>> responseDto =
-                getVariable(execution, VALIDATION_ERROR_RESPONSE, ResponseDto.class);
+                getVariable(execution, VALIDATION_ERROR_RESPONSE, new ParameterizedTypeReference<>() {
+                });
         autoTestEntity.setResponse(OBJECT_MAPPER.writeValueAsString(responseDto));
         compareAndMatchRequestStatus(autoTestEntity, testDataModel.getExpectedResponse().getRequestStatus(),
                 responseDto.getRequestStatus(), matcher);

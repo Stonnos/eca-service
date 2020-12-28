@@ -7,6 +7,7 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.EXECUTION_RESULT;
 import static com.ecaservice.external.api.test.util.CamundaUtils.errorResult;
+import static com.ecaservice.external.api.test.util.CamundaUtils.setVariableSafe;
 
 /**
  * Abstract execution listener implementation. Method execution result is an object of type
@@ -37,6 +38,6 @@ public abstract class AbstractExecutionListener implements JavaDelegate {
     protected abstract ExecutionResult proceedResult(DelegateExecution delegateExecution) throws Exception;
 
     private void saveResult(DelegateExecution execution, ExecutionResult executionResult) {
-        execution.setVariable(EXECUTION_RESULT, executionResult);
+        setVariableSafe(execution, EXECUTION_RESULT, executionResult);
     }
 }

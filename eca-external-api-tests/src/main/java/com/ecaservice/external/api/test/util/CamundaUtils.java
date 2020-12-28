@@ -5,6 +5,8 @@ import com.ecaservice.external.api.test.bpm.model.TaskExecutionStatus;
 import com.ecaservice.external.api.test.exception.ProcessVariableNotFound;
 import lombok.experimental.UtilityClass;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.ResolvableType;
 import org.springframework.util.Assert;
 
 import java.text.MessageFormat;
@@ -35,6 +37,38 @@ public class CamundaUtils {
                 MessageFormat.format("Expected [{0}] type for variable [{1}], but found [{2}]", clazz.getSimpleName(),
                         variableName, value.getClass().getSimpleName()));
         return clazz.cast(value);
+    }
+
+    /**
+     * Gets variable from execution.
+     *
+     * @param execution     - execution context
+     * @param variableName  - variable name
+     * @param typeReference - type reference
+     * @param <T>           - variable value type
+     * @return variable value
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T getVariable(DelegateExecution execution, String variableName,
+                                    ParameterizedTypeReference<T> typeReference) {
+        Object value = execution.getVariable(variableName);
+        if (value == null) {
+            throw new ProcessVariableNotFound(variableName, execution.getProcessInstanceId());
+        }
+        ResolvableType resolvableType = ResolvableType.forType(typeReference);
+        return (T) resolvableType.toClass().cast(value);
+    }
+
+    /**
+     * Safely set variable value to execution. If value is null then exception will be thrown.
+     *
+     * @param execution    - execution context
+     * @param variableName - variable name
+     * @param value        - variable value
+     */
+    public static void setVariableSafe(DelegateExecution execution, String variableName, Object value) {
+        Assert.notNull(value, String.format("Expected not null variable [%s] to set", variableName));
+        execution.setVariable(variableName, value);
     }
 
     /**

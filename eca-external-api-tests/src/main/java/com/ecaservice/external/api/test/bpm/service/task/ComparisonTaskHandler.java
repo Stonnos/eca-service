@@ -13,6 +13,7 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.AUTO_TEST_ID;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.TEST_RESULTS_MATCHER;
 import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
+import static com.ecaservice.external.api.test.util.CamundaUtils.setVariableSafe;
 
 /**
  * Abstract handler for comparison operations.
@@ -46,7 +47,7 @@ public abstract class ComparisonTaskHandler extends AbstractTaskHandler{
                 .orElseThrow(() -> new EntityNotFoundException(AutoTestEntity.class, autoTestId));
         compareAndMatchFields(execution, autoTestEntity, matcher);
         autoTestRepository.save(autoTestEntity);
-        execution.setVariable(TEST_RESULTS_MATCHER, matcher);
+        setVariableSafe(execution, TEST_RESULTS_MATCHER, matcher);
         log.debug("Compare fields has been finished for execution with id [{}], process id [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
     }

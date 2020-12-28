@@ -20,6 +20,7 @@ import static com.ecaservice.external.api.test.bpm.CamundaVariables.AUTO_TEST_ID
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.INSTANCES_RESPONSE;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.TEST_DATA_MODEL;
 import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
+import static com.ecaservice.external.api.test.util.CamundaUtils.setVariableSafe;
 
 /**
  * Implements handler to uploads train data to server.
@@ -56,7 +57,7 @@ public class UploadTrainDataHandler extends ExternalApiTaskHandler {
         ResponseDto<InstancesDto> instancesDto = externalApiService.uploadInstances(resource);
         log.debug("Train data has been uploaded with status [{}] for test [{}]",
                 instancesDto.getRequestStatus(), autoTestId);
-        execution.setVariable(INSTANCES_RESPONSE, instancesDto);
+        setVariableSafe(execution, INSTANCES_RESPONSE, instancesDto);
         log.debug("Train data uploading has been finished for execution [{}], process key [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
     }

@@ -13,6 +13,7 @@ import static com.ecaservice.external.api.test.bpm.CamundaVariables.AUTO_TEST_ID
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.EVALUATION_RESPONSE;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.TEST_DATA_MODEL;
 import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
+import static com.ecaservice.external.api.test.util.CamundaUtils.setVariableSafe;
 
 /**
  * Implements handler to send evaluation request.
@@ -44,7 +45,7 @@ public class EvaluationRequestHandler extends ExternalApiTaskHandler {
         log.debug("Starting to send evaluation request for test [{}]", autoTestId);
         ResponseDto<EvaluationResponseDto> response = externalApiClient.evaluateModel(testDataModel.getRequest());
         log.debug("Received evaluation response for test [{}]: {}", autoTestId, response);
-        execution.setVariable(EVALUATION_RESPONSE, response);
+        setVariableSafe(execution, EVALUATION_RESPONSE, response);
         log.debug("Evaluation request execution [{}], process key [{}] has been finished", execution.getId(),
                 execution.getProcessBusinessKey());
     }

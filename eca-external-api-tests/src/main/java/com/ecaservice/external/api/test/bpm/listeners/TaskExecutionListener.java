@@ -12,6 +12,7 @@ import java.util.List;
 
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.TASK_TYPE;
 import static com.ecaservice.external.api.test.util.CamundaUtils.getEnumFromExecution;
+import static com.ecaservice.external.api.test.util.CamundaUtils.successResult;
 
 /**
  * Implements service task execution listener.
@@ -33,6 +34,7 @@ public class TaskExecutionListener extends AbstractExecutionListener {
                 .findFirst()
                 .orElseThrow(
                         () -> new IllegalStateException(String.format("Can't handle task with type [%s]", taskType)));
-        return taskHandler.handle(execution);
+        taskHandler.handle(execution);
+        return successResult();
     }
 }

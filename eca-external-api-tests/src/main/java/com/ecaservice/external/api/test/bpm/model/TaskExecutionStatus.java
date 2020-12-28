@@ -15,10 +15,5 @@ public enum TaskExecutionStatus {
     /**
      * Error status
      */
-    ERROR,
-
-    /**
-     * Input data validation error
-     */
-    INVALID_DATA
+    ERROR
 }
