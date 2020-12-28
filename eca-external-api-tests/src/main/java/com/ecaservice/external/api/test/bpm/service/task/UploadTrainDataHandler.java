@@ -28,7 +28,7 @@ import static com.ecaservice.external.api.test.util.CamundaUtils.setVariableSafe
 @Component
 public class UploadTrainDataHandler extends ExternalApiTaskHandler {
 
-    private PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+    private final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
     private final ExternalApiService externalApiService;
 
