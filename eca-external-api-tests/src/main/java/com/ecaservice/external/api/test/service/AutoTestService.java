@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 /**
  * Auto test service.
  *
@@ -43,6 +45,7 @@ public class AutoTestService {
         autoTestEntity.setTestResult(TestResult.ERROR);
         autoTestEntity.setExecutionStatus(ExecutionStatus.ERROR);
         autoTestEntity.setDetails(errorMessage);
+        autoTestEntity.setFinished(LocalDateTime.now());
         autoTestRepository.save(autoTestEntity);
         log.debug("Auto test [{}] has been finished with error", autoTestEntity.getId());
     }
@@ -65,6 +68,7 @@ public class AutoTestService {
             autoTestEntity.setTestResult(TestResult.FAILED);
         }
         autoTestEntity.setExecutionStatus(ExecutionStatus.FINISHED);
+        autoTestEntity.setFinished(LocalDateTime.now());
         autoTestRepository.save(autoTestEntity);
     }
 }
