@@ -1,12 +1,17 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
-import com.ecaservice.external.api.test.bpm.model.ExecutionResult;
-import com.ecaservice.external.api.test.bpm.model.TaskExecutionStatus;
+import com.ecaservice.external.api.dto.ResponseDto;
+import com.ecaservice.external.api.dto.ValidationErrorDto;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.util.Assert;
+
+import java.util.List;
 
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.VALIDATION_ERROR_RESPONSE;
 
@@ -18,6 +23,8 @@ import static com.ecaservice.external.api.test.bpm.CamundaVariables.VALIDATION_E
 @Slf4j
 public abstract class ExternalApiTaskHandler extends AbstractTaskHandler {
 
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
     /**
      * Constructor with parameters.
      *
@@ -28,31 +35,29 @@ public abstract class ExternalApiTaskHandler extends AbstractTaskHandler {
     }
 
     @Override
-    public ExecutionResult handle(DelegateExecution execution) throws Exception {
+    public void handle(DelegateExecution execution) throws Exception {
         log.debug("External api task execution [{}], process key [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
-        ExecutionResult executionResult = new ExecutionResult();
         try {
             internalHandle(execution);
-            executionResult.setStatus(TaskExecutionStatus.SUCCESS);
         } catch (FeignException.BadRequest ex) {
-            handleBadRequest(execution, ex, executionResult);
+            handleBadRequest(execution, ex);
         }
-        log.debug("External api task execution [{}], process key [{}] result: {}", execution.getId(),
-                execution.getProcessBusinessKey(), executionResult);
-        return executionResult;
+        log.debug("External api task [{}], process key [{}] has been executed", execution.getId(),
+                execution.getProcessBusinessKey());
     }
 
     protected abstract void internalHandle(DelegateExecution execution) throws Exception;
 
-    private void handleBadRequest(DelegateExecution execution,
-                                  FeignException.BadRequest ex,
-                                  ExecutionResult executionResult) {
+    private void handleBadRequest(DelegateExecution execution, FeignException.BadRequest ex)
+            throws JsonProcessingException {
         log.debug("Got bad request for execution [{}], process key [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
         String responseBody = ex.contentUTF8();
         Assert.notNull(responseBody, "Expected not empty response body");
-        executionResult.setStatus(TaskExecutionStatus.INVALID_DATA);
-        execution.setVariable(VALIDATION_ERROR_RESPONSE, responseBody);
+        ResponseDto<List<ValidationErrorDto>> responseDto =
+                OBJECT_MAPPER.readValue(responseBody, new TypeReference<>() {
+                });
+        execution.setVariable(VALIDATION_ERROR_RESPONSE, responseDto);
     }
 }

@@ -56,11 +56,6 @@ public class UploadTrainDataHandler extends ExternalApiTaskHandler {
         ResponseDto<InstancesDto> instancesDto = externalApiService.uploadInstances(resource);
         log.debug("Train data has been uploaded with status [{}] for test [{}]",
                 instancesDto.getRequestStatus(), autoTestId);
-        if (!RequestStatus.SUCCESS.equals(instancesDto.getRequestStatus())) {
-            throw new UploadTrainDataException(autoTestId);
-        }
-        Assert.notNull(instancesDto.getPayload(),
-                String.format("Expected not null instances response for auto test [%d]", autoTestId));
         execution.setVariable(INSTANCES_RESPONSE, instancesDto);
         log.debug("Train data uploading has been finished for execution [{}], process key [{}]", execution.getId(),
                 execution.getProcessBusinessKey());

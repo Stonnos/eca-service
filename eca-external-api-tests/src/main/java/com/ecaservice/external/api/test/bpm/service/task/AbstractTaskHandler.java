@@ -1,7 +1,6 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
 
-import com.ecaservice.external.api.test.bpm.model.ExecutionResult;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -36,8 +35,7 @@ public abstract class AbstractTaskHandler {
      * Handles task with specified params.
      *
      * @param execution - execution context
-     * @return execution result
      * @throws Exception in case of error
      */
-    public abstract ExecutionResult handle(DelegateExecution execution) throws Exception;
+    public abstract void handle(DelegateExecution execution) throws Exception;
 }

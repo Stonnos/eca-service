@@ -18,7 +18,7 @@ import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
  */
 @Slf4j
 @Component
-public class ErrorHandler extends SimpleTaskHandler {
+public class ErrorHandler extends AbstractTaskHandler {
 
     private final AutoTestService autoTestService;
 
@@ -33,7 +33,7 @@ public class ErrorHandler extends SimpleTaskHandler {
     }
 
     @Override
-    public void internalHandle(DelegateExecution execution) {
+    public void handle(DelegateExecution execution) {
         log.debug("Handles error for execution [{}], process id [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
         Long autoTestId = getVariable(execution, AUTO_TEST_ID, Long.class);

@@ -8,7 +8,6 @@ import com.ecaservice.external.api.test.model.TestDataModel;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
 import com.ecaservice.external.api.test.service.TestResultsMatcher;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -29,31 +28,28 @@ import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
 @Component
 public class ValidationErrorComparisonHandler extends ComparisonTaskHandler {
 
-    private final ObjectMapper objectMapper;
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     /**
      * Constructor with parameters.
      *
      * @param autoTestRepository - auto test repository bean
-     * @param objectMapper       - object mapper bean
      */
-    public ValidationErrorComparisonHandler(AutoTestRepository autoTestRepository,
-                                            ObjectMapper objectMapper) {
+    public ValidationErrorComparisonHandler(AutoTestRepository autoTestRepository) {
         super(TaskType.COMPARE_VALIDATION_ERROR_RESULT, autoTestRepository);
-        this.objectMapper = objectMapper;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void compareAndMatchFields(DelegateExecution execution,
                                          AutoTestEntity autoTestEntity,
                                          TestResultsMatcher matcher) throws JsonProcessingException {
         log.debug("Compare validation error status for execution id [{}], process key [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
         TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
-        String responseBody = getVariable(execution, VALIDATION_ERROR_RESPONSE, String.class);
-        autoTestEntity.setResponse(responseBody);
-        ResponseDto<List<ValidationErrorDto>> responseDto = objectMapper.readValue(responseBody, new TypeReference<>() {
-        });
+        ResponseDto<List<ValidationErrorDto>> responseDto =
+                getVariable(execution, VALIDATION_ERROR_RESPONSE, ResponseDto.class);
+        autoTestEntity.setResponse(OBJECT_MAPPER.writeValueAsString(responseDto));
         compareAndMatchRequestStatus(autoTestEntity, testDataModel.getExpectedResponse().getRequestStatus(),
                 responseDto.getRequestStatus(), matcher);
         log.debug("Comparison validation error status has been finished for execution id [{}], process key [{}]",

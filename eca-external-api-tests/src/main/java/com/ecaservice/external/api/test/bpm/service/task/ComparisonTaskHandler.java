@@ -20,7 +20,7 @@ import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
  * @author Roman Batygin
  */
 @Slf4j
-public abstract class ComparisonTaskHandler extends SimpleTaskHandler {
+public abstract class ComparisonTaskHandler extends AbstractTaskHandler{
 
     private final AutoTestRepository autoTestRepository;
 
@@ -37,7 +37,7 @@ public abstract class ComparisonTaskHandler extends SimpleTaskHandler {
     }
 
     @Override
-    public void internalHandle(DelegateExecution execution) throws Exception {
+    public void handle(DelegateExecution execution) throws Exception {
         log.debug("Compare fields for execution with id [{}], process id [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
         Long autoTestId = getVariable(execution, AUTO_TEST_ID, Long.class);
