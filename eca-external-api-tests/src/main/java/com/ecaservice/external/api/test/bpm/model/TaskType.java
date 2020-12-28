@@ -38,6 +38,11 @@ public enum TaskType {
     COMPARE_EVALUATION_RESPONSE_RESULT,
 
     /**
+     * Compare downloaded classifier model result
+     */
+    COMPARE_CLASSIFIER_MODEL_RESULT,
+
+    /**
      * Process final test result
      */
     PROCESS_FINAL_TEST_RESULTS,
