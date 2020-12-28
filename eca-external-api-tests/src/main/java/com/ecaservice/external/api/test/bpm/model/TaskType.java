@@ -28,6 +28,11 @@ public enum TaskType {
     COMPARE_VALIDATION_ERROR_RESULT,
 
     /**
+     * Compare data not found result
+     */
+    COMPARE_DATA_NOT_FOUND_RESULT,
+
+    /**
      * Compare evaluation response result
      */
     COMPARE_EVALUATION_RESPONSE_RESULT,
