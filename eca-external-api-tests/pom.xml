@@ -16,6 +16,7 @@
         <spring.cloud.oauth2.version>2.2.1.RELEASE</spring.cloud.oauth2.version>
         <commons.csv.version>1.8</commons.csv.version>
         <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
+        <spring-boot-camunda-bpm.version>7.14.0</spring-boot-camunda-bpm.version>
     </properties>
 
     <dependencies>
@@ -66,6 +67,12 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.camunda.bpm.springboot</groupId>
+            <artifactId>camunda-bpm-spring-boot-starter</artifactId>
+            <version>${spring-boot-camunda-bpm.version}</version>
         </dependency>
 
         <dependency>

@@ -3,6 +3,8 @@ package com.ecaservice.classifier.options.model;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import java.io.Serializable;
+
 /**
  * Classifier options abstract model.
  *
@@ -20,5 +22,5 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = StackingOptions.class, name = ClassifierOptionsType.STACKING),
         @JsonSubTypes.Type(value = IterativeEnsembleOptions.class, name = ClassifierOptionsType.ITERATIVE_ENSEMBLE),
 })
-public abstract class ClassifierOptions {
+public abstract class ClassifierOptions implements Serializable {
 }

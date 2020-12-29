@@ -5,13 +5,15 @@ import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.ResponseDto;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * Test data model.
  *
  * @author Roman Batygin
  */
 @Data
-public class TestDataModel {
+public class TestDataModel implements Serializable {
 
     /**
      * Display name (Test description)

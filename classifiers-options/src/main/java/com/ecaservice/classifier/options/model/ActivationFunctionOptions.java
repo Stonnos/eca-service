@@ -3,13 +3,15 @@ package com.ecaservice.classifier.options.model;
 import eca.neural.functions.ActivationFunctionType;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * Activation function options.
  *
  * @author Roman Batygin
  */
 @Data
-public class ActivationFunctionOptions {
+public class ActivationFunctionOptions implements Serializable {
 
     /**
      * Activation function type

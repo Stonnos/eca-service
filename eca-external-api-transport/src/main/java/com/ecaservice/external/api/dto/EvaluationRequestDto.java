@@ -10,6 +10,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import java.io.Serializable;
+
 import static com.ecaservice.external.api.dto.Constraints.MAX_FOLDS;
 import static com.ecaservice.external.api.dto.Constraints.MAX_TESTS;
 import static com.ecaservice.external.api.dto.Constraints.MIN_FOLDS;
@@ -21,7 +23,7 @@ import static com.ecaservice.external.api.dto.Constraints.MIN_TESTS;
  * @author Roman Batygin
  */
 @Data
-public class EvaluationRequestDto {
+public class EvaluationRequestDto implements Serializable {
 
     /**
      * Training data url
