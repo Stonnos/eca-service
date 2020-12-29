@@ -47,8 +47,8 @@ public class ValidationErrorComparisonHandler extends ComparisonTaskHandler {
         log.debug("Compare validation error status for execution id [{}], process key [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
         TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
-        ResponseDto<List<ValidationErrorDto>> responseDto =
-                getVariable(execution, API_RESPONSE, new ParameterizedTypeReference<>() {
+        ResponseDto<List<ValidationErrorDto>> responseDto = getVariable(execution, API_RESPONSE,
+                new ParameterizedTypeReference<ResponseDto<List<ValidationErrorDto>>>() {
                 });
         autoTestEntity.setResponse(OBJECT_MAPPER.writeValueAsString(responseDto));
         compareAndMatchRequestStatus(autoTestEntity, testDataModel.getExpectedResponse().getRequestStatus(),

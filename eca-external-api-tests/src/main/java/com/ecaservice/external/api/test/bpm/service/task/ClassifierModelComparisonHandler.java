@@ -51,8 +51,8 @@ public class ClassifierModelComparisonHandler extends ComparisonTaskHandler {
                                          TestResultsMatcher matcher) throws IOException {
         log.debug("Compare classifier model result for execution id [{}], process key [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
-        ResponseDto<EvaluationResponseDto> responseDto =
-                getVariable(execution, API_RESPONSE, new ParameterizedTypeReference<>() {
+        ResponseDto<EvaluationResponseDto> responseDto = getVariable(execution, API_RESPONSE,
+                new ParameterizedTypeReference<ResponseDto<EvaluationResponseDto>>() {
                 });
         log.debug("Starting to download model for test [{}]", autoTestEntity.getId());
         ClassificationModel classificationModel =

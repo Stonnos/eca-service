@@ -53,7 +53,7 @@ public class InstancesResponseHandler extends AbstractTaskHandler {
         Long autoTestId = getVariable(execution, AUTO_TEST_ID, Long.class);
         TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
         ResponseDto<InstancesDto> responseDto =
-                getVariable(execution, API_RESPONSE, new ParameterizedTypeReference<>() {
+                getVariable(execution, API_RESPONSE, new ParameterizedTypeReference<ResponseDto<InstancesDto>>() {
                 });
         Assert.notNull(responseDto.getPayload(),
                 String.format("Expected not null instances response for auto test [%d]", autoTestId));

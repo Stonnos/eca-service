@@ -45,8 +45,8 @@ public class DataNotFoundComparisonHandler extends ComparisonTaskHandler {
         log.debug("Compare data not found status for execution id [{}], process key [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
         TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
-        ResponseDto<EvaluationResponseDto> responseDto =
-                getVariable(execution, API_RESPONSE, new ParameterizedTypeReference<>() {
+        ResponseDto<EvaluationResponseDto> responseDto = getVariable(execution, API_RESPONSE,
+                new ParameterizedTypeReference<ResponseDto<EvaluationResponseDto>>() {
                 });
         autoTestEntity.setResponse(OBJECT_MAPPER.writeValueAsString(responseDto));
         compareAndMatchRequestStatus(autoTestEntity, testDataModel.getExpectedResponse().getRequestStatus(),

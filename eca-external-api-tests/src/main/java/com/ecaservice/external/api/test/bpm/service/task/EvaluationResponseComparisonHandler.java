@@ -57,8 +57,8 @@ public class EvaluationResponseComparisonHandler extends ComparisonTaskHandler {
         log.debug("Compare evaluation response for execution id [{}], process key [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
         TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
-        ResponseDto<EvaluationResponseDto> responseDto =
-                getVariable(execution, API_RESPONSE, new ParameterizedTypeReference<>() {
+        ResponseDto<EvaluationResponseDto> responseDto = getVariable(execution, API_RESPONSE,
+                new ParameterizedTypeReference<ResponseDto<EvaluationResponseDto>>() {
                 });
         saveResponse(autoTestEntity, responseDto);
         //Compare and match evaluation response status
