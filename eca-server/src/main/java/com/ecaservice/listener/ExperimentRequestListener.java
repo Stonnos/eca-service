@@ -2,7 +2,6 @@ package com.ecaservice.listener;
 
 import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.ExperimentRequest;
-import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.mapping.EcaResponseMapper;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.service.experiment.ExperimentRequestService;
@@ -16,8 +15,6 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
-
-import static com.ecaservice.util.Utils.buildErrorResponse;
 
 /**
  * Rabbit MQ listener for experiment request messages.
@@ -49,11 +46,7 @@ public class ExperimentRequestListener {
     }
 
     private EcaResponse createExperimentRequest(ExperimentRequest evaluationRequest) {
-        try {
-            Experiment experiment = experimentRequestService.createExperimentRequest(evaluationRequest);
-            return ecaResponseMapper.map(experiment);
-        } catch (ExperimentException ex) {
-            return buildErrorResponse(ex.getMessage());
-        }
+        Experiment experiment = experimentRequestService.createExperimentRequest(evaluationRequest);
+        return ecaResponseMapper.map(experiment);
     }
 }

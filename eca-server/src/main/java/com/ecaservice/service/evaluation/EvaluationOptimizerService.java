@@ -19,7 +19,7 @@ import weka.core.Instances;
 import java.nio.charset.StandardCharsets;
 
 import static com.ecaservice.util.ClassifierOptionsHelper.parseOptions;
-import static com.ecaservice.util.Utils.buildErrorResponse;
+import static com.ecaservice.util.Utils.buildEvaluationErrorResponse;
 
 /**
  * Implements classifier evaluation by searching optimal classifier options.
@@ -55,7 +55,7 @@ public class EvaluationOptimizerService {
                 classifierOptionsRequestMapper.map(instancesRequest, crossValidationConfig);
         String optimalOptions = getOptimalClassifierOptions(classifierOptionsRequest);
         if (optimalOptions == null) {
-            return buildErrorResponse(String.format(RESULTS_NOT_FOUND_MESSAGE, data.relationName()));
+            return buildEvaluationErrorResponse(String.format(RESULTS_NOT_FOUND_MESSAGE, data.relationName()));
         } else {
             return evaluateModel(classifierOptionsRequest, optimalOptions, data);
         }
