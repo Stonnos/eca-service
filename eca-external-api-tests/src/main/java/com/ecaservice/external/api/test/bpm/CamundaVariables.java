@@ -44,4 +44,9 @@ public class CamundaVariables {
      * API response variable
      */
     public static final String API_RESPONSE = "apiResponse";
+
+    /**
+     * Error message
+     */
+    public static final String ERROR_MESSAGE = "errorMessage";
 }
