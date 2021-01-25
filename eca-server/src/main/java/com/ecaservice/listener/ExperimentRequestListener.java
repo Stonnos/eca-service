@@ -2,7 +2,6 @@ package com.ecaservice.listener;
 
 import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.ExperimentRequest;
-import com.ecaservice.config.rabbit.Queues;
 import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.mapping.EcaResponseMapper;
 import com.ecaservice.model.entity.Experiment;
@@ -39,7 +38,7 @@ public class ExperimentRequestListener {
      *
      * @param experimentRequest - experiment request
      */
-    @RabbitListener(queues = Queues.EXPERIMENT_REQUEST_QUEUE)
+    @RabbitListener(queues = "${queue.experimentRequestQueue}")
     public void handleMessage(@Valid @Payload ExperimentRequest experimentRequest, Message inboundMessage) {
         EcaResponse ecaResponse = createExperimentRequest(experimentRequest);
         MessageProperties inboundMessageProperties = inboundMessage.getMessageProperties();
