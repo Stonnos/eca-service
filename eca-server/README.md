@@ -71,6 +71,10 @@ ECA server
    * swagger2.clientId - идентификатор клиента
    * swagger2.secret - пароль клиента
    * swagger2.groups - Groups map с мета информацией для swagger
+9) queue - настройки очередей
+   * queue.evaluationRequestQueue - входящая очередь для запросов на построение модели классификатора
+   * queue.evaluationOptimizerRequestQueue - входящая очередь для запросов на построение оптимального классификатора
+   * queue.experimentRequestQueue - входящая очередь для запросов на построение эксперимента
 
 Инструкция по развертыванию
 ----------------------------------------

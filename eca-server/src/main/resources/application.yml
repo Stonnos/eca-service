@@ -61,6 +61,12 @@ common:
   threadPoolSize: 10
   instance: eca-server-instance-1
 
+## Queues properties
+queue:
+  evaluationRequestQueue: evaluation-request-queue
+  evaluationOptimizerRequestQueue: evaluation-optimizer-request-queue
+  experimentRequestQueue: experiment-request-queue
+
 ## Cross - validation properties
 cross-validation:
   numFolds: 10

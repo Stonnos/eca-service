@@ -2,7 +2,6 @@ package com.ecaservice.listener;
 
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.base.model.EvaluationResponse;
-import com.ecaservice.config.rabbit.Queues;
 import com.ecaservice.event.model.EvaluationFinishedEvent;
 import com.ecaservice.service.evaluation.EvaluationRequestService;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +35,7 @@ public class EvaluationRequestListener {
      *
      * @param evaluationRequest - evaluation request
      */
-    @RabbitListener(queues = Queues.EVALUATION_REQUEST_QUEUE)
+    @RabbitListener(queues = "${queue.evaluationRequestQueue}")
     public void handleMessage(@Valid @Payload EvaluationRequest evaluationRequest, Message inboundMessage) {
         log.info("Received request for classifier [{}] evaluation with data [{}]",
                 evaluationRequest.getClassifier().getClass().getSimpleName(),

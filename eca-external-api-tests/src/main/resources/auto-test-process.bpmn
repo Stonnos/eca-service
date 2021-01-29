@@ -4,11 +4,11 @@
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_0mpzo1a</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:exclusiveGateway id="Gateway_1uq9ik9" default="Flow_1p30snr">
+    <bpmn:exclusiveGateway id="Gateway_1uq9ik9" default="Flow_04digqh">
       <bpmn:incoming>Flow_0mpzo1a</bpmn:incoming>
       <bpmn:outgoing>Flow_0rhzdbq</bpmn:outgoing>
       <bpmn:outgoing>Flow_1ckv5ax</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1p30snr</bpmn:outgoing>
+      <bpmn:outgoing>Flow_04digqh</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0mpzo1a" sourceRef="StartEvent_1" targetRef="Gateway_1uq9ik9" />
     <bpmn:serviceTask id="Activity_0jkpz24" name="Загрузить обучающую выборку на сервер" camunda:modelerTemplate="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener">
@@ -34,13 +34,13 @@
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">FINISH_WITH_ERROR</camunda:inputParameter>
+          <camunda:inputParameter name="errorMessage">${executionResult.errorMessage}</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_08maqh1</bpmn:incoming>
       <bpmn:incoming>Flow_1klxt8x</bpmn:incoming>
       <bpmn:incoming>Flow_0lzmeky</bpmn:incoming>
       <bpmn:incoming>Flow_1sl6q04</bpmn:incoming>
-      <bpmn:incoming>Flow_1p30snr</bpmn:incoming>
       <bpmn:outgoing>Flow_063j6fq</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="Activity_09gcibm" name="Сравнение результатов для ошибки валидации" camunda:modelerTemplate="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener">
@@ -99,6 +99,7 @@
     <bpmn:endEvent id="Event_1n8quue">
       <bpmn:incoming>Flow_063j6fq</bpmn:incoming>
       <bpmn:incoming>Flow_1s0pylq</bpmn:incoming>
+      <bpmn:incoming>Flow_1hnji24</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_063j6fq" sourceRef="Activity_0au6vxc" targetRef="Event_1n8quue" />
     <bpmn:sequenceFlow id="Flow_1jn34ba" sourceRef="Activity_09gcibm" targetRef="Activity_1vk8gb4" />
@@ -177,7 +178,18 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0ydfsak" sourceRef="Activity_0dsn777" targetRef="Activity_070x360" />
     <bpmn:sequenceFlow id="Flow_1x8d5f3" sourceRef="Activity_070x360" targetRef="Activity_1vk8gb4" />
-    <bpmn:sequenceFlow id="Flow_1p30snr" sourceRef="Gateway_1uq9ik9" targetRef="Activity_0au6vxc" />
+    <bpmn:serviceTask id="Activity_1b97rio" name="Неизвестный тип теста" camunda:modelerTemplate="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="taskType">FINISH_WITH_ERROR</camunda:inputParameter>
+          <camunda:inputParameter name="errorMessage">Unknown test type</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_04digqh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1hnji24</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_04digqh" sourceRef="Gateway_1uq9ik9" targetRef="Activity_1b97rio" />
+    <bpmn:sequenceFlow id="Flow_1hnji24" sourceRef="Activity_1b97rio" targetRef="Event_1n8quue" />
     <bpmn:textAnnotation id="TextAnnotation_05fl470">
       <bpmn:text>Тест с загрузкой обучающей выборки на сервер</bpmn:text>
     </bpmn:textAnnotation>
@@ -242,19 +254,9 @@
       <bpmn:text>Обработка ответа со статусом DATA_NOT_FOUND</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1psbg5p" sourceRef="Activity_10bazct" targetRef="TextAnnotation_1hfvyfa" />
-    <bpmn:textAnnotation id="TextAnnotation_18hr8sg">
-      <bpmn:text>Неизвестный тип теста</bpmn:text>
-    </bpmn:textAnnotation>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ExternalApiAutoTestProcess">
-      <bpmndi:BPMNEdge id="Flow_1p30snr_di" bpmnElement="Flow_1p30snr">
-        <di:waypoint x="420" y="582" />
-        <di:waypoint x="420" y="1040" />
-        <di:waypoint x="1880" y="1040" />
-        <di:waypoint x="1880" y="120" />
-        <di:waypoint x="1660" y="120" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1x8d5f3_di" bpmnElement="Flow_1x8d5f3">
         <di:waypoint x="1510" y="780" />
         <di:waypoint x="1610" y="780" />
@@ -366,6 +368,17 @@
         <di:waypoint x="188" y="557" />
         <di:waypoint x="395" y="557" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04digqh_di" bpmnElement="Flow_04digqh">
+        <di:waypoint x="420" y="582" />
+        <di:waypoint x="420" y="1130" />
+        <di:waypoint x="750" y="1130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hnji24_di" bpmnElement="Flow_1hnji24">
+        <di:waypoint x="850" y="1130" />
+        <di:waypoint x="2020" y="1130" />
+        <di:waypoint x="2020" y="280" />
+        <di:waypoint x="1628" y="280" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="152" y="539" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -471,8 +484,8 @@
       <bpmndi:BPMNShape id="TextAnnotation_1hfvyfa_di" bpmnElement="TextAnnotation_1hfvyfa">
         <dc:Bounds x="1370" y="860" width="140" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_18hr8sg_di" bpmnElement="TextAnnotation_18hr8sg">
-        <dc:Bounds x="270" y="930" width="140" height="27" />
+      <bpmndi:BPMNShape id="Activity_1b97rio_di" bpmnElement="Activity_1b97rio">
+        <dc:Bounds x="750" y="1090" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_00abtc2_di" bpmnElement="Association_00abtc2">
         <di:waypoint x="1660" y="412" />
