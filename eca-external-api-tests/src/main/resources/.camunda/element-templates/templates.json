@@ -1,6 +1,6 @@
 [
   {
-    "name": "Task execution listener",
+    "name": "Выполнение задачи",
     "id": "com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener",
     "isDefault": false,
     "appliesTo": [
@@ -13,6 +13,52 @@
         "binding": {
           "type": "property",
           "name": "camunda:class"
+        }
+      },
+      {
+        "label": "Тип задачи",
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "Загрузить обучающую выборку на сервер",
+            "value": "UPLOAD_TRAINING_DATA"
+          },
+          {
+            "name": "Отправить запрос на построение модели",
+            "value": "EVALUATION_REQUEST"
+          },
+          {
+            "name": "Обработка ответа от сервиса загрузки данных",
+            "value": "PROCESS_INSTANCES_RESPONSE"
+          },
+          {
+            "name": "Сравнение результатов для ошибки валидации",
+            "value": "COMPARE_VALIDATION_ERROR_RESULT"
+          },
+          {
+            "name": "Сравнение результатов для статуса 'Обучающая выбока не найдена'",
+            "value": "COMPARE_DATA_NOT_FOUND_RESULT"
+          },
+          {
+            "name": "Сравнить результаты ответа на запрос построения модели",
+            "value": "COMPARE_EVALUATION_RESPONSE_RESULT"
+          },
+          {
+            "name": "Скачать модель с сервера и сравнить результаты",
+            "value": "COMPARE_CLASSIFIER_MODEL_RESULT"
+          },
+          {
+            "name": "Вычислить окончательный результат теста",
+            "value": "PROCESS_FINAL_TEST_RESULTS"
+          },
+          {
+            "name": "Завершить тест с ошибкой",
+            "value": "FINISH_WITH_ERROR"
+          }
+        ],
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "taskType"
         }
       }
     ],
