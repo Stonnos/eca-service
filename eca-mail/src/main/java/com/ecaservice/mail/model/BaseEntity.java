@@ -22,7 +22,7 @@ abstract class BaseEntity {
     private Long id;
 
     /**
-     * Creation date.
+     * Creation date
      */
     @Column(name = "created", nullable = false)
     private LocalDateTime created;
