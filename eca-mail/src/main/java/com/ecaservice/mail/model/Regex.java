@@ -23,7 +23,7 @@ public class Regex extends BaseEntity {
     /**
      * Regex code
      */
-    @Column(name = "regex_code", nullable = false)
+    @Column(name = "regex_code", unique = true, nullable = false)
     private String regexCode;
 
     /**

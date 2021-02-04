@@ -29,7 +29,7 @@ public class TemplateEntity extends BaseEntity {
     /**
      * Template code
      */
-    @Column(name = "template_code", nullable = false)
+    @Column(name = "template_code", unique = true, nullable = false)
     private String code;
 
     /**

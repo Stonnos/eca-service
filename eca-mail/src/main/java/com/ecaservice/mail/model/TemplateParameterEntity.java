@@ -25,7 +25,7 @@ public class TemplateParameterEntity extends BaseEntity {
     /**
      * Parameter name
      */
-    @Column(name = "parameter_name", nullable = false)
+    @Column(name = "parameter_name", unique = true, nullable = false)
     private String parameterName;
 
     /**
