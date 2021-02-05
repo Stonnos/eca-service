@@ -23,7 +23,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EmailRequestValidator implements ConstraintValidator<ValidEmailRequest, EmailRequest> {
 
-    private static final String VARIABLES_NODE_FORMAT = "emailMessageVariables[%s]";
+    private static final String VARIABLES_NODE_FORMAT = "variables[%s]";
     private static final String EMAIL_TEMPLATE_PARAMETER_NOT_SPECIFIED = "{email.template.parameter.not.specified}";
     private static final String EMAIL_TEMPLATE_PARAMETER_INVALID_PATTERN = "{email.template.parameter.invalid.pattern}";
 
@@ -31,7 +31,7 @@ public class EmailRequestValidator implements ConstraintValidator<ValidEmailRequ
     public boolean isValid(EmailRequest emailRequest, ConstraintValidatorContext context) {
         boolean valid = true;
         TemplateEntity templateEntity = null;
-        Map<String, Object> variables =
+        Map<String, String> variables =
                 Optional.ofNullable(emailRequest.getVariables()).orElse(Collections.emptyMap());
         if (!CollectionUtils.isEmpty(templateEntity.getParameters())) {
             //validate all variables
@@ -41,7 +41,7 @@ public class EmailRequestValidator implements ConstraintValidator<ValidEmailRequ
                     addParameterNotSpecified(context, code);
                     valid = false;
                 } else {
-                    String value = String.valueOf(variables.get(code));
+                    String value = variables.get(code);
                     if (invalidPattern(value, templateParameter)) {
                         addInvalidPattern(context, code);
                         valid = false;

@@ -22,6 +22,7 @@ public class TestHelperUtils {
     private static final String SUBJECT = "subject";
     private static final String SENDER_MAIL_RU = "sender@mail.ru";
     private static final String RECEIVER_MAIL_RU = "receiver@mail.ru";
+    private static final String TEST_TEMPLATE_CODE = "testTemplate";
 
     /**
      * Creates email request.
@@ -31,8 +32,7 @@ public class TestHelperUtils {
     public static EmailRequest createEmailRequest() {
         EmailRequest emailRequest = new EmailRequest();
         emailRequest.setReceiver(RECEIVER_MAIL_RU);
-        emailRequest.setTemplateType(EmailType.NEW_EXPERIMENT);
-        emailRequest.setHtml(true);
+        emailRequest.setTemplateCode(TEST_TEMPLATE_CODE);
         return emailRequest;
     }
 

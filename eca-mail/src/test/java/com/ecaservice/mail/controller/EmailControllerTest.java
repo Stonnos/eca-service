@@ -61,9 +61,9 @@ class EmailControllerTest {
     }
 
     @Test
-    void testSaveEmailRequestWithNullTemplateType() throws Exception {
+    void testSaveEmailRequestWithNullTemplateCode() throws Exception {
         EmailRequest emailRequest = TestHelperUtils.createEmailRequest();
-        emailRequest.setTemplateType(null);
+        emailRequest.setTemplateCode(null);
         mockMvc.perform(post(EMAIL_REQUEST_URL)
                 .content(objectMapper.writeValueAsString(emailRequest))
                 .contentType(MediaType.APPLICATION_JSON))

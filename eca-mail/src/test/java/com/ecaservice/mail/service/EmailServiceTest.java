@@ -6,8 +6,9 @@ import com.ecaservice.mail.config.MailConfig;
 import com.ecaservice.mail.mapping.EmailRequestMapper;
 import com.ecaservice.mail.mapping.EmailRequestMapperImpl;
 import com.ecaservice.mail.model.Email;
-import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.mail.repository.EmailRepository;
+import com.ecaservice.mail.service.template.TemplateProcessorService;
+import com.ecaservice.notification.dto.EmailRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -26,7 +27,7 @@ class EmailServiceTest extends AbstractJpaTest {
     @Mock
     private MailConfig mailConfig;
     @Mock
-    private TemplateEngineService templateEngineService;
+    private TemplateProcessorService templateProcessorService;
     @Inject
     private EmailRepository emailRepository;
     @Inject
@@ -36,7 +37,7 @@ class EmailServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        emailService = new EmailService(mailConfig, emailRequestMapper, templateEngineService, emailRepository);
+        emailService = new EmailService(mailConfig, emailRequestMapper, templateProcessorService, emailRepository);
     }
 
     @Override
