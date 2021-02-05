@@ -3,6 +3,7 @@ package com.ecaservice.mail.validation;
 import com.ecaservice.mail.model.Regex;
 import com.ecaservice.mail.model.TemplateEntity;
 import com.ecaservice.mail.model.TemplateParameterEntity;
+import com.ecaservice.mail.service.TemplateService;
 import com.ecaservice.mail.validation.annotations.ValidEmailRequest;
 import com.ecaservice.notification.dto.EmailRequest;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +28,12 @@ public class EmailRequestValidator implements ConstraintValidator<ValidEmailRequ
     private static final String EMAIL_TEMPLATE_PARAMETER_NOT_SPECIFIED = "{email.template.parameter.not.specified}";
     private static final String EMAIL_TEMPLATE_PARAMETER_INVALID_PATTERN = "{email.template.parameter.invalid.pattern}";
 
+    private final TemplateService templateService;
+
     @Override
     public boolean isValid(EmailRequest emailRequest, ConstraintValidatorContext context) {
         boolean valid = true;
-        TemplateEntity templateEntity = null;
+        TemplateEntity templateEntity = templateService.getTemplate(emailRequest.getTemplateCode());
         Map<String, String> variables =
                 Optional.ofNullable(emailRequest.getVariables()).orElse(Collections.emptyMap());
         if (!CollectionUtils.isEmpty(templateEntity.getParameters())) {
