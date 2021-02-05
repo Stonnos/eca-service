@@ -22,23 +22,23 @@ public class DatabaseTemplateLoader implements TemplateLoader {
     private final TemplateRepository templateRepository;
 
     @Override
-    public Object findTemplateSource(final String code) {
+    public Object findTemplateSource(String code) {
         log.debug("Load template [{}] from database", code);
         return templateRepository.getBodyByCode(code);
     }
 
     @Override
-    public long getLastModified(final Object template) {
+    public long getLastModified(Object template) {
         return -1L;
     }
 
     @Override
-    public Reader getReader(final Object template, final String encoding) {
+    public Reader getReader(Object template, String encoding) {
         return new StringReader(String.valueOf(template));
     }
 
     @Override
-    public void closeTemplateSource(final Object template) {
+    public void closeTemplateSource(Object template) {
         //Empty implementation
     }
 }

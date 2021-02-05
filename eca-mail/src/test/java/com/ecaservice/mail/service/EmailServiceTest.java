@@ -6,7 +6,6 @@ import com.ecaservice.mail.config.MailConfig;
 import com.ecaservice.mail.mapping.EmailRequestMapper;
 import com.ecaservice.mail.mapping.EmailRequestMapperImpl;
 import com.ecaservice.mail.model.Email;
-import com.ecaservice.mail.service.template.TemplateEngineService;
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.mail.repository.EmailRepository;
 import org.assertj.core.api.Assertions;
