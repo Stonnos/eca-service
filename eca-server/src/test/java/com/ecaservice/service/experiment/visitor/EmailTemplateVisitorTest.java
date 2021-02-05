@@ -67,7 +67,7 @@ class EmailTemplateVisitorTest {
         experiment.setRequestStatus(RequestStatus.TIMEOUT);
         EmailRequest emailRequest = experiment.getRequestStatus().handle(emailTemplateVisitor, experiment);
         assertEmailRequest(emailRequest, experiment);
-        assertThat(Integer.valueOf(emailRequest.getEmailMessageVariables().get(
+        assertThat(Integer.valueOf(emailRequest.getVariables().get(
                 TemplateVariablesDictionary.TIMEOUT_KEY).toString())).isEqualTo(experimentConfig.getTimeout());
     }
 
@@ -79,7 +79,7 @@ class EmailTemplateVisitorTest {
         EmailRequest emailRequest = experiment.getRequestStatus().handle(emailTemplateVisitor, experiment);
         assertEmailRequest(emailRequest, experiment);
         String actualUrl =
-                emailRequest.getEmailMessageVariables().get(TemplateVariablesDictionary.DOWNLOAD_URL_KEY).toString();
+                emailRequest.getVariables().get(TemplateVariablesDictionary.DOWNLOAD_URL_KEY).toString();
         assertThat(actualUrl)
                 .isNotNull()
                 .isEqualTo(String.format(DOWNLOAD_PATH_FORMAT, experimentConfig.getDownloadBaseUrl(),
@@ -87,7 +87,7 @@ class EmailTemplateVisitorTest {
     }
 
     private void assertEmailRequest(EmailRequest emailRequest, Experiment experiment) {
-        Map<String, Object> variablesMap = emailRequest.getEmailMessageVariables();
+        Map<String, Object> variablesMap = emailRequest.getVariables();
         assertThat(variablesMap).containsEntry(TemplateVariablesDictionary.FIRST_NAME_KEY, experiment.getFirstName());
         ExperimentType actualExperimentType =
                 ExperimentType.findByDescription(

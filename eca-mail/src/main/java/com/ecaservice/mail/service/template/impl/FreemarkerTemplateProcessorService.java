@@ -1,5 +1,6 @@
 package com.ecaservice.mail.service.template.impl;
 
+import com.ecaservice.mail.exception.TemplateProcessingException;
 import com.ecaservice.mail.service.template.TemplateProcessorService;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -26,11 +27,16 @@ public class FreemarkerTemplateProcessorService implements TemplateProcessorServ
     private final Configuration configuration;
 
     @Override
-    public String process(String templateCode, Map<String, String> variables) throws IOException, TemplateException {
+    public String process(String templateCode, Map<String, String> variables) {
         log.debug("Starting to process template [{}] with variables: {}", templateCode, variables);
-        Template template = configuration.getTemplate(templateCode);
-        String message = processTemplateIntoString(template, variables);
-        log.debug("Message [{}] for template [{}] has been processed", message, templateCode);
-        return message;
+        try {
+            Template template = configuration.getTemplate(templateCode);
+            String message = processTemplateIntoString(template, variables);
+            log.debug("Message [{}] for template [{}] has been processed", message, templateCode);
+            return message;
+        } catch (IOException | TemplateException ex) {
+            log.error("There was an error while template [{}] processing: {}", templateCode, ex.getMessage());
+            throw new TemplateProcessingException(ex.getMessage());
+        }
     }
 }

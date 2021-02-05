@@ -3,7 +3,7 @@ package com.ecaservice.notification.dto;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.Map;
 
@@ -24,18 +24,13 @@ public class EmailRequest {
     private String receiver;
 
     /**
-     * Email type
+     * Template code
      */
-    @NotNull
-    private EmailType templateType;
+    @NotBlank
+    private String templateCode;
 
     /**
      * Email message variables
      */
-    private Map<String, Object> emailMessageVariables;
-
-    /**
-     * Is html message?
-     */
-    private boolean html;
+    private Map<@NotBlank String, @NotBlank String> variables;
 }

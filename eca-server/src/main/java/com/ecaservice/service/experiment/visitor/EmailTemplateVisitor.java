@@ -34,7 +34,7 @@ public class EmailTemplateVisitor implements RequestStatusVisitor<EmailRequest, 
     @Override
     public EmailRequest caseFinished(Experiment parameter) {
         EmailRequest emailRequest = createEmailCommonRequest(parameter, EmailType.FINISHED_EXPERIMENT);
-        emailRequest.getEmailMessageVariables().put(TemplateVariablesDictionary.DOWNLOAD_URL_KEY,
+        emailRequest.getVariables().put(TemplateVariablesDictionary.DOWNLOAD_URL_KEY,
                 String.format(DOWNLOAD_PATH_FORMAT, experimentConfig.getDownloadBaseUrl(), parameter.getToken()));
         return emailRequest;
     }
@@ -42,7 +42,7 @@ public class EmailTemplateVisitor implements RequestStatusVisitor<EmailRequest, 
     @Override
     public EmailRequest caseTimeout(Experiment parameter) {
         EmailRequest emailRequest = createEmailCommonRequest(parameter, EmailType.TIMEOUT_EXPERIMENT);
-        emailRequest.getEmailMessageVariables().put(TemplateVariablesDictionary.TIMEOUT_KEY,
+        emailRequest.getVariables().put(TemplateVariablesDictionary.TIMEOUT_KEY,
                 experimentConfig.getTimeout());
         return emailRequest;
     }
@@ -66,7 +66,7 @@ public class EmailTemplateVisitor implements RequestStatusVisitor<EmailRequest, 
         emailRequest.setReceiver(experiment.getEmail());
         emailRequest.setTemplateType(templateType);
         Map<String, Object> variablesMap = createCommonVariablesMap(experiment);
-        emailRequest.setEmailMessageVariables(variablesMap);
+        emailRequest.setVariables(variablesMap);
         emailRequest.setHtml(true);
         return emailRequest;
     }

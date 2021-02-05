@@ -67,10 +67,10 @@ class NotificationServiceTest {
         EmailRequest actual = emailRequestArgumentCaptor.getValue();
         assertThat(actual).isNotNull();
         assertThat(actual.getTemplateType()).isEqualTo(EmailType.NEW_USER);
-        assertThat(actual.getEmailMessageVariables()).isNotEmpty();
-        assertThat(actual.getEmailMessageVariables()).containsEntry(TemplateVariablesDictionary.USERNAME_KEY,
+        assertThat(actual.getVariables()).isNotEmpty();
+        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.USERNAME_KEY,
                 userEntity.getLogin());
-        assertThat(actual.getEmailMessageVariables()).containsEntry(TemplateVariablesDictionary.PASSWORD_KEY, PASSWORD);
+        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.PASSWORD_KEY, PASSWORD);
     }
 
     @Test
@@ -82,10 +82,10 @@ class NotificationServiceTest {
         EmailRequest actual = emailRequestArgumentCaptor.getValue();
         assertThat(actual).isNotNull();
         assertThat(actual.getTemplateType()).isEqualTo(EmailType.RESET_PASSWORD);
-        assertThat(actual.getEmailMessageVariables()).isNotEmpty();
-        assertThat(actual.getEmailMessageVariables()).containsEntry(TemplateVariablesDictionary.VALIDITY_MINUTES_KEY,
+        assertThat(actual.getVariables()).isNotEmpty();
+        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.VALIDITY_MINUTES_KEY,
                 resetPasswordConfig.getValidityMinutes());
-        assertThat(actual.getEmailMessageVariables()).containsEntry(TemplateVariablesDictionary.RESET_PASSWORD_URL_KEY,
+        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.RESET_PASSWORD_URL_KEY,
                 String.format(RESET_PASSWORD_URL_FORMAT, resetPasswordConfig.getBaseUrl(),
                         resetPasswordRequestEntity.getToken()));
     }
@@ -100,7 +100,7 @@ class NotificationServiceTest {
         EmailRequest actual = emailRequestArgumentCaptor.getValue();
         assertThat(actual).isNotNull();
         assertThat(actual.getTemplateType()).isEqualTo(EmailType.TFA_CODE);
-        assertThat(actual.getEmailMessageVariables()).isNotEmpty();
-        assertThat(actual.getEmailMessageVariables()).containsEntry(TemplateVariablesDictionary.TFA_CODE, code);
+        assertThat(actual.getVariables()).isNotEmpty();
+        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.TFA_CODE, code);
     }
 }

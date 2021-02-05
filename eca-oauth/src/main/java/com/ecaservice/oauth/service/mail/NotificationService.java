@@ -94,7 +94,7 @@ public class NotificationService {
         EmailRequest emailRequest = new EmailRequest();
         emailRequest.setReceiver(userEntity.getEmail());
         emailRequest.setTemplateType(emailType);
-        emailRequest.setEmailMessageVariables(variables);
+        emailRequest.setVariables(variables);
         emailRequest.setHtml(true);
         return emailRequest;
     }

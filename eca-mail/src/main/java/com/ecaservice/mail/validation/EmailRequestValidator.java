@@ -32,7 +32,7 @@ public class EmailRequestValidator implements ConstraintValidator<ValidEmailRequ
         boolean valid = true;
         TemplateEntity templateEntity = null;
         Map<String, Object> variables =
-                Optional.ofNullable(emailRequest.getEmailMessageVariables()).orElse(Collections.emptyMap());
+                Optional.ofNullable(emailRequest.getVariables()).orElse(Collections.emptyMap());
         if (!CollectionUtils.isEmpty(templateEntity.getParameters())) {
             //validate all variables
             for (TemplateParameterEntity templateParameter : templateEntity.getParameters()) {
