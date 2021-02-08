@@ -32,7 +32,6 @@ class EmailRequestMapperTest {
         Email email = emailRequestMapper.map(emailRequest, mailConfig);
         Assertions.assertThat(email.getSender()).isEqualTo(mailConfig.getSender());
         Assertions.assertThat(email.getReceiver()).isEqualTo(emailRequest.getReceiver());
-        Assertions.assertThat(email.getSubject()).isEqualTo(mailConfig.getSubject());
         Assertions.assertThat(email.getStatus()).isEqualTo(EmailStatus.NEW);
     }
 

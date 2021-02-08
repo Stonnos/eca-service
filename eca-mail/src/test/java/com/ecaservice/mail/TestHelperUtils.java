@@ -54,7 +54,6 @@ public class TestHelperUtils {
     public static MailConfig createMailConfig() {
         MailConfig mailConfig = new MailConfig();
         mailConfig.setSender(SENDER_MAIL_RU);
-        mailConfig.setSubject(SUBJECT);
         return mailConfig;
     }
 

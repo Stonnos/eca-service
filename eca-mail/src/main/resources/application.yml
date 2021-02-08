@@ -60,15 +60,6 @@ mail-config:
   pageSize: 10
   delaySeconds: 10
   sender: rbatsw@gmail.com
-  subject: Eca - service
-  messageTemplatesMap:
-    NEW_EXPERIMENT: new-experiment-template.html
-    FINISHED_EXPERIMENT: finished-experiment-template.html
-    ERROR_EXPERIMENT: error-experiment-template.html
-    TIMEOUT_EXPERIMENT: timeout-experiment-template.html
-    NEW_USER: new-user-template.html
-    RESET_PASSWORD: reset-password-template.html
-    TFA_CODE: tfa-code-template.html
 
 management:
   metrics:
