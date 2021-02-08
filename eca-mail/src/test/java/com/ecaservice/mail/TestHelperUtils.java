@@ -3,12 +3,17 @@ package com.ecaservice.mail;
 import com.ecaservice.mail.config.MailConfig;
 import com.ecaservice.mail.model.Email;
 import com.ecaservice.mail.model.EmailStatus;
+import com.ecaservice.mail.model.Regex;
 import com.ecaservice.mail.model.TemplateEntity;
+import com.ecaservice.mail.model.TemplateParameterEntity;
 import com.ecaservice.notification.dto.EmailRequest;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
 
 /**
  * Test helper utility class.
@@ -25,6 +30,8 @@ public class TestHelperUtils {
     private static final String TEST_TEMPLATE_CODE = "testTemplate";
     private static final String TEMPLATE_CODE = "testTemplate";
     private static final String TEMPLATE_DESCRIPTION = "Test template";
+    private static final String TEST_REGEX = "testRegex";
+    private static final String REGEX_DESCRIPTION = "Test regex";
 
     /**
      * Creates email request.
@@ -35,6 +42,7 @@ public class TestHelperUtils {
         EmailRequest emailRequest = new EmailRequest();
         emailRequest.setReceiver(RECEIVER_MAIL_RU);
         emailRequest.setTemplateCode(TEST_TEMPLATE_CODE);
+        emailRequest.setVariables(newHashMap());
         return emailRequest;
     }
 
@@ -81,6 +89,35 @@ public class TestHelperUtils {
         templateEntity.setBody(MESSAGE);
         templateEntity.setSubject(SUBJECT);
         templateEntity.setCreated(LocalDateTime.now());
+        templateEntity.setParameters(newArrayList());
         return templateEntity;
+    }
+
+    /**
+     * Creates template parameter entity.
+     *
+     * @param name - parameter name
+     * @return template parameter entity
+     */
+    public static TemplateParameterEntity createTemplateParameterEntity(String name) {
+        TemplateParameterEntity templateParameterEntity = new TemplateParameterEntity();
+        templateParameterEntity.setParameterName(name);
+        templateParameterEntity.setCreated(LocalDateTime.now());
+        return templateParameterEntity;
+    }
+
+    /**
+     * Creates regex entity.
+     *
+     * @param value - regex string
+     * @return regex entity
+     */
+    public static Regex createRegex(String value) {
+        Regex regex = new Regex();
+        regex.setRegexCode(TEST_REGEX);
+        regex.setDescription(REGEX_DESCRIPTION);
+        regex.setRegex(value);
+        regex.setCreated(LocalDateTime.now());
+        return regex;
     }
 }
