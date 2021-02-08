@@ -45,6 +45,16 @@ eureka:
 ribbon:
   ReadTimeout: 60000
 
+## Swagger properties
+swagger2:
+  projectVersion: @project.version@
+  groups:
+    eca-mail:
+      title: Email API
+      description: Operations for email notifications sending
+      author: Roman Batygin
+      email: roman.batygin@mail.ru
+
 mail-config:
   maxFailedAttemptsToSent: 10
   pageSize: 10
