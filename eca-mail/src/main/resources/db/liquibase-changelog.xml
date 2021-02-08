@@ -7,4 +7,5 @@
     <include file="db/changelog/v0-init-schema.xml"/>
     <include file="db/changelog/v1-create-template-tables.xml"/>
     <include file="db/changelog/v2-drop-html-column.xml"/>
+    <include file="db/changelog/v3-insert-template-parameters.xml"/>
 </databaseChangeLog>
