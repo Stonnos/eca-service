@@ -3,7 +3,7 @@ package com.ecaservice.mail;
 import com.ecaservice.mail.config.MailConfig;
 import com.ecaservice.mail.model.Email;
 import com.ecaservice.mail.model.EmailStatus;
-import com.ecaservice.mail.model.Regex;
+import com.ecaservice.mail.model.RegexEntity;
 import com.ecaservice.mail.model.TemplateEntity;
 import com.ecaservice.mail.model.TemplateParameterEntity;
 import com.ecaservice.notification.dto.EmailRequest;
@@ -111,8 +111,8 @@ public class TestHelperUtils {
      * @param value - regex string
      * @return regex entity
      */
-    public static Regex createRegex(String value) {
-        Regex regex = new Regex();
+    public static RegexEntity createRegex(String value) {
+        RegexEntity regex = new RegexEntity();
         regex.setRegexCode(TEST_REGEX);
         regex.setDescription(REGEX_DESCRIPTION);
         regex.setRegex(value);

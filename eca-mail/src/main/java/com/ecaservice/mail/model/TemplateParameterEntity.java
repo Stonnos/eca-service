@@ -39,5 +39,5 @@ public class TemplateParameterEntity extends BaseEntity {
      */
     @ManyToOne
     @JoinColumn(name = "regex_id")
-    private Regex regex;
+    private RegexEntity regexEntity;
 }

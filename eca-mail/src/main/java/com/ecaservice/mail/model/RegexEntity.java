@@ -18,7 +18,7 @@ import javax.persistence.Table;
 @ToString(callSuper = true)
 @Entity
 @Table(name = "regex")
-public class Regex extends BaseEntity {
+public class RegexEntity extends BaseEntity {
 
     /**
      * Regex code

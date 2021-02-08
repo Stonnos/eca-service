@@ -87,7 +87,7 @@ class EmailRequestValidatorTest {
         TemplateEntity templateEntity = createTemplateEntity();
         templateEntity.getParameters().add(createTemplateParameterEntity(PARAM_1));
         TemplateParameterEntity templateParameterEntity = createTemplateParameterEntity(PARAM_2);
-        templateParameterEntity.setRegex(createRegex(TEST_REGEX));
+        templateParameterEntity.setRegexEntity(createRegex(TEST_REGEX));
         templateEntity.getParameters().add(templateParameterEntity);
         EmailRequest emailRequest = createEmailRequest();
         emailRequest.getVariables().put(PARAM_1, PARAM_1);

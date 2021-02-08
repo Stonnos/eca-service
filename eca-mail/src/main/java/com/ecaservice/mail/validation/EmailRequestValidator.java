@@ -1,6 +1,6 @@
 package com.ecaservice.mail.validation;
 
-import com.ecaservice.mail.model.Regex;
+import com.ecaservice.mail.model.RegexEntity;
 import com.ecaservice.mail.model.TemplateEntity;
 import com.ecaservice.mail.model.TemplateParameterEntity;
 import com.ecaservice.mail.service.TemplateService;
@@ -56,9 +56,9 @@ public class EmailRequestValidator implements ConstraintValidator<ValidEmailRequ
     }
 
     private boolean invalidPattern(String value, TemplateParameterEntity templateParameter) {
-        Regex regex = templateParameter.getRegex();
-        return StringUtils.isNotEmpty(value) && regex != null && StringUtils.isNotEmpty(regex.getRegex()) &&
-                !value.matches(regex.getRegex());
+        RegexEntity regexEntity = templateParameter.getRegexEntity();
+        return StringUtils.isNotEmpty(value) && regexEntity != null && StringUtils.isNotEmpty(regexEntity.getRegex()) &&
+                !value.matches(regexEntity.getRegex());
     }
 
     private void addParameterNotSpecified(ConstraintValidatorContext context, String parameter) {
