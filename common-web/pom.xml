@@ -12,7 +12,10 @@
     <artifactId>common-web</artifactId>
 
     <properties>
-        <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
+        <sonar.coverage.exclusions>
+            **/dto/**/*,
+            **/exception/**/*
+        </sonar.coverage.exclusions>
     </properties>
 
     <dependencies>
@@ -27,6 +30,12 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>core-test</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
