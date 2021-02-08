@@ -1,10 +1,10 @@
 package com.ecaservice.mail;
 
-import com.ecaservice.notification.dto.EmailRequest;
-import com.ecaservice.notification.dto.EmailType;
 import com.ecaservice.mail.config.MailConfig;
 import com.ecaservice.mail.model.Email;
 import com.ecaservice.mail.model.EmailStatus;
+import com.ecaservice.mail.model.TemplateEntity;
+import com.ecaservice.notification.dto.EmailRequest;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
@@ -23,6 +23,8 @@ public class TestHelperUtils {
     private static final String SENDER_MAIL_RU = "sender@mail.ru";
     private static final String RECEIVER_MAIL_RU = "receiver@mail.ru";
     private static final String TEST_TEMPLATE_CODE = "testTemplate";
+    private static final String TEMPLATE_CODE = "testTemplate";
+    private static final String TEMPLATE_DESCRIPTION = "Test template";
 
     /**
      * Creates email request.
@@ -65,5 +67,20 @@ public class TestHelperUtils {
         email.setSubject(SUBJECT);
         email.setMessage(MESSAGE);
         return email;
+    }
+
+    /**
+     * Creates template entity.
+     *
+     * @return template entity
+     */
+    public static TemplateEntity createTemplateEntity() {
+        TemplateEntity templateEntity = new TemplateEntity();
+        templateEntity.setCode(TEMPLATE_CODE);
+        templateEntity.setDescription(TEMPLATE_DESCRIPTION);
+        templateEntity.setBody(MESSAGE);
+        templateEntity.setSubject(SUBJECT);
+        templateEntity.setCreated(LocalDateTime.now());
+        return templateEntity;
     }
 }
