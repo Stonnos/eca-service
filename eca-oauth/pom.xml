@@ -101,6 +101,12 @@
 
         <dependency>
             <groupId>eca.service</groupId>
+            <artifactId>common-web</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
             <artifactId>swagger-core</artifactId>
             <version>${project.version}</version>
         </dependency>

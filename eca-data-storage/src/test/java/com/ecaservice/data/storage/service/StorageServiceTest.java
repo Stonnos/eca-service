@@ -1,10 +1,10 @@
 package com.ecaservice.data.storage.service;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.config.StorageTestConfiguration;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.exception.DataStorageException;
-import com.ecaservice.data.storage.exception.EntityNotFoundException;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -104,9 +104,7 @@ class StorageServiceTest extends AbstractJpaTest {
     @Test
     void testDeleteNotExistingData() {
         createAndSaveInstancesEntity();
-        assertThrows(EntityNotFoundException.class, () -> {
-            storageService.deleteData(ID);
-        });
+        assertThrows(EntityNotFoundException.class, () -> storageService.deleteData(ID));
     }
 
     @Test

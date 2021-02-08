@@ -1,8 +1,8 @@
 package com.ecaservice.service.classifiers;
 
 import com.ecaservice.classifier.options.model.ClassifierOptions;
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.config.CommonConfig;
-import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;

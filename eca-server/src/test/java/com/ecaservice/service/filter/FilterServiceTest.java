@@ -1,7 +1,7 @@
 package com.ecaservice.service.filter;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.exception.EntityNotFoundException;
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.mapping.filters.FilterDictionaryMapperImpl;
 import com.ecaservice.mapping.filters.FilterDictionaryValueMapperImpl;
 import com.ecaservice.mapping.filters.FilterFieldMapperImpl;

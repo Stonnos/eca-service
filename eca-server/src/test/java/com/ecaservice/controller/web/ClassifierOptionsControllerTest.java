@@ -2,7 +2,7 @@ package com.ecaservice.controller.web;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.classifier.options.model.LogisticOptions;
-import com.ecaservice.exception.EntityNotFoundException;
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.mapping.ClassifierOptionsDatabaseModelMapperImpl;
 import com.ecaservice.mapping.DateTimeConverter;

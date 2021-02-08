@@ -1,10 +1,10 @@
 package com.ecaservice.load.test.service;
 
 import com.ecaservice.base.model.EvaluationRequest;
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.load.test.entity.EvaluationRequestEntity;
 import com.ecaservice.load.test.entity.RequestStageType;
 import com.ecaservice.load.test.entity.TestResult;
-import com.ecaservice.load.test.exception.EntityNotFoundException;
 import com.ecaservice.load.test.repository.EvaluationRequestRepository;
 import com.ecaservice.load.test.service.rabbit.RabbitSender;
 import lombok.RequiredArgsConstructor;

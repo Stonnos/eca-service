@@ -1,12 +1,12 @@
 package com.ecaservice.oauth.service;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.oauth.AbstractJpaTest;
 import com.ecaservice.oauth.TestHelperUtils;
 import com.ecaservice.oauth.config.CommonConfig;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserPhoto;
-import com.ecaservice.oauth.exception.EntityNotFoundException;
 import com.ecaservice.oauth.mapping.RoleMapperImpl;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.mapping.UserMapperImpl;

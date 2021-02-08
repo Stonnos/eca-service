@@ -1,10 +1,10 @@
 package com.ecaservice.load.test.service;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.load.test.config.EcaLoadTestsConfig;
 import com.ecaservice.load.test.dto.LoadTestRequest;
 import com.ecaservice.load.test.entity.ExecutionStatus;
 import com.ecaservice.load.test.entity.LoadTestEntity;
-import com.ecaservice.load.test.exception.EntityNotFoundException;
 import com.ecaservice.load.test.repository.LoadTestRepository;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.RequiredArgsConstructor;

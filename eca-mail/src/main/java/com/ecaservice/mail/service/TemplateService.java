@@ -1,6 +1,6 @@
 package com.ecaservice.mail.service;
 
-import com.ecaservice.mail.exception.EntityNotFoundException;
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.mail.model.TemplateEntity;
 import com.ecaservice.mail.repository.TemplateRepository;
 import lombok.RequiredArgsConstructor;
