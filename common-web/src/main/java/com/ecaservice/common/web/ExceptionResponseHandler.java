@@ -8,7 +8,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.Path;
+import javax.validation.metadata.ConstraintDescriptor;
+import java.lang.annotation.Annotation;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -29,7 +32,7 @@ public class ExceptionResponseHandler {
         List<ValidationErrorDto> errors = ex.getBindingResult().getAllErrors()
                 .stream()
                 .map(FieldError.class::cast)
-                .map(fieldError -> new ValidationErrorDto(fieldError.getField(),
+                .map(fieldError -> new ValidationErrorDto(fieldError.getField(), fieldError.getCode(),
                         fieldError.getDefaultMessage())).collect(Collectors.toList());
         return ResponseEntity.badRequest().body(errors);
     }
@@ -46,6 +49,11 @@ public class ExceptionResponseHandler {
                     Path.Node node = Iterables.getLast(constraintViolation.getPropertyPath());
                     ValidationErrorDto validationErrorDto = new ValidationErrorDto();
                     validationErrorDto.setFieldName(node.getName());
+                    String code = Optional.ofNullable(constraintViolation.getConstraintDescriptor())
+                            .map(ConstraintDescriptor::getAnnotation)
+                            .map(Annotation::annotationType)
+                            .map(Class::getSimpleName).orElse(null);
+                    validationErrorDto.setCode(code);
                     validationErrorDto.setErrorMessage(constraintViolation.getMessage());
                     return validationErrorDto;
                 }).collect(Collectors.toList());

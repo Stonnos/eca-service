@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * Validation error dto.
  *
@@ -15,13 +17,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(description = "Validation error model")
-public class ValidationErrorDto {
+public class ValidationErrorDto implements Serializable {
 
     /**
      * Field name
      */
     @ApiModelProperty(value = "Field name")
     private String fieldName;
+
+    /**
+     * Error code
+     */
+    @ApiModelProperty(value = "Error code")
+    private String code;
 
     /**
      * Error message
