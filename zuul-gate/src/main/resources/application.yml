@@ -25,6 +25,9 @@ zuul:
       external-api:
         path: /external-api/**
         serviceId: eca-external-api
+      eca-mail:
+        path: /eca-mail/**
+        serviceId: eca-mail
       frontend:
         path: /**
         serviceId: eca-web
