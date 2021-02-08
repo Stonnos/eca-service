@@ -3,6 +3,7 @@ package com.ecaservice.mail.service;
 import com.ecaservice.mail.config.MailConfig;
 import com.ecaservice.mail.mapping.EmailRequestMapper;
 import com.ecaservice.mail.model.Email;
+import com.ecaservice.mail.model.TemplateEntity;
 import com.ecaservice.mail.repository.EmailRepository;
 import com.ecaservice.mail.service.template.TemplateProcessorService;
 import com.ecaservice.mail.validation.annotations.ValidEmailRequest;
@@ -28,6 +29,7 @@ public class EmailService {
 
     private final MailConfig mailConfig;
     private final EmailRequestMapper emailRequestMapper;
+    private final TemplateService templateService;
     private final TemplateProcessorService templateProcessorService;
     private final EmailRepository emailRepository;
 
@@ -41,6 +43,8 @@ public class EmailService {
         String uuid = UUID.randomUUID().toString();
         log.info("Received email request with uuid '{}'.", uuid);
         Email email = emailRequestMapper.map(emailRequest, mailConfig);
+        TemplateEntity templateEntity = templateService.getTemplate(emailRequest.getTemplateCode());
+        email.setSubject(templateEntity.getSubject());
         String message = templateProcessorService.process(emailRequest.getTemplateCode(), emailRequest.getVariables());
         email.setMessage(message);
         email.setUuid(uuid);
