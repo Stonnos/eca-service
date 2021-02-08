@@ -5,6 +5,7 @@ import com.ecaservice.mail.mapping.EmailRequestMapper;
 import com.ecaservice.mail.model.Email;
 import com.ecaservice.mail.repository.EmailRepository;
 import com.ecaservice.mail.service.template.TemplateProcessorService;
+import com.ecaservice.mail.validation.annotations.ValidEmailRequest;
 import com.ecaservice.notification.dto.EmailRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +35,7 @@ public class EmailService {
      * @param emailRequest - email request
      * @return email response
      */
-    public Email saveEmail(EmailRequest emailRequest) {
+    public Email saveEmail(@ValidEmailRequest EmailRequest emailRequest) {
         String uuid = UUID.randomUUID().toString();
         log.info("Received email request with uuid '{}'.", uuid);
         Email email = emailRequestMapper.map(emailRequest, mailConfig);
