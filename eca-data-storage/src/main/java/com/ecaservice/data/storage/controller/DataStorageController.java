@@ -1,5 +1,7 @@
 package com.ecaservice.data.storage.controller;
 
+import com.ecaservice.common.web.ExceptionResponseHandler;
+import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.mapping.InstancesMapper;
 import com.ecaservice.data.storage.model.MultipartFileResource;
@@ -9,8 +11,6 @@ import com.ecaservice.web.dto.model.CreateInstancesResultDto;
 import com.ecaservice.web.dto.model.InstancesDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import com.ecaservice.web.dto.model.ValidationErrorDto;
-import com.google.common.collect.Iterables;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -31,12 +31,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.ConstraintViolationException;
-import javax.validation.Path;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Data storage API for web application.
@@ -156,16 +154,6 @@ public class DataStorageController {
      */
     @ExceptionHandler(value = ConstraintViolationException.class)
     public ResponseEntity<List<ValidationErrorDto>> handleConstraintViolation(ConstraintViolationException ex) {
-        List<ValidationErrorDto> validationErrors = ex.getConstraintViolations().stream()
-                .map(constraintViolation -> {
-                    Path.Node node = Iterables.getLast(constraintViolation.getPropertyPath());
-                    ValidationErrorDto validationErrorDto = new ValidationErrorDto();
-                    validationErrorDto.setFieldName(node.getName());
-                    validationErrorDto.setCode(
-                            constraintViolation.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName());
-                    validationErrorDto.setErrorMessage(constraintViolation.getMessage());
-                    return validationErrorDto;
-                }).collect(Collectors.toList());
-        return ResponseEntity.badRequest().body(validationErrors);
+        return ExceptionResponseHandler.handleConstraintViolation(ex);
     }
 }

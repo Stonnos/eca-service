@@ -1,6 +1,6 @@
 package com.ecaservice.mail.controller;
 
-import com.ecaservice.notification.dto.ValidationErrorDto;
+import com.ecaservice.common.web.dto.ValidationErrorDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
