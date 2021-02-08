@@ -64,7 +64,6 @@ public class TestHelperUtils {
         email.setReceiver(RECEIVER_MAIL_RU);
         email.setSubject(SUBJECT);
         email.setMessage(MESSAGE);
-        email.setHtml(true);
         return email;
     }
 }
