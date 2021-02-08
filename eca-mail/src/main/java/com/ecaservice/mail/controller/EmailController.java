@@ -5,6 +5,7 @@ import com.ecaservice.mail.service.EmailService;
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.notification.dto.EmailResponse;
 import com.ecaservice.mail.model.Email;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import javax.validation.Valid;
  * @author Roman Batygin
  */
 @Slf4j
+@Api(tags = "API for email sending")
 @RestController
 @RequestMapping("/emails")
 @RequiredArgsConstructor
