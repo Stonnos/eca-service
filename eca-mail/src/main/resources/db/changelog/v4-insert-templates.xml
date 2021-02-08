@@ -1,0 +1,274 @@
+<?xml version="1.1" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v4-insert-templates.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Insert NEW_EXPERIMENT template -->
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="template_code" value="NEW_EXPERIMENT"/>
+            <column name="description" value="Сообщение о новом эксперименте"/>
+            <column name="template_subject" value="Создан новый эксперимент"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/new-experiment-template.html"/>
+            <where>template_code = 'NEW_EXPERIMENT'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'NEW_EXPERIMENT')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'firstName')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'NEW_EXPERIMENT')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'experimentType')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="5" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'NEW_EXPERIMENT')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'requestId')"/>
+        </insert>
+    </changeSet>
+
+    <!-- Insert ERROR_EXPERIMENT template -->
+
+    <changeSet id="6" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="template_code" value="ERROR_EXPERIMENT"/>
+            <column name="description" value="Сообщение о завершении эксперимента с ошибкой"/>
+            <column name="template_subject" value="Ошибка при построении эксперимента"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="7" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/error-experiment-template.html"/>
+            <where>template_code = 'ERROR_EXPERIMENT'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="8" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'ERROR_EXPERIMENT')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'firstName')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="9" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'ERROR_EXPERIMENT')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'experimentType')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="10" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'ERROR_EXPERIMENT')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'requestId')"/>
+        </insert>
+    </changeSet>
+
+    <!-- Insert TIMEOUT_EXPERIMENT template -->
+
+    <changeSet id="11" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="template_code" value="TIMEOUT_EXPERIMENT"/>
+            <column name="description" value="Сообщение о таймауте эксперимента"/>
+            <column name="template_subject" value="Таймаут при построении эксперимента"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="12" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/timeout-experiment-template.html"/>
+            <where>template_code = 'TIMEOUT_EXPERIMENT'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="13" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'TIMEOUT_EXPERIMENT')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'firstName')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="14" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'TIMEOUT_EXPERIMENT')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'experimentType')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="15" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'TIMEOUT_EXPERIMENT')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'requestId')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="16" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'TIMEOUT_EXPERIMENT')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'timeout')"/>
+        </insert>
+    </changeSet>
+
+    <!-- Insert FINISHED_EXPERIMENT template -->
+
+    <changeSet id="17" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="template_code" value="FINISHED_EXPERIMENT"/>
+            <column name="description" value="Сообщение о завершенном эксперименте"/>
+            <column name="template_subject" value="Эксперимент завершен"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="18" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/finished-experiment-template.html"/>
+            <where>template_code = 'FINISHED_EXPERIMENT'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="19" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'FINISHED_EXPERIMENT')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'firstName')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="20" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'FINISHED_EXPERIMENT')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'experimentType')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="21" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'FINISHED_EXPERIMENT')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'requestId')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="22" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'FINISHED_EXPERIMENT')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'downloadUrl')"/>
+        </insert>
+    </changeSet>
+
+    <!-- Insert RESET_PASSWORD template -->
+
+    <changeSet id="23" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="template_code" value="RESET_PASSWORD"/>
+            <column name="description" value="Сообщение со ссылкой для восстановления пароля"/>
+            <column name="template_subject" value="Восстановление пароля"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="24" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/reset-password-template.html"/>
+            <where>template_code = 'RESET_PASSWORD'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="25" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'RESET_PASSWORD')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'resetPasswordUrl')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="26" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'RESET_PASSWORD')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'validityMinutes')"/>
+        </insert>
+    </changeSet>
+
+    <!-- Insert RESET_PASSWORD template -->
+
+    <changeSet id="27" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="template_code" value="TFA_CODE"/>
+            <column name="description" value="Сообщение с кодом подтвержения для 2FA"/>
+            <column name="template_subject" value="Код подтверждения"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="28" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/tfa-code-template.html"/>
+            <where>template_code = 'TFA_CODE'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="29" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'TFA_CODE')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'tfaCode')"/>
+        </insert>
+    </changeSet>
+
+    <!-- Insert RESET_PASSWORD template -->
+
+    <changeSet id="30" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="template_code" value="NEW_USER"/>
+            <column name="description" value="Сообщение с учетными данными нового пользователя"/>
+            <column name="template_subject" value="Eca - service"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="31" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/new-user-template.html"/>
+            <where>template_code = 'NEW_USER'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="32" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'NEW_USER')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'userName')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="33" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'NEW_USER')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'password')"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

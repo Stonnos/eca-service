@@ -47,7 +47,7 @@ public class TemplateEntity extends BaseEntity {
     /**
      * Template body
      */
-    @Column(name = "template_body", columnDefinition = "text", nullable = false)
+    @Column(name = "template_body", columnDefinition = "text")
     private String body;
 
     /**

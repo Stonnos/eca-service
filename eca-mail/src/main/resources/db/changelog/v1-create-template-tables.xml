@@ -27,9 +27,7 @@
             <column name="template_subject" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="template_body" type="text">
-                <constraints nullable="false"/>
-            </column>
+            <column name="template_body" type="text"/>
         </createTable>
     </changeSet>
 
