@@ -16,6 +16,13 @@
         <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
