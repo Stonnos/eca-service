@@ -219,7 +219,7 @@
             <column name="id" valueComputed="nextval('hibernate_sequence')"/>
             <column name="created" valueDate="now()"/>
             <column name="template_code" value="TFA_CODE"/>
-            <column name="description" value="Сообщение с кодом подтвержения для 2FA"/>
+            <column name="description" value="Сообщение с кодом подтверждения для 2FA"/>
             <column name="template_subject" value="Код подтверждения"/>
         </insert>
     </changeSet>
