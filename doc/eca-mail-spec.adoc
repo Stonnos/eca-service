@@ -134,7 +134,7 @@
 |Сообщение о таймауте эксперимента
 |firstName, experimentType, requestId, timeout
 |FINISHED_EXPERIMENT
-|Сообщение о завершенном эксперимента
+|Сообщение о завершенном эксперименте
 |firstName, experimentType, requestId, downloadUrl
 |RESET_PASSWORD
 |Сообщение со ссылкой для восстановления пароля
