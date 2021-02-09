@@ -1,18 +1,19 @@
 package com.ecaservice.mail.service;
 
-import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.mail.config.MailConfig;
 import com.ecaservice.mail.mapping.EmailRequestMapper;
 import com.ecaservice.mail.model.Email;
+import com.ecaservice.mail.model.TemplateEntity;
 import com.ecaservice.mail.repository.EmailRepository;
-import com.ecaservice.mail.service.template.TemplateEngineService;
+import com.ecaservice.mail.service.template.TemplateProcessorService;
+import com.ecaservice.mail.validation.annotations.ValidEmailRequest;
+import com.ecaservice.notification.dto.EmailRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.context.Context;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
-import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -22,12 +23,14 @@ import java.util.UUID;
  */
 @Slf4j
 @Service
+@Validated
 @RequiredArgsConstructor
 public class EmailService {
 
     private final MailConfig mailConfig;
     private final EmailRequestMapper emailRequestMapper;
-    private final TemplateEngineService templateEngineService;
+    private final TemplateService templateService;
+    private final TemplateProcessorService templateProcessorService;
     private final EmailRepository emailRepository;
 
     /**
@@ -36,21 +39,18 @@ public class EmailService {
      * @param emailRequest - email request
      * @return email response
      */
-    public Email saveEmail(EmailRequest emailRequest) {
+    public Email saveEmail(@ValidEmailRequest EmailRequest emailRequest) {
         String uuid = UUID.randomUUID().toString();
         log.info("Received email request with uuid '{}'.", uuid);
         Email email = emailRequestMapper.map(emailRequest, mailConfig);
-        email.setMessage(buildEmailMessage(emailRequest));
+        TemplateEntity templateEntity = templateService.getTemplate(emailRequest.getTemplateCode());
+        email.setSubject(templateEntity.getSubject());
+        String message = templateProcessorService.process(emailRequest.getTemplateCode(), emailRequest.getVariables());
+        email.setMessage(message);
         email.setUuid(uuid);
         email.setSaveDate(LocalDateTime.now());
         emailRepository.save(email);
         log.info("Email request with uuid '{}' has been saved.", uuid);
         return email;
-    }
-
-    private String buildEmailMessage(EmailRequest emailRequest) {
-        String template = mailConfig.getMessageTemplatesMap().get(emailRequest.getTemplateType());
-        Context context = new Context(Locale.getDefault(), emailRequest.getEmailMessageVariables());
-        return templateEngineService.process(template, context);
     }
 }

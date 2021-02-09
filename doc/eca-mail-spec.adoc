@@ -1,0 +1,148 @@
+= ECA MAIL
+:toc: macro
+
+== Введение
+
+В данном документе приведено описание REST API для отправки email сообщения по заданному шаблону.
+
+== 1. Список доступных методов
+
+|===
+|Endpoint|Тип запроса|Описание|Формат запроса|Формат ответа
+|http://eca-service:8080/eca-mail/emails/email-request
+|POST
+|Отправка email сообщения по заданному шаблону
+|application/json
+|application/json
+|===
+
+== 2. Описание формата запросов
+
+=== 2.1. Пример запроса отправки email
+
+[source,json]
+----
+{
+  "receiver": "test@mail.ru",
+  "templateCode": "NEW_EXPERIMENT",
+  "variables": {
+    "firstName": "Роман",
+    "requestId": "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+    "experimentType": "KNN"
+  }
+}
+----
+
+=== 2.2. Описание параметров запроса отправки email
+
+|===
+|Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
+|receiver
+|string
+|+
+|Email получателя
+|
+|templateCode
+|string
+|+
+|Код шаблона email сообщения
+|
+|variables
+|map
+|-
+|Параметры шаблона
+|
+|===
+
+=== 2.3. Пример ответа на запрос отправки email
+
+[source,json]
+----
+{
+  "requestId": "7c798c0e-251f-41cb-82b0-e8a371718b60"
+}
+----
+
+=== 2.4. Описание параметров ответа на запрос отправки email
+
+|===
+|Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
+|requestId
+|string
+|+
+|Уникальный идентификатор запроса
+|
+|===
+
+== 3. Описание доступных параметров шаблонов
+
+|===
+|Название параметра|Тип|Regex выражение|Описание
+|firstName
+|string
+|-
+|Имя
+|experimentType
+|string
+|-
+|Тип эксперимента
+|requestId
+|string
+|-
+|Идентификатор заявки
+|downloadUrl
+|string
+|-
+|Ссылка на скачивание результатов эксперимента
+|timeout
+|string
+|[0-9]+
+|Таймаут эксперимента
+|tfaCode
+|string
+|-
+|Код подтверждения для двухфакторной аутентификации
+|userName
+|string
+|-
+|Логин пользователя
+|password
+|string
+|-
+|Пароль пользователя
+|resetPasswordUrl
+|string
+|-
+|Ссылка на восстановление пароля
+|validityMinutes
+|string
+|[0-9]+
+|Время действия ссылки на восстановление пароля
+|===
+
+== 4. Описание шаблонов email сообщений
+
+|===
+|Код шаблона|Описание|Обязательные параметры
+|NEW_EXPERIMENT
+|Сообщение о новом эксперименте
+|firstName, experimentType, requestId
+|ERROR_EXPERIMENT
+|Сообщение о завершении эксперимента с ошибкой
+|firstName, experimentType, requestId
+|TIMEOUT_EXPERIMENT
+|Сообщение о таймауте эксперимента
+|firstName, experimentType, requestId, timeout
+|FINISHED_EXPERIMENT
+|Сообщение о завершенном эксперименте
+|firstName, experimentType, requestId, downloadUrl
+|RESET_PASSWORD
+|Сообщение со ссылкой для восстановления пароля
+|resetPasswordUrl, validityMinutes
+|TFA_CODE
+|Сообщение с кодом подтверждения для двухфакторной аутентификации
+|tfaCode
+|NEW_USER
+|Сообщение с учетными данными нового пользователя
+|userName, password
+|===

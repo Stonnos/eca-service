@@ -25,5 +25,6 @@ export class FilterComponent {
       filter.currentValue = null;
       filter.currentValues = null;
     });
+    this.apply.emit();
   }
 }

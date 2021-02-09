@@ -6,15 +6,19 @@ import com.ecaservice.mail.config.MailConfig;
 import com.ecaservice.mail.mapping.EmailRequestMapper;
 import com.ecaservice.mail.mapping.EmailRequestMapperImpl;
 import com.ecaservice.mail.model.Email;
-import com.ecaservice.mail.service.template.TemplateEngineService;
-import com.ecaservice.notification.dto.EmailRequest;
+import com.ecaservice.mail.model.TemplateEntity;
 import com.ecaservice.mail.repository.EmailRepository;
+import com.ecaservice.mail.service.template.TemplateProcessorService;
+import com.ecaservice.notification.dto.EmailRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
+
+import static com.ecaservice.mail.TestHelperUtils.createTemplateEntity;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for checking {@link EmailService} functionality.
@@ -27,7 +31,9 @@ class EmailServiceTest extends AbstractJpaTest {
     @Mock
     private MailConfig mailConfig;
     @Mock
-    private TemplateEngineService templateEngineService;
+    private TemplateProcessorService templateProcessorService;
+    @Mock
+    private TemplateService templateService;
     @Inject
     private EmailRepository emailRepository;
     @Inject
@@ -37,7 +43,8 @@ class EmailServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        emailService = new EmailService(mailConfig, emailRequestMapper, templateEngineService, emailRepository);
+        emailService = new EmailService(mailConfig, emailRequestMapper, templateService, templateProcessorService,
+                emailRepository);
     }
 
     @Override
@@ -48,9 +55,12 @@ class EmailServiceTest extends AbstractJpaTest {
     @Test
     void testEmailSaving() {
         EmailRequest emailRequest = TestHelperUtils.createEmailRequest();
+        TemplateEntity templateEntity = createTemplateEntity();
+        when(templateService.getTemplate(templateEntity.getCode())).thenReturn(templateEntity);
         Email email = emailService.saveEmail(emailRequest);
         Assertions.assertThat(email).isNotNull();
         Assertions.assertThat(email.getUuid()).isNotNull();
+        Assertions.assertThat(email.getSubject()).isEqualTo(templateEntity.getSubject());
         Assertions.assertThat(emailRepository.existsById(email.getId())).isTrue();
     }
 }

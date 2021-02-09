@@ -1,7 +1,7 @@
 package com.ecaservice.external.api.test.controller;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.external.api.test.entity.JobEntity;
-import com.ecaservice.external.api.test.exception.EntityNotFoundException;
 import com.ecaservice.external.api.test.report.TestResultsReportGenerator;
 import com.ecaservice.external.api.test.repository.JobRepository;
 import com.ecaservice.external.api.test.service.JobService;

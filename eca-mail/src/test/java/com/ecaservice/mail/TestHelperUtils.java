@@ -1,14 +1,19 @@
 package com.ecaservice.mail;
 
-import com.ecaservice.notification.dto.EmailRequest;
-import com.ecaservice.notification.dto.EmailType;
 import com.ecaservice.mail.config.MailConfig;
 import com.ecaservice.mail.model.Email;
 import com.ecaservice.mail.model.EmailStatus;
+import com.ecaservice.mail.model.RegexEntity;
+import com.ecaservice.mail.model.TemplateEntity;
+import com.ecaservice.mail.model.TemplateParameterEntity;
+import com.ecaservice.notification.dto.EmailRequest;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
 
 /**
  * Test helper utility class.
@@ -22,6 +27,11 @@ public class TestHelperUtils {
     private static final String SUBJECT = "subject";
     private static final String SENDER_MAIL_RU = "sender@mail.ru";
     private static final String RECEIVER_MAIL_RU = "receiver@mail.ru";
+    private static final String TEST_TEMPLATE_CODE = "testTemplate";
+    private static final String TEMPLATE_CODE = "testTemplate";
+    private static final String TEMPLATE_DESCRIPTION = "Test template";
+    private static final String TEST_REGEX = "testRegex";
+    private static final String REGEX_DESCRIPTION = "Test regex";
 
     /**
      * Creates email request.
@@ -31,8 +41,8 @@ public class TestHelperUtils {
     public static EmailRequest createEmailRequest() {
         EmailRequest emailRequest = new EmailRequest();
         emailRequest.setReceiver(RECEIVER_MAIL_RU);
-        emailRequest.setTemplateType(EmailType.NEW_EXPERIMENT);
-        emailRequest.setHtml(true);
+        emailRequest.setTemplateCode(TEST_TEMPLATE_CODE);
+        emailRequest.setVariables(newHashMap());
         return emailRequest;
     }
 
@@ -44,7 +54,6 @@ public class TestHelperUtils {
     public static MailConfig createMailConfig() {
         MailConfig mailConfig = new MailConfig();
         mailConfig.setSender(SENDER_MAIL_RU);
-        mailConfig.setSubject(SUBJECT);
         return mailConfig;
     }
 
@@ -64,7 +73,50 @@ public class TestHelperUtils {
         email.setReceiver(RECEIVER_MAIL_RU);
         email.setSubject(SUBJECT);
         email.setMessage(MESSAGE);
-        email.setHtml(true);
         return email;
+    }
+
+    /**
+     * Creates template entity.
+     *
+     * @return template entity
+     */
+    public static TemplateEntity createTemplateEntity() {
+        TemplateEntity templateEntity = new TemplateEntity();
+        templateEntity.setCode(TEMPLATE_CODE);
+        templateEntity.setDescription(TEMPLATE_DESCRIPTION);
+        templateEntity.setBody(MESSAGE);
+        templateEntity.setSubject(SUBJECT);
+        templateEntity.setCreated(LocalDateTime.now());
+        templateEntity.setParameters(newArrayList());
+        return templateEntity;
+    }
+
+    /**
+     * Creates template parameter entity.
+     *
+     * @param name - parameter name
+     * @return template parameter entity
+     */
+    public static TemplateParameterEntity createTemplateParameterEntity(String name) {
+        TemplateParameterEntity templateParameterEntity = new TemplateParameterEntity();
+        templateParameterEntity.setParameterName(name);
+        templateParameterEntity.setCreated(LocalDateTime.now());
+        return templateParameterEntity;
+    }
+
+    /**
+     * Creates regex entity.
+     *
+     * @param value - regex string
+     * @return regex entity
+     */
+    public static RegexEntity createRegex(String value) {
+        RegexEntity regex = new RegexEntity();
+        regex.setRegexCode(TEST_REGEX);
+        regex.setDescription(REGEX_DESCRIPTION);
+        regex.setRegex(value);
+        regex.setCreated(LocalDateTime.now());
+        return regex;
     }
 }

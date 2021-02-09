@@ -1,7 +1,7 @@
 package com.ecaservice.controller.web;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.exception.EntityNotFoundException;
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.ecaservice.service.filter.FilterService;

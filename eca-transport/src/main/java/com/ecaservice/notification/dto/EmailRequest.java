@@ -1,9 +1,11 @@
 package com.ecaservice.notification.dto;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.Map;
 
@@ -14,6 +16,7 @@ import static com.ecaservice.notification.util.FieldConstraints.EMAIL_REGEX;
  * Email request dto.
  */
 @Data
+@ApiModel(description = "Email request")
 public class EmailRequest {
 
     /**
@@ -21,21 +24,19 @@ public class EmailRequest {
      */
     @Email(regexp = EMAIL_REGEX)
     @Size(max = EMAIL_MAX_SIZE)
+    @ApiModelProperty(value = "Receiver email")
     private String receiver;
 
     /**
-     * Email type
+     * Template code
      */
-    @NotNull
-    private EmailType templateType;
+    @NotBlank
+    @ApiModelProperty(value = "Email template code")
+    private String templateCode;
 
     /**
      * Email message variables
      */
-    private Map<String, Object> emailMessageVariables;
-
-    /**
-     * Is html message?
-     */
-    private boolean html;
+    @ApiModelProperty(value = "Email templates variables")
+    private Map<@NotBlank String, @NotBlank String> variables;
 }

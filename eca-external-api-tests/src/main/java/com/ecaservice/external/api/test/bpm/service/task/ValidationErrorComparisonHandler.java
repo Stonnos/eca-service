@@ -1,7 +1,7 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
+import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.external.api.dto.ResponseDto;
-import com.ecaservice.external.api.dto.ValidationErrorDto;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
 import com.ecaservice.external.api.test.model.TestDataModel;

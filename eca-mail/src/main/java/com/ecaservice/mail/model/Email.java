@@ -52,11 +52,6 @@ public class Email {
     private String message;
 
     /**
-     * Is html message?
-     */
-    private boolean html;
-
-    /**
      * Email save date
      */
     @Column(name = "save_date")

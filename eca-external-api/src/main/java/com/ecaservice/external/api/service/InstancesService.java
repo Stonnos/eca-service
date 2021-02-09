@@ -1,9 +1,9 @@
 package com.ecaservice.external.api.service;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.exception.DataNotFoundException;
-import com.ecaservice.external.api.exception.EntityNotFoundException;
 import com.ecaservice.external.api.repository.InstancesRepository;
 import eca.data.file.FileDataLoader;
 import eca.data.file.resource.DataResource;

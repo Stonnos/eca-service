@@ -2,11 +2,11 @@ package com.ecaservice.oauth.service.mail;
 
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.notification.dto.EmailResponse;
-import com.ecaservice.notification.dto.EmailType;
 import com.ecaservice.oauth.config.ResetPasswordConfig;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary;
+import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -66,11 +66,11 @@ class NotificationServiceTest {
         verify(emailClient, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
         EmailRequest actual = emailRequestArgumentCaptor.getValue();
         assertThat(actual).isNotNull();
-        assertThat(actual.getTemplateType()).isEqualTo(EmailType.NEW_USER);
-        assertThat(actual.getEmailMessageVariables()).isNotEmpty();
-        assertThat(actual.getEmailMessageVariables()).containsEntry(TemplateVariablesDictionary.USERNAME_KEY,
+        assertThat(actual.getTemplateCode()).isEqualTo(Templates.NEW_USER);
+        assertThat(actual.getVariables()).isNotEmpty();
+        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.USERNAME_KEY,
                 userEntity.getLogin());
-        assertThat(actual.getEmailMessageVariables()).containsEntry(TemplateVariablesDictionary.PASSWORD_KEY, PASSWORD);
+        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.PASSWORD_KEY, PASSWORD);
     }
 
     @Test
@@ -81,11 +81,11 @@ class NotificationServiceTest {
         verify(emailClient, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
         EmailRequest actual = emailRequestArgumentCaptor.getValue();
         assertThat(actual).isNotNull();
-        assertThat(actual.getTemplateType()).isEqualTo(EmailType.RESET_PASSWORD);
-        assertThat(actual.getEmailMessageVariables()).isNotEmpty();
-        assertThat(actual.getEmailMessageVariables()).containsEntry(TemplateVariablesDictionary.VALIDITY_MINUTES_KEY,
-                resetPasswordConfig.getValidityMinutes());
-        assertThat(actual.getEmailMessageVariables()).containsEntry(TemplateVariablesDictionary.RESET_PASSWORD_URL_KEY,
+        assertThat(actual.getTemplateCode()).isEqualTo(Templates.RESET_PASSWORD);
+        assertThat(actual.getVariables()).isNotEmpty();
+        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.VALIDITY_MINUTES_KEY,
+                String.valueOf(resetPasswordConfig.getValidityMinutes()));
+        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.RESET_PASSWORD_URL_KEY,
                 String.format(RESET_PASSWORD_URL_FORMAT, resetPasswordConfig.getBaseUrl(),
                         resetPasswordRequestEntity.getToken()));
     }
@@ -99,8 +99,8 @@ class NotificationServiceTest {
         verify(emailClient, atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
         EmailRequest actual = emailRequestArgumentCaptor.getValue();
         assertThat(actual).isNotNull();
-        assertThat(actual.getTemplateType()).isEqualTo(EmailType.TFA_CODE);
-        assertThat(actual.getEmailMessageVariables()).isNotEmpty();
-        assertThat(actual.getEmailMessageVariables()).containsEntry(TemplateVariablesDictionary.TFA_CODE, code);
+        assertThat(actual.getTemplateCode()).isEqualTo(Templates.TFA_CODE);
+        assertThat(actual.getVariables()).isNotEmpty();
+        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.TFA_CODE, code);
     }
 }

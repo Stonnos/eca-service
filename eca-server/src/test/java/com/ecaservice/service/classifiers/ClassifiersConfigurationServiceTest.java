@@ -1,8 +1,8 @@
 package com.ecaservice.service.classifiers;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.config.CommonConfig;
-import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.mapping.ClassifierOptionsDatabaseModelMapperImpl;
 import com.ecaservice.mapping.ClassifiersConfigurationMapperImpl;
 import com.ecaservice.mapping.DateTimeConverter;

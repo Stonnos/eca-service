@@ -1,7 +1,7 @@
 package com.ecaservice.service.filter;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.config.cache.CacheNames;
-import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.mapping.filters.FilterDictionaryMapper;
 import com.ecaservice.mapping.filters.FilterFieldMapper;
 import com.ecaservice.model.entity.FilterDictionary;

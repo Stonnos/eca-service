@@ -1,10 +1,10 @@
 package com.ecaservice.external.api.test.service;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.external.api.test.bpm.service.ProcessManager;
 import com.ecaservice.external.api.test.config.ProcessConfig;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
 import com.ecaservice.external.api.test.entity.ExecutionStatus;
-import com.ecaservice.external.api.test.exception.EntityNotFoundException;
 import com.ecaservice.external.api.test.model.TestDataModel;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;

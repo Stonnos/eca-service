@@ -5,4 +5,8 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <include file="db/changelog/v0-init-schema.xml"/>
+    <include file="db/changelog/v1-create-template-tables.xml"/>
+    <include file="db/changelog/v2-drop-html-column.xml"/>
+    <include file="db/changelog/v3-insert-template-parameters.xml"/>
+    <include file="db/changelog/v4-insert-templates.xml"/>
 </databaseChangeLog>

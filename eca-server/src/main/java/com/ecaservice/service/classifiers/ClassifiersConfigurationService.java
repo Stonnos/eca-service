@@ -1,8 +1,8 @@
 package com.ecaservice.service.classifiers;
 
 import com.ecaservice.aspect.annotation.Locked;
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.config.CommonConfig;
-import com.ecaservice.exception.EntityNotFoundException;
 import com.ecaservice.filter.ClassifiersConfigurationFilter;
 import com.ecaservice.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.mapping.ClassifiersConfigurationMapper;

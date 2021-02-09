@@ -1,5 +1,6 @@
 package com.ecaservice.external.api.controller;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
@@ -10,7 +11,6 @@ import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
-import com.ecaservice.external.api.exception.EntityNotFoundException;
 import com.ecaservice.external.api.mapping.EcaRequestMapper;
 import com.ecaservice.external.api.metrics.MetricsService;
 import com.ecaservice.external.api.repository.EcaRequestRepository;

@@ -1,0 +1,127 @@
+<?xml version="1.1" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v1-create-template-tables.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="template"/>
+            </not>
+        </preConditions>
+        <createTable tableName="template">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="template_code" type="varchar(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="template_code_unique_idx"/>
+            </column>
+            <column name="description" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="template_subject" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="template_body" type="text"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="regex"/>
+            </not>
+        </preConditions>
+        <createTable tableName="regex">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="regex_code" type="varchar(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="regex_code_unique_idx"/>
+            </column>
+            <column name="regex" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="template_parameter"/>
+            </not>
+        </preConditions>
+        <createTable tableName="template_parameter">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parameter_name" type="varchar(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="parameter_name_unique_idx"/>
+            </column>
+            <column name="description" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="regex_id" type="bigint"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="6" author="roman.batygin@mail.ru">
+        <addForeignKeyConstraint baseColumnNames="regex_id"
+                                 baseTableName="template_parameter"
+                                 constraintName="fk_template_parameter_regex_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="regex"/>
+    </changeSet>
+
+    <changeSet id="7" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="templates_parameters"/>
+            </not>
+        </preConditions>
+        <createTable tableName="templates_parameters">
+            <column name="template_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="param_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="8" author="roman.batygin@mail.ru">
+        <addPrimaryKey tableName="templates_parameters" columnNames="template_id, param_id"
+                       constraintName="pk_templates_parameters"/>
+    </changeSet>
+
+    <changeSet id="9" author="roman.batygin@mail.ru">
+        <addForeignKeyConstraint baseColumnNames="template_id"
+                                 baseTableName="templates_parameters"
+                                 constraintName="fk_templates_parameters_template_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="template"/>
+    </changeSet>
+
+    <changeSet id="10" author="roman.batygin@mail.ru">
+        <addForeignKeyConstraint baseColumnNames="param_id"
+                                 baseTableName="templates_parameters"
+                                 constraintName="fk_templates_parameters_param_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="template_parameter"/>
+    </changeSet>
+
+</databaseChangeLog>

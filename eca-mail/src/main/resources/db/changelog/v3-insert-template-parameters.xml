@@ -1,0 +1,110 @@
+<?xml version="1.1" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v3-insert-template-template_parameter.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="regex">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="regex_code" value="INTEGER"/>
+            <column name="description" value="Регулярное выражение для целого числа"/>
+            <column name="regex" value="[0-9]+"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template_parameter">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="parameter_name" value="firstName"/>
+            <column name="description" value="Имя"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template_parameter">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="parameter_name" value="experimentType"/>
+            <column name="description" value="Тип эксперимента"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template_parameter">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="parameter_name" value="requestId"/>
+            <column name="description" value="Идентификатор заявки"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="5" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template_parameter">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="parameter_name" value="downloadUrl"/>
+            <column name="description" value="Ссылка на скачивание результатов эксперимента"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="6" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template_parameter">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="parameter_name" value="timeout"/>
+            <column name="description" value="Таймаут для эксперимента"/>
+            <column name="regex_id" valueComputed="(select id from regex where regex_code = 'INTEGER')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="7" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template_parameter">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="parameter_name" value="tfaCode"/>
+            <column name="description" value="Код двухфакторной аутентификации"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="8" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template_parameter">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="parameter_name" value="userName"/>
+            <column name="description" value="Логин пользователя"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="9" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template_parameter">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="parameter_name" value="password"/>
+            <column name="description" value="Пароль пользователя"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="10" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template_parameter">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="parameter_name" value="resetPasswordUrl"/>
+            <column name="description" value="Ссылка на восстановление пароля"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="11" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template_parameter">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="parameter_name" value="validityMinutes"/>
+            <column name="description" value="Время действия ссылки на восстановление пароля"/>
+            <column name="regex_id" valueComputed="(select id from regex where regex_code = 'INTEGER')"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

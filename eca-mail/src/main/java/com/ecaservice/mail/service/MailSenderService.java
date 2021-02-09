@@ -44,7 +44,7 @@ public class MailSenderService {
         messageHelper.setFrom(email.getSender());
         messageHelper.setTo(email.getReceiver());
         messageHelper.setSubject(email.getSubject());
-        messageHelper.setText(email.getMessage(), email.isHtml());
+        messageHelper.setText(email.getMessage(), true);
         return message;
     }
 }

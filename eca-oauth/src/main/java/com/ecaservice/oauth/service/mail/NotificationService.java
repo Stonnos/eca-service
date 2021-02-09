@@ -2,10 +2,10 @@ package com.ecaservice.oauth.service.mail;
 
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.notification.dto.EmailResponse;
-import com.ecaservice.notification.dto.EmailType;
 import com.ecaservice.oauth.config.ResetPasswordConfig;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
+import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -43,10 +43,10 @@ public class NotificationService {
      */
     public void notifyUserCreated(UserEntity userEntity, String password) {
         log.info("Starting to send email request for new user [{}].", userEntity.getLogin());
-        Map<String, Object> templateVariables = newHashMap();
+        Map<String, String> templateVariables = newHashMap();
         templateVariables.put(USERNAME_KEY, userEntity.getLogin());
         templateVariables.put(PASSWORD_KEY, password);
-        notifyByEmail(userEntity, templateVariables, EmailType.NEW_USER);
+        notifyByEmail(userEntity, Templates.NEW_USER, templateVariables);
     }
 
     /**
@@ -59,43 +59,41 @@ public class NotificationService {
                 resetPasswordRequestEntity.getUserEntity().getEmail());
         String resetPasswordUrl = String.format(RESET_PASSWORD_URL_FORMAT, resetPasswordConfig.getBaseUrl(),
                 resetPasswordRequestEntity.getToken());
-        Map<String, Object> templateVariables = newHashMap();
+        Map<String, String> templateVariables = newHashMap();
         templateVariables.put(RESET_PASSWORD_URL_KEY, resetPasswordUrl);
-        templateVariables.put(VALIDITY_MINUTES_KEY, resetPasswordConfig.getValidityMinutes());
-        notifyByEmail(resetPasswordRequestEntity.getUserEntity(), templateVariables,
-                EmailType.RESET_PASSWORD);
+        templateVariables.put(VALIDITY_MINUTES_KEY, String.valueOf(resetPasswordConfig.getValidityMinutes()));
+        notifyByEmail(resetPasswordRequestEntity.getUserEntity(), Templates.RESET_PASSWORD, templateVariables);
     }
 
     /**
      * Sends email with two factor authentication code.
      *
      * @param userEntity - user entity
-     * @param code  - code value
+     * @param code       - code value
      */
     public void sendTfaCode(UserEntity userEntity, String code) {
         log.info("Starting to send tfa code for user [{}].", userEntity.getEmail());
-        Map<String, Object> templateVariables = Collections.singletonMap(TFA_CODE, code);
-        notifyByEmail(userEntity, templateVariables, EmailType.TFA_CODE);
+        Map<String, String> templateVariables = Collections.singletonMap(TFA_CODE, code);
+        notifyByEmail(userEntity, Templates.TFA_CODE, templateVariables);
     }
 
-    private void notifyByEmail(UserEntity userEntity, Map<String, Object> variables, EmailType emailType) {
+    private void notifyByEmail(UserEntity userEntity, String templateCode, Map<String, String> variables) {
         try {
-            EmailRequest emailRequest = createEmailRequest(userEntity, variables, emailType);
+            EmailRequest emailRequest = createEmailRequest(userEntity, templateCode, variables);
             EmailResponse emailResponse = emailClient.sendEmail(emailRequest);
             log.info("Email request [{}] has been successfully sent for user [{}] with response id [{}]",
-                    emailType, userEntity.getEmail(), emailResponse.getRequestId());
+                    templateCode, userEntity.getEmail(), emailResponse.getRequestId());
         } catch (Exception ex) {
-            log.error("There was an error while sending email request [{}] for user [{}]: {}", emailType,
+            log.error("There was an error while sending email request [{}] for user [{}]: {}", templateCode,
                     userEntity.getEmail(), ex.getMessage());
         }
     }
 
-    private EmailRequest createEmailRequest(UserEntity userEntity, Map<String, Object> variables, EmailType emailType) {
+    private EmailRequest createEmailRequest(UserEntity userEntity, String templateCode, Map<String, String> variables) {
         EmailRequest emailRequest = new EmailRequest();
         emailRequest.setReceiver(userEntity.getEmail());
-        emailRequest.setTemplateType(emailType);
-        emailRequest.setEmailMessageVariables(variables);
-        emailRequest.setHtml(true);
+        emailRequest.setTemplateCode(templateCode);
+        emailRequest.setVariables(variables);
         return emailRequest;
     }
 }
