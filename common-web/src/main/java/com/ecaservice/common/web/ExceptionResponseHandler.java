@@ -2,6 +2,7 @@ package com.ecaservice.common.web;
 
 import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.google.common.collect.Iterables;
+import lombok.experimental.UtilityClass;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
  *
  * @author Roman Batygin
  */
+@UtilityClass
 public class ExceptionResponseHandler {
 
     /**
