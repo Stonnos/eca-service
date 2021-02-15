@@ -50,6 +50,16 @@ public enum RequestStatus implements DescriptiveEnum {
         public <T, P> T handle(RequestStatusVisitor<T, P> visitor, P parameter) {
             return visitor.caseError(parameter);
         }
+    },
+
+    /**
+     * In progress status
+     */
+    IN_PROGRESS(RequestStatusDictionary.IN_PROGRESS_STATUS_DESCRIPTION) {
+        @Override
+        public <T, P> T handle(RequestStatusVisitor<T, P> visitor, P parameter) {
+            return visitor.caseInProgress(parameter);
+        }
     };
 
     private final String description;

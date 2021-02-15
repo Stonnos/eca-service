@@ -129,11 +129,9 @@ public class ExperimentResultsService {
 
     private ErsReportStatus handleNotFinishedExperiment(Experiment experiment) {
         if (RequestStatus.NEW.equals(experiment.getRequestStatus())) {
-            if (experiment.getStartDate() != null) {
-               return ErsReportStatus.EXPERIMENT_IN_PROGRESS;
-            } else {
-                return ErsReportStatus.EXPERIMENT_NEW;
-            }
+            return ErsReportStatus.EXPERIMENT_NEW;
+        } else if (RequestStatus.IN_PROGRESS.equals(experiment.getRequestStatus())) {
+            return ErsReportStatus.EXPERIMENT_IN_PROGRESS;
         } else {
             return ErsReportStatus.EXPERIMENT_ERROR;
         }

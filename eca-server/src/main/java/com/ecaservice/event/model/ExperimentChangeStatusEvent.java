@@ -5,11 +5,11 @@ import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
 /**
- * Experiment created event.
+ * Experiment change status event.
  *
  * @author Roman Batygin
  */
-public class ExperimentCreatedEvent extends ApplicationEvent {
+public class ExperimentChangeStatusEvent extends ApplicationEvent {
 
     /**
      * Experiment entity
@@ -18,12 +18,12 @@ public class ExperimentCreatedEvent extends ApplicationEvent {
     private final Experiment experiment;
 
     /**
-     * Create a new ExperimentCreatedEvent.
+     * Create a new ExperimentChangeStatusEvent.
      *
      * @param source     - the object on which the event initially occurred (never {@code null})
      * @param experiment - experiment entity
      */
-    public ExperimentCreatedEvent(Object source, Experiment experiment) {
+    public ExperimentChangeStatusEvent(Object source, Experiment experiment) {
         super(source);
         this.experiment = experiment;
     }

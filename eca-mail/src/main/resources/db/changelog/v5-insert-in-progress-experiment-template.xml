@@ -1,0 +1,48 @@
+<?xml version="1.1" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v5-insert-in-progress-experiment-template.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Insert IN_PROGRESS_EXPERIMENT template -->
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="template_code" value="IN_PROGRESS_EXPERIMENT"/>
+            <column name="description" value="Сообщение о поступлении эксперимента в работу"/>
+            <column name="template_subject" value="Заявка поступила в работу"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/in-progress-experiment-template.html"/>
+            <where>template_code = 'IN_PROGRESS_EXPERIMENT'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'IN_PROGRESS_EXPERIMENT')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'firstName')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'IN_PROGRESS_EXPERIMENT')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'experimentType')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="5" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'IN_PROGRESS_EXPERIMENT')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'requestId')"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

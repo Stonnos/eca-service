@@ -1,5 +1,5 @@
 <div class="ui-g ui-fluid">
-  <div class="ui-g-12 ui-md-2 ui-md-offset-1">
+  <div class="ui-g-12 ui-md-2 pl-2">
     <p-panel class="statistics-panel text-center" [showHeader]="false">
       <p class="attr">Всего</p>
       <p class="value">{{ requestStatusStatisticsDto?.totalCount }}</p>
@@ -10,6 +10,13 @@
     <p-panel class="statistics-panel text-center" [showHeader]="false">
       <p class="attr">Новые</p>
       <p class="value">{{ requestStatusStatisticsDto?.newRequestsCount }}</p>
+    </p-panel>
+  </div>
+
+  <div class="ui-g-12 ui-md-2">
+    <p-panel class="statistics-panel text-center" [showHeader]="false">
+      <p class="attr">В работе</p>
+      <p class="value">{{ requestStatusStatisticsDto?.inProgressRequestsCount }}</p>
     </p-panel>
   </div>
 
@@ -27,7 +34,7 @@
     </p-panel>
   </div>
 
-  <div class="ui-g-12 ui-md-2">
+  <div class="ui-g-12 ui-md-2 pr-2">
     <p-panel class="statistics-panel text-center" [showHeader]="false">
       <p class="attr">Таймаут</p>
       <p class="value">{{ requestStatusStatisticsDto?.timeoutRequestsCount }}</p>

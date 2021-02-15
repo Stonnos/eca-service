@@ -16,6 +16,11 @@ public class Templates {
     public static final String NEW_EXPERIMENT = "NEW_EXPERIMENT";
 
     /**
+     * In progress experiment template
+     */
+    public static final String IN_PROGRESS_EXPERIMENT = "IN_PROGRESS_EXPERIMENT";
+
+    /**
      * Finished experiment template
      */
     public static final String FINISHED_EXPERIMENT = "FINISHED_EXPERIMENT";

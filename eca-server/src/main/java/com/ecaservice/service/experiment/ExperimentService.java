@@ -120,8 +120,6 @@ public class ExperimentService implements PageRequestService<Experiment> {
      */
     public ExperimentHistory processExperiment(final Experiment experiment) {
         log.info("Starting to built experiment [{}].", experiment.getRequestId());
-        experiment.setStartDate(LocalDateTime.now());
-        experimentRepository.save(experiment);
         try {
             if (StringUtils.isEmpty(experiment.getTrainingDataAbsolutePath())) {
                 throw new ExperimentException(String.format("Training data path is not specified for experiment [%s]!",

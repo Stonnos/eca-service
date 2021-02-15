@@ -84,7 +84,7 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     @Test
     void testErsReportWithExperimentInProgressStatus() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
         experiment.setStartDate(LocalDateTime.now());
         experimentRepository.save(experiment);
         testGetErsReport(experiment, ErsReportStatus.EXPERIMENT_IN_PROGRESS);

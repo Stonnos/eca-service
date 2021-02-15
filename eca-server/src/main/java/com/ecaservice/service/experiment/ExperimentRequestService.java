@@ -1,7 +1,7 @@
 package com.ecaservice.service.experiment;
 
 import com.ecaservice.base.model.ExperimentRequest;
-import com.ecaservice.event.model.ExperimentCreatedEvent;
+import com.ecaservice.event.model.ExperimentChangeStatusEvent;
 import com.ecaservice.model.entity.Experiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class ExperimentRequestService {
         log.info("Received experiment request for data '{}', email '{}'", experimentRequest.getData().relationName(),
                 experimentRequest.getEmail());
         Experiment experiment = experimentService.createExperiment(experimentRequest);
-        eventPublisher.publishEvent(new ExperimentCreatedEvent(this, experiment));
+        eventPublisher.publishEvent(new ExperimentChangeStatusEvent(this, experiment));
         log.info("Experiment request [{}] has been created.", experiment.getRequestId());
         return experiment;
     }

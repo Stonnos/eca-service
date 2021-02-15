@@ -52,6 +52,11 @@ public class EmailTemplateVisitor implements RequestStatusVisitor<EmailRequest, 
         return createEmailCommonRequest(parameter, Templates.ERROR_EXPERIMENT);
     }
 
+    @Override
+    public EmailRequest caseInProgress(Experiment parameter) {
+        return createEmailCommonRequest(parameter, Templates.IN_PROGRESS_EXPERIMENT);
+    }
+
     private Map<String, String> createCommonVariablesMap(Experiment parameter) {
         Map<String, String> variablesMap = newHashMap();
         variablesMap.put(TemplateVariablesDictionary.FIRST_NAME_KEY, parameter.getFirstName());
