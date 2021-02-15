@@ -214,7 +214,7 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     @Test
     void testGetEvaluationLogDetailsWithInProgressStatus() {
         EvaluationLog evaluationLog =
-                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.NEW);
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
         testGetEvaluationLogDetails(evaluationLog, EvaluationResultsStatus.EVALUATION_IN_PROGRESS);
     }
 

@@ -85,7 +85,7 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
     private EvaluationResultsDto getEvaluationResults(EvaluationLog evaluationLog) {
         EvaluationResultsStatus evaluationResultsStatus;
         if (!RequestStatus.FINISHED.equals(evaluationLog.getRequestStatus())) {
-            evaluationResultsStatus = RequestStatus.NEW.equals(evaluationLog.getRequestStatus()) ?
+            evaluationResultsStatus = RequestStatus.IN_PROGRESS.equals(evaluationLog.getRequestStatus()) ?
                     EvaluationResultsStatus.EVALUATION_IN_PROGRESS : EvaluationResultsStatus.EVALUATION_ERROR;
         } else {
             EvaluationResultsRequestEntity evaluationResultsRequestEntity =
