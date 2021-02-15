@@ -9,4 +9,5 @@
     <include file="db/changelog/v2-drop-html-column.xml"/>
     <include file="db/changelog/v3-insert-template-parameters.xml"/>
     <include file="db/changelog/v4-insert-templates.xml"/>
+    <include file="db/changelog/v5-insert-in-progress-experiment-template.xml"/>
 </databaseChangeLog>
