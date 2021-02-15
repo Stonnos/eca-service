@@ -1,5 +1,6 @@
 <div class="text-white request-status"
-     [class.bg-info]="requestStatus?.value == 'NEW'"
+     [class.bg-secondary]="requestStatus?.value == 'NEW'"
+     [class.bg-info]="requestStatus?.value == 'IN_PROGRESS'"
      [class.bg-success]="requestStatus?.value == 'FINISHED'"
      [class.bg-warning]="requestStatus?.value == 'TIMEOUT'"
      [class.bg-danger]="requestStatus?.value == 'ERROR'">
