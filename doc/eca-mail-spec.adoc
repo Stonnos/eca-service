@@ -127,6 +127,9 @@
 |NEW_EXPERIMENT
 |Сообщение о новом эксперименте
 |firstName, experimentType, requestId
+|IN_PROGRESS_EXPERIMENT
+|Сообщение о поступлении эксперимента в работу
+|firstName, experimentType, requestId
 |ERROR_EXPERIMENT
 |Сообщение о завершении эксперимента с ошибкой
 |firstName, experimentType, requestId
