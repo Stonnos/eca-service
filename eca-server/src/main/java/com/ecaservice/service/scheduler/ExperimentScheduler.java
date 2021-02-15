@@ -71,13 +71,6 @@ public class ExperimentScheduler {
         log.trace("New experiments processing has been successfully finished.");
     }
 
-    private void setInProgressStatus(Experiment experiment) {
-        experiment.setRequestStatus(RequestStatus.IN_PROGRESS);
-        experiment.setStartDate(LocalDateTime.now());
-        experimentRepository.save(experiment);
-        eventPublisher.publishEvent(new ExperimentChangeStatusEvent(this, experiment));
-    }
-
     /**
      * Processing experiment results sending to emails.
      */
@@ -140,5 +133,12 @@ public class ExperimentScheduler {
         log.trace("Obtained {} experiments to remove data", experiments.size());
         experiments.forEach(experimentService::removeExperimentData);
         log.info("Experiments data removing has been finished.");
+    }
+
+    private void setInProgressStatus(Experiment experiment) {
+        experiment.setRequestStatus(RequestStatus.IN_PROGRESS);
+        experiment.setStartDate(LocalDateTime.now());
+        experimentRepository.save(experiment);
+        eventPublisher.publishEvent(new ExperimentChangeStatusEvent(this, experiment));
     }
 }
