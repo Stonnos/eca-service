@@ -1,7 +1,7 @@
 package com.ecaservice.event.listener;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.event.model.ExperimentCreatedEvent;
+import com.ecaservice.event.model.ExperimentChangeStatusEvent;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.service.experiment.mail.NotificationService;
 import org.junit.jupiter.api.Test;
@@ -16,24 +16,24 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
 /**
- * Unit tests for checking {@link ExperimentCreatedEventListener} functionality.
+ * Unit tests for checking {@link ExperimentChangeStatusEventListener} functionality.
  *
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-class ExperimentCreatedEventListenerTest {
+class ExperimentChangeStatusEventListenerTest {
 
     @Mock
     private NotificationService notificationService;
 
     @InjectMocks
-    private ExperimentCreatedEventListener experimentCreatedEventListener;
+    private ExperimentChangeStatusEventListener experimentChangeStatusEventListener;
 
     @Test
-    void testHandleExperimentCreatedEvent() {
+    void testHandleChangeStatusEvent() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
-        ExperimentCreatedEvent experimentCreatedEvent = new ExperimentCreatedEvent(this, experiment);
-        experimentCreatedEventListener.handleExperimentCreatedEvent(experimentCreatedEvent);
+        ExperimentChangeStatusEvent experimentCreatedEvent = new ExperimentChangeStatusEvent(this, experiment);
+        experimentChangeStatusEventListener.handleChangeStatusEvent(experimentCreatedEvent);
         verify(notificationService, atLeastOnce()).notifyByEmail(experiment);
     }
 }

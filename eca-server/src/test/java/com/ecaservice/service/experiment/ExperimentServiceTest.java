@@ -150,8 +150,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         experimentService.processExperiment(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.hasOneElement(experiments);
-        Experiment experiment = experiments.get(0);
-        assertThat(experiment.getStartDate()).isNotNull();
+        Experiment experiment = experiments.iterator().next();
         assertThat(experiment.getEndDate()).isNotNull();
         assertThat(experiment.getExperimentAbsolutePath()).isNotNull();
         assertThat(experiment.getToken()).isNotNull();
@@ -164,8 +163,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         experimentService.processExperiment(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.hasOneElement(experiments);
-        Experiment experiment = experiments.get(0);
-        assertThat(experiment.getStartDate()).isNotNull();
+        Experiment experiment = experiments.iterator().next();
         assertThat(experiment.getEndDate()).isNotNull();
         assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.ERROR);
     }
@@ -180,8 +178,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         experimentService.processExperiment(TestHelperUtils.createExperiment(null));
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.hasOneElement(experiments);
-        Experiment experiment = experiments.get(0);
-        assertThat(experiment.getStartDate()).isNotNull();
+        Experiment experiment = experiments.iterator().next();
         assertThat(experiment.getEndDate()).isNotNull();
         assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.TIMEOUT);
     }
