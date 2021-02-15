@@ -198,6 +198,8 @@ public class Utils {
     public static RequestStatusStatisticsDto toRequestStatusesStatistics(Map<RequestStatus, Long> statusStatisticsMap) {
         RequestStatusStatisticsDto requestStatusStatisticsDto = new RequestStatusStatisticsDto();
         requestStatusStatisticsDto.setNewRequestsCount(statusStatisticsMap.getOrDefault(RequestStatus.NEW, ZERO));
+        requestStatusStatisticsDto.setInProgressRequestsCount(
+                statusStatisticsMap.getOrDefault(RequestStatus.IN_PROGRESS, ZERO));
         requestStatusStatisticsDto.setFinishedRequestsCount(
                 statusStatisticsMap.getOrDefault(RequestStatus.FINISHED, ZERO));
         requestStatusStatisticsDto.setTimeoutRequestsCount(

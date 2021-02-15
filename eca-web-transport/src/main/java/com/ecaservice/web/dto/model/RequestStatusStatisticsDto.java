@@ -26,6 +26,12 @@ public class RequestStatusStatisticsDto {
     private long newRequestsCount;
 
     /**
+     * Requests count with IN_PROGRESS status
+     */
+    @ApiModelProperty(value = "Total requests count with status IN_PROGRESS")
+    private long inProgressRequestsCount;
+
+    /**
      * Requests count with FINISHED status
      */
     @ApiModelProperty(value = "Total requests count with status FINISHED")

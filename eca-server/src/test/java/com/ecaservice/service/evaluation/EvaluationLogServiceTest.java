@@ -107,11 +107,14 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.TIMEOUT));
         evaluationLogRepository.save(
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED));
+        evaluationLogRepository.save(
+                TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS));
         Map<RequestStatus, Long> requestStatusesMap = evaluationLogService.getRequestStatusesStatistics();
         assertThat(requestStatusesMap)
                 .isNotNull()
                 .hasSameSizeAs(RequestStatus.values())
                 .containsEntry(RequestStatus.NEW, 2L)
+                .containsEntry(RequestStatus.IN_PROGRESS, 1L)
                 .containsEntry(RequestStatus.FINISHED, 1L)
                 .containsEntry(RequestStatus.ERROR, 3L)
                 .containsEntry(RequestStatus.TIMEOUT, 1L);
