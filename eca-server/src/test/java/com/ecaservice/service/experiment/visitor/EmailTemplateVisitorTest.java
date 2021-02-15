@@ -56,6 +56,15 @@ class EmailTemplateVisitorTest {
     }
 
     @Test
+    void testInProgressStatusContext() {
+        Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
+        experiment.setRequestStatus(RequestStatus.IN_PROGRESS);
+        EmailRequest emailRequest = experiment.getRequestStatus().handle(emailTemplateVisitor, experiment);
+        assertEmailRequest(emailRequest, experiment);
+        assertThat(emailRequest.getTemplateCode()).isEqualTo(Templates.IN_PROGRESS_EXPERIMENT);
+    }
+
+    @Test
     void testErrorStatusContext() {
         Experiment experiment = TestHelperUtils.createExperiment(TestHelperUtils.TEST_UUID);
         experiment.setRequestStatus(RequestStatus.ERROR);

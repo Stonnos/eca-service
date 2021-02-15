@@ -47,7 +47,7 @@ public class EvaluationRequestService {
     public EvaluationResponse processRequest(final EvaluationRequest request) {
         AppInstanceEntity appInstanceEntity = appInstanceService.getAppInstanceEntity();
         EvaluationLog evaluationLog = evaluationLogMapper.map(request, crossValidationConfig);
-        evaluationLog.setRequestStatus(RequestStatus.NEW);
+        evaluationLog.setRequestStatus(RequestStatus.IN_PROGRESS);
         evaluationLog.setRequestId(UUID.randomUUID().toString());
         evaluationLog.setAppInstanceEntity(appInstanceEntity);
         evaluationLog.setCreationDate(LocalDateTime.now());

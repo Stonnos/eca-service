@@ -10,7 +10,7 @@ package com.ecaservice.model.entity;
 public interface RequestStatusVisitor<T, P> {
 
     /**
-     * Method executed in case if experiment status is NEW.
+     * Method executed in case if request status is NEW.
      *
      * @param parameter input parameter
      * @return generic object
@@ -18,7 +18,7 @@ public interface RequestStatusVisitor<T, P> {
     T caseNew(P parameter);
 
     /**
-     * Method executed in case if experiment status is FINISHED.
+     * Method executed in case if request status is FINISHED.
      *
      * @param parameter input parameter
      * @return generic object
@@ -26,7 +26,7 @@ public interface RequestStatusVisitor<T, P> {
     T caseFinished(P parameter);
 
     /**
-     * Method executed in case if experiment status is TIMEOUT.
+     * Method executed in case if request status is TIMEOUT.
      *
      * @param parameter input parameter
      * @return generic object
@@ -34,10 +34,18 @@ public interface RequestStatusVisitor<T, P> {
     T caseTimeout(P parameter);
 
     /**
-     * Method executed in case if experiment status is ERROR.
+     * Method executed in case if request status is ERROR.
      *
      * @param parameter input parameter
      * @return generic object
      */
     T caseError(P parameter);
+
+    /**
+     * Method executed in case if request status is IN_PROGRESS.
+     *
+     * @param parameter input parameter
+     * @return generic object
+     */
+    T caseInProgress(P parameter);
 }
