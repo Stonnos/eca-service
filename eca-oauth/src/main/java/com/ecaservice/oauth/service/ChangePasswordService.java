@@ -1,9 +1,11 @@
 package com.ecaservice.oauth.service;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.oauth.config.ChangePasswordConfig;
 import com.ecaservice.oauth.dto.ChangePasswordRequest;
 import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
+import com.ecaservice.oauth.exception.ChangePasswordRequestAlreadyExistsException;
 import com.ecaservice.oauth.repository.ChangePasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,31 +35,29 @@ public class ChangePasswordService {
     private final UserEntityRepository userEntityRepository;
 
     /**
-     * Gets active change password request or save new if not exists.
+     * Create change password request.
      *
-     * @param userId - user id
+     * @param userId                - user id
      * @param changePasswordRequest - change password request
      * @return change password request entity
      */
-    public ChangePasswordRequestEntity getOrSaveChangePasswordRequest(Long userId,
-                                                                      ChangePasswordRequest changePasswordRequest) {
+    public ChangePasswordRequestEntity createChangePasswordRequest(Long userId,
+                                                                   ChangePasswordRequest changePasswordRequest) {
         UserEntity userEntity = userEntityRepository.findById(userId)
-                .orElseThrow(() -> new IllegalStateException(
-                        String.format("Can't create change password request, because user with id %d doesn't exists!",
-                                userId)));
+                .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, userId));
         LocalDateTime now = LocalDateTime.now();
         ChangePasswordRequestEntity changePasswordRequestEntity =
                 changePasswordRequestRepository.findByUserEntityAndExpireDateAfterAndApproveDateIsNull(userEntity, now);
-        if (changePasswordRequestEntity == null) {
-            changePasswordRequestEntity = new ChangePasswordRequestEntity();
-            changePasswordRequestEntity.setToken(generateToken(userEntity));
-            changePasswordRequestEntity.setExpireDate(now.plusMinutes(changePasswordConfig.getValidityMinutes()));
-            String encodedPassword = passwordEncoder.encode(changePasswordRequest.getNewPassword().trim());
-            changePasswordRequestEntity.setNewPassword(encodedPassword);
-            changePasswordRequestEntity.setUserEntity(userEntity);
-            changePasswordRequestRepository.save(changePasswordRequestEntity);
+        if (changePasswordRequestEntity != null) {
+            throw new ChangePasswordRequestAlreadyExistsException(userId);
         }
-        return changePasswordRequestEntity;
+        changePasswordRequestEntity = new ChangePasswordRequestEntity();
+        changePasswordRequestEntity.setToken(generateToken(userEntity));
+        changePasswordRequestEntity.setExpireDate(now.plusMinutes(changePasswordConfig.getValidityMinutes()));
+        String encodedPassword = passwordEncoder.encode(changePasswordRequest.getNewPassword().trim());
+        changePasswordRequestEntity.setNewPassword(encodedPassword);
+        changePasswordRequestEntity.setUserEntity(userEntity);
+        return changePasswordRequestRepository.save(changePasswordRequestEntity);
     }
 
     /**
