@@ -3,6 +3,7 @@ package com.ecaservice.oauth.controller;
 import com.ecaservice.common.web.ExceptionResponseHandler;
 import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.oauth.exception.ChangePasswordRequestAlreadyExistsException;
+import com.ecaservice.oauth.exception.InvalidTokenException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -42,9 +43,19 @@ public class ErrorHandler {
     public ResponseEntity<List<ValidationErrorDto>> handleChangePasswordRequestAlreadyExists(
             ChangePasswordRequestAlreadyExistsException ex) {
         log.error("Change password request error: {}", ex.getMessage());
-        ValidationErrorDto validationErrorDto = new ValidationErrorDto();
-        validationErrorDto.setCode(ex.getErrorCode());
-        return ResponseEntity.badRequest().body(Collections.singletonList(validationErrorDto));
+        return buildBadRequestResponse(ex.getErrorCode());
+    }
+
+    /**
+     * Handles invalid token error.
+     *
+     * @param ex -  exception
+     * @return response entity
+     */
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<List<ValidationErrorDto>> handleInvalidToken(InvalidTokenException ex) {
+        log.error("Invalid token error: {}", ex.getMessage());
+        return buildBadRequestResponse(ex.getErrorCode());
     }
 
     /**
@@ -57,5 +68,11 @@ public class ErrorHandler {
     public ResponseEntity<String> handleBadRequest(Exception ex) {
         log.error(ex.getMessage());
         return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
+    private ResponseEntity<List<ValidationErrorDto>> buildBadRequestResponse(String errorCode) {
+        ValidationErrorDto validationErrorDto = new ValidationErrorDto();
+        validationErrorDto.setCode(errorCode);
+        return ResponseEntity.badRequest().body(Collections.singletonList(validationErrorDto));
     }
 }

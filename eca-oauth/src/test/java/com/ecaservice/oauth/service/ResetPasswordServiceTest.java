@@ -6,6 +6,7 @@ import com.ecaservice.oauth.dto.ForgotPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
+import com.ecaservice.oauth.exception.InvalidTokenException;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import org.apache.commons.lang3.StringUtils;
@@ -90,7 +91,7 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
     @Test
     void testResetPasswordForNotExistingToken() {
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest(UUID.randomUUID().toString(), PASSWORD);
-        assertThrows(IllegalStateException.class,
+        assertThrows(InvalidTokenException.class,
                 () -> resetPasswordService.resetPassword(resetPasswordRequest));
     }
 
@@ -101,7 +102,7 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
                         LocalDateTime.now().plusMinutes(2L));
         ResetPasswordRequest resetPasswordRequest =
                 new ResetPasswordRequest(resetPasswordRequestEntity.getToken(), PASSWORD);
-        assertThrows(IllegalStateException.class,
+        assertThrows(InvalidTokenException.class,
                 () -> resetPasswordService.resetPassword(resetPasswordRequest));
     }
 
@@ -111,7 +112,7 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
                 createAndSaveResetPasswordRequestEntity(LocalDateTime.now().minusMinutes(1L), null);
         ResetPasswordRequest resetPasswordRequest =
                 new ResetPasswordRequest(resetPasswordRequestEntity.getToken(), PASSWORD);
-        assertThrows(IllegalStateException.class,
+        assertThrows(InvalidTokenException.class,
                 () -> resetPasswordService.resetPassword(resetPasswordRequest));
     }
 

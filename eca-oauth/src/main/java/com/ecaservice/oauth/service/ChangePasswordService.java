@@ -6,6 +6,7 @@ import com.ecaservice.oauth.dto.ChangePasswordRequest;
 import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.ChangePasswordRequestAlreadyExistsException;
+import com.ecaservice.oauth.exception.InvalidTokenException;
 import com.ecaservice.oauth.repository.ChangePasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.function.Supplier;
 
 import static com.ecaservice.oauth.util.Utils.generateToken;
 
@@ -67,11 +67,9 @@ public class ChangePasswordService {
      */
     @Transactional
     public void changePassword(String token) {
-        Supplier<IllegalStateException> invalidTokenError =
-                () -> new IllegalStateException(String.format("Invalid token [%s]", token));
         ChangePasswordRequestEntity changePasswordRequestEntity =
                 changePasswordRequestRepository.findByTokenAndExpireDateAfterAndApproveDateIsNull(token,
-                        LocalDateTime.now()).orElseThrow(invalidTokenError);
+                        LocalDateTime.now()).orElseThrow(() -> new InvalidTokenException(token));
         UserEntity userEntity = changePasswordRequestEntity.getUserEntity();
         userEntity.setPassword(changePasswordRequestEntity.getNewPassword());
         changePasswordRequestEntity.setApproveDate(LocalDateTime.now());

@@ -7,6 +7,7 @@ import com.ecaservice.oauth.dto.ChangePasswordRequest;
 import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.ChangePasswordRequestAlreadyExistsException;
+import com.ecaservice.oauth.exception.InvalidTokenException;
 import com.ecaservice.oauth.repository.ChangePasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import org.junit.jupiter.api.Test;
@@ -104,7 +105,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     @Test
     void testChangePasswordForNotExistingToken() {
         String token = UUID.randomUUID().toString();
-        assertThrows(IllegalStateException.class, () -> changePasswordService.changePassword(token));
+        assertThrows(InvalidTokenException.class, () -> changePasswordService.changePassword(token));
     }
 
     @Test
@@ -113,7 +114,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
                 LocalDateTime.now().plusMinutes(changePasswordConfig.getValidityMinutes()),
                 LocalDateTime.now().minusMinutes(1L));
         String token = changePasswordRequestEntity.getToken();
-        assertThrows(IllegalStateException.class, () -> changePasswordService.changePassword(token));
+        assertThrows(InvalidTokenException.class, () -> changePasswordService.changePassword(token));
     }
 
     @Test
@@ -121,7 +122,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
         ChangePasswordRequestEntity changePasswordRequestEntity =
                 createAndSaveChangePasswordRequestEntity(LocalDateTime.now().minusDays(1L), null);
         String token = changePasswordRequestEntity.getToken();
-        assertThrows(IllegalStateException.class, () -> changePasswordService.changePassword(token));
+        assertThrows(InvalidTokenException.class, () -> changePasswordService.changePassword(token));
     }
 
     @Test

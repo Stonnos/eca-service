@@ -5,6 +5,7 @@ import com.ecaservice.oauth.dto.ForgotPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
+import com.ecaservice.oauth.exception.InvalidTokenException;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.function.Supplier;
 
 import static com.ecaservice.oauth.util.Utils.generateToken;
 
@@ -64,11 +64,10 @@ public class ResetPasswordService {
      */
     @Transactional
     public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
-        Supplier<IllegalStateException> invalidTokenError =
-                () -> new IllegalStateException(String.format("Invalid token [%s]", resetPasswordRequest.getToken()));
         ResetPasswordRequestEntity resetPasswordRequestEntity =
                 resetPasswordRequestRepository.findByTokenAndExpireDateAfterAndResetDateIsNull(
-                        resetPasswordRequest.getToken(), LocalDateTime.now()).orElseThrow(invalidTokenError);
+                        resetPasswordRequest.getToken(), LocalDateTime.now())
+                        .orElseThrow(() -> new InvalidTokenException(resetPasswordRequest.getToken()));
         UserEntity userEntity = resetPasswordRequestEntity.getUserEntity();
         userEntity.setPassword(passwordEncoder.encode(resetPasswordRequest.getPassword().trim()));
         resetPasswordRequestEntity.setResetDate(LocalDateTime.now());
