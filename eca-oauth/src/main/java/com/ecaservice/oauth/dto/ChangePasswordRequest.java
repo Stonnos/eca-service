@@ -1,6 +1,5 @@
 package com.ecaservice.oauth.dto;
 
-import com.ecaservice.oauth.validation.annotations.UserPassword;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -24,7 +23,6 @@ public class ChangePasswordRequest {
      * Old password
      */
     @NotBlank
-    @UserPassword
     @ApiModelProperty(value = "Old password", required = true)
     private String oldPassword;
 

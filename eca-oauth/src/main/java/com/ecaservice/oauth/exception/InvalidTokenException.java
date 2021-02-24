@@ -5,7 +5,7 @@ package com.ecaservice.oauth.exception;
  *
  * @author Roman Batygin
  */
-public class InvalidTokenException extends RuntimeException {
+public class InvalidTokenException extends PasswordException {
 
     private static final String ERROR_CODE = "InvalidToken";
 
@@ -15,15 +15,6 @@ public class InvalidTokenException extends RuntimeException {
      * @param token - token value
      */
     public InvalidTokenException(String token) {
-        super(String.format("Invalid token [%s]", token));
-    }
-
-    /**
-     * Gets error code.
-     *
-     * @return error code
-     */
-    public String getErrorCode() {
-        return ERROR_CODE;
+        super(ERROR_CODE, String.format("Invalid token [%s]", token));
     }
 }

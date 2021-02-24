@@ -2,8 +2,7 @@ package com.ecaservice.oauth.controller;
 
 import com.ecaservice.common.web.ExceptionResponseHandler;
 import com.ecaservice.common.web.dto.ValidationErrorDto;
-import com.ecaservice.oauth.exception.ChangePasswordRequestAlreadyExistsException;
-import com.ecaservice.oauth.exception.InvalidTokenException;
+import com.ecaservice.oauth.exception.PasswordException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -34,27 +33,14 @@ public class ErrorHandler {
     }
 
     /**
-     * Handles change password request error.
+     * Handles password error.
      *
      * @param ex -  exception
      * @return response entity
      */
-    @ExceptionHandler(ChangePasswordRequestAlreadyExistsException.class)
-    public ResponseEntity<List<ValidationErrorDto>> handleChangePasswordRequestAlreadyExists(
-            ChangePasswordRequestAlreadyExistsException ex) {
-        log.error("Change password request error: {}", ex.getMessage());
-        return buildBadRequestResponse(ex.getErrorCode());
-    }
-
-    /**
-     * Handles invalid token error.
-     *
-     * @param ex -  exception
-     * @return response entity
-     */
-    @ExceptionHandler(InvalidTokenException.class)
-    public ResponseEntity<List<ValidationErrorDto>> handleInvalidToken(InvalidTokenException ex) {
-        log.error("Invalid token error: {}", ex.getMessage());
+    @ExceptionHandler(PasswordException.class)
+    public ResponseEntity<List<ValidationErrorDto>> handlePasswordError(PasswordException ex) {
+        log.error("Password operation error: {}", ex.getMessage());
         return buildBadRequestResponse(ex.getErrorCode());
     }
 

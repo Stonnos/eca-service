@@ -7,6 +7,7 @@ import com.ecaservice.oauth.dto.ChangePasswordRequest;
 import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.ChangePasswordRequestAlreadyExistsException;
+import com.ecaservice.oauth.exception.InvalidPasswordException;
 import com.ecaservice.oauth.exception.InvalidTokenException;
 import com.ecaservice.oauth.repository.ChangePasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
@@ -32,8 +33,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Import(ChangePasswordConfig.class)
 class ChangePasswordServiceTest extends AbstractJpaTest {
 
-    private static final String NEW_PASSWORD = "mewPassword";
+    private static final String NEW_PASSWORD = "тewPassword";
     private static final long INVALID_USER_ID = 1000L;
+    private static final String PASSWORD = "pa66word!";
 
     @Inject
     private ChangePasswordConfig changePasswordConfig;
@@ -44,11 +46,13 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
 
     private ChangePasswordService changePasswordService;
 
+    private PasswordEncoder passwordEncoder;
+
     private UserEntity userEntity;
 
     @Override
     public void init() {
-        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         changePasswordService =
                 new ChangePasswordService(changePasswordConfig, passwordEncoder, changePasswordRequestRepository,
                         userEntityRepository);
@@ -85,8 +89,8 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void tesCreateChangePasswordRequestWithException() {
-        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(userEntity.getPassword(), NEW_PASSWORD);
+    void tesCreateChangePasswordRequestWithChangePasswordRequestAlreadyExistsException() {
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PASSWORD, NEW_PASSWORD);
         ChangePasswordRequestEntity actual =
                 changePasswordService.createChangePasswordRequest(userEntity.getId(), changePasswordRequest);
         assertThat(actual).isNotNull();
@@ -95,6 +99,12 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
         assertThat(changePasswordRequestRepository.count()).isOne();
     }
 
+    @Test
+    void tesCreateChangePasswordRequestWithInvalidPassword() {
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(NEW_PASSWORD, NEW_PASSWORD);
+        assertThrows(InvalidPasswordException.class,
+                () -> changePasswordService.createChangePasswordRequest(userEntity.getId(), changePasswordRequest));
+    }
 
     @Test
     void testCreateChangePasswordRequestForNotExistingUser() {
@@ -139,6 +149,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
 
     private UserEntity createAndSaveUser() {
         UserEntity userEntity = createUserEntity();
+        userEntity.setPassword(passwordEncoder.encode(PASSWORD));
         userEntity.setRoles(Collections.emptySet());
         return userEntityRepository.save(userEntity);
     }
@@ -156,7 +167,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     }
 
     private void internalTestCreateChangePasswordRequest() {
-        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(userEntity.getPassword(), NEW_PASSWORD);
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PASSWORD, NEW_PASSWORD);
         ChangePasswordRequestEntity actual =
                 changePasswordService.createChangePasswordRequest(userEntity.getId(), changePasswordRequest);
         assertThat(actual).isNotNull();

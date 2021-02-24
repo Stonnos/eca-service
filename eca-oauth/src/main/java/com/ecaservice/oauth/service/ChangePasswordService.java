@@ -6,6 +6,7 @@ import com.ecaservice.oauth.dto.ChangePasswordRequest;
 import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.ChangePasswordRequestAlreadyExistsException;
+import com.ecaservice.oauth.exception.InvalidPasswordException;
 import com.ecaservice.oauth.exception.InvalidTokenException;
 import com.ecaservice.oauth.repository.ChangePasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
@@ -45,6 +46,9 @@ public class ChangePasswordService {
                                                                    ChangePasswordRequest changePasswordRequest) {
         UserEntity userEntity = userEntityRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, userId));
+        if (!isValidOldPassword(userEntity, changePasswordRequest)) {
+            throw new InvalidPasswordException();
+        }
         LocalDateTime now = LocalDateTime.now();
         ChangePasswordRequestEntity changePasswordRequestEntity =
                 changePasswordRequestRepository.findByUserEntityAndExpireDateAfterAndApproveDateIsNull(userEntity, now);
@@ -77,5 +81,9 @@ public class ChangePasswordService {
         changePasswordRequestRepository.save(changePasswordRequestEntity);
         log.info("New password has been set for user [{}], change password request id [{}]", userEntity.getLogin(),
                 changePasswordRequestEntity.getId());
+    }
+
+    private boolean isValidOldPassword(UserEntity userEntity, ChangePasswordRequest changePasswordRequest) {
+        return passwordEncoder.matches(changePasswordRequest.getOldPassword().trim(), userEntity.getPassword());
     }
 }
