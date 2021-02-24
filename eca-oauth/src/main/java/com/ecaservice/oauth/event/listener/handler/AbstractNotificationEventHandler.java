@@ -42,6 +42,7 @@ public abstract class AbstractNotificationEventHandler<T extends AbstractNotific
     public EmailRequest handle(T event) {
         EmailRequest emailRequest = new EmailRequest();
         emailRequest.setTemplateCode(templateCode);
+        emailRequest.setReceiver(getReceiver(event));
         emailRequest.setVariables(createVariables(event));
         return emailRequest;
     }
@@ -53,4 +54,12 @@ public abstract class AbstractNotificationEventHandler<T extends AbstractNotific
      * @return variables map
      */
     abstract Map<String, String> createVariables(T event);
+
+    /**
+     * Gets receiver from event.
+     *
+     * @param event -  notification event
+     * @return receiver
+     */
+    abstract String getReceiver(T event);
 }

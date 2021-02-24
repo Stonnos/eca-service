@@ -45,4 +45,9 @@ public class ResetPasswordRequestCreatedEventHandler
         templateVariables.put(VALIDITY_MINUTES_KEY, String.valueOf(resetPasswordConfig.getValidityMinutes()));
         return templateVariables;
     }
+
+    @Override
+    String getReceiver(ResetPasswordRequestCreatedEvent event) {
+        return event.getResetPasswordRequestEntity().getUserEntity().getEmail();
+    }
 }

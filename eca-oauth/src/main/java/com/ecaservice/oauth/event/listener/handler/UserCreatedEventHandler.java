@@ -36,4 +36,9 @@ public class UserCreatedEventHandler extends AbstractNotificationEventHandler<Us
         templateVariables.put(PASSWORD_KEY, event.getPassword());
         return templateVariables;
     }
+
+    @Override
+    String getReceiver(UserCreatedEvent event) {
+        return event.getUserEntity().getEmail();
+    }
 }
