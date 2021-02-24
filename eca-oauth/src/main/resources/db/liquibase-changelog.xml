@@ -19,4 +19,5 @@
     <include file="db/changelog/v12-create-tfa-enabled-column.xml"/>
     <include file="db/changelog/v13-create-user-photo-table.xml"/>
     <include file="db/changelog/v14-insert-external-api-credentials.xml"/>
+    <include file="db/changelog/v15-create-change-password-request-table.xml"/>
 </databaseChangeLog>
