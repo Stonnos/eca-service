@@ -35,14 +35,16 @@ public class ChangePasswordService {
     /**
      * Gets active change password request or save new if not exists.
      *
+     * @param userId - user id
      * @param changePasswordRequest - change password request
      * @return change password request entity
      */
-    public ChangePasswordRequestEntity getOrSaveChangePasswordRequest(ChangePasswordRequest changePasswordRequest) {
-        UserEntity userEntity = userEntityRepository.findById(changePasswordRequest.getUserId())
+    public ChangePasswordRequestEntity getOrSaveChangePasswordRequest(Long userId,
+                                                                      ChangePasswordRequest changePasswordRequest) {
+        UserEntity userEntity = userEntityRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException(
                         String.format("Can't create change password request, because user with id %d doesn't exists!",
-                                changePasswordRequest.getUserId())));
+                                userId)));
         LocalDateTime now = LocalDateTime.now();
         ChangePasswordRequestEntity changePasswordRequestEntity =
                 changePasswordRequestRepository.findByUserEntityAndExpireDateAfterAndApproveDateIsNull(userEntity, now);

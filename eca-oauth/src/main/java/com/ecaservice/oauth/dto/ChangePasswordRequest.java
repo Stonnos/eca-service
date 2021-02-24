@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * Change password request model.
@@ -19,13 +18,6 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @ApiModel(description = "Change password request model")
 public class ChangePasswordRequest {
-
-    /**
-     * User id
-     */
-    @NotNull
-    @ApiModelProperty(value = "User id", required = true)
-    private Long userId;
 
     /**
      * Old password
