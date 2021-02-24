@@ -5,6 +5,7 @@ import com.ecaservice.oauth.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 /**
  * Repository to manage with {@link ChangePasswordRequestEntity} persistence entity.
@@ -22,4 +23,14 @@ public interface ChangePasswordRequestRepository extends JpaRepository<ChangePas
      */
     ChangePasswordRequestEntity findByUserEntityAndExpireDateAfterAndApproveDateIsNull(UserEntity userEntity,
                                                                                        LocalDateTime date);
+
+    /**
+     * Finds active change password request for specified token.
+     *
+     * @param token - token value
+     * @param date  - search date
+     * @return change password request entity
+     */
+    Optional<ChangePasswordRequestEntity> findByTokenAndExpireDateAfterAndApproveDateIsNull(String token,
+                                                                                            LocalDateTime date);
 }

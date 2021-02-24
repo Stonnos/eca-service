@@ -10,8 +10,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.function.Supplier;
 
 import static com.ecaservice.oauth.util.Utils.generateToken;
 
@@ -54,5 +56,26 @@ public class ChangePasswordService {
             changePasswordRequestRepository.save(changePasswordRequestEntity);
         }
         return changePasswordRequestEntity;
+    }
+
+    /**
+     * Change user password.
+     *
+     * @param token - token value
+     */
+    @Transactional
+    public void changePassword(String token) {
+        Supplier<IllegalStateException> invalidTokenError =
+                () -> new IllegalStateException(String.format("Invalid token [%s]", token));
+        ChangePasswordRequestEntity changePasswordRequestEntity =
+                changePasswordRequestRepository.findByTokenAndExpireDateAfterAndApproveDateIsNull(token,
+                        LocalDateTime.now()).orElseThrow(invalidTokenError);
+        UserEntity userEntity = changePasswordRequestEntity.getUserEntity();
+        userEntity.setPassword(changePasswordRequestEntity.getNewPassword());
+        changePasswordRequestEntity.setApproveDate(LocalDateTime.now());
+        userEntityRepository.save(userEntity);
+        changePasswordRequestRepository.save(changePasswordRequestEntity);
+        log.info("New password has been set for user [{}], change password request id [{}]", userEntity.getLogin(),
+                changePasswordRequestEntity.getId());
     }
 }
