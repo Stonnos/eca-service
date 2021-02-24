@@ -28,6 +28,7 @@ class UserCreatedEventHandlerTest {
         EmailRequest actual = userCreatedEventHandler.handle(event);
         assertThat(actual).isNotNull();
         assertThat(actual.getTemplateCode()).isEqualTo(Templates.NEW_USER);
+        assertThat(actual.getReceiver()).isEqualTo(userEntity.getEmail());
         assertThat(actual.getVariables()).isNotEmpty();
         assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.USERNAME_KEY,
                 userEntity.getLogin());

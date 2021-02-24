@@ -44,6 +44,7 @@ class ResetPasswordRequestCreatedEventHandlerTest {
         EmailRequest actual = eventHandler.handle(resetPasswordRequestCreatedEvent);
         assertThat(actual).isNotNull();
         assertThat(actual.getTemplateCode()).isEqualTo(Templates.RESET_PASSWORD);
+        assertThat(actual.getReceiver()).isEqualTo(resetPasswordRequestEntity.getUserEntity().getEmail());
         assertThat(actual.getVariables()).isNotEmpty();
         assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.VALIDITY_MINUTES_KEY,
                 String.valueOf(resetPasswordConfig.getValidityMinutes()));
