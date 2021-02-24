@@ -42,12 +42,15 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
 
     private ResetPasswordService resetPasswordService;
 
+    private UserEntity userEntity;
+
     @Override
     public void init() {
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         resetPasswordService =
                 new ResetPasswordService(resetPasswordConfig, passwordEncoder, resetPasswordRequestRepository,
                         userEntityRepository);
+        userEntity = createAndSaveUser();
     }
 
     @Override
@@ -58,7 +61,6 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
 
     @Test
     void testSaveNewResetPasswordRequest() {
-        UserEntity userEntity = createAndSaveUser();
         ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(userEntity.getEmail());
         ResetPasswordRequestEntity resetPasswordRequestEntity =
                 resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest);
@@ -72,7 +74,6 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetResetPasswordRequestFromCache() {
-        UserEntity userEntity = createAndSaveUser();
         ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(userEntity.getEmail());
         resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest);
         resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest);
@@ -81,7 +82,6 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
 
     @Test
     void testSaveResetPasswordRequestWithException() {
-        createAndSaveUser();
         ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(StringUtils.EMPTY);
         assertThrows(IllegalStateException.class,
                 () -> resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest));
@@ -89,7 +89,6 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
 
     @Test
     void testResetPasswordForNotExistingToken() {
-        createAndSaveUser();
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest(UUID.randomUUID().toString(), PASSWORD);
         assertThrows(IllegalStateException.class,
                 () -> resetPasswordService.resetPassword(resetPasswordRequest));
@@ -138,7 +137,6 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
 
     private ResetPasswordRequestEntity createAndSaveResetPasswordRequestEntity(LocalDateTime expireDate,
                                                                                LocalDateTime resetDate) {
-        UserEntity userEntity = createAndSaveUser();
         String token = UUID.randomUUID().toString();
         ResetPasswordRequestEntity resetPasswordRequestEntity = new ResetPasswordRequestEntity();
         resetPasswordRequestEntity.setToken(token);
