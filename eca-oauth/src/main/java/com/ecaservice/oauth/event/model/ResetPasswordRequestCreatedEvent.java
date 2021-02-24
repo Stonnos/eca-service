@@ -2,14 +2,13 @@ package com.ecaservice.oauth.event.model;
 
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import lombok.Getter;
-import org.springframework.context.ApplicationEvent;
 
 /**
  * Reset password request created event.
  *
  * @author Roman Batygin
  */
-public class ResetPasswordRequestCreatedEvent extends ApplicationEvent {
+public class ResetPasswordRequestCreatedEvent extends AbstractNotificationEvent {
 
     /**
      * User entity
