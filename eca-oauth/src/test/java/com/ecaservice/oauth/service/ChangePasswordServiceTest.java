@@ -101,48 +101,40 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
                 () -> changePasswordService.createChangePasswordRequest(INVALID_USER_ID, new ChangePasswordRequest()));
     }
 
-    /*@Test
-    void testResetPasswordForNotExistingToken() {
-        createAndSaveUser();
-        ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest(UUID.randomUUID().toString(), PASSWORD);
-        assertThrows(IllegalStateException.class,
-                () -> changePasswordService.resetPassword(resetPasswordRequest));
+    @Test
+    void testChangePasswordForNotExistingToken() {
+        String token = UUID.randomUUID().toString();
+        assertThrows(IllegalStateException.class, () -> changePasswordService.changePassword(token));
     }
 
     @Test
-    void testResetPasswordForAlreadyResetRequest() {
-        ResetPasswordRequestEntity resetPasswordRequestEntity =
-                createAndSaveResetPasswordRequestEntity(LocalDateTime.now().plusMinutes(5L),
-                        LocalDateTime.now().plusMinutes(2L));
-        ResetPasswordRequest resetPasswordRequest =
-                new ResetPasswordRequest(resetPasswordRequestEntity.getToken(), PASSWORD);
-        assertThrows(IllegalStateException.class,
-                () -> changePasswordService.resetPassword(resetPasswordRequest));
+    void testChangePasswordForAlreadyApprovedRequest() {
+        ChangePasswordRequestEntity changePasswordRequestEntity = createAndSaveChangePasswordRequestEntity(
+                LocalDateTime.now().plusMinutes(changePasswordConfig.getValidityMinutes()),
+                LocalDateTime.now().minusMinutes(1L));
+        String token = changePasswordRequestEntity.getToken();
+        assertThrows(IllegalStateException.class, () -> changePasswordService.changePassword(token));
     }
 
     @Test
-    void testResetPasswordForExpiredToken() {
-        ResetPasswordRequestEntity resetPasswordRequestEntity =
-                createAndSaveResetPasswordRequestEntity(LocalDateTime.now().minusMinutes(1L), null);
-        ResetPasswordRequest resetPasswordRequest =
-                new ResetPasswordRequest(resetPasswordRequestEntity.getToken(), PASSWORD);
-        assertThrows(IllegalStateException.class,
-                () -> changePasswordService.resetPassword(resetPasswordRequest));
+    void testChangePasswordForExpiredToken() {
+        ChangePasswordRequestEntity changePasswordRequestEntity =
+                createAndSaveChangePasswordRequestEntity(LocalDateTime.now().minusDays(1L), null);
+        String token = changePasswordRequestEntity.getToken();
+        assertThrows(IllegalStateException.class, () -> changePasswordService.changePassword(token));
     }
 
     @Test
-    void testResetPassword() {
-        ResetPasswordRequestEntity resetPasswordRequestEntity =
-                createAndSaveResetPasswordRequestEntity(LocalDateTime.now().plusMinutes(2L), null);
-        ResetPasswordRequest resetPasswordRequest =
-                new ResetPasswordRequest(resetPasswordRequestEntity.getToken(), PASSWORD);
-        changePasswordService.resetPassword(resetPasswordRequest);
-        ResetPasswordRequestEntity actual =
-                changePasswordRequestRepository.findById(resetPasswordRequestEntity.getId()).orElse(null);
+    void testChangePassword() {
+        ChangePasswordRequestEntity changePasswordRequestEntity = createAndSaveChangePasswordRequestEntity(
+                LocalDateTime.now().plusMinutes(changePasswordConfig.getValidityMinutes()), null);
+        changePasswordService.changePassword(changePasswordRequestEntity.getToken());
+        ChangePasswordRequestEntity actual =
+                changePasswordRequestRepository.findById(changePasswordRequestEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
-        assertThat(actual.getResetDate()).isNotNull();
-        assertThat(actual.getUserEntity().getPassword()).isNotNull();
-    }*/
+        assertThat(actual.getApproveDate()).isNotNull();
+        assertThat(actual.getUserEntity().getPassword()).isEqualTo(changePasswordRequestEntity.getNewPassword());
+    }
 
     private UserEntity createAndSaveUser() {
         UserEntity userEntity = createUserEntity();
