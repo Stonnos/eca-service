@@ -1,6 +1,6 @@
 package com.ecaservice.oauth.validation.annotations;
 
-import com.ecaservice.oauth.validation.UserEmailValidator;
+import com.ecaservice.oauth.validation.UserPasswordValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
  * @author Roman Batygin
  */
 @Documented
-@Constraint(validatedBy = UserEmailValidator.class)
+@Constraint(validatedBy = UserPasswordValidator.class)
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UserPassword {
