@@ -1,6 +1,5 @@
 package com.ecaservice.oauth.validation;
 
-import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.service.UserService;
 import com.ecaservice.oauth.validation.annotations.UserPassword;
 import com.ecaservice.user.model.UserDetailsImpl;
@@ -10,7 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.util.Objects;
 
 /**
  * User password validator.
@@ -29,8 +27,6 @@ public class UserPasswordValidator implements ConstraintValidator<UserPassword, 
             return false;
         }
         UserDetailsImpl userDetails = userService.getCurrentUser();
-        UserEntity userEntity = userService.getById(userDetails.getId());
-        String encodedPassword = passwordEncoder.encode(password.trim());
-        return Objects.equals(userEntity.getPassword(), encodedPassword);
+        return passwordEncoder.matches(password.trim(), userDetails.getPassword());
     }
 }
