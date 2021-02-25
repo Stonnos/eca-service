@@ -73,7 +73,7 @@ public class ResetPasswordService {
         resetPasswordRequestEntity.setResetDate(LocalDateTime.now());
         userEntityRepository.save(userEntity);
         resetPasswordRequestRepository.save(resetPasswordRequestEntity);
-        log.info("New password has been set for user [{}], reset password request id [{}]", userEntity.getLogin(),
+        log.info("New password has been set for user [{}], reset password request id [{}]", userEntity.getId(),
                 resetPasswordRequestEntity.getId());
     }
 }

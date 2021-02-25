@@ -80,7 +80,7 @@ public class ChangePasswordService {
         changePasswordRequestEntity.setApproveDate(LocalDateTime.now());
         userEntityRepository.save(userEntity);
         changePasswordRequestRepository.save(changePasswordRequestEntity);
-        log.info("New password has been set for user [{}], change password request id [{}]", userEntity.getLogin(),
+        log.info("New password has been set for user [{}], change password request id [{}]", userEntity.getId(),
                 changePasswordRequestEntity.getId());
         return changePasswordRequestEntity;
     }
