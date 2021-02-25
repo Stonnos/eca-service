@@ -2,11 +2,14 @@ package com.ecaservice.oauth.event.listener;
 
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.notification.dto.EmailResponse;
+import com.ecaservice.oauth.config.ChangePasswordConfig;
 import com.ecaservice.oauth.config.ResetPasswordConfig;
+import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.event.listener.handler.AbstractNotificationEventHandler;
 import com.ecaservice.oauth.event.model.AbstractNotificationEvent;
+import com.ecaservice.oauth.event.model.ChangePasswordNotificationEvent;
 import com.ecaservice.oauth.event.model.ResetPasswordNotificationEvent;
 import com.ecaservice.oauth.event.model.TfaCodeNotificationEvent;
 import com.ecaservice.oauth.event.model.UserCreatedEvent;
@@ -25,6 +28,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 
+import static com.ecaservice.oauth.TestHelperUtils.createChangePasswordRequestEntity;
 import static com.ecaservice.oauth.TestHelperUtils.createResetPasswordRequestEntity;
 import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,7 +46,7 @@ import static org.mockito.Mockito.when;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @ComponentScan(basePackageClasses = AbstractNotificationEventHandler.class)
-@Import({ResetPasswordConfig.class, NotificationEventListener.class})
+@Import({ResetPasswordConfig.class, NotificationEventListener.class, ChangePasswordConfig.class})
 class NotificationEventListenerTest {
 
     private static final String TFA_CODE = "code";
@@ -76,6 +80,13 @@ class NotificationEventListenerTest {
         ResetPasswordRequestEntity resetPasswordRequestEntity = createResetPasswordRequestEntity();
         ResetPasswordNotificationEvent event = new ResetPasswordNotificationEvent(this, resetPasswordRequestEntity);
         internalTestEvent(event, Templates.RESET_PASSWORD);
+    }
+
+    @Test
+    void testChangePassword() {
+        ChangePasswordRequestEntity changePasswordRequestEntity = createChangePasswordRequestEntity();
+        ChangePasswordNotificationEvent event = new ChangePasswordNotificationEvent(this, changePasswordRequestEntity);
+        internalTestEvent(event, Templates.CHANGE_PASSWORD);
     }
 
     private void internalTestEvent(AbstractNotificationEvent event, String expectedTemplateCode) {

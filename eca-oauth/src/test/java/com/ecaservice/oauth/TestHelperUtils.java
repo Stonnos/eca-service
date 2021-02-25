@@ -1,6 +1,7 @@
 package com.ecaservice.oauth;
 
 import com.ecaservice.oauth.dto.CreateUserDto;
+import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
@@ -91,5 +92,17 @@ public class TestHelperUtils {
         resetPasswordRequestEntity.setToken(TOKEN);
         resetPasswordRequestEntity.setUserEntity(createUserEntity());
         return resetPasswordRequestEntity;
+    }
+
+    /**
+     * Creates change password request entity.
+     *
+     * @return change password request entity
+     */
+    public static ChangePasswordRequestEntity createChangePasswordRequestEntity() {
+        ChangePasswordRequestEntity changePasswordRequestEntity = new ChangePasswordRequestEntity();
+        changePasswordRequestEntity.setToken(TOKEN);
+        changePasswordRequestEntity.setUserEntity(createUserEntity());
+        return changePasswordRequestEntity;
     }
 }
