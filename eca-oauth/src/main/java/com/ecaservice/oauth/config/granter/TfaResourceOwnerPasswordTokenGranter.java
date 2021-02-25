@@ -2,9 +2,10 @@ package com.ecaservice.oauth.config.granter;
 
 import com.ecaservice.oauth.config.TfaConfig;
 import com.ecaservice.oauth.entity.UserEntity;
+import com.ecaservice.oauth.event.model.TfaCodeNotificationEvent;
 import com.ecaservice.oauth.exception.TfaRequiredException;
 import com.ecaservice.oauth.repository.UserEntityRepository;
-import com.ecaservice.oauth.service.mail.NotificationService;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -23,9 +24,9 @@ import org.springframework.security.oauth2.provider.password.ResourceOwnerPasswo
 public class TfaResourceOwnerPasswordTokenGranter extends ResourceOwnerPasswordTokenGranter {
 
     private final TfaConfig tfaConfig;
-    private final NotificationService notificationService;
     private final AuthorizationCodeServices authorizationCodeServices;
     private final UserEntityRepository userEntityRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     /**
      * Constructor with spring dependency injection.
@@ -33,22 +34,22 @@ public class TfaResourceOwnerPasswordTokenGranter extends ResourceOwnerPasswordT
      * @param authenticationManager     - authentication manager
      * @param endpoints                 - authorization server endpoints configurer bean
      * @param tfaConfig                 - tfa config bean
-     * @param notificationService       - notification service
      * @param authorizationCodeServices - authorization code services
      * @param userEntityRepository      - user entity repository bean
+     * @param applicationEventPublisher - application event publisher bean
      */
     public TfaResourceOwnerPasswordTokenGranter(AuthenticationManager authenticationManager,
                                                 AuthorizationServerEndpointsConfigurer endpoints,
                                                 TfaConfig tfaConfig,
-                                                NotificationService notificationService,
                                                 AuthorizationCodeServices authorizationCodeServices,
-                                                UserEntityRepository userEntityRepository) {
+                                                UserEntityRepository userEntityRepository,
+                                                ApplicationEventPublisher applicationEventPublisher) {
         super(authenticationManager, endpoints.getTokenServices(), endpoints.getClientDetailsService(),
                 endpoints.getOAuth2RequestFactory());
         this.tfaConfig = tfaConfig;
-        this.notificationService = notificationService;
         this.authorizationCodeServices = authorizationCodeServices;
         this.userEntityRepository = userEntityRepository;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
@@ -60,7 +61,7 @@ public class TfaResourceOwnerPasswordTokenGranter extends ResourceOwnerPasswordT
             UserEntity userEntity = userEntityRepository.findUser(usernamePasswordAuthenticationToken.getName());
             if (userEntity.isTfaEnabled()) {
                 String code = authorizationCodeServices.createAuthorizationCode(oAuth2Authentication);
-                notificationService.sendTfaCode(userEntity, code);
+                applicationEventPublisher.publishEvent(new TfaCodeNotificationEvent(this, userEntity, code));
                 throw new TfaRequiredException(tfaConfig.getCodeValiditySeconds());
             }
         }
