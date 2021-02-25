@@ -61,9 +61,10 @@ public class ResetPasswordService {
      * Reset password.
      *
      * @param resetPasswordRequest - reset password request
+     * @return reset password request entity
      */
     @Transactional
-    public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
+    public ResetPasswordRequestEntity resetPassword(ResetPasswordRequest resetPasswordRequest) {
         ResetPasswordRequestEntity resetPasswordRequestEntity =
                 resetPasswordRequestRepository.findByTokenAndExpireDateAfterAndResetDateIsNull(
                         resetPasswordRequest.getToken(), LocalDateTime.now())
@@ -75,5 +76,6 @@ public class ResetPasswordService {
         resetPasswordRequestRepository.save(resetPasswordRequestEntity);
         log.info("New password has been set for user [{}], reset password request id [{}]", userEntity.getId(),
                 resetPasswordRequestEntity.getId());
+        return resetPasswordRequestEntity;
     }
 }
