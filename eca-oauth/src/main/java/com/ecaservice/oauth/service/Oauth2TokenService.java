@@ -30,12 +30,12 @@ public class Oauth2TokenService {
      * @param userEntity - user entity
      */
     public void revokeTokens(UserEntity userEntity) {
-        log.info("Starting to revoke all tokens for user: {}", userEntity.getLogin());
+        log.info("Starting to revoke all tokens for user: {}", userEntity.getId());
         Collection<OAuth2AccessToken> oAuth2AccessTokens = tokenStore.findTokensByUserName(userEntity.getLogin());
         if (!CollectionUtils.isEmpty(oAuth2AccessTokens)) {
-            log.info("Found [{}] access tokens for user [{]]", userEntity.getLogin());
+            log.info("Found [{}] access tokens for user [{]]", userEntity.getId());
             oAuth2AccessTokens.forEach(oAuth2AccessToken -> tokenServices.revokeToken(oAuth2AccessToken.getValue()));
         }
-        log.info("All tokens has been revoked for user: {}", userEntity.getLogin());
+        log.info("All tokens has been revoked for user: {}", userEntity.getId());
     }
 }

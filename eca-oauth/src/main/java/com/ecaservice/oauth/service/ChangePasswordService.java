@@ -68,9 +68,10 @@ public class ChangePasswordService {
      * Change user password.
      *
      * @param token - token value
+     * @return change password request
      */
     @Transactional
-    public void changePassword(String token) {
+    public ChangePasswordRequestEntity changePassword(String token) {
         ChangePasswordRequestEntity changePasswordRequestEntity =
                 changePasswordRequestRepository.findByTokenAndExpireDateAfterAndApproveDateIsNull(token,
                         LocalDateTime.now()).orElseThrow(() -> new InvalidTokenException(token));
@@ -81,6 +82,7 @@ public class ChangePasswordService {
         changePasswordRequestRepository.save(changePasswordRequestEntity);
         log.info("New password has been set for user [{}], change password request id [{}]", userEntity.getLogin(),
                 changePasswordRequestEntity.getId());
+        return changePasswordRequestEntity;
     }
 
     private boolean isValidOldPassword(UserEntity userEntity, ChangePasswordRequest changePasswordRequest) {
