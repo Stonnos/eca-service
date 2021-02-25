@@ -15,7 +15,7 @@ public abstract class AbstractNotificationEvent extends ApplicationEvent {
      * @param source the object on which the event initially occurred or with
      *               which the event is associated (never {@code null})
      */
-    public AbstractNotificationEvent(Object source) {
+    protected AbstractNotificationEvent(Object source) {
         super(source);
     }
 }
