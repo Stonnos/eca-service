@@ -11,7 +11,7 @@ import lombok.Getter;
 public class ResetPasswordNotificationEvent extends AbstractNotificationEvent {
 
     /**
-     * User entity
+     * Reset password request entity
      */
     @Getter
     private final ResetPasswordRequestEntity resetPasswordRequestEntity;
@@ -21,7 +21,7 @@ public class ResetPasswordNotificationEvent extends AbstractNotificationEvent {
      *
      * @param source                     - the object on which the event initially occurred or with which the event is
      *                                   associated (never {@code null})
-     * @param resetPasswordRequestEntity - reset password request created entity
+     * @param resetPasswordRequestEntity - reset password request entity
      */
     public ResetPasswordNotificationEvent(Object source, ResetPasswordRequestEntity resetPasswordRequestEntity) {
         super(source);
