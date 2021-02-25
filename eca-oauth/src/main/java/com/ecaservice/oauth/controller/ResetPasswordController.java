@@ -3,7 +3,7 @@ package com.ecaservice.oauth.controller;
 import com.ecaservice.oauth.dto.ForgotPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
-import com.ecaservice.oauth.event.model.ResetPasswordRequestCreatedEvent;
+import com.ecaservice.oauth.event.model.ResetPasswordNotificationEvent;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.service.ResetPasswordService;
 import io.swagger.annotations.Api;
@@ -53,7 +53,7 @@ public class ResetPasswordController {
                 resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest);
         log.info("Reset password request [{}] has been created for user with email [{}]",
                 resetPasswordRequestEntity.getId(), forgotPasswordRequest.getEmail());
-        applicationEventPublisher.publishEvent(new ResetPasswordRequestCreatedEvent(this, resetPasswordRequestEntity));
+        applicationEventPublisher.publishEvent(new ResetPasswordNotificationEvent(this, resetPasswordRequestEntity));
     }
 
     /**

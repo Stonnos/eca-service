@@ -7,7 +7,7 @@ import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.event.listener.handler.AbstractNotificationEventHandler;
 import com.ecaservice.oauth.event.model.AbstractNotificationEvent;
-import com.ecaservice.oauth.event.model.ResetPasswordRequestCreatedEvent;
+import com.ecaservice.oauth.event.model.ResetPasswordNotificationEvent;
 import com.ecaservice.oauth.event.model.TfaCodeNotificationEvent;
 import com.ecaservice.oauth.event.model.UserCreatedEvent;
 import com.ecaservice.oauth.service.mail.EmailClient;
@@ -74,7 +74,7 @@ class NotificationEventListenerTest {
     @Test
     void testResetPassword() {
         ResetPasswordRequestEntity resetPasswordRequestEntity = createResetPasswordRequestEntity();
-        ResetPasswordRequestCreatedEvent event = new ResetPasswordRequestCreatedEvent(this, resetPasswordRequestEntity);
+        ResetPasswordNotificationEvent event = new ResetPasswordNotificationEvent(this, resetPasswordRequestEntity);
         internalTestEvent(event, Templates.RESET_PASSWORD);
     }
 

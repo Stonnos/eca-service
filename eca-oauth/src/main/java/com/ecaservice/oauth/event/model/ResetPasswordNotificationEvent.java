@@ -4,11 +4,11 @@ import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import lombok.Getter;
 
 /**
- * Reset password request created event.
+ * Reset password notification event.
  *
  * @author Roman Batygin
  */
-public class ResetPasswordRequestCreatedEvent extends AbstractNotificationEvent {
+public class ResetPasswordNotificationEvent extends AbstractNotificationEvent {
 
     /**
      * User entity
@@ -17,13 +17,13 @@ public class ResetPasswordRequestCreatedEvent extends AbstractNotificationEvent 
     private final ResetPasswordRequestEntity resetPasswordRequestEntity;
 
     /**
-     * Create a new {@code ResetPasswordRequestCreatedEvent}.
+     * Create a new {@code ResetPasswordNotificationEvent}.
      *
      * @param source                     - the object on which the event initially occurred or with which the event is
      *                                   associated (never {@code null})
      * @param resetPasswordRequestEntity - reset password request created entity
      */
-    public ResetPasswordRequestCreatedEvent(Object source, ResetPasswordRequestEntity resetPasswordRequestEntity) {
+    public ResetPasswordNotificationEvent(Object source, ResetPasswordRequestEntity resetPasswordRequestEntity) {
         super(source);
         this.resetPasswordRequestEntity = resetPasswordRequestEntity;
     }

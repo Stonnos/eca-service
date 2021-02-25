@@ -1,7 +1,7 @@
 package com.ecaservice.oauth.event.listener.handler;
 
 import com.ecaservice.oauth.config.ResetPasswordConfig;
-import com.ecaservice.oauth.event.model.ResetPasswordRequestCreatedEvent;
+import com.ecaservice.oauth.event.model.ResetPasswordNotificationEvent;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -13,31 +13,31 @@ import static com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDict
 import static com.google.common.collect.Maps.newHashMap;
 
 /**
- * Implements reset password request created event handler.
+ * Implements reset password notification event handler.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Component
-public class ResetPasswordRequestCreatedEventHandler
-        extends AbstractNotificationEventHandler<ResetPasswordRequestCreatedEvent> {
+public class ResetPasswordNotificationEventHandler
+        extends AbstractNotificationEventHandler<ResetPasswordNotificationEvent> {
 
     private static final String RESET_PASSWORD_URL_FORMAT = "%s/reset-password/?token=%s";
 
     private final ResetPasswordConfig resetPasswordConfig;
 
     /**
-     * Creates reset password request created event handler.
+     * Creates reset password notification event handler.
      *
      * @param resetPasswordConfig - reset password config
      */
-    public ResetPasswordRequestCreatedEventHandler(ResetPasswordConfig resetPasswordConfig) {
-        super(ResetPasswordRequestCreatedEvent.class, Templates.RESET_PASSWORD);
+    public ResetPasswordNotificationEventHandler(ResetPasswordConfig resetPasswordConfig) {
+        super(ResetPasswordNotificationEvent.class, Templates.RESET_PASSWORD);
         this.resetPasswordConfig = resetPasswordConfig;
     }
 
     @Override
-    Map<String, String> createVariables(ResetPasswordRequestCreatedEvent event) {
+    Map<String, String> createVariables(ResetPasswordNotificationEvent event) {
         String resetPasswordUrl = String.format(RESET_PASSWORD_URL_FORMAT, resetPasswordConfig.getBaseUrl(),
                 event.getResetPasswordRequestEntity().getToken());
         Map<String, String> templateVariables = newHashMap();
@@ -47,7 +47,7 @@ public class ResetPasswordRequestCreatedEventHandler
     }
 
     @Override
-    String getReceiver(ResetPasswordRequestCreatedEvent event) {
+    String getReceiver(ResetPasswordNotificationEvent event) {
         return event.getResetPasswordRequestEntity().getUserEntity().getEmail();
     }
 }
