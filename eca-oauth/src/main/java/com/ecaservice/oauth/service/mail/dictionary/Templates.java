@@ -21,6 +21,11 @@ public class Templates {
     public static final String RESET_PASSWORD = "RESET_PASSWORD";
 
     /**
+     * Change password template
+     */
+    public static final String CHANGE_PASSWORD = "CHANGE_PASSWORD";
+
+    /**
      * New user template
      */
     public static final String NEW_USER = "NEW_USER";
