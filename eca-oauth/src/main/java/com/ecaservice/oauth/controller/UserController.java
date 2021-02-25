@@ -124,7 +124,7 @@ public class UserController {
         log.info("Received request for user creation {}", createUserDto);
         String password = passwordService.generatePassword();
         UserEntity userEntity = userService.createUser(createUserDto, password);
-        log.info("User {} has been created", userEntity.getLogin());
+        log.info("User {} has been created", userEntity.getId());
         applicationEventPublisher.publishEvent(new UserCreatedEvent(this, userEntity, password));
         return userMapper.map(userEntity);
     }
@@ -143,7 +143,7 @@ public class UserController {
     @PostMapping(value = "/upload-photo")
     public void uploadPhoto(@AuthenticationPrincipal UserDetailsImpl userDetails,
                             @ApiParam(value = "Photo file", required = true) @RequestParam MultipartFile file) {
-        log.info("Uploads photo [{}] for user [{}]", file.getOriginalFilename(), userDetails.getUsername());
+        log.info("Uploads photo [{}] for user [{}]", file.getOriginalFilename(), userDetails.getId());
         userService.updatePhoto(userDetails.getId(), file);
     }
 
@@ -181,7 +181,7 @@ public class UserController {
     )
     @DeleteMapping(value = "/delete-photo")
     public void deletePhoto(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        log.info("Deletes photo for user [{}]", userDetails.getUsername());
+        log.info("Deletes photo for user [{}]", userDetails.getId());
         userService.deletePhoto(userDetails.getId());
     }
 }
