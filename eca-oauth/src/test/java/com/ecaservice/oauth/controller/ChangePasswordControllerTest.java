@@ -42,7 +42,7 @@ class ChangePasswordControllerTest {
     private static final String TOKEN_VALUE = "tokenValue";
 
     private static final String BASE_URL = "/password/change";
-    private static final String APPROVE_URL = BASE_URL + "/approve";
+    private static final String CONFIRM_URL = BASE_URL + "/confirm";
     private static final String REQUEST_URL = BASE_URL + "/request";
     private static final String PASSWORD = "pa66word!";
 
@@ -80,7 +80,7 @@ class ChangePasswordControllerTest {
     void testApproveChangePasswordRequest() throws Exception {
         ChangePasswordRequestEntity changePasswordRequestEntity = createChangePasswordRequestEntity();
         when(changePasswordService.changePassword(TOKEN_VALUE)).thenReturn(changePasswordRequestEntity);
-        mockMvc.perform(post(APPROVE_URL)
+        mockMvc.perform(post(CONFIRM_URL)
                 .param(TOKEN_PARAM, TOKEN_VALUE))
                 .andExpect(status().isOk());
         verify(changePasswordService, atLeastOnce()).changePassword(TOKEN_VALUE);
@@ -89,7 +89,7 @@ class ChangePasswordControllerTest {
 
     @Test
     void testApproveChangePasswordRequestWithNullToken() throws Exception {
-        mockMvc.perform(post(APPROVE_URL))
+        mockMvc.perform(post(CONFIRM_URL))
                 .andExpect(status().isBadRequest());
     }
 }
