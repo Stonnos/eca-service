@@ -61,16 +61,16 @@ public class ChangePasswordController {
     }
 
     /**
-     * Approves change password request.
+     * Confirms change password request.
      *
      * @param token - token value
      */
     @ApiOperation(
-            value = "Approves change password request",
-            notes = "Approves change password request"
+            value = "Confirms change password request",
+            notes = "Confirms change password request"
     )
-    @PostMapping(value = "/approve")
-    public void approveChangePasswordRequest(
+    @PostMapping(value = "/confirm")
+    public void confirmChangePasswordRequest(
             @ApiParam(value = "Token value", required = true) @RequestParam String token) {
         log.info("Received change password request approving");
         ChangePasswordRequestEntity changePasswordRequestEntity = changePasswordService.changePassword(token);
