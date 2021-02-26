@@ -5,6 +5,9 @@ import com.ecaservice.notification.dto.EmailResponse;
 import com.ecaservice.oauth.TestHelperUtils;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.entity.UserEntity;
+import com.ecaservice.oauth.repository.ChangePasswordRequestRepository;
+import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
+import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.service.UserService;
 import com.ecaservice.oauth.service.mail.EmailClient;
 import com.ecaservice.oauth2.test.token.TokenResponse;
@@ -15,11 +18,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.MultiValueMap;
@@ -43,6 +48,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 abstract class AbstractUserIT {
 
     private static final String BASE_URL_FORMAT = "http://localhost:%d/%s";
@@ -56,16 +62,27 @@ abstract class AbstractUserIT {
 
     private static final String PASSWORD = "pa66word!";
     private static final String GRANT_TYPE_PASSWORD = "password";
-    private static final String CLIENT_ID = "eca_web";
-    private static final String SECRET = "web_secret";
 
     @LocalServerPort
     private int port;
+
+    @Value("${oauth2.client.id}")
+    private String clientId;
+
+    @Value("${oauth2.client.secret}")
+    private String clientSecret;
 
     @MockBean
     private EmailClient emailClient;
     @Captor
     private ArgumentCaptor<EmailRequest> emailRequestArgumentCaptor;
+
+    @Inject
+    private UserEntityRepository userEntityRepository;
+    @Inject
+    private ResetPasswordRequestRepository resetPasswordRequestRepository;
+    @Inject
+    private ChangePasswordRequestRepository changePasswordRequestRepository;
 
     @Getter
     @Inject
@@ -85,6 +102,7 @@ abstract class AbstractUserIT {
 
     @AfterEach
     void after() {
+        clear();
     }
 
     /**
@@ -113,6 +131,9 @@ abstract class AbstractUserIT {
     }
 
     void clear() {
+        changePasswordRequestRepository.deleteAll();
+        resetPasswordRequestRepository.deleteAll();
+        userEntityRepository.deleteAll();
     }
 
     @SneakyThrows
@@ -120,7 +141,7 @@ abstract class AbstractUserIT {
         WebClient tokenClient = WebClient.builder()
                 .baseUrl(String.format(BASE_URL_FORMAT, port, StringUtils.EMPTY))
                 .build();
-        String credentials = String.format(CREDENTIALS_FORMAT, CLIENT_ID, SECRET);
+        String credentials = String.format(CREDENTIALS_FORMAT, clientId, clientSecret);
         String base64Credentials = Base64Utils.encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
         TokenResponse tokenResponse = tokenClient.post()
                 .uri(uriBuilder -> uriBuilder.path(TOKEN_URL)
