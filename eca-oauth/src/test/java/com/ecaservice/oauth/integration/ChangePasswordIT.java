@@ -52,10 +52,10 @@ class ChangePasswordIT extends AbstractUserIT {
     }
 
     private void createChangePasswordRequest(TokenResponse tokenResponse) {
-        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(getUserPassword(), NEW_PASSWORD);
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PASSWORD, NEW_PASSWORD);
         getWebClient().post()
                 .uri(CHANGE_PASSWORD_REQUEST_URL)
-                .header(HttpHeaders.AUTHORIZATION, getAuthorizationHeader(tokenResponse))
+                .header(HttpHeaders.AUTHORIZATION, getBearerAuthorizationHeader(tokenResponse))
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(changePasswordRequest)
                 .retrieve()
