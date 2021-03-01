@@ -23,6 +23,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,6 +56,7 @@ public class UserController {
     private final UserService userService;
     private final PasswordService passwordService;
     private final UserMapper userMapper;
+    private final DefaultTokenServices tokenServices;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final UserPhotoRepository userPhotoRepository;
 
@@ -72,6 +76,23 @@ public class UserController {
         UserDto userDto = userMapper.map(userEntity);
         userDto.setPhotoId(userPhotoRepository.getUserPhotoId(userEntity));
         return userDto;
+    }
+
+    /**
+     * Logout current user and revokes access/refresh token pair.
+     *
+     * @param authentication - oauth2 authentication
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Logout current user and revokes access/refresh token pair",
+            notes = "Logout current user and revokes access/refresh token pair"
+    )
+    @PostMapping(value = "/logout")
+    public void logout(OAuth2Authentication authentication) {
+        log.info("Logout user: [{}]", authentication.getName());
+        OAuth2AccessToken auth2AccessToken = tokenServices.getAccessToken(authentication);
+        tokenServices.revokeToken(auth2AccessToken.getValue());
     }
 
     /**
