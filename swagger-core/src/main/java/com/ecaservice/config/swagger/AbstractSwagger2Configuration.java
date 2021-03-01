@@ -18,6 +18,7 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +47,7 @@ public abstract class AbstractSwagger2Configuration {
      */
     public Docket docket(TypeResolver typeResolver) {
         return new Docket(DocumentationType.SWAGGER_2)
-                .ignoredParameterTypes(AuthenticationPrincipal.class)
+                .ignoredParameterTypes(AuthenticationPrincipal.class, Principal.class)
                 .groupName(getGroupName())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage(getControllersPackage()))

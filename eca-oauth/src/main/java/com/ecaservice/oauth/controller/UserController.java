@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 import static com.ecaservice.oauth.util.Utils.buildAttachmentResponse;
@@ -89,9 +90,10 @@ public class UserController {
             notes = "Logout current user and revokes access/refresh token pair"
     )
     @PostMapping(value = "/logout")
-    public void logout(OAuth2Authentication authentication) {
+    public void logout(Principal authentication) {
         log.info("Logout user: [{}]", authentication.getName());
-        OAuth2AccessToken auth2AccessToken = tokenServices.getAccessToken(authentication);
+        OAuth2Authentication oAuth2Authentication = (OAuth2Authentication) authentication;
+        OAuth2AccessToken auth2AccessToken = tokenServices.getAccessToken(oAuth2Authentication);
         tokenServices.revokeToken(auth2AccessToken.getValue());
     }
 
