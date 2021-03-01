@@ -80,7 +80,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testCreateChangePasswordRequestWithPreviousApproved() {
+    void testCreateChangePasswordRequestWithPreviousConfirmed() {
         createAndSaveChangePasswordRequestEntity(
                 LocalDateTime.now().plusMinutes(changePasswordConfig.getValidityMinutes()),
                 LocalDateTime.now().minusMinutes(1L));
@@ -121,7 +121,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testChangePasswordForAlreadyApprovedRequest() {
+    void testChangePasswordForAlreadyConfirmedRequest() {
         ChangePasswordRequestEntity changePasswordRequestEntity = createAndSaveChangePasswordRequestEntity(
                 LocalDateTime.now().plusMinutes(changePasswordConfig.getValidityMinutes()),
                 LocalDateTime.now().minusMinutes(1L));
@@ -145,7 +145,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
         ChangePasswordRequestEntity actual =
                 changePasswordRequestRepository.findById(changePasswordRequestEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
-        assertThat(actual.getApproveDate()).isNotNull();
+        assertThat(actual.getConfirmationDate()).isNotNull();
         assertThat(actual.getUserEntity().getPassword()).isEqualTo(changePasswordRequestEntity.getNewPassword());
     }
 
@@ -157,12 +157,12 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     }
 
     private ChangePasswordRequestEntity createAndSaveChangePasswordRequestEntity(LocalDateTime expireDate,
-                                                                                 LocalDateTime approveDate) {
+                                                                                 LocalDateTime confirmationDate) {
         String token = UUID.randomUUID().toString();
         ChangePasswordRequestEntity changePasswordRequestEntity = new ChangePasswordRequestEntity();
         changePasswordRequestEntity.setToken(token);
         changePasswordRequestEntity.setExpireDate(expireDate);
-        changePasswordRequestEntity.setApproveDate(approveDate);
+        changePasswordRequestEntity.setConfirmationDate(confirmationDate);
         changePasswordRequestEntity.setUserEntity(userEntity);
         changePasswordRequestEntity.setNewPassword(NEW_PASSWORD);
         return changePasswordRequestRepository.save(changePasswordRequestEntity);

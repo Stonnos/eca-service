@@ -22,10 +22,10 @@ import java.time.LocalDateTime;
 public class ChangePasswordRequestEntity extends TokenEntity {
 
     /**
-     * Approve date
+     * Confirmation date
      */
-    @Column(name = "approve_date")
-    private LocalDateTime approveDate;
+    @Column(name = "confirmation_date")
+    private LocalDateTime confirmationDate;
 
     /**
      * New password

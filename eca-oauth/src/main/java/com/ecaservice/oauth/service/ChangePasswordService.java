@@ -51,7 +51,8 @@ public class ChangePasswordService {
         }
         LocalDateTime now = LocalDateTime.now();
         ChangePasswordRequestEntity changePasswordRequestEntity =
-                changePasswordRequestRepository.findByUserEntityAndExpireDateAfterAndApproveDateIsNull(userEntity, now);
+                changePasswordRequestRepository.findByUserEntityAndExpireDateAfterAndConfirmationDateIsNull(userEntity,
+                        now);
         if (changePasswordRequestEntity != null) {
             throw new ChangePasswordRequestAlreadyExistsException(userId);
         }
@@ -73,11 +74,11 @@ public class ChangePasswordService {
     @Transactional
     public ChangePasswordRequestEntity changePassword(String token) {
         ChangePasswordRequestEntity changePasswordRequestEntity =
-                changePasswordRequestRepository.findByTokenAndExpireDateAfterAndApproveDateIsNull(token,
+                changePasswordRequestRepository.findByTokenAndExpireDateAfterAndConfirmationDateIsNull(token,
                         LocalDateTime.now()).orElseThrow(() -> new InvalidTokenException(token));
         UserEntity userEntity = changePasswordRequestEntity.getUserEntity();
         userEntity.setPassword(changePasswordRequestEntity.getNewPassword());
-        changePasswordRequestEntity.setApproveDate(LocalDateTime.now());
+        changePasswordRequestEntity.setConfirmationDate(LocalDateTime.now());
         userEntityRepository.save(userEntity);
         changePasswordRequestRepository.save(changePasswordRequestEntity);
         log.info("New password has been set for user [{}], change password request id [{}]", userEntity.getId(),

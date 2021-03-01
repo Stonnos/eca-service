@@ -21,8 +21,8 @@ public interface ChangePasswordRequestRepository extends JpaRepository<ChangePas
      * @param date       - search date
      * @return change password request entity
      */
-    ChangePasswordRequestEntity findByUserEntityAndExpireDateAfterAndApproveDateIsNull(UserEntity userEntity,
-                                                                                       LocalDateTime date);
+    ChangePasswordRequestEntity findByUserEntityAndExpireDateAfterAndConfirmationDateIsNull(UserEntity userEntity,
+                                                                                            LocalDateTime date);
 
     /**
      * Finds active change password request for specified token.
@@ -31,6 +31,6 @@ public interface ChangePasswordRequestRepository extends JpaRepository<ChangePas
      * @param date  - search date
      * @return change password request entity
      */
-    Optional<ChangePasswordRequestEntity> findByTokenAndExpireDateAfterAndApproveDateIsNull(String token,
-                                                                                            LocalDateTime date);
+    Optional<ChangePasswordRequestEntity> findByTokenAndExpireDateAfterAndConfirmationDateIsNull(String token,
+                                                                                                 LocalDateTime date);
 }

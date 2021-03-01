@@ -72,8 +72,7 @@ public class ChangePasswordController {
     @PostMapping(value = "/confirm")
     public void confirmChangePasswordRequest(
             @ApiParam(value = "Token value", required = true) @RequestParam String token) {
-        log.info("Received change password request confirm");
-        //FIXME renamed approveDate to confirmationDate
+        log.info("Received change password request confirmation");
         ChangePasswordRequestEntity changePasswordRequestEntity = changePasswordService.changePassword(token);
         oauth2TokenService.revokeTokens(changePasswordRequestEntity.getUserEntity());
     }
