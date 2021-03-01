@@ -96,6 +96,7 @@ abstract class AbstractUserIT {
 
     @BeforeEach
     void before() {
+        MockitoAnnotations.initMocks(this);
         clear();
         init();
     }
@@ -113,7 +114,6 @@ abstract class AbstractUserIT {
     abstract String getApiPrefix();
 
     void init() {
-        MockitoAnnotations.initMocks(this);
         when(emailClient.sendEmail(any(EmailRequest.class))).thenReturn(new EmailResponse());
         CreateUserDto createUserDto = TestHelperUtils.createUserDto();
         userEntity = userService.createUser(createUserDto, PASSWORD);
