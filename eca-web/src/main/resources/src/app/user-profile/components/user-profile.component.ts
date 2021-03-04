@@ -3,7 +3,7 @@ import {
   RoleDto, UserDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { UsersService } from "../../users/services/users.service";
-import { MenuItem, MessageService } from "primeng/api";
+import { ConfirmationService, MenuItem, MessageService } from "primeng/api";
 import { UserFields } from "../../common/util/field-names";
 import { Utils } from "../../common/util/utils";
 import { FieldService } from "../../common/services/field.service";
@@ -48,7 +48,8 @@ export class UserProfileComponent implements OnInit {
   public constructor(private usersService: UsersService,
                      private fieldService: FieldService,
                      private sanitizer: DomSanitizer,
-                     private messageService: MessageService) {
+                     private messageService: MessageService,
+                     private confirmationService: ConfirmationService) {
     this.initCommonFields();
   }
 
@@ -113,7 +114,13 @@ export class UserProfileComponent implements OnInit {
   }
 
   public onCreateChangePasswordRequest(): void {
-    console.log('Created');
+    this.confirmationService.confirm({
+      message: 'На ваш email отправлено письмо с подтверждением смены пароля',
+      acceptLabel: 'OK',
+      rejectVisible: false,
+      accept: () => {
+      }
+    });
   }
 
   private getUser(): void {

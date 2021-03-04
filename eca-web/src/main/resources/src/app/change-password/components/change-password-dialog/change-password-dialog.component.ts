@@ -35,6 +35,11 @@ export class ChangePasswordDialogComponent extends BaseCreateDialogComponent<Cha
   public ngOnInit(): void {
   }
 
+  public hide(): void {
+    this.hasActiveChangePasswordRequest = false;
+    super.hide();
+  }
+
   public submit(): void {
     this.submitted = true;
     if (this.isValid() && this.safePassword) {
