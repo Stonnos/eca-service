@@ -50,6 +50,9 @@
                 <ng-container *ngSwitchCase="'tfaEnabled'">
                   <p-inputSwitch [(ngModel)]="tfaEnabled" (onChange)="changedTfaSwitch($event)"></p-inputSwitch>
                 </ng-container>
+                <ng-container *ngSwitchCase="'password'">
+                  <a class="link" [routerLink]="">Изменить</a>
+                </ng-container>
                 <ng-container *ngSwitchDefault>
                   {{ getValue(field.name) }}
                 </ng-container>

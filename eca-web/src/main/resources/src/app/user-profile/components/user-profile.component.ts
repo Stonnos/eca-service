@@ -178,7 +178,8 @@ export class UserProfileComponent implements OnInit {
     this.commonFields = [
       { name: UserFields.FIRST_NAME, label: "Имя:" },
       { name: UserFields.ROLES, label: "Роли:" },
-      { name: UserFields.TFA_ENABLED, label: "Двухфакторная аутентификация:" }
+      { name: UserFields.TFA_ENABLED, label: "Двухфакторная аутентификация:" },
+      { name: "password", label: "Пароль:" },
     ];
   }
 
