@@ -1,14 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { MessageService } from "primeng/api";
-import { BaseForm } from "../../../common/form/base-form";
-import { NgForm } from "@angular/forms";
-import { ResetPasswordService } from "../../services/reset-password.service";
 import { finalize } from "rxjs/operators";
 import { HttpErrorResponse } from "@angular/common/http";
-import { ResetPasswordRequest } from "../../model/reset-password.request";
-import { ActivatedRoute, Router } from "@angular/router";
-import {BaseCreateDialogComponent} from "../../../common/dialog/base-create-dialog.component";
-import {ChangePasswordRequest} from "../../model/change-password.request";
+import { BaseCreateDialogComponent } from "../../../common/dialog/base-create-dialog.component";
+import { ChangePasswordRequest } from "../../model/change-password.request";
+import { ChangePasswordService } from "../../services/change-password.service";
+import { ValidationErrorDto } from "../../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import { ValidationErrorCode } from "../../../common/model/validation-error-code";
+import { ValidationService } from "../../../common/services/validation.service";
 
 @Component({
   selector: 'app-change-password-dialog',
@@ -21,20 +20,67 @@ export class ChangePasswordDialogComponent extends BaseCreateDialogComponent<Cha
 
   public confirmPassword: string;
 
+  public invalidPassword: boolean = false;
+  public hasActiveChangePasswordRequest: boolean = false;
+
   public passwordScoreCutoff: number = 3;
   public safePassword: boolean = false;
 
   public constructor(private messageService: MessageService,
-                     private resetPasswordService: ResetPasswordService,
-                     private route: ActivatedRoute,
-                     private router: Router) {
+                     private changePasswordService: ChangePasswordService,
+                     private validationService: ValidationService) {
     super();
   }
 
   public ngOnInit(): void {
   }
 
+  public submit(): void {
+    this.submitted = true;
+    if (this.isValid() && this.safePassword) {
+      this.loading = true;
+      this.changePasswordService.changePassword(this.item)
+        .pipe(
+          finalize(() => {
+            this.loading = false;
+          })
+        )
+        .subscribe({
+          next: () => {
+            this.itemEvent.emit();
+            this.hide();
+          },
+          error: (error) => {
+            this.handleError(error);
+          }
+        });
+    }
+  }
+
   public onStrengthChange(score: number): void {
     this.safePassword = score >= this.passwordScoreCutoff;
+  }
+
+  public onOldPasswordFocus(event): void {
+    this.invalidPassword = false;
+  }
+
+  private handleError(error): void {
+    if (error instanceof HttpErrorResponse) {
+      if (error.status === 400) {
+        const errors: ValidationErrorDto[] = error.error;
+        this.invalidPassword = this.validationService.hasErrorCode(errors, ValidationErrorCode.INVALID_PASSWORD);
+        this.hasActiveChangePasswordRequest =
+          this.validationService.hasErrorCode(errors, ValidationErrorCode.ACTIVE_CHANGE_PASSWORD_REQUEST);
+      } else {
+        this.handleUnknownError(error);
+      }
+    } else {
+      this.handleUnknownError(error);
+    }
+  }
+
+  private handleUnknownError(error): void {
+    this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
   }
 }

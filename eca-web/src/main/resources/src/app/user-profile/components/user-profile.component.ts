@@ -113,7 +113,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   public onCreateChangePasswordRequest(): void {
-
+    console.log('Created');
   }
 
   private getUser(): void {
