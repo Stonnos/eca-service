@@ -6,6 +6,7 @@ import { ForgotPasswordComponent } from "./components/forgot-password/forgot-pas
 import { ResetPasswordService } from "./services/reset-password.service";
 import { ResetPasswordComponent } from "./components/reset-password/reset-password.component";
 import { SharedModule } from "../common/shared.module";
+import { ChangePasswordDialogComponent } from "./components/change-password-dialog/change-password-dialog.component";
 
 @NgModule({
   imports: [
@@ -16,7 +17,11 @@ import { SharedModule } from "../common/shared.module";
   ],
   declarations: [
     ForgotPasswordComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    ChangePasswordDialogComponent
+  ],
+  exports: [
+    ChangePasswordDialogComponent
   ],
   providers: [
     ResetPasswordService

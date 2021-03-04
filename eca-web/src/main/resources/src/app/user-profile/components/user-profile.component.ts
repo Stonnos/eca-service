@@ -10,6 +10,7 @@ import { FieldService } from "../../common/services/field.service";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { FileUpload } from "primeng/primeng";
 import { finalize } from "rxjs/internal/operators";
+import { ChangePasswordRequest } from "../../change-password/model/change-password.request";
 
 @Component({
   selector: 'app-user-profile',
@@ -25,6 +26,10 @@ export class UserProfileComponent implements OnInit {
   public commonFields: any[] = [];
 
   public userMenuItems: MenuItem[];
+
+  public changePasswordDialogVisibility: boolean = false;
+
+  public changePasswordRequest: ChangePasswordRequest = new ChangePasswordRequest();
 
   public uploading = false;
 
@@ -97,6 +102,18 @@ export class UserProfileComponent implements OnInit {
 
   public hide(): void {
     this.fileUpload.msgs = [];
+  }
+
+  public showChangePasswordRequestDialog(): void {
+    this.changePasswordDialogVisibility = true;
+  }
+
+  public onChangeExperimentDialogVisibility(visible): void {
+    this.changePasswordDialogVisibility = visible;
+  }
+
+  public onCreateChangePasswordRequest(): void {
+
   }
 
   private getUser(): void {

@@ -51,7 +51,7 @@
                   <p-inputSwitch [(ngModel)]="tfaEnabled" (onChange)="changedTfaSwitch($event)"></p-inputSwitch>
                 </ng-container>
                 <ng-container *ngSwitchCase="'password'">
-                  <a class="link" [routerLink]="">Изменить</a>
+                  <a class="link" [routerLink]="" (click)="showChangePasswordRequestDialog()">Изменить</a>
                 </ng-container>
                 <ng-container *ngSwitchDefault>
                   {{ getValue(field.name) }}
@@ -102,3 +102,9 @@
     </button>
   </p-footer>
 </p-dialog>
+
+<app-change-password-dialog [visible]="changePasswordDialogVisibility"
+                            [item]="changePasswordRequest"
+                            (visibilityChange)="onChangeExperimentDialogVisibility($event)"
+                            (itemEvent)="onCreateChangePasswordRequest()">
+</app-change-password-dialog>
