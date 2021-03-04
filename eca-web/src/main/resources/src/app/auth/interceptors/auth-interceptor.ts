@@ -13,7 +13,7 @@ import { throwError } from "rxjs/internal/observable/throwError";
 import { LogoutService } from "../services/logout.service";
 import { BehaviorSubject } from "rxjs/internal/BehaviorSubject";
 import { AuthService } from "../services/auth.service";
-import { AuthenticationKeys } from "../model/auth.keys";
+import { Utils } from "../../common/util/utils";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -64,7 +64,7 @@ export class AuthInterceptor implements HttpInterceptor {
   private addAuthenticationToken(request) {
     return request.clone({
       setHeaders: {
-        Authorization: `Bearer ${localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)}`
+        Authorization: Utils.getBearerTokenHeader()
       }
     });
   }
