@@ -8,6 +8,7 @@ import { ChangePasswordService } from "../../services/change-password.service";
 import { ValidationErrorDto } from "../../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ValidationErrorCode } from "../../../common/model/validation-error-code";
 import { ValidationService } from "../../../common/services/validation.service";
+import { Utils } from "../../../common/util/utils";
 
 @Component({
   selector: 'app-change-password-dialog',
@@ -23,7 +24,6 @@ export class ChangePasswordDialogComponent extends BaseCreateDialogComponent<Cha
   public invalidPassword: boolean = false;
   public hasActiveChangePasswordRequest: boolean = false;
 
-  public passwordScoreCutoff: number = 3;
   public safePassword: boolean = false;
 
   public constructor(private messageService: MessageService,
@@ -63,7 +63,7 @@ export class ChangePasswordDialogComponent extends BaseCreateDialogComponent<Cha
   }
 
   public onStrengthChange(score: number): void {
-    this.safePassword = score >= this.passwordScoreCutoff;
+    this.safePassword = score >= Utils.PASSWORD_STRENGTH_CUTOFF;
   }
 
   public onOldPasswordFocus(event): void {

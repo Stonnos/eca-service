@@ -19,6 +19,9 @@ import { ChangePasswordRequest } from "../../change-password/model/change-passwo
 })
 export class UserProfileComponent implements OnInit {
 
+  private static readonly CHANGE_PASSWORD_REQUEST_CREATED_MESSAGE =
+    'На ваш email отправлено письмо с подтверждением смены пароля';
+
   public user: UserDto;
 
   public tfaEnabled: boolean = false;
@@ -115,7 +118,7 @@ export class UserProfileComponent implements OnInit {
 
   public onCreateChangePasswordRequest(): void {
     this.confirmationService.confirm({
-      message: 'На ваш email отправлено письмо с подтверждением смены пароля',
+      message: UserProfileComponent.CHANGE_PASSWORD_REQUEST_CREATED_MESSAGE,
       acceptLabel: 'OK',
       rejectVisible: false,
       accept: () => {

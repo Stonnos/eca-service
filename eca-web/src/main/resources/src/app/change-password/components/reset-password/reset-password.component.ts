@@ -7,6 +7,7 @@ import { finalize } from "rxjs/operators";
 import { HttpErrorResponse } from "@angular/common/http";
 import { ResetPasswordRequest } from "../../model/reset-password.request";
 import { ActivatedRoute, Router } from "@angular/router";
+import { Utils } from "../../../common/util/utils";
 
 @Component({
   selector: 'app-reset-password',
@@ -22,7 +23,6 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
   @ViewChild(NgForm, { static: true })
   public form: NgForm;
 
-  public passwordScoreCutoff: number = 3;
   public safePassword: boolean = false;
 
   public token: string;
@@ -73,7 +73,7 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
   }
 
   public onStrengthChange(score: number): void {
-    this.safePassword = score >= this.passwordScoreCutoff;
+    this.safePassword = score >= Utils.PASSWORD_STRENGTH_CUTOFF;
   }
 
   private verifyToken(): void {
