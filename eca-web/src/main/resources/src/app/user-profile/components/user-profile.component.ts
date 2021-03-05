@@ -3,7 +3,7 @@ import {
   RoleDto, UserDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { UsersService } from "../../users/services/users.service";
-import { ConfirmationService, MenuItem, MessageService } from "primeng/api";
+import { MenuItem, MessageService } from "primeng/api";
 import { UserFields } from "../../common/util/field-names";
 import { Utils } from "../../common/util/utils";
 import { FieldService } from "../../common/services/field.service";
@@ -19,9 +19,6 @@ import { ChangePasswordRequest } from "../../change-password/model/change-passwo
 })
 export class UserProfileComponent implements OnInit {
 
-  private static readonly CHANGE_PASSWORD_REQUEST_CREATED_MESSAGE =
-    'На ваш email отправлено письмо с подтверждением смены пароля';
-
   public user: UserDto;
 
   public tfaEnabled: boolean = false;
@@ -35,6 +32,13 @@ export class UserProfileComponent implements OnInit {
   public changePasswordRequest: ChangePasswordRequest = new ChangePasswordRequest();
 
   public uploading = false;
+
+  public changePasswordRequestCreatedMessage: string =
+    'На ваш email отправлено письмо с подтверждением смены пароля';
+
+  public changePasswordRequestCreated: boolean = false;
+
+  public uploadPhotoErrorHeader: string = 'Не удалось загрузить фото';
 
   //Max file size: 10MB
   public maxFileSize: number = 10000000;
@@ -51,8 +55,7 @@ export class UserProfileComponent implements OnInit {
   public constructor(private usersService: UsersService,
                      private fieldService: FieldService,
                      private sanitizer: DomSanitizer,
-                     private messageService: MessageService,
-                     private confirmationService: ConfirmationService) {
+                     private messageService: MessageService) {
     this.initCommonFields();
   }
 
@@ -104,7 +107,7 @@ export class UserProfileComponent implements OnInit {
     })
   }
 
-  public hide(): void {
+  public hideUploadPhotoErrorModal(): void {
     this.fileUpload.msgs = [];
   }
 
@@ -117,13 +120,11 @@ export class UserProfileComponent implements OnInit {
   }
 
   public onCreateChangePasswordRequest(): void {
-    this.confirmationService.confirm({
-      message: UserProfileComponent.CHANGE_PASSWORD_REQUEST_CREATED_MESSAGE,
-      acceptLabel: 'OK',
-      rejectVisible: false,
-      accept: () => {
-      }
-    });
+    this.changePasswordRequestCreated = true;
+  }
+
+  public hideChangePasswordRequestCreatedModal(): void {
+    this.changePasswordRequestCreated = false;
   }
 
   private getUser(): void {

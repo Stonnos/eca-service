@@ -77,31 +77,27 @@
   <p-menu #userPhotoMenu [popup]="true" [model]="userMenuItems"></p-menu>
 </div>
 
-<p-dialog
-  [visible]="hasErrors()"
-  header="Не удалось загрузить фото"
-  [style]="{ width: '600px' }"
-  appendTo="body"
-  [modal]="true"
-  [blockScroll]="false"
-  [draggable]="false"
-  [resizable]="false"
-  [closable]="false">
-  <div class="text-danger">
-    <div *ngFor="let msg of fileUpload.msgs">
-      {{ msg.summary }} {{ msg.detail }}
+<app-confirm-dialog [visible]="hasErrors()"
+                    [closable]="false"
+                    (closedEvent)="hideUploadPhotoErrorModal()"
+                    [header]="uploadPhotoErrorHeader">
+  <div content>
+    <div class="text-danger">
+      <div *ngFor="let msg of fileUpload.msgs">
+        {{ msg.summary }} {{ msg.detail }}
+      </div>
     </div>
   </div>
-  <p-footer>
-    <button
-      pButton
-      label="Закрыть"
-      type="button"
-      (click)="hide()"
-      class="ml-auto">
-    </button>
-  </p-footer>
-</p-dialog>
+</app-confirm-dialog>
+
+<app-confirm-dialog [visible]="changePasswordRequestCreated"
+                    (closedEvent)="hideChangePasswordRequestCreatedModal()">
+  <div content>
+    <div class="text-center justify-content-center align-items-center d-flex">
+      {{ changePasswordRequestCreatedMessage }}
+    </div>
+  </div>
+</app-confirm-dialog>
 
 <app-change-password-dialog [visible]="changePasswordDialogVisibility"
                             [item]="changePasswordRequest"
