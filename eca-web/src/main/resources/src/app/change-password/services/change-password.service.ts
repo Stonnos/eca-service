@@ -19,4 +19,10 @@ export class ChangePasswordService {
     });
     return this.http.post(this.serviceUrl + '/request', changePasswordRequest, { headers: headers })
   }
+
+  public confirmChangePasswordRequest(token: string) {
+    const formData = new FormData();
+    formData.append('token', token);
+    return this.http.post(this.serviceUrl + '/confirm', formData);
+  }
 }
