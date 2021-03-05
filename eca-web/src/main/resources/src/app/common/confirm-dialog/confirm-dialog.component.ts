@@ -13,8 +13,6 @@ export class ConfirmDialogComponent implements OnInit {
   public header: string;
   @Input()
   public dialogWidth: string = '600px';
-  @Input()
-  public closable: boolean = true;
 
   @Output()
   public closedEvent: EventEmitter<void> = new EventEmitter<void>();
