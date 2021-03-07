@@ -76,11 +76,11 @@ public class StorageServiceImpl implements StorageService {
     @Transactional
     public void renameData(long id, String newName) {
         log.info("Starting to rename instances [{}] with new name [{}]", id, newName);
-        if (tableNameService.tableExists(newName)) {
-            throw new TableExistsException(newName);
-        }
         InstancesEntity instancesEntity = getById(id);
         if (!instancesEntity.getTableName().equals(newName)) {
+            if (tableNameService.tableExists(newName)) {
+                throw new TableExistsException(newName);
+            }
             instancesService.renameInstances(instancesEntity.getTableName(), newName);
             instancesEntity.setTableName(newName);
             instancesRepository.save(instancesEntity);
