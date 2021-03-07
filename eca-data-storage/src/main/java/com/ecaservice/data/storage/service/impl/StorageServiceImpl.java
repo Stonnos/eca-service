@@ -86,6 +86,7 @@ public class StorageServiceImpl implements StorageService {
             instancesRepository.save(instancesEntity);
             log.info("Instances [{}] has been renamed to [{}]", id, newName);
         }
+        log.info("Rename instances [{}] has been finished", instancesEntity.getId());
     }
 
     private InstancesEntity getById(long id) {
