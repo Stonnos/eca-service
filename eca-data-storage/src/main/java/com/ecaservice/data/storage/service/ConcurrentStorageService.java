@@ -20,13 +20,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Primary
 @Service
-public class StorageConcurrentService implements StorageService {
+public class ConcurrentStorageService implements StorageService {
 
     private final StorageService storageService;
 
     private final Map<String, Object> tableNamesMonitorsMap = new ConcurrentHashMap<>();
 
-    public StorageConcurrentService(@Qualifier("storageServiceImpl") StorageService storageService) {
+    public ConcurrentStorageService(@Qualifier("storageServiceImpl") StorageService storageService) {
         this.storageService = storageService;
     }
 

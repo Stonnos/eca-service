@@ -1,10 +1,13 @@
-package com.ecaservice.data.storage.service;
+package com.ecaservice.data.storage.service.impl;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.data.storage.config.EcaDsConfig;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.exception.TableExistsException;
 import com.ecaservice.data.storage.repository.InstancesRepository;
+import com.ecaservice.data.storage.service.InstancesService;
+import com.ecaservice.data.storage.service.StorageService;
+import com.ecaservice.data.storage.service.UserService;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,8 +56,11 @@ public class StorageServiceImpl implements StorageService {
     @Override
     public InstancesEntity saveData(Instances instances, String tableName) {
         log.info("Starting to save instances into table [{}]", tableName);
+        if (tableExists(tableName)) {
+            throw new TableExistsException(tableName);
+        }
         instancesService.saveInstances(tableName, instances);
-        InstancesEntity instancesEntity =  saveInstancesEntity(tableName, instances);
+        InstancesEntity instancesEntity = saveInstancesEntity(tableName, instances);
         log.info("Instances has been saved into table [{}]", tableName);
         return instancesEntity;
     }
