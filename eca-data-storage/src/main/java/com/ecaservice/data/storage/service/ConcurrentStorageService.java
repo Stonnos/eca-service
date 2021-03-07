@@ -26,6 +26,11 @@ public class ConcurrentStorageService implements StorageService {
 
     private final Map<String, Object> tableNamesMonitorsMap = new ConcurrentHashMap<>();
 
+    /**
+     * Constructor with spring dependency injection.
+     *
+     * @param storageService - storage service bean
+     */
     public ConcurrentStorageService(@Qualifier("storageServiceImpl") StorageService storageService) {
         this.storageService = storageService;
     }
