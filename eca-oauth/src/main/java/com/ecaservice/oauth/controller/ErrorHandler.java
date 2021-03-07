@@ -2,7 +2,7 @@ package com.ecaservice.oauth.controller;
 
 import com.ecaservice.common.web.ExceptionResponseHandler;
 import com.ecaservice.common.web.dto.ValidationErrorDto;
-import com.ecaservice.oauth.exception.PasswordException;
+import com.ecaservice.common.web.exception.ValidationErrorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -33,14 +33,14 @@ public class ErrorHandler {
     }
 
     /**
-     * Handles password error.
+     * Handles validation error.
      *
      * @param ex -  exception
      * @return response entity
      */
-    @ExceptionHandler(PasswordException.class)
-    public ResponseEntity<List<ValidationErrorDto>> handlePasswordError(PasswordException ex) {
-        log.error("Password operation error: {}", ex.getMessage());
+    @ExceptionHandler(ValidationErrorException.class)
+    public ResponseEntity<List<ValidationErrorDto>> handleValidationError(ValidationErrorException ex) {
+        log.error("Validation error [{}]: {}", ex.getErrorCode(), ex.getMessage());
         return buildBadRequestResponse(ex.getErrorCode());
     }
 

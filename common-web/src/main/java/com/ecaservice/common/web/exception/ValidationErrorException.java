@@ -1,13 +1,13 @@
-package com.ecaservice.oauth.exception;
+package com.ecaservice.common.web.exception;
 
 import lombok.Getter;
 
 /**
- * Exception throws in case of password operations errors.
+ * Exception throws in case of validation errors.
  *
  * @author Roman Batygin
  */
-public class PasswordException extends RuntimeException {
+public class ValidationErrorException extends RuntimeException {
 
     /**
      * Error code.
@@ -21,7 +21,7 @@ public class PasswordException extends RuntimeException {
      * @param errorCode - error code
      * @param message   - error message
      */
-    public PasswordException(String errorCode, String message) {
+    public ValidationErrorException(String errorCode, String message) {
         super(message);
         this.errorCode = errorCode;
     }

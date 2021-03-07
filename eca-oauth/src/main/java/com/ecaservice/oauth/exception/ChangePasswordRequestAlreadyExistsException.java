@@ -1,11 +1,13 @@
 package com.ecaservice.oauth.exception;
 
+import com.ecaservice.common.web.exception.ValidationErrorException;
+
 /**
  * Exception throws in case if active change password request already exists.
  *
  * @author Roman Batygin
  */
-public class ChangePasswordRequestAlreadyExistsException extends PasswordException {
+public class ChangePasswordRequestAlreadyExistsException extends ValidationErrorException {
 
     private static final String ERROR_CODE = "ActiveChangePasswordRequest";
 
