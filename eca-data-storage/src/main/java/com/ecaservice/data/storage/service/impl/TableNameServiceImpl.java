@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class TableNameServiceImpl implements TableNameService {
 
     private static final String TABLE_NOT_EXISTS_QUERY_FORMAT =
-            "SELECT NOT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = '%s')";
+            "SELECT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = '%s')";
 
     private final JdbcTemplate jdbcTemplate;
 
