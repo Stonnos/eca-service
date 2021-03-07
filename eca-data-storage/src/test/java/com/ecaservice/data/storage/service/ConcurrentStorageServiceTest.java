@@ -6,12 +6,12 @@ import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.exception.TableExistsException;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.impl.StorageServiceImpl;
+import com.ecaservice.data.storage.service.impl.TableNameTestService;
 import com.ecaservice.user.model.UserDetailsImpl;
 import eca.data.db.SqlQueryHelper;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.jdbc.core.JdbcTemplate;
 import weka.core.Instances;
 
 import javax.inject.Inject;
@@ -24,8 +24,6 @@ import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
 import static com.ecaservice.data.storage.entity.InstancesEntity_.TABLE_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 /**
@@ -34,7 +32,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({StorageServiceImpl.class, InstancesService.class, TransactionalService.class,
-        SqlQueryHelper.class, StorageTestConfiguration.class})
+        SqlQueryHelper.class, StorageTestConfiguration.class, TableNameTestService.class})
 class ConcurrentStorageServiceTest extends AbstractJpaTest {
 
     private static final int NUM_THREADS = 2;
@@ -49,8 +47,6 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
     @Inject
     private InstancesRepository instancesRepository;
 
-    @MockBean
-    private JdbcTemplate jdbcTemplate;
     @MockBean
     private UserService userService;
 
@@ -72,9 +68,6 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
         UserDetailsImpl userDetails = new UserDetailsImpl();
         userDetails.setUserName(USER_NAME);
         when(userService.getCurrentUser()).thenReturn(userDetails);
-        when(jdbcTemplate.queryForObject(anyString(), eq(Boolean.class)))
-                .thenReturn(false)
-                .thenReturn(true);
         final AtomicInteger tableExistsErrors = new AtomicInteger();
         final CountDownLatch countDownLatch = new CountDownLatch(NUM_THREADS);
         ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);
@@ -100,9 +93,6 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
     void testConcurrentRenameData() throws Exception {
         InstancesEntity first = createAndSaveInstancesEntity(TEST_TABLE);
         InstancesEntity second = createAndSaveInstancesEntity(TEST_TABLE_2);
-        when(jdbcTemplate.queryForObject(anyString(), eq(Boolean.class)))
-                .thenReturn(false)
-                .thenReturn(true);
         final AtomicInteger tableExistsErrors = new AtomicInteger();
         final CountDownLatch countDownLatch = new CountDownLatch(NUM_THREADS);
         ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);

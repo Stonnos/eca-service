@@ -7,6 +7,7 @@ import com.ecaservice.data.storage.exception.TableExistsException;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.InstancesService;
 import com.ecaservice.data.storage.service.StorageService;
+import com.ecaservice.data.storage.service.TableNameService;
 import com.ecaservice.data.storage.service.UserService;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import weka.core.Instances;
@@ -36,13 +36,10 @@ import static com.ecaservice.data.storage.util.FilterUtils.buildSpecification;
 @RequiredArgsConstructor
 public class StorageServiceImpl implements StorageService {
 
-    private static final String TABLE_NOT_EXISTS_QUERY_FORMAT =
-            "SELECT NOT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = '%s')";
-
     private final EcaDsConfig ecaDsConfig;
     private final InstancesService instancesService;
     private final UserService userService;
-    private final JdbcTemplate jdbcTemplate;
+    private final TableNameService tableNameService;
     private final InstancesRepository instancesRepository;
 
     @Override
@@ -56,7 +53,7 @@ public class StorageServiceImpl implements StorageService {
     @Override
     public InstancesEntity saveData(Instances instances, String tableName) {
         log.info("Starting to save instances into table [{}]", tableName);
-        if (tableExists(tableName)) {
+        if (tableNameService.tableExists(tableName)) {
             throw new TableExistsException(tableName);
         }
         instancesService.saveInstances(tableName, instances);
@@ -79,7 +76,7 @@ public class StorageServiceImpl implements StorageService {
     @Transactional
     public void renameData(long id, String newName) {
         log.info("Starting to rename instances [{}] with new name [{}]", id, newName);
-        if (tableExists(newName)) {
+        if (tableNameService.tableExists(newName)) {
             throw new TableExistsException(newName);
         }
         InstancesEntity instancesEntity = getById(id);
@@ -104,11 +101,5 @@ public class StorageServiceImpl implements StorageService {
         instancesEntity.setCreatedBy(userService.getCurrentUser().getUsername());
         instancesEntity.setCreated(LocalDateTime.now());
         return instancesRepository.save(instancesEntity);
-    }
-
-    private boolean tableExists(String tableName) {
-        Boolean result =
-                jdbcTemplate.queryForObject(String.format(TABLE_NOT_EXISTS_QUERY_FORMAT, tableName), Boolean.class);
-        return Boolean.TRUE.equals(result);
     }
 }

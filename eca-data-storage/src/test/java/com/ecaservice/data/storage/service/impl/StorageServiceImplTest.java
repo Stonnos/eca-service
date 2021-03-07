@@ -6,6 +6,7 @@ import com.ecaservice.data.storage.config.StorageTestConfiguration;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.InstancesService;
+import com.ecaservice.data.storage.service.TableNameService;
 import com.ecaservice.data.storage.service.TransactionalService;
 import com.ecaservice.data.storage.service.UserService;
 import com.ecaservice.user.model.UserDetailsImpl;
@@ -16,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
-import org.springframework.jdbc.core.JdbcTemplate;
 import weka.core.Instances;
 
 import javax.inject.Inject;
@@ -50,7 +50,7 @@ class StorageServiceImplTest extends AbstractJpaTest {
     private InstancesRepository instancesRepository;
 
     @MockBean
-    private JdbcTemplate jdbcTemplate;
+    private TableNameService tableNameService;
     @MockBean
     private UserService userService;
 
@@ -63,6 +63,7 @@ class StorageServiceImplTest extends AbstractJpaTest {
     void testSaveData() throws Exception {
         UserDetailsImpl userDetails = new UserDetailsImpl();
         userDetails.setUserName(USER_NAME);
+        when(tableNameService.tableExists(TEST_TABLE)).thenReturn(false);
         when(userService.getCurrentUser()).thenReturn(userDetails);
         Instances instances = loadInstances();
         InstancesEntity expected = storageService.saveData(instances, TEST_TABLE);
@@ -74,6 +75,7 @@ class StorageServiceImplTest extends AbstractJpaTest {
 
     @Test
     void testRenameData() {
+        when(tableNameService.tableExists(TEST_TABLE)).thenReturn(false);
         InstancesEntity instancesEntity = createAndSaveInstancesEntity();
         storageService.renameData(instancesEntity.getId(), NEW_TABLE_NAME);
         InstancesEntity actual = instancesRepository.findById(instancesEntity.getId()).orElse(null);
