@@ -11,7 +11,6 @@ import {
   ValidationErrorDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { HttpErrorResponse} from "@angular/common/http";
-import { InstancesFields } from "../../common/util/field-names";
 import { ValidationErrorCode} from "../../common/model/validation-error-code";
 import { Utils } from "../../common/util/utils";
 
@@ -100,7 +99,7 @@ export class CreateEditInstancesComponent extends BaseCreateDialogComponent<Crea
     if (error instanceof HttpErrorResponse) {
       if (error.status === 400) {
         const errors: ValidationErrorDto[] = error.error;
-        this.hasSameTableName = this.validationService.hasError(errors, InstancesFields.TABLE_NAME, ValidationErrorCode.UNIQUE_TABLE_NAME);
+        this.hasSameTableName = this.validationService.hasErrorCode(errors, ValidationErrorCode.UNIQUE_TABLE_NAME);
       } else {
         this.handleUnknownError(error);
       }
