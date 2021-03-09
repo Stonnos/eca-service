@@ -319,9 +319,10 @@ public class ExperimentController {
     private ExperimentRequest createExperimentRequest(MultipartFile trainingData, ExperimentType experimentType,
                                                       EvaluationMethod evaluationMethod) throws Exception {
         ExperimentRequest experimentRequest = new ExperimentRequest();
-        UserDetailsImpl userDetails = userService.getCurrentUser();
-        experimentRequest.setFirstName(userDetails.getFirstName());
-        experimentRequest.setEmail(userDetails.getEmail());
+        //FIXME call getUserInfo method
+       // UserDetailsImpl userDetails = userService.getCurrentUser();
+       // experimentRequest.setFirstName(userDetails.getFirstName());
+      //  experimentRequest.setEmail(userDetails.getEmail());
         FileDataLoader fileDataLoader = new FileDataLoader();
         fileDataLoader.setSource(new MultipartFileResource(trainingData));
         experimentRequest.setData(fileDataLoader.loadInstances());

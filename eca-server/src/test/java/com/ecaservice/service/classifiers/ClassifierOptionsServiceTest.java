@@ -11,7 +11,6 @@ import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.UserService;
-import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
@@ -57,9 +56,7 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        UserDetailsImpl userDetails = new UserDetailsImpl();
-        userDetails.setUserName(USER_NAME);
-        when(userService.getCurrentUser()).thenReturn(userDetails);
+        when(userService.getCurrentUser()).thenReturn(USER_NAME);
     }
 
     @Override
