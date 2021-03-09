@@ -7,7 +7,6 @@ import com.ecaservice.data.storage.exception.TableExistsException;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.impl.StorageServiceImpl;
 import com.ecaservice.data.storage.service.impl.TableNameTestService;
-import com.ecaservice.user.model.UserDetailsImpl;
 import eca.data.db.SqlQueryHelper;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -65,9 +64,7 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
     @Test
     void testConcurrentSaveData() throws Exception {
         Instances instances = loadInstances();
-        UserDetailsImpl userDetails = new UserDetailsImpl();
-        userDetails.setUserName(USER_NAME);
-        when(userService.getCurrentUser()).thenReturn(userDetails);
+        when(userService.getCurrentUser()).thenReturn(USER_NAME);
         final AtomicInteger tableExistsErrors = new AtomicInteger();
         final CountDownLatch countDownLatch = new CountDownLatch(NUM_THREADS);
         ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);
