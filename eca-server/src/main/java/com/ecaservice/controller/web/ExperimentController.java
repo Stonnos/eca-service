@@ -11,11 +11,10 @@ import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.repository.ExperimentProgressRepository;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
-import com.ecaservice.service.UserService;
+import com.ecaservice.service.auth.UsersClient;
 import com.ecaservice.service.experiment.ExperimentRequestService;
 import com.ecaservice.service.experiment.ExperimentResultsService;
 import com.ecaservice.service.experiment.ExperimentService;
-import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.util.Utils;
 import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
@@ -26,6 +25,7 @@ import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
+import com.ecaservice.web.dto.model.UserDto;
 import eca.core.evaluation.EvaluationMethod;
 import eca.data.file.FileDataLoader;
 import io.swagger.annotations.Api;
@@ -82,7 +82,7 @@ public class ExperimentController {
     private final ExperimentResultsService experimentResultsService;
     private final ExperimentMapper experimentMapper;
     private final ExperimentProgressMapper experimentProgressMapper;
-    private final UserService userService;
+    private final UsersClient usersClient;
     private final ExperimentRepository experimentRepository;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
     private final ExperimentProgressRepository experimentProgressRepository;
@@ -141,10 +141,11 @@ public class ExperimentController {
             @ApiParam(value = "Evaluation method", required = true) @RequestParam EvaluationMethod evaluationMethod) {
         log.info("Received experiment request for data '{}', experiment type {}, evaluation method {}",
                 trainingData.getOriginalFilename(), experimentType, evaluationMethod);
+        UserDto userDto = usersClient.getUserInfo();
         CreateExperimentResultDto resultDto = new CreateExperimentResultDto();
         try {
             ExperimentRequest experimentRequest =
-                    createExperimentRequest(trainingData, experimentType, evaluationMethod);
+                    createExperimentRequest(trainingData, userDto, experimentType, evaluationMethod);
             Experiment experiment = experimentRequestService.createExperimentRequest(experimentRequest);
             resultDto.setRequestId(experiment.getRequestId());
             resultDto.setCreated(true);
@@ -316,13 +317,13 @@ public class ExperimentController {
         return ResponseEntity.ok(experimentProgressMapper.map(experimentProgressEntity));
     }
 
-    private ExperimentRequest createExperimentRequest(MultipartFile trainingData, ExperimentType experimentType,
+    private ExperimentRequest createExperimentRequest(MultipartFile trainingData,
+                                                      UserDto userDto,
+                                                      ExperimentType experimentType,
                                                       EvaluationMethod evaluationMethod) throws Exception {
         ExperimentRequest experimentRequest = new ExperimentRequest();
-        //FIXME call getUserInfo method
-       // UserDetailsImpl userDetails = userService.getCurrentUser();
-       // experimentRequest.setFirstName(userDetails.getFirstName());
-      //  experimentRequest.setEmail(userDetails.getEmail());
+        experimentRequest.setFirstName(userDto.getFirstName());
+        experimentRequest.setEmail(userDto.getEmail());
         FileDataLoader fileDataLoader = new FileDataLoader();
         fileDataLoader.setSource(new MultipartFileResource(trainingData));
         experimentRequest.setData(fileDataLoader.loadInstances());
