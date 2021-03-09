@@ -15,11 +15,10 @@ import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.ExperimentProgressRepository;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
-import com.ecaservice.service.UserService;
+import com.ecaservice.service.auth.UsersClient;
 import com.ecaservice.service.experiment.ExperimentRequestService;
 import com.ecaservice.service.experiment.ExperimentResultsService;
 import com.ecaservice.service.experiment.ExperimentService;
-import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.util.Utils;
 import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
@@ -31,6 +30,7 @@ import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
+import com.ecaservice.web.dto.model.UserDto;
 import eca.core.evaluation.EvaluationMethod;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -102,7 +102,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     @MockBean
     private ExperimentResultsService experimentResultsService;
     @MockBean
-    private UserService userService;
+    private UsersClient usersClient;
     @MockBean
     private ExperimentRepository experimentRepository;
     @MockBean
@@ -187,7 +187,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         CreateExperimentResultDto expected = new CreateExperimentResultDto();
         expected.setCreated(true);
         expected.setRequestId(experiment.getRequestId());
-        when(userService.getCurrentUser()).thenReturn(new UserDetailsImpl());
+        when(usersClient.getUserInfo()).thenReturn(new UserDto());
         when(experimentRequestService.createExperimentRequest(any(ExperimentRequest.class))).thenReturn(experiment);
         mockMvc.perform(multipart(CREATE_EXPERIMENT_URL)
                 .file(trainingData)
@@ -203,7 +203,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     void testCreateExperimentWithError() throws Exception {
         CreateExperimentResultDto expected = new CreateExperimentResultDto();
         expected.setErrorMessage(ERROR_MESSAGE);
-        when(userService.getCurrentUser()).thenReturn(new UserDetailsImpl());
+        when(usersClient.getUserInfo()).thenReturn(new UserDto());
         when(experimentRequestService.createExperimentRequest(any(ExperimentRequest.class))).thenThrow(
                 new ExperimentException(ERROR_MESSAGE));
         mockMvc.perform(multipart(CREATE_EXPERIMENT_URL)
