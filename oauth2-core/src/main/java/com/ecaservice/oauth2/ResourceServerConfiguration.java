@@ -1,7 +1,8 @@
 package com.ecaservice.oauth2;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
+import com.ecaservice.oauth2.config.AuthServerConfig;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -10,11 +11,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
-
-import javax.sql.DataSource;
+import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 
 /**
  * Resource server configuration.
@@ -23,18 +20,13 @@ import javax.sql.DataSource;
  */
 @Configuration
 @EnableResourceServer
+@EnableConfigurationProperties(AuthServerConfig.class)
+@RequiredArgsConstructor
 public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
-    /**
-     * Creates token datasource bean.
-     *
-     * @return token datasource bean
-     */
-    @Bean
-    @ConfigurationProperties(prefix = "spring.tokendatasource")
-    public DataSource tokenDatasource() {
-        return DataSourceBuilder.create().build();
-    }
+    private static final String CHECK_TOKEN_ENDPOINT_FORMAT = "%s/oauth/check_token";
+
+    private final AuthServerConfig authServerConfig;
 
     @Override
     public void configure(final HttpSecurity http) throws Exception {
@@ -48,25 +40,18 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     }
 
     /**
-     * Creates token store bean.
+     * Creates remote token service bean.
      *
-     * @return token store bean
-     */
-    @Bean
-    public TokenStore tokenStore() {
-        return new JdbcTokenStore(tokenDatasource());
-    }
-
-    /**
-     * Creates default token service bean.
-     *
-     * @return default remote token service bean
+     * @return remote remote token service bean
      */
     @Primary
     @Bean
-    public DefaultTokenServices tokenServices() {
-        DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
-        defaultTokenServices.setTokenStore(tokenStore());
-        return defaultTokenServices;
+    public RemoteTokenServices tokenServices() {
+        RemoteTokenServices remoteTokenServices = new RemoteTokenServices();
+        remoteTokenServices.setCheckTokenEndpointUrl(
+                String.format(CHECK_TOKEN_ENDPOINT_FORMAT, authServerConfig.getBaseUrl()));
+        remoteTokenServices.setClientId(authServerConfig.getClientId());
+        remoteTokenServices.setClientSecret(authServerConfig.getClientSecret());
+        return remoteTokenServices;
     }
 }
