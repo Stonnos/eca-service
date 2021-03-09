@@ -20,3 +20,6 @@ eureka:
 ## Swagger properties
 swagger2:
   tokenBaseUrl: http://localhost:8080/eca-oauth
+
+auth-server:
+  baseUrl: http://eca-oauth:8080

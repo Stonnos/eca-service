@@ -33,3 +33,6 @@ experiment:
 ers:
   url: http://evaluation-results-service:8080/ws/
   enabled: true
+
+auth-server:
+  baseUrl: http://eca-oauth:8080

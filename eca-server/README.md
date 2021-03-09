@@ -74,6 +74,10 @@ ECA server
    * queue.evaluationRequestQueue - входящая очередь для запросов на построение модели классификатора
    * queue.evaluationOptimizerRequestQueue - входящая очередь для запросов на построение оптимального классификатора
    * queue.experimentRequestQueue - входящая очередь для запросов на построение эксперимента
+9) auth-server - настройки интеграции с eca-oauth
+   * baseUrl - базовый url eca-oauth
+   * clientId - идентификатор клиента
+   * clientSecret - пароль клиента
 
 Инструкция по развертыванию
 ----------------------------------------

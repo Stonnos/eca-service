@@ -57,6 +57,11 @@ swagger2:
   clientId: swagger
   secret: swagger_secret
 
+auth-server:
+  baseUrl: http://localhost:8085/eca-oauth
+  clientId: eca_web
+  clientSecret: web_secret
+
 management:
   metrics:
     tags:

@@ -38,6 +38,10 @@ ECA external API
    * swagger2.clientId - идентификатор клиента
    * swagger2.secret - пароль клиента
    * swagger2.groups - Groups map с мета информацией для swagger
+5) auth-server - настройки интеграции с eca-oauth
+   * baseUrl - базовый url eca-oauth
+   * clientId - идентификатор клиента
+   * clientSecret - пароль клиента
 
 Инструкция по развертыванию
 ----------------------------------------

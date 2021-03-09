@@ -77,6 +77,11 @@ swagger2:
   clientId: external-api
   secret: external_api_secret
 
+auth-server:
+  baseUrl: http://localhost:8085/eca-oauth
+  clientId: external-api
+  clientSecret: external_api_secret
+
 management:
   metrics:
     tags:

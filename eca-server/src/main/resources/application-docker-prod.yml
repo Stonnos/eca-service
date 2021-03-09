@@ -37,3 +37,6 @@ ers:
     trustStore: classpath:evaluation-results/evaluation-truststore.jks
     trustStorePassword: evaluation
     trustSelfSigned: false
+
+auth-server:
+  baseUrl: http://eca-oauth:8080
