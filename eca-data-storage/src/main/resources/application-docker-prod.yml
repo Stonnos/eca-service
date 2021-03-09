@@ -2,7 +2,7 @@ spring:
   ## Datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://postgres-db:5432/data_storage
+    url: jdbc:postgresql://postgres-db:5432/data_storage
     username: postgres
     password: postgres
   jpa:
