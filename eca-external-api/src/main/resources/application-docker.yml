@@ -5,12 +5,6 @@ spring:
     jdbc-url: jdbc:postgresql://eca-db:5432/eca_external_api
     username: postgres
     password: postgres
-  ## Token datasource properties
-  tokendatasource:
-    driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://eca-db:5432/eca_oauth
-    username: postgres
-    password: postgres
   jpa:
     hibernate:
       ddl-auto: validate

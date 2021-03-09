@@ -27,14 +27,13 @@ ECA server
 ----------------------------------------
 Настройки для проекта eca-server находятся в application.yml. Основные параметры:
 1) spring.datasource - настройки БД для хранения информации
-2) spring.tokendatasource - настройки БД для хранения авторизационных токенов
-3) cross-validation — настройки параметров для метода k * V блочной кросс - проверки
+2) cross-validation — настройки параметров для метода k * V блочной кросс - проверки
    на тестовой выборке:
    * cross-validation.numFolds - число блоков
    * cross-validation.numTests - число тестов
    * cross-validation.seed - начальное значение для генератора псевдослучайных чисел
    * cross-validation.timeout - таймаут в сек. для оценки точности классификатора
-4) experiment - настройки параметров модуля Data Miner. Ниже приведено описание
+3) experiment - настройки параметров модуля Data Miner. Ниже приведено описание
    основных настроек:
    * experiment.resultSize - число наилучших конфигураций классификаторов
    * experiment.numIterations - число итераций эксперимента
@@ -55,23 +54,23 @@ ECA server
    * experiment.ensemble.multiThreadModeEnabled - многопоточный режим для ансамблевых алгоритмов (вкл./выкл.)
    * experiment.ensemble.numThreads - число используемых потоков
    * experiment.ensemble.numFoldsForStacking - число блоков V - блочной кросс - проверки для алгоритма Stacking
-5) ers - настройки интеграции с сервисом evaluation-results-service
+4) ers - настройки интеграции с сервисом evaluation-results-service
    * ers.url - url конечной точки ERS сервиса
    * ers.enabled - выключатель для отправки результатов классификации (вкл./выкл.)
    * ers.useClassifierOptionsCache - вкл./выкл. кеширование оптимальных настроек классификатора
    * ers.classifierOptionsCacheDurationInDays - период хранения оптимальных настроек классификатора,
          полученных от внешнего сервиса ERS
-6) common - общие настройки
+5) common - общие настройки
    * common.threadPoolSize - число потоков для асинхронных задач
    * common.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
    * common.instance - уникальное имя инстанса (используется для кластерной среды)
-7) cache.specs - настройки spring cache
-8) swagger2 - настройки Swagger
+6) cache.specs - настройки spring cache
+7) swagger2 - настройки Swagger
    * swagger2.tokenBaseUrl - базовый url - сервера авторизации
    * swagger2.clientId - идентификатор клиента
    * swagger2.secret - пароль клиента
    * swagger2.groups - Groups map с мета информацией для swagger
-9) queue - настройки очередей
+8) queue - настройки очередей
    * queue.evaluationRequestQueue - входящая очередь для запросов на построение модели классификатора
    * queue.evaluationOptimizerRequestQueue - входящая очередь для запросов на построение оптимального классификатора
    * queue.experimentRequestQueue - входящая очередь для запросов на построение эксперимента
