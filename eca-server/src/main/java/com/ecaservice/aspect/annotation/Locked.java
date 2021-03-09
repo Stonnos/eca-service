@@ -49,5 +49,5 @@ public @interface Locked {
      *
      * @return retry interval
      */
-    long retry() default 10L;
+    long retry() default 100L;
 }
