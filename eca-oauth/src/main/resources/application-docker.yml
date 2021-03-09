@@ -20,6 +20,9 @@ eureka:
 reset-password:
   baseUrl: http://localhost:8080
 
+change-password:
+  baseUrl: http://localhost:8080
+
 ## Swagger properties
 swagger2:
   tokenBaseUrl: http://localhost:8080/eca-oauth

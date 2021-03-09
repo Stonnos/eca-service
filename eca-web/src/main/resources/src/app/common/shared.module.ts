@@ -10,6 +10,7 @@ import { ValidationService } from "./services/validation.service";
 import { EqualValidator } from "./validators/equal-validator.directive";
 import { SearchQueryComponent } from "./search-query/search-query.component";
 import { UploadTrainingDataComponent } from "./upload-training-data/upload-training-data.component";
+import { ConfirmDialogComponent } from "./confirm-dialog/confirm-dialog.component";
 
 @NgModule({
   imports: [
@@ -21,13 +22,15 @@ import { UploadTrainingDataComponent } from "./upload-training-data/upload-train
     RequestStatusComponent,
     SearchQueryComponent,
     UploadTrainingDataComponent,
-    EqualValidator
+    EqualValidator,
+    ConfirmDialogComponent
   ],
   exports: [
     RequestStatusComponent,
     SearchQueryComponent,
     UploadTrainingDataComponent,
-    EqualValidator
+    EqualValidator,
+    ConfirmDialogComponent
   ],
   providers: [
     PageRequestService,

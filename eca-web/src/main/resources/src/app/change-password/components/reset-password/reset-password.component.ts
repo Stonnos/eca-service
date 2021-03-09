@@ -6,7 +6,9 @@ import { ResetPasswordService } from "../../services/reset-password.service";
 import { finalize } from "rxjs/operators";
 import { HttpErrorResponse } from "@angular/common/http";
 import { ResetPasswordRequest } from "../../model/reset-password.request";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
+import { Utils } from "../../../common/util/utils";
+import { LogoutService } from "../../../auth/services/logout.service";
 
 @Component({
   selector: 'app-reset-password',
@@ -22,7 +24,6 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
   @ViewChild(NgForm, { static: true })
   public form: NgForm;
 
-  public passwordScoreCutoff: number = 3;
   public safePassword: boolean = false;
 
   public token: string;
@@ -31,8 +32,8 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
 
   public constructor(private messageService: MessageService,
                      private resetPasswordService: ResetPasswordService,
-                     private route: ActivatedRoute,
-                     private router: Router) {
+                     private logoutService: LogoutService,
+                     private route: ActivatedRoute) {
     this.token = this.route.snapshot.queryParams['token'];
   }
 
@@ -62,7 +63,7 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
         .subscribe({
           next: () => {
             this.clear();
-            this.router.navigate(['/login']);
+            this.logoutService.logout();
             this.messageService.add({ severity: 'success', summary: `Пароль был успешно изменен`, detail: '' });
           },
           error: (error) => {
@@ -73,7 +74,7 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
   }
 
   public onStrengthChange(score: number): void {
-    this.safePassword = score >= this.passwordScoreCutoff;
+    this.safePassword = score >= Utils.PASSWORD_STRENGTH_CUTOFF;
   }
 
   private verifyToken(): void {

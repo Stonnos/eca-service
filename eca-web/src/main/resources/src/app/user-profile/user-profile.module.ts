@@ -4,13 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { UiComponentsModule } from "../ui-components.module";
 import { SharedModule } from "../common/shared.module";
 import { UserProfileComponent } from "./components/user-profile.component";
+import { ChangePasswordModule } from "../change-password/change-password.module";
 
 @NgModule({
   imports: [
     CommonModule,
     SharedModule,
     FormsModule,
-    UiComponentsModule
+    UiComponentsModule,
+    ChangePasswordModule
   ],
   declarations: [
     UserProfileComponent

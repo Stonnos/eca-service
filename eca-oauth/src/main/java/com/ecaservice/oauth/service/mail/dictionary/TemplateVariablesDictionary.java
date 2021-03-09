@@ -34,4 +34,9 @@ public class TemplateVariablesDictionary {
      * Two factor authentication code
      */
     public static final String TFA_CODE = "tfaCode";
+
+    /**
+     * Change password url variable
+     */
+    public static final String CHANGE_PASSWORD_URL_KEY = "changePasswordUrl";
 }

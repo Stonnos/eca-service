@@ -1,16 +1,17 @@
 package com.ecaservice.data.storage.controller;
 
 import com.ecaservice.data.storage.entity.InstancesEntity;
-import com.ecaservice.data.storage.exception.DataStorageException;
+import com.ecaservice.data.storage.exception.TableExistsException;
 import com.ecaservice.data.storage.mapping.InstancesMapper;
 import com.ecaservice.data.storage.mapping.InstancesMapperImpl;
 import com.ecaservice.data.storage.repository.InstancesRepository;
-import com.ecaservice.data.storage.service.StorageService;
+import com.ecaservice.data.storage.service.impl.StorageServiceImpl;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.ecaservice.web.dto.model.CreateInstancesResultDto;
 import com.ecaservice.web.dto.model.InstancesDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import eca.data.file.FileDataLoader;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -22,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.util.MimeTypeUtils;
+import weka.core.Instances;
 
 import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
@@ -30,9 +32,11 @@ import java.util.List;
 
 import static com.ecaservice.data.storage.TestHelperUtils.bearerHeader;
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
+import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -69,9 +73,11 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private static final int PAGE_NUMBER = 0;
 
     @MockBean
-    private StorageService storageService;
+    private StorageServiceImpl storageService;
     @MockBean
     private InstancesRepository instancesRepository;
+    @MockBean
+    private FileDataLoader fileDataLoader;
     @MockBean
     private JdbcTemplate jdbcTemplate;
 
@@ -92,10 +98,12 @@ class DataStorageControllerTest extends AbstractControllerTest {
 
     @Test
     void testSaveInstances() throws Exception {
+        Instances instances = loadInstances();
         InstancesEntity instancesEntity = createInstancesEntity();
         instancesEntity.setTableName(TABLE_NAME);
+        when(fileDataLoader.loadInstances()).thenReturn(instances);
         when(jdbcTemplate.queryForObject(anyString(), eq(Boolean.class))).thenReturn(true);
-        when(storageService.saveData(any(), anyString())).thenReturn(instancesEntity);
+        when(storageService.saveData(any(Instances.class), anyString())).thenReturn(instancesEntity);
         CreateInstancesResultDto expected = new CreateInstancesResultDto();
         expected.setId(instancesEntity.getId());
         expected.setTableName(instancesEntity.getTableName());
@@ -112,10 +120,13 @@ class DataStorageControllerTest extends AbstractControllerTest {
 
     @Test
     void testSaveInstancesWithError() throws Exception {
+        Instances instances = loadInstances();
         InstancesEntity instancesEntity = createInstancesEntity();
         instancesEntity.setTableName(TABLE_NAME);
+        when(fileDataLoader.loadInstances()).thenReturn(instances);
         when(jdbcTemplate.queryForObject(anyString(), eq(Boolean.class))).thenReturn(true);
-        when(storageService.saveData(any(), anyString())).thenThrow(new DataStorageException(ERROR_MESSAGE));
+        when(storageService.saveData(any(Instances.class), anyString())).thenThrow(
+                new IllegalStateException(ERROR_MESSAGE));
         CreateInstancesResultDto expected = new CreateInstancesResultDto();
         expected.setTableName(instancesEntity.getTableName());
         expected.setSourceFileName(trainingData.getOriginalFilename());
@@ -132,7 +143,10 @@ class DataStorageControllerTest extends AbstractControllerTest {
 
     @Test
     void testSaveExistingInstances() throws Exception {
-        when(jdbcTemplate.queryForObject(anyString(), eq(Boolean.class))).thenReturn(false);
+        Instances instances = loadInstances();
+        when(fileDataLoader.loadInstances()).thenReturn(instances);
+        when(storageService.saveData(any(Instances.class), anyString())).thenThrow(
+                new TableExistsException(TABLE_NAME));
         mockMvc.perform(multipart(SAVE_URL)
                 .file(trainingData)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
@@ -159,7 +173,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
 
     @Test
     void testRenameDataWithExistingTableName() throws Exception {
-        when(jdbcTemplate.queryForObject(anyString(), eq(Boolean.class))).thenReturn(false);
+        doThrow(new TableExistsException(TABLE_NAME)).when(storageService).renameData(ID, TABLE_NAME);
         mockMvc.perform(put(RENAME_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(ID_PARAM, String.valueOf(ID))

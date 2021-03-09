@@ -2,12 +2,14 @@ package com.ecaservice.oauth.controller;
 
 import com.ecaservice.common.web.ExceptionResponseHandler;
 import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.web.exception.ValidationErrorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,6 +33,18 @@ public class ErrorHandler {
     }
 
     /**
+     * Handles validation error.
+     *
+     * @param ex -  exception
+     * @return response entity
+     */
+    @ExceptionHandler(ValidationErrorException.class)
+    public ResponseEntity<List<ValidationErrorDto>> handleValidationError(ValidationErrorException ex) {
+        log.error("Validation error [{}]: {}", ex.getErrorCode(), ex.getMessage());
+        return buildBadRequestResponse(ex.getErrorCode());
+    }
+
+    /**
      * Handles bad request error.
      *
      * @param ex -  exception
@@ -40,5 +54,11 @@ public class ErrorHandler {
     public ResponseEntity<String> handleBadRequest(Exception ex) {
         log.error(ex.getMessage());
         return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
+    private ResponseEntity<List<ValidationErrorDto>> buildBadRequestResponse(String errorCode) {
+        ValidationErrorDto validationErrorDto = new ValidationErrorDto();
+        validationErrorDto.setCode(errorCode);
+        return ResponseEntity.badRequest().body(Collections.singletonList(validationErrorDto));
     }
 }

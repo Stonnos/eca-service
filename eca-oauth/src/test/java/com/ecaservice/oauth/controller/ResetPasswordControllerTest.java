@@ -2,8 +2,10 @@ package com.ecaservice.oauth.controller;
 
 import com.ecaservice.oauth.dto.ForgotPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
+import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
+import com.ecaservice.oauth.service.Oauth2TokenService;
 import com.ecaservice.oauth.service.ResetPasswordService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,8 @@ import javax.inject.Inject;
 import java.util.UUID;
 
 import static com.ecaservice.oauth.TestHelperUtils.createResetPasswordRequestEntity;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -49,6 +53,8 @@ class ResetPasswordControllerTest {
     private UserEntityRepository userEntityRepository;
     @MockBean
     private ResetPasswordRequestRepository resetPasswordRequestRepository;
+    @MockBean
+    private Oauth2TokenService oauth2TokenService;
     @MockBean
     private ApplicationEventPublisher applicationEventPublisher;
     @MockBean
@@ -113,10 +119,14 @@ class ResetPasswordControllerTest {
     @Test
     void testResetPassword() throws Exception {
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest(UUID.randomUUID().toString(), PASSWORD);
+        ResetPasswordRequestEntity resetPasswordRequestEntity = createResetPasswordRequestEntity();
+        when(resetPasswordService.resetPassword(resetPasswordRequest)).thenReturn(resetPasswordRequestEntity);
         mockMvc.perform(post(RESET_URL)
                 .content(objectMapper.writeValueAsString(resetPasswordRequest))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+        verify(resetPasswordService, atLeastOnce()).resetPassword(resetPasswordRequest);
+        verify(oauth2TokenService, atLeastOnce()).revokeTokens(resetPasswordRequestEntity.getUserEntity());
     }
 
     @Test

@@ -7,7 +7,8 @@ import { AuthenticationKeys } from "../../auth/model/auth.keys";
 
 export class Utils {
 
-  public static readonly MISSING_VALUE = "-";
+  public static readonly MISSING_VALUE: string = "-";
+  public static readonly PASSWORD_STRENGTH_CUTOFF: number = 3;
 
   public static getEvaluationMethodDescription(evaluationMethod: EnumDto, numFolds: number, numTests: number): string {
     if (evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION) {

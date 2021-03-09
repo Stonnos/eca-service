@@ -10,6 +10,7 @@ import { FieldService } from "../../common/services/field.service";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { FileUpload } from "primeng/primeng";
 import { finalize } from "rxjs/internal/operators";
+import { ChangePasswordRequest } from "../../change-password/model/change-password.request";
 
 @Component({
   selector: 'app-user-profile',
@@ -26,7 +27,18 @@ export class UserProfileComponent implements OnInit {
 
   public userMenuItems: MenuItem[];
 
+  public changePasswordDialogVisibility: boolean = false;
+
+  public changePasswordRequest: ChangePasswordRequest = new ChangePasswordRequest();
+
   public uploading = false;
+
+  public changePasswordRequestCreatedMessage: string =
+    'На ваш email отправлено письмо с подтверждением смены пароля';
+
+  public changePasswordRequestCreated: boolean = false;
+
+  public uploadPhotoErrorHeader: string = 'Не удалось загрузить фото';
 
   //Max file size: 10MB
   public maxFileSize: number = 10000000;
@@ -95,8 +107,24 @@ export class UserProfileComponent implements OnInit {
     })
   }
 
-  public hide(): void {
+  public hideUploadPhotoErrorModal(): void {
     this.fileUpload.msgs = [];
+  }
+
+  public showChangePasswordRequestDialog(): void {
+    this.changePasswordDialogVisibility = true;
+  }
+
+  public onChangeExperimentDialogVisibility(visible): void {
+    this.changePasswordDialogVisibility = visible;
+  }
+
+  public onCreateChangePasswordRequest(): void {
+    this.changePasswordRequestCreated = true;
+  }
+
+  public hideChangePasswordRequestCreatedModal(): void {
+    this.changePasswordRequestCreated = false;
   }
 
   private getUser(): void {
@@ -178,7 +206,8 @@ export class UserProfileComponent implements OnInit {
     this.commonFields = [
       { name: UserFields.FIRST_NAME, label: "Имя:" },
       { name: UserFields.ROLES, label: "Роли:" },
-      { name: UserFields.TFA_ENABLED, label: "Двухфакторная аутентификация:" }
+      { name: UserFields.TFA_ENABLED, label: "Двухфакторная аутентификация:" },
+      { name: "password", label: "Пароль:" },
     ];
   }
 

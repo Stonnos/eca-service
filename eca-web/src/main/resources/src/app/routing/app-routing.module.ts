@@ -14,6 +14,7 @@ import { ForgotPasswordComponent } from "../change-password/components/forgot-pa
 import { ResetPasswordComponent } from "../change-password/components/reset-password/reset-password.component";
 import { InstancesListComponent } from "../instances/components/instances-list.component";
 import { UserProfileComponent } from "../user-profile/components/user-profile.component";
+import { ConfirmChangePasswordComponent } from "../change-password/components/confirm-change-password/confirm-change-password.component";
 
 const routes: Routes = [
   {
@@ -73,6 +74,10 @@ const routes: Routes = [
   {
     path: 'reset-password',
     component: ResetPasswordComponent
+  },
+  {
+    path: 'change-password',
+    component: ConfirmChangePasswordComponent
   },
   {
     path: '',

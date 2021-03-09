@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { LogoutService } from "../auth/services/logout.service";
 import { UserStorage } from "../auth/services/user.storage";
 import { RoleDto, UserDto } from "../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Role } from "../common/model/roles";
+import { HttpErrorResponse } from "@angular/common/http";
+import { UsersService } from "../users/services/users.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -17,7 +19,10 @@ export class DashboardComponent implements OnInit {
 
   public userMenuItems: MenuItem[];
 
-  constructor(private logoutService: LogoutService, private userStorage: UserStorage) {
+  constructor(private logoutService: LogoutService,
+              private usersService: UsersService,
+              private userStorage: UserStorage,
+              private messageService: MessageService) {
   }
 
   public ngOnInit() {
@@ -36,7 +41,27 @@ export class DashboardComponent implements OnInit {
   }
 
   public logout() {
-    this.logoutService.logout();
+    this.usersService.logoutRequest()
+      .subscribe({
+        next: () => {
+          this.logoutService.logout();
+        },
+        error: (error) => {
+          this.handleLogoutError(error);
+        }
+      });
+  }
+
+  private handleLogoutError(error): void {
+    if (error instanceof HttpErrorResponse) {
+      if (error.status === 401) {
+        this.logoutService.logout();
+      } else {
+        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      }
+    } else {
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+    }
   }
 
   private initBaseMenu(): void {

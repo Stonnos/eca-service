@@ -97,7 +97,7 @@ public class UserService {
         UserEntity userEntity = getById(userId);
         userEntity.setTfaEnabled(tfaEnabled);
         userEntityRepository.save(userEntity);
-        log.info("Sets two factor authentication flag [{}] for user [{}]", tfaEnabled, userEntity.getLogin());
+        log.info("Sets two factor authentication flag [{}] for user [{}]", tfaEnabled, userEntity.getId());
     }
 
     /**
@@ -126,7 +126,7 @@ public class UserService {
         UserEntity userEntity = getById(userId);
         UserPhoto userPhoto = userPhotoRepository.findByUserEntity(userEntity);
         if (userPhoto == null) {
-            throw new EntityNotFoundException(UserPhoto.class, String.format("User %s", userEntity.getLogin()));
+            throw new EntityNotFoundException(UserPhoto.class, String.format("User %d", userEntity.getId()));
         }
         userPhotoRepository.delete(userPhoto);
     }

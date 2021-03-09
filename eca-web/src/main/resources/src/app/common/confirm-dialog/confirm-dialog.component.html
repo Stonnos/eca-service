@@ -1,0 +1,21 @@
+<p-dialog
+  [visible]="visible"
+  [style]="{ width: dialogWidth }"
+  [header]="header"
+  appendTo="body"
+  [modal]="true"
+  [blockScroll]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="false">
+  <ng-content select="[content]"></ng-content>
+  <p-footer>
+    <button
+      pButton
+      label="Закрыть"
+      type="button"
+      (click)="close()"
+      class="ml-auto">
+    </button>
+  </p-footer>
+</p-dialog>

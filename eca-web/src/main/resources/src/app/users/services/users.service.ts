@@ -77,4 +77,11 @@ export class UsersService {
     const options = { headers: headers, responseType: 'blob' as 'json' };
     return this.http.get<Blob>(this.serviceUrl + '/photo/' + id.toString(), options);
   }
+
+  public logoutRequest(): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    return this.http.post(this.serviceUrl + '/logout', null, { headers: headers });
+  }
 }

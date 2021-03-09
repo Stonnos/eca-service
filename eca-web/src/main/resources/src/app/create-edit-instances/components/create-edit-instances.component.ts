@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { BaseCreateDialogComponent } from "../../common/dialog/base-create-dialog.component";
 import { UploadTrainingDataComponent } from "../../common/upload-training-data/upload-training-data.component";
 import { CreateEditInstancesModel } from "../model/create-edit-instances.model";
@@ -11,7 +11,6 @@ import {
   ValidationErrorDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { HttpErrorResponse} from "@angular/common/http";
-import { InstancesFields } from "../../common/util/field-names";
 import { ValidationErrorCode} from "../../common/model/validation-error-code";
 import { Utils } from "../../common/util/utils";
 
@@ -27,9 +26,6 @@ export class CreateEditInstancesComponent extends BaseCreateDialogComponent<Crea
   public loading: boolean = false;
 
   public hasSameTableName: boolean = false;
-
-  @Input()
-  public prevItem: CreateEditInstancesModel;
 
   @ViewChild(UploadTrainingDataComponent, { static: true })
   public fileUpload: UploadTrainingDataComponent;
@@ -62,26 +58,22 @@ export class CreateEditInstancesComponent extends BaseCreateDialogComponent<Crea
   }
 
   private renameData(): void {
-    if (this.prevItem.tableName == this.item.tableName) {
-      this.hide();
-    } else {
-      this.loading = true;
-      this.instancesService.renameData(this.item.id, this.item.tableName)
-        .pipe(
-          finalize(() => {
-            this.loading = false;
-          })
-        )
-        .subscribe({
-          next: () => {
-            this.renameEvent.emit();
-            this.hide();
-          },
-          error: (error) => {
-            this.handleError(error);
-          }
-        });
-    }
+    this.loading = true;
+    this.instancesService.renameData(this.item.id, this.item.tableName)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.renameEvent.emit();
+          this.hide();
+        },
+        error: (error) => {
+          this.handleError(error);
+        }
+      });
   }
 
   private saveData(): void {
@@ -107,7 +99,7 @@ export class CreateEditInstancesComponent extends BaseCreateDialogComponent<Crea
     if (error instanceof HttpErrorResponse) {
       if (error.status === 400) {
         const errors: ValidationErrorDto[] = error.error;
-        this.hasSameTableName = this.validationService.hasError(errors, InstancesFields.TABLE_NAME, ValidationErrorCode.UNIQUE_TABLE_NAME);
+        this.hasSameTableName = this.validationService.hasErrorCode(errors, ValidationErrorCode.UNIQUE_TABLE_NAME);
       } else {
         this.handleUnknownError(error);
       }
