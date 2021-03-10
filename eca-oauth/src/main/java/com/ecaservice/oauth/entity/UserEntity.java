@@ -65,6 +65,12 @@ public class UserEntity {
     private boolean tfaEnabled;
 
     /**
+     * Last password change date
+     */
+    @Column(name = "password_date")
+    private LocalDateTime passwordDate;
+
+    /**
      * User roles
      */
     @ManyToMany(fetch = FetchType.EAGER)

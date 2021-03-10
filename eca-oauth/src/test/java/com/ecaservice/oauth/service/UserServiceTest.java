@@ -84,6 +84,7 @@ class UserServiceTest extends AbstractJpaTest {
         UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.getLogin()).isEqualTo(createUserDto.getLogin());
+        assertThat(actual.getPasswordDate()).isNotNull();
     }
 
     @Test

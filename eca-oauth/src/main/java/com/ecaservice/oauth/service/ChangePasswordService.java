@@ -78,6 +78,7 @@ public class ChangePasswordService {
                         LocalDateTime.now()).orElseThrow(() -> new InvalidTokenException(token));
         UserEntity userEntity = changePasswordRequestEntity.getUserEntity();
         userEntity.setPassword(changePasswordRequestEntity.getNewPassword());
+        userEntity.setPasswordDate(LocalDateTime.now());
         changePasswordRequestEntity.setConfirmationDate(LocalDateTime.now());
         userEntityRepository.save(userEntity);
         changePasswordRequestRepository.save(changePasswordRequestEntity);
