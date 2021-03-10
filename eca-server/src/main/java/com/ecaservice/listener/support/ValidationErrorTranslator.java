@@ -2,9 +2,9 @@ package com.ecaservice.listener.support;
 
 import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.MessageError;
+import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 import java.util.stream.Collectors;
