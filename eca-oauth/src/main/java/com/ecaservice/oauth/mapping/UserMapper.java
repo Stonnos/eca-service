@@ -17,7 +17,7 @@ import java.util.Optional;
  * @author Roman Batygin
  */
 @Mapper(uses = RoleMapper.class)
-public abstract class UserMapper {
+public interface UserMapper {
 
     /**
      * Maps user entity to its dto model.
@@ -25,7 +25,7 @@ public abstract class UserMapper {
      * @param userEntity - user entity
      * @return user dto
      */
-    public abstract UserDto map(UserEntity userEntity);
+    UserDto map(UserEntity userEntity);
 
     /**
      * Maps create user dto to entity model
@@ -36,7 +36,7 @@ public abstract class UserMapper {
     @Mapping(source = "login", target = "login", qualifiedByName = "trim")
     @Mapping(source = "email", target = "email", qualifiedByName = "trim")
     @Mapping(source = "firstName", target = "firstName", qualifiedByName = "trim")
-    public abstract UserEntity map(CreateUserDto createUserDto);
+    UserEntity map(CreateUserDto createUserDto);
 
     /**
      * Maps user entity to user details.
@@ -46,7 +46,7 @@ public abstract class UserMapper {
      */
     @Mapping(source = "login", target = "userName")
     @Mapping(source = "roles", target = "authorities")
-    public abstract UserDetailsImpl mapDetails(UserEntity userEntity);
+    UserDetailsImpl mapDetails(UserEntity userEntity);
 
     /**
      * Maps user entities to its dto model list.
@@ -54,10 +54,10 @@ public abstract class UserMapper {
      * @param userEntityList - users entities
      * @return users dto list
      */
-    public abstract List<UserDto> map(List<UserEntity> userEntityList);
+    List<UserDto> map(List<UserEntity> userEntityList);
 
     @Named("trim")
-    String trim(String value) {
+    default String trim(String value) {
         return Optional.ofNullable(value).map(String::trim).orElse(null);
     }
 }

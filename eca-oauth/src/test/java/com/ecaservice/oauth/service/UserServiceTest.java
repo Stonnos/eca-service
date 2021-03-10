@@ -104,12 +104,12 @@ class UserServiceTest extends AbstractJpaTest {
 
     @Test
     void testEmailDuplicationError() {
-        UserEntity first = createAndSaveUser();
+        Long firstUserId = createAndSaveUser().getId();
         CreateUserDto createUserDto = TestHelperUtils.createUserDto();
         createUserDto.setLogin(TEST_2_USER);
         createUserDto.setEmail(EMAIL_TO_UPDATE);
-        UserEntity second = userService.createUser(createUserDto, PASSWORD);
-        assertThrows(EmailDuplicationException.class, () -> userService.updateEmail(first.getId(), EMAIL_TO_UPDATE));
+        userService.createUser(createUserDto, PASSWORD);
+        assertThrows(EmailDuplicationException.class, () -> userService.updateEmail(firstUserId, EMAIL_TO_UPDATE));
     }
 
     @Test
