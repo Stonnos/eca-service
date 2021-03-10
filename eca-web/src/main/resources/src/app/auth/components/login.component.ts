@@ -7,11 +7,9 @@ import { AuthenticationKeys } from "../model/auth.keys";
 import { finalize } from "rxjs/internal/operators";
 import { BaseForm } from "../../common/form/base-form";
 import { HttpErrorResponse } from "@angular/common/http";
-import { UserStorage } from "../services/user.storage";
 import { MessageService } from "primeng/api";
 import { UsersService } from "../../users/services/users.service";
 import { Subscription, timer } from "rxjs";
-import { UserDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 
 @Component({
   selector: 'app-login',
@@ -43,7 +41,6 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
   public constructor(private router: Router,
                      private authService: AuthService,
                      private usersService: UsersService,
-                     private userStorage: UserStorage,
                      private messageService: MessageService) {
   }
 
@@ -98,18 +95,6 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
     }
   }
 
-  private saveUser(): void {
-    this.usersService.getCurrentUser().subscribe({
-      next: (user: UserDto) => {
-        this.userStorage.saveUser(user);
-        this.enter();
-      },
-      error: (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-      }
-    })
-  }
-
   private obtainToken(): void {
     this.loading = true;
     this.authService.obtainAccessToken(this.userModel)
@@ -121,7 +106,7 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
       .subscribe({
         next: (token) => {
           this.authService.saveToken(token);
-          this.saveUser();
+          this.enter();
         },
         error: (error) => {
           this.handleObtainTokenError(error);
@@ -140,7 +125,7 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
       .subscribe({
         next: (token) => {
           this.authService.saveToken(token);
-          this.saveUser();
+          this.enter();
         },
         error: (error) => {
           this.handleTfaVerificationError(error);
