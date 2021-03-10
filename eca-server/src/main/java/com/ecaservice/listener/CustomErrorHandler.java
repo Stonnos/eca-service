@@ -36,7 +36,7 @@ public class CustomErrorHandler implements ErrorHandler {
             Message failedMessage = failedException.getFailedMessage();
             MessageProperties messageProperties = failedMessage.getMessageProperties();
             log.error("There was an error while message [{}] processing: {}", messageProperties.getCorrelationId(),
-                    failedException.getCause().getMessage());
+                    errorResponse);
             rabbitTemplate.convertAndSend(messageProperties.getReplyTo(), errorResponse, outboundMessage -> {
                 outboundMessage.getMessageProperties().setCorrelationId(messageProperties.getCorrelationId());
                 return outboundMessage;
