@@ -6,6 +6,7 @@ import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserPhoto;
+import com.ecaservice.oauth.exception.EmailDuplicationException;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.repository.RoleRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
@@ -88,16 +89,37 @@ public class UserService {
     }
 
     /**
+     * Updates email for user.
+     *
+     * @param userId   - user id
+     * @param newEmail - new email
+     */
+    public void updateEmail(long userId, String newEmail) {
+        log.info("Starting to update email for user [{}]", userId);
+        String emailToUpdate = newEmail.trim();
+        UserEntity userEntity = getById(userId);
+        if (!userEntity.getEmail().equals(emailToUpdate)) {
+            if (userEntityRepository.existsByEmail(emailToUpdate)) {
+                throw new EmailDuplicationException(userId);
+            }
+            userEntity.setEmail(emailToUpdate);
+            userEntityRepository.save(userEntity);
+            log.info("Email has been updated for user [{}]", userId);
+        }
+    }
+
+    /**
      * Enable/Disable two factor authentication for user.
      *
      * @param userId     - user id
      * @param tfaEnabled - tfa enabled?
      */
     public void setTfaEnabled(long userId, boolean tfaEnabled) {
+        log.info("Starting to set tfa flag [{}] for user [{}]", tfaEnabled, userId);
         UserEntity userEntity = getById(userId);
         userEntity.setTfaEnabled(tfaEnabled);
         userEntityRepository.save(userEntity);
-        log.info("Sets two factor authentication flag [{}] for user [{}]", tfaEnabled, userEntity.getId());
+        log.info("Tfa flag [{}] has been set for user [{}]", tfaEnabled, userEntity.getId());
     }
 
     /**
@@ -107,6 +129,7 @@ public class UserService {
      * @param file   - user photo file
      */
     public void updatePhoto(long userId, MultipartFile file) {
+        log.info("Starting to update user [{}] photo: [{}]", userId, file.getOriginalFilename());
         UserEntity userEntity = getById(userId);
         UserPhoto userPhoto = userPhotoRepository.findByUserEntity(userEntity);
         if (userPhoto == null) {
@@ -114,6 +137,7 @@ public class UserService {
             userPhoto.setUserEntity(userEntity);
         }
         updatePhoto(userPhoto, file);
+        log.info("New photo [{}] has been updated for user [{}]", userPhoto.getId(), userId);
     }
 
     /**
@@ -123,12 +147,14 @@ public class UserService {
      */
     @Transactional
     public void deletePhoto(long userId) {
+        log.info("Starting to delete user [{}] photo", userId);
         UserEntity userEntity = getById(userId);
         UserPhoto userPhoto = userPhotoRepository.findByUserEntity(userEntity);
         if (userPhoto == null) {
             throw new EntityNotFoundException(UserPhoto.class, String.format("User %d", userEntity.getId()));
         }
         userPhotoRepository.delete(userPhoto);
+        log.info("User [{}] photo has been deleted", userId);
     }
 
     private void populateUserRole(UserEntity userEntity) {

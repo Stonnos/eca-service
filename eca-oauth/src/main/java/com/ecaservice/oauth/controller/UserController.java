@@ -144,7 +144,7 @@ public class UserController {
     )
     @PostMapping(value = "/create")
     public UserDto save(@Valid @RequestBody CreateUserDto createUserDto) {
-        log.info("Received request for user creation {}", createUserDto);
+        log.info("Received request for user creation [{}]", createUserDto.getLogin());
         String password = passwordService.generatePassword();
         UserEntity userEntity = userService.createUser(createUserDto, password);
         log.info("User {} has been created", userEntity.getId());

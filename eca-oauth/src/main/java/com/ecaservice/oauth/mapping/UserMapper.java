@@ -57,7 +57,7 @@ public abstract class UserMapper {
     public abstract List<UserDto> map(List<UserEntity> userEntityList);
 
     @Named("trim")
-    protected String trim(String value) {
+    String trim(String value) {
         return Optional.ofNullable(value).map(String::trim).orElse(null);
     }
 }
