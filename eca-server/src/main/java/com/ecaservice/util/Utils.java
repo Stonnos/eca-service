@@ -1,7 +1,7 @@
 package com.ecaservice.util;
 
 import com.ecaservice.base.model.EcaResponse;
-import com.ecaservice.base.model.Error;
+import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.dto.evaluation.ClassifierReport;
@@ -63,8 +63,8 @@ public class Utils {
      * @param errorMessage - error message
      * @return error object
      */
-    public static Error error(String errorMessage) {
-        Error error = new Error();
+    public static MessageError error(String errorMessage) {
+        MessageError error = new MessageError();
         error.setMessage(errorMessage);
         return error;
     }
@@ -79,7 +79,7 @@ public class Utils {
         EvaluationResponse evaluationResponse = new EvaluationResponse();
         evaluationResponse.setRequestId(UUID.randomUUID().toString());
         evaluationResponse.setStatus(TechnicalStatus.ERROR);
-        Error error = error(errorMessage);
+        MessageError error = error(errorMessage);
         evaluationResponse.setErrors(Collections.singletonList(error));
         return evaluationResponse;
     }
@@ -88,14 +88,28 @@ public class Utils {
      * Creates response with error status.
      *
      * @param errorMessage - error message
-     * @return evaluation response
+     * @return eca response
      */
     public static EcaResponse buildErrorResponse(String errorMessage) {
         EcaResponse ecaResponse = new EcaResponse();
         ecaResponse.setRequestId(UUID.randomUUID().toString());
         ecaResponse.setStatus(TechnicalStatus.ERROR);
-        Error error = error(errorMessage);
+        MessageError error = error(errorMessage);
         ecaResponse.setErrors(Collections.singletonList(error));
+        return ecaResponse;
+    }
+
+    /**
+     * Creates response with validation error status.
+     *
+     * @param errors - error message
+     * @return evaluation response
+     */
+    public static EcaResponse buildValidationError(List<MessageError> errors) {
+        EcaResponse ecaResponse = new EcaResponse();
+        ecaResponse.setRequestId(UUID.randomUUID().toString());
+        ecaResponse.setStatus(TechnicalStatus.VALIDATION_ERROR);
+        ecaResponse.setErrors(errors);
         return ecaResponse;
     }
 

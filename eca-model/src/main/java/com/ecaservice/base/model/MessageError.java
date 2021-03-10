@@ -5,14 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Error model.
+ * Message error model.
  *
  * @author Roman Batygin
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Error {
+public class MessageError {
 
     /**
      * Error code

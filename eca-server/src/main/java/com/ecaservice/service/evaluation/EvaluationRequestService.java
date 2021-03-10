@@ -1,6 +1,6 @@
 package com.ecaservice.service.evaluation;
 
-import com.ecaservice.base.model.Error;
+import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.TechnicalStatus;
@@ -90,7 +90,7 @@ public class EvaluationRequestService {
         evaluationLog.setRequestStatus(RequestStatus.ERROR);
         evaluationLog.setErrorMessage(errorMessage);
         evaluationResponse.setStatus(TechnicalStatus.ERROR);
-        Error error = error(errorMessage);
+        MessageError error = error(errorMessage);
         evaluationResponse.setErrors(Collections.singletonList(error));
     }
 }

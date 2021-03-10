@@ -25,5 +25,5 @@ public class EcaResponse {
     /**
      * Errors list
      */
-    private List<Error> errors;
+    private List<MessageError> errors;
 }
