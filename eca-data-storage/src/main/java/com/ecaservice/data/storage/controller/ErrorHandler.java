@@ -1,5 +1,6 @@
 package com.ecaservice.data.storage.controller;
 
+import com.ecaservice.common.web.ExceptionResponseHandler;
 import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.common.web.exception.ValidationErrorException;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,6 +20,17 @@ import java.util.List;
 @Slf4j
 @ControllerAdvice
 public class ErrorHandler {
+
+    /**
+     * Handles constraint violation error.
+     *
+     * @param ex - constraint violation exception
+     * @return response entity
+     */
+    @ExceptionHandler(value = ConstraintViolationException.class)
+    public ResponseEntity<List<ValidationErrorDto>> handleConstraintViolation(ConstraintViolationException ex) {
+        return ExceptionResponseHandler.handleConstraintViolation(ex);
+    }
 
     /**
      * Handles validation error.
