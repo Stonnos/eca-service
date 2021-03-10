@@ -59,10 +59,7 @@ class UserMapperTest {
         assertThat(userDetails).isNotNull();
         assertThat(userDetails.getId()).isEqualTo(userEntity.getId());
         assertThat(userDetails.getUsername()).isEqualTo(userEntity.getLogin());
-        assertThat(userDetails.getEmail()).isEqualTo(userEntity.getEmail());
-        assertThat(userDetails.getFirstName()).isEqualTo(userEntity.getFirstName());
         assertThat(userDetails.getAuthorities()).isNotEmpty();
         assertThat(userDetails.getAuthorities()).hasSameSizeAs(userEntity.getRoles());
-        assertThat(userDetails.getCreationDate()).isEqualTo(userEntity.getCreationDate());
     }
 }

@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -37,27 +36,6 @@ public class UserDetailsImpl implements UserDetails {
      */
     @Setter
     private String password;
-
-    /**
-     * User creation date
-     */
-    @Getter
-    @Setter
-    private LocalDateTime creationDate;
-
-    /**
-     * User email
-     */
-    @Getter
-    @Setter
-    private String email;
-
-    /**
-     * User first name
-     */
-    @Getter
-    @Setter
-    private String firstName;
 
     /**
      * Roles list
