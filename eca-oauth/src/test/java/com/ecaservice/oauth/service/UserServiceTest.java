@@ -7,6 +7,7 @@ import com.ecaservice.oauth.config.CommonConfig;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserPhoto;
+import com.ecaservice.oauth.exception.EmailDuplicationException;
 import com.ecaservice.oauth.mapping.RoleMapperImpl;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.mapping.UserMapperImpl;
@@ -45,6 +46,8 @@ class UserServiceTest extends AbstractJpaTest {
     private static final long USER_ID = 1L;
     private static final String PHOTO_FILE_NAME = "image.png";
     private static final int BYTE_ARRAY_LENGTH = 32;
+    private static final String EMAIL_TO_UPDATE = "updateemail@test.ru";
+    private static final String TEST_2_USER = "test2";
 
     @Inject
     private CommonConfig commonConfig;
@@ -87,6 +90,25 @@ class UserServiceTest extends AbstractJpaTest {
     void testCreateUserWithNotExistingRole() {
         CreateUserDto createUserDto = TestHelperUtils.createUserDto();
         assertThrows(IllegalStateException.class, () -> userService.createUser(createUserDto, PASSWORD));
+    }
+
+    @Test
+    void testUpdateEmail() {
+        UserEntity userEntity = createAndSaveUser();
+        userService.updateEmail(userEntity.getId(), EMAIL_TO_UPDATE);
+        UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getEmail()).isEqualTo(EMAIL_TO_UPDATE);
+    }
+
+    @Test
+    void testEmailDuplicationError() {
+        UserEntity first = createAndSaveUser();
+        CreateUserDto createUserDto = TestHelperUtils.createUserDto();
+        createUserDto.setLogin(TEST_2_USER);
+        createUserDto.setEmail(EMAIL_TO_UPDATE);
+        UserEntity second = userService.createUser(createUserDto, PASSWORD);
+        assertThrows(EmailDuplicationException.class, () -> userService.updateEmail(first.getId(), EMAIL_TO_UPDATE));
     }
 
     @Test
