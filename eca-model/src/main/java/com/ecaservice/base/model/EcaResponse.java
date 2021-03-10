@@ -2,6 +2,8 @@ package com.ecaservice.base.model;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * Response basic model.
  *
@@ -21,7 +23,7 @@ public class EcaResponse {
     private TechnicalStatus status;
 
     /**
-     * Error message
+     * Errors list
      */
-    private String errorMessage;
+    private List<Error> errors;
 }

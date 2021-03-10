@@ -1,6 +1,7 @@
 package com.ecaservice.util;
 
 import com.ecaservice.base.model.EcaResponse;
+import com.ecaservice.base.model.Error;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.dto.evaluation.ClassifierReport;
@@ -57,6 +58,18 @@ public class Utils {
     private static final long ZERO = 0L;
 
     /**
+     * Creates error object.
+     *
+     * @param errorMessage - error message
+     * @return error object
+     */
+    public static Error error(String errorMessage) {
+        Error error = new Error();
+        error.setMessage(errorMessage);
+        return error;
+    }
+
+    /**
      * Creates evaluation response with error status.
      *
      * @param errorMessage - error message
@@ -66,7 +79,8 @@ public class Utils {
         EvaluationResponse evaluationResponse = new EvaluationResponse();
         evaluationResponse.setRequestId(UUID.randomUUID().toString());
         evaluationResponse.setStatus(TechnicalStatus.ERROR);
-        evaluationResponse.setErrorMessage(errorMessage);
+        Error error = error(errorMessage);
+        evaluationResponse.setErrors(Collections.singletonList(error));
         return evaluationResponse;
     }
 
@@ -80,7 +94,8 @@ public class Utils {
         EcaResponse ecaResponse = new EcaResponse();
         ecaResponse.setRequestId(UUID.randomUUID().toString());
         ecaResponse.setStatus(TechnicalStatus.ERROR);
-        ecaResponse.setErrorMessage(errorMessage);
+        Error error = error(errorMessage);
+        ecaResponse.setErrors(Collections.singletonList(error));
         return ecaResponse;
     }
 

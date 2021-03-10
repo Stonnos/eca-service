@@ -2,6 +2,7 @@ package com.ecaservice.listener;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.base.model.EcaResponse;
+import com.ecaservice.base.model.Error;
 import com.ecaservice.base.model.TechnicalStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
@@ -56,6 +57,10 @@ class CustomErrorHandlerTest {
         assertThat(replyToCaptor.getValue()).isEqualTo(messageProperties.getReplyTo());
         assertThat(ecaResponseArgumentCaptor.getValue()).isNotNull();
         assertThat(ecaResponseArgumentCaptor.getValue().getStatus()).isEqualTo(TechnicalStatus.ERROR);
-        assertThat(ecaResponseArgumentCaptor.getValue().getErrorMessage()).isEqualTo(ERROR_MESSAGE);
+        assertThat(ecaResponseArgumentCaptor.getValue().getErrors()).isNotEmpty();
+        assertThat(ecaResponseArgumentCaptor.getValue().getErrors()).hasSize(1);
+        Error error = ecaResponseArgumentCaptor.getValue().getErrors().iterator().next();
+        assertThat(error).isNotNull();
+        assertThat(error.getMessage()).isEqualTo(ERROR_MESSAGE);
     }
 }
