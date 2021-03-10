@@ -7,7 +7,6 @@ import { MessageService } from "primeng/api";
 import { ValidationErrorDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ValidationService } from "../../common/services/validation.service";
 import { ValidationErrorCode } from "../../common/model/validation-error-code";
-import { UserFields } from "../../common/util/field-names";
 
 @Component({
   selector: 'app-update-user-email',
@@ -61,7 +60,7 @@ export class UpdateUserEmailComponent extends BaseCreateDialogComponent<string> 
     if (error instanceof HttpErrorResponse) {
       if (error.status === 400) {
         const errors: ValidationErrorDto[] = error.error;
-        this.hasSameEmail = this.validationService.hasError(errors, UserFields.EMAIL, ValidationErrorCode.UNIQUE_EMAIL);
+        this.hasSameEmail = this.validationService.hasErrorCode(errors, ValidationErrorCode.UNIQUE_EMAIL);
       } else {
         this.handleUnknownError(error);
       }
