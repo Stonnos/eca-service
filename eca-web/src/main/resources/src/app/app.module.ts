@@ -36,6 +36,7 @@ import { ChangePasswordModule } from "./change-password/change-password.module";
 import { InstancesModule } from "./instances/instances.module";
 import { CreateEditInstancesModule } from "./create-edit-instances/create-edit-instances.module";
 import { UserProfileModule } from "./user-profile/user-profile.module";
+import { UpdateUserEmailModule } from "./update-user-email/update-user-email.module";
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import { UserProfileModule } from "./user-profile/user-profile.module";
     InstancesModule,
     CreateEditInstancesModule,
     ChangePasswordModule,
+    UpdateUserEmailModule,
     UiComponentsModule,
     HttpClientModule,
     NoopAnimationsModule,
