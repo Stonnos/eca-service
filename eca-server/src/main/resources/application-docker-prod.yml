@@ -2,13 +2,7 @@ spring:
   ## Eca datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://postgres-db:5432/eca
-    username: postgres
-    password: postgres
-  ## Token datasource properties
-  tokendatasource:
-    driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://postgres-db:5432/eca_oauth
+    url: jdbc:postgresql://postgres-db:5432/eca
     username: postgres
     password: postgres
   jpa:
@@ -43,3 +37,6 @@ ers:
     trustStore: classpath:evaluation-results/evaluation-truststore.jks
     trustStorePassword: evaluation
     trustSelfSigned: false
+
+auth-server:
+  baseUrl: http://eca-oauth:8080

@@ -10,13 +10,7 @@ spring:
   ## Eca datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://localhost:5432/eca
-    username: postgres
-    password: postgres
-  ## Token datasource properties
-  tokendatasource:
-    driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://localhost:5432/eca_oauth
+    url: jdbc:postgresql://localhost:5432/eca
     username: postgres
     password: postgres
   jpa:
@@ -148,6 +142,11 @@ cache:
     filter-dictionaries:
       expireAfterWriteSeconds: 18000
       maxSize: 100
+
+auth-server:
+  baseUrl: http://localhost:8085/eca-oauth
+  clientId: eca_web
+  clientSecret: web_secret
 
 management:
   metrics:

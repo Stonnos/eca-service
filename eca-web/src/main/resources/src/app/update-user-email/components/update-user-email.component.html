@@ -1,0 +1,62 @@
+<p-dialog
+  [(visible)]="visible"
+  header="Изменение email"
+  [style]="{ width: '650px' }"
+  appendTo="body"
+  [modal]="true"
+  [blockScroll]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="!loading"
+  (onHide)="hide()">
+
+  <form novalidate class="form d-flex flex-column justify-content-center m-auto" (keydown.enter)="submit()">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-10 mx-auto mb-4">
+        <label class="text-bold control-label">Email</label>
+        <input
+          required
+          pInputText
+          [pattern]="emailRegex"
+          id="email"
+          name="email"
+          type="text"
+          placeholder="Введите Email"
+          [(ngModel)]="item"
+          [disabled]="loading"
+          #email="ngModel"
+          maxlength="255"
+          (focus)="onEmailFocus($event)"
+          class="form-control d-block w-100">
+        <div class="text-danger error-message" *ngIf="email.invalid && (email.dirty || email.touched || submitted)">
+          <div *ngIf="email?.errors?.required">
+            Заполните Email
+          </div>
+          <div *ngIf="email?.errors?.pattern">
+            Недопустимый формат Email
+          </div>
+        </div>
+        <div class="text-danger error-message" *ngIf="hasSameEmail && submitted">
+          Пользователь с таким Email уже вуществует
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <p-footer>
+    <button
+      pButton
+      type="button"
+      (click)="submit()"
+      [disabled]="!isValid() || loading"
+      class="update-email-button ml-auto">
+      <span class="update-email-text" *ngIf="!loading">Изменить</span>
+      <p-progressSpinner
+        *ngIf="loading"
+        class="update-email-progress-spinner"
+        strokeWidth="4"
+        animationDuration=".5s">
+      </p-progressSpinner>
+    </button>
+  </p-footer>
+</p-dialog>

@@ -35,6 +35,7 @@ public class ExperimentRequest {
     /**
      * Email
      */
+    @NotBlank
     @Email(regexp = EMAIL_REGEX)
     @Size(max = EMAIL_MAX_SIZE)
     private String email;

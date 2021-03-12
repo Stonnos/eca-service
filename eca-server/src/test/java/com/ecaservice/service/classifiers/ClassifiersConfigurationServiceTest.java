@@ -14,7 +14,6 @@ import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.UserService;
 import com.ecaservice.service.filter.FilterService;
-import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -67,9 +66,7 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        UserDetailsImpl userDetails = new UserDetailsImpl();
-        userDetails.setUserName(USER_NAME);
-        when(userService.getCurrentUser()).thenReturn(userDetails);
+        when(userService.getCurrentUser()).thenReturn(USER_NAME);
     }
 
     @Override

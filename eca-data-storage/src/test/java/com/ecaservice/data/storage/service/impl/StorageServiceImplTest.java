@@ -9,7 +9,6 @@ import com.ecaservice.data.storage.service.InstancesService;
 import com.ecaservice.data.storage.service.TableNameService;
 import com.ecaservice.data.storage.service.TransactionalService;
 import com.ecaservice.data.storage.service.UserService;
-import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.db.SqlQueryHelper;
 import org.apache.commons.lang3.StringUtils;
@@ -61,10 +60,8 @@ class StorageServiceImplTest extends AbstractJpaTest {
 
     @Test
     void testSaveData() throws Exception {
-        UserDetailsImpl userDetails = new UserDetailsImpl();
-        userDetails.setUserName(USER_NAME);
         when(tableNameService.tableExists(TEST_TABLE)).thenReturn(false);
-        when(userService.getCurrentUser()).thenReturn(userDetails);
+        when(userService.getCurrentUser()).thenReturn(USER_NAME);
         Instances instances = loadInstances();
         InstancesEntity expected = storageService.saveData(instances, TEST_TABLE);
         InstancesEntity actual = instancesRepository.findById(expected.getId()).orElse(null);

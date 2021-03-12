@@ -10,13 +10,7 @@ spring:
   ## Datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://localhost:5432/eca_external_api
-    username: postgres
-    password: postgres
-  ## Token datasource properties
-  tokendatasource:
-    driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://localhost:5432/eca_oauth
+    url: jdbc:postgresql://localhost:5432/eca_external_api
     username: postgres
     password: postgres
   jpa:
@@ -82,6 +76,11 @@ swagger2:
   tokenBaseUrl: http://localhost:8085/eca-oauth
   clientId: external-api
   secret: external_api_secret
+
+auth-server:
+  baseUrl: http://localhost:8085/eca-oauth
+  clientId: external-api
+  clientSecret: external_api_secret
 
 management:
   metrics:

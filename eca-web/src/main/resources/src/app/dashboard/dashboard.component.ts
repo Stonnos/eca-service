@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 import { LogoutService } from "../auth/services/logout.service";
-import { UserStorage } from "../auth/services/user.storage";
 import { RoleDto, UserDto } from "../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Role } from "../common/model/roles";
 import { HttpErrorResponse } from "@angular/common/http";
@@ -15,29 +14,40 @@ import { UsersService } from "../users/services/users.service";
 })
 export class DashboardComponent implements OnInit {
 
-  public items: MenuItem[];
+  private user: UserDto;
 
-  public userMenuItems: MenuItem[];
+  public items: MenuItem[] = [];
+
+  public userMenuItems: MenuItem[] = [];
 
   constructor(private logoutService: LogoutService,
               private usersService: UsersService,
-              private userStorage: UserStorage,
               private messageService: MessageService) {
   }
 
   public ngOnInit() {
-    this.initBaseMenu();
+    this.getCurrentUser();
     this.initUserMenu();
   }
 
   public getUserLogin(): string {
-    const user: UserDto = this.userStorage.getUser();
-    return user && user.login;
+    return this.user && this.user.login;
   }
 
   public isSuperAdmin(): boolean {
-    const user: UserDto = this.userStorage.getUser();
-    return user && user.roles && user.roles.map((role: RoleDto) => role.roleName).includes(Role.ROLE_SUPER_ADMIN);
+    return this.user && this.user.roles && this.user.roles.map((role: RoleDto) => role.roleName).includes(Role.ROLE_SUPER_ADMIN);
+  }
+
+  public getCurrentUser(): void {
+    this.usersService.getCurrentUser().subscribe({
+      next: (user: UserDto) => {
+        this.user = user;
+        this.initBaseMenu();
+      },
+      error: (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      }
+    })
   }
 
   public logout() {

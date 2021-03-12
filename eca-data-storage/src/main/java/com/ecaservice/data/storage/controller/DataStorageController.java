@@ -1,7 +1,5 @@
 package com.ecaservice.data.storage.controller;
 
-import com.ecaservice.common.web.ExceptionResponseHandler;
-import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.common.web.exception.ValidationErrorException;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.mapping.InstancesMapper;
@@ -18,11 +16,9 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -32,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import weka.core.Instances;
 
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -151,16 +146,5 @@ public class DataStorageController {
     @DeleteMapping(value = "/delete")
     public void delete(@ApiParam(value = "Instances id", example = "1", required = true) @RequestParam long id) {
         storageService.deleteData(id);
-    }
-
-    /**
-     * Handles constraint violation error.
-     *
-     * @param ex - constraint violation exception
-     * @return response entity
-     */
-    @ExceptionHandler(value = ConstraintViolationException.class)
-    public ResponseEntity<List<ValidationErrorDto>> handleConstraintViolation(ConstraintViolationException ex) {
-        return ExceptionResponseHandler.handleConstraintViolation(ex);
     }
 }

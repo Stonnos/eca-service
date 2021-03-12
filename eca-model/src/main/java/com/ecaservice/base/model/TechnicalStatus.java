@@ -20,5 +20,10 @@ public enum TechnicalStatus {
     /**
      * Timeout status.
      */
-    TIMEOUT
+    TIMEOUT,
+
+    /**
+     * Validation error status.
+     */
+    VALIDATION_ERROR
 }

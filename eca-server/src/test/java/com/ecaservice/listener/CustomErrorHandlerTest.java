@@ -2,7 +2,9 @@ package com.ecaservice.listener;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.base.model.EcaResponse;
+import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.TechnicalStatus;
+import com.ecaservice.listener.support.AbstractExceptionTranslator;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +19,8 @@ import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,6 +39,8 @@ class CustomErrorHandlerTest {
 
     @Mock
     private RabbitTemplate rabbitTemplate;
+    @Mock
+    private List<AbstractExceptionTranslator> exceptionTranslators;;
     @InjectMocks
     private CustomErrorHandler customErrorHandler;
 
@@ -56,6 +62,10 @@ class CustomErrorHandlerTest {
         assertThat(replyToCaptor.getValue()).isEqualTo(messageProperties.getReplyTo());
         assertThat(ecaResponseArgumentCaptor.getValue()).isNotNull();
         assertThat(ecaResponseArgumentCaptor.getValue().getStatus()).isEqualTo(TechnicalStatus.ERROR);
-        assertThat(ecaResponseArgumentCaptor.getValue().getErrorMessage()).isEqualTo(ERROR_MESSAGE);
+        assertThat(ecaResponseArgumentCaptor.getValue().getErrors()).isNotEmpty();
+        assertThat(ecaResponseArgumentCaptor.getValue().getErrors()).hasSize(1);
+        MessageError error = ecaResponseArgumentCaptor.getValue().getErrors().iterator().next();
+        assertThat(error).isNotNull();
+        assertThat(error.getMessage()).isEqualTo(ERROR_MESSAGE);
     }
 }

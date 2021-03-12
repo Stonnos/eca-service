@@ -16,7 +16,6 @@ import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.PageRequestService;
 import com.ecaservice.service.UserService;
 import com.ecaservice.service.filter.FilterService;
-import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
@@ -65,8 +64,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      */
     public ClassifiersConfiguration save(CreateClassifiersConfigurationDto configurationDto) {
         ClassifiersConfiguration classifiersConfiguration = classifiersConfigurationMapper.map(configurationDto);
-        UserDetailsImpl userDetails = userService.getCurrentUser();
-        classifiersConfiguration.setCreatedBy(userDetails.getUsername());
+        classifiersConfiguration.setCreatedBy(userService.getCurrentUser());
         classifiersConfiguration.setCreationDate(LocalDateTime.now());
         ClassifiersConfiguration savedConfiguration = classifiersConfigurationRepository.save(classifiersConfiguration);
         log.info("Classifiers configuration [{}] has been saved", savedConfiguration.getConfigurationName());

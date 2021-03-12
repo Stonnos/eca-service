@@ -1,5 +1,6 @@
 package com.ecaservice.service.evaluation;
 
+import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.TechnicalStatus;
@@ -16,10 +17,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import static com.ecaservice.util.Utils.error;
 
 /**
  * Evaluation request service.
@@ -86,6 +90,7 @@ public class EvaluationRequestService {
         evaluationLog.setRequestStatus(RequestStatus.ERROR);
         evaluationLog.setErrorMessage(errorMessage);
         evaluationResponse.setStatus(TechnicalStatus.ERROR);
-        evaluationResponse.setErrorMessage(errorMessage);
+        MessageError error = error(errorMessage);
+        evaluationResponse.setErrors(Collections.singletonList(error));
     }
 }

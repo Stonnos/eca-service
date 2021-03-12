@@ -8,7 +8,6 @@ import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.UserService;
-import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -60,8 +59,7 @@ public class ClassifierOptionsService {
         Assert.state(!isEnsembleClassifierOptions(classifierOptions), "Can't save ensemble classifier options!");
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
                 createClassifierOptionsDatabaseModel(classifierOptions, classifiersConfiguration);
-        UserDetailsImpl userDetails = userService.getCurrentUser();
-        classifierOptionsDatabaseModel.setCreatedBy(userDetails.getUsername());
+        classifierOptionsDatabaseModel.setCreatedBy(userService.getCurrentUser());
         ClassifierOptionsDatabaseModel saved =
                 classifierOptionsDatabaseModelRepository.save(classifierOptionsDatabaseModel);
         classifiersConfiguration.setUpdated(LocalDateTime.now());

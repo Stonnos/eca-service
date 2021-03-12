@@ -146,6 +146,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
                 changePasswordRequestRepository.findById(changePasswordRequestEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.getConfirmationDate()).isNotNull();
+        assertThat(actual.getUserEntity().getPasswordDate()).isNotNull();
         assertThat(actual.getUserEntity().getPassword()).isEqualTo(changePasswordRequestEntity.getNewPassword());
     }
 

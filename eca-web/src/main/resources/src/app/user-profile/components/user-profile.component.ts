@@ -29,6 +29,8 @@ export class UserProfileComponent implements OnInit {
 
   public changePasswordDialogVisibility: boolean = false;
 
+  public changeEmailDialogVisibility: boolean = false;
+
   public changePasswordRequest: ChangePasswordRequest = new ChangePasswordRequest();
 
   public uploading = false;
@@ -60,7 +62,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.getUser();
+    this.getUser(true);
     this.initUserPhotoMenu();
   }
 
@@ -99,7 +101,7 @@ export class UserProfileComponent implements OnInit {
   public changedTfaSwitch(event): void {
     this.usersService.setTfaEnabled(event.checked).subscribe({
       next: () => {
-        this.getUser();
+        this.getUser(false);
       },
       error: (error) => {
         this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
@@ -115,7 +117,7 @@ export class UserProfileComponent implements OnInit {
     this.changePasswordDialogVisibility = true;
   }
 
-  public onChangeExperimentDialogVisibility(visible): void {
+  public onChangePasswordDialogVisibility(visible): void {
     this.changePasswordDialogVisibility = visible;
   }
 
@@ -127,12 +129,26 @@ export class UserProfileComponent implements OnInit {
     this.changePasswordRequestCreated = false;
   }
 
-  private getUser(): void {
+  public showChangeEmailDialog(): void {
+    this.changeEmailDialogVisibility = true;
+  }
+
+  public onChangeEmailDialogVisibility(visible): void {
+    this.changeEmailDialogVisibility = visible;
+  }
+
+  public onChangeEmail(): void {
+    this.getUser(false);
+  }
+
+  private getUser(downloadPhoto: boolean): void {
     this.usersService.getCurrentUser().subscribe({
       next: (user: UserDto) => {
         this.user = user;
         this.tfaEnabled = user.tfaEnabled;
-        this.updatePhoto();
+        if (downloadPhoto) {
+          this.updatePhoto();
+        }
       },
       error: (error) => {
         this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
@@ -158,7 +174,7 @@ export class UserProfileComponent implements OnInit {
       )
       .subscribe({
         next: () => {
-          this.getUser();
+          this.getUser(true);
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
@@ -194,7 +210,7 @@ export class UserProfileComponent implements OnInit {
       )
       .subscribe({
         next: () => {
-          this.getUser();
+          this.getUser(true);
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
@@ -207,7 +223,7 @@ export class UserProfileComponent implements OnInit {
       { name: UserFields.FIRST_NAME, label: "Имя:" },
       { name: UserFields.ROLES, label: "Роли:" },
       { name: UserFields.TFA_ENABLED, label: "Двухфакторная аутентификация:" },
-      { name: "password", label: "Пароль:" },
+      { name: UserFields.PASSWORD_DATE, label: "Дата изменения пароля:" },
     ];
   }
 

@@ -71,6 +71,7 @@ public class ResetPasswordService {
                         .orElseThrow(() -> new InvalidTokenException(resetPasswordRequest.getToken()));
         UserEntity userEntity = resetPasswordRequestEntity.getUserEntity();
         userEntity.setPassword(passwordEncoder.encode(resetPasswordRequest.getPassword().trim()));
+        userEntity.setPasswordDate(LocalDateTime.now());
         resetPasswordRequestEntity.setResetDate(LocalDateTime.now());
         userEntityRepository.save(userEntity);
         resetPasswordRequestRepository.save(resetPasswordRequestEntity);

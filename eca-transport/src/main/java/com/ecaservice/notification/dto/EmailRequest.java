@@ -22,6 +22,7 @@ public class EmailRequest {
     /**
      * Receiver email
      */
+    @NotBlank
     @Email(regexp = EMAIL_REGEX)
     @Size(max = EMAIL_MAX_SIZE)
     @ApiModelProperty(value = "Receiver email")

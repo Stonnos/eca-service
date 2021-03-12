@@ -12,7 +12,7 @@ ECA external API
 * Openjdk 1.11
 * maven => 3.3.9
 * Rabbit MQ => 3
-* eca-core 6.8.1
+* eca-core 6.8.2
 * Postgres Database для хранения информации => 9.6
 * Docker, Docker compose
 
@@ -20,8 +20,7 @@ ECA external API
 ----------------------------------------
 Настройки для проекта eca-external-api находятся в application.yml. Основные параметры:
 1) spring.datasource - настройки БД для хранения информации
-2) spring.tokendatasource - настройки БД для хранения авторизационных токенов
-3) external-api - основные настройки модуля. Ниже приведено описание основных настроек:
+2) external-api - основные настройки модуля. Ниже приведено описание основных настроек:
    * external-api.batchSize - размер страницы (используется для постраничной обработки)
    * external-api.requestTimeoutMinutes - таймаут запроса в мин.
    * external-api.requestCacheDurationMinutes - таймаут кэша запросов в мин.
@@ -31,14 +30,18 @@ ECA external API
    * external-api.numberOfDaysForStorage - число дней для хранения файлов с моделями и обучающими выборками.
    * external-api.removeClassifiersCron - крон выражение для удаления файлов с моделями
    * external-api.removeDataCron - крон выражение для удаления файлов с обучающими выборками
-4) queue - настройки очередей rabbit mq
+3) queue - настройки очередей rabbit mq
    * queue.evaluationRequestQueue - очередь запросов на построение классификаторов
    * queue.evaluationRequestReplyToQueue - очередь ответов от eca - server
-5) swagger2 - настройки Swagger
+4) swagger2 - настройки Swagger
    * swagger2.tokenBaseUrl - базовый url - сервера авторизации
    * swagger2.clientId - идентификатор клиента
    * swagger2.secret - пароль клиента
    * swagger2.groups - Groups map с мета информацией для swagger
+5) auth-server - настройки интеграции с eca-oauth
+   * baseUrl - базовый url eca-oauth
+   * clientId - идентификатор клиента
+   * clientSecret - пароль клиента
 
 Инструкция по развертыванию
 ----------------------------------------

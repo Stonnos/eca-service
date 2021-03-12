@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,6 +31,17 @@ public class ErrorHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<List<ValidationErrorDto>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         return ExceptionResponseHandler.handleMethodArgumentNotValid(ex);
+    }
+
+    /**
+     * Handles constraint violation error.
+     *
+     * @param ex - constraint violation exception
+     * @return response entity
+     */
+    @ExceptionHandler(value = ConstraintViolationException.class)
+    public ResponseEntity<List<ValidationErrorDto>> handleConstraintViolation(ConstraintViolationException ex) {
+        return ExceptionResponseHandler.handleConstraintViolation(ex);
     }
 
     /**

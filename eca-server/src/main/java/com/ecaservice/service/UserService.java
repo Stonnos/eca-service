@@ -1,6 +1,5 @@
 package com.ecaservice.service;
 
-import com.ecaservice.user.model.UserDetailsImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +16,7 @@ public class UserService {
      *
      * @return user details
      */
-    public UserDetailsImpl getCurrentUser() {
-        return (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public String getCurrentUser() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }

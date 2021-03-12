@@ -66,6 +66,14 @@ public class UserDto {
     private Long photoId;
 
     /**
+     * Last password change date
+     */
+    @ApiModelProperty(value = "Last password change date")
+    @JsonFormat(pattern = DATE_TIME_PATTERN)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private LocalDateTime passwordDate;
+
+    /**
      * Roles list
      */
     @ApiModelProperty(value = "User roles")

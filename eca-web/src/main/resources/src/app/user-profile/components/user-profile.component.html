@@ -45,16 +45,22 @@
             <div class="ui-g-4 text-left text-bold text-wrap">
               {{ field.label }}
             </div>
-            <div class="ui-g-6 text-left text-wrap">
+            <div class="ui-g-4 text-left text-wrap">
               <ng-container [ngSwitch]="field.name">
                 <ng-container *ngSwitchCase="'tfaEnabled'">
                   <p-inputSwitch [(ngModel)]="tfaEnabled" (onChange)="changedTfaSwitch($event)"></p-inputSwitch>
                 </ng-container>
-                <ng-container *ngSwitchCase="'password'">
+                <ng-container *ngSwitchDefault>
+                  {{ getValue(field.name) }}
+                </ng-container>
+              </ng-container>
+            </div>
+            <div class="ui-g-4 text-left text-wrap">
+              <ng-container [ngSwitch]="field.name">
+                <ng-container *ngSwitchCase="'passwordDate'">
                   <a class="link" [routerLink]="" (click)="showChangePasswordRequestDialog()">Изменить</a>
                 </ng-container>
                 <ng-container *ngSwitchDefault>
-                  {{ getValue(field.name) }}
                 </ng-container>
               </ng-container>
             </div>
@@ -66,8 +72,11 @@
             <div class="ui-g-4 text-left text-bold text-wrap">
               Email:
             </div>
-            <div class="ui-g-6 text-left text-wrap">
+            <div class="ui-g-4 text-left text-wrap">
               {{ user?.email }}
+            </div>
+            <div class="ui-g-4 text-left text-wrap">
+              <a class="link" [routerLink]="" (click)="showChangeEmailDialog()">Изменить</a>
             </div>
           </div>
         </p-fieldset>
@@ -100,6 +109,12 @@
 
 <app-change-password-dialog [visible]="changePasswordDialogVisibility"
                             [item]="changePasswordRequest"
-                            (visibilityChange)="onChangeExperimentDialogVisibility($event)"
+                            (visibilityChange)="onChangePasswordDialogVisibility($event)"
                             (itemEvent)="onCreateChangePasswordRequest()">
 </app-change-password-dialog>
+
+<app-update-user-email [visible]="changeEmailDialogVisibility"
+                       [item]="user?.email"
+                       (visibilityChange)="onChangeEmailDialogVisibility($event)"
+                       (itemEvent)="onChangeEmail()">
+</app-update-user-email>

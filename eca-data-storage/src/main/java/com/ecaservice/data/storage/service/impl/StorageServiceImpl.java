@@ -99,7 +99,7 @@ public class StorageServiceImpl implements StorageService {
         instancesEntity.setTableName(tableName);
         instancesEntity.setNumAttributes(instances.numAttributes());
         instancesEntity.setNumInstances(instances.numInstances());
-        instancesEntity.setCreatedBy(userService.getCurrentUser().getUsername());
+        instancesEntity.setCreatedBy(userService.getCurrentUser());
         instancesEntity.setCreated(LocalDateTime.now());
         return instancesRepository.save(instancesEntity);
     }

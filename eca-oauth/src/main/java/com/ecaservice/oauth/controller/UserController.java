@@ -26,6 +26,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,9 +38,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Size;
 import java.security.Principal;
 import java.util.List;
 
+import static com.ecaservice.oauth.util.FieldConstraints.EMAIL_MAX_SIZE;
+import static com.ecaservice.oauth.util.FieldConstraints.EMAIL_REGEX;
 import static com.ecaservice.oauth.util.Utils.buildAttachmentResponse;
 
 /**
@@ -48,6 +53,7 @@ import static com.ecaservice.oauth.util.Utils.buildAttachmentResponse;
  * @author Roman Batygin
  */
 @Slf4j
+@Validated
 @Api(tags = "Users API for web application")
 @RestController
 @RequestMapping("/users")
@@ -144,12 +150,32 @@ public class UserController {
     )
     @PostMapping(value = "/create")
     public UserDto save(@Valid @RequestBody CreateUserDto createUserDto) {
-        log.info("Received request for user creation {}", createUserDto);
+        log.info("Received request for user creation [{}]", createUserDto.getLogin());
         String password = passwordService.generatePassword();
         UserEntity userEntity = userService.createUser(createUserDto, password);
         log.info("User {} has been created", userEntity.getId());
         applicationEventPublisher.publishEvent(new UserCreatedEvent(this, userEntity, password));
         return userMapper.map(userEntity);
+    }
+
+    /**
+     * Updates email for current authenticated user.
+     *
+     * @param userDetails - user details
+     * @param newEmail    - new email
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Updates email for current authenticated user",
+            notes = "Updates email for current authenticated user"
+    )
+    @PostMapping(value = "/update-email")
+    public void updateEmail(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                            @ApiParam(value = "User email", required = true)
+                            @Email(regexp = EMAIL_REGEX)
+                            @Size(max = EMAIL_MAX_SIZE) @RequestParam String newEmail) {
+        log.info("Received request to update user [{}] email", userDetails.getId());
+        userService.updateEmail(userDetails.getId(), newEmail);
     }
 
     /**

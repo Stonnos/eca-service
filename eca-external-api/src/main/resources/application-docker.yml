@@ -2,13 +2,7 @@ spring:
   ## Datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://eca-db:5432/eca_external_api
-    username: postgres
-    password: postgres
-  ## Token datasource properties
-  tokendatasource:
-    driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://eca-db:5432/eca_oauth
+    url: jdbc:postgresql://eca-db:5432/eca_external_api
     username: postgres
     password: postgres
   jpa:
@@ -33,3 +27,6 @@ external-api:
   classifiersPath: /home/classifiers/
   trainDataPath: /home/classifiers/data/
   downloadBaseUrl: http://localhost:8080/external-api
+
+auth-server:
+  baseUrl: http://eca-oauth:8080
