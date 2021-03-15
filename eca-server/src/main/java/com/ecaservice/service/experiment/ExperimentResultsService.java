@@ -63,7 +63,9 @@ public class ExperimentResultsService {
                     experimentResultsEntity.setResultsIndex(i);
                     return experimentResultsEntity;
                 }).collect(Collectors.toList());
-        return experimentResultsEntityRepository.saveAll(experimentResultsEntities);
+        List<ExperimentResultsEntity> saved = experimentResultsEntityRepository.saveAll(experimentResultsEntities);
+        log.info("[{}] experiment [{}] results has been saved to ERS sent", saved.size(), experiment.getRequestId());
+        return saved;
     }
 
     /**

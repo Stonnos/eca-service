@@ -29,6 +29,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.util.LogHelper.EV_REQUEST_ID;
+import static com.ecaservice.util.LogHelper.putMdc;
+
 /**
  * Experiment scheduler.
  *
@@ -60,6 +63,7 @@ public class ExperimentScheduler {
                 Collections.singletonList(RequestStatus.NEW));
         log.trace("Obtained {} new experiments", experiments.size());
         experiments.forEach(experiment -> {
+            putMdc(EV_REQUEST_ID, experiment.getRequestId());
             experimentProgressService.start(experiment);
             setInProgressStatus(experiment);
             ExperimentHistory experimentHistory = experimentService.processExperiment(experiment);
@@ -82,6 +86,7 @@ public class ExperimentScheduler {
                 Arrays.asList(RequestStatus.FINISHED, RequestStatus.ERROR, RequestStatus.TIMEOUT));
         log.trace("Obtained {} experiments to sent results", experiments.size());
         for (Experiment experiment : experiments) {
+            putMdc(EV_REQUEST_ID, experiment.getRequestId());
             try {
                 notificationService.notifyByEmail(experiment);
                 experiment.setSentDate(LocalDateTime.now());
@@ -108,6 +113,7 @@ public class ExperimentScheduler {
                 experimentResultsEntities.stream().collect(
                         Collectors.groupingBy(ExperimentResultsEntity::getExperiment));
         experimentResultsMap.forEach((experiment, experimentResultsEntityList) -> {
+            putMdc(EV_REQUEST_ID, experiment.getRequestId());
             try {
                 ExperimentHistory experimentHistory = experimentService.getExperimentHistory(experiment);
                 experimentResultsEntityList.forEach(
@@ -131,7 +137,10 @@ public class ExperimentScheduler {
         LocalDateTime dateTime = LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage());
         List<Experiment> experiments = experimentRepository.findNotDeletedExperiments(appInstanceEntity, dateTime);
         log.trace("Obtained {} experiments to remove data", experiments.size());
-        experiments.forEach(experimentService::removeExperimentData);
+        experiments.forEach(experiment -> {
+            putMdc(EV_REQUEST_ID, experiment.getRequestId());
+            experimentService.removeExperimentData(experiment);
+        });
         log.info("Experiments data removing has been finished.");
     }
 

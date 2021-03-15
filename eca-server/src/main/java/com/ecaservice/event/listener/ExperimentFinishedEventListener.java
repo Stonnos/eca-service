@@ -35,8 +35,11 @@ public class ExperimentFinishedEventListener {
         List<ExperimentResultsEntity> experimentResultsEntityList =
                 experimentResultsService.saveExperimentResultsToErsSent(experimentFinishedEvent.getExperiment(),
                         experimentFinishedEvent.getExperimentHistory());
-        experimentResultsEntityList.forEach(
-                experimentResultsEntity -> ersService.sentExperimentResults(experimentResultsEntity,
-                        experimentFinishedEvent.getExperimentHistory(), ExperimentResultsRequestSource.SYSTEM));
+        experimentResultsEntityList.forEach(experimentResultsEntity -> {
+            log.info("Starting to sent experiment [{}] results index [{}] to ERS",
+                    experimentFinishedEvent.getExperiment().getRequestId(), experimentResultsEntity.getResultsIndex());
+            ersService.sentExperimentResults(experimentResultsEntity,
+                    experimentFinishedEvent.getExperimentHistory(), ExperimentResultsRequestSource.SYSTEM);
+        });
     }
 }
