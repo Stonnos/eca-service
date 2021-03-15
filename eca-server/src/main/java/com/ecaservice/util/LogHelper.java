@@ -15,7 +15,7 @@ public class LogHelper {
     /**
      * Evaluation request id
      */
-    public static final String EV_REQUEST_ID = "ev-requestId";
+    public static final String EV_REQUEST_ID = "ev.requestId";
 
     /**
      * Puts key-value pair in mdc.

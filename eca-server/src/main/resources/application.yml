@@ -44,8 +44,8 @@ spring:
   sleuth:
     log:
       slf4j:
-        whitelisted-mdc-keys: ev-requestId
-    propagation-keys: ev-requestId
+        whitelisted-mdc-keys: ev.requestId
+    propagation-keys: ev.requestId
 eureka:
   client:
     registerWithEureka: false
