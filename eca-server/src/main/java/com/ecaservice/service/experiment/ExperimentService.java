@@ -98,8 +98,9 @@ public class ExperimentService implements PageRequestService<Experiment> {
     public Experiment createExperiment(ExperimentRequest experimentRequest) {
         String requestId = UUID.randomUUID().toString();
         putMdc(EV_REQUEST_ID, requestId);
-        log.info("Received experiment request for data '{}', email '{}'", experimentRequest.getData().relationName(),
-                experimentRequest.getEmail());
+        log.info("Received experiment [{}] request for data '{}', evaluation method [{}], email '{}'",
+                experimentRequest.getExperimentType(), experimentRequest.getData().relationName(),
+                experimentRequest.getEvaluationMethod(), experimentRequest.getEmail());
         try {
             AppInstanceEntity appInstanceEntity = appInstanceService.getAppInstanceEntity();
             Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
