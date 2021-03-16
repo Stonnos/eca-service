@@ -26,6 +26,7 @@ import java.util.concurrent.TimeoutException;
 import static com.ecaservice.util.LogHelper.EV_REQUEST_ID;
 import static com.ecaservice.util.LogHelper.TX_ID;
 import static com.ecaservice.util.LogHelper.putMdc;
+import static com.ecaservice.util.LogHelper.putMdcIfAbsent;
 import static com.ecaservice.util.Utils.error;
 
 /**
@@ -53,7 +54,7 @@ public class EvaluationRequestService {
      */
     public EvaluationResponse processRequest(final EvaluationRequest evaluationRequest) {
         String requestId = UUID.randomUUID().toString();
-        putMdc(TX_ID, requestId);
+        putMdcIfAbsent(TX_ID, requestId);
         putMdc(EV_REQUEST_ID, requestId);
         log.info("Received request for classifier [{}] evaluation with data [{}]",
                 evaluationRequest.getClassifier().getClass().getSimpleName(),

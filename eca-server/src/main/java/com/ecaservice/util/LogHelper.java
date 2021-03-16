@@ -2,6 +2,7 @@ package com.ecaservice.util;
 
 import brave.propagation.ExtraFieldPropagation;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 
 /**
@@ -31,5 +32,18 @@ public class LogHelper {
     public static void putMdc(String key, String value) {
         MDC.put(key, value);
         ExtraFieldPropagation.set(key, value);
+    }
+
+    /**
+     * Puts key-value pair in mdc if it isn't exists.
+     *
+     * @param key   - key
+     * @param value - value
+     */
+    public static void putMdcIfAbsent(String key, String value) {
+        String val = MDC.get(key);
+        if (StringUtils.isEmpty(val)) {
+            putMdc(key, value);
+        }
     }
 }
