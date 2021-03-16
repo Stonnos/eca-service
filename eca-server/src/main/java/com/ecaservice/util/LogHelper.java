@@ -30,8 +30,10 @@ public class LogHelper {
      * @param value - value
      */
     public static void putMdc(String key, String value) {
-        MDC.put(key, value);
-        ExtraFieldPropagation.set(key, value);
+        if (!StringUtils.isEmpty(key) && !StringUtils.isEmpty(value)) {
+            MDC.put(key, value);
+            ExtraFieldPropagation.set(key, value);
+        }
     }
 
     /**
@@ -41,9 +43,11 @@ public class LogHelper {
      * @param value - value
      */
     public static void putMdcIfAbsent(String key, String value) {
-        String val = MDC.get(key);
-        if (StringUtils.isEmpty(val)) {
-            putMdc(key, value);
+        if (!StringUtils.isEmpty(key) && !StringUtils.isEmpty(value)) {
+            String val = MDC.get(key);
+            if (StringUtils.isEmpty(val)) {
+                putMdc(key, value);
+            }
         }
     }
 }
