@@ -55,13 +55,13 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.common.web.logging.LogHelper.EV_REQUEST_ID;
+import static com.ecaservice.common.web.logging.LogHelper.TX_ID;
+import static com.ecaservice.common.web.logging.LogHelper.putMdc;
 import static com.ecaservice.model.entity.AbstractEvaluationEntity_.CREATION_DATE;
 import static com.ecaservice.model.entity.Experiment_.EXPERIMENT_TYPE;
 import static com.ecaservice.util.ExperimentUtils.generateToken;
 import static com.ecaservice.util.ExperimentUtils.getExperimentFile;
-import static com.ecaservice.util.LogHelper.EV_REQUEST_ID;
-import static com.ecaservice.util.LogHelper.TX_ID;
-import static com.ecaservice.util.LogHelper.putMdc;
 import static com.ecaservice.util.Utils.atEndOfDay;
 import static com.ecaservice.util.Utils.atStartOfDay;
 import static com.ecaservice.util.Utils.existsFile;

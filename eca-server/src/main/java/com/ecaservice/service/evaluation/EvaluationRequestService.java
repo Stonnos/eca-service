@@ -23,10 +23,10 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static com.ecaservice.util.LogHelper.EV_REQUEST_ID;
-import static com.ecaservice.util.LogHelper.TX_ID;
-import static com.ecaservice.util.LogHelper.putMdc;
-import static com.ecaservice.util.LogHelper.putMdcIfAbsent;
+import static com.ecaservice.common.web.logging.LogHelper.EV_REQUEST_ID;
+import static com.ecaservice.common.web.logging.LogHelper.TX_ID;
+import static com.ecaservice.common.web.logging.LogHelper.putMdc;
+import static com.ecaservice.common.web.logging.LogHelper.putMdcIfAbsent;
 import static com.ecaservice.util.Utils.error;
 
 /**

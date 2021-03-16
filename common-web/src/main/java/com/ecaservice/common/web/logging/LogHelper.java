@@ -1,4 +1,4 @@
-package com.ecaservice.util;
+package com.ecaservice.common.web.logging;
 
 import brave.propagation.ExtraFieldPropagation;
 import lombok.experimental.UtilityClass;
@@ -34,6 +34,19 @@ public class LogHelper {
             MDC.put(key, value);
             ExtraFieldPropagation.set(key, value);
         }
+    }
+
+    /**
+     * Gets value by key from mdc.
+     *
+     * @param key - key
+     * @return value associated with key
+     */
+    public static String getMdc(String key) {
+        if (StringUtils.isEmpty(key)) {
+            return null;
+        }
+        return MDC.get(key);
     }
 
     /**

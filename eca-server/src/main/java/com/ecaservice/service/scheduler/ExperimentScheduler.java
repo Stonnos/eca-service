@@ -29,9 +29,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.ecaservice.util.LogHelper.EV_REQUEST_ID;
-import static com.ecaservice.util.LogHelper.TX_ID;
-import static com.ecaservice.util.LogHelper.putMdc;
+import static com.ecaservice.common.web.logging.LogHelper.EV_REQUEST_ID;
+import static com.ecaservice.common.web.logging.LogHelper.TX_ID;
+import static com.ecaservice.common.web.logging.LogHelper.putMdc;
 
 /**
  * Experiment scheduler.
@@ -153,6 +153,7 @@ public class ExperimentScheduler {
         experiment.setRequestStatus(RequestStatus.IN_PROGRESS);
         experiment.setStartDate(LocalDateTime.now());
         experimentRepository.save(experiment);
+        log.info("Experiment [{}] in progress status has been set", experiment.getRequestId());
         eventPublisher.publishEvent(new ExperimentChangeStatusEvent(this, experiment));
     }
 }

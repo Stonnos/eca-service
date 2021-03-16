@@ -32,6 +32,10 @@
             <artifactId>spring-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-sleuth</artifactId>
+        </dependency>
+        <dependency>
             <groupId>eca.service</groupId>
             <artifactId>core-test</artifactId>
             <version>${project.version}</version>
