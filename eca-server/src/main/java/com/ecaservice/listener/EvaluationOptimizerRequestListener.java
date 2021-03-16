@@ -15,6 +15,10 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
+import java.util.UUID;
+
+import static com.ecaservice.util.LogHelper.TX_ID;
+import static com.ecaservice.util.LogHelper.putMdc;
 
 /**
  * Rabbit MQ listener for evaluation optimizer request messages.
@@ -37,6 +41,7 @@ public class EvaluationOptimizerRequestListener {
      */
     @RabbitListener(queues = "${queue.evaluationOptimizerRequestQueue}")
     public void handleMessage(@Valid @Payload InstancesRequest instancesRequest, Message inboundMessage) {
+        putMdc(TX_ID, UUID.randomUUID().toString());
         EvaluationResponse evaluationResponse =
                 evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
         log.info("Evaluation response [{}] with status [{}] has been built for evaluation optimizer request.",

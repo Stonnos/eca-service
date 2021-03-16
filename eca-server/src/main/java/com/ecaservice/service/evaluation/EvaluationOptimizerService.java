@@ -79,6 +79,7 @@ public class EvaluationOptimizerService {
 
     private EvaluationResponse evaluateModel(ClassifierOptionsRequest classifierOptionsRequest, String options,
                                              Instances data) {
+        log.info("Starting to evaluate model for data [{}] with options [{}]", data.relationName(), options);
         AbstractClassifier classifier = classifierOptionsAdapter.convert(parseOptions(options));
         EvaluationRequest evaluationRequest = evaluationRequestMapper.map(classifierOptionsRequest);
         evaluationRequest.setData(data);

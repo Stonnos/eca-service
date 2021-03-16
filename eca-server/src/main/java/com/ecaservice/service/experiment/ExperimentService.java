@@ -60,6 +60,7 @@ import static com.ecaservice.model.entity.Experiment_.EXPERIMENT_TYPE;
 import static com.ecaservice.util.ExperimentUtils.generateToken;
 import static com.ecaservice.util.ExperimentUtils.getExperimentFile;
 import static com.ecaservice.util.LogHelper.EV_REQUEST_ID;
+import static com.ecaservice.util.LogHelper.TX_ID;
 import static com.ecaservice.util.LogHelper.putMdc;
 import static com.ecaservice.util.Utils.atEndOfDay;
 import static com.ecaservice.util.Utils.atStartOfDay;
@@ -97,6 +98,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
      */
     public Experiment createExperiment(ExperimentRequest experimentRequest) {
         String requestId = UUID.randomUUID().toString();
+        putMdc(TX_ID, requestId);
         putMdc(EV_REQUEST_ID, requestId);
         log.info("Received experiment [{}] request for data '{}', evaluation method [{}], email '{}'",
                 experimentRequest.getExperimentType(), experimentRequest.getData().relationName(),

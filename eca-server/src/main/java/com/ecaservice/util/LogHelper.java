@@ -13,6 +13,11 @@ import org.slf4j.MDC;
 public class LogHelper {
 
     /**
+     * Transaction id
+     */
+    public static final String TX_ID = "tx.id";
+
+    /**
      * Evaluation request id
      */
     public static final String EV_REQUEST_ID = "ev.requestId";
