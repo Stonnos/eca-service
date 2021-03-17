@@ -79,12 +79,27 @@ public class TestHelperUtils {
      * @return create user dto
      */
     public static CreateUserDto createUserDto() {
+        return createUserDto(USER_NAME, EMAIL, FIRST_NAME, LAST_NAME, MIDDLE_NAME);
+    }
+
+    /**
+     * Creates user dto.
+     *
+     * @param login      - user login
+     * @param email      - user email
+     * @param firstName  - user first name
+     * @param lastName   - user last name
+     * @param middleName - user middle name
+     * @return create user dto
+     */
+    public static CreateUserDto createUserDto(String login, String email, String firstName, String lastName,
+                                              String middleName) {
         CreateUserDto createUserDto = new CreateUserDto();
-        createUserDto.setLogin(USER_NAME);
-        createUserDto.setEmail(EMAIL);
-        createUserDto.setFirstName(FIRST_NAME);
-        createUserDto.setLastName(LAST_NAME);
-        createUserDto.setMiddleName(MIDDLE_NAME);
+        createUserDto.setLogin(login);
+        createUserDto.setEmail(email);
+        createUserDto.setFirstName(firstName);
+        createUserDto.setLastName(lastName);
+        createUserDto.setMiddleName(middleName);
         return createUserDto;
     }
 

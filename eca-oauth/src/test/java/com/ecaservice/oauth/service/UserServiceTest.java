@@ -26,9 +26,12 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Iterator;
 
 import static com.ecaservice.oauth.TestHelperUtils.createRoleEntity;
+import static com.ecaservice.oauth.TestHelperUtils.createUserDto;
 import static com.ecaservice.oauth.entity.UserEntity_.CREATION_DATE;
+import static com.ecaservice.oauth.entity.UserEntity_.FULL_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
@@ -64,6 +67,7 @@ class UserServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
+        roleRepository.save(createRoleEntity());
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         userService = new UserService(commonConfig, passwordEncoder, userMapper, userEntityRepository, roleRepository,
                 userPhotoRepository);
@@ -78,7 +82,6 @@ class UserServiceTest extends AbstractJpaTest {
 
     @Test
     void testCreateUser() {
-        roleRepository.save(createRoleEntity());
         CreateUserDto createUserDto = TestHelperUtils.createUserDto();
         UserEntity userEntity = userService.createUser(createUserDto, PASSWORD);
         UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
@@ -120,6 +123,28 @@ class UserServiceTest extends AbstractJpaTest {
         Page<UserEntity> usersPage = userService.getNextPage(pageRequestDto);
         assertThat(usersPage).isNotNull();
         assertThat(usersPage.getContent()).hasSize(1);
+    }
+
+    @Test
+    void testSortByFullName() {
+        UserEntity first =
+                userService.createUser(createUserDto("user1", "test1@mail.ru", "Ivan", "Ivanov", "Ivanovich"),
+                        PASSWORD);
+        UserEntity second =
+                userService.createUser(createUserDto("user2", "test2@mail.ru", "Petr", "Babaev", "Petrovich"),
+                        PASSWORD);
+        UserEntity third =
+                userService.createUser(createUserDto("user3", "test3@mail.ru", "Ivan", "Alaev", "Fedorovich"),
+                        PASSWORD);
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(0, 10, FULL_NAME, true, null, Collections.emptyList());
+        Page<UserEntity> usersPage = userService.getNextPage(pageRequestDto);
+        assertThat(usersPage).isNotNull();
+        assertThat(usersPage.getContent()).hasSize(3);
+        Iterator<UserEntity> iterator = usersPage.iterator();
+        assertThat(iterator.next().getId()).isEqualTo(third.getId());
+        assertThat(iterator.next().getId()).isEqualTo(second.getId());
+        assertThat(iterator.next().getId()).isEqualTo(first.getId());
     }
 
     @Test
@@ -180,7 +205,6 @@ class UserServiceTest extends AbstractJpaTest {
     }
 
     private UserEntity createAndSaveUser() {
-        roleRepository.save(createRoleEntity());
         CreateUserDto createUserDto = TestHelperUtils.createUserDto();
         return userService.createUser(createUserDto, PASSWORD);
     }
