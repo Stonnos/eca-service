@@ -94,6 +94,7 @@ class UserServiceTest extends AbstractJpaTest {
 
     @Test
     void testCreateUserWithNotExistingRole() {
+        roleRepository.deleteAll();
         CreateUserDto createUserDto = TestHelperUtils.createUserDto();
         assertThrows(IllegalStateException.class, () -> userService.createUser(createUserDto, PASSWORD));
     }
