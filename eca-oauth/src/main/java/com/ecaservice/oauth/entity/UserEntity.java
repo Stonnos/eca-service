@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -59,6 +60,18 @@ public class UserEntity {
     private String firstName;
 
     /**
+     * User last name
+     */
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
+
+    /**
+     * User middle name
+     */
+    @Column(name = "middle_name", nullable = false)
+    private String middleName;
+
+    /**
      * Two factor authentication enabled?
      */
     @Column(name = "tfa_enabled")
@@ -78,4 +91,9 @@ public class UserEntity {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleEntity> roles;
 
+    /**
+     * User full name
+     */
+    @Formula("concat(last_name, ' ', first_name, ' ', middle_name)")
+    private String fullName;
 }
