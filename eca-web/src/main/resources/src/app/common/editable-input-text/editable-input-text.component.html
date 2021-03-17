@@ -1,0 +1,22 @@
+<input
+  required
+  pInputText
+  type="text"
+  [value]="value"
+  [(ngModel)]="editableValue"
+  (click)="enableEditMode()"
+  class="form-control d-block w-100">
+<div *ngIf="editMode" class="mt-1 d-flex align-items-end justify-content-end">
+  <button pButton
+          type="button"
+          (click)="submit()"
+          class="ui-button-info"
+          icon="pi pi-fw pi-check">
+  </button>
+  <button pButton
+          type="button"
+          (click)="cancel()"
+          class="ui-button-secondary"
+          icon="pi pi-fw pi-times">
+  </button>
+</div>

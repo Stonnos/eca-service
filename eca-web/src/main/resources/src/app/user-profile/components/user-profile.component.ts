@@ -141,6 +141,10 @@ export class UserProfileComponent implements OnInit {
     this.getUser(false);
   }
 
+  public updateFirstName(value: string): void {
+    console.log(value);
+  }
+
   private getUser(downloadPhoto: boolean): void {
     this.usersService.getCurrentUser().subscribe({
       next: (user: UserDto) => {

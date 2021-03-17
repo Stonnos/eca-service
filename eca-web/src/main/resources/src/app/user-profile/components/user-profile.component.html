@@ -50,6 +50,10 @@
                 <ng-container *ngSwitchCase="'tfaEnabled'">
                   <p-inputSwitch [(ngModel)]="tfaEnabled" (onChange)="changedTfaSwitch($event)"></p-inputSwitch>
                 </ng-container>
+                <ng-container *ngSwitchCase="'firstName'">
+                 <app-editable-input-text [value]="getValue(field.name)" (submitEvent)="updateFirstName($event)">
+                 </app-editable-input-text>
+                </ng-container>
                 <ng-container *ngSwitchDefault>
                   {{ getValue(field.name) }}
                 </ng-container>
