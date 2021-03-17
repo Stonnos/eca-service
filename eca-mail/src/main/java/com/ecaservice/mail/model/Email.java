@@ -82,7 +82,7 @@ public class Email {
     private int failedAttemptsToSent;
 
     /**
-     * Identifier for cross - system logging.
+     * Identifier for cross - system logging
      */
     @Column(name = "tx_id")
     private String txId;

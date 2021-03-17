@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.ecaservice.common.web.logging.LogHelper.TX_ID;
-import static com.ecaservice.common.web.logging.LogHelper.putMdc;
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.putMdc;
 
 /**
  * Email scheduler.

@@ -29,9 +29,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.ecaservice.common.web.logging.LogHelper.EV_REQUEST_ID;
-import static com.ecaservice.common.web.logging.LogHelper.TX_ID;
-import static com.ecaservice.common.web.logging.LogHelper.putMdc;
+import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.putMdc;
 
 /**
  * Experiment scheduler.

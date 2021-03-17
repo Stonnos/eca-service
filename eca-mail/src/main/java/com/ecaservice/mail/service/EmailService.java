@@ -16,8 +16,8 @@ import org.springframework.validation.annotation.Validated;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.ecaservice.common.web.logging.LogHelper.TX_ID;
-import static com.ecaservice.common.web.logging.LogHelper.getMdc;
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.getMdc;
 
 /**
  * Email service.

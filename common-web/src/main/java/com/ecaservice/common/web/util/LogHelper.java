@@ -1,4 +1,4 @@
-package com.ecaservice.common.web.logging;
+package com.ecaservice.common.web.util;
 
 import brave.propagation.ExtraFieldPropagation;
 import lombok.experimental.UtilityClass;
@@ -50,7 +50,7 @@ public class LogHelper {
     }
 
     /**
-     * Puts key-value pair in mdc if it isn't exists.
+     * Puts key-value pair in mdc if it doesn't exists.
      *
      * @param key   - key
      * @param value - value
