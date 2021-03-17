@@ -153,6 +153,14 @@ export class UserProfileComponent implements OnInit {
     console.log(value);
   }
 
+  public updateLastName(value: string): void {
+    console.log(value);
+  }
+
+  public updateMiddleName(value: string): void {
+    console.log(value);
+  }
+
   private getUser(downloadPhoto: boolean): void {
     this.usersService.getCurrentUser().subscribe({
       next: (user: UserDto) => {

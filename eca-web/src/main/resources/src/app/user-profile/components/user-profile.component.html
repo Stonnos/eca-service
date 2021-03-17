@@ -58,6 +58,22 @@
                                           [invalidPatternErrorMessages]="invalidPersonNameErrorMessages">
                  </app-editable-input-text>
                 </ng-container>
+                <ng-container *ngSwitchCase="'lastName'">
+                  <app-editable-input-text [value]="getValue(field.name)"
+                                           (submitEvent)="updateLastName($event)"
+                                           [maxLength]="personNameMaxLength"
+                                           [pattern]="personNameRegex"
+                                           [invalidPatternErrorMessages]="invalidPersonNameErrorMessages">
+                  </app-editable-input-text>
+                </ng-container>
+                <ng-container *ngSwitchCase="'middleName'">
+                  <app-editable-input-text [value]="getValue(field.name)"
+                                           (submitEvent)="updateMiddleName($event)"
+                                           [maxLength]="personNameMaxLength"
+                                           [pattern]="personNameRegex"
+                                           [invalidPatternErrorMessages]="invalidPersonNameErrorMessages">
+                  </app-editable-input-text>
+                </ng-container>
                 <ng-container *ngSwitchDefault>
                   {{ getValue(field.name) }}
                 </ng-container>
