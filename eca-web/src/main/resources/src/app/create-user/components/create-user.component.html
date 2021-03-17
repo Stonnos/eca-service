@@ -113,7 +113,7 @@
           <div *ngIf="lastName?.errors?.required">
             Заполните фамилию
           </div>
-          <div *ngIf="firstName?.errors?.pattern">
+          <div *ngIf="lastName?.errors?.pattern">
             <span>Фамилия должна содержать не менее 2-х символов и начинаться с заглавной буквы.</span>
             <span class="d-block">Разрешены только буквы одного алфавита</span>
           </div>
