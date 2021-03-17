@@ -37,9 +37,6 @@ public class EvaluationRequestListener {
      */
     @RabbitListener(queues = "${queue.evaluationRequestQueue}")
     public void handleMessage(@Valid @Payload EvaluationRequest evaluationRequest, Message inboundMessage) {
-        log.info("Received request for classifier [{}] evaluation with data [{}]",
-                evaluationRequest.getClassifier().getClass().getSimpleName(),
-                evaluationRequest.getData().relationName());
         EvaluationResponse evaluationResponse = evaluationRequestService.processRequest(evaluationRequest);
         log.info("Evaluation response [{}] with status [{}] has been built.", evaluationResponse.getRequestId(),
                 evaluationResponse.getStatus());

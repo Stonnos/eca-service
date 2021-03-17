@@ -15,6 +15,9 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.putMdc;
+
 /**
  * Email scheduler.
  *
@@ -39,6 +42,7 @@ public class MailScheduler {
                         PageRequest.of(0, mailConfig.getPageSize()));
         log.trace("{} not sent emails has been found.", emails.size());
         for (Email email : emails) {
+            putMdc(TX_ID, email.getTxId());
             try {
                 mailSenderService.sendEmail(email);
                 email.setStatus(EmailStatus.SENT);

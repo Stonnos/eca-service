@@ -80,4 +80,10 @@ public class Email {
      */
     @Column(name = "failed_attempts_to_sent")
     private int failedAttemptsToSent;
+
+    /**
+     * Identifier for cross - system logging
+     */
+    @Column(name = "tx_id")
+    private String txId;
 }

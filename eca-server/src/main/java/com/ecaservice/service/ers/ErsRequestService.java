@@ -60,8 +60,11 @@ public class ErsRequestService {
             ersRequest.setRequestDate(LocalDateTime.now());
             ersRequest.setRequestId(UUID.randomUUID().toString());
             try {
+                log.info("Starting to send evaluation results to ERS with request [{}]", ersRequest.getRequestId());
                 EvaluationResultsResponse resultsResponse =
                         ersWebServiceClient.sendEvaluationResults(evaluationResults, ersRequest.getRequestId());
+                log.info("Received response for requestId [{}] with status = {} from ERS.",
+                        resultsResponse.getRequestId(), resultsResponse.getStatus());
                 ersRequest.setResponseStatus(ersResponseStatusMapper.map(resultsResponse.getStatus()));
             } catch (WebServiceIOException ex) {
                 log.error("There was an error while sending evaluation results: {}", ex.getMessage());
