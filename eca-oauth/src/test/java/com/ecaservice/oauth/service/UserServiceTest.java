@@ -51,6 +51,8 @@ class UserServiceTest extends AbstractJpaTest {
     private static final int BYTE_ARRAY_LENGTH = 32;
     private static final String EMAIL_TO_UPDATE = "updateemail@test.ru";
     private static final String TEST_2_USER = "test2";
+    private static final int PAGE = 0;
+    private static final int SIZE = 10;
 
     @Inject
     private CommonConfig commonConfig;
@@ -119,7 +121,7 @@ class UserServiceTest extends AbstractJpaTest {
     void testGetUsersPage() {
         UserEntity userEntity = createAndSaveUser();
         PageRequestDto pageRequestDto =
-                new PageRequestDto(0, 10, CREATION_DATE, true, userEntity.getLogin(), Collections.emptyList());
+                new PageRequestDto(PAGE, SIZE, CREATION_DATE, true, userEntity.getLogin(), Collections.emptyList());
         Page<UserEntity> usersPage = userService.getNextPage(pageRequestDto);
         assertThat(usersPage).isNotNull();
         assertThat(usersPage.getContent()).hasSize(1);
@@ -137,7 +139,7 @@ class UserServiceTest extends AbstractJpaTest {
                 userService.createUser(createUserDto("user3", "test3@mail.ru", "Ivan", "Alaev", "Fedorovich"),
                         PASSWORD);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(0, 10, FULL_NAME, true, null, Collections.emptyList());
+                new PageRequestDto(PAGE, SIZE, FULL_NAME, true, null, Collections.emptyList());
         Page<UserEntity> usersPage = userService.getNextPage(pageRequestDto);
         assertThat(usersPage).isNotNull();
         assertThat(usersPage.getContent()).hasSize(3);
@@ -155,7 +157,7 @@ class UserServiceTest extends AbstractJpaTest {
                         PASSWORD);
         userService.createUser(createUserDto("user3", "test3@mail.ru", "Ivan", "Alaev", "Petrovich"), PASSWORD);
         PageRequestDto pageRequestDto =
-                new PageRequestDto(0, 10, CREATION_DATE, true, "ev Petr Petr", Collections.emptyList());
+                new PageRequestDto(PAGE, SIZE, CREATION_DATE, true, "ev Petr Petr", Collections.emptyList());
         Page<UserEntity> usersPage = userService.getNextPage(pageRequestDto);
         assertThat(usersPage).isNotNull();
         assertThat(usersPage.getContent()).hasSize(1);
