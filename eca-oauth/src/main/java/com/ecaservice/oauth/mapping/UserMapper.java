@@ -36,6 +36,8 @@ public interface UserMapper {
     @Mapping(source = "login", target = "login", qualifiedByName = "trim")
     @Mapping(source = "email", target = "email", qualifiedByName = "trim")
     @Mapping(source = "firstName", target = "firstName", qualifiedByName = "trim")
+    @Mapping(source = "lastName", target = "lastName", qualifiedByName = "trim")
+    @Mapping(source = "middleName", target = "middleName", qualifiedByName = "trim")
     UserEntity map(CreateUserDto createUserDto);
 
     /**

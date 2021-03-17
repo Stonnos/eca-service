@@ -26,6 +26,8 @@ public class TestHelperUtils {
     private static final long USER_ID = 1L;
     private static final String PASSWORD = "pa66word!";
     private static final String TOKEN = "token";
+    private static final String MIDDLE_NAME = "Igorevich";
+    private static final String LAST_NAME = "Batygin";
 
     /**
      * Creates role entity.
@@ -61,6 +63,8 @@ public class TestHelperUtils {
         userEntity.setLogin(USER_NAME);
         userEntity.setEmail(EMAIL);
         userEntity.setFirstName(FIRST_NAME);
+        userEntity.setLastName(LAST_NAME);
+        userEntity.setMiddleName(MIDDLE_NAME);
         userEntity.setId(USER_ID);
         userEntity.setRoles(Sets.newHashSet(createRoleEntity()));
         userEntity.setPassword(PASSWORD);
@@ -79,6 +83,8 @@ public class TestHelperUtils {
         createUserDto.setLogin(USER_NAME);
         createUserDto.setEmail(EMAIL);
         createUserDto.setFirstName(FIRST_NAME);
+        createUserDto.setLastName(LAST_NAME);
+        createUserDto.setMiddleName(MIDDLE_NAME);
         return createUserDto;
     }
 

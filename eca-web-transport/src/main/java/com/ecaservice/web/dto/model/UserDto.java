@@ -46,6 +46,18 @@ public class UserDto {
     private String firstName;
 
     /**
+     * User last name
+     */
+    @ApiModelProperty(value = "User last name")
+    private String lastName;
+
+    /**
+     * User middle name
+     */
+    @ApiModelProperty(value = "User middle name")
+    private String middleName;
+
+    /**
      * User creation date
      */
     @ApiModelProperty(value = "User creation date")
