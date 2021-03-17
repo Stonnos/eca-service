@@ -148,6 +148,21 @@ class UserServiceTest extends AbstractJpaTest {
     }
 
     @Test
+    void testSearchByFullName() {
+        userService.createUser(createUserDto("user1", "test1@mail.ru", "Ivan", "Ivanov", "Petrovich"), PASSWORD);
+        UserEntity second =
+                userService.createUser(createUserDto("user2", "test2@mail.ru", "Petr", "Babaev", "Petrovich"),
+                        PASSWORD);
+        userService.createUser(createUserDto("user3", "test3@mail.ru", "Ivan", "Alaev", "Petrovich"), PASSWORD);
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(0, 10, CREATION_DATE, true, "ev Petr Petr", Collections.emptyList());
+        Page<UserEntity> usersPage = userService.getNextPage(pageRequestDto);
+        assertThat(usersPage).isNotNull();
+        assertThat(usersPage.getContent()).hasSize(1);
+        assertThat(usersPage.getContent().iterator().next().getId()).isEqualTo(second.getId());
+    }
+
+    @Test
     void testSetTfaEnabled() {
         UserEntity userEntity = createAndSaveUser();
         userService.setTfaEnabled(userEntity.getId(), true);

@@ -55,7 +55,7 @@ public class FilterUtils {
                 predicates.add(cb.or(
                         buildLikePredicate(root, cb, UserEntity_.LOGIN, trimQuery),
                         buildLikePredicate(root, cb, UserEntity_.EMAIL, trimQuery),
-                        buildLikePredicate(root, cb, UserEntity_.FIRST_NAME, trimQuery))
+                        buildLikePredicate(root, cb, UserEntity_.FULL_NAME, trimQuery))
                 );
             }
             return cb.and(predicates.toArray(new Predicate[0]));
