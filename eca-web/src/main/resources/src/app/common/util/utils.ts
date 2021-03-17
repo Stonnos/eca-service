@@ -7,6 +7,12 @@ import { AuthenticationKeys } from "../../auth/model/auth.keys";
 
 export class Utils {
 
+  public static readonly LOGIN_REGEX: string = '[a-z0-9]{3,}';
+  public static readonly EMAIL_REGEX: string =
+    '[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})';
+  public static readonly PERSON_NAME_REGEX: string = '([A-Z][a-z]+)|([А-Я][а-я]+)';
+  public static readonly PERSON_NAME_MAX_LENGTH: number = 30;
+
   public static readonly MISSING_VALUE: string = "-";
   public static readonly PASSWORD_STRENGTH_CUTOFF: number = 3;
 

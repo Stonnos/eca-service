@@ -9,6 +9,7 @@ import { UserDto, ValidationErrorDto } from "../../../../../../../target/generat
 import { ValidationService } from "../../common/services/validation.service";
 import { ValidationErrorCode } from "../../common/model/validation-error-code";
 import { UserFields } from "../../common/util/field-names";
+import { Utils } from "../../common/util/utils";
 
 @Component({
   selector: 'app-create-user',
@@ -17,10 +18,10 @@ import { UserFields } from "../../common/util/field-names";
 })
 export class CreateUserComponent extends BaseCreateDialogComponent<CreateUserModel> implements OnInit {
 
-  public loginRegex: string = '[a-z0-9]{3,}';
-  public emailRegex: string = '[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})';
-  public personNameRegex: string = '([A-Z][a-z]+)|([А-Я][а-я]+)';
-  public personNameMaxLength: number = 30;
+  public loginRegex: string = Utils.LOGIN_REGEX;
+  public emailRegex: string = Utils.EMAIL_REGEX;
+  public personNameRegex: string = Utils.PERSON_NAME_REGEX;
+  public personNameMaxLength: number = Utils.PERSON_NAME_MAX_LENGTH;
 
   public loading: boolean = false;
 

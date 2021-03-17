@@ -1,4 +1,5 @@
-import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, Input, OnInit, EventEmitter, Output, ViewChild } from '@angular/core';
+import { NgForm } from "@angular/forms";
 
 @Component({
   selector: 'app-editable-input-text',
@@ -7,15 +8,32 @@ import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
 })
 export class EditableInputTextComponent implements OnInit {
 
+  @ViewChild(NgForm, { static: true })
+  private form: NgForm;
+
   @Input()
   public value: string;
+
+  @Input()
+  public pattern: string;
+
+  @Input()
+  public maxLength: number = 255;
+
+  @Input()
+  public requiredFieldErrorMessage: string = 'Обязательное поле';
+
+  @Input()
+  public invalidPatternErrorMessages: string[] = [];
 
   @Output()
   public submitEvent: EventEmitter<string> = new EventEmitter<string>();
 
-  public editableValue: string;
+  public editableValue: string = '';
 
   public editMode: boolean = false;
+
+  public submitted: boolean = false;
 
   public ngOnInit() {
     this.editableValue = this.value;
@@ -26,12 +44,21 @@ export class EditableInputTextComponent implements OnInit {
   }
 
   public submit(): void {
-    this.editMode = false;
-    this.submitEvent.emit(this.editableValue);
+    this.submitted = true;
+    if (this.isValid()) {
+      this.submitEvent.emit(this.editableValue);
+      this.editMode = false;
+      this.submitted = false;
+    }
   }
 
   public cancel(): void {
     this.editMode = false;
+    this.submitted = false;
     this.editableValue = this.value;
+  }
+
+  public isValid(): boolean {
+    return this.form.valid;
   }
 }

@@ -38,9 +38,17 @@ export class UserProfileComponent implements OnInit {
   public changePasswordRequestCreatedMessage: string =
     'На ваш email отправлено письмо с подтверждением смены пароля';
 
-  public changePasswordRequestCreated: boolean = false;
-
   public uploadPhotoErrorHeader: string = 'Не удалось загрузить фото';
+
+  public invalidPersonNameErrorMessages: string[] = [
+    'Поле должно содержать не менее 2-х символов и начинаться с заглавной буквы.',
+    'Разрешены только буквы одного алфавита'
+  ];
+
+  public personNameRegex: string = Utils.PERSON_NAME_REGEX;
+  public personNameMaxLength: number = Utils.PERSON_NAME_MAX_LENGTH;
+
+  public changePasswordRequestCreated: boolean = false;
 
   //Max file size: 10MB
   public maxFileSize: number = 10000000;
