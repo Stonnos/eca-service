@@ -11,7 +11,7 @@ public enum ClassifierOptionsRequestSource {
     ERS,
 
     /**
-     * Optimal classifier options has been received cache
+     * Optimal classifier options has been received from cache
      */
     CACHE
 }

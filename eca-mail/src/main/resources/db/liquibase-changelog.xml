@@ -11,4 +11,5 @@
     <include file="db/changelog/v4-insert-templates.xml"/>
     <include file="db/changelog/v5-insert-in-progress-experiment-template.xml"/>
     <include file="db/changelog/v6-insert-change-password-template.xml"/>
+    <include file="db/changelog/v7-add-email-tx-id-column.xml"/>
 </databaseChangeLog>

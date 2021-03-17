@@ -50,6 +50,8 @@ public class ClassifierOptionsCacheService {
      */
     public String getOptimalClassifierOptionsFromErs(ClassifierOptionsRequest classifierOptionsRequest,
                                                      String dataMd5Hash) {
+        log.info("Starting to get optimal classifiers options from ERS for data: {}",
+                classifierOptionsRequest.getInstances().getRelationName());
         ClassifierOptionsRequestEntity requestEntity =
                 createClassifierOptionsRequestEntity(ClassifierOptionsRequestSource.ERS);
         ClassifierOptionsRequestModel requestModel =
@@ -70,6 +72,8 @@ public class ClassifierOptionsCacheService {
     @Locked(lockName = "getOptimalClassifierOptions", key = "#dataMd5Hash")
     public String getOptimalClassifierOptionsFromCache(ClassifierOptionsRequest classifierOptionsRequest,
                                                        String dataMd5Hash) {
+        log.info("Starting to get optimal classifiers options from cache for data: {}",
+                classifierOptionsRequest.getInstances().getRelationName());
         String options;
         ClassifierOptionsRequestModel requestModel = getLastClassifierOptionsRequestModel(dataMd5Hash);
         ClassifierOptionsResponseModel responseModel = getFirstResponseModel(requestModel);

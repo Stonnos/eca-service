@@ -16,6 +16,9 @@ import org.springframework.validation.annotation.Validated;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.getMdc;
+
 /**
  * Email service.
  *
@@ -42,12 +45,14 @@ public class EmailService {
     public Email saveEmail(@ValidEmailRequest EmailRequest emailRequest) {
         String uuid = UUID.randomUUID().toString();
         log.info("Received email request with uuid '{}'.", uuid);
-        Email email = emailRequestMapper.map(emailRequest, mailConfig);
         TemplateEntity templateEntity = templateService.getTemplate(emailRequest.getTemplateCode());
+        String txId = getMdc(TX_ID);
+        Email email = emailRequestMapper.map(emailRequest, mailConfig);
         email.setSubject(templateEntity.getSubject());
         String message = templateProcessorService.process(emailRequest.getTemplateCode(), emailRequest.getVariables());
         email.setMessage(message);
         email.setUuid(uuid);
+        email.setTxId(txId);
         email.setSaveDate(LocalDateTime.now());
         emailRepository.save(email);
         log.info("Email request with uuid '{}' has been saved.", uuid);

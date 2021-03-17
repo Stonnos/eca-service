@@ -55,6 +55,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.model.entity.AbstractEvaluationEntity_.CREATION_DATE;
 import static com.ecaservice.model.entity.Experiment_.EXPERIMENT_TYPE;
 import static com.ecaservice.util.ExperimentUtils.generateToken;
@@ -94,11 +97,17 @@ public class ExperimentService implements PageRequestService<Experiment> {
      * @return created experiment entity
      */
     public Experiment createExperiment(ExperimentRequest experimentRequest) {
+        String requestId = UUID.randomUUID().toString();
+        putMdc(TX_ID, requestId);
+        putMdc(EV_REQUEST_ID, requestId);
+        log.info("Received experiment [{}] request for data '{}', evaluation method [{}], email '{}'",
+                experimentRequest.getExperimentType(), experimentRequest.getData().relationName(),
+                experimentRequest.getEvaluationMethod(), experimentRequest.getEmail());
         try {
             AppInstanceEntity appInstanceEntity = appInstanceService.getAppInstanceEntity();
             Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
             experiment.setRequestStatus(RequestStatus.NEW);
-            experiment.setRequestId(UUID.randomUUID().toString());
+            experiment.setRequestId(requestId);
             experiment.setAppInstanceEntity(appInstanceEntity);
             File dataFile = new File(experimentConfig.getData().getStoragePath(),
                     String.format(experimentConfig.getData().getFileFormat(), experiment.getRequestId()));

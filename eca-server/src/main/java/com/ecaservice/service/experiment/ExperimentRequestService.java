@@ -28,8 +28,6 @@ public class ExperimentRequestService {
      * @return experiment entity
      */
     public Experiment createExperimentRequest(ExperimentRequest experimentRequest) {
-        log.info("Received experiment request for data '{}', email '{}'", experimentRequest.getData().relationName(),
-                experimentRequest.getEmail());
         Experiment experiment = experimentService.createExperiment(experimentRequest);
         eventPublisher.publishEvent(new ExperimentChangeStatusEvent(this, experiment));
         log.info("Experiment request [{}] has been created.", experiment.getRequestId());
