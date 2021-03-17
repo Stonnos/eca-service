@@ -19,7 +19,8 @@ export class CreateUserComponent extends BaseCreateDialogComponent<CreateUserMod
 
   public loginRegex: string = '[a-z0-9]{3,}';
   public emailRegex: string = '[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})';
-  public firstNameRegex: string = '([A-Z][a-z]+)|([А-Я][а-я]+)';
+  public personNameRegex: string = '([A-Z][a-z]+)|([А-Я][а-я]+)';
+  public personNameMaxLength: number = 30;
 
   public loading: boolean = false;
 
