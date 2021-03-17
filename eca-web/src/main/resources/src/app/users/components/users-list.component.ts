@@ -67,7 +67,7 @@ export class UsersListComponent extends BaseListComponent<UserDto> implements On
     this.columns = [
       { name: UserFields.LOGIN, label: "Логин" },
       { name: UserFields.EMAIL, label: "Email пользователя" },
-      { name: UserFields.FIRST_NAME, label: "Имя пользователя" },
+      { name: UserFields.FULL_NAME, label: "ФИО пользователя" },
       { name: UserFields.CREATION_DATE, label: "Дата создания" },
       { name: UserFields.ROLES, label: "Роли" }
     ];
