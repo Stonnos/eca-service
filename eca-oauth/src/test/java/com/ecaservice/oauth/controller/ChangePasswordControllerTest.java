@@ -1,9 +1,7 @@
 package com.ecaservice.oauth.controller;
 
 import com.ecaservice.oauth.dto.ChangePasswordRequest;
-import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
 import com.ecaservice.oauth.service.ChangePasswordService;
-import com.ecaservice.oauth.service.Oauth2TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
@@ -18,10 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
 
-import static com.ecaservice.oauth.TestHelperUtils.createChangePasswordRequestEntity;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,8 +44,6 @@ class ChangePasswordControllerTest {
 
     @MockBean
     private ChangePasswordService changePasswordService;
-    @MockBean
-    private Oauth2TokenService oauth2TokenService;
     @MockBean
     private ApplicationEventPublisher applicationEventPublisher;
 
@@ -78,13 +72,10 @@ class ChangePasswordControllerTest {
 
     @Test
     void testApproveChangePasswordRequest() throws Exception {
-        ChangePasswordRequestEntity changePasswordRequestEntity = createChangePasswordRequestEntity();
-        when(changePasswordService.changePassword(TOKEN_VALUE)).thenReturn(changePasswordRequestEntity);
         mockMvc.perform(post(CONFIRM_URL)
                 .param(TOKEN_PARAM, TOKEN_VALUE))
                 .andExpect(status().isOk());
         verify(changePasswordService, atLeastOnce()).changePassword(TOKEN_VALUE);
-        verify(oauth2TokenService, atLeastOnce()).revokeTokens(changePasswordRequestEntity.getUserEntity());
     }
 
     @Test
