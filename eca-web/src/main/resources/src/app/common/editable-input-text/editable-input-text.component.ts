@@ -12,6 +12,12 @@ export class EditableInputTextComponent implements OnInit {
   private form: NgForm;
 
   @Input()
+  public textId: string = 'editField';
+
+  @Input()
+  public textName: string = 'editField';
+
+  @Input()
   public value: string;
 
   @Input()

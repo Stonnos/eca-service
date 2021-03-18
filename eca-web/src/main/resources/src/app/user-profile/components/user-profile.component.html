@@ -51,7 +51,9 @@
                   <p-inputSwitch [(ngModel)]="tfaEnabled" (onChange)="changedTfaSwitch($event)"></p-inputSwitch>
                 </ng-container>
                 <ng-container *ngSwitchCase="'firstName'">
-                 <app-editable-input-text [value]="getValue(field.name)"
+                 <app-editable-input-text [textId]="'firstName'"
+                                          [textName]="'firstName'"
+                                          [value]="getValue(field.name)"
                                           (submitEvent)="updateFirstName($event)"
                                           [maxLength]="personNameMaxLength"
                                           [pattern]="personNameRegex"
@@ -59,7 +61,9 @@
                  </app-editable-input-text>
                 </ng-container>
                 <ng-container *ngSwitchCase="'lastName'">
-                  <app-editable-input-text [value]="getValue(field.name)"
+                  <app-editable-input-text [textId]="'lastName'"
+                                           [textName]="'lastName'"
+                                           [value]="getValue(field.name)"
                                            (submitEvent)="updateLastName($event)"
                                            [maxLength]="personNameMaxLength"
                                            [pattern]="personNameRegex"
@@ -67,7 +71,9 @@
                   </app-editable-input-text>
                 </ng-container>
                 <ng-container *ngSwitchCase="'middleName'">
-                  <app-editable-input-text [value]="getValue(field.name)"
+                  <app-editable-input-text [textId]="'middleName'"
+                                           [textName]="'middleName'"
+                                           [value]="getValue(field.name)"
                                            (submitEvent)="updateMiddleName($event)"
                                            [maxLength]="personNameMaxLength"
                                            [pattern]="personNameRegex"
