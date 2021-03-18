@@ -30,6 +30,7 @@ public class ResetPasswordService {
 
     private final ResetPasswordConfig resetPasswordConfig;
     private final PasswordEncoder passwordEncoder;
+    private final Oauth2TokenService oauth2TokenService;
     private final ResetPasswordRequestRepository resetPasswordRequestRepository;
     private final UserEntityRepository userEntityRepository;
 
@@ -61,10 +62,9 @@ public class ResetPasswordService {
      * Reset password.
      *
      * @param resetPasswordRequest - reset password request
-     * @return reset password request entity
      */
     @Transactional
-    public ResetPasswordRequestEntity resetPassword(ResetPasswordRequest resetPasswordRequest) {
+    public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
         ResetPasswordRequestEntity resetPasswordRequestEntity =
                 resetPasswordRequestRepository.findByTokenAndExpireDateAfterAndResetDateIsNull(
                         resetPasswordRequest.getToken(), LocalDateTime.now())
@@ -75,8 +75,8 @@ public class ResetPasswordService {
         resetPasswordRequestEntity.setResetDate(LocalDateTime.now());
         userEntityRepository.save(userEntity);
         resetPasswordRequestRepository.save(resetPasswordRequestEntity);
+        oauth2TokenService.revokeTokens(userEntity);
         log.info("New password has been set for user [{}], reset password request id [{}]", userEntity.getId(),
                 resetPasswordRequestEntity.getId());
-        return resetPasswordRequestEntity;
     }
 }

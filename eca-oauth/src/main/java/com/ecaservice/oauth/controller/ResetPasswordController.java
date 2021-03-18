@@ -5,7 +5,6 @@ import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.event.model.ResetPasswordNotificationEvent;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
-import com.ecaservice.oauth.service.Oauth2TokenService;
 import com.ecaservice.oauth.service.ResetPasswordService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,7 +34,6 @@ import java.time.LocalDateTime;
 public class ResetPasswordController {
 
     private final ResetPasswordService resetPasswordService;
-    private final Oauth2TokenService oauth2TokenService;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final ResetPasswordRequestRepository resetPasswordRequestRepository;
 
@@ -87,8 +85,6 @@ public class ResetPasswordController {
     @PostMapping(value = "/reset")
     public void resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
         log.info("Received reset password request {}", resetPasswordRequest.getToken());
-        ResetPasswordRequestEntity resetPasswordRequestEntity =
-                resetPasswordService.resetPassword(resetPasswordRequest);
-        oauth2TokenService.revokeTokens(resetPasswordRequestEntity.getUserEntity());
+        resetPasswordService.resetPassword(resetPasswordRequest);
     }
 }

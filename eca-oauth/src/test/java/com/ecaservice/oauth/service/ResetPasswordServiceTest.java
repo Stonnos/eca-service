@@ -11,6 +11,7 @@ import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +24,9 @@ import java.util.UUID;
 import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
 
 /**
  * Unit tests for checking {@link ResetPasswordService} functionality.
@@ -41,6 +45,9 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
     @Inject
     private ResetPasswordRequestRepository resetPasswordRequestRepository;
 
+    @MockBean
+    private Oauth2TokenService oauth2TokenService;
+
     private ResetPasswordService resetPasswordService;
 
     private UserEntity userEntity;
@@ -48,9 +55,8 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        resetPasswordService =
-                new ResetPasswordService(resetPasswordConfig, passwordEncoder, resetPasswordRequestRepository,
-                        userEntityRepository);
+        resetPasswordService = new ResetPasswordService(resetPasswordConfig, passwordEncoder, oauth2TokenService,
+                resetPasswordRequestRepository, userEntityRepository);
         userEntity = createAndSaveUser();
     }
 
@@ -129,6 +135,7 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
         assertThat(actual.getResetDate()).isNotNull();
         assertThat(actual.getUserEntity().getPasswordDate()).isNotNull();
         assertThat(actual.getUserEntity().getPassword()).isNotNull();
+        verify(oauth2TokenService, atLeastOnce()).revokeTokens(any(UserEntity.class));
     }
 
     private UserEntity createAndSaveUser() {
