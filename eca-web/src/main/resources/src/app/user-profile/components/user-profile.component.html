@@ -53,6 +53,7 @@
                 <ng-container *ngSwitchCase="'firstName'">
                  <app-editable-input-text [textId]="'firstName'"
                                           [textName]="'firstName'"
+                                          [textDisabled]="loading"
                                           [value]="getValue(field.name)"
                                           (submitEvent)="updateFirstName($event)"
                                           [maxLength]="personNameMaxLength"
@@ -63,6 +64,7 @@
                 <ng-container *ngSwitchCase="'lastName'">
                   <app-editable-input-text [textId]="'lastName'"
                                            [textName]="'lastName'"
+                                           [textDisabled]="loading"
                                            [value]="getValue(field.name)"
                                            (submitEvent)="updateLastName($event)"
                                            [maxLength]="personNameMaxLength"
@@ -73,6 +75,7 @@
                 <ng-container *ngSwitchCase="'middleName'">
                   <app-editable-input-text [textId]="'middleName'"
                                            [textName]="'middleName'"
+                                           [textDisabled]="loading"
                                            [value]="getValue(field.name)"
                                            (submitEvent)="updateMiddleName($event)"
                                            [maxLength]="personNameMaxLength"

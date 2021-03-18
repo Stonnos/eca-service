@@ -27,6 +27,9 @@ export class EditableInputTextComponent implements OnInit {
   public maxLength: number = 255;
 
   @Input()
+  public textDisabled: boolean = false;
+
+  @Input()
   public requiredFieldErrorMessage: string = 'Обязательное поле';
 
   @Input()

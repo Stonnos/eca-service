@@ -11,6 +11,7 @@ import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { FileUpload } from "primeng/primeng";
 import { finalize } from "rxjs/internal/operators";
 import { ChangePasswordRequest } from "../../change-password/model/change-password.request";
+import { UpdateUserInfoModel } from "../../users/model/update-user-info.model";
 
 @Component({
   selector: 'app-user-profile',
@@ -33,7 +34,9 @@ export class UserProfileComponent implements OnInit {
 
   public changePasswordRequest: ChangePasswordRequest = new ChangePasswordRequest();
 
-  public uploading = false;
+  public uploading: boolean = false;
+
+  public loading: boolean = false;
 
   public changePasswordRequestCreatedMessage: string =
     'На ваш email отправлено письмо с подтверждением смены пароля';
@@ -150,15 +153,36 @@ export class UserProfileComponent implements OnInit {
   }
 
   public updateFirstName(value: string): void {
-    console.log(value);
+    const updateUserInfoModel: UpdateUserInfoModel = new UpdateUserInfoModel(value, this.user.lastName, this.user.middleName);
+    this.updateUserInfo(updateUserInfoModel);
   }
 
   public updateLastName(value: string): void {
-    console.log(value);
+    const updateUserInfoModel: UpdateUserInfoModel = new UpdateUserInfoModel(this.user.firstName, value, this.user.middleName);
+    this.updateUserInfo(updateUserInfoModel);
   }
 
   public updateMiddleName(value: string): void {
-    console.log(value);
+    const updateUserInfoModel: UpdateUserInfoModel = new UpdateUserInfoModel(this.user.firstName, this.user.lastName, value);
+    this.updateUserInfo(updateUserInfoModel);
+  }
+
+  private updateUserInfo(updateUserInfo: UpdateUserInfoModel): void {
+    this.loading = true;
+    this.usersService.updateUserInfo(updateUserInfo)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.getUser(false);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
   }
 
   private getUser(downloadPhoto: boolean): void {
