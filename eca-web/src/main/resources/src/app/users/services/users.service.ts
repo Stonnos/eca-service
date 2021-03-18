@@ -96,6 +96,24 @@ export class UsersService {
     return this.http.post(this.serviceUrl + '/update-email', formData, { headers: headers })
   }
 
+  public lock(userId: number) {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    const formData = new FormData();
+    formData.append('userId', userId.toString());
+    return this.http.post(this.serviceUrl + '/lock', formData, { headers: headers })
+  }
+
+  public unlock(userId: number) {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    const formData = new FormData();
+    formData.append('userId', userId.toString());
+    return this.http.post(this.serviceUrl + '/unlock', formData, { headers: headers })
+  }
+
   public logoutRequest(): Observable<any> {
     const headers = new HttpHeaders({
       'Authorization': Utils.getBearerTokenHeader()
