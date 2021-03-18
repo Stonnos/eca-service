@@ -10,6 +10,7 @@ import { PageRequestService } from "../../common/services/page-request.service";
 import { environment } from "../../../environments/environment";
 import { CreateUserModel } from "../../create-user/model/create-user.model";
 import { Utils } from "../../common/util/utils";
+import { UpdateUserInfoModel } from "../model/update-user-info.model";
 
 @Injectable()
 export class UsersService {
@@ -43,6 +44,14 @@ export class UsersService {
       'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.post<UserDto>(this.serviceUrl + '/create', createUser, { headers: headers })
+  }
+
+  public updateUserInfo(updateUserInfo: UpdateUserInfoModel) {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    return this.http.put(this.serviceUrl + '/update-info', updateUserInfo, { headers: headers })
   }
 
   public setTfaEnabled(tfaEnabled: boolean) {
