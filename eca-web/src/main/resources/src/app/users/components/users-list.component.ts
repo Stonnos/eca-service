@@ -11,6 +11,7 @@ import { FieldService } from "../../common/services/field.service";
 import { UsersService } from "../services/users.service";
 import { CreateUserModel } from "../../create-user/model/create-user.model";
 import { finalize } from "rxjs/internal/operators";
+import { Utils } from "../../common/util/utils";
 
 @Component({
   selector: 'app-users-list',
@@ -18,6 +19,8 @@ import { finalize } from "rxjs/internal/operators";
   styleUrls: ['./users-list.component.scss']
 })
 export class UsersListComponent extends BaseListComponent<UserDto> implements OnInit {
+
+  private currentUser: UserDto;
 
   public createUserDialogVisibility: boolean = false;
 
@@ -32,6 +35,18 @@ export class UsersListComponent extends BaseListComponent<UserDto> implements On
   }
 
   public ngOnInit() {
+    this.getCurrentUser();
+  }
+
+  public getCurrentUser(): void {
+    this.usersService.getCurrentUser().subscribe({
+      next: (user: UserDto) => {
+        this.currentUser = user;
+      },
+      error: (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+      }
+    })
   }
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<UserDto>> {
@@ -58,6 +73,10 @@ export class UsersListComponent extends BaseListComponent<UserDto> implements On
 
   public showCreateUserDialog(): void {
     this.createUserDialogVisibility = true;
+  }
+
+  public isLockAllowed(user: UserDto): boolean {
+    return Utils.isSuperAdmin(this.currentUser) && user.id != this.currentUser.id && !Utils.isSuperAdmin(user);
   }
 
   public lockUser(user: UserDto): void {
