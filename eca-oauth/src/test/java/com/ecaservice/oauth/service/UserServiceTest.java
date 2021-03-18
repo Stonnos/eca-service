@@ -236,6 +236,42 @@ class UserServiceTest extends AbstractJpaTest {
         assertThat(userPhotoRepository.findByUserEntity(userEntity)).isNull();
     }
 
+    @Test
+    void testLockUser() {
+        UserEntity userEntity = createAndSaveUser();
+        userService.lock(userEntity.getId());
+        UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
+        assertThat(actual).isNotNull();
+        assertThat(actual.isLocked()).isTrue();
+    }
+
+    @Test
+    void testLockUserShouldThrowIllegalStateException() {
+        UserEntity userEntity = createAndSaveUser();
+        userEntity.setLocked(true);
+        userEntityRepository.save(userEntity);
+        Long userId = userEntity.getId();
+        assertThrows(IllegalStateException.class, () -> userService.lock(userId));
+    }
+
+    @Test
+    void testUnlockUser() {
+        UserEntity userEntity = createAndSaveUser();
+        userEntity.setLocked(true);
+        userEntityRepository.save(userEntity);
+        userService.unlock(userEntity.getId());
+        UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
+        assertThat(actual).isNotNull();
+        assertThat(actual.isLocked()).isFalse();
+    }
+
+    @Test
+    void testUnlockUserShouldThrowIllegalStateException() {
+        UserEntity userEntity = createAndSaveUser();
+        Long userId = userEntity.getId();
+        assertThrows(IllegalStateException.class, () -> userService.unlock(userId));
+    }
+
     private UserEntity createAndSaveUser() {
         CreateUserDto createUserDto = TestHelperUtils.createUserDto();
         return userService.createUser(createUserDto, PASSWORD);
