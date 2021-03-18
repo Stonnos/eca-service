@@ -18,6 +18,7 @@ import com.ecaservice.oauth.repository.UserPhotoRepository;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -36,7 +37,10 @@ import static com.ecaservice.oauth.entity.UserEntity_.CREATION_DATE;
 import static com.ecaservice.oauth.entity.UserEntity_.FULL_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -67,14 +71,18 @@ class UserServiceTest extends AbstractJpaTest {
     @Inject
     private UserPhotoRepository userPhotoRepository;
 
+    @MockBean
+    private Oauth2TokenService oauth2TokenService;
+
     private UserService userService;
 
     @Override
     public void init() {
         roleRepository.save(createRoleEntity());
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        userService = new UserService(commonConfig, passwordEncoder, userMapper, userEntityRepository, roleRepository,
-                userPhotoRepository);
+        userService =
+                new UserService(commonConfig, passwordEncoder, userMapper, oauth2TokenService, userEntityRepository,
+                        roleRepository, userPhotoRepository);
     }
 
     @Override
@@ -243,6 +251,7 @@ class UserServiceTest extends AbstractJpaTest {
         UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.isLocked()).isTrue();
+        verify(oauth2TokenService, atLeastOnce()).revokeTokens(any(UserEntity.class));
     }
 
     @Test

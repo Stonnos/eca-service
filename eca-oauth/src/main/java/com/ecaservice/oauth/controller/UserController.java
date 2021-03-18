@@ -253,4 +253,36 @@ public class UserController {
         log.info("Deletes photo for user [{}]", userDetails.getId());
         userService.deletePhoto(userDetails.getId());
     }
+
+    /**
+     * Locks user.
+     *
+     * @param userId - user id
+     */
+    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
+    @ApiOperation(
+            value = "Locks user",
+            notes = "Locks user"
+    )
+    @PutMapping(value = "/lock")
+    public void lock(@ApiParam(value = "User id", required = true) @RequestParam Long userId) {
+        log.info("Received request for user [{}] locking", userId);
+        userService.lock(userId);
+    }
+
+    /**
+     * Unlocks user.
+     *
+     * @param userId - user id
+     */
+    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
+    @ApiOperation(
+            value = "Unlocks user",
+            notes = "Unlocks user"
+    )
+    @PutMapping(value = "/unlock")
+    public void unlock(@ApiParam(value = "User id", required = true) @RequestParam Long userId) {
+        log.info("Received request for user [{}] unlocking", userId);
+        userService.unlock(userId);
+    }
 }

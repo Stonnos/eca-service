@@ -47,6 +47,7 @@ public class UserService {
     private final CommonConfig commonConfig;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final Oauth2TokenService oauth2TokenService;
     private final UserEntityRepository userEntityRepository;
     private final RoleRepository roleRepository;
     private final UserPhotoRepository userPhotoRepository;
@@ -143,6 +144,7 @@ public class UserService {
      *
      * @param userId - user id
      */
+    @Transactional
     public void lock(long userId) {
         log.info("Starting to lock user [{}]", userId);
         UserEntity userEntity = getById(userId);
@@ -151,6 +153,7 @@ public class UserService {
         }
         userEntity.setLocked(true);
         userEntityRepository.save(userEntity);
+        oauth2TokenService.revokeTokens(userEntity);
         log.info("User [{}] has been locked", userId);
     }
 
