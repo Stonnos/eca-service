@@ -1,1 +1,18 @@
+.users-table::ng-deep {
 
+  .ui-table-tbody > tr > td {
+    &:nth-child(6) {
+      width: 100px;
+    }
+  }
+
+  .ui-table-thead > tr > th {
+    &:nth-child(6) {
+      width: 100px;
+    }
+  }
+}
+
+.round-button {
+  border-radius: 50%;
+}

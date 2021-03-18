@@ -10,6 +10,7 @@ import { UserFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
 import { UsersService } from "../services/users.service";
 import { CreateUserModel } from "../../create-user/model/create-user.model";
+import { finalize } from "rxjs/internal/operators";
 
 @Component({
   selector: 'app-users-list',
@@ -57,6 +58,42 @@ export class UsersListComponent extends BaseListComponent<UserDto> implements On
 
   public showCreateUserDialog(): void {
     this.createUserDialogVisibility = true;
+  }
+
+  public lockUser(user: UserDto): void {
+    this.loading = true;
+    this.usersService.lock(user.id)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.refreshUsersPage();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  public unlockUser(user: UserDto): void {
+    this.loading = true;
+    this.usersService.unlock(user.id)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.refreshUsersPage();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
   }
 
   private refreshUsersPage(): void {
