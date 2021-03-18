@@ -11,6 +11,8 @@ export class EditableInputTextComponent implements OnInit {
   @ViewChild(NgForm, { static: true })
   private form: NgForm;
 
+  private mouseDownEvent: Event;
+
   @Input()
   public textId: string = 'editField';
 
@@ -48,11 +50,24 @@ export class EditableInputTextComponent implements OnInit {
     this.editableValue = this.value;
   }
 
+  public mouseDown(event: Event): void {
+    this.mouseDownEvent = event;
+  }
+
   public enableEditMode(): void {
     this.editMode = true;
   }
 
+  public disableEditMode(event: Event): void {
+    if (this.mouseDownEvent) {
+      event.preventDefault();
+    } else {
+      this.cancel();
+    }
+  }
+
   public submit(): void {
+    this.mouseDownEvent = null;
     this.submitted = true;
     if (this.isValid()) {
       this.submitEvent.emit(this.editableValue);
@@ -62,6 +77,7 @@ export class EditableInputTextComponent implements OnInit {
   }
 
   public cancel(): void {
+    this.mouseDownEvent = null;
     this.editMode = false;
     this.submitted = false;
     this.editableValue = this.value;
