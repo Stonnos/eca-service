@@ -44,6 +44,7 @@ class UserMapperTest {
         assertThat(userDto.getRoles()).hasSameSizeAs(userEntity.getRoles());
         assertThat(userDto.getCreationDate()).isEqualTo(userEntity.getCreationDate());
         assertThat(userDto.isTfaEnabled()).isEqualTo(userEntity.isTfaEnabled());
+        assertThat(userDto.isLocked()).isEqualTo(userEntity.isLocked());
     }
 
     @Test
@@ -67,6 +68,7 @@ class UserMapperTest {
         assertThat(userDetails.getUsername()).isEqualTo(userEntity.getLogin());
         assertThat(userDetails.getAuthorities()).isNotEmpty();
         assertThat(userDetails.getAuthorities()).hasSameSizeAs(userEntity.getRoles());
+        assertThat(userDetails.isAccountNonLocked()).isTrue();
     }
 
     @Test

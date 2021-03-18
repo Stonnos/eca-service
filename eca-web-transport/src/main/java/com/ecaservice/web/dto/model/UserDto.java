@@ -78,6 +78,12 @@ public class UserDto {
     private boolean tfaEnabled;
 
     /**
+     * Account locked?
+     */
+    @ApiModelProperty(value = "Account locked")
+    private boolean locked;
+
+    /**
      * User photo id
      */
     @ApiModelProperty(value = "User photo id")

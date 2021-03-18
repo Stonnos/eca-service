@@ -43,6 +43,12 @@ public class UserDetailsImpl implements UserDetails {
     @Setter
     private List<Role> authorities;
 
+    /**
+     * Account locked?
+     */
+    @Setter
+    private boolean locked;
+
     @Override
     public Collection<Role> getAuthorities() {
         return authorities;
@@ -65,7 +71,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !locked;
     }
 
     @Override
