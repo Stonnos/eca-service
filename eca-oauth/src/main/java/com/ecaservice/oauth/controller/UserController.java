@@ -264,7 +264,7 @@ public class UserController {
             value = "Locks user",
             notes = "Locks user"
     )
-    @PutMapping(value = "/lock")
+    @PostMapping(value = "/lock")
     public void lock(@ApiParam(value = "User id", required = true) @RequestParam Long userId) {
         log.info("Received request for user [{}] locking", userId);
         userService.lock(userId);
@@ -280,7 +280,7 @@ public class UserController {
             value = "Unlocks user",
             notes = "Unlocks user"
     )
-    @PutMapping(value = "/unlock")
+    @PostMapping(value = "/unlock")
     public void unlock(@ApiParam(value = "User id", required = true) @RequestParam Long userId) {
         log.info("Received request for user [{}] unlocking", userId);
         userService.unlock(userId);
