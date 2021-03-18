@@ -57,7 +57,7 @@
           <button pButton
                   type="button"
                   [pTooltip]="'Заблокировать пользователя'"
-                  [disabled]="isLockAllowed(item)"
+                  [disabled]="!isLockAllowed(item)"
                   class="ui-button-secondary round-button"
                   icon="pi pi-fw pi-lock" (click)="lockUser(item)">
           </button>
