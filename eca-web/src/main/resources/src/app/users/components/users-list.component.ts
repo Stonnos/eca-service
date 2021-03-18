@@ -3,7 +3,7 @@ import {
   PageDto,
   PageRequestDto, RoleDto, UserDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
-import { MessageService } from "primeng/api";
+import { MessageService, ConfirmationService } from "primeng/api";
 import { BaseListComponent } from "../../common/lists/base-list.component";
 import { Observable } from "rxjs/internal/Observable";
 import { UserFields } from "../../common/util/field-names";
@@ -25,7 +25,8 @@ export class UsersListComponent extends BaseListComponent<UserDto> implements On
   public createUserModel: CreateUserModel = new CreateUserModel();
 
   public constructor(private injector: Injector,
-                     private usersService: UsersService) {
+                     private usersService: UsersService,
+                     private confirmationService: ConfirmationService) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = UserFields.CREATION_DATE;
     this.notSortableColumns = [UserFields.ROLES];
@@ -66,8 +67,30 @@ export class UsersListComponent extends BaseListComponent<UserDto> implements On
   }
 
   public lockUser(user: UserDto): void {
+    this.confirmationService.confirm({
+      message: 'Вы уверены?',
+      acceptLabel: 'Да',
+      rejectLabel: 'Нет',
+      accept: () => {
+        this.lockUserById(user.id);
+      }
+    });
+  }
+
+  public unlockUser(user: UserDto): void {
+    this.confirmationService.confirm({
+      message: 'Вы уверены?',
+      acceptLabel: 'Да',
+      rejectLabel: 'Нет',
+      accept: () => {
+        this.unlockUserById(user.id);
+      }
+    });
+  }
+
+  private lockUserById(userId: number): void {
     this.loading = true;
-    this.usersService.lock(user.id)
+    this.usersService.lock(userId)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -83,9 +106,9 @@ export class UsersListComponent extends BaseListComponent<UserDto> implements On
       });
   }
 
-  public unlockUser(user: UserDto): void {
+  private unlockUserById(userId: number): void {
     this.loading = true;
-    this.usersService.unlock(user.id)
+    this.usersService.unlock(userId)
       .pipe(
         finalize(() => {
           this.loading = false;
