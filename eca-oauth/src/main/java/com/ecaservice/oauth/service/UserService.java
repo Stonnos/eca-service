@@ -139,6 +139,38 @@ public class UserService {
     }
 
     /**
+     * Locks user account.
+     *
+     * @param userId - user id
+     */
+    public void lock(long userId) {
+        log.info("Starting to lock user [{}]", userId);
+        UserEntity userEntity = getById(userId);
+        if (userEntity.isLocked()) {
+            throw new IllegalStateException(String.format("User [%d] was locked", userId));
+        }
+        userEntity.setLocked(true);
+        userEntityRepository.save(userEntity);
+        log.info("User [{}] has been locked", userId);
+    }
+
+    /**
+     * Unlocks user account.
+     *
+     * @param userId - user id
+     */
+    public void unlock(long userId) {
+        log.info("Starting to unlock user [{}]", userId);
+        UserEntity userEntity = getById(userId);
+        if (!userEntity.isLocked()) {
+            throw new IllegalStateException(String.format("User [%d] was unlocked", userId));
+        }
+        userEntity.setLocked(false);
+        userEntityRepository.save(userEntity);
+        log.info("User [{}] has been unlocked", userId);
+    }
+
+    /**
      * Updates photo for specified user.
      *
      * @param userId - user id
