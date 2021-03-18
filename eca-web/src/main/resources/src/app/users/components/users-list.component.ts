@@ -20,8 +20,6 @@ import { Utils } from "../../common/util/utils";
 })
 export class UsersListComponent extends BaseListComponent<UserDto> implements OnInit {
 
-  private currentUser: UserDto;
-
   public createUserDialogVisibility: boolean = false;
 
   public createUserModel: CreateUserModel = new CreateUserModel();
@@ -35,18 +33,6 @@ export class UsersListComponent extends BaseListComponent<UserDto> implements On
   }
 
   public ngOnInit() {
-    this.getCurrentUser();
-  }
-
-  public getCurrentUser(): void {
-    this.usersService.getCurrentUser().subscribe({
-      next: (user: UserDto) => {
-        this.currentUser = user;
-      },
-      error: (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-      }
-    })
   }
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<UserDto>> {
@@ -76,7 +62,7 @@ export class UsersListComponent extends BaseListComponent<UserDto> implements On
   }
 
   public isLockAllowed(user: UserDto): boolean {
-    return Utils.isSuperAdmin(this.currentUser) && user.id != this.currentUser.id && !Utils.isSuperAdmin(user);
+    return !Utils.isSuperAdmin(user);
   }
 
   public lockUser(user: UserDto): void {
