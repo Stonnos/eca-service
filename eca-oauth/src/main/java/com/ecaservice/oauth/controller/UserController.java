@@ -257,7 +257,8 @@ public class UserController {
     /**
      * Locks user.
      *
-     * @param userId - user id
+     * @param userDetails - user details
+     * @param userId      - user id
      */
     @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
     @ApiOperation(
@@ -265,8 +266,12 @@ public class UserController {
             notes = "Locks user"
     )
     @PostMapping(value = "/lock")
-    public void lock(@ApiParam(value = "User id", required = true) @RequestParam Long userId) {
+    public void lock(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                     @ApiParam(value = "User id", required = true) @RequestParam Long userId) {
         log.info("Received request for user [{}] locking", userId);
+        if (userDetails.getId().equals(userId)) {
+            throw new IllegalStateException(String.format("Can't lock yourself: [%d]", userId));
+        }
         userService.lock(userId);
     }
 

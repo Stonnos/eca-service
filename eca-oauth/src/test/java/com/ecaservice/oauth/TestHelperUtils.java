@@ -24,7 +24,6 @@ public class TestHelperUtils {
     private static final String USER_NAME = "user";
     private static final String EMAIL = "test@mail.ru";
     private static final String FIRST_NAME = "Roman";
-    private static final long USER_ID = 1L;
     private static final String PASSWORD = "pa66word!";
     private static final String TOKEN = "token";
     private static final String MIDDLE_NAME = "Igorevich";
@@ -69,7 +68,6 @@ public class TestHelperUtils {
         userEntity.setFirstName(FIRST_NAME);
         userEntity.setLastName(LAST_NAME);
         userEntity.setMiddleName(MIDDLE_NAME);
-        userEntity.setId(USER_ID);
         userEntity.setRoles(Sets.newHashSet(createRoleEntity()));
         userEntity.setPassword(PASSWORD);
         userEntity.setCreationDate(LocalDateTime.now());

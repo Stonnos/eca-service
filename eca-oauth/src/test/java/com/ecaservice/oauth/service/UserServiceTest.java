@@ -6,6 +6,7 @@ import com.ecaservice.oauth.TestHelperUtils;
 import com.ecaservice.oauth.config.CommonConfig;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
+import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserPhoto;
 import com.ecaservice.oauth.exception.EmailDuplicationException;
@@ -15,7 +16,9 @@ import com.ecaservice.oauth.mapping.UserMapperImpl;
 import com.ecaservice.oauth.repository.RoleRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.repository.UserPhotoRepository;
+import com.ecaservice.user.model.Role;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.google.common.collect.Sets;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -33,6 +36,7 @@ import java.util.Iterator;
 import static com.ecaservice.oauth.TestHelperUtils.createRoleEntity;
 import static com.ecaservice.oauth.TestHelperUtils.createUpdateUserInfoDto;
 import static com.ecaservice.oauth.TestHelperUtils.createUserDto;
+import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
 import static com.ecaservice.oauth.entity.UserEntity_.CREATION_DATE;
 import static com.ecaservice.oauth.entity.UserEntity_.FULL_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -242,6 +246,18 @@ class UserServiceTest extends AbstractJpaTest {
         userService.updatePhoto(userEntity.getId(), file);
         userService.deletePhoto(userEntity.getId());
         assertThat(userPhotoRepository.findByUserEntity(userEntity)).isNull();
+    }
+
+    @Test
+    void testLockSuperAdmin() {
+        UserEntity userEntity = createUserEntity();
+        RoleEntity role = createRoleEntity();
+        role.setRoleName(Role.ROLE_SUPER_ADMIN);
+        roleRepository.save(role);
+        userEntity.setRoles(Sets.newHashSet(role));
+        userEntityRepository.save(userEntity);
+        Long userId = userEntity.getId();
+        assertThrows(IllegalStateException.class, () -> userService.lock(userId));
     }
 
     @Test

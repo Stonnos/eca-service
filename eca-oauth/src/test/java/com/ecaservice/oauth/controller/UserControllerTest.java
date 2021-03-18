@@ -248,15 +248,6 @@ class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void testLockUser() throws Exception {
-        mockMvc.perform(post(LOCK_URL)
-                .param(USER_ID_PARAM, String.valueOf(USER_ID))
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
-                .andExpect(status().isOk());
-        verify(userService, atLeastOnce()).lock(USER_ID);
-    }
-
-    @Test
     void testUnlockUserUnauthorized() throws Exception {
         mockMvc.perform(post(UNLOCK_URL)
                 .param(USER_ID_PARAM, String.valueOf(USER_ID)))

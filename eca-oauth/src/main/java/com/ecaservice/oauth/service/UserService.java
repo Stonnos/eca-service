@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
 import static com.ecaservice.oauth.entity.UserEntity_.CREATION_DATE;
 import static com.ecaservice.oauth.util.FilterUtils.buildSort;
 import static com.ecaservice.oauth.util.FilterUtils.buildSpecification;
+import static com.ecaservice.oauth.util.Utils.isSuperAdmin;
 import static com.ecaservice.user.model.Role.ROLE_ECA_USER;
 
 /**
@@ -148,6 +149,9 @@ public class UserService {
     public void lock(long userId) {
         log.info("Starting to lock user [{}]", userId);
         UserEntity userEntity = getById(userId);
+        if (isSuperAdmin(userEntity)) {
+            throw new IllegalStateException(String.format("Can't lock super admin user [%d]", userId));
+        }
         if (userEntity.isLocked()) {
             throw new IllegalStateException(String.format("User [%d] was locked", userId));
         }
