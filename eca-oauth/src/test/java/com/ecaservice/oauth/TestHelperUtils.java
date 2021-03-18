@@ -1,6 +1,7 @@
 package com.ecaservice.oauth;
 
 import com.ecaservice.oauth.dto.CreateUserDto;
+import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.RoleEntity;
@@ -28,6 +29,9 @@ public class TestHelperUtils {
     private static final String TOKEN = "token";
     private static final String MIDDLE_NAME = "Igorevich";
     private static final String LAST_NAME = "Batygin";
+    private static final String UPDATE_MIDDLE_NAME = "updateMiddleName";
+    private static final String UPDATE_LAST_NAME = "updateLastName";
+    private static final String UPDATE_FIRST_NAME = "updateFirstName";
 
     /**
      * Creates role entity.
@@ -101,6 +105,19 @@ public class TestHelperUtils {
         createUserDto.setLastName(lastName);
         createUserDto.setMiddleName(middleName);
         return createUserDto;
+    }
+
+    /**
+     * Creates update user info dto.
+     *
+     * @return update user info dto
+     */
+    public static UpdateUserInfoDto createUpdateUserInfoDto() {
+        UpdateUserInfoDto updateUserInfoDto = new UpdateUserInfoDto();
+        updateUserInfoDto.setFirstName(UPDATE_FIRST_NAME);
+        updateUserInfoDto.setLastName(UPDATE_LAST_NAME);
+        updateUserInfoDto.setMiddleName(UPDATE_MIDDLE_NAME);
+        return updateUserInfoDto;
     }
 
     /**

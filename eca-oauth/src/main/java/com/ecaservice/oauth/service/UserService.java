@@ -3,6 +3,7 @@ package com.ecaservice.oauth.service;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.oauth.config.CommonConfig;
 import com.ecaservice.oauth.dto.CreateUserDto;
+import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserPhoto;
@@ -77,6 +78,20 @@ public class UserService {
         populateUserRole(userEntity);
         userEntity.setCreationDate(LocalDateTime.now());
         return userEntityRepository.save(userEntity);
+    }
+
+    /**
+     * Updates user info.
+     *
+     * @param userId            - user id
+     * @param updateUserInfoDto - user info dto
+     */
+    public void updateUserInfo(long userId, UpdateUserInfoDto updateUserInfoDto) {
+        log.info("Starting to update user [{}] info", userId);
+        UserEntity userEntity = getById(userId);
+        userMapper.update(updateUserInfoDto, userEntity);
+        userEntityRepository.save(userEntity);
+        log.info("User [{}] info has been updated", userId);
     }
 
     /**

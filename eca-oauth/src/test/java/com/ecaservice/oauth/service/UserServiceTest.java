@@ -5,6 +5,7 @@ import com.ecaservice.oauth.AbstractJpaTest;
 import com.ecaservice.oauth.TestHelperUtils;
 import com.ecaservice.oauth.config.CommonConfig;
 import com.ecaservice.oauth.dto.CreateUserDto;
+import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserPhoto;
 import com.ecaservice.oauth.exception.EmailDuplicationException;
@@ -29,6 +30,7 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import static com.ecaservice.oauth.TestHelperUtils.createRoleEntity;
+import static com.ecaservice.oauth.TestHelperUtils.createUpdateUserInfoDto;
 import static com.ecaservice.oauth.TestHelperUtils.createUserDto;
 import static com.ecaservice.oauth.entity.UserEntity_.CREATION_DATE;
 import static com.ecaservice.oauth.entity.UserEntity_.FULL_NAME;
@@ -97,6 +99,18 @@ class UserServiceTest extends AbstractJpaTest {
         roleRepository.deleteAll();
         CreateUserDto createUserDto = TestHelperUtils.createUserDto();
         assertThrows(IllegalStateException.class, () -> userService.createUser(createUserDto, PASSWORD));
+    }
+
+    @Test
+    void testUpdateUserInfo() {
+        UserEntity userEntity = createAndSaveUser();
+        UpdateUserInfoDto updateUserInfoDto = createUpdateUserInfoDto();
+        userService.updateUserInfo(userEntity.getId(), updateUserInfoDto);
+        UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getFirstName()).isEqualTo(updateUserInfoDto.getFirstName());
+        assertThat(actual.getLastName()).isEqualTo(updateUserInfoDto.getLastName());
+        assertThat(actual.getMiddleName()).isEqualTo(updateUserInfoDto.getMiddleName());
     }
 
     @Test
