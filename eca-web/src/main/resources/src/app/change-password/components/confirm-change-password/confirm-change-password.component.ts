@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from "primeng/api";
 import { HttpErrorResponse } from "@angular/common/http";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { ChangePasswordService } from "../../services/change-password.service";
 import { LogoutService } from "../../../auth/services/logout.service";
 import { finalize } from "rxjs/operators";
+import { ValidationErrorCode } from "../../../common/model/validation-error-code";
+import { ValidationService } from "../../../common/services/validation.service";
 
 @Component({
   selector: 'app-confirm-change-password',
@@ -15,13 +17,14 @@ export class ConfirmChangePasswordComponent implements OnInit {
 
   public token: string;
   public tokenValid: boolean = false;
+  public userLocked: boolean = false;
   public loading: boolean = true;
 
   public constructor(private changePasswordService: ChangePasswordService,
                      private messageService: MessageService,
                      private logoutService: LogoutService,
-                     private route: ActivatedRoute,
-                     private router: Router) {
+                     private validationService: ValidationService,
+                     private route: ActivatedRoute) {
     this.token = this.route.snapshot.queryParams['token'];
   }
 
@@ -49,12 +52,9 @@ export class ConfirmChangePasswordComponent implements OnInit {
   }
 
   private handleError(error): void {
-    if (error instanceof HttpErrorResponse) {
-      if (error.status === 400) {
-        this.tokenValid = false;
-      } else {
-        this.handleUnknownError(error);
-      }
+    if (error instanceof HttpErrorResponse && error.status === 400) {
+        this.tokenValid = !this.validationService.hasErrorCode(error.error, ValidationErrorCode.INVALID_TOKEN);
+        this.userLocked = this.validationService.hasErrorCode(error.error, ValidationErrorCode.USER_LOCKED);
     } else {
       this.handleUnknownError(error);
     }
