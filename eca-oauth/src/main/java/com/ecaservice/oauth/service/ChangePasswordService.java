@@ -8,6 +8,7 @@ import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.ChangePasswordRequestAlreadyExistsException;
 import com.ecaservice.oauth.exception.InvalidPasswordException;
 import com.ecaservice.oauth.exception.InvalidTokenException;
+import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.repository.ChangePasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +48,9 @@ public class ChangePasswordService {
                                                                    ChangePasswordRequest changePasswordRequest) {
         UserEntity userEntity = userEntityRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, userId));
+        if (userEntity.isLocked()) {
+            throw new UserLockedException(userEntity.getId());
+        }
         if (!isValidOldPassword(userEntity, changePasswordRequest)) {
             throw new InvalidPasswordException();
         }
@@ -77,6 +81,9 @@ public class ChangePasswordService {
                 changePasswordRequestRepository.findByTokenAndExpireDateAfterAndConfirmationDateIsNull(token,
                         LocalDateTime.now()).orElseThrow(() -> new InvalidTokenException(token));
         UserEntity userEntity = changePasswordRequestEntity.getUserEntity();
+        if (userEntity.isLocked()) {
+            throw new UserLockedException(userEntity.getId());
+        }
         userEntity.setPassword(changePasswordRequestEntity.getNewPassword());
         userEntity.setPasswordDate(LocalDateTime.now());
         changePasswordRequestEntity.setConfirmationDate(LocalDateTime.now());
