@@ -7,6 +7,7 @@ import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.InvalidTokenException;
+import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import org.apache.commons.lang3.StringUtils;
@@ -80,6 +81,15 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
     }
 
     @Test
+    void testSaveResetPasswordRequestForLockedUser() {
+        userEntity.setLocked(true);
+        userEntityRepository.save(userEntity);
+        ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(userEntity.getEmail());
+        assertThrows(UserLockedException.class,
+                () -> resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest));
+    }
+
+    @Test
     void testGetResetPasswordRequestFromCache() {
         ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(userEntity.getEmail());
         resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest);
@@ -136,6 +146,17 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
         assertThat(actual.getUserEntity().getPasswordDate()).isNotNull();
         assertThat(actual.getUserEntity().getPassword()).isNotNull();
         verify(oauth2TokenService, atLeastOnce()).revokeTokens(any(UserEntity.class));
+    }
+
+    @Test
+    void testResetPasswordForLockedUser() {
+        userEntity.setLocked(true);
+        userEntityRepository.save(userEntity);
+        ResetPasswordRequestEntity resetPasswordRequestEntity =
+                createAndSaveResetPasswordRequestEntity(LocalDateTime.now().plusMinutes(2L), null);
+        ResetPasswordRequest resetPasswordRequest =
+                new ResetPasswordRequest(resetPasswordRequestEntity.getToken(), PASSWORD);
+        assertThrows(UserLockedException.class, () -> resetPasswordService.resetPassword(resetPasswordRequest));
     }
 
     private UserEntity createAndSaveUser() {

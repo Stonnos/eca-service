@@ -6,6 +6,7 @@ import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.InvalidTokenException;
+import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +46,9 @@ public class ResetPasswordService {
                 () -> new IllegalStateException(
                         String.format("Can't create reset password request, because user with email %s doesn't exists!",
                                 forgotPasswordRequest.getEmail())));
+        if (userEntity.isLocked()) {
+            throw new UserLockedException(userEntity.getId());
+        }
         LocalDateTime now = LocalDateTime.now();
         ResetPasswordRequestEntity resetPasswordRequestEntity =
                 resetPasswordRequestRepository.findByUserEntityAndExpireDateAfterAndResetDateIsNull(userEntity, now);
@@ -70,6 +74,9 @@ public class ResetPasswordService {
                         resetPasswordRequest.getToken(), LocalDateTime.now())
                         .orElseThrow(() -> new InvalidTokenException(resetPasswordRequest.getToken()));
         UserEntity userEntity = resetPasswordRequestEntity.getUserEntity();
+        if (userEntity.isLocked()) {
+            throw new UserLockedException(userEntity.getId());
+        }
         userEntity.setPassword(passwordEncoder.encode(resetPasswordRequest.getPassword().trim()));
         userEntity.setPasswordDate(LocalDateTime.now());
         resetPasswordRequestEntity.setResetDate(LocalDateTime.now());
