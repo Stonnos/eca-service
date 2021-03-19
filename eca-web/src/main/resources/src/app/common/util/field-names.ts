@@ -99,6 +99,9 @@ export class UserFields {
   public static readonly LOGIN: string = "login";
   public static readonly EMAIL: string = "email";
   public static readonly FIRST_NAME: string = "firstName";
+  public static readonly LAST_NAME: string = "lastName";
+  public static readonly MIDDLE_NAME: string = "middleName";
+  public static readonly FULL_NAME: string = "fullName";
   public static readonly CREATION_DATE: string = "creationDate";
   public static readonly TFA_ENABLED: string = "tfaEnabled";
   public static readonly PASSWORD_DATE: string = 'passwordDate';

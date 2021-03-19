@@ -15,6 +15,7 @@ import { ResetPasswordComponent } from "../change-password/components/reset-pass
 import { InstancesListComponent } from "../instances/components/instances-list.component";
 import { UserProfileComponent } from "../user-profile/components/user-profile.component";
 import { ConfirmChangePasswordComponent } from "../change-password/components/confirm-change-password/confirm-change-password.component";
+import { AccessDeniedComponent } from "../access-denied/components/access-denied.component";
 
 const routes: Routes = [
   {
@@ -78,6 +79,10 @@ const routes: Routes = [
   {
     path: 'change-password',
     component: ConfirmChangePasswordComponent
+  },
+  {
+    path: 'access-denied',
+    component: AccessDeniedComponent
   },
   {
     path: '',

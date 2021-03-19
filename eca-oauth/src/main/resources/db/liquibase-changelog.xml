@@ -21,4 +21,6 @@
     <include file="db/changelog/v14-insert-external-api-credentials.xml"/>
     <include file="db/changelog/v15-create-change-password-request-table.xml"/>
     <include file="db/changelog/v16-add-user-password-date-column.xml"/>
+    <include file="db/changelog/v17-add-user-last-name-column.xml"/>
+    <include file="db/changelog/v18-add-user-locked-column.xml"/>
 </databaseChangeLog>

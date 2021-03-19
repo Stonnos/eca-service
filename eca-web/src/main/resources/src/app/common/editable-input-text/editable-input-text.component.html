@@ -1,0 +1,41 @@
+<form novalidate>
+  <input
+    required
+    pInputText
+    id="{{ textId }}"
+    name="{{ textName }}"
+    type="text"
+    [disabled]="textDisabled"
+    [value]="value"
+    [pattern]="pattern"
+    [maxLength]="maxLength"
+    [(ngModel)]="editableValue"
+    #editField = "ngModel"
+    (blur)="disableEditMode($event)"
+    (focus)="enableEditMode()"
+    class="form-control d-block w-100">
+  <div class="text-danger mt-1 font-12" *ngIf="submitted && editField.invalid">
+    <div *ngIf="editField?.errors?.required">
+      {{ requiredFieldErrorMessage }}
+    </div>
+    <div *ngIf="editField?.errors?.pattern">
+      <span class="d-block" *ngFor="let errorMessage of invalidPatternErrorMessages">{{ errorMessage }}</span>
+    </div>
+  </div>
+  <div *ngIf="editMode" class="mt-1 d-flex align-items-end justify-content-end">
+    <button pButton
+            type="button"
+            (mousedown)="mouseDown($event)"
+            (click)="submit()"
+            class="ui-button-info"
+            icon="pi pi-fw pi-check">
+    </button>
+    <button pButton
+            type="button"
+            (mousedown)="mouseDown($event)"
+            (click)="cancel()"
+            class="ui-button-secondary"
+            icon="pi pi-fw pi-times">
+    </button>
+  </div>
+</form>

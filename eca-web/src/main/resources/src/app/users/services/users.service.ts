@@ -10,6 +10,7 @@ import { PageRequestService } from "../../common/services/page-request.service";
 import { environment } from "../../../environments/environment";
 import { CreateUserModel } from "../../create-user/model/create-user.model";
 import { Utils } from "../../common/util/utils";
+import { UpdateUserInfoModel } from "../model/update-user-info.model";
 
 @Injectable()
 export class UsersService {
@@ -43,6 +44,14 @@ export class UsersService {
       'Authorization': Utils.getBearerTokenHeader()
     });
     return this.http.post<UserDto>(this.serviceUrl + '/create', createUser, { headers: headers })
+  }
+
+  public updateUserInfo(updateUserInfo: UpdateUserInfoModel) {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    return this.http.put(this.serviceUrl + '/update-info', updateUserInfo, { headers: headers })
   }
 
   public setTfaEnabled(tfaEnabled: boolean) {
@@ -85,6 +94,24 @@ export class UsersService {
     const formData = new FormData();
     formData.append('newEmail', newEmail);
     return this.http.post(this.serviceUrl + '/update-email', formData, { headers: headers })
+  }
+
+  public lock(userId: number) {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    const formData = new FormData();
+    formData.append('userId', userId.toString());
+    return this.http.post(this.serviceUrl + '/lock', formData, { headers: headers })
+  }
+
+  public unlock(userId: number) {
+    const headers = new HttpHeaders({
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    const formData = new FormData();
+    formData.append('userId', userId.toString());
+    return this.http.post(this.serviceUrl + '/unlock', formData, { headers: headers })
   }
 
   public logoutRequest(): Observable<any> {

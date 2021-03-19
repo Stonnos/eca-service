@@ -46,6 +46,24 @@ public class UserDto {
     private String firstName;
 
     /**
+     * User last name
+     */
+    @ApiModelProperty(value = "User last name")
+    private String lastName;
+
+    /**
+     * User middle name
+     */
+    @ApiModelProperty(value = "User middle name")
+    private String middleName;
+
+    /**
+     * User full name
+     */
+    @ApiModelProperty(value = "User full name")
+    private String fullName;
+
+    /**
      * User creation date
      */
     @ApiModelProperty(value = "User creation date")
@@ -58,6 +76,12 @@ public class UserDto {
      */
     @ApiModelProperty(value = "Two factor authentication enabled")
     private boolean tfaEnabled;
+
+    /**
+     * Account locked?
+     */
+    @ApiModelProperty(value = "Account locked")
+    private boolean locked;
 
     /**
      * User photo id

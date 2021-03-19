@@ -11,6 +11,7 @@ import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { FileUpload } from "primeng/primeng";
 import { finalize } from "rxjs/internal/operators";
 import { ChangePasswordRequest } from "../../change-password/model/change-password.request";
+import { UpdateUserInfoModel } from "../../users/model/update-user-info.model";
 
 @Component({
   selector: 'app-user-profile',
@@ -33,14 +34,24 @@ export class UserProfileComponent implements OnInit {
 
   public changePasswordRequest: ChangePasswordRequest = new ChangePasswordRequest();
 
-  public uploading = false;
+  public uploading: boolean = false;
+
+  public loading: boolean = false;
 
   public changePasswordRequestCreatedMessage: string =
     'На ваш email отправлено письмо с подтверждением смены пароля';
 
-  public changePasswordRequestCreated: boolean = false;
-
   public uploadPhotoErrorHeader: string = 'Не удалось загрузить фото';
+
+  public invalidPersonNameErrorMessages: string[] = [
+    'Поле должно содержать не менее 2-х символов и начинаться с заглавной буквы.',
+    'Разрешены только буквы одного алфавита'
+  ];
+
+  public personNameRegex: string = Utils.PERSON_NAME_REGEX;
+  public personNameMaxLength: number = Utils.PERSON_NAME_MAX_LENGTH;
+
+  public changePasswordRequestCreated: boolean = false;
 
   //Max file size: 10MB
   public maxFileSize: number = 10000000;
@@ -141,6 +152,39 @@ export class UserProfileComponent implements OnInit {
     this.getUser(false);
   }
 
+  public updateFirstName(value: string): void {
+    const updateUserInfoModel: UpdateUserInfoModel = new UpdateUserInfoModel(value, this.user.lastName, this.user.middleName);
+    this.updateUserInfo(updateUserInfoModel);
+  }
+
+  public updateLastName(value: string): void {
+    const updateUserInfoModel: UpdateUserInfoModel = new UpdateUserInfoModel(this.user.firstName, value, this.user.middleName);
+    this.updateUserInfo(updateUserInfoModel);
+  }
+
+  public updateMiddleName(value: string): void {
+    const updateUserInfoModel: UpdateUserInfoModel = new UpdateUserInfoModel(this.user.firstName, this.user.lastName, value);
+    this.updateUserInfo(updateUserInfoModel);
+  }
+
+  private updateUserInfo(updateUserInfo: UpdateUserInfoModel): void {
+    this.loading = true;
+    this.usersService.updateUserInfo(updateUserInfo)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.getUser(false);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
   private getUser(downloadPhoto: boolean): void {
     this.usersService.getCurrentUser().subscribe({
       next: (user: UserDto) => {
@@ -220,7 +264,9 @@ export class UserProfileComponent implements OnInit {
 
   private initCommonFields(): void {
     this.commonFields = [
+      { name: UserFields.LAST_NAME, label: "Фамилия:" },
       { name: UserFields.FIRST_NAME, label: "Имя:" },
+      { name: UserFields.MIDDLE_NAME, label: "Отчество:" },
       { name: UserFields.ROLES, label: "Роли:" },
       { name: UserFields.TFA_ENABLED, label: "Двухфакторная аутентификация:" },
       { name: UserFields.PASSWORD_DATE, label: "Дата изменения пароля:" },

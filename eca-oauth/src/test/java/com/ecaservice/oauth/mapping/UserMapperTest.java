@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.mapping;
 
 import com.ecaservice.oauth.dto.CreateUserDto;
+import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.UserDto;
@@ -11,6 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 
+import static com.ecaservice.oauth.TestHelperUtils.createUpdateUserInfoDto;
 import static com.ecaservice.oauth.TestHelperUtils.createUserDto;
 import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,10 +38,13 @@ class UserMapperTest {
         assertThat(userDto.getLogin()).isEqualTo(userEntity.getLogin());
         assertThat(userDto.getEmail()).isEqualTo(userEntity.getEmail());
         assertThat(userDto.getFirstName()).isEqualTo(userEntity.getFirstName());
+        assertThat(userDto.getLastName()).isEqualTo(userEntity.getLastName());
+        assertThat(userDto.getMiddleName()).isEqualTo(userEntity.getMiddleName());
         assertThat(userDto.getRoles()).isNotEmpty();
         assertThat(userDto.getRoles()).hasSameSizeAs(userEntity.getRoles());
         assertThat(userDto.getCreationDate()).isEqualTo(userEntity.getCreationDate());
         assertThat(userDto.isTfaEnabled()).isEqualTo(userEntity.isTfaEnabled());
+        assertThat(userDto.isLocked()).isEqualTo(userEntity.isLocked());
     }
 
     @Test
@@ -50,6 +55,8 @@ class UserMapperTest {
         assertThat(userEntity.getLogin()).isEqualTo(createUserDto.getLogin());
         assertThat(userEntity.getEmail()).isEqualTo(createUserDto.getEmail());
         assertThat(userEntity.getFirstName()).isEqualTo(createUserDto.getFirstName());
+        assertThat(userEntity.getLastName()).isEqualTo(createUserDto.getLastName());
+        assertThat(userEntity.getMiddleName()).isEqualTo(createUserDto.getMiddleName());
     }
 
     @Test
@@ -61,5 +68,16 @@ class UserMapperTest {
         assertThat(userDetails.getUsername()).isEqualTo(userEntity.getLogin());
         assertThat(userDetails.getAuthorities()).isNotEmpty();
         assertThat(userDetails.getAuthorities()).hasSameSizeAs(userEntity.getRoles());
+        assertThat(userDetails.isAccountNonLocked()).isTrue();
+    }
+
+    @Test
+    void testUpdateUserInfo() {
+        UpdateUserInfoDto updateUserInfoDto = createUpdateUserInfoDto();
+        UserEntity userEntity = createUserEntity();
+        userMapper.update(updateUserInfoDto, userEntity);
+        assertThat(userEntity.getFirstName()).isEqualTo(updateUserInfoDto.getFirstName());
+        assertThat(userEntity.getLastName()).isEqualTo(updateUserInfoDto.getLastName());
+        assertThat(userEntity.getMiddleName()).isEqualTo(updateUserInfoDto.getMiddleName());
     }
 }

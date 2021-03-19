@@ -3,6 +3,7 @@ package com.ecaservice.oauth.service;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.oauth.config.CommonConfig;
 import com.ecaservice.oauth.dto.CreateUserDto;
+import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserPhoto;
@@ -31,6 +32,7 @@ import java.time.LocalDateTime;
 import static com.ecaservice.oauth.entity.UserEntity_.CREATION_DATE;
 import static com.ecaservice.oauth.util.FilterUtils.buildSort;
 import static com.ecaservice.oauth.util.FilterUtils.buildSpecification;
+import static com.ecaservice.oauth.util.Utils.isSuperAdmin;
 import static com.ecaservice.user.model.Role.ROLE_ECA_USER;
 
 /**
@@ -46,6 +48,7 @@ public class UserService {
     private final CommonConfig commonConfig;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final Oauth2TokenService oauth2TokenService;
     private final UserEntityRepository userEntityRepository;
     private final RoleRepository roleRepository;
     private final UserPhotoRepository userPhotoRepository;
@@ -77,6 +80,20 @@ public class UserService {
         populateUserRole(userEntity);
         userEntity.setCreationDate(LocalDateTime.now());
         return userEntityRepository.save(userEntity);
+    }
+
+    /**
+     * Updates user info.
+     *
+     * @param userId            - user id
+     * @param updateUserInfoDto - user info dto
+     */
+    public void updateUserInfo(long userId, UpdateUserInfoDto updateUserInfoDto) {
+        log.info("Starting to update user [{}] info", userId);
+        UserEntity userEntity = getById(userId);
+        userMapper.update(updateUserInfoDto, userEntity);
+        userEntityRepository.save(userEntity);
+        log.info("User [{}] info has been updated", userId);
     }
 
     /**
@@ -121,6 +138,43 @@ public class UserService {
         userEntity.setTfaEnabled(tfaEnabled);
         userEntityRepository.save(userEntity);
         log.info("Tfa flag [{}] has been set for user [{}]", tfaEnabled, userEntity.getId());
+    }
+
+    /**
+     * Locks user account.
+     *
+     * @param userId - user id
+     */
+    @Transactional
+    public void lock(long userId) {
+        log.info("Starting to lock user [{}]", userId);
+        UserEntity userEntity = getById(userId);
+        if (isSuperAdmin(userEntity)) {
+            throw new IllegalStateException(String.format("Can't lock super admin user [%d]", userId));
+        }
+        if (userEntity.isLocked()) {
+            throw new IllegalStateException(String.format("User [%d] was locked", userId));
+        }
+        userEntity.setLocked(true);
+        userEntityRepository.save(userEntity);
+        oauth2TokenService.revokeTokens(userEntity);
+        log.info("User [{}] has been locked", userId);
+    }
+
+    /**
+     * Unlocks user account.
+     *
+     * @param userId - user id
+     */
+    public void unlock(long userId) {
+        log.info("Starting to unlock user [{}]", userId);
+        UserEntity userEntity = getById(userId);
+        if (!userEntity.isLocked()) {
+            throw new IllegalStateException(String.format("User [%d] was unlocked", userId));
+        }
+        userEntity.setLocked(false);
+        userEntityRepository.save(userEntity);
+        log.info("User [{}] has been unlocked", userId);
     }
 
     /**

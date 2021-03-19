@@ -9,6 +9,8 @@ import { ResetPasswordRequest } from "../../model/reset-password.request";
 import { ActivatedRoute } from "@angular/router";
 import { Utils } from "../../../common/util/utils";
 import { LogoutService } from "../../../auth/services/logout.service";
+import { ValidationErrorCode } from "../../../common/model/validation-error-code";
+import { ValidationService } from "../../../common/services/validation.service";
 
 @Component({
   selector: 'app-reset-password',
@@ -20,6 +22,7 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
   public submitted: boolean = false;
   public loading: boolean = false;
   public tokenValid: boolean = false;
+  public userLocked: boolean = false;
 
   @ViewChild(NgForm, { static: true })
   public form: NgForm;
@@ -33,6 +36,7 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
   public constructor(private messageService: MessageService,
                      private resetPasswordService: ResetPasswordService,
                      private logoutService: LogoutService,
+                     private validationService: ValidationService,
                      private route: ActivatedRoute) {
     this.token = this.route.snapshot.queryParams['token'];
   }
@@ -98,7 +102,8 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
   private handleError(error): void {
     if (error instanceof HttpErrorResponse) {
       if (error.status === 400) {
-        this.tokenValid = false;
+        this.tokenValid = !this.validationService.hasErrorCode(error.error, ValidationErrorCode.INVALID_TOKEN);
+        this.userLocked = this.validationService.hasErrorCode(error.error, ValidationErrorCode.USER_LOCKED);
       } else {
         this.handleUnknownError(error);
       }

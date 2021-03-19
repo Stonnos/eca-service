@@ -50,6 +50,39 @@
                 <ng-container *ngSwitchCase="'tfaEnabled'">
                   <p-inputSwitch [(ngModel)]="tfaEnabled" (onChange)="changedTfaSwitch($event)"></p-inputSwitch>
                 </ng-container>
+                <ng-container *ngSwitchCase="'firstName'">
+                 <app-editable-input-text [textId]="'firstName'"
+                                          [textName]="'firstName'"
+                                          [textDisabled]="loading"
+                                          [value]="getValue(field.name)"
+                                          (submitEvent)="updateFirstName($event)"
+                                          [maxLength]="personNameMaxLength"
+                                          [pattern]="personNameRegex"
+                                          [invalidPatternErrorMessages]="invalidPersonNameErrorMessages">
+                 </app-editable-input-text>
+                </ng-container>
+                <ng-container *ngSwitchCase="'lastName'">
+                  <app-editable-input-text [textId]="'lastName'"
+                                           [textName]="'lastName'"
+                                           [textDisabled]="loading"
+                                           [value]="getValue(field.name)"
+                                           (submitEvent)="updateLastName($event)"
+                                           [maxLength]="personNameMaxLength"
+                                           [pattern]="personNameRegex"
+                                           [invalidPatternErrorMessages]="invalidPersonNameErrorMessages">
+                  </app-editable-input-text>
+                </ng-container>
+                <ng-container *ngSwitchCase="'middleName'">
+                  <app-editable-input-text [textId]="'middleName'"
+                                           [textName]="'middleName'"
+                                           [textDisabled]="loading"
+                                           [value]="getValue(field.name)"
+                                           (submitEvent)="updateMiddleName($event)"
+                                           [maxLength]="personNameMaxLength"
+                                           [pattern]="personNameRegex"
+                                           [invalidPatternErrorMessages]="invalidPersonNameErrorMessages">
+                  </app-editable-input-text>
+                </ng-container>
                 <ng-container *ngSwitchDefault>
                   {{ getValue(field.name) }}
                 </ng-container>

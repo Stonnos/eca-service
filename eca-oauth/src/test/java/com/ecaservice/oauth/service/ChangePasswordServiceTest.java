@@ -9,9 +9,11 @@ import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.ChangePasswordRequestAlreadyExistsException;
 import com.ecaservice.oauth.exception.InvalidPasswordException;
 import com.ecaservice.oauth.exception.InvalidTokenException;
+import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.repository.ChangePasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +26,9 @@ import java.util.UUID;
 import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
 
 /**
  * Unit tests for checking {@link ChangePasswordService} functionality.
@@ -44,6 +49,9 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     @Inject
     private ChangePasswordRequestRepository changePasswordRequestRepository;
 
+    @MockBean
+    private Oauth2TokenService oauth2TokenService;
+
     private ChangePasswordService changePasswordService;
 
     private PasswordEncoder passwordEncoder;
@@ -53,9 +61,8 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        changePasswordService =
-                new ChangePasswordService(changePasswordConfig, passwordEncoder, changePasswordRequestRepository,
-                        userEntityRepository);
+        changePasswordService = new ChangePasswordService(changePasswordConfig, passwordEncoder, oauth2TokenService,
+                changePasswordRequestRepository, userEntityRepository);
         userEntity = createAndSaveUser();
     }
 
@@ -69,6 +76,13 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     void testCreateChangePasswordRequest() {
         internalTestCreateChangePasswordRequest();
         assertThat(changePasswordRequestRepository.count()).isOne();
+    }
+
+    @Test
+    void testCreateChangePasswordRequestForLockedUser() {
+        userEntity.setLocked(true);
+        userEntityRepository.save(userEntity);
+        assertThrows(UserLockedException.class, this::internalTestCreateChangePasswordRequest);
     }
 
     @Test
@@ -89,7 +103,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void tesCreateChangePasswordRequestWithChangePasswordRequestAlreadyExistsException() {
+    void testCreateChangePasswordRequestWithChangePasswordRequestAlreadyExistsException() {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PASSWORD, NEW_PASSWORD);
         ChangePasswordRequestEntity actual =
                 changePasswordService.createChangePasswordRequest(userEntity.getId(), changePasswordRequest);
@@ -101,7 +115,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void tesCreateChangePasswordRequestWithInvalidPassword() {
+    void testCreateChangePasswordRequestWithInvalidPassword() {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(NEW_PASSWORD, NEW_PASSWORD);
         Long userId = userEntity.getId();
         assertThrows(InvalidPasswordException.class,
@@ -148,6 +162,17 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
         assertThat(actual.getConfirmationDate()).isNotNull();
         assertThat(actual.getUserEntity().getPasswordDate()).isNotNull();
         assertThat(actual.getUserEntity().getPassword()).isEqualTo(changePasswordRequestEntity.getNewPassword());
+        verify(oauth2TokenService, atLeastOnce()).revokeTokens(any(UserEntity.class));
+    }
+
+    @Test
+    void testChangePasswordForLockedUser() {
+        userEntity.setLocked(true);
+        userEntityRepository.save(userEntity);
+        ChangePasswordRequestEntity changePasswordRequestEntity = createAndSaveChangePasswordRequestEntity(
+                LocalDateTime.now().plusMinutes(changePasswordConfig.getValidityMinutes()), null);
+        String token = changePasswordRequestEntity.getToken();
+        assertThrows(UserLockedException.class, () -> changePasswordService.changePassword(token));
     }
 
     private UserEntity createAndSaveUser() {

@@ -8,6 +8,7 @@ import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.ChangePasswordRequestAlreadyExistsException;
 import com.ecaservice.oauth.exception.InvalidPasswordException;
 import com.ecaservice.oauth.exception.InvalidTokenException;
+import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.repository.ChangePasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class ChangePasswordService {
 
     private final ChangePasswordConfig changePasswordConfig;
     private final PasswordEncoder passwordEncoder;
+    private final Oauth2TokenService oauth2TokenService;
     private final ChangePasswordRequestRepository changePasswordRequestRepository;
     private final UserEntityRepository userEntityRepository;
 
@@ -46,6 +48,9 @@ public class ChangePasswordService {
                                                                    ChangePasswordRequest changePasswordRequest) {
         UserEntity userEntity = userEntityRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, userId));
+        if (userEntity.isLocked()) {
+            throw new UserLockedException(userEntity.getId());
+        }
         if (!isValidOldPassword(userEntity, changePasswordRequest)) {
             throw new InvalidPasswordException();
         }
@@ -69,22 +74,24 @@ public class ChangePasswordService {
      * Change user password.
      *
      * @param token - token value
-     * @return change password request
      */
     @Transactional
-    public ChangePasswordRequestEntity changePassword(String token) {
+    public void changePassword(String token) {
         ChangePasswordRequestEntity changePasswordRequestEntity =
                 changePasswordRequestRepository.findByTokenAndExpireDateAfterAndConfirmationDateIsNull(token,
                         LocalDateTime.now()).orElseThrow(() -> new InvalidTokenException(token));
         UserEntity userEntity = changePasswordRequestEntity.getUserEntity();
+        if (userEntity.isLocked()) {
+            throw new UserLockedException(userEntity.getId());
+        }
         userEntity.setPassword(changePasswordRequestEntity.getNewPassword());
         userEntity.setPasswordDate(LocalDateTime.now());
         changePasswordRequestEntity.setConfirmationDate(LocalDateTime.now());
         userEntityRepository.save(userEntity);
         changePasswordRequestRepository.save(changePasswordRequestEntity);
+        oauth2TokenService.revokeTokens(userEntity);
         log.info("New password has been set for user [{}], change password request id [{}]", userEntity.getId(),
                 changePasswordRequestEntity.getId());
-        return changePasswordRequestEntity;
     }
 
     private boolean isValidOldPassword(UserEntity userEntity, ChangePasswordRequest changePasswordRequest) {

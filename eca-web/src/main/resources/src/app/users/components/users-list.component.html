@@ -16,6 +16,7 @@
     </div>
   </div>
   <p-table
+    class="users-table"
     [columns]="columns"
     [value]="items"
     [rows]="pageSize"
@@ -35,6 +36,7 @@
           </th>
           <th *ngIf="notSortable(column.name)">{{ column.label }}</th>
         </ng-container>
+        <th></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-item>
@@ -42,11 +44,29 @@
         <td *ngFor="let column of columns">
           {{ getColumnValue(column.name, item) }}
         </td>
+        <td *ngIf="item.locked">
+          <button pButton
+                  type="button"
+                  [pTooltip]="'Разблокировать пользователя'"
+                  class="ui-button-danger round-button"
+                  icon="pi pi-fw pi-unlock"
+                  (click)="unlockUser(item)">
+          </button>
+        </td>
+        <td *ngIf="!item.locked">
+          <button pButton
+                  type="button"
+                  [pTooltip]="'Заблокировать пользователя'"
+                  [disabled]="!isLockAllowed(item)"
+                  class="ui-button-secondary round-button"
+                  icon="pi pi-fw pi-lock" (click)="lockUser(item)">
+          </button>
+        </td>
       </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage" *ngIf="items.length == 0">
       <tr>
-        <td [attr.colspan]="columns.length" class="text-center">
+        <td [attr.colspan]="columns.length + 1" class="text-center">
           Не найдено ни одного пользователя
         </td>
       </tr>

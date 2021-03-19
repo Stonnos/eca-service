@@ -70,19 +70,19 @@
         </div>
       </div>
       <div class="ui-g-10 mx-auto mb-4">
-        <label class="text-bold control-label">Имя пользователя</label>
+        <label class="text-bold control-label">Имя</label>
         <input
           required
           pInputText
-          [pattern]="firstNameRegex"
+          [pattern]="personNameRegex"
           id="firstName"
           name="firstName"
           type="text"
-          placeholder="Введите имя пользователя"
+          placeholder="Введите имя"
           [(ngModel)]="item.firstName"
           [disabled]="loading"
           #firstName="ngModel"
-          maxlength="30"
+          [maxLength]="personNameMaxLength"
           class="form-control d-block w-100">
         <div class="text-danger error-message" *ngIf="firstName.invalid && (firstName.dirty || firstName.touched || submitted)">
           <div *ngIf="firstName?.errors?.required">
@@ -90,6 +90,56 @@
           </div>
           <div *ngIf="firstName?.errors?.pattern">
             <span>Имя должно содержать не менее 2-х символов и начинаться с заглавной буквы.</span>
+            <span class="d-block">Разрешены только буквы одного алфавита</span>
+          </div>
+        </div>
+      </div>
+      <div class="ui-g-10 mx-auto mb-4">
+        <label class="text-bold control-label">Фамилия</label>
+        <input
+          required
+          pInputText
+          [pattern]="personNameRegex"
+          id="lastName"
+          name="lastName"
+          type="text"
+          placeholder="Введите фамилию"
+          [(ngModel)]="item.lastName"
+          [disabled]="loading"
+          #lastName="ngModel"
+          [maxLength]="personNameMaxLength"
+          class="form-control d-block w-100">
+        <div class="text-danger error-message" *ngIf="lastName.invalid && (lastName.dirty || lastName.touched || submitted)">
+          <div *ngIf="lastName?.errors?.required">
+            Заполните фамилию
+          </div>
+          <div *ngIf="lastName?.errors?.pattern">
+            <span>Фамилия должна содержать не менее 2-х символов и начинаться с заглавной буквы.</span>
+            <span class="d-block">Разрешены только буквы одного алфавита</span>
+          </div>
+        </div>
+      </div>
+      <div class="ui-g-10 mx-auto mb-4">
+        <label class="text-bold control-label">Отчество</label>
+        <input
+          required
+          pInputText
+          [pattern]="personNameRegex"
+          id="middleName"
+          name="middleName"
+          type="text"
+          placeholder="Введите отчество"
+          [(ngModel)]="item.middleName"
+          [disabled]="loading"
+          #middleName="ngModel"
+          [maxLength]="personNameMaxLength"
+          class="form-control d-block w-100">
+        <div class="text-danger error-message" *ngIf="middleName.invalid && (middleName.dirty || middleName.touched || submitted)">
+          <div *ngIf="middleName?.errors?.required">
+            Заполните отчество
+          </div>
+          <div *ngIf="middleName?.errors?.pattern">
+            <span>Отчество должно содержать не менее 2-х символов и начинаться с заглавной буквы.</span>
             <span class="d-block">Разрешены только буквы одного алфавита</span>
           </div>
         </div>

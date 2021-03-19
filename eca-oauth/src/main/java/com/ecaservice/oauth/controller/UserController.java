@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.controller;
 
 import com.ecaservice.oauth.dto.CreateUserDto;
+import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserPhoto;
 import com.ecaservice.oauth.event.model.UserCreatedEvent;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -179,6 +181,24 @@ public class UserController {
     }
 
     /**
+     * Updates info for current authenticated user.
+     *
+     * @param userDetails       - user details
+     * @param updateUserInfoDto - user info dto
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Updates info for current authenticated user",
+            notes = "Updates info for current authenticated user"
+    )
+    @PutMapping(value = "/update-info")
+    public void updateUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                               @Valid @RequestBody UpdateUserInfoDto updateUserInfoDto) {
+        log.info("Received request to update user [{}] info", userDetails.getId());
+        userService.updateUserInfo(userDetails.getId(), updateUserInfoDto);
+    }
+
+    /**
      * Uploads photo for current authenticated user.
      *
      * @param userDetails - user details
@@ -232,5 +252,42 @@ public class UserController {
     public void deletePhoto(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         log.info("Deletes photo for user [{}]", userDetails.getId());
         userService.deletePhoto(userDetails.getId());
+    }
+
+    /**
+     * Locks user.
+     *
+     * @param userDetails - user details
+     * @param userId      - user id
+     */
+    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
+    @ApiOperation(
+            value = "Locks user",
+            notes = "Locks user"
+    )
+    @PostMapping(value = "/lock")
+    public void lock(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                     @ApiParam(value = "User id", required = true) @RequestParam Long userId) {
+        log.info("Received request for user [{}] locking", userId);
+        if (userDetails.getId().equals(userId)) {
+            throw new IllegalStateException(String.format("Can't lock yourself: [%d]", userId));
+        }
+        userService.lock(userId);
+    }
+
+    /**
+     * Unlocks user.
+     *
+     * @param userId - user id
+     */
+    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
+    @ApiOperation(
+            value = "Unlocks user",
+            notes = "Unlocks user"
+    )
+    @PostMapping(value = "/unlock")
+    public void unlock(@ApiParam(value = "User id", required = true) @RequestParam Long userId) {
+        log.info("Received request for user [{}] unlocking", userId);
+        userService.unlock(userId);
     }
 }

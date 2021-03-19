@@ -6,6 +6,7 @@ import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.InvalidTokenException;
+import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class ResetPasswordService {
 
     private final ResetPasswordConfig resetPasswordConfig;
     private final PasswordEncoder passwordEncoder;
+    private final Oauth2TokenService oauth2TokenService;
     private final ResetPasswordRequestRepository resetPasswordRequestRepository;
     private final UserEntityRepository userEntityRepository;
 
@@ -44,6 +46,9 @@ public class ResetPasswordService {
                 () -> new IllegalStateException(
                         String.format("Can't create reset password request, because user with email %s doesn't exists!",
                                 forgotPasswordRequest.getEmail())));
+        if (userEntity.isLocked()) {
+            throw new UserLockedException(userEntity.getId());
+        }
         LocalDateTime now = LocalDateTime.now();
         ResetPasswordRequestEntity resetPasswordRequestEntity =
                 resetPasswordRequestRepository.findByUserEntityAndExpireDateAfterAndResetDateIsNull(userEntity, now);
@@ -61,22 +66,24 @@ public class ResetPasswordService {
      * Reset password.
      *
      * @param resetPasswordRequest - reset password request
-     * @return reset password request entity
      */
     @Transactional
-    public ResetPasswordRequestEntity resetPassword(ResetPasswordRequest resetPasswordRequest) {
+    public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
         ResetPasswordRequestEntity resetPasswordRequestEntity =
                 resetPasswordRequestRepository.findByTokenAndExpireDateAfterAndResetDateIsNull(
                         resetPasswordRequest.getToken(), LocalDateTime.now())
                         .orElseThrow(() -> new InvalidTokenException(resetPasswordRequest.getToken()));
         UserEntity userEntity = resetPasswordRequestEntity.getUserEntity();
+        if (userEntity.isLocked()) {
+            throw new UserLockedException(userEntity.getId());
+        }
         userEntity.setPassword(passwordEncoder.encode(resetPasswordRequest.getPassword().trim()));
         userEntity.setPasswordDate(LocalDateTime.now());
         resetPasswordRequestEntity.setResetDate(LocalDateTime.now());
         userEntityRepository.save(userEntity);
         resetPasswordRequestRepository.save(resetPasswordRequestEntity);
+        oauth2TokenService.revokeTokens(userEntity);
         log.info("New password has been set for user [{}], reset password request id [{}]", userEntity.getId(),
                 resetPasswordRequestEntity.getId());
-        return resetPasswordRequestEntity;
     }
 }

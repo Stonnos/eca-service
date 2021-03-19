@@ -1,6 +1,7 @@
 package com.ecaservice.oauth;
 
 import com.ecaservice.oauth.dto.CreateUserDto;
+import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.RoleEntity;
@@ -23,9 +24,13 @@ public class TestHelperUtils {
     private static final String USER_NAME = "user";
     private static final String EMAIL = "test@mail.ru";
     private static final String FIRST_NAME = "Roman";
-    private static final long USER_ID = 1L;
     private static final String PASSWORD = "pa66word!";
     private static final String TOKEN = "token";
+    private static final String MIDDLE_NAME = "Igorevich";
+    private static final String LAST_NAME = "Batygin";
+    private static final String UPDATE_MIDDLE_NAME = "updateMiddleName";
+    private static final String UPDATE_LAST_NAME = "updateLastName";
+    private static final String UPDATE_FIRST_NAME = "updateFirstName";
 
     /**
      * Creates role entity.
@@ -61,7 +66,8 @@ public class TestHelperUtils {
         userEntity.setLogin(USER_NAME);
         userEntity.setEmail(EMAIL);
         userEntity.setFirstName(FIRST_NAME);
-        userEntity.setId(USER_ID);
+        userEntity.setLastName(LAST_NAME);
+        userEntity.setMiddleName(MIDDLE_NAME);
         userEntity.setRoles(Sets.newHashSet(createRoleEntity()));
         userEntity.setPassword(PASSWORD);
         userEntity.setCreationDate(LocalDateTime.now());
@@ -75,11 +81,41 @@ public class TestHelperUtils {
      * @return create user dto
      */
     public static CreateUserDto createUserDto() {
+        return createUserDto(USER_NAME, EMAIL, FIRST_NAME, LAST_NAME, MIDDLE_NAME);
+    }
+
+    /**
+     * Creates user dto.
+     *
+     * @param login      - user login
+     * @param email      - user email
+     * @param firstName  - user first name
+     * @param lastName   - user last name
+     * @param middleName - user middle name
+     * @return create user dto
+     */
+    public static CreateUserDto createUserDto(String login, String email, String firstName, String lastName,
+                                              String middleName) {
         CreateUserDto createUserDto = new CreateUserDto();
-        createUserDto.setLogin(USER_NAME);
-        createUserDto.setEmail(EMAIL);
-        createUserDto.setFirstName(FIRST_NAME);
+        createUserDto.setLogin(login);
+        createUserDto.setEmail(email);
+        createUserDto.setFirstName(firstName);
+        createUserDto.setLastName(lastName);
+        createUserDto.setMiddleName(middleName);
         return createUserDto;
+    }
+
+    /**
+     * Creates update user info dto.
+     *
+     * @return update user info dto
+     */
+    public static UpdateUserInfoDto createUpdateUserInfoDto() {
+        UpdateUserInfoDto updateUserInfoDto = new UpdateUserInfoDto();
+        updateUserInfoDto.setFirstName(UPDATE_FIRST_NAME);
+        updateUserInfoDto.setLastName(UPDATE_LAST_NAME);
+        updateUserInfoDto.setMiddleName(UPDATE_MIDDLE_NAME);
+        return updateUserInfoDto;
     }
 
     /**

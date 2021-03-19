@@ -37,12 +37,12 @@ public class FieldConstraints {
             "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
     /**
-     * First name regex
+     * Person name (e.g. first name, last name) regex
      */
-    public static final String FIRST_NAME_REGEX = "^([A-Z][a-z]+)|([А-Я][а-я]+)$";
+    public static final String PERSON_NAME_REGEX = "^([A-Z][a-z]+)|([А-Я][а-я]+)$";
 
     /**
-     * First name max size
+     * Person name (e.g. first name, last name) max size
      */
-    public static final int FIRST_NAME_MAX_SIZE = 30;
+    public static final int PERSON_NAME_MAX_SIZE = 30;
 }

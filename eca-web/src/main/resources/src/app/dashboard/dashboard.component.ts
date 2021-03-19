@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 import { LogoutService } from "../auth/services/logout.service";
-import { RoleDto, UserDto } from "../../../../../../target/generated-sources/typescript/eca-web-dto";
-import { Role } from "../common/model/roles";
+import { UserDto } from "../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { HttpErrorResponse } from "@angular/common/http";
 import { UsersService } from "../users/services/users.service";
+import { Utils } from "../common/util/utils";
 
 @Component({
   selector: 'app-dashboard',
@@ -32,10 +32,6 @@ export class DashboardComponent implements OnInit {
 
   public getUserLogin(): string {
     return this.user && this.user.login;
-  }
-
-  public isSuperAdmin(): boolean {
-    return this.user && this.user.roles && this.user.roles.map((role: RoleDto) => role.roleName).includes(Role.ROLE_SUPER_ADMIN);
   }
 
   public getCurrentUser(): void {
@@ -95,7 +91,7 @@ export class DashboardComponent implements OnInit {
       {
         label: 'Пользователи',
         routerLink: ['/dashboard/users'],
-        visible: this.isSuperAdmin()
+        visible: Utils.isSuperAdmin(this.user)
       }
     ];
   }

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v17-add-user-last-name-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Add last_name column to user table -->
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_entity"/>
+            <not>
+                <columnExists tableName="user_entity" columnName="last_name"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="user_entity">
+            <column name="last_name" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <!-- Add middle_name column to user table -->
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_entity"/>
+            <not>
+                <columnExists tableName="user_entity" columnName="middle_name"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="user_entity">
+            <column name="middle_name" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_entity"/>
+            <columnExists tableName="user_entity" columnName="last_name"/>
+            <columnExists tableName="user_entity" columnName="middle_name"/>
+        </preConditions>
+        <update tableName="user_entity">
+            <column name="last_name" value="Батыгин"/>
+            <column name="middle_name" value="Игоревич"/>
+            <where>login = 'admin'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_entity"/>
+            <columnExists tableName="user_entity" columnName="last_name"/>
+        </preConditions>
+        <addNotNullConstraint tableName="user_entity" columnName="last_name"/>
+    </changeSet>
+
+    <changeSet id="5" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_entity"/>
+            <columnExists tableName="user_entity" columnName="middle_name"/>
+        </preConditions>
+        <addNotNullConstraint tableName="user_entity" columnName="middle_name"/>
+    </changeSet>
+
+</databaseChangeLog>

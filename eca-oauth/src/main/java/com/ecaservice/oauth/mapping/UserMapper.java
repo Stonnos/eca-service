@@ -1,11 +1,13 @@
 package com.ecaservice.oauth.mapping;
 
 import com.ecaservice.oauth.dto.CreateUserDto;
+import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.UserDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 import java.util.List;
@@ -36,6 +38,8 @@ public interface UserMapper {
     @Mapping(source = "login", target = "login", qualifiedByName = "trim")
     @Mapping(source = "email", target = "email", qualifiedByName = "trim")
     @Mapping(source = "firstName", target = "firstName", qualifiedByName = "trim")
+    @Mapping(source = "lastName", target = "lastName", qualifiedByName = "trim")
+    @Mapping(source = "middleName", target = "middleName", qualifiedByName = "trim")
     UserEntity map(CreateUserDto createUserDto);
 
     /**
@@ -55,6 +59,17 @@ public interface UserMapper {
      * @return users dto list
      */
     List<UserDto> map(List<UserEntity> userEntityList);
+
+    /**
+     * Maps user info data to user entity.
+     *
+     * @param updateUserInfoDto - update user info dto
+     * @param userEntity        - user entity
+     */
+    @Mapping(source = "firstName", target = "firstName", qualifiedByName = "trim")
+    @Mapping(source = "lastName", target = "lastName", qualifiedByName = "trim")
+    @Mapping(source = "middleName", target = "middleName", qualifiedByName = "trim")
+    void update(UpdateUserInfoDto updateUserInfoDto, @MappingTarget UserEntity userEntity);
 
     @Named("trim")
     default String trim(String value) {
