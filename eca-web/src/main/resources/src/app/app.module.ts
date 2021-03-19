@@ -37,6 +37,7 @@ import { InstancesModule } from "./instances/instances.module";
 import { CreateEditInstancesModule } from "./create-edit-instances/create-edit-instances.module";
 import { UserProfileModule } from "./user-profile/user-profile.module";
 import { UpdateUserEmailModule } from "./update-user-email/update-user-email.module";
+import { AccessDeniedModule } from "./access-denied/access-denied.module";
 
 @NgModule({
   declarations: [
@@ -78,6 +79,7 @@ import { UpdateUserEmailModule } from "./update-user-email/update-user-email.mod
     UiComponentsModule,
     HttpClientModule,
     NoopAnimationsModule,
+    AccessDeniedModule
   ],
   providers: [
     CookieService
