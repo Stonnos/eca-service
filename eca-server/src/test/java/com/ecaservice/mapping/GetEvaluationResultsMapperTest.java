@@ -1,8 +1,8 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
-import com.ecaservice.dto.evaluation.ResponseStatus;
+import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
+import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import org.junit.jupiter.api.Test;
@@ -13,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import javax.inject.Inject;
 import java.util.UUID;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -33,6 +34,7 @@ class GetEvaluationResultsMapperTest {
                 TestHelperUtils.createGetEvaluationResultsResponse(UUID.randomUUID().toString(),
                         ResponseStatus.SUCCESS);
         evaluationResultsResponse.setStatistics(TestHelperUtils.createStatisticsReport());
+        evaluationResultsResponse.setClassificationCosts(newArrayList());
         evaluationResultsResponse.getClassificationCosts().add(TestHelperUtils.createClassificationCostsReport());
         evaluationResultsResponse.getClassificationCosts().add(TestHelperUtils.createClassificationCostsReport());
         EvaluationResultsDto evaluationResultsDto = evaluationResultsMapper.map(evaluationResultsResponse);

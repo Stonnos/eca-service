@@ -1,6 +1,6 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.dto.evaluation.ClassificationCostsReport;
+import com.ecaservice.ers.dto.ClassificationCostsReport;
 import com.ecaservice.web.dto.model.ClassificationCostsDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

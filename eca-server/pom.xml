@@ -13,9 +13,6 @@
     <packaging>war</packaging>
 
     <properties>
-        <xmlschema.version>2.2.5</xmlschema.version>
-        <httpclient.version>4.5.11</httpclient.version>
-        <jaxb2-maven-plugin.version>2.5.0</jaxb2-maven-plugin.version>
         <sonar.coverage.exclusions>
             **/model/**/*,
             **/dto/**/*,
@@ -69,13 +66,14 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web-services</artifactId>
+            <groupId>eca.service</groupId>
+            <artifactId>common-web</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>eca.service</groupId>
-            <artifactId>common-web</artifactId>
+            <artifactId>eca-ers-transport</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -119,17 +117,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.ws.xmlschema</groupId>
-            <artifactId>xmlschema-core</artifactId>
-            <version>${xmlschema.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>wsdl4j</groupId>
-            <artifactId>wsdl4j</artifactId>
         </dependency>
 
         <dependency>
@@ -180,12 +167,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>${httpclient.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>eca.service</groupId>
             <artifactId>oauth2-test</artifactId>
             <version>${project.version}</version>
@@ -208,28 +189,6 @@
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jaxb2-maven-plugin</artifactId>
-                <version>${jaxb2-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>ers</id>
-                        <goals>
-                            <goal>xjc</goal>
-                        </goals>
-                        <configuration>
-                            <packageName>com.ecaservice.dto.evaluation</packageName>
-                            <sources>
-                                <source>src/main/resources/evaluation-results/evaluation-results.xsd</source>
-                            </sources>
-                            <outputDirectory>target/generated-sources/xjb</outputDirectory>
-                            <clearOutputDir>false</clearOutputDir>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
 
             <plugin>
                 <groupId>org.bsc.maven</groupId>

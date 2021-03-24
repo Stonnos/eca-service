@@ -1,10 +1,10 @@
 package com.ecaservice.util;
 
 import com.ecaservice.base.model.EcaResponse;
-import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.EvaluationResponse;
+import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.TechnicalStatus;
-import com.ecaservice.dto.evaluation.ClassifierReport;
+import com.ecaservice.ers.dto.ClassifierReport;
 import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;

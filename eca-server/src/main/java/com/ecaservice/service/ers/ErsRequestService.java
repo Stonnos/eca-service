@@ -1,14 +1,13 @@
 package com.ecaservice.service.ers;
 
 import com.ecaservice.config.cache.CacheNames;
-import com.ecaservice.config.ws.ers.ErsConfig;
-import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
-import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
-import com.ecaservice.dto.evaluation.ClassifierReport;
-import com.ecaservice.dto.evaluation.EvaluationResultsResponse;
-import com.ecaservice.dto.evaluation.GetEvaluationResultsRequest;
-import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
-import com.ecaservice.dto.evaluation.ResponseStatus;
+import com.ecaservice.ers.dto.ClassifierOptionsRequest;
+import com.ecaservice.ers.dto.ClassifierOptionsResponse;
+import com.ecaservice.ers.dto.ClassifierReport;
+import com.ecaservice.ers.dto.EvaluationResultsResponse;
+import com.ecaservice.ers.dto.GetEvaluationResultsRequest;
+import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
+import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.mapping.ClassifierReportMapper;
 import com.ecaservice.mapping.ErsResponseStatusMapper;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
@@ -17,11 +16,11 @@ import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.repository.ErsRequestRepository;
 import eca.core.evaluation.EvaluationResults;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.ws.client.WebServiceIOException;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -40,12 +39,11 @@ import static com.ecaservice.util.Utils.isValid;
 @RequiredArgsConstructor
 public class ErsRequestService {
 
-    private final ErsWebServiceClient ersWebServiceClient;
+    private final ErsRequestSender ersRequestSender;
     private final ErsRequestRepository ersRequestRepository;
     private final ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
     private final ClassifierReportMapper classifierReportMapper;
     private final ErsResponseStatusMapper ersResponseStatusMapper;
-    private final ErsConfig ersConfig;
 
     /**
      * Save evaluation results by sending request to ERS web - service.
@@ -54,27 +52,23 @@ public class ErsRequestService {
      * @param ersRequest        - evaluation results service request
      */
     public void saveEvaluationResults(EvaluationResults evaluationResults, ErsRequest ersRequest) {
-        if (!Boolean.TRUE.equals(ersConfig.getEnabled())) {
-            log.warn("Evaluation results sending is disabled.");
-        } else {
-            ersRequest.setRequestDate(LocalDateTime.now());
-            ersRequest.setRequestId(UUID.randomUUID().toString());
-            try {
-                log.info("Starting to send evaluation results to ERS with request [{}]", ersRequest.getRequestId());
-                EvaluationResultsResponse resultsResponse =
-                        ersWebServiceClient.sendEvaluationResults(evaluationResults, ersRequest.getRequestId());
-                log.info("Received response for requestId [{}] with status = {} from ERS.",
-                        resultsResponse.getRequestId(), resultsResponse.getStatus());
-                ersRequest.setResponseStatus(ersResponseStatusMapper.map(resultsResponse.getStatus()));
-            } catch (WebServiceIOException ex) {
-                log.error("There was an error while sending evaluation results: {}", ex.getMessage());
-                handleErrorRequest(ersRequest, ErsResponseStatus.SERVICE_UNAVAILABLE, ex.getMessage());
-            } catch (Exception ex) {
-                log.error("There was an error while sending evaluation results: {}", ex.getMessage());
-                handleErrorRequest(ersRequest, ErsResponseStatus.ERROR, ex.getMessage());
-            } finally {
-                ersRequestRepository.save(ersRequest);
-            }
+        ersRequest.setRequestDate(LocalDateTime.now());
+        ersRequest.setRequestId(UUID.randomUUID().toString());
+        try {
+            log.info("Starting to send evaluation results to ERS with request [{}]", ersRequest.getRequestId());
+            EvaluationResultsResponse resultsResponse =
+                    ersRequestSender.sendEvaluationResults(evaluationResults, ersRequest.getRequestId());
+            log.info("Received response for requestId [{}] with status = {} from ERS.",
+                    resultsResponse.getRequestId(), resultsResponse.getStatus());
+            ersRequest.setResponseStatus(ersResponseStatusMapper.map(resultsResponse.getStatus()));
+        } catch (FeignException.ServiceUnavailable ex) {
+            log.error("There was an error while sending evaluation results: {}", ex.getMessage());
+            handleErrorRequest(ersRequest, ErsResponseStatus.SERVICE_UNAVAILABLE, ex.getMessage());
+        } catch (Exception ex) {
+            log.error("There was an error while sending evaluation results: {}", ex.getMessage());
+            handleErrorRequest(ersRequest, ErsResponseStatus.ERROR, ex.getMessage());
+        } finally {
+            ersRequestRepository.save(ersRequest);
         }
     }
 
@@ -89,7 +83,7 @@ public class ErsRequestService {
         log.info("Starting to get evaluation results simple response for request id [{}]", requestId);
         GetEvaluationResultsRequest request = new GetEvaluationResultsRequest();
         request.setRequestId(requestId);
-        GetEvaluationResultsResponse response = ersWebServiceClient.getEvaluationResultsSimpleResponse(request);
+        GetEvaluationResultsResponse response = ersRequestSender.getEvaluationResultsSimpleResponse(request);
         log.info("Evaluation results simple response with request id [{}] has been fetched", requestId);
         return response;
     }
@@ -109,7 +103,7 @@ public class ErsRequestService {
             log.info("Sending request to find classifier optimal options for data '{}'.",
                     classifierOptionsRequest.getInstances().getRelationName());
             ClassifierOptionsResponse response =
-                    ersWebServiceClient.getClassifierOptions(classifierOptionsRequest);
+                    ersRequestSender.getClassifierOptions(classifierOptionsRequest);
             log.info("Received response with requestId = {}, status = {} for data '{}'", response.getRequestId(),
                     response.getStatus(), classifierOptionsRequest.getInstances().getRelationName());
             requestModel.setRequestId(response.getRequestId());
@@ -128,7 +122,7 @@ public class ErsRequestService {
                             Collections.singletonList(classifierReportMapper.map(classifierReport)));
                 }
             }
-        } catch (WebServiceIOException ex) {
+        } catch (FeignException.ServiceUnavailable ex) {
             log.error("There was an error while sending classifier options request: {}.", ex.getMessage());
             handleErrorRequest(requestModel, ErsResponseStatus.SERVICE_UNAVAILABLE, ex.getMessage());
         } catch (Exception ex) {

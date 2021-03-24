@@ -1,6 +1,6 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.dto.evaluation.InstancesReport;
+import com.ecaservice.ers.dto.InstancesReport;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 import weka.core.Instances;

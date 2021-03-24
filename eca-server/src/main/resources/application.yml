@@ -126,12 +126,8 @@ experiment:
     numFoldsForStacking: 10
 
 ers:
-  url: http://localhost:8089/evaluation-results-service/ws/
-  enabled: true
   useClassifierOptionsCache: false
   classifierOptionsCacheDurationInDays: 2
-  ssl:
-    trustSelfSigned: true
 
 cache:
   specs:

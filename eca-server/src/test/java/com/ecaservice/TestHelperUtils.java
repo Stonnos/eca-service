@@ -17,16 +17,16 @@ import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.classifier.options.model.NeuralNetworkOptions;
 import com.ecaservice.classifier.options.model.RandomForestsOptions;
 import com.ecaservice.classifier.options.model.StackingOptions;
-import com.ecaservice.dto.evaluation.ClassificationCostsReport;
-import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
-import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
-import com.ecaservice.dto.evaluation.ClassifierReport;
-import com.ecaservice.dto.evaluation.EvaluationMethodReport;
-import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
-import com.ecaservice.dto.evaluation.InputOptionsMap;
-import com.ecaservice.dto.evaluation.ResponseStatus;
-import com.ecaservice.dto.evaluation.RocCurveReport;
-import com.ecaservice.dto.evaluation.StatisticsReport;
+import com.ecaservice.ers.dto.ClassificationCostsReport;
+import com.ecaservice.ers.dto.ClassifierOptionsRequest;
+import com.ecaservice.ers.dto.ClassifierOptionsResponse;
+import com.ecaservice.ers.dto.ClassifierReport;
+import com.ecaservice.ers.dto.EvaluationMethodReport;
+import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
+import com.ecaservice.ers.dto.InputOptionsMap;
+import com.ecaservice.ers.dto.ResponseStatus;
+import com.ecaservice.ers.dto.RocCurveReport;
+import com.ecaservice.ers.dto.StatisticsReport;
 import com.ecaservice.model.entity.AppInstanceEntity;
 import com.ecaservice.model.entity.ClassifierInfo;
 import com.ecaservice.model.entity.ClassifierInputOptions;
@@ -592,7 +592,7 @@ public class TestHelperUtils {
      */
     public static EvaluationMethodReport createEvaluationMethodReport() {
         EvaluationMethodReport evaluationMethodReport = new EvaluationMethodReport();
-        evaluationMethodReport.setEvaluationMethod(com.ecaservice.dto.evaluation.EvaluationMethod.CROSS_VALIDATION);
+        evaluationMethodReport.setEvaluationMethod(com.ecaservice.ers.dto.EvaluationMethod.CROSS_VALIDATION);
         evaluationMethodReport.setNumFolds(BigInteger.valueOf(NUM_FOLDS));
         evaluationMethodReport.setNumTests(BigInteger.valueOf(NUM_TESTS));
         evaluationMethodReport.setSeed(BigInteger.valueOf(SEED));
@@ -623,6 +623,7 @@ public class TestHelperUtils {
         ClassifierOptionsResponse response = new ClassifierOptionsResponse();
         response.setStatus(responseStatus);
         response.setRequestId(java.util.UUID.randomUUID().toString());
+        response.setClassifierReports(newArrayList());
         classifierReports.forEach(classifierReport -> response.getClassifierReports().add(classifierReport));
         return response;
     }

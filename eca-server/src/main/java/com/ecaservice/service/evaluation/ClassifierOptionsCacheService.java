@@ -1,8 +1,8 @@
 package com.ecaservice.service.evaluation;
 
 import com.ecaservice.aspect.annotation.Locked;
-import com.ecaservice.config.ws.ers.ErsConfig;
-import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
+import com.ecaservice.config.ers.ErsConfig;
+import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.mapping.ClassifierOptionsRequestModelMapper;
 import com.ecaservice.model.entity.AppInstanceEntity;
 import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
