@@ -26,6 +26,7 @@
         <module>eca-oauth</module>
         <module>eca-server</module>
         <module>eca-mail</module>
+        <module>eca-ers</module>
         <module>eca-data-storage</module>
         <module>eca-external-api</module>
         <module>eca-web</module>

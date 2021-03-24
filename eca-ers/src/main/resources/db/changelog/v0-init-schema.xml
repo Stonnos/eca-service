@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v0-init-schema.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="hibernate_sequence"/>
+            </not>
+        </preConditions>
+        <createSequence sequenceName="hibernate_sequence" startValue="1" incrementBy="1" minValue="1"/>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="instances_info"/>
+            </not>
+        </preConditions>
+        <createTable tableName="instances_info">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="data_path" type="varchar(255)"/>
+            <column name="data_md5_hash" type="varchar(255)"/>
+            <column name="relation_name" type="varchar(255)"/>
+            <column name="num_instances" type="integer"/>
+            <column name="num_attributes" type="integer"/>
+            <column name="num_classes" type="integer"/>
+            <column name="class_name" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <not>
+                <indexExists indexName="data_md5_hash_index" tableName="instances_info"
+                             columnNames="data_md5_hash"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="instances_info" indexName="data_md5_hash_index">
+            <column name="data_md5_hash"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="classifier_options_info"/>
+            </not>
+        </preConditions>
+        <createTable tableName="classifier_options_info">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="classifier_name" type="varchar(255)"/>
+            <column name="options" type="text"/>
+            <column name="classifier_description" type="varchar(255)"/>
+            <column name="parent_id" type="bigint">
+                <constraints foreignKeyName="fk_classifier_options_info_id"
+                             referencedTableName="classifier_options_info" referencedColumnNames="id" nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options_info"/>
+            <not>
+                <tableExists tableName="input_options"/>
+            </not>
+        </preConditions>
+        <createTable tableName="input_options">
+            <column name="classifier_options_info_id" type="bigint">
+                <constraints foreignKeyName="fk_input_options_classifier_options_info_id"
+                             referencedTableName="classifier_options_info" referencedColumnNames="id" nullable="false"/>
+            </column>
+            <column name="option_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="option_value" type="varchar(255)"/>
+        </createTable>
+        <addPrimaryKey constraintName="pk_input_options" tableName="input_options"
+                       columnNames="classifier_options_info_id, option_name"/>
+    </changeSet>
+
+    <changeSet id="6" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="evaluation_results_info"/>
+            </not>
+        </preConditions>
+        <createTable tableName="evaluation_results_info">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="request_id" type="varchar(255)"/>
+            <column name="save_date" type="timestamp"/>
+            <column name="instances_info_id" type="bigint">
+                <constraints foreignKeyName="fk_evaluation_results_instances_info_id"
+                             referencedTableName="instances_info" referencedColumnNames="id" nullable="true"/>
+            </column>
+            <column name="classifier_options_info_id" type="bigint">
+                <constraints foreignKeyName="fk_evaluation_results_classifier_options_info_id"
+                             referencedTableName="classifier_options_info" referencedColumnNames="id" nullable="true"/>
+            </column>
+            <column name="evaluation_method" type="varchar(255)"/>
+            <column name="num_folds" type="integer"/>
+            <column name="num_tests" type="integer"/>
+            <column name="seed" type="integer"/>
+            <column name="num_test_instances" type="integer"/>
+            <column name="num_correct" type="integer"/>
+            <column name="num_incorrect" type="integer"/>
+            <column name="pct_correct" type="numeric(19,4)"/>
+            <column name="pct_incorrect" type="numeric(19,4)"/>
+            <column name="mean_abs_error" type="numeric(19,4)"/>
+            <column name="root_mean_squared_error" type="numeric(19,4)"/>
+            <column name="max_auc" type="numeric(19,4)"/>
+            <column name="variance_error" type="numeric(19,4)"/>
+            <column name="confidence_interval_lower_bound" type="numeric(19,4)"/>
+            <column name="confidence_interval_upper_bound" type="numeric(19,4)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="7" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_results_info"/>
+            <not>
+                <indexExists indexName="request_id_idx" tableName="evaluation_results_info"
+                             columnNames="request_id"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="evaluation_results_info" indexName="request_id_idx">
+            <column name="request_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="8" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="confusion_matrix"/>
+            </not>
+        </preConditions>
+        <createTable tableName="confusion_matrix">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="actual_class" type="varchar(255)"/>
+            <column name="predicted_class" type="varchar(255)"/>
+            <column name="num_instances" type="integer"/>
+            <column name="evaluation_results_info_id" type="bigint">
+                <constraints foreignKeyName="fk_confusion_matrix_evaluation_results_info_id"
+                             referencedTableName="evaluation_results_info" referencedColumnNames="id" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="9" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="classification_costs_info"/>
+            </not>
+        </preConditions>
+        <createTable tableName="classification_costs_info">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="class_value" type="varchar(255)"/>
+            <column name="tp_rate" type="numeric(19,4)"/>
+            <column name="fp_rate" type="numeric(19,4)"/>
+            <column name="tn_rate" type="numeric(19,4)"/>
+            <column name="fn_rate" type="numeric(19,4)"/>
+            <column name="auc_value" type="numeric(19,4)"/>
+            <column name="specificity" type="numeric(19,4)"/>
+            <column name="sensitivity" type="numeric(19,4)"/>
+            <column name="threshold_value" type="numeric(19,4)"/>
+            <column name="evaluation_results_info_id" type="bigint">
+                <constraints foreignKeyName="fk_classification_costs_info_evaluation_results_info_id"
+                             referencedTableName="evaluation_results_info" referencedColumnNames="id" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
