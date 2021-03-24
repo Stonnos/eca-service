@@ -24,6 +24,6 @@ public class EnsembleClassifierReport extends ClassifierReport {
      * Individual classifiers reports
      */
     @Valid
-    @ApiModelProperty(value = "Individual classifiers reports", allowEmptyValue = true)
+    @ApiModelProperty(value = "Individual classifiers reports")
     private List<ClassifierReport> individualClassifiers;
 }

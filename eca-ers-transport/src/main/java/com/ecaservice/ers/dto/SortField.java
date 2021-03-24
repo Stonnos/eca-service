@@ -27,6 +27,6 @@ public class SortField {
     /**
      * Sort direction
      */
-    @ApiModelProperty(value = "Sort direction", allowEmptyValue = true)
+    @ApiModelProperty(value = "Sort direction")
     private SortDirection direction;
 }

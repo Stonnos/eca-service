@@ -39,26 +39,26 @@ public class ClassifierReport {
      * Classifier description
      */
     @Size(max = MAX_LENGTH_255)
-    @ApiModelProperty(value = "Classifier description", allowEmptyValue = true)
+    @ApiModelProperty(value = "Classifier description")
     private String classifierDescription;
 
     /**
      * Classifier options string
      */
     @NotBlank
-    @ApiModelProperty(value = "Classifier options string", example = "[classifier options string]")
+    @ApiModelProperty(value = "Classifier options string", example = "classifier options string")
     private String options;
 
     /**
      * Classifier input options map
      */
     @Valid
-    @ApiModelProperty(value = "Classifier input options map", allowEmptyValue = true)
+    @ApiModelProperty(value = "Classifier input options map")
     private InputOptionsMap inputOptionsMap;
 
     /**
      * Is meta classifier?
      */
-    @ApiModelProperty(value = "Is meta classifier?", allowEmptyValue = true)
+    @ApiModelProperty(value = "Is meta classifier?")
     private boolean metaClassifier;
 }

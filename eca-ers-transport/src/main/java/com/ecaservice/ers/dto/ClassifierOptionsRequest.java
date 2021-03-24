@@ -38,6 +38,6 @@ public class ClassifierOptionsRequest {
      * Sort fields list
      */
     @Valid
-    @ApiModelProperty(value = "Sort fields list", allowEmptyValue = true)
+    @ApiModelProperty(value = "Sort fields list")
     private List<SortField> sortFields;
 }

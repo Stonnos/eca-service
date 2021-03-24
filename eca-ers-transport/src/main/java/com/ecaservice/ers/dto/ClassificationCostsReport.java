@@ -73,6 +73,6 @@ public class ClassificationCostsReport {
      * Roc curve report data
      */
     @Valid
-    @ApiModelProperty(value = "Roc curve report data", allowEmptyValue = true)
+    @ApiModelProperty(value = "Roc curve report data")
     private RocCurveReport rocCurve;
 }

@@ -31,19 +31,19 @@ public class EvaluationMethodReport {
      * Folds number for k * V cross - validation method
      */
     @Min(MIN_2)
-    @ApiModelProperty(value = "Folds number for k * V cross - validation method", allowEmptyValue = true)
+    @ApiModelProperty(value = "Folds number for k * V cross - validation method")
     private BigInteger numFolds;
 
     /**
      * Tests number for k * V cross - validation method
      */
     @Min(MIN_1)
-    @ApiModelProperty(value = "Tests number for k * V cross - validation method", allowEmptyValue = true)
+    @ApiModelProperty(value = "Tests number for k * V cross - validation method")
     private BigInteger numTests;
 
     /**
      * Seed value for k * V cross - validation method
      */
-    @ApiModelProperty(value = "Seed value for k * V cross - validation method", allowEmptyValue = true)
+    @ApiModelProperty(value = "Seed value for k * V cross - validation method")
     private BigInteger seed;
 }

@@ -73,7 +73,7 @@ public class StatisticsReport {
      */
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @ApiModelProperty(value = "Mean absolute error", example = "0.0", allowEmptyValue = true)
+    @ApiModelProperty(value = "Mean absolute error", example = "0.0")
     private BigDecimal meanAbsoluteError;
 
     /**
@@ -81,7 +81,7 @@ public class StatisticsReport {
      */
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @ApiModelProperty(value = "Root mean squared error", example = "0.0", allowEmptyValue = true)
+    @ApiModelProperty(value = "Root mean squared error", example = "0.0")
     private BigDecimal rootMeanSquaredError;
 
     /**
@@ -89,7 +89,7 @@ public class StatisticsReport {
      */
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @ApiModelProperty(value = "Max AUC value", example = "1.0", allowEmptyValue = true)
+    @ApiModelProperty(value = "Max AUC value", example = "1.0")
     private BigDecimal maxAucValue;
 
     /**
@@ -97,18 +97,18 @@ public class StatisticsReport {
      */
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @ApiModelProperty(value = "Variance error", example = "0.0", allowEmptyValue = true)
+    @ApiModelProperty(value = "Variance error", example = "0.0")
     private BigDecimal varianceError;
 
     /**
      * 95% confidence interval lower bound value
      */
-    @ApiModelProperty(value = "95% confidence interval lower bound value", allowEmptyValue = true)
+    @ApiModelProperty(value = "95% confidence interval lower bound value")
     private BigDecimal confidenceIntervalLowerBound;
 
     /**
      * 95% confidence interval upper bound value
      */
-    @ApiModelProperty(value = "95% confidence interval upper bound value", allowEmptyValue = true)
+    @ApiModelProperty(value = "95% confidence interval upper bound value")
     private BigDecimal confidenceIntervalUpperBound;
 }

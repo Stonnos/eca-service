@@ -26,7 +26,7 @@ public class InstancesReport {
      * Training data
      */
     @NotBlank
-    @ApiModelProperty(value = "Training data", example = "[training data string]")
+    @ApiModelProperty(value = "Training data", example = "training data string")
     private String xmlInstances;
 
     /**
