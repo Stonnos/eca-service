@@ -21,6 +21,7 @@ import com.ecaservice.service.AbstractJpaTest;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import eca.metrics.KNearestNeighbours;
+import feign.FeignException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -32,6 +33,7 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -98,12 +100,14 @@ class ErsRequestServiceTest extends AbstractJpaTest {
 
     @Test
     void testSendingWithServiceUnavailable() {
-        //internalTestErrorStatus(new WebServiceIOException("I/O exception"), ErsResponseStatus.SERVICE_UNAVAILABLE);
+        FeignException.ServiceUnavailable serviceUnavailable = mock(FeignException.ServiceUnavailable.class);
+        internalTestErrorStatus(serviceUnavailable, ErsResponseStatus.SERVICE_UNAVAILABLE);
     }
 
     @Test
     void testSendingWithSErrorStatus() {
-        //internalTestErrorStatus(new WebServiceFaultException("I/O exception"), ErsResponseStatus.ERROR);
+        FeignException.BadRequest badRequest = mock(FeignException.BadRequest.class);
+        internalTestErrorStatus(badRequest, ErsResponseStatus.ERROR);
     }
 
     @Test

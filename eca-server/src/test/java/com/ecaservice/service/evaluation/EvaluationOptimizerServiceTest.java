@@ -66,6 +66,7 @@ import eca.neural.functions.ActivationFunctionType;
 import eca.regression.Logistic;
 import eca.trees.CART;
 import eca.trees.J48;
+import feign.FeignException;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -87,6 +88,7 @@ import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -152,13 +154,14 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     @Test
     void testServiceUnavailable() {
-        //internalTestErrorStatus(new WebServiceIOException("error"), ErsResponseStatus.SERVICE_UNAVAILABLE);
+        FeignException.ServiceUnavailable serviceUnavailable = mock(FeignException.ServiceUnavailable.class);
+        internalTestErrorStatus(serviceUnavailable, ErsResponseStatus.SERVICE_UNAVAILABLE);
     }
 
     @Test
     void testErrorStatus() {
-
-        //internalTestErrorStatus(new WebServiceFaultException("error"), ErsResponseStatus.ERROR);
+        FeignException.BadRequest badRequest = mock(FeignException.BadRequest.class);
+        internalTestErrorStatus(badRequest, ErsResponseStatus.ERROR);
     }
 
     @Test
@@ -347,7 +350,8 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         }
         finishedLatch.await();
         executorService.shutdownNow();
-        List<ClassifierOptionsRequestEntity> requestEntities = classifierOptionsRequestRepository.findAll();assertThat(requestEntities.size()).isEqualTo(2);
+        List<ClassifierOptionsRequestEntity> requestEntities = classifierOptionsRequestRepository.findAll();
+        assertThat(requestEntities.size()).isEqualTo(2);
         assertThat(classifierOptionsRequestModelRepository.count()).isOne();
         assertThat(requestEntities.get(0).getSource()).isEqualTo(ClassifierOptionsRequestSource.ERS);
         assertThat(requestEntities.get(1).getSource()).isEqualTo(ClassifierOptionsRequestSource.CACHE);
