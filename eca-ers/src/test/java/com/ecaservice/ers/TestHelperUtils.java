@@ -8,6 +8,7 @@ import com.ecaservice.ers.dto.EnsembleClassifierReport;
 import com.ecaservice.ers.dto.EvaluationMethod;
 import com.ecaservice.ers.dto.EvaluationMethodReport;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
+import com.ecaservice.ers.dto.EvaluationResultsResponse;
 import com.ecaservice.ers.dto.GetEvaluationResultsRequest;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.ers.dto.InputOptionsMap;
@@ -384,6 +385,20 @@ public class TestHelperUtils {
         GetEvaluationResultsRequest request = new GetEvaluationResultsRequest();
         request.setRequestId(requestId);
         return request;
+    }
+
+    /**
+     * Creates evaluation results response.
+     *
+     * @param requestId - request id
+     * @param status    - resposne status
+     * @return evaluation results response
+     */
+    public static EvaluationResultsResponse buildEvaluationResultsResponse(String requestId, ResponseStatus status) {
+        EvaluationResultsResponse response = new EvaluationResultsResponse();
+        response.setRequestId(requestId);
+        response.setStatus(ResponseStatus.SUCCESS);
+        return response;
     }
 
     /**
