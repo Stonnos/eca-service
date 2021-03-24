@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource("classpath:application.properties")
 class ErsModelValidationTest {
 
-    private static final int STRING_LENGTH = 256;
+    private static final int LARGE_STRING_LENGTH = 256;
     private static final BigDecimal NEGATIVE_VALUE = BigDecimal.valueOf(-1L);
 
     /**
@@ -310,7 +310,7 @@ class ErsModelValidationTest {
 
     private <T> void internalTestLargeFields(List<String> testFields,
                                              Function<EvaluationResultsRequest, T> targetFunction) {
-        internalTestFieldsWithConstraints(testFields, targetFunction, StringUtils.repeat('Q', STRING_LENGTH));
+        internalTestFieldsWithConstraints(testFields, targetFunction, StringUtils.repeat('Q', LARGE_STRING_LENGTH));
     }
 
     private <T> void internalTestFieldsWithConstraints(List<String> testFields,
