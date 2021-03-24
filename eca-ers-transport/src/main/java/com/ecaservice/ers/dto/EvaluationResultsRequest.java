@@ -67,12 +67,14 @@ public class EvaluationResultsRequest {
     /**
      * Classification costs report
      */
+    @Valid
     @ApiModelProperty(value = "Classification costs report", allowEmptyValue = true)
     private List<ClassificationCostsReport> classificationCosts;
 
     /**
      * Confusion matrix report
      */
+    @Valid
     @ApiModelProperty(value = "Confusion matrix report", allowEmptyValue = true)
     private List<ConfusionMatrixReport> confusionMatrix;
 }

@@ -13,6 +13,7 @@
     <packaging>war</packaging>
 
     <properties>
+        <beanutils.version>1.9.4</beanutils.version>
         <sonar.coverage.exclusions>
             **/config/*,
             **/exception/*,
@@ -94,6 +95,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${beanutils.version}</version>
         </dependency>
 
         <dependency>

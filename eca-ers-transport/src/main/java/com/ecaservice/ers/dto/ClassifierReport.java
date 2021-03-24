@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -51,6 +52,7 @@ public class ClassifierReport {
     /**
      * Classifier input options map
      */
+    @Valid
     @ApiModelProperty(value = "Classifier input options map", allowEmptyValue = true)
     private InputOptionsMap inputOptionsMap;
 
