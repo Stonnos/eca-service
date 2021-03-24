@@ -29,6 +29,8 @@ public class ErrorHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<List<ValidationErrorDto>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
-        return ExceptionResponseHandler.handleMethodArgumentNotValid(ex);
+        var response = ExceptionResponseHandler.handleMethodArgumentNotValid(ex);
+        log.error("Request validation error: {}", response.getBody());
+        return response;
     }
 }

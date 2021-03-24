@@ -29,7 +29,9 @@ public class ErrorHandler {
      */
     @ExceptionHandler(value = ConstraintViolationException.class)
     public ResponseEntity<List<ValidationErrorDto>> handleConstraintViolation(ConstraintViolationException ex) {
-        return ExceptionResponseHandler.handleConstraintViolation(ex);
+        var response = ExceptionResponseHandler.handleConstraintViolation(ex);
+        log.error("Request validation error: {}", response.getBody());
+        return response;
     }
 
     /**
