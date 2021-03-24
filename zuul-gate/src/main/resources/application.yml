@@ -28,6 +28,9 @@ zuul:
       eca-mail:
         path: /eca-mail/**
         serviceId: eca-mail
+      eca-ers:
+        path: /eca-ers/**
+        serviceId: eca-ers
       frontend:
         path: /**
         serviceId: eca-web
