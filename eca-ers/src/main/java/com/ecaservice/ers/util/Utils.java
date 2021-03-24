@@ -75,8 +75,7 @@ public class Utils {
                                                                            List<ClassifierReport> classifierReports,
                                                                            ResponseStatus responseStatus) {
         ClassifierOptionsResponse classifierOptionsResponse = buildClassifierOptionsResponse(requestId, responseStatus);
-        classifierReports.forEach(
-                classifierReport -> classifierOptionsResponse.getClassifierReports().add(classifierReport));
+        classifierOptionsResponse.setClassifierReports(classifierReports);
         return classifierOptionsResponse;
     }
 

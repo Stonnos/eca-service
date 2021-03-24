@@ -13,6 +13,8 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
+import static com.google.common.collect.Lists.newArrayList;
+
 /**
  * Implements mapping classifier options info to dto model.
  *
@@ -43,6 +45,7 @@ public abstract class ClassifierOptionsInfoMapper {
                                    @MappingTarget ClassifierReport classifierReport) {
         if (!CollectionUtils.isEmpty(classifierOptionsInfo.getInputOptionsMap())) {
             classifierReport.setInputOptionsMap(new InputOptionsMap());
+            classifierReport.getInputOptionsMap().setEntry(newArrayList());
             classifierOptionsInfo.getInputOptionsMap().forEach((key, value) -> {
                 InputOptionsMap.Entry entry = new InputOptionsMap.Entry();
                 entry.setKey(key);
@@ -57,6 +60,7 @@ public abstract class ClassifierOptionsInfoMapper {
                                   @MappingTarget ClassifierReport classifierReport) {
         if (classifierReport instanceof EnsembleClassifierReport) {
             EnsembleClassifierReport ensembleClassifierReport = (EnsembleClassifierReport) classifierReport;
+            ensembleClassifierReport.setIndividualClassifiers(newArrayList());
             classifierOptionsInfo.getIndividualClassifiers().forEach(
                     classifierOptions -> ensembleClassifierReport.getIndividualClassifiers().add(
                             map(classifierOptions)));
