@@ -23,7 +23,6 @@ import com.ecaservice.ers.dto.ClassifierOptionsResponse;
 import com.ecaservice.ers.dto.ClassifierReport;
 import com.ecaservice.ers.dto.EvaluationMethodReport;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
-import com.ecaservice.ers.dto.InputOptionsMap;
 import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.ers.dto.RocCurveReport;
 import com.ecaservice.ers.dto.StatisticsReport;
@@ -580,7 +579,7 @@ public class TestHelperUtils {
         ClassifierReport classifierReport = new ClassifierReport();
         classifierReport.setClassifierName(DecisionTreeType.CART.name());
         classifierReport.setClassifierDescription(DecisionTreeType.CART.getDescription());
-        classifierReport.setInputOptionsMap(new InputOptionsMap());
+        classifierReport.setClassifierInputOptions(newArrayList());
         classifierReport.setOptions(options);
         return classifierReport;
     }

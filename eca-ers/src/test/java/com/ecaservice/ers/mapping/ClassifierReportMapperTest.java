@@ -39,7 +39,7 @@ class ClassifierReportMapperTest {
         assertThat(classifierOptionsInfo.getInputOptionsMap()).isNotNull();
         assertThat(classifierOptionsInfo.getInputOptionsMap()).isNotNull();
         assertThat(classifierOptionsInfo.getInputOptionsMap()).hasSameSizeAs(
-                classifierReport.getInputOptionsMap().getEntry());
+                classifierReport.getClassifierInputOptions());
         assertThat(classifierOptionsInfo.getIndividualClassifiers()).isNullOrEmpty();
     }
 
@@ -52,7 +52,7 @@ class ClassifierReportMapperTest {
         assertThat(classifierOptionsInfo.getInputOptionsMap()).isNotNull();
         assertThat(classifierOptionsInfo.getInputOptionsMap()).isNotNull();
         assertThat(classifierOptionsInfo.getInputOptionsMap()).hasSameSizeAs(
-                classifierReport.getInputOptionsMap().getEntry());
+                classifierReport.getClassifierInputOptions());
         assertThat(classifierOptionsInfo.getIndividualClassifiers()).hasSameSizeAs(
                 (classifierOptionsInfo.getIndividualClassifiers()));
     }

@@ -1,6 +1,7 @@
 package com.ecaservice.ers;
 
 import com.ecaservice.ers.dto.ClassificationCostsReport;
+import com.ecaservice.ers.dto.ClassifierInputOption;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierReport;
 import com.ecaservice.ers.dto.ConfusionMatrixReport;
@@ -11,7 +12,6 @@ import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.ers.dto.EvaluationResultsResponse;
 import com.ecaservice.ers.dto.GetEvaluationResultsRequest;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
-import com.ecaservice.ers.dto.InputOptionsMap;
 import com.ecaservice.ers.dto.InstancesReport;
 import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.ers.dto.RocCurveReport;
@@ -33,6 +33,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -268,7 +270,7 @@ public class TestHelperUtils {
         classifierReport.setClassifierName(CLASSIFIER_NAME);
         classifierReport.setClassifierDescription(CLASSIFIER_DESCRIPTION);
         classifierReport.setOptions(OPTIONS);
-        classifierReport.setInputOptionsMap(populateInputOptionsMap());
+        classifierReport.setClassifierInputOptions(createClassifierInputOptions());
         return classifierReport;
     }
 
@@ -280,7 +282,7 @@ public class TestHelperUtils {
     public static EnsembleClassifierReport buildEnsembleClassifierReport() {
         EnsembleClassifierReport classifierReport = new EnsembleClassifierReport();
         classifierReport.setClassifierName(CLASSIFIER_NAME);
-        classifierReport.setInputOptionsMap(populateInputOptionsMap());
+        classifierReport.setClassifierInputOptions(createClassifierInputOptions());
         classifierReport.setIndividualClassifiers(newArrayList());
         for (int i = 0; i < OPTIONS_SIZE; i++) {
             classifierReport.getIndividualClassifiers().add(buildClassifierReport());
@@ -419,15 +421,9 @@ public class TestHelperUtils {
         return getEvaluationResultsResponse;
     }
 
-    private static InputOptionsMap populateInputOptionsMap() {
-        InputOptionsMap inputOptionsMap = new InputOptionsMap();
-        inputOptionsMap.setEntry(newArrayList());
-        for (int i = 0; i < OPTIONS_SIZE; i++) {
-            InputOptionsMap.Entry entry = new InputOptionsMap.Entry();
-            entry.setKey(String.valueOf(i));
-            entry.setValue(OPTION_VALUE);
-            inputOptionsMap.getEntry().add(entry);
-        }
-        return inputOptionsMap;
+    private static List<ClassifierInputOption> createClassifierInputOptions() {
+        return IntStream.range(0, OPTIONS_SIZE)
+                .mapToObj(i -> new ClassifierInputOption(String.valueOf(i), OPTION_VALUE))
+                .collect(Collectors.toList());
     }
 }

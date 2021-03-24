@@ -4,13 +4,13 @@ import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.ers.dto.ClassificationCostsReport;
+import com.ecaservice.ers.dto.ClassifierInputOption;
 import com.ecaservice.ers.dto.ClassifierReport;
 import com.ecaservice.ers.dto.ConfusionMatrixReport;
 import com.ecaservice.ers.dto.EnsembleClassifierReport;
 import com.ecaservice.ers.dto.EvaluationMethod;
 import com.ecaservice.ers.dto.EvaluationMethodReport;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
-import com.ecaservice.ers.dto.InputOptionsMap;
 import com.ecaservice.ers.dto.RocCurveReport;
 import com.ecaservice.ers.dto.StatisticsReport;
 import com.ecaservice.mapping.InstancesConverter;
@@ -32,6 +32,7 @@ import weka.core.Utils;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -168,7 +169,7 @@ public class EvaluationResultsService {
         ClassifierReport classifierReport = new ClassifierReport();
         classifierReport.setClassifierName(classifier.getClass().getSimpleName());
         classifierReport.setOptions(getClassifierOptionsAsJsonString(classifier));
-        classifierReport.setInputOptionsMap(populateInputOptionsMap(classifier));
+        classifierReport.setClassifierInputOptions(populateInputOptions(classifier));
         return classifierReport;
     }
 
@@ -176,22 +177,18 @@ public class EvaluationResultsService {
         EnsembleClassifierReport classifierReport = new EnsembleClassifierReport();
         classifierReport.setClassifierName(classifier.getClass().getSimpleName());
         classifierReport.setOptions(getClassifierOptionsAsJsonString(classifier));
-        classifierReport.setInputOptionsMap(populateInputOptionsMap(classifier));
+        classifierReport.setClassifierInputOptions(populateInputOptions(classifier));
         populateIndividualClassifiers(classifierReport, classifier);
         return classifierReport;
     }
 
-    private InputOptionsMap populateInputOptionsMap(AbstractClassifier classifier) {
-        InputOptionsMap inputOptionsMap = new InputOptionsMap();
-        inputOptionsMap.setEntry(newArrayList());
+    private List<ClassifierInputOption> populateInputOptions(AbstractClassifier classifier) {
+        List<ClassifierInputOption> options = newArrayList();
         String[] classifierOptions = classifier.getOptions();
         for (int i = 0; i < classifierOptions.length; i += 2) {
-            InputOptionsMap.Entry entry = new InputOptionsMap.Entry();
-            entry.setKey(classifierOptions[i]);
-            entry.setValue(classifierOptions[i + 1]);
-            inputOptionsMap.getEntry().add(entry);
+            options.add(new ClassifierInputOption(classifierOptions[i], classifierOptions[i + 1]));
         }
-        return inputOptionsMap;
+        return options;
     }
 
     private void populateIndividualClassifiers(EnsembleClassifierReport classifierReport,

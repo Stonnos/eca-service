@@ -40,8 +40,7 @@ class ClassifierOptionsInfoMapperTest {
                 classifierOptionsInfo.getClassifierName());
         assertThat(classifierReport.getClassifierDescription()).isEqualTo(
                 classifierOptionsInfo.getClassifierDescription());
-        assertThat(classifierReport.getInputOptionsMap()).isNotNull();
-        assertThat(classifierReport.getInputOptionsMap().getEntry().size()).isOne();
+        assertThat(classifierReport.getClassifierInputOptions()).hasSize(1);
     }
 
     @Test
@@ -59,8 +58,7 @@ class ClassifierOptionsInfoMapperTest {
                 classifierOptionsInfo.getClassifierName());
         assertThat(classifierReport.getClassifierDescription()).isEqualTo(
                 classifierOptionsInfo.getClassifierDescription());
-        assertThat(classifierReport.getInputOptionsMap()).isNotNull();
-        assertThat(classifierReport.getInputOptionsMap().getEntry().size()).isOne();
+        assertThat(classifierReport.getClassifierInputOptions()).hasSize(1);
         EnsembleClassifierReport ensembleClassifierReport = (EnsembleClassifierReport) classifierReport;
         assertThat(ensembleClassifierReport.getIndividualClassifiers().size()).isEqualTo(
                 classifierOptionsInfoList.size());

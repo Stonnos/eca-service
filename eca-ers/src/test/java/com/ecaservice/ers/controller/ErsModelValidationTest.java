@@ -283,19 +283,19 @@ class ErsModelValidationTest {
     @Test
     void testValidateEvaluationReportWithNullInputOptionsMapFields() {
         internalTestNullFields(INPUT_OPTIONS_MAP_NULL_TEST,
-                (request) -> request.getClassifierReport().getInputOptionsMap().getEntry().iterator().next());
+                (request) -> request.getClassifierReport().getClassifierInputOptions().iterator().next());
     }
 
     @Test
     void testValidateEvaluationReportWithEmptyInputOptionsMapFields() {
         internalTestEmptyFields(INPUT_OPTIONS_MAP_EMPTY_TEST,
-                (request) -> request.getClassifierReport().getInputOptionsMap().getEntry().iterator().next());
+                (request) -> request.getClassifierReport().getClassifierInputOptions().iterator().next());
     }
 
     @Test
     void testValidateEvaluationReportWitLargeInputOptionsMapFields() {
         internalTestLargeFields(INPUT_OPTIONS_MAP_LARGE_TEST,
-                (request) -> request.getClassifierReport().getInputOptionsMap().getEntry().iterator().next());
+                (request) -> request.getClassifierReport().getClassifierInputOptions().iterator().next());
     }
 
     private <T> void internalTestEmptyFields(List<String> testFields,

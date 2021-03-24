@@ -1,18 +1,17 @@
 package com.ecaservice.ers.mapping;
 
+import com.ecaservice.ers.dto.ClassifierInputOption;
 import com.ecaservice.ers.dto.ClassifierReport;
 import com.ecaservice.ers.dto.EnsembleClassifierReport;
-import com.ecaservice.ers.dto.InputOptionsMap;
 import com.ecaservice.ers.model.ClassifierOptionsInfo;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -35,10 +34,9 @@ public abstract class ClassifierReportMapper {
     @AfterMapping
     protected void mapInputOptions(ClassifierReport classifierReport,
                                    @MappingTarget ClassifierOptionsInfo classifierOptionsInfo) {
-        if (Optional.ofNullable(classifierReport.getInputOptionsMap()).map(
-                InputOptionsMap::getEntry).isPresent()) {
-            Map<String, String> inputOptionsMap = classifierReport.getInputOptionsMap().getEntry().stream().collect(
-                    Collectors.toMap(InputOptionsMap.Entry::getKey, InputOptionsMap.Entry::getValue));
+        if (!CollectionUtils.isEmpty(classifierReport.getClassifierInputOptions())) {
+            Map<String, String> inputOptionsMap = classifierReport.getClassifierInputOptions().stream()
+                    .collect(Collectors.toMap(ClassifierInputOption::getKey, ClassifierInputOption::getValue));
             classifierOptionsInfo.setInputOptionsMap(inputOptionsMap);
         }
     }
@@ -55,8 +53,9 @@ public abstract class ClassifierReportMapper {
         if (classifierReport instanceof EnsembleClassifierReport) {
             EnsembleClassifierReport ensembleClassifierReport = (EnsembleClassifierReport) classifierReport;
             List<ClassifierReport> classifierReports = ensembleClassifierReport.getIndividualClassifiers();
-            List<ClassifierOptionsInfo> individualClassifiers = new ArrayList<>(classifierReports.size());
-            classifierReports.forEach(c -> individualClassifiers.add(map(c)));
+            List<ClassifierOptionsInfo> individualClassifiers = classifierReports.stream()
+                    .map(this::map)
+                    .collect(Collectors.toList());
             classifierOptionsInfo.setIndividualClassifiers(individualClassifiers);
         }
     }

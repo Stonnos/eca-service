@@ -9,6 +9,7 @@ import lombok.Data;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 import static com.ecaservice.ers.dto.Constraints.MAX_LENGTH_255;
 
@@ -50,11 +51,11 @@ public class ClassifierReport {
     private String options;
 
     /**
-     * Classifier input options map
+     * Classifier input options
      */
     @Valid
-    @ApiModelProperty(value = "Classifier input options map")
-    private InputOptionsMap inputOptionsMap;
+    @ApiModelProperty(value = "Classifier input options")
+    private List<ClassifierInputOption> classifierInputOptions;
 
     /**
      * Is meta classifier?

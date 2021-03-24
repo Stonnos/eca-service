@@ -1,19 +1,17 @@
 package com.ecaservice.ers.mapping;
 
+import com.ecaservice.ers.dto.ClassifierInputOption;
 import com.ecaservice.ers.dto.ClassifierReport;
 import com.ecaservice.ers.dto.EnsembleClassifierReport;
-import com.ecaservice.ers.dto.InputOptionsMap;
 import com.ecaservice.ers.model.ClassifierOptionsInfo;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-
-import static com.google.common.collect.Lists.newArrayList;
+import java.util.stream.Collectors;
 
 /**
  * Implements mapping classifier options info to dto model.
@@ -29,7 +27,6 @@ public abstract class ClassifierOptionsInfoMapper {
      * @param classifierOptionsInfo - classifier options info
      * @return classifier options report
      */
-    @Mapping(target = "inputOptionsMap", ignore = true)
     public abstract ClassifierReport map(ClassifierOptionsInfo classifierOptionsInfo);
 
     /**
@@ -44,14 +41,11 @@ public abstract class ClassifierOptionsInfoMapper {
     protected void mapInputOptions(ClassifierOptionsInfo classifierOptionsInfo,
                                    @MappingTarget ClassifierReport classifierReport) {
         if (!CollectionUtils.isEmpty(classifierOptionsInfo.getInputOptionsMap())) {
-            classifierReport.setInputOptionsMap(new InputOptionsMap());
-            classifierReport.getInputOptionsMap().setEntry(newArrayList());
-            classifierOptionsInfo.getInputOptionsMap().forEach((key, value) -> {
-                InputOptionsMap.Entry entry = new InputOptionsMap.Entry();
-                entry.setKey(key);
-                entry.setValue(value);
-                classifierReport.getInputOptionsMap().getEntry().add(entry);
-            });
+            List<ClassifierInputOption> classifierInputOptions = classifierOptionsInfo.getInputOptionsMap()
+                    .entrySet().stream()
+                    .map(entry -> new ClassifierInputOption(entry.getKey(), entry.getValue()))
+                    .collect(Collectors.toList());
+            classifierReport.setClassifierInputOptions(classifierInputOptions);
         }
     }
 
@@ -60,10 +54,8 @@ public abstract class ClassifierOptionsInfoMapper {
                                   @MappingTarget ClassifierReport classifierReport) {
         if (classifierReport instanceof EnsembleClassifierReport) {
             EnsembleClassifierReport ensembleClassifierReport = (EnsembleClassifierReport) classifierReport;
-            ensembleClassifierReport.setIndividualClassifiers(newArrayList());
-            classifierOptionsInfo.getIndividualClassifiers().forEach(
-                    classifierOptions -> ensembleClassifierReport.getIndividualClassifiers().add(
-                            map(classifierOptions)));
+            List<ClassifierReport> classifierReports = map(classifierOptionsInfo.getIndividualClassifiers());
+            ensembleClassifierReport.setIndividualClassifiers(classifierReports);
         }
     }
 }

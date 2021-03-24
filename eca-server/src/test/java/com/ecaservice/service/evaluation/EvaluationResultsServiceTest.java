@@ -130,10 +130,7 @@ class EvaluationResultsServiceTest {
         AbstractClassifier classifier = (AbstractClassifier) evaluationResults.getClassifier();
         assertThat(classifierReport).isNotNull();
         assertThat(classifierReport.getClassifierName()).isEqualTo(classifier.getClass().getSimpleName());
-        assertThat(classifierReport.getInputOptionsMap()).isNotNull();
-        assertThat(classifierReport.getInputOptionsMap().getEntry()).isNotNull();
-        assertThat(classifierReport.getInputOptionsMap().getEntry().size()).isEqualTo(
-                classifier.getOptions().length / 2);
+        assertThat(classifierReport.getClassifierInputOptions()).hasSize(classifier.getOptions().length / 2);
     }
 
     private void verifyEvaluationMethodReport(Evaluation evaluation, EvaluationResultsRequest resultsRequest) {
