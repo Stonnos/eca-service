@@ -25,6 +25,7 @@ public class EvaluationResultsSortEntity {
 
     @Tolerate
     public EvaluationResultsSortEntity() {
+        //default constructor
     }
 
     @Id

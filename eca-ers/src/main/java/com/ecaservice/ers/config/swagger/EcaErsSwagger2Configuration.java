@@ -21,7 +21,7 @@ import javax.inject.Inject;
 @Import(SwaggerBaseConfiguration.class)
 public class EcaErsSwagger2Configuration extends AbstractSwagger2Configuration {
 
-    private static final String ECA_MAIL_GROUP_NAME = "eca-ers";
+    private static final String ECA_ERS_GROUP_NAME = "eca-ers";
 
     /**
      * Constructor with spring dependency injection.
@@ -41,7 +41,7 @@ public class EcaErsSwagger2Configuration extends AbstractSwagger2Configuration {
 
     @Override
     protected String getGroupName() {
-        return ECA_MAIL_GROUP_NAME;
+        return ECA_ERS_GROUP_NAME;
     }
 
     @Override
