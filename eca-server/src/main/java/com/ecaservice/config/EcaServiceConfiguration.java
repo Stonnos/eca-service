@@ -1,6 +1,7 @@
 package com.ecaservice.config;
 
 import com.ecaservice.classifier.options.config.ClassifiersOptionsConfiguration;
+import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.config.ers.ErsConfig;
 import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
 import eca.data.file.FileDataLoader;
@@ -27,6 +28,7 @@ import java.util.concurrent.Executors;
 @EnableScheduling
 @EnableCaching
 @EnableAsync
+@EnableGlobalExceptionHandler
 @Oauth2ResourceServer
 @EnableConfigurationProperties(
         {CommonConfig.class, CrossValidationConfig.class, ExperimentConfig.class, ErsConfig.class})
