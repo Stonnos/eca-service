@@ -1,5 +1,6 @@
 package com.ecaservice.oauth.controller;
 
+import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.oauth.dto.ChangePasswordRequest;
 import com.ecaservice.oauth.service.ChangePasswordService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
+@EnableGlobalExceptionHandler
 @WebMvcTest(controllers = ChangePasswordController.class,
         useDefaultFilters = false,
         includeFilters = {

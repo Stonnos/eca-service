@@ -1,5 +1,6 @@
 package com.ecaservice.ers.controller;
 
+import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
 import com.ecaservice.ers.dto.EvaluationMethod;
@@ -35,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
+@EnableGlobalExceptionHandler
 @WebMvcTest(controllers = EvaluationResultsController.class)
 class EvaluationResultsControllerTest {
 

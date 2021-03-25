@@ -1,5 +1,6 @@
 package com.ecaservice.oauth2.test.controller;
 
+import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.oauth2.test.configuration.annotation.Oauth2TestConfiguration;
 import com.ecaservice.oauth2.test.token.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +15,7 @@ import javax.inject.Inject;
  *
  * @author Roman Batygin
  */
+@EnableGlobalExceptionHandler
 @Oauth2TestConfiguration
 public abstract class AbstractControllerTest {
 
