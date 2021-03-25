@@ -8,9 +8,11 @@ import com.ecaservice.ers.dto.GetEvaluationResultsRequest;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.ers.service.ClassifierOptionsRequestService;
 import com.ecaservice.ers.service.EvaluationResultsService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,7 +49,10 @@ public class EvaluationResultsController {
     @PostMapping(value = "/save")
     public EvaluationResultsResponse save(@Valid @RequestBody EvaluationResultsRequest evaluationResultsRequest) {
         log.info("Received request to save evaluation results report [{}]", evaluationResultsRequest.getRequestId());
-        return evaluationResultsService.saveEvaluationResults(evaluationResultsRequest);
+        logJson(evaluationResultsRequest);
+        var r = evaluationResultsService.saveEvaluationResults(evaluationResultsRequest);
+        logJson(r);
+        return r;
     }
 
     /**
@@ -64,7 +69,10 @@ public class EvaluationResultsController {
     public GetEvaluationResultsResponse getEvaluationResultsResponse(
             @Valid @RequestBody GetEvaluationResultsRequest request) {
         log.info("Received request to get evaluation results report [{}]", request.getRequestId());
-        return evaluationResultsService.getEvaluationResultsResponse(request);
+        logJson(request);
+        var r = evaluationResultsService.getEvaluationResultsResponse(request);
+        logJson(r);
+        return r;
     }
 
     /**
@@ -82,6 +90,15 @@ public class EvaluationResultsController {
             @Valid @RequestBody ClassifierOptionsRequest classifierOptionsRequest) {
         log.info("Received request to find optimal classifiers options for data [{}]",
                 classifierOptionsRequest.getInstances().getRelationName());
-        return classifierOptionsRequestService.findClassifierOptions(classifierOptionsRequest);
+        logJson(classifierOptionsRequest);
+        var r = classifierOptionsRequestService.findClassifierOptions(classifierOptionsRequest);
+        logJson(r);
+        return r;
+    }
+
+    @SneakyThrows
+    void logJson(Object o) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        log.info("Request json: {}", objectMapper.writeValueAsString(o));
     }
 }
