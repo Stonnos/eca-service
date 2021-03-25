@@ -1,6 +1,7 @@
 package com.ecaservice.common.web;
 
 import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.web.exception.ValidationErrorException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -18,8 +19,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.ecaservice.common.web.ExceptionResponseHandler.handleConstraintViolation;
-import static com.ecaservice.common.web.ExceptionResponseHandler.handleMethodArgumentNotValid;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -30,10 +29,11 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-class ExceptionResponseHandlerTest {
+class GlobalExceptionHandlerTest {
 
     private static final String EMAIL_RECEIVER = "email.receiver";
-    private static final String ERROR_MESSAGE = "Invalid receiver!";
+    private static final String ERROR_MESSAGE = "message";
+    private static final String ERROR_CODE = "code";
 
     @Mock
     private ConstraintViolationException constraintViolationException;
@@ -49,20 +49,36 @@ class ExceptionResponseHandlerTest {
     @Mock
     private BindingResult bindingResult;
 
+    private GlobalExceptionHandler exceptionHandler = new GlobalExceptionHandler();
+
     @Test
     void testHandleConstraintViolation() {
         mockConstraintViolation();
         ResponseEntity<List<ValidationErrorDto>> errorResponse =
-                handleConstraintViolation(constraintViolationException);
-        assertResponse(errorResponse);
+                exceptionHandler.handleConstraintViolation(constraintViolationException);
+        assertResponse(errorResponse, null, EMAIL_RECEIVER, ERROR_MESSAGE);
     }
 
     @Test
     void testHandleMethodArgumentNotValid() {
         mockMethodArgumentNotValid();
         ResponseEntity<List<ValidationErrorDto>> errorResponse =
-                handleMethodArgumentNotValid(methodArgumentNotValidException);
-        assertResponse(errorResponse);
+                exceptionHandler.handleMethodArgumentNotValid(methodArgumentNotValidException);
+        assertResponse(errorResponse, null, EMAIL_RECEIVER, ERROR_MESSAGE);
+    }
+
+    @Test
+    void testValidationError() {
+        ResponseEntity<List<ValidationErrorDto>> errorResponse =
+                exceptionHandler.handleValidationError(new ValidationErrorException(ERROR_CODE, ERROR_MESSAGE));
+        assertResponse(errorResponse, ERROR_CODE, null, null);
+    }
+
+    @Test
+    void testBadRequest() {
+        ResponseEntity<String> responseEntity = exceptionHandler.handleBadRequest(new IllegalStateException());
+        assertThat(responseEntity).isNotNull();
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     private void mockMethodArgumentNotValid() {
@@ -93,12 +109,14 @@ class ExceptionResponseHandlerTest {
         when(constraintViolationException.getConstraintViolations()).thenReturn(newHashSet(constraintViolation));
     }
 
-    private void assertResponse(ResponseEntity<List<ValidationErrorDto>> errorResponse) {
+    private void assertResponse(ResponseEntity<List<ValidationErrorDto>> errorResponse, String expectedCode,
+                                String expectedField, String expectedErrorMessage) {
         assertThat(errorResponse).isNotNull();
         assertThat(errorResponse.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResponse.getBody()).hasSize(1);
         ValidationErrorDto validationErrorDto = errorResponse.getBody().iterator().next();
-        assertThat(validationErrorDto.getFieldName()).isEqualTo(EMAIL_RECEIVER);
-        assertThat(validationErrorDto.getErrorMessage()).isEqualTo(ERROR_MESSAGE);
+        assertThat(validationErrorDto.getCode()).isEqualTo(expectedCode);
+        assertThat(validationErrorDto.getFieldName()).isEqualTo(expectedField);
+        assertThat(validationErrorDto.getErrorMessage()).isEqualTo(expectedErrorMessage);
     }
 }
