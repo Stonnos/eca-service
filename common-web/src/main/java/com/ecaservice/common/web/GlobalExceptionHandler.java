@@ -1,6 +1,5 @@
-package com.ecaservice.oauth.controller;
+package com.ecaservice.common.web;
 
-import com.ecaservice.common.web.ExceptionResponseHandler;
 import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.common.web.exception.ValidationErrorException;
 import lombok.extern.slf4j.Slf4j;
@@ -14,13 +13,25 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Exception handler for controllers.
+ * Global exception handler for controllers.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @ControllerAdvice
-public class ErrorHandler {
+public class GlobalExceptionHandler {
+
+    /**
+     * Handles bad request error.
+     *
+     * @param ex -  exception
+     * @return response entity
+     */
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
+    public ResponseEntity<String> handleBadRequest(Exception ex) {
+        log.error("Bad request error: {}", ex.getMessage());
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
 
     /**
      * Handles validation error.
@@ -31,7 +42,7 @@ public class ErrorHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<List<ValidationErrorDto>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         var response = ExceptionResponseHandler.handleMethodArgumentNotValid(ex);
-        log.error("Request validation error: {}", response.getBody());
+        log.error("Method argument not valid errors: {}", response.getBody());
         return response;
     }
 
@@ -44,7 +55,7 @@ public class ErrorHandler {
     @ExceptionHandler(value = ConstraintViolationException.class)
     public ResponseEntity<List<ValidationErrorDto>> handleConstraintViolation(ConstraintViolationException ex) {
         var response = ExceptionResponseHandler.handleConstraintViolation(ex);
-        log.error("Request validation error: {}", response.getBody());
+        log.error("Constraint violation errors: {}", response.getBody());
         return response;
     }
 
@@ -58,18 +69,6 @@ public class ErrorHandler {
     public ResponseEntity<List<ValidationErrorDto>> handleValidationError(ValidationErrorException ex) {
         log.error("Validation error [{}]: {}", ex.getErrorCode(), ex.getMessage());
         return buildBadRequestResponse(ex.getErrorCode());
-    }
-
-    /**
-     * Handles bad request error.
-     *
-     * @param ex -  exception
-     * @return response entity
-     */
-    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
-    public ResponseEntity<String> handleBadRequest(Exception ex) {
-        log.error(ex.getMessage());
-        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
     private ResponseEntity<List<ValidationErrorDto>> buildBadRequestResponse(String errorCode) {

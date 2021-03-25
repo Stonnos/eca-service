@@ -1,5 +1,6 @@
 package com.ecaservice.data.storage.config;
 
+import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
 import eca.data.db.SqlQueryHelper;
 import eca.data.db.SqlTypeUtils;
@@ -19,6 +20,7 @@ import static org.springframework.web.context.WebApplicationContext.SCOPE_REQUES
  */
 @Configuration
 @Oauth2ResourceServer
+@EnableGlobalExceptionHandler
 @EnableConfigurationProperties(EcaDsConfig.class)
 public class EcaDataStorageConfiguration {
 
