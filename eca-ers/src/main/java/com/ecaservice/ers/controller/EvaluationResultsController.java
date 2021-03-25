@@ -8,7 +8,6 @@ import com.ecaservice.ers.dto.GetEvaluationResultsRequest;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.ers.service.ClassifierOptionsRequestService;
 import com.ecaservice.ers.service.EvaluationResultsService;
-import io.micrometer.core.annotation.Timed;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-
-import static com.ecaservice.ers.config.MetricConstants.GET_EVALUATION_RESULTS_TIMED_METRIC_NAME;
-import static com.ecaservice.ers.config.MetricConstants.GET_OPTIMAL_CLASSIFIER_OPTIONS_TIMED_METRIC_NAME;
-import static com.ecaservice.ers.config.MetricConstants.SAVE_EVALUATION_RESULTS_TIMED_METRIC_NAME;
 
 /**
  * Evaluation results service controller.
@@ -45,7 +40,6 @@ public class EvaluationResultsController {
      * @param evaluationResultsRequest - evaluation result request
      * @return evaluation results response
      */
-    @Timed(value = SAVE_EVALUATION_RESULTS_TIMED_METRIC_NAME)
     @ApiOperation(
             value = "Saves evaluation results report",
             notes = "Saves evaluation results report"
@@ -62,7 +56,6 @@ public class EvaluationResultsController {
      * @param request - get evaluation result request
      * @return evaluation results response
      */
-    @Timed(value = GET_EVALUATION_RESULTS_TIMED_METRIC_NAME)
     @ApiOperation(
             value = "Gets evaluation results simple report",
             notes = "Gets evaluation results simple report"
@@ -80,7 +73,6 @@ public class EvaluationResultsController {
      * @param classifierOptionsRequest - classifier options request
      * @return classifier options response
      */
-    @Timed(value = GET_OPTIMAL_CLASSIFIER_OPTIONS_TIMED_METRIC_NAME)
     @ApiOperation(
             value = "Endpoint for searching optimal classifiers options for specified request",
             notes = "Endpoint for searching optimal classifiers options for specified request"
