@@ -2,7 +2,6 @@ package com.ecaservice.config.ers;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.core.io.Resource;
 
 /**
  * Evaluation results service config.
