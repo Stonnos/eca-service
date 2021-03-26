@@ -1,6 +1,6 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.dto.evaluation.EvaluationMethod;
+import com.ecaservice.ers.dto.EvaluationMethod;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

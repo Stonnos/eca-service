@@ -1,5 +1,6 @@
 package com.ecaservice.mail.controller;
 
+import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.mail.TestHelperUtils;
 import com.ecaservice.mail.service.EmailService;
 import com.ecaservice.notification.dto.EmailRequest;
@@ -30,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
+@EnableGlobalExceptionHandler
 @WebMvcTest(controllers = EmailController.class)
 @Import(EmailRequestMapperImpl.class)
 class EmailControllerTest {

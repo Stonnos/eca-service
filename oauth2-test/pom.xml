@@ -5,7 +5,7 @@
     <parent>
         <artifactId>eca-service</artifactId>
         <groupId>eca.service</groupId>
-        <version>6.0</version>
+        <version>6.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -25,6 +25,12 @@
         <dependency>
             <groupId>eca.service</groupId>
             <artifactId>eca-user-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>common-web</artifactId>
             <version>${project.version}</version>
         </dependency>
 

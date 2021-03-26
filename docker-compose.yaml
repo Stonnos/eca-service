@@ -108,6 +108,21 @@ services:
       - eca-db
       - discovery-server
 
+  eca-ers:
+    image: eca-ers
+    container_name: eca-ers
+    environment:
+      TZ: ${TIME_ZONE}
+      SPRING_PROFILES_ACTIVE: "docker"
+      JAVA_OPTS: "-Xmx1g"
+      DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
+      DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
+    networks:
+      - default
+    depends_on:
+      - eca-db
+      - discovery-server
+
   eca-external-api:
     image: eca-external-api
     container_name: eca-external-api

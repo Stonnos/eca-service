@@ -2,7 +2,7 @@ package com.ecaservice.mapping;
 
 import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.config.CrossValidationConfig;
-import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
+import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -27,6 +27,5 @@ public interface ClassifierOptionsRequestMapper {
     @Mapping(source = "crossValidationConfig.numFolds", target = "evaluationMethodReport.numFolds")
     @Mapping(source = "crossValidationConfig.numTests", target = "evaluationMethodReport.numTests")
     @Mapping(source = "crossValidationConfig.seed", target = "evaluationMethodReport.seed")
-    ClassifierOptionsRequest map(InstancesRequest instancesRequest,
-                                 CrossValidationConfig crossValidationConfig);
+    ClassifierOptionsRequest map(InstancesRequest instancesRequest, CrossValidationConfig crossValidationConfig);
 }

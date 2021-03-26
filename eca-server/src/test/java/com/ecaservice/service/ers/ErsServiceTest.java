@@ -1,8 +1,8 @@
 package com.ecaservice.service.ers;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
-import com.ecaservice.dto.evaluation.ResponseStatus;
+import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
+import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.mapping.ClassificationCostsMapperImpl;
 import com.ecaservice.mapping.GetEvaluationResultsMapper;
 import com.ecaservice.mapping.GetEvaluationResultsMapperImpl;
@@ -18,11 +18,11 @@ import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationResults;
+import feign.FeignException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
-import org.springframework.ws.client.WebServiceIOException;
 
 import javax.inject.Inject;
 import java.util.UUID;
@@ -31,6 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -92,7 +93,8 @@ class ErsServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetExperimentResultsDetailsWithServiceUnavailable() {
-        when(ersRequestService.getEvaluationResults(anyString())).thenThrow(new WebServiceIOException("I/O"));
+        FeignException.ServiceUnavailable serviceUnavailable = mock(FeignException.ServiceUnavailable.class);
+        when(ersRequestService.getEvaluationResults(anyString())).thenThrow(serviceUnavailable);
         assertEvaluationResults(EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE);
     }
 

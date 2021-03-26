@@ -17,11 +17,11 @@ import com.ecaservice.classifier.options.model.NeuralNetworkOptions;
 import com.ecaservice.classifier.options.model.RandomForestsOptions;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CrossValidationConfig;
-import com.ecaservice.config.ws.ers.ErsConfig;
+import com.ecaservice.config.ers.ErsConfig;
 import com.ecaservice.configuation.ExecutorConfiguration;
-import com.ecaservice.dto.evaluation.ClassifierOptionsRequest;
-import com.ecaservice.dto.evaluation.ClassifierOptionsResponse;
-import com.ecaservice.dto.evaluation.ResponseStatus;
+import com.ecaservice.ers.dto.ClassifierOptionsRequest;
+import com.ecaservice.ers.dto.ClassifierOptionsResponse;
+import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
 import com.ecaservice.mapping.ClassifierOptionsRequestMapperImpl;
@@ -45,8 +45,8 @@ import com.ecaservice.repository.ErsRequestRepository;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.AppInstanceService;
+import com.ecaservice.service.ers.ErsRequestSender;
 import com.ecaservice.service.ers.ErsRequestService;
-import com.ecaservice.service.ers.ErsWebServiceClient;
 import com.ecaservice.service.lock.JdbcLockStorage;
 import com.ecaservice.service.lock.LockService;
 import com.ecaservice.util.Utils;
@@ -66,6 +66,7 @@ import eca.neural.functions.ActivationFunctionType;
 import eca.regression.Logistic;
 import eca.trees.CART;
 import eca.trees.J48;
+import feign.FeignException;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -73,8 +74,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.DigestUtils;
-import org.springframework.ws.client.WebServiceFaultException;
-import org.springframework.ws.client.WebServiceIOException;
 import weka.classifiers.AbstractClassifier;
 
 import javax.inject.Inject;
@@ -89,6 +88,7 @@ import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -113,7 +113,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     private static final int NUM_THREADS = 2;
 
     @MockBean
-    private ErsWebServiceClient ersWebServiceClient;
+    private ErsRequestSender ersRequestSender;
     @Inject
     private ErsConfig ersConfig;
     @Inject
@@ -154,19 +154,21 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     @Test
     void testServiceUnavailable() {
-        internalTestErrorStatus(new WebServiceIOException("error"), ErsResponseStatus.SERVICE_UNAVAILABLE);
+        FeignException.ServiceUnavailable serviceUnavailable = mock(FeignException.ServiceUnavailable.class);
+        internalTestErrorStatus(serviceUnavailable, ErsResponseStatus.SERVICE_UNAVAILABLE);
     }
 
     @Test
     void testErrorStatus() {
-        internalTestErrorStatus(new WebServiceFaultException("error"), ErsResponseStatus.ERROR);
+        FeignException.BadRequest badRequest = mock(FeignException.BadRequest.class);
+        internalTestErrorStatus(badRequest, ErsResponseStatus.ERROR);
     }
 
     @Test
     void testsInvalidClassifierOptions() {
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
                 .singletonList(TestHelperUtils.createClassifierReport(StringUtils.EMPTY)), ResponseStatus.SUCCESS);
-        when(ersWebServiceClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
+        when(ersRequestSender.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
         EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
                 instancesRequest);
         assertThat(evaluationResponse).isNotNull();
@@ -183,7 +185,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     void testEvaluationWithNoClassifierOptionsRequests() {
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
                 .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)), ResponseStatus.SUCCESS);
-        when(ersWebServiceClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
+        when(ersRequestSender.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
         EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
                 instancesRequest);
         assertSuccessEvaluationResponse(evaluationResponse);
@@ -224,7 +226,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         classifierOptionsRequestRepository.save(requestEntity);
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
                 .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)), ResponseStatus.SUCCESS);
-        when(ersWebServiceClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
+        when(ersRequestSender.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
         EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
                 instancesRequest);
         assertSuccessEvaluationResponse(evaluationResponse);
@@ -336,7 +338,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     void testClassifierOptionsCacheInMultiThreadEnvironment() throws Exception {
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
                 .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)), ResponseStatus.SUCCESS);
-        when(ersWebServiceClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
+        when(ersRequestSender.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
         final CountDownLatch finishedLatch = new CountDownLatch(NUM_THREADS);
         ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);
         for (int i = 0; i < NUM_THREADS; i++) {
@@ -348,7 +350,8 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         }
         finishedLatch.await();
         executorService.shutdownNow();
-        List<ClassifierOptionsRequestEntity> requestEntities = classifierOptionsRequestRepository.findAll();assertThat(requestEntities.size()).isEqualTo(2);
+        List<ClassifierOptionsRequestEntity> requestEntities = classifierOptionsRequestRepository.findAll();
+        assertThat(requestEntities.size()).isEqualTo(2);
         assertThat(classifierOptionsRequestModelRepository.count()).isOne();
         assertThat(requestEntities.get(0).getSource()).isEqualTo(ClassifierOptionsRequestSource.ERS);
         assertThat(requestEntities.get(1).getSource()).isEqualTo(ClassifierOptionsRequestSource.CACHE);
@@ -411,7 +414,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     }
 
     private void internalTestErrorStatus(Exception ex, ErsResponseStatus expectedStatus) {
-        when(ersWebServiceClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenThrow(ex);
+        when(ersRequestSender.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenThrow(ex);
         EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
                 instancesRequest);
         assertThat(evaluationResponse).isNotNull();
@@ -431,7 +434,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections.singletonList(
                 TestHelperUtils.createClassifierReport(objectMapper.writeValueAsString(options))),
                 ResponseStatus.SUCCESS);
-        when(ersWebServiceClient.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
+        when(ersRequestSender.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
         EvaluationResponse evaluationResponse = evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
                 instancesRequest);
         assertSuccessEvaluationResponse(evaluationResponse);

@@ -17,18 +17,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ErrorHandler {
 
     /**
-     * Handles bad request error.
-     *
-     * @param ex -  exception
-     * @return response entity
-     */
-    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
-    public ResponseEntity<String> handleBadRequest(Exception ex) {
-        log.error(ex.getMessage());
-        return ResponseEntity.badRequest().body(ex.getMessage());
-    }
-
-    /**
      * Handles feign client unauthorized error.
      *
      * @param ex -  exception
@@ -36,7 +24,7 @@ public class ErrorHandler {
      */
     @ExceptionHandler(FeignException.Unauthorized.class)
     public ResponseEntity<String> handleFeignUnauthorized(FeignException.Unauthorized ex) {
-        log.error(ex.getMessage());
+        log.error("Feign client unauthorized error: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

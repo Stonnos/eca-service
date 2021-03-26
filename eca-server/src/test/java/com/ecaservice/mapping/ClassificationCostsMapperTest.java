@@ -1,7 +1,7 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.dto.evaluation.ClassificationCostsReport;
+import com.ecaservice.ers.dto.ClassificationCostsReport;
 import com.ecaservice.web.dto.model.ClassificationCostsDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

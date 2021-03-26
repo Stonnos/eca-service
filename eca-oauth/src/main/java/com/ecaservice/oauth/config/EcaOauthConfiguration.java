@@ -1,5 +1,6 @@
 package com.ecaservice.oauth.config;
 
+import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import org.passay.PasswordGenerator;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  */
 @Configuration
 @EnableAsync
+@EnableGlobalExceptionHandler
 @EnableConfigurationProperties({CommonConfig.class, PasswordConfig.class, ResetPasswordConfig.class, TfaConfig.class,
         ChangePasswordConfig.class})
 public class EcaOauthConfiguration {

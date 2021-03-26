@@ -1,7 +1,7 @@
 package com.ecaservice.mapping;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.dto.evaluation.ClassifierReport;
+import com.ecaservice.ers.dto.ClassifierReport;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

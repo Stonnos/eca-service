@@ -6,6 +6,7 @@ import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.notification.dto.EmailResponse;
 import com.ecaservice.mail.model.Email;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,6 +37,10 @@ public class EmailController {
      * @param emailRequest - email request
      * @return email response
      */
+    @ApiOperation(
+            value = "Saves email request to sent",
+            notes = "Saves email request to sent"
+    )
     @PostMapping(value = "/email-request")
     public EmailResponse saveRequest(@Valid @RequestBody EmailRequest emailRequest) {
         Email email = emailService.saveEmail(emailRequest);

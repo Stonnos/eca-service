@@ -58,3 +58,6 @@ swagger2:
       description: Operations for load tests managment
       author: Roman Batygin
       email: roman.batygin@mail.ru
+
+server:
+  port: 8088

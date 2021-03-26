@@ -1,0 +1,1640 @@
+= Модуль ECA ERS (Evaluation results service)
+:toc: macro
+
+== 1. Описание модуля
+
+Evaluation results service представляет собой сервис, который предназначен для хранения и анализа результатов классификации разнотипных данных с использованием различных алгоритмов классификации, как одиночных так и ансамблевых. Сервис поддерживает хранение таких основных показателей как:
+
+* Точность классификатора
+* Дисперсия ошибки классификатора
+* Доверительный интервал ошибки классификатора
+* Результаты ROC - анализа
+* Матрица классификации и др.
+
+Вместе с результами классификации сохраняется полная информация о входных параметрах классификатора, а также обучающая выборка на основе которой была построена модель классификатора.
+
+Сервис также предоставляет API для нахождения оптимальных параметров классификаторов для конкретной обучающей выборки на основе накопленной истории результатов классификации.
+
+== 2. Описание формата отправки результатов классификации
+
+=== 2.1. Структура запроса отправки результатов классификации
+
+[source,json]
+----
+{
+  "requestId": "04b1373f-7838-4535-b65a-88c088830879",
+  "instances": {
+    "xmlInstances": "<data structure>",
+    "relationName": "Glass",
+    "numInstances": 214,
+    "numAttributes": 10,
+    "numClasses": 6,
+    "className": "Type"
+  },
+  "classifierReport": {
+    "type": "ClassifierReport",
+    "classifierName": "ExtraTreesClassifier",
+    "classifierDescription": null,
+    "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
+    "classifierInputOptions": [
+      {
+        "key": "Число деревьев:",
+        "value": "20"
+      },
+      {
+        "key": "Минимальное число объектов в листе:",
+        "value": "2"
+      },
+      {
+        "key": "Максиальная глубина дерева:",
+        "value": "0"
+      },
+      {
+        "key": "Число случайных атрибутов:",
+        "value": "5"
+      },
+      {
+        "key": "Алгоритм построения дерева решений:",
+        "value": "ID3"
+      },
+      {
+        "key": "Число потоков",
+        "value": "6"
+      },
+      {
+        "key": "Начальное значение (Seed)",
+        "value": "1"
+      },
+      {
+        "key": "Число случайных расщеплений атрибута:",
+        "value": "6"
+      },
+      {
+        "key": "Формирование обучающих выборок:",
+        "value": "Исходное обучающее множество"
+      }
+    ],
+    "metaClassifier": false
+  },
+  "evaluationMethodReport": {
+    "evaluationMethod": "CROSS_VALIDATION",
+    "numFolds": 10,
+    "numTests": 1,
+    "seed": 1
+  },
+  "statistics": {
+    "numTestInstances": 214,
+    "numCorrect": 172,
+    "numIncorrect": 42,
+    "pctCorrect": 80.37383177570094,
+    "pctIncorrect": 19.626168224299064,
+    "meanAbsoluteError": 0.11885129227585131,
+    "rootMeanSquaredError": 0.231476151125149,
+    "maxAucValue": 0.9983739837398374,
+    "varianceError": 0.00436052266530287,
+    "confidenceIntervalLowerBound": 0.14902362368597982,
+    "confidenceIntervalUpperBound": 0.24349974080000147
+  },
+  "classificationCosts": [
+    {
+      "classValue": "build wind float",
+      "truePositiveRate": 0.9142857142857143,
+      "falsePositiveRate": 0.125,
+      "trueNegativeRate": 0.875,
+      "falseNegativeRate": 0.08571428571428572,
+      "rocCurve": {
+        "aucValue": 0.9313988095238095,
+        "specificity": 0.8611111111111112,
+        "sensitivity": 0.9428571428571428,
+        "thresholdValue": 0.4138291855203621
+      }
+    },
+    {
+      "classValue": "vehic wind float",
+      "truePositiveRate": 0.23529411764705882,
+      "falsePositiveRate": 0.01015228426395939,
+      "trueNegativeRate": 0.9898477157360406,
+      "falseNegativeRate": 0.7647058823529411,
+      "rocCurve": {
+        "aucValue": 0.9252015527022992,
+        "specificity": 0.751269035532995,
+        "sensitivity": 1.0,
+        "thresholdValue": 0.08396763793615986
+      }
+    },
+    {
+      "classValue": "tableware",
+      "truePositiveRate": 0.7777777777777778,
+      "falsePositiveRate": 0.004878048780487805,
+      "trueNegativeRate": 0.9951219512195122,
+      "falseNegativeRate": 0.2222222222222222,
+      "rocCurve": {
+        "aucValue": 0.9983739837398374,
+        "specificity": 0.9951219512195122,
+        "sensitivity": 1.0,
+        "thresholdValue": 0.33422619047619045
+      }
+    },
+    {
+      "classValue": "build wind non-float",
+      "truePositiveRate": 0.8289473684210527,
+      "falsePositiveRate": 0.10869565217391304,
+      "trueNegativeRate": 0.8913043478260869,
+      "falseNegativeRate": 0.17105263157894737,
+      "rocCurve": {
+        "aucValue": 0.9111365369946606,
+        "specificity": 0.9492753623188406,
+        "sensitivity": 0.75,
+        "thresholdValue": 0.49067460317460315
+      }
+    },
+    {
+      "classValue": "headlamps",
+      "truePositiveRate": 0.8275862068965517,
+      "falsePositiveRate": 0.016216216216216217,
+      "trueNegativeRate": 0.9837837837837838,
+      "falseNegativeRate": 0.1724137931034483,
+      "rocCurve": {
+        "aucValue": 0.9606710158434296,
+        "specificity": 0.9459459459459459,
+        "sensitivity": 0.9655172413793104,
+        "thresholdValue": 0.1461273690078038
+      }
+    },
+    {
+      "classValue": "containers",
+      "truePositiveRate": 0.7692307692307693,
+      "falsePositiveRate": 0.014925373134328358,
+      "trueNegativeRate": 0.9850746268656716,
+      "falseNegativeRate": 0.23076923076923078,
+      "rocCurve": {
+        "aucValue": 0.9862227324913893,
+        "specificity": 0.9701492537313433,
+        "sensitivity": 0.9230769230769231,
+        "thresholdValue": 0.2746176338281601
+      }
+    }
+  ],
+  "confusionMatrix": [
+    {
+      "actualClass": "build wind float",
+      "predictedClass": "build wind float",
+      "numInstances": 64
+    },
+    {
+      "actualClass": "build wind float",
+      "predictedClass": "vehic wind float",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "build wind float",
+      "predictedClass": "tableware",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "build wind float",
+      "predictedClass": "build wind non-float",
+      "numInstances": 5
+    },
+    {
+      "actualClass": "build wind float",
+      "predictedClass": "headlamps",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "build wind float",
+      "predictedClass": "containers",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "vehic wind float",
+      "predictedClass": "build wind float",
+      "numInstances": 9
+    },
+    {
+      "actualClass": "vehic wind float",
+      "predictedClass": "vehic wind float",
+      "numInstances": 4
+    },
+    {
+      "actualClass": "vehic wind float",
+      "predictedClass": "tableware",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "vehic wind float",
+      "predictedClass": "build wind non-float",
+      "numInstances": 4
+    },
+    {
+      "actualClass": "vehic wind float",
+      "predictedClass": "headlamps",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "vehic wind float",
+      "predictedClass": "containers",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "tableware",
+      "predictedClass": "build wind float",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "tableware",
+      "predictedClass": "vehic wind float",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "tableware",
+      "predictedClass": "tableware",
+      "numInstances": 7
+    },
+    {
+      "actualClass": "tableware",
+      "predictedClass": "build wind non-float",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "tableware",
+      "predictedClass": "headlamps",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "tableware",
+      "predictedClass": "containers",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "build wind non-float",
+      "predictedClass": "build wind float",
+      "numInstances": 8
+    },
+    {
+      "actualClass": "build wind non-float",
+      "predictedClass": "vehic wind float",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "build wind non-float",
+      "predictedClass": "tableware",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "build wind non-float",
+      "predictedClass": "build wind non-float",
+      "numInstances": 63
+    },
+    {
+      "actualClass": "build wind non-float",
+      "predictedClass": "headlamps",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "build wind non-float",
+      "predictedClass": "containers",
+      "numInstances": 2
+    },
+    {
+      "actualClass": "headlamps",
+      "predictedClass": "build wind float",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "headlamps",
+      "predictedClass": "vehic wind float",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "headlamps",
+      "predictedClass": "tableware",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "headlamps",
+      "predictedClass": "build wind non-float",
+      "numInstances": 3
+    },
+    {
+      "actualClass": "headlamps",
+      "predictedClass": "headlamps",
+      "numInstances": 24
+    },
+    {
+      "actualClass": "headlamps",
+      "predictedClass": "containers",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "containers",
+      "predictedClass": "build wind float",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "containers",
+      "predictedClass": "vehic wind float",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "containers",
+      "predictedClass": "tableware",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "containers",
+      "predictedClass": "build wind non-float",
+      "numInstances": 2
+    },
+    {
+      "actualClass": "containers",
+      "predictedClass": "headlamps",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "containers",
+      "predictedClass": "containers",
+      "numInstances": 10
+    }
+  ]
+}
+----
+
+=== 2.2. Описание полей запроса отправки результатов классификации
+
+==== 2.2.1. Описание полей блока EvaluationResultsRequest
+
+[options="header"]
+|===
+|№|Название поля|Тип|Обязательное|Описание|Комментарий
+|1
+|requestId
+|string
+|+
+|Уникальный идентификатор запроса в формате UUID
+|Данное поле заполняется клиентским приложением
+|2
+|instances
+|InstancesReport
+|+
+|Блок содержит информацию об обучающей выборке, на основе которой были получены результаты классификации
+|
+|3
+|classifierReport
+|ClassifierReport
+|+
+|Информация о классификаторе
+|
+|4
+|evaluationMethodReport
+|EvaluationMethodReport
+|+
+|Блок содержит информацию о методе оценки точности классификатора
+|
+|5
+|statistics
+|StatisticsReport
+|+
+|Блок с основными показателями точности классификатора
+|
+|6
+|classificationCosts
+|array
+|-
+|Результаты классификации с учетом издержек
+|
+|7
+|confusionMatrix
+|array
+|-
+|Структура матрицы классификации
+|
+|===
+
+==== 2.2.2. Описание полей блока InstancesReport
+
+[options="header"]
+|===
+|№|Название поля|Тип|Обязательное|Макс. длина|Мин. значение|Описание|Комментарий
+|1
+|xmlInstances
+|string
+|+
+|-
+|-
+|Обучающая выборка
+|
+|2
+|relationName
+|string
+|+
+|255
+|-
+|Наименовавние данных
+|
+|3
+|numInstances
+|integer
+|+
+|-
+|2
+|Число объектов обучающей выборки
+|
+|4
+|numAttributes
+|integer
+|+
+|-
+|2
+|Число атрибутов
+|
+|5
+|numClasses
+|integer
+|+
+|-
+|2
+|Число классов
+|
+|6
+|className
+|string
+|+
+|255
+|-
+|Имя атрибута класса
+|
+|===
+
+==== 2.2.3. Описание полей блока ClassifierReport
+
+[options="header"]
+|===
+|№|Название поля|Тип|Обязательное|Макс. длина|Описание|Комментарий
+|1
+|classifierName
+|string
+|+
+|255
+|Наименование классификатора
+|В качестве имени можно использовать название алгоритма классификации
+|2
+|options
+|string
+|+
+|-
+|Строка с настройками классификатора
+|
+|3
+|classifierDescription
+|string
+|-
+|255
+|Дополнительная информация о классификаторе
+|
+|4
+|classifierInputOptions
+|array
+|-
+|-
+|Входные параметры классификатора в формате ключ/значение
+|
+|5
+|metaClassifier
+|boolean
+|+
+|-
+|Значение равно true, если классификатор является мета - классификатором (используется для алгоритмов семейства Stacking)
+|
+|===
+
+==== 2.2.4. Описание полей блока EnsembleClassifierReport
+
+[options="header"]
+|===
+|№|Название поля|Тип|Обязательное|Описание|Комментарий
+|1
+|individualClassifiers
+|array
+|-
+|Перечень входных параметров базовых классификаторов, которые использовались при построении ансамбля
+|
+|===
+
+==== 2.2.5. Описание полей блока EvaluationMethodReport
+
+[options="header"]
+|===
+|№|Название поля|Тип|Обязательное|Мин. значение|Описание|Комментарий
+|1
+|evaluationMethod
+|EvaluationMethod
+|+
+|-
+|Метод оценки точности классификатора
+|Заполняется по по справочнику <<Справочник значений EvaluationMethod>>
+|2
+|numFolds
+|integer
+|-
+|2
+|Число блоков для k * V - блочной кросс проверка на тестовой выборке
+|
+|3
+|numTests
+|integer
+|-
+|1
+|Число тестов для k * V - блочной кросс проверка на тестовой выборке
+|
+|4
+|seed
+|integer
+|-
+|-
+|Начальное значение (seed) для генератор псевдослучайных чисел
+|
+|===
+
+==== 2.2.6. Описание полей блока StatisticsReport
+
+[options="header"]
+|===
+|№|Название поля|Тип|Обязательное|Мин. значение|Макс. значение|Описание|Комментарий
+|1
+|numTestInstances
+|integer
+|+
+|2
+|-
+|Число объектов тестовых данных
+|
+|2
+|numCorrect
+|integer
+|+
+|0
+|-
+|Число верно классифицированных объектов
+|
+|3
+|numIncorrect
+|integer
+|+
+|0
+|-
+|Число неверно классифицированных объектов
+|
+|4
+|pctCorrect
+|decimal
+|+
+|0
+|100
+|Точность классификатора
+|Доля верно классифицированных объектов
+|5
+|pctIncorrect
+|decimal
+|+
+|0
+|100
+|Ошибка классификатора
+|Доля неверно классифицированных объектов
+|6
+|meanAbsoluteError
+|decimal
+|-
+|0
+|1
+|Средняя абсолютная ошибка классификации
+|
+|7
+|rootMeanSquaredError
+|decimal
+|-
+|0
+|1
+|Среднеквадратическая ошибка классификации
+|
+|8
+|maxAucValue
+|decimal
+|-
+|0
+|1
+|Максимальное значение показателя AUC среди всех классов
+|
+|9
+|varianceError
+|decimal
+|-
+|0
+|1
+|Дисперсия ошибки классификатора
+|
+|10
+|confidenceIntervalLowerBound
+|decimal
+|-
+|-
+|-
+|Нижняя граница 95% доверительного интервала ошибки классификатора
+|
+|11
+|confidenceIntervalUpperBound
+|decimal
+|-
+|-
+|-
+|Верхняя граница 95% доверительного интервала ошибки классификатора
+|
+|===
+
+==== 2.2.7. Описание полей блока ClassificationCostsReport
+
+[options="header"]
+|===
+|№|Название поля|Тип|Обязательное|Макс. длина|Мин. значение|Макс. значение|Описание|Комментарий
+|1
+|className
+|string
+|+
+|255
+|-
+|-
+|Наименование класса
+|
+|2
+|truePositiveRate
+|decimal
+|+
+|-
+|0
+|1
+|Доля верно классифицированных положительных примеров для данного класса
+|
+|3
+|falsePositiveRate
+|decimal
+|+
+|-
+|0
+|1
+|Доля отрицательных примеров, классифицированных как положительные
+|
+|4
+|trueNegativeRate
+|decimal
+|+
+|-
+|0
+|1
+|Доля верно классифицированных отрицательных примеров
+|
+|5
+|falseNegativeRate
+|decimal
+|+
+|-
+|0
+|1
+|Доля положительных примеров, классифицированных как отрицательные
+|
+|6
+|rocCurve
+|RocCurveReport
+|+
+|Данные ROC - анализа
+|
+|===
+
+==== 2.2.8. Описание полей блока RocCurveReport
+
+[options="header"]
+|===
+|№|Название поля|Тип|Обязательное|Мин. значение|Макс. значение|Описание|Комментарий
+|1
+|aucValue
+|decimal
+|+
+|0
+|1
+|Значение площади под ROC - кривой для соответствующего класса
+|
+|2
+|specificity
+|decimal
+|+
+|0
+|1
+|Значение специфичности оптимальной точки ROC - кривой для соответствующего класса
+|
+|3
+|sensitivity
+|decimal
+|+
+|0
+|1
+|Значение чувствительности оптимальной точки ROC - кривой для соответствующего класса
+|
+|4
+|thresholdValue
+|decimal
+|+
+|0
+|1
+|Значения оптимальный порога для определения класса
+|
+|===
+
+==== 2.2.9. Описание полей блока ConfusionMatrixReport
+
+[options="header"]
+|===
+|№|Название поля|Тип|Обязательное|Макс. длина|Мин. значение|Описание|Комментарий
+|1
+|actualClass
+|string
+|+
+|255
+|-
+|Реальное значение класса
+|
+|2
+|predictedClass
+|string
+|+
+|255
+|-
+|Прогнозное значение класса
+|
+|3
+|numInstances
+|decimal
+|+
+|-
+|0
+|Число объектов
+|
+|===
+
+==== 2.2.10. Описание полей блока ClassifierInputOption
+
+[options="header"]
+|===
+|№|Название поля|Тип|Обязательное|Макс. длина|Мин. значение|Описание|Комментарий
+|1
+|key
+|string
+|+
+|255
+|-
+|Название параметра
+|
+|2
+|value
+|string
+|+
+|255
+|-
+|Значение параметра
+|
+|===
+
+== 3. Описание формата ответа на запрос о сохранении результатов классификации
+
+=== 3.1. Структура ответа на запрос о сохранении результатов классификации
+
+[source,json]
+----
+{
+  "requestId": "04b1373f-7838-4535-b65a-88c088830879",
+  "status": "SUCCESS"
+}
+----
+
+=== 3.2. Описание полей ответа на запрос о сохранении результатов классификации
+
+[options="header"]
+|===
+|№|Название поля|Тип|Обязательное|Описание|Комментарий
+|1
+|requestId
+|string
+|+
+|Уникальный идентификатор запроса
+|Совпадает со значением requestId из запроса
+|2
+|status
+|ResponseStatus
+|+
+|Статус ответа
+|Заполняется по по справочнику <<Справочник значений ResponseStatus>>
+|===
+
+== 4. Описание формата запроса на нахождение оптимальных конфигураций классификаторов
+
+=== 4.1. Структура запроса на нахождение оптимальных конфигураций классификаторов
+
+[source,json]
+----
+{
+  "instances": {
+    "xmlInstances": "<data structure>",
+    "relationName": "Glass",
+    "numInstances": 214,
+    "numAttributes": 10,
+    "numClasses": 6,
+    "className": "Type"
+  },
+  "evaluationMethodReport": {
+    "evaluationMethod": "CROSS_VALIDATION",
+    "numFolds": 10,
+    "numTests": 1,
+    "seed": 1
+  },
+  "sortFields": null
+}
+----
+
+=== 4.2. Описание полей запроса на нахождение оптимальных конфигураций классификаторов
+
+[options="header"]
+|===
+|№|Название поля|Тип|Обязательное|Описание|Комментарий
+|1
+|instances
+|InstancesReport
+|+
+|Блок содержит информацию об обучающей выборке для которой будет осуществлен поиск оптимальных параметров классификаторов
+|
+|2
+|evaluationMethodReport
+|EvaluationMethodReport
+|+
+|Блок содержит информацию о методе оценки точности классификатора
+|
+|3
+|sortFields
+|SortField
+|-
+|Настраиваемый список полей для упорядочивания результатов классификации
+|Если поля для сортировки не заданы, то используется сортировка по умолчанию ([statistics.pctCorrect->DESC, statistics.maxAucValue->DESC, statistics.varianceError->ASC])
+|===
+
+==== 4.2.1. Описание полей блока SortField
+
+[options="header"]
+|===
+|№|Название поля|Тип|Обязательное|Макс. длина|Описание|Комментарий
+|1
+|fieldName
+|string
+|+
+|255
+|Название поля для сортировки
+|ВАЖНО! Для сортировки должны быть использованы поля из блока Statistics
+|2
+|direction
+|SortDirection
+|-
+|-
+|Направление сортировки
+|Заполняется по по справочнику <<Справочник значений SortDirection>>. По умолчанию используется ASC.
+|===
+
+== 5. Описание формата ответа на запрос о нахождении оптимальных конфигураций классификаторов
+
+=== 5.1. Структура ответа на запрос о нахождении оптимальных конфигураций классификаторов
+
+[source,json]
+----
+{
+  "requestId": "f8cecbf7-405b-403b-9a94-f51e8fb73ed8",
+  "classifierReports": [
+    {
+      "type": "ClassifierReport",
+      "classifierName": "ExtraTreesClassifier",
+      "classifierDescription": null,
+      "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
+      "classifierInputOptions": [
+        {
+          "key": "Число потоков",
+          "value": "6"
+        },
+        {
+          "key": "Формирование обучающих выборок:",
+          "value": "Исходное обучающее множество"
+        },
+        {
+          "key": "Алгоритм построения дерева решений:",
+          "value": "ID3"
+        },
+        {
+          "key": "Число деревьев:",
+          "value": "20"
+        },
+        {
+          "key": "Максиальная глубина дерева:",
+          "value": "0"
+        },
+        {
+          "key": "Число случайных атрибутов:",
+          "value": "5"
+        },
+        {
+          "key": "Число случайных расщеплений атрибута:",
+          "value": "6"
+        },
+        {
+          "key": "Минимальное число объектов в листе:",
+          "value": "2"
+        },
+        {
+          "key": "Начальное значение (Seed)",
+          "value": "1"
+        }
+      ],
+      "metaClassifier": false
+    },
+    {
+      "type": "ClassifierReport",
+      "classifierName": "ExtraTreesClassifier",
+      "classifierDescription": null,
+      "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
+      "classifierInputOptions": [
+        {
+          "key": "Число потоков",
+          "value": "6"
+        },
+        {
+          "key": "Формирование обучающих выборок:",
+          "value": "Исходное обучающее множество"
+        },
+        {
+          "key": "Алгоритм построения дерева решений:",
+          "value": "ID3"
+        },
+        {
+          "key": "Число деревьев:",
+          "value": "20"
+        },
+        {
+          "key": "Максиальная глубина дерева:",
+          "value": "0"
+        },
+        {
+          "key": "Число случайных атрибутов:",
+          "value": "5"
+        },
+        {
+          "key": "Число случайных расщеплений атрибута:",
+          "value": "6"
+        },
+        {
+          "key": "Минимальное число объектов в листе:",
+          "value": "2"
+        },
+        {
+          "key": "Начальное значение (Seed)",
+          "value": "1"
+        }
+      ],
+      "metaClassifier": false
+    },
+    {
+      "type": "ClassifierReport",
+      "classifierName": "ExtraTreesClassifier",
+      "classifierDescription": null,
+      "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
+      "classifierInputOptions": [
+        {
+          "key": "Число потоков",
+          "value": "6"
+        },
+        {
+          "key": "Формирование обучающих выборок:",
+          "value": "Исходное обучающее множество"
+        },
+        {
+          "key": "Алгоритм построения дерева решений:",
+          "value": "ID3"
+        },
+        {
+          "key": "Число деревьев:",
+          "value": "20"
+        },
+        {
+          "key": "Максиальная глубина дерева:",
+          "value": "0"
+        },
+        {
+          "key": "Число случайных атрибутов:",
+          "value": "5"
+        },
+        {
+          "key": "Число случайных расщеплений атрибута:",
+          "value": "6"
+        },
+        {
+          "key": "Минимальное число объектов в листе:",
+          "value": "2"
+        },
+        {
+          "key": "Начальное значение (Seed)",
+          "value": "1"
+        }
+      ],
+      "metaClassifier": false
+    },
+    {
+      "type": "ClassifierReport",
+      "classifierName": "ExtraTreesClassifier",
+      "classifierDescription": null,
+      "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
+      "classifierInputOptions": [
+        {
+          "key": "Число потоков",
+          "value": "6"
+        },
+        {
+          "key": "Формирование обучающих выборок:",
+          "value": "Исходное обучающее множество"
+        },
+        {
+          "key": "Алгоритм построения дерева решений:",
+          "value": "ID3"
+        },
+        {
+          "key": "Число деревьев:",
+          "value": "20"
+        },
+        {
+          "key": "Максиальная глубина дерева:",
+          "value": "0"
+        },
+        {
+          "key": "Число случайных атрибутов:",
+          "value": "5"
+        },
+        {
+          "key": "Число случайных расщеплений атрибута:",
+          "value": "6"
+        },
+        {
+          "key": "Минимальное число объектов в листе:",
+          "value": "2"
+        },
+        {
+          "key": "Начальное значение (Seed)",
+          "value": "1"
+        }
+      ],
+      "metaClassifier": false
+    },
+    {
+      "type": "ClassifierReport",
+      "classifierName": "ExtraTreesClassifier",
+      "classifierDescription": null,
+      "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
+      "classifierInputOptions": [
+        {
+          "key": "Число потоков",
+          "value": "6"
+        },
+        {
+          "key": "Формирование обучающих выборок:",
+          "value": "Исходное обучающее множество"
+        },
+        {
+          "key": "Алгоритм построения дерева решений:",
+          "value": "ID3"
+        },
+        {
+          "key": "Число деревьев:",
+          "value": "20"
+        },
+        {
+          "key": "Максиальная глубина дерева:",
+          "value": "0"
+        },
+        {
+          "key": "Число случайных атрибутов:",
+          "value": "5"
+        },
+        {
+          "key": "Число случайных расщеплений атрибута:",
+          "value": "6"
+        },
+        {
+          "key": "Минимальное число объектов в листе:",
+          "value": "2"
+        },
+        {
+          "key": "Начальное значение (Seed)",
+          "value": "1"
+        }
+      ],
+      "metaClassifier": false
+    }
+  ],
+  "status": "SUCCESS"
+}
+----
+
+=== 5.2. Описание полей ответа на запрос о нахождении оптимальных конфигураций классификаторов
+
+[options="header"]
+|===
+|№|Название поля|Тип|Обязательное|Описание|Комментарий
+|1
+|requestId
+|string
+|+
+|Уникальный идентификатор запроса
+|Генерируется вместе с ответом на запрос
+|2
+|classifierReports
+|array
+|+
+|Список оптимальных конфигураций классификаторов
+|
+|3
+|status
+|ResponseStatus
+|+
+|Статус ответа
+|Заполняется по по справочнику <<Справочник значений ResponseStatus>>
+|===
+
+== 6. Описание формата запроса на получение результатов классификации
+
+=== 6.1. Структура запроса на получение результатов классификации
+
+[source,json]
+----
+{
+  "requestId": "04b1373f-7838-4535-b65a-88c088830879"
+}
+
+----
+
+=== 6.2. Описание полей запроса на получение результатов классификации
+
+[options="header"]
+|===
+|№|Название поля|Тип|Обязательное|Описание|Комментарий
+|1
+|requestId
+|string
+|+
+|Уникальный идентификатор запроса в формате UUID
+|
+|===
+
+== 7. Описание формата ответа на запрос о получении результатов классификации
+
+=== 7.1. Структура ответа на запрос о получении результатов классификации
+
+[source,json]
+----
+{
+  "requestId": "04b1373f-7838-4535-b65a-88c088830879",
+  "status": "SUCCESS",
+  "instances": {
+    "xmlInstances": "<data structure>",
+    "relationName": "Glass",
+    "numInstances": 214,
+    "numAttributes": 10,
+    "numClasses": 6,
+    "className": "Type"
+  },
+  "classifierReport": {
+    "type": "ClassifierReport",
+    "classifierName": "ExtraTreesClassifier",
+    "classifierDescription": null,
+    "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}",
+    "classifierInputOptions": [
+      {
+        "key": "Число потоков",
+        "value": "6"
+      },
+      {
+        "key": "Формирование обучающих выборок:",
+        "value": "Исходное обучающее множество"
+      },
+      {
+        "key": "Алгоритм построения дерева решений:",
+        "value": "ID3"
+      },
+      {
+        "key": "Число деревьев:",
+        "value": "20"
+      },
+      {
+        "key": "Максиальная глубина дерева:",
+        "value": "0"
+      },
+      {
+        "key": "Число случайных атрибутов:",
+        "value": "5"
+      },
+      {
+        "key": "Число случайных расщеплений атрибута:",
+        "value": "6"
+      },
+      {
+        "key": "Минимальное число объектов в листе:",
+        "value": "2"
+      },
+      {
+        "key": "Начальное значение (Seed)",
+        "value": "1"
+      }
+    ],
+    "metaClassifier": false
+  },
+  "evaluationMethodReport": {
+    "evaluationMethod": "CROSS_VALIDATION",
+    "numFolds": 10,
+    "numTests": 1,
+    "seed": 1
+  },
+  "statistics": {
+    "numTestInstances": 214,
+    "numCorrect": 172,
+    "numIncorrect": 42,
+    "pctCorrect": 80.3738,
+    "pctIncorrect": 19.6262,
+    "meanAbsoluteError": 0.1189,
+    "rootMeanSquaredError": 0.2315,
+    "maxAucValue": 0.9984,
+    "varianceError": 0.0044,
+    "confidenceIntervalLowerBound": 0.1490,
+    "confidenceIntervalUpperBound": 0.2435
+  },
+  "classificationCosts": [
+    {
+      "classValue": "build wind float",
+      "truePositiveRate": 0.9143,
+      "falsePositiveRate": 0.1250,
+      "trueNegativeRate": 0.8750,
+      "falseNegativeRate": 0.0857,
+      "rocCurve": {
+        "aucValue": 0.9314,
+        "specificity": 0.8611,
+        "sensitivity": 0.9429,
+        "thresholdValue": 0.4138
+      }
+    },
+    {
+      "classValue": "build wind non-float",
+      "truePositiveRate": 0.8289,
+      "falsePositiveRate": 0.1087,
+      "trueNegativeRate": 0.8913,
+      "falseNegativeRate": 0.1711,
+      "rocCurve": {
+        "aucValue": 0.9111,
+        "specificity": 0.9493,
+        "sensitivity": 0.7500,
+        "thresholdValue": 0.4907
+      }
+    },
+    {
+      "classValue": "containers",
+      "truePositiveRate": 0.7692,
+      "falsePositiveRate": 0.0149,
+      "trueNegativeRate": 0.9851,
+      "falseNegativeRate": 0.2308,
+      "rocCurve": {
+        "aucValue": 0.9862,
+        "specificity": 0.9701,
+        "sensitivity": 0.9231,
+        "thresholdValue": 0.2746
+      }
+    },
+    {
+      "classValue": "headlamps",
+      "truePositiveRate": 0.8276,
+      "falsePositiveRate": 0.0162,
+      "trueNegativeRate": 0.9838,
+      "falseNegativeRate": 0.1724,
+      "rocCurve": {
+        "aucValue": 0.9607,
+        "specificity": 0.9459,
+        "sensitivity": 0.9655,
+        "thresholdValue": 0.1461
+      }
+    },
+    {
+      "classValue": "tableware",
+      "truePositiveRate": 0.7778,
+      "falsePositiveRate": 0.0049,
+      "trueNegativeRate": 0.9951,
+      "falseNegativeRate": 0.2222,
+      "rocCurve": {
+        "aucValue": 0.9984,
+        "specificity": 0.9951,
+        "sensitivity": 1.0000,
+        "thresholdValue": 0.3342
+      }
+    },
+    {
+      "classValue": "vehic wind float",
+      "truePositiveRate": 0.2353,
+      "falsePositiveRate": 0.0102,
+      "trueNegativeRate": 0.9898,
+      "falseNegativeRate": 0.7647,
+      "rocCurve": {
+        "aucValue": 0.9252,
+        "specificity": 0.7513,
+        "sensitivity": 1.0000,
+        "thresholdValue": 0.0840
+      }
+    }
+  ],
+  "confusionMatrix": [
+    {
+      "actualClass": "tableware",
+      "predictedClass": "build wind float",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "build wind non-float",
+      "predictedClass": "build wind float",
+      "numInstances": 8
+    },
+    {
+      "actualClass": "vehic wind float",
+      "predictedClass": "containers",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "vehic wind float",
+      "predictedClass": "build wind non-float",
+      "numInstances": 4
+    },
+    {
+      "actualClass": "build wind float",
+      "predictedClass": "build wind non-float",
+      "numInstances": 5
+    },
+    {
+      "actualClass": "build wind non-float",
+      "predictedClass": "build wind non-float",
+      "numInstances": 63
+    },
+    {
+      "actualClass": "build wind non-float",
+      "predictedClass": "containers",
+      "numInstances": 2
+    },
+    {
+      "actualClass": "build wind float",
+      "predictedClass": "headlamps",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "headlamps",
+      "predictedClass": "build wind float",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "headlamps",
+      "predictedClass": "tableware",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "containers",
+      "predictedClass": "headlamps",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "headlamps",
+      "predictedClass": "build wind non-float",
+      "numInstances": 3
+    },
+    {
+      "actualClass": "headlamps",
+      "predictedClass": "containers",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "tableware",
+      "predictedClass": "build wind non-float",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "containers",
+      "predictedClass": "build wind non-float",
+      "numInstances": 2
+    },
+    {
+      "actualClass": "headlamps",
+      "predictedClass": "headlamps",
+      "numInstances": 24
+    },
+    {
+      "actualClass": "containers",
+      "predictedClass": "build wind float",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "vehic wind float",
+      "predictedClass": "tableware",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "vehic wind float",
+      "predictedClass": "headlamps",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "build wind float",
+      "predictedClass": "build wind float",
+      "numInstances": 64
+    },
+    {
+      "actualClass": "containers",
+      "predictedClass": "containers",
+      "numInstances": 10
+    },
+    {
+      "actualClass": "containers",
+      "predictedClass": "vehic wind float",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "tableware",
+      "predictedClass": "containers",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "build wind non-float",
+      "predictedClass": "tableware",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "build wind float",
+      "predictedClass": "containers",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "tableware",
+      "predictedClass": "vehic wind float",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "build wind float",
+      "predictedClass": "tableware",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "vehic wind float",
+      "predictedClass": "vehic wind float",
+      "numInstances": 4
+    },
+    {
+      "actualClass": "build wind float",
+      "predictedClass": "vehic wind float",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "vehic wind float",
+      "predictedClass": "build wind float",
+      "numInstances": 9
+    },
+    {
+      "actualClass": "build wind non-float",
+      "predictedClass": "headlamps",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "containers",
+      "predictedClass": "tableware",
+      "numInstances": 0
+    },
+    {
+      "actualClass": "build wind non-float",
+      "predictedClass": "vehic wind float",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "tableware",
+      "predictedClass": "headlamps",
+      "numInstances": 1
+    },
+    {
+      "actualClass": "tableware",
+      "predictedClass": "tableware",
+      "numInstances": 7
+    },
+    {
+      "actualClass": "headlamps",
+      "predictedClass": "vehic wind float",
+      "numInstances": 0
+    }
+  ]
+}
+----
+
+=== 7.2. Описание полей ответа на запрос о получении результатов классификации
+
+[options="header"]
+|===
+|№|Название поля|Тип|Обязательное|Описание|Комментарий
+|1
+|requestId
+|string
+|+
+|Уникальный идентификатор запроса
+|
+|2
+|status
+|ResponseStatus
+|+
+|Статус ответа
+|Заполняется по по справочнику <<Справочник значений ResponseStatus>>
+|3
+|instances
+|InstancesReport
+|+
+|Блок содержит информацию об обучающей выборке, на основе которой были получены результаты классификации
+|
+|4
+|classifierReport
+|ClassifierReport
+|+
+|Информация о классификаторе
+|
+|5
+|evaluationMethodReport
+|EvaluationMethodReport
+|+
+|Блок содержит информацию о методе оценки точности классификатора
+|
+|6
+|statistics
+|StatisticsReport
+|+
+|Блок с основными показателями точности классификатора
+|
+|7
+|classificationCosts
+|array
+|-
+|Результаты классификации с учетом издержек
+|
+|8
+|confusionMatrix
+|array
+|-
+|Структура матрицы классификации
+|
+|===
+
+== Справочник значений EvaluationMethod
+
+[options="header"]
+|===
+|№|Значение|Описание
+|1
+|TRAINING_DATA
+|Использование всей обучающей выборки для оценки точности классификатора
+|2
+|CROSS_VALIDATION
+|Метод k * V - блочной кросс проверки на тестовой выборке
+|===
+
+== Справочник значений ResponseStatus
+
+[options="header"]
+|===
+|№|Код ответа|Описание
+|1
+|SUCCESS
+|Операция завершилась успешно
+|2
+|DUPLICATE_REQUEST_ID
+|Данные с таким requestId уже существуют в базе
+|3
+|DATA_NOT_FOUND
+|В БД не найдена обучающая выборка, заданная в запросе
+|4
+|RESULTS_NOT_FOUND
+|Не удалось найти данные для заданных параметров запроса
+|===
+
+== Справочник значений SortDirection
+
+[options="header"]
+|===
+|№|Код ответа|Описание
+|1
+|ASC
+|Сортировка по возрастанию
+|2
+|DESC
+|Сортировка по убыванию
+|===

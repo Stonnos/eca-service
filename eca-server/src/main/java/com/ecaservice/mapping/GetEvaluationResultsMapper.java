@@ -1,7 +1,7 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
-import com.ecaservice.dto.evaluation.ResponseStatus;
+import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
+import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;

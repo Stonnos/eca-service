@@ -1,6 +1,6 @@
 package com.ecaservice.service.ers;
 
-import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
+import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.mapping.GetEvaluationResultsMapper;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.ExperimentResultsRequest;
@@ -9,10 +9,10 @@ import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationResults;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.ws.client.WebServiceIOException;
 
 import static com.ecaservice.util.Utils.buildEvaluationResultsDto;
 
@@ -57,7 +57,7 @@ public class ErsService {
         try {
             GetEvaluationResultsResponse evaluationResultsResponse = ersRequestService.getEvaluationResults(requestId);
             return evaluationResultsMapper.map(evaluationResultsResponse);
-        } catch (WebServiceIOException ex) {
+        } catch (FeignException.ServiceUnavailable ex) {
             log.error(ex.getMessage());
             evaluationResultsStatus = EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE;
         } catch (Exception ex) {

@@ -60,6 +60,7 @@ public class ErrorHandler {
         ResponseEntity<List<ValidationErrorDto>> errorResponse = supplier.get();
         ResponseDto<List<ValidationErrorDto>> responseDto =
                 buildResponse(RequestStatus.VALIDATION_ERROR, errorResponse.getBody());
+        log.error("Validation error: {}", responseDto);
         metricsService.trackRequestStatus(responseDto.getRequestStatus());
         metricsService.trackResponsesTotal();
         return ResponseEntity.badRequest().body(responseDto);

@@ -4,12 +4,11 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsConfiguration;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.cache.CacheNames;
-import com.ecaservice.config.ws.ers.ErsConfig;
+import com.ecaservice.config.ers.ErsConfig;
 import com.ecaservice.configuation.CacheConfiguration;
-import com.ecaservice.configuation.ErsWebServiceConfiguration;
-import com.ecaservice.dto.evaluation.GetEvaluationResultsRequest;
-import com.ecaservice.dto.evaluation.GetEvaluationResultsResponse;
-import com.ecaservice.dto.evaluation.ResponseStatus;
+import com.ecaservice.ers.dto.GetEvaluationResultsRequest;
+import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
+import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.mapping.ClassifierReportMapperImpl;
 import com.ecaservice.mapping.ErsResponseStatusMapperImpl;
 import com.ecaservice.mapping.InstancesConverter;
@@ -18,6 +17,7 @@ import com.ecaservice.service.evaluation.EvaluationResultsService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -35,22 +35,25 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ErsConfig.class, ClassifierReportMapperImpl.class, ErsWebServiceClient.class,
-        EvaluationResultsService.class, ErsWebServiceConfiguration.class, ErsResponseStatusMapperImpl.class,
+@Import({ErsConfig.class, ClassifierReportMapperImpl.class, ErsRequestSender.class,
+        EvaluationResultsService.class, ErsResponseStatusMapperImpl.class,
         CacheConfiguration.class, CrossValidationConfig.class, ErsRequestService.class,
         ClassifiersOptionsConfiguration.class, InstancesConverter.class})
 class GetEvaluationResultsCacheTest extends AbstractJpaTest {
+
+    @MockBean
+    private ErsClient ersClient;
 
     @Inject
     private ErsRequestService ersRequestService;
     @Inject
     private CacheManager cacheManager;
     @Mock
-    private ErsWebServiceClient ersWebServiceClient;
+    private ErsRequestSender ersRequestSender;
 
     @Test
     void testGetEvaluationResultsCache() {
-        ReflectionTestUtils.setField(ersRequestService, "ersWebServiceClient", ersWebServiceClient);
+        ReflectionTestUtils.setField(ersRequestService, "ersRequestSender", ersRequestSender);
         String requestId = UUID.randomUUID().toString();
         GetEvaluationResultsResponse first =
                 TestHelperUtils.createGetEvaluationResultsResponse(requestId, ResponseStatus.RESULTS_NOT_FOUND);
@@ -58,7 +61,7 @@ class GetEvaluationResultsCacheTest extends AbstractJpaTest {
                 TestHelperUtils.createGetEvaluationResultsResponse(requestId, ResponseStatus.SUCCESS);
         GetEvaluationResultsResponse third =
                 TestHelperUtils.createGetEvaluationResultsResponse(requestId, ResponseStatus.SUCCESS);
-        when(ersWebServiceClient.getEvaluationResultsSimpleResponse(
+        when(ersRequestSender.getEvaluationResultsSimpleResponse(
                 any(GetEvaluationResultsRequest.class))).thenReturn(first).thenReturn(second).thenReturn(third);
         //Checks first call with ERROR status (Results shouldn't save in cache)
         GetEvaluationResultsResponse actual =
@@ -77,7 +80,7 @@ class GetEvaluationResultsCacheTest extends AbstractJpaTest {
         Assertions.assertThat(actual.getRequestId()).isEqualTo(second.getRequestId());
         Assertions.assertThat(actual.getStatus()).isEqualTo(second.getStatus());
         //Method must calls 2 times because of cache
-        verify(ersWebServiceClient, times(2)).getEvaluationResultsSimpleResponse(any
+        verify(ersRequestSender, times(2)).getEvaluationResultsSimpleResponse(any
                 (GetEvaluationResultsRequest.class));
         Assertions.assertThat(
                 cacheManager.getCache(CacheNames.EVALUATION_RESULTS_CACHE_NAME).get(requestId)).isNotNull();

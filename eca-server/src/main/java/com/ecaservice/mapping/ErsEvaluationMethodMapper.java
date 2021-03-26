@@ -1,6 +1,6 @@
 package com.ecaservice.mapping;
 
-import com.ecaservice.dto.evaluation.EvaluationMethod;
+import com.ecaservice.ers.dto.EvaluationMethod;
 import org.mapstruct.Mapper;
 
 /**
