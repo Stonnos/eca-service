@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>eca-transport</artifactId>
+    <artifactId>eca-mail-transport</artifactId>
     <packaging>jar</packaging>
 
     <properties>

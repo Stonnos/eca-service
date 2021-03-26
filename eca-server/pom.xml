@@ -151,7 +151,7 @@
 
         <dependency>
             <groupId>eca.service</groupId>
-            <artifactId>eca-transport</artifactId>
+            <artifactId>eca-mail-transport</artifactId>
             <version>${project.version}</version>
         </dependency>
 

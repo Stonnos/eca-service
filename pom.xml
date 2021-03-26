@@ -13,7 +13,7 @@
         <module>common-web</module>
         <module>eca-model</module>
         <module>eca-user-model</module>
-        <module>eca-transport</module>
+        <module>eca-mail-transport</module>
         <module>classifiers-options</module>
         <module>eca-ers-transport</module>
         <module>eca-external-api-transport</module>
