@@ -4,6 +4,7 @@ import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.TechnicalStatus;
+import com.ecaservice.ers.dto.ClassifierOptionsResponse;
 import com.ecaservice.ers.dto.ClassifierReport;
 import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
@@ -152,6 +153,20 @@ public class Utils {
      */
     public static boolean isValid(ClassifierReport classifierReport) {
         return classifierReport != null && !StringUtils.isEmpty(classifierReport.getOptions());
+    }
+
+    /**
+     * Gets first classifier report.
+     *
+     * @param classifierOptionsResponse - classifier options response
+     * @return classifier report
+     */
+    public static ClassifierReport getFirstClassifierReport(ClassifierOptionsResponse classifierOptionsResponse) {
+        if (classifierOptionsResponse == null ||
+                CollectionUtils.isEmpty(classifierOptionsResponse.getClassifierReports())) {
+            return null;
+        }
+        return classifierOptionsResponse.getClassifierReports().stream().findFirst().orElse(null);
     }
 
     /**

@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.UUID;
 
 import static com.ecaservice.util.ClassifierOptionsHelper.parseOptions;
+import static com.ecaservice.util.Utils.getFirstClassifierReport;
 import static com.ecaservice.util.Utils.isValid;
 
 /**
@@ -109,7 +110,7 @@ public class ErsRequestService {
             requestModel.setRequestId(response.getRequestId());
             requestModel.setResponseStatus(ersResponseStatusMapper.map(response.getStatus()));
             if (ResponseStatus.SUCCESS.equals(response.getStatus())) {
-                ClassifierReport classifierReport = response.getClassifierReports().stream().findFirst().orElse(null);
+                ClassifierReport classifierReport = getFirstClassifierReport(response);
                 if (!isValid(classifierReport)) {
                     handleErrorRequest(requestModel, ErsResponseStatus.ERROR, "Got empty classifier options string!");
                 } else {
