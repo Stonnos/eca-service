@@ -50,10 +50,6 @@
 
 mvn clean install -Pquality
 
-С параметрами:
--Ders.url=http://localhost:8089/evaluation-results-service/ws/
--Ders.enabled=true
-
 Инструкция по развертыванию в Docker
 -------------------------------------------------------
 
