@@ -28,7 +28,6 @@ public class InstancesInfo {
      * Data structure bytes
      */
     @Lob
-    @Column(name = "xml_data")
     private byte[] structure;
 
     /**
