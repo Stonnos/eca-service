@@ -45,8 +45,8 @@ public class ClassifierOptionsService {
      * @return optimal classifiers options list
      */
     public List<ClassifierOptionsInfo> findBestClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
-        String xmlData = classifierOptionsRequest.getInstances().getXmlInstances();
-        String md5Hash = DigestUtils.md5DigestAsHex(xmlData.getBytes(StandardCharsets.UTF_8));
+        String structure = classifierOptionsRequest.getInstances().getStructure();
+        String md5Hash = DigestUtils.md5DigestAsHex(structure.getBytes(StandardCharsets.UTF_8));
         Long instancesInfoId = instancesInfoRepository.findIdByDataMd5Hash(md5Hash);
         if (instancesInfoId == null) {
             throw new DataNotFoundException(String.format("Instances '%s' doesn't exists!",

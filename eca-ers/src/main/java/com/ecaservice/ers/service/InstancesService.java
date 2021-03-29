@@ -34,9 +34,9 @@ public class InstancesService {
      * @return instances info
      */
     public InstancesInfo getOrSaveInstancesInfo(EvaluationResultsRequest evaluationResultsRequest) {
-        String xmlData = evaluationResultsRequest.getInstances().getXmlInstances();
-        byte[] xmlDataBytes = xmlData.getBytes(StandardCharsets.UTF_8);
-        String md5Hash = DigestUtils.md5DigestAsHex(xmlDataBytes);
+        String structure = evaluationResultsRequest.getInstances().getStructure();
+        byte[] dataBytes = structure.getBytes(StandardCharsets.UTF_8);
+        String md5Hash = DigestUtils.md5DigestAsHex(dataBytes);
         InstancesInfo instancesInfo;
         cachedDataMd5Hashes.putIfAbsent(md5Hash, new Object());
         synchronized (cachedDataMd5Hashes.get(md5Hash)) {
@@ -46,7 +46,7 @@ public class InstancesService {
                 instancesInfo.setId(instancesInfoId);
             } else {
                 instancesInfo = instancesMapper.map(evaluationResultsRequest.getInstances());
-                instancesInfo.setXmlData(xmlDataBytes);
+                instancesInfo.setStructure(dataBytes);
                 instancesInfo.setDataMd5Hash(md5Hash);
                 instancesInfoRepository.save(instancesInfo);
             }

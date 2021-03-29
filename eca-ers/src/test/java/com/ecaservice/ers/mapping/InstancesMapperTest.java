@@ -48,6 +48,6 @@ class InstancesMapperTest {
                 instancesInfo.getNumInstances().intValue());
         assertThat(instancesReport.getNumAttributes().intValue()).isEqualTo(
                 instancesInfo.getNumAttributes().intValue());
-        assertThat(instancesReport.getXmlInstances()).isNotNull();
+        assertThat(instancesReport.getStructure()).isNotNull();
     }
 }

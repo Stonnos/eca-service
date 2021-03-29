@@ -50,7 +50,7 @@ public class TestHelperUtils {
     private static final int NUM_FOLDS = 10;
     private static final int NUM_TESTS = 1;
     private static final int SEED = 1;
-    private static final String XML_DATA = "xmlData";
+    private static final String STRUCTURE = "data";
     private static final String RELATION_NAME = "relation";
     private static final String CLASS_NAME = "class";
     private static final String ACTUAL_CLASS = "actual";
@@ -92,7 +92,7 @@ public class TestHelperUtils {
      */
     public static InstancesReport buildInstancesReport() {
         InstancesReport instancesReport = new InstancesReport();
-        instancesReport.setXmlInstances(XML_DATA);
+        instancesReport.setStructure(STRUCTURE);
         instancesReport.setRelationName(RELATION_NAME);
         instancesReport.setNumInstances(BigInteger.TEN);
         instancesReport.setNumAttributes(BigInteger.TEN);
@@ -108,7 +108,7 @@ public class TestHelperUtils {
      */
     public static InstancesInfo buildInstancesInfo() {
         InstancesInfo instancesInfo = new InstancesInfo();
-        instancesInfo.setXmlData(XML_DATA.getBytes(StandardCharsets.UTF_8));
+        instancesInfo.setStructure(STRUCTURE.getBytes(StandardCharsets.UTF_8));
         instancesInfo.setRelationName(RELATION_NAME);
         instancesInfo.setNumInstances(BigInteger.TEN.intValue());
         instancesInfo.setNumAttributes(BigInteger.TEN.intValue());

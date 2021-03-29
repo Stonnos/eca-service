@@ -31,7 +31,7 @@ public class InstancesConverter {
         instancesReport.setNumAttributes(BigInteger.valueOf(instances.numAttributes()));
         instancesReport.setNumClasses(BigInteger.valueOf(instances.numClasses()));
         instancesReport.setClassName(instances.classAttribute().name());
-        instancesReport.setXmlInstances(toXmlInstances(instances));
+        instancesReport.setStructure(toXmlInstances(instances));
         return instancesReport;
     }
 }

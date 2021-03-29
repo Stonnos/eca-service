@@ -113,7 +113,7 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
         EvaluationMethod evaluationMethod = request.getEvaluationMethodReport().getEvaluationMethod();
         InstancesInfo instancesInfo = new InstancesInfo();
         instancesInfo.setDataMd5Hash(
-                DigestUtils.md5DigestAsHex(request.getInstances().getXmlInstances().getBytes(StandardCharsets.UTF_8)));
+                DigestUtils.md5DigestAsHex(request.getInstances().getStructure().getBytes(StandardCharsets.UTF_8)));
         InstancesInfo anotherInstancesInfo = new InstancesInfo();
         anotherInstancesInfo.setDataMd5Hash(
                 DigestUtils.md5DigestAsHex(StringUtils.EMPTY.getBytes(StandardCharsets.UTF_8)));

@@ -63,6 +63,6 @@ class ClassifierOptionsRequestMapperTest {
                 instancesRequest.getData().numClasses());
         Assertions.assertThat(request.getInstances().getClassName()).isEqualTo(
                 instancesRequest.getData().classAttribute().name());
-        Assertions.assertThat(request.getInstances().getXmlInstances()).isNotNull();
+        Assertions.assertThat(request.getInstances().getStructure()).isNotNull();
     }
 }

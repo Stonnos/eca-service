@@ -116,7 +116,7 @@ class EvaluationResultsServiceTest {
     private void verifyInstancesReport(Instances instances, EvaluationResultsRequest resultsRequest) {
         InstancesReport instancesReport = resultsRequest.getInstances();
         assertThat(instancesReport).isNotNull();
-        assertThat(instancesReport.getXmlInstances()).isNotNull();
+        assertThat(instancesReport.getStructure()).isNotNull();
         assertThat(instancesReport.getRelationName()).isEqualTo(instances.relationName());
         assertThat(instancesReport.getClassName()).isEqualTo(instances.classAttribute().name());
         assertThat(instancesReport.getNumInstances().intValue()).isEqualTo(instances.numInstances());

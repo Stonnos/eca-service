@@ -63,7 +63,7 @@ public class EvaluationOptimizerService {
 
     private String getOptimalClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
         String dataMd5Hash = DigestUtils.md5DigestAsHex(
-                classifierOptionsRequest.getInstances().getXmlInstances().getBytes(StandardCharsets.UTF_8));
+                classifierOptionsRequest.getInstances().getStructure().getBytes(StandardCharsets.UTF_8));
         if (isUseClassifierOptionsCache()) {
             return classifierOptionsCacheService.getOptimalClassifierOptionsFromCache(classifierOptionsRequest,
                     dataMd5Hash);
