@@ -24,7 +24,7 @@ Evaluation results service представляет собой сервис, к�
 {
   "requestId": "04b1373f-7838-4535-b65a-88c088830879",
   "instances": {
-    "xmlInstances": "<data structure>",
+    "structure": "<data structure>",
     "relationName": "Glass",
     "numInstances": 214,
     "numAttributes": 10,
@@ -417,7 +417,7 @@ Evaluation results service представляет собой сервис, к�
 |===
 |№|Название поля|Тип|Обязательное|Макс. длина|Мин. значение|Описание|Комментарий
 |1
-|xmlInstances
+|structure
 |string
 |+
 |-
@@ -841,7 +841,7 @@ Evaluation results service представляет собой сервис, к�
 ----
 {
   "instances": {
-    "xmlInstances": "<data structure>",
+    "structure": "<data structure>",
     "relationName": "Glass",
     "numInstances": 214,
     "numAttributes": 10,
@@ -1203,7 +1203,7 @@ Evaluation results service представляет собой сервис, к�
   "requestId": "04b1373f-7838-4535-b65a-88c088830879",
   "status": "SUCCESS",
   "instances": {
-    "xmlInstances": "<data structure>",
+    "structure": "<data structure>",
     "relationName": "Glass",
     "numInstances": 214,
     "numAttributes": 10,
