@@ -35,6 +35,7 @@ import com.ecaservice.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.mapping.EvaluationRequestMapperImpl;
 import com.ecaservice.mapping.InstancesConverter;
 import com.ecaservice.mapping.InstancesInfoMapperImpl;
+import com.ecaservice.mapping.InstancesJsonConverter;
 import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ErsResponseStatus;
@@ -49,7 +50,6 @@ import com.ecaservice.service.ers.ErsRequestSender;
 import com.ecaservice.service.ers.ErsRequestService;
 import com.ecaservice.service.lock.JdbcLockStorage;
 import com.ecaservice.service.lock.LockService;
-import com.ecaservice.util.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.EvaluationResults;
 import eca.ensemble.AdaBoostClassifier;
@@ -110,6 +110,7 @@ import static org.mockito.Mockito.when;
 class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final InstancesJsonConverter INSTANCES_JSON_CONVERTER = new InstancesJsonConverter();
     private static final int NUM_THREADS = 2;
 
     @MockBean
@@ -137,8 +138,8 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     public void init() throws Exception {
         instancesRequest = new InstancesRequest();
         instancesRequest.setData(TestHelperUtils.loadInstances());
-        dataMd5Hash = DigestUtils.md5DigestAsHex(
-                Utils.toXmlInstances(instancesRequest.getData()).getBytes(StandardCharsets.UTF_8));
+        String instancesJson = INSTANCES_JSON_CONVERTER.convert(instancesRequest.getData());
+        dataMd5Hash = DigestUtils.md5DigestAsHex(instancesJson.getBytes(StandardCharsets.UTF_8));
         DecisionTreeOptions treeOptions = TestHelperUtils.createDecisionTreeOptions();
         treeOptions.setDecisionTreeType(DecisionTreeType.CART);
         decisionTreeOptions = objectMapper.writeValueAsString(treeOptions);

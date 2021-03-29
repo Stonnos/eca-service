@@ -7,8 +7,6 @@ import weka.core.Instances;
 
 import java.math.BigInteger;
 
-import static com.ecaservice.util.Utils.toXmlInstances;
-
 /**
  * Instances converter.
  *
@@ -16,6 +14,8 @@ import static com.ecaservice.util.Utils.toXmlInstances;
  */
 @Component
 public class InstancesConverter {
+
+    private static final InstancesJsonConverter INSTANCES_JSON_CONVERTER = new InstancesJsonConverter();
 
     /**
      * Converts instances to instances report.
@@ -31,7 +31,8 @@ public class InstancesConverter {
         instancesReport.setNumAttributes(BigInteger.valueOf(instances.numAttributes()));
         instancesReport.setNumClasses(BigInteger.valueOf(instances.numClasses()));
         instancesReport.setClassName(instances.classAttribute().name());
-        instancesReport.setStructure(toXmlInstances(instances));
+        String instancesJson = INSTANCES_JSON_CONVERTER.convert(instances);
+        instancesReport.setStructure(instancesJson);
         return instancesReport;
     }
 }

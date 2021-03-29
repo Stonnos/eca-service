@@ -17,7 +17,6 @@ import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import eca.core.evaluation.EvaluationMethod;
-import eca.data.file.xml.converter.XmlInstancesConverter;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.FileSystemResource;
@@ -26,7 +25,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
-import weka.core.Instances;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -112,21 +110,6 @@ public class Utils {
         ecaResponse.setStatus(TechnicalStatus.VALIDATION_ERROR);
         ecaResponse.setErrors(errors);
         return ecaResponse;
-    }
-
-    /**
-     * Transforms instances to xml string.
-     *
-     * @param data - training data
-     * @return data as xml
-     */
-    public static String toXmlInstances(Instances data) {
-        try {
-            XmlInstancesConverter xmlInstancesConverter = new XmlInstancesConverter();
-            return xmlInstancesConverter.toXmlString(data);
-        } catch (Exception ex) {
-            throw new IllegalStateException(ex.getMessage());
-        }
     }
 
     /**
