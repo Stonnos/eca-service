@@ -26,6 +26,7 @@ import com.ecaservice.ers.model.InstancesInfo;
 import com.ecaservice.ers.model.RocCurveInfo;
 import com.ecaservice.ers.model.StatisticsInfo;
 import lombok.experimental.UtilityClass;
+import org.springframework.util.DigestUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -323,7 +324,9 @@ public class TestHelperUtils {
      */
     public static ClassifierOptionsRequest createClassifierOptionsRequest(EvaluationMethod evaluationMethod) {
         ClassifierOptionsRequest request = new ClassifierOptionsRequest();
-        request.setInstances(buildInstancesReport());
+        request.setRelationName(RELATION_NAME);
+        String dataMd5Hash = DigestUtils.md5DigestAsHex(STRUCTURE.getBytes(StandardCharsets.UTF_8));
+        request.setDataHash(dataMd5Hash);
         request.setEvaluationMethodReport(buildEvaluationMethodReport(evaluationMethod));
         request.setSortFields(newArrayList());
         request.getSortFields().add(createSortField(STATISTICS_PCT_CORRECT, SortDirection.DESC));

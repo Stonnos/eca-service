@@ -3,17 +3,24 @@ package com.ecaservice.mapping;
 import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
-import org.mapstruct.InjectionStrategy;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.springframework.util.DigestUtils;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 /**
  * Implements mapping to classifier options request.
  *
  * @author Roman Batygin
  */
-@Mapper(uses = InstancesConverter.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+@Mapper
 public interface ClassifierOptionsRequestMapper {
+
+    InstancesJsonConverter INSTANCES_JSON_CONVERTER = new InstancesJsonConverter();
 
     /**
      * Maps specified params to classifier options request.
@@ -22,10 +29,26 @@ public interface ClassifierOptionsRequestMapper {
      * @param crossValidationConfig - cross validation config
      * @return classifier options request
      */
-    @Mapping(source = "instancesRequest.data", target = "instances", qualifiedByName = "instancesToInstancesReport")
     @Mapping(target = "evaluationMethodReport.evaluationMethod", constant = "CROSS_VALIDATION")
     @Mapping(source = "crossValidationConfig.numFolds", target = "evaluationMethodReport.numFolds")
     @Mapping(source = "crossValidationConfig.numTests", target = "evaluationMethodReport.numTests")
     @Mapping(source = "crossValidationConfig.seed", target = "evaluationMethodReport.seed")
     ClassifierOptionsRequest map(InstancesRequest instancesRequest, CrossValidationConfig crossValidationConfig);
+
+    /**
+     * Maps instances info.
+     *
+     * @param instancesRequest         - instances request
+     * @param classifierOptionsRequest - classifier options request
+     */
+    @AfterMapping
+    default void mapData(InstancesRequest instancesRequest,
+                         @MappingTarget ClassifierOptionsRequest classifierOptionsRequest) {
+        if (Optional.ofNullable(instancesRequest.getData()).isPresent()) {
+            classifierOptionsRequest.setRelationName(instancesRequest.getData().relationName());
+            String jsonData = INSTANCES_JSON_CONVERTER.convert(instancesRequest.getData());
+            String dataMd5Hash = DigestUtils.md5DigestAsHex(jsonData.getBytes(StandardCharsets.UTF_8));
+            classifierOptionsRequest.setDataHash(dataMd5Hash);
+        }
+    }
 }

@@ -17,9 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.DigestUtils;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,12 +43,11 @@ public class ClassifierOptionsService {
      * @return optimal classifiers options list
      */
     public List<ClassifierOptionsInfo> findBestClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
-        String structure = classifierOptionsRequest.getInstances().getStructure();
-        String md5Hash = DigestUtils.md5DigestAsHex(structure.getBytes(StandardCharsets.UTF_8));
-        Long instancesInfoId = instancesInfoRepository.findIdByDataMd5Hash(md5Hash);
+        String dataHash = classifierOptionsRequest.getDataHash();
+        Long instancesInfoId = instancesInfoRepository.findIdByDataMd5Hash(dataHash);
         if (instancesInfoId == null) {
-            throw new DataNotFoundException(String.format("Instances '%s' doesn't exists!",
-                    classifierOptionsRequest.getInstances().getRelationName()));
+            throw new DataNotFoundException(
+                    String.format("Instances '%s' doesn't exists!", classifierOptionsRequest.getRelationName()));
         } else {
             EvaluationMethodReport evaluationMethodReport = classifierOptionsRequest.getEvaluationMethodReport();
             EvaluationResultsFilter filter = new EvaluationResultsFilter(instancesInfoId, evaluationMethodReport);
