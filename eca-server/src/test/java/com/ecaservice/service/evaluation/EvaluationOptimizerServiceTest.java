@@ -35,7 +35,6 @@ import com.ecaservice.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.mapping.EvaluationRequestMapperImpl;
 import com.ecaservice.mapping.InstancesConverter;
 import com.ecaservice.mapping.InstancesInfoMapperImpl;
-import com.ecaservice.mapping.InstancesJsonConverter;
 import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ErsResponseStatus;
@@ -86,6 +85,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.ecaservice.util.InstancesUtils.toJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -110,7 +110,6 @@ import static org.mockito.Mockito.when;
 class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    private static final InstancesJsonConverter INSTANCES_JSON_CONVERTER = new InstancesJsonConverter();
     private static final int NUM_THREADS = 2;
 
     @MockBean
@@ -138,7 +137,7 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     public void init() throws Exception {
         instancesRequest = new InstancesRequest();
         instancesRequest.setData(TestHelperUtils.loadInstances());
-        String instancesJson = INSTANCES_JSON_CONVERTER.convert(instancesRequest.getData());
+        String instancesJson = toJson(instancesRequest.getData());
         dataMd5Hash = DigestUtils.md5DigestAsHex(instancesJson.getBytes(StandardCharsets.UTF_8));
         DecisionTreeOptions treeOptions = TestHelperUtils.createDecisionTreeOptions();
         treeOptions.setDecisionTreeType(DecisionTreeType.CART);

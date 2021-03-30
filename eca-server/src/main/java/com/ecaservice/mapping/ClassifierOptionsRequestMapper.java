@@ -12,6 +12,8 @@ import org.springframework.util.DigestUtils;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
+import static com.ecaservice.util.InstancesUtils.toJson;
+
 /**
  * Implements mapping to classifier options request.
  *
@@ -19,8 +21,6 @@ import java.util.Optional;
  */
 @Mapper
 public interface ClassifierOptionsRequestMapper {
-
-    InstancesJsonConverter INSTANCES_JSON_CONVERTER = new InstancesJsonConverter();
 
     /**
      * Maps specified params to classifier options request.
@@ -46,7 +46,7 @@ public interface ClassifierOptionsRequestMapper {
                          @MappingTarget ClassifierOptionsRequest classifierOptionsRequest) {
         if (Optional.ofNullable(instancesRequest.getData()).isPresent()) {
             classifierOptionsRequest.setRelationName(instancesRequest.getData().relationName());
-            String jsonData = INSTANCES_JSON_CONVERTER.convert(instancesRequest.getData());
+            String jsonData = toJson(instancesRequest.getData());
             String dataMd5Hash = DigestUtils.md5DigestAsHex(jsonData.getBytes(StandardCharsets.UTF_8));
             classifierOptionsRequest.setDataHash(dataMd5Hash);
         }

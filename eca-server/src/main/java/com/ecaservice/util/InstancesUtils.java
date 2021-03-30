@@ -1,17 +1,19 @@
-package com.ecaservice.mapping;
+package com.ecaservice.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.data.file.converter.InstancesConverter;
 import eca.data.file.model.InstancesModel;
+import lombok.experimental.UtilityClass;
 import weka.core.Instances;
 
 /**
- * Component for converting instances to json format.
+ * Instances utility class.
  *
  * @author Roman Batygin
  */
-public class InstancesJsonConverter {
+@UtilityClass
+public class InstancesUtils {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final InstancesConverter INSTANCES_CONVERTER = new InstancesConverter();
@@ -22,7 +24,7 @@ public class InstancesJsonConverter {
      * @param instances - instances object
      * @return instances json
      */
-    public String convert(Instances instances) {
+    public static String toJson(Instances instances) {
         try {
             InstancesModel instancesModel = INSTANCES_CONVERTER.convert(instances);
             return OBJECT_MAPPER.writeValueAsString(instancesModel);
