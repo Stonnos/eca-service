@@ -12,11 +12,8 @@ import com.ecaservice.mapping.EvaluationRequestMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
-
-import java.nio.charset.StandardCharsets;
 
 import static com.ecaservice.util.ClassifierOptionsHelper.parseOptions;
 import static com.ecaservice.util.Utils.buildEvaluationErrorResponse;
@@ -62,8 +59,7 @@ public class EvaluationOptimizerService {
     }
 
     private String getOptimalClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
-        String dataMd5Hash = DigestUtils.md5DigestAsHex(
-                classifierOptionsRequest.getInstances().getXmlInstances().getBytes(StandardCharsets.UTF_8));
+        String dataMd5Hash = classifierOptionsRequest.getDataHash();
         if (isUseClassifierOptionsCache()) {
             return classifierOptionsCacheService.getOptimalClassifierOptionsFromCache(classifierOptionsRequest,
                     dataMd5Hash);

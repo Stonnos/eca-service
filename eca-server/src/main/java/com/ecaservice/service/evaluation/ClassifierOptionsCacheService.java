@@ -51,7 +51,7 @@ public class ClassifierOptionsCacheService {
     public String getOptimalClassifierOptionsFromErs(ClassifierOptionsRequest classifierOptionsRequest,
                                                      String dataMd5Hash) {
         log.info("Starting to get optimal classifiers options from ERS for data: {}",
-                classifierOptionsRequest.getInstances().getRelationName());
+                classifierOptionsRequest.getRelationName());
         ClassifierOptionsRequestEntity requestEntity =
                 createClassifierOptionsRequestEntity(ClassifierOptionsRequestSource.ERS);
         ClassifierOptionsRequestModel requestModel =
@@ -73,13 +73,13 @@ public class ClassifierOptionsCacheService {
     public String getOptimalClassifierOptionsFromCache(ClassifierOptionsRequest classifierOptionsRequest,
                                                        String dataMd5Hash) {
         log.info("Starting to get optimal classifiers options from cache for data: {}",
-                classifierOptionsRequest.getInstances().getRelationName());
+                classifierOptionsRequest.getRelationName());
         String options;
         ClassifierOptionsRequestModel requestModel = getLastClassifierOptionsRequestModel(dataMd5Hash);
         ClassifierOptionsResponseModel responseModel = getFirstResponseModel(requestModel);
         if (responseModel != null) {
             log.info("Optimal classifier options [{}] has been taken from last response for data '{}'.",
-                    responseModel.getOptions(), classifierOptionsRequest.getInstances().getRelationName());
+                    responseModel.getOptions(), classifierOptionsRequest.getRelationName());
             ClassifierOptionsRequestEntity requestEntity =
                     createClassifierOptionsRequestEntity(ClassifierOptionsRequestSource.CACHE);
             requestEntity.setClassifierOptionsRequestModel(requestModel);
@@ -96,7 +96,7 @@ public class ClassifierOptionsCacheService {
         AppInstanceEntity appInstanceEntity = appInstanceService.getAppInstanceEntity();
         ClassifierOptionsRequestModel requestModel =
                 classifierOptionsRequestModelMapper.map(classifierOptionsRequest);
-        requestModel.setRelationName(classifierOptionsRequest.getInstances().getRelationName());
+        requestModel.setRelationName(classifierOptionsRequest.getRelationName());
         requestModel.setDataMd5Hash(dataMd5Hash);
         requestModel.setAppInstanceEntity(appInstanceEntity);
         return requestModel;

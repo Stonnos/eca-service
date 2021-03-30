@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -19,12 +20,18 @@ import java.util.List;
 public class ClassifierOptionsRequest {
 
     /**
-     * Instances report
+     * Instances name
      */
-    @Valid
-    @NotNull
-    @ApiModelProperty(value = "Instances report")
-    private InstancesReport instances;
+    @NotBlank
+    @ApiModelProperty(value = "Instances name")
+    private String relationName;
+
+    /**
+     * Instances MD5 hash sum
+     */
+    @NotBlank
+    @ApiModelProperty(value = "Instances MD5 hash sum")
+    private String dataHash;
 
     /**
      * Evaluation method report

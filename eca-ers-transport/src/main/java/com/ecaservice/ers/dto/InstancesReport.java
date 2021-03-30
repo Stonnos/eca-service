@@ -23,11 +23,11 @@ import static com.ecaservice.ers.dto.Constraints.MIN_2;
 public class InstancesReport {
 
     /**
-     * Training data
+     * Training data structure
      */
     @NotBlank
-    @ApiModelProperty(value = "Training data", example = "training data string")
-    private String xmlInstances;
+    @ApiModelProperty(value = "Training data structure", example = "training data string")
+    private String structure;
 
     /**
      * Relation name

@@ -25,11 +25,10 @@ public class InstancesInfo {
     private Long id;
 
     /**
-     * Xml data bytes
+     * Data structure bytes
      */
     @Lob
-    @Column(name = "xml_data")
-    private byte[] xmlData;
+    private byte[] structure;
 
     /**
      * Data MD5 hash

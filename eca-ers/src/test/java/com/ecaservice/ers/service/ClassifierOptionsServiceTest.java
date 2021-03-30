@@ -112,8 +112,7 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     private void testClassifierOptionsSearching(ClassifierOptionsRequest request) {
         EvaluationMethod evaluationMethod = request.getEvaluationMethodReport().getEvaluationMethod();
         InstancesInfo instancesInfo = new InstancesInfo();
-        instancesInfo.setDataMd5Hash(
-                DigestUtils.md5DigestAsHex(request.getInstances().getXmlInstances().getBytes(StandardCharsets.UTF_8)));
+        instancesInfo.setDataMd5Hash(request.getDataHash());
         InstancesInfo anotherInstancesInfo = new InstancesInfo();
         anotherInstancesInfo.setDataMd5Hash(
                 DigestUtils.md5DigestAsHex(StringUtils.EMPTY.getBytes(StandardCharsets.UTF_8)));
