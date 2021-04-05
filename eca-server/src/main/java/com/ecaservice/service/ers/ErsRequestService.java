@@ -102,11 +102,11 @@ public class ErsRequestService {
         String classifierOptions = null;
         try {
             log.info("Sending request to find classifier optimal options for data '{}'.",
-                    classifierOptionsRequest.getInstances().getRelationName());
+                    classifierOptionsRequest.getRelationName());
             ClassifierOptionsResponse response =
                     ersRequestSender.getClassifierOptions(classifierOptionsRequest);
             log.info("Received response with requestId = {}, status = {} for data '{}'", response.getRequestId(),
-                    response.getStatus(), classifierOptionsRequest.getInstances().getRelationName());
+                    response.getStatus(), classifierOptionsRequest.getRelationName());
             requestModel.setRequestId(response.getRequestId());
             requestModel.setResponseStatus(ersResponseStatusMapper.map(response.getStatus()));
             if (ResponseStatus.SUCCESS.equals(response.getStatus())) {
@@ -118,7 +118,7 @@ public class ErsRequestService {
                     parseOptions(classifierReport.getOptions());
                     classifierOptions = classifierReport.getOptions();
                     log.info("Optimal classifier options [{}] has been found for data '{}'.", classifierOptions,
-                            classifierOptionsRequest.getInstances().getRelationName());
+                            classifierOptionsRequest.getRelationName());
                     requestModel.setClassifierOptionsResponseModels(
                             Collections.singletonList(classifierReportMapper.map(classifierReport)));
                 }

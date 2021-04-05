@@ -59,8 +59,7 @@ public class ErsRequestSender {
      * @return classifier options response
      */
     public ClassifierOptionsResponse getClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
-        log.trace("Gets optimal classifier options for data [{}]",
-                classifierOptionsRequest.getInstances().getRelationName());
+        log.trace("Gets optimal classifier options for data [{}]", classifierOptionsRequest.getRelationName());
         return ersClient.getClassifierOptions(classifierOptionsRequest);
     }
 }

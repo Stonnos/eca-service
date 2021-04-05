@@ -43,19 +43,17 @@ public class ClassifierOptionsRequestService {
         log.info("Received request [{}] for searching optimal classifiers options.", requestId);
         ResponseStatus responseStatus = ResponseStatus.SUCCESS;
         try {
-            log.info(
-                    "Starting to find optimal classifiers options with request id [{}] for data '{}' classification.",
-                    requestId, classifierOptionsRequest.getInstances().getRelationName());
+            log.info("Starting to find optimal classifiers options with request id [{}] for data '{}' classification.",
+                    requestId, classifierOptionsRequest.getRelationName());
             List<ClassifierOptionsInfo> classifierOptionsInfoList =
                     classifierOptionsService.findBestClassifierOptions(classifierOptionsRequest);
             if (CollectionUtils.isEmpty(classifierOptionsInfoList)) {
                 log.info("Best classifiers options not found for data '{}', request id [{}]",
-                        classifierOptionsRequest.getInstances().getRelationName(), requestId);
+                        classifierOptionsRequest.getRelationName(), requestId);
                 responseStatus = ResponseStatus.RESULTS_NOT_FOUND;
             } else {
                 log.info("{} best classifiers options has been found for data '{}', request id [{}]",
-                        classifierOptionsInfoList.size(), classifierOptionsRequest.getInstances().getRelationName(),
-                        requestId);
+                        classifierOptionsInfoList.size(), classifierOptionsRequest.getRelationName(), requestId);
                 return Utils.buildClassifierOptionsResponse(requestId,
                         classifierOptionsInfoMapper.map(classifierOptionsInfoList), responseStatus);
             }

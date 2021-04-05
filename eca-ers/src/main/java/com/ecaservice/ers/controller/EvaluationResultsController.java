@@ -81,7 +81,7 @@ public class EvaluationResultsController {
     public ClassifierOptionsResponse findClassifierOptions(
             @Valid @RequestBody ClassifierOptionsRequest classifierOptionsRequest) {
         log.info("Received request to find optimal classifiers options for data [{}]",
-                classifierOptionsRequest.getInstances().getRelationName());
+                classifierOptionsRequest.getRelationName());
         return classifierOptionsRequestService.findClassifierOptions(classifierOptionsRequest);
     }
 }

@@ -20,7 +20,7 @@
 ----------------------------------------
 * Openjdk 1.11
 * maven >= 3.3.9
-* eca-core 6.8.2
+* eca-core 6.8.3
 * База данных PostgreSQL для хранения информации.
 
 Описание ключевой конфигурации модуля
@@ -52,8 +52,3 @@
 
 Страница с документацией swagger находится по адресу http://[host]:[port]/eca-data-storage/swagger-ui.html, где host и port
 соответственно адрес машины и порт на котором развернуто приложение.
-
-End point для сохранения данных доступен по адресу http://[host]:[port]/eca-data-storage/instances/save. Где host и port - адрес хоста и номер порта, на котором развернуто приложение.
-Ниже приведен пример команды через утилиту curl для миграции данных через end point:
-
-curl -i -X POST -H "Content-Type: multipart/form-data" -F "trainingData=@/home/roman/soybean.arff" -F "tableName=soybean" http://localhost:8080/eca-data-storage/instances/save

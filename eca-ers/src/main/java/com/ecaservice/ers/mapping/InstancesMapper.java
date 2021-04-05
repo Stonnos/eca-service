@@ -4,6 +4,7 @@ import com.ecaservice.ers.dto.InstancesReport;
 import com.ecaservice.ers.model.InstancesInfo;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import java.nio.charset.StandardCharsets;
@@ -23,7 +24,8 @@ public interface InstancesMapper {
      * @param instancesReport - instances report entity
      * @return instances info entity
      */
-     InstancesInfo map(InstancesReport instancesReport);
+    @Mapping(target = "structure", ignore = true)
+    InstancesInfo map(InstancesReport instancesReport);
 
     /**
      * Maps instances info entity to dto model.
@@ -31,11 +33,12 @@ public interface InstancesMapper {
      * @param instancesInfo - instances info entity
      * @return instances report
      */
-   InstancesReport map(InstancesInfo instancesInfo);
+    @Mapping(target = "structure", ignore = true)
+    InstancesReport map(InstancesInfo instancesInfo);
 
     @AfterMapping
-    default void mapXmlData(InstancesInfo instancesInfo, @MappingTarget InstancesReport instancesReport) {
-        instancesReport.setXmlInstances(Optional.ofNullable(instancesInfo.getXmlData()).map(
+    default void mapStructure(InstancesInfo instancesInfo, @MappingTarget InstancesReport instancesReport) {
+        instancesReport.setStructure(Optional.ofNullable(instancesInfo.getStructure()).map(
                 data -> new String(data, StandardCharsets.UTF_8)).orElse(null));
     }
 }

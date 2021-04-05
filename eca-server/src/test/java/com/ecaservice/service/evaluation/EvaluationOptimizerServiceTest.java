@@ -49,7 +49,6 @@ import com.ecaservice.service.ers.ErsRequestSender;
 import com.ecaservice.service.ers.ErsRequestService;
 import com.ecaservice.service.lock.JdbcLockStorage;
 import com.ecaservice.service.lock.LockService;
-import com.ecaservice.util.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.EvaluationResults;
 import eca.ensemble.AdaBoostClassifier;
@@ -86,6 +85,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.ecaservice.util.InstancesUtils.toJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -137,8 +137,8 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
     public void init() throws Exception {
         instancesRequest = new InstancesRequest();
         instancesRequest.setData(TestHelperUtils.loadInstances());
-        dataMd5Hash = DigestUtils.md5DigestAsHex(
-                Utils.toXmlInstances(instancesRequest.getData()).getBytes(StandardCharsets.UTF_8));
+        String instancesJson = toJson(instancesRequest.getData());
+        dataMd5Hash = DigestUtils.md5DigestAsHex(instancesJson.getBytes(StandardCharsets.UTF_8));
         DecisionTreeOptions treeOptions = TestHelperUtils.createDecisionTreeOptions();
         treeOptions.setDecisionTreeType(DecisionTreeType.CART);
         decisionTreeOptions = objectMapper.writeValueAsString(treeOptions);

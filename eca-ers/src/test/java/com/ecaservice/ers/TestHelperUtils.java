@@ -26,6 +26,7 @@ import com.ecaservice.ers.model.InstancesInfo;
 import com.ecaservice.ers.model.RocCurveInfo;
 import com.ecaservice.ers.model.StatisticsInfo;
 import lombok.experimental.UtilityClass;
+import org.springframework.util.DigestUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -50,7 +51,7 @@ public class TestHelperUtils {
     private static final int NUM_FOLDS = 10;
     private static final int NUM_TESTS = 1;
     private static final int SEED = 1;
-    private static final String XML_DATA = "xmlData";
+    private static final String STRUCTURE = "data";
     private static final String RELATION_NAME = "relation";
     private static final String CLASS_NAME = "class";
     private static final String ACTUAL_CLASS = "actual";
@@ -92,7 +93,7 @@ public class TestHelperUtils {
      */
     public static InstancesReport buildInstancesReport() {
         InstancesReport instancesReport = new InstancesReport();
-        instancesReport.setXmlInstances(XML_DATA);
+        instancesReport.setStructure(STRUCTURE);
         instancesReport.setRelationName(RELATION_NAME);
         instancesReport.setNumInstances(BigInteger.TEN);
         instancesReport.setNumAttributes(BigInteger.TEN);
@@ -108,7 +109,7 @@ public class TestHelperUtils {
      */
     public static InstancesInfo buildInstancesInfo() {
         InstancesInfo instancesInfo = new InstancesInfo();
-        instancesInfo.setXmlData(XML_DATA.getBytes(StandardCharsets.UTF_8));
+        instancesInfo.setStructure(STRUCTURE.getBytes(StandardCharsets.UTF_8));
         instancesInfo.setRelationName(RELATION_NAME);
         instancesInfo.setNumInstances(BigInteger.TEN.intValue());
         instancesInfo.setNumAttributes(BigInteger.TEN.intValue());
@@ -323,7 +324,9 @@ public class TestHelperUtils {
      */
     public static ClassifierOptionsRequest createClassifierOptionsRequest(EvaluationMethod evaluationMethod) {
         ClassifierOptionsRequest request = new ClassifierOptionsRequest();
-        request.setInstances(buildInstancesReport());
+        request.setRelationName(RELATION_NAME);
+        String dataMd5Hash = DigestUtils.md5DigestAsHex(STRUCTURE.getBytes(StandardCharsets.UTF_8));
+        request.setDataHash(dataMd5Hash);
         request.setEvaluationMethodReport(buildEvaluationMethodReport(evaluationMethod));
         request.setSortFields(newArrayList());
         request.getSortFields().add(createSortField(STATISTICS_PCT_CORRECT, SortDirection.DESC));

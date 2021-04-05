@@ -5,7 +5,6 @@ import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.EvaluationMethod;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +14,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit tests for checking {@link ClassifierOptionsRequestMapper} functionality.
@@ -43,26 +44,17 @@ class ClassifierOptionsRequestMapperTest {
     @Test
     void testMappingInstancesRequest() {
         ClassifierOptionsRequest request = classifierOptionsRequestMapper.map(instancesRequest, crossValidationConfig);
-        Assertions.assertThat(request.getEvaluationMethodReport()).isNotNull();
-        Assertions.assertThat(request.getEvaluationMethodReport().getEvaluationMethod()).isEqualTo(
+        assertThat(request.getEvaluationMethodReport()).isNotNull();
+        assertThat(request.getEvaluationMethodReport().getEvaluationMethod()).isEqualTo(
                 EvaluationMethod.CROSS_VALIDATION);
-        Assertions.assertThat(request.getEvaluationMethodReport().getNumFolds().intValue()).isEqualTo(
+        assertThat(request.getEvaluationMethodReport().getNumFolds().intValue()).isEqualTo(
                 crossValidationConfig.getNumFolds());
-        Assertions.assertThat(request.getEvaluationMethodReport().getNumTests().intValue()).isEqualTo(
+        assertThat(request.getEvaluationMethodReport().getNumTests().intValue()).isEqualTo(
                 crossValidationConfig.getNumTests());
-        Assertions.assertThat(request.getEvaluationMethodReport().getSeed().intValue()).isEqualTo(
+        assertThat(request.getEvaluationMethodReport().getSeed().intValue()).isEqualTo(
                 crossValidationConfig.getSeed());
-        Assertions.assertThat(request.getInstances()).isNotNull();
-        Assertions.assertThat(request.getInstances().getRelationName()).isEqualTo(
+        assertThat(request.getRelationName()).isEqualTo(
                 instancesRequest.getData().relationName());
-        Assertions.assertThat(request.getInstances().getNumInstances().intValue()).isEqualTo(
-                instancesRequest.getData().numInstances());
-        Assertions.assertThat(request.getInstances().getNumAttributes().intValue()).isEqualTo(
-                instancesRequest.getData().numAttributes());
-        Assertions.assertThat(request.getInstances().getNumClasses().intValue()).isEqualTo(
-                instancesRequest.getData().numClasses());
-        Assertions.assertThat(request.getInstances().getClassName()).isEqualTo(
-                instancesRequest.getData().classAttribute().name());
-        Assertions.assertThat(request.getInstances().getXmlInstances()).isNotNull();
+        assertThat(request.getDataHash()).isNotNull();
     }
 }
