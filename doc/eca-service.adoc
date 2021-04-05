@@ -161,6 +161,80 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 
 image::./images/eca-oauth-db-schema.png[alt=Схема базы данных eca-oauth,scaledwidth=80%]
 
+=== 3.4 Описание БД eca-oauth
+
+==== Таблица 3.11 - 'user_entity' - содержит данные о пользователях
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                      |bigint           |+|+|+                              |Идентификатор записи (первичный ключ)
+|creation_date           |timestamp        |-|+|-                              |Дата создания пользователя
+|login                   |varchar(255)     |+|+|login_unique_index             |Логин пользователя
+|password                |varchar(255)     |-|+|-                              |Хеш пароля пользователя
+|email                   |varchar(255)     |+|+|email_unique_index             |Email пользователя
+|first_name              |varchar(255)     |-|+|-                              |Имя пользователя
+|last_name               |varchar(255)     |-|+|-                              |Фамилия пользователя
+|middle_name             |varchar(255)     |-|+|-                              |Отчество пользователя
+|tfa_enabled             |boolean          |-|-|-                              |Вкл./выкл. двухфакторную аутентификацию
+|locked                  |boolean          |-|-|-                              |Вкл./выкл. блокировку пользователя
+|password_date           |timestamp        |-|-|-                              |Дата последнего изменения пароля
+|===
+
+==== Таблица 3.11 - 'role_entity' - содержит данные о ролях
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                      |bigint           |+|+|+                              |Идентификатор записи (первичный ключ)
+|role_name               |varchar(255)     |+|+|role_name_unique_index         |Технический код роли
+|description             |varchar(255)     |-|-|-                              |Описание роли
+|===
+
+==== Таблица 3.11 - 'user_role' - содержит данные о соответствиях пользователи - роли
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|user_id                      |bigint           |-|+|fk_user_role_user_id      |Внешний ключ пользователя
+|role_id                      |bigint           |-|+|fk_user_role_role_id      |Внешний ключ роли
+|===
+
+Таблица также содержит составной первичный ключ для полей user_id, role_id
+
+==== Таблица 3.11 - 'user_photo' - содержит данные о фотографиях пользователей
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                      |bigint           |+|+|+                              |Идентификатор записи (первичный ключ)
+|file_name               |varchar(255)     |-|-|-                              |Название файла с фотографией
+|file_extension          |varchar(255)     |-|-|-                              |Расширение файла
+|photo                   |bytea            |-|-|-                              |Фотография в двоичном виде
+|user_id                 |bigint           |-|+|fk_user_photo_user_id          |Внешний ключ пользователя
+|===
+
+==== Таблица 3.11 - 'reset_password_request' - содержит данные о запросах на восстановление пароля
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                      |bigint           |+|+|+                                          |Идентификатор записи (первичный ключ)
+|token                   |varchar(255)     |+|+|reset_password_request_token_unique_index  |Короткоживущий токен для восстановления пароля
+|expire_date             |timestamp        |-|+|-                                          |Дата истечения срока действия токена
+|reset_date              |timestamp        |-|+|-                                          |Дата восстановления пароля
+|user_id                 |bigint           |-|+|fk_reset_password_request_user_id          |Внешний ключ пользователя
+|===
+
+==== Таблица 3.11 - 'change_password_request' - содержит данные о запросах на смену пароля
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                      |bigint           |+|+|+                                          |Идентификатор записи (первичный ключ)
+|token                   |varchar(255)     |+|+|change_password_request_token_unique_index |Короткоживущий токен для смены пароля
+|expire_date             |timestamp        |-|+|-                                          |Дата истечения срока действия токена
+|confirmation_date       |timestamp        |-|+|-                                          |Дата подтверждения смены пароля
+|user_id                 |bigint           |-|+|fk_change_password_request_user_id         |Внешний ключ пользователя
+|===
+
+Таблицы databasechangeloglock и databasechangeloglock предназначены для управления миграциями базы данных.
+Таблицы с префиксом oauth_ предназначены для работы с библиотекой spring security oauth2.
+
 === 3.5 Схема БД eca-ers
 
 На рисунке 3.3 приведена схема базы данных eca-ers:
@@ -257,6 +331,6 @@ image::./images/eca-mail-db-schema.png[alt=Схема базы данных eca-
 |parameter_id                     |bigint           |-|+|fk_templates_parameters_param_id     |Внешний ключ параметра шаблона
 |===
 
-Таблица также содержит первичный ключ для полей template_id, param_id.
+Таблица также содержит составной первичный ключ для полей template_id, param_id.
 
 Таблицы databasechangeloglock и databasechangeloglock предназначены для управления миграциями базы данных.
