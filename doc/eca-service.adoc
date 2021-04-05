@@ -257,6 +257,6 @@ image::./images/eca-mail-db-schema.png[alt=Схема базы данных eca-
 |parameter_id                     |bigint           |-|+|fk_templates_parameters_param_id     |Внешний ключ параметра шаблона
 |===
 
-Таблица также содержит первичный ключ на поля template_id, param_id.
+Таблица также содержит первичный ключ для полей template_id, param_id.
 
 Таблицы databasechangeloglock и databasechangeloglock предназначены для управления миграциями базы данных.
