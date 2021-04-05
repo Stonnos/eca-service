@@ -281,7 +281,7 @@ image::./images/eca-ers-db-schema.png[alt=Схема базы данных eca-e
 
 Таблица содержит составной первичный ключ для полей classifier_options_info_id, option_name.
 
-==== Таблица 3.11 - 'evaluation_results_info' - содержит данные мета информации о результатах классификации
+==== Таблица 3.11 - 'evaluation_results_info' - содержит мета информацию о результатах классификации
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -342,7 +342,7 @@ image::./images/eca-ers-db-schema.png[alt=Схема базы данных eca-e
 |id                               |bigint           |+|+|+                                       |Идентификатор записи (первичный ключ)
 |field_name                       |varchar(255)     |-|+|field_name_field_order_unique_index     |Название поля
 |is_ascending                     |boolean          |-|-|-                                       |Сортировка по возрастанию?
-|field_order                      |integer          |-|-|field_name_field_order_unique_index     |Порядок поля для сортировки
+|field_order                      |integer          |-|+|field_name_field_order_unique_index     |Порядок поля для сортировки
 |===
 
 Таблицв содержит уникальный индкес на поля field_name, field_order.
