@@ -151,14 +151,30 @@ image::./images/experiment-request-sequence.png[alt=Диаграмма посл�
 
 === 3.1 Схема БД eca-server
 
-На рисунке 3.1 приведена схема базы данных eca - server:
+На рисунке 3.1 приведена схема базы данных eca-server:
 
-image::./images/eca-db-schema.png[alt=Схема базы данных eca - server,scaledwidth=80%]
+image::./images/eca-db-schema.png[alt=Схема базы данных eca-server,scaledwidth=80%]
 
 === 3.2 Схема БД eca-oauth
 
+На рисунке 3.2 приведена схема базы данных eca-oauth:
+
+image::./images/eca-oauth-db-schema.png[alt=Схема базы данных eca-oauth,scaledwidth=80%]
+
 === 3.3 Схема БД eca-ers
+
+На рисунке 3.3 приведена схема базы данных eca-ers:
+
+image::./images/eca-ers-db-schema.png[alt=Схема базы данных eca-ers,scaledwidth=80%]
 
 === 3.4 Схема БД eca-data-storage
 
+На рисунке 3.4 приведена схема базы данных eca-data -storage:
+
+image::./images/eca-data-storage-db-schema.png[alt=Схема базы данных eca-data-storage,scaledwidth=80%]
+
 === 3.5 Схема БД eca-mail
+
+На рисунке 3.5 приведена схема базы данных eca-mail:
+
+image::./images/eca-mail-db-schema.png[alt=Схема базы данных eca-mail,scaledwidth=80%]
