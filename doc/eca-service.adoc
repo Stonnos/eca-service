@@ -295,7 +295,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |filter_template_id         |bigint           |-|+|fk_filter_template_id             |Внешний ключ, ID шаблона
 |===
 
-==== Таблица 3.14 - 'evaluation_log' - содержит данные о запросе на построение модели классификатора
+==== Таблица 3.14 - 'evaluation_log' - содержит данные о запросах на построение моделей классификаторов
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
