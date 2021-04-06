@@ -193,8 +193,8 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |creation_date           |timestamp        |-|-|-                                                   |Дата создания конфигурации
 |updated                 |timestamp        |-|-|-                                                   |Дата обновления конфигурации
 |created_by              |varchar(255)     |-|-|-                                                   |Пользователь, который добавил конфигурацию
-|build_in                |boolean          |-|-|-                                                   |Системная конфигурация?
-|active                  |boolean          |-|-|-                                                   |Текущая активная конфигурация?
+|build_in                |boolean          |-|-|-                                                   |Признак системной конфигурации
+|active                  |boolean          |-|-|-                                                   |Признак активной конфигурации
 |===
 
 ==== Таблица 3.5 - 'classifier_options' - содержит json конфигурации индивидуальных классификаторов для построения экспериментов с использованием ансамблевых алгоритмов
@@ -340,6 +340,55 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |sent_date                    |timestamp        |-|-|-                                 |Дата отправки email с результатами эксперимента пользователю
 |deleted_date                 |timestamp        |-|-|-                                 |Дата удаления файлов с результатами эксперимента
 |token                        |varchar(255)     |-|-|-                                 |Токен для скачивания результатов эксперимента с сервера
+|===
+
+==== Таблица 3.16 - 'experiment_progress' - содержит данные о статусах построения экспериментов
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                           |bigint           |+|+|+                                     |Идентификатор записи (первичный ключ)
+|progress                     |integer          |-|+|-                                     |Значение прогресс бара в %
+|finished                     |boolean          |-|-|-                                     |Флаг завершения построения эксперимента
+|experiment_id                |bigint           |-|+|fk_experiment_progress_experiment_id  |Внешний ключ, ID эксперимента
+|===
+
+==== Таблица 3.17 - 'experiment_results' - содержит мета данные о результатах экспериментов
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                           |bigint           |+|+|+                                         |Идентификатор записи (первичный ключ)
+|results_index                |integer          |-|-|-                                         |Индекс результатов классификации в истории экспериментов
+|classifier_info_id           |bigint           |-|+|fk_experiment_results_classifier_info_id  |Внешний ключ, ID информации о классификаторе
+|experiment_id                |bigint           |-|+|fk_experiment_results_experiment_id       |Внешний ключ, ID эксперимента
+|pct_correct                  |numeric(19,4)    |-|-|-                                         |Точность классификатора
+|===
+
+==== Таблица 3.18 - 'ers_request' - системная таблица для интеграции с сервисом eca-ers
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                           |bigint           |+|+|+                         |Идентификатор записи (первичный ключ)
+|request_date                 |timestamp        |-|-|-                         |Дата запроса
+|request_id                   |varchar(255)     |-|-|-                         |Уникальный UUID запроса
+|response_status              |varchar(255)     |-|-|-                         |Статус ответа от eca-ers
+|details                      |text             |-|-|-                         |Детальная информация об ошибке
+|===
+
+==== Таблица 3.19 - 'evaluation_results_request' - данные запросов в eca-ers для сохранения результатов классификации
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                           |bigint           |+|+|fk_evaluation_results_id  |Идентификатор записи (первичный ключ) и внешний ключ на ers_request
+|evaluation_log_id            |bigint           |-|+|fk_evaluation_log         |Внешний ключ, ID evaluation_log
+|===
+
+==== Таблица 3.20 - 'experiment_results_request' - данные запросов в eca-ers для сохранения результатов экспериментов
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                           |bigint           |+|+|fk_experiment_results_id                                   |Идентификатор записи (первичный ключ) и внешний ключ на ers_request
+|experiment_results_id        |bigint           |-|+|fk_experiment_results_request_experiment_results_id        |Внешний ключ, ID experiment_results
+|request_source               |varchar(255)     |-|-|-                                                          |Источник запроса
 |===
 
 === 3.3 Схема БД eca-oauth
