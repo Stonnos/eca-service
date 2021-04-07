@@ -301,17 +301,17 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                         |bigint           |+|+|+                                 |Идентификатор записи (первичный ключ)
-|request_id                 |varchar(255)     |-|-|-                                 |Уникальный UUID запроса
-|creation_date              |timestamp        |-|-|-                                 |Дата создания запроса
+|request_id                 |varchar(255)     |-|+|-                                 |Уникальный UUID запроса
+|creation_date              |timestamp        |-|+|-                                 |Дата создания запроса
 |start_date                 |timestamp        |-|-|-                                 |Дата начала построения модели
 |end_date                   |timestamp        |-|-|-                                 |Дата завершения построения модели
-|request_status             |varchar(255)     |-|-|-                                 |Статус запроса
-|evaluation_method          |varchar(255)     |-|-|-                                 |Метод оценки точности
+|request_status             |varchar(255)     |-|+|-                                 |Статус запроса
+|evaluation_method          |varchar(255)     |-|+|-                                 |Метод оценки точности
 |num_folds                  |integer          |-|-|-                                 |Число блоков для k * V - блочной кросс проверки на тестовой выборке
 |num_tests                  |integer          |-|-|-                                 |Число тестов для k * V - блочной кросс проверки на тестовой выборке
 |seed                       |integer          |-|-|-                                 |Начальное значение (seed) для генератор псевдослучайных чисел
-|instances_info_id          |bigint           |-|-|+                                 |Внешний ключ, ID обучающей выборки
-|classifier_info_id         |bigint           |-|-|+                                 |Внешний ключ, ID информации о классификаторе
+|instances_info_id          |bigint           |-|+|+                                 |Внешний ключ, ID обучающей выборки
+|classifier_info_id         |bigint           |-|+|+                                 |Внешний ключ, ID информации о классификаторе
 |app_instance_id            |bigint           |-|-|-                                 |Внешний ключ, ID инстанса для обработки запроса
 |error_message              |text             |-|-|-                                 |Текст ошибки
 |===
@@ -321,20 +321,20 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                           |bigint           |+|+|+                                 |Идентификатор записи (первичный ключ)
-|request_id                   |varchar(255)     |-|-|-                                 |Уникальный UUID заявки
-|creation_date                |timestamp        |-|-|-                                 |Дата создания заявки
+|request_id                   |varchar(255)     |-|+|-                                 |Уникальный UUID заявки
+|creation_date                |timestamp        |-|+|-                                 |Дата создания заявки
 |start_date                   |timestamp        |-|-|-                                 |Дата начала построения эксперимента
 |end_date                     |timestamp        |-|-|-                                 |Дата завершения построения эксперимента
-|request_status               |varchar(255)     |-|-|-                                 |Статус заявки
-|evaluation_method            |varchar(255)     |-|-|-                                 |Метод оценки точности
+|request_status               |varchar(255)     |-|+|-                                 |Статус заявки
+|evaluation_method            |varchar(255)     |-|+|-                                 |Метод оценки точности
 |num_folds                    |integer          |-|-|-                                 |Число блоков для k * V - блочной кросс проверки на тестовой выборке
 |num_tests                    |integer          |-|-|-                                 |Число тестов для k * V - блочной кросс проверки на тестовой выборке
 |seed                         |integer          |-|-|-                                 |Начальное значение (seed) для генератор псевдослучайных чисел
 |class_index                  |integer          |-|-|-                                 |Индекс атрибута класса
 |app_instance_id              |bigint           |-|-|-                                 |Внешний ключ, ID инстанса для обработки заявки
-|experiment_type              |varchar(255)     |-|-|-                                 |Тип эксперимента
-|firstName                    |varchar(255)     |-|-|-                                 |Имя пользователя
-|email                        |varchar(255)     |-|-|-                                 |Email пользователя для отправки результатов эксперимента
+|experiment_type              |varchar(255)     |-|+|-                                 |Тип эксперимента
+|firstName                    |varchar(255)     |-|+|-                                 |Имя пользователя
+|email                        |varchar(255)     |-|+|-                                 |Email пользователя для отправки результатов эксперимента
 |training_data_absolute_path  |varchar(255)     |-|-|-                                 |Абсолютный путь к файлу с обучающей выборкой
 |experiment_absolute_path     |varchar(255)     |-|-|-                                 |Абсолютный путь к файлу с результатами эксперимента
 |error_message                |text             |-|-|-                                 |Текст ошибки
@@ -358,7 +358,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                           |bigint           |+|+|+                                         |Идентификатор записи (первичный ключ)
-|results_index                |integer          |-|-|-                                         |Индекс результатов классификации в истории экспериментов
+|results_index                |integer          |-|+|-                                         |Индекс результатов классификации в истории экспериментов
 |classifier_info_id           |bigint           |-|+|fk_experiment_results_classifier_info_id  |Внешний ключ, ID информации о классификаторе
 |experiment_id                |bigint           |-|+|fk_experiment_results_experiment_id       |Внешний ключ, ID эксперимента
 |pct_correct                  |numeric(19,4)    |-|-|-                                         |Точность классификатора

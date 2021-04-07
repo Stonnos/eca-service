@@ -40,14 +40,14 @@ public class ExperimentResultsEntity {
     /**
      * Experiment results index
      */
-    @Column(name = "results_index")
+    @Column(name = "results_index", nullable = false)
     private Integer resultsIndex;
 
     /**
      * Classifier info
      */
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "classifier_info_id")
+    @JoinColumn(name = "classifier_info_id", nullable = false)
     private ClassifierInfo classifierInfo;
 
     /**
