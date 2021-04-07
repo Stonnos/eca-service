@@ -1,5 +1,6 @@
 = ECA EXTERNAL API
-:toc: macro
+:toc:
+:toc-title: Оглавление
 
 == Введение
 

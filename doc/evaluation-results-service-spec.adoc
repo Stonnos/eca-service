@@ -1,5 +1,6 @@
 = Модуль ECA ERS (Evaluation results service)
-:toc: macro
+:toc:
+:toc-title: Оглавление
 
 == 1. Описание модуля
 
