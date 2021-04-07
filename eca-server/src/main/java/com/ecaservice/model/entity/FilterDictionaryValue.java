@@ -2,6 +2,7 @@ package com.ecaservice.model.entity;
 
 import lombok.Data;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -24,10 +25,12 @@ public class FilterDictionaryValue {
     /**
      * Label string
      */
+    @Column(nullable = false)
     private String label;
 
     /**
      * String value
      */
+    @Column(nullable = false)
     private String value;
 }

@@ -25,6 +25,6 @@ public class GlobalFilterField {
     /**
      * Field name
      */
-    @Column(name = "field_name")
+    @Column(name = "field_name", nullable = false)
     private String fieldName;
 }

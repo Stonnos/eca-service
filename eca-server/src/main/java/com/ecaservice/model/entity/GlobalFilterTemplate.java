@@ -29,14 +29,14 @@ public class GlobalFilterTemplate {
     @GeneratedValue
     private Long id;
 
-    @Column(name = "filter_name")
+    @Column(name = "filter_name", nullable = false)
     private String filterName;
 
     /**
      * Template type
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "template_type")
+    @Column(name = "template_type", nullable = false)
     private FilterTemplateType templateType;
 
     /**

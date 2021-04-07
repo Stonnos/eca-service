@@ -27,7 +27,7 @@ public class ClassifiersConfiguration extends BaseEntity {
     /**
      * Configuration name
      */
-    @Column(name = "configuration_name")
+    @Column(name = "configuration_name", nullable = false)
     private String configurationName;
 
     /**

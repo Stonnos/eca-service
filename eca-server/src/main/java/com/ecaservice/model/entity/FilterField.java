@@ -31,12 +31,13 @@ public class FilterField {
     /**
      * Field name
      */
-    @Column(name = "field_name")
+    @Column(name = "field_name", nullable = false)
     private String fieldName;
 
     /**
      * Field description
      */
+    @Column(nullable = false)
     private String description;
 
     /**
@@ -49,14 +50,14 @@ public class FilterField {
      * Filter field type
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "filter_field_type")
+    @Column(name = "filter_field_type", nullable = false)
     private FilterFieldType filterFieldType;
 
     /**
      * Filter match mode
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "match_mode")
+    @Column(name = "match_mode", nullable = false)
     private MatchMode matchMode;
 
     /**

@@ -3,6 +3,7 @@ package com.ecaservice.model.entity;
 import lombok.Data;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -29,6 +30,7 @@ public class FilterDictionary {
     /**
      * Dictionary name
      */
+    @Column(nullable = false)
     private String name;
 
     /**

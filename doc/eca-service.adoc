@@ -171,7 +171,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                              |Идентификатор записи (первичный ключ)
-|classifier_name         |varchar(255)     |-|-|-                              |Название классификатора
+|classifier_name         |varchar(255)     |-|+|-                              |Название классификатора
 |===
 
 ==== Таблица 3.3 - 'classifier_input_options' - содержит данные о входных параметрах классификатора
@@ -179,9 +179,9 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                                               |Идентификатор записи (первичный ключ)
-|option_name             |varchar(255)     |-|-|-                                               |Название параметра
-|option_value            |varchar(255)     |-|-|-                                               |Значение параметра
-|option_order            |integer          |-|-|-                                               |Порядковый номер параметра
+|option_name             |varchar(255)     |-|+|-                                               |Название параметра
+|option_value            |varchar(255)     |-|+|-                                               |Значение параметра
+|option_order            |integer          |-|+|-                                               |Порядковый номер параметра
 |classifier_info_id      |bigint           |-|+|fk_classifier_input_options_classifier_info_id  |Внешний ключ classifier_info
 |===
 
@@ -190,8 +190,8 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                                                   |Идентификатор записи (первичный ключ)
-|configuration_name      |varchar(255)     |-|-|-                                                   |Название конфигурации
-|creation_date           |timestamp        |-|-|-                                                   |Дата создания конфигурации
+|configuration_name      |varchar(255)     |-|+|-                                                   |Название конфигурации
+|creation_date           |timestamp        |-|+|-                                                   |Дата создания конфигурации
 |updated                 |timestamp        |-|-|-                                                   |Дата обновления конфигурации
 |created_by              |varchar(255)     |-|-|-                                                   |Пользователь, который добавил конфигурацию
 |build_in                |boolean          |-|-|-                                                   |Признак системной конфигурации
@@ -203,10 +203,10 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                                                   |Идентификатор записи (первичный ключ)
-|options_name            |varchar(255)     |-|-|-                                                   |Название натроек
-|creation_date           |timestamp        |-|-|-                                                   |Дата создания настроек
-|config                  |text             |-|-|-                                                   |Json конфигурация классификатора
-|config_md5_hash         |varchar(255)     |-|-|-                                                   |Md5 хеш json конфигурации
+|options_name            |varchar(255)     |-|+|-                                                   |Название натроек
+|creation_date           |timestamp        |-|+|-                                                   |Дата создания настроек
+|config                  |text             |-|+|-                                                   |Json конфигурация классификатора
+|config_md5_hash         |varchar(255)     |-|+|-                                                   |Md5 хеш json конфигурации
 |created_by              |varchar(255)     |-|-|-                                                   |Пользователь, который добавил настройки
 |configuration_id        |bigint           |-|+|fk_classifier_options_classifiers_configuration_id  |Внешний ключ classifiers_configuration
 |===
@@ -216,11 +216,11 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                       |Идентификатор записи (первичный ключ)
-|relation_name           |varchar(255)     |-|-|-                       |Название обучающей выборки
-|num_instances           |integer          |-|-|-                       |Число объектов обучающей выборки
-|num_attributes          |integer          |-|-|-                       |Число атрибутов обучающей выборки
-|num_classes             |integer          |-|-|-                       |Число классов
-|class_name              |varchar(255)     |-|-|-                       |Название атрибута класса
+|relation_name           |varchar(255)     |-|+|-                       |Название обучающей выборки
+|num_instances           |integer          |-|+|-                       |Число объектов обучающей выборки
+|num_attributes          |integer          |-|+|-                       |Число атрибутов обучающей выборки
+|num_classes             |integer          |-|+|-                       |Число классов
+|class_name              |varchar(255)     |-|+|-                       |Название атрибута класса
 |===
 
 ==== Таблица 3.7 - 'lock' - содержит данные о блокировках для кластерной среды
@@ -240,8 +240,8 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                  |Идентификатор записи (первичный ключ)
-|filter_name             |varchar(255)     |-|-|-                  |Название фильтра
-|template_type           |varchar(255)     |-|-|-                  |Тип шаблона
+|filter_name             |varchar(255)     |-|+|-                  |Название фильтра
+|template_type           |varchar(255)     |-|+|-                  |Тип шаблона
 |===
 
 ==== Таблица 3.9 - 'global_filter_field' - содержит данные полей для глобального поиска
@@ -249,7 +249,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                         |bigint           |+|+|+                                 |Идентификатор записи (первичный ключ)
-|field_name                 |varchar(255)     |-|-|-                                 |Название поля в сущности
+|field_name                 |varchar(255)     |-|+|-                                 |Название поля в сущности
 |global_filter_template_id  |bigint           |-|+|fk_global_filter_template_id      |Внешний ключ, ID шаблона
 |===
 
@@ -258,9 +258,9 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                  |Идентификатор записи (первичный ключ)
-|template_name           |varchar(255)     |-|-|-                  |Название шаблона
-|template_type           |varchar(255)     |-|-|-                  |Тип шаблона
-|created                 |timestamp        |-|-|-                  |Дата создания шаблона
+|template_name           |varchar(255)     |-|+|-                  |Название шаблона
+|template_type           |varchar(255)     |-|+|-                  |Тип шаблона
+|created                 |timestamp        |-|+|-                  |Дата создания шаблона
 |===
 
 ==== Таблица 3.11 - 'filter_dictionary' - содержит данные словарей
@@ -268,7 +268,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                         |bigint           |+|+|+                                 |Идентификатор записи (первичный ключ)
-|name                       |varchar(255)     |-|-|-                                 |Название словаря
+|name                       |varchar(255)     |-|+|-                                 |Название словаря
 |===
 
 ==== Таблица 3.12 - 'filter_dictionary_value' - содержит данные значений словарей
@@ -276,8 +276,8 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                         |bigint           |+|+|+                                 |Идентификатор записи (первичный ключ)
-|label                      |varchar(255)     |-|-|-                                 |Описание значения
-|value                      |varchar(255)     |-|-|-                                 |Значение
+|label                      |varchar(255)     |-|+|-                                 |Описание значения
+|value                      |varchar(255)     |-|+|-                                 |Значение
 |filter_dictionary_id       |bigint           |-|+|fk_filter_dictionary_id           |Внешний ключ, ID словаря
 |===
 
@@ -286,11 +286,11 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                         |bigint           |+|+|+                                 |Идентификатор записи (первичный ключ)
-|field_name                 |varchar(255)     |-|-|-                                 |Название поля в сущности
-|description                |varchar(255)     |-|-|-                                 |Описание поля
+|field_name                 |varchar(255)     |-|+|-                                 |Название поля в сущности
+|description                |varchar(255)     |-|+|-                                 |Описание поля
 |field_order                |integer          |-|+|-                                 |Порядок отображения поля в фильтре
-|filter_field_type          |varchar(255)     |-|-|-                                 |Тип поля для отображения, например TEXT, DATE, REFERENCE.
-|match_mode                 |varchar(255)     |-|-|-                                 |Тип фильтрации по полю, например EQUALS, LIKE, RANGE.
+|filter_field_type          |varchar(255)     |-|+|-                                 |Тип поля для отображения, например TEXT, DATE, REFERENCE.
+|match_mode                 |varchar(255)     |-|+|-                                 |Тип фильтрации по полю, например EQUALS, LIKE, RANGE.
 |multiple                   |boolean          |-|-|-                                 |Допускается фильтрация по нескольким значениям поля
 |filter_dictionary_id       |bigint           |-|-|fk_filter_field_dictionary_id     |Внешний ключ, ID словаря (заполняется для полей типа REFERENCE)
 |filter_template_id         |bigint           |-|+|fk_filter_template_id             |Внешний ключ, ID шаблона

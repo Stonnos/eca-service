@@ -24,7 +24,7 @@ public class BaseEntity {
     /**
      * Config creation date
      */
-    @Column(name = "creation_date")
+    @Column(name = "creation_date", nullable = false)
     private LocalDateTime creationDate;
 
     /**
