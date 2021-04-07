@@ -31,7 +31,7 @@ public class ClassifierInputOptions {
     /**
      * Input option value
      */
-    @Column(name = "option_value", nullable = false)
+    @Column(name = "option_value")
     private String optionValue;
 
     /**

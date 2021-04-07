@@ -180,7 +180,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                                               |Идентификатор записи (первичный ключ)
 |option_name             |varchar(255)     |-|+|-                                               |Название параметра
-|option_value            |varchar(255)     |-|+|-                                               |Значение параметра
+|option_value            |varchar(255)     |-|-|-                                               |Значение параметра
 |option_order            |integer          |-|+|-                                               |Порядковый номер параметра
 |classifier_info_id      |bigint           |-|+|fk_classifier_input_options_classifier_info_id  |Внешний ключ classifier_info
 |===
