@@ -658,14 +658,14 @@ image::./images/eca-mail-db-schema.png[alt=Схема базы данных eca-
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                       |Идентификатор записи (первичный ключ)
-|uuid                    |varchar(255)     |-|-|-                       |Уникальный UUID запроса
-|sender                  |varchar(255)     |-|-|-                       |Адрес отправителя
-|receiver                |varchar(255)     |-|-|-                       |Адрес получателя
-|subject                 |varchar(255)     |-|-|-                       |Тема письма
-|message                 |text             |-|-|-                       |Тело сообщения
-|save_date               |timestamp        |-|-|-                       |Дата создания запроса
+|uuid                    |varchar(255)     |-|+|-                       |Уникальный UUID запроса
+|sender                  |varchar(255)     |-|+|-                       |Адрес отправителя
+|receiver                |varchar(255)     |-|+|-                       |Адрес получателя
+|subject                 |varchar(255)     |-|+|-                       |Тема письма
+|message                 |text             |-|+|-                       |Тело сообщения
+|save_date               |timestamp        |-|+|-                       |Дата создания запроса
 |sent_date               |timestamp        |-|-|-                       |Дата отправки письма
-|status                  |varchar(255)     |-|-|-                       |Статус отправки письма
+|status                  |varchar(255)     |-|+|-                       |Статус отправки письма
 |error_message           |text             |-|-|-                       |Текст ошибки при отправке письма
 |failed_attempts_to_sent |integer          |-|-|-                       |Число попыток отправки письма
 |tx_id                   |varchar(255)     |-|-|-                       |Идентификатор для кросс-системного логирования
