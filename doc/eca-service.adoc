@@ -523,13 +523,13 @@ image::./images/eca-ers-db-schema.png[alt=Схема базы данных eca-e
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                       |Идентификатор записи (первичный ключ)
-|data_md5_hash           |varchar(255)     |-|-|-                       |MD5 хеш данных
-|structure               |oid              |-|-|-                       |Структура обучающей выборки
-|relation_name           |varchar(255)     |-|-|-                       |Название обучающей выборки
-|num_instances           |integer          |-|-|-                       |Число объектов обучающей выборки
-|num_attributes          |integer          |-|-|-                       |Число атрибутов обучающей выборки
-|num_classes             |integer          |-|-|-                       |Число классов
-|class_name              |varchar(255)     |-|-|-                       |Название атрибута класса
+|data_md5_hash           |varchar(255)     |-|+|-                       |MD5 хеш данных
+|structure               |oid              |-|+|-                       |Структура обучающей выборки
+|relation_name           |varchar(255)     |-|+|-                       |Название обучающей выборки
+|num_instances           |integer          |-|+|-                       |Число объектов обучающей выборки
+|num_attributes          |integer          |-|+|-                       |Число атрибутов обучающей выборки
+|num_classes             |integer          |-|+|-                       |Число классов
+|class_name              |varchar(255)     |-|+|-                       |Название атрибута класса
 |===
 
 ==== Таблица 3.31 - 'classifier_options_info' - содержит данные о классификаторах
@@ -537,9 +537,9 @@ image::./images/eca-ers-db-schema.png[alt=Схема базы данных eca-e
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                       |Идентификатор записи (первичный ключ)
-|classifier_name         |varchar(255)     |-|-|-                       |Название классификатора
+|classifier_name         |varchar(255)     |-|+|-                       |Название классификатора
 |classifier_description  |varchar(255)     |-|-|-                       |Описание классификатора
-|options                 |text             |-|-|-                       |Настройки классификатора
+|options                 |text             |-|+|-                       |Настройки классификатора
 |parent_id               |bigint           |-|-|+                       |Ссылка на родительский классификатор (используется для ансамблевых алгоритмов)
 |meta_classifier         |boolean          |-|-|-                       |Признак мета-классификатора (используется для алгоритмов семейства stacking)
 |===
@@ -560,14 +560,14 @@ image::./images/eca-ers-db-schema.png[alt=Схема базы данных eca-e
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                               |bigint           |+|+|+                       |Идентификатор записи (первичный ключ)
-|evaluation_method                |varchar(255)     |-|-|-                       |Метод оценки точности
+|evaluation_method                |varchar(255)     |-|+|-                       |Метод оценки точности
 |num_folds                        |integer          |-|-|-                       |Число блоков для k * V - блочной кросс проверки на тестовой выборке
 |num_tests                        |integer          |-|-|-                       |Число тестов для k * V - блочной кросс проверки на тестовой выборке
 |seed                             |integer          |-|-|-                       |Начальное значение (seed) для генератор псевдослучайных чисел
-|request_id                       |varchar(255)     |-|-|-                       |Уникальный UUID запроса
-|save_date                        |timestamp        |-|-|-                       |Дата сохранения результатов
-|instances_info_id                |bigint           |-|-|+                       |Внешний ключ данных об обучающей выборке
-|classifier_options_info_id       |bigint           |-|-|+                       |Внешний ключ данных о классификаторе
+|request_id                       |varchar(255)     |-|+|-                       |Уникальный UUID запроса
+|save_date                        |timestamp        |-|+|-                       |Дата сохранения результатов
+|instances_info_id                |bigint           |-|+|+                       |Внешний ключ данных об обучающей выборке
+|classifier_options_info_id       |bigint           |-|+|+                       |Внешний ключ данных о классификаторе
 |num_test_instances               |integer          |-|-|-                       |Число объектов тестовых данных
 |num_correct                      |integer          |-|-|-                       |Число верно классифицированных объектов
 |num_incorrect                    |integer          |-|-|-                       |Число неверно классифицированных объектов
@@ -603,9 +603,9 @@ image::./images/eca-ers-db-schema.png[alt=Схема базы данных eca-e
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                               |bigint           |+|+|+                       |Идентификатор записи (первичный ключ)
-|actual_class                     |varchar(255)     |-|-|-                       |Реальное значение класса
-|predicted_class                  |varchar(255)     |-|-|-                       |Прогнозное значение класса
-|num_instances                    |integer          |-|-|-                       |Число объектов
+|actual_class                     |varchar(255)     |-|+|-                       |Реальное значение класса
+|predicted_class                  |varchar(255)     |-|+|-                       |Прогнозное значение класса
+|num_instances                    |integer          |-|+|-                       |Число объектов
 |evaluation_results_info_id       |bigint           |-|+|+                       |Внешний ключ evaluation_results_info
 |===
 

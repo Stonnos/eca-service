@@ -31,9 +31,11 @@ import org.springframework.util.DigestUtils;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -302,6 +304,7 @@ public class TestHelperUtils {
         ClassifierOptionsInfo classifierOptionsInfo = new ClassifierOptionsInfo();
         classifierOptionsInfo.setClassifierName(CLASSIFIER_NAME);
         classifierOptionsInfo.setClassifierDescription(CLASSIFIER_DESCRIPTION);
+        classifierOptionsInfo.setOptions(OPTIONS);
         classifierOptionsInfo.setInputOptionsMap(inputOptionsMap);
         classifierOptionsInfo.setIndividualClassifiers(classifierOptionsInfoList);
         return classifierOptionsInfo;
@@ -367,6 +370,8 @@ public class TestHelperUtils {
                                                                     BigDecimal maxAucValue,
                                                                     BigDecimal varianceError) {
         EvaluationResultsInfo evaluationResultsInfo = new EvaluationResultsInfo();
+        evaluationResultsInfo.setRequestId(UUID.randomUUID().toString());
+        evaluationResultsInfo.setSaveDate(LocalDateTime.now());
         evaluationResultsInfo.setInstances(instancesInfo);
         evaluationResultsInfo.setClassifierOptionsInfo(classifierOptionsInfo);
         evaluationResultsInfo.setNumFolds(NUM_FOLDS);

@@ -50,34 +50,34 @@ public class EvaluationResultsInfo {
     /**
      * Request unique id
      */
-    @Column(name = "request_id", unique = true)
+    @Column(name = "request_id", unique = true, nullable = false)
     private String requestId;
 
     /**
      * Creation date.
      */
-    @Column(name = "save_date")
+    @Column(name = "save_date", nullable = false)
     private LocalDateTime saveDate;
 
     /**
      * Training data info
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "instances_info_id")
+    @JoinColumn(name = "instances_info_id", nullable = false)
     private InstancesInfo instances;
 
     /**
      * Classifier options info
      */
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "classifier_options_info_id")
+    @JoinColumn(name = "classifier_options_info_id", nullable = false)
     private ClassifierOptionsInfo classifierOptionsInfo;
 
     /**
      * Evaluation method
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "evaluation_method")
+    @Column(name = "evaluation_method", nullable = false)
     private EvaluationMethod evaluationMethod;
 
     /**

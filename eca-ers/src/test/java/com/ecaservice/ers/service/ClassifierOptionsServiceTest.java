@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.ecaservice.ers.TestHelperUtils.buildClassifierOptionsInfo;
+import static com.ecaservice.ers.TestHelperUtils.buildInstancesInfo;
 import static com.ecaservice.ers.TestHelperUtils.createClassifierOptionsRequest;
 import static com.ecaservice.ers.TestHelperUtils.createEvaluationResultsInfo;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -111,9 +112,9 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     private void testClassifierOptionsSearching(ClassifierOptionsRequest request) {
         EvaluationMethod evaluationMethod = request.getEvaluationMethodReport().getEvaluationMethod();
-        InstancesInfo instancesInfo = new InstancesInfo();
+        InstancesInfo instancesInfo = buildInstancesInfo();
         instancesInfo.setDataMd5Hash(request.getDataHash());
-        InstancesInfo anotherInstancesInfo = new InstancesInfo();
+        InstancesInfo anotherInstancesInfo = buildInstancesInfo();
         anotherInstancesInfo.setDataMd5Hash(
                 DigestUtils.md5DigestAsHex(StringUtils.EMPTY.getBytes(StandardCharsets.UTF_8)));
         instancesInfoRepository.saveAll(Arrays.asList(instancesInfo, anotherInstancesInfo));

@@ -10,4 +10,5 @@
     <include file="db/changelog/v3-add-meta-classifier-column.xml"/>
     <include file="db/changelog/v4-create-evaluation-results-sort-table.xml"/>
     <include file="db/changelog/v5-rename-xml-data-column.xml"/>
+    <include file="db/changelog/v6-add-not-null-constraints.xml"/>
 </databaseChangeLog>

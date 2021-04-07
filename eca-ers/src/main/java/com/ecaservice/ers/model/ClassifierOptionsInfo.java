@@ -34,13 +34,13 @@ public class ClassifierOptionsInfo {
     /**
      * Classifier name.
      */
-    @Column(name = "classifier_name")
+    @Column(name = "classifier_name", nullable = false)
     private String classifierName;
 
     /**
      * Classifier options (input options config)
      */
-    @Column(columnDefinition = "text")
+    @Column(columnDefinition = "text", nullable = false)
     private String options;
 
     /**
