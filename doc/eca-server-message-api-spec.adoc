@@ -1,4 +1,4 @@
-= Модуль ECA - SERVICE (v6.0)
+= Модуль ECA - SERVICE (v6.1)
 :toc:
 :toc-title: Оглавление
 
