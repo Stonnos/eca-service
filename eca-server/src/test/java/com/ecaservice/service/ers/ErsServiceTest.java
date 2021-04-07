@@ -82,6 +82,7 @@ class ErsServiceTest extends AbstractJpaTest {
         ExperimentResultsEntity experimentResultsEntity = new ExperimentResultsEntity();
         experimentResultsEntity.setResultsIndex(0);
         experimentResultsEntity.setExperiment(experiment);
+        experimentResultsEntity.setClassifierInfo(TestHelperUtils.createClassifierInfo());
         return experimentResultsEntityRepository.save(experimentResultsEntity);
     }
 

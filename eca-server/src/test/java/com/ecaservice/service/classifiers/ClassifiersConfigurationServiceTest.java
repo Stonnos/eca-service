@@ -24,6 +24,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -175,6 +176,7 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         ClassifiersConfiguration newActive = new ClassifiersConfiguration();
         newActive.setBuildIn(false);
         newActive.setActive(false);
+        newActive.setCreationDate(LocalDateTime.now());
         newActive.setConfigurationName(TEST_CONFIGURATION_NAME);
         classifiersConfigurationRepository.save(newActive);
         assertThrows(IllegalStateException.class, () -> classifiersConfigurationService.setActive(newActive.getId()));

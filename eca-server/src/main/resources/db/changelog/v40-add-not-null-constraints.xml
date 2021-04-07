@@ -333,7 +333,7 @@
         <addNotNullConstraint tableName="experiment" columnName="email"/>
     </changeSet>
 
-    <changeSet id="41" author="roman.batygin@email.ru" context="schema">
+    <changeSet id="42" author="roman.batygin@email.ru" context="schema">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="experiment_results"/>
             <columnExists tableName="experiment_results" columnName="results_index"/>
@@ -341,7 +341,7 @@
         <addNotNullConstraint tableName="experiment_results" columnName="results_index"/>
     </changeSet>
 
-    <changeSet id="42" author="roman.batygin@email.ru" context="schema">
+    <changeSet id="43" author="roman.batygin@email.ru" context="schema">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="experiment_results"/>
             <columnExists tableName="experiment_results" columnName="classifier_info_id"/>
