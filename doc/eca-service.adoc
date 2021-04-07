@@ -386,44 +386,44 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                           |bigint           |+|+|fk_experiment_results_id                                   |Идентификатор записи (первичный ключ) и внешний ключ на ers_request
-|experiment_results_id        |bigint           |-|+|fk_experiment_results_request_experiment_results_id        |Внешний ключ, ID experiment_results
-|request_source               |varchar(255)     |-|-|-                                                          |Источник запроса
+|id                           |bigint           |+|+|fk_experiment_results_id                              |Идентификатор записи (первичный ключ) и внешний ключ на ers_request
+|experiment_results_id        |bigint           |-|+|fk_experiment_results_request_experiment_results_id   |Внешний ключ, ID experiment_results
+|request_source               |varchar(255)     |-|-|-                                                     |Источник запроса
 |===
 
 ==== Таблица 3.21 - 'classifier_options_request_model' - содержит информацию о запросах в eca-ers на нахождение оптимальных настроек классификаторов
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                                  |bigint           |+|+|fk_classifier_options_request_id                  |Идентификатор записи (первичный ключ) и внешний ключ на ers_request
-|relation_name                       |varchar(255)     |-|-|-                                                 |Название обучающей выборки, для который осуществляется поиск оптимальных настроек
-|data_md5_hash                       |varchar(255)     |-|-|-                                                 |MD5 хеш обучающей выборки
-|evaluation_method                   |varchar(255)     |-|-|-                                                 |Метод оценки точности
-|num_folds                           |integer          |-|-|-                                                 |Число блоков для k * V - блочной кросс проверки на тестовой выборке
-|num_tests                           |integer          |-|-|-                                                 |Число тестов для k * V - блочной кросс проверки на тестовой выборке
-|seed                                |integer          |-|-|-                                                 |Начальное значение (seed) для генератор псевдослучайных чисел
-|app_instance_id                     |bigint           |-|-|-                                                 |Внешний ключ, ID инстанса для обработки запроса
+|id                                  |bigint           |+|+|fk_classifier_options_request_id       |Идентификатор записи (первичный ключ) и внешний ключ на ers_request
+|relation_name                       |varchar(255)     |-|-|-                                      |Название обучающей выборки, для который осуществляется поиск оптимальных настроек
+|data_md5_hash                       |varchar(255)     |-|-|-                                      |MD5 хеш обучающей выборки
+|evaluation_method                   |varchar(255)     |-|-|-                                      |Метод оценки точности
+|num_folds                           |integer          |-|-|-                                      |Число блоков для k * V - блочной кросс проверки на тестовой выборке
+|num_tests                           |integer          |-|-|-                                      |Число тестов для k * V - блочной кросс проверки на тестовой выборке
+|seed                                |integer          |-|-|-                                      |Начальное значение (seed) для генератор псевдослучайных чисел
+|app_instance_id                     |bigint           |-|-|-                                      |Внешний ключ, ID инстанса для обработки запроса
 |===
 
 ==== Таблица 3.22 - 'classifier_options_response_model' - содержит информацию об оптимальных настройках классификаторов от eca-ers
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                                  |bigint           |+|+|+                                                          |Идентификатор записи (первичный ключ)
-|classifier_name                     |varchar(255)     |-|-|-                                                          |Название классификатора
-|classifier_description              |varchar(255)     |-|-|-                                                          |Описание классификатора
-|classifier_options                  |text             |-|-|-                                                          |Настройки классификатора
-|classifier_options_request_model_id |bigint           |-|+|fk_classifier_options_request_model_id                     |Внешний ключ, ID запроса classifier_options_request_model
+|id                                  |bigint           |+|+|+                                        |Идентификатор записи (первичный ключ)
+|classifier_name                     |varchar(255)     |-|-|-                                        |Название классификатора
+|classifier_description              |varchar(255)     |-|-|-                                        |Описание классификатора
+|classifier_options                  |text             |-|-|-                                        |Настройки классификатора
+|classifier_options_request_model_id |bigint           |-|+|fk_classifier_options_request_model_id   |Внешний ключ, ID запроса classifier_options_request_model
 |===
 
 ==== Таблица 3.23 - 'classifier_options_request' - содержит информацию о запросах на нахождение оптимальных настроек классификаторов
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                                  |bigint           |+|+|fk_classifier_options_request_id                  |Идентификатор записи (первичный ключ)
-|creation_date                       |timestamp        |-|-|-                                                 |Дата запроса
-|source                              |varchar(255)     |-|-|-                                                 |Тип источника данных (CACHE или ERS)
-|classifier_options_request_model_id |bigint           |-|+|fk_options_request_model_id                       |Внешний ключ, ID classifier_options_request_model
+|id                                  |bigint           |+|+|fk_classifier_options_request_id    |Идентификатор записи (первичный ключ)
+|creation_date                       |timestamp        |-|-|-                                   |Дата запроса
+|source                              |varchar(255)     |-|-|-                                   |Тип источника данных (CACHE или ERS)
+|classifier_options_request_model_id |bigint           |-|+|fk_options_request_model_id         |Внешний ключ, ID classifier_options_request_model
 |===
 
 === 3.3 Схема БД eca-oauth
