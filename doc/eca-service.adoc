@@ -426,6 +426,8 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |classifier_options_request_model_id |bigint           |-|+|fk_options_request_model_id         |Внешний ключ, ID classifier_options_request_model
 |===
 
+Таблицы databasechangeloglock и databasechangeloglock предназначены для управления миграциями базы данных.
+
 === 3.3 Схема БД eca-oauth
 
 На рисунке 3.2 приведена схема базы данных eca-oauth:
