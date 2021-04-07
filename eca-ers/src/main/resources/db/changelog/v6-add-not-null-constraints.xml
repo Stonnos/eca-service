@@ -140,4 +140,12 @@
         </preConditions>
         <addNotNullConstraint tableName="evaluation_results_info" columnName="evaluation_method"/>
     </changeSet>
+
+    <changeSet id="18" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classification_costs_info"/>
+            <columnExists tableName="classification_costs_info" columnName="class_value"/>
+        </preConditions>
+        <addNotNullConstraint tableName="classification_costs_info" columnName="class_value"/>
+    </changeSet>
 </databaseChangeLog>
