@@ -28,33 +28,37 @@ public class Email {
     /**
      * Email uuid
      */
+    @Column(nullable = false)
     private String uuid;
 
     /**
      * Source mail
      */
+    @Column(nullable = false)
     private String sender;
 
     /**
      * Target email
      */
+    @Column(nullable = false)
     private String receiver;
 
     /**
      * Email subject
      */
+    @Column(nullable = false)
     private String subject;
 
     /**
      * Email text
      */
-    @Column(columnDefinition = "text")
+    @Column(columnDefinition = "text", nullable = false)
     private String message;
 
     /**
      * Email save date
      */
-    @Column(name = "save_date")
+    @Column(name = "save_date", nullable = false)
     private LocalDateTime saveDate;
 
     /**
@@ -67,6 +71,7 @@ public class Email {
      * Email sent status
      */
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private EmailStatus status;
 
     /**

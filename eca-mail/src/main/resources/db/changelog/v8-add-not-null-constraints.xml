@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v8-add-not-null-constraints.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="email"/>
+            <columnExists tableName="email" columnName="uuid"/>
+        </preConditions>
+        <addNotNullConstraint tableName="email" columnName="uuid"/>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="email"/>
+            <columnExists tableName="email" columnName="sender"/>
+        </preConditions>
+        <addNotNullConstraint tableName="email" columnName="sender"/>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="email"/>
+            <columnExists tableName="email" columnName="receiver"/>
+        </preConditions>
+        <addNotNullConstraint tableName="email" columnName="receiver"/>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="email"/>
+            <columnExists tableName="email" columnName="subject"/>
+        </preConditions>
+        <addNotNullConstraint tableName="email" columnName="subject"/>
+    </changeSet>
+
+    <changeSet id="5" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="email"/>
+            <columnExists tableName="email" columnName="message"/>
+        </preConditions>
+        <addNotNullConstraint tableName="email" columnName="message"/>
+    </changeSet>
+
+    <changeSet id="6" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="email"/>
+            <columnExists tableName="email" columnName="save_date"/>
+        </preConditions>
+        <addNotNullConstraint tableName="email" columnName="save_date"/>
+    </changeSet>
+
+    <changeSet id="7" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="email"/>
+            <columnExists tableName="email" columnName="status"/>
+        </preConditions>
+        <addNotNullConstraint tableName="email" columnName="status"/>
+    </changeSet>
+</databaseChangeLog>
