@@ -691,7 +691,7 @@ image::./images/eca-mail-db-schema.png[alt=Схема базы данных eca-
 |template_code           |varchar(255)     |+|+|template_code_unique_idx |Технический код шаблона
 |description             |varchar(255)     |-|+|-                        |Описание шаблона
 |template_subject        |varchar(255)     |-|+|-                        |Тема шаблона
-|template_body           |varchar(255)     |-|+|-                        |Текст шаблона
+|template_body           |varchar(255)     |-|-|-                        |Текст шаблона
 |===
 
 ==== Таблица 3.41 - 'template_parameter' - содержит данные о параметрах шаблонов email - ообщений
