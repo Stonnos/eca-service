@@ -25,7 +25,7 @@ public class ClassifierInputOptions {
     /**
      * Input option name
      */
-    @Column(name = "option_name")
+    @Column(name = "option_name", nullable = false)
     private String optionName;
 
     /**
@@ -37,6 +37,6 @@ public class ClassifierInputOptions {
     /**
      * Input option order
      */
-    @Column(name = "option_order")
+    @Column(name = "option_order", nullable = false)
     private Integer optionOrder;
 }

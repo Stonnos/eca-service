@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v6-add-not-null-constraints.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <columnExists tableName="instances_info" columnName="structure"/>
+        </preConditions>
+        <addNotNullConstraint tableName="instances_info" columnName="structure"/>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <columnExists tableName="instances_info" columnName="data_md5_hash"/>
+        </preConditions>
+        <addNotNullConstraint tableName="instances_info" columnName="data_md5_hash"/>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <columnExists tableName="instances_info" columnName="relation_name"/>
+        </preConditions>
+        <addNotNullConstraint tableName="instances_info" columnName="relation_name"/>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <columnExists tableName="instances_info" columnName="num_instances"/>
+        </preConditions>
+        <addNotNullConstraint tableName="instances_info" columnName="num_instances"/>
+    </changeSet>
+
+    <changeSet id="5" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <columnExists tableName="instances_info" columnName="num_attributes"/>
+        </preConditions>
+        <addNotNullConstraint tableName="instances_info" columnName="num_attributes"/>
+    </changeSet>
+
+    <changeSet id="6" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <columnExists tableName="instances_info" columnName="num_classes"/>
+        </preConditions>
+        <addNotNullConstraint tableName="instances_info" columnName="num_classes"/>
+    </changeSet>
+
+    <changeSet id="7" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <columnExists tableName="instances_info" columnName="class_name"/>
+        </preConditions>
+        <addNotNullConstraint tableName="instances_info" columnName="class_name"/>
+    </changeSet>
+
+    <changeSet id="8" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options_info"/>
+            <columnExists tableName="classifier_options_info" columnName="classifier_name"/>
+        </preConditions>
+        <addNotNullConstraint tableName="classifier_options_info" columnName="classifier_name"/>
+    </changeSet>
+
+    <changeSet id="9" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options_info"/>
+            <columnExists tableName="classifier_options_info" columnName="options"/>
+        </preConditions>
+        <addNotNullConstraint tableName="classifier_options_info" columnName="options"/>
+    </changeSet>
+
+    <changeSet id="10" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="confusion_matrix"/>
+            <columnExists tableName="confusion_matrix" columnName="actual_class"/>
+        </preConditions>
+        <addNotNullConstraint tableName="confusion_matrix" columnName="actual_class"/>
+    </changeSet>
+
+    <changeSet id="11" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="confusion_matrix"/>
+            <columnExists tableName="confusion_matrix" columnName="predicted_class"/>
+        </preConditions>
+        <addNotNullConstraint tableName="confusion_matrix" columnName="predicted_class"/>
+    </changeSet>
+
+    <changeSet id="12" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="confusion_matrix"/>
+            <columnExists tableName="confusion_matrix" columnName="num_instances"/>
+        </preConditions>
+        <addNotNullConstraint tableName="confusion_matrix" columnName="num_instances"/>
+    </changeSet>
+
+    <changeSet id="13" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_results_info"/>
+            <columnExists tableName="evaluation_results_info" columnName="request_id"/>
+        </preConditions>
+        <addNotNullConstraint tableName="evaluation_results_info" columnName="request_id"/>
+    </changeSet>
+
+    <changeSet id="14" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_results_info"/>
+            <columnExists tableName="evaluation_results_info" columnName="save_date"/>
+        </preConditions>
+        <addNotNullConstraint tableName="evaluation_results_info" columnName="save_date"/>
+    </changeSet>
+
+    <changeSet id="15" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_results_info"/>
+            <columnExists tableName="evaluation_results_info" columnName="instances_info_id"/>
+        </preConditions>
+        <addNotNullConstraint tableName="evaluation_results_info" columnName="instances_info_id"/>
+    </changeSet>
+
+    <changeSet id="16" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_results_info"/>
+            <columnExists tableName="evaluation_results_info" columnName="classifier_options_info_id"/>
+        </preConditions>
+        <addNotNullConstraint tableName="evaluation_results_info" columnName="classifier_options_info_id"/>
+    </changeSet>
+
+    <changeSet id="17" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_results_info"/>
+            <columnExists tableName="evaluation_results_info" columnName="evaluation_method"/>
+        </preConditions>
+        <addNotNullConstraint tableName="evaluation_results_info" columnName="evaluation_method"/>
+    </changeSet>
+
+    <changeSet id="18" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classification_costs_info"/>
+            <columnExists tableName="classification_costs_info" columnName="class_value"/>
+        </preConditions>
+        <addNotNullConstraint tableName="classification_costs_info" columnName="class_value"/>
+    </changeSet>
+</databaseChangeLog>

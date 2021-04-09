@@ -28,6 +28,9 @@ import static org.mockito.Mockito.when;
 @Import(EmailRequestMapperImpl.class)
 class EmailServiceTest extends AbstractJpaTest {
 
+    private static final String EMAIL_MESSAGE = "message";
+    private static final String SENDER_MAIL = "sender@mail.ru";
+
     @Mock
     private MailConfig mailConfig;
     @Mock
@@ -56,7 +59,10 @@ class EmailServiceTest extends AbstractJpaTest {
     void testEmailSaving() {
         EmailRequest emailRequest = TestHelperUtils.createEmailRequest();
         TemplateEntity templateEntity = createTemplateEntity();
+        when(mailConfig.getSender()).thenReturn(SENDER_MAIL);
         when(templateService.getTemplate(templateEntity.getCode())).thenReturn(templateEntity);
+        when(templateProcessorService.process(templateEntity.getCode(), emailRequest.getVariables()))
+                .thenReturn(EMAIL_MESSAGE);
         Email email = emailService.saveEmail(emailRequest);
         Assertions.assertThat(email).isNotNull();
         Assertions.assertThat(email.getUuid()).isNotNull();

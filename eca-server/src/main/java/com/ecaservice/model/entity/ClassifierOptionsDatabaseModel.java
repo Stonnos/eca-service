@@ -25,19 +25,19 @@ public class ClassifierOptionsDatabaseModel extends BaseEntity {
     /**
      * Options name
      */
-    @Column(name = "options_name")
+    @Column(name = "options_name", nullable = false)
     private String optionsName;
 
     /**
      * Classifier options config as json
      */
-    @Column(columnDefinition = "text")
+    @Column(columnDefinition = "text", nullable = false)
     private String config;
 
     /**
      * Classifier options config MD5 hash
      */
-    @Column(name = "config_md5_hash")
+    @Column(name = "config_md5_hash", nullable = false)
     private String configMd5Hash;
 
     /**

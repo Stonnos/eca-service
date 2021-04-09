@@ -27,18 +27,18 @@ public class ConfusionMatrix {
     /**
      * Actual class value
      */
-    @Column(name = "actual_class")
+    @Column(name = "actual_class", nullable = false)
     private String actualClass;
 
     /**
      * Expected class value
      */
-    @Column(name = "predicted_class")
+    @Column(name = "predicted_class", nullable = false)
     private String predictedClass;
 
     /**
      * Instances number
      */
-    @Column(name = "num_instances")
+    @Column(name = "num_instances", nullable = false)
     private Integer numInstances;
 }

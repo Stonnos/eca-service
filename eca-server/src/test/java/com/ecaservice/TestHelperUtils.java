@@ -141,6 +141,10 @@ public class TestHelperUtils {
     private static final int FILTER_TEMPLATE_FIELDS = 5;
     private static final String CREATED_BY = "user";
     private static final String CONFIG = "config";
+    private static final String OPTION_NAME = "option";
+    private static final String OPTION_VALUE = "value";
+    private static final String CONFIGURATION_NAME = "configuration";
+    private static final String DESCRIPTION = "description";
 
     /**
      * Generates the test data set.
@@ -301,6 +305,7 @@ public class TestHelperUtils {
     public static ClassifierOptionsDatabaseModel createClassifierOptionsDatabaseModel(String config,
                                                                                       ClassifiersConfiguration classifiersConfiguration) {
         ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel = new ClassifierOptionsDatabaseModel();
+        classifierOptionsDatabaseModel.setOptionsName(OPTION_NAME);
         classifierOptionsDatabaseModel.setConfiguration(classifiersConfiguration);
         classifierOptionsDatabaseModel.setConfig(config);
         classifierOptionsDatabaseModel.setConfigMd5Hash(
@@ -316,6 +321,7 @@ public class TestHelperUtils {
      */
     public static ClassifiersConfiguration createClassifiersConfiguration() {
         ClassifiersConfiguration classifiersConfiguration = new ClassifiersConfiguration();
+        classifiersConfiguration.setConfigurationName(CONFIGURATION_NAME);
         classifiersConfiguration.setActive(true);
         classifiersConfiguration.setCreationDate(LocalDateTime.now());
         classifiersConfiguration.setBuildIn(true);
@@ -343,7 +349,11 @@ public class TestHelperUtils {
     public static ClassifierInfo createClassifierInfo() {
         ClassifierInfo classifierInfo = new ClassifierInfo();
         classifierInfo.setClassifierName(CART.class.getSimpleName());
-        classifierInfo.setClassifierInputOptions(Collections.singletonList(new ClassifierInputOptions()));
+        ClassifierInputOptions classifierInputOptions = new ClassifierInputOptions();
+        classifierInputOptions.setOptionName(OPTION_NAME);
+        classifierInputOptions.setOptionValue(OPTION_VALUE);
+        classifierInputOptions.setOptionOrder(0);
+        classifierInfo.setClassifierInputOptions(Collections.singletonList(classifierInputOptions));
         return classifierInfo;
     }
 
@@ -693,6 +703,7 @@ public class TestHelperUtils {
     public static ExperimentResultsEntity createExperimentResultsEntity(Experiment experiment) {
         ExperimentResultsEntity experimentResultsEntity = new ExperimentResultsEntity();
         experimentResultsEntity.setExperiment(experiment);
+        experimentResultsEntity.setResultsIndex(0);
         experimentResultsEntity.setClassifierInfo(createClassifierInfo());
         return experimentResultsEntity;
     }
@@ -765,6 +776,7 @@ public class TestHelperUtils {
     public static FilterField createFilterField(String name, int order) {
         FilterField filterField = new FilterField();
         filterField.setFieldName(name);
+        filterField.setDescription(DESCRIPTION);
         filterField.setFieldOrder(order);
         filterField.setFilterFieldType(FilterFieldType.TEXT);
         filterField.setMatchMode(MatchMode.LIKE);
@@ -779,6 +791,7 @@ public class TestHelperUtils {
      */
     public static FilterTemplate createFilterTemplate(FilterTemplateType filterTemplateType) {
         FilterTemplate filterTemplate = new FilterTemplate();
+        filterTemplate.setTemplateName(FILTER_NAME);
         filterTemplate.setTemplateType(filterTemplateType);
         filterTemplate.setCreated(LocalDateTime.now());
         filterTemplate.setFields(IntStream.range(0, FILTER_TEMPLATE_FIELDS).mapToObj(
@@ -794,6 +807,7 @@ public class TestHelperUtils {
      */
     public static GlobalFilterTemplate createGlobalFilterTemplate(FilterTemplateType filterTemplateType) {
         GlobalFilterTemplate filterTemplate = new GlobalFilterTemplate();
+        filterTemplate.setFilterName(FILTER_NAME);
         filterTemplate.setTemplateType(filterTemplateType);
         filterTemplate.setFields(IntStream.range(0, FILTER_TEMPLATE_FIELDS).mapToObj(
                 i -> createGlobalFilterField(String.valueOf(i))).collect(Collectors.toList()));

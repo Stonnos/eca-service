@@ -34,19 +34,20 @@ public class FilterTemplate {
     /**
      * Template name
      */
-    @Column(name = "template_name")
+    @Column(name = "template_name", nullable = false)
     private String templateName;
 
     /**
      * Template type
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "template_type")
+    @Column(name = "template_type", nullable = false)
     private FilterTemplateType templateType;
 
     /**
      * Created date
      */
+    @Column(nullable = false)
     private LocalDateTime created;
 
     /**

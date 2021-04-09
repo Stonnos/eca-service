@@ -31,7 +31,7 @@ public class ClassificationCostsInfo {
     /**
      * Class value
      */
-    @Column(name = "class_value")
+    @Column(name = "class_value", nullable = false)
     private String classValue;
 
     /**

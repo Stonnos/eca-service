@@ -29,7 +29,7 @@ public abstract class AbstractEvaluationEntity {
     /**
      * Request unique identifier
      */
-    @Column(name = "request_id")
+    @Column(name = "request_id", nullable = false)
     private String requestId;
 
     /**
@@ -42,7 +42,7 @@ public abstract class AbstractEvaluationEntity {
     /**
      * Request creation date
      */
-    @Column(name = "creation_date")
+    @Column(name = "creation_date", nullable = false)
     private LocalDateTime creationDate;
 
     /**
@@ -61,14 +61,14 @@ public abstract class AbstractEvaluationEntity {
      * Request status
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "request_status")
+    @Column(name = "request_status", nullable = false)
     private RequestStatus requestStatus;
 
     /**
      * Evaluation method
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "evaluation_method")
+    @Column(name = "evaluation_method", nullable = false)
     private EvaluationMethod evaluationMethod;
 
     /**

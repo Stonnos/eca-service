@@ -44,4 +44,5 @@
     <include file="db/changelog/v37-create-experiment-progress-table.xml"/>
     <include file="db/changelog/v38-add-experiment-class-index-column.xml"/>
     <include file="db/changelog/v39-insert-in-progress-request-status.xml"/>
+    <include file="db/changelog/v40-add-not-null-constraints.xml"/>
 </databaseChangeLog>

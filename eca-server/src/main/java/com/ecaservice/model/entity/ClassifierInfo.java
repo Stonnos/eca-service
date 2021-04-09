@@ -26,7 +26,7 @@ public class ClassifierInfo {
     @GeneratedValue
     private Long id;
 
-    @Column(name = "classifier_name")
+    @Column(name = "classifier_name", nullable = false)
     private String classifierName;
 
     /**

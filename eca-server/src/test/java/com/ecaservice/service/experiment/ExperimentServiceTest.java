@@ -113,7 +113,8 @@ class ExperimentServiceTest extends AbstractJpaTest {
 
     @Test
     void testNullTrainingDataPath() {
-        Experiment experiment = new Experiment();
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        experiment.setTrainingDataAbsolutePath(null);
         experimentService.processExperiment(experiment);
         assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.ERROR);
     }
@@ -175,7 +176,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
                 any(InitializationParams.class))).thenReturn(new ExperimentHistory());
         doThrow(TimeoutException.class).when(dataService).saveExperimentHistory(any(File.class),
                 any(ExperimentHistory.class));
-        experimentService.processExperiment(TestHelperUtils.createExperiment(null));
+        experimentService.processExperiment(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.hasOneElement(experiments);
         Experiment experiment = experiments.iterator().next();

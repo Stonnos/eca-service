@@ -25,31 +25,31 @@ public class InstancesInfo {
     /**
      * Instances name
      */
-    @Column(name = "relation_name")
+    @Column(name = "relation_name", nullable = false)
     private String relationName;
 
     /**
      * Instances size
      */
-    @Column(name = "num_instances")
+    @Column(name = "num_instances", nullable = false)
     private Integer numInstances;
 
     /**
      * Attributes number
      */
-    @Column(name = "num_attributes")
+    @Column(name = "num_attributes", nullable = false)
     private Integer numAttributes;
 
     /**
      * Classes number
      */
-    @Column(name = "num_classes")
+    @Column(name = "num_classes", nullable = false)
     private Integer numClasses;
 
     /**
      * Class attribute name
      */
-    @Column(name = "class_name")
+    @Column(name = "class_name", nullable = false)
     private String className;
 
 }

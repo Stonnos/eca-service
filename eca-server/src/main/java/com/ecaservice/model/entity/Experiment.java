@@ -30,13 +30,13 @@ public class Experiment extends AbstractEvaluationEntity {
     /**
      * First name
      */
-    @Column(name = "first_name")
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
     /**
      * Email
      */
-    @Column(name = "email")
+    @Column(name = "email", nullable = false)
     private String email;
 
     /**
@@ -73,7 +73,7 @@ public class Experiment extends AbstractEvaluationEntity {
      * Experiment type
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "experiment_type")
+    @Column(name = "experiment_type", nullable = false)
     private ExperimentType experimentType;
 
     /**

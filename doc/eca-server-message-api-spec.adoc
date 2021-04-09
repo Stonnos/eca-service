@@ -1,5 +1,6 @@
-= Модуль ECA - SERVICE (v6.0)
-:toc: macro
+= Модуль ECA - SERVICE (v6.1)
+:toc:
+:toc-title: Оглавление
 
 == 1. Описание модуля
 
