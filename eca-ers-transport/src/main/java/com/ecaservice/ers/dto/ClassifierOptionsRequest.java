@@ -23,14 +23,14 @@ public class ClassifierOptionsRequest {
      * Instances name
      */
     @NotBlank
-    @ApiModelProperty(value = "Instances name")
+    @ApiModelProperty(value = "Instances name", example = "iris")
     private String relationName;
 
     /**
      * Instances MD5 hash sum
      */
     @NotBlank
-    @ApiModelProperty(value = "Instances MD5 hash sum")
+    @ApiModelProperty(value = "Instances MD5 hash sum", example = "3032e188204cb537f69fc7364f638641")
     private String dataHash;
 
     /**
