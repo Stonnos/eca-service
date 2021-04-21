@@ -8,6 +8,7 @@ import com.ecaservice.external.api.metrics.MetricsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -52,6 +53,18 @@ public class ErrorHandler {
     public ResponseEntity<ResponseDto<List<ValidationErrorDto>>> handleConstraintViolation(
             ConstraintViolationException ex) {
         return handleValidationError(() -> ExceptionResponseHandler.handleConstraintViolation(ex));
+    }
+
+    /**
+     * Handles http message not readable error.
+     *
+     * @param ex - http message not readable exception
+     * @return response entity
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ResponseDto<List<ValidationErrorDto>>> handleMethodArgumentNotValid(
+            HttpMessageNotReadableException ex) {
+        return handleValidationError(() -> ExceptionResponseHandler.handleHttpMessageNotReadable(ex));
     }
 
     private ResponseEntity<ResponseDto<List<ValidationErrorDto>>> handleValidationError(
