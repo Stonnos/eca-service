@@ -116,7 +116,8 @@ public class ClassifierOptionsService {
                 classifiersConfigurationRepository.findFirstByActiveTrue().orElseThrow(
                         () -> new IllegalStateException("Can't find active classifiers configuration!"));
         List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
-                classifierOptionsDatabaseModelRepository.findAllByConfiguration(activeConfiguration);
+                classifierOptionsDatabaseModelRepository.findAllByConfigurationOrderByCreationDateDesc(
+                        activeConfiguration);
         log.info("Fetched active classifiers configuration with name [{}], id [{}], options size [{}]!",
                 activeConfiguration.getConfigurationName(), activeConfiguration.getId(),
                 classifierOptionsDatabaseModels.size());
@@ -135,7 +136,8 @@ public class ClassifierOptionsService {
         Assert.state(classifiersConfiguration.isBuildIn(), "Expected build in configuration!");
         Assert.notEmpty(newOptions, "New classifiers options list must be not empty!");
         List<ClassifierOptionsDatabaseModel> latestOptions =
-                classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration);
+                classifierOptionsDatabaseModelRepository.findAllByConfigurationOrderByCreationDateDesc(
+                        classifiersConfiguration);
         if (CollectionUtils.isEmpty(latestOptions) || latestOptions.size() != newOptions.size() ||
                 !newOptions.containsAll(latestOptions)) {
             List<ClassifierOptionsDatabaseModel> oldOptionsToDelete =

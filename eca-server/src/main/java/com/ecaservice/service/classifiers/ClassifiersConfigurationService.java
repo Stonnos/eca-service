@@ -186,7 +186,8 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
     public ClassifiersConfigurationBean getClassifiersConfigurationReport(long id) {
         ClassifiersConfiguration classifiersConfiguration = getById(id);
         List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
-                classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration);
+                classifierOptionsDatabaseModelRepository.findAllByConfigurationOrderByCreationDateDesc(
+                        classifiersConfiguration);
         ClassifiersConfigurationBean classifiersConfigurationBean =
                 classifiersConfigurationMapper.mapToBean(classifiersConfiguration);
         classifiersConfigurationBean.setClassifiersOptionsCount(classifierOptionsDatabaseModels.size());
