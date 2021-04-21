@@ -79,7 +79,7 @@ public class ExceptionResponseHandler {
             for (var reference : invalidFormatException.getPath()) {
                 ValidationErrorDto validationErrorDto = new ValidationErrorDto();
                 validationErrorDto.setFieldName(reference.getFieldName());
-                validationErrorDto.setErrorMessage(reference.getDescription());
+                validationErrorDto.setErrorMessage(ex.getMessage());
                 validationErrors.add(validationErrorDto);
             }
         }

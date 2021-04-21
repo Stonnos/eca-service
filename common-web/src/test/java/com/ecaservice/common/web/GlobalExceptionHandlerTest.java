@@ -2,12 +2,16 @@ package com.ecaservice.common.web;
 
 import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.common.web.exception.ValidationErrorException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -21,6 +25,7 @@ import java.util.List;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -79,6 +84,19 @@ class GlobalExceptionHandlerTest {
         ResponseEntity<String> responseEntity = exceptionHandler.handleBadRequest(new IllegalStateException());
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void testHttpMessageNotReadable() {
+        HttpInputMessage httpInputMessage = mock(HttpInputMessage.class);
+        InvalidFormatException invalidFormatException = mock(InvalidFormatException.class);
+        JsonMappingException.Reference reference = new JsonMappingException.Reference(null, EMAIL_RECEIVER);
+        HttpMessageNotReadableException exception = new HttpMessageNotReadableException(ERROR_MESSAGE,
+                invalidFormatException, httpInputMessage);
+        when(invalidFormatException.getPath()).thenReturn(Collections.singletonList(reference));
+        ResponseEntity<List<ValidationErrorDto>> errorResponse =
+                exceptionHandler.handleHttpMessageNotReadableError(exception);
+        assertResponse(errorResponse, null, EMAIL_RECEIVER, exception.getMessage());
     }
 
     private void mockMethodArgumentNotValid() {
