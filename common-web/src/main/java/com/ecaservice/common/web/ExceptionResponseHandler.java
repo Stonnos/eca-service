@@ -1,9 +1,11 @@
 package com.ecaservice.common.web;
 
 import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.google.common.collect.Iterables;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
@@ -11,6 +13,7 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Path;
 import javax.validation.metadata.ConstraintDescriptor;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -59,6 +62,27 @@ public class ExceptionResponseHandler {
                     validationErrorDto.setErrorMessage(constraintViolation.getMessage());
                     return validationErrorDto;
                 }).collect(Collectors.toList());
+        return ResponseEntity.badRequest().body(validationErrors);
+    }
+
+    /**
+     * Handles http message not readable errors.
+     *
+     * @param ex - http message not readable exception
+     * @return validation errors
+     */
+    public static ResponseEntity<List<ValidationErrorDto>> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException ex) {
+        List<ValidationErrorDto> validationErrors = new ArrayList<>();
+        if (ex.getCause() instanceof InvalidFormatException) {
+            InvalidFormatException invalidFormatException = (InvalidFormatException) ex.getCause();
+            for (var reference : invalidFormatException.getPath()) {
+                ValidationErrorDto validationErrorDto = new ValidationErrorDto();
+                validationErrorDto.setFieldName(reference.getFieldName());
+                validationErrorDto.setErrorMessage(reference.getDescription());
+                validationErrors.add(validationErrorDto);
+            }
+        }
         return ResponseEntity.badRequest().body(validationErrors);
     }
 }
