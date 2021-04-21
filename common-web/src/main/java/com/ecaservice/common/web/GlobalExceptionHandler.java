@@ -5,6 +5,7 @@ import com.ecaservice.common.web.exception.ValidationErrorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -86,6 +87,20 @@ public class GlobalExceptionHandler {
         log.error("Http message not readable error: {}", ex.getMessage());
         var response = ExceptionResponseHandler.handleHttpMessageNotReadable(ex);
         log.error("Http message not readable errors: {}", response.getBody());
+        return response;
+    }
+
+    /**
+     * Handles constraint violation error.
+     *
+     * @param ex - constraint violation exception
+     * @return response entity
+     */
+    @ExceptionHandler(value = BindException.class)
+    public ResponseEntity<List<ValidationErrorDto>> handleBindException(BindException ex) {
+        log.error("Bind error: {}", ex.getMessage());
+        var response = ExceptionResponseHandler.handleBindException(ex);
+        log.error("Bind errors: {}", response.getBody());
         return response;
     }
 

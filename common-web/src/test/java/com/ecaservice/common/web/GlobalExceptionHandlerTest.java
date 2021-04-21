@@ -12,6 +12,7 @@ import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -51,6 +52,8 @@ class GlobalExceptionHandlerTest {
 
     @Mock
     private MethodArgumentNotValidException methodArgumentNotValidException;
+    @Mock
+    private BindException bindException;
     @Mock
     private BindingResult bindingResult;
 
@@ -99,10 +102,22 @@ class GlobalExceptionHandlerTest {
         assertResponse(errorResponse, null, EMAIL_RECEIVER, exception.getMessage());
     }
 
+    @Test
+    void testBindException() {
+        mockBindException();
+        ResponseEntity<List<ValidationErrorDto>> errorResponse = exceptionHandler.handleBindException(bindException);
+        assertResponse(errorResponse, null, EMAIL_RECEIVER, ERROR_MESSAGE);
+    }
+
     private void mockMethodArgumentNotValid() {
         when(methodArgumentNotValidException.getBindingResult()).thenReturn(bindingResult);
         FieldError fieldError = new FieldError(Object.class.getSimpleName(), EMAIL_RECEIVER, ERROR_MESSAGE);
         when(bindingResult.getAllErrors()).thenReturn(Collections.singletonList(fieldError));
+    }
+
+    private void mockBindException() {
+        FieldError fieldError = new FieldError(Object.class.getSimpleName(), EMAIL_RECEIVER, ERROR_MESSAGE);
+        when(bindException.getAllErrors()).thenReturn(Collections.singletonList(fieldError));
     }
 
     private void mockConstraintViolation() {

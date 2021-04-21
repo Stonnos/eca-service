@@ -6,6 +6,7 @@ import com.google.common.collect.Iterables;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
@@ -84,5 +85,20 @@ public class ExceptionResponseHandler {
             }
         }
         return ResponseEntity.badRequest().body(validationErrors);
+    }
+
+    /**
+     * Handles bind error.
+     *
+     * @param ex -  bind exception
+     * @return response entity
+     */
+    public static ResponseEntity<List<ValidationErrorDto>> handleBindException(BindException ex) {
+        List<ValidationErrorDto> errors = ex.getAllErrors()
+                .stream()
+                .map(FieldError.class::cast)
+                .map(fieldError -> new ValidationErrorDto(fieldError.getField(), fieldError.getCode(),
+                        fieldError.getDefaultMessage())).collect(Collectors.toList());
+        return ResponseEntity.badRequest().body(errors);
     }
 }
