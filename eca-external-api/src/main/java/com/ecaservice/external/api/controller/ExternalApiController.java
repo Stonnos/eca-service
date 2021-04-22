@@ -1,6 +1,5 @@
 package com.ecaservice.external.api.controller;
 
-import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
@@ -12,13 +11,11 @@ import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.mapping.EcaRequestMapper;
-import com.ecaservice.external.api.metrics.MetricsService;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.service.EvaluationApiService;
 import com.ecaservice.external.api.service.InstancesService;
 import com.ecaservice.external.api.service.MessageCorrelationService;
-import com.ecaservice.external.api.service.RequestStageHandler;
 import com.ecaservice.external.api.validation.annotations.ValidTrainData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -68,9 +65,8 @@ public class ExternalApiController {
     private final MessageCorrelationService messageCorrelationService;
     private final EvaluationApiService evaluationApiService;
     private final EcaRequestMapper ecaRequestMapper;
-    private final RequestStageHandler requestStageHandler;
+    private final TimeoutFallback timeoutFallback;
     private final InstancesService instancesService;
-    private final MetricsService metricsService;
     private final EcaRequestRepository ecaRequestRepository;
     private final EvaluationRequestRepository evaluationRequestRepository;
 
@@ -121,7 +117,7 @@ public class ExternalApiController {
             messageCorrelationService.push(ecaRequestEntity.getCorrelationId(), sink);
             evaluationApiService.processRequest(ecaRequestEntity, evaluationRequestDto);
         }).timeout(Duration.ofMinutes(externalApiConfig.getRequestTimeoutMinutes()),
-                timeoutFallback(ecaRequestEntity.getCorrelationId()));
+                timeoutFallback.timeout(ecaRequestEntity.getCorrelationId()));
     }
 
     /**
@@ -151,26 +147,6 @@ public class ExternalApiController {
         log.debug("Downloads classifier model file {} for request id [{}]",
                 evaluationRequestEntity.getClassifierAbsolutePath(), evaluationRequestEntity.getCorrelationId());
         return buildAttachmentResponse(modelFile);
-    }
-
-    private Mono<ResponseDto<EvaluationResponseDto>> timeoutFallback(String correlationId) {
-        return Mono.create(timeoutSink -> {
-            EcaRequestEntity ecaRequestEntity = getByCorrelationId(correlationId);
-            requestStageHandler.handleExceeded(ecaRequestEntity);
-            EvaluationResponseDto evaluationResponseDto = EvaluationResponseDto.builder()
-                    .requestId(ecaRequestEntity.getCorrelationId())
-                    .build();
-            ResponseDto<EvaluationResponseDto> responseDto =
-                    buildResponse(RequestStatus.TIMEOUT, evaluationResponseDto);
-            metricsService.trackResponse(ecaRequestEntity, responseDto.getRequestStatus());
-            log.debug("Send response with timeout for correlation id [{}]", ecaRequestEntity.getCorrelationId());
-            timeoutSink.success(responseDto);
-        });
-    }
-
-    private EcaRequestEntity getByCorrelationId(String correlationId) {
-        return ecaRequestRepository.findByCorrelationId(correlationId).orElseThrow(
-                () -> new EntityNotFoundException(EcaRequestEntity.class, correlationId));
     }
 
     private EcaRequestEntity createAndSaveRequestEntity(EvaluationRequestDto evaluationRequestDto) {

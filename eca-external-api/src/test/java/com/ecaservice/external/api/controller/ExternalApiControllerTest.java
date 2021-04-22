@@ -13,7 +13,6 @@ import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.service.EvaluationApiService;
 import com.ecaservice.external.api.service.InstancesService;
 import com.ecaservice.external.api.service.MessageCorrelationService;
-import com.ecaservice.external.api.service.RequestStageHandler;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -52,13 +51,13 @@ class ExternalApiControllerTest extends AbstractControllerTest {
     @MockBean
     private MessageCorrelationService messageCorrelationService;
     @MockBean
+    private TimeoutFallback timeoutFallback;
+    @MockBean
     private MetricsService metricsService;
     @MockBean
     private EvaluationApiService evaluationApiService;
     @MockBean
     private EcaRequestMapper ecaRequestMapper;
-    @MockBean
-    private RequestStageHandler requestStageHandler;
     @MockBean
     private InstancesService instancesService;
     @MockBean
