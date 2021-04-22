@@ -61,6 +61,8 @@ class UserControllerTest extends AbstractControllerTest {
     private static final String LOCK_URL = BASE_URL + "/lock";
     private static final String UNLOCK_URL = BASE_URL + "/unlock";
     private static final String UPDATE_EMAIL_URL = BASE_URL + "/update-email";
+    private static final String GET_USER_INFO_URL = BASE_URL + "/user-info";
+    private static final String LOGOUT_URL = BASE_URL + "/logout";
 
     private static final String PAGE_PARAM = "page";
     private static final String SIZE_PARAM = "size";
@@ -320,6 +322,39 @@ class UserControllerTest extends AbstractControllerTest {
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk());
         verify(userService, atLeastOnce()).updateEmail(USER_ID, TEST_EMAIL);
+    }
+
+    @Test
+    void testGetUserInfoUnauthorized() throws Exception {
+        mockMvc.perform(get(GET_USER_INFO_URL))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetUserInfoOk() throws Exception {
+        UserEntity userEntity = createUserEntity();
+        userEntity.setId(USER_ID);
+        UserDto expected = userMapper.map(userEntity);
+        when(userService.getById(USER_ID)).thenReturn(userEntity);
+        when(userPhotoRepository.getUserPhotoId(userEntity)).thenReturn(null);
+        mockMvc.perform(get(GET_USER_INFO_URL)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    void testLogoutUnauthorized() throws Exception {
+        mockMvc.perform(post(LOGOUT_URL))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testLogout() throws Exception {
+        mockMvc.perform(post(LOGOUT_URL)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isOk());
     }
 
     private void testCreateUserBadRequest(CreateUserDto createUserDto) throws Exception {
