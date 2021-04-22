@@ -32,6 +32,7 @@ import static com.ecaservice.oauth.TestHelperUtils.createChangePasswordRequestEn
 import static com.ecaservice.oauth.TestHelperUtils.createResetPasswordRequestEntity;
 import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
@@ -87,6 +88,13 @@ class NotificationEventListenerTest {
         ChangePasswordRequestEntity changePasswordRequestEntity = createChangePasswordRequestEntity();
         ChangePasswordNotificationEvent event = new ChangePasswordNotificationEvent(this, changePasswordRequestEntity);
         internalTestEvent(event, Templates.CHANGE_PASSWORD);
+    }
+
+    @Test
+    void testThrowIllegalStateException() {
+       AbstractNotificationEvent event = new AbstractNotificationEvent(this) {
+       };
+       assertThrows(IllegalStateException.class, () -> notificationEventListener.handleNotificationEvent(event));
     }
 
     private void internalTestEvent(AbstractNotificationEvent event, String expectedTemplateCode) {
