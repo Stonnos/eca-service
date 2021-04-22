@@ -2,7 +2,6 @@ package com.ecaservice.external.api.service;
 
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
-import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.mapping.EcaRequestMapper;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
