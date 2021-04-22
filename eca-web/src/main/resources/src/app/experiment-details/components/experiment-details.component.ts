@@ -161,7 +161,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   private updateExperimentProgress(): void {
     this.updateProgressSubscription = timer(0, this.updateProgressInterval).subscribe({
       next: () => {
-        this.experimentsService.getExperimentProgress(this.experimentDto.requestId)
+        this.experimentsService.getExperimentProgress(this.experimentRequestId)
           .subscribe({
             next: (experimentProgress: ExperimentProgressDto) => {
               if (!experimentProgress.finished) {
