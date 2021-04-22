@@ -11,7 +11,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.validation.ConstraintViolationException;
-import javax.validation.Path;
 import javax.validation.metadata.ConstraintDescriptor;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public class ExceptionResponseHandler {
      */
     public static ResponseEntity<List<ValidationErrorDto>> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex) {
-        List<ValidationErrorDto> errors = ex.getBindingResult().getAllErrors()
+        var errors = ex.getBindingResult().getAllErrors()
                 .stream()
                 .map(FieldError.class::cast)
                 .map(fieldError -> new ValidationErrorDto(fieldError.getField(), fieldError.getCode(),
@@ -50,12 +49,12 @@ public class ExceptionResponseHandler {
      * @return response entity
      */
     public static ResponseEntity<List<ValidationErrorDto>> handleConstraintViolation(ConstraintViolationException ex) {
-        List<ValidationErrorDto> validationErrors = ex.getConstraintViolations().stream()
+        var validationErrors = ex.getConstraintViolations().stream()
                 .map(constraintViolation -> {
-                    Path.Node node = Iterables.getLast(constraintViolation.getPropertyPath());
-                    ValidationErrorDto validationErrorDto = new ValidationErrorDto();
+                    var node = Iterables.getLast(constraintViolation.getPropertyPath());
+                    var validationErrorDto = new ValidationErrorDto();
                     validationErrorDto.setFieldName(node.getName());
-                    String code = Optional.ofNullable(constraintViolation.getConstraintDescriptor())
+                    var code = Optional.ofNullable(constraintViolation.getConstraintDescriptor())
                             .map(ConstraintDescriptor::getAnnotation)
                             .map(Annotation::annotationType)
                             .map(Class::getSimpleName).orElse(null);
@@ -76,13 +75,17 @@ public class ExceptionResponseHandler {
             HttpMessageNotReadableException ex) {
         List<ValidationErrorDto> validationErrors = new ArrayList<>();
         if (ex.getCause() instanceof InvalidFormatException) {
-            InvalidFormatException invalidFormatException = (InvalidFormatException) ex.getCause();
+            var invalidFormatException = (InvalidFormatException) ex.getCause();
             for (var reference : invalidFormatException.getPath()) {
                 ValidationErrorDto validationErrorDto = new ValidationErrorDto();
                 validationErrorDto.setFieldName(reference.getFieldName());
                 validationErrorDto.setErrorMessage(ex.getMessage());
                 validationErrors.add(validationErrorDto);
             }
+        } else {
+            ValidationErrorDto validationErrorDto = new ValidationErrorDto();
+            validationErrorDto.setErrorMessage(ex.getMessage());
+            validationErrors.add(validationErrorDto);
         }
         return ResponseEntity.badRequest().body(validationErrors);
     }
@@ -94,7 +97,7 @@ public class ExceptionResponseHandler {
      * @return response entity
      */
     public static ResponseEntity<List<ValidationErrorDto>> handleBindException(BindException ex) {
-        List<ValidationErrorDto> errors = ex.getAllErrors()
+        var errors = ex.getAllErrors()
                 .stream()
                 .map(FieldError.class::cast)
                 .map(fieldError -> new ValidationErrorDto(fieldError.getField(), fieldError.getCode(),
