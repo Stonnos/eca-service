@@ -83,8 +83,8 @@ public class ExternalApiController {
             @ValidTrainData
             @RequestParam MultipartFile trainingData) throws IOException {
         log.debug("Received request to upload train data [{}]", trainingData.getOriginalFilename());
-        InstancesEntity instancesEntity = instancesService.uploadInstances(trainingData);
-        InstancesDto instancesDto = new InstancesDto(instancesEntity.getUuid(),
+        var instancesEntity = instancesService.uploadInstances(trainingData);
+        var instancesDto = new InstancesDto(instancesEntity.getUuid(),
                 String.format("%s%s", DATA_URL_PREFIX, instancesEntity.getUuid()));
         return buildResponse(RequestStatus.SUCCESS, instancesDto);
     }
@@ -107,7 +107,7 @@ public class ExternalApiController {
             log.debug("Received request with options [{}], evaluation method [{}]",
                     toJson(evaluationRequestDto.getClassifierOptions()), evaluationRequestDto.getEvaluationMethod());
         }
-        EcaRequestEntity ecaRequestEntity = ecaRequestService.createAndSaveRequestEntity(evaluationRequestDto);
+        var ecaRequestEntity = ecaRequestService.createAndSaveRequestEntity(evaluationRequestDto);
         return Mono.<ResponseDto<EvaluationResponseDto>>create(sink -> {
             messageCorrelationService.push(ecaRequestEntity.getCorrelationId(), sink);
             evaluationApiService.processRequest(ecaRequestEntity, evaluationRequestDto);
@@ -128,12 +128,12 @@ public class ExternalApiController {
     @GetMapping(value = "/download-model/{requestId}")
     public ResponseEntity<FileSystemResource> downloadModel(
             @ApiParam(value = "Request id", required = true) @PathVariable String requestId) {
-        EvaluationRequestEntity evaluationRequestEntity = evaluationRequestRepository.findByCorrelationId(requestId);
+        var evaluationRequestEntity = evaluationRequestRepository.findByCorrelationId(requestId);
         if (evaluationRequestEntity == null) {
             log.error("Evaluation request with id [{}] not found", requestId);
             return ResponseEntity.notFound().build();
         }
-        File modelFile = Optional.ofNullable(evaluationRequestEntity.getClassifierAbsolutePath())
+        var modelFile = Optional.ofNullable(evaluationRequestEntity.getClassifierAbsolutePath())
                 .map(File::new)
                 .orElse(null);
         if (!existsFile(modelFile)) {
