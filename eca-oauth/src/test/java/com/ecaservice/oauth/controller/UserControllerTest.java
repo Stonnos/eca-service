@@ -26,8 +26,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.util.MimeTypeUtils;
 
 import javax.inject.Inject;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +45,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -68,6 +73,8 @@ class UserControllerTest extends AbstractControllerTest {
     private static final String LOGOUT_URL = BASE_URL + "/logout";
     private static final String TFA_ENABLED_URL = BASE_URL + "/tfa-enabled";
     private static final String UPDATE_USER_INFO = BASE_URL + "/update-info";
+    private static final String DELETE_PHOTO_URL = BASE_URL + "/delete-photo";
+    private static final String UPLOAD_PHOTO_URL = BASE_URL + "/upload-photo";
 
     private static final String PAGE_PARAM = "page";
     private static final String SIZE_PARAM = "size";
@@ -84,6 +91,10 @@ class UserControllerTest extends AbstractControllerTest {
     private static final String NEW_EMAIL_PARAM = "newEmail";
     private static final String TFA_ENABLED_PARAM = "enabled";
     private static final String INVALID_PERSON_DATA = "ивfd";
+
+    private final MockMultipartFile photoFile =
+            new MockMultipartFile("file", "photo.jpg",
+                    MimeTypeUtils.TEXT_PLAIN.toString(), "file-content".getBytes(StandardCharsets.UTF_8));
 
     @MockBean
     private UserService userService;
@@ -461,6 +472,43 @@ class UserControllerTest extends AbstractControllerTest {
                 .content(objectMapper.writeValueAsString(updateUserInfo)))
                 .andExpect(status().isOk());
         verify(userService, atLeastOnce()).updateUserInfo(USER_ID, updateUserInfo);
+    }
+
+    @Test
+    void testDeletePhotoUnauthorized() throws Exception {
+        mockMvc.perform(delete(DELETE_PHOTO_URL))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testDeletePhoto() throws Exception {
+        mockMvc.perform(delete(DELETE_PHOTO_URL)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isOk());
+        verify(userService, atLeastOnce()).deletePhoto(USER_ID);
+    }
+
+    @Test
+    void testUploadPhotoUnauthorized() throws Exception {
+        mockMvc.perform(multipart(UPLOAD_PHOTO_URL)
+                .file(photoFile))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testUploadPhotoWithNullFile() throws Exception {
+        mockMvc.perform(multipart(UPLOAD_PHOTO_URL)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testUploadPhotoOk() throws Exception {
+        mockMvc.perform(multipart(UPLOAD_PHOTO_URL)
+                .file(photoFile)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isOk());
+        verify(userService, atLeastOnce()).updatePhoto(USER_ID, photoFile);
     }
 
     private void testCreateUserBadRequest(CreateUserDto createUserDto) throws Exception {
