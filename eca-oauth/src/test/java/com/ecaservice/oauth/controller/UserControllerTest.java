@@ -2,6 +2,7 @@ package com.ecaservice.oauth.controller;
 
 import com.ecaservice.oauth.TestHelperUtils;
 import com.ecaservice.oauth.dto.CreateUserDto;
+import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserPhoto;
 import com.ecaservice.oauth.mapping.RoleMapperImpl;
@@ -31,6 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.ecaservice.oauth.TestHelperUtils.createUpdateUserInfoDto;
 import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
 import static com.ecaservice.oauth.util.FieldConstraints.EMAIL_MAX_SIZE;
 import static com.ecaservice.oauth.util.FieldConstraints.LOGIN_MAX_LENGTH;
@@ -42,6 +44,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -63,6 +66,8 @@ class UserControllerTest extends AbstractControllerTest {
     private static final String UPDATE_EMAIL_URL = BASE_URL + "/update-email";
     private static final String GET_USER_INFO_URL = BASE_URL + "/user-info";
     private static final String LOGOUT_URL = BASE_URL + "/logout";
+    private static final String TFA_ENABLED_URL = BASE_URL + "/tfa-enabled";
+    private static final String UPDATE_USER_INFO = BASE_URL + "/update-info";
 
     private static final String PAGE_PARAM = "page";
     private static final String SIZE_PARAM = "size";
@@ -77,6 +82,8 @@ class UserControllerTest extends AbstractControllerTest {
     private static final long LOCK_USER_ID = 2L;
     private static final String TEST_EMAIL = "test@mail.ru";
     private static final String NEW_EMAIL_PARAM = "newEmail";
+    private static final String TFA_ENABLED_PARAM = "enabled";
+    private static final String INVALID_PERSON_DATA = "ивfd";
 
     @MockBean
     private UserService userService;
@@ -357,11 +364,118 @@ class UserControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void testTfaEnabledUnauthorized() throws Exception {
+        mockMvc.perform(post(TFA_ENABLED_URL)
+                .param(TFA_ENABLED_PARAM, Boolean.TRUE.toString()))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testTfaEnabled() throws Exception {
+        mockMvc.perform(post(TFA_ENABLED_URL)
+                .param(TFA_ENABLED_PARAM, Boolean.TRUE.toString())
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isOk());
+        verify(userService, atLeastOnce()).setTfaEnabled(USER_ID, true);
+    }
+
+    @Test
+    void testUpdateUserInfoUnauthorized() throws Exception {
+        var updateUserInfo = createUpdateUserInfoDto();
+        mockMvc.perform(put(UPDATE_USER_INFO)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateUserInfo)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testUpdateUserWithEmptyFirstName() throws Exception {
+        var updateUserInfo = createUpdateUserInfoDto();
+        updateUserInfo.setFirstName(StringUtils.EMPTY);
+        testUpdateUserInfoBadRequest(updateUserInfo);
+    }
+
+    @Test
+    void testUpdateUserWithEmptyLastName() throws Exception {
+        var updateUserInfo = createUpdateUserInfoDto();
+        updateUserInfo.setLastName(StringUtils.EMPTY);
+        testUpdateUserInfoBadRequest(updateUserInfo);
+    }
+
+    @Test
+    void testUpdateUserWithEmptyMiddleName() throws Exception {
+        var updateUserInfo = createUpdateUserInfoDto();
+        updateUserInfo.setMiddleName(StringUtils.EMPTY);
+        testUpdateUserInfoBadRequest(updateUserInfo);
+    }
+
+    @Test
+    void testUpdateUserWithLargeFirstName() throws Exception {
+        var updateUserInfo = createUpdateUserInfoDto();
+        updateUserInfo.setFirstName(StringUtils.repeat('Q', PERSON_NAME_MAX_SIZE + 1));
+        testUpdateUserInfoBadRequest(updateUserInfo);
+    }
+
+    @Test
+    void testUpdateUserWithLargeLastName() throws Exception {
+        var updateUserInfo = createUpdateUserInfoDto();
+        updateUserInfo.setLastName(StringUtils.repeat('Q', PERSON_NAME_MAX_SIZE + 1));
+        testUpdateUserInfoBadRequest(updateUserInfo);
+    }
+
+    @Test
+    void testUpdateUserWithLargeMiddleName() throws Exception {
+        var updateUserInfo = createUpdateUserInfoDto();
+        updateUserInfo.setMiddleName(StringUtils.repeat('Q', PERSON_NAME_MAX_SIZE + 1));
+        testUpdateUserInfoBadRequest(updateUserInfo);
+    }
+
+    @Test
+    void testUpdateUserWithInvalidFirstName() throws Exception {
+        var updateUserInfo = createUpdateUserInfoDto();
+        updateUserInfo.setFirstName(INVALID_PERSON_DATA);
+        testUpdateUserInfoBadRequest(updateUserInfo);
+    }
+
+    @Test
+    void testUpdateUserWithInvalidLastName() throws Exception {
+        var updateUserInfo = createUpdateUserInfoDto();
+        updateUserInfo.setLastName(INVALID_PERSON_DATA);
+        testUpdateUserInfoBadRequest(updateUserInfo);
+    }
+
+    @Test
+    void testUpdateUserWithInvalidMiddleName() throws Exception {
+        var updateUserInfo = createUpdateUserInfoDto();
+        updateUserInfo.setMiddleName(INVALID_PERSON_DATA);
+        testUpdateUserInfoBadRequest(updateUserInfo);
+    }
+
+    @Test
+    void testUpdateUserInfoOk() throws Exception {
+        var updateUserInfo = createUpdateUserInfoDto();
+        mockMvc.perform(put(UPDATE_USER_INFO)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateUserInfo)))
+                .andExpect(status().isOk());
+        verify(userService, atLeastOnce()).updateUserInfo(USER_ID, updateUserInfo);
+    }
+
     private void testCreateUserBadRequest(CreateUserDto createUserDto) throws Exception {
         mockMvc.perform(post(CREATE_URL)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(createUserDto))
                 .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    private void testUpdateUserInfoBadRequest(UpdateUserInfoDto updateUserInfoDto) throws Exception {
+        mockMvc.perform(put(UPDATE_USER_INFO)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateUserInfoDto)))
                 .andExpect(status().isBadRequest());
     }
 }
