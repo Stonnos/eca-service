@@ -9,10 +9,8 @@ import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.InstancesEntity;
-import com.ecaservice.external.api.entity.RequestStageType;
-import com.ecaservice.external.api.mapping.EcaRequestMapper;
-import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
+import com.ecaservice.external.api.service.EcaRequestService;
 import com.ecaservice.external.api.service.EvaluationApiService;
 import com.ecaservice.external.api.service.InstancesService;
 import com.ecaservice.external.api.service.MessageCorrelationService;
@@ -39,9 +37,7 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
 
 import static com.ecaservice.external.api.util.Constants.DATA_URL_PREFIX;
 import static com.ecaservice.external.api.util.Utils.buildAttachmentResponse;
@@ -64,10 +60,9 @@ public class ExternalApiController {
     private final ExternalApiConfig externalApiConfig;
     private final MessageCorrelationService messageCorrelationService;
     private final EvaluationApiService evaluationApiService;
-    private final EcaRequestMapper ecaRequestMapper;
+    private final EcaRequestService ecaRequestService;
     private final TimeoutFallback timeoutFallback;
     private final InstancesService instancesService;
-    private final EcaRequestRepository ecaRequestRepository;
     private final EvaluationRequestRepository evaluationRequestRepository;
 
     /**
@@ -112,7 +107,7 @@ public class ExternalApiController {
             log.debug("Received request with options [{}], evaluation method [{}]",
                     toJson(evaluationRequestDto.getClassifierOptions()), evaluationRequestDto.getEvaluationMethod());
         }
-        EcaRequestEntity ecaRequestEntity = createAndSaveRequestEntity(evaluationRequestDto);
+        EcaRequestEntity ecaRequestEntity = ecaRequestService.createAndSaveRequestEntity(evaluationRequestDto);
         return Mono.<ResponseDto<EvaluationResponseDto>>create(sink -> {
             messageCorrelationService.push(ecaRequestEntity.getCorrelationId(), sink);
             evaluationApiService.processRequest(ecaRequestEntity, evaluationRequestDto);
@@ -138,8 +133,9 @@ public class ExternalApiController {
             log.error("Evaluation request with id [{}] not found", requestId);
             return ResponseEntity.notFound().build();
         }
-        File modelFile =
-                Optional.ofNullable(evaluationRequestEntity.getClassifierAbsolutePath()).map(File::new).orElse(null);
+        File modelFile = Optional.ofNullable(evaluationRequestEntity.getClassifierAbsolutePath())
+                .map(File::new)
+                .orElse(null);
         if (!existsFile(modelFile)) {
             log.error("Classifier model file not found for request id [{}]", requestId);
             return ResponseEntity.notFound().build();
@@ -147,13 +143,5 @@ public class ExternalApiController {
         log.debug("Downloads classifier model file {} for request id [{}]",
                 evaluationRequestEntity.getClassifierAbsolutePath(), evaluationRequestEntity.getCorrelationId());
         return buildAttachmentResponse(modelFile);
-    }
-
-    private EcaRequestEntity createAndSaveRequestEntity(EvaluationRequestDto evaluationRequestDto) {
-        EvaluationRequestEntity ecaRequestEntity = ecaRequestMapper.map(evaluationRequestDto);
-        ecaRequestEntity.setCorrelationId(UUID.randomUUID().toString());
-        ecaRequestEntity.setRequestStage(RequestStageType.NOT_SEND);
-        ecaRequestEntity.setCreationDate(LocalDateTime.now());
-        return ecaRequestRepository.save(ecaRequestEntity);
     }
 }
