@@ -60,6 +60,7 @@ class UserControllerTest extends AbstractControllerTest {
     private static final String DOWNLOAD_PHOTO_URL = BASE_URL + "/photo/{id}";
     private static final String LOCK_URL = BASE_URL + "/lock";
     private static final String UNLOCK_URL = BASE_URL + "/unlock";
+    private static final String UPDATE_EMAIL_URL = BASE_URL + "/update-email";
 
     private static final String PAGE_PARAM = "page";
     private static final String SIZE_PARAM = "size";
@@ -71,6 +72,9 @@ class UserControllerTest extends AbstractControllerTest {
     private static final int CONTENT_LENGTH = 32;
     private static final long USER_ID = 1L;
     private static final String USER_ID_PARAM = "userId";
+    private static final long LOCK_USER_ID = 2L;
+    private static final String TEST_EMAIL = "test@mail.ru";
+    private static final String NEW_EMAIL_PARAM = "newEmail";
 
     @MockBean
     private UserService userService;
@@ -248,6 +252,23 @@ class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void testLockYourself() throws Exception {
+        mockMvc.perform(post(LOCK_URL)
+                .param(USER_ID_PARAM, String.valueOf(USER_ID))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testLockUser() throws Exception {
+        mockMvc.perform(post(LOCK_URL)
+                .param(USER_ID_PARAM, String.valueOf(LOCK_USER_ID))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isOk());
+        verify(userService, atLeastOnce()).lock(LOCK_USER_ID);
+    }
+
+    @Test
     void testUnlockUserUnauthorized() throws Exception {
         mockMvc.perform(post(UNLOCK_URL)
                 .param(USER_ID_PARAM, String.valueOf(USER_ID)))
@@ -268,6 +289,37 @@ class UserControllerTest extends AbstractControllerTest {
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk());
         verify(userService, atLeastOnce()).unlock(USER_ID);
+    }
+
+    @Test
+    void testUpdateEmailUnauthorized() throws Exception {
+        mockMvc.perform(post(UPDATE_EMAIL_URL)
+                .param(NEW_EMAIL_PARAM, TEST_EMAIL))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testUpdateEmailWithNullEmailParam() throws Exception {
+        mockMvc.perform(post(UPDATE_EMAIL_URL)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testUpdateEmailWithInvalidEmailParam() throws Exception {
+        mockMvc.perform(post(UPDATE_EMAIL_URL)
+                .param(NEW_EMAIL_PARAM, "abc")
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testUpdateEmailOk() throws Exception {
+        mockMvc.perform(post(UPDATE_EMAIL_URL)
+                .param(NEW_EMAIL_PARAM, TEST_EMAIL)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isOk());
+        verify(userService, atLeastOnce()).updateEmail(USER_ID, TEST_EMAIL);
     }
 
     private void testCreateUserBadRequest(CreateUserDto createUserDto) throws Exception {
