@@ -77,13 +77,13 @@ public class ExceptionResponseHandler {
         if (ex.getCause() instanceof InvalidFormatException) {
             var invalidFormatException = (InvalidFormatException) ex.getCause();
             for (var reference : invalidFormatException.getPath()) {
-                ValidationErrorDto validationErrorDto = new ValidationErrorDto();
+                var validationErrorDto = new ValidationErrorDto();
                 validationErrorDto.setFieldName(reference.getFieldName());
                 validationErrorDto.setErrorMessage(ex.getMessage());
                 validationErrors.add(validationErrorDto);
             }
         } else {
-            ValidationErrorDto validationErrorDto = new ValidationErrorDto();
+            var validationErrorDto = new ValidationErrorDto();
             validationErrorDto.setErrorMessage(ex.getMessage());
             validationErrors.add(validationErrorDto);
         }
