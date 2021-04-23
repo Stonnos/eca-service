@@ -1,6 +1,7 @@
 package com.ecaservice.oauth2.test.configuration;
 
 import com.ecaservice.user.model.Role;
+import com.ecaservice.user.model.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -25,14 +26,20 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class Oauth2ServerSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    private static final long USER_ID = 1L;
+
     private final Oauth2TestConfig oauth2TestConfig;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser(oauth2TestConfig.getUsername())
-                .password(passwordEncoder().encode(oauth2TestConfig.getPassword()))
-                .authorities(Collections.singletonList(new Role(Role.ROLE_SUPER_ADMIN, StringUtils.EMPTY)));
+        auth.userDetailsService(username -> {
+            var userDetails = new UserDetailsImpl();
+            userDetails.setId(USER_ID);
+            userDetails.setUserName(oauth2TestConfig.getUsername());
+            userDetails.setPassword(passwordEncoder().encode(oauth2TestConfig.getPassword()));
+            userDetails.setAuthorities(Collections.singletonList(new Role(Role.ROLE_SUPER_ADMIN, StringUtils.EMPTY)));
+            return userDetails;
+        }).passwordEncoder(passwordEncoder());
     }
 
     /**

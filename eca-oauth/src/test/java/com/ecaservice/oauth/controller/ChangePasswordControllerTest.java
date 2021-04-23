@@ -2,23 +2,26 @@ package com.ecaservice.oauth.controller;
 
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.oauth.dto.ChangePasswordRequest;
+import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
 import com.ecaservice.oauth.service.ChangePasswordService;
+import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -28,13 +31,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Roman Batygin
  */
 @EnableGlobalExceptionHandler
-@WebMvcTest(controllers = ChangePasswordController.class,
-        useDefaultFilters = false,
-        includeFilters = {
-                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = ChangePasswordController.class)
-        })
-@AutoConfigureMockMvc(addFilters = false)
-class ChangePasswordControllerTest {
+@WebMvcTest(controllers = ChangePasswordController.class)
+class ChangePasswordControllerTest extends AbstractControllerTest {
 
     private static final String TOKEN_PARAM = "token";
     private static final String TOKEN_VALUE = "tokenValue";
@@ -58,6 +56,7 @@ class ChangePasswordControllerTest {
     void testCreateChangePasswordRequestWithEmptyOldPassword() throws Exception {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(StringUtils.EMPTY, PASSWORD);
         mockMvc.perform(post(REQUEST_URL)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(changePasswordRequest))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -67,9 +66,31 @@ class ChangePasswordControllerTest {
     void testCreateChangePasswordRequestWithEmptyNewPassword() throws Exception {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PASSWORD, StringUtils.EMPTY);
         mockMvc.perform(post(REQUEST_URL)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(changePasswordRequest))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testCreateChangePasswordUnauthorized() throws Exception {
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PASSWORD, PASSWORD);
+        mockMvc.perform(post(REQUEST_URL)
+                .content(objectMapper.writeValueAsString(changePasswordRequest))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testCreateChangePasswordRequestOk() throws Exception {
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PASSWORD, PASSWORD);
+        when(changePasswordService.createChangePasswordRequest(anyLong(), any(ChangePasswordRequest.class))).thenReturn(
+                new ChangePasswordRequestEntity());
+        mockMvc.perform(post(REQUEST_URL)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                .content(objectMapper.writeValueAsString(changePasswordRequest))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test

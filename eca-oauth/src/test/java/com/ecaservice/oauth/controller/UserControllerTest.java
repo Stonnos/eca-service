@@ -2,6 +2,7 @@ package com.ecaservice.oauth.controller;
 
 import com.ecaservice.oauth.TestHelperUtils;
 import com.ecaservice.oauth.dto.CreateUserDto;
+import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserPhoto;
 import com.ecaservice.oauth.mapping.RoleMapperImpl;
@@ -25,12 +26,16 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.util.MimeTypeUtils;
 
 import javax.inject.Inject;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.ecaservice.oauth.TestHelperUtils.createUpdateUserInfoDto;
 import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
 import static com.ecaservice.oauth.util.FieldConstraints.EMAIL_MAX_SIZE;
 import static com.ecaservice.oauth.util.FieldConstraints.LOGIN_MAX_LENGTH;
@@ -40,8 +45,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -60,6 +68,13 @@ class UserControllerTest extends AbstractControllerTest {
     private static final String DOWNLOAD_PHOTO_URL = BASE_URL + "/photo/{id}";
     private static final String LOCK_URL = BASE_URL + "/lock";
     private static final String UNLOCK_URL = BASE_URL + "/unlock";
+    private static final String UPDATE_EMAIL_URL = BASE_URL + "/update-email";
+    private static final String GET_USER_INFO_URL = BASE_URL + "/user-info";
+    private static final String LOGOUT_URL = BASE_URL + "/logout";
+    private static final String TFA_ENABLED_URL = BASE_URL + "/tfa-enabled";
+    private static final String UPDATE_USER_INFO = BASE_URL + "/update-info";
+    private static final String DELETE_PHOTO_URL = BASE_URL + "/delete-photo";
+    private static final String UPLOAD_PHOTO_URL = BASE_URL + "/upload-photo";
 
     private static final String PAGE_PARAM = "page";
     private static final String SIZE_PARAM = "size";
@@ -71,6 +86,15 @@ class UserControllerTest extends AbstractControllerTest {
     private static final int CONTENT_LENGTH = 32;
     private static final long USER_ID = 1L;
     private static final String USER_ID_PARAM = "userId";
+    private static final long LOCK_USER_ID = 2L;
+    private static final String TEST_EMAIL = "test@mail.ru";
+    private static final String NEW_EMAIL_PARAM = "newEmail";
+    private static final String TFA_ENABLED_PARAM = "enabled";
+    private static final String INVALID_PERSON_DATA = "ивfd";
+
+    private final MockMultipartFile photoFile =
+            new MockMultipartFile("file", "photo.jpg",
+                    MimeTypeUtils.TEXT_PLAIN.toString(), "file-content".getBytes(StandardCharsets.UTF_8));
 
     @MockBean
     private UserService userService;
@@ -248,6 +272,23 @@ class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void testLockYourself() throws Exception {
+        mockMvc.perform(post(LOCK_URL)
+                .param(USER_ID_PARAM, String.valueOf(USER_ID))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testLockUser() throws Exception {
+        mockMvc.perform(post(LOCK_URL)
+                .param(USER_ID_PARAM, String.valueOf(LOCK_USER_ID))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isOk());
+        verify(userService, atLeastOnce()).lock(LOCK_USER_ID);
+    }
+
+    @Test
     void testUnlockUserUnauthorized() throws Exception {
         mockMvc.perform(post(UNLOCK_URL)
                 .param(USER_ID_PARAM, String.valueOf(USER_ID)))
@@ -270,11 +311,219 @@ class UserControllerTest extends AbstractControllerTest {
         verify(userService, atLeastOnce()).unlock(USER_ID);
     }
 
+    @Test
+    void testUpdateEmailUnauthorized() throws Exception {
+        mockMvc.perform(post(UPDATE_EMAIL_URL)
+                .param(NEW_EMAIL_PARAM, TEST_EMAIL))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testUpdateEmailWithNullEmailParam() throws Exception {
+        mockMvc.perform(post(UPDATE_EMAIL_URL)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testUpdateEmailWithInvalidEmailParam() throws Exception {
+        mockMvc.perform(post(UPDATE_EMAIL_URL)
+                .param(NEW_EMAIL_PARAM, "abc")
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testUpdateEmailOk() throws Exception {
+        mockMvc.perform(post(UPDATE_EMAIL_URL)
+                .param(NEW_EMAIL_PARAM, TEST_EMAIL)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isOk());
+        verify(userService, atLeastOnce()).updateEmail(USER_ID, TEST_EMAIL);
+    }
+
+    @Test
+    void testGetUserInfoUnauthorized() throws Exception {
+        mockMvc.perform(get(GET_USER_INFO_URL))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetUserInfoOk() throws Exception {
+        UserEntity userEntity = createUserEntity();
+        userEntity.setId(USER_ID);
+        UserDto expected = userMapper.map(userEntity);
+        when(userService.getById(USER_ID)).thenReturn(userEntity);
+        when(userPhotoRepository.getUserPhotoId(userEntity)).thenReturn(null);
+        mockMvc.perform(get(GET_USER_INFO_URL)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    void testLogoutUnauthorized() throws Exception {
+        mockMvc.perform(post(LOGOUT_URL))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testLogout() throws Exception {
+        mockMvc.perform(post(LOGOUT_URL)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testTfaEnabledUnauthorized() throws Exception {
+        mockMvc.perform(post(TFA_ENABLED_URL)
+                .param(TFA_ENABLED_PARAM, Boolean.TRUE.toString()))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testTfaEnabled() throws Exception {
+        mockMvc.perform(post(TFA_ENABLED_URL)
+                .param(TFA_ENABLED_PARAM, Boolean.TRUE.toString())
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isOk());
+        verify(userService, atLeastOnce()).setTfaEnabled(USER_ID, true);
+    }
+
+    @Test
+    void testUpdateUserInfoUnauthorized() throws Exception {
+        var updateUserInfo = createUpdateUserInfoDto();
+        mockMvc.perform(put(UPDATE_USER_INFO)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateUserInfo)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testUpdateUserWithEmptyFirstName() throws Exception {
+        var updateUserInfo = createUpdateUserInfoDto();
+        updateUserInfo.setFirstName(StringUtils.EMPTY);
+        testUpdateUserInfoBadRequest(updateUserInfo);
+    }
+
+    @Test
+    void testUpdateUserWithEmptyLastName() throws Exception {
+        var updateUserInfo = createUpdateUserInfoDto();
+        updateUserInfo.setLastName(StringUtils.EMPTY);
+        testUpdateUserInfoBadRequest(updateUserInfo);
+    }
+
+    @Test
+    void testUpdateUserWithEmptyMiddleName() throws Exception {
+        var updateUserInfo = createUpdateUserInfoDto();
+        updateUserInfo.setMiddleName(StringUtils.EMPTY);
+        testUpdateUserInfoBadRequest(updateUserInfo);
+    }
+
+    @Test
+    void testUpdateUserWithLargeFirstName() throws Exception {
+        var updateUserInfo = createUpdateUserInfoDto();
+        updateUserInfo.setFirstName(StringUtils.repeat('Q', PERSON_NAME_MAX_SIZE + 1));
+        testUpdateUserInfoBadRequest(updateUserInfo);
+    }
+
+    @Test
+    void testUpdateUserWithLargeLastName() throws Exception {
+        var updateUserInfo = createUpdateUserInfoDto();
+        updateUserInfo.setLastName(StringUtils.repeat('Q', PERSON_NAME_MAX_SIZE + 1));
+        testUpdateUserInfoBadRequest(updateUserInfo);
+    }
+
+    @Test
+    void testUpdateUserWithLargeMiddleName() throws Exception {
+        var updateUserInfo = createUpdateUserInfoDto();
+        updateUserInfo.setMiddleName(StringUtils.repeat('Q', PERSON_NAME_MAX_SIZE + 1));
+        testUpdateUserInfoBadRequest(updateUserInfo);
+    }
+
+    @Test
+    void testUpdateUserWithInvalidFirstName() throws Exception {
+        var updateUserInfo = createUpdateUserInfoDto();
+        updateUserInfo.setFirstName(INVALID_PERSON_DATA);
+        testUpdateUserInfoBadRequest(updateUserInfo);
+    }
+
+    @Test
+    void testUpdateUserWithInvalidLastName() throws Exception {
+        var updateUserInfo = createUpdateUserInfoDto();
+        updateUserInfo.setLastName(INVALID_PERSON_DATA);
+        testUpdateUserInfoBadRequest(updateUserInfo);
+    }
+
+    @Test
+    void testUpdateUserWithInvalidMiddleName() throws Exception {
+        var updateUserInfo = createUpdateUserInfoDto();
+        updateUserInfo.setMiddleName(INVALID_PERSON_DATA);
+        testUpdateUserInfoBadRequest(updateUserInfo);
+    }
+
+    @Test
+    void testUpdateUserInfoOk() throws Exception {
+        var updateUserInfo = createUpdateUserInfoDto();
+        mockMvc.perform(put(UPDATE_USER_INFO)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateUserInfo)))
+                .andExpect(status().isOk());
+        verify(userService, atLeastOnce()).updateUserInfo(USER_ID, updateUserInfo);
+    }
+
+    @Test
+    void testDeletePhotoUnauthorized() throws Exception {
+        mockMvc.perform(delete(DELETE_PHOTO_URL))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testDeletePhoto() throws Exception {
+        mockMvc.perform(delete(DELETE_PHOTO_URL)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isOk());
+        verify(userService, atLeastOnce()).deletePhoto(USER_ID);
+    }
+
+    @Test
+    void testUploadPhotoUnauthorized() throws Exception {
+        mockMvc.perform(multipart(UPLOAD_PHOTO_URL)
+                .file(photoFile))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testUploadPhotoWithNullFile() throws Exception {
+        mockMvc.perform(multipart(UPLOAD_PHOTO_URL)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testUploadPhotoOk() throws Exception {
+        mockMvc.perform(multipart(UPLOAD_PHOTO_URL)
+                .file(photoFile)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isOk());
+        verify(userService, atLeastOnce()).updatePhoto(USER_ID, photoFile);
+    }
+
     private void testCreateUserBadRequest(CreateUserDto createUserDto) throws Exception {
         mockMvc.perform(post(CREATE_URL)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(createUserDto))
                 .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    private void testUpdateUserInfoBadRequest(UpdateUserInfoDto updateUserInfoDto) throws Exception {
+        mockMvc.perform(put(UPDATE_USER_INFO)
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateUserInfoDto)))
                 .andExpect(status().isBadRequest());
     }
 }

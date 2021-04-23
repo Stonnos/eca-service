@@ -28,9 +28,9 @@ public class TestHelperUtils {
     private static final String TOKEN = "token";
     private static final String MIDDLE_NAME = "Igorevich";
     private static final String LAST_NAME = "Batygin";
-    private static final String UPDATE_MIDDLE_NAME = "updateMiddleName";
-    private static final String UPDATE_LAST_NAME = "updateLastName";
-    private static final String UPDATE_FIRST_NAME = "updateFirstName";
+    private static final String UPDATE_MIDDLE_NAME = "Иванович";
+    private static final String UPDATE_LAST_NAME = "Иванов";
+    private static final String UPDATE_FIRST_NAME = "Иван";
 
     /**
      * Creates role entity.

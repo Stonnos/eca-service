@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -53,15 +52,14 @@ public class ClassifierOptionsService {
     @Transactional
     public ClassifierOptionsDatabaseModel saveClassifierOptions(long configurationId,
                                                                 ClassifierOptions classifierOptions) {
-        ClassifiersConfiguration classifiersConfiguration = getConfigurationById(configurationId);
+        var classifiersConfiguration = getConfigurationById(configurationId);
         Assert.state(!classifiersConfiguration.isBuildIn(),
                 "Can't add classifier options to build in configuration!");
         Assert.state(!isEnsembleClassifierOptions(classifierOptions), "Can't save ensemble classifier options!");
-        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
+        var classifierOptionsDatabaseModel =
                 createClassifierOptionsDatabaseModel(classifierOptions, classifiersConfiguration);
         classifierOptionsDatabaseModel.setCreatedBy(userService.getCurrentUser());
-        ClassifierOptionsDatabaseModel saved =
-                classifierOptionsDatabaseModelRepository.save(classifierOptionsDatabaseModel);
+        var saved = classifierOptionsDatabaseModelRepository.save(classifierOptionsDatabaseModel);
         classifiersConfiguration.setUpdated(LocalDateTime.now());
         classifiersConfigurationRepository.save(classifiersConfiguration);
         log.info("New classifier options [{}, id {}] has been saved for configuration [{}]", saved.getOptionsName(),
@@ -76,10 +74,9 @@ public class ClassifierOptionsService {
      */
     @Transactional
     public void deleteOptions(long id) {
-        ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel =
-                classifierOptionsDatabaseModelRepository.findById(id).orElseThrow(
-                        () -> new EntityNotFoundException(ClassifierOptionsDatabaseModel.class, id));
-        ClassifiersConfiguration classifiersConfiguration = classifierOptionsDatabaseModel.getConfiguration();
+        var classifierOptionsDatabaseModel = classifierOptionsDatabaseModelRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(ClassifierOptionsDatabaseModel.class, id));
+        var classifiersConfiguration = classifierOptionsDatabaseModel.getConfiguration();
         Assert.state(!classifiersConfiguration.isBuildIn(),
                 "Can't delete classifier options from build in configuration!");
         Assert.state(hasMoreThanOneOptionsForActiveConfiguration(classifiersConfiguration), String.format(
@@ -99,9 +96,9 @@ public class ClassifierOptionsService {
      * @return classifiers options page
      */
     public Page<ClassifierOptionsDatabaseModel> getNextPage(long configurationId, PageRequestDto pageRequestDto) {
-        ClassifiersConfiguration classifiersConfiguration = getConfigurationById(configurationId);
-        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
-        int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
+        var classifiersConfiguration = getConfigurationById(configurationId);
+        var sort = SortUtils.buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
+        var pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
         return classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration,
                 PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
     }
@@ -112,11 +109,11 @@ public class ClassifierOptionsService {
      * @return classifiers options list
      */
     public List<ClassifierOptionsDatabaseModel> getActiveClassifiersOptions() {
-        ClassifiersConfiguration activeConfiguration =
-                classifiersConfigurationRepository.findFirstByActiveTrue().orElseThrow(
-                        () -> new IllegalStateException("Can't find active classifiers configuration!"));
-        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
-                classifierOptionsDatabaseModelRepository.findAllByConfiguration(activeConfiguration);
+        var activeConfiguration = classifiersConfigurationRepository.findFirstByActiveTrue()
+                .orElseThrow(() -> new IllegalStateException("Can't find active classifiers configuration!"));
+        var classifierOptionsDatabaseModels =
+                classifierOptionsDatabaseModelRepository.findAllByConfigurationOrderByCreationDateDesc(
+                        activeConfiguration);
         log.info("Fetched active classifiers configuration with name [{}], id [{}], options size [{}]!",
                 activeConfiguration.getConfigurationName(), activeConfiguration.getId(),
                 classifierOptionsDatabaseModels.size());
@@ -134,16 +131,15 @@ public class ClassifierOptionsService {
                                                       Set<ClassifierOptionsDatabaseModel> newOptions) {
         Assert.state(classifiersConfiguration.isBuildIn(), "Expected build in configuration!");
         Assert.notEmpty(newOptions, "New classifiers options list must be not empty!");
-        List<ClassifierOptionsDatabaseModel> latestOptions =
-                classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration);
+        var latestOptions = classifierOptionsDatabaseModelRepository.findAllByConfigurationOrderByCreationDateDesc(classifiersConfiguration);
         if (CollectionUtils.isEmpty(latestOptions) || latestOptions.size() != newOptions.size() ||
                 !newOptions.containsAll(latestOptions)) {
-            List<ClassifierOptionsDatabaseModel> oldOptionsToDelete =
-                    latestOptions.stream().filter(options -> !newOptions.contains(options)).collect(
-                            Collectors.toList());
-            List<ClassifierOptionsDatabaseModel> newOptionsToSave =
-                    newOptions.stream().filter(options -> !latestOptions.contains(options)).collect(
-                            Collectors.toList());
+            var oldOptionsToDelete = latestOptions.stream()
+                    .filter(options -> !newOptions.contains(options))
+                    .collect(Collectors.toList());
+            var newOptionsToSave = newOptions.stream()
+                    .filter(options -> !latestOptions.contains(options))
+                    .collect(Collectors.toList());
             if (!CollectionUtils.isEmpty(oldOptionsToDelete)) {
                 classifierOptionsDatabaseModelRepository.deleteAll(oldOptionsToDelete);
             }

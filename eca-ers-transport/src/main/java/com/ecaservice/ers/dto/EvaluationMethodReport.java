@@ -31,14 +31,14 @@ public class EvaluationMethodReport {
      * Folds number for k * V cross - validation method
      */
     @Min(MIN_2)
-    @ApiModelProperty(value = "Folds number for k * V cross - validation method")
+    @ApiModelProperty(value = "Folds number for k * V cross - validation method", example = "2")
     private BigInteger numFolds;
 
     /**
      * Tests number for k * V cross - validation method
      */
     @Min(MIN_1)
-    @ApiModelProperty(value = "Tests number for k * V cross - validation method")
+    @ApiModelProperty(value = "Tests number for k * V cross - validation method", example = "1")
     private BigInteger numTests;
 
     /**

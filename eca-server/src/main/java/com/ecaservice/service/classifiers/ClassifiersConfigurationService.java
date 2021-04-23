@@ -6,10 +6,8 @@ import com.ecaservice.config.CommonConfig;
 import com.ecaservice.filter.ClassifiersConfigurationFilter;
 import com.ecaservice.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.mapping.ClassifiersConfigurationMapper;
-import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.model.entity.FilterTemplateType;
-import com.ecaservice.model.projections.ClassifiersOptionsStatistics;
 import com.ecaservice.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
@@ -26,14 +24,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -63,10 +58,10 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * @param configurationDto - create classifiers configuration dto
      */
     public ClassifiersConfiguration save(CreateClassifiersConfigurationDto configurationDto) {
-        ClassifiersConfiguration classifiersConfiguration = classifiersConfigurationMapper.map(configurationDto);
+        var classifiersConfiguration = classifiersConfigurationMapper.map(configurationDto);
         classifiersConfiguration.setCreatedBy(userService.getCurrentUser());
         classifiersConfiguration.setCreationDate(LocalDateTime.now());
-        ClassifiersConfiguration savedConfiguration = classifiersConfigurationRepository.save(classifiersConfiguration);
+        var savedConfiguration = classifiersConfigurationRepository.save(classifiersConfiguration);
         log.info("Classifiers configuration [{}] has been saved", savedConfiguration.getConfigurationName());
         return savedConfiguration;
     }
@@ -77,7 +72,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * @param configurationDto - update classifiers configuration dto
      */
     public void update(UpdateClassifiersConfigurationDto configurationDto) {
-        ClassifiersConfiguration classifiersConfiguration = getById(configurationDto.getId());
+        var classifiersConfiguration = getById(configurationDto.getId());
         classifiersConfigurationMapper.update(configurationDto, classifiersConfiguration);
         classifiersConfiguration.setUpdated(LocalDateTime.now());
         classifiersConfigurationRepository.save(classifiersConfiguration);
@@ -90,7 +85,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * @param id - classifiers configuration id
      */
     public void delete(long id) {
-        ClassifiersConfiguration classifiersConfiguration = getById(id);
+        var classifiersConfiguration = getById(id);
         Assert.state(!classifiersConfiguration.isBuildIn(),
                 String.format("Can't delete build in configuration [%d]!", id));
         Assert.state(!classifiersConfiguration.isActive(),
@@ -106,10 +101,9 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      */
     @Locked(lockName = "setActiveClassifiersConfiguration")
     public void setActive(long id) {
-        ClassifiersConfiguration classifiersConfiguration = getById(id);
-        ClassifiersConfiguration activeConfiguration =
-                classifiersConfigurationRepository.findFirstByActiveTrue().orElseThrow(
-                        () -> new IllegalStateException("Can't find previous active classifiers configuration!"));
+        var classifiersConfiguration = getById(id);
+        var activeConfiguration = classifiersConfigurationRepository.findFirstByActiveTrue()
+                .orElseThrow(() -> new IllegalStateException("Can't find previous active classifiers configuration!"));
         Assert.state(classifierOptionsDatabaseModelRepository.countByConfiguration(classifiersConfiguration) > 0L,
                 String.format("Can't set configuration [%d] as active, because its has no one classifiers options!",
                         classifiersConfiguration.getId()));
@@ -123,12 +117,12 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
 
     @Override
     public Page<ClassifiersConfiguration> getNextPage(PageRequestDto pageRequestDto) {
-        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
-        List<String> globalFilterFields =
+        var sort = SortUtils.buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
+        var globalFilterFields =
                 filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION);
-        ClassifiersConfigurationFilter filter = new ClassifiersConfigurationFilter(pageRequestDto.getSearchQuery(),
+        var filter = new ClassifiersConfigurationFilter(pageRequestDto.getSearchQuery(),
                 globalFilterFields, pageRequestDto.getFilters());
-        int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
+        var pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
         return classifiersConfigurationRepository.findAll(filter,
                 PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
     }
@@ -140,19 +134,19 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * @return classifiers configurations dto models page
      */
     public PageDto<ClassifiersConfigurationDto> getClassifiersConfigurations(PageRequestDto pageRequestDto) {
-        Page<ClassifiersConfiguration> classifiersConfigurationsPage = getNextPage(pageRequestDto);
-        List<ClassifiersConfigurationDto> configurationDtoList =
-                classifiersConfigurationMapper.map(classifiersConfigurationsPage.getContent());
+        var classifiersConfigurationsPage = getNextPage(pageRequestDto);
+        var configurationDtoList = classifiersConfigurationMapper.map(classifiersConfigurationsPage.getContent());
         if (classifiersConfigurationsPage.hasContent()) {
-            List<Long> configurationsIds =
-                    classifiersConfigurationsPage.getContent().stream().map(ClassifiersConfiguration::getId).collect(
-                            Collectors.toList());
-            List<ClassifiersOptionsStatistics> classifiersOptionsStatisticsList =
+            var configurationsIds = classifiersConfigurationsPage.getContent()
+                    .stream()
+                    .map(ClassifiersConfiguration::getId)
+                    .collect(Collectors.toList());
+            var classifiersOptionsStatisticsList =
                     classifierOptionsDatabaseModelRepository.getClassifiersOptionsStatistics(configurationsIds);
-            Map<Long, ClassifiersConfigurationDto> configurationDtoMap = configurationDtoList.stream().collect(
-                    Collectors.toMap(ClassifiersConfigurationDto::getId, Function.identity()));
+            var configurationDtoMap = configurationDtoList.stream()
+                    .collect(Collectors.toMap(ClassifiersConfigurationDto::getId, Function.identity()));
             classifiersOptionsStatisticsList.forEach(classifiersOptionsStatistics -> {
-                ClassifiersConfigurationDto classifiersConfigurationDto =
+                var classifiersConfigurationDto =
                         configurationDtoMap.get(classifiersOptionsStatistics.getConfigurationId());
                 classifiersConfigurationDto.setClassifiersOptionsCount(
                         classifiersOptionsStatistics.getClassifiersOptionsCount());
@@ -169,9 +163,8 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * @return classifiers configuration dto
      */
     public ClassifiersConfigurationDto getClassifiersConfigurationDetails(long id) {
-        ClassifiersConfiguration classifiersConfiguration = getById(id);
-        ClassifiersConfigurationDto classifiersConfigurationDto =
-                classifiersConfigurationMapper.map(classifiersConfiguration);
+        var classifiersConfiguration = getById(id);
+        var classifiersConfigurationDto = classifiersConfigurationMapper.map(classifiersConfiguration);
         classifiersConfigurationDto.setClassifiersOptionsCount(
                 classifierOptionsDatabaseModelRepository.countByConfiguration(classifiersConfiguration));
         return classifiersConfigurationDto;
@@ -184,11 +177,11 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * @return classifiers configuration report
      */
     public ClassifiersConfigurationBean getClassifiersConfigurationReport(long id) {
-        ClassifiersConfiguration classifiersConfiguration = getById(id);
-        List<ClassifierOptionsDatabaseModel> classifierOptionsDatabaseModels =
-                classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration);
-        ClassifiersConfigurationBean classifiersConfigurationBean =
-                classifiersConfigurationMapper.mapToBean(classifiersConfiguration);
+        var classifiersConfiguration = getById(id);
+        var classifierOptionsDatabaseModels =
+                classifierOptionsDatabaseModelRepository.findAllByConfigurationOrderByCreationDateDesc(
+                        classifiersConfiguration);
+        var classifiersConfigurationBean = classifiersConfigurationMapper.mapToBean(classifiersConfiguration);
         classifiersConfigurationBean.setClassifiersOptionsCount(classifierOptionsDatabaseModels.size());
         classifiersConfigurationBean.setClassifiersOptions(
                 classifierOptionsDatabaseModelMapper.mapToBeans(classifierOptionsDatabaseModels));
