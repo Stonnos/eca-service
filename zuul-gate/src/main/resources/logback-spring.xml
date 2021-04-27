@@ -19,25 +19,8 @@
         </appender>
     </springProfile>
 
-    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>zuul-gate.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>zuul-gate.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <!-- 21 days keep logs -->
-            <maxHistory>21</maxHistory>
-            <totalSizeCap>100mb</totalSizeCap>
-        </rollingPolicy>
-
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>
-                %d{yyyy-MM-dd HH:mm:ss} [%thread] %X{userLogin} %-5level %logger{36} - %msg%n
-            </Pattern>
-        </layout>
-    </appender>
-
     <root level="INFO">
         <appender-ref ref="console"/>
-        <appender-ref ref="file"/>
     </root>
 
 </configuration>
