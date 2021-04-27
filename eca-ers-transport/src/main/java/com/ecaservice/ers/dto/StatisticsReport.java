@@ -31,7 +31,7 @@ public class StatisticsReport {
      */
     @NotNull
     @Min(MIN_2)
-    @ApiModelProperty(value = "Test instances number", example = "100")
+    @ApiModelProperty(value = "Test instances number", example = "100", required = true)
     private BigInteger numTestInstances;
 
     /**
@@ -39,7 +39,7 @@ public class StatisticsReport {
      */
     @NotNull
     @Min(MIN_ZERO)
-    @ApiModelProperty(value = "Correctly classified instances number", example = "100")
+    @ApiModelProperty(value = "Correctly classified instances number", example = "100", required = true)
     private BigInteger numCorrect;
 
     /**
@@ -47,7 +47,7 @@ public class StatisticsReport {
      */
     @NotNull
     @Min(MIN_ZERO)
-    @ApiModelProperty(value = "Incorrectly classified instances number", example = "0")
+    @ApiModelProperty(value = "Incorrectly classified instances number", example = "0", required = true)
     private BigInteger numIncorrect;
 
     /**
@@ -56,7 +56,7 @@ public class StatisticsReport {
     @NotNull
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_100)
-    @ApiModelProperty(value = "Correctly classified percentage", example = "100.0")
+    @ApiModelProperty(value = "Correctly classified percentage", example = "100.0", required = true)
     private BigDecimal pctCorrect;
 
     /**
@@ -65,7 +65,7 @@ public class StatisticsReport {
     @NotNull
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_100)
-    @ApiModelProperty(value = "Incorrectly classified percentage", example = "0.0")
+    @ApiModelProperty(value = "Incorrectly classified percentage", example = "0.0", required = true)
     private BigDecimal pctIncorrect;
 
     /**

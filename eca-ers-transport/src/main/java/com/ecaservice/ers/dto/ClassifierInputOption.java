@@ -27,7 +27,7 @@ public class ClassifierInputOption {
      */
     @NotBlank
     @Size(max = MAX_LENGTH_255)
-    @ApiModelProperty(value = "Option key")
+    @ApiModelProperty(value = "Option key", required = true)
     private String key;
 
     /**
@@ -35,6 +35,6 @@ public class ClassifierInputOption {
      */
     @NotBlank
     @Size(max = MAX_LENGTH_255)
-    @ApiModelProperty(value = "Option value")
+    @ApiModelProperty(value = "Option value", required = true)
     private String value;
 }

@@ -27,7 +27,7 @@ public class ConfusionMatrixReport {
      */
     @NotBlank
     @Size(max = MAX_LENGTH_255)
-    @ApiModelProperty(value = "Actual class", example = "Iris-setosa")
+    @ApiModelProperty(value = "Actual class", example = "Iris-setosa", required = true)
     private String actualClass;
 
     /**
@@ -35,7 +35,7 @@ public class ConfusionMatrixReport {
      */
     @NotBlank
     @Size(max = MAX_LENGTH_255)
-    @ApiModelProperty(value = "Predicted class", example = "Iris-versicolor")
+    @ApiModelProperty(value = "Predicted class", example = "Iris-versicolor", required = true)
     private String predictedClass;
 
     /**
@@ -43,6 +43,6 @@ public class ConfusionMatrixReport {
      */
     @NotNull
     @Min(MIN_ZERO)
-    @ApiModelProperty(value = "Instances number", example = "10")
+    @ApiModelProperty(value = "Instances number", example = "10", required = true)
     private BigInteger numInstances;
 }

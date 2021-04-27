@@ -21,7 +21,7 @@ public class SortField {
      */
     @NotBlank
     @Size(max = MAX_LENGTH_255)
-    @ApiModelProperty(value = "Sort field name")
+    @ApiModelProperty(value = "Sort field name", example = "statistics.pctCorrect", required = true)
     private String fieldName;
 
     /**

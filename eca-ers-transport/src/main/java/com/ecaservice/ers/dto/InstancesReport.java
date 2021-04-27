@@ -26,7 +26,7 @@ public class InstancesReport {
      * Training data structure
      */
     @NotBlank
-    @ApiModelProperty(value = "Training data structure", example = "training data string")
+    @ApiModelProperty(value = "Training data structure", example = "training data string", required = true)
     private String structure;
 
     /**
@@ -34,7 +34,7 @@ public class InstancesReport {
      */
     @NotBlank
     @Size(max = MAX_LENGTH_255)
-    @ApiModelProperty(value = "Relation name", example = "iris")
+    @ApiModelProperty(value = "Relation name", example = "iris", required = true)
     private String relationName;
 
     /**
@@ -42,7 +42,7 @@ public class InstancesReport {
      */
     @NotNull
     @Min(MIN_2)
-    @ApiModelProperty(value = "Instances number", example = "150")
+    @ApiModelProperty(value = "Instances number", example = "150", required = true)
     private BigInteger numInstances;
 
     /**
@@ -50,7 +50,7 @@ public class InstancesReport {
      */
     @NotNull
     @Min(MIN_2)
-    @ApiModelProperty(value = "Attributes number", example = "5")
+    @ApiModelProperty(value = "Attributes number", example = "5", required = true)
     private BigInteger numAttributes;
 
     /**
@@ -58,7 +58,7 @@ public class InstancesReport {
      */
     @NotNull
     @Min(MIN_2)
-    @ApiModelProperty(value = "Classes number", example = "4")
+    @ApiModelProperty(value = "Classes number", example = "4", required = true)
     private BigInteger numClasses;
 
     /**
@@ -66,6 +66,6 @@ public class InstancesReport {
      */
     @NotBlank
     @Size(max = MAX_LENGTH_255)
-    @ApiModelProperty(value = "Class name", example = "class")
+    @ApiModelProperty(value = "Class name", example = "class", required = true)
     private String className;
 }
