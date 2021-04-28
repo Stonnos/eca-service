@@ -23,13 +23,14 @@ public class ResetPasswordRequest {
      * Token value
      */
     @NotBlank
-    @ApiModelProperty(value = "Token value", required = true)
+    @ApiModelProperty(value = "Token value",
+            example = "MDhmNTg4MDdiMTI0Y2Y4OWNmN2UxYmE1OTljYjUzOWU6MTYxNjE1MzM4MDMzMQ==", required = true)
     private String token;
 
     /**
      * New password
      */
     @NotBlank
-    @ApiModelProperty(value = "New password", required = true)
+    @ApiModelProperty(value = "New password", example = "passw0rd!", required = true)
     private String password;
 }

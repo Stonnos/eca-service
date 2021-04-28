@@ -29,7 +29,7 @@ public class EvaluationResultsRequest {
     @NotBlank
     @Pattern(regexp = UUID_PATTERN)
     @Size(max = UUID_MAX_SIZE)
-    @ApiModelProperty(value = "Request id", example = "1d2de514-3a87-4620-9b97-c260e24340de")
+    @ApiModelProperty(value = "Request id", example = "1d2de514-3a87-4620-9b97-c260e24340de", required = true)
     private String requestId;
 
     /**
@@ -37,7 +37,7 @@ public class EvaluationResultsRequest {
      */
     @NotNull
     @Valid
-    @ApiModelProperty(value = "Instances report")
+    @ApiModelProperty(value = "Instances report", required = true)
     private InstancesReport instances;
 
     /**
@@ -45,7 +45,7 @@ public class EvaluationResultsRequest {
      */
     @NotNull
     @Valid
-    @ApiModelProperty(value = "Classifier report")
+    @ApiModelProperty(value = "Classifier report", required = true)
     private ClassifierReport classifierReport;
 
     /**
@@ -53,7 +53,7 @@ public class EvaluationResultsRequest {
      */
     @NotNull
     @Valid
-    @ApiModelProperty(value = "Evaluation method report")
+    @ApiModelProperty(value = "Evaluation method report", required = true)
     private EvaluationMethodReport evaluationMethodReport;
 
     /**
@@ -61,7 +61,7 @@ public class EvaluationResultsRequest {
      */
     @NotNull
     @Valid
-    @ApiModelProperty(value = "Statistics report")
+    @ApiModelProperty(value = "Statistics report", required = true)
     private StatisticsReport statistics;
 
     /**

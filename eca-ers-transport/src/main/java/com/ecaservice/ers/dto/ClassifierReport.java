@@ -33,7 +33,7 @@ public class ClassifierReport {
      */
     @NotBlank
     @Size(max = MAX_LENGTH_255)
-    @ApiModelProperty(value = "Classifier name", example = "CART")
+    @ApiModelProperty(value = "Classifier name", example = "CART", required = true)
     private String classifierName;
 
     /**
@@ -47,7 +47,7 @@ public class ClassifierReport {
      * Classifier options string
      */
     @NotBlank
-    @ApiModelProperty(value = "Classifier options string", example = "classifier options string")
+    @ApiModelProperty(value = "Classifier options string", example = "classifier options string", required = true)
     private String options;
 
     /**

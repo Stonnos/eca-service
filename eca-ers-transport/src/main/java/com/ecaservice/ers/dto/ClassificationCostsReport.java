@@ -30,7 +30,7 @@ public class ClassificationCostsReport {
      */
     @NotBlank
     @Size(max = MAX_LENGTH_255)
-    @ApiModelProperty(value = "Class value", example = "classValue")
+    @ApiModelProperty(value = "Class value", example = "classValue", required = true)
     private String classValue;
 
     /**
@@ -39,7 +39,7 @@ public class ClassificationCostsReport {
     @NotNull
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @ApiModelProperty(value = "True positive rate", example = "0.75")
+    @ApiModelProperty(value = "True positive rate", example = "0.75", required = true)
     private BigDecimal truePositiveRate;
 
     /**
@@ -48,7 +48,7 @@ public class ClassificationCostsReport {
     @NotNull
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @ApiModelProperty(value = "False positive rate", example = "0.25")
+    @ApiModelProperty(value = "False positive rate", example = "0.25", required = true)
     private BigDecimal falsePositiveRate;
 
     /**
@@ -57,7 +57,7 @@ public class ClassificationCostsReport {
     @NotNull
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @ApiModelProperty(value = "True negative rate", example = "0.25")
+    @ApiModelProperty(value = "True negative rate", example = "0.25", required = true)
     private BigDecimal trueNegativeRate;
 
     /**
@@ -66,7 +66,7 @@ public class ClassificationCostsReport {
     @NotNull
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @ApiModelProperty(value = "False negative rate", example = "0.5")
+    @ApiModelProperty(value = "False negative rate", example = "0.5", required = true)
     private BigDecimal falseNegativeRate;
 
     /**

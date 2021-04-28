@@ -24,7 +24,7 @@ public class EvaluationMethodReport {
      * Evaluation method
      */
     @NotNull
-    @ApiModelProperty(value = "Evaluation method")
+    @ApiModelProperty(value = "Evaluation method", required = true)
     private EvaluationMethod evaluationMethod;
 
     /**

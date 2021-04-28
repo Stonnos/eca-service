@@ -29,21 +29,22 @@ public class EvaluationRequestDto implements Serializable {
      * Training data url
      */
     @DataURL
-    @ApiModelProperty(value = "Train data url")
+    @ApiModelProperty(value = "Train data url", example = "http://kt.ijs.si/Branax/Repository/WEKA/Iris.xls",
+            required = true)
     private String trainDataUrl;
 
     /**
      * Classifier input options json config
      */
     @NotNull
-    @ApiModelProperty(value = "Classifier options json")
+    @ApiModelProperty(value = "Classifier options json", required = true)
     private ClassifierOptions classifierOptions;
 
     /**
      * Evaluation method
      */
     @NotNull
-    @ApiModelProperty(value = "Evaluation method")
+    @ApiModelProperty(value = "Evaluation method", required = true)
     private EvaluationMethod evaluationMethod;
 
     /**
@@ -51,7 +52,7 @@ public class EvaluationRequestDto implements Serializable {
      */
     @Min(MIN_FOLDS)
     @Max(MAX_FOLDS)
-    @ApiModelProperty(value = "Folds number for k * V cross - validation method")
+    @ApiModelProperty(value = "Folds number for k * V cross - validation method", example = "10")
     private Integer numFolds;
 
     /**
@@ -59,12 +60,12 @@ public class EvaluationRequestDto implements Serializable {
      */
     @Min(MIN_TESTS)
     @Max(MAX_TESTS)
-    @ApiModelProperty(value = "Tests number for k * V cross - validation method")
+    @ApiModelProperty(value = "Tests number for k * V cross - validation method", example = "1")
     private Integer numTests;
 
     /**
      * Seed value for k * V cross - validation method
      */
-    @ApiModelProperty(value = "Seed value for k * V cross - validation method")
+    @ApiModelProperty(value = "Seed value for k * V cross - validation method", example = "1")
     private Integer seed;
 }

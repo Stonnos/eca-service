@@ -26,6 +26,6 @@ public class GetEvaluationResultsRequest {
     @NotBlank
     @Pattern(regexp = UUID_PATTERN)
     @Size(max = UUID_MAX_SIZE)
-    @ApiModelProperty(value = "Request id", example = "1d2de514-3a87-4620-9b97-c260e24340de")
+    @ApiModelProperty(value = "Request id", example = "1d2de514-3a87-4620-9b97-c260e24340de", required = true)
     private String requestId;
 }

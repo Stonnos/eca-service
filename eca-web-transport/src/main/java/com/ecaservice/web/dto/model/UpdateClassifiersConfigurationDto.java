@@ -26,7 +26,7 @@ public class UpdateClassifiersConfigurationDto {
      * Configuration id
      */
     @NotNull
-    @ApiModelProperty(value = "Configuration id", required = true)
+    @ApiModelProperty(value = "Configuration id", example = "1", required = true)
     private Long id;
 
     /**
@@ -34,6 +34,6 @@ public class UpdateClassifiersConfigurationDto {
      */
     @NotBlank
     @Size(max = FieldConstraints.CONFIGURATION_NAME_MAX_LENGTH)
-    @ApiModelProperty(value = "Configuration name", required = true)
+    @ApiModelProperty(value = "Configuration name", example = "Classifiers configuration", required = true)
     private String configurationName;
 }

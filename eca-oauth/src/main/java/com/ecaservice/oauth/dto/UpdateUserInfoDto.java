@@ -26,7 +26,7 @@ public class UpdateUserInfoDto {
     @NotBlank
     @Size(max = PERSON_NAME_MAX_SIZE)
     @Pattern(regexp = PERSON_NAME_REGEX)
-    @ApiModelProperty(value = "First name", required = true)
+    @ApiModelProperty(value = "First name", example = "Roman", required = true)
     private String firstName;
 
     /**
@@ -35,7 +35,7 @@ public class UpdateUserInfoDto {
     @NotBlank
     @Size(max = PERSON_NAME_MAX_SIZE)
     @Pattern(regexp = PERSON_NAME_REGEX)
-    @ApiModelProperty(value = "Last name", required = true)
+    @ApiModelProperty(value = "Last name", example = "Batygin", required = true)
     private String lastName;
 
     /**
@@ -44,6 +44,6 @@ public class UpdateUserInfoDto {
     @NotBlank
     @Size(max = PERSON_NAME_MAX_SIZE)
     @Pattern(regexp = PERSON_NAME_REGEX)
-    @ApiModelProperty(value = "Middle name", required = true)
+    @ApiModelProperty(value = "Middle name", example = "Igorevich", required = true)
     private String middleName;
 }

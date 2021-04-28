@@ -23,14 +23,14 @@ public class ClassifierOptionsRequest {
      * Instances name
      */
     @NotBlank
-    @ApiModelProperty(value = "Instances name", example = "iris")
+    @ApiModelProperty(value = "Instances name", example = "iris", required = true)
     private String relationName;
 
     /**
      * Instances MD5 hash sum
      */
     @NotBlank
-    @ApiModelProperty(value = "Instances MD5 hash sum", example = "3032e188204cb537f69fc7364f638641")
+    @ApiModelProperty(value = "Instances MD5 hash sum", example = "3032e188204cb537f69fc7364f638641", required = true)
     private String dataHash;
 
     /**
@@ -38,7 +38,7 @@ public class ClassifierOptionsRequest {
      */
     @Valid
     @NotNull
-    @ApiModelProperty(value = "Evaluation method report")
+    @ApiModelProperty(value = "Evaluation method report", required = true)
     private EvaluationMethodReport evaluationMethodReport;
 
     /**

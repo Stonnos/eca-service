@@ -35,7 +35,7 @@ public class CreateUserDto {
     @Size(min = LOGIN_MIN_LENGTH, max = LOGIN_MAX_LENGTH)
     @Pattern(regexp = LOGIN_REGEX)
     @UniqueLogin
-    @ApiModelProperty(value = "User login", required = true)
+    @ApiModelProperty(value = "User login", example = "user", required = true)
     private String login;
 
     /**
@@ -44,7 +44,7 @@ public class CreateUserDto {
     @Email(regexp = EMAIL_REGEX)
     @Size(max = EMAIL_MAX_SIZE)
     @UniqueEmail
-    @ApiModelProperty(value = "User email", required = true)
+    @ApiModelProperty(value = "User email", example = "bat1238@yandex.ru", required = true)
     private String email;
 
     /**
@@ -53,7 +53,7 @@ public class CreateUserDto {
     @NotBlank
     @Size(max = PERSON_NAME_MAX_SIZE)
     @Pattern(regexp = PERSON_NAME_REGEX)
-    @ApiModelProperty(value = "First name", required = true)
+    @ApiModelProperty(value = "First name", example = "Roman", required = true)
     private String firstName;
 
     /**
@@ -62,7 +62,7 @@ public class CreateUserDto {
     @NotBlank
     @Size(max = PERSON_NAME_MAX_SIZE)
     @Pattern(regexp = PERSON_NAME_REGEX)
-    @ApiModelProperty(value = "Last name", required = true)
+    @ApiModelProperty(value = "Last name", example = "Batygin", required = true)
     private String lastName;
 
     /**
@@ -71,6 +71,6 @@ public class CreateUserDto {
     @NotBlank
     @Size(max = PERSON_NAME_MAX_SIZE)
     @Pattern(regexp = PERSON_NAME_REGEX)
-    @ApiModelProperty(value = "Middle name", required = true)
+    @ApiModelProperty(value = "Middle name", example = "Igorevich", required = true)
     private String middleName;
 }
