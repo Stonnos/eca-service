@@ -26,6 +26,6 @@ public class CreateClassifiersConfigurationDto {
      */
     @NotBlank
     @Size(max = FieldConstraints.CONFIGURATION_NAME_MAX_LENGTH)
-    @ApiModelProperty(value = "Configuration name", required = true)
+    @ApiModelProperty(value = "Configuration name", example = "Classifiers configuration", required = true)
     private String configurationName;
 }

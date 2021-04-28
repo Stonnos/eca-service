@@ -23,13 +23,13 @@ public class ChangePasswordRequest {
      * Old password
      */
     @NotBlank
-    @ApiModelProperty(value = "Old password", required = true)
+    @ApiModelProperty(value = "Old password", example = "oldPassw0rd!", required = true)
     private String oldPassword;
 
     /**
      * New password
      */
     @NotBlank
-    @ApiModelProperty(value = "New password", required = true)
+    @ApiModelProperty(value = "New password", example = "newPassw0rd!", required = true)
     private String newPassword;
 }

@@ -25,14 +25,14 @@ public class EmailRequest {
     @NotBlank
     @Email(regexp = EMAIL_REGEX)
     @Size(max = EMAIL_MAX_SIZE)
-    @ApiModelProperty(value = "Receiver email", required = true)
+    @ApiModelProperty(value = "Receiver email", example = "bat1238@yandex.ru", required = true)
     private String receiver;
 
     /**
      * Template code
      */
     @NotBlank
-    @ApiModelProperty(value = "Email template code", required = true)
+    @ApiModelProperty(value = "Email template code", example = "NEW_EXPERIMENT", required = true)
     private String templateCode;
 
     /**

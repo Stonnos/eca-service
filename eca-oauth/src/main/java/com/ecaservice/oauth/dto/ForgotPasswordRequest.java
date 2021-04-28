@@ -25,6 +25,6 @@ public class ForgotPasswordRequest {
      */
     @NotBlank
     @UserEmail
-    @ApiModelProperty(value = "User email", required = true)
+    @ApiModelProperty(value = "User email", example = "bat1238@yandex.ru", required = true)
     private String email;
 }
