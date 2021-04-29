@@ -123,7 +123,7 @@ public class ExternalApiController {
     @GetMapping(value = "/download-model/{requestId}")
     public ResponseEntity<FileSystemResource> downloadModel(
             @ApiParam(value = "Request id", required = true) @PathVariable String requestId) {
-        var evaluationRequestEntity = ecaRequestService.getById(requestId);
+        var evaluationRequestEntity = ecaRequestService.getByCorrelationId(requestId);
         var modelFile = Optional.ofNullable(evaluationRequestEntity.getClassifierAbsolutePath())
                 .map(File::new)
                 .orElse(null);

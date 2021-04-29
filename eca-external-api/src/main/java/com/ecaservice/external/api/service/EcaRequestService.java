@@ -47,7 +47,7 @@ public class EcaRequestService {
      * @param correlationId - correlation id
      * @return evaluation request entity
      */
-    public EvaluationRequestEntity getById(String correlationId) {
+    public EvaluationRequestEntity getByCorrelationId(String correlationId) {
         return evaluationRequestRepository.findByCorrelationId(correlationId)
                 .orElseThrow(() -> new EntityNotFoundException(EcaRequestEntity.class, correlationId));
     }
