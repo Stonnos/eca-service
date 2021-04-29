@@ -3,6 +3,7 @@ package com.ecaservice.controller.web;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.mapping.ExperimentMapper;
@@ -13,7 +14,6 @@ import com.ecaservice.model.entity.ExperimentProgressEntity;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.ExperimentProgressRepository;
-import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.auth.UsersClient;
 import com.ecaservice.service.experiment.ExperimentRequestService;
@@ -104,8 +104,6 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     @MockBean
     private UsersClient usersClient;
     @MockBean
-    private ExperimentRepository experimentRepository;
-    @MockBean
     private ExperimentProgressRepository experimentProgressRepository;
     @MockBean
     private ExperimentResultsEntityRepository experimentResultsEntityRepository;
@@ -154,16 +152,16 @@ class ExperimentControllerTest extends PageRequestControllerTest {
 
     @Test
     void testGetExperimentDetailsNotFound() throws Exception {
-        when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(null);
+        when(experimentService.getByRequestId(TEST_UUID)).thenThrow(new EntityNotFoundException());
         mockMvc.perform(get(DETAILS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     void testGetExperimentDetailsOk() throws Exception {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
-        when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(experiment);
+        when(experimentService.getByRequestId(TEST_UUID)).thenReturn(experiment);
         ExperimentDto experimentDto = experimentMapper.map(experiment);
         mockMvc.perform(get(DETAILS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
@@ -298,7 +296,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         when(experimentResultsEntityRepository.findById(EXPERIMENT_RESULTS_ID)).thenReturn(Optional.empty());
         mockMvc.perform(get(EXPERIMENT_RESULTS_DETAILS_URL, EXPERIMENT_RESULTS_ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -327,16 +325,16 @@ class ExperimentControllerTest extends PageRequestControllerTest {
 
     @Test
     void testGetErsReportForNotExistingExperiment() throws Exception {
-        when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(null);
+        when(experimentService.getByRequestId(TEST_UUID)).thenThrow(new EntityNotFoundException());
         mockMvc.perform(get(ERS_REPORT_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     void testGetErsReportOk() throws Exception {
         ExperimentErsReportDto expected = new ExperimentErsReportDto();
-        when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(new Experiment());
+        when(experimentService.getByRequestId(TEST_UUID)).thenReturn(new Experiment());
         when(experimentResultsService.getErsReport(any(Experiment.class))).thenReturn(expected);
         mockMvc.perform(get(ERS_REPORT_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
@@ -372,19 +370,19 @@ class ExperimentControllerTest extends PageRequestControllerTest {
 
     @Test
     void testGetExperimentProgressForNotExistingExperiment() throws Exception {
-        when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(null);
+        when(experimentService.getByRequestId(TEST_UUID)).thenThrow(new EntityNotFoundException());
         mockMvc.perform(get(EXPERIMENT_PROGRESS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     void testGetExperimentProgressForNotExistingExperimentProgress() throws Exception {
-        when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(new Experiment());
+        when(experimentService.getByRequestId(TEST_UUID)).thenReturn(new Experiment());
         when(experimentProgressRepository.findByExperiment(any(Experiment.class))).thenReturn(null);
         mockMvc.perform(get(EXPERIMENT_PROGRESS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -392,7 +390,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         ExperimentProgressDto expected = new ExperimentProgressDto();
         expected.setFinished(true);
         expected.setProgress(PROGRESS_VALUE);
-        when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(new Experiment());
+        when(experimentService.getByRequestId(TEST_UUID)).thenReturn(new Experiment());
         ExperimentProgressEntity experimentProgressEntity = new ExperimentProgressEntity();
         experimentProgressEntity.setFinished(true);
         experimentProgressEntity.setProgress(PROGRESS_VALUE);
@@ -405,17 +403,17 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     private void testDownloadFileForNotExistingExperiment(String url) throws Exception {
-        when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(null);
+        when(experimentService.getByRequestId(TEST_UUID)).thenThrow(new EntityNotFoundException());
         mockMvc.perform(get(url, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     private void testDownloadNotExistingExperimentFile(String url) throws Exception {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
-        when(experimentRepository.findByRequestId(TEST_UUID)).thenReturn(experiment);
+        when(experimentService.getByRequestId(TEST_UUID)).thenReturn(experiment);
         mockMvc.perform(get(url, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 }

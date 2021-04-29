@@ -124,7 +124,7 @@ class FilterTemplateControllerTest extends AbstractControllerTest {
         when(filterService.getFilterFields(filterTemplateType)).thenThrow(new EntityNotFoundException());
         mockMvc.perform(get(templateUrl)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     private void testGetFilterTemplateOk(String templateUrl, FilterTemplateType filterTemplateType) throws Exception {
@@ -141,7 +141,7 @@ class FilterTemplateControllerTest extends AbstractControllerTest {
         when(filterService.getFilterDictionary(filterDictionaryName)).thenThrow(new EntityNotFoundException());
         mockMvc.perform(get(templateUrl)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     private void testGetFilterDictionaryOk(String templateUrl, String filterDictionaryName) throws Exception {

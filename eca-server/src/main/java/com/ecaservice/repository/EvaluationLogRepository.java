@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Implements repository that manages with {@link EvaluationLog} entities.
@@ -33,7 +34,7 @@ public interface EvaluationLogRepository
      * @param requestId - evaluation log request id
      * @return evaluation log entity
      */
-    EvaluationLog findByRequestId(String requestId);
+    Optional<EvaluationLog> findByRequestId(String requestId);
 
     /**
      * Calculates requests status counting statistics.

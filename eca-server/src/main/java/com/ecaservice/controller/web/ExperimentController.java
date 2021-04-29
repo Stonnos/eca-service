@@ -2,6 +2,7 @@ package com.ecaservice.controller.web;
 
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentProgressMapper;
 import com.ecaservice.model.MultipartFileResource;
@@ -9,7 +10,6 @@ import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentProgressEntity;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.repository.ExperimentProgressRepository;
-import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.auth.UsersClient;
 import com.ecaservice.service.experiment.ExperimentRequestService;
@@ -51,7 +51,6 @@ import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -73,7 +72,6 @@ public class ExperimentController {
 
     private static final String EXPERIMENT_RESULTS_FILE_NOT_FOUND =
             "Experiment results file for request id = '%s' not found!";
-    private static final String EXPERIMENT_NOT_FOUND_FORMAT = "Experiment with request id [{}] not found";
     private static final String EXPERIMENT_TRAINING_DATA_FILE_NOT_FOUND_FORMAT =
             "Experiment training data file for request id = '%s' not found!";
 
@@ -83,7 +81,6 @@ public class ExperimentController {
     private final ExperimentMapper experimentMapper;
     private final ExperimentProgressMapper experimentProgressMapper;
     private final UsersClient usersClient;
-    private final ExperimentRepository experimentRepository;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
     private final ExperimentProgressRepository experimentProgressRepository;
 
@@ -191,11 +188,7 @@ public class ExperimentController {
     public ResponseEntity<ExperimentDto> getExperiment(
             @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
         log.info("Received request to get experiment details for request id [{}]", requestId);
-        Experiment experiment = experimentRepository.findByRequestId(requestId);
-        if (experiment == null) {
-            log.error(EXPERIMENT_NOT_FOUND_FORMAT, requestId);
-            return ResponseEntity.notFound().build();
-        }
+        Experiment experiment = experimentService.getByRequestId(requestId);
         return ResponseEntity.ok(experimentMapper.map(experiment));
     }
 
@@ -214,14 +207,9 @@ public class ExperimentController {
     public ResponseEntity<ExperimentResultsDetailsDto> getExperimentResultsDetails(
             @ApiParam(value = "Experiment results id", example = "1", required = true) @PathVariable Long id) {
         log.info("Received request to get experiment results details for id [{}]", id);
-        Optional<ExperimentResultsEntity> experimentResultsEntityOptional =
-                experimentResultsEntityRepository.findById(id);
-        if (!experimentResultsEntityOptional.isPresent()) {
-            log.error("Experiment results with id [{}] not found", id);
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(
-                experimentResultsService.getExperimentResultsDetails(experimentResultsEntityOptional.get()));
+        ExperimentResultsEntity experimentResultsEntityOptional = experimentResultsEntityRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(ExperimentResultsEntity.class, id));
+        return ResponseEntity.ok(experimentResultsService.getExperimentResultsDetails(experimentResultsEntityOptional));
     }
 
     /**
@@ -254,11 +242,7 @@ public class ExperimentController {
     public ResponseEntity<ExperimentErsReportDto> getExperimentErsReport(
             @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
         log.info("Received request for ERS report for experiment [{}]", requestId);
-        Experiment experiment = experimentRepository.findByRequestId(requestId);
-        if (experiment == null) {
-            log.error(EXPERIMENT_NOT_FOUND_FORMAT, requestId);
-            return ResponseEntity.notFound().build();
-        }
+        Experiment experiment = experimentService.getByRequestId(requestId);
         return ResponseEntity.ok(experimentResultsService.getErsReport(experiment));
     }
 
@@ -304,15 +288,11 @@ public class ExperimentController {
     public ResponseEntity<ExperimentProgressDto> getExperimentProgress(
             @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
         log.trace("Received request to get experiment progress for request id [{}]", requestId);
-        Experiment experiment = experimentRepository.findByRequestId(requestId);
-        if (experiment == null) {
-            log.error(EXPERIMENT_NOT_FOUND_FORMAT, requestId);
-            return ResponseEntity.notFound().build();
-        }
+        Experiment experiment = experimentService.getByRequestId(requestId);
         ExperimentProgressEntity experimentProgressEntity = experimentProgressRepository.findByExperiment(experiment);
         if (experimentProgressEntity == null) {
             log.error("Can't find experiment progress for request id [{}]", experiment.getRequestId());
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(experimentProgressMapper.map(experimentProgressEntity));
     }
@@ -335,15 +315,11 @@ public class ExperimentController {
     private ResponseEntity<FileSystemResource> downloadExperimentFile(String requestId,
                                                                       Function<Experiment, String> filePathFunction,
                                                                       String errorMessage) {
-        Experiment experiment = experimentRepository.findByRequestId(requestId);
-        if (experiment == null) {
-            log.error(EXPERIMENT_NOT_FOUND_FORMAT, requestId);
-            return ResponseEntity.notFound().build();
-        }
+        Experiment experiment = experimentService.getByRequestId(requestId);
         File experimentFile = getExperimentFile(experiment, filePathFunction);
         if (!existsFile(experimentFile)) {
             log.error(errorMessage);
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
         log.info("Downloads experiment file '{}' for request id = '{}'", filePathFunction.apply(experiment), requestId);
         return Utils.buildAttachmentResponse(experimentFile);
