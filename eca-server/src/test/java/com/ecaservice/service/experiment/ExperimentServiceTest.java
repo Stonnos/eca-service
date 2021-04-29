@@ -4,6 +4,7 @@ import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
@@ -67,6 +68,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
+    private static final String INVALID_UUID = "InvalidUuid";
 
     @Inject
     private ExperimentRepository experimentRepository;
@@ -451,5 +453,19 @@ class ExperimentServiceTest extends AbstractJpaTest {
         Assertions.assertThat(experimentTypesMap).containsEntry(ExperimentType.ADA_BOOST, 2L);
         Assertions.assertThat(experimentTypesMap.get(ExperimentType.KNN)).isOne();
         Assertions.assertThat(experimentTypesMap.get(ExperimentType.DECISION_TREE)).isZero();
+    }
+
+    @Test
+    void testGetExperiment() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        experimentRepository.save(experiment);
+        Experiment actual = experimentService.getByRequestId(experiment.getRequestId());
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(experiment.getId());
+    }
+
+    @Test
+    void testGetExperimentShouldThrowEntityNotFoundException() {
+        assertThrows(EntityNotFoundException.class, () -> experimentService.getByRequestId(INVALID_UUID));
     }
 }

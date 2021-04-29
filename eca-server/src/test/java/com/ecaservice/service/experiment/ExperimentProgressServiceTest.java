@@ -1,5 +1,6 @@
 package com.ecaservice.service.experiment;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentProgressEntity;
 import com.ecaservice.model.entity.RequestStatus;
@@ -14,6 +15,7 @@ import java.util.UUID;
 
 import static com.ecaservice.TestHelperUtils.createExperiment;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for checking {@link ExperimentProgressService} functionality.
@@ -82,6 +84,12 @@ class ExperimentProgressServiceTest extends AbstractJpaTest {
         assertThat(experimentProgressEntity).isNotNull();
         assertThat(experimentProgressEntity.getExperiment()).isNotNull();
         assertThat(experimentProgressEntity.getExperiment().getId()).isEqualTo(experiment.getId());
+    }
+
+    @Test
+    void testGetExperimentProgressShouldThrowEntityNotFoundException() {
+        Experiment experiment = createAndSaveExperiment();
+        assertThrows(EntityNotFoundException.class, () ->  experimentProgressService.getExperimentProgress(experiment));
     }
 
     private Experiment createAndSaveExperiment() {
