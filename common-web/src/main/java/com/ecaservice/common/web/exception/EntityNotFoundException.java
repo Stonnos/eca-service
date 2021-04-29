@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author Roman Batygin
  */
 @NoArgsConstructor
-@ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Entity not found")
+@ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Entity not found")
 public class EntityNotFoundException extends RuntimeException {
 
     /**

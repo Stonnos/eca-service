@@ -241,7 +241,7 @@ class UserControllerTest extends AbstractControllerTest {
         when(userPhotoRepository.findById(PHOTO_ID)).thenReturn(Optional.empty());
         mockMvc.perform(get(DOWNLOAD_PHOTO_URL, PHOTO_ID)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
