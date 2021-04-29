@@ -1,5 +1,6 @@
 package com.ecaservice.external.api.controller;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.InstancesDto;
 import com.ecaservice.external.api.dto.RequestStatus;
@@ -100,20 +101,20 @@ class ExternalApiControllerTest extends AbstractControllerTest {
     @Test
     void testDownloadModelForNotExistingRequest() throws Exception {
         String requestId = UUID.randomUUID().toString();
-        when(evaluationRequestRepository.findByCorrelationId(requestId)).thenReturn(null);
+        when(ecaRequestService.getById(requestId)).thenThrow(
+                new EntityNotFoundException(EvaluationRequestEntity.class, requestId));
         mockMvc.perform(get(DOWNLOAD_MODEL_URL, requestId)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     void testDownloadModelWithNotExistingFile() throws Exception {
         EvaluationRequestEntity evaluationRequestEntity = createEvaluationRequestEntity(UUID.randomUUID().toString());
         evaluationRequestEntity.setClassifierAbsolutePath(null);
-        when(evaluationRequestRepository.findByCorrelationId(evaluationRequestEntity.getCorrelationId())).thenReturn(
-                evaluationRequestEntity);
+        when(ecaRequestService.getById(evaluationRequestEntity.getCorrelationId())).thenReturn(evaluationRequestEntity);
         mockMvc.perform(get(DOWNLOAD_MODEL_URL, evaluationRequestEntity.getCorrelationId())
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 }
