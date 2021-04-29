@@ -9,9 +9,9 @@ import com.ecaservice.model.MultipartFileResource;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentProgressEntity;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
-import com.ecaservice.repository.ExperimentProgressRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.auth.UsersClient;
+import com.ecaservice.service.experiment.ExperimentProgressService;
 import com.ecaservice.service.experiment.ExperimentRequestService;
 import com.ecaservice.service.experiment.ExperimentResultsService;
 import com.ecaservice.service.experiment.ExperimentService;
@@ -81,8 +81,8 @@ public class ExperimentController {
     private final ExperimentMapper experimentMapper;
     private final ExperimentProgressMapper experimentProgressMapper;
     private final UsersClient usersClient;
+    private final ExperimentProgressService experimentProgressService;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
-    private final ExperimentProgressRepository experimentProgressRepository;
 
     /**
      * Downloads experiment training data by specified request id.
@@ -289,11 +289,7 @@ public class ExperimentController {
             @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
         log.trace("Received request to get experiment progress for request id [{}]", requestId);
         Experiment experiment = experimentService.getByRequestId(requestId);
-        ExperimentProgressEntity experimentProgressEntity = experimentProgressRepository.findByExperiment(experiment);
-        if (experimentProgressEntity == null) {
-            log.error("Can't find experiment progress for request id [{}]", experiment.getRequestId());
-            return ResponseEntity.badRequest().build();
-        }
+        ExperimentProgressEntity experimentProgressEntity = experimentProgressService.getExperimentProgress(experiment);
         return ResponseEntity.ok(experimentProgressMapper.map(experimentProgressEntity));
     }
 

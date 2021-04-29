@@ -13,9 +13,9 @@ import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentProgressEntity;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.RequestStatus;
-import com.ecaservice.repository.ExperimentProgressRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.auth.UsersClient;
+import com.ecaservice.service.experiment.ExperimentProgressService;
 import com.ecaservice.service.experiment.ExperimentRequestService;
 import com.ecaservice.service.experiment.ExperimentResultsService;
 import com.ecaservice.service.experiment.ExperimentService;
@@ -104,7 +104,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     @MockBean
     private UsersClient usersClient;
     @MockBean
-    private ExperimentProgressRepository experimentProgressRepository;
+    private ExperimentProgressService experimentProgressService;
     @MockBean
     private ExperimentResultsEntityRepository experimentResultsEntityRepository;
 
@@ -379,7 +379,8 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     @Test
     void testGetExperimentProgressForNotExistingExperimentProgress() throws Exception {
         when(experimentService.getByRequestId(TEST_UUID)).thenReturn(new Experiment());
-        when(experimentProgressRepository.findByExperiment(any(Experiment.class))).thenReturn(null);
+        when(experimentProgressService.getExperimentProgress(any(Experiment.class))).thenThrow(
+                new EntityNotFoundException());
         mockMvc.perform(get(EXPERIMENT_PROGRESS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
@@ -394,7 +395,8 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         ExperimentProgressEntity experimentProgressEntity = new ExperimentProgressEntity();
         experimentProgressEntity.setFinished(true);
         experimentProgressEntity.setProgress(PROGRESS_VALUE);
-        when(experimentProgressRepository.findByExperiment(any(Experiment.class))).thenReturn(experimentProgressEntity);
+        when(experimentProgressService.getExperimentProgress(any(Experiment.class))).thenReturn(
+                experimentProgressEntity);
         mockMvc.perform(get(EXPERIMENT_PROGRESS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
