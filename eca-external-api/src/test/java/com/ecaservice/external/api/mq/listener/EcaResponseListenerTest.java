@@ -59,7 +59,8 @@ class EcaResponseListenerTest {
         Message message = Mockito.mock(Message.class);
         MessageProperties messageProperties = buildMessageProperties();
         when(message.getMessageProperties()).thenReturn(messageProperties);
-        when(evaluationRequestRepository.findByCorrelationId(messageProperties.getCorrelationId())).thenReturn(null);
+        when(evaluationRequestRepository.findByCorrelationId(messageProperties.getCorrelationId())).thenReturn(
+                Optional.empty());
         ecaResponseListener.handleEvaluationMessage(new EvaluationResponse(), message);
         verify(ecaResponseHandler, never()).handleResponse(any(EvaluationRequestEntity.class),
                 any(EvaluationResponse.class));
@@ -74,7 +75,7 @@ class EcaResponseListenerTest {
                 createEvaluationRequestEntity(messageProperties.getCorrelationId());
         evaluationRequestEntity.setRequestStage(RequestStageType.EXCEEDED);
         when(evaluationRequestRepository.findByCorrelationId(messageProperties.getCorrelationId())).thenReturn(
-                evaluationRequestEntity);
+                Optional.of(evaluationRequestEntity));
         ecaResponseListener.handleEvaluationMessage(new EvaluationResponse(), message);
         verify(ecaResponseHandler, never()).handleResponse(any(EvaluationRequestEntity.class),
                 any(EvaluationResponse.class));
@@ -91,7 +92,7 @@ class EcaResponseListenerTest {
         evaluationRequestEntity.setRequestStage(RequestStageType.REQUEST_SENT);
         //Mock methods
         when(evaluationRequestRepository.findByCorrelationId(messageProperties.getCorrelationId())).thenReturn(
-                evaluationRequestEntity);
+                Optional.of(evaluationRequestEntity));
         when(messageCorrelationService.pop(messageProperties.getCorrelationId())).thenReturn(Optional.of(sink));
         EvaluationResponseDto evaluationResponseDto = EvaluationResponseDto.builder()
                 .requestId(messageProperties.getCorrelationId())

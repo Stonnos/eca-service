@@ -1,6 +1,7 @@
 package com.ecaservice.controller.web;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
 import com.ecaservice.mapping.DateTimeConverter;
@@ -30,6 +31,7 @@ import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.PageRequestUtils.PAGE_NUMBER;
@@ -77,16 +79,16 @@ class EvaluationControllerTest extends PageRequestControllerTest {
 
     @Test
     void testGetEvaluationLogDetailsNotFound() throws Exception {
-        when(evaluationLogRepository.findByRequestId(TEST_UUID)).thenReturn(null);
+        when(evaluationLogRepository.findByRequestId(TEST_UUID)).thenThrow(new EntityNotFoundException());
         mockMvc.perform(get(DETAILS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     void testGetEvaluationLogDetailsOk() throws Exception {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog(TEST_UUID, RequestStatus.FINISHED);
-        when(evaluationLogRepository.findByRequestId(TEST_UUID)).thenReturn(evaluationLog);
+        when(evaluationLogRepository.findByRequestId(TEST_UUID)).thenReturn(Optional.of(evaluationLog));
         EvaluationLogDetailsDto evaluationLogDetailsDto = evaluationLogMapper.mapDetails(evaluationLog);
         when(evaluationLogService.getEvaluationLogDetails(evaluationLog)).thenReturn(evaluationLogDetailsDto);
         mockMvc.perform(get(DETAILS_URL, TEST_UUID)

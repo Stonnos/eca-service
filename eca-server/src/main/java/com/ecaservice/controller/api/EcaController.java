@@ -1,5 +1,6 @@
 package com.ecaservice.controller.api;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.repository.ExperimentRepository;
 import io.swagger.annotations.Api;
@@ -46,15 +47,12 @@ public class EcaController {
     @GetMapping(value = "/experiment/download/{token}")
     public ResponseEntity<FileSystemResource> downloadExperiment(
             @ApiParam(value = "Experiment token", required = true) @PathVariable String token) {
-        Experiment experiment = experimentRepository.findByToken(token);
-        if (experiment == null) {
-            log.error("Experiment with token [{}] not found", token);
-            return ResponseEntity.notFound().build();
-        }
+        Experiment experiment = experimentRepository.findByToken(token)
+                .orElseThrow(() -> new EntityNotFoundException(Experiment.class, token));
         File experimentFile = getExperimentFile(experiment, Experiment::getExperimentAbsolutePath);
         if (!existsFile(experimentFile)) {
             log.error("Experiment results file not found for token [{}]", token);
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
         log.info("Downloads experiment file '{}' for token = '{}'", experiment.getExperimentAbsolutePath(), token);
         return buildAttachmentResponse(experimentFile);

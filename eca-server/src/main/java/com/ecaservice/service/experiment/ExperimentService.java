@@ -2,6 +2,7 @@ package com.ecaservice.service.experiment;
 
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
@@ -222,6 +223,17 @@ public class ExperimentService implements PageRequestService<Experiment> {
                 new ExperimentFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
         int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
         return experimentRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+    }
+
+    /**
+     * Gets experiment by request id.
+     *
+     * @param requestId - request id
+     * @return experiment entity
+     */
+    public Experiment getByRequestId(String requestId) {
+        return experimentRepository.findByRequestId(requestId)
+                .orElseThrow(() -> new EntityNotFoundException(Experiment.class, requestId));
     }
 
     /**

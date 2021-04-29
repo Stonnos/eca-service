@@ -1,5 +1,6 @@
 package com.ecaservice.service.experiment;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentProgressEntity;
 import com.ecaservice.model.entity.RequestStatus;
@@ -13,8 +14,8 @@ import javax.inject.Inject;
 import java.util.UUID;
 
 import static com.ecaservice.TestHelperUtils.createExperiment;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for checking {@link ExperimentProgressService} functionality.
@@ -44,7 +45,8 @@ class ExperimentProgressServiceTest extends AbstractJpaTest {
     void testStartProgress() {
         Experiment experiment = createAndSaveExperiment();
         experimentProgressService.start(experiment);
-        ExperimentProgressEntity experimentProgressEntity = experimentProgressRepository.findByExperiment(experiment);
+        ExperimentProgressEntity experimentProgressEntity =
+                experimentProgressRepository.findByExperiment(experiment).orElse(null);
         assertThat(experimentProgressEntity).isNotNull();
         assertThat(experimentProgressEntity.getExperiment()).isNotNull();
         assertThat(experimentProgressEntity.getExperiment().getId()).isEqualTo(experiment.getId());
@@ -56,7 +58,8 @@ class ExperimentProgressServiceTest extends AbstractJpaTest {
     void testFinishedProgress() {
         Experiment experiment = createAndSaveExperiment();
         experimentProgressService.finish(experiment);
-        ExperimentProgressEntity experimentProgressEntity = experimentProgressRepository.findByExperiment(experiment);
+        ExperimentProgressEntity experimentProgressEntity =
+                experimentProgressRepository.findByExperiment(experiment).orElse(null);
         assertThat(experimentProgressEntity).isNotNull();
         assertThat(experimentProgressEntity.isFinished()).isTrue();
         assertThat(experimentProgressEntity.getProgress()).isEqualTo(FULL_PROGRESS);
@@ -66,10 +69,27 @@ class ExperimentProgressServiceTest extends AbstractJpaTest {
     void testOnProgress() {
         Experiment experiment = createAndSaveExperiment();
         experimentProgressService.onProgress(experiment, PROGRESS_VALUE);
-        ExperimentProgressEntity experimentProgressEntity = experimentProgressRepository.findByExperiment(experiment);
+        ExperimentProgressEntity experimentProgressEntity =
+                experimentProgressRepository.findByExperiment(experiment).orElse(null);
         assertThat(experimentProgressEntity).isNotNull();
         assertThat(experimentProgressEntity.isFinished()).isFalse();
         assertThat(experimentProgressEntity.getProgress()).isEqualTo(PROGRESS_VALUE);
+    }
+
+    @Test
+    void testGetExperimentProgress() {
+        Experiment experiment = createAndSaveExperiment();
+        experimentProgressService.start(experiment);
+        ExperimentProgressEntity experimentProgressEntity = experimentProgressService.getExperimentProgress(experiment);
+        assertThat(experimentProgressEntity).isNotNull();
+        assertThat(experimentProgressEntity.getExperiment()).isNotNull();
+        assertThat(experimentProgressEntity.getExperiment().getId()).isEqualTo(experiment.getId());
+    }
+
+    @Test
+    void testGetExperimentProgressShouldThrowEntityNotFoundException() {
+        Experiment experiment = createAndSaveExperiment();
+        assertThrows(EntityNotFoundException.class, () ->  experimentProgressService.getExperimentProgress(experiment));
     }
 
     private Experiment createAndSaveExperiment() {

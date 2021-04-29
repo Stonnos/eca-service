@@ -1,5 +1,6 @@
 package com.ecaservice.controller.web;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.repository.EvaluationLogRepository;
@@ -79,11 +80,8 @@ public class EvaluationController {
     public ResponseEntity<EvaluationLogDetailsDto> getEvaluationLogDetails(
             @ApiParam(value = "Evaluation log request id", required = true) @PathVariable String requestId) {
         log.info("Received request for evaluation log details for request id [{}]", requestId);
-        EvaluationLog evaluationLog = evaluationLogRepository.findByRequestId(requestId);
-        if (evaluationLog == null) {
-            log.error("Evaluation log with request id [{}] not found", requestId);
-            return ResponseEntity.notFound().build();
-        }
+        EvaluationLog evaluationLog = evaluationLogRepository.findByRequestId(requestId)
+                .orElseThrow(() -> new EntityNotFoundException(EvaluationLog.class, requestId));
         return ResponseEntity.ok(evaluationLogService.getEvaluationLogDetails(evaluationLog));
     }
 

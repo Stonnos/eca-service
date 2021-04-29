@@ -1,5 +1,6 @@
 package com.ecaservice.service.experiment;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentProgressEntity;
 import com.ecaservice.repository.ExperimentProgressRepository;
@@ -63,8 +64,21 @@ public class ExperimentProgressService {
         experimentProgressRepository.save(experimentProgressEntity);
     }
 
+    /**
+     * Gets experiment progress entity.
+     *
+     * @param experiment - experiment entity
+     * @return experiment progress entity
+     */
+    public ExperimentProgressEntity getExperimentProgress(Experiment experiment) {
+        return experimentProgressRepository.findByExperiment(experiment)
+                .orElseThrow(() -> new EntityNotFoundException(ExperimentProgressEntity.class,
+                        String.format("Experiment id [%s]", experiment.getId())));
+    }
+
     private ExperimentProgressEntity getOrCreateExperimentProgress(Experiment experiment) {
-        ExperimentProgressEntity experimentProgressEntity = experimentProgressRepository.findByExperiment(experiment);
+        ExperimentProgressEntity experimentProgressEntity = experimentProgressRepository.findByExperiment(experiment)
+                .orElse(null);
         if (experimentProgressEntity == null) {
             experimentProgressEntity = new ExperimentProgressEntity();
             experimentProgressEntity.setExperiment(experiment);

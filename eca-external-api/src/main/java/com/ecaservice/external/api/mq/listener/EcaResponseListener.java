@@ -44,7 +44,8 @@ public class EcaResponseListener {
         log.debug("Received response from eca - server with correlation id [{}], status [{}]", correlationId,
                 evaluationResponse.getStatus());
         EvaluationRequestEntity evaluationRequestEntity =
-                evaluationRequestRepository.findByCorrelationId(correlationId);
+                evaluationRequestRepository.findByCorrelationId(correlationId)
+                        .orElse(null);
         if (evaluationRequestEntity == null) {
             log.warn("Can't find request entity with correlation id [{}]. ", correlationId);
             return;

@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Implements repository that manages with {@link Experiment} entities.
@@ -26,7 +27,7 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
      * @param requestId - request id
      * @return experiment entity
      */
-    Experiment findByRequestId(String requestId);
+    Optional<Experiment> findByRequestId(String requestId);
 
     /**
      * Finds experiment by token.
@@ -34,7 +35,7 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
      * @param token - experiment token
      * @return experiment entity
      */
-    Experiment findByToken(String token);
+    Optional<Experiment> findByToken(String token);
 
     /**
      * Finds not sent experiments by statuses

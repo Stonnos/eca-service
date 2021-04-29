@@ -125,7 +125,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
                 ID);
         mockMvc.perform(get(DETAIL_URL, ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -199,7 +199,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
         mockMvc.perform(post(SET_ACTIVE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(ID_PARAM, String.valueOf(ID)))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -323,7 +323,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
                 ID);
         mockMvc.perform(get(REPORT_URL, ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     @Test

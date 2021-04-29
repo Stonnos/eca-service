@@ -1,5 +1,6 @@
 package com.ecaservice.oauth.controller;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.UserEntity;
@@ -230,11 +231,8 @@ public class UserController {
     @GetMapping(value = "/photo/{id}")
     public ResponseEntity<ByteArrayResource> downloadPhoto(
             @ApiParam(value = "Photo id", required = true, example = "1") @PathVariable Long id) {
-        UserPhoto userPhoto = userPhotoRepository.findById(id).orElse(null);
-        if (userPhoto == null) {
-            log.error("Can't find user photo with id [{}]", id);
-            return ResponseEntity.notFound().build();
-        }
+        UserPhoto userPhoto = userPhotoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(UserPhoto.class, id));
         return buildAttachmentResponse(userPhoto.getPhoto(), userPhoto.getFileName());
     }
 

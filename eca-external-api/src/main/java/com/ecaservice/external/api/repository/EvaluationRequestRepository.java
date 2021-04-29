@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository to manage with {@link EvaluationRequestEntity} persistence entity.
@@ -24,7 +25,7 @@ public interface EvaluationRequestRepository extends JpaRepository<EvaluationReq
      * @param correlationId - correlation id
      * @return evaluation request entity
      */
-    EvaluationRequestEntity findByCorrelationId(String correlationId);
+    Optional<EvaluationRequestEntity> findByCorrelationId(String correlationId);
 
     /**
      * Finds evaluation requests ids with not deleted classifiers models.

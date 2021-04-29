@@ -6,7 +6,6 @@ import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.InstancesDto;
 import com.ecaservice.external.api.dto.RequestStatus;
 import com.ecaservice.external.api.dto.ResponseDto;
-import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.service.EcaRequestService;
 import com.ecaservice.external.api.service.EvaluationApiService;
 import com.ecaservice.external.api.service.InstancesService;
@@ -60,7 +59,6 @@ public class ExternalApiController {
     private final EcaRequestService ecaRequestService;
     private final TimeoutFallback timeoutFallback;
     private final InstancesService instancesService;
-    private final EvaluationRequestRepository evaluationRequestRepository;
 
     /**
      * Uploads train data file.
@@ -125,17 +123,13 @@ public class ExternalApiController {
     @GetMapping(value = "/download-model/{requestId}")
     public ResponseEntity<FileSystemResource> downloadModel(
             @ApiParam(value = "Request id", required = true) @PathVariable String requestId) {
-        var evaluationRequestEntity = evaluationRequestRepository.findByCorrelationId(requestId);
-        if (evaluationRequestEntity == null) {
-            log.error("Evaluation request with id [{}] not found", requestId);
-            return ResponseEntity.notFound().build();
-        }
+        var evaluationRequestEntity = ecaRequestService.getByCorrelationId(requestId);
         var modelFile = Optional.ofNullable(evaluationRequestEntity.getClassifierAbsolutePath())
                 .map(File::new)
                 .orElse(null);
         if (!existsFile(modelFile)) {
             log.error("Classifier model file not found for request id [{}]", requestId);
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
         log.debug("Downloads classifier model file {} for request id [{}]",
                 evaluationRequestEntity.getClassifierAbsolutePath(), evaluationRequestEntity.getCorrelationId());

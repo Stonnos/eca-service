@@ -1,5 +1,6 @@
 package com.ecaservice.controller.api;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.repository.ExperimentRepository;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -37,13 +39,13 @@ class EcaControllerTest {
 
     @Test
     void testExperimentNotExists() throws Exception {
-        when(experimentRepository.findByToken(anyString())).thenReturn(null);
-        mockMvc.perform(get(DOWNLOAD_URL, TOKEN)).andExpect(status().isNotFound());
+        when(experimentRepository.findByToken(anyString())).thenThrow(new EntityNotFoundException());
+        mockMvc.perform(get(DOWNLOAD_URL, TOKEN)).andExpect(status().isBadRequest());
     }
 
     @Test
     void testResultsFileNotExists() throws Exception {
-        when(experimentRepository.findByToken(anyString())).thenReturn(new Experiment());
-        mockMvc.perform(get(DOWNLOAD_URL, TOKEN)).andExpect(status().isNotFound());
+        when(experimentRepository.findByToken(anyString())).thenReturn(Optional.of(new Experiment()));
+        mockMvc.perform(get(DOWNLOAD_URL, TOKEN)).andExpect(status().isBadRequest());
     }
 }

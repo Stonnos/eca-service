@@ -182,7 +182,7 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
         mockMvc.perform(delete(DELETE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(ID_PARAM, String.valueOf(CONFIGURATION_ID)))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
