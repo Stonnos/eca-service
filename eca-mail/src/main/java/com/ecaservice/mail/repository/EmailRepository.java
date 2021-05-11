@@ -22,5 +22,5 @@ public interface EmailRepository extends JpaRepository<Email, Long> {
      * @param pageable - {@link Pageable} object
      * @return emails list
      */
-    List<Email> findByStatusNotInOrderBySaveDate(Collection<EmailStatus> statuses, Pageable pageable);
+    List<Email> findByStatusNotIn(Collection<EmailStatus> statuses, Pageable pageable);
 }

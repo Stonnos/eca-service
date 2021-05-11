@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static com.ecaservice.notification.util.Priority.LOW;
+import static com.ecaservice.notification.util.Priority.MEDIUM;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 
@@ -75,6 +76,7 @@ public class TestHelperUtils {
         email.setReceiver(RECEIVER_MAIL_RU);
         email.setSubject(SUBJECT);
         email.setMessage(MESSAGE);
+        email.setPriority(MEDIUM);
         return email;
     }
 
