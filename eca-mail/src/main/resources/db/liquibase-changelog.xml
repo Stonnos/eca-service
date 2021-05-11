@@ -13,4 +13,5 @@
     <include file="db/changelog/v6-insert-change-password-template.xml"/>
     <include file="db/changelog/v7-add-email-tx-id-column.xml"/>
     <include file="db/changelog/v8-add-not-null-constraints.xml"/>
+    <include file="db/changelog/v9-add-priority-column.xml"/>
 </databaseChangeLog>

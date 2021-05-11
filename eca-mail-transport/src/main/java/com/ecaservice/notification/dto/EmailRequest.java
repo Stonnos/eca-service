@@ -5,12 +5,17 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Map;
 
 import static com.ecaservice.notification.util.FieldConstraints.EMAIL_MAX_SIZE;
 import static com.ecaservice.notification.util.FieldConstraints.EMAIL_REGEX;
+import static com.ecaservice.notification.util.Priority.HIGHEST;
+import static com.ecaservice.notification.util.Priority.LOW;
 
 /**
  * Email request dto.
@@ -40,4 +45,13 @@ public class EmailRequest {
      */
     @ApiModelProperty(value = "Email templates variables")
     private Map<@NotBlank String, @NotBlank String> variables;
+
+    /**
+     * Delivery priority
+     */
+    @NotNull
+    @Min(LOW)
+    @Max(HIGHEST)
+    @ApiModelProperty(value = "Delivery priority")
+    private Integer priority;
 }

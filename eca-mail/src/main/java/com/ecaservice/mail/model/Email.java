@@ -91,4 +91,10 @@ public class Email {
      */
     @Column(name = "tx_id")
     private String txId;
+
+    /**
+     * Delivery priority
+     */
+    @Column(nullable = false)
+    private int priority;
 }
