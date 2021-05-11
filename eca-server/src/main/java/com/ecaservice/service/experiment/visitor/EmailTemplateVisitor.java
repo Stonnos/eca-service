@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+import static com.ecaservice.notification.util.Priority.MEDIUM;
 import static com.google.common.collect.Maps.newHashMap;
 
 /**
@@ -72,6 +73,7 @@ public class EmailTemplateVisitor implements RequestStatusVisitor<EmailRequest, 
         emailRequest.setTemplateCode(templateCode);
         Map<String, String> variablesMap = createCommonVariablesMap(experiment);
         emailRequest.setVariables(variablesMap);
+        emailRequest.setPriority(MEDIUM);
         return emailRequest;
     }
 }
