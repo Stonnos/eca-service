@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
+
 /**
  * TFA code service.
  *
@@ -51,7 +53,8 @@ public class TfaCodeService implements AuthorizationCodeServices {
         synchronized (monitorsMap.get(user)) {
             //Invalidate previous code
             invalidatePreviousCode(user);
-            codesCache.put(code, authentication);
+            String codeHash = md5Hex(code);
+            codesCache.put(codeHash, authentication);
         }
         monitorsMap.remove(user);
         return code;
@@ -59,7 +62,8 @@ public class TfaCodeService implements AuthorizationCodeServices {
 
     @Override
     public OAuth2Authentication consumeAuthorizationCode(String code) {
-        OAuth2Authentication authentication = codesCache.getIfPresent(code);
+        String codeHash = md5Hex(code);
+        OAuth2Authentication authentication = codesCache.getIfPresent(codeHash);
         if (authentication == null) {
             throw new InvalidGrantException(String.format("Invalid authorization code: %s", code));
         }
