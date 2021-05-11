@@ -15,6 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 
+import static com.ecaservice.notification.util.Priority.MEDIUM;
 import static com.ecaservice.oauth.TestHelperUtils.createResetPasswordRequestEntity;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -51,5 +52,6 @@ class ResetPasswordNotificationEventHandlerTest {
         assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.RESET_PASSWORD_URL_KEY,
                 String.format(RESET_PASSWORD_URL_FORMAT, resetPasswordConfig.getBaseUrl(),
                         resetPasswordRequestEntity.getToken()));
+        assertThat(actual.getPriority()).isEqualTo(MEDIUM);
     }
 }

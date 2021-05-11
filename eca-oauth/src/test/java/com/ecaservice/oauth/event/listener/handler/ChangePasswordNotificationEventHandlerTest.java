@@ -15,6 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 
+import static com.ecaservice.notification.util.Priority.MEDIUM;
 import static com.ecaservice.oauth.TestHelperUtils.createChangePasswordRequestEntity;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -51,5 +52,6 @@ class ChangePasswordNotificationEventHandlerTest {
         assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.CHANGE_PASSWORD_URL_KEY,
                 String.format(CHANGE_PASSWORD_URL_FORMAT, changePasswordConfig.getBaseUrl(),
                         changePasswordRequestEntity.getToken()));
+        assertThat(actual.getPriority()).isEqualTo(MEDIUM);
     }
 }
