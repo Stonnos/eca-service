@@ -1,6 +1,6 @@
 package com.ecaservice.oauth.event.model;
 
-import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
+import com.ecaservice.oauth.model.TokenModel;
 import lombok.Getter;
 
 /**
@@ -11,20 +11,20 @@ import lombok.Getter;
 public class ResetPasswordNotificationEvent extends AbstractNotificationEvent {
 
     /**
-     * Reset password request entity
+     * Reset password request model
      */
     @Getter
-    private final ResetPasswordRequestEntity resetPasswordRequestEntity;
+    private final TokenModel tokenModel;
 
     /**
      * Create a new {@code ResetPasswordNotificationEvent}.
      *
-     * @param source                     - the object on which the event initially occurred or with which the event is
-     *                                   associated (never {@code null})
-     * @param resetPasswordRequestEntity - reset password request entity
+     * @param source     - the object on which the event initially occurred or with which the event is
+     *                   associated (never {@code null})
+     * @param tokenModel - reset password request model
      */
-    public ResetPasswordNotificationEvent(Object source, ResetPasswordRequestEntity resetPasswordRequestEntity) {
+    public ResetPasswordNotificationEvent(Object source, TokenModel tokenModel) {
         super(source);
-        this.resetPasswordRequestEntity = resetPasswordRequestEntity;
+        this.tokenModel = tokenModel;
     }
 }

@@ -85,7 +85,10 @@ class NotificationEventListenerTest {
     @Test
     void testResetPassword() {
         ResetPasswordRequestEntity resetPasswordRequestEntity = createResetPasswordRequestEntity();
-        ResetPasswordNotificationEvent event = new ResetPasswordNotificationEvent(this, resetPasswordRequestEntity);
+        resetPasswordRequestEntity.getUserEntity().setId(USER_ID);
+        TokenModel tokenModel = new TokenModel(TOKEN, USER_ID, resetPasswordRequestEntity.getId());
+        when(userService.getById(USER_ID)).thenReturn(resetPasswordRequestEntity.getUserEntity());
+        ResetPasswordNotificationEvent event = new ResetPasswordNotificationEvent(this, tokenModel);
         internalTestEvent(event, Templates.RESET_PASSWORD);
     }
 
@@ -93,8 +96,7 @@ class NotificationEventListenerTest {
     void testChangePassword() {
         ChangePasswordRequestEntity changePasswordRequestEntity = createChangePasswordRequestEntity(TOKEN);
         changePasswordRequestEntity.getUserEntity().setId(USER_ID);
-        TokenModel tokenModel = new TokenModel(TOKEN, changePasswordRequestEntity.getUserEntity().getId(),
-                changePasswordRequestEntity.getId());
+        TokenModel tokenModel = new TokenModel(TOKEN, USER_ID, changePasswordRequestEntity.getId());
         ChangePasswordNotificationEvent event = new ChangePasswordNotificationEvent(this, tokenModel);
         when(userService.getById(USER_ID)).thenReturn(changePasswordRequestEntity.getUserEntity());
         internalTestEvent(event, Templates.CHANGE_PASSWORD);

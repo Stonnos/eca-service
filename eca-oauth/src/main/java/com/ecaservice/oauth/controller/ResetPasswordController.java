@@ -2,7 +2,6 @@ package com.ecaservice.oauth.controller;
 
 import com.ecaservice.oauth.dto.ForgotPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
-import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.event.model.ResetPasswordNotificationEvent;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.service.ResetPasswordService;
@@ -20,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+
+import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 /**
  * Implements reset password REST API.
@@ -49,11 +50,10 @@ public class ResetPasswordController {
     @PostMapping(value = "/forgot")
     public void forgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
         log.info("Received forgot password request {}", forgotPasswordRequest);
-        ResetPasswordRequestEntity resetPasswordRequestEntity =
-                resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest);
-        log.info("Reset password request [{}] has been created for user with email [{}]",
-                resetPasswordRequestEntity.getId(), forgotPasswordRequest.getEmail());
-        applicationEventPublisher.publishEvent(new ResetPasswordNotificationEvent(this, resetPasswordRequestEntity));
+        var tokenModel = resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest);
+        log.info("Reset password request [{}] has been created for user [{}]", tokenModel.getTokenId(),
+                tokenModel.getUserId());
+        applicationEventPublisher.publishEvent(new ResetPasswordNotificationEvent(this, tokenModel));
     }
 
     /**
@@ -68,8 +68,9 @@ public class ResetPasswordController {
     )
     @PostMapping(value = "/verify-token")
     public boolean verifyToken(@ApiParam(value = "Reset password token", required = true) @RequestParam String token) {
-        log.info("Received request for reset password token {} verification", token);
-        return resetPasswordRequestRepository.existsByTokenAndExpireDateAfterAndResetDateIsNull(token,
+        log.info("Received request for reset password token verification");
+        String md5Hash = md5Hex(token);
+        return resetPasswordRequestRepository.existsByTokenAndExpireDateAfterAndResetDateIsNull(md5Hash,
                 LocalDateTime.now());
     }
 
@@ -84,7 +85,7 @@ public class ResetPasswordController {
     )
     @PostMapping(value = "/reset")
     public void resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
-        log.info("Received reset password request {}", resetPasswordRequest.getToken());
+        log.info("Received reset password request");
         resetPasswordService.resetPassword(resetPasswordRequest);
     }
 }

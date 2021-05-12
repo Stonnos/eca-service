@@ -3,6 +3,7 @@ package com.ecaservice.oauth.controller;
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.oauth.dto.ForgotPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
+import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.service.ResetPasswordService;
@@ -20,7 +21,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import javax.inject.Inject;
 import java.util.UUID;
 
-import static com.ecaservice.oauth.TestHelperUtils.createResetPasswordRequestEntity;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -86,8 +86,7 @@ class ResetPasswordControllerTest {
     void testForgotPassword() throws Exception {
         ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(EMAIL);
         when(userEntityRepository.existsByEmail(EMAIL)).thenReturn(true);
-        when(resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest)).thenReturn(
-                createResetPasswordRequestEntity());
+        when(resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest)).thenReturn(new TokenModel());
         mockMvc.perform(post(FORGOT_URL)
                 .content(objectMapper.writeValueAsString(forgotPasswordRequest))
                 .contentType(MediaType.APPLICATION_JSON))

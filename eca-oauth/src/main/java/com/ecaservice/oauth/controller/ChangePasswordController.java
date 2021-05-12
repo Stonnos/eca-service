@@ -52,7 +52,8 @@ public class ChangePasswordController {
                                             @Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
         log.info("Received change password request for user [{}]", userDetails.getId());
         var tokenModel = changePasswordService.createChangePasswordRequest(userDetails.getId(), changePasswordRequest);
-        log.info("Change password request has been created for user [{}]", userDetails.getId());
+        log.info("Change password request [{}] has been created for user [{}]", tokenModel.getTokenId(),
+                userDetails.getId());
         applicationEventPublisher.publishEvent(new ChangePasswordNotificationEvent(this, tokenModel));
     }
 

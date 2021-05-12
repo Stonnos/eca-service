@@ -7,6 +7,7 @@ import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.InvalidTokenException;
 import com.ecaservice.oauth.exception.UserLockedException;
+import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.oauth.util.Utils.generateToken;
+import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 /**
  * Reset password service.
@@ -39,9 +41,9 @@ public class ResetPasswordService {
      * Gets active reset password request or save new if not exists.
      *
      * @param forgotPasswordRequest - forgot password request
-     * @return reset password request
+     * @return reset password request token
      */
-    public ResetPasswordRequestEntity getOrSaveResetPasswordRequest(ForgotPasswordRequest forgotPasswordRequest) {
+    public TokenModel getOrSaveResetPasswordRequest(ForgotPasswordRequest forgotPasswordRequest) {
         UserEntity userEntity = userEntityRepository.findByEmail(forgotPasswordRequest.getEmail()).orElseThrow(
                 () -> new IllegalStateException(
                         String.format("Can't create reset password request, because user with email %s doesn't exists!",
@@ -52,14 +54,19 @@ public class ResetPasswordService {
         LocalDateTime now = LocalDateTime.now();
         ResetPasswordRequestEntity resetPasswordRequestEntity =
                 resetPasswordRequestRepository.findByUserEntityAndExpireDateAfterAndResetDateIsNull(userEntity, now);
+        TokenModel tokenModel = new TokenModel();
         if (resetPasswordRequestEntity == null) {
             resetPasswordRequestEntity = new ResetPasswordRequestEntity();
-            resetPasswordRequestEntity.setToken(generateToken(userEntity));
+            String token = generateToken(userEntity);
+            tokenModel.setToken(token);
+            resetPasswordRequestEntity.setToken(md5Hex(token));
             resetPasswordRequestEntity.setExpireDate(now.plusMinutes(resetPasswordConfig.getValidityMinutes()));
             resetPasswordRequestEntity.setUserEntity(userEntity);
             resetPasswordRequestRepository.save(resetPasswordRequestEntity);
         }
-        return resetPasswordRequestEntity;
+        tokenModel.setUserId(resetPasswordRequestEntity.getUserEntity().getId());
+        tokenModel.setTokenId(resetPasswordRequestEntity.getId());
+        return tokenModel;
     }
 
     /**
@@ -69,9 +76,10 @@ public class ResetPasswordService {
      */
     @Transactional
     public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
+        String md5Hash = md5Hex(resetPasswordRequest.getToken());
         ResetPasswordRequestEntity resetPasswordRequestEntity =
-                resetPasswordRequestRepository.findByTokenAndExpireDateAfterAndResetDateIsNull(
-                        resetPasswordRequest.getToken(), LocalDateTime.now())
+                resetPasswordRequestRepository.findByTokenAndExpireDateAfterAndResetDateIsNull(md5Hash,
+                        LocalDateTime.now())
                         .orElseThrow(() -> new InvalidTokenException(resetPasswordRequest.getToken()));
         UserEntity userEntity = resetPasswordRequestEntity.getUserEntity();
         if (userEntity.isLocked()) {
