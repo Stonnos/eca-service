@@ -9,6 +9,7 @@ import com.ecaservice.oauth.exception.ChangePasswordRequestAlreadyExistsExceptio
 import com.ecaservice.oauth.exception.InvalidPasswordException;
 import com.ecaservice.oauth.exception.InvalidTokenException;
 import com.ecaservice.oauth.exception.UserLockedException;
+import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.repository.ChangePasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.oauth.util.Utils.generateToken;
+import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 /**
  * Change password service.
@@ -42,10 +44,9 @@ public class ChangePasswordService {
      *
      * @param userId                - user id
      * @param changePasswordRequest - change password request
-     * @return change password request entity
+     * @return change password token model
      */
-    public ChangePasswordRequestEntity createChangePasswordRequest(Long userId,
-                                                                   ChangePasswordRequest changePasswordRequest) {
+    public TokenModel createChangePasswordRequest(Long userId, ChangePasswordRequest changePasswordRequest) {
         UserEntity userEntity = userEntityRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, userId));
         if (userEntity.isLocked()) {
@@ -62,12 +63,14 @@ public class ChangePasswordService {
             throw new ChangePasswordRequestAlreadyExistsException(userId);
         }
         changePasswordRequestEntity = new ChangePasswordRequestEntity();
-        changePasswordRequestEntity.setToken(generateToken(userEntity));
+        String token = generateToken(userEntity);
+        changePasswordRequestEntity.setToken(md5Hex(token));
         changePasswordRequestEntity.setExpireDate(now.plusMinutes(changePasswordConfig.getValidityMinutes()));
         String encodedPassword = passwordEncoder.encode(changePasswordRequest.getNewPassword().trim());
         changePasswordRequestEntity.setNewPassword(encodedPassword);
         changePasswordRequestEntity.setUserEntity(userEntity);
-        return changePasswordRequestRepository.save(changePasswordRequestEntity);
+        changePasswordRequestRepository.save(changePasswordRequestEntity);
+        return new TokenModel(token, userId, changePasswordRequestEntity.getId());
     }
 
     /**
@@ -77,8 +80,9 @@ public class ChangePasswordService {
      */
     @Transactional
     public void changePassword(String token) {
+        String md5Hash = md5Hex(token);
         ChangePasswordRequestEntity changePasswordRequestEntity =
-                changePasswordRequestRepository.findByTokenAndExpireDateAfterAndConfirmationDateIsNull(token,
+                changePasswordRequestRepository.findByTokenAndExpireDateAfterAndConfirmationDateIsNull(md5Hash,
                         LocalDateTime.now()).orElseThrow(() -> new InvalidTokenException(token));
         UserEntity userEntity = changePasswordRequestEntity.getUserEntity();
         if (userEntity.isLocked()) {

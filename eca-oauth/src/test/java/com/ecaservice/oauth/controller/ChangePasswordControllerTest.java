@@ -2,7 +2,7 @@ package com.ecaservice.oauth.controller;
 
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.oauth.dto.ChangePasswordRequest;
-import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
+import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.service.ChangePasswordService;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -85,7 +85,7 @@ class ChangePasswordControllerTest extends AbstractControllerTest {
     void testCreateChangePasswordRequestOk() throws Exception {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PASSWORD, PASSWORD);
         when(changePasswordService.createChangePasswordRequest(anyLong(), any(ChangePasswordRequest.class))).thenReturn(
-                new ChangePasswordRequestEntity());
+                new TokenModel());
         mockMvc.perform(post(REQUEST_URL)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(changePasswordRequest))
