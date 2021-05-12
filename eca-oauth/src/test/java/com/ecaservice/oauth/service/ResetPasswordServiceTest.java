@@ -74,7 +74,7 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
     @Test
     void testSaveNewResetPasswordRequest() {
         ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(userEntity.getEmail());
-        TokenModel tokenModel = resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest);
+        TokenModel tokenModel = resetPasswordService.createResetPasswordRequest(forgotPasswordRequest);
         assertThat(tokenModel).isNotNull();
         assertThat(tokenModel.getTokenId()).isNotNull();
         assertThat(tokenModel.getUserId()).isNotNull();
@@ -94,22 +94,22 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
         userEntityRepository.save(userEntity);
         ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(userEntity.getEmail());
         assertThrows(UserLockedException.class,
-                () -> resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest));
+                () -> resetPasswordService.createResetPasswordRequest(forgotPasswordRequest));
     }
 
     @Test
     void testCreateResetPasswordRequestWithResetPasswordRequestAlreadyExistsException() {
         ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(userEntity.getEmail());
-        resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest);
+        resetPasswordService.createResetPasswordRequest(forgotPasswordRequest);
         assertThrows(ResetPasswordRequestAlreadyExistsException.class,
-                () -> resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest));
+                () -> resetPasswordService.createResetPasswordRequest(forgotPasswordRequest));
     }
 
     @Test
     void testSaveResetPasswordRequestWithException() {
         ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(StringUtils.EMPTY);
         assertThrows(IllegalStateException.class,
-                () -> resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest));
+                () -> resetPasswordService.createResetPasswordRequest(forgotPasswordRequest));
     }
 
     @Test

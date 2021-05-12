@@ -39,12 +39,12 @@ public class ResetPasswordService {
     private final UserEntityRepository userEntityRepository;
 
     /**
-     * Gets active reset password request or save new if not exists.
+     * Save reset password request.
      *
      * @param forgotPasswordRequest - forgot password request
      * @return reset password request token
      */
-    public TokenModel getOrSaveResetPasswordRequest(ForgotPasswordRequest forgotPasswordRequest) {
+    public TokenModel createResetPasswordRequest(ForgotPasswordRequest forgotPasswordRequest) {
         UserEntity userEntity = userEntityRepository.findByEmail(forgotPasswordRequest.getEmail()).orElseThrow(
                 () -> new IllegalStateException(
                         String.format("Can't create reset password request, because user with email %s doesn't exists!",
