@@ -7,6 +7,7 @@ import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.InvalidTokenException;
+import com.ecaservice.oauth.exception.ResetPasswordRequestAlreadyExistsException;
 import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
@@ -97,11 +98,11 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testGetResetPasswordRequestFromCache() {
+    void testCreateResetPasswordRequestWithResetPasswordRequestAlreadyExistsException() {
         ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(userEntity.getEmail());
         resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest);
-        resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest);
-        assertThat(resetPasswordRequestRepository.count()).isOne();
+        assertThrows(ResetPasswordRequestAlreadyExistsException.class,
+                () -> resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest));
     }
 
     @Test

@@ -6,6 +6,7 @@ import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.InvalidTokenException;
+import com.ecaservice.oauth.exception.ResetPasswordRequestAlreadyExistsException;
 import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
@@ -54,19 +55,16 @@ public class ResetPasswordService {
         LocalDateTime now = LocalDateTime.now();
         ResetPasswordRequestEntity resetPasswordRequestEntity =
                 resetPasswordRequestRepository.findByUserEntityAndExpireDateAfterAndResetDateIsNull(userEntity, now);
-        TokenModel tokenModel = new TokenModel();
-        if (resetPasswordRequestEntity == null) {
-            resetPasswordRequestEntity = new ResetPasswordRequestEntity();
-            String token = generateToken(userEntity);
-            tokenModel.setToken(token);
-            resetPasswordRequestEntity.setToken(md5Hex(token));
-            resetPasswordRequestEntity.setExpireDate(now.plusMinutes(resetPasswordConfig.getValidityMinutes()));
-            resetPasswordRequestEntity.setUserEntity(userEntity);
-            resetPasswordRequestRepository.save(resetPasswordRequestEntity);
+        if (resetPasswordRequestEntity != null) {
+            throw new ResetPasswordRequestAlreadyExistsException(userEntity.getId());
         }
-        tokenModel.setUserId(resetPasswordRequestEntity.getUserEntity().getId());
-        tokenModel.setTokenId(resetPasswordRequestEntity.getId());
-        return tokenModel;
+        resetPasswordRequestEntity = new ResetPasswordRequestEntity();
+        String token = generateToken(userEntity);
+        resetPasswordRequestEntity.setToken(md5Hex(token));
+        resetPasswordRequestEntity.setExpireDate(now.plusMinutes(resetPasswordConfig.getValidityMinutes()));
+        resetPasswordRequestEntity.setUserEntity(userEntity);
+        resetPasswordRequestRepository.save(resetPasswordRequestEntity);
+        return new TokenModel(token, userEntity.getId(), resetPasswordRequestEntity.getId());
     }
 
     /**
