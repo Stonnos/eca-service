@@ -1,7 +1,6 @@
 package com.ecaservice.oauth.controller;
 
 import com.ecaservice.oauth.dto.ChangePasswordRequest;
-import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
 import com.ecaservice.oauth.event.model.ChangePasswordNotificationEvent;
 import com.ecaservice.oauth.service.ChangePasswordService;
 import com.ecaservice.user.model.UserDetailsImpl;
