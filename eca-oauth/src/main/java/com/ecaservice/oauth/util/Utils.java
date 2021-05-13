@@ -13,8 +13,7 @@ import org.springframework.util.Base64Utils;
 import org.springframework.util.DigestUtils;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.security.SecureRandom;
 import java.util.UUID;
 
 /**
@@ -29,32 +28,32 @@ public class Utils {
     private static final String SALT_FORMAT = "%s:%d";
 
     /**
-     * Gets local date time in milliseconds.
+     * Generates unique token by algorithm:
+     * 1. Creates salt in format uuid:first_random_number
+     * 2. Gets md5_salt = MD5(salt)
+     * 3. Creates string in format md5_salt:second_random_number
+     * 4. Gets results = base64(md5_salt:second_random_number)
      *
-     * @param localDateTime - local date time
-     * @return ocal date time in milliseconds
+     * @return token value
      */
-    public static long toMillis(LocalDateTime localDateTime) {
-        return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+    public static String generateToken() {
+        long first = secureRandomNumber();
+        long second = secureRandomNumber();
+        String uuid = UUID.randomUUID().toString();
+        String salt = String.format(SALT_FORMAT, uuid, first);
+        String md5Salt = DigestUtils.md5DigestAsHex(salt.getBytes(StandardCharsets.UTF_8));
+        String stringToEncode = String.format(SALT_FORMAT, md5Salt, second);
+        return Base64Utils.encodeToString(stringToEncode.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
-     * Generates unique token by algorithm:
-     * 1. Creates salt in format uuid:user_creation_date_millis
-     * 2. Gets md5_salt = MD5(salt)
-     * 3. Creates string in format md5_salt:token_creation_date_millis
-     * 4. Gets results = base64(md5_salt:token_creation_date_millis)
+     * Generates secure random number.
      *
-     * @param userEntity - user entity
-     * @return experiment token
+     * @return random number
      */
-    public static String generateToken(UserEntity userEntity) {
-        LocalDateTime tokenCreationDate = LocalDateTime.now();
-        String uuid = UUID.randomUUID().toString();
-        String salt = String.format(SALT_FORMAT, uuid, toMillis(userEntity.getCreationDate()));
-        String md5Salt = DigestUtils.md5DigestAsHex(salt.getBytes(StandardCharsets.UTF_8));
-        String stringToEncode = String.format(SALT_FORMAT, md5Salt, toMillis(tokenCreationDate));
-        return Base64Utils.encodeToString(stringToEncode.getBytes(StandardCharsets.UTF_8));
+    public static long secureRandomNumber() {
+        SecureRandom secureRandom = new SecureRandom();
+        return Math.abs(secureRandom.nextLong());
     }
 
     /**

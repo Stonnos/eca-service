@@ -63,7 +63,7 @@ public class ChangePasswordService {
             throw new ChangePasswordRequestAlreadyExistsException(userId);
         }
         changePasswordRequestEntity = new ChangePasswordRequestEntity();
-        String token = generateToken(userEntity);
+        String token = generateToken();
         changePasswordRequestEntity.setToken(md5Hex(token));
         changePasswordRequestEntity.setExpireDate(now.plusMinutes(changePasswordConfig.getValidityMinutes()));
         String encodedPassword = passwordEncoder.encode(changePasswordRequest.getNewPassword().trim());

@@ -59,7 +59,7 @@ public class ResetPasswordService {
             throw new ResetPasswordRequestAlreadyExistsException(userEntity.getId());
         }
         resetPasswordRequestEntity = new ResetPasswordRequestEntity();
-        String token = generateToken(userEntity);
+        String token = generateToken();
         resetPasswordRequestEntity.setToken(md5Hex(token));
         resetPasswordRequestEntity.setExpireDate(now.plusMinutes(resetPasswordConfig.getValidityMinutes()));
         resetPasswordRequestEntity.setUserEntity(userEntity);
