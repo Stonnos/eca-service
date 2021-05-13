@@ -40,7 +40,7 @@ public class MailScheduler {
      */
     @Scheduled(fixedDelayString = "${mail-config.delaySeconds}000")
     public void sendEmails() {
-        Sort sort = Sort.by(Sort.Order.desc(PRIORITY), Sort.Order.desc(SAVE_DATE));
+        Sort sort = Sort.by(Sort.Order.desc(PRIORITY), Sort.Order.asc(SAVE_DATE));
         List<Email> emails = emailRepository.findByStatusNotIn(Arrays.asList(EmailStatus.SENT, EmailStatus.EXCEEDED),
                 PageRequest.of(0, mailConfig.getPageSize(), sort));
         log.trace("{} not sent emails has been found.", emails.size());
