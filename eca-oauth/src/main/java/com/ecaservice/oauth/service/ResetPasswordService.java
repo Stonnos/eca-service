@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
-import static com.ecaservice.oauth.util.Utils.generateToken;
+import static com.ecaservice.common.web.util.RandomUtils.generateToken;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 /**
