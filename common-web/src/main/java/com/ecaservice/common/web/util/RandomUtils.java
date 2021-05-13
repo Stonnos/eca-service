@@ -44,6 +44,6 @@ public class RandomUtils {
      */
     public static long secureRandomNumber() {
         SecureRandom secureRandom = new SecureRandom();
-        return Math.abs(secureRandom.nextLong());
+        return secureRandom.nextLong();
     }
 }
