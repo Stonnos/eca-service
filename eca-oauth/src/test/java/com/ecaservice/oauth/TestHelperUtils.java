@@ -12,6 +12,8 @@ import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
 
+import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
+
 /**
  * Test helper utility class.
  *
@@ -133,11 +135,12 @@ public class TestHelperUtils {
     /**
      * Creates change password request entity.
      *
+     * @param token - token value
      * @return change password request entity
      */
-    public static ChangePasswordRequestEntity createChangePasswordRequestEntity() {
+    public static ChangePasswordRequestEntity createChangePasswordRequestEntity(String token) {
         ChangePasswordRequestEntity changePasswordRequestEntity = new ChangePasswordRequestEntity();
-        changePasswordRequestEntity.setToken(TOKEN);
+        changePasswordRequestEntity.setToken(md5Hex(token));
         changePasswordRequestEntity.setUserEntity(createUserEntity());
         return changePasswordRequestEntity;
     }

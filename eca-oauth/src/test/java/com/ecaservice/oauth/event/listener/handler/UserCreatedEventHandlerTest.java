@@ -7,6 +7,7 @@ import com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import org.junit.jupiter.api.Test;
 
+import static com.ecaservice.notification.util.Priority.MEDIUM;
 import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,5 +34,6 @@ class UserCreatedEventHandlerTest {
         assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.USERNAME_KEY,
                 userEntity.getLogin());
         assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.PASSWORD_KEY, PASSWORD);
+        assertThat(actual.getPriority()).isEqualTo(MEDIUM);
     }
 }

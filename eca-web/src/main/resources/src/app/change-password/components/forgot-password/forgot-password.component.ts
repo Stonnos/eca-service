@@ -23,6 +23,7 @@ export class ForgotPasswordComponent implements BaseForm, OnInit {
 
   public emailNotExists: boolean = false;
   public userLocked: boolean = false;
+  public hasActiveResetPasswordRequest: boolean = false;
 
   @ViewChild(NgForm, { static: true })
   public form: NgForm;
@@ -76,6 +77,8 @@ export class ForgotPasswordComponent implements BaseForm, OnInit {
       if (error.status === 400) {
         this.emailNotExists = this.validationService.hasError(error.error, UserFields.EMAIL, ValidationErrorCode.USER_EMAIL);
         this.userLocked = this.validationService.hasErrorCode(error.error, ValidationErrorCode.USER_LOCKED);
+        this.hasActiveResetPasswordRequest =
+          this.validationService.hasErrorCode(error.error, ValidationErrorCode.ACTIVE_RESET_PASSWORD_REQUEST);
       } else {
         this.handleUnknownError(error);
       }

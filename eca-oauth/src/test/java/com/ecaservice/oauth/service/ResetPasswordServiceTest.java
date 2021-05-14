@@ -7,7 +7,9 @@ import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.InvalidTokenException;
+import com.ecaservice.oauth.exception.ResetPasswordRequestAlreadyExistsException;
 import com.ecaservice.oauth.exception.UserLockedException;
+import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import org.apache.commons.lang3.StringUtils;
@@ -23,6 +25,7 @@ import java.util.Collections;
 import java.util.UUID;
 
 import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
+import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,6 +41,7 @@ import static org.mockito.Mockito.verify;
 class ResetPasswordServiceTest extends AbstractJpaTest {
 
     private static final String PASSWORD = "@pa66word!";
+    private static final String TOKEN = "token";
 
     @Inject
     private ResetPasswordConfig resetPasswordConfig;
@@ -70,14 +74,18 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
     @Test
     void testSaveNewResetPasswordRequest() {
         ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(userEntity.getEmail());
+        TokenModel tokenModel = resetPasswordService.createResetPasswordRequest(forgotPasswordRequest);
+        assertThat(tokenModel).isNotNull();
+        assertThat(tokenModel.getTokenId()).isNotNull();
+        assertThat(tokenModel.getUserId()).isNotNull();
+        assertThat(tokenModel.getToken()).isNotNull();
         ResetPasswordRequestEntity resetPasswordRequestEntity =
-                resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest);
+                resetPasswordRequestRepository.findById(tokenModel.getTokenId()).orElse(null);
         assertThat(resetPasswordRequestEntity).isNotNull();
         assertThat(resetPasswordRequestEntity.getExpireDate()).isNotNull();
         assertThat(resetPasswordRequestEntity.getToken()).isNotNull();
         assertThat(resetPasswordRequestEntity.getUserEntity()).isNotNull();
         assertThat(resetPasswordRequestEntity.getResetDate()).isNull();
-        assertThat(resetPasswordRequestRepository.count()).isOne();
     }
 
     @Test
@@ -86,22 +94,22 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
         userEntityRepository.save(userEntity);
         ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(userEntity.getEmail());
         assertThrows(UserLockedException.class,
-                () -> resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest));
+                () -> resetPasswordService.createResetPasswordRequest(forgotPasswordRequest));
     }
 
     @Test
-    void testGetResetPasswordRequestFromCache() {
+    void testCreateResetPasswordRequestWithResetPasswordRequestAlreadyExistsException() {
         ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(userEntity.getEmail());
-        resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest);
-        resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest);
-        assertThat(resetPasswordRequestRepository.count()).isOne();
+        resetPasswordService.createResetPasswordRequest(forgotPasswordRequest);
+        assertThrows(ResetPasswordRequestAlreadyExistsException.class,
+                () -> resetPasswordService.createResetPasswordRequest(forgotPasswordRequest));
     }
 
     @Test
     void testSaveResetPasswordRequestWithException() {
         ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(StringUtils.EMPTY);
         assertThrows(IllegalStateException.class,
-                () -> resetPasswordService.getOrSaveResetPasswordRequest(forgotPasswordRequest));
+                () -> resetPasswordService.createResetPasswordRequest(forgotPasswordRequest));
     }
 
     @Test
@@ -136,8 +144,7 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
     void testResetPassword() {
         ResetPasswordRequestEntity resetPasswordRequestEntity =
                 createAndSaveResetPasswordRequestEntity(LocalDateTime.now().plusMinutes(2L), null);
-        ResetPasswordRequest resetPasswordRequest =
-                new ResetPasswordRequest(resetPasswordRequestEntity.getToken(), PASSWORD);
+        ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest(TOKEN, PASSWORD);
         resetPasswordService.resetPassword(resetPasswordRequest);
         ResetPasswordRequestEntity actual =
                 resetPasswordRequestRepository.findById(resetPasswordRequestEntity.getId()).orElse(null);
@@ -152,10 +159,8 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
     void testResetPasswordForLockedUser() {
         userEntity.setLocked(true);
         userEntityRepository.save(userEntity);
-        ResetPasswordRequestEntity resetPasswordRequestEntity =
-                createAndSaveResetPasswordRequestEntity(LocalDateTime.now().plusMinutes(2L), null);
-        ResetPasswordRequest resetPasswordRequest =
-                new ResetPasswordRequest(resetPasswordRequestEntity.getToken(), PASSWORD);
+        createAndSaveResetPasswordRequestEntity(LocalDateTime.now().plusMinutes(2L), null);
+        ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest(TOKEN, PASSWORD);
         assertThrows(UserLockedException.class, () -> resetPasswordService.resetPassword(resetPasswordRequest));
     }
 
@@ -167,9 +172,8 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
 
     private ResetPasswordRequestEntity createAndSaveResetPasswordRequestEntity(LocalDateTime expireDate,
                                                                                LocalDateTime resetDate) {
-        String token = UUID.randomUUID().toString();
         ResetPasswordRequestEntity resetPasswordRequestEntity = new ResetPasswordRequestEntity();
-        resetPasswordRequestEntity.setToken(token);
+        resetPasswordRequestEntity.setToken(md5Hex(TOKEN));
         resetPasswordRequestEntity.setExpireDate(expireDate);
         resetPasswordRequestEntity.setResetDate(resetDate);
         resetPasswordRequestEntity.setUserEntity(userEntity);

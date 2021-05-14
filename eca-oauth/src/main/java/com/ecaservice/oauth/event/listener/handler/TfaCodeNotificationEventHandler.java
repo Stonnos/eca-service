@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.Collections;
 import java.util.Map;
 
+import static com.ecaservice.notification.util.Priority.HIGHEST;
 import static com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary.TFA_CODE;
 
 /**
@@ -34,5 +35,10 @@ public class TfaCodeNotificationEventHandler extends AbstractNotificationEventHa
     @Override
     String getReceiver(TfaCodeNotificationEvent event) {
         return event.getUserEntity().getEmail();
+    }
+
+    @Override
+    int getPriority() {
+        return HIGHEST;
     }
 }

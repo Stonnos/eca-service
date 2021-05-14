@@ -13,6 +13,8 @@ import com.ecaservice.oauth.event.model.ChangePasswordNotificationEvent;
 import com.ecaservice.oauth.event.model.ResetPasswordNotificationEvent;
 import com.ecaservice.oauth.event.model.TfaCodeNotificationEvent;
 import com.ecaservice.oauth.event.model.UserCreatedEvent;
+import com.ecaservice.oauth.model.TokenModel;
+import com.ecaservice.oauth.service.UserService;
 import com.ecaservice.oauth.service.mail.EmailClient;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import org.junit.jupiter.api.Test;
@@ -52,9 +54,13 @@ class NotificationEventListenerTest {
 
     private static final String TFA_CODE = "code";
     private static final String PASSWORD = "pa66word!";
+    private static final String TOKEN = "token";
+    private static final long USER_ID = 1L;
 
     @MockBean
     private EmailClient emailClient;
+    @MockBean
+    private UserService userService;
 
     @Inject
     private NotificationEventListener notificationEventListener;
@@ -79,22 +85,28 @@ class NotificationEventListenerTest {
     @Test
     void testResetPassword() {
         ResetPasswordRequestEntity resetPasswordRequestEntity = createResetPasswordRequestEntity();
-        ResetPasswordNotificationEvent event = new ResetPasswordNotificationEvent(this, resetPasswordRequestEntity);
+        resetPasswordRequestEntity.getUserEntity().setId(USER_ID);
+        TokenModel tokenModel = new TokenModel(TOKEN, USER_ID, resetPasswordRequestEntity.getId());
+        when(userService.getById(USER_ID)).thenReturn(resetPasswordRequestEntity.getUserEntity());
+        ResetPasswordNotificationEvent event = new ResetPasswordNotificationEvent(this, tokenModel);
         internalTestEvent(event, Templates.RESET_PASSWORD);
     }
 
     @Test
     void testChangePassword() {
-        ChangePasswordRequestEntity changePasswordRequestEntity = createChangePasswordRequestEntity();
-        ChangePasswordNotificationEvent event = new ChangePasswordNotificationEvent(this, changePasswordRequestEntity);
+        ChangePasswordRequestEntity changePasswordRequestEntity = createChangePasswordRequestEntity(TOKEN);
+        changePasswordRequestEntity.getUserEntity().setId(USER_ID);
+        TokenModel tokenModel = new TokenModel(TOKEN, USER_ID, changePasswordRequestEntity.getId());
+        ChangePasswordNotificationEvent event = new ChangePasswordNotificationEvent(this, tokenModel);
+        when(userService.getById(USER_ID)).thenReturn(changePasswordRequestEntity.getUserEntity());
         internalTestEvent(event, Templates.CHANGE_PASSWORD);
     }
 
     @Test
     void testThrowIllegalStateException() {
-       AbstractNotificationEvent event = new AbstractNotificationEvent(this) {
-       };
-       assertThrows(IllegalStateException.class, () -> notificationEventListener.handleNotificationEvent(event));
+        AbstractNotificationEvent event = new AbstractNotificationEvent(this) {
+        };
+        assertThrows(IllegalStateException.class, () -> notificationEventListener.handleNotificationEvent(event));
     }
 
     private void internalTestEvent(AbstractNotificationEvent event, String expectedTemplateCode) {

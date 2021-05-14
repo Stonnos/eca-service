@@ -12,6 +12,8 @@ import lombok.experimental.UtilityClass;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static com.ecaservice.notification.util.Priority.LOW;
+import static com.ecaservice.notification.util.Priority.MEDIUM;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 
@@ -43,6 +45,7 @@ public class TestHelperUtils {
         emailRequest.setReceiver(RECEIVER_MAIL_RU);
         emailRequest.setTemplateCode(TEST_TEMPLATE_CODE);
         emailRequest.setVariables(newHashMap());
+        emailRequest.setPriority(LOW);
         return emailRequest;
     }
 
@@ -73,6 +76,7 @@ public class TestHelperUtils {
         email.setReceiver(RECEIVER_MAIL_RU);
         email.setSubject(SUBJECT);
         email.setMessage(MESSAGE);
+        email.setPriority(MEDIUM);
         return email;
     }
 

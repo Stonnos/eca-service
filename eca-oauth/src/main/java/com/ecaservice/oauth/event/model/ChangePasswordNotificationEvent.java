@@ -1,6 +1,6 @@
 package com.ecaservice.oauth.event.model;
 
-import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
+import com.ecaservice.oauth.model.TokenModel;
 import lombok.Getter;
 
 /**
@@ -11,20 +11,20 @@ import lombok.Getter;
 public class ChangePasswordNotificationEvent extends AbstractNotificationEvent {
 
     /**
-     * Change password request entity
+     * Change password request token model
      */
     @Getter
-    private final ChangePasswordRequestEntity changePasswordRequestEntity;
+    private final TokenModel tokenModel;
 
     /**
      * Create a new {@code ChangePasswordNotificationEvent}.
      *
-     * @param source                      - the object on which the event initially occurred or with which the event is
-     *                                    associated (never {@code null})
-     * @param changePasswordRequestEntity - change password request entity
+     * @param source     - the object on which the event initially occurred or with which the event is
+     *                   associated (never {@code null})
+     * @param tokenModel - change password request token model
      */
-    public ChangePasswordNotificationEvent(Object source, ChangePasswordRequestEntity changePasswordRequestEntity) {
+    public ChangePasswordNotificationEvent(Object source, TokenModel tokenModel) {
         super(source);
-        this.changePasswordRequestEntity = changePasswordRequestEntity;
+        this.tokenModel = tokenModel;
     }
 }

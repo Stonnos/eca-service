@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.ecaservice.notification.util.Priority.MEDIUM;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -107,5 +108,6 @@ class EmailTemplateVisitorTest {
                         variablesMap.get(TemplateVariablesDictionary.EXPERIMENT_TYPE_KEY));
         assertThat(actualExperimentType).isEqualTo(experiment.getExperimentType());
         assertThat(variablesMap.get(TemplateVariablesDictionary.REQUEST_ID_KEY)).hasToString(experiment.getRequestId());
+        assertThat(emailRequest.getPriority()).isEqualTo(MEDIUM);
     }
 }

@@ -19,6 +19,8 @@ import { Router } from "@angular/router";
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
+  private static readonly TOKEN_URL = '/oauth/token';
+
   private refreshTokenInProgress = false;
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
@@ -31,7 +33,7 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(catchError(error => {
       if (error instanceof HttpErrorResponse) {
         if (error.status === 401) {
-          if (request.url.includes('/oauth/token')) {
+          if (request.url.includes(AuthInterceptor.TOKEN_URL)) {
             this.logoutService.logout();
             return EMPTY;
           }
@@ -60,7 +62,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 })
               );
           }
-        } else if (error.status === 403) {
+        } else if (error.status === 403 && !request.url.includes(AuthInterceptor.TOKEN_URL)) {
           this.router.navigate(['/access-denied']);
           return EMPTY;
         }

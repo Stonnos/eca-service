@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
+import static com.ecaservice.notification.util.Priority.MEDIUM;
+
 /**
  * Abstract notification event handler.
  *
@@ -41,10 +43,20 @@ public abstract class AbstractNotificationEventHandler<T extends AbstractNotific
      */
     public EmailRequest handle(T event) {
         EmailRequest emailRequest = new EmailRequest();
-        emailRequest.setTemplateCode(templateCode);
+        emailRequest.setTemplateCode(getTemplateCode());
         emailRequest.setReceiver(getReceiver(event));
         emailRequest.setVariables(createVariables(event));
+        emailRequest.setPriority(getPriority());
         return emailRequest;
+    }
+
+    /**
+     * Gets delivery priority.
+     *
+     * @return delivery priority
+     */
+    int getPriority() {
+        return MEDIUM;
     }
 
     /**

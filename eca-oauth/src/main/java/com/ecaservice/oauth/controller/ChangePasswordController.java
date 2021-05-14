@@ -1,7 +1,6 @@
 package com.ecaservice.oauth.controller;
 
 import com.ecaservice.oauth.dto.ChangePasswordRequest;
-import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
 import com.ecaservice.oauth.event.model.ChangePasswordNotificationEvent;
 import com.ecaservice.oauth.service.ChangePasswordService;
 import com.ecaservice.user.model.UserDetailsImpl;
@@ -51,11 +50,10 @@ public class ChangePasswordController {
     public void createChangePasswordRequest(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                             @Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
         log.info("Received change password request for user [{}]", userDetails.getId());
-        ChangePasswordRequestEntity changePasswordRequestEntity =
-                changePasswordService.createChangePasswordRequest(userDetails.getId(), changePasswordRequest);
-        log.info("Change password request [{}] has been created for user [{}]",
-                changePasswordRequestEntity.getId(), userDetails.getId());
-        applicationEventPublisher.publishEvent(new ChangePasswordNotificationEvent(this, changePasswordRequestEntity));
+        var tokenModel = changePasswordService.createChangePasswordRequest(userDetails.getId(), changePasswordRequest);
+        log.info("Change password request [{}] has been created for user [{}]", tokenModel.getTokenId(),
+                userDetails.getId());
+        applicationEventPublisher.publishEvent(new ChangePasswordNotificationEvent(this, tokenModel));
     }
 
     /**

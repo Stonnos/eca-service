@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v9-add-priority-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Add priority column to email table -->
+    <changeSet id="1" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="email"/>
+            <not>
+                <columnExists tableName="email" columnName="priority"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="email">
+            <column name="priority" type="integer" defaultValueNumeric="0"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="email"/>
+            <columnExists tableName="email" columnName="priority"/>
+        </preConditions>
+        <addNotNullConstraint tableName="email" columnName="priority" defaultNullValue="0"/>
+    </changeSet>
+</databaseChangeLog>

@@ -59,9 +59,9 @@ import java.util.stream.Collectors;
 import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
+import static com.ecaservice.common.web.util.RandomUtils.generateToken;
 import static com.ecaservice.model.entity.AbstractEvaluationEntity_.CREATION_DATE;
 import static com.ecaservice.model.entity.Experiment_.EXPERIMENT_TYPE;
-import static com.ecaservice.util.ExperimentUtils.generateToken;
 import static com.ecaservice.util.ExperimentUtils.getExperimentFile;
 import static com.ecaservice.util.Utils.atEndOfDay;
 import static com.ecaservice.util.Utils.atStartOfDay;
@@ -159,7 +159,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
             stopWatch.stop();
 
             experiment.setExperimentAbsolutePath(experimentFile.getAbsolutePath());
-            experiment.setToken(generateToken(experiment));
+            experiment.setToken(generateToken());
             experiment.setRequestStatus(RequestStatus.FINISHED);
             log.info("Experiment [{}] has been successfully finished!", experiment.getRequestId());
             log.info(stopWatch.prettyPrint());
