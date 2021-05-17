@@ -34,6 +34,7 @@ public class EmailService {
     private final EmailRequestMapper emailRequestMapper;
     private final TemplateService templateService;
     private final TemplateProcessorService templateProcessorService;
+    private final AesEncryptorService aesEncryptorService;
     private final EmailRepository emailRepository;
 
     /**
@@ -50,7 +51,8 @@ public class EmailService {
         Email email = emailRequestMapper.map(emailRequest, mailConfig);
         email.setSubject(templateEntity.getSubject());
         String message = templateProcessorService.process(emailRequest.getTemplateCode(), emailRequest.getVariables());
-        email.setMessage(message);
+        String encodedMessage = aesEncryptorService.encrypt(message);
+        email.setMessage(encodedMessage);
         email.setUuid(uuid);
         email.setTxId(txId);
         email.setSaveDate(LocalDateTime.now());

@@ -2,6 +2,7 @@ package com.ecaservice.mail.service;
 
 import com.ecaservice.mail.AbstractJpaTest;
 import com.ecaservice.mail.TestHelperUtils;
+import com.ecaservice.mail.config.EncryptorConfiguration;
 import com.ecaservice.mail.config.MailConfig;
 import com.ecaservice.mail.mapping.EmailRequestMapper;
 import com.ecaservice.mail.mapping.EmailRequestMapperImpl;
@@ -25,7 +26,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import(EmailRequestMapperImpl.class)
+@Import({EmailRequestMapperImpl.class, EncryptorConfiguration.class, MailConfig.class, AesEncryptorService.class})
 class EmailServiceTest extends AbstractJpaTest {
 
     private static final String EMAIL_MESSAGE = "message";
@@ -41,13 +42,15 @@ class EmailServiceTest extends AbstractJpaTest {
     private EmailRepository emailRepository;
     @Inject
     private EmailRequestMapper emailRequestMapper;
+    @Inject
+    private AesEncryptorService aesEncryptorService;
 
     private EmailService emailService;
 
     @Override
     public void init() {
         emailService = new EmailService(mailConfig, emailRequestMapper, templateService, templateProcessorService,
-                emailRepository);
+                aesEncryptorService, emailRepository);
     }
 
     @Override

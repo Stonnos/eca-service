@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -21,6 +20,7 @@ import javax.mail.internet.MimeMessage;
 @RequiredArgsConstructor
 public class MailSenderService {
 
+    private final AesEncryptorService aesEncryptorService;
     private final JavaMailSender mailSender;
 
     /**
@@ -29,7 +29,6 @@ public class MailSenderService {
      * @param email - email object
      */
     public void sendEmail(Email email) throws MessagingException {
-        Assert.notNull(email, "Mail is not specified!");
         log.info("Starting to send email message [{}] from '{}' to '{}'.", email.getUuid(), email.getSender(),
                 email.getReceiver());
         MimeMessage message = buildMimeMessage(email);
@@ -44,7 +43,8 @@ public class MailSenderService {
         messageHelper.setFrom(email.getSender());
         messageHelper.setTo(email.getReceiver());
         messageHelper.setSubject(email.getSubject());
-        messageHelper.setText(email.getMessage(), true);
+        String decodedMessage = aesEncryptorService.decrypt(email.getMessage());
+        messageHelper.setText(decodedMessage, true);
         return message;
     }
 }
