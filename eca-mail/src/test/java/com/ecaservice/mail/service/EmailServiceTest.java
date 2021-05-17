@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({EmailRequestMapperImpl.class, EncryptorConfiguration.class, MailConfig.class, AesEncryptorService.class})
+@Import({EmailRequestMapperImpl.class, EncryptorConfiguration.class, MailConfig.class})
 class EmailServiceTest extends AbstractJpaTest {
 
     private static final String EMAIL_MESSAGE = "message";
@@ -43,14 +43,14 @@ class EmailServiceTest extends AbstractJpaTest {
     @Inject
     private EmailRequestMapper emailRequestMapper;
     @Inject
-    private AesEncryptorService aesEncryptorService;
+    private EncryptorBase64AdapterService encryptorBase64AdapterService;
 
     private EmailService emailService;
 
     @Override
     public void init() {
         emailService = new EmailService(mailConfig, emailRequestMapper, templateService, templateProcessorService,
-                aesEncryptorService, emailRepository);
+                encryptorBase64AdapterService, emailRepository);
     }
 
     @Override

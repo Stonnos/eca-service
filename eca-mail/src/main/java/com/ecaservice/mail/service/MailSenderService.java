@@ -20,7 +20,7 @@ import javax.mail.internet.MimeMessage;
 @RequiredArgsConstructor
 public class MailSenderService {
 
-    private final AesEncryptorService aesEncryptorService;
+    private final EncryptorBase64AdapterService encryptorBase64AdapterService;
     private final JavaMailSender mailSender;
 
     /**
@@ -43,7 +43,7 @@ public class MailSenderService {
         messageHelper.setFrom(email.getSender());
         messageHelper.setTo(email.getReceiver());
         messageHelper.setSubject(email.getSubject());
-        String decodedMessage = aesEncryptorService.decrypt(email.getMessage());
+        String decodedMessage = encryptorBase64AdapterService.decrypt(email.getMessage());
         messageHelper.setText(decodedMessage, true);
         return message;
     }

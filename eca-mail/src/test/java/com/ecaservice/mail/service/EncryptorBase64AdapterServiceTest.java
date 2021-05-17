@@ -14,26 +14,26 @@ import javax.inject.Inject;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests for {@link AesEncryptorService} class.
+ * Unit tests for {@link EncryptorBase64AdapterService} class.
  *
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({EncryptorConfiguration.class, AesEncryptorService.class, MailConfig.class})
-class AesEncryptorServiceTest {
+@Import({EncryptorConfiguration.class, MailConfig.class})
+class EncryptorBase64AdapterServiceTest {
 
     private static final String TEST_MESSAGE = "Test message";
 
     @Inject
-    private AesEncryptorService aesEncryptorService;
+    private EncryptorBase64AdapterService encryptorBase64AdapterService;
 
     @Test
     void testEncryptMessage() {
-        String cipher = aesEncryptorService.encrypt(TEST_MESSAGE);
+        String cipher = encryptorBase64AdapterService.encrypt(TEST_MESSAGE);
         assertThat(cipher).isNotNull();
-        String encoded = aesEncryptorService.decrypt(cipher);
+        String encoded = encryptorBase64AdapterService.decrypt(cipher);
         assertThat(encoded).isEqualTo(TEST_MESSAGE);
     }
 }

@@ -1,43 +1,41 @@
 package com.ecaservice.mail.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.encrypt.AesBytesEncryptor;
-import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.encrypt.BytesEncryptor;
 import org.springframework.util.Base64Utils;
 
 import java.nio.charset.StandardCharsets;
 
 /**
- * AES encryptor service.
+ * Adapter service to encrypt messages in base64 cipher format.
  *
  * @author Roman Batygin
  */
-@Service
 @RequiredArgsConstructor
-public class AesEncryptorService {
+public class EncryptorBase64AdapterService {
 
-    private final AesBytesEncryptor aesBytesEncryptor;
+    private final BytesEncryptor bytesEncryptor;
 
     /**
-     * Encrypt message.
+     * Encrypt message as cipher in Base64.
      *
      * @param message - message value
      * @return cipher value in Base64 format
      */
     public String encrypt(String message) {
-        byte[] cipherBytes = aesBytesEncryptor.encrypt(message.getBytes(StandardCharsets.UTF_8));
+        byte[] cipherBytes = bytesEncryptor.encrypt(message.getBytes(StandardCharsets.UTF_8));
         return Base64Utils.encodeToString(cipherBytes);
     }
 
     /**
      * Encrypt message.
      *
-     * @param cipher - cipher value
+     * @param cipher - cipher value in Base64
      * @return encoded message
      */
     public String decrypt(String cipher) {
         byte[] cipherBytes = Base64Utils.decodeFromString(cipher);
-        byte[] encodedBytes = aesBytesEncryptor.decrypt(cipherBytes);
+        byte[] encodedBytes = bytesEncryptor.decrypt(cipherBytes);
         return new String(encodedBytes, StandardCharsets.UTF_8);
     }
 }

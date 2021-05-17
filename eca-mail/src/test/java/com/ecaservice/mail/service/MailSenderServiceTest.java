@@ -30,7 +30,7 @@ class MailSenderServiceTest {
     private static final String MESSAGE = "Message";
 
     @Mock
-    private AesEncryptorService aesEncryptorService;
+    private EncryptorBase64AdapterService encryptorBase64AdapterService;
     @Mock
     private JavaMailSender mailSender;
     @InjectMocks
@@ -41,7 +41,7 @@ class MailSenderServiceTest {
         Email email = createEmail(LocalDateTime.now(), EmailStatus.NEW);
         MimeMessage mimeMessage = mock(MimeMessage.class);
         when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
-        when(aesEncryptorService.decrypt(email.getMessage())).thenReturn(MESSAGE);
+        when(encryptorBase64AdapterService.decrypt(email.getMessage())).thenReturn(MESSAGE);
         mailSenderService.sendEmail(email);
         verify(mailSender, atLeastOnce()).send(mimeMessage);
     }
