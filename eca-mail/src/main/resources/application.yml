@@ -63,7 +63,7 @@ swagger2:
 mail-config:
   maxFailedAttemptsToSent: 10
   pageSize: 10
-  delaySeconds: 10
+  delaySeconds: 3
   sender: rbatsw@gmail.com
   encrypt:
     password: pa66word!
