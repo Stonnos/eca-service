@@ -31,4 +31,26 @@ public class MailConfig {
      * Sender email
      */
     private String sender;
+
+    /**
+     * Encrypt properties
+     */
+    private EncryptConfig encrypt;
+
+    /**
+     * Encrypt config.
+     */
+    @Data
+    public static class EncryptConfig {
+
+        /**
+         * Password for PBKDF2WithHmacSHA1 algorithm
+         */
+        private String password;
+
+        /**
+         * Salt for PBKDF2WithHmacSHA1 algorithm
+         */
+        private String salt;
+    }
 }

@@ -65,6 +65,9 @@ mail-config:
   pageSize: 10
   delaySeconds: 10
   sender: rbatsw@gmail.com
+  encrypt:
+    password: pa66word!
+    salt: s@lt#
 
 management:
   metrics:
