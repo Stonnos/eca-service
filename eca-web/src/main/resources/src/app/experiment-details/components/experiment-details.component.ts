@@ -1,7 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {
   ExperimentDto,
-  ExperimentErsReportDto, ExperimentProgressDto
+  ExperimentErsReportDto,
+  ExperimentProgressDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { MessageService } from "primeng/api";
 import { ActivatedRoute } from "@angular/router";
@@ -13,6 +14,7 @@ import { FieldService } from "../../common/services/field.service";
 import { Utils } from "../../common/util/utils";
 import { Subscription, timer } from "rxjs";
 import { finalize } from "rxjs/internal/operators";
+import { RequestStatus } from "../../common/model/request-status.enum";
 
 @Component({
   selector: 'app-experiment-details',
@@ -28,6 +30,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
     .set(ExperimentFields.EXPERIMENT_PATH, false);
 
   private readonly updateProgressInterval = 1000;
+  private readonly updateStatusInterval = 3000;
 
   public experimentFields: any[] = [];
 
@@ -37,7 +40,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
 
   public experimentProgress: ExperimentProgressDto;
 
-  private updateProgressSubscription: Subscription = new Subscription();
+  private updateSubscription: Subscription = new Subscription();
 
   public linkColumns: string[] = [ExperimentFields.TRAINING_DATA_PATH, ExperimentFields.EXPERIMENT_PATH];
 
@@ -63,6 +66,13 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
       .subscribe({
         next: (experimentDto: ExperimentDto) => {
           this.experimentDto = experimentDto;
+          if (this.experimentDto.requestStatus.value == RequestStatus.NEW) {
+            //Subscribe for experiment status change
+            this.updateExperimentStatus();
+          } else if (this.experimentDto.requestStatus.value == RequestStatus.IN_PROGRESS) {
+            //Subscribe for experiment progress change
+            this.updateExperimentProgress();
+          }
         },
         error: (error) => {
           this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
@@ -111,9 +121,6 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
       .subscribe({
         next: (experimentErsReport: ExperimentErsReportDto) => {
           this.experimentErsReport = experimentErsReport;
-          if (this.experimentErsReport.ersReportStatus.value == "EXPERIMENT_IN_PROGRESS") {
-            this.updateExperimentProgress();
-          }
         },
         error: (error) => {
           this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
@@ -158,18 +165,49 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
     return this.fieldService.hasValue(field, this.experimentDto);
   }
 
+  private updateExperimentStatus(): void {
+    this.updateSubscription = timer(0, this.updateStatusInterval).subscribe({
+      next: () => {
+        this.experimentsService.getExperiment(this.experimentRequestId)
+          .subscribe({
+            next: (experimentDto: ExperimentDto) => {
+              if (this.experimentDto.requestStatus.value != experimentDto.requestStatus.value) {
+                //Update experiment data if status has been changed
+                this.experimentDto = experimentDto;
+                if (this.experimentDto.requestStatus.value == RequestStatus.IN_PROGRESS) {
+                  //Subscribe for experiment progress change
+                  this.unSubscribe();
+                  this.updateExperimentProgress();
+                } else {
+                  this.unSubscribe();
+                }
+                this.getExperimentErsReport();
+              }
+            },
+            error: (error) => {
+              this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
+            }
+          });
+      },
+      error: (error) => {
+        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
+      }
+    });
+  }
+
   private updateExperimentProgress(): void {
-    this.updateProgressSubscription = timer(0, this.updateProgressInterval).subscribe({
+    this.updateSubscription = timer(0, this.updateProgressInterval).subscribe({
       next: () => {
         this.experimentsService.getExperimentProgress(this.experimentRequestId)
           .subscribe({
             next: (experimentProgress: ExperimentProgressDto) => {
+              console.log('Experiment progress updaye');
               if (!experimentProgress.finished) {
                 this.experimentProgress = experimentProgress;
               } else {
+                this.unSubscribe();
                 this.getExperiment();
                 this.getExperimentErsReport();
-                this.unSubscribe();
               }
             },
             error: (error) => {
@@ -184,7 +222,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   }
 
   private unSubscribe(): void {
-    this.updateProgressSubscription.unsubscribe();
+    this.updateSubscription.unsubscribe();
   }
 
   private initExperimentFields(): void {
