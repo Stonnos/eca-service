@@ -2,7 +2,6 @@ package com.ecaservice.service.experiment;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
-import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
 import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.mapping.ExperimentMapperImpl;
 import com.ecaservice.mapping.ExperimentResultsMapper;
@@ -42,8 +41,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ClassifierInputOptionsMapperImpl.class, ExperimentResultsMapperImpl.class,
-        ClassifierInfoMapperImpl.class, ExperimentMapperImpl.class, DateTimeConverter.class})
+@Import({ExperimentResultsMapperImpl.class, ClassifierInfoMapperImpl.class, ExperimentMapperImpl.class,
+        DateTimeConverter.class})
 class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     @Mock
@@ -84,7 +83,8 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
 
     @Test
     void testErsReportWithExperimentInProgressStatus() {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
+        Experiment experiment =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
         experiment.setStartDate(LocalDateTime.now());
         experimentRepository.save(experiment);
         testGetErsReport(experiment, ErsReportStatus.EXPERIMENT_IN_PROGRESS);

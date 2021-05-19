@@ -3,7 +3,6 @@ package com.ecaservice.controller.web;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
-import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
 import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.mapping.EvaluationLogMapperImpl;
@@ -55,7 +54,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @WebMvcTest(controllers = EvaluationController.class)
 @Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class, DateTimeConverter.class,
-        ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class})
+        ClassifierInfoMapperImpl.class})
 class EvaluationControllerTest extends PageRequestControllerTest {
 
     private static final String BASE_URL = "/evaluation";
