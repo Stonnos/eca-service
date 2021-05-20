@@ -21,6 +21,8 @@ import { ReportsService } from "../../common/services/report.service";
 import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
 import { Utils } from "../../common/util/utils";
 import { ReportType } from "../../common/model/report-type.enum";
+import {StompConfig, StompService} from "@stomp/ng2-stompjs";
+import {AuthenticationKeys} from "../../auth/model/auth.keys";
 
 @Component({
   selector: 'app-experiment-list',
@@ -61,6 +63,26 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     this.getRequestStatusesStatistics();
     this.getEvaluationMethods();
     this.getExperimentTypes();
+
+    let stompConfig: StompConfig = {
+      url: 'ws://localhost:8085/socket?access_token='+localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN),
+      headers: {
+      },
+      heartbeat_in: 0,
+      heartbeat_out: 20000,
+      reconnect_delay: 5000,
+      debug: true
+    };
+    const stompService = new StompService(stompConfig);
+    stompService.subscribe('/queue/experiment')
+      .subscribe({
+        next: (message) => {
+          console.log(message.body);
+        },
+        error: (error) => {
+          console.log(error);
+        }
+      });
   }
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<ExperimentDto>> {

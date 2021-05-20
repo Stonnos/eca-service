@@ -10,7 +10,6 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { MessageService } from "primeng/api";
 import { UsersService } from "../../users/services/users.service";
 import { Subscription, timer } from "rxjs";
-import {StompConfig, StompService} from "@stomp/ng2-stompjs";
 
 @Component({
   selector: 'app-login',
@@ -49,25 +48,6 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
     if (localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)) {
       this.enter();
     }
-    let stompConfig: StompConfig = {
-      url: 'ws://localhost:8085/socket',
-      headers: {
-      },
-      heartbeat_in: 0,
-      heartbeat_out: 20000,
-      reconnect_delay: 5000,
-      debug: true
-    };
-    const stompService = new StompService(stompConfig);
-    stompService.subscribe('/queue/experiment')
-      .subscribe({
-        next: (message) => {
-          console.log(message.body);
-        },
-        error: (error) => {
-          console.log(error);
-        }
-      });
   }
 
   public ngOnDestroy(): void {
