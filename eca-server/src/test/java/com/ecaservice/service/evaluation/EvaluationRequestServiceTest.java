@@ -9,7 +9,6 @@ import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.configuation.ExecutorConfiguration;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
-import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
 import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.mapping.EvaluationLogMapperImpl;
@@ -42,7 +41,7 @@ import static org.mockito.Mockito.mock;
  */
 @Import({ExecutorConfiguration.class, CrossValidationConfig.class,
         EvaluationLogMapperImpl.class, EvaluationService.class, CommonConfig.class, DateTimeConverter.class,
-        InstancesInfoMapperImpl.class, ClassifierInputOptionsMapperImpl.class, ClassifierInfoMapperImpl.class})
+        InstancesInfoMapperImpl.class, ClassifierInfoMapperImpl.class})
 class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     @Inject

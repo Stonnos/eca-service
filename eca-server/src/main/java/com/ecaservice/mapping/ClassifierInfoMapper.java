@@ -3,13 +3,18 @@ package com.ecaservice.mapping;
 import com.ecaservice.model.entity.ClassifierInfo;
 import com.ecaservice.model.entity.ClassifierInputOptions;
 import com.ecaservice.web.dto.model.ClassifierInfoDto;
+import com.ecaservice.web.dto.model.InputOptionDto;
 import org.mapstruct.AfterMapping;
-import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.springframework.util.CollectionUtils;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -18,7 +23,7 @@ import static com.google.common.collect.Lists.newArrayList;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = ClassifierInputOptionsMapper.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+@Mapper
 public abstract class ClassifierInfoMapper {
 
     /**
@@ -37,6 +42,20 @@ public abstract class ClassifierInfoMapper {
      */
     @Mapping(source = "classifierInputOptions", target = "inputOptions")
     public abstract ClassifierInfoDto map(ClassifierInfo classifierInfo);
+
+    @AfterMapping
+    protected void postMappingOptions(ClassifierInfo classifierInfo,
+                                      @MappingTarget ClassifierInfoDto classifierInfoDto) {
+        if (!CollectionUtils.isEmpty(classifierInfo.getClassifierInputOptions())) {
+            List<InputOptionDto> sortedOptions = classifierInfo.getClassifierInputOptions()
+                    .stream()
+                    .sorted(Comparator.comparing(ClassifierInputOptions::getOptionOrder))
+                    .map(classifierInputOptions -> new InputOptionDto(classifierInputOptions.getOptionName(),
+                            classifierInputOptions.getOptionValue()))
+                    .collect(Collectors.toList());
+            classifierInfoDto.setInputOptions(sortedOptions);
+        }
+    }
 
     @AfterMapping
     protected void postMapping(Classifier classifier, @MappingTarget ClassifierInfo classifierInfo) {

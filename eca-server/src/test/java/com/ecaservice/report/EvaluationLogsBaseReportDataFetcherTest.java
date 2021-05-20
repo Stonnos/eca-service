@@ -3,7 +3,6 @@ package com.ecaservice.report;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
-import com.ecaservice.mapping.ClassifierInputOptionsMapperImpl;
 import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.mapping.EvaluationLogMapperImpl;
@@ -43,7 +42,7 @@ import static com.google.common.collect.Lists.newArrayList;
  * @author Roman Batygin
  */
 @Import({CommonConfig.class, ClassifierInfoMapperImpl.class, EvaluationLogMapperImpl.class,
-        InstancesInfoMapperImpl.class, ClassifierInputOptionsMapperImpl.class, DateTimeConverter.class})
+        InstancesInfoMapperImpl.class, DateTimeConverter.class})
 class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
 
     private static final List<String> DATE_RANGE_VALUES = ImmutableList.of("2018-01-01", "2018-01-07");
