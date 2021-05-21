@@ -1,7 +1,7 @@
 package com.ecaservice.service.scheduler;
 
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.event.model.ExperimentChangeStatusEvent;
+import com.ecaservice.event.model.ExperimentNotificationEvent;
 import com.ecaservice.event.model.ExperimentFinishedEvent;
 import com.ecaservice.model.entity.AppInstanceEntity;
 import com.ecaservice.model.entity.Experiment;
@@ -67,7 +67,7 @@ public class ExperimentScheduler {
             experimentProgressService.start(experiment);
             setInProgressStatus(experiment);
             ExperimentHistory experimentHistory = experimentService.processExperiment(experiment);
-            eventPublisher.publishEvent(new ExperimentChangeStatusEvent(this, experiment));
+            eventPublisher.publishEvent(new ExperimentNotificationEvent(this, experiment));
             if (RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
                 eventPublisher.publishEvent(new ExperimentFinishedEvent(this, experiment, experimentHistory));
             }
@@ -89,7 +89,7 @@ public class ExperimentScheduler {
         for (Experiment experiment : experiments) {
             putMdc(TX_ID, experiment.getRequestId());
             putMdc(EV_REQUEST_ID, experiment.getRequestId());
-            eventPublisher.publishEvent(new ExperimentChangeStatusEvent(this, experiment));
+            eventPublisher.publishEvent(new ExperimentNotificationEvent(this, experiment, false));
         }
         log.trace("Sending experiments has been successfully finished.");
     }
@@ -146,6 +146,6 @@ public class ExperimentScheduler {
         experiment.setStartDate(LocalDateTime.now());
         experimentRepository.save(experiment);
         log.info("Experiment [{}] in progress status has been set", experiment.getRequestId());
-        eventPublisher.publishEvent(new ExperimentChangeStatusEvent(this, experiment));
+        eventPublisher.publishEvent(new ExperimentNotificationEvent(this, experiment));
     }
 }

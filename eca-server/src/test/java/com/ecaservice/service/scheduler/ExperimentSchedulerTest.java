@@ -3,7 +3,7 @@ package com.ecaservice.service.scheduler;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.event.model.ExperimentChangeStatusEvent;
+import com.ecaservice.event.model.ExperimentNotificationEvent;
 import com.ecaservice.model.entity.AppInstanceEntity;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.Experiment;
@@ -109,7 +109,8 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         experimentRepository.saveAll(experiments);
         experimentScheduler.processNewRequests();
         verify(experimentService, times(experiments.size())).processExperiment(any(Experiment.class));
-        verify(eventPublisher, times(EXPECTED_CHANGE_STATUS_EVENTS_COUNT)).publishEvent(any(ExperimentChangeStatusEvent.class));
+        verify(eventPublisher, times(EXPECTED_CHANGE_STATUS_EVENTS_COUNT)).publishEvent(any(
+                ExperimentNotificationEvent.class));
     }
 
     @Test
@@ -123,7 +124,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
                 appInstanceEntity));
         experimentRepository.saveAll(experiments);
         experimentScheduler.processRequestsToSent();
-        verify(eventPublisher, times(experiments.size())).publishEvent(any(ExperimentChangeStatusEvent.class));
+        verify(eventPublisher, times(experiments.size())).publishEvent(any(ExperimentNotificationEvent.class));
     }
 
     @Test

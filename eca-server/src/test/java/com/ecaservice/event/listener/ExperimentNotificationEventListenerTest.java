@@ -1,7 +1,7 @@
 package com.ecaservice.event.listener;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.event.model.ExperimentChangeStatusEvent;
+import com.ecaservice.event.model.ExperimentNotificationEvent;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.service.experiment.visitor.ExperimentEmailVisitor;
@@ -18,18 +18,18 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
 /**
- * Unit tests for checking {@link ExperimentChangeStatusEventListener} functionality.
+ * Unit tests for checking {@link ExperimentNotificationEventListener} functionality.
  *
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-class ExperimentChangeStatusEventListenerTest {
+class ExperimentNotificationEventListenerTest {
 
     @Mock
     private ExperimentEmailVisitor experimentEmailVisitor;
 
     @InjectMocks
-    private ExperimentChangeStatusEventListener experimentChangeStatusEventListener;
+    private ExperimentNotificationEventListener experimentNotificationEventListener;
 
     @Test
     void testHandleChangeStatusEventForNewRequest() {
@@ -64,7 +64,8 @@ class ExperimentChangeStatusEventListenerTest {
     private void internalTestChangeStatusEvent(RequestStatus requestStatus) {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         experiment.setRequestStatus(requestStatus);
-        ExperimentChangeStatusEvent experimentCreatedEvent = new ExperimentChangeStatusEvent(this, experiment);
-        experimentChangeStatusEventListener.handleChangeStatusEvent(experimentCreatedEvent);
+        ExperimentNotificationEvent
+                experimentCreatedEvent = new ExperimentNotificationEvent(this, experiment);
+        experimentNotificationEventListener.handleChangeStatusEvent(experimentCreatedEvent);
     }
 }

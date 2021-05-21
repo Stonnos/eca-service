@@ -2,7 +2,7 @@ package com.ecaservice.service.experiment;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.base.model.ExperimentRequest;
-import com.ecaservice.event.model.ExperimentChangeStatusEvent;
+import com.ecaservice.event.model.ExperimentNotificationEvent;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
 import org.assertj.core.api.Assertions;
@@ -42,7 +42,7 @@ class ExperimentRequestServiceTest {
         experiment.setId(1L);
         when(experimentService.createExperiment(experimentRequest)).thenReturn(experiment);
         experiment = experimentRequestService.createExperimentRequest(experimentRequest);
-        verify(eventPublisher, atLeastOnce()).publishEvent(any(ExperimentChangeStatusEvent.class));
+        verify(eventPublisher, atLeastOnce()).publishEvent(any(ExperimentNotificationEvent.class));
         Assertions.assertThat(experiment).isNotNull();
         Assertions.assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.NEW);
     }
