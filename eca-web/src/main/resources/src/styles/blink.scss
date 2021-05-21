@@ -20,7 +20,7 @@ $animation-iterations: 1;
 }
 
 .in-progress-status-blink {
-  animation: $animation-duration in-progress-new-status-blink $animation-delay $animation-iterations;
+  animation: $animation-duration in-progress-status-blink $animation-delay $animation-iterations;
 }
 
 .timeout-status-blink {
