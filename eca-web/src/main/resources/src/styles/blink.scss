@@ -37,7 +37,7 @@ $animation-iterations: 1;
 
 @keyframes new-status-blink {
   from {
-    background: #999999;
+    background: #6c757d;
   }
   to {
     background: white;
@@ -46,7 +46,7 @@ $animation-iterations: 1;
 
 @keyframes in-progress-status-blink {
   from {
-    background: #4176ff;
+    background: #17a2b8;
   }
   to {
     background: white;
@@ -55,7 +55,7 @@ $animation-iterations: 1;
 
 @keyframes finished-status-blink {
   from {
-    background: #4ca954;
+    background: #28a745;
   }
   to {
     background: white;
@@ -64,7 +64,7 @@ $animation-iterations: 1;
 
 @keyframes error-status-blink {
   from {
-    background: #f22c16;
+    background: #dc3545;
   }
   to {
     background: white;
@@ -73,7 +73,7 @@ $animation-iterations: 1;
 
 @keyframes timeout-status-blink {
   from {
-    background: #e2d414;
+    background: #ffc107;
   }
   to {
     background: white;
