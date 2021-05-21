@@ -14,7 +14,6 @@ import com.ecaservice.service.AppInstanceService;
 import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.experiment.ExperimentProgressService;
 import com.ecaservice.service.experiment.ExperimentService;
-import com.ecaservice.service.experiment.mail.NotificationService;
 import eca.converters.model.ExperimentHistory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +45,6 @@ public class ExperimentScheduler {
     private final ExperimentRepository experimentRepository;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
     private final ExperimentService experimentService;
-    private final NotificationService notificationService;
     private final ApplicationEventPublisher eventPublisher;
     private final ErsService ersService;
     private final AppInstanceService appInstanceService;
@@ -69,6 +67,7 @@ public class ExperimentScheduler {
             experimentProgressService.start(experiment);
             setInProgressStatus(experiment);
             ExperimentHistory experimentHistory = experimentService.processExperiment(experiment);
+            eventPublisher.publishEvent(new ExperimentChangeStatusEvent(this, experiment));
             if (RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
                 eventPublisher.publishEvent(new ExperimentFinishedEvent(this, experiment, experimentHistory));
             }
@@ -90,14 +89,7 @@ public class ExperimentScheduler {
         for (Experiment experiment : experiments) {
             putMdc(TX_ID, experiment.getRequestId());
             putMdc(EV_REQUEST_ID, experiment.getRequestId());
-            try {
-                notificationService.notifyByEmail(experiment);
-                experiment.setSentDate(LocalDateTime.now());
-                experimentRepository.save(experiment);
-            } catch (Exception ex) {
-                log.error("There was an error while sending email request for experiment [{}]: {}",
-                        experiment.getRequestId(), ex.getMessage());
-            }
+            eventPublisher.publishEvent(new ExperimentChangeStatusEvent(this, experiment));
         }
         log.trace("Sending experiments has been successfully finished.");
     }
