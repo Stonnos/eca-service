@@ -129,15 +129,11 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
 
   public onUploadedClassifiersOptions(event): void {
     this.getClassifiersConfigurationDetails();
-    this.refreshClassifiersOptionsPage();
+    this.reloadPageWithLoader();
   }
 
   public onEditClassifiersConfiguration(item: ClassifiersConfigurationModel): void {
     this.updateConfiguration(item);
-  }
-
-  private refreshClassifiersOptionsPage(): void {
-    this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1);
   }
 
   private deleteConfiguration(item: ClassifiersConfigurationDto): void {
@@ -189,7 +185,7 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
       .subscribe({
         next: () => {
           this.messageService.add({ severity: 'success', summary: `Удалена настройка ${item.optionsName}`, detail: '' });
-          this.refreshClassifiersOptionsPage();
+          this.reloadPageWithLoader();
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });

@@ -105,7 +105,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   }
 
   public onUploadedClassifiersOptions(event): void {
-    this.refreshClassifiersConfigurationsPage();
+    this.reloadPageWithLoader();
   }
 
   private initColumns() {
@@ -116,10 +116,6 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
       { name: ClassifiersConfigurationFields.CREATED_BY, label: "Пользователь" },
       { name: ClassifiersConfigurationFields.CLASSIFIERS_OPTIONS_COUNT, label: "Число настроек классификаторов" },
     ];
-  }
-
-  private refreshClassifiersConfigurationsPage(): void {
-    this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1);
   }
 
   private createConfiguration(item: ClassifiersConfigurationModel): void {
@@ -134,7 +130,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
         next: (configuration: ClassifiersConfigurationDto) => {
           this.lastCreatedId = configuration.id;
           this.messageService.add({ severity: 'success', summary: `Добавлена конфигурация ${configuration.configurationName}`, detail: '' });
-          this.refreshClassifiersConfigurationsPage();
+          this.reloadPageWithLoader();
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
@@ -152,7 +148,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
       )
       .subscribe({
         next: () => {
-          this.refreshClassifiersConfigurationsPage();
+          this.reloadPageWithLoader();
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
@@ -171,7 +167,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
       .subscribe({
         next: () => {
           this.messageService.add({ severity: 'success', summary: `Конфигурация ${item.configurationName} была удалена`, detail: '' });
-          this.refreshClassifiersConfigurationsPage();
+          this.reloadPageWithLoader();
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
@@ -189,7 +185,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
       )
       .subscribe({
         next: () => {
-          this.refreshClassifiersConfigurationsPage();
+          this.reloadPageWithLoader();
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });

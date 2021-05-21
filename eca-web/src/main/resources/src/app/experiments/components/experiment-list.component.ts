@@ -78,6 +78,9 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       .subscribe({
         next: (message) => {
           console.log(message.body);
+          const experimentDto: ExperimentDto = JSON.parse(message.body);
+          this.lastCreatedId = experimentDto.requestId;
+          this.reloadPage(false);
         },
         error: (error) => {
           console.log(error);
@@ -192,7 +195,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
             this.messageService.add({ severity: 'success', summary: `Эксперимент был успешно создан`, detail: '' });
             this.lastCreatedId = result.requestId;
             this.getRequestStatusesStatistics();
-            this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1);
+            this.reloadPageWithLoader();
           } else {
             this.messageService.add({ severity: 'error', summary: 'Не удалось создать эксперимент', detail: result.errorMessage });
           }

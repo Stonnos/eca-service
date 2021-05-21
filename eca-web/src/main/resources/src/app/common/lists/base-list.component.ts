@@ -47,8 +47,8 @@ export abstract class BaseListComponent<T> implements FieldLink {
                         public fieldService: FieldService) {
   }
 
-  public getNextPage(pageRequest: PageRequestDto) {
-    this.loading = true;
+  public getNextPage(pageRequest: PageRequestDto, showLoader: boolean) {
+    this.loading = showLoader;
     this.getNextPageAsObservable(pageRequest)
       .pipe(
         finalize(() => {
@@ -87,17 +87,17 @@ export abstract class BaseListComponent<T> implements FieldLink {
 
   public onLazyLoad(event: LazyLoadEvent) {
     const page: number = Math.round(event.first / event.rows);
-    this.performPageRequest(page, event.rows, event.sortField, event.sortOrder == 1);
+    this.performPageRequest(page, event.rows, event.sortField, event.sortOrder == 1, true);
   }
 
   public onSearch(searchQuery: string) {
     this.searchQuery = searchQuery;
-    this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1);
+    this.reloadPageWithLoader();
   }
 
   public onApplyFilter() {
     this.rebuildFilterRequests();
-    this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1);
+    this.reloadPageWithLoader();
   }
 
   public setPage(pageDto: PageDto<T>) {
@@ -122,7 +122,15 @@ export abstract class BaseListComponent<T> implements FieldLink {
     return this.notSortableColumns.includes(column);
   }
 
-  public performPageRequest(page: number, size: number, sortField: string, ascending: boolean) {
+  public reloadPageWithLoader() {
+    this.reloadPage(true);
+  }
+
+  public reloadPage(showLoader: boolean) {
+    this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1, showLoader);
+  }
+
+  public performPageRequest(page: number, size: number, sortField: string, ascending: boolean, showLoader: boolean) {
     this.pageRequestDto = {
       page: page,
       size: size,
@@ -131,7 +139,8 @@ export abstract class BaseListComponent<T> implements FieldLink {
       searchQuery: this.searchQuery,
       filters: this.filterRequests
     };
-    this.getNextPage(this.pageRequestDto);
+    console.log('Page request');
+    this.getNextPage(this.pageRequestDto, showLoader);
   }
 
   public isBlink(item: any): boolean {
