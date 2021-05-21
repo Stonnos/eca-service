@@ -21,7 +21,7 @@ public class ExperimentNotificationEvent extends ApplicationEvent {
      * Notify web push?
      */
     @Getter
-    private boolean notifyWebPush;
+    private boolean notifyWebPush = true;
 
     /**
      * Create a new ExperimentChangeStatusEvent.
