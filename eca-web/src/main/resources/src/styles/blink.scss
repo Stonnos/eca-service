@@ -10,3 +10,68 @@
     background: white;
   }
 }
+
+.new-status-blink {
+  animation: 1.5s new-status-blink 400ms 1;
+}
+
+.in-progress-status-blink {
+  animation: 1.5s in-progress-status-blink 400ms 1;
+}
+
+.timeout-status-blink {
+  animation: 1.5s timeout-status-blink 400ms 1;
+}
+
+.finished-status-blink {
+  animation: 1.5s finished-status-blink 400ms 1;
+}
+
+.error-status-blink {
+  animation: 1.5s error-status-blink 400ms 1;
+}
+
+@keyframes new-status-blink {
+  from {
+    background: #999999;
+  }
+  to {
+    background: white;
+  }
+}
+
+@keyframes in-progress-status-blink {
+  from {
+    background: #4176ff;
+  }
+  to {
+    background: white;
+  }
+}
+
+@keyframes finished-status-blink {
+  from {
+    background: #4ca954;
+  }
+  to {
+    background: white;
+  }
+}
+
+@keyframes error-status-blink {
+  from {
+    background: #f22c16;
+  }
+  to {
+    background: white;
+  }
+}
+
+@keyframes timeout-status-blink {
+  from {
+    background: #e2d414;
+  }
+  to {
+    background: white;
+  }
+}
