@@ -81,6 +81,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
           const experimentDto: ExperimentDto = JSON.parse(message.body);
           this.lastCreatedId = experimentDto.requestId;
           this.reloadPage(false);
+          this.getRequestStatusesStatistics();
         },
         error: (error) => {
           console.log(error);
