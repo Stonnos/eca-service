@@ -31,6 +31,9 @@ zuul:
       eca-ers:
         path: /eca-ers/**
         serviceId: eca-ers
+      eca-web-push:
+        path: /eca-web-push/**
+        serviceId: eca-web-push
       frontend:
         path: /**
         serviceId: eca-web
