@@ -29,7 +29,7 @@ queues:
 swagger2:
   projectVersion: @project.version@
   groups:
-    eca-mail:
+    eca-web-push:
       title: Email API
       description: Operations for web push notifications sending
       author: Roman Batygin
