@@ -31,7 +31,8 @@ import java.util.concurrent.Executors;
 @EnableGlobalExceptionHandler
 @Oauth2ResourceServer
 @EnableConfigurationProperties(
-        {CommonConfig.class, CrossValidationConfig.class, ExperimentConfig.class, ErsConfig.class})
+        {CommonConfig.class, CrossValidationConfig.class, ExperimentConfig.class, ErsConfig.class,
+                NotificationConfig.class})
 @Import(ClassifiersOptionsConfiguration.class)
 public class EcaServiceConfiguration {
 

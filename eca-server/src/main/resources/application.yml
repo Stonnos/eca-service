@@ -129,6 +129,9 @@ ers:
   useClassifierOptionsCache: false
   classifierOptionsCacheDurationInDays: 2
 
+notification:
+  webPushesEnabled: true
+
 cache:
   specs:
     evaluation-results:
