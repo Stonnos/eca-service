@@ -1,4 +1,4 @@
-import { Component, Injector, OnInit } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import {
   CreateExperimentResultDto,
   ExperimentDto, FilterDictionaryDto, FilterDictionaryValueDto, FilterFieldDto, PageDto,
@@ -21,17 +21,21 @@ import { ReportsService } from "../../common/services/report.service";
 import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
 import { Utils } from "../../common/util/utils";
 import { ReportType } from "../../common/model/report-type.enum";
-import {StompConfig, StompService} from "@stomp/ng2-stompjs";
-import {AuthenticationKeys} from "../../auth/model/auth.keys";
+import { WsService } from "../../common/websockets/ws.service";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: 'app-experiment-list',
   templateUrl: './experiment-list.component.html',
   styleUrls: ['./experiment-list.component.scss']
 })
-export class ExperimentListComponent extends BaseListComponent<ExperimentDto> implements OnInit {
+export class ExperimentListComponent extends BaseListComponent<ExperimentDto> implements OnInit, OnDestroy {
 
   private static readonly EXPERIMENTS_REPORT_FILE_NAME = 'experiments-report.xlsx';
+
+  private wsService: WsService;
+
+  private experimentsUpdatesSubscriptions: Subscription;
 
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
 
@@ -58,35 +62,21 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     this.initColumns();
   }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.getFilterFields();
     this.getRequestStatusesStatistics();
     this.getEvaluationMethods();
     this.getExperimentTypes();
+    this.subscribeForExperimentsUpdates();
+  }
 
-    let stompConfig: StompConfig = {
-      url: 'ws://localhost:8085/socket?access_token='+localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN),
-      headers: {
-      },
-      heartbeat_in: 0,
-      heartbeat_out: 20000,
-      reconnect_delay: 5000,
-      debug: true
-    };
-    const stompService = new StompService(stompConfig);
-    stompService.subscribe('/queue/experiment')
-      .subscribe({
-        next: (message) => {
-          console.log(message.body);
-          const experimentDto: ExperimentDto = JSON.parse(message.body);
-          this.lastCreatedId = experimentDto.requestId;
-          this.reloadPage(false);
-          this.getRequestStatusesStatistics();
-        },
-        error: (error) => {
-          console.log(error);
-        }
-      });
+  public ngOnDestroy(): void {
+    if (this.experimentsUpdatesSubscriptions) {
+      this.experimentsUpdatesSubscriptions.unsubscribe();
+    }
+    if (this.wsService) {
+      this.wsService.close();
+    }
   }
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<ExperimentDto>> {
@@ -255,6 +245,23 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     this.selectedExperiment = experimentDto;
     this.selectedColumn = column;
     overlayPanel.toggle(event);
+  }
+
+  private subscribeForExperimentsUpdates(): void {
+    this.wsService = new WsService();
+    this.experimentsUpdatesSubscriptions = this.wsService.subscribe('/queue/experiment')
+      .subscribe({
+        next: (message) => {
+          console.log(message.body);
+          const experimentDto: ExperimentDto = JSON.parse(message.body);
+          this.lastCreatedId = experimentDto.requestId;
+          this.reloadPage(false);
+          this.getRequestStatusesStatistics();
+        },
+        error: (error) => {
+          console.log(error);
+        }
+      });
   }
 
   private initColumns() {
