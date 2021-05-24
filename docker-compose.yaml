@@ -39,6 +39,7 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
+      JAVA_OPTS: "-Xmx512m"
     networks:
       - default
 
@@ -169,6 +170,19 @@ services:
       - default
     depends_on:
       - discovery-server
+
+  eca-web-push:
+    image: eca-web-push
+    container_name: eca-web-push
+    ports:
+      - "8099:8099"
+    environment:
+      TZ: ${TIME_ZONE}
+      SERVER_PORT: "8099"
+      SPRING_PROFILES_ACTIVE: "docker"
+      JAVA_OPTS: "-Xmx512m"
+    networks:
+      - default
 
 networks:
   default:
