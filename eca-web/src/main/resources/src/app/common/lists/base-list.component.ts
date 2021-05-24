@@ -139,7 +139,6 @@ export abstract class BaseListComponent<T> implements FieldLink {
       searchQuery: this.searchQuery,
       filters: this.filterRequests
     };
-    console.log('Page request');
     this.getNextPage(this.pageRequestDto, showLoader);
   }
 
