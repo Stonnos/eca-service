@@ -38,10 +38,10 @@ public class WebPushController {
     )
     @PostMapping(value = "/experiment")
     public void pushExperiment(@RequestBody ExperimentDto experimentDto) {
-        log.info("Received request to send experiment [{}, {}] web push", experimentDto.getRequestId(),
+        log.info("Received web push request for experiment [{}], request status [{}]", experimentDto.getRequestId(),
                 experimentDto.getRequestStatus().getValue());
         messagingTemplate.convertAndSend(queueConfig.getExperimentQueue(), experimentDto);
-        log.info("Web push has been send for experiment [{}, {}]", experimentDto.getRequestId(),
+        log.info("Web push has been send for experiment [{}], request status [{}]", experimentDto.getRequestId(),
                 experimentDto.getRequestStatus().getValue());
     }
 }
