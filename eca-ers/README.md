@@ -14,7 +14,6 @@ Evaluation results service
 * Openjdk 1.11
 * maven >= 3.3.9
 * База данных PostgreSQL для хранения информации.
-* Tomcat >= 8
 
 Описание ключевой конфигурации модуля
 ----------------------------------------
@@ -45,5 +44,6 @@ Evaluation results service
 
    mvn clean install
    
-2. Развернуть target/eca-ers.war на одном из контейнеров сервлетов (например, Tomcat 8)
-   с префиксом /eca-ers.
+2. Запустить проект с помощью команды:
+
+    java -jar /target/eca-ers.war

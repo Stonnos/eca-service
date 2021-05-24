@@ -48,7 +48,9 @@
     
    mvn clean install
     
-2. Развернуть target/eca-data-storage.war на одном из контейнеров сервлетов (например, Tomcat 8) с контекстом /eca-data-storage.
+2. Запустить проект с помощью команды:
+
+    java -jar /target/eca-data-storage.war
 
 Страница с документацией swagger находится по адресу http://[host]:[port]/eca-data-storage/swagger-ui.html, где host и port
 соответственно адрес машины и порт на котором развернуто приложение.

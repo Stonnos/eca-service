@@ -105,7 +105,7 @@ docker exec -it container_name bash
 
 Для копирования новой версии war файла в контейнер (container_name), необходимо выполнить команду:
 
-docker cp application.war container_name:/usr/local/tomcat/webapps/
+docker cp application.war container_name:/
 
 ВАЖНО! Данную команду необходимо выполнять из директории, в которой лежит war файл.
 Либо можно указать абсолютный путь к war - файлу.
