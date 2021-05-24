@@ -1,5 +1,6 @@
 import { StompService } from "@stomp/ng2-stompjs";
 import { AuthenticationKeys } from "../../auth/model/auth.keys";
+import { environment } from "../../../environments/environment";
 
 export class WsService {
 
@@ -7,7 +8,7 @@ export class WsService {
 
   public constructor() {
     this.stompService = new StompService({
-      url: 'ws://localhost:8085/socket?access_token=' + localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN),
+      url: `${environment.wsUrl}?access_token=${localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)}`,
       headers: {
       },
       heartbeat_in: 0,
@@ -23,6 +24,5 @@ export class WsService {
 
   public close(): void {
     this.stompService.disconnect();
-    console.log('Close connection');
   }
 }
