@@ -23,6 +23,7 @@ import { Utils } from "../../common/util/utils";
 import { ReportType } from "../../common/model/report-type.enum";
 import { WsService } from "../../common/websockets/ws.service";
 import { Subscription } from "rxjs";
+import { RequestStatus } from "../../common/model/request-status.enum";
 
 @Component({
   selector: 'app-experiment-list',
@@ -252,16 +253,24 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     this.experimentsUpdatesSubscriptions = this.wsService.subscribe('/queue/experiment')
       .subscribe({
         next: (message) => {
-          console.log(message.body);
           const experimentDto: ExperimentDto = JSON.parse(message.body);
           this.lastCreatedId = experimentDto.requestId;
+          this.showMessage(experimentDto);
           this.reloadPage(false);
           this.getRequestStatusesStatistics();
         },
         error: (error) => {
-          console.log(error);
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
       });
+  }
+
+  private showMessage(experimentDto: ExperimentDto): void {
+    if (experimentDto.requestStatus.value == RequestStatus.NEW) {
+      this.messageService.add({ severity: 'info', summary: `Поступила новая заявка на эксперимент ${experimentDto.requestId}`, detail: '' });
+    } else if (experimentDto.requestStatus.value == RequestStatus.FINISHED) {
+      this.messageService.add({ severity: 'info', summary: `Эксперимент ${experimentDto.requestId} успешно завершен`, detail: '' });
+    }
   }
 
   private initColumns() {
