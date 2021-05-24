@@ -5,6 +5,7 @@ import com.ecaservice.event.model.ExperimentNotificationEvent;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.service.experiment.visitor.ExperimentEmailVisitor;
+import com.ecaservice.service.push.WebPushService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,6 +28,8 @@ class ExperimentNotificationEventListenerTest {
 
     @Mock
     private ExperimentEmailVisitor experimentEmailVisitor;
+    @Mock
+    private WebPushService webPushService;
 
     @InjectMocks
     private ExperimentNotificationEventListener experimentNotificationEventListener;

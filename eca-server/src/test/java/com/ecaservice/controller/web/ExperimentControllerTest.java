@@ -16,7 +16,6 @@ import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.auth.UsersClient;
 import com.ecaservice.service.experiment.ExperimentProgressService;
-import com.ecaservice.service.experiment.ExperimentRequestService;
 import com.ecaservice.service.experiment.ExperimentResultsService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.util.Utils;
@@ -36,6 +35,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -98,13 +98,13 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     @MockBean
     private ExperimentService experimentService;
     @MockBean
-    private ExperimentRequestService experimentRequestService;
-    @MockBean
     private ExperimentResultsService experimentResultsService;
     @MockBean
     private UsersClient usersClient;
     @MockBean
     private ExperimentProgressService experimentProgressService;
+    @MockBean
+    private ApplicationEventPublisher eventPublisher;
     @MockBean
     private ExperimentResultsEntityRepository experimentResultsEntityRepository;
 
@@ -186,7 +186,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         expected.setCreated(true);
         expected.setRequestId(experiment.getRequestId());
         when(usersClient.getUserInfo()).thenReturn(new UserDto());
-        when(experimentRequestService.createExperimentRequest(any(ExperimentRequest.class))).thenReturn(experiment);
+        when(experimentService.createExperiment(any(ExperimentRequest.class))).thenReturn(experiment);
         mockMvc.perform(multipart(CREATE_EXPERIMENT_URL)
                 .file(trainingData)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
@@ -202,7 +202,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         CreateExperimentResultDto expected = new CreateExperimentResultDto();
         expected.setErrorMessage(ERROR_MESSAGE);
         when(usersClient.getUserInfo()).thenReturn(new UserDto());
-        when(experimentRequestService.createExperimentRequest(any(ExperimentRequest.class))).thenThrow(
+        when(experimentService.createExperiment(any(ExperimentRequest.class))).thenThrow(
                 new ExperimentException(ERROR_MESSAGE));
         mockMvc.perform(multipart(CREATE_EXPERIMENT_URL)
                 .file(trainingData)
