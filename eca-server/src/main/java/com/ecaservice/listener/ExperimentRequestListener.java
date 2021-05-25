@@ -2,7 +2,8 @@ package com.ecaservice.listener;
 
 import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.ExperimentRequest;
-import com.ecaservice.event.model.ExperimentNotificationEvent;
+import com.ecaservice.event.model.ExperimentEmailEvent;
+import com.ecaservice.event.model.ExperimentWebPushEvent;
 import com.ecaservice.mapping.EcaResponseMapper;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.service.experiment.ExperimentService;
@@ -50,7 +51,8 @@ public class ExperimentRequestListener {
 
     private EcaResponse createExperimentRequest(ExperimentRequest evaluationRequest) {
         Experiment experiment = experimentService.createExperiment(evaluationRequest);
-        eventPublisher.publishEvent(new ExperimentNotificationEvent(this, experiment));
+        eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
+        eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
         log.info("Experiment request [{}] has been created.", experiment.getRequestId());
         return ecaResponseMapper.map(experiment);
     }

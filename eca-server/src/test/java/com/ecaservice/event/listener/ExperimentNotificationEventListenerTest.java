@@ -1,7 +1,7 @@
 package com.ecaservice.event.listener;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.event.model.ExperimentNotificationEvent;
+import com.ecaservice.event.model.ExperimentEmailEvent;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.service.experiment.visitor.ExperimentEmailVisitor;
@@ -67,8 +67,8 @@ class ExperimentNotificationEventListenerTest {
     private void internalTestChangeStatusEvent(RequestStatus requestStatus) {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         experiment.setRequestStatus(requestStatus);
-        ExperimentNotificationEvent
-                experimentCreatedEvent = new ExperimentNotificationEvent(this, experiment);
-        experimentNotificationEventListener.handleChangeStatusEvent(experimentCreatedEvent);
+        ExperimentEmailEvent
+                experimentCreatedEvent = new ExperimentEmailEvent(this, experiment);
+        experimentNotificationEventListener.handleExperimentEmailEvent(experimentCreatedEvent);
     }
 }

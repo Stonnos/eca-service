@@ -3,7 +3,8 @@ package com.ecaservice.listener;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.ExperimentRequest;
-import com.ecaservice.event.model.ExperimentNotificationEvent;
+import com.ecaservice.event.model.ExperimentEmailEvent;
+import com.ecaservice.event.model.ExperimentWebPushEvent;
 import com.ecaservice.mapping.EcaResponseMapper;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.service.experiment.ExperimentService;
@@ -65,6 +66,7 @@ class ExperimentRequestListenerTest {
         verify(rabbitTemplate).convertAndSend(replyToCaptor.capture(), any(EcaResponse.class),
                 any(MessagePostProcessor.class));
         Assertions.assertThat(replyToCaptor.getValue()).isEqualTo(messageProperties.getReplyTo());
-        verify(eventPublisher, atLeastOnce()).publishEvent(any(ExperimentNotificationEvent.class));
+        verify(eventPublisher, atLeastOnce()).publishEvent(any(ExperimentEmailEvent.class));
+        verify(eventPublisher, atLeastOnce()).publishEvent(any(ExperimentWebPushEvent.class));
     }
 }

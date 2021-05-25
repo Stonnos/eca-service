@@ -1,6 +1,7 @@
 package com.ecaservice.event.listener;
 
-import com.ecaservice.event.model.ExperimentNotificationEvent;
+import com.ecaservice.event.model.ExperimentEmailEvent;
+import com.ecaservice.event.model.ExperimentWebPushEvent;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.service.experiment.visitor.ExperimentEmailVisitor;
 import com.ecaservice.service.push.WebPushService;
@@ -25,14 +26,21 @@ public class ExperimentNotificationEventListener {
     /**
      * Handles event to sent email about experiment status change.
      *
-     * @param changeStatusEvent - experiment change status event
+     * @param experimentEmailEvent - experiment email event
      */
     @EventListener
-    public void handleChangeStatusEvent(ExperimentNotificationEvent changeStatusEvent) {
-        Experiment experiment = changeStatusEvent.getExperiment();
-        if (changeStatusEvent.isNotifyWebPush()) {
-            webPushService.sendWebPush(changeStatusEvent.getExperiment());
-        }
+    public void handleExperimentEmailEvent(ExperimentEmailEvent experimentEmailEvent) {
+        Experiment experiment = experimentEmailEvent.getExperiment();
         experiment.getRequestStatus().handle(experimentEmailVisitor, experiment);
+    }
+
+    /**
+     * Handles event to sent web push about experiment status change.
+     *
+     * @param experimentWebPushEvent - experiment web push event
+     */
+    @EventListener
+    public void handleExperimentPushEvent(ExperimentWebPushEvent experimentWebPushEvent) {
+        webPushService.sendWebPush(experimentWebPushEvent.getExperiment());
     }
 }

@@ -3,7 +3,7 @@ package com.ecaservice.controller.web;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.event.model.ExperimentNotificationEvent;
+import com.ecaservice.event.model.ExperimentEmailEvent;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentProgressMapper;
 import com.ecaservice.model.MultipartFileResource;
@@ -147,7 +147,7 @@ public class ExperimentController {
             Experiment experiment = experimentService.createExperiment(experimentRequest);
             resultDto.setRequestId(experiment.getRequestId());
             resultDto.setCreated(true);
-            eventPublisher.publishEvent(new ExperimentNotificationEvent(this, experiment, false));
+            eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
             log.info("Experiment request [{}] has been created.", experiment.getRequestId());
         } catch (Exception ex) {
             log.error("There was an error while experiment creation for data '{}': {}",

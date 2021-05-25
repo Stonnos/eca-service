@@ -1,8 +1,9 @@
 package com.ecaservice.service.scheduler;
 
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.event.model.ExperimentNotificationEvent;
+import com.ecaservice.event.model.ExperimentEmailEvent;
 import com.ecaservice.event.model.ExperimentFinishedEvent;
+import com.ecaservice.event.model.ExperimentWebPushEvent;
 import com.ecaservice.model.entity.AppInstanceEntity;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
@@ -67,7 +68,8 @@ public class ExperimentScheduler {
             experimentProgressService.start(experiment);
             setInProgressStatus(experiment);
             ExperimentHistory experimentHistory = experimentService.processExperiment(experiment);
-            eventPublisher.publishEvent(new ExperimentNotificationEvent(this, experiment));
+            eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
+            eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
             if (RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
                 eventPublisher.publishEvent(new ExperimentFinishedEvent(this, experiment, experimentHistory));
             }
@@ -89,7 +91,7 @@ public class ExperimentScheduler {
         for (Experiment experiment : experiments) {
             putMdc(TX_ID, experiment.getRequestId());
             putMdc(EV_REQUEST_ID, experiment.getRequestId());
-            eventPublisher.publishEvent(new ExperimentNotificationEvent(this, experiment, false));
+            eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
         }
         log.trace("Sending experiments has been successfully finished.");
     }
@@ -146,6 +148,7 @@ public class ExperimentScheduler {
         experiment.setStartDate(LocalDateTime.now());
         experimentRepository.save(experiment);
         log.info("Experiment [{}] in progress status has been set", experiment.getRequestId());
-        eventPublisher.publishEvent(new ExperimentNotificationEvent(this, experiment));
+        eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
+        eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
     }
 }
