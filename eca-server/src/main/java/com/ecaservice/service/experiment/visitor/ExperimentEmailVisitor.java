@@ -38,14 +38,12 @@ public class ExperimentEmailVisitor implements RequestStatusVisitor<Void, Experi
 
     @Override
     public Void caseTimeout(Experiment experiment) {
-        notifyFinalEmail(experiment);
-        return null;
+        return caseFinished(experiment);
     }
 
     @Override
     public Void caseError(Experiment experiment) {
-        notifyFinalEmail(experiment);
-        return null;
+        return caseFinished(experiment);
     }
 
     @Override
