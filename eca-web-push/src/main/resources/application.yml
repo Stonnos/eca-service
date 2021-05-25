@@ -30,7 +30,7 @@ swagger2:
   projectVersion: @project.version@
   groups:
     eca-web-push:
-      title: Email API
+      title: Web push API
       description: Operations for web push notifications sending
       author: Roman Batygin
       email: roman.batygin@mail.ru
