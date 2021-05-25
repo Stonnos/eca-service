@@ -2,6 +2,7 @@ package com.ecaservice.event.listener;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.event.model.ExperimentEmailEvent;
+import com.ecaservice.event.model.ExperimentWebPushEvent;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.service.experiment.visitor.ExperimentEmailVisitor;
@@ -35,40 +36,47 @@ class ExperimentNotificationEventListenerTest {
     private ExperimentNotificationEventListener experimentNotificationEventListener;
 
     @Test
-    void testHandleChangeStatusEventForNewRequest() {
-        internalTestChangeStatusEvent(RequestStatus.NEW);
+    void testHandleEmailEventForNewRequest() {
+        internalTestEmailEvent(RequestStatus.NEW);
         verify(experimentEmailVisitor, atLeastOnce()).caseNew(any(Experiment.class));
     }
 
     @Test
-    void testHandleChangeStatusEventForInProgressRequest() {
-        internalTestChangeStatusEvent(RequestStatus.IN_PROGRESS);
+    void testHandleEmailEventForInProgressRequest() {
+        internalTestEmailEvent(RequestStatus.IN_PROGRESS);
         verify(experimentEmailVisitor, atLeastOnce()).caseInProgress(any(Experiment.class));
     }
 
     @Test
-    void testHandleChangeStatusEventForFinishedRequest() {
-        internalTestChangeStatusEvent(RequestStatus.FINISHED);
+    void testHandleEmailEventForFinishedRequest() {
+        internalTestEmailEvent(RequestStatus.FINISHED);
         verify(experimentEmailVisitor, atLeastOnce()).caseFinished(any(Experiment.class));
     }
 
     @Test
-    void testHandleChangeStatusEventFoErrorRequest() {
-        internalTestChangeStatusEvent(RequestStatus.ERROR);
+    void testHandleEmailEventFoErrorRequest() {
+        internalTestEmailEvent(RequestStatus.ERROR);
         verify(experimentEmailVisitor, atLeastOnce()).caseError(any(Experiment.class));
     }
 
     @Test
-    void testHandleChangeStatusEventForTimeoutRequest() {
-        internalTestChangeStatusEvent(RequestStatus.TIMEOUT);
+    void testHandleEmailEventForTimeoutRequest() {
+        internalTestEmailEvent(RequestStatus.TIMEOUT);
         verify(experimentEmailVisitor, atLeastOnce()).caseTimeout(any(Experiment.class));
     }
+    
+    @Test
+    void testHandleWebPushEvent() {
+        var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        var experimentPushEvent = new ExperimentWebPushEvent(this, experiment);
+        experimentNotificationEventListener.handleExperimentPushEvent(experimentPushEvent);
+        verify(webPushService, atLeastOnce()).sendWebPush(experiment);
+    }
 
-    private void internalTestChangeStatusEvent(RequestStatus requestStatus) {
-        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+    private void internalTestEmailEvent(RequestStatus requestStatus) {
+        var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         experiment.setRequestStatus(requestStatus);
-        ExperimentEmailEvent
-                experimentCreatedEvent = new ExperimentEmailEvent(this, experiment);
-        experimentNotificationEventListener.handleExperimentEmailEvent(experimentCreatedEvent);
+        var experimentEmailEvent = new ExperimentEmailEvent(this, experiment);
+        experimentNotificationEventListener.handleExperimentEmailEvent(experimentEmailEvent);
     }
 }
