@@ -41,7 +41,7 @@ public class WebPushController {
         log.info("Received web push request for experiment [{}], request status [{}]", experimentDto.getRequestId(),
                 experimentDto.getRequestStatus().getValue());
         messagingTemplate.convertAndSend(queueConfig.getExperimentQueue(), experimentDto);
-        log.info("Web push has been send for experiment [{}], request status [{}]", experimentDto.getRequestId(),
-                experimentDto.getRequestStatus().getValue());
+        log.info("Web push request has been send for experiment [{}], request status [{}]",
+                experimentDto.getRequestId(), experimentDto.getRequestStatus().getValue());
     }
 }
