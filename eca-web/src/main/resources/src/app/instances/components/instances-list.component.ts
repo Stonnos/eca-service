@@ -54,23 +54,19 @@ export class InstancesListComponent extends BaseListComponent<InstancesDto> impl
   }
 
   public onRenameInstances(event): void {
-    this.refreshInstancesPage();
+    this.reloadPageWithLoader();
   }
 
   public onCreateInstances(createInstancesResultDto: CreateInstancesResultDto): void {
     if (createInstancesResultDto.created) {
       this.messageService.add({ severity: 'success', summary: `Добавлен новый датасет ${createInstancesResultDto.tableName}`, detail: '' });
       this.lastCreatedId = createInstancesResultDto.id;
-      this.refreshInstancesPage();
+      this.reloadPageWithLoader();
     } else {
       this.messageService.add({ severity: 'error', summary:
           `Возникла ошибка при добавлении датасета из файла ${createInstancesResultDto.sourceFileName}`,
         detail: createInstancesResultDto.errorMessage });
     }
-  }
-
-  private refreshInstancesPage(): void {
-    this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1);
   }
 
   public onDeleteInstances(item: InstancesDto): void {
@@ -95,7 +91,7 @@ export class InstancesListComponent extends BaseListComponent<InstancesDto> impl
       .subscribe({
         next: () => {
           this.messageService.add({ severity: 'success', summary: `Данные ${item.tableName} были успешно удалены`, detail: '' });
-          this.refreshInstancesPage();
+          this.reloadPageWithLoader();
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });

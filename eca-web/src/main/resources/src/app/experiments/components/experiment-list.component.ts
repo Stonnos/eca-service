@@ -1,4 +1,4 @@
-import { Component, Injector, OnInit } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import {
   CreateExperimentResultDto,
   ExperimentDto, FilterDictionaryDto, FilterDictionaryValueDto, FilterFieldDto, PageDto,
@@ -21,15 +21,22 @@ import { ReportsService } from "../../common/services/report.service";
 import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
 import { Utils } from "../../common/util/utils";
 import { ReportType } from "../../common/model/report-type.enum";
+import { WsService } from "../../common/websockets/ws.service";
+import { Subscription } from "rxjs";
+import { RequestStatus } from "../../common/model/request-status.enum";
 
 @Component({
   selector: 'app-experiment-list',
   templateUrl: './experiment-list.component.html',
   styleUrls: ['./experiment-list.component.scss']
 })
-export class ExperimentListComponent extends BaseListComponent<ExperimentDto> implements OnInit {
+export class ExperimentListComponent extends BaseListComponent<ExperimentDto> implements OnInit, OnDestroy {
 
   private static readonly EXPERIMENTS_REPORT_FILE_NAME = 'experiments-report.xlsx';
+
+  private wsService: WsService;
+
+  private experimentsUpdatesSubscriptions: Subscription;
 
   public requestStatusStatisticsDto: RequestStatusStatisticsDto;
 
@@ -56,11 +63,21 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     this.initColumns();
   }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.getFilterFields();
     this.getRequestStatusesStatistics();
     this.getEvaluationMethods();
     this.getExperimentTypes();
+    this.subscribeForExperimentsUpdates();
+  }
+
+  public ngOnDestroy(): void {
+    if (this.experimentsUpdatesSubscriptions) {
+      this.experimentsUpdatesSubscriptions.unsubscribe();
+    }
+    if (this.wsService) {
+      this.wsService.close();
+    }
   }
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<ExperimentDto>> {
@@ -170,7 +187,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
             this.messageService.add({ severity: 'success', summary: `Эксперимент был успешно создан`, detail: '' });
             this.lastCreatedId = result.requestId;
             this.getRequestStatusesStatistics();
-            this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1);
+            this.reloadPageWithLoader();
           } else {
             this.messageService.add({ severity: 'error', summary: 'Не удалось создать эксперимент', detail: result.errorMessage });
           }
@@ -229,6 +246,31 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     this.selectedExperiment = experimentDto;
     this.selectedColumn = column;
     overlayPanel.toggle(event);
+  }
+
+  private subscribeForExperimentsUpdates(): void {
+    this.wsService = new WsService();
+    this.experimentsUpdatesSubscriptions = this.wsService.subscribe('/queue/experiment')
+      .subscribe({
+        next: (message) => {
+          const experimentDto: ExperimentDto = JSON.parse(message.body);
+          this.lastCreatedId = experimentDto.requestId;
+          this.showMessage(experimentDto);
+          this.reloadPage(false);
+          this.getRequestStatusesStatistics();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private showMessage(experimentDto: ExperimentDto): void {
+    if (experimentDto.requestStatus.value == RequestStatus.NEW) {
+      this.messageService.add({ severity: 'info', summary: `Поступила новая заявка на эксперимент ${experimentDto.requestId}`, detail: '' });
+    } else if (experimentDto.requestStatus.value == RequestStatus.FINISHED) {
+      this.messageService.add({ severity: 'info', summary: `Эксперимент ${experimentDto.requestId} успешно завершен`, detail: '' });
+    }
   }
 
   private initColumns() {

@@ -3,6 +3,7 @@ package com.ecaservice.controller.web;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.event.model.ExperimentEmailEvent;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentProgressMapper;
 import com.ecaservice.model.MultipartFileResource;
@@ -12,7 +13,6 @@ import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.auth.UsersClient;
 import com.ecaservice.service.experiment.ExperimentProgressService;
-import com.ecaservice.service.experiment.ExperimentRequestService;
 import com.ecaservice.service.experiment.ExperimentResultsService;
 import com.ecaservice.service.experiment.ExperimentService;
 import com.ecaservice.util.Utils;
@@ -33,6 +33,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -76,12 +77,12 @@ public class ExperimentController {
             "Experiment training data file for request id = '%s' not found!";
 
     private final ExperimentService experimentService;
-    private final ExperimentRequestService experimentRequestService;
     private final ExperimentResultsService experimentResultsService;
     private final ExperimentMapper experimentMapper;
     private final ExperimentProgressMapper experimentProgressMapper;
     private final UsersClient usersClient;
     private final ExperimentProgressService experimentProgressService;
+    private final ApplicationEventPublisher eventPublisher;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
 
     /**
@@ -143,9 +144,11 @@ public class ExperimentController {
         try {
             ExperimentRequest experimentRequest =
                     createExperimentRequest(trainingData, userDto, experimentType, evaluationMethod);
-            Experiment experiment = experimentRequestService.createExperimentRequest(experimentRequest);
+            Experiment experiment = experimentService.createExperiment(experimentRequest);
             resultDto.setRequestId(experiment.getRequestId());
             resultDto.setCreated(true);
+            eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
+            log.info("Experiment request [{}] has been created.", experiment.getRequestId());
         } catch (Exception ex) {
             log.error("There was an error while experiment creation for data '{}': {}",
                     trainingData.getOriginalFilename(), ex.getMessage());

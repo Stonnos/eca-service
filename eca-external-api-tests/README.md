@@ -13,7 +13,6 @@
 ----------------------------------------
 * Openjdk 1.11
 * maven => 3.3.9
-* Контейнер сервлетов Tomcat 8
 
 Описание ключевой конфигурации модуля
 ----------------------------------------
@@ -44,7 +43,9 @@
     
    mvn clean install
     
-2. Развернуть target/eca-external-api-tests.war на одном из контейнеров сервлетов (например, Tomcat 8) с контекстом /eca-external-api-tests.
+2. Запустить проект с помощью команды:
+
+    java -jar /target/eca-external-api-tests.war
          
 3. Страница с документацией swagger находится по адресу http://[host]:[port]/eca-external-api-tests/swagger-ui.html, где host и port
 соответственно адрес машины и порт на котором развернуто приложение.

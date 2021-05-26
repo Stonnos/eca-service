@@ -3,9 +3,11 @@ package com.ecaservice.listener;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.ExperimentRequest;
+import com.ecaservice.event.model.ExperimentEmailEvent;
+import com.ecaservice.event.model.ExperimentWebPushEvent;
 import com.ecaservice.mapping.EcaResponseMapper;
 import com.ecaservice.model.entity.Experiment;
-import com.ecaservice.service.experiment.ExperimentRequestService;
+import com.ecaservice.service.experiment.ExperimentService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,10 +21,12 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -37,9 +41,11 @@ class ExperimentRequestListenerTest {
     @Mock
     private RabbitTemplate rabbitTemplate;
     @Mock
-    private ExperimentRequestService experimentRequestService;
+    private ExperimentService experimentService;
     @Mock
     private EcaResponseMapper ecaResponseMapper;
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
     private ExperimentRequestListener experimentRequestListener;
@@ -51,7 +57,7 @@ class ExperimentRequestListenerTest {
     void testHandleMessage() {
         ExperimentRequest evaluationRequest = TestHelperUtils.createExperimentRequest();
         Message message = Mockito.mock(Message.class);
-        when(experimentRequestService.createExperimentRequest(evaluationRequest)).thenReturn(
+        when(experimentService.createExperiment(evaluationRequest)).thenReturn(
                 TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         when(ecaResponseMapper.map(any(Experiment.class))).thenReturn(new EcaResponse());
         MessageProperties messageProperties = TestHelperUtils.buildMessageProperties();
@@ -60,5 +66,7 @@ class ExperimentRequestListenerTest {
         verify(rabbitTemplate).convertAndSend(replyToCaptor.capture(), any(EcaResponse.class),
                 any(MessagePostProcessor.class));
         Assertions.assertThat(replyToCaptor.getValue()).isEqualTo(messageProperties.getReplyTo());
+        verify(eventPublisher, atLeastOnce()).publishEvent(any(ExperimentEmailEvent.class));
+        verify(eventPublisher, atLeastOnce()).publishEvent(any(ExperimentWebPushEvent.class));
     }
 }

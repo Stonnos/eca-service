@@ -37,6 +37,7 @@
 * eca-mail - модуль для отправки почты
 * eca-ers - сервис для хранения и анализа результатов классификации
 * eca-data-storage - модуль для хранения обучающих выборок в виде таблиц БД
+* eca-web-push - модуль для отправки веб - пушей с поддержкой web sockets
 * eca-external-api - предоставляет внешний API (web proxy) для обучения моделей классификаторов
 * eca-web - реализует web клиент для администрирования
 * zuul-gate - Zuul proxy  (API gateway)
@@ -105,7 +106,7 @@ docker exec -it container_name bash
 
 Для копирования новой версии war файла в контейнер (container_name), необходимо выполнить команду:
 
-docker cp application.war container_name:/usr/local/tomcat/webapps/
+docker cp application.war container_name:/
 
 ВАЖНО! Данную команду необходимо выполнять из директории, в которой лежит war файл.
 Либо можно указать абсолютный путь к war - файлу.

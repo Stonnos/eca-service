@@ -58,7 +58,11 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-item>
-        <tr [ngClass]="{'item-blink': isBlink(item)}">
+        <tr [class.new-status-blink]="isBlink(item) && item?.requestStatus?.value == 'NEW'"
+            [class.in-progress-status-blink]="isBlink(item) && item?.requestStatus?.value == 'IN_PROGRESS'"
+            [class.finished-status-blink]="isBlink(item) && item?.requestStatus?.value == 'FINISHED'"
+            [class.error-status-blink]="isBlink(item) && item?.requestStatus?.value == 'ERROR'"
+            [class.timeout-status-blink]="isBlink(item) && item?.requestStatus?.value == 'TIMEOUT'">
           <td *ngFor="let column of columns">
             <a class="link" [routerLink]="" *ngIf="isLink(column.name)" (click)="onLink($event, column.name, item, infoPanel)">
               {{ getColumnValue(column.name, item) }}

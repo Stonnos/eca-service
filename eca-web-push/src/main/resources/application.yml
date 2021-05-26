@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: eca-web-push
+  jmx:
+    default-domain: eca-web-push
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+  sleuth:
+    log:
+      slf4j:
+        whitelisted-mdc-keys: tx.id, ev.requestId
+    propagation-keys: tx.id, ev.requestId
+eureka:
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+
+auth-server:
+  baseUrl: http://localhost:8085/eca-oauth
+  clientId: eca_web
+  clientSecret: web_secret
+
+queues:
+  experimentQueue: /queue/experiment
+
+## Swagger properties
+swagger2:
+  projectVersion: @project.version@
+  groups:
+    eca-web-push:
+      title: Web push API
+      description: Operations for web push notifications sending
+      author: Roman Batygin
+      email: roman.batygin@mail.ru
+
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always

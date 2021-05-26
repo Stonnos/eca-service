@@ -55,7 +55,7 @@ export class UsersListComponent extends BaseListComponent<UserDto> implements On
   public onCreateUser(user: UserDto): void {
     this.messageService.add({ severity: 'success', summary: `Создан новый пользователь ${user.login}`, detail: '' });
     this.lastCreatedId = user.id;
-    this.refreshUsersPage();
+    this.reloadPageWithLoader();
   }
 
   public showCreateUserDialog(): void {
@@ -98,7 +98,7 @@ export class UsersListComponent extends BaseListComponent<UserDto> implements On
       )
       .subscribe({
         next: () => {
-          this.refreshUsersPage();
+          this.reloadPageWithLoader();
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
@@ -116,16 +116,12 @@ export class UsersListComponent extends BaseListComponent<UserDto> implements On
       )
       .subscribe({
         next: () => {
-          this.refreshUsersPage();
+          this.reloadPageWithLoader();
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
       });
-  }
-
-  private refreshUsersPage(): void {
-    this.performPageRequest(0, this.pageSize, this.table.sortField, this.table.sortOrder == 1);
   }
 
   private initColumns() {

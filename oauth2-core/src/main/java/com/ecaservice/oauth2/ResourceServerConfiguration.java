@@ -25,13 +25,18 @@ import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
     private static final String CHECK_TOKEN_ENDPOINT_FORMAT = "%s/oauth/check_token";
+    private static final String SOCKET_URL = "/socket";
 
     private final AuthServerConfig authServerConfig;
 
     @Override
     public void configure(final HttpSecurity http) throws Exception {
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                .and().authorizeRequests().anyRequest().permitAll();
+        http.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .and()
+                .authorizeRequests()
+                .antMatchers(SOCKET_URL).authenticated()
+                .anyRequest().permitAll();
     }
 
     @Override

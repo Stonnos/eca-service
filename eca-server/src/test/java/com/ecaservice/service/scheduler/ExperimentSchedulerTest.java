@@ -3,6 +3,8 @@ package com.ecaservice.service.scheduler;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
+import com.ecaservice.event.model.ExperimentEmailEvent;
+import com.ecaservice.event.model.ExperimentWebPushEvent;
 import com.ecaservice.model.entity.AppInstanceEntity;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.Experiment;
@@ -19,7 +21,6 @@ import com.ecaservice.service.AppInstanceService;
 import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.experiment.ExperimentProgressService;
 import com.ecaservice.service.experiment.ExperimentService;
-import com.ecaservice.service.experiment.mail.NotificationService;
 import eca.converters.model.ExperimentHistory;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -49,6 +50,8 @@ import static org.mockito.Mockito.when;
 @Import({ExperimentConfig.class, CommonConfig.class})
 class ExperimentSchedulerTest extends AbstractJpaTest {
 
+    private static final int EXPECTED_CHANGE_STATUS_EVENTS_COUNT = 4;
+
     @Inject
     private ExperimentRepository experimentRepository;
     @Inject
@@ -61,8 +64,6 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     private AppInstanceRepository appInstanceRepository;
     @Mock
     private ExperimentService experimentService;
-    @Mock
-    private NotificationService notificationService;
     @Mock
     private ErsService ersService;
     @Mock
@@ -77,19 +78,16 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     @Inject
     private CommonConfig commonConfig;
 
-    private  AppInstanceService appInstanceService;
-
     private ExperimentScheduler experimentScheduler;
 
     private AppInstanceEntity appInstanceEntity;
 
     @Override
     public void init() {
-        appInstanceService = new AppInstanceService(commonConfig, appInstanceRepository);
+        AppInstanceService appInstanceService = new AppInstanceService(commonConfig, appInstanceRepository);
         experimentScheduler =
                 new ExperimentScheduler(experimentRepository, experimentResultsEntityRepository, experimentService,
-                        notificationService, eventPublisher, ersService, appInstanceService, experimentProgressService,
-                        experimentConfig);
+                        eventPublisher, ersService, appInstanceService, experimentProgressService, experimentConfig);
         appInstanceService.saveAppInstance();
         appInstanceEntity = appInstanceService.getAppInstanceEntity();
     }
@@ -112,6 +110,10 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         experimentRepository.saveAll(experiments);
         experimentScheduler.processNewRequests();
         verify(experimentService, times(experiments.size())).processExperiment(any(Experiment.class));
+        verify(eventPublisher, times(EXPECTED_CHANGE_STATUS_EVENTS_COUNT)).publishEvent(
+                any(ExperimentEmailEvent.class));
+        verify(eventPublisher, times(EXPECTED_CHANGE_STATUS_EVENTS_COUNT)).publishEvent(
+                any(ExperimentWebPushEvent.class));
     }
 
     @Test
@@ -125,7 +127,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
                 appInstanceEntity));
         experimentRepository.saveAll(experiments);
         experimentScheduler.processRequestsToSent();
-        verify(notificationService, times(experiments.size())).notifyByEmail(any(Experiment.class));
+        verify(eventPublisher, times(experiments.size())).publishEvent(any(ExperimentEmailEvent.class));
     }
 
     @Test

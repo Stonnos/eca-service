@@ -1,10 +1,79 @@
+$animation-duration: 1.5s;
+$animation-delay: 400ms;
+$animation-iterations: 1;
+
 .item-blink {
-  animation: 1.5s blink 400ms 1;
+  animation: $animation-duration blink $animation-delay $animation-iterations;
 }
 
 @keyframes blink {
   from {
     background: #4eb1ff;
+  }
+  to {
+    background: white;
+  }
+}
+
+.new-status-blink {
+  animation: $animation-duration new-status-blink $animation-delay $animation-iterations;
+}
+
+.in-progress-status-blink {
+  animation: $animation-duration in-progress-status-blink $animation-delay $animation-iterations;
+}
+
+.timeout-status-blink {
+  animation: $animation-duration timeout-status-blink $animation-delay $animation-iterations;
+}
+
+.finished-status-blink {
+  animation: $animation-duration finished-status-blink $animation-delay $animation-iterations;
+}
+
+.error-status-blink {
+  animation: $animation-duration error-status-blink $animation-delay $animation-iterations;
+}
+
+@keyframes new-status-blink {
+  from {
+    background: #6c757d;
+  }
+  to {
+    background: white;
+  }
+}
+
+@keyframes in-progress-status-blink {
+  from {
+    background: #17a2b8;
+  }
+  to {
+    background: white;
+  }
+}
+
+@keyframes finished-status-blink {
+  from {
+    background: #28a745;
+  }
+  to {
+    background: white;
+  }
+}
+
+@keyframes error-status-blink {
+  from {
+    background: #dc3545;
+  }
+  to {
+    background: white;
+  }
+}
+
+@keyframes timeout-status-blink {
+  from {
+    background: #ffc107;
   }
   to {
     background: white;
