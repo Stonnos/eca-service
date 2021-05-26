@@ -14,7 +14,7 @@ export class WsService {
       heartbeat_in: 0,
       heartbeat_out: 20000,
       reconnect_delay: 5000,
-      debug: true
+      debug: false
     });
   }
 
