@@ -98,7 +98,7 @@
 {
   "requestId": "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
   "status": "SUCCESS",
-  "evaluationResults": <Base64 evaluation results>
+  "evaluationResults": "<Base64 evaluation results>"
 }
 ----
 
@@ -273,7 +273,7 @@
 {
   "requestId": "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
   "status": "SUCCESS",
-  "evaluationResults": <Base64 evaluation results>
+  "evaluationResults": "<Base64 evaluation results>"
 }
 ----
 
