@@ -19,6 +19,7 @@ import { Subscription, timer } from "rxjs";
 export class LoginComponent implements BaseForm, OnInit, OnDestroy {
 
   private static readonly UNKNOWN_ERROR_MESSAGE = 'Возникла неизвестная ошибка';
+  private static readonly INVALID_TFA_CODE_MESSAGE = 'Неправильный код';
 
   public errorMessage: string;
   public submitted: boolean = false;
@@ -155,7 +156,7 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
   private handleTfaVerificationError(error): void {
     if (error instanceof HttpErrorResponse) {
       if (error.status === 400) {
-        this.errorMessage = 'Неправильный код';
+        this.errorMessage = LoginComponent.INVALID_TFA_CODE_MESSAGE;
       } else {
         this.errorMessage = LoginComponent.UNKNOWN_ERROR_MESSAGE;
       }
