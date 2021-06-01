@@ -18,6 +18,8 @@ import { Subscription, timer } from "rxjs";
 })
 export class LoginComponent implements BaseForm, OnInit, OnDestroy {
 
+  private static readonly UNKNOWN_ERROR_MESSAGE = 'Возникла неизвестная ошибка';
+
   public errorMessage: string;
   public submitted: boolean = false;
   public loading: boolean = false;
@@ -136,14 +138,14 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
   private handleObtainTokenError(error): void {
     if (error instanceof HttpErrorResponse) {
       if (error.status === 400) {
-        this.errorMessage = 'Неправильный логин или пароль';
+        this.errorMessage = error.error.error_description;
       } else if (error.status === 403) {
         this.errorMessage = null;
         this.tfaCodeVerificationStep = true;
         this.codeExpired = false;
         this.startTfaCodeValidityTimer(error.error.expires_in);
       } else {
-        this.errorMessage = 'Возникла неизвестная ошибка';
+        this.errorMessage = LoginComponent.UNKNOWN_ERROR_MESSAGE;
       }
     } else {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
@@ -155,7 +157,7 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
       if (error.status === 400) {
         this.errorMessage = 'Неправильный код';
       } else {
-        this.errorMessage = 'Возникла неизвестная ошибка';
+        this.errorMessage = LoginComponent.UNKNOWN_ERROR_MESSAGE;
       }
     } else {
       this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
