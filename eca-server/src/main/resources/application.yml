@@ -156,7 +156,7 @@ lock:
   enabled: true
 
 redis-lock:
-  expireAfter: 5000
+  expireAfter: 60000
   registryKey: eca-server-lock
 
 management:
