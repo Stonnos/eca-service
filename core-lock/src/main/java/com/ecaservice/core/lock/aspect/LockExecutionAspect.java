@@ -8,9 +8,11 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.ApplicationContext;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.integration.support.locks.LockRegistry;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -31,15 +33,15 @@ public class LockExecutionAspect {
 
     private final ExpressionParser expressionParser = new SpelExpressionParser();
 
-    private final LockService lockService;
+    private final ApplicationContext applicationContext;
 
     /**
      * Constructor with spring dependency injection.
      *
-     * @param lockService - lock service bean
+     * @param applicationContext - spring application context bean
      */
-    public LockExecutionAspect(LockService lockService) {
-        this.lockService = lockService;
+    public LockExecutionAspect(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 
     /**
@@ -52,6 +54,8 @@ public class LockExecutionAspect {
     @Around("execution(@com.ecaservice.core.lock.annotation.Locked * * (..)) && @annotation(locked)")
     public Object around(ProceedingJoinPoint joinPoint, Locked locked) throws Throwable {
         String lockKey = getLockKey(joinPoint, locked);
+        LockRegistry lockRegistry = applicationContext.getBean(locked.lockRegistry(), LockRegistry.class);
+        LockService lockService = new LockService(lockRegistry);
         try {
             lockService.lock(lockKey);
             return joinPoint.proceed();

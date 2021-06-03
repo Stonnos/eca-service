@@ -3,7 +3,6 @@ package com.ecaservice.core.lock.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.integration.support.locks.LockRegistry;
-import org.springframework.stereotype.Service;
 
 import java.util.concurrent.locks.Lock;
 
@@ -13,7 +12,6 @@ import java.util.concurrent.locks.Lock;
  * @author Roman Batygin
  */
 @Slf4j
-@Service
 @RequiredArgsConstructor
 public class LockService {
 

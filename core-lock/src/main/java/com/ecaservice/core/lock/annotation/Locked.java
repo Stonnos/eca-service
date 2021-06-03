@@ -25,4 +25,12 @@ public @interface Locked {
      * Spring Expression Language (SpEL) attribute for computing the key dynamically.
      */
     String key() default "";
+
+    /**
+     * Gets lock registry bean name. Bean must implements
+     * {@link org.springframework.integration.support.locks.LockRegistry} interface.
+     *
+     * @return lock registry bean name
+     */
+    String lockRegistry() default "redisLockRegistry";
 }
