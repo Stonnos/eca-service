@@ -11,6 +11,8 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
   rabbitmq:
     host: rabbitmq
+  redis:
+    host: redis
 
 eureka:
   client:
