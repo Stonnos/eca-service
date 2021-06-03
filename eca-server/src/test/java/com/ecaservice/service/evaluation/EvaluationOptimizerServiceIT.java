@@ -70,6 +70,7 @@ import static org.mockito.Mockito.when;
         EvaluationOptimizerService.class, ClassifierInfoMapperImpl.class, RedisAutoConfiguration.class,
         ClassifierOptionsCacheService.class, AppInstanceService.class, DateTimeConverter.class})
 class EvaluationOptimizerServiceIT extends AbstractJpaTest {
+
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final int NUM_THREADS = 2;
 
