@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @ConfigurationProperties("redis-lock")
 public class RedisLockProperties {
 
-    private static final long DEFAULT_EXPIRE_AFTER = 5000L;
+    private static final long DEFAULT_EXPIRE_AFTER = 60000L;
     private static final String DEFAULT_REGISTRY_KEY = "lock";
 
     /**
