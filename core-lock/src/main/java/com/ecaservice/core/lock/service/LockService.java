@@ -36,8 +36,12 @@ public class LockService {
      */
     public void unlock(String lockKey) {
         log.debug("Release lock [{}]", lockKey);
-        Lock lock = lockRegistry.obtain(lockKey);
-        lock.unlock();
+        try {
+            Lock lock = lockRegistry.obtain(lockKey);
+            lock.unlock();
+        } catch (Exception ex) {
+            log.error("There was an error while release lock with key [{}]: {}", lockKey, ex.getMessage());
+        }
         log.debug("Lock [{}] has been unlocked", lockKey);
     }
 }
