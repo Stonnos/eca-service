@@ -1,8 +1,8 @@
 package com.ecaservice.service.experiment;
 
-import com.ecaservice.aspect.annotation.Locked;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.config.ExperimentConfig;
+import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.exception.ClassifierOptionsException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
