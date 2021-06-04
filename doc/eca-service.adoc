@@ -230,19 +230,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |class_name              |varchar(255)     |-|+|-                       |Название атрибута класса
 |===
 
-==== Таблица 3.7 - 'lock' - содержит данные о блокировках для кластерной среды
-[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
-|===
-|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                      |bigint           |+|+|+                                               |Идентификатор записи (первичный ключ)
-|lock_name               |varchar(255)     |-|+|lock_name_key_unique_idx                        |Название блокировки
-|lock_key                |varchar(255)     |-|+|lock_name_key_unique_idx                        |Ключ блокировки
-|expire_at               |timestamp        |-|+|-                                               |Дата истечения срока действия блокировки
-|===
-
-Таблица содержит составной уникальный индекс на поля lock_name, lock_key.
-
-==== Таблица 3.8 - 'global_filter_template' - содержит конфигурацию полей для глобального поиска
+==== Таблица 3.7 - 'global_filter_template' - содержит конфигурацию полей для глобального поиска
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -251,7 +239,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |template_type           |varchar(255)     |-|+|-                  |Тип шаблона
 |===
 
-==== Таблица 3.9 - 'global_filter_field' - содержит данные полей для глобального поиска
+==== Таблица 3.8 - 'global_filter_field' - содержит данные полей для глобального поиска
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -260,7 +248,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |global_filter_template_id  |bigint           |-|+|fk_global_filter_template_id      |Внешний ключ, ID шаблона
 |===
 
-==== Таблица 3.10 - 'filter_template' - содержит данные шаблонов фильтров для web приложения
+==== Таблица 3.9 - 'filter_template' - содержит данные шаблонов фильтров для web приложения
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -270,7 +258,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |created                 |timestamp        |-|+|-                  |Дата создания шаблона
 |===
 
-==== Таблица 3.11 - 'filter_dictionary' - содержит данные словарей
+==== Таблица 3.10 - 'filter_dictionary' - содержит данные словарей
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -278,7 +266,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |name                       |varchar(255)     |-|+|-                                 |Название словаря
 |===
 
-==== Таблица 3.12 - 'filter_dictionary_value' - содержит данные значений словарей
+==== Таблица 3.11 - 'filter_dictionary_value' - содержит данные значений словарей
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -288,7 +276,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |filter_dictionary_id       |bigint           |-|+|fk_filter_dictionary_id           |Внешний ключ, ID словаря
 |===
 
-==== Таблица 3.13 - 'filter_field' - содержит данные полей для фильтров
+==== Таблица 3.12 - 'filter_field' - содержит данные полей для фильтров
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -303,7 +291,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |filter_template_id         |bigint           |-|+|fk_filter_template_id             |Внешний ключ, ID шаблона
 |===
 
-==== Таблица 3.14 - 'evaluation_log' - содержит данные о запросах на построение моделей классификаторов
+==== Таблица 3.13 - 'evaluation_log' - содержит данные о запросах на построение моделей классификаторов
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -323,7 +311,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |error_message              |text             |-|-|-                                 |Текст ошибки
 |===
 
-==== Таблица 3.15 - 'experiment' - содержит данные о заявках на построение экспрериментов
+==== Таблица 3.14 - 'experiment' - содержит данные о заявках на построение экспрериментов
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -350,7 +338,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |token                        |varchar(255)     |-|-|-                                 |Токен для скачивания результатов эксперимента с сервера
 |===
 
-==== Таблица 3.16 - 'experiment_progress' - содержит данные о статусах построения экспериментов
+==== Таблица 3.15 - 'experiment_progress' - содержит данные о статусах построения экспериментов
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -360,7 +348,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |experiment_id                |bigint           |-|+|fk_experiment_progress_experiment_id  |Внешний ключ, ID эксперимента
 |===
 
-==== Таблица 3.17 - 'experiment_results' - содержит мета данные о результатах экспериментов
+==== Таблица 3.16 - 'experiment_results' - содержит мета данные о результатах экспериментов
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -371,7 +359,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |pct_correct                  |numeric(19,4)    |-|-|-                                         |Точность классификатора
 |===
 
-==== Таблица 3.18 - 'ers_request' - системная таблица для интеграции с сервисом eca-ers
+==== Таблица 3.17 - 'ers_request' - системная таблица для интеграции с сервисом eca-ers
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -382,7 +370,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |details                      |text             |-|-|-                         |Детальная информация об ошибке
 |===
 
-==== Таблица 3.19 - 'evaluation_results_request' - данные запросов в eca-ers для сохранения результатов классификации
+==== Таблица 3.18 - 'evaluation_results_request' - данные запросов в eca-ers для сохранения результатов классификации
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -390,7 +378,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |evaluation_log_id            |bigint           |-|+|fk_evaluation_log         |Внешний ключ, ID evaluation_log
 |===
 
-==== Таблица 3.20 - 'experiment_results_request' - данные запросов в eca-ers для сохранения результатов экспериментов
+==== Таблица 3.19 - 'experiment_results_request' - данные запросов в eca-ers для сохранения результатов экспериментов
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -399,7 +387,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |request_source               |varchar(255)     |-|-|-                                                     |Источник запроса
 |===
 
-==== Таблица 3.21 - 'classifier_options_request_model' - содержит информацию о запросах в eca-ers на нахождение оптимальных настроек классификаторов
+==== Таблица 3.20 - 'classifier_options_request_model' - содержит информацию о запросах в eca-ers на нахождение оптимальных настроек классификаторов
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -413,7 +401,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |app_instance_id                     |bigint           |-|-|-                                      |Внешний ключ, ID инстанса для обработки запроса
 |===
 
-==== Таблица 3.22 - 'classifier_options_response_model' - содержит информацию об оптимальных настройках классификаторов от eca-ers
+==== Таблица 3.21 - 'classifier_options_response_model' - содержит информацию об оптимальных настройках классификаторов от eca-ers
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -424,7 +412,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |classifier_options_request_model_id |bigint           |-|+|fk_classifier_options_request_model_id   |Внешний ключ, ID запроса classifier_options_request_model
 |===
 
-==== Таблица 3.23 - 'classifier_options_request' - содержит информацию о запросах на нахождение оптимальных настроек классификаторов
+==== Таблица 3.22 - 'classifier_options_request' - содержит информацию о запросах на нахождение оптимальных настроек классификаторов
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание

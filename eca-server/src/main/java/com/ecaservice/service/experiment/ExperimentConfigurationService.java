@@ -1,6 +1,5 @@
 package com.ecaservice.service.experiment;
 
-import com.ecaservice.aspect.annotation.Locked;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.exception.ClassifierOptionsException;
@@ -49,7 +48,6 @@ public class ExperimentConfigurationService {
     /**
      * Saves individual classifiers input options into database.
      */
-    @Locked(lockName = "saveExperimentClassifiersOptions")
     public void saveClassifiersOptions() throws IOException {
         if (StringUtils.isEmpty(experimentConfig.getIndividualClassifiersStoragePath())) {
             log.error(CLASSIFIERS_INPUT_OPTIONS_DIRECTORY_IS_NOT_SPECIFIED);

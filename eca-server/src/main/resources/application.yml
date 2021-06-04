@@ -152,6 +152,13 @@ auth-server:
   clientId: eca_web
   clientSecret: web_secret
 
+lock:
+  enabled: true
+
+redis-lock:
+  expireAfter: 60000
+  registryKey: eca-server-lock
+
 management:
   metrics:
     tags:

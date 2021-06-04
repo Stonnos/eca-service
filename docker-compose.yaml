@@ -17,6 +17,14 @@ services:
       TZ: ${TIME_ZONE}
       PGTZ: ${TIME_ZONE}
 
+  redis:
+    image: redis:${REDIS_VERSION}
+    container_name: redis
+    environment:
+      TZ: ${TIME_ZONE}
+    ports:
+      - "6379:6379"
+
   rabbitmq:
     image: rabbitmq:${RABBIT_MQ_VERSION}
     container_name: "rabbitmq"
@@ -57,6 +65,8 @@ services:
       QUEUE_EVALUATIONREQUESTQUEUE: ${QUEUE_EVALUATION_REQUEST_QUEUE}
       QUEUE_EVALUATIONOPTIMIZERREQUESTQUEUE: ${QUEUE_EVALUATION_OPTIMIZER_REQUEST_QUEUE}
       QUEUE_EXPERIMENTREQUESTQUEUE: ${QUEUE_EXPERIMENT_REQUEST_QUEUE}
+      SPRING_REDIS_HOST: "redis"
+      SPRING_CACHE_TYPE: "redis"
     networks:
       - default
     depends_on:

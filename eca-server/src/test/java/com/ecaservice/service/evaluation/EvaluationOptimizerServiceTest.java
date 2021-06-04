@@ -2,7 +2,6 @@ package com.ecaservice.service.evaluation;
 
 import com.ecaservice.AssertionUtils;
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.aspect.LockExecutionAspect;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.base.model.TechnicalStatus;
@@ -46,8 +45,6 @@ import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.AppInstanceService;
 import com.ecaservice.service.ers.ErsRequestSender;
 import com.ecaservice.service.ers.ErsRequestService;
-import com.ecaservice.service.lock.JdbcLockStorage;
-import com.ecaservice.service.lock.LockService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.core.evaluation.EvaluationResults;
 import eca.ensemble.AdaBoostClassifier;
@@ -68,7 +65,6 @@ import feign.FeignException;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.DigestUtils;
@@ -80,9 +76,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static com.ecaservice.util.InstancesUtils.toJson;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -95,7 +88,6 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@EnableAspectJAutoProxy
 @Import({ExecutorConfiguration.class, ClassifiersOptionsConfiguration.class, CommonConfig.class,
         CrossValidationConfig.class, EvaluationRequestService.class, InstancesInfoMapperImpl.class,
         ClassifierOptionsRequestModelMapperImpl.class, ClassifierReportMapperImpl.class,
@@ -104,12 +96,10 @@ import static org.mockito.Mockito.when;
         EvaluationService.class, ErsEvaluationMethodMapperImpl.class, ErsResponseStatusMapperImpl.class,
         InstancesConverter.class, ClassifierOptionsResponseModelMapperImpl.class, ErsRequestService.class,
         EvaluationOptimizerService.class, ClassifierInfoMapperImpl.class,
-        ClassifierOptionsCacheService.class, LockExecutionAspect.class, LockService.class, JdbcLockStorage.class,
-        AppInstanceService.class, DateTimeConverter.class})
+        ClassifierOptionsCacheService.class, AppInstanceService.class, DateTimeConverter.class})
 class EvaluationOptimizerServiceTest extends AbstractJpaTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    private static final int NUM_THREADS = 2;
 
     @MockBean
     private ErsRequestSender ersRequestSender;
@@ -331,31 +321,6 @@ class EvaluationOptimizerServiceTest extends AbstractJpaTest {
         assertThat(optionsRequests.size()).isEqualTo(2);
         assertThat(requestEntities.size()).isEqualTo(3);
         assertThat(requestEntities.get(2).getSource()).isEqualTo(ClassifierOptionsRequestSource.CACHE);
-    }
-
-    @Test
-    void testClassifierOptionsCacheInMultiThreadEnvironment() throws Exception {
-        ClassifierOptionsResponse response = TestHelperUtils.createClassifierOptionsResponse(Collections
-                .singletonList(TestHelperUtils.createClassifierReport(decisionTreeOptions)), ResponseStatus.SUCCESS);
-        when(ersRequestSender.getClassifierOptions(any(ClassifierOptionsRequest.class))).thenReturn(response);
-        final CountDownLatch finishedLatch = new CountDownLatch(NUM_THREADS);
-        ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);
-        for (int i = 0; i < NUM_THREADS; i++) {
-            executorService.submit(() -> {
-                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
-                        instancesRequest);
-                finishedLatch.countDown();
-            });
-        }
-        finishedLatch.await();
-        executorService.shutdownNow();
-        List<ClassifierOptionsRequestEntity> requestEntities = classifierOptionsRequestRepository.findAll();
-        assertThat(requestEntities.size()).isEqualTo(2);
-        assertThat(classifierOptionsRequestModelRepository.count()).isOne();
-        assertThat(requestEntities.get(0).getSource()).isEqualTo(ClassifierOptionsRequestSource.ERS);
-        assertThat(requestEntities.get(1).getSource()).isEqualTo(ClassifierOptionsRequestSource.CACHE);
-        assertThat(requestEntities.get(0).getClassifierOptionsRequestModel().getId()).isEqualTo(
-                requestEntities.get(1).getClassifierOptionsRequestModel().getId());
     }
 
     /**

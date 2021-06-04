@@ -121,6 +121,12 @@
 
         <dependency>
             <groupId>eca.service</groupId>
+            <artifactId>redis-lock</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
             <artifactId>eca-model</artifactId>
             <version>${project.version}</version>
         </dependency>

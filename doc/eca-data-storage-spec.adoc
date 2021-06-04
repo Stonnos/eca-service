@@ -85,7 +85,7 @@ curl -i -X POST -H "Content-Type: multipart/form-data" -H "authorization: Bearer
 где trainingData - файл с обучающей выборкой, tableName - название таблицы БД, в которую необходимо созранить данные
 
 * Примечание: размер файла не должен превышать 10мб.
-* Примечание: допускаются только файлы форматов csv, xls, xlsx, arff, json, docx, data, txt
+* Примечание: допускаются только файлы форматов csv, xls, xlsx, arff, json, docx, data, txt, xml
 
 ==== 3.2. Пример ответа на запрос о загрузке обучающей выборки на сервер
 
@@ -135,7 +135,7 @@ curl -i -X POST -H "Content-Type: multipart/form-data" -H "authorization: Bearer
 
 [source,bash]
 ----
-curl -i -X PUT -H "authorization: Bearer cf4cd583-b9f1-4dce-8dcc-afefd1510974" -F "id=1" -F "tableName=soybean1" http://eca-service:8080/eca-data-storage/instances/rename
+curl -i -X PUT -H "authorization: Bearer cf4cd583-b9f1-4dce-8dcc-afefd1510974" -d "id=1" -d "tableName=soybean1" http://eca-service:8080/eca-data-storage/instances/rename
 ----
 
 где id - ID обучающей выборки, tableName - новое название таблицы БД
@@ -144,7 +144,7 @@ curl -i -X PUT -H "authorization: Bearer cf4cd583-b9f1-4dce-8dcc-afefd1510974" -
 
 [source,bash]
 ----
-curl -i -X DELETE -H "authorization: Bearer cf4cd583-b9f1-4dce-8dcc-afefd1510974" -F "id=1" http://eca-service:8080/eca-data-storage/instances/delete
+curl -i -X DELETE -H "authorization: Bearer cf4cd583-b9f1-4dce-8dcc-afefd1510974" -d "id=1" http://eca-service:8080/eca-data-storage/instances/delete
 ----
 
 где id - ID обучающей выборки

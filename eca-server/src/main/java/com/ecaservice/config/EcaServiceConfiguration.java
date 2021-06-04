@@ -3,6 +3,7 @@ package com.ecaservice.config;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsConfiguration;
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.config.ers.ErsConfig;
+import com.ecaservice.core.lock.redis.annotation.EnableRedisLocks;
 import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
 import eca.data.file.FileDataLoader;
 import eca.data.file.FileDataSaver;
@@ -27,6 +28,7 @@ import java.util.concurrent.Executors;
 @Configuration
 @EnableScheduling
 @EnableCaching
+@EnableRedisLocks
 @EnableAsync
 @EnableGlobalExceptionHandler
 @Oauth2ResourceServer
