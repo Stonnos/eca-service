@@ -116,9 +116,11 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
         ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);
         for (int i = 0; i < NUM_THREADS; i++) {
             executorService.submit(() -> {
-                evaluationOptimizerService.evaluateWithOptimalClassifierOptions(
-                        instancesRequest);
-                finishedLatch.countDown();
+                try {
+                    evaluationOptimizerService.evaluateWithOptimalClassifierOptions(instancesRequest);
+                } finally {
+                    finishedLatch.countDown();
+                }
             });
         }
         finishedLatch.await();
