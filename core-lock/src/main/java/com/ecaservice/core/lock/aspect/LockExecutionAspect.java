@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
@@ -58,9 +59,15 @@ public class LockExecutionAspect {
         LockService lockService = new LockService(lockRegistry);
         try {
             lockService.lock(lockKey);
-            return joinPoint.proceed();
-        } finally {
+            Object result = joinPoint.proceed();
             lockService.unlock(lockKey);
+            return result;
+        } catch (CannotAcquireLockException ex) {
+            log.error("Acquire lock error: {}", ex.getMessage());
+            throw ex;
+        } catch (Exception ex) {
+            lockService.unlock(lockKey);
+            throw ex;
         }
     }
 
