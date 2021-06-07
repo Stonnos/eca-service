@@ -1,4 +1,4 @@
-import {Component, Injector, OnInit} from '@angular/core';
+import { Component, Injector, OnInit } from '@angular/core';
 import {
   ClassifierOptionsDto, ClassifiersConfigurationDto, PageDto,
   PageRequestDto
