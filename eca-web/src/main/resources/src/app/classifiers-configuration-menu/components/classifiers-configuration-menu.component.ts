@@ -13,6 +13,7 @@ export class ClassifiersConfigurationMenuComponent implements OnInit, OnChanges 
 
   public setActiveMenuItem: MenuItem;
   public deleteMenuItem: MenuItem;
+  public copyMenuItem: MenuItem;
   public renameMenuItem: MenuItem;
   public uploadClassifiersOptionsMenu: MenuItem;
   public downloadReportMenu: MenuItem;
@@ -25,6 +26,8 @@ export class ClassifiersConfigurationMenuComponent implements OnInit, OnChanges 
   public onUploadClassifiers: EventEmitter<ClassifiersConfigurationDto> = new EventEmitter<ClassifiersConfigurationDto>();
   @Output()
   public onRename: EventEmitter<ClassifiersConfigurationDto> = new EventEmitter<ClassifiersConfigurationDto>();
+  @Output()
+  public onCopy: EventEmitter<ClassifiersConfigurationDto> = new EventEmitter<ClassifiersConfigurationDto>();
   @Output()
   public onDelete: EventEmitter<ClassifiersConfigurationDto> = new EventEmitter<ClassifiersConfigurationDto>();
   @Output()
@@ -76,6 +79,14 @@ export class ClassifiersConfigurationMenuComponent implements OnInit, OnChanges 
           this.onRename.emit(this.classifiersConfiguration);
         }
       };
+      this.copyMenuItem = {
+        label: 'Копировать',
+        icon: 'pi pi-fw pi-copy',
+        styleClass: 'menu-item',
+        command: () => {
+          this.onCopy.emit(this.classifiersConfiguration);
+        }
+      };
       this.downloadReportMenu = {
         label: 'Сформировать отчет',
         icon: 'pi pi-file',
@@ -91,6 +102,7 @@ export class ClassifiersConfigurationMenuComponent implements OnInit, OnChanges 
           items: [
             this.renameMenuItem,
             this.deleteMenuItem,
+            this.copyMenuItem,
             this.setActiveMenuItem,
             this.uploadClassifiersOptionsMenu,
             this.downloadReportMenu
