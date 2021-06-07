@@ -53,12 +53,13 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
     private static final String DELETE_URL = BASE_URL + "/delete";
     private static final String SET_ACTIVE_URL = BASE_URL + "/set-active";
     private static final String SAVE_URL = BASE_URL + "/save";
+    private static final String COPY_URL = BASE_URL + "/copy";
     private static final String UPDATE_URL = BASE_URL + "/update";
     private static final String REPORT_URL = BASE_URL + "/report/{id}";
 
+    private static final String CONFIGURATION_NAME = "ConfigurationName";
     private static final String ID_PARAM = "id";
     private static final long ID = 1L;
-    static final String CONFIGURATION_NAME = "ConfigurationName";
 
     @MockBean
     private ClassifiersConfigurationService classifiersConfigurationService;
@@ -336,5 +337,45 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE));
+    }
+
+    @Test
+    void testCopyClassifiersConfigurationUnauthorized() throws Exception {
+        var configurationDto = new UpdateClassifiersConfigurationDto(ID, CONFIGURATION_NAME);
+        mockMvc.perform(post(COPY_URL)
+                .content(objectMapper.writeValueAsString(configurationDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testCopyClassifiersConfigurationWithEmptyName() throws Exception {
+        var configurationDto = new UpdateClassifiersConfigurationDto(ID, StringUtils.EMPTY);
+        mockMvc.perform(post(COPY_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .content(objectMapper.writeValueAsString(configurationDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testCopyClassifiersConfigurationWithLargeName() throws Exception {
+        var configurationDto = new UpdateClassifiersConfigurationDto(ID,
+                StringUtils.repeat('Q', FieldConstraints.CONFIGURATION_NAME_MAX_LENGTH + 1));
+        mockMvc.perform(post(COPY_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .content(objectMapper.writeValueAsString(configurationDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testCopyClassifiersConfigurationOk() throws Exception {
+        var configurationDto = new UpdateClassifiersConfigurationDto(ID, CONFIGURATION_NAME);
+        mockMvc.perform(post(COPY_URL)
+                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .content(objectMapper.writeValueAsString(configurationDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 }
