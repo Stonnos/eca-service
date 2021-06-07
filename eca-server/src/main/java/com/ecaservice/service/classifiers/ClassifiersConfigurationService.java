@@ -103,18 +103,18 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
     }
 
     /**
-     * Creates classifiers configuration copy.
+     * Creates classifiers configuration copy. Created copy will always be not build in and not active.
      *
-     * @param updateClassifiersConfigurationDto - configuration data
+     * @param configurationDto - configuration data
      * @return classifiers configuration entity
      */
     @Transactional
-    public ClassifiersConfiguration copy(UpdateClassifiersConfigurationDto updateClassifiersConfigurationDto) {
+    public ClassifiersConfiguration copy(UpdateClassifiersConfigurationDto configurationDto) {
         log.info("Starting to create classifiers configuration [{}] copy with name [{}]",
-                updateClassifiersConfigurationDto.getId(), updateClassifiersConfigurationDto.getConfigurationName());
-        var classifiersConfiguration = getById(updateClassifiersConfigurationDto.getId());
+                configurationDto.getId(), configurationDto.getConfigurationName());
+        var classifiersConfiguration = getById(configurationDto.getId());
         var classifiersConfigurationCopy = new ClassifiersConfiguration();
-        classifiersConfigurationCopy.setConfigurationName(updateClassifiersConfigurationDto.getConfigurationName());
+        classifiersConfigurationCopy.setConfigurationName(configurationDto.getConfigurationName());
         classifiersConfigurationCopy.setCreatedBy(userService.getCurrentUser());
         classifiersConfigurationCopy.setCreationDate(LocalDateTime.now());
         classifiersConfigurationRepository.save(classifiersConfigurationCopy);
