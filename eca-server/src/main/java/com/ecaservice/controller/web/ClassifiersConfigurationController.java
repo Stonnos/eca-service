@@ -131,6 +131,23 @@ public class ClassifiersConfigurationController {
     }
 
     /**
+     * Creates classifiers configuration copy.
+     *
+     * @param configurationDto - classifiers configuration
+     * @return classifiers configuration dto
+     */
+    @PreAuthorize("#oauth2.hasScope('web')")
+    @ApiOperation(
+            value = "Creates classifiers configuration copy",
+            notes = "Creates classifiers configuration copy"
+    )
+    @PostMapping(value = "/copy")
+    public ClassifiersConfigurationDto copy(@Valid @RequestBody UpdateClassifiersConfigurationDto configurationDto) {
+        ClassifiersConfiguration copy = classifiersConfigurationService.copy(configurationDto);
+        return classifiersConfigurationMapper.map(copy);
+    }
+
+    /**
      * Sets classifiers configuration as active.
      *
      * @param id - configuration id
