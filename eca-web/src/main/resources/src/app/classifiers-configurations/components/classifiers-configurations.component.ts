@@ -14,6 +14,7 @@ import { ClassifiersConfigurationModel } from "../../create-classifiers-configur
 import { Router } from "@angular/router";
 import { RouterPaths } from "../../routing/router-paths";
 import { Utils } from "../../common/util/utils";
+import { OperationType } from "../../common/model/operation-type.enum";
 
 @Component({
   selector: 'app-classifiers-configurations',
@@ -63,11 +64,16 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
     this.uploadClassifiersOptionsDialogVisibility = visible;
   }
 
+  public showCopyClassifiersConfigurationDialog(item?: ClassifiersConfigurationDto): void {
+    this.classifiersConfiguration = new ClassifiersConfigurationModel(OperationType.COPY, item.id, item.configurationName);
+    this.editClassifiersConfigurationDialogVisibility = true;
+  }
+
   public showEditClassifiersConfigurationDialog(item?: ClassifiersConfigurationDto): void {
     if (item && item.id) {
-      this.classifiersConfiguration = new ClassifiersConfigurationModel(item.id, item.configurationName);
+      this.classifiersConfiguration = new ClassifiersConfigurationModel(OperationType.EDIT, item.id, item.configurationName);
     } else {
-      this.classifiersConfiguration = new ClassifiersConfigurationModel();
+      this.classifiersConfiguration = new ClassifiersConfigurationModel(OperationType.CREATE);
     }
     this.editClassifiersConfigurationDialogVisibility = true;
   }
@@ -77,10 +83,18 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   }
 
   public onEditClassifiersConfiguration(item: ClassifiersConfigurationModel): void {
-    if (item.id) {
-      this.updateConfiguration(item);
-    } else {
-      this.createConfiguration(item);
+    switch (item.operation) {
+      case OperationType.CREATE:
+        this.createConfiguration(item);
+        break;
+      case OperationType.EDIT:
+        this.updateConfiguration(item);
+        break;
+      case OperationType.COPY:
+        this.copyConfiguration(item);
+        break;
+      default:
+        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${item.operation} operation`});
     }
   }
 
@@ -148,6 +162,27 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
       )
       .subscribe({
         next: () => {
+          this.reloadPageWithLoader();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private copyConfiguration(item: ClassifiersConfigurationModel): void {
+    this.loading = true;
+    this.classifiersConfigurationsService.copyConfiguration({ id: item.id, configurationName: item.configurationName })
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: (configuration: ClassifiersConfigurationDto) => {
+          this.lastCreatedId = configuration.id;
+          this.messageService.add({ severity: 'success',
+            summary: `Создана копия конфигурации с именем ${configuration.configurationName}`, detail: '' });
           this.reloadPageWithLoader();
         },
         error: (error) => {

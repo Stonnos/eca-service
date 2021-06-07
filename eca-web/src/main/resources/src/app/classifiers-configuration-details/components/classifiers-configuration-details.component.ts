@@ -1,4 +1,4 @@
-import { Component, Injector, OnInit } from '@angular/core';
+import {Component, Injector, OnInit} from '@angular/core';
 import {
   ClassifierOptionsDto, ClassifiersConfigurationDto, PageDto,
   PageRequestDto
@@ -17,6 +17,7 @@ import { ClassifiersConfigurationModel } from "../../create-classifiers-configur
 import { ExperimentTabUtils } from "../../experiments-tabs/model/experiment-tab.utils";
 import { finalize } from "rxjs/internal/operators";
 import { Utils } from "../../common/util/utils";
+import { OperationType }  from "../../common/model/operation-type.enum";
 
 declare var Prism: any;
 
@@ -103,7 +104,12 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
   }
 
   public showEditClassifiersConfigurationDialog(item: ClassifiersConfigurationDto): void {
-    this.editClassifiersConfiguration = new ClassifiersConfigurationModel(item.id, item.configurationName);
+    this.editClassifiersConfiguration = new ClassifiersConfigurationModel(OperationType.EDIT, item.id, item.configurationName);
+    this.editClassifiersConfigurationDialogVisibility = true;
+  }
+
+  public showCopyClassifiersConfigurationDialog(item: ClassifiersConfigurationDto): void {
+    this.editClassifiersConfiguration = new ClassifiersConfigurationModel(OperationType.COPY, item.id, item.configurationName);
     this.editClassifiersConfigurationDialogVisibility = true;
   }
 
@@ -133,7 +139,16 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
   }
 
   public onEditClassifiersConfiguration(item: ClassifiersConfigurationModel): void {
-    this.updateConfiguration(item);
+    switch (item.operation) {
+      case OperationType.EDIT:
+        this.updateConfiguration(item);
+        break;
+      case OperationType.COPY:
+        this.copyConfiguration(item);
+        break;
+      default:
+        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${item.operation} operation`});
+    }
   }
 
   private deleteConfiguration(item: ClassifiersConfigurationDto): void {
@@ -166,6 +181,21 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
       .updateConfiguration({ id: item.id, configurationName: item.configurationName })
       .subscribe({
         next: () => {
+          this.getClassifiersConfigurationDetails();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private copyConfiguration(item: ClassifiersConfigurationModel): void {
+    this.classifiersConfigurationService
+      .copyConfiguration({ id: item.id, configurationName: item.configurationName })
+      .subscribe({
+        next: (configuration: ClassifiersConfigurationDto) => {
+          this.messageService.add({ severity: 'success',
+            summary: `Создана копия конфигурации с именем ${configuration.configurationName}`, detail: '' });
           this.getClassifiersConfigurationDetails();
         },
         error: (error) => {
