@@ -6,6 +6,7 @@ import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.filter.ClassifiersConfigurationFilter;
 import com.ecaservice.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.mapping.ClassifiersConfigurationMapper;
+import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.report.model.ClassifiersConfigurationBean;
@@ -25,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
@@ -56,8 +58,10 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * Saves new classifiers configuration.
      *
      * @param configurationDto - create classifiers configuration dto
+     * @return classifiers configuration entity
      */
     public ClassifiersConfiguration save(CreateClassifiersConfigurationDto configurationDto) {
+        log.info("Starting to save new classifiers configuration [{}]", configurationDto.getConfigurationName());
         var classifiersConfiguration = classifiersConfigurationMapper.map(configurationDto);
         classifiersConfiguration.setCreatedBy(userService.getCurrentUser());
         classifiersConfiguration.setCreationDate(LocalDateTime.now());
@@ -72,11 +76,14 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * @param configurationDto - update classifiers configuration dto
      */
     public void update(UpdateClassifiersConfigurationDto configurationDto) {
+        log.info("Starting to update classifiers configuration [{}] with new name [{}]", configurationDto.getId(),
+                configurationDto.getConfigurationName());
         var classifiersConfiguration = getById(configurationDto.getId());
         classifiersConfigurationMapper.update(configurationDto, classifiersConfiguration);
         classifiersConfiguration.setUpdated(LocalDateTime.now());
         classifiersConfigurationRepository.save(classifiersConfiguration);
-        log.info("Classifiers configuration [{}] has been updated", classifiersConfiguration.getId());
+        log.info("Classifiers configuration [{}] has been updated with name [{}]", classifiersConfiguration.getId(),
+                classifiersConfiguration.getConfigurationName());
     }
 
     /**
@@ -85,6 +92,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * @param id - classifiers configuration id
      */
     public void delete(long id) {
+        log.info("Starting to delete classifiers configuration [{}]", id);
         var classifiersConfiguration = getById(id);
         Assert.state(!classifiersConfiguration.isBuildIn(),
                 String.format("Can't delete build in configuration [%d]!", id));
@@ -95,12 +103,36 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
     }
 
     /**
+     * Creates classifiers configuration copy.
+     *
+     * @param updateClassifiersConfigurationDto - configuration data
+     * @return classifiers configuration entity
+     */
+    @Transactional
+    public ClassifiersConfiguration copy(UpdateClassifiersConfigurationDto updateClassifiersConfigurationDto) {
+        log.info("Starting to create classifiers configuration [{}] copy with name [{}]",
+                updateClassifiersConfigurationDto.getId(), updateClassifiersConfigurationDto.getConfigurationName());
+        var classifiersConfiguration = getById(updateClassifiersConfigurationDto.getId());
+        var classifiersConfigurationCopy = new ClassifiersConfiguration();
+        classifiersConfigurationCopy.setConfigurationName(updateClassifiersConfigurationDto.getConfigurationName());
+        classifiersConfigurationCopy.setCreatedBy(userService.getCurrentUser());
+        classifiersConfigurationCopy.setCreationDate(LocalDateTime.now());
+        classifiersConfigurationRepository.save(classifiersConfigurationCopy);
+        copyClassifiersOptions(classifiersConfiguration, classifiersConfigurationCopy);
+        log.info("Classifiers configuration [{}] copy [{}] has been created with new id [{}]",
+                classifiersConfiguration.getId(), classifiersConfigurationCopy.getConfigurationName(),
+                classifiersConfigurationCopy.getId());
+        return classifiersConfigurationCopy;
+    }
+
+    /**
      * Sets classifiers configuration as active.
      *
      * @param id - configuration id
      */
     @Locked(lockName = "setActiveClassifiersConfiguration")
     public void setActive(long id) {
+        log.info("Request to set classifiers configuration [{}] as active", id);
         var classifiersConfiguration = getById(id);
         var activeConfiguration = classifiersConfigurationRepository.findFirstByActiveTrue()
                 .orElseThrow(() -> new IllegalStateException("Can't find previous active classifiers configuration!"));
@@ -191,5 +223,30 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
     private ClassifiersConfiguration getById(long id) {
         return classifiersConfigurationRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(ClassifiersConfiguration.class, id));
+    }
+
+    private void copyClassifiersOptions(ClassifiersConfiguration classifiersConfiguration,
+                                        ClassifiersConfiguration classifiersConfigurationCopy) {
+        log.info("Starting to copy classifiers options for configuration [{}]", classifiersConfiguration.getId());
+        var classifierOptionsDatabaseModels =
+                classifierOptionsDatabaseModelRepository.findAllByConfigurationOrderByCreationDate(
+                        classifiersConfiguration);
+        log.info("Got [{}] classifiers options for copy", classifierOptionsDatabaseModels.size());
+        var currentUser = userService.getCurrentUser();
+        var classifierOptionsCopies = classifierOptionsDatabaseModels.stream()
+                .map(classifierOptionsDatabaseModel -> {
+                    var classifierOptionsCopy = new ClassifierOptionsDatabaseModel();
+                    classifierOptionsCopy.setOptionsName(classifierOptionsDatabaseModel.getOptionsName());
+                    classifierOptionsCopy.setConfig(classifierOptionsDatabaseModel.getConfig());
+                    classifierOptionsCopy.setConfigMd5Hash(classifierOptionsDatabaseModel.getConfigMd5Hash());
+                    classifierOptionsCopy.setCreatedBy(currentUser);
+                    classifierOptionsCopy.setCreationDate(LocalDateTime.now());
+                    classifierOptionsCopy.setConfiguration(classifiersConfigurationCopy);
+                    return classifierOptionsCopy;
+                })
+                .collect(Collectors.toList());
+        classifierOptionsDatabaseModelRepository.saveAll(classifierOptionsCopies);
+        log.info("[{}] classifiers options has been copied for configuration [{}]", classifierOptionsCopies.size(),
+                classifiersConfiguration.getId());
     }
 }

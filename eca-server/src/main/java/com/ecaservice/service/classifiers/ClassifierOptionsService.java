@@ -74,6 +74,7 @@ public class ClassifierOptionsService {
      */
     @Transactional
     public void deleteOptions(long id) {
+        log.info("Starting to delete classifier options [{}]", id);
         var classifierOptionsDatabaseModel = classifierOptionsDatabaseModelRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ClassifierOptionsDatabaseModel.class, id));
         var classifiersConfiguration = classifierOptionsDatabaseModel.getConfiguration();
