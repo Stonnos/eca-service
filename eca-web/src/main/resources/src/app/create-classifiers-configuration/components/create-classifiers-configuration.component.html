@@ -1,6 +1,6 @@
 <p-dialog
   [(visible)]="visible"
-  header="{{ item.id ? 'Переименовать' : 'Создать' }} конфигурацию"
+  header="{{ item.operation }} конфигурацию"
   [style]="{ width: '650px' }"
   appendTo="body"
   [modal]="true"
@@ -30,7 +30,7 @@
   <p-footer>
     <button
       pButton
-      label="{{ item.id ? 'Переименовать' : 'Создать' }}"
+      label="{{ item.operation }}"
       type="button"
       [disabled]="!isValid()"
       (click)="submit()"

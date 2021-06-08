@@ -240,6 +240,30 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         assertThat(classifiersConfigurationBean.getClassifiersOptionsCount()).isEqualTo(expectedCount);
     }
 
+    @Test
+    void testCopyClassifiersConfiguration() {
+        var classifiersConfiguration = saveConfiguration(true, true);
+        assertThat(classifiersConfiguration.getUpdated()).isNull();
+        assertThat(classifiersConfiguration.getConfigurationName()).isEqualTo(TEST_CONFIGURATION_NAME);
+        var updateClassifiersConfigurationDto = new UpdateClassifiersConfigurationDto();
+        updateClassifiersConfigurationDto.setConfigurationName(TEST_CONFIGURATION_UPDATED_NAME);
+        updateClassifiersConfigurationDto.setId(classifiersConfiguration.getId());
+        var copy = classifiersConfigurationService.copy(updateClassifiersConfigurationDto);
+        var actualCopy = classifiersConfigurationRepository.findById(copy.getId()).orElse(null);
+        assertThat(actualCopy).isNotNull();
+        assertThat(actualCopy.getConfigurationName()).isEqualTo(
+                updateClassifiersConfigurationDto.getConfigurationName());
+        assertThat(actualCopy.getCreatedBy()).isNotNull();
+        assertThat(actualCopy.getCreationDate()).isNotNull();
+        assertThat(actualCopy.isBuildIn()).isFalse();
+        assertThat(actualCopy.isActive()).isFalse();
+        var expectedOptionsCopies = classifierOptionsDatabaseModelRepository.findAllByConfigurationOrderByCreationDate(
+                classifiersConfiguration);
+        var actualOptionsCopies =
+                classifierOptionsDatabaseModelRepository.findAllByConfigurationOrderByCreationDate(actualCopy);
+        assertThat(actualOptionsCopies).hasSameSizeAs(expectedOptionsCopies);
+    }
+
     private ClassifiersConfiguration saveConfiguration(boolean active, boolean buildIn) {
         ClassifiersConfiguration classifiersConfiguration = TestHelperUtils.createClassifiersConfiguration();
         classifiersConfiguration.setBuildIn(buildIn);

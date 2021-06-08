@@ -52,6 +52,14 @@ export class ClassifiersConfigurationsService {
     return this.http.put(this.serviceUrl + '/update', configuration, { headers: headers })
   }
 
+  public copyConfiguration(configuration: UpdateClassifiersConfigurationDto): Observable<ClassifiersConfigurationDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    return this.http.post<ClassifiersConfigurationDto>(this.serviceUrl + '/copy', configuration, { headers: headers })
+  }
+
   public deleteConfiguration(id: number): Observable<any> {
     const headers = new HttpHeaders({
       'Authorization': Utils.getBearerTokenHeader()

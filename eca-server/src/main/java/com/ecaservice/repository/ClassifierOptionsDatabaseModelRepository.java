@@ -29,6 +29,15 @@ public interface ClassifierOptionsDatabaseModelRepository extends JpaRepository<
             ClassifiersConfiguration configuration);
 
     /**
+     * Finds all classifiers input options by specified configuration.
+     *
+     * @param configuration - classifiers configuration
+     * @return classifier options database models list
+     */
+    List<ClassifierOptionsDatabaseModel> findAllByConfigurationOrderByCreationDate(
+            ClassifiersConfiguration configuration);
+
+    /**
      * Gets classifiers options statistics group by classifiers configuration.
      *
      * @param configurationsIds - configurations ids
