@@ -3,7 +3,7 @@ package com.ecaservice.core.audit.service;
 import com.ecaservice.core.audit.entity.AuditCodeEntity;
 import com.ecaservice.core.audit.entity.AuditEventTemplateEntity;
 import com.ecaservice.core.audit.entity.EventType;
-import com.ecaservice.core.audit.exception.AuditEntityNotFoundException;
+import com.ecaservice.core.audit.exception.AuditDataNotFoundException;
 import com.ecaservice.core.audit.repository.AuditCodeRepository;
 import com.ecaservice.core.audit.repository.AuditEventTemplateRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class AuditCodeService {
     public AuditCodeEntity getAuditCode(String code) {
         log.debug("Gets audit code [{}]", code);
         return auditCodeRepository.findById(code)
-                .orElseThrow(() -> new AuditEntityNotFoundException(String.format("Audit code [%s] not found", code)));
+                .orElseThrow(() -> new AuditDataNotFoundException(String.format("Audit code [%s] not found", code)));
     }
 
     /**
@@ -45,7 +45,7 @@ public class AuditCodeService {
     public AuditEventTemplateEntity getAuditEvent(AuditCodeEntity auditCode, EventType eventType) {
         log.debug("Gets audit event with code [{}], type [{}]", auditCode.getId(), eventType);
         return auditEventTemplateRepository.findByAuditCodeAndEventType(auditCode, eventType)
-                .orElseThrow(() -> new AuditEntityNotFoundException(
+                .orElseThrow(() -> new AuditDataNotFoundException(
                         String.format("Audit event with code [%s], type [%s] not found", auditCode.getId(),
                                 eventType)));
     }
