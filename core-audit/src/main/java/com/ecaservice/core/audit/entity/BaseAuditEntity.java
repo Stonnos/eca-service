@@ -21,7 +21,7 @@ public abstract class BaseAuditEntity {
     private String id;
 
     /**
-     * Audit unit description string
+     * Audit unit title string
      */
-    private String description;
+    private String title;
 }

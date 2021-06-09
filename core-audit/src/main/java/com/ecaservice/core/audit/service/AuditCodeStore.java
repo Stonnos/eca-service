@@ -1,7 +1,6 @@
 package com.ecaservice.core.audit.service;
 
 import com.ecaservice.core.audit.entity.EventType;
-import com.ecaservice.core.audit.model.AuditCodeModel;
 import com.ecaservice.core.audit.model.AuditEventTemplateModel;
 
 /**
@@ -10,14 +9,6 @@ import com.ecaservice.core.audit.model.AuditEventTemplateModel;
  * @author Roman Batygin
  */
 public interface AuditCodeStore {
-
-    /**
-     * Gets audit code model.
-     *
-     * @param code - code value
-     * @return audit code model
-     */
-    AuditCodeModel getAuditCode(String code);
 
     /**
      * Gets audit event template model.

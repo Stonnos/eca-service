@@ -33,5 +33,5 @@ public class AuditCodeEntity extends BaseAuditEntity {
      */
     @ManyToOne
     @JoinColumn(name = "audit_group_id", nullable = false)
-    private AuditGroupEntity group;
+    private AuditGroupEntity auditGroup;
 }

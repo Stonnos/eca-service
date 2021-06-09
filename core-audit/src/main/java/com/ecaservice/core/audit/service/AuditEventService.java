@@ -1,7 +1,6 @@
 package com.ecaservice.core.audit.service;
 
 import com.ecaservice.core.audit.entity.EventType;
-import com.ecaservice.core.audit.model.AuditCodeModel;
 import com.ecaservice.core.audit.model.AuditEventTemplateModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,11 +30,10 @@ public class AuditEventService {
      */
     public void audit(String eventId, String eventCode, EventType eventType, Map<String, Object> params) {
         log.debug("Audit event [{}] type [{}] with correlation id [{}]", eventCode, eventType, eventId);
-        AuditCodeModel auditCode = auditCodeStore.getAuditCode(eventCode);
-        if (!Boolean.TRUE.equals(auditCode.getEnabled())) {
-            log.warn("Audit code [{}] is disabled", auditCode);
+        AuditEventTemplateModel auditEvent = auditCodeStore.getAuditEventTemplate(eventCode, eventType);
+        if (!Boolean.TRUE.equals(auditEvent.getAuditCode().getEnabled())) {
+            log.warn("Audit code [{}] is disabled", eventCode);
         } else {
-            AuditEventTemplateModel auditEvent = auditCodeStore.getAuditEventTemplate(eventCode, eventType);
             log.info("Audit event [{}] of type [{}]", eventCode, eventType);
         }
     }
