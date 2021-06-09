@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import static com.ecaservice.core.audit.entity.Constraints.MESSAGE_TEMPLATE_LENGTH;
+
 /**
  * Audit event template entity.
  *
@@ -42,7 +44,7 @@ public class AuditEventTemplateEntity {
     /**
      * Audit message template.
      */
-    @Column(name = "message_template", nullable = false)
+    @Column(name = "message_template", nullable = false, length = MESSAGE_TEMPLATE_LENGTH)
     private String messageTemplate;
 
     /**
