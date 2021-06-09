@@ -1,12 +1,23 @@
 package com.ecaservice.core.audit.aspect;
 
 import com.ecaservice.core.audit.annotation.Auditable;
+import com.ecaservice.core.audit.entity.EventType;
+import com.ecaservice.core.audit.service.AuditEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.stereotype.Component;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.ParameterNameDiscoverer;
+
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.IntStream;
+
+import static com.google.common.collect.Maps.newHashMap;
 
 /**
  * Aspect for audit execution.
@@ -15,9 +26,11 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Aspect
-@Component
 @RequiredArgsConstructor
 public class AuditAspect {
+
+    private final ParameterNameDiscoverer parameterNameDiscoverer;
+    private final AuditEventService auditEventService;
 
     /**
      * Wrapper to audit service method.
@@ -28,21 +41,27 @@ public class AuditAspect {
      */
     @Around("execution(@com.ecaservice.core.audit.annotation.Auditable * * (..)) && @annotation(auditable)")
     public Object around(ProceedingJoinPoint joinPoint, Auditable auditable) throws Throwable {
-       /* String lockKey = getLockKey(joinPoint, locked);
-        LockRegistry lockRegistry = applicationContext.getBean(locked.lockRegistry(), LockRegistry.class);
-        LockService lockService = new LockService(lockRegistry);
-        try {
-            lockService.lock(lockKey);
-            Object result = joinPoint.proceed();
-            lockService.unlock(lockKey);
-            return result;
-        } catch (CannotAcquireLockException ex) {
-            log.error("Acquire lock error: {}", ex.getMessage());
-            throw ex;
-        } catch (Exception ex) {
-            lockService.unlock(lockKey);
-            throw ex;
-        }*/
-        return null;
+        String eventId = UUID.randomUUID().toString();
+        log.debug("Starting to around audited method [{}] with event id [{}]", joinPoint.getSignature().getName(),
+                eventId);
+        var methodParams = getMethodParams(joinPoint);
+        Object result = joinPoint.proceed();
+        auditEventService.audit(eventId, auditable.value(), EventType.SUCCESS, methodParams);
+        log.debug("Around audited method [{}] with event id [{}] has been processed",
+                joinPoint.getSignature().getName(), eventId);
+        return result;
+    }
+
+    private Map<String, Object> getMethodParams(ProceedingJoinPoint joinPoint) {
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        Method method = methodSignature.getMethod();
+        Map<String, Object> paramsMap = newHashMap();
+        String[] parameterNames = parameterNameDiscoverer.getParameterNames(method);
+        if (parameterNames == null || parameterNames.length == 0) {
+            return Collections.emptyMap();
+        }
+        Object[] args = joinPoint.getArgs();
+        IntStream.range(0, args.length).forEach(i -> paramsMap.put(parameterNames[i], args[i]));
+        return paramsMap;
     }
 }

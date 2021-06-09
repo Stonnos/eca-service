@@ -6,12 +6,10 @@ import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.List;
+import javax.persistence.UniqueConstraint;
 
 /**
  * Audit code entity.
@@ -22,7 +20,11 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Entity
-@Table(name = "audit_code")
+@Table(name = "audit_code",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"id", "audit_group_id"},
+                        name = "audit_code_id_audit_group_id_unique_index")
+        })
 public class AuditCodeEntity extends BaseAuditEntity {
 
     /**
@@ -37,11 +39,4 @@ public class AuditCodeEntity extends BaseAuditEntity {
     @ManyToOne
     @JoinColumn(name = "audit_group_id", nullable = false)
     private AuditGroupEntity group;
-
-    /**
-     * Audit events
-     */
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "audit_code_id", nullable = false)
-    private List<AuditEventEntity> events;
 }
