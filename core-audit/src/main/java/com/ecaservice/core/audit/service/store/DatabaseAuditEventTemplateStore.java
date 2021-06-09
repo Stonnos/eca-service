@@ -75,7 +75,9 @@ public class DatabaseAuditEventTemplateStore implements AuditEventTemplateStore 
                 var auditCodeEntity = getAuditCode(key.getAuditCode());
                 var auditCodeTemplate = auditEventTemplateRepository
                         .findByAuditCodeAndEventType(auditCodeEntity, key.getEventType())
-                        .orElseThrow(() -> new AuditDataNotFoundException(String.format("Audit event with code [%s], type [%s] not found", key.getAuditCode(), key.getEventType())));
+                        .orElseThrow(() -> new AuditDataNotFoundException(
+                                String.format("Audit event with code [%s], type [%s] not found", key.getAuditCode(),
+                                        key.getEventType())));
                 log.debug("Fetched audit event template for key {}", key);
                 return auditMapper.map(auditCodeTemplate);
             }
