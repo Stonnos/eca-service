@@ -13,6 +13,7 @@
         <module>common-web</module>
         <module>core-lock</module>
         <module>redis-lock</module>
+        <module>core-audit</module>
         <module>eca-model</module>
         <module>eca-user-model</module>
         <module>eca-mail-transport</module>
