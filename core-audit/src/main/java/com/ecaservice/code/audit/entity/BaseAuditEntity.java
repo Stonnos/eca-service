@@ -1,4 +1,4 @@
-package com.ecaservice.code.audit;
+package com.ecaservice.code.audit.entity;
 
 import lombok.Data;
 

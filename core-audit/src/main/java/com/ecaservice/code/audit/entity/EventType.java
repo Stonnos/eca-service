@@ -1,4 +1,4 @@
-package com.ecaservice.code.audit;
+package com.ecaservice.code.audit.entity;
 
 /**
  * Audit event type.
