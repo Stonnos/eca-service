@@ -4,11 +4,11 @@ import com.ecaservice.core.audit.entity.EventType;
 import com.ecaservice.core.audit.model.AuditEventTemplateModel;
 
 /**
- * Interface to manage with audit codes store.
+ * Interface to manage with audit event templates store.
  *
  * @author Roman Batygin
  */
-public interface AuditCodeStore {
+public interface AuditEventTemplateStore {
 
     /**
      * Gets audit event template model.

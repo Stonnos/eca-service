@@ -18,7 +18,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuditEventService {
 
-    private final AuditCodeStore auditCodeStore;
+    private final AuditEventTemplateStore auditEventTemplateStore;
 
     /**
      * Send audit event.
@@ -30,8 +30,8 @@ public class AuditEventService {
      */
     public void audit(String eventId, String eventCode, EventType eventType, Map<String, Object> params) {
         log.debug("Audit event [{}] type [{}] with correlation id [{}]", eventCode, eventType, eventId);
-        AuditEventTemplateModel auditEvent = auditCodeStore.getAuditEventTemplate(eventCode, eventType);
-        if (!Boolean.TRUE.equals(auditEvent.getAuditCode().getEnabled())) {
+        var auditEventTemplate = auditEventTemplateStore.getAuditEventTemplate(eventCode, eventType);
+        if (!Boolean.TRUE.equals(auditEventTemplate.getAuditCode().getEnabled())) {
             log.warn("Audit code [{}] is disabled", eventCode);
         } else {
             log.info("Audit event [{}] of type [{}]", eventCode, eventType);

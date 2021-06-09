@@ -7,7 +7,7 @@ import com.ecaservice.core.audit.mapping.AuditMapper;
 import com.ecaservice.core.audit.model.AuditEventTemplateModel;
 import com.ecaservice.core.audit.repository.AuditCodeRepository;
 import com.ecaservice.core.audit.repository.AuditEventTemplateRepository;
-import com.ecaservice.core.audit.service.AuditCodeStore;
+import com.ecaservice.core.audit.service.AuditEventTemplateStore;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -20,14 +20,14 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 
 /**
- * Service to manage with audit codes.
+ * Service to loading audit event templates from database.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DatabaseAuditCodeStore implements AuditCodeStore {
+public class DatabaseAuditEventTemplateStore implements AuditEventTemplateStore {
 
     private final AuditMapper auditMapper;
     private final AuditCodeRepository auditCodeRepository;
