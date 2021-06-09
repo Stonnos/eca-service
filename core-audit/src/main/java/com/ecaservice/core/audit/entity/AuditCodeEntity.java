@@ -1,4 +1,4 @@
-package com.ecaservice.code.audit.entity;
+package com.ecaservice.core.audit.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -35,7 +35,7 @@ public class AuditCodeEntity extends BaseAuditEntity {
      * Audit group id
      */
     @ManyToOne
-    @JoinColumn(name = "audit_group_id")
+    @JoinColumn(name = "audit_group_id", nullable = false)
     private AuditGroupEntity group;
 
     /**
