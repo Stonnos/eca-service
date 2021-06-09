@@ -13,19 +13,22 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 /**
- * Audit event entity.
+ * Audit event template entity.
  *
  * @author Roman Batygin
  */
 @Data
 @Entity
-@Table(name = "audit_event",
+@Table(name = "audit_event_template",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"audit_code_id", "event_type"},
-                        name = "audit_event_code_id_event_type_unique_index")
+                        name = "audit_event_template_code_id_event_type_unique_index")
         })
-public class AuditEventEntity {
+public class AuditEventTemplateEntity {
 
+    /**
+     * Template id
+     */
     @Id
     private Long id;
 

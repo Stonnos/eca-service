@@ -1,11 +1,11 @@
 package com.ecaservice.core.audit.service;
 
 import com.ecaservice.core.audit.entity.AuditCodeEntity;
-import com.ecaservice.core.audit.entity.AuditEventEntity;
+import com.ecaservice.core.audit.entity.AuditEventTemplateEntity;
 import com.ecaservice.core.audit.entity.EventType;
 import com.ecaservice.core.audit.exception.AuditEntityNotFoundException;
 import com.ecaservice.core.audit.repository.AuditCodeRepository;
-import com.ecaservice.core.audit.repository.AuditEventRepository;
+import com.ecaservice.core.audit.repository.AuditEventTemplateRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 public class AuditCodeService {
 
     private final AuditCodeRepository auditCodeRepository;
-    private final AuditEventRepository auditEventRepository;
+    private final AuditEventTemplateRepository auditEventTemplateRepository;
 
     /**
      * Gets audit code entity.
@@ -42,9 +42,9 @@ public class AuditCodeService {
      * @param eventType - event type
      * @return audit event entity
      */
-    public AuditEventEntity getAuditEvent(AuditCodeEntity auditCode, EventType eventType) {
+    public AuditEventTemplateEntity getAuditEvent(AuditCodeEntity auditCode, EventType eventType) {
         log.debug("Gets audit event with code [{}], type [{}]", auditCode.getId(), eventType);
-        return auditEventRepository.findByAuditCodeAndEventType(auditCode, eventType)
+        return auditEventTemplateRepository.findByAuditCodeAndEventType(auditCode, eventType)
                 .orElseThrow(() -> new AuditEntityNotFoundException(
                         String.format("Audit event with code [%s], type [%s] not found", auditCode.getId(),
                                 eventType)));

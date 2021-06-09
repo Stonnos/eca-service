@@ -1,9 +1,8 @@
 package com.ecaservice.core.audit.service;
 
 import com.ecaservice.core.audit.entity.AuditCodeEntity;
-import com.ecaservice.core.audit.entity.AuditEventEntity;
+import com.ecaservice.core.audit.entity.AuditEventTemplateEntity;
 import com.ecaservice.core.audit.entity.EventType;
-import com.ecaservice.core.audit.repository.AuditEventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,7 +35,7 @@ public class AuditEventService {
         if (!auditCode.isEnabled()) {
             log.warn("Audit code [{}] is disabled", auditCode);
         } else {
-            AuditEventEntity auditEvent = auditCodeService.getAuditEvent(auditCode, eventType);
+            AuditEventTemplateEntity auditEvent = auditCodeService.getAuditEvent(auditCode, eventType);
             log.info("Audit event [{}] of type [{}]", eventCode, eventType);
         }
     }

@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * Audit group entity.
+ * Audit group entity. Used for grouping audit codes.
  *
  * @author Roman Batygin
  */

@@ -9,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 /**
  * Audit code entity.
@@ -20,11 +19,7 @@ import javax.persistence.UniqueConstraint;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Entity
-@Table(name = "audit_code",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"id", "audit_group_id"},
-                        name = "audit_code_id_audit_group_id_unique_index")
-        })
+@Table(name = "audit_code")
 public class AuditCodeEntity extends BaseAuditEntity {
 
     /**
