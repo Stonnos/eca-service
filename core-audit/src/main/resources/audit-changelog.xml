@@ -58,4 +58,10 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="add_audit_event_template_code_id_event_type_unique_index"
+               author="roman.batygin@mail.ru" context="schema">
+        <addUniqueConstraint tableName="audit_event_template" columnNames="audit_code_id, event_type"
+                             constraintName="audit_event_template_code_id_event_type_unique_index"/>
+    </changeSet>
+
 </databaseChangeLog>
