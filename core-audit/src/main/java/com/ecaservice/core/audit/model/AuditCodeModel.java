@@ -23,7 +23,7 @@ public class AuditCodeModel {
     /**
      * Audit code enabled?
      */
-    private Boolean enabled;
+    private boolean enabled;
 
     /**
      * Audit group

@@ -31,7 +31,7 @@ public class AuditEventService {
     public void audit(String eventId, String auditCode, EventType eventType, AuditContextParams auditContextParams) {
         log.debug("Audit event [{}] type [{}] with correlation id [{}]", auditCode, eventType, eventId);
         var auditEventTemplate = auditEventTemplateStore.getAuditEventTemplate(auditCode, eventType);
-        if (!Boolean.TRUE.equals(auditEventTemplate.getAuditCode().getEnabled())) {
+        if (!Boolean.TRUE.equals(auditEventTemplate.getAuditCode().isEnabled())) {
             log.warn("Audit code [{}] is disabled", auditCode);
         } else {
             log.info("Audit event [{}] of type [{}]", auditCode, eventType);
