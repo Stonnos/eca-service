@@ -1,6 +1,7 @@
 package com.ecaservice.data.storage.controller;
 
 import com.ecaservice.common.web.exception.ValidationErrorException;
+import com.ecaservice.core.audit.annotation.Auditable;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.mapping.InstancesMapper;
 import com.ecaservice.data.storage.model.MultipartFileResource;
@@ -32,6 +33,10 @@ import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
+
+import static com.ecaservice.data.storage.config.audit.AuditCodes.DELETE_INSTANCES;
+import static com.ecaservice.data.storage.config.audit.AuditCodes.RENAME_INSTANCES;
+import static com.ecaservice.data.storage.config.audit.AuditCodes.SAVE_INSTANCES;
 
 /**
  * Data storage API for web application.
@@ -79,6 +84,7 @@ public class DataStorageController {
      * @param tableName    - table name
      * @return create instances results dto
      */
+    @Auditable(SAVE_INSTANCES)
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Saves instances into database",
@@ -120,6 +126,7 @@ public class DataStorageController {
      * @param id        - instances id
      * @param tableName - new table name
      */
+    @Auditable(RENAME_INSTANCES)
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Renames data with specified id",
@@ -138,6 +145,7 @@ public class DataStorageController {
      *
      * @param id - instances id
      */
+    @Auditable(DELETE_INSTANCES)
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Deletes instances with specified id",

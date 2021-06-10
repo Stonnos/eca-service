@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v1-insert-audit-codes-and-events.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="roman.batygin@mail.ru" id="insert_audit_groups_1">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="audit_group"/>
+        </preConditions>
+        <loadUpdateData
+                tableName="audit_group"
+                primaryKey="id"
+                separator=";"
+                file="audit/groups.csv"/>
+    </changeSet>
+
+    <changeSet author="roman.batygin@mail.ru" id="insert_audit_codes_1">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="audit_code"/>
+        </preConditions>
+        <loadUpdateData
+                tableName="audit_code"
+                primaryKey="id"
+                separator=";"
+                file="audit/codes.csv"/>
+    </changeSet>
+
+    <changeSet author="roman.batygin@mail.ru" id="insert_audit_event_templates_2">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="audit_event_template"/>
+        </preConditions>
+        <loadUpdateData
+                tableName="audit_event_template"
+                primaryKey="id"
+                separator=";"
+                file="audit/event_templates.csv"/>
+    </changeSet>
+
+</databaseChangeLog>

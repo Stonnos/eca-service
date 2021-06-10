@@ -1,0 +1,4 @@
+id;event_type;message_template;audit_code_id
+1;SUCCESS;Успешное сохранение файла ${trainingData.originalFilename} с обучающей выборкой в таблицу ${tableName};SAVE_INSTANCES
+2;SUCCESS;Изменено название таблицы для обучающей выборки ${id}. Новое название - ${tableName};RENAME_INSTANCES
+3;SUCCESS;Обучающая выборка ${id} была удалена;DELETE_INSTANCES
