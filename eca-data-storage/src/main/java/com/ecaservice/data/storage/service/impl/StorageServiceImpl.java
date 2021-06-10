@@ -1,7 +1,7 @@
 package com.ecaservice.data.storage.service.impl;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.core.audit.annotation.Auditable;
+import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.data.storage.config.EcaDsConfig;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.exception.TableExistsException;
@@ -66,7 +66,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    @Auditable(DELETE_INSTANCES)
+    @Audit(DELETE_INSTANCES)
     @Transactional
     public String deleteData(long id) {
         log.info("Starting to delete instances with id [{}]", id);
@@ -78,7 +78,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    @Auditable(RENAME_INSTANCES)
+    @Audit(RENAME_INSTANCES)
     @Transactional
     public String renameData(long id, String newName) {
         log.info("Starting to rename instances [{}] with new name [{}]", id, newName);

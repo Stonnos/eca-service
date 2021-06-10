@@ -1,7 +1,7 @@
 package com.ecaservice.data.storage.controller;
 
 import com.ecaservice.common.web.exception.ValidationErrorException;
-import com.ecaservice.core.audit.annotation.Auditable;
+import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.mapping.InstancesMapper;
 import com.ecaservice.data.storage.model.MultipartFileResource;
@@ -82,7 +82,7 @@ public class DataStorageController {
      * @param tableName    - table name
      * @return create instances results dto
      */
-    @Auditable(SAVE_INSTANCES)
+    @Audit(SAVE_INSTANCES)
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Saves instances into database",

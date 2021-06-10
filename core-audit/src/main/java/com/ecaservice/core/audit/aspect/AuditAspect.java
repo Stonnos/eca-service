@@ -1,7 +1,7 @@
 package com.ecaservice.core.audit.aspect;
 
 import com.ecaservice.audit.dto.EventType;
-import com.ecaservice.core.audit.annotation.Auditable;
+import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.audit.model.AuditContextParams;
 import com.ecaservice.core.audit.service.AuditEventService;
 import lombok.extern.slf4j.Slf4j;
@@ -48,18 +48,18 @@ public class AuditAspect {
      * Wrapper to audit service method.
      *
      * @param joinPoint - give reflective access to the processed method
-     * @param auditable - audit annotation
+     * @param audit     - audit annotation
      * @return result object
      */
-    @Around("execution(@com.ecaservice.core.audit.annotation.Auditable * * (..)) && @annotation(auditable)")
-    public Object around(ProceedingJoinPoint joinPoint, Auditable auditable) throws Throwable {
+    @Around("execution(@com.ecaservice.core.audit.annotation.Audit * * (..)) && @annotation(audit)")
+    public Object around(ProceedingJoinPoint joinPoint, Audit audit) throws Throwable {
         String eventId = UUID.randomUUID().toString();
         log.debug("Starting to around audited method [{}] with event id [{}]", joinPoint.getSignature().getName(),
                 eventId);
         Map<String, Object> methodParams = getMethodParams(joinPoint);
         Object result = joinPoint.proceed();
         AuditContextParams auditContextParams = new AuditContextParams(methodParams, result);
-        auditEventService.audit(eventId, auditable.value(), EventType.SUCCESS, auditContextParams);
+        auditEventService.audit(eventId, audit.value(), EventType.SUCCESS, auditContextParams);
         log.debug("Around audited method [{}] with event id [{}] has been processed",
                 joinPoint.getSignature().getName(), eventId);
         return result;
