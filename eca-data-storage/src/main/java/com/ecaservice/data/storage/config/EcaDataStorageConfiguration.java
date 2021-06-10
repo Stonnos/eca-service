@@ -1,7 +1,6 @@
 package com.ecaservice.data.storage.config;
 
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
-import com.ecaservice.core.audit.annotation.EnableAudit;
 import com.ecaservice.core.audit.entity.BaseAuditEntity;
 import com.ecaservice.core.audit.repository.AuditEventTemplateRepository;
 import com.ecaservice.data.storage.entity.InstancesEntity;
@@ -27,7 +26,6 @@ import static org.springframework.web.context.WebApplicationContext.SCOPE_REQUES
  */
 @Configuration
 @Oauth2ResourceServer
-@EnableAudit
 @EntityScan(basePackageClasses = {BaseAuditEntity.class, InstancesEntity.class})
 @EnableJpaRepositories(basePackageClasses = {AuditEventTemplateRepository.class, InstancesRepository.class})
 @EnableGlobalExceptionHandler
