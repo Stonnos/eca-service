@@ -28,7 +28,7 @@
 * classifiers-options - модуль содержит модельные классы для настроек входных параметров классификаторов
 * eca-ers-transport - модуль содержит dto классы для сервиса ERS
 * eca-external-api-transport - модуль содержит dto классы для внешнего API
-* eca-audit-transport - модуль содержит dto классы для сервиса аудита
+* eca-audit-transport - модуль содержит dto классы для сервиса журнала аудита
 * eca-web-transport - модуль содержит dto классы для REST API WEB
 * core-audit - библиотека для отправки событий аудита
 * swagger-core - модуль содержит конфигурационные классы для swagger
