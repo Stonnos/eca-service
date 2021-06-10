@@ -1,8 +1,8 @@
 package com.ecaservice.core.audit.repository;
 
+import com.ecaservice.audit.dto.EventType;
 import com.ecaservice.core.audit.entity.AuditCodeEntity;
 import com.ecaservice.core.audit.entity.AuditEventTemplateEntity;
-import com.ecaservice.core.audit.entity.EventType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

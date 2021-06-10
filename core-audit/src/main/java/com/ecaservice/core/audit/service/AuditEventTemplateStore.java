@@ -1,6 +1,6 @@
 package com.ecaservice.core.audit.service;
 
-import com.ecaservice.core.audit.entity.EventType;
+import com.ecaservice.audit.dto.EventType;
 import com.ecaservice.core.audit.model.AuditEventTemplateModel;
 
 /**

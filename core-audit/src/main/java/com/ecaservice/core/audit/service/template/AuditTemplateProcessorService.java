@@ -1,6 +1,6 @@
 package com.ecaservice.core.audit.service.template;
 
-import com.ecaservice.core.audit.entity.EventType;
+import com.ecaservice.audit.dto.EventType;
 import com.ecaservice.core.audit.model.AuditContextParams;
 import org.springframework.validation.annotation.Validated;
 

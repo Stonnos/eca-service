@@ -1,5 +1,6 @@
 package com.ecaservice.core.audit.entity;
 
+import com.ecaservice.audit.dto.EventType;
 import lombok.Data;
 
 import javax.persistence.Column;

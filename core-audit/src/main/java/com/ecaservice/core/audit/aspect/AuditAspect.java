@@ -1,7 +1,7 @@
 package com.ecaservice.core.audit.aspect;
 
+import com.ecaservice.audit.dto.EventType;
 import com.ecaservice.core.audit.annotation.Auditable;
-import com.ecaservice.core.audit.entity.EventType;
 import com.ecaservice.core.audit.model.AuditContextParams;
 import com.ecaservice.core.audit.service.AuditEventService;
 import lombok.extern.slf4j.Slf4j;

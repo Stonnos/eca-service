@@ -1,6 +1,6 @@
 package com.ecaservice.core.audit.config.freemarker;
 
-import com.ecaservice.core.audit.entity.EventType;
+import com.ecaservice.audit.dto.EventType;
 import com.ecaservice.core.audit.service.AuditEventTemplateStore;
 import freemarker.cache.TemplateLoader;
 import lombok.RequiredArgsConstructor;

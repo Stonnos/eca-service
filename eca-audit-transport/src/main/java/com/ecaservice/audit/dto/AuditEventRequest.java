@@ -1,8 +1,6 @@
 package com.ecaservice.audit.dto;
 
-import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.Tolerate;
 
 import java.time.LocalDateTime;
 
@@ -12,13 +10,7 @@ import java.time.LocalDateTime;
  * @author Roman Batygin
  */
 @Data
-@Builder
 public class AuditEventRequest {
-
-    @Tolerate
-    public AuditEventRequest() {
-        //default constructor
-    }
 
     /**
      * Audit event id.

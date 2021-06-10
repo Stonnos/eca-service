@@ -1,7 +1,7 @@
 package com.ecaservice.core.audit.service.store;
 
+import com.ecaservice.audit.dto.EventType;
 import com.ecaservice.core.audit.entity.AuditCodeEntity;
-import com.ecaservice.core.audit.entity.EventType;
 import com.ecaservice.core.audit.exception.AuditDataNotFoundException;
 import com.ecaservice.core.audit.mapping.AuditMapper;
 import com.ecaservice.core.audit.model.AuditEventTemplateModel;
