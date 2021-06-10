@@ -19,6 +19,7 @@ public class AuditEventService {
 
     private final AuditEventTemplateStore auditEventTemplateStore;
     private final AuditTemplateProcessorService auditTemplateProcessorService;
+    private final AuditEventInitiator auditEventInitiator;
 
     /**
      * Send audit event.
@@ -36,7 +37,8 @@ public class AuditEventService {
         } else {
             log.info("Audit event [{}] of type [{}]", auditCode, eventType);
             String message = auditTemplateProcessorService.process(auditCode, eventType, auditContextParams);
-            log.info("Audit event [{}] message: [{}]", auditCode, message);
+            String eventInitiator = auditEventInitiator.getInitiator();
+            log.info("Audit event [{}] message: [{}], initiator [{}]", auditCode, message, eventInitiator);
         }
     }
 }
