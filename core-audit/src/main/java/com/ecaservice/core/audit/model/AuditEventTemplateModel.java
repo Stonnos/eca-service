@@ -22,11 +22,6 @@ public class AuditEventTemplateModel {
     private EventType eventType;
 
     /**
-     * Template title
-     */
-    private String title;
-
-    /**
      * Audit message template.
      */
     private String messageTemplate;

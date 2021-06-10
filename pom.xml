@@ -13,14 +13,15 @@
         <module>common-web</module>
         <module>core-lock</module>
         <module>redis-lock</module>
-        <module>core-audit</module>
         <module>eca-model</module>
         <module>eca-user-model</module>
         <module>eca-mail-transport</module>
         <module>classifiers-options</module>
         <module>eca-ers-transport</module>
         <module>eca-external-api-transport</module>
+        <module>eca-audit-transport</module>
         <module>eca-web-transport</module>
+        <module>core-audit</module>
         <module>swagger-core</module>
         <module>oauth2-core</module>
         <module>rabbit-core</module>
