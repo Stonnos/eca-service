@@ -2,6 +2,7 @@ package com.ecaservice.core.audit.aspect;
 
 import com.ecaservice.core.audit.annotation.Auditable;
 import com.ecaservice.core.audit.entity.EventType;
+import com.ecaservice.core.audit.model.AuditContextParams;
 import com.ecaservice.core.audit.service.AuditEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,9 +45,10 @@ public class AuditAspect {
         String eventId = UUID.randomUUID().toString();
         log.debug("Starting to around audited method [{}] with event id [{}]", joinPoint.getSignature().getName(),
                 eventId);
-        var methodParams = getMethodParams(joinPoint);
+        Map<String, Object> methodParams = getMethodParams(joinPoint);
         Object result = joinPoint.proceed();
-        auditEventService.audit(eventId, auditable.value(), EventType.SUCCESS, methodParams);
+        AuditContextParams auditContextParams = new AuditContextParams(methodParams, result);
+        auditEventService.audit(eventId, auditable.value(), EventType.SUCCESS, auditContextParams);
         log.debug("Around audited method [{}] with event id [{}] has been processed",
                 joinPoint.getSignature().getName(), eventId);
         return result;

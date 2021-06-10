@@ -1,12 +1,11 @@
 package com.ecaservice.core.audit.service;
 
 import com.ecaservice.core.audit.entity.EventType;
-import com.ecaservice.core.audit.model.AuditEventTemplateModel;
+import com.ecaservice.core.audit.model.AuditContextParams;
+import com.ecaservice.core.audit.service.template.AuditTemplateProcessorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 /**
  * Service to sending audit events.
@@ -19,22 +18,25 @@ import java.util.Map;
 public class AuditEventService {
 
     private final AuditEventTemplateStore auditEventTemplateStore;
+    private final AuditTemplateProcessorService auditTemplateProcessorService;
 
     /**
      * Send audit event.
      *
-     * @param eventId   - event correlation id
-     * @param eventCode - event code
-     * @param eventType - event type
-     * @param params    - audited method params
+     * @param eventId            - event correlation id
+     * @param auditCode          - audit code
+     * @param eventType          - event type
+     * @param auditContextParams - audit context params
      */
-    public void audit(String eventId, String eventCode, EventType eventType, Map<String, Object> params) {
-        log.debug("Audit event [{}] type [{}] with correlation id [{}]", eventCode, eventType, eventId);
-        var auditEventTemplate = auditEventTemplateStore.getAuditEventTemplate(eventCode, eventType);
+    public void audit(String eventId, String auditCode, EventType eventType, AuditContextParams auditContextParams) {
+        log.debug("Audit event [{}] type [{}] with correlation id [{}]", auditCode, eventType, eventId);
+        var auditEventTemplate = auditEventTemplateStore.getAuditEventTemplate(auditCode, eventType);
         if (!Boolean.TRUE.equals(auditEventTemplate.getAuditCode().getEnabled())) {
-            log.warn("Audit code [{}] is disabled", eventCode);
+            log.warn("Audit code [{}] is disabled", auditCode);
         } else {
-            log.info("Audit event [{}] of type [{}]", eventCode, eventType);
+            log.info("Audit event [{}] of type [{}]", auditCode, eventType);
+            String message = auditTemplateProcessorService.process(auditCode, eventType, auditContextParams);
+            log.info("Audit event [{}] message: [{}]", auditCode, message);
         }
     }
 }
