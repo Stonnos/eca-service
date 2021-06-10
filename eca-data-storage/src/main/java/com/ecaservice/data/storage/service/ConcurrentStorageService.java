@@ -53,17 +53,19 @@ public class ConcurrentStorageService implements StorageService {
     }
 
     @Override
-    public void renameData(long id, String newTableName) {
+    public String renameData(long id, String newTableName) {
         String trimmedName = newTableName.trim();
+        String oldTableName;
         tableNamesMonitorsMap.putIfAbsent(trimmedName, new Object());
         synchronized (tableNamesMonitorsMap.get(trimmedName)) {
-            storageService.renameData(id, newTableName);
+            oldTableName = storageService.renameData(id, newTableName);
         }
         tableNamesMonitorsMap.remove(trimmedName);
+        return oldTableName;
     }
 
     @Override
-    public void deleteData(long id) {
-        storageService.deleteData(id);
+    public String deleteData(long id) {
+        return storageService.deleteData(id);
     }
 }

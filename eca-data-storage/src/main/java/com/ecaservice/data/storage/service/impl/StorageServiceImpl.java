@@ -1,6 +1,7 @@
 package com.ecaservice.data.storage.service.impl;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.core.audit.annotation.Auditable;
 import com.ecaservice.data.storage.config.EcaDsConfig;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.exception.TableExistsException;
@@ -22,6 +23,8 @@ import weka.core.Instances;
 
 import java.time.LocalDateTime;
 
+import static com.ecaservice.data.storage.config.audit.AuditCodes.DELETE_INSTANCES;
+import static com.ecaservice.data.storage.config.audit.AuditCodes.RENAME_INSTANCES;
 import static com.ecaservice.data.storage.entity.InstancesEntity_.CREATED;
 import static com.ecaservice.data.storage.util.FilterUtils.buildSort;
 import static com.ecaservice.data.storage.util.FilterUtils.buildSpecification;
@@ -63,20 +66,24 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    @Auditable(DELETE_INSTANCES)
     @Transactional
-    public void deleteData(long id) {
+    public String deleteData(long id) {
         log.info("Starting to delete instances with id [{}]", id);
         InstancesEntity instancesEntity = getById(id);
         instancesService.deleteInstances(instancesEntity.getTableName());
         instancesRepository.deleteById(id);
         log.info("Instances [{}] has been deleted", id);
+        return instancesEntity.getTableName();
     }
 
     @Override
+    @Auditable(RENAME_INSTANCES)
     @Transactional
-    public void renameData(long id, String newName) {
+    public String renameData(long id, String newName) {
         log.info("Starting to rename instances [{}] with new name [{}]", id, newName);
         InstancesEntity instancesEntity = getById(id);
+        String oldTableName = instancesEntity.getTableName();
         if (!instancesEntity.getTableName().equals(newName)) {
             if (tableNameService.tableExists(newName)) {
                 throw new TableExistsException(newName);
@@ -87,6 +94,7 @@ public class StorageServiceImpl implements StorageService {
             log.info("Instances [{}] has been renamed to [{}]", id, newName);
         }
         log.info("Rename instances [{}] has been finished", instancesEntity.getId());
+        return oldTableName;
     }
 
     private InstancesEntity getById(long id) {

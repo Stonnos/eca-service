@@ -34,8 +34,6 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
 
-import static com.ecaservice.data.storage.config.audit.AuditCodes.DELETE_INSTANCES;
-import static com.ecaservice.data.storage.config.audit.AuditCodes.RENAME_INSTANCES;
 import static com.ecaservice.data.storage.config.audit.AuditCodes.SAVE_INSTANCES;
 
 /**
@@ -126,7 +124,6 @@ public class DataStorageController {
      * @param id        - instances id
      * @param tableName - new table name
      */
-    @Auditable(RENAME_INSTANCES)
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Renames data with specified id",
@@ -145,7 +142,6 @@ public class DataStorageController {
      *
      * @param id - instances id
      */
-    @Auditable(DELETE_INSTANCES)
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Deletes instances with specified id",
