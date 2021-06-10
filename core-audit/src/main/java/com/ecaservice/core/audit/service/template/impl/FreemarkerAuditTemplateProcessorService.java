@@ -50,7 +50,7 @@ public class FreemarkerAuditTemplateProcessorService implements AuditTemplatePro
         try {
             Template template = configuration.getTemplate(templateCode);
             Map<String, Object> context = newHashMap();
-            if (CollectionUtils.isEmpty(auditContextParams.getInputParams())) {
+            if (!CollectionUtils.isEmpty(auditContextParams.getInputParams())) {
                 context.putAll(auditContextParams.getInputParams());
             }
             if (auditContextParams.getReturnValue() != null) {

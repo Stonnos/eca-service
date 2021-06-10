@@ -4,13 +4,14 @@ import com.ecaservice.core.audit.annotation.Auditable;
 import com.ecaservice.core.audit.entity.EventType;
 import com.ecaservice.core.audit.model.AuditContextParams;
 import com.ecaservice.core.audit.service.AuditEventService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -27,11 +28,21 @@ import static com.google.common.collect.Maps.newHashMap;
  */
 @Slf4j
 @Aspect
-@RequiredArgsConstructor
+@Component
 public class AuditAspect {
 
-    private final ParameterNameDiscoverer parameterNameDiscoverer;
     private final AuditEventService auditEventService;
+
+    private final ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
+
+    /**
+     * Constructor with spring dependency injection.
+     *
+     * @param auditEventService - audit event service
+     */
+    public AuditAspect(AuditEventService auditEventService) {
+        this.auditEventService = auditEventService;
+    }
 
     /**
      * Wrapper to audit service method.
