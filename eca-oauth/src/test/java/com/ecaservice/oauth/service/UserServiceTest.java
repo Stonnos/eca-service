@@ -277,7 +277,8 @@ class UserServiceTest extends AbstractJpaTest {
     @Test
     void testLockUser() {
         UserEntity userEntity = createAndSaveUser();
-        userService.lock(userEntity.getId());
+        UserEntity locked = userService.lock(userEntity.getId());
+        assertThat(locked).isNotNull();
         UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.isLocked()).isTrue();
@@ -298,7 +299,8 @@ class UserServiceTest extends AbstractJpaTest {
         UserEntity userEntity = createAndSaveUser();
         userEntity.setLocked(true);
         userEntityRepository.save(userEntity);
-        userService.unlock(userEntity.getId());
+        UserEntity unlocked = userService.unlock(userEntity.getId());
+        assertThat(unlocked).isNotNull();
         UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.isLocked()).isFalse();
