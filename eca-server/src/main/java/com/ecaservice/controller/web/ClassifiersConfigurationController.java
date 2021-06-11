@@ -1,5 +1,6 @@
 package com.ecaservice.controller.web;
 
+import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.mapping.ClassifiersConfigurationMapper;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.report.model.ClassifiersConfigurationBean;
@@ -30,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 
+import static com.ecaservice.config.audit.AuditCodes.SET_ACTIVE_CONFIGURATION;
 import static com.ecaservice.util.ReportHelper.download;
 
 /**
@@ -152,6 +154,7 @@ public class ClassifiersConfigurationController {
      *
      * @param id - configuration id
      */
+    @Audit(SET_ACTIVE_CONFIGURATION)
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
             value = "Sets classifiers configuration as active",

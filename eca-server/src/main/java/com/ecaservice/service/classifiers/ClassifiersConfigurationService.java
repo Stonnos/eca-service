@@ -2,6 +2,7 @@ package com.ecaservice.service.classifiers;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.config.CommonConfig;
+import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.filter.ClassifiersConfigurationFilter;
 import com.ecaservice.mapping.ClassifierOptionsDatabaseModelMapper;
@@ -34,6 +35,10 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.config.audit.AuditCodes.ADD_CONFIGURATION;
+import static com.ecaservice.config.audit.AuditCodes.COPY_CONFIGURATION;
+import static com.ecaservice.config.audit.AuditCodes.DELETE_CONFIGURATION;
+import static com.ecaservice.config.audit.AuditCodes.RENAME_CONFIGURATION;
 import static com.ecaservice.model.entity.BaseEntity_.CREATION_DATE;
 
 /**
@@ -60,6 +65,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * @param configurationDto - create classifiers configuration dto
      * @return classifiers configuration entity
      */
+    @Audit(ADD_CONFIGURATION)
     public ClassifiersConfiguration save(CreateClassifiersConfigurationDto configurationDto) {
         log.info("Starting to save new classifiers configuration [{}]", configurationDto.getConfigurationName());
         var classifiersConfiguration = classifiersConfigurationMapper.map(configurationDto);
@@ -75,6 +81,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      *
      * @param configurationDto - update classifiers configuration dto
      */
+    @Audit(RENAME_CONFIGURATION)
     public void update(UpdateClassifiersConfigurationDto configurationDto) {
         log.info("Starting to update classifiers configuration [{}] with new name [{}]", configurationDto.getId(),
                 configurationDto.getConfigurationName());
@@ -91,6 +98,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      *
      * @param id - classifiers configuration id
      */
+    @Audit(DELETE_CONFIGURATION)
     public void delete(long id) {
         log.info("Starting to delete classifiers configuration [{}]", id);
         var classifiersConfiguration = getById(id);
@@ -108,6 +116,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
      * @param configurationDto - configuration data
      * @return classifiers configuration entity
      */
+    @Audit(COPY_CONFIGURATION)
     @Transactional
     public ClassifiersConfiguration copy(UpdateClassifiersConfigurationDto configurationDto) {
         log.info("Starting to create classifiers configuration [{}] copy with name [{}]",
