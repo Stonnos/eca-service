@@ -14,5 +14,5 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties(AuditProperties.class)
 @ComponentScan({"com.ecaservice.core.audit"})
 @ConditionalOnProperty(value = "audit.enabled", havingValue = "true")
-public class AuditConfiguration {
+public class AuditCoreConfiguration {
 }

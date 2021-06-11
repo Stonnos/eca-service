@@ -1,6 +1,6 @@
 package com.ecaservice.core.audit.annotation;
 
-import com.ecaservice.core.audit.config.AuditConfiguration;
+import com.ecaservice.core.audit.config.AuditCoreConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.Documented;
@@ -17,6 +17,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import(AuditConfiguration.class)
+@Import(AuditCoreConfiguration.class)
 public @interface EnableAudit {
 }
