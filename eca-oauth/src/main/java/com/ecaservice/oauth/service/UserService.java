@@ -171,10 +171,11 @@ public class UserService {
      * Locks user account.
      *
      * @param userId - user id
+     * @return locked user
      */
     @Audit(LOCK_USER)
     @Transactional
-    public void lock(long userId) {
+    public UserEntity lock(long userId) {
         log.info("Starting to lock user [{}]", userId);
         UserEntity userEntity = getById(userId);
         if (isSuperAdmin(userEntity)) {
@@ -187,15 +188,17 @@ public class UserService {
         userEntityRepository.save(userEntity);
         oauth2TokenService.revokeTokens(userEntity);
         log.info("User [{}] has been locked", userId);
+        return userEntity;
     }
 
     /**
      * Unlocks user account.
      *
      * @param userId - user id
+     * @return unlocked user
      */
     @Audit(UNLOCK_USER)
-    public void unlock(long userId) {
+    public UserEntity unlock(long userId) {
         log.info("Starting to unlock user [{}]", userId);
         UserEntity userEntity = getById(userId);
         if (!userEntity.isLocked()) {
@@ -204,6 +207,7 @@ public class UserService {
         userEntity.setLocked(false);
         userEntityRepository.save(userEntity);
         log.info("User [{}] has been unlocked", userId);
+        return userEntity;
     }
 
     /**

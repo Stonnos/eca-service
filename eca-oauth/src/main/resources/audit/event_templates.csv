@@ -6,5 +6,5 @@ id;event_type;message_template;audit_code_id
 5;SUCCESS;Обновлена фотография профиля;UPDATE_PHOTO
 6;SUCCESS;Удалена фотография профиля;DELETE_PHOTO
 7;SUCCESS;Создан новый пользователь [${createUserDto.login}];CREATE_USER
-8;SUCCESS;Пользователь [${returnValue}] был заблокирован;LOCK_USER
-9;SUCCESS;Блокировка пользователя [${returnValue}] была снята;UNLOCK_USER
+8;SUCCESS;Пользователь [${returnValue.login}] был заблокирован;LOCK_USER
+9;SUCCESS;Блокировка пользователя [${returnValue.login}] была снята;UNLOCK_USER
