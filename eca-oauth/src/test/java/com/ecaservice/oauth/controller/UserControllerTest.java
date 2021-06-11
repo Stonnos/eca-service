@@ -71,7 +71,7 @@ class UserControllerTest extends AbstractControllerTest {
     private static final String UPDATE_EMAIL_URL = BASE_URL + "/update-email";
     private static final String GET_USER_INFO_URL = BASE_URL + "/user-info";
     private static final String LOGOUT_URL = BASE_URL + "/logout";
-    private static final String TFA_ENABLED_URL = BASE_URL + "/tfa-enabled";
+    private static final String TFA_ENABLED_URL = BASE_URL + "/tfa";
     private static final String UPDATE_USER_INFO = BASE_URL + "/update-info";
     private static final String DELETE_PHOTO_URL = BASE_URL + "/delete-photo";
     private static final String UPLOAD_PHOTO_URL = BASE_URL + "/upload-photo";
