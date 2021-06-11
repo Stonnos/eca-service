@@ -1,0 +1,10 @@
+id;title;enabled;audit_group_id
+ENABLE_2FA;Включение двухфакторной аутентификации;true;USER_PROFILE_ACTIONS
+DISABLE_2FA;Выключение двухфакторной аутентификации;true;USER_PROFILE_ACTIONS
+UPDATE_PERSONAL_DATA;Изменение персональных данных;true;USER_PROFILE_ACTIONS
+UPDATE_EMAIL;Изменение email;true;USER_PROFILE_ACTIONS
+UPDATE_PHOTO;Изменение фотографии профиля;true;USER_PROFILE_ACTIONS
+DELETE_PHOTO;Удаление фотографии профиля;true;USER_PROFILE_ACTIONS
+CREATE_USER;Создание нового пользователя в системе;true;USER_PROFILE_ACTIONS
+LOCK_USER;Блокировка пользователя;true;USER_PROFILE_ACTIONS
+UNLOCK_USER;Снятие блокировки пользователя;true;USER_PROFILE_ACTIONS
