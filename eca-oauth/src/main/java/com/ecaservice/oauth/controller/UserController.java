@@ -107,16 +107,16 @@ public class UserController {
     }
 
     /**
-     * Sets tfa enabled for current authenticated user.
+     * Enable/disable tfa for current authenticated user.
      *
      * @param enabled - tfa enabled?
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @ApiOperation(
-            value = "Sets tfa enabled for current authenticated user",
-            notes = "Sets tfa enabled for current authenticated user"
+            value = "Enable/disable tfa for current authenticated user",
+            notes = "Enable/disable tfa for current authenticated user"
     )
-    @PostMapping(value = "/tfa-enabled")
+    @PostMapping(value = "/tfa")
     public void setTfaEnabled(@AuthenticationPrincipal UserDetailsImpl userDetails,
                               @ApiParam(value = "Tfa enabled flag", required = true) @RequestParam boolean enabled) {
         if (enabled) {
