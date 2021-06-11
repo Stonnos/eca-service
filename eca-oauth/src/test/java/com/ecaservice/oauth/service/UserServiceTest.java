@@ -192,17 +192,31 @@ class UserServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testSetTfaEnabled() {
+    void testEnableTfa() {
         UserEntity userEntity = createAndSaveUser();
-        userService.setTfaEnabled(userEntity.getId(), true);
+        userService.enableTfa(userEntity.getId());
         UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.isTfaEnabled()).isTrue();
     }
 
     @Test
-    void testSetTfaEnabledForNotExistingUser() {
-        assertThrows(EntityNotFoundException.class, () -> userService.setTfaEnabled(USER_ID, true));
+    void testEnableTfaForNotExistingUser() {
+        assertThrows(EntityNotFoundException.class, () -> userService.enableTfa(USER_ID));
+    }
+
+    @Test
+    void testDisableTfa() {
+        UserEntity userEntity = createAndSaveUser();
+        userService.disableTfa(userEntity.getId());
+        UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
+        assertThat(actual).isNotNull();
+        assertThat(actual.isTfaEnabled()).isFalse();
+    }
+
+    @Test
+    void testDisableTfaForNotExistingUser() {
+        assertThrows(EntityNotFoundException.class, () -> userService.disableTfa(USER_ID));
     }
 
     @Test

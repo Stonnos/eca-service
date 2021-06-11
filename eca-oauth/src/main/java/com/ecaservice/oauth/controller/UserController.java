@@ -119,7 +119,11 @@ public class UserController {
     @PostMapping(value = "/tfa-enabled")
     public void setTfaEnabled(@AuthenticationPrincipal UserDetailsImpl userDetails,
                               @ApiParam(value = "Tfa enabled flag", required = true) @RequestParam boolean enabled) {
-        userService.setTfaEnabled(userDetails.getId(), enabled);
+        if (enabled) {
+            userService.enableTfa(userDetails.getId());
+        } else {
+            userService.disableTfa(userDetails.getId());
+        }
     }
 
     /**

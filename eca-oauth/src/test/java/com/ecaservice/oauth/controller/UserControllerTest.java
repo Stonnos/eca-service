@@ -388,7 +388,16 @@ class UserControllerTest extends AbstractControllerTest {
                 .param(TFA_ENABLED_PARAM, Boolean.TRUE.toString())
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk());
-        verify(userService, atLeastOnce()).setTfaEnabled(USER_ID, true);
+        verify(userService, atLeastOnce()).enableTfa(USER_ID);
+    }
+
+    @Test
+    void testTfaDisabled() throws Exception {
+        mockMvc.perform(post(TFA_ENABLED_URL)
+                .param(TFA_ENABLED_PARAM, Boolean.FALSE.toString())
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isOk());
+        verify(userService, atLeastOnce()).disableTfa(USER_ID);
     }
 
     @Test

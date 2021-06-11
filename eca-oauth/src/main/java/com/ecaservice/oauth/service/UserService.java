@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
 
 import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_USER;
 import static com.ecaservice.oauth.config.audit.AuditCodes.DELETE_PHOTO;
+import static com.ecaservice.oauth.config.audit.AuditCodes.DISABLE_2FA;
 import static com.ecaservice.oauth.config.audit.AuditCodes.ENABLE_2FA;
 import static com.ecaservice.oauth.config.audit.AuditCodes.LOCK_USER;
 import static com.ecaservice.oauth.config.audit.AuditCodes.UNLOCK_USER;
@@ -139,18 +140,31 @@ public class UserService {
     }
 
     /**
-     * Enable/Disable two factor authentication for user.
+     * Enable two factor authentication for user.
      *
-     * @param userId     - user id
-     * @param tfaEnabled - tfa enabled?
+     * @param userId - user id
      */
     @Audit(ENABLE_2FA)
-    public void setTfaEnabled(long userId, boolean tfaEnabled) {
-        log.info("Starting to set tfa flag [{}] for user [{}]", tfaEnabled, userId);
+    public void enableTfa(long userId) {
+        log.info("Starting to enable tfa for user [{}]", userId);
         UserEntity userEntity = getById(userId);
-        userEntity.setTfaEnabled(tfaEnabled);
+        userEntity.setTfaEnabled(true);
         userEntityRepository.save(userEntity);
-        log.info("Tfa flag [{}] has been set for user [{}]", tfaEnabled, userEntity.getId());
+        log.info("Tfa has been enabled for user [{}]", userEntity.getId());
+    }
+
+    /**
+     * Disable two factor authentication for user.
+     *
+     * @param userId - user id
+     */
+    @Audit(DISABLE_2FA)
+    public void disableTfa(long userId) {
+        log.info("Starting to disable tfa for user [{}]", userId);
+        UserEntity userEntity = getById(userId);
+        userEntity.setTfaEnabled(false);
+        userEntityRepository.save(userEntity);
+        log.info("Tfa has been disabled for user [{}]", userEntity.getId());
     }
 
     /**
