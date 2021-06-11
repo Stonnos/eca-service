@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.oauth.config.CommonConfig;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
@@ -29,6 +30,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
+import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_USER;
+import static com.ecaservice.oauth.config.audit.AuditCodes.DELETE_PHOTO;
+import static com.ecaservice.oauth.config.audit.AuditCodes.ENABLE_2FA;
+import static com.ecaservice.oauth.config.audit.AuditCodes.LOCK_USER;
+import static com.ecaservice.oauth.config.audit.AuditCodes.UNLOCK_USER;
+import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_EMAIL;
+import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_PERSONAL_DATA;
+import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_PHOTO;
 import static com.ecaservice.oauth.entity.UserEntity_.CREATION_DATE;
 import static com.ecaservice.oauth.util.FilterUtils.buildSort;
 import static com.ecaservice.oauth.util.FilterUtils.buildSpecification;
@@ -73,6 +82,7 @@ public class UserService {
      * @param password      - user password
      * @return user entity
      */
+    @Audit(CREATE_USER)
     public UserEntity createUser(CreateUserDto createUserDto, String password) {
         UserEntity userEntity = userMapper.map(createUserDto);
         userEntity.setPassword(passwordEncoder.encode(password));
@@ -88,6 +98,7 @@ public class UserService {
      * @param userId            - user id
      * @param updateUserInfoDto - user info dto
      */
+    @Audit(UPDATE_PERSONAL_DATA)
     public void updateUserInfo(long userId, UpdateUserInfoDto updateUserInfoDto) {
         log.info("Starting to update user [{}] info", userId);
         UserEntity userEntity = getById(userId);
@@ -112,6 +123,7 @@ public class UserService {
      * @param userId   - user id
      * @param newEmail - new email
      */
+    @Audit(UPDATE_EMAIL)
     public void updateEmail(long userId, String newEmail) {
         log.info("Starting to update email for user [{}]", userId);
         String emailToUpdate = newEmail.trim();
@@ -132,6 +144,7 @@ public class UserService {
      * @param userId     - user id
      * @param tfaEnabled - tfa enabled?
      */
+    @Audit(ENABLE_2FA)
     public void setTfaEnabled(long userId, boolean tfaEnabled) {
         log.info("Starting to set tfa flag [{}] for user [{}]", tfaEnabled, userId);
         UserEntity userEntity = getById(userId);
@@ -145,6 +158,7 @@ public class UserService {
      *
      * @param userId - user id
      */
+    @Audit(LOCK_USER)
     @Transactional
     public void lock(long userId) {
         log.info("Starting to lock user [{}]", userId);
@@ -166,6 +180,7 @@ public class UserService {
      *
      * @param userId - user id
      */
+    @Audit(UNLOCK_USER)
     public void unlock(long userId) {
         log.info("Starting to unlock user [{}]", userId);
         UserEntity userEntity = getById(userId);
@@ -183,6 +198,7 @@ public class UserService {
      * @param userId - user id
      * @param file   - user photo file
      */
+    @Audit(UPDATE_PHOTO)
     public void updatePhoto(long userId, MultipartFile file) {
         log.info("Starting to update user [{}] photo: [{}]", userId, file.getOriginalFilename());
         UserEntity userEntity = getById(userId);
@@ -200,6 +216,7 @@ public class UserService {
      *
      * @param userId - user id
      */
+    @Audit(DELETE_PHOTO)
     @Transactional
     public void deletePhoto(long userId) {
         log.info("Starting to delete user [{}] photo", userId);
