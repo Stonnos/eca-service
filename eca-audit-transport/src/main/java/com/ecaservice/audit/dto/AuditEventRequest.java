@@ -2,6 +2,8 @@ package com.ecaservice.audit.dto;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
@@ -15,26 +17,31 @@ public class AuditEventRequest {
     /**
      * Audit event id.
      */
+    @NotEmpty
     private String eventId;
 
     /**
      * Audit message
      */
+    @NotEmpty
     private String message;
 
     /**
      * Event initiator
      */
+    @NotEmpty
     private String initiator;
 
     /**
      * Event type
      */
+    @NotNull
     private EventType eventType;
 
     /**
      * Audit group
      */
+    @NotEmpty
     private String groupCode;
 
     /**
@@ -45,6 +52,7 @@ public class AuditEventRequest {
     /**
      * Audit code
      */
+    @NotEmpty
     private String code;
 
     /**
@@ -55,5 +63,6 @@ public class AuditEventRequest {
     /**
      * Event date
      */
+    @NotNull
     private LocalDateTime eventDate;
 }
