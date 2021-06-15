@@ -148,6 +148,9 @@ public class UserService {
     public void enableTfa(long userId) {
         log.info("Starting to enable tfa for user [{}]", userId);
         UserEntity userEntity = getById(userId);
+        if (userEntity.isTfaEnabled()) {
+            throw new IllegalStateException(String.format("Tfa is already enabled for user [%d]", userId));
+        }
         userEntity.setTfaEnabled(true);
         userEntityRepository.save(userEntity);
         log.info("Tfa has been enabled for user [{}]", userEntity.getId());
@@ -162,6 +165,9 @@ public class UserService {
     public void disableTfa(long userId) {
         log.info("Starting to disable tfa for user [{}]", userId);
         UserEntity userEntity = getById(userId);
+        if (!userEntity.isTfaEnabled()) {
+            throw new IllegalStateException(String.format("Tfa is already disabled for user [%d]", userId));
+        }
         userEntity.setTfaEnabled(false);
         userEntityRepository.save(userEntity);
         log.info("Tfa has been disabled for user [{}]", userEntity.getId());
@@ -182,7 +188,7 @@ public class UserService {
             throw new IllegalStateException(String.format("Can't lock super admin user [%d]", userId));
         }
         if (userEntity.isLocked()) {
-            throw new IllegalStateException(String.format("User [%d] was locked", userId));
+            throw new IllegalStateException(String.format("User [%d] is already locked", userId));
         }
         userEntity.setLocked(true);
         userEntityRepository.save(userEntity);
@@ -202,7 +208,7 @@ public class UserService {
         log.info("Starting to unlock user [{}]", userId);
         UserEntity userEntity = getById(userId);
         if (!userEntity.isLocked()) {
-            throw new IllegalStateException(String.format("User [%d] was unlocked", userId));
+            throw new IllegalStateException(String.format("User [%d] is already unlocked", userId));
         }
         userEntity.setLocked(false);
         userEntityRepository.save(userEntity);
