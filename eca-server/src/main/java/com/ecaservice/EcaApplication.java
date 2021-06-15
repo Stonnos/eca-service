@@ -1,5 +1,8 @@
 package com.ecaservice;
 
+import com.ecaservice.service.auth.UsersClient;
+import com.ecaservice.service.ers.ErsClient;
+import com.ecaservice.service.experiment.mail.EmailClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -14,7 +17,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  */
 @SpringBootApplication
 @EnableEurekaClient
-@EnableFeignClients
+@EnableFeignClients(basePackageClasses = {ErsClient.class, UsersClient.class, EmailClient.class})
 public class EcaApplication extends SpringBootServletInitializer {
 
     @Override
