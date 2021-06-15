@@ -192,6 +192,21 @@ services:
     networks:
       - default
 
+  eca-audit-log:
+    image: eca-audit-log
+    container_name: eca-audit-log
+    environment:
+      TZ: ${TIME_ZONE}
+      SPRING_PROFILES_ACTIVE: "docker"
+      DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
+      DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
+      JAVA_OPTS: "-Xmx512m"
+    networks:
+      - default
+    depends_on:
+      - eca-db
+      - discovery-server
+
 networks:
   default:
     name: app-network
