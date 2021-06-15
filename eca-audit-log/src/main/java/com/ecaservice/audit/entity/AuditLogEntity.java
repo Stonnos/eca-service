@@ -35,7 +35,7 @@ public class AuditLogEntity {
     /**
      * Audit message
      */
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "text")
     private String message;
 
     /**
