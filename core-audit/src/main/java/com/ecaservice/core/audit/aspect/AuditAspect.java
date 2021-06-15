@@ -2,13 +2,15 @@ package com.ecaservice.core.audit.aspect;
 
 import com.ecaservice.audit.dto.EventType;
 import com.ecaservice.core.audit.annotation.Audit;
+import com.ecaservice.core.audit.event.AuditEvent;
 import com.ecaservice.core.audit.model.AuditContextParams;
-import com.ecaservice.core.audit.service.AuditEventService;
+import com.ecaservice.core.audit.service.AuditEventInitiator;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.stereotype.Component;
@@ -16,7 +18,6 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static com.google.common.collect.Maps.newHashMap;
@@ -31,17 +32,21 @@ import static com.google.common.collect.Maps.newHashMap;
 @Component
 public class AuditAspect {
 
-    private final AuditEventService auditEventService;
+    private final ApplicationEventPublisher applicationEventPublisher;
+    private final AuditEventInitiator auditEventInitiator;
 
     private final ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
 
     /**
      * Constructor with spring dependency injection.
      *
-     * @param auditEventService - audit event service
+     * @param applicationEventPublisher - application event publisher bean
+     * @param auditEventInitiator       - audit event initiator
      */
-    public AuditAspect(AuditEventService auditEventService) {
-        this.auditEventService = auditEventService;
+    public AuditAspect(ApplicationEventPublisher applicationEventPublisher,
+                       AuditEventInitiator auditEventInitiator) {
+        this.applicationEventPublisher = applicationEventPublisher;
+        this.auditEventInitiator = auditEventInitiator;
     }
 
     /**
@@ -53,15 +58,15 @@ public class AuditAspect {
      */
     @Around("execution(@com.ecaservice.core.audit.annotation.Audit * * (..)) && @annotation(audit)")
     public Object around(ProceedingJoinPoint joinPoint, Audit audit) throws Throwable {
-        String eventId = UUID.randomUUID().toString();
-        log.debug("Starting to around audited method [{}] with event id [{}]", joinPoint.getSignature().getName(),
-                eventId);
+        log.debug("Starting to around audited method [{}]", joinPoint.getSignature().getName());
         Map<String, Object> methodParams = getMethodParams(joinPoint);
         Object result = joinPoint.proceed();
         AuditContextParams auditContextParams = new AuditContextParams(methodParams, result);
-        auditEventService.audit(eventId, audit.value(), EventType.SUCCESS, auditContextParams);
-        log.debug("Around audited method [{}] with event id [{}] has been processed",
-                joinPoint.getSignature().getName(), eventId);
+        String eventInitiator = auditEventInitiator.getInitiator();
+        AuditEvent auditEvent =
+                new AuditEvent(this, audit.value(), EventType.SUCCESS, eventInitiator, auditContextParams);
+        applicationEventPublisher.publishEvent(auditEvent);
+        log.debug("Around audited method [{}] has been processed", joinPoint.getSignature().getName());
         return result;
     }
 

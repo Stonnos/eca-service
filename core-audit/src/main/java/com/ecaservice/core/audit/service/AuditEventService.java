@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Service to sending audit events.
@@ -24,18 +25,18 @@ public class AuditEventService {
 
     private final AuditEventTemplateStore auditEventTemplateStore;
     private final AuditTemplateProcessorService auditTemplateProcessorService;
-    private final AuditEventInitiator auditEventInitiator;
     private final AuditMapper auditMapper;
 
     /**
      * Send audit event.
      *
-     * @param eventId            - event correlation id
      * @param auditCode          - audit code
      * @param eventType          - event type
+     * @param initiator - event initiator
      * @param auditContextParams - audit context params
      */
-    public void audit(String eventId, String auditCode, EventType eventType, AuditContextParams auditContextParams) {
+    public void audit(String auditCode, EventType eventType, String initiator, AuditContextParams auditContextParams) {
+        String eventId = UUID.randomUUID().toString();
         log.debug("Audit event [{}] type [{}] with correlation id [{}]", auditCode, eventType, eventId);
         AuditEventTemplateModel auditEventTemplate =
                 auditEventTemplateStore.getAuditEventTemplate(auditCode, eventType);
@@ -44,12 +45,11 @@ public class AuditEventService {
         } else {
             log.info("Audit event [{}] of type [{}]", auditCode, eventType);
             String message = auditTemplateProcessorService.process(auditCode, eventType, auditContextParams);
-            String eventInitiator = auditEventInitiator.getInitiator();
-            log.info("Audit event [{}] message: [{}], initiator [{}]", auditCode, message, eventInitiator);
+            log.info("Audit event [{}] message: [{}], initiator [{}]", auditCode, message, initiator);
             AuditEventRequest auditEventRequest = auditMapper.map(auditEventTemplate);
             auditEventRequest.setEventId(eventId);
             auditEventRequest.setMessage(message);
-            auditEventRequest.setInitiator(eventInitiator);
+            auditEventRequest.setInitiator(initiator);
             auditEventRequest.setEventDate(LocalDateTime.now());
             log.info("Audit event request: {}", auditEventRequest);
         }
