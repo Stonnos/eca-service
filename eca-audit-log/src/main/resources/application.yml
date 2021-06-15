@@ -36,6 +36,9 @@ eureka:
 ribbon:
   ReadTimeout: 60000
 
+audit-log:
+  maxPageSize: 50
+
 ## Swagger properties
 swagger2:
   projectVersion: @project.version@
