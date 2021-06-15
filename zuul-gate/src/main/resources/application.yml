@@ -34,6 +34,9 @@ zuul:
       eca-web-push:
         path: /eca-web-push/**
         serviceId: eca-web-push
+      eca-audit-log:
+        path: /eca-audit-log/**
+        serviceId: eca-audit-log
       frontend:
         path: /**
         serviceId: eca-web
