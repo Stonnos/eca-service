@@ -1,6 +1,7 @@
 package com.ecaservice.audit.service;
 
 import com.ecaservice.audit.dto.AuditEventRequest;
+import com.ecaservice.audit.entity.AuditLogEntity;
 import com.ecaservice.audit.mapping.AuditLogMapper;
 import com.ecaservice.audit.repository.AuditLogRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +25,15 @@ public class AuditLogService {
      * Saves audit event into database.
      *
      * @param auditEventRequest - audit event request
+     * @return audit log entity
      */
-    public void save(AuditEventRequest auditEventRequest) {
+    public AuditLogEntity save(AuditEventRequest auditEventRequest) {
         log.info("Starting to save audit event [{}], code [{}] type [{}]", auditEventRequest.getEventId(),
                 auditEventRequest.getCode(), auditEventRequest.getEventType());
         var auditLogEntity = auditLogMapper.map(auditEventRequest);
         auditLogRepository.save(auditLogEntity);
         log.info("Audit event [{}] with code [{}], type [{}] has been saved", auditEventRequest.getEventId(),
                 auditEventRequest.getCode(), auditEventRequest.getEventType());
+        return auditLogEntity;
     }
 }
