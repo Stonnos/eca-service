@@ -201,6 +201,14 @@ class UserServiceTest extends AbstractJpaTest {
     }
 
     @Test
+    void testEnableTfaShouldThrowIllegalStateException() {
+        UserEntity userEntity = createAndSaveUser();
+        userEntity.setTfaEnabled(true);
+        userEntityRepository.save(userEntity);
+        assertThrows(IllegalStateException.class, () -> userService.enableTfa(userEntity.getId()));
+    }
+
+    @Test
     void testEnableTfaForNotExistingUser() {
         assertThrows(EntityNotFoundException.class, () -> userService.enableTfa(USER_ID));
     }
@@ -208,10 +216,18 @@ class UserServiceTest extends AbstractJpaTest {
     @Test
     void testDisableTfa() {
         UserEntity userEntity = createAndSaveUser();
+        userEntity.setTfaEnabled(true);
+        userEntityRepository.save(userEntity);
         userService.disableTfa(userEntity.getId());
         UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.isTfaEnabled()).isFalse();
+    }
+
+    @Test
+    void testDisableTfaShouldThrowIllegalStateException() {
+        UserEntity userEntity = createAndSaveUser();
+        assertThrows(IllegalStateException.class, () -> userService.disableTfa(userEntity.getId()));
     }
 
     @Test
