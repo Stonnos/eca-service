@@ -1,12 +1,16 @@
 package com.ecaservice.core.audit.service;
 
 import com.ecaservice.audit.dto.AuditEventRequest;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * Interface for sending audit events to specified channel.
  *
  * @author Roman Batygin
  */
+@FeignClient(value = "eca-audit-log", path = "/api/audit/event")
 public interface AuditEventSender {
 
     /**
@@ -14,5 +18,6 @@ public interface AuditEventSender {
      *
      * @param auditEventRequest audit event request
      */
-    void sendEvent(AuditEventRequest auditEventRequest);
+    @PostMapping(value = "/save")
+    void sendEvent(@RequestBody AuditEventRequest auditEventRequest);
 }

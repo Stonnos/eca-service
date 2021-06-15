@@ -23,6 +23,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuditEventService {
 
+    private final AuditEventSender auditEventSender;
     private final AuditEventTemplateStore auditEventTemplateStore;
     private final AuditTemplateProcessorService auditTemplateProcessorService;
     private final AuditMapper auditMapper;
@@ -32,26 +33,32 @@ public class AuditEventService {
      *
      * @param auditCode          - audit code
      * @param eventType          - event type
-     * @param initiator - event initiator
+     * @param initiator          - event initiator
      * @param auditContextParams - audit context params
      */
     public void audit(String auditCode, EventType eventType, String initiator, AuditContextParams auditContextParams) {
         String eventId = UUID.randomUUID().toString();
-        log.debug("Audit event [{}] type [{}] with correlation id [{}]", auditCode, eventType, eventId);
-        AuditEventTemplateModel auditEventTemplate =
-                auditEventTemplateStore.getAuditEventTemplate(auditCode, eventType);
-        if (!Boolean.TRUE.equals(auditEventTemplate.getAuditCode().isEnabled())) {
-            log.warn("Audit code [{}] is disabled", auditCode);
-        } else {
-            log.info("Audit event [{}] of type [{}]", auditCode, eventType);
-            String message = auditTemplateProcessorService.process(auditCode, eventType, auditContextParams);
-            log.info("Audit event [{}] message: [{}], initiator [{}]", auditCode, message, initiator);
-            AuditEventRequest auditEventRequest = auditMapper.map(auditEventTemplate);
-            auditEventRequest.setEventId(eventId);
-            auditEventRequest.setMessage(message);
-            auditEventRequest.setInitiator(initiator);
-            auditEventRequest.setEventDate(LocalDateTime.now());
-            log.info("Audit event request: {}", auditEventRequest);
+        log.debug("Audit event [{}] type [{}] with event id [{}]", auditCode, eventType, eventId);
+        try {
+            AuditEventTemplateModel auditEventTemplate =
+                    auditEventTemplateStore.getAuditEventTemplate(auditCode, eventType);
+            if (!Boolean.TRUE.equals(auditEventTemplate.getAuditCode().isEnabled())) {
+                log.warn("Audit code [{}] is disabled", auditCode);
+            } else {
+                String message = auditTemplateProcessorService.process(auditCode, eventType, auditContextParams);
+                AuditEventRequest auditEventRequest = auditMapper.map(auditEventTemplate);
+                auditEventRequest.setEventId(eventId);
+                auditEventRequest.setMessage(message);
+                auditEventRequest.setInitiator(initiator);
+                auditEventRequest.setEventDate(LocalDateTime.now());
+                log.info("Starting to send audit event [{}] with code [{}], type [{}]", auditEventRequest.getEventId(),
+                        auditEventRequest.getCode(), auditEventRequest.getEventType());
+                auditEventSender.sendEvent(auditEventRequest);
+                log.info("Audit event [{}] with code [{}], type [{}] has been sent", auditEventRequest.getEventId(),
+                        auditEventRequest.getCode(), auditEventRequest.getEventType());
+            }
+        } catch (Exception ex) {
+            log.error("There was an error while sending audit event [{}]: {}", eventId, ex.getMessage());
         }
     }
 }
