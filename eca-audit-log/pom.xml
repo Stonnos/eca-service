@@ -13,7 +13,11 @@
     <packaging>war</packaging>
 
     <properties>
-        <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
+        <sonar.coverage.exclusions>
+            **/entity/**/*,
+            **/config/**/*,
+            **/EcaAuditLogApplication.java
+        </sonar.coverage.exclusions>
     </properties>
 
     <dependencies>
