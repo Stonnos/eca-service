@@ -1,5 +1,6 @@
 package com.ecaservice.oauth;
 
+import com.ecaservice.core.audit.service.AuditEventSender;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -14,7 +15,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  */
 @SpringBootApplication
 @EnableEurekaClient
-@EnableFeignClients
+@EnableFeignClients(basePackageClasses = {EcaOauthApplication.class, AuditEventSender.class})
 public class EcaOauthApplication extends SpringBootServletInitializer {
 
     /**
