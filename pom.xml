@@ -33,6 +33,7 @@
         <module>eca-ers</module>
         <module>eca-data-storage</module>
         <module>eca-web-push</module>
+        <module>eca-audit-log</module>
         <module>eca-external-api</module>
         <module>eca-web</module>
         <module>zuul-gate</module>

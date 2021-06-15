@@ -1,0 +1,72 @@
+spring:
+  application:
+    name: eca-audit-log
+  jmx:
+    default-domain: eca-audit-log
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+  ## Datasource properties
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/audit_log
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        order_by:
+          default_null_ordering: last
+  liquibase:
+    contexts: schema,data
+    change-log: classpath:db/liquibase-changelog.xml
+
+eureka:
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+
+ribbon:
+  ReadTimeout: 60000
+
+## Swagger properties
+swagger2:
+  projectVersion: @project.version@
+  groups:
+    audit:
+      title: REST API for audit events
+      description: Audit events API for services
+      author: Roman Batygin
+      email: roman.batygin@mail.ru
+    eca-web:
+      title: REST API for web application
+      description: Operations for ECA web application
+      author: Roman Batygin
+      email: roman.batygin@mail.ru
+  tokenBaseUrl: http://localhost:8085/eca-oauth
+  clientId: swagger
+  secret: swagger_secret
+
+auth-server:
+  baseUrl: http://localhost:8085/eca-oauth
+  clientId: eca_web
+  clientSecret: web_secret
+
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
