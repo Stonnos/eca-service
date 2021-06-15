@@ -1,8 +1,6 @@
 package com.ecaservice.oauth.config;
 
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
-import com.ecaservice.core.audit.entity.BaseAuditEntity;
-import com.ecaservice.core.audit.repository.AuditEventTemplateRepository;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import org.passay.PasswordGenerator;
@@ -21,8 +19,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @Configuration
 @EnableAsync
 @EnableGlobalExceptionHandler
-@EntityScan(basePackageClasses = {UserEntity.class, BaseAuditEntity.class})
-@EnableJpaRepositories(basePackageClasses = {UserEntityRepository.class, AuditEventTemplateRepository.class})
+@EntityScan(basePackageClasses = UserEntity.class)
+@EnableJpaRepositories(basePackageClasses = UserEntityRepository.class)
 @EnableConfigurationProperties({CommonConfig.class, PasswordConfig.class, ResetPasswordConfig.class, TfaConfig.class,
         ChangePasswordConfig.class})
 public class EcaOauthConfiguration {
