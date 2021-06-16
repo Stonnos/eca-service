@@ -3,7 +3,7 @@ package com.ecaservice.audit.controller.web;
 import com.ecaservice.audit.entity.AuditLogEntity;
 import com.ecaservice.audit.mapping.AuditLogMapper;
 import com.ecaservice.audit.service.AuditLogService;
-import com.ecaservice.web.dto.model.InstancesDto;
+import com.ecaservice.web.dto.model.AuditLogDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import io.swagger.annotations.Api;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Audit log API for web application.
@@ -32,8 +33,8 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class AuditLogController {
 
-   private final AuditLogService auditLogService;
-   private final AuditLogMapper auditLogMapper;
+    private final AuditLogService auditLogService;
+    private final AuditLogMapper auditLogMapper;
 
     /**
      * Finds audit logs with specified options such as filter, sorting and paging.
@@ -47,10 +48,10 @@ public class AuditLogController {
             notes = "Finds audit logs with specified options such as filter, sorting and paging"
     )
     @GetMapping(value = "/list")
-    public PageDto<InstancesDto> getAuditLogsPage(@Valid PageRequestDto pageRequestDto) {
+    public PageDto<AuditLogDto> getAuditLogsPage(@Valid PageRequestDto pageRequestDto) {
         log.info("Received audit logs page request: {}", pageRequestDto);
-        Page<AuditLogEntity> instancesPage = auditLogService.getNextPage(pageRequestDto);
-       // List<InstancesDto> instancesDtoList = instancesMapper.map(instancesPage.getContent());
-        return PageDto.of(null, pageRequestDto.getPage(), instancesPage.getTotalElements());
+        Page<AuditLogEntity> auditLogsPage = auditLogService.getNextPage(pageRequestDto);
+        List<AuditLogDto> auditLogDtoList = auditLogMapper.map(auditLogsPage.getContent());
+        return PageDto.of(auditLogDtoList, pageRequestDto.getPage(), auditLogsPage.getTotalElements());
     }
 }
