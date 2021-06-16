@@ -22,6 +22,7 @@
         <module>eca-audit-transport</module>
         <module>eca-web-transport</module>
         <module>core-audit</module>
+        <module>core-filter</module>
         <module>swagger-core</module>
         <module>oauth2-core</module>
         <module>rabbit-core</module>

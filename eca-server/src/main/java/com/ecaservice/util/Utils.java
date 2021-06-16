@@ -30,7 +30,6 @@ import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +50,6 @@ import static com.ecaservice.util.ClassifierOptionsHelper.isParsableOptions;
 public class Utils {
 
     private static final String ATTACHMENT = "attachment";
-    private static final String POINT_SEPARATOR = ".";
     private static final String CV_FORMAT = "%d - блочная кросс - проверка";
     private static final String CV_EXTENDED_FORMAT = "%d×%d - блочная кросс - проверка";
     private static final long ZERO = 0L;
@@ -194,26 +192,6 @@ public class Utils {
      */
     public static LocalDateTime atEndOfDay(LocalDate localDate) {
         return localDate != null ? localDate.atTime(LocalTime.MAX) : null;
-    }
-
-    /**
-     * Gets local date time in milliseconds.
-     *
-     * @param localDateTime - local date time
-     * @return ocal date time in milliseconds
-     */
-    public static long toMillis(LocalDateTime localDateTime) {
-        return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-    }
-
-    /**
-     * Splits string by "." separator.
-     *
-     * @param str - string value
-     * @return tokens array
-     */
-    public static String[] splitByPointSeparator(String str) {
-        return StringUtils.split(str, POINT_SEPARATOR);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.ecaservice.filter;
 
+import com.ecaservice.core.filter.AbstractFilter;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 

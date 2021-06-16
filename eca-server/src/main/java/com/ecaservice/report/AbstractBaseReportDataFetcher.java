@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.core.filter.util.ReflectionUtils.getFieldType;
 import static com.ecaservice.util.RangeUtils.formatDateRange;
-import static com.ecaservice.util.ReflectionUtils.getFieldType;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**

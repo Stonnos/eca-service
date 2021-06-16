@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
+import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_USER;
 import static com.ecaservice.oauth.config.audit.AuditCodes.DELETE_PHOTO;
 import static com.ecaservice.oauth.config.audit.AuditCodes.DISABLE_2FA;
@@ -40,7 +41,6 @@ import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_EMAIL;
 import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_PERSONAL_DATA;
 import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_PHOTO;
 import static com.ecaservice.oauth.entity.UserEntity_.CREATION_DATE;
-import static com.ecaservice.oauth.util.FilterUtils.buildSort;
 import static com.ecaservice.oauth.util.FilterUtils.buildSpecification;
 import static com.ecaservice.oauth.util.Utils.isSuperAdmin;
 import static com.ecaservice.user.model.Role.ROLE_ECA_USER;

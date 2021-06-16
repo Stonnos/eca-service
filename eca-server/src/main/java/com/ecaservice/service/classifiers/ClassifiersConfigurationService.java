@@ -16,7 +16,6 @@ import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.PageRequestService;
 import com.ecaservice.service.UserService;
 import com.ecaservice.service.filter.FilterService;
-import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -39,6 +38,7 @@ import static com.ecaservice.config.audit.AuditCodes.ADD_CONFIGURATION;
 import static com.ecaservice.config.audit.AuditCodes.COPY_CONFIGURATION;
 import static com.ecaservice.config.audit.AuditCodes.DELETE_CONFIGURATION;
 import static com.ecaservice.config.audit.AuditCodes.RENAME_CONFIGURATION;
+import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.model.entity.BaseEntity_.CREATION_DATE;
 
 /**
@@ -158,7 +158,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
 
     @Override
     public Page<ClassifiersConfiguration> getNextPage(PageRequestDto pageRequestDto) {
-        var sort = SortUtils.buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
+        var sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
         var globalFilterFields =
                 filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION);
         var filter = new ClassifiersConfigurationFilter(pageRequestDto.getSearchQuery(),

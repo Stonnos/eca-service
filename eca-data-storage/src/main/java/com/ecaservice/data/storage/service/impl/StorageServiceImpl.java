@@ -23,10 +23,10 @@ import weka.core.Instances;
 
 import java.time.LocalDateTime;
 
+import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.data.storage.config.audit.AuditCodes.DELETE_INSTANCES;
 import static com.ecaservice.data.storage.config.audit.AuditCodes.RENAME_INSTANCES;
 import static com.ecaservice.data.storage.entity.InstancesEntity_.CREATED;
-import static com.ecaservice.data.storage.util.FilterUtils.buildSort;
 import static com.ecaservice.data.storage.util.FilterUtils.buildSpecification;
 
 /**

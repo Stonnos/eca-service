@@ -1,13 +1,13 @@
-package com.ecaservice.filter;
+package com.ecaservice.core.filter;
 
 import com.ecaservice.web.dto.MatchModeVisitor;
 import com.ecaservice.web.dto.model.FilterRequestDto;
-import eca.core.DescriptiveEnum;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ReflectionUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -15,6 +15,7 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,8 +26,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.ecaservice.util.ReflectionUtils.getFieldType;
-import static com.ecaservice.util.Utils.splitByPointSeparator;
+import static com.ecaservice.core.filter.util.ReflectionUtils.getFieldType;
+import static com.ecaservice.core.filter.util.Utils.splitByPointSeparator;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
@@ -37,6 +38,7 @@ import static com.google.common.collect.Lists.newArrayList;
 public abstract class AbstractFilter<T> implements Specification<T> {
 
     private static final String LIKE_FORMAT = "%{0}%";
+    private static final String GET_ENUM_DESCRIPTION_METHOD_NAME = "getDescription";
 
     /**
      * Entity class
@@ -111,7 +113,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     private Predicate buildPredicate(FilterRequestDto filterRequestDto, List<String> values, Root<T> root,
                                      CriteriaBuilder criteriaBuilder) {
-        return filterRequestDto.getMatchMode().handle(new MatchModeVisitor<Predicate>() {
+        return filterRequestDto.getMatchMode().handle(new MatchModeVisitor<>() {
             @Override
             public Predicate caseEquals() {
                 return buildEqualPredicate(filterRequestDto, values, root, criteriaBuilder);
@@ -221,11 +223,6 @@ public abstract class AbstractFilter<T> implements Specification<T> {
                                                           String value) {
         Class<?> fieldClazz = getFieldType(field, clazz);
         if (fieldClazz.isEnum()) {
-            if (!DescriptiveEnum.class.isAssignableFrom(fieldClazz)) {
-                throw new IllegalStateException(
-                        String.format("Enum class [%s] must implements [%s] interface!", fieldClazz.getSimpleName(),
-                                DescriptiveEnum.class.getSimpleName()));
-            }
             return buildGlobalFilterPredicateForEnumField(fieldClazz, root, field, value);
         } else if (String.class.isAssignableFrom(fieldClazz)) {
             Expression<String> expression = buildExpression(root, field);
@@ -238,14 +235,22 @@ public abstract class AbstractFilter<T> implements Specification<T> {
         }
     }
 
+    private boolean enumDescriptionContainsSearchTerm(Method method, Object enumValue, String value) {
+        Object retVal = ReflectionUtils.invokeMethod(method, enumValue);
+        return retVal != null && String.valueOf(retVal).toLowerCase().contains(value);
+    }
+
     private Predicate buildGlobalFilterPredicateForEnumField(Class<?> fieldClazz, Root<T> root, String field,
                                                              String value) {
-        List<DescriptiveEnum> descriptiveEnums =
-                Stream.of(fieldClazz.getEnumConstants()).map(DescriptiveEnum.class::cast).filter(
-                        val -> val.getDescription().toLowerCase().contains(value)).collect(Collectors.toList());
-        if (!CollectionUtils.isEmpty(descriptiveEnums)) {
-            Expression<?> expression = buildExpression(root, field);
-            return expression.in(descriptiveEnums);
+        Method method = ReflectionUtils.findMethod(fieldClazz, GET_ENUM_DESCRIPTION_METHOD_NAME);
+        if (method != null) {
+            List<Object> descriptiveEnums = Stream.of(fieldClazz.getEnumConstants())
+                    .filter(c -> enumDescriptionContainsSearchTerm(method, c, value))
+                    .collect(Collectors.toList());
+            if (!CollectionUtils.isEmpty(descriptiveEnums)) {
+                Expression<?> expression = buildExpression(root, field);
+                return expression.in(descriptiveEnums);
+            }
         }
         return null;
     }

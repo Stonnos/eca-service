@@ -31,6 +31,7 @@
 * eca-audit-transport - модуль содержит dto классы для сервиса журнала аудита
 * eca-web-transport - модуль содержит dto классы для REST API WEB
 * core-audit - библиотека для отправки событий аудита
+* core-filter - общая библиотека для фильтрации и сортировки
 * swagger-core - модуль содержит конфигурационные классы для swagger
 * oauth2-core - модуль содержит конфигурационные классы для oauth2 resource server 
 * rabbit-core - модуль содержит конфигурационные классы для rabbit

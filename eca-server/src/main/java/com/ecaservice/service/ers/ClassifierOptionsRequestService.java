@@ -7,7 +7,6 @@ import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.service.PageRequestService;
 import com.ecaservice.service.filter.FilterService;
-import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.model.entity.ErsRequest_.REQUEST_DATE;
 
 /**
@@ -36,7 +36,7 @@ public class ClassifierOptionsRequestService implements PageRequestService<Class
 
     @Override
     public Page<ClassifierOptionsRequestModel> getNextPage(PageRequestDto pageRequestDto) {
-        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), REQUEST_DATE, pageRequestDto.isAscending());
+        Sort sort = buildSort(pageRequestDto.getSortField(), REQUEST_DATE, pageRequestDto.isAscending());
         List<String> globalFilterFields =
                 filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST);
         ClassifierOptionsRequestModelFilter filter =
