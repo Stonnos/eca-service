@@ -1,6 +1,7 @@
 package com.ecaservice.config.cache;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -20,6 +21,7 @@ import static org.springframework.data.redis.serializer.RedisSerializationContex
  *
  * @author Roman Batygin
  */
+@Slf4j
 @Configuration
 @EnableConfigurationProperties(CacheConfig.class)
 @ConditionalOnProperty(value = "spring.cache.type", havingValue = "redis")
@@ -42,6 +44,7 @@ public class RedisCacheConfigurer {
                             .entryTtl(Duration.ofSeconds(value.getExpireAfterWriteSeconds()))
                             .serializeValuesWith(fromSerializer(new GenericJackson2JsonRedisSerializer()))));
             builder.withInitialCacheConfigurations(configurationMap);
+            log.info("Redis cache customizer has been initialized");
         };
     }
 }
