@@ -88,13 +88,13 @@
 
         <insert tableName="filter_template">
             <column name="id" valueNumeric="1"/>
-            <column name="name" value="Фильтр событий аудита"/>
+            <column name="template_name" value="Фильтр событий аудита"/>
             <column name="template_type" value="AUDIT_LOG"/>
             <column name="created" valueDate="now()"/>
         </insert>
 
         <insert tableName="filter_field">
-            <column name="name" value="eventId"/>
+            <column name="filter_name" value="eventId"/>
             <column name="description" value="ID события"/>
             <column name="field_order" valueNumeric="0"/>
             <column name="filter_type" value="TEXT"/>
@@ -103,7 +103,7 @@
         </insert>
 
         <insert tableName="filter_field">
-            <column name="name" value="groupCode"/>
+            <column name="filter_name" value="groupCode"/>
             <column name="description" value="Группа событий"/>
             <column name="field_order" valueNumeric="1"/>
             <column name="filter_type" value="REFERENCE"/>
@@ -113,7 +113,7 @@
         </insert>
 
         <insert tableName="filter_field">
-            <column name="name" value="initiator"/>
+            <column name="filter_name" value="initiator"/>
             <column name="description" value="Источник события"/>
             <column name="field_order" valueNumeric="2"/>
             <column name="filter_type" value="TEXT"/>
@@ -122,7 +122,7 @@
         </insert>
 
         <insert tableName="filter_field">
-            <column name="name" value="eventDate"/>
+            <column name="filter_name" value="eventDate"/>
             <column name="description" value="Дата события"/>
             <column name="field_order" valueNumeric="3"/>
             <column name="filter_type" value="DATE"/>
