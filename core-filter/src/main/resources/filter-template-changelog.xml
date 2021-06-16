@@ -55,7 +55,7 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="name" type="varchar(255)">
+            <column name="template_name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="template_type" type="varchar(255)">
@@ -95,7 +95,7 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="name" type="varchar(255)">
+            <column name="filter_name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="varchar(255)">
