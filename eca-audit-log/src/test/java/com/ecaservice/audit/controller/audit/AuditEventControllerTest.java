@@ -1,6 +1,5 @@
-package com.ecaservice.audit.controller;
+package com.ecaservice.audit.controller.audit;
 
-import com.ecaservice.audit.controller.audit.AuditEventController;
 import com.ecaservice.audit.service.AuditLogService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

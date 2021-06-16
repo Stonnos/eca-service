@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import static com.ecaservice.audit.TestHelperUtils.createAuditEventRequest;
+import static com.ecaservice.audit.TestHelperUtils.createAuditLog;
 import static com.ecaservice.audit.dictionary.FilterDictionaries.AUDIT_LOG_TEMPLATE;
 import static com.ecaservice.audit.entity.AuditLogEntity_.CODE;
 import static com.ecaservice.audit.entity.AuditLogEntity_.EVENT_DATE;
@@ -94,9 +95,9 @@ class AuditLogServiceTest extends AbstractJpaTest {
     }
 
     private void saveAuditLogs() {
-        var first = createAuditEventRequest("Group1", "Code1");
-        var second = createAuditEventRequest("Group2", "Code2");
-        var third = createAuditEventRequest("XGroup3", "Code3");
-        Arrays.asList(first, second, third).forEach(auditLogService::save);
+        var first = createAuditLog("Group1", "Code1");
+        var second = createAuditLog("Group2", "Code2");
+        var third = createAuditLog("XGroup3", "Code3");
+        auditLogRepository.saveAll(Arrays.asList(first, second, third));
     }
 }
