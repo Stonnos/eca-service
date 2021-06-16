@@ -57,7 +57,7 @@
 
         <insert tableName="filter_dictionary">
             <column name="id" valueNumeric="1"/>
-            <column name="name" value="Группа событий аудита"/>
+            <column name="name" value="auditGroup"/>
         </insert>
 
         <!-- Insert  audit group codes values -->

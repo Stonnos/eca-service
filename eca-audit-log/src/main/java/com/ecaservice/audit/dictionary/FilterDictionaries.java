@@ -14,4 +14,9 @@ public class FilterDictionaries {
      * Audit log template name.
      */
     public static final String AUDIT_LOG_TEMPLATE = "AUDIT_LOG";
+
+    /**
+     * Audit group codes dictionary name.
+     */
+    public static final String AUDIT_GROUPS_DICTIONARY = "auditGroup";
 }

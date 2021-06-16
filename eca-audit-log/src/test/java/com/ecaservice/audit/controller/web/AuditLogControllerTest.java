@@ -4,6 +4,7 @@ import com.ecaservice.audit.entity.AuditLogEntity;
 import com.ecaservice.audit.mapping.AuditLogMapper;
 import com.ecaservice.audit.mapping.AuditLogMapperImpl;
 import com.ecaservice.audit.service.AuditLogService;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.ecaservice.web.dto.model.AuditLogDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -48,6 +49,8 @@ class AuditLogControllerTest extends AbstractControllerTest {
 
     @MockBean
     private AuditLogService auditLogService;
+    @MockBean
+    private FilterService filterService;
 
     @Inject
     private AuditLogMapper auditLogMapper;
