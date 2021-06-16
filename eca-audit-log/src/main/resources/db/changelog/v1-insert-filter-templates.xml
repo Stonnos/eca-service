@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v1-insert-filter-templates.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Insert global filter template for audit_log entity -->
+    <changeSet id="1" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_template"/>
+            <tableExists tableName="global_filter_field"/>
+            <sqlCheck expectedResult="0">
+                select count(*) from global_filter_template where id = 1
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="global_filter_template">
+            <column name="id" valueNumeric="1"/>
+            <column name="filter_name" value="auditLogFilter"/>
+            <column name="template_type" value="AUDIT_LOG"/>
+        </insert>
+
+        <insert tableName="global_filter_field">
+            <column name="field_name" value="eventId"/>
+            <column name="global_filter_template_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="global_filter_field">
+            <column name="field_name" value="message"/>
+            <column name="global_filter_template_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="global_filter_field">
+            <column name="field_name" value="initiator"/>
+            <column name="global_filter_template_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="global_filter_field">
+            <column name="field_name" value="groupTitle"/>
+            <column name="global_filter_template_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="global_filter_field">
+            <column name="field_name" value="codeTitle"/>
+            <column name="global_filter_template_id" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+
+    <!-- Insert audit group codes dictionary-->
+    <changeSet id="2" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from filter_dictionary where id = 1
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="filter_dictionary">
+            <column name="id" valueNumeric="1"/>
+            <column name="name" value="Группа событий аудита"/>
+        </insert>
+
+        <!-- Insert  audit group codes values -->
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Действия пользователя в личном кабинете"/>
+            <column name="value" value="USER_PROFILE_ACTIONS"/>
+            <column name="filter_dictionary_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Действия с конфигурациями классификаторов"/>
+            <column name="value" value="CLASSIFIERS_CONFIGURATIONS_ACTIONS"/>
+            <column name="filter_dictionary_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="filter_dictionary_value">
+            <column name="label" value="Действия с обучающими выборками"/>
+            <column name="value" value="DATA_STORAGE_ACTIONS"/>
+            <column name="filter_dictionary_id" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+
+    <!-- Insert audit log filter template -->
+    <changeSet id="3" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from filter_template where id = 1
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="filter_template">
+            <column name="id" valueNumeric="1"/>
+            <column name="name" value="Фильтр событий аудита"/>
+            <column name="template_type" value="AUDIT_LOG"/>
+            <column name="created" valueDate="now()"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="eventId"/>
+            <column name="description" value="ID события"/>
+            <column name="field_order" valueNumeric="0"/>
+            <column name="filter_type" value="TEXT"/>
+            <column name="match_mode" value="LIKE"/>
+            <column name="filter_template_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="groupCode"/>
+            <column name="description" value="Группа событий"/>
+            <column name="field_order" valueNumeric="1"/>
+            <column name="filter_type" value="REFERENCE"/>
+            <column name="match_mode" value="EQUALS"/>
+            <column name="filter_template_id" valueNumeric="1"/>
+            <column name="filter_dictionary_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="initiator"/>
+            <column name="description" value="Источник события"/>
+            <column name="field_order" valueNumeric="2"/>
+            <column name="filter_type" value="TEXT"/>
+            <column name="match_mode" value="LIKE"/>
+            <column name="filter_template_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="filter_field">
+            <column name="name" value="eventDate"/>
+            <column name="description" value="Дата события"/>
+            <column name="field_order" valueNumeric="3"/>
+            <column name="filter_type" value="DATE"/>
+            <column name="match_mode" value="RANGE"/>
+            <column name="multiple" valueBoolean="true"/>
+            <column name="filter_template_id" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
