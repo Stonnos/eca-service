@@ -48,4 +48,5 @@
     <include file="db/changelog/v41-drop-lock-table.xml"/>
     <include file="../audit-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v42-insert-audit-codes-and-events.xml"/>
+    <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
