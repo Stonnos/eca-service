@@ -5,7 +5,6 @@ import com.ecaservice.audit.mapping.AuditLogMapper;
 import com.ecaservice.audit.service.AuditLogService;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.web.dto.model.AuditLogDto;
-import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.List;
 
-import static com.ecaservice.audit.dictionary.FilterDictionaries.AUDIT_GROUPS_DICTIONARY;
 import static com.ecaservice.audit.dictionary.FilterDictionaries.AUDIT_LOG_TEMPLATE;
 
 /**
@@ -75,20 +73,5 @@ public class AuditLogController {
     @GetMapping(value = "/filter-templates/fields")
     public List<FilterFieldDto> getAuditLogFilter() {
         return filterService.getFilterFields(AUDIT_LOG_TEMPLATE);
-    }
-
-    /**
-     * Gets audit groups filter dictionary.
-     *
-     * @return filter fields list
-     */
-    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
-    @ApiOperation(
-            value = "Gets audit groups filter dictionary",
-            notes = "Gets audit groups filter dictionary"
-    )
-    @GetMapping(value = "/filter-templates/groups")
-    public FilterDictionaryDto getAuditGroupCodesDictionary() {
-        return filterService.getFilterDictionary(AUDIT_GROUPS_DICTIONARY);
     }
 }

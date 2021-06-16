@@ -8,7 +8,6 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.ecaservice.web.dto.model.AuditLogDto;
-import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.junit.jupiter.api.Test;
@@ -25,9 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.ecaservice.audit.TestHelperUtils.createAuditLog;
-import static com.ecaservice.audit.TestHelperUtils.createFilterDictionaryDto;
 import static com.ecaservice.audit.TestHelperUtils.createFilterFieldDto;
-import static com.ecaservice.audit.dictionary.FilterDictionaries.AUDIT_GROUPS_DICTIONARY;
 import static com.ecaservice.audit.dictionary.FilterDictionaries.AUDIT_LOG_TEMPLATE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -47,7 +44,6 @@ class AuditLogControllerTest extends AbstractControllerTest {
     private static final String BASE_URL = "/audit-log";
     private static final String LIST_URL = BASE_URL + "/list";
     private static final String AUDIT_LOG_TEMPLATE_URL = BASE_URL + "/filter-templates/fields";
-    private static final String AUDIT_GROUPS_URL = BASE_URL + "/filter-templates/groups";
 
     private static final String PAGE_PARAM = "page";
     private static final String SIZE_PARAM = "size";
@@ -110,29 +106,5 @@ class AuditLogControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(filterFieldDtoList)));
-    }
-
-    @Test
-    void testGetGroupsDictionaryUnauthorized() throws Exception {
-        mockMvc.perform(get(AUDIT_GROUPS_URL)).andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void testGetGroupsDictionaryBadRequest() throws Exception {
-        when(filterService.getFilterDictionary(AUDIT_GROUPS_DICTIONARY)).thenThrow(new EntityNotFoundException());
-        mockMvc.perform(get(AUDIT_GROUPS_URL)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void testGetGroupsDictionaryOk() throws Exception {
-        FilterDictionaryDto filterDictionaryDto = createFilterDictionaryDto();
-        when(filterService.getFilterDictionary(AUDIT_GROUPS_DICTIONARY)).thenReturn(filterDictionaryDto);
-        mockMvc.perform(get(AUDIT_GROUPS_URL)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(objectMapper.writeValueAsString(filterDictionaryDto)));
     }
 }
