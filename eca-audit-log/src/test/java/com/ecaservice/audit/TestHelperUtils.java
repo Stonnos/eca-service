@@ -3,9 +3,14 @@ package com.ecaservice.audit;
 import com.ecaservice.audit.dto.AuditEventRequest;
 import com.ecaservice.audit.dto.EventType;
 import com.ecaservice.audit.entity.AuditLogEntity;
+import com.ecaservice.web.dto.model.FilterDictionaryDto;
+import com.ecaservice.web.dto.model.FilterFieldDto;
+import com.ecaservice.web.dto.model.FilterFieldType;
+import com.ecaservice.web.dto.model.MatchMode;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.UUID;
 
 /**
@@ -22,6 +27,8 @@ public class TestHelperUtils {
     private static final String GROUP = "GROUP";
     private static final String GROUP_TITLE = "group title";
     private static final String MESSAGE = "audit message";
+    private static final String FILTER_NAME = "name";
+    private static final String FILTER_DESCRIPTION = "description";
 
     /**
      * Creates audit event request.
@@ -70,5 +77,33 @@ public class TestHelperUtils {
      */
     public static AuditLogEntity createAuditLog() {
         return createAuditLog(GROUP, CODE);
+    }
+
+    /**
+     * Creates filter field dto.
+     *
+     * @return filter field dto
+     */
+    public static FilterFieldDto createFilterFieldDto() {
+        FilterFieldDto filterField = new FilterFieldDto();
+        filterField.setDescription(FILTER_DESCRIPTION);
+        filterField.setFieldOrder(1);
+        filterField.setFieldName(FILTER_NAME);
+        filterField.setFilterFieldType(FilterFieldType.REFERENCE);
+        filterField.setMatchMode(MatchMode.EQUALS);
+        filterField.setMultiple(false);
+        return filterField;
+    }
+
+    /**
+     * Creates filter dictionary dto.
+     *
+     * @return filter dictionary dto
+     */
+    public static FilterDictionaryDto createFilterDictionaryDto() {
+        FilterDictionaryDto filterDictionaryDto = new FilterDictionaryDto();
+        filterDictionaryDto.setName(FILTER_NAME);
+        filterDictionaryDto.setValues(Collections.emptyList());
+        return filterDictionaryDto;
     }
 }

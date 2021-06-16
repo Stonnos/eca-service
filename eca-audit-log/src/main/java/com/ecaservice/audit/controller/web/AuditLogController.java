@@ -72,7 +72,7 @@ public class AuditLogController {
             value = "Gets audit log filter fields",
             notes = "Gets audit log filter fields"
     )
-    @GetMapping(value = "/filter-templates/audit-log")
+    @GetMapping(value = "/filter-templates/fields")
     public List<FilterFieldDto> getAuditLogFilter() {
         return filterService.getFilterFields(AUDIT_LOG_TEMPLATE);
     }
