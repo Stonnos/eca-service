@@ -110,14 +110,20 @@ export class UserProfileComponent implements OnInit {
   }
 
   public changedTfaSwitch(event): void {
-    this.usersService.setTfaEnabled(event.checked).subscribe({
-      next: () => {
-        this.getUser(false);
-      },
-      error: (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
-      }
-    })
+    this.loading = true;
+    this.usersService.setTfaEnabled(event.checked)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      ).subscribe({
+        next: () => {
+          this.getUser(false);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+    });
   }
 
   public hideUploadPhotoErrorModal(): void {
@@ -197,7 +203,7 @@ export class UserProfileComponent implements OnInit {
       error: (error) => {
         this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
       }
-    })
+    });
   }
 
   private updatePhoto(): void {
