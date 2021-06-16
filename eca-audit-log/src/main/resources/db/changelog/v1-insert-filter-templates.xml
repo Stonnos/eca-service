@@ -97,7 +97,7 @@
             <column name="field_name" value="eventId"/>
             <column name="description" value="ID события"/>
             <column name="field_order" valueNumeric="0"/>
-            <column name="filter_type" value="TEXT"/>
+            <column name="filter_field_type" value="TEXT"/>
             <column name="match_mode" value="LIKE"/>
             <column name="filter_template_id" valueNumeric="1"/>
         </insert>
@@ -106,7 +106,7 @@
             <column name="field_name" value="groupCode"/>
             <column name="description" value="Группа событий"/>
             <column name="field_order" valueNumeric="1"/>
-            <column name="filter_type" value="REFERENCE"/>
+            <column name="filter_field_type" value="REFERENCE"/>
             <column name="match_mode" value="EQUALS"/>
             <column name="filter_template_id" valueNumeric="1"/>
             <column name="filter_dictionary_id" valueNumeric="1"/>
@@ -116,7 +116,7 @@
             <column name="field_name" value="initiator"/>
             <column name="description" value="Источник события"/>
             <column name="field_order" valueNumeric="2"/>
-            <column name="filter_type" value="TEXT"/>
+            <column name="filter_field_type" value="TEXT"/>
             <column name="match_mode" value="LIKE"/>
             <column name="filter_template_id" valueNumeric="1"/>
         </insert>
@@ -125,7 +125,7 @@
             <column name="field_name" value="eventDate"/>
             <column name="description" value="Дата события"/>
             <column name="field_order" valueNumeric="3"/>
-            <column name="filter_type" value="DATE"/>
+            <column name="filter_field_type" value="DATE"/>
             <column name="match_mode" value="RANGE"/>
             <column name="multiple" valueBoolean="true"/>
             <column name="filter_template_id" valueNumeric="1"/>

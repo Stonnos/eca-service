@@ -104,7 +104,7 @@
             <column name="field_order" type="int">
                 <constraints nullable="false"/>
             </column>
-            <column name="filter_type" type="varchar(255)">
+            <column name="filter_field_type" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="match_mode" type="varchar(255)">
