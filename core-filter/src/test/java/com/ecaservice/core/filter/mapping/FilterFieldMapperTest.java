@@ -1,7 +1,7 @@
-package com.ecaservice.mapping.filters;
+package com.ecaservice.core.filter.mapping;
 
-import com.ecaservice.model.entity.FilterDictionary;
-import com.ecaservice.model.entity.FilterField;
+import com.ecaservice.core.filter.entity.FilterDictionary;
+import com.ecaservice.core.filter.entity.FilterField;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.MatchMode;

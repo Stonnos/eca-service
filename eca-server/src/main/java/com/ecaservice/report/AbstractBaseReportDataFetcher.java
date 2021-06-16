@@ -4,7 +4,7 @@ import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.FilterBean;
 import com.ecaservice.report.model.ReportType;
-import com.ecaservice.service.filter.FilterService;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
@@ -78,7 +78,7 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
     }
 
     private List<FilterBean> getFilterBeans(PageRequestDto pageRequestDto) {
-        Map<String, String> filterFieldsMap = filterService.getFilterFields(filterTemplateType).stream().collect(
+        Map<String, String> filterFieldsMap = filterService.getFilterFields(filterTemplateType.name()).stream().collect(
                 Collectors.toMap(FilterFieldDto::getFieldName, FilterFieldDto::getDescription));
         List<FilterBean> filterBeans = newArrayList();
         if (!CollectionUtils.isEmpty(pageRequestDto.getFilters())) {

@@ -1,4 +1,4 @@
-package com.ecaservice.model.entity;
+package com.ecaservice.core.filter.entity;
 
 import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.MatchMode;

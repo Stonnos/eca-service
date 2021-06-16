@@ -1,19 +1,17 @@
-package com.ecaservice.service.filter;
+package com.ecaservice.core.filter.service;
 
-import com.ecaservice.TestHelperUtils;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.mapping.filters.FilterDictionaryMapperImpl;
-import com.ecaservice.mapping.filters.FilterDictionaryValueMapperImpl;
-import com.ecaservice.mapping.filters.FilterFieldMapperImpl;
-import com.ecaservice.model.entity.FilterDictionary;
-import com.ecaservice.model.entity.FilterTemplate;
-import com.ecaservice.model.entity.FilterTemplateType;
-import com.ecaservice.model.entity.GlobalFilterTemplate;
-import com.ecaservice.repository.FilterDictionaryRepository;
-import com.ecaservice.repository.FilterTemplateRepository;
-import com.ecaservice.repository.GlobalFilterTemplateRepository;
-import com.ecaservice.service.AbstractJpaTest;
-import com.ecaservice.service.filter.dictionary.FilterDictionaries;
+import com.ecaservice.core.filter.AbstractJpaTest;
+import com.ecaservice.core.filter.TestHelperUtils;
+import com.ecaservice.core.filter.entity.FilterDictionary;
+import com.ecaservice.core.filter.entity.FilterTemplate;
+import com.ecaservice.core.filter.entity.GlobalFilterTemplate;
+import com.ecaservice.core.filter.mapping.FilterDictionaryMapperImpl;
+import com.ecaservice.core.filter.mapping.FilterDictionaryValueMapperImpl;
+import com.ecaservice.core.filter.mapping.FilterFieldMapperImpl;
+import com.ecaservice.core.filter.repository.FilterDictionaryRepository;
+import com.ecaservice.core.filter.repository.FilterTemplateRepository;
+import com.ecaservice.core.filter.repository.GlobalFilterTemplateRepository;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import org.junit.jupiter.api.Test;
@@ -34,6 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
         FilterService.class})
 class FilterServiceTest extends AbstractJpaTest {
 
+    public static final String FILTER_TEMPLATE_TYPE = "template";
+    public static final String DICTIONARY_NAME = "dictionaryName";
     @Inject
     private FilterTemplateRepository filterTemplateRepository;
     @Inject
@@ -53,40 +53,40 @@ class FilterServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetFilterTemplateFields() {
-        FilterTemplate filterTemplate = TestHelperUtils.createFilterTemplate(FilterTemplateType.EVALUATION_LOG);
+        FilterTemplate filterTemplate = TestHelperUtils.createFilterTemplate(FILTER_TEMPLATE_TYPE);
         filterTemplateRepository.save(filterTemplate);
-        List<FilterFieldDto> filterFieldDtoList = filterService.getFilterFields(FilterTemplateType.EVALUATION_LOG);
+        List<FilterFieldDto> filterFieldDtoList = filterService.getFilterFields(FILTER_TEMPLATE_TYPE);
         assertThat(filterFieldDtoList).hasSameSizeAs(filterTemplate.getFields());
     }
 
     @Test
     void testNotExistingFilterTemplate() {
         assertThrows(EntityNotFoundException.class,
-                () -> filterService.getFilterFields(FilterTemplateType.EVALUATION_LOG));
+                () -> filterService.getFilterFields(FILTER_TEMPLATE_TYPE));
     }
 
     @Test
     void testGetGlobalFilterTemplateFields() {
         GlobalFilterTemplate filterTemplate =
-                TestHelperUtils.createGlobalFilterTemplate(FilterTemplateType.EVALUATION_LOG);
+                TestHelperUtils.createGlobalFilterTemplate(FILTER_TEMPLATE_TYPE);
         globalFilterTemplateRepository.save(filterTemplate);
-        List<String> fields = filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG);
+        List<String> fields = filterService.getGlobalFilterFields(FILTER_TEMPLATE_TYPE);
         assertThat(fields).hasSameSizeAs(filterTemplate.getFields());
     }
 
     @Test
     void testNotExistingGlobalFilterTemplate() {
         assertThrows(EntityNotFoundException.class,
-                () -> filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG));
+                () -> filterService.getGlobalFilterFields(FILTER_TEMPLATE_TYPE));
     }
 
     @Test
     void testGetFilterDictionary() {
         FilterDictionary filterDictionary = new FilterDictionary();
-        filterDictionary.setName(FilterDictionaries.EVALUATION_METHOD);
+        filterDictionary.setName(DICTIONARY_NAME);
         filterDictionaryRepository.save(filterDictionary);
         FilterDictionaryDto filterDictionaryDto =
-                filterService.getFilterDictionary(FilterDictionaries.EVALUATION_METHOD);
+                filterService.getFilterDictionary(DICTIONARY_NAME);
         assertThat(filterDictionaryDto).isNotNull();
         assertThat(filterDictionaryDto.getName()).isEqualTo(filterDictionary.getName());
     }
@@ -94,6 +94,6 @@ class FilterServiceTest extends AbstractJpaTest {
     @Test
     void testNotExistingFilterDictionary() {
         assertThrows(EntityNotFoundException.class,
-                () -> filterService.getFilterDictionary(FilterDictionaries.EVALUATION_METHOD));
+                () -> filterService.getFilterDictionary(DICTIONARY_NAME));
     }
 }

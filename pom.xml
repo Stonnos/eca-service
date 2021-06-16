@@ -320,6 +320,7 @@
                         <exclude>**/config/**/*</exclude>
                         <exclude>**/exception/**/*</exclude>
                         <exclude>**/util/**/*</exclude>
+                        <exclude>**/specification/**/*</exclude>
                         <exclude>**/metrics/**/*</exclude>
                     </excludes>
                 </configuration>

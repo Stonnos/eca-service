@@ -8,7 +8,7 @@ import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.service.AbstractJpaTest;
-import com.ecaservice.service.filter.FilterService;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -94,7 +94,7 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
                         newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(ClassifierOptionsRequestModel_.RESPONSE_STATUS,
                 Collections.singletonList(ErsResponseStatus.SUCCESS.name()), MatchMode.EQUALS));
-        when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST)).thenReturn(
+        when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST.name())).thenReturn(
                 Arrays.asList(ClassifierOptionsRequestModel_.RELATION_NAME, ClassifierOptionsRequestModel_.REQUEST_ID));
         Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
                 classifierOptionsRequestService.getNextPage(pageRequestDto);
@@ -179,7 +179,7 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
 
     @Test
     void testGlobalFilterForNotStringField() {
-        when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST)).thenReturn(
+        when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST.name())).thenReturn(
                 Collections.singletonList(ClassifierOptionsRequestModel_.REQUEST_DATE));
         ClassifierOptionsRequestModel requestModel =
                 TestHelperUtils.createClassifierOptionsRequestModel(StringUtils.EMPTY, LocalDateTime.now(),

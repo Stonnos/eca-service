@@ -13,7 +13,7 @@ import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.UserService;
-import com.ecaservice.service.filter.FilterService;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -202,8 +202,8 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetClassifiersConfigurations() {
-        when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION)).thenReturn(
-                Collections.emptyList());
+        when(filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION.name()))
+                .thenReturn(Collections.emptyList());
         ClassifiersConfiguration firstConfiguration = saveConfiguration(true, true);
         ClassifiersConfiguration secondConfiguration = saveConfiguration(false, false);
         classifierOptionsDatabaseModelRepository.save(

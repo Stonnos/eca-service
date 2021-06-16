@@ -15,7 +15,7 @@ import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.PageRequestService;
 import com.ecaservice.service.UserService;
-import com.ecaservice.service.filter.FilterService;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -160,7 +160,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
     public Page<ClassifiersConfiguration> getNextPage(PageRequestDto pageRequestDto) {
         var sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
         var globalFilterFields =
-                filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION);
+                filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION.name());
         var filter = new ClassifiersConfigurationFilter(pageRequestDto.getSearchQuery(),
                 globalFilterFields, pageRequestDto.getFilters());
         var pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());

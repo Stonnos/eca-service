@@ -1,6 +1,6 @@
-package com.ecaservice.mapping.filters;
+package com.ecaservice.core.filter.mapping;
 
-import com.ecaservice.model.entity.FilterField;
+import com.ecaservice.core.filter.entity.FilterField;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;

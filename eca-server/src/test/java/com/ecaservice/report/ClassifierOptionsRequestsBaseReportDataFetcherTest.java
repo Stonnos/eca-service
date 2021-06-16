@@ -14,7 +14,7 @@ import com.ecaservice.report.model.ClassifierOptionsRequestBean;
 import com.ecaservice.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.ers.ClassifierOptionsRequestService;
-import com.ecaservice.service.filter.FilterService;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;

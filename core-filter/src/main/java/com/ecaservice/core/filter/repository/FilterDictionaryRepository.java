@@ -1,6 +1,6 @@
-package com.ecaservice.repository;
+package com.ecaservice.core.filter.repository;
 
-import com.ecaservice.model.entity.FilterDictionary;
+import com.ecaservice.core.filter.entity.FilterDictionary;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

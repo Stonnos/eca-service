@@ -23,7 +23,7 @@ import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.AppInstanceService;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.service.evaluation.CalculationExecutorServiceImpl;
-import com.ecaservice.service.filter.FilterService;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -267,7 +267,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
                         newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(Experiment_.REQUEST_STATUS,
                 Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
-        when(filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT)).thenReturn(
+        when(filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT.name())).thenReturn(
                 Arrays.asList(Experiment_.EMAIL, Experiment_.FIRST_NAME, Experiment_.REQUEST_ID));
         Page<Experiment> evaluationLogPage = experimentService.getNextPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();
@@ -286,7 +286,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         experimentRepository.saveAll(Arrays.asList(experiment, experiment1, experiment2, experiment3));
         PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false,
                 RequestStatus.FINISHED.getDescription().substring(0, 2), newArrayList());
-        when(filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT)).thenReturn(
+        when(filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT.name())).thenReturn(
                 Collections.singletonList(Experiment_.REQUEST_STATUS));
         Page<Experiment> evaluationLogPage = experimentService.getNextPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();
@@ -304,7 +304,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         experimentRepository.saveAll(Arrays.asList(experiment, experiment1, experiment2));
         PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Experiment_.CREATION_DATE, false,
                 "query", newArrayList());
-        when(filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT)).thenReturn(
+        when(filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT.name())).thenReturn(
                 Collections.singletonList(Experiment_.REQUEST_STATUS));
         Page<Experiment> evaluationLogPage = experimentService.getNextPage(pageRequestDto);
         assertThat(evaluationLogPage).isEmpty();

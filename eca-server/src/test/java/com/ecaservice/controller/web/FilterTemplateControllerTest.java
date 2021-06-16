@@ -4,7 +4,7 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
-import com.ecaservice.service.filter.FilterService;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.service.filter.dictionary.FilterDictionaries;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
@@ -121,7 +121,7 @@ class FilterTemplateControllerTest extends AbstractControllerTest {
 
     private void testGetFilterTemplateNotFound(String templateUrl, FilterTemplateType filterTemplateType)
             throws Exception {
-        when(filterService.getFilterFields(filterTemplateType)).thenThrow(new EntityNotFoundException());
+        when(filterService.getFilterFields(filterTemplateType.name())).thenThrow(new EntityNotFoundException());
         mockMvc.perform(get(templateUrl)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
@@ -129,7 +129,7 @@ class FilterTemplateControllerTest extends AbstractControllerTest {
 
     private void testGetFilterTemplateOk(String templateUrl, FilterTemplateType filterTemplateType) throws Exception {
         List<FilterFieldDto> filterFieldDtoList = Collections.singletonList(TestHelperUtils.createFilterFieldDto());
-        when(filterService.getFilterFields(filterTemplateType)).thenReturn(filterFieldDtoList);
+        when(filterService.getFilterFields(filterTemplateType.name())).thenReturn(filterFieldDtoList);
         mockMvc.perform(get(templateUrl)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())

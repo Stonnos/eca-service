@@ -1,7 +1,7 @@
 package com.ecaservice.controller.web;
 
 import com.ecaservice.model.entity.FilterTemplateType;
-import com.ecaservice.service.filter.FilterService;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.service.filter.dictionary.FilterDictionaries;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
@@ -42,7 +42,7 @@ public class FilterTemplateController {
     )
     @GetMapping(value = "/experiment")
     public List<FilterFieldDto> getExperimentFilter() {
-        return filterService.getFilterFields(FilterTemplateType.EXPERIMENT);
+        return filterService.getFilterFields(FilterTemplateType.EXPERIMENT.name());
     }
 
     /**
@@ -57,7 +57,7 @@ public class FilterTemplateController {
     )
     @GetMapping(value = "/evaluation")
     public List<FilterFieldDto> getEvaluationLogFilter() {
-        return filterService.getFilterFields(FilterTemplateType.EVALUATION_LOG);
+        return filterService.getFilterFields(FilterTemplateType.EVALUATION_LOG.name());
     }
 
     /**
@@ -72,7 +72,7 @@ public class FilterTemplateController {
     )
     @GetMapping(value = "/classifier-options-request")
     public List<FilterFieldDto> getClassifierOptionsRequestFilter() {
-        return filterService.getFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST);
+        return filterService.getFilterFields(FilterTemplateType.CLASSIFIER_OPTIONS_REQUEST.name());
     }
 
     /**

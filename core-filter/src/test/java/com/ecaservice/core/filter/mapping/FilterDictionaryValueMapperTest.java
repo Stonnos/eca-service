@@ -1,7 +1,7 @@
-package com.ecaservice.mapping.filters;
+package com.ecaservice.core.filter.mapping;
 
-import com.ecaservice.TestHelperUtils;
-import com.ecaservice.model.entity.FilterDictionaryValue;
+import com.ecaservice.core.filter.TestHelperUtils;
+import com.ecaservice.core.filter.entity.FilterDictionaryValue;
 import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

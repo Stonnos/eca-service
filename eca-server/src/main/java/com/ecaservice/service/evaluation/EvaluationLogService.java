@@ -13,7 +13,7 @@ import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.repository.EvaluationResultsRequestEntityRepository;
 import com.ecaservice.service.PageRequestService;
 import com.ecaservice.service.ers.ErsService;
-import com.ecaservice.service.filter.FilterService;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
@@ -53,7 +53,7 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
     @Override
     public Page<EvaluationLog> getNextPage(PageRequestDto pageRequestDto) {
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
-        List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG);
+        List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG.name());
         EvaluationLogFilter filter = new EvaluationLogFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());
         int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());

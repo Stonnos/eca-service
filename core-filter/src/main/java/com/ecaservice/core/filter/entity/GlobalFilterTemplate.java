@@ -1,12 +1,10 @@
-package com.ecaservice.model.entity;
+package com.ecaservice.core.filter.entity;
 
 import lombok.Data;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -35,9 +33,8 @@ public class GlobalFilterTemplate {
     /**
      * Template type
      */
-    @Enumerated(EnumType.STRING)
     @Column(name = "template_type", nullable = false)
-    private FilterTemplateType templateType;
+    private String templateType;
 
     /**
      * Filter fields list

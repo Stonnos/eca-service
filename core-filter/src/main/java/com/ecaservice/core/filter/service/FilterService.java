@@ -1,17 +1,16 @@
-package com.ecaservice.service.filter;
+package com.ecaservice.core.filter.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.config.cache.CacheNames;
-import com.ecaservice.mapping.filters.FilterDictionaryMapper;
-import com.ecaservice.mapping.filters.FilterFieldMapper;
-import com.ecaservice.model.entity.FilterDictionary;
-import com.ecaservice.model.entity.FilterTemplate;
-import com.ecaservice.model.entity.FilterTemplateType;
-import com.ecaservice.model.entity.GlobalFilterField;
-import com.ecaservice.model.entity.GlobalFilterTemplate;
-import com.ecaservice.repository.FilterDictionaryRepository;
-import com.ecaservice.repository.FilterTemplateRepository;
-import com.ecaservice.repository.GlobalFilterTemplateRepository;
+import com.ecaservice.core.filter.config.CacheNames;
+import com.ecaservice.core.filter.entity.FilterDictionary;
+import com.ecaservice.core.filter.entity.FilterTemplate;
+import com.ecaservice.core.filter.entity.GlobalFilterField;
+import com.ecaservice.core.filter.entity.GlobalFilterTemplate;
+import com.ecaservice.core.filter.mapping.FilterDictionaryMapper;
+import com.ecaservice.core.filter.mapping.FilterFieldMapper;
+import com.ecaservice.core.filter.repository.FilterDictionaryRepository;
+import com.ecaservice.core.filter.repository.FilterTemplateRepository;
+import com.ecaservice.core.filter.repository.GlobalFilterTemplateRepository;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +44,7 @@ public class FilterService {
      * @return global filter fields list
      */
     @Cacheable(CacheNames.GLOBAL_FILTERS_CACHE_NAME)
-    public List<String> getGlobalFilterFields(FilterTemplateType filterTemplateType) {
+    public List<String> getGlobalFilterFields(String filterTemplateType) {
         return globalFilterTemplateRepository.findFirstByTemplateType(filterTemplateType).map(
                 GlobalFilterTemplate::getFields).map(
                 globalFilterFields -> globalFilterFields.stream().map(GlobalFilterField::getFieldName).collect(
@@ -60,7 +59,7 @@ public class FilterService {
      * @return filter field dto list
      */
     @Cacheable(CacheNames.FILTER_TEMPLATES_CACHE_NAME)
-    public List<FilterFieldDto> getFilterFields(FilterTemplateType templateType) {
+    public List<FilterFieldDto> getFilterFields(String templateType) {
         log.info("Fetch filter fields for template type [{}]", templateType);
         return filterTemplateRepository.findFirstByTemplateType(templateType).map(FilterTemplate::getFields).map(
                 filterFieldMapper::map).orElseThrow(

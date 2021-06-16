@@ -1,6 +1,6 @@
-package com.ecaservice.mapping.filters;
+package com.ecaservice.core.filter.mapping;
 
-import com.ecaservice.model.entity.FilterDictionary;
+import com.ecaservice.core.filter.entity.FilterDictionary;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
