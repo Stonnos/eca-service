@@ -1,6 +1,6 @@
 package com.ecaservice.audit.config.swagger;
 
-import com.ecaservice.audit.controller.AuditEventController;
+import com.ecaservice.audit.controller.audit.AuditEventController;
 import com.ecaservice.config.swagger.AbstractSwagger2Configuration;
 import com.ecaservice.config.swagger.Swagger2ApiConfig;
 import com.ecaservice.config.swagger.SwaggerBaseConfiguration;

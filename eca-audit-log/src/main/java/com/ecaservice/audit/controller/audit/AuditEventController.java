@@ -1,4 +1,4 @@
-package com.ecaservice.audit.controller;
+package com.ecaservice.audit.controller.audit;
 
 import com.ecaservice.audit.dto.AuditEventRequest;
 import com.ecaservice.audit.service.AuditLogService;
