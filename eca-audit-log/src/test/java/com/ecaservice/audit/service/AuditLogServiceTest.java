@@ -1,8 +1,10 @@
 package com.ecaservice.audit.service;
 
 import com.ecaservice.audit.AbstractJpaTest;
+import com.ecaservice.audit.config.EcaAuditLogConfig;
 import com.ecaservice.audit.mapping.AuditLogMapperImpl;
 import com.ecaservice.audit.repository.AuditLogRepository;
+import com.ecaservice.core.filter.annotation.EnableFilters;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
 
@@ -16,7 +18,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@Import({AuditLogMapperImpl.class, AuditLogService.class})
+@EnableFilters
+@Import({AuditLogMapperImpl.class, AuditLogService.class, EcaAuditLogConfig.class})
 class AuditLogServiceTest extends AbstractJpaTest {
 
     @Inject
