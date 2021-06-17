@@ -49,8 +49,12 @@
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="event_type" type="varchar(255)"/>
-            <column name="message_template" type="varchar(1024)"/>
+            <column name="event_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message_template" type="varchar(1024)">
+                <constraints nullable="false"/>
+            </column>
             <column name="audit_code_id" type="varchar(255)">
                 <constraints foreignKeyName="fk_audit_event_template_code_id"
                              referencedTableName="audit_code" referencedColumnNames="id" nullable="false"/>
