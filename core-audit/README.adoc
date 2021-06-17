@@ -1,0 +1,60 @@
+= Библиотека аудита
+:toc:
+:toc-title: Оглавление
+
+== Введение
+
+В данном документе приведена инструкция для подключения библиотеки аудита к spring boot приложению.
+
+=== 1. Подключение библиотеки
+
+1. Для начала, необходимо добавить зависимость в pom.xml
+
+[source,xml]
+----
+<dependency>
+    <groupId>eca.service</groupId>
+    <artifactId>core-audit</artifactId>
+    <version>${project.version}</version>
+</dependency>
+----
+
+2. С помощью аннотации @EnableAudit импортировать бины библиотеки
+
+[source,java]
+----
+@EnableAudit
+@Configuration
+public class AppConfiguration {
+
+    /**
+     * Creates custom audit event initiator bean.
+     *
+     * @return audit event initiator bean
+     */
+    @Primary
+    @Bean
+    public AuditEventInitiator auditEventInitiator() {
+        return () -> SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+}
+----
+
+Обратите внимание, что в конфигурации можно переопределить основной бин AuditEventInitiator, который
+предоставляет единственный метод getInitiator для получения инициатора события аудита, например текущего
+авторизированного пользователя.
+
+3. В конфигурационный файл liquibase, добавить путь к файлу audit-changelog.xml со скриптами для создания служебных таблиц аудита
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        logicalFilePath="liquibase-changelog.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!-- your change sets -->
+    <include file="../audit-changelog.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>
+----
