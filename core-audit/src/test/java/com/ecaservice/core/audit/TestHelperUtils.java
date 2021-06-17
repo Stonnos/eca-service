@@ -22,6 +22,7 @@ public class TestHelperUtils {
     private static final String CODE_TITLE = "Code title";
     private static final String CODE = "code";
     private static final String MESSAGE_TEMPLATE = "Message";
+    private static final long ID = 1L;
 
     /**
      * Creates audit group entity.
@@ -56,6 +57,7 @@ public class TestHelperUtils {
      */
     public static AuditEventTemplateEntity createAuditEventTemplateEntity() {
         var auditEventTemplateEntity = new AuditEventTemplateEntity();
+        auditEventTemplateEntity.setId(ID);
         auditEventTemplateEntity.setEventType(EventType.SUCCESS);
         auditEventTemplateEntity.setAuditCode(createAuditCodeEntity());
         auditEventTemplateEntity.setMessageTemplate(MESSAGE_TEMPLATE);
