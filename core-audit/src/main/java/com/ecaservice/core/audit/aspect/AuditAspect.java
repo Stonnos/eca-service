@@ -12,10 +12,8 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -35,7 +33,6 @@ public class AuditAspect {
 
     private final ApplicationEventPublisher applicationEventPublisher;
     private final AuditEventInitiator auditEventInitiator;
-    private final ParameterNameDiscoverer auditParameterNameDiscoverer;
 
     /**
      * Wrapper to audit service method.
@@ -60,9 +57,8 @@ public class AuditAspect {
 
     private Map<String, Object> getMethodParams(ProceedingJoinPoint joinPoint) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        Method method = methodSignature.getMethod();
         Map<String, Object> paramsMap = newHashMap();
-        String[] parameterNames = auditParameterNameDiscoverer.getParameterNames(method);
+        String[] parameterNames = methodSignature.getParameterNames();
         if (parameterNames == null || parameterNames.length == 0) {
             return Collections.emptyMap();
         }

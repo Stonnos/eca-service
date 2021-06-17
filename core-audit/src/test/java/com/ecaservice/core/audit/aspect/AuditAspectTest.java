@@ -15,12 +15,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.core.ParameterNameDiscoverer;
-
-import java.lang.reflect.Method;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -49,8 +45,6 @@ class AuditAspectTest {
     private ApplicationEventPublisher applicationEventPublisher;
     @Mock
     private AuditEventInitiator auditEventInitiator;
-    @Mock
-    private ParameterNameDiscoverer auditParameterNameDiscoverer;
 
     @InjectMocks
     private AuditAspect auditAspect;
@@ -64,7 +58,6 @@ class AuditAspectTest {
         when(audit.value()).thenReturn(AUDIT_CODE);
         var joinPoint = mockProceedingJoinPoint();
         when(auditEventInitiator.getInitiator()).thenReturn(USER);
-        when(auditParameterNameDiscoverer.getParameterNames(any(Method.class))).thenReturn(PARAMETERS_NAMES);
         auditAspect.around(joinPoint, audit);
         verify(applicationEventPublisher, atLeastOnce()).publishEvent(auditEventArgumentCaptor.capture());
         var auditEvent = auditEventArgumentCaptor.getValue();
@@ -85,7 +78,7 @@ class AuditAspectTest {
         when(proceedingJoinPoint.proceed()).thenReturn(OUTPUT_VALUE);
         MethodSignature signature = mock(MethodSignature.class);
         when(signature.getName()).thenReturn(METHOD_NAME);
-        when(signature.getMethod()).thenReturn(AuditEventInitiator.class.getMethod("getInitiator"));
+        when(signature.getParameterNames()).thenReturn(PARAMETERS_NAMES);
         when(proceedingJoinPoint.getSignature()).thenReturn(signature);
         return proceedingJoinPoint;
     }
