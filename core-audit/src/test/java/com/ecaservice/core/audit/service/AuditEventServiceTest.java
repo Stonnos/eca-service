@@ -75,8 +75,9 @@ class AuditEventServiceTest extends AbstractJpaTest {
     void testAudit() {
         String auditCode = auditEventTemplateEntity.getAuditCode().getId();
         var contextParams = new AuditContextParams();
-        when(auditTemplateProcessorService.process(auditCode, EventType.SUCCESS, contextParams)).thenReturn(MESSAGE);
-        auditEventService.audit(auditCode, EventType.SUCCESS, INITIATOR, contextParams);
+        when(auditTemplateProcessorService.process(auditCode, auditEventTemplateEntity.getEventType(),
+                contextParams)).thenReturn(MESSAGE);
+        auditEventService.audit(auditCode, auditEventTemplateEntity.getEventType(), INITIATOR, contextParams);
         verify(auditEventSender, atLeastOnce()).sendEvent(auditEventRequestArgumentCaptor.capture());
         var auditEventRequest = auditEventRequestArgumentCaptor.getValue();
         assertThat(auditEventRequest).isNotNull();
