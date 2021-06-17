@@ -12,7 +12,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
@@ -54,7 +53,7 @@ class AuditAspectTest {
 
     @Test
     void testAroundMethod() throws Throwable {
-        var audit = Mockito.mock(Audit.class);
+        var audit = mock(Audit.class);
         when(audit.value()).thenReturn(AUDIT_CODE);
         var joinPoint = mockProceedingJoinPoint();
         when(auditEventInitiator.getInitiator()).thenReturn(USER);
