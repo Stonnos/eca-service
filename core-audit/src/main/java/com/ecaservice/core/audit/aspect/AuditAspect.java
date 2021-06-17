@@ -5,13 +5,13 @@ import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.audit.event.AuditEvent;
 import com.ecaservice.core.audit.model.AuditContextParams;
 import com.ecaservice.core.audit.service.AuditEventInitiator;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.stereotype.Component;
 
@@ -30,24 +30,12 @@ import static com.google.common.collect.Maps.newHashMap;
 @Slf4j
 @Aspect
 @Component
+@RequiredArgsConstructor
 public class AuditAspect {
 
     private final ApplicationEventPublisher applicationEventPublisher;
     private final AuditEventInitiator auditEventInitiator;
-
-    private final ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
-
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param applicationEventPublisher - application event publisher bean
-     * @param auditEventInitiator       - audit event initiator
-     */
-    public AuditAspect(ApplicationEventPublisher applicationEventPublisher,
-                       AuditEventInitiator auditEventInitiator) {
-        this.applicationEventPublisher = applicationEventPublisher;
-        this.auditEventInitiator = auditEventInitiator;
-    }
+    private final ParameterNameDiscoverer auditParameterNameDiscoverer;
 
     /**
      * Wrapper to audit service method.
@@ -74,7 +62,7 @@ public class AuditAspect {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
         Map<String, Object> paramsMap = newHashMap();
-        String[] parameterNames = parameterNameDiscoverer.getParameterNames(method);
+        String[] parameterNames = auditParameterNameDiscoverer.getParameterNames(method);
         if (parameterNames == null || parameterNames.length == 0) {
             return Collections.emptyMap();
         }
