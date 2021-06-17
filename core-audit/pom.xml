@@ -46,6 +46,17 @@
             <artifactId>eca-audit-transport</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>core-test</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
