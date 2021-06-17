@@ -19,6 +19,14 @@
 </dependency>
 ----
 
+В файле application.yml активировать использование библиотеки
+
+[source,yml]
+----
+audit:
+  enabled: true
+----
+
 С помощью аннотации @EnableAudit импортировать бины библиотеки
 
 [source,java]
