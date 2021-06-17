@@ -8,7 +8,7 @@
 
 === 1. Подключение библиотеки
 
-1. Для начала, необходимо добавить зависимость в pom.xml
+Для начала, необходимо добавить зависимость в pom.xml
 
 [source,xml]
 ----
@@ -19,7 +19,7 @@
 </dependency>
 ----
 
-2. С помощью аннотации @EnableAudit импортировать бины библиотеки
+С помощью аннотации @EnableAudit импортировать бины библиотеки
 
 [source,java]
 ----
@@ -44,13 +44,12 @@ public class AppConfiguration {
 предоставляет единственный метод getInitiator для получения инициатора события аудита, например текущего
 авторизированного пользователя.
 
-3. В конфигурационный файл liquibase, добавить путь к файлу audit-changelog.xml со скриптами для создания служебных таблиц аудита
+В конфигурационный файл liquibase, добавить путь к файлу audit-changelog.xml со скриптами для создания служебных таблиц аудита
 
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog
-        logicalFilePath="liquibase-changelog.xml"
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
@@ -58,3 +57,6 @@ public class AppConfiguration {
     <include file="../audit-changelog.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
 ----
+
+=== 2. Настройка шаблонов с событиями аудита
+
