@@ -715,3 +715,30 @@ image::./images/eca-mail-db-schema.png[alt=Схема базы данных eca-
 Таблица также содержит составной первичный ключ для полей template_id, param_id.
 
 Таблицы databasechangeloglock и databasechangeloglock предназначены для управления миграциями базы данных.
+
+=== 3.11 Схема БД eca-audit-log
+
+На рисунке 3.6 приведена схема базы данных eca-audit-log:
+
+image::./images/eca-audit-log-db-schema.png[alt=Схема базы данных eca-audit-log,scaledwidth=80%]
+
+=== 3.12 Описание таблиц БД eca-audit-log
+
+==== Таблица 3.43 - 'audit_log' - содержит данные о событиях аудита в системе
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                      |bigint           |+|+|+                              |Идентификатор записи (первичный ключ)
+|event_id                |varchar(255)     |-|+|-                              |Внешний ID события
+|message                 |text             |-|+|-                              |Текст сообщения
+|initiator               |varchar(255)     |-|+|-                              |Источник события, например имя пользователя
+|event_type              |varchar(255)     |-|+|-                              |Тип события
+|group_code              |varchar(255)     |-|+|-                              |Код группы событий
+|group_title             |varchar(255)     |-|-|-                              |Описание группы событий
+|audit_code              |varchar(255)     |-|+|-                              |Код события
+|audit_code_title        |varchar(255)     |-|-|-                              |Описание кода события
+|event_date              |timestamp        |-|+|-                              |Дата события
+|===
+
+Таблицы databasechangeloglock и databasechangeloglock предназначены для управления миграциями базы данных.
+Описание таблиц для работы с шаблонами фильтров приведено в разделе 3.2 (таблицы 3.7 - 3.12)
