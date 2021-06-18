@@ -99,7 +99,7 @@ services:
       SPRING_PROFILES_ACTIVE: "docker"
       DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
       DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
-      JAVA_OPTS: "-Xmx756m"
+      JAVA_OPTS: "-Xmx512m"
     networks:
       - default
     depends_on:
@@ -114,7 +114,7 @@ services:
       SPRING_PROFILES_ACTIVE: "docker"
       DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
       DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
-      JAVA_OPTS: "-Xmx756m"
+      JAVA_OPTS: "-Xmx512m"
       AUDIT_ENABLED: "true"
     networks:
       - default
