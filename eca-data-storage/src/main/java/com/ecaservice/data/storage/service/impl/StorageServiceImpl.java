@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.data.storage.config.audit.AuditCodes.DELETE_INSTANCES;
 import static com.ecaservice.data.storage.config.audit.AuditCodes.RENAME_INSTANCES;
+import static com.ecaservice.data.storage.config.audit.AuditCodes.SAVE_INSTANCES;
 import static com.ecaservice.data.storage.entity.InstancesEntity_.CREATED;
 import static com.ecaservice.data.storage.util.FilterUtils.buildSpecification;
 
@@ -54,6 +55,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    @Audit(SAVE_INSTANCES)
     public InstancesEntity saveData(Instances instances, String tableName) {
         log.info("Starting to save instances into table [{}]", tableName);
         if (tableNameService.tableExists(tableName)) {
