@@ -33,6 +33,8 @@ public class ReportGenerator {
             REPORTS_DIRECTORY + "/classifier-options-requests-report-template.xlsx";
     private static final String CLASSIFIERS_CONFIGURATION_TEMPLATE =
             REPORTS_DIRECTORY + "/classifiers-configuration-report-template.xlsx";
+    private static final String AUDIT_LOGS_REPORT_TEMPLATE =
+            REPORTS_DIRECTORY + "/audit-logs-report-template.xlsx";
 
     /**
      * Context variables
@@ -66,6 +68,11 @@ public class ReportGenerator {
             @Override
             public void caseClassifiersConfiguration() {
                 generateReport(CLASSIFIERS_CONFIGURATION_TEMPLATE, reportBean, outputStream);
+            }
+
+            @Override
+            public void caseAuditLogs() {
+                generateReport(AUDIT_LOGS_REPORT_TEMPLATE, reportBean, outputStream);
             }
         });
     }

@@ -26,4 +26,9 @@ public interface ReportTypeVisitor {
      * Method executed in case if experiment status is CLASSIFIERS_CONFIGURATION.
      */
     void caseClassifiersConfiguration();
+
+    /**
+     * Method executed in case if experiment status is AUDIT_LOGS.
+     */
+    void caseAuditLogs();
 }

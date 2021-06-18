@@ -49,6 +49,16 @@ public enum ReportType {
         public void handle(ReportTypeVisitor visitor) {
             visitor.caseClassifiersConfiguration();
         }
+    },
+
+    /**
+     * Audit logs report
+     */
+    AUDIT_LOGS("audit-logs") {
+        @Override
+        public void handle(ReportTypeVisitor visitor) {
+            visitor.caseAuditLogs();
+        }
     };
 
     /**
