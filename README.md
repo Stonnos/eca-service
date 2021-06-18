@@ -29,6 +29,7 @@
 * eca-ers-transport - модуль содержит dto классы для сервиса ERS
 * eca-external-api-transport - модуль содержит dto классы для внешнего API
 * eca-audit-transport - модуль содержит dto классы для сервиса журнала аудита
+* eca-report-model - модуль содержит модельные классы для отчетов
 * eca-web-transport - модуль содержит dto классы для REST API WEB
 * core-audit - библиотека для отправки событий аудита
 * core-filter - общая библиотека для фильтрации и сортировки
