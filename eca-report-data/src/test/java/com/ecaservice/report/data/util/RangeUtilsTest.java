@@ -1,8 +1,8 @@
-package com.ecaservice.util;
+package com.ecaservice.report.data.util;
 
 import org.junit.jupiter.api.Test;
 
-import static com.ecaservice.util.RangeUtils.formatDateRange;
+import static com.ecaservice.report.data.util.RangeUtils.formatDateRange;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

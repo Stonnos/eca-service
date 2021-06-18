@@ -28,6 +28,7 @@
         <module>rabbit-core</module>
         <module>classifiers-options-adapter</module>
         <module>eca-report</module>
+        <module>eca-report-data</module>
         <module>eca-oauth</module>
         <module>eca-server</module>
         <module>eca-mail</module>
@@ -321,6 +322,7 @@
                         <exclude>**/exception/**/*</exclude>
                         <exclude>**/util/**/*</exclude>
                         <exclude>**/specification/**/*</exclude>
+                        <exclude>**/fetcher/**/*</exclude>
                         <exclude>**/metrics/**/*</exclude>
                     </excludes>
                 </configuration>

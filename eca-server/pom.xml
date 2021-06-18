@@ -175,7 +175,7 @@
 
         <dependency>
             <groupId>eca.service</groupId>
-            <artifactId>eca-report</artifactId>
+            <artifactId>eca-report-data</artifactId>
             <version>${project.version}</version>
         </dependency>
 

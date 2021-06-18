@@ -1,29 +1,31 @@
-package com.ecaservice.report;
+package com.ecaservice.report.data.fetcher;
 
-import com.ecaservice.model.entity.FilterTemplateType;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.FilterBean;
 import com.ecaservice.report.model.ReportType;
-import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import eca.core.DescriptiveEnum;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.core.filter.util.ReflectionUtils.getFieldType;
-import static com.ecaservice.util.RangeUtils.formatDateRange;
+import static com.ecaservice.report.data.util.RangeUtils.formatDateRange;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
@@ -35,11 +37,12 @@ import static com.google.common.collect.Lists.newArrayList;
 public abstract class AbstractBaseReportDataFetcher<E, B> {
 
     private static final String VALUES_SEPARATOR = ", ";
+    private static final String GET_ENUM_DESCRIPTION_METHOD_NAME = "getDescription";
 
     @Getter
     private final ReportType reportType;
     private final Class<E> entityClazz;
-    private final FilterTemplateType filterTemplateType;
+    private final String filterTemplateType;
     private final FilterService filterService;
 
     /**
@@ -78,8 +81,9 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
     }
 
     private List<FilterBean> getFilterBeans(PageRequestDto pageRequestDto) {
-        Map<String, String> filterFieldsMap = filterService.getFilterFields(filterTemplateType.name()).stream().collect(
-                Collectors.toMap(FilterFieldDto::getFieldName, FilterFieldDto::getDescription));
+        Map<String, String> filterFieldsMap = filterService.getFilterFields(filterTemplateType)
+                .stream()
+                .collect(Collectors.toMap(FilterFieldDto::getFieldName, FilterFieldDto::getDescription));
         List<FilterBean> filterBeans = newArrayList();
         if (!CollectionUtils.isEmpty(pageRequestDto.getFilters())) {
             pageRequestDto.getFilters().forEach(filterRequestDto -> {
@@ -112,14 +116,20 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
     }
 
     private String getEnumValuesAsString(List<String> values, Class fieldClazz) {
-        if (!DescriptiveEnum.class.isAssignableFrom(fieldClazz)) {
-            throw new IllegalStateException(
-                    String.format("Enum class [%s] must implements [%s] interface!", fieldClazz.getSimpleName(),
-                            DescriptiveEnum.class.getSimpleName()));
+        List<String> enumValues;
+        Method method = ReflectionUtils.findMethod(fieldClazz, GET_ENUM_DESCRIPTION_METHOD_NAME);
+        if (method != null) {
+            enumValues = values.stream()
+                    .map(value -> {
+                        Enum<?> enumVal = Enum.valueOf(fieldClazz, value);
+                        Object retVal = ReflectionUtils.invokeMethod(method, enumVal);
+                        return Optional.ofNullable(retVal).map(String::valueOf).orElse(null);
+                    })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+        } else {
+            enumValues = values;
         }
-        List<String> enumValues = values.stream()
-                .map(value -> ((DescriptiveEnum) Enum.valueOf(fieldClazz, value)).getDescription())
-                .collect(Collectors.toList());
         return StringUtils.join(enumValues, VALUES_SEPARATOR);
     }
 

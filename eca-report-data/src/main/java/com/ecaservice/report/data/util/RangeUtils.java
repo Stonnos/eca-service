@@ -1,4 +1,4 @@
-package com.ecaservice.util;
+package com.ecaservice.report.data.util;
 
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;

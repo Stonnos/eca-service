@@ -3,6 +3,7 @@ package com.ecaservice.report;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.FilterTemplateType;
+import com.ecaservice.report.data.fetcher.AbstractBaseReportDataFetcher;
 import com.ecaservice.report.model.ExperimentBean;
 import com.ecaservice.report.model.ReportType;
 import com.ecaservice.service.experiment.ExperimentService;
@@ -36,7 +37,7 @@ public class ExperimentsBaseReportDataFetcher extends AbstractBaseReportDataFetc
     public ExperimentsBaseReportDataFetcher(FilterService filterService,
                                             ExperimentService experimentService,
                                             ExperimentMapper experimentMapper) {
-        super(ReportType.EXPERIMENTS, Experiment.class, FilterTemplateType.EXPERIMENT, filterService);
+        super(ReportType.EXPERIMENTS, Experiment.class, FilterTemplateType.EXPERIMENT.name(), filterService);
         this.experimentService = experimentService;
         this.experimentMapper = experimentMapper;
     }
