@@ -1,0 +1,84 @@
+= События аудита
+:toc:
+:toc-title: Оглавление
+
+== Введение
+
+В данном документе приведено описание всех событий аудита в системе eca - service.
+
+== 1. Описание групп событий
+
+[options="header"]
+|===
+|Код группы|Описание
+|DATA_STORAGE_ACTIONS
+|Действия с обучающими выборками
+|USER_PROFILE_ACTIONS
+|Действия пользователя в личном кабинете
+|CLASSIFIERS_CONFIGURATIONS_ACTIONS
+|Действия с конфигурациями классификаторов
+|===
+
+== 2. Описание кодов событий аудита
+
+[options="header"]
+|===
+|Код|Описание|Код группы
+|ENABLE_2FA
+|Включение двухфакторной аутентификации
+|USER_PROFILE_ACTIONS
+|DISABLE_2FA
+|Выключение двухфакторной аутентификации
+|USER_PROFILE_ACTIONS
+|UPDATE_PERSONAL_DATA|
+Изменение персональных данных
+|USER_PROFILE_ACTIONS
+|UPDATE_EMAIL
+|Изменение email
+|USER_PROFILE_ACTIONS
+|UPDATE_PHOTO
+|Изменение фотографии профиля
+|USER_PROFILE_ACTIONS
+|DELETE_PHOTO
+|Удаление фотографии профиля
+|USER_PROFILE_ACTIONS
+|CREATE_USER
+|Создание нового пользователя в системе
+|USER_PROFILE_ACTIONS
+|LOCK_USER
+|Блокировка пользователя
+|USER_PROFILE_ACTIONS
+|UNLOCK_USER
+|Снятие блокировки пользователя
+|USER_PROFILE_ACTIONS
+|SAVE_INSTANCES
+|Сохранение файла с обучающей выборкой в базу данных
+|DATA_STORAGE_ACTIONS
+|RENAME_INSTANCES
+|Изменение имени таблицы с обучающей выборкой
+|DATA_STORAGE_ACTIONS
+|DELETE_INSTANCES
+|Удаление таблицы с обучающей выборкой
+|DATA_STORAGE_ACTIONS
+|ADD_CONFIGURATION
+|Добавление новой конфигурации с настройками классификаторов
+|CLASSIFIERS_CONFIGURATIONS_ACTIONS
+|RENAME_CONFIGURATION
+|Изменение названия конфигурации с настройками классификаторов
+|CLASSIFIERS_CONFIGURATIONS_ACTIONS
+|DELETE_CONFIGURATION
+|Удаление конфигурации с настройками классификаторов
+|CLASSIFIERS_CONFIGURATIONS_ACTIONS
+|SET_ACTIVE_CONFIGURATION
+|Установка активной конфигурации с настройками классификаторов
+|CLASSIFIERS_CONFIGURATIONS_ACTIONS
+|COPY_CONFIGURATION
+|Создание копии конфигурации с настройками классификаторов
+|CLASSIFIERS_CONFIGURATIONS_ACTIONS
+|ADD_CLASSIFIER_OPTIONS
+|Добавление настроек классификатора в конфигурацию
+|CLASSIFIERS_CONFIGURATIONS_ACTIONS
+|DELETE_CLASSIFIER_OPTIONS
+|Удаление настроек классификатора из конфигурации
+|CLASSIFIERS_CONFIGURATIONS_ACTIONS
+|===
