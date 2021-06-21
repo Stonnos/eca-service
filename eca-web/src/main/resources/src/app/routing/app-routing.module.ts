@@ -16,6 +16,7 @@ import { InstancesListComponent } from "../instances/components/instances-list.c
 import { UserProfileComponent } from "../user-profile/components/user-profile.component";
 import { ConfirmChangePasswordComponent } from "../change-password/components/confirm-change-password/confirm-change-password.component";
 import { AccessDeniedComponent } from "../access-denied/components/access-denied.component";
+import { AuditLogsComponent } from "../audit-logs/components/audit-logs.component";
 
 const routes: Routes = [
   {
@@ -41,6 +42,10 @@ const routes: Routes = [
       {
         path: 'users',
         component: UsersListComponent
+      },
+      {
+        path: 'audit-logs',
+        component: AuditLogsComponent
       },
       {
         path: 'classifiers/evaluation-results/:id',

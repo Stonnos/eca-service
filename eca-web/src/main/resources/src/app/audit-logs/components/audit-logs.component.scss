@@ -1,0 +1,19 @@
+.audit-logs-table::ng-deep {
+
+  .ui-table-tbody > tr > td {
+    width: 300px;
+
+    &:first-child {
+      width: 330px;
+      font-weight: bold;
+    }
+  }
+
+  .ui-table-thead > tr > th {
+    width: 300px;
+
+    &:first-child {
+      width: 330px;
+    }
+  }
+}

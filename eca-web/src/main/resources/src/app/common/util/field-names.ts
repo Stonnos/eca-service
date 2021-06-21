@@ -115,3 +115,12 @@ export class InstancesFields {
   public static readonly CREATED: string = "created";
   public static readonly CREATED_BY: string = "createdBy";
 }
+
+export class AuditLogFields {
+  public static readonly EVENT_ID: string = "eventId";
+  public static readonly EVENT_DATE: string = "eventDate";
+  public static readonly GROUP_TITLE: string = "groupTitle";
+  public static readonly CODE_TITLE: string = "codeTitle";
+  public static readonly MESSAGE: string = "message";
+  public static readonly INITIATOR: string = "initiator";
+}

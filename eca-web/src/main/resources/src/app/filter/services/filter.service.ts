@@ -15,7 +15,8 @@ import { Utils } from "../../common/util/utils";
 @Injectable()
 export class FilterService {
 
-  private serviceUrl = environment.serverUrl + '/filter-templates';
+  private ecaServerUrl = environment.serverUrl + '/filter-templates';
+  private auditLogsUrl = environment.auditLogUrl + '/audit-log/filter-templates';
 
   public constructor(private http: HttpClient) {
   }
@@ -25,7 +26,7 @@ export class FilterService {
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': Utils.getBearerTokenHeader()
     });
-    return this.http.get<FilterFieldDto[]>(this.serviceUrl + '/experiment', { headers: headers });
+    return this.http.get<FilterFieldDto[]>(this.ecaServerUrl + '/experiment', { headers: headers });
   }
 
   public getEvaluationLogFilterFields(): Observable<FilterFieldDto[]> {
@@ -33,7 +34,7 @@ export class FilterService {
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': Utils.getBearerTokenHeader()
     });
-    return this.http.get<FilterFieldDto[]>(this.serviceUrl + '/evaluation', { headers: headers });
+    return this.http.get<FilterFieldDto[]>(this.ecaServerUrl + '/evaluation', { headers: headers });
   }
 
   public getClassifierOptionsRequestFilterFields(): Observable<FilterFieldDto[]> {
@@ -41,7 +42,7 @@ export class FilterService {
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': Utils.getBearerTokenHeader()
     });
-    return this.http.get<FilterFieldDto[]>(this.serviceUrl + '/classifier-options-request', { headers: headers });
+    return this.http.get<FilterFieldDto[]>(this.ecaServerUrl + '/classifier-options-request', { headers: headers });
   }
 
   public getExperimentTypeDictionary(): Observable<FilterDictionaryDto> {
@@ -49,7 +50,7 @@ export class FilterService {
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': Utils.getBearerTokenHeader()
     });
-    return this.http.get<FilterDictionaryDto>(this.serviceUrl + '/experiment-types', { headers: headers });
+    return this.http.get<FilterDictionaryDto>(this.ecaServerUrl + '/experiment-types', { headers: headers });
   }
 
   public getEvaluationMethodDictionary(): Observable<FilterDictionaryDto> {
@@ -57,7 +58,15 @@ export class FilterService {
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': Utils.getBearerTokenHeader()
     });
-    return this.http.get<FilterDictionaryDto>(this.serviceUrl + '/evaluation-methods', { headers: headers });
+    return this.http.get<FilterDictionaryDto>(this.ecaServerUrl + '/evaluation-methods', { headers: headers });
+  }
+
+  public getAuditLogFilterFields(): Observable<FilterFieldDto[]> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8',
+      'Authorization': Utils.getBearerTokenHeader()
+    });
+    return this.http.get<FilterFieldDto[]>(this.auditLogsUrl + '/fields', { headers: headers });
   }
 
   public mapToFilters(filterFields: FilterFieldDto[]): Filter[] {
