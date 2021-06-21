@@ -8,6 +8,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import javax.inject.Inject;
 
 import static com.ecaservice.audit.TestHelperUtils.createAuditEventRequest;
+import static com.ecaservice.audit.TestHelperUtils.createAuditLog;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -35,5 +36,33 @@ class AuditLogMapperTest {
         assertThat(auditLog.getCodeTitle()).isEqualTo(auditEventRequest.getCodeTitle());
         assertThat(auditLog.getGroupCode()).isEqualTo(auditEventRequest.getGroupCode());
         assertThat(auditLog.getGroupTitle()).isEqualTo(auditEventRequest.getGroupTitle());
+    }
+
+    @Test
+    void testMapAuditLogToDto() {
+        var auditLog = createAuditLog();
+        var auditLogDto = auditLogMapper.map(auditLog);
+        assertThat(auditLogDto).isNotNull();
+        assertThat(auditLogDto.getEventId()).isEqualTo(auditLog.getEventId());
+        assertThat(auditLogDto.getEventDate()).isEqualTo(auditLog.getEventDate());
+        assertThat(auditLogDto.getMessage()).isEqualTo(auditLog.getMessage());
+        assertThat(auditLogDto.getCode()).isEqualTo(auditLog.getCode());
+        assertThat(auditLogDto.getCodeTitle()).isEqualTo(auditLog.getCodeTitle());
+        assertThat(auditLogDto.getGroupCode()).isEqualTo(auditLog.getGroupCode());
+        assertThat(auditLogDto.getGroupTitle()).isEqualTo(auditLog.getGroupTitle());
+    }
+
+    @Test
+    void testMapAuditLogToBean() {
+        var auditLog = createAuditLog();
+        var auditLogBean = auditLogMapper.mapToBean(auditLog);
+        assertThat(auditLogBean).isNotNull();
+        assertThat(auditLogBean.getEventId()).isEqualTo(auditLog.getEventId());
+        assertThat(auditLogBean.getEventDate()).isNotNull();
+        assertThat(auditLogBean.getMessage()).isEqualTo(auditLog.getMessage());
+        assertThat(auditLogBean.getCode()).isEqualTo(auditLog.getCode());
+        assertThat(auditLogBean.getCodeTitle()).isEqualTo(auditLog.getCodeTitle());
+        assertThat(auditLogBean.getGroupCode()).isEqualTo(auditLog.getGroupCode());
+        assertThat(auditLogBean.getGroupTitle()).isEqualTo(auditLog.getGroupTitle());
     }
 }
