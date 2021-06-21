@@ -1,6 +1,5 @@
 package com.ecaservice.oauth.config.audit;
 
-import com.ecaservice.core.audit.annotation.EnableAudit;
 import com.ecaservice.core.audit.service.AuditEventInitiator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +11,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
  *
  * @author Roman Batygin
  */
-@EnableAudit
 @Configuration
 public class AuditConfiguration {
 
