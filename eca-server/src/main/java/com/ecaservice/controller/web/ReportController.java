@@ -53,6 +53,7 @@ public class ReportController {
                                @ApiParam(value = "Report type", required = true) @RequestParam ReportType reportType,
                                HttpServletResponse httpServletResponse)
             throws IOException {
+        log.info("Request to download base report [{}] with params: {}", reportType, pageRequestDto);
         AbstractBaseReportDataFetcher reportDataFetcher = getReportDataFetcher(reportType);
         BaseReportBean<?> baseReportBean = reportDataFetcher.fetchReportData(pageRequestDto);
         download(reportType, reportType.getName(), httpServletResponse, baseReportBean);
