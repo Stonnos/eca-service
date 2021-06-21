@@ -19,6 +19,8 @@
         </appender>
     </springProfile>
 
+    <logger name="org.jxls" level="OFF"/>
+
     <root level="INFO">
         <appender-ref ref="console"/>
     </root>
