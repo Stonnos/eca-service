@@ -1,5 +1,6 @@
 package com.ecaservice.data.storage.config.audit;
 
+import com.ecaservice.core.audit.annotation.EnableAudit;
 import com.ecaservice.core.audit.service.AuditEventInitiator;
 import com.ecaservice.data.storage.service.UserService;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Primary;
  *
  * @author Roman Batygin
  */
+@EnableAudit
 @Configuration
 public class AuditConfiguration {
 
