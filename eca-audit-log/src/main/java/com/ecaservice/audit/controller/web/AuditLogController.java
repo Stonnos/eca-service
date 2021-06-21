@@ -103,7 +103,7 @@ public class AuditLogController {
             throws IOException {
         log.info("Request to download audit logs base report with params: {}", pageRequestDto);
         var baseReportBean = auditLogsBaseReportDataFetcher.fetchReportData(pageRequestDto);
-        String targetFile = String.format(FILE_NAME_FORMAT, ReportType.AUDIT_LOGS);
+        String targetFile = String.format(FILE_NAME_FORMAT, ReportType.AUDIT_LOGS.getName());
         @Cleanup OutputStream outputStream = httpServletResponse.getOutputStream();
         httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
         httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(ATTACHMENT_FORMAT, targetFile));
