@@ -95,7 +95,7 @@ public class AuditLogController {
      * @param httpServletResponse - http servlet response
      * @throws IOException in case of I/O error
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
     @ApiOperation(
             value = "Downloads audit logs base report in xlsx format",
             notes = "Downloads audit logs base report in xlsx format"
