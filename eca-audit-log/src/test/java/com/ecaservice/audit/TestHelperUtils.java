@@ -3,7 +3,7 @@ package com.ecaservice.audit;
 import com.ecaservice.audit.dto.AuditEventRequest;
 import com.ecaservice.audit.dto.EventType;
 import com.ecaservice.audit.entity.AuditLogEntity;
-import com.ecaservice.web.dto.model.FilterDictionaryDto;
+import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.MatchMode;
@@ -96,14 +96,15 @@ public class TestHelperUtils {
     }
 
     /**
-     * Creates filter dictionary dto.
+     * Creates report bean.
      *
-     * @return filter dictionary dto
+     * @param <T> - item generic type
+     * @return base report bean
      */
-    public static FilterDictionaryDto createFilterDictionaryDto() {
-        FilterDictionaryDto filterDictionaryDto = new FilterDictionaryDto();
-        filterDictionaryDto.setName(FILTER_NAME);
-        filterDictionaryDto.setValues(Collections.emptyList());
-        return filterDictionaryDto;
+    public static <T> BaseReportBean<T> createReportBean() {
+        return BaseReportBean.<T>builder()
+                .items(Collections.emptyList())
+                .filters(Collections.emptyList())
+                .build();
     }
 }

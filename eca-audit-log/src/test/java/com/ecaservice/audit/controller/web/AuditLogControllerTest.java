@@ -3,6 +3,7 @@ package com.ecaservice.audit.controller.web;
 import com.ecaservice.audit.entity.AuditLogEntity;
 import com.ecaservice.audit.mapping.AuditLogMapper;
 import com.ecaservice.audit.mapping.AuditLogMapperImpl;
+import com.ecaservice.audit.report.AuditLogsBaseReportDataFetcher;
 import com.ecaservice.audit.service.AuditLogService;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.filter.service.FilterService;
@@ -44,6 +45,7 @@ class AuditLogControllerTest extends AbstractControllerTest {
     private static final String BASE_URL = "/audit-log";
     private static final String LIST_URL = BASE_URL + "/list";
     private static final String AUDIT_LOG_TEMPLATE_URL = BASE_URL + "/filter-templates/fields";
+    private static final String DOWNLOAD_REPORT_URL = BASE_URL + "/report/download";
 
     private static final String PAGE_PARAM = "page";
     private static final String SIZE_PARAM = "size";
@@ -55,6 +57,8 @@ class AuditLogControllerTest extends AbstractControllerTest {
     private AuditLogService auditLogService;
     @MockBean
     private FilterService filterService;
+    @MockBean
+    private AuditLogsBaseReportDataFetcher auditLogsBaseReportDataFetcher;
 
     @Inject
     private AuditLogMapper auditLogMapper;
@@ -106,5 +110,13 @@ class AuditLogControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(filterFieldDtoList)));
+    }
+
+    @Test
+    void testDownloadReportUnauthorized() throws Exception {
+        mockMvc.perform(get(DOWNLOAD_REPORT_URL)
+                .param(PAGE_PARAM, String.valueOf(PAGE_NUMBER))
+                .param(SIZE_PARAM, String.valueOf(TOTAL_ELEMENTS)))
+                .andExpect(status().isUnauthorized());
     }
 }

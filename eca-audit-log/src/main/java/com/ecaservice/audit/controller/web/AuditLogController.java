@@ -19,7 +19,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,7 +37,6 @@ import static com.ecaservice.report.ReportGenerator.generateReport;
  *
  * @author Roman Batygin
  */
-@Validated
 @Slf4j
 @Api(tags = "Audit log API for web application")
 @RestController
