@@ -49,4 +49,5 @@
     <include file="../audit-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v42-insert-audit-codes-and-events.xml"/>
     <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/v43-add-classifiers-configuration-id-global-filter.xml"/>
 </databaseChangeLog>

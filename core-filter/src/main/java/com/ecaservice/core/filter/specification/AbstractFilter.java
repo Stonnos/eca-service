@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.NumberUtils;
 import org.springframework.util.ReflectionUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -228,6 +229,14 @@ public abstract class AbstractFilter<T> implements Specification<T> {
             Expression<String> expression = buildExpression(root, field);
             return criteriaBuilder.like(criteriaBuilder.lower(expression),
                     MessageFormat.format(LIKE_FORMAT, value));
+        } else if (Long.class.isAssignableFrom(fieldClazz)) {
+            if (!StringUtils.isNumeric(value)) {
+                return null;
+            } else {
+                Long longValue = NumberUtils.parseNumber(value, Long.class);
+                Expression<String> expression = buildExpression(root, field);
+                return criteriaBuilder.equal(expression, longValue);
+            }
         } else {
             throw new IllegalStateException(
                     String.format("Can't build LIKE predicate for filter field [%s] of class %s", field,
