@@ -4,6 +4,8 @@ import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.FilterBean;
 import com.ecaservice.report.model.ReportType;
+import com.ecaservice.web.dto.model.FilterDictionaryDto;
+import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
@@ -14,14 +16,12 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.core.filter.util.ReflectionUtils.getFieldType;
@@ -37,7 +37,6 @@ import static com.google.common.collect.Lists.newArrayList;
 public abstract class AbstractBaseReportDataFetcher<E, B> {
 
     private static final String VALUES_SEPARATOR = ", ";
-    private static final String GET_ENUM_DESCRIPTION_METHOD_NAME = "getDescription";
 
     @Getter
     private final ReportType reportType;
@@ -81,9 +80,9 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
     }
 
     private List<FilterBean> getFilterBeans(PageRequestDto pageRequestDto) {
-        Map<String, String> filterFieldsMap = filterService.getFilterFields(filterTemplateType)
+        Map<String, FilterFieldDto> filterFieldsMap = filterService.getFilterFields(filterTemplateType)
                 .stream()
-                .collect(Collectors.toMap(FilterFieldDto::getFieldName, FilterFieldDto::getDescription));
+                .collect(Collectors.toMap(FilterFieldDto::getFieldName, Function.identity()));
         List<FilterBean> filterBeans = newArrayList();
         if (!CollectionUtils.isEmpty(pageRequestDto.getFilters())) {
             pageRequestDto.getFilters().forEach(filterRequestDto -> {
@@ -92,8 +91,11 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
                             String::trim).collect(Collectors.toList());
                     if (!CollectionUtils.isEmpty(values)) {
                         FilterBean filterBean = new FilterBean();
-                        filterBean.setDescription(filterFieldsMap.get(filterRequestDto.getName()));
-                        String filterData = getFilterValuesAsString(filterRequestDto, values);
+                        FilterFieldDto filterFieldDto = filterFieldsMap.get(filterRequestDto.getName());
+                        String description =
+                                Optional.ofNullable(filterFieldDto).map(FilterFieldDto::getDescription).orElse(null);
+                        filterBean.setDescription(description);
+                        String filterData = getFilterValuesAsString(filterRequestDto, values, filterFieldDto);
                         filterBean.setFilterData(filterData);
                         filterBeans.add(filterBean);
                     }
@@ -103,37 +105,30 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
         return filterBeans;
     }
 
-    private String getFilterValuesAsString(FilterRequestDto filterRequestDto, List<String> values) {
-        Class fieldClazz = getFieldType(filterRequestDto.getName(), entityClazz);
+    private String getFilterValuesAsString(FilterRequestDto filterRequestDto, List<String> values,
+                                           FilterFieldDto filterFieldDto) {
         if (MatchMode.RANGE.equals(filterRequestDto.getMatchMode())) {
-            return getRangeAsString(values, fieldClazz);
+            return getRangeAsString(values, filterRequestDto);
         } else {
-            if (fieldClazz.isEnum()) {
-                return getEnumValuesAsString(values, fieldClazz);
+            if (Optional.ofNullable(filterFieldDto).map(FilterFieldDto::getDictionary).map(
+                    FilterDictionaryDto::getValues).isPresent()) {
+                return getValuesFromDictionary(values, filterFieldDto.getDictionary());
             }
             return StringUtils.join(values, VALUES_SEPARATOR);
         }
     }
 
-    private String getEnumValuesAsString(List<String> values, Class fieldClazz) {
-        List<String> enumValues;
-        Method method = ReflectionUtils.findMethod(fieldClazz, GET_ENUM_DESCRIPTION_METHOD_NAME);
-        if (method != null) {
-            enumValues = values.stream()
-                    .map(value -> {
-                        Enum<?> enumVal = Enum.valueOf(fieldClazz, value);
-                        Object retVal = ReflectionUtils.invokeMethod(method, enumVal);
-                        return Optional.ofNullable(retVal).map(String::valueOf).orElse(null);
-                    })
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
-        } else {
-            enumValues = values;
-        }
-        return StringUtils.join(enumValues, VALUES_SEPARATOR);
+    private String getValuesFromDictionary(List<String> values, FilterDictionaryDto filterDictionaryDto) {
+        List<String> resultValues = filterDictionaryDto.getValues()
+                .stream()
+                .filter(v -> values.contains(v.getValue()))
+                .map(FilterDictionaryValueDto::getLabel)
+                .collect(Collectors.toList());
+        return StringUtils.join(resultValues, VALUES_SEPARATOR);
     }
 
-    private String getRangeAsString(List<String> values, Class fieldClazz) {
+    private String getRangeAsString(List<String> values, FilterRequestDto filterRequestDto) {
+        Class fieldClazz = getFieldType(filterRequestDto.getName(), entityClazz);
         if (!LocalDateTime.class.isAssignableFrom(fieldClazz)) {
             throw new IllegalStateException(
                     String.format("Can't get range value as string for field class %s", fieldClazz.getSimpleName()));
