@@ -230,13 +230,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
             return criteriaBuilder.like(criteriaBuilder.lower(expression),
                     MessageFormat.format(LIKE_FORMAT, value));
         } else if (Long.class.isAssignableFrom(fieldClazz)) {
-            if (!StringUtils.isNumeric(value)) {
-                return null;
-            } else {
-                Long longValue = NumberUtils.parseNumber(value, Long.class);
-                Expression<String> expression = buildExpression(root, field);
-                return criteriaBuilder.equal(expression, longValue);
-            }
+            return buildGlobalFilterPredicateForNumericField(root, criteriaBuilder, field, value);
         } else {
             throw new IllegalStateException(
                     String.format("Can't build LIKE predicate for filter field [%s] of class %s", field,
@@ -247,6 +241,17 @@ public abstract class AbstractFilter<T> implements Specification<T> {
     private boolean enumDescriptionContainsSearchTerm(Method method, Object enumValue, String value) {
         Object retVal = ReflectionUtils.invokeMethod(method, enumValue);
         return retVal != null && String.valueOf(retVal).toLowerCase().contains(value);
+    }
+
+    private Predicate buildGlobalFilterPredicateForNumericField(Root<T> root, CriteriaBuilder criteriaBuilder,
+                                                                String field, String value) {
+        if (!StringUtils.isNumeric(value)) {
+            return null;
+        } else {
+            Long longValue = NumberUtils.parseNumber(value, Long.class);
+            Expression<String> expression = buildExpression(root, field);
+            return criteriaBuilder.equal(expression, longValue);
+        }
     }
 
     private Predicate buildGlobalFilterPredicateForEnumField(Class<?> fieldClazz, Root<T> root, String field,
