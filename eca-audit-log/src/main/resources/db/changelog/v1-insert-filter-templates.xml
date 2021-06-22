@@ -114,7 +114,7 @@
 
         <insert tableName="filter_field">
             <column name="field_name" value="initiator"/>
-            <column name="description" value="Источник события"/>
+            <column name="description" value="Инициатор события"/>
             <column name="field_order" valueNumeric="2"/>
             <column name="filter_field_type" value="TEXT"/>
             <column name="match_mode" value="LIKE"/>
