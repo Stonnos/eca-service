@@ -4,8 +4,10 @@
     &:first-child {
       width: 125px;
     }
-
     &:nth-child(2) {
+      width: 100px;
+    }
+    &:nth-child(3) {
       width: 450px;
     }
   }
@@ -14,6 +16,9 @@
       width: 125px;
     }
     &:nth-child(2) {
+      width: 100px;
+    }
+    &:nth-child(3) {
       width: 450px;
     }
   }

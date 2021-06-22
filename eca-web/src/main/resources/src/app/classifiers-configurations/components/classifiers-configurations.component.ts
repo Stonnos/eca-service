@@ -36,7 +36,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ClassifiersConfigurationFields.CREATION_DATE;
     this.notSortableColumns = [ClassifiersConfigurationFields.CLASSIFIERS_OPTIONS_COUNT];
-    this.linkColumns = [ClassifiersConfigurationFields.CONFIGURATION_NAME];
+    this.linkColumns = [ClassifiersConfigurationFields.ID];
     this.initColumns();
   }
 
@@ -48,7 +48,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
   }
 
   public onLink(event: any, column: string, item: ClassifiersConfigurationDto): void {
-    if (column === ClassifiersConfigurationFields.CONFIGURATION_NAME) {
+    if (column === ClassifiersConfigurationFields.ID) {
       this.router.navigate([RouterPaths.CLASSIFIERS_CONFIGURATION_DETAILS_URL, item.id]);
     } else {
       this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${column} as link`});
@@ -124,6 +124,7 @@ export class ClassifiersConfigurationsComponent extends BaseListComponent<Classi
 
   private initColumns() {
     this.columns = [
+      { name: ClassifiersConfigurationFields.ID, label: "#" },
       { name: ClassifiersConfigurationFields.CONFIGURATION_NAME, label: "Конфигурация" },
       { name: ClassifiersConfigurationFields.CREATION_DATE, label: "Дата создания" },
       { name: ClassifiersConfigurationFields.UPDATED, label: "Дата обновления" },
