@@ -1,9 +1,7 @@
 package com.ecaservice.oauth.event.listener.handler;
 
 import com.ecaservice.oauth.config.ResetPasswordConfig;
-import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.event.model.ResetPasswordNotificationEvent;
-import com.ecaservice.oauth.service.UserService;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -27,19 +25,15 @@ public class ResetPasswordNotificationEventHandler
     private static final String RESET_PASSWORD_URL_FORMAT = "%s/reset-password/?token=%s";
 
     private final ResetPasswordConfig resetPasswordConfig;
-    private final UserService userService;
 
     /**
      * Creates reset password notification event handler.
      *
      * @param resetPasswordConfig - reset password config
-     * @param userService         - user service bean
      */
-    public ResetPasswordNotificationEventHandler(ResetPasswordConfig resetPasswordConfig,
-                                                 UserService userService) {
+    public ResetPasswordNotificationEventHandler(ResetPasswordConfig resetPasswordConfig) {
         super(ResetPasswordNotificationEvent.class, Templates.RESET_PASSWORD);
         this.resetPasswordConfig = resetPasswordConfig;
-        this.userService = userService;
     }
 
     @Override
@@ -54,7 +48,6 @@ public class ResetPasswordNotificationEventHandler
 
     @Override
     String getReceiver(ResetPasswordNotificationEvent event) {
-        UserEntity userEntity = userService.getById(event.getTokenModel().getUserId());
-        return userEntity.getEmail();
+        return event.getTokenModel().getEmail();
     }
 }

@@ -54,4 +54,24 @@ public class AuditCodes {
      * Unlocks user
      */
     public static final String UNLOCK_USER = "UNLOCK_USER";
+
+    /**
+     * Creates change password request
+     */
+    public static final String CREATE_CHANGE_PASSWORD_REQUEST = "CREATE_CHANGE_PASSWORD_REQUEST";
+
+    /**
+     * Confirm change password request
+     */
+    public static final String CONFIRM_CHANGE_PASSWORD_REQUEST = "CONFIRM_CHANGE_PASSWORD_REQUEST";
+
+    /**
+     * Creates reset password request
+     */
+    public static final String CREATE_RESET_PASSWORD_REQUEST = "CREATE_RESET_PASSWORD_REQUEST";
+
+    /**
+     * Reset password
+     */
+    public static final String RESET_PASSWORD = "RESET_PASSWORD";
 }

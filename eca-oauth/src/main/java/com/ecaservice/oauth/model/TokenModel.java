@@ -1,8 +1,7 @@
 package com.ecaservice.oauth.model;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Token model.
@@ -10,8 +9,7 @@ import lombok.NoArgsConstructor;
  * @author Roman Batygin
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Builder
 public class TokenModel {
 
     /**
@@ -20,9 +18,14 @@ public class TokenModel {
     private String token;
 
     /**
-     * User id
+     * User login
      */
-    private Long userId;
+    private String login;
+
+    /**
+     * User email
+     */
+    private String email;
 
     /**
      * Token id in database

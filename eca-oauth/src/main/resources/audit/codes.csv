@@ -8,3 +8,7 @@ DELETE_PHOTO;Удаление фотографии профиля;true;USER_PROF
 CREATE_USER;Создание нового пользователя в системе;true;USER_PROFILE_ACTIONS
 LOCK_USER;Блокировка пользователя;true;USER_PROFILE_ACTIONS
 UNLOCK_USER;Снятие блокировки пользователя;true;USER_PROFILE_ACTIONS
+CREATE_CHANGE_PASSWORD_REQUEST;Создание запроса на изменение пароля;true;USER_PROFILE_ACTIONS
+CONFIRM_CHANGE_PASSWORD_REQUEST;Подтверждение запроса на изменение пароля;true;USER_PROFILE_ACTIONS
+CREATE_RESET_PASSWORD_REQUEST;Создание запроса на восстановление пароля;true;USER_PROFILE_ACTIONS
+RESET_PASSWORD;Восстановление пароля;true;USER_PROFILE_ACTIONS
