@@ -81,4 +81,12 @@
 |DELETE_CLASSIFIER_OPTIONS
 |Удаление настроек классификатора из конфигурации
 |CLASSIFIERS_CONFIGURATIONS_ACTIONS
+|CREATE_CHANGE_PASSWORD_REQUEST
+|Создание запроса на изменение пароля
+|CONFIRM_CHANGE_PASSWORD_REQUEST
+|Подтверждение запроса на изменение пароля
+|CREATE_RESET_PASSWORD_REQUEST
+|Создание запроса на восстановление пароля
+|RESET_PASSWORD
+|Восстановление пароля
 |===
