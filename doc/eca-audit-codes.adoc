@@ -1,4 +1,4 @@
-= События аудита
+﻿= События аудита
 :toc:
 :toc-title: Оглавление
 
@@ -51,6 +51,18 @@
 |UNLOCK_USER
 |Снятие блокировки пользователя
 |USER_PROFILE_ACTIONS
+|CREATE_CHANGE_PASSWORD_REQUEST
+|Создание запроса на изменение пароля
+|USER_PROFILE_ACTIONS
+|CONFIRM_CHANGE_PASSWORD_REQUEST
+|Подтверждение запроса на изменение пароля
+|USER_PROFILE_ACTIONS
+|CREATE_RESET_PASSWORD_REQUEST
+|Создание запроса на восстановление пароля
+|USER_PROFILE_ACTIONS
+|RESET_PASSWORD
+|Восстановление пароля
+|USER_PROFILE_ACTIONS
 |SAVE_INSTANCES
 |Сохранение файла с обучающей выборкой в базу данных
 |DATA_STORAGE_ACTIONS
@@ -81,12 +93,4 @@
 |DELETE_CLASSIFIER_OPTIONS
 |Удаление настроек классификатора из конфигурации
 |CLASSIFIERS_CONFIGURATIONS_ACTIONS
-|CREATE_CHANGE_PASSWORD_REQUEST
-|Создание запроса на изменение пароля
-|CONFIRM_CHANGE_PASSWORD_REQUEST
-|Подтверждение запроса на изменение пароля
-|CREATE_RESET_PASSWORD_REQUEST
-|Создание запроса на восстановление пароля
-|RESET_PASSWORD
-|Восстановление пароля
 |===
