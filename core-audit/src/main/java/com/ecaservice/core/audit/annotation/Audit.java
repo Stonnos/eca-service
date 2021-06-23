@@ -20,4 +20,10 @@ public @interface Audit {
      * @return audit code
      */
     String value() default "";
+
+    /**
+     * Spring Expression Language (SpEL) attribute for computing the initiator key dynamically.
+     * This expression is evaluated after the method has been called and can therefore refer to the {@code result}.
+     */
+    String targetInitiator() default "";
 }

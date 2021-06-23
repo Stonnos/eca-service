@@ -14,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static org.springframework.ui.freemarker.FreeMarkerTemplateUtils.processTemplateIntoString;
@@ -50,10 +51,10 @@ public class FreemarkerAuditTemplateProcessorService implements AuditTemplatePro
         try {
             Template template = configuration.getTemplate(templateCode);
             Map<String, Object> context = newHashMap();
-            if (!CollectionUtils.isEmpty(auditContextParams.getInputParams())) {
+            if (auditContextParams != null && !CollectionUtils.isEmpty(auditContextParams.getInputParams())) {
                 context.putAll(auditContextParams.getInputParams());
             }
-            if (auditContextParams.getReturnValue() != null) {
+            if (Optional.ofNullable(auditContextParams).map(AuditContextParams::getReturnValue).isPresent()) {
                 context.put(RETURN_VALUE_PARAM, auditContextParams.getReturnValue());
             }
             String message = processTemplateIntoString(template, context);

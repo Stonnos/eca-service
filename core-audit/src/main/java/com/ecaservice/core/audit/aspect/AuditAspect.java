@@ -12,7 +12,11 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.Collections;
 import java.util.Map;
@@ -33,6 +37,7 @@ public class AuditAspect {
 
     private final ApplicationEventPublisher applicationEventPublisher;
     private final AuditEventInitiator auditEventInitiator;
+    private final ExpressionParser expressionParser = new SpelExpressionParser();
 
     /**
      * Wrapper to audit service method.
@@ -47,12 +52,22 @@ public class AuditAspect {
         Map<String, Object> methodParams = getMethodParams(joinPoint);
         Object result = joinPoint.proceed();
         AuditContextParams auditContextParams = new AuditContextParams(methodParams, result);
-        String eventInitiator = auditEventInitiator.getInitiator();
+        String eventInitiator = getInitiator(audit, result);
         AuditEvent auditEvent =
                 new AuditEvent(this, audit.value(), EventType.SUCCESS, eventInitiator, auditContextParams);
         applicationEventPublisher.publishEvent(auditEvent);
         log.debug("Around audited method [{}] has been processed", joinPoint.getSignature().getName());
         return result;
+    }
+
+    private String getInitiator(Audit audit, Object methodResult) {
+        if (!StringUtils.hasText(audit.targetInitiator())) {
+            return auditEventInitiator.getInitiator();
+        } else {
+            StandardEvaluationContext context = new StandardEvaluationContext(methodResult);
+            Object val = expressionParser.parseExpression(audit.targetInitiator()).getValue(context, Object.class);
+            return String.valueOf(val);
+        }
     }
 
     private Map<String, Object> getMethodParams(ProceedingJoinPoint joinPoint) {

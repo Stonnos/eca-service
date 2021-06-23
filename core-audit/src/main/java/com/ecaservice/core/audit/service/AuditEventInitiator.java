@@ -5,6 +5,7 @@ package com.ecaservice.core.audit.service;
  *
  * @author Roman Batygin
  */
+@FunctionalInterface
 public interface AuditEventInitiator {
 
     /**
