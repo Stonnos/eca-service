@@ -33,13 +33,15 @@ public interface StorageService {
      *
      * @param id      - instances id
      * @param newName - new instances name
+     * @return old table name
      */
-    void renameData(long id, String newName);
+    String renameData(long id, String newName);
 
     /**
      * Deletes data with specified id.
      *
      * @param id - instances id
+     * @return deleted table name
      */
-    void deleteData(long id);
+    String deleteData(long id);
 }

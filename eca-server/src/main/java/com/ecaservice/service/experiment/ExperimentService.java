@@ -20,8 +20,7 @@ import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.AppInstanceService;
 import com.ecaservice.service.PageRequestService;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
-import com.ecaservice.service.filter.FilterService;
-import com.ecaservice.util.SortUtils;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.converters.model.ExperimentHistory;
 import lombok.RequiredArgsConstructor;
@@ -60,6 +59,7 @@ import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.common.web.util.RandomUtils.generateToken;
+import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.model.entity.AbstractEvaluationEntity_.CREATION_DATE;
 import static com.ecaservice.model.entity.Experiment_.EXPERIMENT_TYPE;
 import static com.ecaservice.util.ExperimentUtils.getExperimentFile;
@@ -217,8 +217,8 @@ public class ExperimentService implements PageRequestService<Experiment> {
 
     @Override
     public Page<Experiment> getNextPage(PageRequestDto pageRequestDto) {
-        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
-        List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT);
+        Sort sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
+        List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT.name());
         ExperimentFilter filter =
                 new ExperimentFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
         int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());

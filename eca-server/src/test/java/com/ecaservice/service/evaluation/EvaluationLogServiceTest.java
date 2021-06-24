@@ -17,7 +17,7 @@ import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.repository.EvaluationResultsRequestEntityRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.ers.ErsService;
-import com.ecaservice.service.filter.FilterService;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
@@ -202,7 +202,7 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, EvaluationLog_.CREATION_DATE, false, "car", newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(EvaluationLog_.REQUEST_STATUS,
                 Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
-        when(filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG)).thenReturn(
+        when(filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG.name())).thenReturn(
                 Arrays.asList(CLASSIFIER_INFO_CLASSIFIER_NAME, EvaluationLog_.REQUEST_ID,
                         INSTANCES_INFO_RELATION_NAME));
         Page<EvaluationLog> evaluationLogPage = evaluationLogService.getNextPage(pageRequestDto);

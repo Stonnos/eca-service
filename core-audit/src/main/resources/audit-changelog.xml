@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_audit_group_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="audit_group"/>
+            </not>
+        </preConditions>
+        <createTable tableName="audit_group">
+            <column name="id" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_audit_code_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="audit_code"/>
+            </not>
+        </preConditions>
+        <createTable tableName="audit_code">
+            <column name="id" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="varchar(255)"/>
+            <column name="enabled" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="audit_group_id" type="varchar(255)">
+                <constraints foreignKeyName="fk_audit_code_group_id"
+                             referencedTableName="audit_group" referencedColumnNames="id" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_audit_event_template_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="audit_event_template"/>
+            </not>
+        </preConditions>
+        <createTable tableName="audit_event_template">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="event_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message_template" type="varchar(1024)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="audit_code_id" type="varchar(255)">
+                <constraints foreignKeyName="fk_audit_event_template_code_id"
+                             referencedTableName="audit_code" referencedColumnNames="id" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add_audit_event_template_code_id_event_type_unique_index"
+               author="roman.batygin@mail.ru" context="schema">
+        <addUniqueConstraint tableName="audit_event_template" columnNames="audit_code_id, event_type"
+                             constraintName="audit_event_template_code_id_event_type_unique_index"/>
+    </changeSet>
+
+</databaseChangeLog>

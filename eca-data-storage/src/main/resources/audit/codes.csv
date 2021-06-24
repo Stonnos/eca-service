@@ -1,0 +1,4 @@
+id;title;enabled;audit_group_id
+SAVE_INSTANCES;Сохранение файла с обучающей выборкой в базу данных;true;DATA_STORAGE_ACTIONS
+RENAME_INSTANCES;Изменение имени таблицы с обучающей выборкой;true;DATA_STORAGE_ACTIONS
+DELETE_INSTANCES;Удаление таблицы с обучающей выборкой;true;DATA_STORAGE_ACTIONS

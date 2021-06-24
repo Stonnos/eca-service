@@ -49,7 +49,7 @@ public class InstancesService {
             log.trace("{} rows has been saved into table '{}'.", offset + batchSize, tableName);
         }
         log.info("Data has been saved into table '{}'.", tableName);
-        log.info("Data saving has been successfully completed. Instances '{}' has been saved into table '{}.",
+        log.info("Data saving has been successfully completed. Instances '{}' has been saved into table '{}'.",
                 instances.relationName(), tableName);
     }
 

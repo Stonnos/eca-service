@@ -13,8 +13,7 @@ import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.repository.EvaluationResultsRequestEntityRepository;
 import com.ecaservice.service.PageRequestService;
 import com.ecaservice.service.ers.ErsService;
-import com.ecaservice.service.filter.FilterService;
-import com.ecaservice.util.SortUtils;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
@@ -29,6 +28,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.model.entity.AbstractEvaluationEntity_.CREATION_DATE;
 import static com.ecaservice.util.Utils.buildEvaluationResultsDto;
 import static com.ecaservice.util.Utils.toRequestStatusStatisticsMap;
@@ -52,8 +52,8 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
 
     @Override
     public Page<EvaluationLog> getNextPage(PageRequestDto pageRequestDto) {
-        Sort sort = SortUtils.buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
-        List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG);
+        Sort sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
+        List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG.name());
         EvaluationLogFilter filter = new EvaluationLogFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());
         int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());

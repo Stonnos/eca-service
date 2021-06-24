@@ -1,13 +1,25 @@
 .options-table::ng-deep {
 
   .ui-table-tbody > tr > td {
-    &:nth-child(4) {
+
+    &:first-child {
+      width: 100px;
+      font-weight: bold;
+    }
+
+    &:nth-child(5) {
       width: 100px;
     }
   }
 
   .ui-table-thead > tr > th {
-    &:nth-child(4) {
+
+    &:first-child {
+      width: 100px;
+      font-weight: bold;
+    }
+
+    &:nth-child(5) {
       width: 100px;
     }
   }

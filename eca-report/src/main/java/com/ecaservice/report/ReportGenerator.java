@@ -5,6 +5,7 @@ import com.ecaservice.report.model.ReportType;
 import com.ecaservice.report.model.ReportTypeVisitor;
 import lombok.Cleanup;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import org.jxls.common.Context;
 import org.jxls.util.JxlsHelper;
 
@@ -18,6 +19,7 @@ import java.util.Collections;
  *
  * @author Roman Batygin
  */
+@Slf4j
 @UtilityClass
 public class ReportGenerator {
 
@@ -33,6 +35,8 @@ public class ReportGenerator {
             REPORTS_DIRECTORY + "/classifier-options-requests-report-template.xlsx";
     private static final String CLASSIFIERS_CONFIGURATION_TEMPLATE =
             REPORTS_DIRECTORY + "/classifiers-configuration-report-template.xlsx";
+    private static final String AUDIT_LOGS_REPORT_TEMPLATE =
+            REPORTS_DIRECTORY + "/audit-logs-report-template.xlsx";
 
     /**
      * Context variables
@@ -47,6 +51,7 @@ public class ReportGenerator {
      * @param outputStream - output stream object
      */
     public static void generateReport(ReportType reportType, Object reportBean, OutputStream outputStream) {
+        log.info("Starting to generate xlsx report [{}]", reportType);
         reportType.handle(new ReportTypeVisitor() {
             @Override
             public void caseExperiments() {
@@ -67,10 +72,17 @@ public class ReportGenerator {
             public void caseClassifiersConfiguration() {
                 generateReport(CLASSIFIERS_CONFIGURATION_TEMPLATE, reportBean, outputStream);
             }
+
+            @Override
+            public void caseAuditLogs() {
+                generateReport(AUDIT_LOGS_REPORT_TEMPLATE, reportBean, outputStream);
+            }
         });
+        log.info("Xlsx report [{}] has been processed", reportType);
     }
 
     private static void generateReport(String template, Object reportBean, OutputStream outputStream) {
+        log.debug("Generates report with template [{}]", template);
         try {
             @Cleanup InputStream inputStream = ReportGenerator.class.getClassLoader().getResourceAsStream(template);
             Context context = new Context(Collections.singletonMap(REPORT_VARIABLE, reportBean));

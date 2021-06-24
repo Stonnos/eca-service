@@ -20,7 +20,7 @@ import com.ecaservice.service.evaluation.CalculationExecutorServiceImpl;
 import com.ecaservice.service.experiment.DataService;
 import com.ecaservice.service.experiment.ExperimentProcessorService;
 import com.ecaservice.service.experiment.ExperimentService;
-import com.ecaservice.service.filter.FilterService;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;

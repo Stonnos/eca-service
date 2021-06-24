@@ -1,6 +1,6 @@
 package com.ecaservice.controller.web;
 
-import com.ecaservice.report.AbstractBaseReportDataFetcher;
+import com.ecaservice.report.data.fetcher.AbstractBaseReportDataFetcher;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.ReportType;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -53,6 +53,7 @@ public class ReportController {
                                @ApiParam(value = "Report type", required = true) @RequestParam ReportType reportType,
                                HttpServletResponse httpServletResponse)
             throws IOException {
+        log.info("Request to download base report [{}] with params: {}", reportType, pageRequestDto);
         AbstractBaseReportDataFetcher reportDataFetcher = getReportDataFetcher(reportType);
         BaseReportBean<?> baseReportBean = reportDataFetcher.fetchReportData(pageRequestDto);
         download(reportType, reportType.getName(), httpServletResponse, baseReportBean);

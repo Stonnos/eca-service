@@ -1,0 +1,8 @@
+id;event_type;message_template;audit_code_id
+1;SUCCESS;Добавлена новая конфигурация [${returnValue.id}] с именем ${configurationDto.configurationName};ADD_CONFIGURATION
+2;SUCCESS;Изменено название конфигурации [${configurationDto.id}]. Новое название - ${configurationDto.configurationName};RENAME_CONFIGURATION
+3;SUCCESS;Удалена конфигурация [${id}];DELETE_CONFIGURATION
+4;SUCCESS;Установлена активная конфигурация [${id}];SET_ACTIVE_CONFIGURATION
+5;SUCCESS;Создана копия конфигурации [${configurationDto.id}]. Идентификатор копии [${returnValue.id}], название конфигурации ${returnValue.configurationName};COPY_CONFIGURATION
+6;SUCCESS;Добавлены новые настройки классификатора в конфигурацию [${configurationId}]. Идентификатор настроек [${returnValue.id}], название настроек ${returnValue.optionsName};ADD_CLASSIFIER_OPTIONS
+7;SUCCESS;Удалены настройки классификатора [${id}];DELETE_CLASSIFIER_OPTIONS

@@ -42,28 +42,28 @@ public class ConcurrentStorageService implements StorageService {
 
     @Override
     public InstancesEntity saveData(Instances instances, String tableName) {
-        String trimmedName = tableName.trim();
         InstancesEntity instancesEntity;
-        tableNamesMonitorsMap.putIfAbsent(trimmedName, new Object());
-        synchronized (tableNamesMonitorsMap.get(trimmedName)) {
+        tableNamesMonitorsMap.putIfAbsent(tableName, new Object());
+        synchronized (tableNamesMonitorsMap.get(tableName)) {
             instancesEntity = storageService.saveData(instances, tableName);
         }
-        tableNamesMonitorsMap.remove(trimmedName);
+        tableNamesMonitorsMap.remove(tableName);
         return instancesEntity;
     }
 
     @Override
-    public void renameData(long id, String newTableName) {
-        String trimmedName = newTableName.trim();
-        tableNamesMonitorsMap.putIfAbsent(trimmedName, new Object());
-        synchronized (tableNamesMonitorsMap.get(trimmedName)) {
-            storageService.renameData(id, newTableName);
+    public String renameData(long id, String newTableName) {
+        String oldTableName;
+        tableNamesMonitorsMap.putIfAbsent(newTableName, new Object());
+        synchronized (tableNamesMonitorsMap.get(newTableName)) {
+            oldTableName = storageService.renameData(id, newTableName);
         }
-        tableNamesMonitorsMap.remove(trimmedName);
+        tableNamesMonitorsMap.remove(newTableName);
+        return oldTableName;
     }
 
     @Override
-    public void deleteData(long id) {
-        storageService.deleteData(id);
+    public String deleteData(long id) {
+        return storageService.deleteData(id);
     }
 }

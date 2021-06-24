@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_global_filter_template" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="global_filter_template"/>
+            </not>
+        </preConditions>
+        <createTable tableName="global_filter_template">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="filter_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="template_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_global_filter_field" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_template"/>
+            <not>
+                <tableExists tableName="global_filter_field"/>
+            </not>
+        </preConditions>
+        <createTable tableName="global_filter_field">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="field_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="global_filter_template_id" type="bigint">
+                <constraints foreignKeyName="fk_global_filter_template_id"
+                             referencedTableName="global_filter_template" referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_filter_template" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="filter_template"/>
+            </not>
+        </preConditions>
+        <createTable tableName="filter_template">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="template_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="template_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_filter_dictionary" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="filter_dictionary"/>
+            </not>
+        </preConditions>
+        <createTable tableName="filter_dictionary">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_filter_field" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_template"/>
+            <tableExists tableName="filter_dictionary"/>
+            <not>
+                <tableExists tableName="filter_field"/>
+            </not>
+        </preConditions>
+        <createTable tableName="filter_field">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="field_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="field_order" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="filter_field_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="match_mode" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="filter_template_id" type="bigint">
+                <constraints foreignKeyName="fk_filter_template_id"
+                             referencedTableName="filter_template" referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+            <column name="filter_dictionary_id" type="bigint">
+                <constraints foreignKeyName="fk_filter_field_dictionary_id"
+                             referencedTableName="filter_dictionary" referencedColumnNames="id"
+                             nullable="true"/>
+            </column>
+            <column name="multiple" type="boolean" defaultValueBoolean="false"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_filter_dictionary_value" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_dictionary"/>
+            <not>
+                <tableExists tableName="filter_dictionary_value"/>
+            </not>
+        </preConditions>
+        <createTable tableName="filter_dictionary_value">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="label" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="filter_dictionary_id" type="bigint">
+                <constraints foreignKeyName="fk_filter_dictionary_id"
+                             referencedTableName="filter_dictionary" referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

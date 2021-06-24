@@ -23,4 +23,6 @@
     <include file="db/changelog/v16-add-user-password-date-column.xml"/>
     <include file="db/changelog/v17-add-user-last-name-column.xml"/>
     <include file="db/changelog/v18-add-user-locked-column.xml"/>
+    <include file="../audit-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/v19-insert-audit-codes-and-events.xml"/>
 </databaseChangeLog>

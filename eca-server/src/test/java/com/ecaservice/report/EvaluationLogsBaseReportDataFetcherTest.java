@@ -17,7 +17,7 @@ import com.ecaservice.repository.EvaluationResultsRequestEntityRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.evaluation.EvaluationLogService;
-import com.ecaservice.service.filter.FilterService;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;

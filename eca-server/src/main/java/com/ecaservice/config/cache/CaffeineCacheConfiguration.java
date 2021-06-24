@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Ticker;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
  *
  * @author Roman Batygin
  */
+@Slf4j
 @Configuration
 @EnableConfigurationProperties(CacheConfig.class)
 @ConditionalOnProperty(value = "spring.cache.type", havingValue = "caffeine")
@@ -48,6 +50,7 @@ public class CaffeineCacheConfiguration {
     public CacheManager cacheManager() {
         SimpleCacheManager simpleCacheManager = new SimpleCacheManager();
         simpleCacheManager.setCaches(buildCaches());
+        log.info("Caffeine cache manager has been initialized");
         return simpleCacheManager;
     }
 

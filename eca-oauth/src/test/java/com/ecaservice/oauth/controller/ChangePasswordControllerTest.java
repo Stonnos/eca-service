@@ -84,8 +84,8 @@ class ChangePasswordControllerTest extends AbstractControllerTest {
     @Test
     void testCreateChangePasswordRequestOk() throws Exception {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PASSWORD, PASSWORD);
-        when(changePasswordService.createChangePasswordRequest(anyLong(), any(ChangePasswordRequest.class))).thenReturn(
-                new TokenModel());
+        when(changePasswordService.createChangePasswordRequest(anyLong(), any(ChangePasswordRequest.class)))
+                .thenReturn(TokenModel.builder().build());
         mockMvc.perform(post(REQUEST_URL)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(changePasswordRequest))

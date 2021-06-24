@@ -38,6 +38,7 @@ import { CreateEditInstancesModule } from "./create-edit-instances/create-edit-i
 import { UserProfileModule } from "./user-profile/user-profile.module";
 import { UpdateUserEmailModule } from "./update-user-email/update-user-email.module";
 import { AccessDeniedModule } from "./access-denied/access-denied.module";
+import { AuditLogsModule } from "./audit-logs/audit-logs.module";
 
 @NgModule({
   declarations: [
@@ -79,7 +80,8 @@ import { AccessDeniedModule } from "./access-denied/access-denied.module";
     UiComponentsModule,
     HttpClientModule,
     NoopAnimationsModule,
-    AccessDeniedModule
+    AccessDeniedModule,
+    AuditLogsModule
   ],
   providers: [
     CookieService

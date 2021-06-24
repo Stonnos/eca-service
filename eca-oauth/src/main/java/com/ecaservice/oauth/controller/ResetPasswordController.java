@@ -52,7 +52,7 @@ public class ResetPasswordController {
         log.info("Received forgot password request {}", forgotPasswordRequest);
         var tokenModel = resetPasswordService.createResetPasswordRequest(forgotPasswordRequest);
         log.info("Reset password request [{}] has been created for user [{}]", tokenModel.getTokenId(),
-                tokenModel.getUserId());
+                tokenModel.getLogin());
         applicationEventPublisher.publishEvent(new ResetPasswordNotificationEvent(this, tokenModel));
     }
 

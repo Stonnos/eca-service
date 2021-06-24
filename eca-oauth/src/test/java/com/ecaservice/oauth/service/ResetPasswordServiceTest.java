@@ -77,7 +77,8 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
         TokenModel tokenModel = resetPasswordService.createResetPasswordRequest(forgotPasswordRequest);
         assertThat(tokenModel).isNotNull();
         assertThat(tokenModel.getTokenId()).isNotNull();
-        assertThat(tokenModel.getUserId()).isNotNull();
+        assertThat(tokenModel.getLogin()).isNotNull();
+        assertThat(tokenModel.getEmail()).isNotNull();
         assertThat(tokenModel.getToken()).isNotNull();
         ResetPasswordRequestEntity resetPasswordRequestEntity =
                 resetPasswordRequestRepository.findById(tokenModel.getTokenId()).orElse(null);

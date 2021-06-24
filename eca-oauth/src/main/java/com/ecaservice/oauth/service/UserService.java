@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.oauth.config.CommonConfig;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
@@ -29,8 +30,17 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
+import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
+import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_USER;
+import static com.ecaservice.oauth.config.audit.AuditCodes.DELETE_PHOTO;
+import static com.ecaservice.oauth.config.audit.AuditCodes.DISABLE_2FA;
+import static com.ecaservice.oauth.config.audit.AuditCodes.ENABLE_2FA;
+import static com.ecaservice.oauth.config.audit.AuditCodes.LOCK_USER;
+import static com.ecaservice.oauth.config.audit.AuditCodes.UNLOCK_USER;
+import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_EMAIL;
+import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_PERSONAL_DATA;
+import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_PHOTO;
 import static com.ecaservice.oauth.entity.UserEntity_.CREATION_DATE;
-import static com.ecaservice.oauth.util.FilterUtils.buildSort;
 import static com.ecaservice.oauth.util.FilterUtils.buildSpecification;
 import static com.ecaservice.oauth.util.Utils.isSuperAdmin;
 import static com.ecaservice.user.model.Role.ROLE_ECA_USER;
@@ -73,6 +83,7 @@ public class UserService {
      * @param password      - user password
      * @return user entity
      */
+    @Audit(CREATE_USER)
     public UserEntity createUser(CreateUserDto createUserDto, String password) {
         UserEntity userEntity = userMapper.map(createUserDto);
         userEntity.setPassword(passwordEncoder.encode(password));
@@ -88,6 +99,7 @@ public class UserService {
      * @param userId            - user id
      * @param updateUserInfoDto - user info dto
      */
+    @Audit(UPDATE_PERSONAL_DATA)
     public void updateUserInfo(long userId, UpdateUserInfoDto updateUserInfoDto) {
         log.info("Starting to update user [{}] info", userId);
         UserEntity userEntity = getById(userId);
@@ -112,6 +124,7 @@ public class UserService {
      * @param userId   - user id
      * @param newEmail - new email
      */
+    @Audit(UPDATE_EMAIL)
     public void updateEmail(long userId, String newEmail) {
         log.info("Starting to update email for user [{}]", userId);
         String emailToUpdate = newEmail.trim();
@@ -127,54 +140,80 @@ public class UserService {
     }
 
     /**
-     * Enable/Disable two factor authentication for user.
+     * Enable two factor authentication for user.
      *
-     * @param userId     - user id
-     * @param tfaEnabled - tfa enabled?
+     * @param userId - user id
      */
-    public void setTfaEnabled(long userId, boolean tfaEnabled) {
-        log.info("Starting to set tfa flag [{}] for user [{}]", tfaEnabled, userId);
+    @Audit(ENABLE_2FA)
+    public void enableTfa(long userId) {
+        log.info("Starting to enable tfa for user [{}]", userId);
         UserEntity userEntity = getById(userId);
-        userEntity.setTfaEnabled(tfaEnabled);
+        if (userEntity.isTfaEnabled()) {
+            throw new IllegalStateException(String.format("Tfa is already enabled for user [%d]", userId));
+        }
+        userEntity.setTfaEnabled(true);
         userEntityRepository.save(userEntity);
-        log.info("Tfa flag [{}] has been set for user [{}]", tfaEnabled, userEntity.getId());
+        log.info("Tfa has been enabled for user [{}]", userEntity.getId());
+    }
+
+    /**
+     * Disable two factor authentication for user.
+     *
+     * @param userId - user id
+     */
+    @Audit(DISABLE_2FA)
+    public void disableTfa(long userId) {
+        log.info("Starting to disable tfa for user [{}]", userId);
+        UserEntity userEntity = getById(userId);
+        if (!userEntity.isTfaEnabled()) {
+            throw new IllegalStateException(String.format("Tfa is already disabled for user [%d]", userId));
+        }
+        userEntity.setTfaEnabled(false);
+        userEntityRepository.save(userEntity);
+        log.info("Tfa has been disabled for user [{}]", userEntity.getId());
     }
 
     /**
      * Locks user account.
      *
      * @param userId - user id
+     * @return locked user
      */
+    @Audit(LOCK_USER)
     @Transactional
-    public void lock(long userId) {
+    public UserEntity lock(long userId) {
         log.info("Starting to lock user [{}]", userId);
         UserEntity userEntity = getById(userId);
         if (isSuperAdmin(userEntity)) {
             throw new IllegalStateException(String.format("Can't lock super admin user [%d]", userId));
         }
         if (userEntity.isLocked()) {
-            throw new IllegalStateException(String.format("User [%d] was locked", userId));
+            throw new IllegalStateException(String.format("User [%d] is already locked", userId));
         }
         userEntity.setLocked(true);
         userEntityRepository.save(userEntity);
         oauth2TokenService.revokeTokens(userEntity);
         log.info("User [{}] has been locked", userId);
+        return userEntity;
     }
 
     /**
      * Unlocks user account.
      *
      * @param userId - user id
+     * @return unlocked user
      */
-    public void unlock(long userId) {
+    @Audit(UNLOCK_USER)
+    public UserEntity unlock(long userId) {
         log.info("Starting to unlock user [{}]", userId);
         UserEntity userEntity = getById(userId);
         if (!userEntity.isLocked()) {
-            throw new IllegalStateException(String.format("User [%d] was unlocked", userId));
+            throw new IllegalStateException(String.format("User [%d] is already unlocked", userId));
         }
         userEntity.setLocked(false);
         userEntityRepository.save(userEntity);
         log.info("User [{}] has been unlocked", userId);
+        return userEntity;
     }
 
     /**
@@ -183,6 +222,7 @@ public class UserService {
      * @param userId - user id
      * @param file   - user photo file
      */
+    @Audit(UPDATE_PHOTO)
     public void updatePhoto(long userId, MultipartFile file) {
         log.info("Starting to update user [{}] photo: [{}]", userId, file.getOriginalFilename());
         UserEntity userEntity = getById(userId);
@@ -200,6 +240,7 @@ public class UserService {
      *
      * @param userId - user id
      */
+    @Audit(DELETE_PHOTO)
     @Transactional
     public void deletePhoto(long userId) {
         log.info("Starting to delete user [{}] photo", userId);

@@ -86,7 +86,8 @@ class ResetPasswordControllerTest {
     void testForgotPassword() throws Exception {
         ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(EMAIL);
         when(userEntityRepository.existsByEmail(EMAIL)).thenReturn(true);
-        when(resetPasswordService.createResetPasswordRequest(forgotPasswordRequest)).thenReturn(new TokenModel());
+        when(resetPasswordService.createResetPasswordRequest(forgotPasswordRequest)).thenReturn(
+                TokenModel.builder().build());
         mockMvc.perform(post(FORGOT_URL)
                 .content(objectMapper.writeValueAsString(forgotPasswordRequest))
                 .contentType(MediaType.APPLICATION_JSON))

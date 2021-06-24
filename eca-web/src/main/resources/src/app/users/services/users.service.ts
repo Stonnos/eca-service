@@ -60,7 +60,7 @@ export class UsersService {
     });
     const formData = new FormData();
     formData.append('enabled', tfaEnabled.toString());
-    return this.http.post(this.serviceUrl + '/tfa-enabled', formData, { headers: headers })
+    return this.http.post(this.serviceUrl + '/tfa', formData, { headers: headers })
   }
 
   public uploadPhoto(file: File): Observable<any> {

@@ -2,16 +2,13 @@ package com.ecaservice.oauth.event.listener.handler;
 
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.oauth.config.ResetPasswordConfig;
-import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.event.model.ResetPasswordNotificationEvent;
 import com.ecaservice.oauth.model.TokenModel;
-import com.ecaservice.oauth.service.UserService;
 import com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -21,7 +18,6 @@ import javax.inject.Inject;
 import static com.ecaservice.notification.util.Priority.MEDIUM;
 import static com.ecaservice.oauth.TestHelperUtils.createResetPasswordRequestEntity;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for class {@link ResetPasswordNotificationEventHandler}.
@@ -44,17 +40,17 @@ class ResetPasswordNotificationEventHandlerTest {
     @Inject
     private ResetPasswordNotificationEventHandler eventHandler;
 
-    @MockBean
-    private UserService userService;
-
     @Test
     void testEvent() {
-        ResetPasswordRequestEntity resetPasswordRequestEntity = createResetPasswordRequestEntity();
+        var resetPasswordRequestEntity = createResetPasswordRequestEntity();
         resetPasswordRequestEntity.getUserEntity().setId(USER_ID);
-        TokenModel tokenModel = new TokenModel(TOKEN, USER_ID, resetPasswordRequestEntity.getId());
-        ResetPasswordNotificationEvent resetPasswordNotificationEvent =
-                new ResetPasswordNotificationEvent(this, tokenModel);
-        when(userService.getById(USER_ID)).thenReturn(resetPasswordRequestEntity.getUserEntity());
+        var tokenModel = TokenModel.builder()
+                .token(TOKEN)
+                .tokenId(resetPasswordRequestEntity.getId())
+                .login(resetPasswordRequestEntity.getUserEntity().getLogin())
+                .email(resetPasswordRequestEntity.getUserEntity().getEmail())
+                .build();;
+        var resetPasswordNotificationEvent = new ResetPasswordNotificationEvent(this, tokenModel);
         EmailRequest actual = eventHandler.handle(resetPasswordNotificationEvent);
         assertThat(actual).isNotNull();
         assertThat(actual.getTemplateCode()).isEqualTo(Templates.RESET_PASSWORD);

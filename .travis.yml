@@ -41,6 +41,8 @@ jobs:
         - docker push $DOCKER_USERNAME/$DOCKER_REPOSITORY:discovery-server;
         - docker tag eca-web-push $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-web-push;
         - docker push $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-web-push;
+        - docker tag eca-audit-log $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-audit-log;
+        - docker push $DOCKER_USERNAME/$DOCKER_REPOSITORY:eca-audit-log;
 cache:
   directories:
     - $HOME/.m2

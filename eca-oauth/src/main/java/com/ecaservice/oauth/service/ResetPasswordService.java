@@ -1,5 +1,6 @@
 package com.ecaservice.oauth.service;
 
+import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.oauth.config.ResetPasswordConfig;
 import com.ecaservice.oauth.dto.ForgotPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
@@ -20,6 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.common.web.util.RandomUtils.generateToken;
+import static com.ecaservice.oauth.config.audit.AuditCodes.CONFIRM_CHANGE_PASSWORD_REQUEST;
+import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_RESET_PASSWORD_REQUEST;
+import static com.ecaservice.oauth.config.audit.AuditCodes.RESET_PASSWORD;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 /**
@@ -44,6 +48,7 @@ public class ResetPasswordService {
      * @param forgotPasswordRequest - forgot password request
      * @return reset password request token
      */
+    @Audit(value = CREATE_RESET_PASSWORD_REQUEST, targetInitiator = "login")
     public TokenModel createResetPasswordRequest(ForgotPasswordRequest forgotPasswordRequest) {
         UserEntity userEntity = userEntityRepository.findByEmail(forgotPasswordRequest.getEmail()).orElseThrow(
                 () -> new IllegalStateException(
@@ -64,7 +69,12 @@ public class ResetPasswordService {
         resetPasswordRequestEntity.setExpireDate(now.plusMinutes(resetPasswordConfig.getValidityMinutes()));
         resetPasswordRequestEntity.setUserEntity(userEntity);
         resetPasswordRequestRepository.save(resetPasswordRequestEntity);
-        return new TokenModel(token, userEntity.getId(), resetPasswordRequestEntity.getId());
+        return TokenModel.builder()
+                .token(token)
+                .tokenId(resetPasswordRequestEntity.getId())
+                .login(userEntity.getLogin())
+                .email(userEntity.getEmail())
+                .build();
     }
 
     /**
@@ -72,8 +82,9 @@ public class ResetPasswordService {
      *
      * @param resetPasswordRequest - reset password request
      */
+    @Audit(value = RESET_PASSWORD, targetInitiator = "userEntity.login")
     @Transactional
-    public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
+    public ResetPasswordRequestEntity resetPassword(ResetPasswordRequest resetPasswordRequest) {
         String md5Hash = md5Hex(resetPasswordRequest.getToken());
         ResetPasswordRequestEntity resetPasswordRequestEntity =
                 resetPasswordRequestRepository.findByTokenAndExpireDateAfterAndResetDateIsNull(md5Hash,
@@ -91,5 +102,6 @@ public class ResetPasswordService {
         oauth2TokenService.revokeTokens(userEntity);
         log.info("New password has been set for user [{}], reset password request id [{}]", userEntity.getId(),
                 resetPasswordRequestEntity.getId());
+        return resetPasswordRequestEntity;
     }
 }

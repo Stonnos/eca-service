@@ -3,12 +3,12 @@ package com.ecaservice.service.classifiers;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.config.CommonConfig;
+import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.service.UserService;
-import com.ecaservice.util.SortUtils;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.config.audit.AuditCodes.ADD_CLASSIFIER_OPTIONS;
+import static com.ecaservice.config.audit.AuditCodes.DELETE_CLASSIFIER_OPTIONS;
+import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.model.entity.ClassifierOptionsDatabaseModel_.CREATION_DATE;
 import static com.ecaservice.util.ClassifierOptionsHelper.createClassifierOptionsDatabaseModel;
 import static com.ecaservice.util.ClassifierOptionsHelper.isEnsembleClassifierOptions;
@@ -49,6 +52,7 @@ public class ClassifierOptionsService {
      * @param configurationId   - configuration id
      * @param classifierOptions - classifier options
      */
+    @Audit(ADD_CLASSIFIER_OPTIONS)
     @Transactional
     public ClassifierOptionsDatabaseModel saveClassifierOptions(long configurationId,
                                                                 ClassifierOptions classifierOptions) {
@@ -72,6 +76,7 @@ public class ClassifierOptionsService {
      *
      * @param id - classifier options id
      */
+    @Audit(DELETE_CLASSIFIER_OPTIONS)
     @Transactional
     public void deleteOptions(long id) {
         log.info("Starting to delete classifier options [{}]", id);
@@ -98,7 +103,7 @@ public class ClassifierOptionsService {
      */
     public Page<ClassifierOptionsDatabaseModel> getNextPage(long configurationId, PageRequestDto pageRequestDto) {
         var classifiersConfiguration = getConfigurationById(configurationId);
-        var sort = SortUtils.buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
+        var sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
         var pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
         return classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration,
                 PageRequest.of(pageRequestDto.getPage(), pageSize, sort));

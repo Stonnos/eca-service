@@ -1,9 +1,7 @@
 package com.ecaservice.oauth.event.listener.handler;
 
 import com.ecaservice.oauth.config.ChangePasswordConfig;
-import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.event.model.ChangePasswordNotificationEvent;
-import com.ecaservice.oauth.service.UserService;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -27,19 +25,15 @@ public class ChangePasswordNotificationEventHandler
     private static final String CHANGE_PASSWORD_URL_FORMAT = "%s/change-password/?token=%s";
 
     private final ChangePasswordConfig changePasswordConfig;
-    private final UserService userService;
 
     /**
      * Creates change password notification event handler.
      *
      * @param changePasswordConfig - change password config
-     * @param userService          - user service bean
      */
-    public ChangePasswordNotificationEventHandler(ChangePasswordConfig changePasswordConfig,
-                                                  UserService userService) {
+    public ChangePasswordNotificationEventHandler(ChangePasswordConfig changePasswordConfig) {
         super(ChangePasswordNotificationEvent.class, Templates.CHANGE_PASSWORD);
         this.changePasswordConfig = changePasswordConfig;
-        this.userService = userService;
     }
 
     @Override
@@ -54,7 +48,6 @@ public class ChangePasswordNotificationEventHandler
 
     @Override
     String getReceiver(ChangePasswordNotificationEvent event) {
-        UserEntity userEntity = userService.getById(event.getTokenModel().getUserId());
-        return userEntity.getEmail();
+        return event.getTokenModel().getEmail();
     }
 }

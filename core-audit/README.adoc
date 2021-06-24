@@ -1,0 +1,120 @@
+= Библиотека аудита
+:toc:
+:toc-title: Оглавление
+
+== Введение
+
+В данном документе приведена инструкция для подключения библиотеки аудита к spring boot приложению.
+
+== 1. Подключение библиотеки
+
+Для начала, необходимо добавить зависимость в pom.xml
+
+[source,xml]
+----
+<dependency>
+    <groupId>eca.service</groupId>
+    <artifactId>core-audit</artifactId>
+    <version>${project.version}</version>
+</dependency>
+----
+
+В файле application.yml активировать использование библиотеки
+
+[source,yml]
+----
+audit:
+  enabled: true
+----
+
+С помощью аннотации @EnableAudit импортировать бины библиотеки
+
+[source,java]
+----
+@EnableAudit
+@Configuration
+public class AppConfiguration {
+
+    /**
+     * Creates custom audit event initiator bean.
+     *
+     * @return audit event initiator bean
+     */
+    @Primary
+    @Bean
+    public AuditEventInitiator auditEventInitiator() {
+        return () -> SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+}
+----
+
+Обратите внимание, что в конфигурации можно переопределить основной бин AuditEventInitiator, который
+предоставляет единственный метод getInitiator для получения инициатора события аудита, например текущего
+авторизированного пользователя.
+
+В конфигурационный файл liquibase, добавить путь к файлу audit-changelog.xml со скриптами для создания служебных таблиц аудита
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!-- your change sets -->
+    <include file="../audit-changelog.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>
+----
+
+== 2. Настройка шаблонов с событиями аудита
+
+События аудита создаются по следующей схеме:
+
+* Каждый шаблон события привязывается к уникальному коду события.
+* Каждый код события привязывается к определенной группе событий. Это дает возможность привязывать
+набор событий аудита к определенной группе, например действия пользователя в личном кабинете.
+
+=== 2.1. Настройка групп событий
+
+Пример csv файла с группами событий для импорта в базу данных:
+
+[source,csv]
+----
+id;title
+USER_PROFILE_ACTIONS;Действия пользователя в личном кабинете
+----
+
+=== 2.2. Настройка кодов событий
+
+Пример csv файла с кодами событий для импорта в базу данных:
+
+[source,csv]
+----
+id;title;enabled;audit_group_id
+ENABLE_2FA;Включение двухфакторной аутентификации;true;USER_PROFILE_ACTIONS
+DISABLE_2FA;Выключение двухфакторной аутентификации;true;USER_PROFILE_ACTIONS
+UPDATE_PERSONAL_DATA;Изменение персональных данных;true;USER_PROFILE_ACTIONS
+LOCK_USER;Блокировка пользователя;true;USER_PROFILE_ACTIONS
+UNLOCK_USER;Снятие блокировки пользователя;true;USER_PROFILE_ACTIONS
+----
+
+=== 2.3. Настройка шаблонов событий
+
+Пример csv файла с шаблонами событий для импорта в базу данных:
+
+[source,csv]
+----
+id;event_type;message_template;audit_code_id
+1;SUCCESS;Включена двухфакторной аутентификации;ENABLE_2FA
+2;SUCCESS;Выключена двухфакторная аутентификация;DISABLE_2FA
+3;SUCCESS;Персональные данные были изменены;UPDATE_PERSONAL_DATA
+4;SUCCESS;Пользователь [${returnValue.login}] был заблокирован;LOCK_USER
+5;SUCCESS;Блокировка пользователя [${returnValue.login}] была снята;UNLOCK_USER
+----
+
+В шаблоне события (поле message_template) можно задавать селекторы со следующими переменными:
+
+* Входные переменные метода java класса. Переменными могут быть примитивные типы и сложные объекты.
+Для доступа к полю объекта используется следующий синтаксис myInputParam.field1Value
+* Возвращаемое значение метода java класса. Доступ к объекту возвращаемого значения осуществляется с использованием переменной
+returnValue

@@ -192,17 +192,47 @@ class UserServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testSetTfaEnabled() {
+    void testEnableTfa() {
         UserEntity userEntity = createAndSaveUser();
-        userService.setTfaEnabled(userEntity.getId(), true);
+        userService.enableTfa(userEntity.getId());
         UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.isTfaEnabled()).isTrue();
     }
 
     @Test
-    void testSetTfaEnabledForNotExistingUser() {
-        assertThrows(EntityNotFoundException.class, () -> userService.setTfaEnabled(USER_ID, true));
+    void testEnableTfaShouldThrowIllegalStateException() {
+        UserEntity userEntity = createAndSaveUser();
+        userEntity.setTfaEnabled(true);
+        userEntityRepository.save(userEntity);
+        assertThrows(IllegalStateException.class, () -> userService.enableTfa(userEntity.getId()));
+    }
+
+    @Test
+    void testEnableTfaForNotExistingUser() {
+        assertThrows(EntityNotFoundException.class, () -> userService.enableTfa(USER_ID));
+    }
+
+    @Test
+    void testDisableTfa() {
+        UserEntity userEntity = createAndSaveUser();
+        userEntity.setTfaEnabled(true);
+        userEntityRepository.save(userEntity);
+        userService.disableTfa(userEntity.getId());
+        UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
+        assertThat(actual).isNotNull();
+        assertThat(actual.isTfaEnabled()).isFalse();
+    }
+
+    @Test
+    void testDisableTfaShouldThrowIllegalStateException() {
+        UserEntity userEntity = createAndSaveUser();
+        assertThrows(IllegalStateException.class, () -> userService.disableTfa(userEntity.getId()));
+    }
+
+    @Test
+    void testDisableTfaForNotExistingUser() {
+        assertThrows(EntityNotFoundException.class, () -> userService.disableTfa(USER_ID));
     }
 
     @Test
@@ -263,7 +293,8 @@ class UserServiceTest extends AbstractJpaTest {
     @Test
     void testLockUser() {
         UserEntity userEntity = createAndSaveUser();
-        userService.lock(userEntity.getId());
+        UserEntity locked = userService.lock(userEntity.getId());
+        assertThat(locked).isNotNull();
         UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.isLocked()).isTrue();
@@ -284,7 +315,8 @@ class UserServiceTest extends AbstractJpaTest {
         UserEntity userEntity = createAndSaveUser();
         userEntity.setLocked(true);
         userEntityRepository.save(userEntity);
-        userService.unlock(userEntity.getId());
+        UserEntity unlocked = userService.unlock(userEntity.getId());
+        assertThat(unlocked).isNotNull();
         UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.isLocked()).isFalse();

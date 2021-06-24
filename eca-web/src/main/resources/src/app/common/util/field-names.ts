@@ -54,12 +54,14 @@ export class ClassifierOptionsRequestsFields {
 }
 
 export class ClassifierOptionsFields {
+  public static readonly ID: string = "id";
   public static readonly OPTIONS_NAME: string = "optionsName";
   public static readonly CREATION_DATE: string = "creationDate";
   public static readonly CREATED_BY: string = "createdBy";
 }
 
 export class ClassifiersConfigurationFields {
+  public static readonly ID: string = "id";
   public static readonly CONFIGURATION_NAME: string = "configurationName";
   public static readonly CREATION_DATE: string = "creationDate";
   public static readonly CREATED_BY: string = "createdBy";
@@ -114,4 +116,13 @@ export class InstancesFields {
   public static readonly NUM_ATTRIBUTES: string = "numAttributes";
   public static readonly CREATED: string = "created";
   public static readonly CREATED_BY: string = "createdBy";
+}
+
+export class AuditLogFields {
+  public static readonly EVENT_ID: string = "eventId";
+  public static readonly EVENT_DATE: string = "eventDate";
+  public static readonly GROUP_TITLE: string = "groupTitle";
+  public static readonly CODE_TITLE: string = "codeTitle";
+  public static readonly MESSAGE: string = "message";
+  public static readonly INITIATOR: string = "initiator";
 }

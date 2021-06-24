@@ -3,10 +3,11 @@ package com.ecaservice.report;
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.FilterTemplateType;
+import com.ecaservice.report.data.fetcher.AbstractBaseReportDataFetcher;
 import com.ecaservice.report.model.EvaluationLogBean;
 import com.ecaservice.report.model.ReportType;
 import com.ecaservice.service.evaluation.EvaluationLogService;
-import com.ecaservice.service.filter.FilterService;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,8 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Component
-public class EvaluationLogsBaseReportDataFetcher extends AbstractBaseReportDataFetcher<EvaluationLog, EvaluationLogBean> {
+public class EvaluationLogsBaseReportDataFetcher extends
+        AbstractBaseReportDataFetcher<EvaluationLog, EvaluationLogBean> {
 
     private final EvaluationLogService evaluationLogService;
     private final EvaluationLogMapper evaluationLogMapper;
@@ -36,7 +38,7 @@ public class EvaluationLogsBaseReportDataFetcher extends AbstractBaseReportDataF
     public EvaluationLogsBaseReportDataFetcher(FilterService filterService,
                                                EvaluationLogService evaluationLogService,
                                                EvaluationLogMapper evaluationLogMapper) {
-        super(ReportType.EVALUATION_LOGS, EvaluationLog.class, FilterTemplateType.EVALUATION_LOG, filterService);
+        super(ReportType.EVALUATION_LOGS, EvaluationLog.class, FilterTemplateType.EVALUATION_LOG.name(), filterService);
         this.evaluationLogService = evaluationLogService;
         this.evaluationLogMapper = evaluationLogMapper;
     }

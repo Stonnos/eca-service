@@ -8,7 +8,7 @@ import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
 export class SearchQueryComponent implements OnInit {
 
   @Input()
-  public minQuerySize: number = 3;
+  public minQuerySize: number = 1;
 
   @Input()
   public searchQuery: string = '';

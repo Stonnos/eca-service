@@ -48,7 +48,7 @@
             <div class="ui-g-4 text-left text-wrap">
               <ng-container [ngSwitch]="field.name">
                 <ng-container *ngSwitchCase="'tfaEnabled'">
-                  <p-inputSwitch [(ngModel)]="tfaEnabled" (onChange)="changedTfaSwitch($event)"></p-inputSwitch>
+                  <p-inputSwitch [(ngModel)]="tfaEnabled" (onChange)="changedTfaSwitch($event)" [readonly]="loading"></p-inputSwitch>
                 </ng-container>
                 <ng-container *ngSwitchCase="'firstName'">
                  <app-editable-input-text [textId]="'firstName'"

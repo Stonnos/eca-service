@@ -19,18 +19,24 @@
         <module>classifiers-options</module>
         <module>eca-ers-transport</module>
         <module>eca-external-api-transport</module>
+        <module>eca-audit-transport</module>
         <module>eca-web-transport</module>
+        <module>eca-report-model</module>
+        <module>core-audit</module>
+        <module>core-filter</module>
         <module>swagger-core</module>
         <module>oauth2-core</module>
         <module>rabbit-core</module>
         <module>classifiers-options-adapter</module>
         <module>eca-report</module>
+        <module>eca-report-data</module>
         <module>eca-oauth</module>
         <module>eca-server</module>
         <module>eca-mail</module>
         <module>eca-ers</module>
         <module>eca-data-storage</module>
         <module>eca-web-push</module>
+        <module>eca-audit-log</module>
         <module>eca-external-api</module>
         <module>eca-web</module>
         <module>zuul-gate</module>
@@ -316,6 +322,8 @@
                         <exclude>**/config/**/*</exclude>
                         <exclude>**/exception/**/*</exclude>
                         <exclude>**/util/**/*</exclude>
+                        <exclude>**/specification/**/*</exclude>
+                        <exclude>**/fetcher/**/*</exclude>
                         <exclude>**/metrics/**/*</exclude>
                     </excludes>
                 </configuration>
