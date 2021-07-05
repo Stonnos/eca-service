@@ -6,7 +6,6 @@ import {
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
-import { PageRequestService } from "../../common/services/page-request.service";
 import { environment } from "../../../environments/environment";
 import { Utils } from "../../common/util/utils";
 
@@ -15,7 +14,7 @@ export class ClassifierOptionsService {
 
   private serviceUrl = environment.serverUrl + '/experiment/classifiers-options';
 
-  public constructor(private http: HttpClient, private pageRequestService: PageRequestService) {
+  public constructor(private http: HttpClient) {
   }
 
   public getClassifiersOptions(configurationId: number, pageRequest: PageRequestDto): Observable<PageDto<ClassifierOptionsDto>> {
@@ -23,10 +22,10 @@ export class ClassifierOptionsService {
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': Utils.getBearerTokenHeader()
     });
-    const params: HttpParams = this.pageRequestService.convertToHttpRequestParams(pageRequest)
+    const params: HttpParams = new HttpParams()
       .set('configurationId', configurationId.toString());
     const options = { headers: headers, params: params };
-    return this.http.get<PageDto<ClassifierOptionsDto>>(this.serviceUrl + '/page', options);
+    return this.http.post<PageDto<ClassifierOptionsDto>>(this.serviceUrl + '/page', pageRequest, { headers: headers });
   }
 
   public saveClassifierOptions(configurationId: number, file: File): Observable<CreateClassifierOptionsResultDto> {

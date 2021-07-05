@@ -7,7 +7,6 @@ import {
   PageRequestDto,
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
-import { PageRequestService } from "../../common/services/page-request.service";
 import { environment } from "../../../environments/environment";
 import { Utils } from "../../common/util/utils";
 
@@ -16,7 +15,7 @@ export class InstancesService {
 
   private serviceUrl = environment.dsUrl + '/instances';
 
-  public constructor(private http: HttpClient, private pageRequestService: PageRequestService) {
+  public constructor(private http: HttpClient) {
   }
 
   public getInstancesPage(pageRequest: PageRequestDto): Observable<PageDto<InstancesDto>> {
@@ -24,9 +23,7 @@ export class InstancesService {
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': Utils.getBearerTokenHeader()
     });
-    const params: HttpParams = this.pageRequestService.convertToHttpRequestParams(pageRequest);
-    const options = { headers: headers, params: params };
-    return this.http.get<PageDto<InstancesDto>>(this.serviceUrl + '/list', options);
+    return this.http.post<PageDto<InstancesDto>>(this.serviceUrl + '/list', pageRequest, { headers: headers });
   }
 
   public deleteInstances(id: number): Observable<any> {

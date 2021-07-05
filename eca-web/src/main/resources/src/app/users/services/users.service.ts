@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   PageDto,
@@ -6,7 +6,6 @@ import {
   UserDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
-import { PageRequestService } from "../../common/services/page-request.service";
 import { environment } from "../../../environments/environment";
 import { CreateUserModel } from "../../create-user/model/create-user.model";
 import { Utils } from "../../common/util/utils";
@@ -17,7 +16,7 @@ export class UsersService {
 
   private serviceUrl = environment.oauthUrl + '/users';
 
-  public constructor(private http: HttpClient, private pageRequestService: PageRequestService) {
+  public constructor(private http: HttpClient) {
   }
 
   public getUsers(pageRequest: PageRequestDto): Observable<PageDto<UserDto>> {
@@ -25,9 +24,7 @@ export class UsersService {
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': Utils.getBearerTokenHeader()
     });
-    const params: HttpParams = this.pageRequestService.convertToHttpRequestParams(pageRequest);
-    const options = { headers: headers, params: params };
-    return this.http.get<PageDto<UserDto>>(this.serviceUrl + '/list', options);
+    return this.http.post<PageDto<UserDto>>(this.serviceUrl + '/list', pageRequest, { headers: headers });
   }
 
   public getCurrentUser(): Observable<UserDto> {

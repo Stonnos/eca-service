@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   AuditLogDto,
@@ -6,7 +6,6 @@ import {
   PageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
-import { PageRequestService } from "../../common/services/page-request.service";
 import { environment } from "../../../environments/environment";
 import { Utils } from "../../common/util/utils";
 
@@ -15,7 +14,7 @@ export class AuditLogService {
 
   private serviceUrl = environment.auditLogUrl + '/audit-log';
 
-  public constructor(private http: HttpClient, private pageRequestService: PageRequestService) {
+  public constructor(private http: HttpClient) {
   }
 
   public getAuditLogs(pageRequest: PageRequestDto): Observable<PageDto<AuditLogDto>> {
@@ -23,17 +22,14 @@ export class AuditLogService {
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': Utils.getBearerTokenHeader()
     });
-    const params: HttpParams = this.pageRequestService.convertToHttpRequestParams(pageRequest);
-    const options = { headers: headers, params: params };
-    return this.http.get<PageDto<AuditLogDto>>(this.serviceUrl + '/list', options);
+    return this.http.post<PageDto<AuditLogDto>>(this.serviceUrl + '/list', pageRequest, { headers: headers });
   }
 
   public getAuditLogsBaseReport(pageRequest: PageRequestDto): Observable<Blob> {
     const headers = new HttpHeaders({
       'Authorization': Utils.getBearerTokenHeader()
     });
-    const params: HttpParams = this.pageRequestService.convertToHttpRequestParams(pageRequest);
-    const options = { headers: headers, params: params, responseType: 'blob' as 'json' };
-    return this.http.get<Blob>(this.serviceUrl + '/report/download', options);
+    const options = { headers: headers, responseType: 'blob' as 'json' };
+    return this.http.post<Blob>(this.serviceUrl + '/report/download', pageRequest, options);
   }
 }
