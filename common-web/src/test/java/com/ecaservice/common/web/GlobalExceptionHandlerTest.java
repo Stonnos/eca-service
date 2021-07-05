@@ -77,7 +77,7 @@ class GlobalExceptionHandlerTest {
     void testValidationError() {
         var errorResponse =
                 exceptionHandler.handleValidationError(new ValidationErrorException(ERROR_CODE, ERROR_MESSAGE));
-        assertResponse(errorResponse, ERROR_CODE, null, null);
+        assertResponse(errorResponse, ERROR_CODE, null, ERROR_MESSAGE);
     }
 
     @Test
