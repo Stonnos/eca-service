@@ -137,8 +137,8 @@ public class UserController {
             value = "Finds users with specified options",
             notes = "Finds users with specified options"
     )
-    @GetMapping(value = "/list")
-    public PageDto<UserDto> getUsers(@Valid PageRequestDto pageRequestDto) {
+    @PostMapping(value = "/list")
+    public PageDto<UserDto> getUsers(@Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received users page request: {}", pageRequestDto);
         Page<UserEntity> usersPage = userService.getNextPage(pageRequestDto);
         List<UserDto> userDtoList = userMapper.map(usersPage.getContent());
