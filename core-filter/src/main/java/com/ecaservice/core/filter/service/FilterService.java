@@ -45,11 +45,11 @@ public class FilterService {
      */
     @Cacheable(CacheNames.GLOBAL_FILTERS_CACHE_NAME)
     public List<String> getGlobalFilterFields(String filterTemplateType) {
-        return globalFilterTemplateRepository.findFirstByTemplateType(filterTemplateType).map(
-                GlobalFilterTemplate::getFields).map(
-                globalFilterFields -> globalFilterFields.stream().map(GlobalFilterField::getFieldName).collect(
-                        Collectors.toList())).orElseThrow(
-                () -> new EntityNotFoundException(GlobalFilterTemplate.class, filterTemplateType));
+        return globalFilterTemplateRepository.findFirstByTemplateType(filterTemplateType)
+                .map(GlobalFilterTemplate::getFields)
+                .map(globalFilterFields -> globalFilterFields.stream().map(GlobalFilterField::getFieldName)
+                        .collect(Collectors.toList()))
+                .orElseThrow(() -> new EntityNotFoundException(GlobalFilterTemplate.class, filterTemplateType));
     }
 
     /**
@@ -61,9 +61,10 @@ public class FilterService {
     @Cacheable(CacheNames.FILTER_TEMPLATES_CACHE_NAME)
     public List<FilterFieldDto> getFilterFields(String templateType) {
         log.info("Fetch filter fields for template type [{}]", templateType);
-        return filterTemplateRepository.findFirstByTemplateType(templateType).map(FilterTemplate::getFields).map(
-                filterFieldMapper::map).orElseThrow(
-                () -> new EntityNotFoundException(FilterTemplate.class, templateType));
+        return filterTemplateRepository.findFirstByTemplateType(templateType)
+                .map(FilterTemplate::getFields)
+                .map(filterFieldMapper::map)
+                .orElseThrow(() -> new EntityNotFoundException(FilterTemplate.class, templateType));
     }
 
     /**
@@ -75,7 +76,8 @@ public class FilterService {
     @Cacheable(CacheNames.FILTER_DICTIONARIES_CACHE_NAME)
     public FilterDictionaryDto getFilterDictionary(String name) {
         log.info("Fetch filter dictionary with name [{}]", name);
-        return filterDictionaryRepository.findByName(name).map(filterDictionaryMapper::map).orElseThrow(
-                () -> new EntityNotFoundException(FilterDictionary.class, name));
+        return filterDictionaryRepository.findByName(name)
+                .map(filterDictionaryMapper::map)
+                .orElseThrow(() -> new EntityNotFoundException(FilterDictionary.class, name));
     }
 }
