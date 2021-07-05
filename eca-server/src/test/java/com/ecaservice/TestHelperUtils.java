@@ -53,6 +53,7 @@ import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.MatchMode;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationMethod;
@@ -98,6 +99,8 @@ public class TestHelperUtils {
     public static final int NUM_TESTS = 1;
     public static final int SEED = 1;
     public static final String TEST_UUID = "a01ebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
+    public static final int PAGE_SIZE = 10;
+    public static final int PAGE_NUMBER = 0;
 
     private static final String FIRST_NAME = "Roman";
     private static final String TEST_MAIL_RU = "test@mail.ru";
@@ -134,6 +137,26 @@ public class TestHelperUtils {
     private static final String OPTION_NAME = "option";
     private static final String OPTION_VALUE = "value";
     private static final String CONFIGURATION_NAME = "configuration";
+
+    /**
+     * Creates page request dto.
+     *
+     * @return page request dto
+     */
+    public static PageRequestDto createPageRequestDto() {
+        return createPageRequestDto(PAGE_NUMBER, PAGE_SIZE);
+    }
+
+    /**
+     * Creates page request dto.
+     *
+     * @param page - page number
+     * @param size - page size
+     * @return page request dto
+     */
+    public static PageRequestDto createPageRequestDto(Integer page, Integer size) {
+        return new PageRequestDto(page, size, null, true, null, newArrayList());
+    }
 
     /**
      * Generates the test data set.

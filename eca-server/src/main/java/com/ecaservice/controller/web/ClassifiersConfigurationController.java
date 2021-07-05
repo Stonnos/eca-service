@@ -62,8 +62,9 @@ public class ClassifiersConfigurationController {
             value = "Finds classifiers configurations with specified options",
             notes = "Finds classifiers configurations with specified options"
     )
-    @GetMapping(value = "/list")
-    public PageDto<ClassifiersConfigurationDto> getClassifiersConfigurations(@Valid PageRequestDto pageRequestDto) {
+    @PostMapping(value = "/list")
+    public PageDto<ClassifiersConfigurationDto> getClassifiersConfigurations(
+            @Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received classifiers configurations page request: {}", pageRequestDto);
         return classifiersConfigurationService.getClassifiersConfigurations(pageRequestDto);
     }

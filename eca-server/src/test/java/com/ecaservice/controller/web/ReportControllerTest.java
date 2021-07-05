@@ -13,15 +13,12 @@ import org.springframework.http.MediaType;
 
 import java.util.Collections;
 
-import static com.ecaservice.PageRequestUtils.PAGE_NUMBER;
-import static com.ecaservice.PageRequestUtils.PAGE_NUMBER_PARAM;
-import static com.ecaservice.PageRequestUtils.PAGE_SIZE;
-import static com.ecaservice.PageRequestUtils.PAGE_SIZE_PARAM;
 import static com.ecaservice.TestHelperUtils.bearerHeader;
+import static com.ecaservice.TestHelperUtils.createPageRequestDto;
 import static com.ecaservice.TestHelperUtils.createReportBean;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -95,10 +92,10 @@ class ReportControllerTest extends PageRequestControllerTest {
 
     @Test
     void testDownloadReportWithNullReportType() throws Exception {
-        mockMvc.perform(get(DOWNLOAD_REPORT_URL)
+        mockMvc.perform(post(DOWNLOAD_REPORT_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
+                .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
@@ -124,11 +121,11 @@ class ReportControllerTest extends PageRequestControllerTest {
     }
 
     private void testDownloadReportOk(ReportType reportType) throws Exception {
-        mockMvc.perform(get(DOWNLOAD_REPORT_URL)
+        mockMvc.perform(post(DOWNLOAD_REPORT_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(REPORT_TYPE_PARAM, reportType.name())
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
+                .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE));
     }
