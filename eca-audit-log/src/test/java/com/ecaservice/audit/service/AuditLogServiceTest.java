@@ -5,6 +5,7 @@ import com.ecaservice.audit.config.EcaAuditLogConfig;
 import com.ecaservice.audit.entity.AuditLogEntity;
 import com.ecaservice.audit.mapping.AuditLogMapperImpl;
 import com.ecaservice.audit.repository.AuditLogRepository;
+import com.ecaservice.core.filter.exception.FieldNotFoundException;
 import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
@@ -27,6 +28,7 @@ import static com.ecaservice.audit.entity.AuditLogEntity_.EVENT_ID;
 import static com.ecaservice.audit.entity.AuditLogEntity_.GROUP_CODE;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 /**
@@ -39,6 +41,7 @@ class AuditLogServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
+    private static final String INVALID_FIELD_NAME = "abc.field1.field2";
 
     @Inject
     private AuditLogService auditLogService;
@@ -92,6 +95,17 @@ class AuditLogServiceTest extends AbstractJpaTest {
         Page<AuditLogEntity> auditLogsPage = auditLogService.getNextPage(pageRequestDto);
         assertThat(auditLogsPage).isNotNull();
         assertThat(auditLogsPage.getTotalElements()).isOne();
+    }
+
+    @Test
+    void testFilterShouldThrowFieldNotFoundException() {
+        saveAuditLogs();
+        PageRequestDto pageRequestDto =
+                new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, EVENT_DATE, false, null, newArrayList());
+        when(filterService.getGlobalFilterFields(AUDIT_LOG_TEMPLATE)).thenReturn(Collections.emptyList());
+        pageRequestDto.getFilters().add(
+                new FilterRequestDto(INVALID_FIELD_NAME, Collections.singletonList("Value"), MatchMode.EQUALS));
+        assertThrows(FieldNotFoundException.class, () -> auditLogService.getNextPage(pageRequestDto));
     }
 
     private void saveAuditLogs() {

@@ -1,5 +1,6 @@
 package com.ecaservice.core.filter.util;
 
+import com.ecaservice.core.filter.exception.FieldNotFoundException;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.internal.engine.path.PathImpl;
@@ -61,7 +62,10 @@ public class ReflectionUtils {
             doWithFields(clazz,
                     field -> fieldClassMap.putIfAbsent(key, field.getType()),
                     field -> fieldName.equals(field.getName()));
-            return fieldClassMap.get(key);
+            result = fieldClassMap.get(key);
+            if (result == null) {
+                throw new FieldNotFoundException(fieldName);
+            }
         }
         return result;
     }
