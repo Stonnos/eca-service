@@ -72,7 +72,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ValidationErrorException.class)
     public ResponseEntity<List<ValidationErrorDto>> handleValidationError(ValidationErrorException ex) {
         log.error("Validation error [{}]: {}", ex.getErrorCode(), ex.getMessage());
-        return buildBadRequestResponse(ex.getErrorCode());
+        return buildBadRequestResponse(ex);
     }
 
     /**
@@ -104,9 +104,10 @@ public class GlobalExceptionHandler {
         return response;
     }
 
-    private ResponseEntity<List<ValidationErrorDto>> buildBadRequestResponse(String errorCode) {
+    private ResponseEntity<List<ValidationErrorDto>> buildBadRequestResponse(ValidationErrorException ex) {
         var validationErrorDto = new ValidationErrorDto();
-        validationErrorDto.setCode(errorCode);
+        validationErrorDto.setCode(ex.getErrorCode());
+        validationErrorDto.setErrorMessage(ex.getMessage());
         return ResponseEntity.badRequest().body(Collections.singletonList(validationErrorDto));
     }
 }

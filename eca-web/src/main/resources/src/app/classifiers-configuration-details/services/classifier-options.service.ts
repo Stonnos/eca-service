@@ -25,7 +25,7 @@ export class ClassifierOptionsService {
     const params: HttpParams = new HttpParams()
       .set('configurationId', configurationId.toString());
     const options = { headers: headers, params: params };
-    return this.http.post<PageDto<ClassifierOptionsDto>>(this.serviceUrl + '/page', pageRequest, { headers: headers });
+    return this.http.post<PageDto<ClassifierOptionsDto>>(this.serviceUrl + '/page', pageRequest, options);
   }
 
   public saveClassifierOptions(configurationId: number, file: File): Observable<CreateClassifierOptionsResultDto> {
