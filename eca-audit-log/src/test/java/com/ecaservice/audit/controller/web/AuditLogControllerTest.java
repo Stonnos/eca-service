@@ -49,9 +49,6 @@ class AuditLogControllerTest extends AbstractControllerTest {
     private static final String AUDIT_LOG_TEMPLATE_URL = BASE_URL + "/filter-templates/fields";
     private static final String DOWNLOAD_REPORT_URL = BASE_URL + "/report/download";
 
-    private static final String PAGE_PARAM = "page";
-    private static final String SIZE_PARAM = "size";
-
     private static final long TOTAL_ELEMENTS = 1L;
     private static final int PAGE_NUMBER = 0;
 
@@ -116,9 +113,9 @@ class AuditLogControllerTest extends AbstractControllerTest {
 
     @Test
     void testDownloadReportUnauthorized() throws Exception {
-        mockMvc.perform(get(DOWNLOAD_REPORT_URL)
-                .param(PAGE_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(SIZE_PARAM, String.valueOf(TOTAL_ELEMENTS)))
+        mockMvc.perform(post(DOWNLOAD_REPORT_URL)
+                .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
 }

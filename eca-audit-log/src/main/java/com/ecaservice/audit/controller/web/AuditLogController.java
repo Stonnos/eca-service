@@ -100,8 +100,9 @@ public class AuditLogController {
             value = "Downloads audit logs base report in xlsx format",
             notes = "Downloads audit logs base report in xlsx format"
     )
-    @GetMapping(value = "/report/download")
-    public void downloadReport(@Valid PageRequestDto pageRequestDto, HttpServletResponse httpServletResponse)
+    @PostMapping(value = "/report/download")
+    public void downloadReport(@Valid @RequestBody PageRequestDto pageRequestDto,
+                               HttpServletResponse httpServletResponse)
             throws IOException {
         log.info("Request to download audit logs base report with params: {}", pageRequestDto);
         var baseReportBean = auditLogsBaseReportDataFetcher.fetchReportData(pageRequestDto);

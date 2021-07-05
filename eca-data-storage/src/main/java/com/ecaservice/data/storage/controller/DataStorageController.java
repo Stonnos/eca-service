@@ -19,9 +19,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -64,8 +64,8 @@ public class DataStorageController {
             value = "Finds instances tables with specified options such as filter, sorting and paging",
             notes = "Finds instances tables with specified options such as filter, sorting and paging"
     )
-    @GetMapping(value = "/list")
-    public PageDto<InstancesDto> getInstancesPage(@Valid PageRequestDto pageRequestDto) {
+    @PostMapping(value = "/list")
+    public PageDto<InstancesDto> getInstancesPage(@Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received instances page request: {}", pageRequestDto);
         Page<InstancesEntity> instancesPage = storageService.getNextPage(pageRequestDto);
         List<InstancesDto> instancesDtoList = instancesMapper.map(instancesPage.getContent());
