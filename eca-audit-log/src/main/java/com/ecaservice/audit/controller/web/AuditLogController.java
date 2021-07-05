@@ -20,6 +20,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -63,8 +65,8 @@ public class AuditLogController {
             value = "Finds audit logs with specified options such as filter, sorting and paging",
             notes = "Finds audit logs with specified options such as filter, sorting and paging"
     )
-    @GetMapping(value = "/list")
-    public PageDto<AuditLogDto> getAuditLogsPage(@Valid PageRequestDto pageRequestDto) {
+    @PostMapping(value = "/list")
+    public PageDto<AuditLogDto> getAuditLogsPage(@Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received audit logs page request: {}", pageRequestDto);
         Page<AuditLogEntity> auditLogsPage = auditLogService.getNextPage(pageRequestDto);
         List<AuditLogDto> auditLogDtoList = auditLogMapper.map(auditLogsPage.getContent());
