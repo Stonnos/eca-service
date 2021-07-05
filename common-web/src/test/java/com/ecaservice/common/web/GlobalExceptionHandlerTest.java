@@ -63,21 +63,21 @@ class GlobalExceptionHandlerTest {
     void testHandleConstraintViolation() {
         mockConstraintViolation();
         var errorResponse = exceptionHandler.handleConstraintViolation(constraintViolationException);
-        assertResponse(errorResponse, null, EMAIL_RECEIVER, ERROR_MESSAGE);
+        assertResponse(errorResponse, null, EMAIL_RECEIVER);
     }
 
     @Test
     void testHandleMethodArgumentNotValid() {
         mockMethodArgumentNotValid();
         var errorResponse = exceptionHandler.handleMethodArgumentNotValid(methodArgumentNotValidException);
-        assertResponse(errorResponse, null, EMAIL_RECEIVER, ERROR_MESSAGE);
+        assertResponse(errorResponse, null, EMAIL_RECEIVER);
     }
 
     @Test
     void testValidationError() {
         var errorResponse =
                 exceptionHandler.handleValidationError(new ValidationErrorException(ERROR_CODE, ERROR_MESSAGE));
-        assertResponse(errorResponse, ERROR_CODE, null, null);
+        assertResponse(errorResponse, ERROR_CODE, null);
     }
 
     @Test
@@ -95,14 +95,14 @@ class GlobalExceptionHandlerTest {
         var exception = new HttpMessageNotReadableException(ERROR_MESSAGE, invalidFormatException, httpInputMessage);
         when(invalidFormatException.getPath()).thenReturn(Collections.singletonList(reference));
         var errorResponse = exceptionHandler.handleHttpMessageNotReadableError(exception);
-        assertResponse(errorResponse, null, EMAIL_RECEIVER, exception.getMessage());
+        assertResponse(errorResponse, null, EMAIL_RECEIVER);
     }
 
     @Test
     void testBindException() {
         mockBindException();
         var errorResponse = exceptionHandler.handleBindException(bindException);
-        assertResponse(errorResponse, null, EMAIL_RECEIVER, ERROR_MESSAGE);
+        assertResponse(errorResponse, null, EMAIL_RECEIVER);
     }
 
     private void mockMethodArgumentNotValid() {
@@ -139,13 +139,12 @@ class GlobalExceptionHandlerTest {
     }
 
     private void assertResponse(ResponseEntity<List<ValidationErrorDto>> errorResponse, String expectedCode,
-                                String expectedField, String expectedErrorMessage) {
+                                String expectedField) {
         assertThat(errorResponse).isNotNull();
         assertThat(errorResponse.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResponse.getBody()).hasSize(1);
         var validationErrorDto = errorResponse.getBody().iterator().next();
         assertThat(validationErrorDto.getCode()).isEqualTo(expectedCode);
         assertThat(validationErrorDto.getFieldName()).isEqualTo(expectedField);
-        assertThat(validationErrorDto.getErrorMessage()).isEqualTo(expectedErrorMessage);
     }
 }
