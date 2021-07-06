@@ -17,6 +17,6 @@ public class FieldNotFoundException extends ValidationErrorException {
      * @param fieldName - field name
      */
     public FieldNotFoundException(String fieldName) {
-        super(ERROR_CODE, String.format("Field [%s] doesn't exists", fieldName));
+        super(ERROR_CODE, "Field doesn't exists", fieldName);
     }
 }

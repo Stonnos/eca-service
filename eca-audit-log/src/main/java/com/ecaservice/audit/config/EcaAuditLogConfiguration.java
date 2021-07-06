@@ -4,11 +4,13 @@ import com.ecaservice.audit.entity.AuditLogEntity;
 import com.ecaservice.audit.repository.AuditLogRepository;
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.core.filter.annotation.EnableFilters;
+import com.ecaservice.core.filter.error.FilterExceptionHandler;
 import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
@@ -24,5 +26,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan(basePackageClasses = AuditLogEntity.class)
 @EnableJpaRepositories(basePackageClasses = AuditLogRepository.class)
 @EnableConfigurationProperties(EcaAuditLogConfig.class)
+@Import(FilterExceptionHandler.class)
 public class EcaAuditLogConfiguration {
 }

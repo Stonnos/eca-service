@@ -107,6 +107,7 @@ public class GlobalExceptionHandler {
     private ResponseEntity<List<ValidationErrorDto>> buildBadRequestResponse(ValidationErrorException ex) {
         var validationErrorDto = new ValidationErrorDto();
         validationErrorDto.setCode(ex.getErrorCode());
+        validationErrorDto.setFieldName(ex.getFieldName());
         validationErrorDto.setErrorMessage(ex.getMessage());
         return ResponseEntity.badRequest().body(Collections.singletonList(validationErrorDto));
     }

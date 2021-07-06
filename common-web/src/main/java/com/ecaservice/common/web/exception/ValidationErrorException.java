@@ -16,6 +16,12 @@ public class ValidationErrorException extends RuntimeException {
     private final String errorCode;
 
     /**
+     * Field name
+     */
+    @Getter
+    private String fieldName;
+
+    /**
      * Creates exception object.
      *
      * @param errorCode - error code
@@ -24,5 +30,17 @@ public class ValidationErrorException extends RuntimeException {
     public ValidationErrorException(String errorCode, String message) {
         super(message);
         this.errorCode = errorCode;
+    }
+
+    /**
+     * Creates exception object.
+     *
+     * @param errorCode - error code
+     * @param message   - error message
+     * @param fieldName - field name
+     */
+    public ValidationErrorException(String errorCode, String message, String fieldName) {
+        this(errorCode, message);
+        this.fieldName = fieldName;
     }
 }
