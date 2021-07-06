@@ -1,6 +1,7 @@
 package com.ecaservice.common.web;
 
 import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.google.common.collect.Iterables;
 import lombok.experimental.UtilityClass;
@@ -28,6 +29,10 @@ public class ExceptionResponseHandler {
 
     private static final String INVALID_REQUEST_CODE = "InvalidRequest";
     private static final String INVALID_FORMAT_CODE = "InvalidFormat";
+
+    private static final String POINT = ".";
+    private static final String OPEN_BRACKET = "[";
+    private static final String CLOSE_BRACKET = "]";
 
     /**
      * Handles validation error.
@@ -79,13 +84,11 @@ public class ExceptionResponseHandler {
         List<ValidationErrorDto> validationErrors = new ArrayList<>();
         if (ex.getCause() instanceof InvalidFormatException) {
             var invalidFormatException = (InvalidFormatException) ex.getCause();
-            for (var reference : invalidFormatException.getPath()) {
-                var validationErrorDto = new ValidationErrorDto();
-                validationErrorDto.setCode(INVALID_FORMAT_CODE);
-                validationErrorDto.setFieldName(reference.getFieldName());
-                validationErrorDto.setErrorMessage(ex.getMessage());
-                validationErrors.add(validationErrorDto);
-            }
+            var validationErrorDto = new ValidationErrorDto();
+            validationErrorDto.setCode(INVALID_FORMAT_CODE);
+            validationErrorDto.setFieldName(getPropertyPath(invalidFormatException.getPath()));
+            validationErrorDto.setErrorMessage(ex.getMessage());
+            validationErrors.add(validationErrorDto);
         } else {
             var validationErrorDto = new ValidationErrorDto();
             validationErrorDto.setCode(INVALID_REQUEST_CODE);
@@ -108,5 +111,23 @@ public class ExceptionResponseHandler {
                 .map(fieldError -> new ValidationErrorDto(fieldError.getField(), fieldError.getCode(),
                         fieldError.getDefaultMessage())).collect(Collectors.toList());
         return ResponseEntity.badRequest().body(errors);
+    }
+
+    private static String getPropertyPath(List<JsonMappingException.Reference> references) {
+        StringBuilder stringBuilder = new StringBuilder();
+        var referenceIterator = references.iterator();
+        while (referenceIterator.hasNext()) {
+            var reference = referenceIterator.next();
+            if (reference.getIndex() >= 0) {
+                stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+                stringBuilder.append(OPEN_BRACKET).append(reference.getIndex()).append(CLOSE_BRACKET);
+            } else {
+                stringBuilder.append(reference.getFieldName());
+            }
+            if (referenceIterator.hasNext()) {
+                stringBuilder.append(POINT);
+            }
+        }
+        return stringBuilder.toString();
     }
 }
