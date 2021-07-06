@@ -108,7 +108,9 @@ public class ClassifierOptionsCacheService {
                         Collections.singletonList(ErsResponseStatus.SUCCESS),
                         LocalDateTime.now().minusDays(ersConfig.getClassifierOptionsCacheDurationInDays()),
                         PageRequest.of(0, 1));
-        return requestModels.stream().findFirst().map(
-                ClassifierOptionsRequestEntity::getClassifierOptionsRequestModel).orElse(null);
+        return requestModels.stream()
+                .findFirst()
+                .map(ClassifierOptionsRequestEntity::getClassifierOptionsRequestModel)
+                .orElse(null);
     }
 }

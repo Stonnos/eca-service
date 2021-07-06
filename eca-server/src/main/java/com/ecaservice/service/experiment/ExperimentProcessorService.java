@@ -91,6 +91,9 @@ public class ExperimentProcessorService {
         }
         experimentHistory.sort(new ClassifierComparator());
         int resultsSize = Integer.min(experimentHistory.size(), experimentConfig.getResultSize());
-        return experimentHistory.stream().limit(resultsSize).collect(Collectors.toList());
+        return experimentHistory
+                .stream()
+                .limit(resultsSize)
+                .collect(Collectors.toList());
     }
 }

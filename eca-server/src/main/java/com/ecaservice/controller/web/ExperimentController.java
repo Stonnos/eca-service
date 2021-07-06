@@ -272,8 +272,9 @@ public class ExperimentController {
                 createdDateFrom, createdDateTo);
         Map<ExperimentType, Long> experimentTypesMap =
                 experimentService.getExperimentTypesStatistics(createdDateFrom, createdDateTo);
-        return experimentTypesMap.entrySet().stream().map(
-                entry -> new ChartDataDto(entry.getKey().name(), entry.getKey().getDescription(),
+        return experimentTypesMap.entrySet()
+                .stream()
+                .map(entry -> new ChartDataDto(entry.getKey().name(), entry.getKey().getDescription(),
                         entry.getValue())).collect(Collectors.toList());
     }
 

@@ -62,8 +62,10 @@ public class EvaluationController {
     public PageDto<EvaluationLogDto> getEvaluationLogs(@Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received evaluation logs page request: {}", pageRequestDto);
         Page<EvaluationLog> evaluationLogs = evaluationLogService.getNextPage(pageRequestDto);
-        List<EvaluationLogDto> evaluationLogDtoList =
-                evaluationLogs.getContent().stream().map(evaluationLogMapper::map).collect(Collectors.toList());
+        List<EvaluationLogDto> evaluationLogDtoList = evaluationLogs.getContent()
+                .stream()
+                .map(evaluationLogMapper::map)
+                .collect(Collectors.toList());
         return PageDto.of(evaluationLogDtoList, pageRequestDto.getPage(), evaluationLogs.getTotalElements());
     }
 

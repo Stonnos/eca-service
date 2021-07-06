@@ -93,13 +93,16 @@ public class ExperimentResultsService {
         //Gets experiment results list
         List<ExperimentResultsEntity> experimentResultsEntityList =
                 experimentResultsEntityRepository.findByExperimentOrderByResultsIndex(experiment);
-        experimentErsReportDto.setExperimentResults(
-                experimentResultsEntityList.stream().map(experimentResultsMapper::map).collect(Collectors.toList()));
+        experimentErsReportDto.setExperimentResults(experimentResultsEntityList
+                .stream()
+                .map(experimentResultsMapper::map)
+                .collect(Collectors.toList()));
         if (!CollectionUtils.isEmpty(experimentResultsEntityList)) {
             experimentErsReportDto.setClassifiersCount(experimentResultsEntityList.size());
-            List<Long> experimentResultsIds =
-                    experimentResultsEntityList.stream().map(ExperimentResultsEntity::getId).collect(
-                            Collectors.toList());
+            List<Long> experimentResultsIds = experimentResultsEntityList
+                    .stream()
+                    .map(ExperimentResultsEntity::getId)
+                    .collect(Collectors.toList());
             List<Long> sentResultsIds =
                     experimentResultsEntityRepository.findSentResultsIds(experimentResultsIds);
             experimentErsReportDto.setSentClassifiersCount(sentResultsIds.size());

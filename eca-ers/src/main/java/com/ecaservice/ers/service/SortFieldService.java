@@ -38,10 +38,12 @@ public class SortFieldService {
             throw new IllegalStateException("Expected at least one evaluation results sort fields!");
         }
         log.info("[{}] evaluation results sort fields has been fetched", evaluationResultsSortEntityList.size());
-        Sort.Order[] orders = evaluationResultsSortEntityList.stream().map(evaluationResultsSortEntity ->
-                evaluationResultsSortEntity.isAscending() ? Sort.Order.asc(evaluationResultsSortEntity.getFieldName()) :
-                        Sort.Order.desc(evaluationResultsSortEntity.getFieldName())
-        ).toArray(Sort.Order[]::new);
+        Sort.Order[] orders = evaluationResultsSortEntityList
+                .stream()
+                .map(evaluationResultsSortEntity -> evaluationResultsSortEntity.isAscending() ?
+                        Sort.Order.asc(evaluationResultsSortEntity.getFieldName()) :
+                        Sort.Order.desc(evaluationResultsSortEntity.getFieldName()))
+                .toArray(Sort.Order[]::new);
         return Sort.by(orders);
     }
 }

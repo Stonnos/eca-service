@@ -97,11 +97,17 @@ public abstract class AbstractSwagger2Configuration {
     }
 
     private List<SecurityScheme> buildSecuritySchemes() {
-        return getSecuritySchemes().stream().map(this::buildSecurityScheme).collect(Collectors.toList());
+        return getSecuritySchemes()
+                .stream()
+                .map(this::buildSecurityScheme)
+                .collect(Collectors.toList());
     }
 
     private List<SecurityContext> buildSecurityContexts() {
-        return getSecuritySchemes().stream().map(this::buildSecurityContext).collect(Collectors.toList());
+        return getSecuritySchemes()
+                .stream()
+                .map(this::buildSecurityContext)
+                .collect(Collectors.toList());
     }
 
     private ApiInfo apiInfo() {

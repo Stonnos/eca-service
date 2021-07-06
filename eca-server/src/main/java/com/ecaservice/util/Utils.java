@@ -121,8 +121,11 @@ public class Utils {
                 ClassifierOptionsRequestModel::getClassifierOptionsResponseModels).isPresent()) {
             return null;
         } else {
-            return requestModel.getClassifierOptionsResponseModels().stream().filter(
-                    responseModel -> isParsableOptions(responseModel.getOptions())).findFirst().orElse(null);
+            return requestModel.getClassifierOptionsResponseModels()
+                    .stream()
+                    .filter(responseModel -> isParsableOptions(responseModel.getOptions()))
+                    .findFirst()
+                    .orElse(null);
         }
     }
 
@@ -147,7 +150,10 @@ public class Utils {
                 CollectionUtils.isEmpty(classifierOptionsResponse.getClassifierReports())) {
             return null;
         }
-        return classifierOptionsResponse.getClassifierReports().stream().findFirst().orElse(null);
+        return classifierOptionsResponse.getClassifierReports()
+                .stream()
+                .findFirst()
+                .orElse(null);
     }
 
     /**
@@ -226,10 +232,10 @@ public class Utils {
         if (CollectionUtils.isEmpty(requestStatusStatistics)) {
             return Collections.emptyMap();
         }
-        Map<RequestStatus, Long> requestStatusMap =
-                requestStatusStatistics.stream().collect(
-                        Collectors.toMap(RequestStatusStatistics::getRequestStatus,
-                                RequestStatusStatistics::getRequestsCount, (v1, v2) -> v1, TreeMap::new));
+        Map<RequestStatus, Long> requestStatusMap = requestStatusStatistics
+                .stream()
+                .collect(Collectors.toMap(RequestStatusStatistics::getRequestStatus,
+                        RequestStatusStatistics::getRequestsCount, (v1, v2) -> v1, TreeMap::new));
         Arrays.stream(RequestStatus.values()).filter(
                 requestStatus -> !requestStatusMap.containsKey(requestStatus)).forEach(
                 requestStatus -> requestStatusMap.put(requestStatus, ZERO));

@@ -106,9 +106,9 @@ public class ExperimentScheduler {
         List<ExperimentResultsEntity> experimentResultsEntities =
                 experimentResultsEntityRepository.findExperimentsResultsToErsSent(appInstanceEntity);
         log.trace("Obtained {} experiments results sending to ERS service", experimentResultsEntities.size());
-        Map<Experiment, List<ExperimentResultsEntity>> experimentResultsMap =
-                experimentResultsEntities.stream().collect(
-                        Collectors.groupingBy(ExperimentResultsEntity::getExperiment));
+        Map<Experiment, List<ExperimentResultsEntity>> experimentResultsMap = experimentResultsEntities
+                .stream()
+                .collect(Collectors.groupingBy(ExperimentResultsEntity::getExperiment));
         experimentResultsMap.forEach((experiment, experimentResultsEntityList) -> {
             putMdc(TX_ID, experiment.getRequestId());
             putMdc(EV_REQUEST_ID, experiment.getRequestId());

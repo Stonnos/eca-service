@@ -265,10 +265,11 @@ public class ExperimentService implements PageRequestService<Experiment> {
         criteria.groupBy(root.get(EXPERIMENT_TYPE));
         criteria.multiselect(root.get(EXPERIMENT_TYPE), builder.count(root)).where(
                 builder.and(predicates.toArray(new Predicate[0])));
-        Map<ExperimentType, Long> experimentTypesMap =
-                entityManager.createQuery(criteria).getResultList().stream().collect(
-                        Collectors.toMap(tuple -> tuple.get(0, ExperimentType.class),
-                                tuple -> tuple.get(1, Long.class), (v1, v2) -> v1, TreeMap::new));
+        Map<ExperimentType, Long> experimentTypesMap = entityManager.createQuery(criteria).getResultList()
+                .stream()
+                .collect(
+                        Collectors.toMap(tuple -> tuple.get(0, ExperimentType.class), tuple -> tuple.get(1, Long.class),
+                                (v1, v2) -> v1, TreeMap::new));
         Arrays.stream(ExperimentType.values()).filter(
                 requestStatus -> !experimentTypesMap.containsKey(requestStatus)).forEach(
                 requestStatus -> experimentTypesMap.put(requestStatus, 0L));
