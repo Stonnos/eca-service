@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Exception handler for controllers.
@@ -115,19 +116,20 @@ public class ExceptionResponseHandler {
 
     private static String getPropertyPath(List<JsonMappingException.Reference> references) {
         StringBuilder stringBuilder = new StringBuilder();
-        var referenceIterator = references.iterator();
-        while (referenceIterator.hasNext()) {
-            var reference = referenceIterator.next();
+        IntStream.range(0, references.size()).forEach(i -> {
+            var reference = references.get(i);
             if (reference.getIndex() >= 0) {
-                stringBuilder.deleteCharAt(stringBuilder.length() - 1);
                 stringBuilder.append(OPEN_BRACKET).append(reference.getIndex()).append(CLOSE_BRACKET);
             } else {
                 stringBuilder.append(reference.getFieldName());
             }
-            if (referenceIterator.hasNext()) {
-                stringBuilder.append(POINT);
+            int nextIndex = i + 1;
+            if (nextIndex < references.size()) {
+                if (references.get(nextIndex).getIndex() < 0) {
+                    stringBuilder.append(POINT);
+                }
             }
-        }
+        });
         return stringBuilder.toString();
     }
 }
