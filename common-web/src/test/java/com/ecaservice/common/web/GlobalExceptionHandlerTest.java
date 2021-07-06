@@ -95,7 +95,7 @@ class GlobalExceptionHandlerTest {
         var exception = new HttpMessageNotReadableException(ERROR_MESSAGE, invalidFormatException, httpInputMessage);
         when(invalidFormatException.getPath()).thenReturn(Collections.singletonList(reference));
         var errorResponse = exceptionHandler.handleHttpMessageNotReadableError(exception);
-        assertResponse(errorResponse, null, EMAIL_RECEIVER, exception.getMessage());
+        assertResponse(errorResponse, "InvalidFormat", EMAIL_RECEIVER, exception.getMessage());
     }
 
     @Test

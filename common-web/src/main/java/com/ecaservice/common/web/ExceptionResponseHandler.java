@@ -26,6 +26,9 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class ExceptionResponseHandler {
 
+    private static final String INVALID_REQUEST = "InvalidRequest";
+    private static final String INVALID_FORMAT = "InvalidFormat";
+
     /**
      * Handles validation error.
      *
@@ -78,12 +81,14 @@ public class ExceptionResponseHandler {
             var invalidFormatException = (InvalidFormatException) ex.getCause();
             for (var reference : invalidFormatException.getPath()) {
                 var validationErrorDto = new ValidationErrorDto();
+                validationErrorDto.setCode(INVALID_FORMAT);
                 validationErrorDto.setFieldName(reference.getFieldName());
                 validationErrorDto.setErrorMessage(ex.getMessage());
                 validationErrors.add(validationErrorDto);
             }
         } else {
             var validationErrorDto = new ValidationErrorDto();
+            validationErrorDto.setCode(INVALID_REQUEST);
             validationErrorDto.setErrorMessage(ex.getMessage());
             validationErrors.add(validationErrorDto);
         }
