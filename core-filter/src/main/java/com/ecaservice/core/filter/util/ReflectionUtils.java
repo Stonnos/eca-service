@@ -64,7 +64,7 @@ public class ReflectionUtils {
                     field -> fieldName.equals(field.getName()));
             result = fieldClassMap.get(key);
             if (result == null) {
-                throw new FieldNotFoundException(fieldName);
+                throw new FieldNotFoundException(fieldName, clazz);
             }
         }
         return result;

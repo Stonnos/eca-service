@@ -15,8 +15,9 @@ public class FieldNotFoundException extends ValidationErrorException {
      * Constructor with parameters.
      *
      * @param fieldName - field name
+     * @param clazz     - class type
      */
-    public FieldNotFoundException(String fieldName) {
-        super(ERROR_CODE, "Field doesn't exists", fieldName);
+    public FieldNotFoundException(String fieldName, Class<?> clazz) {
+        super(ERROR_CODE, String.format("Field [%s] not found for type [%s]", fieldName, clazz.getSimpleName()));
     }
 }
