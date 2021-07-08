@@ -25,7 +25,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import java.time.Duration;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -112,8 +111,9 @@ public class EcaServiceConfiguration {
     @Bean
     public RedisLockRegistry experimentRedisLockRegistry(RedisConnectionFactory redisConnectionFactory,
                                                          ExperimentConfig experimentConfig) {
-        long expireAfter = Duration.ofHours(experimentConfig.getTimeout()).plusMinutes(1L).toMillis();
-        return new RedisLockRegistry(redisConnectionFactory, "experiment-registry", expireAfter);
+        ExperimentConfig.LockProperties lockProperties = experimentConfig.getLock();
+        return new RedisLockRegistry(redisConnectionFactory, lockProperties.getRegistryKey(),
+                lockProperties.getExpireAfter());
     }
 
     /**
