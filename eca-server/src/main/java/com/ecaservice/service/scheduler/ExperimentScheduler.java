@@ -12,7 +12,6 @@ import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
-import com.ecaservice.service.AppInstanceService;
 import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.experiment.ExperimentProgressService;
 import com.ecaservice.service.experiment.ExperimentService;
@@ -56,7 +55,6 @@ public class ExperimentScheduler {
     private final ExperimentService experimentService;
     private final ApplicationEventPublisher eventPublisher;
     private final ErsService ersService;
-    private final AppInstanceService appInstanceService;
     private final ExperimentProgressService experimentProgressService;
     private final LockService experimentLockService;
     private final ExperimentConfig experimentConfig;

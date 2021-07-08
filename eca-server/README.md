@@ -59,7 +59,6 @@ ECA server
 5) common - общие настройки
    * common.threadPoolSize - число потоков для асинхронных задач
    * common.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
-   * common.instance - уникальное имя инстанса (используется для кластерной среды)
 6) cache.specs - настройки spring cache
 7) swagger2 - настройки Swagger
    * swagger2.tokenBaseUrl - базовый url - сервера авторизации

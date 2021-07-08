@@ -3,21 +3,19 @@ package com.ecaservice.service.scheduler;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
+import com.ecaservice.core.lock.service.LockService;
 import com.ecaservice.event.model.ExperimentEmailEvent;
 import com.ecaservice.event.model.ExperimentWebPushEvent;
-import com.ecaservice.model.entity.AppInstanceEntity;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
-import com.ecaservice.repository.AppInstanceRepository;
 import com.ecaservice.repository.ErsRequestRepository;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.service.AbstractJpaTest;
-import com.ecaservice.service.AppInstanceService;
 import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.experiment.ExperimentProgressService;
 import com.ecaservice.service.experiment.ExperimentService;
@@ -28,16 +26,19 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
+import org.springframework.integration.support.locks.LockRegistry;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.locks.Lock;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -60,8 +61,6 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     private ExperimentResultsRequestRepository experimentResultsRequestRepository;
     @Inject
     private ExperimentResultsEntityRepository experimentResultsEntityRepository;
-    @Inject
-    private AppInstanceRepository appInstanceRepository;
     @Mock
     private ExperimentService experimentService;
     @Mock
@@ -70,6 +69,10 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     private ExperimentProgressService experimentProgressService;
     @Mock
     private ApplicationEventPublisher eventPublisher;
+    @Mock
+    private LockRegistry lockRegistry;
+    @Mock
+    private Lock lock;
     @Captor
     private ArgumentCaptor<Experiment> argumentCaptor;
 
@@ -80,16 +83,14 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
 
     private ExperimentScheduler experimentScheduler;
 
-    private AppInstanceEntity appInstanceEntity;
-
     @Override
     public void init() {
-        AppInstanceService appInstanceService = new AppInstanceService(commonConfig, appInstanceRepository);
+        LockService lockService = new LockService(lockRegistry);
         experimentScheduler =
                 new ExperimentScheduler(experimentRepository, experimentResultsEntityRepository, experimentService,
-                        eventPublisher, ersService, appInstanceService, experimentProgressService, experimentConfig);
-        appInstanceService.saveAppInstance();
-        appInstanceEntity = appInstanceService.getAppInstanceEntity();
+                        eventPublisher, ersService, experimentProgressService, lockService, experimentConfig);
+        when(lockRegistry.obtain(anyString())).thenReturn(lock);
+        when(lock.tryLock()).thenReturn(true);
     }
 
     @Override
@@ -97,16 +98,15 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         ersRequestRepository.deleteAll();
         experimentResultsEntityRepository.deleteAll();
         experimentRepository.deleteAll();
-        appInstanceRepository.deleteAll();
     }
 
     @Test
     void testProcessExperiments() {
         List<Experiment> experiments = newArrayList();
         experiments.add(
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, appInstanceEntity));
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW));
         experiments.add(
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW, appInstanceEntity));
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW));
         experimentRepository.saveAll(experiments);
         experimentScheduler.processNewRequests();
         verify(experimentService, times(experiments.size())).processExperiment(any(Experiment.class));
@@ -119,12 +119,10 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     @Test
     void testSentExperiments() {
         List<Experiment> experiments = newArrayList();
-        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED,
-                appInstanceEntity));
+        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
         experiments.add(
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR, appInstanceEntity));
-        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT,
-                appInstanceEntity));
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
+        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT));
         experimentRepository.saveAll(experiments);
         experimentScheduler.processRequestsToSent();
         verify(eventPublisher, times(experiments.size())).publishEvent(any(ExperimentEmailEvent.class));
@@ -133,22 +131,18 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     @Test
     void testRemoveExperiments() {
         List<Experiment> experiments = newArrayList();
-        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED,
-                appInstanceEntity));
+        experiments.add(TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
         Experiment experimentToRemove =
                 TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR,
                         LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage() + 1));
-        experimentToRemove.setAppInstanceEntity(appInstanceEntity);
         experiments.add(experimentToRemove);
         Experiment sentExperiment =
                 TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED,
                         LocalDateTime.now());
-        sentExperiment.setAppInstanceEntity(appInstanceEntity);
         experiments.add(sentExperiment);
         Experiment timeoutExperiment =
                 TestHelperUtils.createSentExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT,
                         LocalDateTime.now());
-        timeoutExperiment.setAppInstanceEntity(appInstanceEntity);
         timeoutExperiment.setDeletedDate(LocalDateTime.now());
         experiments.add(timeoutExperiment);
         experimentRepository.saveAll(experiments);
@@ -161,8 +155,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     void testSentExperimentsToErs() {
         //Create finished experiment
         Experiment finishedExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED,
-                        appInstanceEntity);
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experimentRepository.save(finishedExperiment);
         ExperimentResultsEntity firstResults = TestHelperUtils.createExperimentResultsEntity(finishedExperiment);
         ExperimentResultsEntity secondResults = TestHelperUtils.createExperimentResultsEntity(finishedExperiment);
@@ -176,18 +169,15 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
                 TestHelperUtils.createExperimentResultsRequest(secondResults, ErsResponseStatus.SUCCESS));
         //Created deleted experiment
         Experiment removedExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED,
-                        appInstanceEntity);
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         removedExperiment.setDeletedDate(LocalDateTime.now());
         experimentRepository.save(removedExperiment);
         //Create error experiment
         Experiment errorExperiment =
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT,
-                        appInstanceEntity);
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.TIMEOUT);
         experimentRepository.save(errorExperiment);
         //Create another finished experiment
-        finishedExperiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED,
-                appInstanceEntity);
+        finishedExperiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experimentRepository.save(finishedExperiment);
         experimentResultsEntityRepository.save(TestHelperUtils.createExperimentResultsEntity(finishedExperiment));
         when(experimentService.getExperimentHistory(any(Experiment.class))).thenReturn(new ExperimentHistory());

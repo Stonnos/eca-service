@@ -58,7 +58,6 @@ ribbon:
 common:
   maxPageSize: 50
   threadPoolSize: 10
-  instance: eca-server-instance-1
 
 ## Queues properties
 queue:
