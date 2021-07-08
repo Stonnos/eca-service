@@ -6,6 +6,7 @@ import com.ecaservice.config.ers.ErsConfig;
 import com.ecaservice.core.filter.annotation.EnableFilters;
 import com.ecaservice.core.filter.error.FilterExceptionHandler;
 import com.ecaservice.core.lock.redis.annotation.EnableRedisLocks;
+import com.ecaservice.core.lock.service.LockService;
 import com.ecaservice.model.entity.AbstractEvaluationEntity;
 import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
 import com.ecaservice.repository.EvaluationLogRepository;
@@ -18,10 +19,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.integration.redis.util.RedisLockRegistry;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import java.time.Duration;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -97,5 +101,29 @@ public class EcaServiceConfiguration {
         executor.setCorePoolSize(commonConfig.getThreadPoolSize());
         executor.setMaxPoolSize(commonConfig.getThreadPoolSize());
         return executor;
+    }
+
+    /**
+     * Creates redis lock registry for experiments processing.
+     *
+     * @param redisConnectionFactory - redis connection factory
+     * @return experiment redis lock registry
+     */
+    @Bean
+    public RedisLockRegistry experimentRedisLockRegistry(RedisConnectionFactory redisConnectionFactory,
+                                                         ExperimentConfig experimentConfig) {
+        long expireAfter = Duration.ofHours(experimentConfig.getTimeout()).plusMinutes(1L).toMillis();
+        return new RedisLockRegistry(redisConnectionFactory, "experiment-registry", expireAfter);
+    }
+
+    /**
+     * Creates experiment lock service.
+     *
+     * @param experimentRedisLockRegistry - experiment redis lock registry
+     * @return experiment lock service
+     */
+    @Bean
+    public LockService experimentLockService(RedisLockRegistry experimentRedisLockRegistry) {
+        return new LockService(experimentRedisLockRegistry);
     }
 }
