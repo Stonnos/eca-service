@@ -23,7 +23,7 @@ import eca.converters.model.ExperimentHistory;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.Mock;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
 
@@ -36,6 +36,7 @@ import java.util.UUID;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,10 +46,10 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentConfig.class, CommonConfig.class, ExperimentScheduler.class, ExperimentRequestProcessor.class})
+@Import({ExperimentConfig.class, CommonConfig.class})
 class ExperimentSchedulerTest extends AbstractJpaTest {
 
-    private static final int EXPECTED_CHANGE_STATUS_EVENTS_COUNT = 4;
+    private static final int EXPECTED_CHANGE_STATUS_EVENTS_COUNT = 2;
 
     @Inject
     private ExperimentRepository experimentRepository;
@@ -58,13 +59,13 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     private ExperimentResultsRequestRepository experimentResultsRequestRepository;
     @Inject
     private ExperimentResultsEntityRepository experimentResultsEntityRepository;
-    @MockBean
+    @Mock
     private ExperimentService experimentService;
-    @MockBean
+    @Mock
     private ErsService ersService;
-    @MockBean
+    @Mock
     private ExperimentProgressService experimentProgressService;
-    @MockBean
+    @Mock
     private ApplicationEventPublisher eventPublisher;
     @Captor
     private ArgumentCaptor<Experiment> argumentCaptor;
@@ -73,8 +74,16 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     private ExperimentConfig experimentConfig;
     @Inject
     private CommonConfig commonConfig;
-    @Inject
+
     private ExperimentScheduler experimentScheduler;
+
+    @Override
+    public void init() {
+        ExperimentRequestProcessor experimentRequestProcessor = new ExperimentRequestProcessor(experimentRepository,
+                experimentResultsEntityRepository, experimentService, eventPublisher, ersService,
+                experimentProgressService, experimentConfig);
+        experimentScheduler = new ExperimentScheduler(experimentRepository, experimentRequestProcessor);
+    }
 
     @Override
     public void deleteAll() {
@@ -89,10 +98,12 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         experiments.add(
                 TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW));
         experiments.add(
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW));
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR));
+        experiments.add(
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED));
         experimentRepository.saveAll(experiments);
         experimentScheduler.processNewRequests();
-        verify(experimentService, times(experiments.size())).processExperiment(any(Experiment.class));
+        verify(experimentService, atLeastOnce()).processExperiment(any(Experiment.class));
         verify(eventPublisher, times(EXPECTED_CHANGE_STATUS_EVENTS_COUNT)).publishEvent(
                 any(ExperimentEmailEvent.class));
         verify(eventPublisher, times(EXPECTED_CHANGE_STATUS_EVENTS_COUNT)).publishEvent(
