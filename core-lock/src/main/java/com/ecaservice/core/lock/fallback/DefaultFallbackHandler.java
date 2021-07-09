@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class DefaultFallbackHandler implements FallbackHandler {
 
     @Override
-    public void apply() {
-        log.info("Can;t not acquire lock for key. Skip...");
+    public void fallback(String lockKey) {
+        log.info("Can't not acquire lock for key [{}]. Skip...", lockKey);
     }
 }

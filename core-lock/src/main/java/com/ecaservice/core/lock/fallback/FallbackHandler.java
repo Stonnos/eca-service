@@ -10,6 +10,8 @@ public interface FallbackHandler {
 
     /**
      * Performs fallback action.
+     *
+     * @param lockKey lock key
      */
-    void apply();
+    void fallback(String lockKey);
 }

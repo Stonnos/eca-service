@@ -3,7 +3,6 @@ package com.ecaservice.service.scheduler;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.core.lock.service.LockService;
 import com.ecaservice.event.model.ExperimentEmailEvent;
 import com.ecaservice.event.model.ExperimentWebPushEvent;
 import com.ecaservice.model.entity.ErsResponseStatus;
@@ -18,27 +17,25 @@ import com.ecaservice.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.experiment.ExperimentProgressService;
+import com.ecaservice.service.experiment.ExperimentRequestProcessor;
 import com.ecaservice.service.experiment.ExperimentService;
 import eca.converters.model.ExperimentHistory;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
-import org.springframework.integration.support.locks.LockRegistry;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.locks.Lock;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -48,7 +45,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentConfig.class, CommonConfig.class})
+@Import({ExperimentConfig.class, CommonConfig.class, ExperimentScheduler.class, ExperimentRequestProcessor.class})
 class ExperimentSchedulerTest extends AbstractJpaTest {
 
     private static final int EXPECTED_CHANGE_STATUS_EVENTS_COUNT = 4;
@@ -61,18 +58,14 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     private ExperimentResultsRequestRepository experimentResultsRequestRepository;
     @Inject
     private ExperimentResultsEntityRepository experimentResultsEntityRepository;
-    @Mock
+    @MockBean
     private ExperimentService experimentService;
-    @Mock
+    @MockBean
     private ErsService ersService;
-    @Mock
+    @MockBean
     private ExperimentProgressService experimentProgressService;
-    @Mock
+    @MockBean
     private ApplicationEventPublisher eventPublisher;
-    @Mock
-    private LockRegistry lockRegistry;
-    @Mock
-    private Lock lock;
     @Captor
     private ArgumentCaptor<Experiment> argumentCaptor;
 
@@ -80,18 +73,8 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     private ExperimentConfig experimentConfig;
     @Inject
     private CommonConfig commonConfig;
-
+    @Inject
     private ExperimentScheduler experimentScheduler;
-
-    @Override
-    public void init() {
-        LockService lockService = new LockService(lockRegistry);
-        experimentScheduler =
-                new ExperimentScheduler(experimentRepository, experimentResultsEntityRepository, experimentService,
-                        eventPublisher, ersService, experimentProgressService, lockService, experimentConfig);
-        when(lockRegistry.obtain(anyString())).thenReturn(lock);
-        when(lock.tryLock()).thenReturn(true);
-    }
 
     @Override
     public void deleteAll() {

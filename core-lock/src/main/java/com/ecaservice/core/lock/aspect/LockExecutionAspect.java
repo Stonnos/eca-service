@@ -88,7 +88,7 @@ public class LockExecutionAspect {
         try {
             if (!lockService.tryLock(lockKey)) {
                 FallbackHandler fallbackHandler = applicationContext.getBean(tryLocked.fallback());
-                fallbackHandler.apply();
+                fallbackHandler.fallback(lockKey);
             } else {
                 joinPoint.proceed();
                 lockService.unlock(lockKey);

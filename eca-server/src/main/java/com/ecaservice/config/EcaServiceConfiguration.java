@@ -6,7 +6,6 @@ import com.ecaservice.config.ers.ErsConfig;
 import com.ecaservice.core.filter.annotation.EnableFilters;
 import com.ecaservice.core.filter.error.FilterExceptionHandler;
 import com.ecaservice.core.lock.redis.annotation.EnableRedisLocks;
-import com.ecaservice.core.lock.service.LockService;
 import com.ecaservice.model.entity.AbstractEvaluationEntity;
 import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
 import com.ecaservice.repository.EvaluationLogRepository;
@@ -51,6 +50,7 @@ import java.util.concurrent.Executors;
 public class EcaServiceConfiguration {
 
     public static final String ECA_THREAD_POOL_TASK_EXECUTOR = "ecaThreadPoolTaskExecutor";
+    public static final String EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN = "experimentRedisLockRegistry";
 
     /**
      * Creates executor service bean.
@@ -108,22 +108,11 @@ public class EcaServiceConfiguration {
      * @param redisConnectionFactory - redis connection factory
      * @return experiment redis lock registry
      */
-    @Bean
-    public RedisLockRegistry experimentRedisLockRegistry(RedisConnectionFactory redisConnectionFactory,
-                                                         ExperimentConfig experimentConfig) {
+    @Bean(EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN)
+    public RedisLockRegistry redisLockRegistry(RedisConnectionFactory redisConnectionFactory,
+                                               ExperimentConfig experimentConfig) {
         ExperimentConfig.LockProperties lockProperties = experimentConfig.getLock();
         return new RedisLockRegistry(redisConnectionFactory, lockProperties.getRegistryKey(),
                 lockProperties.getExpireAfter());
-    }
-
-    /**
-     * Creates experiment lock service.
-     *
-     * @param experimentRedisLockRegistry - experiment redis lock registry
-     * @return experiment lock service
-     */
-    @Bean
-    public LockService experimentLockService(RedisLockRegistry experimentRedisLockRegistry) {
-        return new LockService(experimentRedisLockRegistry);
     }
 }
