@@ -1,7 +1,7 @@
 package com.ecaservice.service.scheduler;
 
 import com.ecaservice.config.ExperimentConfig;
-import com.ecaservice.core.lock.service.Callback;
+import com.ecaservice.core.lock.fallback.FallbackHandler;
 import com.ecaservice.core.lock.service.LockService;
 import com.ecaservice.event.model.ExperimentEmailEvent;
 import com.ecaservice.event.model.ExperimentFinishedEvent;
@@ -71,8 +71,8 @@ public class ExperimentScheduler {
         processPaging(pageFunction, experiments -> {
             log.info("Obtained {} new experiments", experiments.size());
             experiments.forEach(experiment -> {
-                Callback processCallback = () -> processNewExperiment(experiment);
-                Callback lockAcquiredCallback =
+                FallbackHandler processCallback = () -> processNewExperiment(experiment);
+                FallbackHandler lockAcquiredCallback =
                         () -> log.info("Experiment [{}] is already been processed. Skip...", experiment.getRequestId());
                 experimentLockService.doInLock(experiment.getRequestId(), processCallback, lockAcquiredCallback);
             });
@@ -91,12 +91,12 @@ public class ExperimentScheduler {
                         Arrays.asList(RequestStatus.FINISHED, RequestStatus.ERROR, RequestStatus.TIMEOUT), pageable);
         processPaging(pageFunction, experiments -> {
             experiments.forEach(experiment -> {
-                Callback processCallback = () -> {
+                FallbackHandler processCallback = () -> {
                     putMdc(TX_ID, experiment.getRequestId());
                     putMdc(EV_REQUEST_ID, experiment.getRequestId());
                     eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
                 };
-                Callback lockAcquiredCallback =
+                FallbackHandler lockAcquiredCallback =
                         () -> log.info("Experiment [{}] is already been processed. Skip...", experiment.getRequestId());
                 experimentLockService.doInLock(experiment.getRequestId(), processCallback, lockAcquiredCallback);
 
@@ -111,7 +111,7 @@ public class ExperimentScheduler {
     @Scheduled(cron = "${experiment.ersSendingCron}")
     public void processRequestsToErs() {
         log.info("Starting to sent experiment results to ERS service");
-        Callback lockAcquiredCallback =
+        FallbackHandler lockAcquiredCallback =
                 () -> log.info("Job with key [{}] is already processed. Skip...", EXPERIMENTS_CRON_JOB_KEY);
         experimentLockService.doInLock(EXPERIMENTS_CRON_JOB_KEY, this::sentExperimentResultsToErs,
                 lockAcquiredCallback);
@@ -124,7 +124,7 @@ public class ExperimentScheduler {
     @Scheduled(cron = "${experiment.removeExperimentCron}")
     public void processRequestsToRemove() {
         log.info("Starting to remove experiments data.");
-        Callback lockAcquiredCallback =
+        FallbackHandler lockAcquiredCallback =
                 () -> log.info("Job with key [{}] is already processed. Skip...", EXPERIMENTS_CRON_JOB_KEY);
         experimentLockService.doInLock(EXPERIMENTS_CRON_JOB_KEY, this::removeExperimentsData, lockAcquiredCallback);
         log.info("Experiments data removing has been finished.");

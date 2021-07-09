@@ -2,6 +2,7 @@ package com.ecaservice.core.lock.aspect;
 
 import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.core.lock.annotation.TryLocked;
+import com.ecaservice.core.lock.fallback.FallbackHandler;
 import com.ecaservice.core.lock.service.LockService;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -86,6 +87,8 @@ public class LockExecutionAspect {
         LockService lockService = new LockService(lockRegistry);
         try {
             if (!lockService.tryLock(lockKey)) {
+                FallbackHandler fallbackHandler = applicationContext.getBean(tryLocked.fallback());
+                fallbackHandler.apply();
             } else {
                 joinPoint.proceed();
                 lockService.unlock(lockKey);

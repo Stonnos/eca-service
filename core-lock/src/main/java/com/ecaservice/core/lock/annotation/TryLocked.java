@@ -1,5 +1,8 @@
 package com.ecaservice.core.lock.annotation;
 
+import com.ecaservice.core.lock.fallback.DefaultFallbackHandler;
+import com.ecaservice.core.lock.fallback.FallbackHandler;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -35,4 +38,12 @@ public @interface TryLocked {
      * @return lock registry bean name
      */
     String lockRegistry() default "redisLockRegistry";
+
+    /**
+     * Fallback class in case if lock can't be acquire. The fallback class must
+     * implement the interface annotated by this annotation and be a valid spring bean.
+     *
+     * @return fallback class
+     */
+    Class<? extends FallbackHandler> fallback() default DefaultFallbackHandler.class;
 }

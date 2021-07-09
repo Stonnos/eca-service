@@ -1,5 +1,6 @@
 package com.ecaservice.core.lock.service;
 
+import com.ecaservice.core.lock.fallback.FallbackHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.CannotAcquireLockException;
@@ -64,7 +65,7 @@ public class LockService {
      * @param actionCallback       - action callback
      * @param lockAcquiredCallback - callback in case if lock is already acquired for specified key
      */
-    public void doInLock(String lockKey, Callback actionCallback, Callback lockAcquiredCallback) {
+    public void doInLock(String lockKey, FallbackHandler actionCallback, FallbackHandler lockAcquiredCallback) {
         Lock lock = lockRegistry.obtain(lockKey);
         try {
             if (!lock.tryLock()) {
