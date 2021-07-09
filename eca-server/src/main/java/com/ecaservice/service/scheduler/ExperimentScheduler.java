@@ -28,6 +28,8 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class ExperimentScheduler {
 
+    private static final int PAGE_SIZE = 1;
+
     private final ExperimentRepository experimentRepository;
     private final ExperimentRequestProcessor experimentRequestProcessor;
 
@@ -78,7 +80,7 @@ public class ExperimentScheduler {
     }
 
     private <T> void processPaging(Function<Pageable, Page<T>> pageFunction, Consumer<List<T>> pageContentAction) {
-        Pageable pageRequest = PageRequest.of(0, 1);
+        Pageable pageRequest = PageRequest.of(0, PAGE_SIZE);
         Page<T> page;
         do {
             page = pageFunction.apply(pageRequest);
