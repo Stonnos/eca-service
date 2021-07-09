@@ -56,6 +56,7 @@ public class ExperimentRequestProcessor {
     @TryLocked(lockName = "experiment", key = "#experiment.requestId",
             lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN)
     public void processNewExperiment(Experiment experiment) {
+        log.info("Starting to process new experiment [{}]", experiment.getRequestId());
         putMdc(TX_ID, experiment.getRequestId());
         putMdc(EV_REQUEST_ID, experiment.getRequestId());
         experimentProgressService.start(experiment);
@@ -67,6 +68,7 @@ public class ExperimentRequestProcessor {
             eventPublisher.publishEvent(new ExperimentFinishedEvent(this, experiment, experimentHistory));
         }
         experimentProgressService.finish(experiment);
+        log.info("New experiment [{}] has been processed", experiment.getRequestId());
     }
 
     /**
@@ -77,9 +79,12 @@ public class ExperimentRequestProcessor {
     @TryLocked(lockName = "experiment", key = "#experiment.requestId",
             lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN)
     public void notifyExperimentFinished(Experiment experiment) {
+        log.info("Retry to sent email for finished experiment [{}]", experiment.getRequestId());
         putMdc(TX_ID, experiment.getRequestId());
         putMdc(EV_REQUEST_ID, experiment.getRequestId());
         eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
+        log.info("Email sent retrying process has been finished for finished experiment [{}]",
+                experiment.getRequestId());
     }
 
     /**

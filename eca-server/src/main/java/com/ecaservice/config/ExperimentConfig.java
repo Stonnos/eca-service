@@ -139,10 +139,14 @@ public class ExperimentConfig {
     @Data
     public static class LockProperties {
 
-        private Boolean enabled;
-
+        /**
+         * Registry key
+         */
         private String registryKey;
 
+        /**
+         * Lock duration in millis.
+         */
         private Long expireAfter;
     }
 }

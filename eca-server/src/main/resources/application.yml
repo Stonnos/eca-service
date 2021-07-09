@@ -124,7 +124,6 @@ experiment:
     numThreads:
     numFoldsForStacking: 10
   lock:
-    enabled: true
     registryKey: experiments-registry
     expireAfter: 18060000
 

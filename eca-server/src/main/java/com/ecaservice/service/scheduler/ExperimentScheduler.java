@@ -52,13 +52,13 @@ public class ExperimentScheduler {
      */
     @Scheduled(fixedDelayString = "${experiment.delaySeconds}000")
     public void processRequestsToSent() {
-        /*log.trace("Starting to sent experiment results.");
+        log.trace("Starting to sent experiment results.");
         Function<Pageable, Page<Experiment>> pageFunction =
                 (pageable) -> experimentRepository.findExperimentsForProcessing(
                         Arrays.asList(RequestStatus.FINISHED, RequestStatus.ERROR, RequestStatus.TIMEOUT), pageable);
         processPaging(pageFunction,
                 experiments -> experiments.forEach(experimentRequestProcessor::notifyExperimentFinished));
-        log.trace("Sending experiments has been successfully finished.");*/
+        log.trace("Sending experiments has been successfully finished.");
     }
 
     /**

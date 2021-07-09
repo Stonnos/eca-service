@@ -156,14 +156,14 @@ public class ExperimentService implements PageRequestService<Experiment> {
             experiment.setExperimentAbsolutePath(experimentFile.getAbsolutePath());
             experiment.setToken(generateToken());
             experiment.setRequestStatus(RequestStatus.FINISHED);
-            log.info("Experiment [{}] has been successfully finished!", experiment.getRequestId());
+            log.info("Experiment [{}] has been successfully built!", experiment.getRequestId());
             log.info(stopWatch.prettyPrint());
             return experimentHistory;
         } catch (TimeoutException ex) {
-            log.warn("There was a timeout for experiment [{}].", experiment.getRequestId());
+            log.warn("There was a timeout while experiment [{}] built.", experiment.getRequestId());
             experiment.setRequestStatus(RequestStatus.TIMEOUT);
         } catch (Exception ex) {
-            log.error("There was an error occurred for experiment [{}]: {}", experiment.getRequestId(), ex);
+            log.error("There was an error while experiment [{}] built: {}", experiment.getRequestId(), ex);
             experiment.setRequestStatus(RequestStatus.ERROR);
             experiment.setErrorMessage(ex.getMessage());
         } finally {
