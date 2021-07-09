@@ -67,6 +67,7 @@ public class ExperimentScheduler {
      */
     @Scheduled(cron = "${experiment.ersSendingCron}")
     public void processRequestsToErs() {
+        log.info("Starting job to sent experiments results to ERS service");
         experimentRequestProcessor.sentExperimentResultsToErs();
     }
 
@@ -75,6 +76,7 @@ public class ExperimentScheduler {
      */
     @Scheduled(cron = "${experiment.removeExperimentCron}")
     public void processRequestsToRemove() {
+        log.info("Starting job to removes experiments data files from disk");
         experimentRequestProcessor.removeExperimentsData();
     }
 
