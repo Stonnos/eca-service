@@ -269,7 +269,7 @@ public class UserController {
     )
     @PostMapping(value = "/lock")
     public void lock(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                     @ApiParam(value = "User id", required = true) @RequestParam Long userId) {
+                     @ApiParam(value = "User id", example = "1", required = true) @RequestParam Long userId) {
         log.info("Received request for user [{}] locking", userId);
         if (userDetails.getId().equals(userId)) {
             throw new IllegalStateException(String.format("Can't lock yourself: [%d]", userId));
@@ -288,7 +288,7 @@ public class UserController {
             notes = "Unlocks user"
     )
     @PostMapping(value = "/unlock")
-    public void unlock(@ApiParam(value = "User id", required = true) @RequestParam Long userId) {
+    public void unlock(@ApiParam(value = "User id", example = "1", required = true) @RequestParam Long userId) {
         log.info("Received request for user [{}] unlocking", userId);
         userService.unlock(userId);
     }
