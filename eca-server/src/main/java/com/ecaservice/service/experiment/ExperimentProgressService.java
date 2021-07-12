@@ -35,6 +35,7 @@ public class ExperimentProgressService {
      * @param experiment - experiment entity
      */
     public void start(Experiment experiment) {
+        log.info("Starting experiment [{}] progress bar", experiment.getRequestId());
         ExperimentProgressEntity experimentProgressEntity = getOrCreateExperimentProgress(experiment);
         experimentProgressEntity.setProgress(MIN_PROGRESS);
         experimentProgressRepository.save(experimentProgressEntity);
@@ -47,6 +48,7 @@ public class ExperimentProgressService {
      * @param progress   - progress bar value
      */
     public void onProgress(Experiment experiment, @NotNull @Min(MIN_PROGRESS) @Max(MAX_PROGRESS) Integer progress) {
+        log.debug("Update experiment [{}] progress bar with value {}", experiment.getRequestId(), progress);
         ExperimentProgressEntity experimentProgressEntity = getOrCreateExperimentProgress(experiment);
         experimentProgressEntity.setProgress(progress);
         experimentProgressRepository.save(experimentProgressEntity);
@@ -58,6 +60,7 @@ public class ExperimentProgressService {
      * @param experiment - experiment entity
      */
     public void finish(Experiment experiment) {
+        log.info("Finished experiment [{}] progress", experiment.getRequestId());
         ExperimentProgressEntity experimentProgressEntity = getOrCreateExperimentProgress(experiment);
         experimentProgressEntity.setProgress(MAX_PROGRESS);
         experimentProgressEntity.setFinished(true);
