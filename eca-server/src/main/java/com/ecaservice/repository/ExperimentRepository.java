@@ -1,9 +1,10 @@
 package com.ecaservice.repository;
 
-import com.ecaservice.model.entity.AppInstanceEntity;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.projections.RequestStatusStatistics;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -40,26 +41,23 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
     /**
      * Finds not sent experiments by statuses
      *
-     * @param appInstanceEntity - app instance entity
      * @param statuses - {@link RequestStatus} collection
      * @return experiments list
      */
-    @Query("select exp from Experiment exp where exp.appInstanceEntity = :appInstance and exp.requestStatus " +
-            "in (:statuses) and exp.sentDate is null order by exp.creationDate")
-    List<Experiment> findExperimentsForProcessing(@Param("appInstance") AppInstanceEntity appInstanceEntity,
-                                                  @Param("statuses") Collection<RequestStatus> statuses);
+    @Query("select exp from Experiment exp where exp.requestStatus in (:statuses) " +
+            "and exp.sentDate is null order by exp.creationDate")
+    Page<Experiment> findExperimentsForProcessing(@Param("statuses") Collection<RequestStatus> statuses,
+                                                  Pageable pageable);
 
     /**
      * Finds experiments which sent date is after N days.
      *
-     * @param appInstanceEntity - app instance entity
      * @param dateTime date time threshold value
      * @return experiments list
      */
-    @Query("select exp from Experiment exp where exp.appInstanceEntity = :appInstance and " +
-            "exp.sentDate is not null and exp.deletedDate is null and exp.sentDate < :dateTime order by exp.sentDate")
-    List<Experiment> findNotDeletedExperiments(@Param("appInstance") AppInstanceEntity appInstanceEntity,
-                                               @Param("dateTime") LocalDateTime dateTime);
+    @Query("select exp from Experiment exp where exp.sentDate is not null and exp.deletedDate is null " +
+            "and exp.sentDate < :dateTime order by exp.sentDate")
+    List<Experiment> findNotDeletedExperiments(@Param("dateTime") LocalDateTime dateTime);
 
     /**
      * Calculates requests status counting statistics.

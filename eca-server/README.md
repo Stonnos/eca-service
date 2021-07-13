@@ -53,13 +53,14 @@ ECA server
    * experiment.ensemble.multiThreadModeEnabled - многопоточный режим для ансамблевых алгоритмов (вкл./выкл.)
    * experiment.ensemble.numThreads - число используемых потоков
    * experiment.ensemble.numFoldsForStacking - число блоков V - блочной кросс - проверки для алгоритма Stacking
+   * experiment.lock.registryKey - ключ реестра для блокировок
+   * experiment.lock.expireAfter - время жизни блокировки
 4) ers - настройки интеграции с сервисом eca-ers
    * ers.useClassifierOptionsCache - вкл./выкл. кеширование оптимальных настроек классификатора
    * ers.classifierOptionsCacheDurationInDays - период хранения оптимальных настроек классификатора, полученных от сервиса ERS
 5) common - общие настройки
    * common.threadPoolSize - число потоков для асинхронных задач
    * common.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
-   * common.instance - уникальное имя инстанса (используется для кластерной среды)
 6) cache.specs - настройки spring cache
 7) swagger2 - настройки Swagger
    * swagger2.tokenBaseUrl - базовый url - сервера авторизации

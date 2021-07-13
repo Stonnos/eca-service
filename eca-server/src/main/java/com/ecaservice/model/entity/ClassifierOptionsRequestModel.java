@@ -12,7 +12,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
@@ -64,13 +63,6 @@ public class ClassifierOptionsRequestModel extends ErsRequest {
      * Seed value for k * V cross - validation method
      */
     private Integer seed;
-
-    /**
-     * Linked app instance
-     */
-    @ManyToOne
-    @JoinColumn(name = "app_instance_id")
-    private AppInstanceEntity appInstanceEntity;
 
     /**
      * Classifier options response

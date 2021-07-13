@@ -8,6 +8,7 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.mapping.ExperimentMapper;
@@ -17,13 +18,10 @@ import com.ecaservice.model.entity.Experiment_;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.InitializationParams;
-import com.ecaservice.repository.AppInstanceRepository;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.AbstractJpaTest;
-import com.ecaservice.service.AppInstanceService;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.service.evaluation.CalculationExecutorServiceImpl;
-import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -73,8 +71,6 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @Inject
     private ExperimentRepository experimentRepository;
     @Inject
-    private AppInstanceRepository appInstanceRepository;
-    @Inject
     private ExperimentMapper experimentMapper;
     @Mock
     private DataService dataService;
@@ -100,17 +96,14 @@ class ExperimentServiceTest extends AbstractJpaTest {
         data = TestHelperUtils.loadInstances();
         CalculationExecutorService executorService =
                 new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
-        AppInstanceService appInstanceService = new AppInstanceService(commonConfig, appInstanceRepository);
         experimentService = new ExperimentService(experimentRepository, executorService, experimentMapper, dataService,
                 crossValidationConfig, experimentConfig, experimentProcessorService, entityManager, commonConfig,
-                filterService, appInstanceService);
-        appInstanceService.saveAppInstance();
+                filterService);
     }
 
     @Override
     public void deleteAll() {
         experimentRepository.deleteAll();
-        appInstanceRepository.deleteAll();
     }
 
     @Test
@@ -133,8 +126,6 @@ class ExperimentServiceTest extends AbstractJpaTest {
         assertThat(experiment.getRequestId()).isNotNull();
         assertThat(experiment.getCreationDate()).isNotNull();
         assertThat(experiment.getTrainingDataAbsolutePath()).isNotNull();
-        assertThat(experiment.getAppInstanceEntity()).isNotNull();
-        assertThat(experiment.getAppInstanceEntity().getInstanceName()).isEqualTo(commonConfig.getInstance());
     }
 
     @Test
