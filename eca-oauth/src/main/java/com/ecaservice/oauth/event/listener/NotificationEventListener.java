@@ -35,6 +35,8 @@ public class NotificationEventListener {
     @Async
     @EventListener
     public void handleNotificationEvent(AbstractNotificationEvent notificationEvent) {
+        log.info("Received notification event [{}] from source [{}]", notificationEvent.getClass().getSimpleName(),
+                notificationEvent.getSource().getClass().getSimpleName());
         AbstractNotificationEventHandler eventHandler = notificationEventHandlers.stream()
                 .filter(handler -> handler.canHandle(notificationEvent))
                 .findFirst()
