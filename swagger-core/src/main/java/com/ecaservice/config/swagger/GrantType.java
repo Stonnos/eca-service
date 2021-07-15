@@ -27,5 +27,10 @@ public enum GrantType {
         }
     };
 
+    /**
+     * Visitor method.
+     *
+     * @param visitor - visitor interface
+     */
     public abstract void handle(GrantTypeVisitor visitor);
 }
