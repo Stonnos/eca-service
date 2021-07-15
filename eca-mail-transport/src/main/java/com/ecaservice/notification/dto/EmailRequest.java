@@ -51,6 +51,6 @@ public class EmailRequest {
     @NotNull
     @Min(LOW)
     @Max(HIGHEST)
-    @Schema(description = "Delivery priority")
+    @Schema(description = "Delivery priority", example = "0")
     private Integer priority;
 }
