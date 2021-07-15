@@ -64,8 +64,8 @@ change-password:
 ## Swagger properties
 open-api:
   basePath: /
-  title: REST API for web application
-  description: Operations for ECA web application
+  title: Microservice for users managment
+  description: API provides operations with users for ECA web application
   author: Roman Batygin
   email: roman.batygin@mail.ru
   projectVersion: @project.version@

@@ -47,8 +47,8 @@ eca-ds:
 ## Swagger properties
 open-api:
   basePath: /
-  title: REST API for web application
-  description: Operations for ECA web application
+  title: Microservice for storaging training data sets
+  description: API provides operations with training data sets for ECA web application
   author: Roman Batygin
   email: roman.batygin@mail.ru
   projectVersion: @project.version@

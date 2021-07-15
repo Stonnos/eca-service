@@ -10,8 +10,9 @@ import com.ecaservice.web.dto.model.AuditLogDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 import static com.ecaservice.audit.dictionary.FilterDictionaries.AUDIT_LOG_TEMPLATE;
+import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.report.ReportGenerator.generateReport;
 
 /**
@@ -40,7 +42,7 @@ import static com.ecaservice.report.ReportGenerator.generateReport;
  * @author Roman Batygin
  */
 @Slf4j
-@Api(tags = "Audit log API for web application")
+@Tag(name = "Audit log API for web application")
 @RestController
 @RequestMapping("/audit-log")
 @RequiredArgsConstructor
@@ -61,9 +63,10 @@ public class AuditLogController {
      * @return audit logs page
      */
     @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
-    @ApiOperation(
-            value = "Finds audit logs with specified options such as filter, sorting and paging",
-            notes = "Finds audit logs with specified options such as filter, sorting and paging"
+    @Operation(
+            description = "Finds audit logs with specified options such as filter, sorting and paging",
+            summary = "Finds audit logs with specified options such as filter, sorting and paging",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @PostMapping(value = "/list")
     public PageDto<AuditLogDto> getAuditLogsPage(@Valid @RequestBody PageRequestDto pageRequestDto) {
@@ -79,9 +82,10 @@ public class AuditLogController {
      * @return filter fields list
      */
     @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
-    @ApiOperation(
-            value = "Gets audit log filter fields",
-            notes = "Gets audit log filter fields"
+    @Operation(
+            description = "Gets audit log filter fields",
+            summary = "Gets audit log filter fields",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @GetMapping(value = "/filter-templates/fields")
     public List<FilterFieldDto> getAuditLogFilter() {
@@ -96,9 +100,10 @@ public class AuditLogController {
      * @throws IOException in case of I/O error
      */
     @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
-    @ApiOperation(
-            value = "Downloads audit logs base report in xlsx format",
-            notes = "Downloads audit logs base report in xlsx format"
+    @Operation(
+            description = "Downloads audit logs base report in xlsx format",
+            summary = "Downloads audit logs base report in xlsx format",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @PostMapping(value = "/report/download")
     public void downloadReport(@Valid @RequestBody PageRequestDto pageRequestDto,
