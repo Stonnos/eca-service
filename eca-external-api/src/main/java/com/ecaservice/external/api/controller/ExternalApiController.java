@@ -13,6 +13,8 @@ import com.ecaservice.external.api.service.MessageCorrelationService;
 import com.ecaservice.external.api.validation.annotations.ValidTrainData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +39,7 @@ import java.time.Duration;
 import java.util.Optional;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.external.api.controller.docs.ApiExamples.EVALUATION_REQUEST_JSON;
 import static com.ecaservice.external.api.util.Constants.DATA_URL_PREFIX;
 import static com.ecaservice.external.api.util.Utils.buildAttachmentResponse;
 import static com.ecaservice.external.api.util.Utils.buildResponse;
@@ -97,7 +100,12 @@ public class ExternalApiController {
     @Operation(
             description = "Processes evaluation request",
             summary = "Processes evaluation request",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = EVALUATION_REQUEST_JSON)
+                    })
+            })
     )
     @PostMapping(value = "/evaluate")
     public Mono<ResponseDto<EvaluationResponseDto>> evaluateModel(
