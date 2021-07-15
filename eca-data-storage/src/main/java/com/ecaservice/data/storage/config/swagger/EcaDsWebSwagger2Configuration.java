@@ -1,8 +1,5 @@
 package com.ecaservice.data.storage.config.swagger;
 
-import com.ecaservice.config.swagger.AbstractEcaWebSwagger2Configuration;
-import com.ecaservice.config.swagger.Swagger2ApiConfig;
-import com.ecaservice.config.swagger.SwaggerBaseConfiguration;
 import com.ecaservice.data.storage.controller.DataStorageController;
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;

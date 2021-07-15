@@ -1,8 +1,5 @@
 package com.ecaservice.web.push.config.swagger;
 
-import com.ecaservice.config.swagger.AbstractSwagger2Configuration;
-import com.ecaservice.config.swagger.Swagger2ApiConfig;
-import com.ecaservice.config.swagger.SwaggerBaseConfiguration;
 import com.ecaservice.web.push.controller.WebPushController;
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;

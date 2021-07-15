@@ -1,8 +1,5 @@
 package com.ecaservice.oauth.config.swagger;
 
-import com.ecaservice.config.swagger.AbstractEcaWebSwagger2Configuration;
-import com.ecaservice.config.swagger.Swagger2ApiConfig;
-import com.ecaservice.config.swagger.SwaggerBaseConfiguration;
 import com.ecaservice.oauth.controller.UserController;
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;

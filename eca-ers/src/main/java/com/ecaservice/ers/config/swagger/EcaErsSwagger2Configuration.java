@@ -1,8 +1,5 @@
 package com.ecaservice.ers.config.swagger;
 
-import com.ecaservice.config.swagger.AbstractSwagger2Configuration;
-import com.ecaservice.config.swagger.Swagger2ApiConfig;
-import com.ecaservice.config.swagger.SwaggerBaseConfiguration;
 import com.ecaservice.ers.controller.EvaluationResultsController;
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;

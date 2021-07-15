@@ -1,9 +1,5 @@
 package com.ecaservice.external.api.config.swagger;
 
-import com.ecaservice.config.swagger.AbstractSwagger2Configuration;
-import com.ecaservice.config.swagger.SecuritySchemeOptions;
-import com.ecaservice.config.swagger.Swagger2ApiConfig;
-import com.ecaservice.config.swagger.SwaggerBaseConfiguration;
 import com.ecaservice.external.api.controller.ExternalApiController;
 import com.fasterxml.classmate.TypeResolver;
 import com.google.common.collect.ImmutableList;
