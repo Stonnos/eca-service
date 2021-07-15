@@ -60,4 +60,9 @@ public class OpenApiProperties {
      * Open api auth properties map
      */
     private Map<@NotNull GrantType, @NotNull OpenApiAuthProperties> apiAuth;
+
+    /**
+     * Oauth2 token base url
+     */
+    private String tokenBaseUrl;
 }

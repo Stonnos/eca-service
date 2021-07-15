@@ -4,9 +4,9 @@ import com.ecaservice.oauth.dto.ChangePasswordRequest;
 import com.ecaservice.oauth.event.model.ChangePasswordNotificationEvent;
 import com.ecaservice.oauth.service.ChangePasswordService;
 import com.ecaservice.user.model.UserDetailsImpl;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -26,7 +26,7 @@ import javax.validation.Valid;
  * @author Roman Batygin
  */
 @Slf4j
-@Api(tags = "Change password API")
+@Tag(name = "Change password API")
 @RestController
 @RequestMapping("/password/change")
 @RequiredArgsConstructor
@@ -42,9 +42,9 @@ public class ChangePasswordController {
      * @param changePasswordRequest - change password request
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Creates change password request",
-            notes = "Creates change password request"
+    @Operation(
+            description = "Creates change password request",
+            summary = "Creates change password request"
     )
     @PostMapping(value = "/request")
     public void createChangePasswordRequest(@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -61,13 +61,13 @@ public class ChangePasswordController {
      *
      * @param token - token value
      */
-    @ApiOperation(
-            value = "Confirms change password request",
-            notes = "Confirms change password request"
+    @Operation(
+            description = "Confirms change password request",
+            summary = "Confirms change password request"
     )
     @PostMapping(value = "/confirm")
     public void confirmChangePasswordRequest(
-            @ApiParam(value = "Token value", required = true) @RequestParam String token) {
+            @Parameter(description = "Token value", required = true) @RequestParam String token) {
         log.info("Received change password request confirmation");
         changePasswordService.changePassword(token);
     }

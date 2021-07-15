@@ -62,17 +62,17 @@ change-password:
   baseUrl: http://localhost:8085
 
 ## Swagger properties
-swagger2:
+open-api:
+  basePath: /
+  title: REST API for web application
+  description: Operations for ECA web application
+  author: Roman Batygin
+  email: roman.batygin@mail.ru
   projectVersion: @project.version@
-  groups:
-    eca-web:
-      title: REST API for web application
-      description: Operations for ECA web application
-      author: Roman Batygin
-      email: roman.batygin@mail.ru
-  tokenBaseUrl: http://localhost:8085/eca-oauth
-  clientId: swagger
-  secret: swagger_secret
+  tokenBaseUrl: http://localhost:8080
+  apiAuth:
+    PASSWORD:
+      scopes: web
 
 management:
   metrics:

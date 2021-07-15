@@ -5,9 +5,9 @@ import com.ecaservice.oauth.dto.ResetPasswordRequest;
 import com.ecaservice.oauth.event.model.ResetPasswordNotificationEvent;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.service.ResetPasswordService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -28,7 +28,7 @@ import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
  * @author Roman Batygin
  */
 @Slf4j
-@Api(tags = "Reset password API")
+@Tag(name = "Reset password API")
 @RestController
 @RequestMapping("/password")
 @RequiredArgsConstructor
@@ -43,9 +43,9 @@ public class ResetPasswordController {
      *
      * @param forgotPasswordRequest - forgot password request
      */
-    @ApiOperation(
-            value = "Creates forgot password request",
-            notes = "Creates forgot password request"
+    @Operation(
+            description = "Creates forgot password request",
+            summary = "Creates forgot password request"
     )
     @PostMapping(value = "/forgot")
     public void forgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
@@ -62,12 +62,12 @@ public class ResetPasswordController {
      * @param token - reset password token
      * @return {@code true} if token is valid (not expired and not reset). {@code false} otherwise
      */
-    @ApiOperation(
-            value = "Verify reset password token",
-            notes = "Verify reset password token"
+    @Operation(
+            description = "Verify reset password token",
+            summary = "Verify reset password token"
     )
     @PostMapping(value = "/verify-token")
-    public boolean verifyToken(@ApiParam(value = "Reset password token", required = true) @RequestParam String token) {
+    public boolean verifyToken(@Parameter(description = "Reset password token", required = true) @RequestParam String token) {
         log.info("Received request for reset password token verification");
         String md5Hash = md5Hex(token);
         return resetPasswordRequestRepository.existsByTokenAndExpireDateAfterAndResetDateIsNull(md5Hash,
@@ -79,9 +79,9 @@ public class ResetPasswordController {
      *
      * @param resetPasswordRequest - reset password request
      */
-    @ApiOperation(
-            value = "Reset password with specified token",
-            notes = "Reset password with specified token"
+    @Operation(
+            description = "Reset password with specified token",
+            summary = "Reset password with specified token"
     )
     @PostMapping(value = "/reset")
     public void resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {

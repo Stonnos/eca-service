@@ -52,7 +52,7 @@ ribbon:
 
 ## Swagger properties
 open-api:
-  base-path: /
+  basePath: /
   title: Email API
   description: Operations for email notifications sending
   author: Roman Batygin

@@ -14,9 +14,9 @@ import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UserDto;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -57,7 +57,7 @@ import static com.ecaservice.oauth.util.Utils.buildAttachmentResponse;
  */
 @Slf4j
 @Validated
-@Api(tags = "Users API for web application")
+@Tag(name = "Users API for web application")
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -76,9 +76,9 @@ public class UserController {
      * @return users list
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Gets current authenticated user info",
-            notes = "Gets current authenticated user info"
+    @Operation(
+            description = "Gets current authenticated user info",
+            summary = "Gets current authenticated user info"
     )
     @GetMapping(value = "/user-info")
     public UserDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -94,9 +94,9 @@ public class UserController {
      * @param authentication - oauth2 authentication
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Logout current user and revokes access/refresh token pair",
-            notes = "Logout current user and revokes access/refresh token pair"
+    @Operation(
+            description = "Logout current user and revokes access/refresh token pair",
+            summary = "Logout current user and revokes access/refresh token pair"
     )
     @PostMapping(value = "/logout")
     public void logout(Principal authentication) {
@@ -112,13 +112,13 @@ public class UserController {
      * @param enabled - tfa enabled?
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Enable/disable tfa for current authenticated user",
-            notes = "Enable/disable tfa for current authenticated user"
+    @Operation(
+            description = "Enable/disable tfa for current authenticated user",
+            summary = "Enable/disable tfa for current authenticated user"
     )
     @PostMapping(value = "/tfa")
     public void tfa(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                    @ApiParam(value = "Tfa enabled flag", required = true) @RequestParam boolean enabled) {
+                    @Parameter(description = "Tfa enabled flag", required = true) @RequestParam boolean enabled) {
         if (enabled) {
             userService.enableTfa(userDetails.getId());
         } else {
@@ -133,9 +133,9 @@ public class UserController {
      * @return users page
      */
     @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
-    @ApiOperation(
-            value = "Finds users with specified options",
-            notes = "Finds users with specified options"
+    @Operation(
+            description = "Finds users with specified options",
+            summary = "Finds users with specified options"
     )
     @PostMapping(value = "/list")
     public PageDto<UserDto> getUsers(@Valid @RequestBody PageRequestDto pageRequestDto) {
@@ -151,9 +151,9 @@ public class UserController {
      * @param createUserDto - create user dto
      */
     @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
-    @ApiOperation(
-            value = "Creates new user",
-            notes = "Creates new user"
+    @Operation(
+            description = "Creates new user",
+            summary = "Creates new user"
     )
     @PostMapping(value = "/create")
     public UserDto save(@Valid @RequestBody CreateUserDto createUserDto) {
@@ -172,13 +172,13 @@ public class UserController {
      * @param newEmail    - new email
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Updates email for current authenticated user",
-            notes = "Updates email for current authenticated user"
+    @Operation(
+            description = "Updates email for current authenticated user",
+            summary = "Updates email for current authenticated user"
     )
     @PostMapping(value = "/update-email")
     public void updateEmail(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                            @ApiParam(value = "User email", required = true)
+                            @Parameter(description = "User email", required = true)
                             @Email(regexp = EMAIL_REGEX)
                             @Size(max = EMAIL_MAX_SIZE) @RequestParam String newEmail) {
         log.info("Received request to update user [{}] email", userDetails.getId());
@@ -192,9 +192,9 @@ public class UserController {
      * @param updateUserInfoDto - user info dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Updates info for current authenticated user",
-            notes = "Updates info for current authenticated user"
+    @Operation(
+            description = "Updates info for current authenticated user",
+            summary = "Updates info for current authenticated user"
     )
     @PutMapping(value = "/update-info")
     public void updateUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -210,13 +210,13 @@ public class UserController {
      * @param file        - user photo file
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Uploads photo for current authenticated user",
-            notes = "Uploads photo for current authenticated user"
+    @Operation(
+            description = "Uploads photo for current authenticated user",
+            summary = "Uploads photo for current authenticated user"
     )
     @PostMapping(value = "/upload-photo")
     public void uploadPhoto(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                            @ApiParam(value = "Photo file", required = true) @RequestParam MultipartFile file) {
+                            @Parameter(description = "Photo file", required = true) @RequestParam MultipartFile file) {
         log.info("Uploads photo [{}] for user [{}]", file.getOriginalFilename(), userDetails.getId());
         userService.updatePhoto(userDetails.getId(), file);
     }
@@ -228,13 +228,13 @@ public class UserController {
      * @return user photo as byte array
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Downloads user photo",
-            notes = "Downloads user photo"
+    @Operation(
+            description = "Downloads user photo",
+            summary = "Downloads user photo"
     )
     @GetMapping(value = "/photo/{id}")
     public ResponseEntity<ByteArrayResource> downloadPhoto(
-            @ApiParam(value = "Photo id", required = true, example = "1") @PathVariable Long id) {
+            @Parameter(description = "Photo id", required = true, example = "1") @PathVariable Long id) {
         UserPhoto userPhoto = userPhotoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(UserPhoto.class, id));
         return buildAttachmentResponse(userPhoto.getPhoto(), userPhoto.getFileName());
@@ -246,9 +246,9 @@ public class UserController {
      * @param userDetails - user details
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Deletes photo for current authenticated user",
-            notes = "Deletes photo for current authenticated user"
+    @Operation(
+            description = "Deletes photo for current authenticated user",
+            summary = "Deletes photo for current authenticated user"
     )
     @DeleteMapping(value = "/delete-photo")
     public void deletePhoto(@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -263,13 +263,14 @@ public class UserController {
      * @param userId      - user id
      */
     @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
-    @ApiOperation(
-            value = "Locks user",
-            notes = "Locks user"
+    @Operation(
+            description = "Locks user",
+            summary = "Locks user"
     )
     @PostMapping(value = "/lock")
     public void lock(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                     @ApiParam(value = "User id", example = "1", required = true) @RequestParam Long userId) {
+                     @Parameter(description = "User id", example = "1", required = true)
+                     @RequestParam Long userId) {
         log.info("Received request for user [{}] locking", userId);
         if (userDetails.getId().equals(userId)) {
             throw new IllegalStateException(String.format("Can't lock yourself: [%d]", userId));
@@ -283,12 +284,12 @@ public class UserController {
      * @param userId - user id
      */
     @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
-    @ApiOperation(
-            value = "Unlocks user",
-            notes = "Unlocks user"
+    @Operation(
+            description = "Unlocks user",
+            summary = "Unlocks user"
     )
     @PostMapping(value = "/unlock")
-    public void unlock(@ApiParam(value = "User id", example = "1", required = true) @RequestParam Long userId) {
+    public void unlock(@Parameter(description = "User id", example = "1", required = true) @RequestParam Long userId) {
         log.info("Received request for user [{}] unlocking", userId);
         userService.unlock(userId);
     }

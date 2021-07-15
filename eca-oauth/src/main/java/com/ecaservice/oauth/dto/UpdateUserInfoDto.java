@@ -1,7 +1,6 @@
 package com.ecaservice.oauth.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -17,7 +16,7 @@ import static com.ecaservice.oauth.util.FieldConstraints.PERSON_NAME_REGEX;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "Update user info model")
+@Schema(description = "Update user info model")
 public class UpdateUserInfoDto {
 
     /**
@@ -26,7 +25,7 @@ public class UpdateUserInfoDto {
     @NotBlank
     @Size(max = PERSON_NAME_MAX_SIZE)
     @Pattern(regexp = PERSON_NAME_REGEX)
-    @ApiModelProperty(value = "First name", example = "Roman", required = true)
+    @Schema(description = "First name", example = "Roman", required = true)
     private String firstName;
 
     /**
@@ -35,7 +34,7 @@ public class UpdateUserInfoDto {
     @NotBlank
     @Size(max = PERSON_NAME_MAX_SIZE)
     @Pattern(regexp = PERSON_NAME_REGEX)
-    @ApiModelProperty(value = "Last name", example = "Batygin", required = true)
+    @Schema(description = "Last name", example = "Batygin", required = true)
     private String lastName;
 
     /**
@@ -44,6 +43,6 @@ public class UpdateUserInfoDto {
     @NotBlank
     @Size(max = PERSON_NAME_MAX_SIZE)
     @Pattern(regexp = PERSON_NAME_REGEX)
-    @ApiModelProperty(value = "Middle name", example = "Igorevich", required = true)
+    @Schema(description = "Middle name", example = "Igorevich", required = true)
     private String middleName;
 }

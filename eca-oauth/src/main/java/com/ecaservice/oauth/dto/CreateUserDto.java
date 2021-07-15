@@ -2,8 +2,7 @@ package com.ecaservice.oauth.dto;
 
 import com.ecaservice.oauth.validation.annotations.UniqueEmail;
 import com.ecaservice.oauth.validation.annotations.UniqueLogin;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -13,11 +12,11 @@ import javax.validation.constraints.Size;
 
 import static com.ecaservice.oauth.util.FieldConstraints.EMAIL_MAX_SIZE;
 import static com.ecaservice.oauth.util.FieldConstraints.EMAIL_REGEX;
-import static com.ecaservice.oauth.util.FieldConstraints.PERSON_NAME_MAX_SIZE;
-import static com.ecaservice.oauth.util.FieldConstraints.PERSON_NAME_REGEX;
 import static com.ecaservice.oauth.util.FieldConstraints.LOGIN_MAX_LENGTH;
 import static com.ecaservice.oauth.util.FieldConstraints.LOGIN_MIN_LENGTH;
 import static com.ecaservice.oauth.util.FieldConstraints.LOGIN_REGEX;
+import static com.ecaservice.oauth.util.FieldConstraints.PERSON_NAME_MAX_SIZE;
+import static com.ecaservice.oauth.util.FieldConstraints.PERSON_NAME_REGEX;
 
 /**
  * Create user dto model.
@@ -25,7 +24,7 @@ import static com.ecaservice.oauth.util.FieldConstraints.LOGIN_REGEX;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "Create user model")
+@Schema(description = "Create user model")
 public class CreateUserDto {
 
     /**
@@ -35,7 +34,7 @@ public class CreateUserDto {
     @Size(min = LOGIN_MIN_LENGTH, max = LOGIN_MAX_LENGTH)
     @Pattern(regexp = LOGIN_REGEX)
     @UniqueLogin
-    @ApiModelProperty(value = "User login", example = "user", required = true)
+    @Schema(description = "User login", example = "user", required = true)
     private String login;
 
     /**
@@ -44,7 +43,7 @@ public class CreateUserDto {
     @Email(regexp = EMAIL_REGEX)
     @Size(max = EMAIL_MAX_SIZE)
     @UniqueEmail
-    @ApiModelProperty(value = "User email", example = "bat1238@yandex.ru", required = true)
+    @Schema(description = "User email", example = "bat1238@yandex.ru", required = true)
     private String email;
 
     /**
@@ -53,7 +52,7 @@ public class CreateUserDto {
     @NotBlank
     @Size(max = PERSON_NAME_MAX_SIZE)
     @Pattern(regexp = PERSON_NAME_REGEX)
-    @ApiModelProperty(value = "First name", example = "Roman", required = true)
+    @Schema(description = "First name", example = "Roman", required = true)
     private String firstName;
 
     /**
@@ -62,7 +61,7 @@ public class CreateUserDto {
     @NotBlank
     @Size(max = PERSON_NAME_MAX_SIZE)
     @Pattern(regexp = PERSON_NAME_REGEX)
-    @ApiModelProperty(value = "Last name", example = "Batygin", required = true)
+    @Schema(description = "Last name", example = "Batygin", required = true)
     private String lastName;
 
     /**
@@ -71,6 +70,6 @@ public class CreateUserDto {
     @NotBlank
     @Size(max = PERSON_NAME_MAX_SIZE)
     @Pattern(regexp = PERSON_NAME_REGEX)
-    @ApiModelProperty(value = "Middle name", example = "Igorevich", required = true)
+    @Schema(description = "Middle name", example = "Igorevich", required = true)
     private String middleName;
 }

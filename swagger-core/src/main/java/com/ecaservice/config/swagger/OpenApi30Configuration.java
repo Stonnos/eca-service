@@ -9,6 +9,8 @@ import io.swagger.v3.oas.models.security.OAuthFlows;
 import io.swagger.v3.oas.models.security.Scopes;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -20,27 +22,33 @@ import org.springframework.util.CollectionUtils;
  *
  * @author Roman Batygin
  */
+@Slf4j
 @Configuration
 @EnableConfigurationProperties(OpenApiProperties.class)
+@RequiredArgsConstructor
 public class OpenApi30Configuration {
 
-    public static final String ECA_AUTHENTICATION_SECURITY_SCHEME = "EcaAuth";
+    private static final String TOKEN_URL_FORMAT = "%s/oauth/token";
+
+    private static final String ECA_AUTHENTICATION_SECURITY_SCHEME = "EcaAuth";
+
+    private final OpenApiProperties openApiProperties;
 
     /**
      * Creates open api bean.
      *
-     * @param openApiProperties - open api properties
      * @return open api bean
      */
     @Bean
-    public OpenAPI customOpenAPI(OpenApiProperties openApiProperties) {
+    public OpenAPI customOpenAPI() {
+        log.info("Starting to init Open API configuration");
         return new OpenAPI()
-                .components(components(openApiProperties))
+                .components(components())
                 .addServersItem(new Server().url(openApiProperties.getBasePath()))
-                .info(apiInfo(openApiProperties));
+                .info(apiInfo());
     }
 
-    private Info apiInfo(OpenApiProperties openApiProperties) {
+    private Info apiInfo() {
         return new Info()
                 .title(openApiProperties.getTitle())
                 .version(openApiProperties.getProjectVersion())
@@ -50,16 +58,16 @@ public class OpenApi30Configuration {
                         .email(openApiProperties.getEmail()));
     }
 
-    private Components components(OpenApiProperties openApiProperties) {
+    private Components components() {
         var components = new Components();
         if (!CollectionUtils.isEmpty(openApiProperties.getApiAuth())) {
-            System.out.println(openApiProperties.getApiAuth().size());
-            components.addSecuritySchemes(ECA_AUTHENTICATION_SECURITY_SCHEME, oauth2SecurityScheme(openApiProperties));
+            log.info("Starting to init security schemes for Open API");
+            components.addSecuritySchemes(ECA_AUTHENTICATION_SECURITY_SCHEME, oauth2SecurityScheme());
         }
         return components;
     }
 
-    private SecurityScheme oauth2SecurityScheme(OpenApiProperties openApiProperties) {
+    private SecurityScheme oauth2SecurityScheme() {
         var securityScheme = new SecurityScheme()
                 .name(ECA_AUTHENTICATION_SECURITY_SCHEME)
                 .type(SecurityScheme.Type.OAUTH2)
@@ -69,27 +77,34 @@ public class OpenApi30Configuration {
                     @Override
                     public void visitPassword() {
                         securityScheme.getFlows().setPassword(passwordFlow(openApiAuthProperties));
+                        log.info("Password security scheme has been initialized for Open API");
                     }
 
                     @Override
                     public void visitClientCredentials() {
                         securityScheme.getFlows().setClientCredentials(clientCredentialsFlow(openApiAuthProperties));
+                        log.info("Client credentials security scheme has been initialized for Open API");
                     }
                 }));
         return securityScheme;
     }
 
     private OAuthFlow passwordFlow(OpenApiAuthProperties openApiAuthProperties) {
+        String tokenUrl = getTokenUrl();
         return new OAuthFlow()
-                .tokenUrl(openApiAuthProperties.getTokenUrl())
-                .refreshUrl(openApiAuthProperties.getRefreshTokenUrl())
+                .tokenUrl(tokenUrl)
+                .refreshUrl(tokenUrl)
                 .scopes(scopes(openApiAuthProperties));
     }
 
     private OAuthFlow clientCredentialsFlow(OpenApiAuthProperties openApiAuthProperties) {
         return new OAuthFlow()
-                .tokenUrl(openApiAuthProperties.getTokenUrl())
+                .tokenUrl(getTokenUrl())
                 .scopes(scopes(openApiAuthProperties));
+    }
+
+    private String getTokenUrl() {
+        return String.format(TOKEN_URL_FORMAT, openApiProperties.getTokenBaseUrl());
     }
 
     private Scopes scopes(OpenApiAuthProperties openApiAuthProperties) {
