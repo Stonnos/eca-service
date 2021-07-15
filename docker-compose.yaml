@@ -68,6 +68,7 @@ services:
       SPRING_REDIS_HOST: "redis"
       SPRING_CACHE_TYPE: "redis"
       AUDIT_ENABLED: "true"
+      OPENAPI_BASEPATH: "/eca-server"
     networks:
       - default
     depends_on:
@@ -85,6 +86,7 @@ services:
       DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
       JAVA_OPTS: "-Xmx756m"
       AUDIT_ENABLED: "true"
+      OPENAPI_BASEPATH: "/eca-oauth"
     networks:
       - default
     depends_on:
@@ -100,6 +102,7 @@ services:
       DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
       DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
       JAVA_OPTS: "-Xmx512m"
+      OPENAPI_BASEPATH: "/eca-mail"
     networks:
       - default
     depends_on:
@@ -116,6 +119,7 @@ services:
       DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
       JAVA_OPTS: "-Xmx512m"
       AUDIT_ENABLED: "true"
+      OPENAPI_BASEPATH: "/eca-ds"
     networks:
       - default
     depends_on:
@@ -131,6 +135,7 @@ services:
       JAVA_OPTS: "-Xmx1g"
       DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
       DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
+      OPENAPI_BASEPATH: "/eca-ers"
     networks:
       - default
     depends_on:
@@ -148,6 +153,7 @@ services:
       JAVA_OPTS: "-Xmx1g"
       DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
       DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
+      OPENAPI_BASEPATH: "/external-api"
     networks:
       - default
     depends_on:
@@ -192,6 +198,7 @@ services:
       SERVER_PORT: "8099"
       SPRING_PROFILES_ACTIVE: "docker"
       JAVA_OPTS: "-Xmx512m"
+      OPENAPI_BASEPATH: "/eca-web-push"
     networks:
       - default
 
@@ -204,6 +211,7 @@ services:
       DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
       DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
       JAVA_OPTS: "-Xmx512m"
+      OPENAPI_BASEPATH: "/eca-audit-log"
     networks:
       - default
     depends_on:
