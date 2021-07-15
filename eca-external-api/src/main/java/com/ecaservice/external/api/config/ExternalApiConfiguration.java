@@ -1,6 +1,7 @@
 package com.ecaservice.external.api.config;
 
 import com.ecaservice.classifier.options.config.ClassifiersOptionsConfiguration;
+import com.ecaservice.config.swagger.annotation.EnableOpenApi;
 import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
 import eca.data.file.FileDataLoader;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -19,6 +20,7 @@ import static org.springframework.web.context.WebApplicationContext.SCOPE_REQUES
  * @author Roman Batygin
  */
 @Configuration
+@EnableOpenApi
 @Oauth2ResourceServer
 @EnableScheduling
 @EnableConfigurationProperties(ExternalApiConfig.class)

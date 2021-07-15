@@ -11,9 +11,10 @@ import com.ecaservice.external.api.service.EvaluationApiService;
 import com.ecaservice.external.api.service.InstancesService;
 import com.ecaservice.external.api.service.MessageCorrelationService;
 import com.ecaservice.external.api.validation.annotations.ValidTrainData;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
@@ -35,6 +36,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.Optional;
 
+import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.external.api.util.Constants.DATA_URL_PREFIX;
 import static com.ecaservice.external.api.util.Utils.buildAttachmentResponse;
 import static com.ecaservice.external.api.util.Utils.buildResponse;
@@ -46,7 +48,7 @@ import static com.ecaservice.external.api.util.Utils.toJson;
  *
  * @author Roman Batygin
  */
-@Api(tags = "Operations for external API")
+@Tag(name = "Operations for external API")
 @Slf4j
 @Validated
 @RestController
@@ -68,13 +70,14 @@ public class ExternalApiController {
      * @throws IOException in case of I/O error
      */
     @PreAuthorize("#oauth2.hasScope('external-api')")
-    @ApiOperation(
-            value = "Uploads train data file",
-            notes = "Uploads train data file"
+    @Operation(
+            description = "Uploads train data file",
+            summary = "Uploads train data file",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @PostMapping(value = "/uploads-train-data")
     public ResponseDto<InstancesDto> uploadInstances(
-            @ApiParam(value = "Training data file", required = true)
+            @Parameter(description = "Training data file", required = true)
             @ValidTrainData
             @RequestParam MultipartFile trainingData) throws IOException {
         log.debug("Received request to upload train data [{}]", trainingData.getOriginalFilename());
@@ -91,9 +94,10 @@ public class ExternalApiController {
      * @return evaluation response mono object
      */
     @PreAuthorize("#oauth2.hasScope('external-api')")
-    @ApiOperation(
-            value = "Processes evaluation request",
-            notes = "Processes evaluation request"
+    @Operation(
+            description = "Processes evaluation request",
+            summary = "Processes evaluation request",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @PostMapping(value = "/evaluate")
     public Mono<ResponseDto<EvaluationResponseDto>> evaluateModel(
@@ -116,13 +120,14 @@ public class ExternalApiController {
      * @param requestId - request id
      */
     @PreAuthorize("#oauth2.hasScope('external-api')")
-    @ApiOperation(
-            value = "Downloads classifier model",
-            notes = "Downloads classifier model"
+    @Operation(
+            description = "Downloads classifier model",
+            summary = "Downloads classifier model",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @GetMapping(value = "/download-model/{requestId}")
-    public ResponseEntity<FileSystemResource> downloadModel(
-            @ApiParam(value = "Request id", required = true) @PathVariable String requestId) {
+    public ResponseEntity<FileSystemResource> downloadModel(@Parameter(description = "Request id", required = true)
+                                                            @PathVariable String requestId) {
         var evaluationRequestEntity = ecaRequestService.getByCorrelationId(requestId);
         var modelFile = Optional.ofNullable(evaluationRequestEntity.getClassifierAbsolutePath())
                 .map(File::new)
