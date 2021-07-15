@@ -24,7 +24,7 @@ import java.math.BigInteger;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ResponseBuilder {
+public class EvaluationResponseBuilder {
 
     private static final String MODEL_DOWNLOAD_URL_FORMAT = "%s/download-model/%s";
 
