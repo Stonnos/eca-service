@@ -26,14 +26,13 @@ queues:
   experimentQueue: /queue/experiment
 
 ## Swagger properties
-swagger2:
+open-api:
+  basePath: /
+  title: Web pushes microservice
+  description: API provides operations for sending web pushes
+  author: Roman Batygin
+  email: roman.batygin@mail.ru
   projectVersion: @project.version@
-  groups:
-    eca-web-push:
-      title: Web push API
-      description: Operations for web push notifications sending
-      author: Roman Batygin
-      email: roman.batygin@mail.ru
 
 management:
   metrics:

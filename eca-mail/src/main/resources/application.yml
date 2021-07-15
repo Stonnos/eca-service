@@ -53,8 +53,8 @@ ribbon:
 ## Swagger properties
 open-api:
   basePath: /
-  title: Email API
-  description: Operations for email notifications sending
+  title: Microservice for sending emails
+  description: API provides operations for email notifications sending
   author: Roman Batygin
   email: roman.batygin@mail.ru
   projectVersion: @project.version@
