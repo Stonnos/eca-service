@@ -5,9 +5,9 @@ import com.ecaservice.external.api.test.entity.JobEntity;
 import com.ecaservice.external.api.test.report.TestResultsReportGenerator;
 import com.ecaservice.external.api.test.repository.JobRepository;
 import com.ecaservice.external.api.test.service.JobService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ import java.io.OutputStream;
  *
  * @author Roman Batygin
  */
-@Api(tags = "API for auto tests execution")
+@Tag(name = "API for auto tests execution")
 @Slf4j
 @RestController
 @RequestMapping("/auto-tests")
@@ -47,9 +47,9 @@ public class AutoTestController {
      *
      * @return job uuid
      */
-    @ApiOperation(
-            value = "Creates auto tests job",
-            notes = "Creates auto tests job"
+    @Operation(
+            description = "Creates auto tests job",
+            summary = "Creates auto tests job"
     )
     @PostMapping(value = "/create-job")
     public String createJob() {
@@ -66,12 +66,13 @@ public class AutoTestController {
      * @param httpServletResponse - http servlet response
      * @throws IOException in case of I/O error
      */
-    @ApiOperation(
-            value = "Downloads auto tests report zip file",
-            notes = "Downloads auto tests report zip file"
+    @Operation(
+            description = "Downloads auto tests report zip file",
+            summary = "Downloads auto tests report zip file"
     )
     @GetMapping(value = "/report/{jobUuid}")
-    public void downloadReport(@ApiParam(value = "Job uuid", required = true) @PathVariable String jobUuid,
+    public void downloadReport(@Parameter(description = "Job uuid", required = true)
+                               @PathVariable String jobUuid,
                                HttpServletResponse httpServletResponse) throws IOException {
         log.info("Starting to download auto tests [{}] report", jobUuid);
         JobEntity jobEntity =
