@@ -13,16 +13,6 @@ import java.util.List;
 public class OpenApiAuthProperties {
 
     /**
-     * Application id
-     */
-    private String clientId;
-
-    /**
-     * Application secret
-     */
-    private String secret;
-
-    /**
      * Scopes list
      */
     private List<String> scopes;
