@@ -28,9 +28,9 @@ import org.springframework.util.CollectionUtils;
 @RequiredArgsConstructor
 public class OpenApi30Configuration {
 
-    private static final String TOKEN_URL_FORMAT = "%s/oauth/token";
+    public static final String ECA_AUTHENTICATION_SECURITY_SCHEME = "EcaAuth";
 
-    private static final String ECA_AUTHENTICATION_SECURITY_SCHEME = "EcaAuth";
+    private static final String TOKEN_URL_FORMAT = "%s/oauth/token";
 
     private final OpenApiProperties openApiProperties;
 

@@ -6,6 +6,7 @@ import com.ecaservice.oauth.service.ChangePasswordService;
 import com.ecaservice.user.model.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+
+import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 
 /**
  * Implements change password REST API.
@@ -44,7 +47,8 @@ public class ChangePasswordController {
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Creates change password request",
-            summary = "Creates change password request"
+            summary = "Creates change password request",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @PostMapping(value = "/request")
     public void createChangePasswordRequest(@AuthenticationPrincipal UserDetailsImpl userDetails,

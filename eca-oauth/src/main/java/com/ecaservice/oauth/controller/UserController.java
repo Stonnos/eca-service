@@ -16,6 +16,7 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +47,7 @@ import javax.validation.constraints.Size;
 import java.security.Principal;
 import java.util.List;
 
+import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.oauth.util.FieldConstraints.EMAIL_MAX_SIZE;
 import static com.ecaservice.oauth.util.FieldConstraints.EMAIL_REGEX;
 import static com.ecaservice.oauth.util.Utils.buildAttachmentResponse;
@@ -78,7 +80,8 @@ public class UserController {
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Gets current authenticated user info",
-            summary = "Gets current authenticated user info"
+            summary = "Gets current authenticated user info",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @GetMapping(value = "/user-info")
     public UserDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -96,7 +99,8 @@ public class UserController {
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Logout current user and revokes access/refresh token pair",
-            summary = "Logout current user and revokes access/refresh token pair"
+            summary = "Logout current user and revokes access/refresh token pair",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @PostMapping(value = "/logout")
     public void logout(Principal authentication) {
@@ -114,7 +118,8 @@ public class UserController {
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Enable/disable tfa for current authenticated user",
-            summary = "Enable/disable tfa for current authenticated user"
+            summary = "Enable/disable tfa for current authenticated user",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @PostMapping(value = "/tfa")
     public void tfa(@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -135,7 +140,8 @@ public class UserController {
     @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
     @Operation(
             description = "Finds users with specified options",
-            summary = "Finds users with specified options"
+            summary = "Finds users with specified options",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @PostMapping(value = "/list")
     public PageDto<UserDto> getUsers(@Valid @RequestBody PageRequestDto pageRequestDto) {
@@ -153,7 +159,8 @@ public class UserController {
     @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
     @Operation(
             description = "Creates new user",
-            summary = "Creates new user"
+            summary = "Creates new user",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @PostMapping(value = "/create")
     public UserDto save(@Valid @RequestBody CreateUserDto createUserDto) {
@@ -174,7 +181,8 @@ public class UserController {
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Updates email for current authenticated user",
-            summary = "Updates email for current authenticated user"
+            summary = "Updates email for current authenticated user",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @PostMapping(value = "/update-email")
     public void updateEmail(@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -194,7 +202,8 @@ public class UserController {
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Updates info for current authenticated user",
-            summary = "Updates info for current authenticated user"
+            summary = "Updates info for current authenticated user",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @PutMapping(value = "/update-info")
     public void updateUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -212,7 +221,8 @@ public class UserController {
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Uploads photo for current authenticated user",
-            summary = "Uploads photo for current authenticated user"
+            summary = "Uploads photo for current authenticated user",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @PostMapping(value = "/upload-photo")
     public void uploadPhoto(@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -230,7 +240,8 @@ public class UserController {
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Downloads user photo",
-            summary = "Downloads user photo"
+            summary = "Downloads user photo",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @GetMapping(value = "/photo/{id}")
     public ResponseEntity<ByteArrayResource> downloadPhoto(
@@ -248,7 +259,8 @@ public class UserController {
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
             description = "Deletes photo for current authenticated user",
-            summary = "Deletes photo for current authenticated user"
+            summary = "Deletes photo for current authenticated user",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @DeleteMapping(value = "/delete-photo")
     public void deletePhoto(@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -265,7 +277,8 @@ public class UserController {
     @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
     @Operation(
             description = "Locks user",
-            summary = "Locks user"
+            summary = "Locks user",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @PostMapping(value = "/lock")
     public void lock(@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -286,7 +299,8 @@ public class UserController {
     @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
     @Operation(
             description = "Unlocks user",
-            summary = "Unlocks user"
+            summary = "Unlocks user",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @PostMapping(value = "/unlock")
     public void unlock(@Parameter(description = "User id", example = "1", required = true) @RequestParam Long userId) {

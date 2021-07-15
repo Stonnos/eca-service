@@ -74,6 +74,9 @@ open-api:
     PASSWORD:
       scopes: web
 
+springdoc:
+  packages-to-exclude: org.springframework.security.oauth2.provider.endpoint
+
 management:
   metrics:
     tags:
