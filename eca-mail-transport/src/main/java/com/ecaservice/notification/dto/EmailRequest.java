@@ -1,5 +1,6 @@
 package com.ecaservice.notification.dto;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -13,6 +14,7 @@ import java.util.Map;
 
 import static com.ecaservice.notification.util.FieldConstraints.EMAIL_MAX_SIZE;
 import static com.ecaservice.notification.util.FieldConstraints.EMAIL_REGEX;
+import static com.ecaservice.notification.util.FieldConstraints.MAX_VARIABLES_SIZE;
 import static com.ecaservice.notification.util.Priority.HIGHEST;
 import static com.ecaservice.notification.util.Priority.LOW;
 
@@ -42,7 +44,8 @@ public class EmailRequest {
     /**
      * Email message variables
      */
-    @Schema(description = "Email templates variables")
+    @ArraySchema(schema = @Schema(description = "Email templates variables"), maxItems = MAX_VARIABLES_SIZE)
+    @Size(max = MAX_VARIABLES_SIZE)
     private Map<@NotBlank String, @NotBlank String> variables;
 
     /**

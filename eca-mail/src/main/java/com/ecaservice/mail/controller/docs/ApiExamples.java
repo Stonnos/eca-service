@@ -10,7 +10,8 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class ApiExamples {
 
-    public static final String EMAIL_REQUEST_JSON = "{\"receiver\": \"bat1238@yandex.ru\", \"templateCode\": " +
-            "\"NEW_EXPERIMENT\", \"variables\": {\"firstName\": \"Роман\", \"requestId\": " +
-            "\"1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c\", \"experimentType\": \"KNN\", \"priority\": 1}}";
+    public static final String EMAIL_REQUEST_JSON =
+            "{\"receiver\": \"test@mail.ru\", \"templateCode\": \"NEW_EXPERIMENT\", \"variables\": " +
+                    "{\"firstName\": \"Роман\", \"requestId\": \"1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c\", " +
+                    "\"experimentType\": \"KNN\"},\"priority\": 1}";
 }
