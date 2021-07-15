@@ -77,22 +77,23 @@ classifiers-options:
   maximumFractionDigits: 4
 
 ## Swagger properties
-swagger2:
+open-api:
+  basePath: /
+  title: Microservice for classifiers learning
+  description: API provides operations for individual and ensemble classification models learning
+  author: Roman Batygin
+  email: roman.batygin@mail.ru
   projectVersion: @project.version@
-  groups:
-    eca:
-      title: REST API for ECA application
-      description: API for individual and ensemble classification models learning
-      author: Roman Batygin
-      email: roman.batygin@mail.ru
-    eca-web:
-      title: REST API for web application
-      description: Operations for ECA web application
-      author: Roman Batygin
-      email: roman.batygin@mail.ru
-  tokenBaseUrl: http://localhost:8085/eca-oauth
-  clientId: swagger
-  secret: swagger_secret
+  tokenBaseUrl: http://localhost:8080
+  apiAuth:
+    PASSWORD:
+      scopes: web
+
+springdoc:
+  swagger-ui:
+    oauth:
+      client-id: swagger
+      client-secret: swagger_secret
 
 ## Experiment properties
 experiment:

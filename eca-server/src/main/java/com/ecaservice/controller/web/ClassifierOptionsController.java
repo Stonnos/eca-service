@@ -8,9 +8,10 @@ import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.CreateClassifierOptionsResultDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ import javax.validation.Valid;
 import java.io.InputStream;
 import java.util.List;
 
+import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.util.ClassifierOptionsHelper.parseOptions;
 
 /**
@@ -37,7 +39,7 @@ import static com.ecaservice.util.ClassifierOptionsHelper.parseOptions;
  * @author Roman Batygin
  */
 @Slf4j
-@Api(tags = "Experiment classifiers configs API for web application")
+@Tag(name = "Experiment classifiers configs API for web application")
 @RestController
 @RequestMapping("/experiment/classifiers-options")
 @RequiredArgsConstructor
@@ -52,9 +54,10 @@ public class ClassifierOptionsController {
      * @return response entity
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Finds active classifiers options configs",
-            notes = "Finds active classifiers options configs"
+    @Operation(
+            description = "Finds active classifiers options configs",
+            summary = "Finds active classifiers options configs",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @GetMapping(value = "/active-options")
     public List<ClassifierOptionsDto> getActiveClassifiersOptions() {
@@ -70,13 +73,15 @@ public class ClassifierOptionsController {
      * @return response entity
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Finds classifiers options configs page",
-            notes = "Finds classifiers options configs page"
+    @Operation(
+            description = "Finds classifiers options configs page",
+            summary = "Finds classifiers options configs page",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @PostMapping(value = "/page")
     public PageDto<ClassifierOptionsDto> getClassifiersOptionsPage(
-            @ApiParam(value = "Configuration id", example = "1", required = true) @RequestParam long configurationId,
+            @Parameter(description = "Configuration id", example = "1", required = true)
+            @RequestParam long configurationId,
             @Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received classifiers options page request: {}, configuration id [{}]", pageRequestDto,
                 configurationId);
@@ -95,15 +100,17 @@ public class ClassifierOptionsController {
      * @param classifiersOptionsFile - classifier options file
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Saves new classifier options for specified configuration",
-            notes = "Saves new classifier options for specified configuration"
+    @Operation(
+            description = "Saves new classifier options for specified configuration",
+            summary = "Saves new classifier options for specified configuration",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @PostMapping(value = "/save")
     public CreateClassifierOptionsResultDto save(
-            @ApiParam(value = "Configuration id", example = "1", required = true) @RequestParam long configurationId,
-            @ApiParam(value = "Classifiers options file", required = true) @RequestParam
-                    MultipartFile classifiersOptionsFile) {
+            @Parameter(description = "Configuration id", example = "1", required = true)
+            @RequestParam long configurationId,
+            @Parameter(description = "Classifiers options file", required = true)
+            @RequestParam MultipartFile classifiersOptionsFile) {
         log.info("Received request to save classifier options for configuration id [{}], options file [{}]",
                 configurationId, classifiersOptionsFile.getOriginalFilename());
         CreateClassifierOptionsResultDto classifierOptionsResultDto = new CreateClassifierOptionsResultDto();
@@ -129,13 +136,14 @@ public class ClassifierOptionsController {
      * @param id - classifier options id
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Classifier options id",
-            notes = "Classifier options id"
+    @Operation(
+            description = "Classifier options id",
+            summary = "Classifier options id",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @DeleteMapping(value = "/delete")
-    public void delete(
-            @ApiParam(value = "Classifier options id", example = "1", required = true) @RequestParam long id) {
+    public void delete(@Parameter(description = "Classifier options id", example = "1", required = true)
+                       @RequestParam long id) {
         classifierOptionsService.deleteOptions(id);
     }
 

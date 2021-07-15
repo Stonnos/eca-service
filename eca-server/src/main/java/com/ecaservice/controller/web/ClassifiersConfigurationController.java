@@ -11,9 +11,10 @@ import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,6 +33,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 
 import static com.ecaservice.config.audit.AuditCodes.SET_ACTIVE_CONFIGURATION;
+import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.util.ReportHelper.download;
 
 /**
@@ -40,7 +42,7 @@ import static com.ecaservice.util.ReportHelper.download;
  * @author Roman Batygin
  */
 @Slf4j
-@Api(tags = "API to manage experiment classifiers configurations")
+@Tag(name = "API to manage experiment classifiers configurations")
 @RestController
 @RequestMapping("/experiment/classifiers-configurations")
 @RequiredArgsConstructor
@@ -58,9 +60,10 @@ public class ClassifiersConfigurationController {
      * @return classifiers configurations page
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Finds classifiers configurations with specified options",
-            notes = "Finds classifiers configurations with specified options"
+    @Operation(
+            description = "Finds classifiers configurations with specified options",
+            summary = "Finds classifiers configurations with specified options",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @PostMapping(value = "/list")
     public PageDto<ClassifiersConfigurationDto> getClassifiersConfigurations(
@@ -75,13 +78,15 @@ public class ClassifiersConfigurationController {
      * @param id - configuration id
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Gets classifiers configuration details",
-            notes = "Gets classifiers configuration details"
+    @Operation(
+            description = "Gets classifiers configuration details",
+            summary = "Gets classifiers configuration details",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @GetMapping(value = "/details/{id}")
     public ClassifiersConfigurationDto getClassifiersConfigurationDetails(
-            @ApiParam(value = "Configuration id", example = "1", required = true) @PathVariable Long id) {
+            @Parameter(description = "Configuration id", example = "1", required = true)
+            @PathVariable Long id) {
         log.info("Gets classifier configuration details by id {}", id);
         return classifiersConfigurationService.getClassifiersConfigurationDetails(id);
     }
@@ -93,9 +98,10 @@ public class ClassifiersConfigurationController {
      * @return classifiers configuration dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Saves new classifiers configuration",
-            notes = "Saves new classifiers configuration"
+    @Operation(
+            description = "Saves new classifiers configuration",
+            summary = "Saves new classifiers configuration",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @PostMapping(value = "/save")
     public ClassifiersConfigurationDto save(@Valid @RequestBody CreateClassifiersConfigurationDto configurationDto) {
@@ -109,9 +115,10 @@ public class ClassifiersConfigurationController {
      * @param configurationDto - classifiers configuration
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Updates classifiers configuration",
-            notes = "Updates classifiers configuration"
+    @Operation(
+            description = "Updates classifiers configuration",
+            summary = "Updates classifiers configuration",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @PutMapping(value = "/update")
     public void update(@Valid @RequestBody UpdateClassifiersConfigurationDto configurationDto) {
@@ -124,12 +131,14 @@ public class ClassifiersConfigurationController {
      * @param id - configuration id
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Deletes classifiers configuration",
-            notes = "Deletes classifiers configuration"
+    @Operation(
+            description = "Deletes classifiers configuration",
+            summary = "Deletes classifiers configuration",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @DeleteMapping(value = "/delete")
-    public void delete(@ApiParam(value = "Configuration id", example = "1", required = true) @RequestParam long id) {
+    public void delete(@Parameter(description = "Configuration id", example = "1", required = true)
+                       @RequestParam long id) {
         classifiersConfigurationService.delete(id);
     }
 
@@ -140,9 +149,10 @@ public class ClassifiersConfigurationController {
      * @return classifiers configuration dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Creates classifiers configuration copy",
-            notes = "Creates classifiers configuration copy"
+    @Operation(
+            description = "Creates classifiers configuration copy",
+            summary = "Creates classifiers configuration copy",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @PostMapping(value = "/copy")
     public ClassifiersConfigurationDto copy(@Valid @RequestBody UpdateClassifiersConfigurationDto configurationDto) {
@@ -157,12 +167,14 @@ public class ClassifiersConfigurationController {
      */
     @Audit(SET_ACTIVE_CONFIGURATION)
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Sets classifiers configuration as active",
-            notes = "Sets classifiers configuration as active"
+    @Operation(
+            description = "Sets classifiers configuration as active",
+            summary = "Sets classifiers configuration as active",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @PostMapping(value = "/set-active")
-    public void setActive(@ApiParam(value = "Configuration id", example = "1", required = true) @RequestParam long id) {
+    public void setActive(@Parameter(description = "Configuration id", example = "1", required = true)
+                          @RequestParam long id) {
         classifiersConfigurationService.setActive(id);
     }
 
@@ -174,13 +186,14 @@ public class ClassifiersConfigurationController {
      * @throws IOException in case of I/O error
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Downloads classifiers configuration report in xlsx format",
-            notes = "Downloads classifiers configuration report in xlsx format"
+    @Operation(
+            description = "Downloads classifiers configuration report in xlsx format",
+            summary = "Downloads classifiers configuration report in xlsx format",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @GetMapping(value = "/report/{id}")
     public void downloadReport(
-            @ApiParam(value = "Configuration id", example = "1", required = true) @PathVariable Long id,
+            @Parameter(description = "Configuration id", example = "1", required = true) @PathVariable Long id,
             HttpServletResponse httpServletResponse) throws IOException {
         log.info("Downloads classifier configuration report by id {}", id);
         ClassifiersConfigurationBean classifiersConfigurationBean =
