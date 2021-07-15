@@ -1,7 +1,6 @@
 package com.ecaservice.web.dto.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,18 +11,18 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(description = "Experiment results details model")
+@Schema(description = "Experiment results details model")
 public class ExperimentResultsDetailsDto extends ExperimentResultsDto {
 
     /**
      * Experiment dto
      */
-    @ApiModelProperty(value = "Experiment model")
+    @Schema(description = "Experiment model")
     private ExperimentDto experimentDto;
 
     /**
      * Evaluation results dto (main factors)
      */
-    @ApiModelProperty(value = "Evaluation results report (main factors)")
+    @Schema(description = "Evaluation results report (main factors)")
     private EvaluationResultsDto evaluationResultsDto;
 }

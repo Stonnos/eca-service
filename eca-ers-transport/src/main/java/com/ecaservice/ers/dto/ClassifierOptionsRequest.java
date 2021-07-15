@@ -1,8 +1,7 @@
 package com.ecaservice.ers.dto;
 
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.Valid;
@@ -16,21 +15,21 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "Classifier options request model")
+@Schema(description = "Classifier options request model")
 public class ClassifierOptionsRequest {
 
     /**
      * Instances name
      */
     @NotBlank
-    @ApiModelProperty(value = "Instances name", example = "iris", required = true)
+    @Schema(description = "Instances name", example = "iris", required = true)
     private String relationName;
 
     /**
      * Instances MD5 hash sum
      */
     @NotBlank
-    @ApiModelProperty(value = "Instances MD5 hash sum", example = "3032e188204cb537f69fc7364f638641", required = true)
+    @Schema(description = "Instances MD5 hash sum", example = "3032e188204cb537f69fc7364f638641", required = true)
     private String dataHash;
 
     /**
@@ -38,13 +37,13 @@ public class ClassifierOptionsRequest {
      */
     @Valid
     @NotNull
-    @ApiModelProperty(value = "Evaluation method report", required = true)
+    @Schema(description = "Evaluation method report", required = true)
     private EvaluationMethodReport evaluationMethodReport;
 
     /**
      * Sort fields list
      */
     @Valid
-    @ApiModelProperty(value = "Sort fields list")
+    @Schema(description = "Sort fields list")
     private List<SortField> sortFields;
 }

@@ -1,7 +1,6 @@
 package com.ecaservice.web.dto.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
@@ -10,48 +9,48 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "Filter field model")
+@Schema(description = "Filter field model")
 public class FilterFieldDto {
 
     /**
      * Field name
      */
-    @ApiModelProperty(value = "Field name")
+    @Schema(description = "Field name")
     private String fieldName;
 
     /**
      * Field description
      */
-    @ApiModelProperty(value = "Field description")
+    @Schema(description = "Field description")
     private String description;
 
     /**
      * Field order
      */
-    @ApiModelProperty(value = "Field order")
+    @Schema(description = "Field order")
     private int fieldOrder;
 
     /**
      * Filter type
      */
-    @ApiModelProperty(value = "Filter field type")
+    @Schema(description = "Filter field type")
     private FilterFieldType filterFieldType;
 
     /**
      * Filter match mode
      */
-    @ApiModelProperty(value = "Filter match mode")
+    @Schema(description = "Filter match mode")
     private MatchMode matchMode;
 
     /**
      * Allow multiple values
      */
-    @ApiModelProperty(value = "Allow multiple values")
+    @Schema(description = "Allow multiple values")
     private boolean multiple;
 
     /**
      * Filter dictionary
      */
-    @ApiModelProperty(value = "Filter dictionary")
+    @Schema(description = "Filter dictionary")
     private FilterDictionaryDto dictionary;
 }

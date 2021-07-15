@@ -1,7 +1,6 @@
 package com.ecaservice.ers.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +18,7 @@ import static com.ecaservice.ers.dto.Constraints.MAX_LENGTH_255;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(description = "Classifier input option model")
+@Schema(description = "Classifier input option model")
 public class ClassifierInputOption {
 
     /**
@@ -27,7 +26,7 @@ public class ClassifierInputOption {
      */
     @NotBlank
     @Size(max = MAX_LENGTH_255)
-    @ApiModelProperty(value = "Option key", required = true)
+    @Schema(description = "Option key", required = true)
     private String key;
 
     /**
@@ -35,6 +34,6 @@ public class ClassifierInputOption {
      */
     @NotBlank
     @Size(max = MAX_LENGTH_255)
-    @ApiModelProperty(value = "Option value", required = true)
+    @Schema(description = "Option value", required = true)
     private String value;
 }

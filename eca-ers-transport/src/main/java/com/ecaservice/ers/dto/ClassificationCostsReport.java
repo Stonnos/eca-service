@@ -1,7 +1,6 @@
 package com.ecaservice.ers.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.Valid;
@@ -22,7 +21,7 @@ import static com.ecaservice.ers.dto.Constraints.MAX_LENGTH_255;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "Classification costs report model")
+@Schema(description = "Classification costs report model")
 public class ClassificationCostsReport {
 
     /**
@@ -30,7 +29,7 @@ public class ClassificationCostsReport {
      */
     @NotBlank
     @Size(max = MAX_LENGTH_255)
-    @ApiModelProperty(value = "Class value", example = "classValue", required = true)
+    @Schema(description = "Class value", example = "classValue", required = true)
     private String classValue;
 
     /**
@@ -39,7 +38,7 @@ public class ClassificationCostsReport {
     @NotNull
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @ApiModelProperty(value = "True positive rate", example = "0.75", required = true)
+    @Schema(description = "True positive rate", example = "0.75", required = true)
     private BigDecimal truePositiveRate;
 
     /**
@@ -48,7 +47,7 @@ public class ClassificationCostsReport {
     @NotNull
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @ApiModelProperty(value = "False positive rate", example = "0.25", required = true)
+    @Schema(description = "False positive rate", example = "0.25", required = true)
     private BigDecimal falsePositiveRate;
 
     /**
@@ -57,7 +56,7 @@ public class ClassificationCostsReport {
     @NotNull
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @ApiModelProperty(value = "True negative rate", example = "0.25", required = true)
+    @Schema(description = "True negative rate", example = "0.25", required = true)
     private BigDecimal trueNegativeRate;
 
     /**
@@ -66,13 +65,13 @@ public class ClassificationCostsReport {
     @NotNull
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @ApiModelProperty(value = "False negative rate", example = "0.5", required = true)
+    @Schema(description = "False negative rate", example = "0.5", required = true)
     private BigDecimal falseNegativeRate;
 
     /**
      * Roc curve report data
      */
     @Valid
-    @ApiModelProperty(value = "Roc curve report data")
+    @Schema(description = "Roc curve report data")
     private RocCurveReport rocCurve;
 }

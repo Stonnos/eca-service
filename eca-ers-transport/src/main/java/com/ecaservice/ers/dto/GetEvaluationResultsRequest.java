@@ -1,7 +1,6 @@
 package com.ecaservice.ers.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -17,7 +16,7 @@ import static com.ecaservice.ers.dto.Constraints.UUID_PATTERN;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "Get evaluation results request model")
+@Schema(description = "Get evaluation results request model")
 public class GetEvaluationResultsRequest {
 
     /**
@@ -26,6 +25,6 @@ public class GetEvaluationResultsRequest {
     @NotBlank
     @Pattern(regexp = UUID_PATTERN)
     @Size(max = UUID_MAX_SIZE)
-    @ApiModelProperty(value = "Request id", example = "1d2de514-3a87-4620-9b97-c260e24340de", required = true)
+    @Schema(description = "Request id", example = "1d2de514-3a87-4620-9b97-c260e24340de", required = true)
     private String requestId;
 }

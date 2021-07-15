@@ -2,8 +2,7 @@ package com.ecaservice.ers.dto;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.Valid;
@@ -25,7 +24,7 @@ import static com.ecaservice.ers.dto.Constraints.MAX_LENGTH_255;
         @JsonSubTypes.Type(value = EnsembleClassifierReport.class, name = "ensemble_classifier_report"),
 })
 @Data
-@ApiModel(description = "Classifier report model")
+@Schema(description = "Classifier report model")
 public class ClassifierReport {
 
     /**
@@ -33,33 +32,33 @@ public class ClassifierReport {
      */
     @NotBlank
     @Size(max = MAX_LENGTH_255)
-    @ApiModelProperty(value = "Classifier name", example = "CART", required = true)
+    @Schema(description = "Classifier name", example = "CART", required = true)
     private String classifierName;
 
     /**
      * Classifier description
      */
     @Size(max = MAX_LENGTH_255)
-    @ApiModelProperty(value = "Classifier description")
+    @Schema(description = "Classifier description")
     private String classifierDescription;
 
     /**
      * Classifier options string
      */
     @NotBlank
-    @ApiModelProperty(value = "Classifier options string", example = "classifier options string", required = true)
+    @Schema(description = "Classifier options string", example = "classifier options string", required = true)
     private String options;
 
     /**
      * Classifier input options
      */
     @Valid
-    @ApiModelProperty(value = "Classifier input options")
+    @Schema(description = "Classifier input options")
     private List<ClassifierInputOption> classifierInputOptions;
 
     /**
      * Is meta classifier?
      */
-    @ApiModelProperty(value = "Is meta classifier?")
+    @Schema(description = "Is meta classifier?")
     private boolean metaClassifier;
 }

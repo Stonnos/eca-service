@@ -3,8 +3,7 @@ package com.ecaservice.web.dto.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -19,37 +18,37 @@ import static com.ecaservice.web.dto.util.FieldConstraints.DATE_TIME_PATTERN;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(description = "Experiment model")
+@Schema(description = "Experiment model")
 public class ExperimentDto extends AbstractEvaluationDto {
 
     /**
      * First name
      */
-    @ApiModelProperty(value = "Request creator first name")
+    @Schema(description = "Request creator first name")
     private String firstName;
 
     /**
      * Email
      */
-    @ApiModelProperty(value = "Request creator email")
+    @Schema(description = "Request creator email")
     private String email;
 
     /**
      * Experiment file absolute path
      */
-    @ApiModelProperty(value = "Experiment results file")
+    @Schema(description = "Experiment results file")
     private String experimentAbsolutePath;
 
     /**
      * Training data absolute path
      */
-    @ApiModelProperty(value = "Training data file")
+    @Schema(description = "Training data file")
     private String trainingDataAbsolutePath;
 
     /**
      * Date when experiment results is sent
      */
-    @ApiModelProperty(value = "Experiment results sent date")
+    @Schema(description = "Experiment results sent date")
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime sentDate;
@@ -57,7 +56,7 @@ public class ExperimentDto extends AbstractEvaluationDto {
     /**
      * Experiment files deleted date
      */
-    @ApiModelProperty(value = "Experiment files delete date")
+    @Schema(description = "Experiment files delete date")
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime deletedDate;
@@ -65,6 +64,6 @@ public class ExperimentDto extends AbstractEvaluationDto {
     /**
      * Experiment type
      */
-    @ApiModelProperty(value = "Experiment type")
+    @Schema(description = "Experiment type")
     private EnumDto experimentType;
 }

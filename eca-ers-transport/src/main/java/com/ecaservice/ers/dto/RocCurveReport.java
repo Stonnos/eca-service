@@ -1,7 +1,6 @@
 package com.ecaservice.ers.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.constraints.DecimalMax;
@@ -17,7 +16,7 @@ import static com.ecaservice.ers.dto.Constraints.DECIMAL_MIN_ZERO;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "Roc curve report model")
+@Schema(description = "Roc curve report model")
 public class RocCurveReport {
 
     /**
@@ -25,7 +24,7 @@ public class RocCurveReport {
      */
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @ApiModelProperty(value = "Auc value", example = "0.9")
+    @Schema(description = "Auc value", example = "0.9")
     private BigDecimal aucValue;
 
     /**
@@ -33,7 +32,7 @@ public class RocCurveReport {
      */
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @ApiModelProperty(value = "Specificity value at optimal ROC - curve point", example = "0.2")
+    @Schema(description = "Specificity value at optimal ROC - curve point", example = "0.2")
     private BigDecimal specificity;
 
     /**
@@ -41,7 +40,7 @@ public class RocCurveReport {
      */
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @ApiModelProperty(value = "Sensitivity value at optimal ROC - curve point", example = "0.8")
+    @Schema(description = "Sensitivity value at optimal ROC - curve point", example = "0.8")
     private BigDecimal sensitivity;
 
     /**
@@ -49,6 +48,6 @@ public class RocCurveReport {
      */
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @ApiModelProperty(value = "Threshold value at optimal ROC - curve point", example = "0.5")
+    @Schema(description = "Threshold value at optimal ROC - curve point", example = "0.5")
     private BigDecimal thresholdValue;
 }

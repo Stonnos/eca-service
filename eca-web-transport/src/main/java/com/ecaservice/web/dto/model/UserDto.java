@@ -3,8 +3,7 @@ package com.ecaservice.web.dto.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -18,55 +17,55 @@ import static com.ecaservice.web.dto.util.FieldConstraints.DATE_TIME_PATTERN;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "User model")
+@Schema(description = "User model")
 public class UserDto {
 
     /**
      * User id
      */
-    @ApiModelProperty(value = "User id")
+    @Schema(description = "User id")
     private Long id;
 
     /**
      * User login
      */
-    @ApiModelProperty(value = "User login")
+    @Schema(description = "User login")
     private String login;
 
     /**
      * User email
      */
-    @ApiModelProperty(value = "User email")
+    @Schema(description = "User email")
     private String email;
 
     /**
      * User first name
      */
-    @ApiModelProperty(value = "User first name")
+    @Schema(description = "User first name")
     private String firstName;
 
     /**
      * User last name
      */
-    @ApiModelProperty(value = "User last name")
+    @Schema(description = "User last name")
     private String lastName;
 
     /**
      * User middle name
      */
-    @ApiModelProperty(value = "User middle name")
+    @Schema(description = "User middle name")
     private String middleName;
 
     /**
      * User full name
      */
-    @ApiModelProperty(value = "User full name")
+    @Schema(description = "User full name")
     private String fullName;
 
     /**
      * User creation date
      */
-    @ApiModelProperty(value = "User creation date")
+    @Schema(description = "User creation date")
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime creationDate;
@@ -74,25 +73,25 @@ public class UserDto {
     /**
      * Two factor authentication enabled?
      */
-    @ApiModelProperty(value = "Two factor authentication enabled")
+    @Schema(description = "Two factor authentication enabled")
     private boolean tfaEnabled;
 
     /**
      * Account locked?
      */
-    @ApiModelProperty(value = "Account locked")
+    @Schema(description = "Account locked")
     private boolean locked;
 
     /**
      * User photo id
      */
-    @ApiModelProperty(value = "User photo id")
+    @Schema(description = "User photo id")
     private Long photoId;
 
     /**
      * Last password change date
      */
-    @ApiModelProperty(value = "Last password change date")
+    @Schema(description = "Last password change date")
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime passwordDate;
@@ -100,6 +99,6 @@ public class UserDto {
     /**
      * Roles list
      */
-    @ApiModelProperty(value = "User roles")
+    @Schema(description = "User roles")
     private List<RoleDto> roles;
 }

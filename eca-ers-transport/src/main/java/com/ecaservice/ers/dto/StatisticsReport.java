@@ -1,7 +1,6 @@
 package com.ecaservice.ers.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.constraints.DecimalMax;
@@ -23,7 +22,7 @@ import static com.ecaservice.ers.dto.Constraints.MIN_ZERO;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "Evaluation statistics report model")
+@Schema(description = "Evaluation statistics report model")
 public class StatisticsReport {
 
     /**
@@ -31,7 +30,7 @@ public class StatisticsReport {
      */
     @NotNull
     @Min(MIN_2)
-    @ApiModelProperty(value = "Test instances number", example = "100", required = true)
+    @Schema(description = "Test instances number", example = "100", required = true)
     private BigInteger numTestInstances;
 
     /**
@@ -39,7 +38,7 @@ public class StatisticsReport {
      */
     @NotNull
     @Min(MIN_ZERO)
-    @ApiModelProperty(value = "Correctly classified instances number", example = "100", required = true)
+    @Schema(description = "Correctly classified instances number", example = "100", required = true)
     private BigInteger numCorrect;
 
     /**
@@ -47,7 +46,7 @@ public class StatisticsReport {
      */
     @NotNull
     @Min(MIN_ZERO)
-    @ApiModelProperty(value = "Incorrectly classified instances number", example = "0", required = true)
+    @Schema(description = "Incorrectly classified instances number", example = "0", required = true)
     private BigInteger numIncorrect;
 
     /**
@@ -56,7 +55,7 @@ public class StatisticsReport {
     @NotNull
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_100)
-    @ApiModelProperty(value = "Correctly classified percentage", example = "100.0", required = true)
+    @Schema(description = "Correctly classified percentage", example = "100.0", required = true)
     private BigDecimal pctCorrect;
 
     /**
@@ -65,7 +64,7 @@ public class StatisticsReport {
     @NotNull
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_100)
-    @ApiModelProperty(value = "Incorrectly classified percentage", example = "0.0", required = true)
+    @Schema(description = "Incorrectly classified percentage", example = "0.0", required = true)
     private BigDecimal pctIncorrect;
 
     /**
@@ -73,7 +72,7 @@ public class StatisticsReport {
      */
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @ApiModelProperty(value = "Mean absolute error", example = "0.0")
+    @Schema(description = "Mean absolute error", example = "0.0")
     private BigDecimal meanAbsoluteError;
 
     /**
@@ -81,7 +80,7 @@ public class StatisticsReport {
      */
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @ApiModelProperty(value = "Root mean squared error", example = "0.0")
+    @Schema(description = "Root mean squared error", example = "0.0")
     private BigDecimal rootMeanSquaredError;
 
     /**
@@ -89,7 +88,7 @@ public class StatisticsReport {
      */
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @ApiModelProperty(value = "Max AUC value", example = "1.0")
+    @Schema(description = "Max AUC value", example = "1.0")
     private BigDecimal maxAucValue;
 
     /**
@@ -97,18 +96,18 @@ public class StatisticsReport {
      */
     @DecimalMin(value = DECIMAL_MIN_ZERO)
     @DecimalMax(value = DECIMAL_MAX_ONE)
-    @ApiModelProperty(value = "Variance error", example = "0.0")
+    @Schema(description = "Variance error", example = "0.0")
     private BigDecimal varianceError;
 
     /**
      * 95% confidence interval lower bound value
      */
-    @ApiModelProperty(value = "95% confidence interval lower bound value")
+    @Schema(description = "95% confidence interval lower bound value")
     private BigDecimal confidenceIntervalLowerBound;
 
     /**
      * 95% confidence interval upper bound value
      */
-    @ApiModelProperty(value = "95% confidence interval upper bound value")
+    @Schema(description = "95% confidence interval upper bound value")
     private BigDecimal confidenceIntervalUpperBound;
 }

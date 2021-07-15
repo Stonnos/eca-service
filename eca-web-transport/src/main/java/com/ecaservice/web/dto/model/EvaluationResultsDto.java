@@ -1,7 +1,6 @@
 package com.ecaservice.web.dto.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.List;
@@ -12,24 +11,24 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "Classifier evaluation results model")
+@Schema(description = "Classifier evaluation results model")
 public class EvaluationResultsDto {
 
     /**
      * Evaluation log results status
      */
-    @ApiModelProperty(value = "Evaluation results status")
+    @Schema(description = "Evaluation results status")
     private EnumDto evaluationResultsStatus;
 
     /**
      * Evaluation results dto (main factors)
      */
-    @ApiModelProperty(value = "Evaluation statistics report (main factors)")
+    @Schema(description = "Evaluation statistics report (main factors)")
     private EvaluationStatisticsDto evaluationStatisticsDto;
 
     /**
      * Classification costs results
      */
-    @ApiModelProperty(value = "Classification costs results")
+    @Schema(description = "Classification costs results")
     private List<ClassificationCostsDto> classificationCosts;
 }

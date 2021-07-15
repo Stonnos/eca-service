@@ -1,8 +1,7 @@
 package com.ecaservice.web.dto.model;
 
 import com.ecaservice.web.dto.util.FieldConstraints;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,14 +18,14 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "Update classifiers configuration model")
+@Schema(description = "Update classifiers configuration model")
 public class UpdateClassifiersConfigurationDto {
 
     /**
      * Configuration id
      */
     @NotNull
-    @ApiModelProperty(value = "Configuration id", example = "1", required = true)
+    @Schema(description = "Configuration id", example = "1", required = true)
     private Long id;
 
     /**
@@ -34,6 +33,6 @@ public class UpdateClassifiersConfigurationDto {
      */
     @NotBlank
     @Size(max = FieldConstraints.CONFIGURATION_NAME_MAX_LENGTH)
-    @ApiModelProperty(value = "Configuration name", example = "Classifiers configuration", required = true)
+    @Schema(description = "Configuration name", example = "Classifiers configuration", required = true)
     private String configurationName;
 }
