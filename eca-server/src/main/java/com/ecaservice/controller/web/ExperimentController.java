@@ -38,6 +38,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -140,7 +141,7 @@ public class ExperimentController {
             summary = "Creates experiment request with specified options",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
-    @PostMapping(value = "/create")
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CreateExperimentResultDto createRequest(
             @Parameter(description = "Training data file", required = true) @RequestParam MultipartFile trainingData,
             @Parameter(description = "Experiment type", required = true) @RequestParam ExperimentType experimentType,

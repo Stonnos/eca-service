@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -224,7 +225,7 @@ public class UserController {
             summary = "Uploads photo for current authenticated user",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
-    @PostMapping(value = "/upload-photo")
+    @PostMapping(value = "/upload-photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void uploadPhoto(@AuthenticationPrincipal UserDetailsImpl userDetails,
                             @Parameter(description = "Photo file", required = true) @RequestParam MultipartFile file) {
         log.info("Uploads photo [{}] for user [{}]", file.getOriginalFilename(), userDetails.getId());
