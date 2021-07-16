@@ -1,5 +1,6 @@
 package com.ecaservice.mail.validation;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.mail.model.TemplateEntity;
 import com.ecaservice.mail.model.TemplateParameterEntity;
 import com.ecaservice.mail.service.TemplateService;
@@ -94,6 +95,16 @@ class EmailRequestValidatorTest {
         emailRequest.getVariables().put(PARAM_2, PARAM_2);
         emailRequest.setTemplateCode(templateEntity.getCode());
         testInvalidRequest(templateEntity, emailRequest);
+    }
+
+    @Test
+    void testValidateInvalidTemplateCode() {
+        EmailRequest emailRequest = createEmailRequest();
+        when(templateService.getTemplate(emailRequest.getTemplateCode()))
+                .thenThrow(new EntityNotFoundException());
+        when(context.buildConstraintViolationWithTemplate(anyString())).thenReturn(constraintViolationBuilder);
+        when(constraintViolationBuilder.addPropertyNode(anyString())).thenReturn(customizableContext);
+        assertThat(emailRequestValidator.isValid(emailRequest, context)).isFalse();
     }
 
     private void testInvalidRequest(TemplateEntity templateEntity, EmailRequest emailRequest) {
