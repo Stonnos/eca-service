@@ -19,4 +19,12 @@ public class ApiExamples {
                     "\"values\":[\"USER_PROFILE_ACTIONS\"],\"matchMode\":\"EQUALS\"}," +
                     "{\"name\":\"initiator\",\"values\":[\"admin\"],\"matchMode\":\"LIKE\"}," +
                     "{\"name\":\"eventDate\",\"values\":[\"2021-07-16\"],\"matchMode\":\"RANGE\"}]}";
+
+    /**
+     * Audit event request json
+     */
+    public static final String AUDIT_EVENT_REQUEST_JSON = "{\"eventId\": \"a01ebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", " +
+            "\"message\": \"Audit message\", \"initiator\": \"user\", \"eventType\": \"START\"," +
+            " \"groupCode\": \"GROUP_CODE\", \"groupTitle\": \"\", \"code\": \"AUDIT_CODE\"," +
+            " \"codeTitle\": \"\", \"eventDate\": \"2021-07-16 07:57:11\"}";
 }

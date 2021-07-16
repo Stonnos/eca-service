@@ -31,8 +31,16 @@
    * security.oauth2.client.clientSecret - секретный ключ или пароль клиента
    * security.oauth2.client.accessTokenUri - endpoint для получения access token
    * security.oauth2.client.grant-type - тип авторизации
-4) swagger2 - настройки Swagger
-   * swagger2.groups - Groups map с мета информацией для swagger
+4) open-api - настройки Swagger
+   * open-api.tokenBaseUrl - базовый url - сервера авторизации
+   * open-api.projectVersion - версия API
+   * open-api.title - краткое название API
+   * open-api.description - описание API
+   * open-api.author - автор
+   * open-api.email - email для связи
+   * open-api.basePath - базовый префикс для API
+   * open-api.apiAuth - настройки авторизации
+   * open-api.apiAuth.scopes - список scopes
 5) process - настройки бизнес - процесса
    * processId - идентификатор бизнес - процесса
 
