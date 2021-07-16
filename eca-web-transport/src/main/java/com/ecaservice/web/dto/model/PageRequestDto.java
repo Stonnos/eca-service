@@ -8,7 +8,11 @@ import lombok.NoArgsConstructor;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
+
+import static com.ecaservice.web.dto.util.FieldConstraints.FILTERS_LIST_MAX_LENGTH;
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 
 /**
  * Page request model.
@@ -41,6 +45,7 @@ public class PageRequestDto {
      * Sort field
      */
     @Schema(description = "Sort field")
+    @Size(max = MAX_LENGTH_255)
     private String sortField;
 
     /**
@@ -53,12 +58,14 @@ public class PageRequestDto {
      * Search query string
      */
     @Schema(description = "Search query string")
+    @Size(max = MAX_LENGTH_255)
     private String searchQuery;
 
     /**
      * Filters list
      */
     @Valid
+    @Size(max = FILTERS_LIST_MAX_LENGTH)
     @Schema(description = "Filters list")
     private List<FilterRequestDto> filters;
 }
