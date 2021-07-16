@@ -13,6 +13,8 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,7 @@ import java.io.IOException;
 
 import static com.ecaservice.config.audit.AuditCodes.SET_ACTIVE_CONFIGURATION;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.controller.doc.ApiExamples.SIMPLE_PAGE_REQUEST_JSON;
 import static com.ecaservice.util.ReportHelper.download;
 
 /**
@@ -63,7 +66,12 @@ public class ClassifiersConfigurationController {
     @Operation(
             description = "Finds classifiers configurations with specified options",
             summary = "Finds classifiers configurations with specified options",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)
+                    })
+            })
     )
     @PostMapping(value = "/list")
     public PageDto<ClassifiersConfigurationDto> getClassifiersConfigurations(

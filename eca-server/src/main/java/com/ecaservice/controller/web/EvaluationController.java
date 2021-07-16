@@ -12,6 +12,8 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.controller.doc.ApiExamples.EVALUATION_LOGS_PAGE_REQUEST_JSON;
 import static com.ecaservice.util.Utils.toRequestStatusesStatistics;
 
 /**
@@ -59,7 +62,12 @@ public class EvaluationController {
     @Operation(
             description = "Finds evaluation logs with specified options",
             summary = "Finds evaluation logs with specified options",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = EVALUATION_LOGS_PAGE_REQUEST_JSON)
+                    })
+            })
     )
     @PostMapping(value = "/list")
     public PageDto<EvaluationLogDto> getEvaluationLogs(@Valid @RequestBody PageRequestDto pageRequestDto) {

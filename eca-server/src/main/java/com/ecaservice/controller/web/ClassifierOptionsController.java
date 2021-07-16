@@ -10,6 +10,8 @@ import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Cleanup;
@@ -32,6 +34,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.controller.doc.ApiExamples.SIMPLE_PAGE_REQUEST_JSON;
 import static com.ecaservice.util.ClassifierOptionsHelper.parseOptions;
 
 /**
@@ -77,7 +80,12 @@ public class ClassifierOptionsController {
     @Operation(
             description = "Finds classifiers options configs page",
             summary = "Finds classifiers options configs page",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)
+                    })
+            })
     )
     @PostMapping(value = "/page")
     public PageDto<ClassifierOptionsDto> getClassifiersOptionsPage(
