@@ -290,9 +290,11 @@ public class ExperimentController {
     )
     @GetMapping(value = "/statistics")
     public List<ChartDataDto> getExperimentTypesStatistics(
-            @Parameter(description = "Experiment created date from") @RequestParam(required = false)
+            @Parameter(description = "Experiment created date from", example = "2021-07-01")
+            @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDateFrom,
-            @Parameter(description = "Experiment created date to") @RequestParam(required = false)
+            @Parameter(description = "Experiment created date to", example = "2021-07-10")
+            @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDateTo) {
         log.info("Received request for experiment types statistics calculation with creation date from [{}] to [{}]",
                 createdDateFrom, createdDateTo);

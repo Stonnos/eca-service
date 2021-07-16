@@ -3,6 +3,8 @@ package com.ecaservice.audit.controller.audit;
 import com.ecaservice.audit.dto.AuditEventRequest;
 import com.ecaservice.audit.service.AuditLogService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+
+import static com.ecaservice.audit.controller.doc.ApiExamples.AUDIT_EVENT_REQUEST_JSON;
 
 /**
  * Implements REST API for audit events.
@@ -34,7 +38,12 @@ public class AuditEventController {
      */
     @Operation(
             description = "Saves audit event into database",
-            summary = "Saves audit event into database"
+            summary = "Saves audit event into database",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = AUDIT_EVENT_REQUEST_JSON)
+                    })
+            })
     )
     @PostMapping(value = "/save")
     public void saveAuditEvent(@Valid @RequestBody AuditEventRequest auditEventRequest) {

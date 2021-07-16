@@ -30,14 +30,14 @@ public class AuditEventRequest {
      */
     @NotEmpty
     @Size(max = MAX_LENGTH_255)
-    @Schema(description = "Audit event id", example = "a01ebc99-9c0b-4ef8-bb6d-6bb9bd380a11")
+    @Schema(description = "Audit event id")
     private String eventId;
 
     /**
      * Audit message
      */
     @NotEmpty
-    @Schema(description = "Audit message", example = "Audit message")
+    @Schema(description = "Audit message")
     private String message;
 
     /**
@@ -45,7 +45,7 @@ public class AuditEventRequest {
      */
     @NotEmpty
     @Size(max = MAX_LENGTH_255)
-    @Schema(description = "Event initiator", example = "user")
+    @Schema(description = "Event initiator")
     private String initiator;
 
     /**
@@ -60,7 +60,7 @@ public class AuditEventRequest {
      */
     @NotEmpty
     @Size(max = MAX_LENGTH_255)
-    @Schema(description = "Audit group", example = "GROUP_CODE")
+    @Schema(description = "Audit group")
     private String groupCode;
 
     /**
@@ -75,7 +75,7 @@ public class AuditEventRequest {
      */
     @NotEmpty
     @Size(max = MAX_LENGTH_255)
-    @Schema(description = "Audit code", example = "AUDIT_CODE")
+    @Schema(description = "Audit code")
     private String code;
 
     /**
@@ -92,6 +92,6 @@ public class AuditEventRequest {
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @Schema(description = "Event date", example = "2021-06-16 15:00:00")
+    @Schema(description = "Event date", pattern = DATE_TIME_PATTERN)
     private LocalDateTime eventDate;
 }
