@@ -11,6 +11,8 @@ import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Cleanup;
@@ -32,6 +34,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
+import static com.ecaservice.audit.controller.doc.ApiExamples.AUDIT_LOGS_PAGE_REQUEST_JSON;
 import static com.ecaservice.audit.dictionary.FilterDictionaries.AUDIT_LOG_TEMPLATE;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.report.ReportGenerator.generateReport;
@@ -66,7 +69,12 @@ public class AuditLogController {
     @Operation(
             description = "Finds audit logs with specified options such as filter, sorting and paging",
             summary = "Finds audit logs with specified options such as filter, sorting and paging",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = AUDIT_LOGS_PAGE_REQUEST_JSON)
+                    })
+            })
     )
     @PostMapping(value = "/list")
     public PageDto<AuditLogDto> getAuditLogsPage(@Valid @RequestBody PageRequestDto pageRequestDto) {
@@ -103,7 +111,12 @@ public class AuditLogController {
     @Operation(
             description = "Downloads audit logs base report in xlsx format",
             summary = "Downloads audit logs base report in xlsx format",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = AUDIT_LOGS_PAGE_REQUEST_JSON)
+                    })
+            })
     )
     @PostMapping(value = "/report/download")
     public void downloadReport(@Valid @RequestBody PageRequestDto pageRequestDto,

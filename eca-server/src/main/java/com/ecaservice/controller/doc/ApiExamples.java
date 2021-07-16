@@ -33,6 +33,17 @@ public class ApiExamples {
             "\"matchMode\":\"RANGE\"}]}";
 
     /**
+     * Classifier options requests page request json example
+     */
+    public static final String CLASSIFIER_OPTIONS_REQUESTS_PAGE_REQUEST_JSON =
+            "{\"page\":0,\"size\":25,\"sortField\":\"requestDate\",\"ascending\":false," +
+                    "\"searchQuery\":\"\",\"filters\":[{\"name\":\"evaluationMethod\"," +
+                    "\"values\":[\"CROSS_VALIDATION\"],\"matchMode\":\"EQUALS\"}," +
+                    "{\"name\":\"responseStatus\",\"values\":[\"SUCCESS\"]," +
+                    "\"matchMode\":\"EQUALS\"},{\"name\":\"requestDate\",\"values\":[\"2021-07-16\"]," +
+                    "\"matchMode\":\"RANGE\"}]}";
+
+    /**
      * Simple page request json
      */
     public static final String SIMPLE_PAGE_REQUEST_JSON = "{\"page\":0,\"size\":25}";

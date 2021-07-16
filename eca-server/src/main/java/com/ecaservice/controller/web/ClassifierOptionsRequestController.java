@@ -7,6 +7,8 @@ import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.controller.doc.ApiExamples.CLASSIFIER_OPTIONS_REQUESTS_PAGE_REQUEST_JSON;
 
 /**
  * Classifier options requests API for web application.
@@ -46,7 +49,12 @@ public class ClassifierOptionsRequestController {
     @Operation(
             description = "Finds classifiers options requests models with specified options",
             summary = "Finds classifiers options requests models with specified options",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = CLASSIFIER_OPTIONS_REQUESTS_PAGE_REQUEST_JSON)
+                    })
+            })
     )
     @PostMapping(value = "/classifiers-options-requests")
     public PageDto<ClassifierOptionsRequestDto> getClassifierOptionsRequestModels(
