@@ -9,6 +9,7 @@ import com.ecaservice.mail.mapping.EmailRequestMapperImpl;
 import com.ecaservice.mail.model.Email;
 import com.ecaservice.mail.model.TemplateEntity;
 import com.ecaservice.mail.repository.EmailRepository;
+import com.ecaservice.mail.repository.TemplateRepository;
 import com.ecaservice.mail.service.template.TemplateProcessorService;
 import com.ecaservice.notification.dto.EmailRequest;
 import org.assertj.core.api.Assertions;
@@ -17,6 +18,7 @@ import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
+import java.util.Optional;
 
 import static com.ecaservice.mail.TestHelperUtils.createTemplateEntity;
 import static org.mockito.Mockito.when;
@@ -37,7 +39,7 @@ class EmailServiceTest extends AbstractJpaTest {
     @Mock
     private TemplateProcessorService templateProcessorService;
     @Mock
-    private TemplateService templateService;
+    private TemplateRepository templateRepository;
     @Inject
     private EmailRepository emailRepository;
     @Inject
@@ -49,8 +51,8 @@ class EmailServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        emailService = new EmailService(mailConfig, emailRequestMapper, templateService, templateProcessorService,
-                encryptorBase64AdapterService, emailRepository);
+        emailService = new EmailService(mailConfig, emailRequestMapper, templateProcessorService,
+                encryptorBase64AdapterService, emailRepository, templateRepository);
     }
 
     @Override
@@ -63,7 +65,7 @@ class EmailServiceTest extends AbstractJpaTest {
         EmailRequest emailRequest = TestHelperUtils.createEmailRequest();
         TemplateEntity templateEntity = createTemplateEntity();
         when(mailConfig.getSender()).thenReturn(SENDER_MAIL);
-        when(templateService.getTemplate(templateEntity.getCode())).thenReturn(templateEntity);
+        when(templateRepository.findByCode(templateEntity.getCode())).thenReturn(Optional.of(templateEntity));
         when(templateProcessorService.process(templateEntity.getCode(), emailRequest.getVariables()))
                 .thenReturn(EMAIL_MESSAGE);
         Email email = emailService.saveEmail(emailRequest);

@@ -1,10 +1,9 @@
 package com.ecaservice.mail.validation;
 
-import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.mail.model.RegexEntity;
 import com.ecaservice.mail.model.TemplateEntity;
 import com.ecaservice.mail.model.TemplateParameterEntity;
-import com.ecaservice.mail.service.TemplateService;
+import com.ecaservice.mail.repository.TemplateRepository;
 import com.ecaservice.mail.validation.annotations.ValidEmailRequest;
 import com.ecaservice.notification.dto.EmailRequest;
 import lombok.RequiredArgsConstructor;
@@ -32,13 +31,20 @@ public class EmailRequestValidator implements ConstraintValidator<ValidEmailRequ
     private static final String EMAIL_TEMPLATE_PARAMETER_INVALID_PATTERN = "{email.template.parameter.invalid.pattern}";
     private static final String EMAIL_TEMPLATE_INVALID_CODE = "{email.template.invalid.code}";
 
-    private final TemplateService templateService;
+    private final TemplateRepository templateRepository;
 
     @Override
     public boolean isValid(EmailRequest emailRequest, ConstraintValidatorContext context) {
-        return getTemplate(emailRequest.getTemplateCode(), context)
-                .map(templateEntity -> isValidTemplateParams(emailRequest, templateEntity, context))
-                .orElse(false);
+        var optionalTemplateEntity = templateRepository.findByCode(emailRequest.getTemplateCode());
+        if (optionalTemplateEntity.isEmpty()) {
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate(EMAIL_TEMPLATE_INVALID_CODE)
+                    .addPropertyNode(TEMPLATE_CODE_PROPERTY)
+                    .addConstraintViolation();
+            return false;
+        } else {
+            return isValidTemplateParams(emailRequest, optionalTemplateEntity.get(), context);
+        }
     }
 
     private boolean isValidTemplateParams(EmailRequest emailRequest, TemplateEntity templateEntity,
@@ -62,19 +68,6 @@ public class EmailRequestValidator implements ConstraintValidator<ValidEmailRequ
             }
         }
         return valid;
-    }
-
-    private Optional<TemplateEntity> getTemplate(String code, ConstraintValidatorContext context) {
-        try {
-            return Optional.of(templateService.getTemplate(code));
-        } catch (EntityNotFoundException ex) {
-            log.error("Template code [{}] not found: {}", code, ex.getMessage());
-            context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(EMAIL_TEMPLATE_INVALID_CODE)
-                    .addPropertyNode(TEMPLATE_CODE_PROPERTY)
-                    .addConstraintViolation();
-        }
-        return Optional.empty();
     }
 
     private boolean invalidPattern(String value, TemplateParameterEntity templateParameter) {

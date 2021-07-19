@@ -1,10 +1,12 @@
 package com.ecaservice.mail.service;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.mail.config.MailConfig;
 import com.ecaservice.mail.mapping.EmailRequestMapper;
 import com.ecaservice.mail.model.Email;
 import com.ecaservice.mail.model.TemplateEntity;
 import com.ecaservice.mail.repository.EmailRepository;
+import com.ecaservice.mail.repository.TemplateRepository;
 import com.ecaservice.mail.service.template.TemplateProcessorService;
 import com.ecaservice.mail.validation.annotations.ValidEmailRequest;
 import com.ecaservice.notification.dto.EmailRequest;
@@ -32,10 +34,10 @@ public class EmailService {
 
     private final MailConfig mailConfig;
     private final EmailRequestMapper emailRequestMapper;
-    private final TemplateService templateService;
     private final TemplateProcessorService templateProcessorService;
     private final EncryptorBase64AdapterService encryptorBase64AdapterService;
     private final EmailRepository emailRepository;
+    private final TemplateRepository templateRepository;
 
     /**
      * Saves email request.
@@ -46,7 +48,8 @@ public class EmailService {
     public Email saveEmail(@ValidEmailRequest EmailRequest emailRequest) {
         String uuid = UUID.randomUUID().toString();
         log.info("Received email request with uuid '{}'.", uuid);
-        TemplateEntity templateEntity = templateService.getTemplate(emailRequest.getTemplateCode());
+        TemplateEntity templateEntity = templateRepository.findByCode(emailRequest.getTemplateCode())
+                .orElseThrow(() -> new EntityNotFoundException(TemplateEntity.class, emailRequest.getTemplateCode()));
         String txId = getMdc(TX_ID);
         Email email = emailRequestMapper.map(emailRequest, mailConfig);
         email.setSubject(templateEntity.getSubject());

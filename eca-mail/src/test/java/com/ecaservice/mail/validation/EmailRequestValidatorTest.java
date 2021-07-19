@@ -1,9 +1,8 @@
 package com.ecaservice.mail.validation;
 
-import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.mail.model.TemplateEntity;
 import com.ecaservice.mail.model.TemplateParameterEntity;
-import com.ecaservice.mail.service.TemplateService;
+import com.ecaservice.mail.repository.TemplateRepository;
 import com.ecaservice.notification.dto.EmailRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.validation.ConstraintValidatorContext;
+import java.util.Optional;
 
 import static com.ecaservice.mail.TestHelperUtils.createEmailRequest;
 import static com.ecaservice.mail.TestHelperUtils.createRegex;
@@ -41,19 +41,19 @@ class EmailRequestValidatorTest {
     private ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderCustomizableContext customizableContext;
 
     @Mock
-    private TemplateService templateService;
+    private TemplateRepository templateRepository;
 
     private EmailRequestValidator emailRequestValidator;
 
     @BeforeEach
     void init() {
-        emailRequestValidator = new EmailRequestValidator(templateService);
+        emailRequestValidator = new EmailRequestValidator(templateRepository);
     }
 
     @Test
     void testValidateTemplateWithoutParameters() {
         TemplateEntity templateEntity = createTemplateEntity();
-        when(templateService.getTemplate(templateEntity.getCode())).thenReturn(templateEntity);
+        when(templateRepository.findByCode(templateEntity.getCode())).thenReturn(Optional.of(templateEntity));
         EmailRequest emailRequest = createEmailRequest();
         emailRequest.setTemplateCode(templateEntity.getCode());
         assertThat(emailRequestValidator.isValid(emailRequest, context)).isTrue();
@@ -68,7 +68,7 @@ class EmailRequestValidatorTest {
         emailRequest.getVariables().put(PARAM_1, PARAM_1);
         emailRequest.getVariables().put(PARAM_2, PARAM_2);
         emailRequest.setTemplateCode(templateEntity.getCode());
-        when(templateService.getTemplate(templateEntity.getCode())).thenReturn(templateEntity);
+        when(templateRepository.findByCode(templateEntity.getCode())).thenReturn(Optional.of(templateEntity));
         assertThat(emailRequestValidator.isValid(emailRequest, context)).isTrue();
     }
 
@@ -100,8 +100,7 @@ class EmailRequestValidatorTest {
     @Test
     void testValidateInvalidTemplateCode() {
         EmailRequest emailRequest = createEmailRequest();
-        when(templateService.getTemplate(emailRequest.getTemplateCode()))
-                .thenThrow(new EntityNotFoundException());
+        when(templateRepository.findByCode(emailRequest.getTemplateCode())).thenReturn(Optional.empty());
         when(context.buildConstraintViolationWithTemplate(anyString())).thenReturn(constraintViolationBuilder);
         when(constraintViolationBuilder.addPropertyNode(anyString())).thenReturn(customizableContext);
         assertThat(emailRequestValidator.isValid(emailRequest, context)).isFalse();
@@ -110,7 +109,7 @@ class EmailRequestValidatorTest {
     private void testInvalidRequest(TemplateEntity templateEntity, EmailRequest emailRequest) {
         when(context.buildConstraintViolationWithTemplate(anyString())).thenReturn(constraintViolationBuilder);
         when(constraintViolationBuilder.addPropertyNode(anyString())).thenReturn(customizableContext);
-        when(templateService.getTemplate(templateEntity.getCode())).thenReturn(templateEntity);
+        when(templateRepository.findByCode(templateEntity.getCode())).thenReturn(Optional.of(templateEntity));
         assertThat(emailRequestValidator.isValid(emailRequest, context)).isFalse();
     }
 }
