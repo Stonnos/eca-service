@@ -45,4 +45,9 @@ public class FieldConstraints {
      * Person name (e.g. first name, last name) max size
      */
     public static final int PERSON_NAME_MAX_SIZE = 30;
+
+    /**
+     * Person name (e.g. first name, last name) min size
+     */
+    public static final int PERSON_NAME_MIN_SIZE = 2;
 }

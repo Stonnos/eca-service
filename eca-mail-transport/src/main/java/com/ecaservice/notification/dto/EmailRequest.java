@@ -1,7 +1,7 @@
 package com.ecaservice.notification.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -14,6 +14,7 @@ import java.util.Map;
 
 import static com.ecaservice.notification.util.FieldConstraints.EMAIL_MAX_SIZE;
 import static com.ecaservice.notification.util.FieldConstraints.EMAIL_REGEX;
+import static com.ecaservice.notification.util.FieldConstraints.MAX_VARIABLES_SIZE;
 import static com.ecaservice.notification.util.Priority.HIGHEST;
 import static com.ecaservice.notification.util.Priority.LOW;
 
@@ -21,7 +22,7 @@ import static com.ecaservice.notification.util.Priority.LOW;
  * Email request dto.
  */
 @Data
-@ApiModel(description = "Email request")
+@Schema(description = "Email request")
 public class EmailRequest {
 
     /**
@@ -30,20 +31,21 @@ public class EmailRequest {
     @NotBlank
     @Email(regexp = EMAIL_REGEX)
     @Size(max = EMAIL_MAX_SIZE)
-    @ApiModelProperty(value = "Receiver email", example = "bat1238@yandex.ru", required = true)
+    @Schema(description = "Receiver email", example = "bat1238@yandex.ru", required = true)
     private String receiver;
 
     /**
      * Template code
      */
     @NotBlank
-    @ApiModelProperty(value = "Email template code", example = "NEW_EXPERIMENT", required = true)
+    @Schema(description = "Email template code", example = "NEW_EXPERIMENT", required = true)
     private String templateCode;
 
     /**
      * Email message variables
      */
-    @ApiModelProperty(value = "Email templates variables")
+    @ArraySchema(schema = @Schema(description = "Email templates variables"), maxItems = MAX_VARIABLES_SIZE)
+    @Size(max = MAX_VARIABLES_SIZE)
     private Map<@NotBlank String, @NotBlank String> variables;
 
     /**
@@ -52,6 +54,6 @@ public class EmailRequest {
     @NotNull
     @Min(LOW)
     @Max(HIGHEST)
-    @ApiModelProperty(value = "Delivery priority")
+    @Schema(description = "Delivery priority", example = "0")
     private Integer priority;
 }

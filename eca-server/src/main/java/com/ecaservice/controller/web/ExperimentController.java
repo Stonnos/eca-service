@@ -28,15 +28,19 @@ import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.ecaservice.web.dto.model.UserDto;
 import eca.core.evaluation.EvaluationMethod;
 import eca.data.file.FileDataLoader;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,6 +60,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.controller.doc.ApiExamples.EXPERIMENTS_PAGE_REQUEST_JSON;
 import static com.ecaservice.util.ExperimentUtils.getExperimentFile;
 import static com.ecaservice.util.Utils.existsFile;
 import static com.ecaservice.util.Utils.toRequestStatusesStatistics;
@@ -65,7 +71,7 @@ import static com.ecaservice.util.Utils.toRequestStatusesStatistics;
  *
  * @author Roman Batygin
  */
-@Api(tags = "Experiments API for web application")
+@Tag(name = "Experiments API for web application")
 @Slf4j
 @RestController
 @RequestMapping("/experiment")
@@ -92,13 +98,15 @@ public class ExperimentController {
      * @param requestId - experiment request id
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Downloads experiment training data by specified request id",
-            notes = "Downloads experiment training data by specified request id"
+    @Operation(
+            description = "Downloads experiment training data by specified request id",
+            summary = "Downloads experiment training data by specified request id",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @GetMapping(value = "/training-data/{requestId}")
     public ResponseEntity<FileSystemResource> downloadTrainingData(
-            @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
+            @Parameter(description = "Experiment request id", required = true)
+            @PathVariable String requestId) {
         return downloadExperimentFile(requestId, Experiment::getTrainingDataAbsolutePath,
                 String.format(EXPERIMENT_TRAINING_DATA_FILE_NOT_FOUND_FORMAT, requestId));
     }
@@ -109,13 +117,15 @@ public class ExperimentController {
      * @param requestId - experiment request id
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Downloads experiment results by specified request id",
-            notes = "Downloads experiment results by specified request id"
+    @Operation(
+            description = "Downloads experiment results by specified request id",
+            summary = "Downloads experiment results by specified request id",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @GetMapping(value = "/results/{requestId}")
     public ResponseEntity<FileSystemResource> downloadExperiment(
-            @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
+            @Parameter(description = "Experiment request id", required = true)
+            @PathVariable String requestId) {
         return downloadExperimentFile(requestId, Experiment::getExperimentAbsolutePath,
                 String.format(EXPERIMENT_RESULTS_FILE_NOT_FOUND, requestId));
     }
@@ -129,15 +139,17 @@ public class ExperimentController {
      * @return create experiment results dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Creates experiment request with specified options",
-            notes = "Creates experiment request with specified options"
+    @Operation(
+            description = "Creates experiment request with specified options",
+            summary = "Creates experiment request with specified options",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
-    @PostMapping(value = "/create")
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CreateExperimentResultDto createRequest(
-            @ApiParam(value = "Training data file", required = true) @RequestParam MultipartFile trainingData,
-            @ApiParam(value = "Experiment type", required = true) @RequestParam ExperimentType experimentType,
-            @ApiParam(value = "Evaluation method", required = true) @RequestParam EvaluationMethod evaluationMethod) {
+            @Parameter(description = "Training data file", required = true) @RequestParam MultipartFile trainingData,
+            @Parameter(description = "Experiment type", required = true) @RequestParam ExperimentType experimentType,
+            @Parameter(description = "Evaluation method", required = true) @RequestParam
+                    EvaluationMethod evaluationMethod) {
         log.info("Received experiment request for data '{}', experiment type {}, evaluation method {}",
                 trainingData.getOriginalFilename(), experimentType, evaluationMethod);
         UserDto userDto = usersClient.getUserInfo();
@@ -165,9 +177,15 @@ public class ExperimentController {
      * @return experiments page dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Finds experiments with specified options",
-            notes = "Finds experiments with specified options"
+    @Operation(
+            description = "Finds experiments with specified options",
+            summary = "Finds experiments with specified options",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = EXPERIMENTS_PAGE_REQUEST_JSON)
+                    })
+            })
     )
     @PostMapping(value = "/list")
     public PageDto<ExperimentDto> getExperiments(@Valid @RequestBody PageRequestDto pageRequestDto) {
@@ -184,13 +202,15 @@ public class ExperimentController {
      * @return experiment dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Finds experiment with specified request id",
-            notes = "Finds experiment with specified request id"
+    @Operation(
+            description = "Finds experiment with specified request id",
+            summary = "Finds experiment with specified request id",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @GetMapping(value = "/details/{requestId}")
     public ResponseEntity<ExperimentDto> getExperiment(
-            @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
+            @Parameter(description = "Experiment request id", required = true)
+            @PathVariable String requestId) {
         log.info("Received request to get experiment details for request id [{}]", requestId);
         Experiment experiment = experimentService.getByRequestId(requestId);
         return ResponseEntity.ok(experimentMapper.map(experiment));
@@ -203,13 +223,15 @@ public class ExperimentController {
      * @return experiment results details dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Finds experiment results details with specified id",
-            notes = "Finds experiment results details with specified id"
+    @Operation(
+            description = "Finds experiment results details with specified id",
+            summary = "Finds experiment results details with specified id",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @GetMapping(value = "/results/details/{id}")
     public ResponseEntity<ExperimentResultsDetailsDto> getExperimentResultsDetails(
-            @ApiParam(value = "Experiment results id", example = "1", required = true) @PathVariable Long id) {
+            @Parameter(description = "Experiment results id", example = "1", required = true)
+            @PathVariable Long id) {
         log.info("Received request to get experiment results details for id [{}]", id);
         ExperimentResultsEntity experimentResultsEntityOptional = experimentResultsEntityRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ExperimentResultsEntity.class, id));
@@ -222,9 +244,10 @@ public class ExperimentController {
      * @return experiments request statuses statistics dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Gets experiments request statuses statistics",
-            notes = "Gets experiments request statuses statistics"
+    @Operation(
+            description = "Gets experiments request statuses statistics",
+            summary = "Gets experiments request statuses statistics",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @GetMapping(value = "/request-statuses-statistics")
     public RequestStatusStatisticsDto getExperimentsRequestStatusesStatistics() {
@@ -238,13 +261,15 @@ public class ExperimentController {
      * @return ers report dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Gets experiment ERS report",
-            notes = "Gets experiment ERS report"
+    @Operation(
+            description = "Gets experiment ERS report",
+            summary = "Gets experiment ERS report",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @GetMapping(value = "/ers-report/{requestId}")
     public ResponseEntity<ExperimentErsReportDto> getExperimentErsReport(
-            @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
+            @Parameter(description = "Experiment request id", required = true)
+            @PathVariable String requestId) {
         log.info("Received request for ERS report for experiment [{}]", requestId);
         Experiment experiment = experimentService.getByRequestId(requestId);
         return ResponseEntity.ok(experimentResultsService.getErsReport(experiment));
@@ -258,15 +283,18 @@ public class ExperimentController {
      * @return chart data list
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Gets experiment types statistics",
-            notes = "Gets experiment types statistics"
+    @Operation(
+            description = "Gets experiment types statistics",
+            summary = "Gets experiment types statistics",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @GetMapping(value = "/statistics")
     public List<ChartDataDto> getExperimentTypesStatistics(
-            @ApiParam(value = "Experiment created date from") @RequestParam(required = false)
+            @Parameter(description = "Experiment created date from", example = "2021-07-01")
+            @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDateFrom,
-            @ApiParam(value = "Experiment created date to") @RequestParam(required = false)
+            @Parameter(description = "Experiment created date to", example = "2021-07-10")
+            @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDateTo) {
         log.info("Received request for experiment types statistics calculation with creation date from [{}] to [{}]",
                 createdDateFrom, createdDateTo);
@@ -285,13 +313,15 @@ public class ExperimentController {
      * @return experiment progress dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Finds experiment progress with specified request id",
-            notes = "Finds experiment progress with specified request id"
+    @Operation(
+            description = "Finds experiment progress with specified request id",
+            summary = "Finds experiment progress with specified request id",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @GetMapping(value = "/progress/{requestId}")
     public ResponseEntity<ExperimentProgressDto> getExperimentProgress(
-            @ApiParam(value = "Experiment request id", required = true) @PathVariable String requestId) {
+            @Parameter(description = "Experiment request id", required = true)
+            @PathVariable String requestId) {
         log.trace("Received request to get experiment progress for request id [{}]", requestId);
         Experiment experiment = experimentService.getByRequestId(requestId);
         ExperimentProgressEntity experimentProgressEntity = experimentProgressService.getExperimentProgress(experiment);

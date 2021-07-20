@@ -1,7 +1,6 @@
 package com.ecaservice.web.dto.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +8,11 @@ import lombok.NoArgsConstructor;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
+
+import static com.ecaservice.web.dto.util.FieldConstraints.FILTERS_LIST_MAX_LENGTH;
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 
 /**
  * Page request model.
@@ -19,7 +22,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "Page request model")
+@Schema(description = "Page request model")
 public class PageRequestDto {
 
     /**
@@ -27,7 +30,7 @@ public class PageRequestDto {
      */
     @NotNull
     @Min(0)
-    @ApiModelProperty(value = "Page number", example = "0")
+    @Schema(description = "Page number", example = "0")
     private Integer page;
 
     /**
@@ -35,31 +38,34 @@ public class PageRequestDto {
      */
     @NotNull
     @Min(1)
-    @ApiModelProperty(value = "Page size", example = "25")
+    @Schema(description = "Page size", example = "25")
     private Integer size;
 
     /**
      * Sort field
      */
-    @ApiModelProperty(value = "Sort field")
+    @Schema(description = "Sort field")
+    @Size(max = MAX_LENGTH_255)
     private String sortField;
 
     /**
      * Is ascending sort?
      */
-    @ApiModelProperty(value = "Is ascending sort?")
+    @Schema(description = "Is ascending sort?")
     private boolean ascending;
 
     /**
      * Search query string
      */
-    @ApiModelProperty(value = "Search query string")
+    @Schema(description = "Search query string")
+    @Size(max = MAX_LENGTH_255)
     private String searchQuery;
 
     /**
      * Filters list
      */
     @Valid
-    @ApiModelProperty(value = "Filters list")
+    @Size(max = FILTERS_LIST_MAX_LENGTH)
+    @Schema(description = "Filters list")
     private List<FilterRequestDto> filters;
 }

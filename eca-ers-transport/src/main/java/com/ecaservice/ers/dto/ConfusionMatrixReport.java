@@ -1,7 +1,6 @@
 package com.ecaservice.ers.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.constraints.Min;
@@ -19,7 +18,7 @@ import static com.ecaservice.ers.dto.Constraints.MIN_ZERO;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "Confusion matrix report")
+@Schema(description = "Confusion matrix report")
 public class ConfusionMatrixReport {
 
     /**
@@ -27,7 +26,7 @@ public class ConfusionMatrixReport {
      */
     @NotBlank
     @Size(max = MAX_LENGTH_255)
-    @ApiModelProperty(value = "Actual class", example = "Iris-setosa", required = true)
+    @Schema(description = "Actual class", example = "Iris-setosa", required = true)
     private String actualClass;
 
     /**
@@ -35,7 +34,7 @@ public class ConfusionMatrixReport {
      */
     @NotBlank
     @Size(max = MAX_LENGTH_255)
-    @ApiModelProperty(value = "Predicted class", example = "Iris-versicolor", required = true)
+    @Schema(description = "Predicted class", example = "Iris-versicolor", required = true)
     private String predictedClass;
 
     /**
@@ -43,6 +42,6 @@ public class ConfusionMatrixReport {
      */
     @NotNull
     @Min(MIN_ZERO)
-    @ApiModelProperty(value = "Instances number", example = "10", required = true)
+    @Schema(description = "Instances number", example = "10", required = true)
     private BigInteger numInstances;
 }

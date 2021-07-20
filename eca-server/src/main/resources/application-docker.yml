@@ -22,7 +22,7 @@ eureka:
       defaultZone: http://discovery-server:8761/eureka
 
 ## Swagger properties
-swagger2:
+open-api:
   tokenBaseUrl: http://localhost:8080/eca-oauth
 
 ## Experiment properties

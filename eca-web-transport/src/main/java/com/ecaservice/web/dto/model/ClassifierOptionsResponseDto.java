@@ -1,7 +1,6 @@
 package com.ecaservice.web.dto.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
@@ -10,18 +9,18 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "ERS classifier options response model")
+@Schema(description = "ERS classifier options response model")
 public class ClassifierOptionsResponseDto {
 
     /**
      * Classifier name
      */
-    @ApiModelProperty(value = "Classifier name")
+    @Schema(description = "Classifier name")
     private String classifierName;
 
     /**
      * Classifier options config
      */
-    @ApiModelProperty(value = "Classifier input options json config")
+    @Schema(description = "Classifier input options json config")
     private String options;
 }

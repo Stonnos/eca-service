@@ -2,8 +2,8 @@ package com.ecaservice.web.push.controller;
 
 import com.ecaservice.web.dto.model.ExperimentDto;
 import com.ecaservice.web.push.config.ws.QueueConfig;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Roman Batygin
  */
 @Slf4j
-@Api(tags = "API for sending web pushes")
+@Tag(name = "API for sending web pushes")
 @RestController
 @RequestMapping("/push")
 @RequiredArgsConstructor
@@ -32,9 +32,9 @@ public class WebPushController {
      *
      * @param experimentDto - experiment dto
      */
-    @ApiOperation(
-            value = "Send web push with experiment changes",
-            notes = "Send web push with experiment changes"
+    @Operation(
+            description = "Send web push with experiment changes",
+            summary = "Send web push with experiment changes"
     )
     @PostMapping(value = "/experiment")
     public void pushExperiment(@RequestBody ExperimentDto experimentDto) {

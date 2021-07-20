@@ -1,7 +1,6 @@
 package com.ecaservice.web.dto.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -14,25 +13,25 @@ import java.util.List;
  */
 @Data
 @AllArgsConstructor
-@ApiModel(description = "Page model")
+@Schema(description = "Page model")
 public class PageDto<T> {
 
     /**
      * Page content
      */
-    @ApiModelProperty(value = "Page content")
+    @Schema(description = "Page content")
     private List<T> content;
 
     /**
      * Page number
      */
-    @ApiModelProperty(value = "Page number")
+    @Schema(description = "Page number")
     private int page;
 
     /**
      * Total elements count in all pages
      */
-    @ApiModelProperty(value = "Total elements count in all pages")
+    @Schema(description = "Total elements count in all pages")
     private long totalCount;
 
     /**

@@ -19,11 +19,16 @@
 1) spring.datasource - настройки БД для хранения информации
 2) common - общие настройки
    * common.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
-3) swagger2 - настройки Swagger
-   * swagger2.tokenBaseUrl - базовый url - сервера авторизации
-   * swagger2.clientId - идентификатор клиента
-   * swagger2.secret - пароль клиента
-   * swagger2.groups - Groups map с мета информацией для swagger
+3) open-api - настройки Swagger
+   * open-api.tokenBaseUrl - базовый url - сервера авторизации
+   * open-api.projectVersion - версия API
+   * open-api.title - краткое название API
+   * open-api.description - описание API
+   * open-api.author - автор
+   * open-api.email - email для связи
+   * open-api.basePath - базовый префикс для API
+   * open-api.apiAuth - настройки авторизации
+   * open-api.apiAuth.scopes - список scopes
 4) password - настройки для генератора паролей
    * password.length - длина пароля
    * password.useDigits - использовать цифры?

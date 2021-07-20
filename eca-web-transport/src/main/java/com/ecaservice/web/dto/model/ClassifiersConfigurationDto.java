@@ -3,8 +3,7 @@ package com.ecaservice.web.dto.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -17,16 +16,16 @@ import static com.ecaservice.web.dto.util.FieldConstraints.DATE_TIME_PATTERN;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "Classifiers configuration dto model")
+@Schema(description = "Classifiers configuration dto model")
 public class ClassifiersConfigurationDto {
 
-    @ApiModelProperty(value = "Configuration id")
+    @Schema(description = "Configuration id")
     private Long id;
 
     /**
      * Configuration name
      */
-    @ApiModelProperty(value = "Configuration name")
+    @Schema(description = "Configuration name")
     private String configurationName;
 
     /**
@@ -34,13 +33,13 @@ public class ClassifiersConfigurationDto {
      */
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @ApiModelProperty(value = "Configuration creation date")
+    @Schema(description = "Configuration creation date", type = "string", example = "2021-07-01 14:00:00")
     private LocalDateTime creationDate;
 
     /**
      * User name
      */
-    @ApiModelProperty(value = "User name")
+    @Schema(description = "User name")
     private String createdBy;
 
     /**
@@ -48,24 +47,24 @@ public class ClassifiersConfigurationDto {
      */
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @ApiModelProperty(value = "Configuration updated date")
+    @Schema(description = "Configuration updated date", type = "string", example = "2021-07-01 14:00:00")
     private LocalDateTime updated;
 
     /**
      * Is active?
      */
-    @ApiModelProperty(value = "Is active?")
+    @Schema(description = "Is active?")
     private boolean active;
 
     /**
      * Is build in?
      */
-    @ApiModelProperty(value = "Is build in?")
+    @Schema(description = "Is build in?")
     private boolean buildIn;
 
     /**
      * Classifiers options count associated with configuration
      */
-    @ApiModelProperty(value = "Classifiers options count associated with configuration")
+    @Schema(description = "Classifiers options count associated with configuration")
     private long classifiersOptionsCount;
 }

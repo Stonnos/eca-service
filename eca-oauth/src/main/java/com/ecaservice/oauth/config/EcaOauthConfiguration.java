@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.config;
 
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
+import com.ecaservice.config.swagger.annotation.EnableOpenApi;
 import com.ecaservice.core.filter.error.FilterExceptionHandler;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.repository.UserEntityRepository;
@@ -19,6 +20,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  * @author Roman Batygin
  */
 @Configuration
+@EnableOpenApi
 @EnableAsync
 @EnableGlobalExceptionHandler
 @EntityScan(basePackageClasses = UserEntity.class)

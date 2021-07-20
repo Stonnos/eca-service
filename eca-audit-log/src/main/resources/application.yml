@@ -44,22 +44,23 @@ audit-log:
   maxPageSize: 50
 
 ## Swagger properties
-swagger2:
+open-api:
+  basePath: /
+  title: Microservice for collecting and storing audit events
+  description: API provides operations with audit events
+  author: Roman Batygin
+  email: roman.batygin@mail.ru
   projectVersion: @project.version@
-  groups:
-    audit:
-      title: REST API for audit events
-      description: Audit events API for services
-      author: Roman Batygin
-      email: roman.batygin@mail.ru
-    eca-web:
-      title: REST API for web application
-      description: Operations for ECA web application
-      author: Roman Batygin
-      email: roman.batygin@mail.ru
-  tokenBaseUrl: http://localhost:8085/eca-oauth
-  clientId: swagger
-  secret: swagger_secret
+  tokenBaseUrl: http://localhost:8080
+  apiAuth:
+    PASSWORD:
+      scopes: web
+
+springdoc:
+  swagger-ui:
+    oauth:
+      client-id: swagger
+      client-secret: swagger_secret
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth
@@ -77,3 +78,6 @@ management:
   endpoint:
     health:
       show-details: always
+
+server:
+  forward-headers-strategy: framework

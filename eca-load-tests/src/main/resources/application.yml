@@ -50,14 +50,13 @@ classifiers-options:
   maximumFractionDigits: 4
 
 ## Swagger properties
-swagger2:
+open-api:
+  basePath: /
+  title: Load tests execution module
+  description: API provides operations for load tests execution
+  author: Roman Batygin
+  email: roman.batygin@mail.ru
   projectVersion: @project.version@
-  groups:
-    eca-load-tests:
-      title: API for load tests execution
-      description: Operations for load tests managment
-      author: Roman Batygin
-      email: roman.batygin@mail.ru
 
 server:
   port: 8088

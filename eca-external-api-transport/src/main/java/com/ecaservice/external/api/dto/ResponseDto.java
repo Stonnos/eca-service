@@ -1,6 +1,6 @@
 package com.ecaservice.external.api.dto;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Tolerate;
@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 @Data
 @Builder
+@Schema(description = "Response model")
 public class ResponseDto<T> implements Serializable {
 
     @Tolerate
@@ -24,18 +25,18 @@ public class ResponseDto<T> implements Serializable {
     /**
      * Response payload
      */
-    @ApiModelProperty(value = "Response payload")
+    @Schema(description = "Response payload")
     private T payload;
 
     /**
      * Request status
      */
-    @ApiModelProperty(value = "Request status")
+    @Schema(description = "Request status")
     private RequestStatus requestStatus;
 
     /**
      * Error message
      */
-    @ApiModelProperty(value = "Error message")
+    @Schema(description = "Error message")
     private String errorDescription;
 }

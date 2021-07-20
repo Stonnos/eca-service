@@ -1,7 +1,6 @@
 package com.ecaservice.web.dto.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -12,42 +11,42 @@ import java.math.BigDecimal;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "Classification costs model")
+@Schema(description = "Classification costs model")
 public class ClassificationCostsDto {
 
     /**
      * Class value
      */
-    @ApiModelProperty(value = "Class value")
+    @Schema(description = "Class value")
     private String classValue;
 
     /**
      * TP rate
      */
-    @ApiModelProperty(value = "TP rate")
+    @Schema(description = "TP rate")
     private BigDecimal truePositiveRate;
 
     /**
      * FP rate
      */
-    @ApiModelProperty(value = "FP rate")
+    @Schema(description = "FP rate")
     private BigDecimal falsePositiveRate;
 
     /**
      * TN rate
      */
-    @ApiModelProperty(value = "TN rate")
+    @Schema(description = "TN rate")
     private BigDecimal trueNegativeRate;
 
     /**
      * FN rate
      */
-    @ApiModelProperty(value = "FN rate")
+    @Schema(description = "FN rate")
     private BigDecimal falseNegativeRate;
 
     /**
      * AUC value
      */
-    @ApiModelProperty(value = "AUC value")
+    @Schema(description = "AUC value")
     private BigDecimal aucValue;
 }

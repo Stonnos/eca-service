@@ -23,6 +23,16 @@
     * encrypt - настройки для алгоритма шифрования AES
        * password - пароль для алгоритма PBKDF2
        * salt - соль для алгоритма PBKDF2
+3) open-api - настройки Swagger
+   * open-api.tokenBaseUrl - базовый url - сервера авторизации
+   * open-api.projectVersion - версия API
+   * open-api.title - краткое название API
+   * open-api.description - описание API
+   * open-api.author - автор
+   * open-api.email - email для связи
+   * open-api.basePath - базовый префикс для API
+   * open-api.apiAuth - настройки авторизации
+   * open-api.apiAuth.scopes - список scopes
     
 Инструкция по развертыванию
 ----------------------------------------

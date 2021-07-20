@@ -5,8 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -19,49 +18,49 @@ import static com.ecaservice.web.dto.util.FieldConstraints.DATE_TIME_PATTERN;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "Audit log model")
+@Schema(description = "Audit log model")
 public class AuditLogDto {
 
     /**
      * Audit event id.
      */
-    @ApiModelProperty(value = "Audit event id")
+    @Schema(description = "Audit event id")
     private String eventId;
 
     /**
      * Audit message
      */
-    @ApiModelProperty(value = "Audit message")
+    @Schema(description = "Audit message")
     private String message;
 
     /**
      * Event initiator
      */
-    @ApiModelProperty(value = "Event initiator")
+    @Schema(description = "Event initiator")
     private String initiator;
 
     /**
      * Audit group
      */
-    @ApiModelProperty(value = "Audit group")
+    @Schema(description = "Audit group")
     private String groupCode;
 
     /**
      * Audit group title
      */
-    @ApiModelProperty(value = "Audit group title")
+    @Schema(description = "Audit group title")
     private String groupTitle;
 
     /**
      * Audit code
      */
-    @ApiModelProperty(value = "Audit code")
+    @Schema(description = "Audit code")
     private String code;
 
     /**
      * Audit code title
      */
-    @ApiModelProperty(value = "Audit code title")
+    @Schema(description = "Audit code title")
     private String codeTitle;
 
     /**
@@ -70,6 +69,6 @@ public class AuditLogDto {
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @ApiModelProperty(value = "Event date")
+    @Schema(description = "Event date", type = "string", example = "2021-07-01 14:00:00")
     private LocalDateTime eventDate;
 }

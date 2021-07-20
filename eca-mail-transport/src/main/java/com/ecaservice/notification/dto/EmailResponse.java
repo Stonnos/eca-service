@@ -1,7 +1,6 @@
 package com.ecaservice.notification.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,12 +11,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(description = "Email response")
+@Schema(description = "Email response")
 public class EmailResponse {
 
     /**
      * Email request id
      */
-    @ApiModelProperty(value = "Request id")
+    @Schema(description = "Request id")
     private String requestId;
 }

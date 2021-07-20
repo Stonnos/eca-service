@@ -40,14 +40,13 @@ process:
   processId: ExternalApiAutoTestProcess
 
 ## Swagger properties
-swagger2:
+open-api:
+  basePath: /
+  title: External API auti tests execution
+  description: API provides operations for external API auto tests
+  author: Roman Batygin
+  email: roman.batygin@mail.ru
   projectVersion: @project.version@
-  groups:
-    eca-external-api-tests:
-      title: External API tests execution
-      description: Operations for external API tests managment
-      author: Roman Batygin
-      email: roman.batygin@mail.ru
 
 server:
   port: 8090

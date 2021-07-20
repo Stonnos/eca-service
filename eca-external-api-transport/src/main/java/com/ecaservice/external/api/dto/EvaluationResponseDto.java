@@ -1,6 +1,6 @@
 package com.ecaservice.external.api.dto;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Tolerate;
@@ -16,6 +16,7 @@ import java.math.BigInteger;
  */
 @Data
 @Builder
+@Schema(description = "Evaluation response model")
 public class EvaluationResponseDto implements Serializable {
 
     @Tolerate
@@ -26,48 +27,48 @@ public class EvaluationResponseDto implements Serializable {
     /**
      * Evaluation request id
      */
-    @ApiModelProperty(value = "Evaluation request id")
+    @Schema(description = "Evaluation request id")
     private String requestId;
 
     /**
      * Classifier model url
      */
-    @ApiModelProperty(value = "Model url")
+    @Schema(description = "Model url")
     private String modelUrl;
 
     /**
      * Test instances number
      */
-    @ApiModelProperty(value = "Test instances number")
+    @Schema(description = "Test instances number")
     private BigInteger numTestInstances;
 
     /**
      * Correctly classified instances number
      */
-    @ApiModelProperty(value = "Correctly classified instances number")
+    @Schema(description = "Correctly classified instances number")
     private BigInteger numCorrect;
 
     /**
      * Incorrectly classified instances number
      */
-    @ApiModelProperty(value = "Incorrectly classified instances number")
+    @Schema(description = "Incorrectly classified instances number")
     private BigInteger numIncorrect;
 
     /**
      * Correctly classified percentage
      */
-    @ApiModelProperty(value = "Correctly classified percentage")
+    @Schema(description = "Correctly classified percentage")
     private BigDecimal pctCorrect;
 
     /**
      * Incorrectly classified percentage
      */
-    @ApiModelProperty(value = "Incorrectly classified percentage")
+    @Schema(description = "Incorrectly classified percentage")
     private BigDecimal pctIncorrect;
 
     /**
      * Mean absolute error
      */
-    @ApiModelProperty(value = "Mean absolute error")
+    @Schema(description = "Mean absolute error")
     private BigDecimal meanAbsoluteError;
 }

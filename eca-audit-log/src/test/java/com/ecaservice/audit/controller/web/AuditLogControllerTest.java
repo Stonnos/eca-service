@@ -94,7 +94,7 @@ class AuditLogControllerTest extends AbstractControllerTest {
 
     @Test
     void testGetAuditLogFilterTemplateBadRequest() throws Exception {
-        when(filterService.getFilterFields(AUDIT_LOG_TEMPLATE)).thenThrow(new EntityNotFoundException());
+        when(filterService.getFilterFields(AUDIT_LOG_TEMPLATE)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(AUDIT_LOG_TEMPLATE_URL)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());

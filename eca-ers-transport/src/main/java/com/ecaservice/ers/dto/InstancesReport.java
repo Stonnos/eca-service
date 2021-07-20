@@ -1,7 +1,6 @@
 package com.ecaservice.ers.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.constraints.Min;
@@ -19,14 +18,14 @@ import static com.ecaservice.ers.dto.Constraints.MIN_2;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "Training data report model")
+@Schema(description = "Training data report model")
 public class InstancesReport {
 
     /**
      * Training data structure
      */
     @NotBlank
-    @ApiModelProperty(value = "Training data structure", example = "training data string", required = true)
+    @Schema(description = "Training data structure", example = "training data string", required = true)
     private String structure;
 
     /**
@@ -34,7 +33,7 @@ public class InstancesReport {
      */
     @NotBlank
     @Size(max = MAX_LENGTH_255)
-    @ApiModelProperty(value = "Relation name", example = "iris", required = true)
+    @Schema(description = "Relation name", example = "iris", required = true)
     private String relationName;
 
     /**
@@ -42,7 +41,7 @@ public class InstancesReport {
      */
     @NotNull
     @Min(MIN_2)
-    @ApiModelProperty(value = "Instances number", example = "150", required = true)
+    @Schema(description = "Instances number", example = "150", required = true)
     private BigInteger numInstances;
 
     /**
@@ -50,7 +49,7 @@ public class InstancesReport {
      */
     @NotNull
     @Min(MIN_2)
-    @ApiModelProperty(value = "Attributes number", example = "5", required = true)
+    @Schema(description = "Attributes number", example = "5", required = true)
     private BigInteger numAttributes;
 
     /**
@@ -58,7 +57,7 @@ public class InstancesReport {
      */
     @NotNull
     @Min(MIN_2)
-    @ApiModelProperty(value = "Classes number", example = "4", required = true)
+    @Schema(description = "Classes number", example = "4", required = true)
     private BigInteger numClasses;
 
     /**
@@ -66,6 +65,6 @@ public class InstancesReport {
      */
     @NotBlank
     @Size(max = MAX_LENGTH_255)
-    @ApiModelProperty(value = "Class name", example = "class", required = true)
+    @Schema(description = "Class name", example = "class", required = true)
     private String className;
 }

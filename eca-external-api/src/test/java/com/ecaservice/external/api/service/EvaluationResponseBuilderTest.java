@@ -21,20 +21,20 @@ import static com.ecaservice.external.api.TestHelperUtils.successEvaluationRespo
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests for {@link ResponseBuilder} functionality.
+ * Unit tests for {@link EvaluationResponseBuilder} functionality.
  *
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import({ExternalApiConfig.class, ResponseBuilder.class})
-class ResponseBuilderTest {
+@Import({ExternalApiConfig.class, EvaluationResponseBuilder.class})
+class EvaluationResponseBuilderTest {
 
     private static final String MODEL_DOWNLOAD_URL_FORMAT = "%s/download-model/%s";
 
     @Inject
     private ExternalApiConfig externalApiConfig;
     @Inject
-    private ResponseBuilder responseBuilder;
+    private EvaluationResponseBuilder evaluationResponseBuilder;
 
     @Test
     void testBuildResponseWithError() {
@@ -42,7 +42,7 @@ class ResponseBuilderTest {
         EvaluationRequestEntity evaluationRequestEntity =
                 createEvaluationRequestEntity(RequestStageType.ERROR, LocalDateTime.now());
         ResponseDto<EvaluationResponseDto> evaluationResponseDto =
-                responseBuilder.buildResponse(evaluationResponse, evaluationRequestEntity);
+                evaluationResponseBuilder.buildResponse(evaluationResponse, evaluationRequestEntity);
         assertThat(evaluationResponseDto).isNotNull();
         assertThat(evaluationResponseDto.getPayload()).isNotNull();
         assertThat(evaluationResponseDto.getPayload().getRequestId()).isEqualTo(
@@ -58,7 +58,7 @@ class ResponseBuilderTest {
         String expectedModelUrl = String.format(MODEL_DOWNLOAD_URL_FORMAT, externalApiConfig.getDownloadBaseUrl(),
                 evaluationRequestEntity.getCorrelationId());
         ResponseDto<EvaluationResponseDto> evaluationResponseDto =
-                responseBuilder.buildResponse(evaluationResponse, evaluationRequestEntity);
+                evaluationResponseBuilder.buildResponse(evaluationResponse, evaluationRequestEntity);
         assertThat(evaluationResponseDto).isNotNull();
         assertThat(evaluationResponseDto.getRequestStatus()).isEqualTo(RequestStatus.SUCCESS);
         assertThat(evaluationResponseDto.getPayload()).isNotNull();

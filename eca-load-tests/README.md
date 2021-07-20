@@ -32,8 +32,16 @@
    * eca-load-tests.classifiersStoragePath - относительный путь к директории (в resources) с настройками классификаторов
    * eca-load-tests.pageSize - размер страницы для постраничной обработки
    * eca-load-tests.delaySeconds - интервал между запусками scheduler для обработки тестов
-3) swagger2 - настройки Swagger
-   * swagger2.groups - Groups map с мета информацией для swagger
+3) open-api - настройки Swagger
+   * open-api.tokenBaseUrl - базовый url - сервера авторизации
+   * open-api.projectVersion - версия API
+   * open-api.title - краткое название API
+   * open-api.description - описание API
+   * open-api.author - автор
+   * open-api.email - email для связи
+   * open-api.basePath - базовый префикс для API
+   * open-api.apiAuth - настройки авторизации
+   * open-api.apiAuth.scopes - список scopes
 4) queue - настройки очередей rabbit mq
    * queue.evaluationRequestQueue - очередь запросов на построение классификаторов
    * queue.replyToQueue - очередь ответов от eca - server

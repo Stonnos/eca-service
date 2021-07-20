@@ -1,14 +1,18 @@
 package com.ecaservice.web.dto.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
+
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUES_LIST_MAX_LENGTH;
 
 /**
  * Filter request model.
@@ -18,26 +22,28 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "Filter request model")
+@Schema(description = "Filter request model")
 public class FilterRequestDto {
 
     /**
      * Column name
      */
     @NotBlank
-    @ApiModelProperty(value = "Filter column name")
+    @Size(max = MAX_LENGTH_255)
+    @Schema(description = "Filter column name")
     private String name;
 
     /**
      * Column values to filter
      */
-    @ApiModelProperty(value = "Column values to filter")
-    private List<String> values;
+    @ArraySchema(schema = @Schema(description = "Column values to filter", maxLength = MAX_LENGTH_255))
+    @Size(max = VALUES_LIST_MAX_LENGTH)
+    private List<@Size(max = MAX_LENGTH_255) String> values;
 
     /**
      * Match mode type {@link MatchMode}
      */
     @NotNull
-    @ApiModelProperty(value = "Match mode type")
+    @Schema(description = "Match mode type")
     private MatchMode matchMode;
 }

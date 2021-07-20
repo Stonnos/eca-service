@@ -3,7 +3,7 @@ package com.ecaservice.web.dto.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -21,13 +21,13 @@ public abstract class AbstractEvaluationDto {
     /**
      * Request unique identifier
      */
-    @ApiModelProperty(value = "Request unique identifier")
+    @Schema(description = "Request unique identifier")
     private String requestId;
 
     /**
      * Request creation date
      */
-    @ApiModelProperty(value = "Request creation date")
+    @Schema(description = "Request creation date", type = "string", example = "2021-07-01 14:00:00")
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime creationDate;
@@ -35,7 +35,7 @@ public abstract class AbstractEvaluationDto {
     /**
      * Evaluation start date
      */
-    @ApiModelProperty(value = "Evaluation start date")
+    @Schema(description = "Evaluation start date", type = "string", example = "2021-07-01 14:00:00")
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime startDate;
@@ -43,7 +43,7 @@ public abstract class AbstractEvaluationDto {
     /**
      * Evaluation end date
      */
-    @ApiModelProperty(value = "Evaluation end date")
+    @Schema(description = "Evaluation end date", type = "string", example = "2021-07-01 14:00:00")
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime endDate;
@@ -51,36 +51,36 @@ public abstract class AbstractEvaluationDto {
     /**
      * Request status
      */
-    @ApiModelProperty(value = "Request status")
+    @Schema(description = "Request status")
     private EnumDto requestStatus;
 
     /**
      * Evaluation method
      */
-    @ApiModelProperty(value = "Evaluation method")
+    @Schema(description = "Evaluation method")
     private EnumDto evaluationMethod;
 
     /**
      * Folds number for k * V cross - validation method
      */
-    @ApiModelProperty(value = "Folds number for k * V cross - validation method")
+    @Schema(description = "Folds number for k * V cross - validation method")
     private Integer numFolds;
 
     /**
      * Tests number for k * V cross - validation method
      */
-    @ApiModelProperty(value = "Tests number for k * V cross - validation method")
+    @Schema(description = "Tests number for k * V cross - validation method")
     private Integer numTests;
 
     /**
      * Seed value for k * V cross - validation method
      */
-    @ApiModelProperty(value = "Seed value for k * V cross - validation method")
+    @Schema(description = "Seed value for k * V cross - validation method")
     private Integer seed;
 
     /**
      * Model evaluation total time in format HH:mm:ss:SS
      */
-    @ApiModelProperty(value = "Model evaluation total time in format HH:mm:ss:SS")
+    @Schema(description = "Model evaluation total time in format HH:mm:ss:SS")
     private String evaluationTotalTime;
 }

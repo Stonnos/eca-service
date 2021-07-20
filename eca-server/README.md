@@ -62,11 +62,16 @@ ECA server
    * common.threadPoolSize - число потоков для асинхронных задач
    * common.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
 6) cache.specs - настройки spring cache
-7) swagger2 - настройки Swagger
-   * swagger2.tokenBaseUrl - базовый url - сервера авторизации
-   * swagger2.clientId - идентификатор клиента
-   * swagger2.secret - пароль клиента
-   * swagger2.groups - Groups map с мета информацией для swagger
+7) open-api - настройки Swagger
+   * open-api.tokenBaseUrl - базовый url - сервера авторизации
+   * open-api.projectVersion - версия API
+   * open-api.title - краткое название API
+   * open-api.description - описание API
+   * open-api.author - автор
+   * open-api.email - email для связи
+   * open-api.basePath - базовый префикс для API
+   * open-api.apiAuth - настройки авторизации
+   * open-api.apiAuth.scopes - список scopes
 8) queue - настройки очередей
    * queue.evaluationRequestQueue - входящая очередь для запросов на построение модели классификатора
    * queue.evaluationOptimizerRequestQueue - входящая очередь для запросов на построение оптимального классификатора

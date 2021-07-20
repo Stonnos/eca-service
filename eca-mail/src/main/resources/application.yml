@@ -51,14 +51,13 @@ ribbon:
   ReadTimeout: 60000
 
 ## Swagger properties
-swagger2:
+open-api:
+  basePath: /
+  title: Microservice for sending emails
+  description: API provides operations for email notifications sending
+  author: Roman Batygin
+  email: roman.batygin@mail.ru
   projectVersion: @project.version@
-  groups:
-    eca-mail:
-      title: Email API
-      description: Operations for email notifications sending
-      author: Roman Batygin
-      email: roman.batygin@mail.ru
 
 mail-config:
   maxFailedAttemptsToSent: 10
@@ -80,3 +79,6 @@ management:
   endpoint:
     health:
       show-details: always
+
+server:
+  forward-headers-strategy: framework

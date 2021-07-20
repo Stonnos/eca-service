@@ -4,9 +4,12 @@ import com.ecaservice.report.data.fetcher.AbstractBaseReportDataFetcher;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.ReportType;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +24,8 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
+import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.controller.doc.ApiExamples.SIMPLE_PAGE_REQUEST_JSON;
 import static com.ecaservice.util.ReportHelper.download;
 
 /**
@@ -28,7 +33,7 @@ import static com.ecaservice.util.ReportHelper.download;
  *
  * @author Roman Batygin
  */
-@Api(tags = "Reports controller for web application")
+@Tag(name = "Reports controller for web application")
 @Slf4j
 @RestController
 @RequestMapping("/reports")
@@ -45,13 +50,20 @@ public class ReportController {
      * @throws IOException in case of I/O error
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Downloads specified base report in xlsx format",
-            notes = "Downloads specified base report in xlsx format"
+    @Operation(
+            description = "Downloads specified base report in xlsx format",
+            summary = "Downloads specified base report in xlsx format",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)
+                    })
+            })
     )
     @PostMapping(value = "/download")
     public void downloadReport(@Valid @RequestBody PageRequestDto pageRequestDto,
-                               @ApiParam(value = "Report type", required = true) @RequestParam ReportType reportType,
+                               @Parameter(description = "Report type", required = true)
+                               @RequestParam ReportType reportType,
                                HttpServletResponse httpServletResponse)
             throws IOException {
         log.info("Request to download base report [{}] with params: {}", reportType, pageRequestDto);

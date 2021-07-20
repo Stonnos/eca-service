@@ -177,7 +177,7 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
 
     @Test
     void testDeleteNotExistingOptions() throws Exception {
-        doThrow(new EntityNotFoundException()).when(classifierOptionsService).deleteOptions(CONFIGURATION_ID);
+        doThrow(EntityNotFoundException.class).when(classifierOptionsService).deleteOptions(CONFIGURATION_ID);
         mockMvc.perform(delete(DELETE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(ID_PARAM, String.valueOf(CONFIGURATION_ID)))

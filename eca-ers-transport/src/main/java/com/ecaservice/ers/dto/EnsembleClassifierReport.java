@@ -1,7 +1,6 @@
 package com.ecaservice.ers.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -17,13 +16,13 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-@ApiModel(description = "Ensemble classifier report")
+@Schema(description = "Ensemble classifier report")
 public class EnsembleClassifierReport extends ClassifierReport {
 
     /**
      * Individual classifiers reports
      */
     @Valid
-    @ApiModelProperty(value = "Individual classifiers reports")
+    @Schema(description = "Individual classifiers reports")
     private List<ClassifierReport> individualClassifiers;
 }

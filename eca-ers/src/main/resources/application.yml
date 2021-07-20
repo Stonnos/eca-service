@@ -38,14 +38,13 @@ ribbon:
   ReadTimeout: 60000
 
 ## Swagger properties
-swagger2:
+open-api:
+  basePath: /
+  title: Microservice for storaging and analysis evaluation results
+  description: API provides operations with evaluation results
+  author: Roman Batygin
+  email: roman.batygin@mail.ru
   projectVersion: @project.version@
-  groups:
-    eca-ers:
-      title: Evaluation results storage API
-      description: Operations to manage with evaluation results
-      author: Roman Batygin
-      email: roman.batygin@mail.ru
 
 ers:
   resultSize: 5
@@ -61,3 +60,6 @@ management:
   endpoint:
     health:
       show-details: always
+
+server:
+  forward-headers-strategy: framework
