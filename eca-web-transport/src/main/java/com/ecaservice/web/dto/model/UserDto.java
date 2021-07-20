@@ -65,7 +65,7 @@ public class UserDto {
     /**
      * User creation date
      */
-    @Schema(description = "User creation date")
+    @Schema(description = "User creation date", type = "string", example = "2021-07-01 14:00:00")
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime creationDate;
@@ -91,7 +91,7 @@ public class UserDto {
     /**
      * Last password change date
      */
-    @Schema(description = "Last password change date")
+    @Schema(description = "Last password change date", type = "string", example = "2021-07-01 14:00:00")
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime passwordDate;

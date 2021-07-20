@@ -25,7 +25,7 @@ public class ClassifierOptionsRequestDto {
      */
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @Schema(description = "ERS request date")
+    @Schema(description = "ERS request date", type = "string", example = "2021-07-01 14:00:00")
     private LocalDateTime requestDate;
 
     /**

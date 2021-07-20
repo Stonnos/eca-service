@@ -45,7 +45,7 @@ public class InstancesDto {
      */
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @Schema(description = "Instances creation date")
+    @Schema(description = "Instances creation date", type = "string", example = "2021-07-01 14:00:00")
     private LocalDateTime created;
 
     /**

@@ -27,7 +27,7 @@ public abstract class AbstractEvaluationDto {
     /**
      * Request creation date
      */
-    @Schema(description = "Request creation date")
+    @Schema(description = "Request creation date", type = "string", example = "2021-07-01 14:00:00")
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime creationDate;
@@ -35,7 +35,7 @@ public abstract class AbstractEvaluationDto {
     /**
      * Evaluation start date
      */
-    @Schema(description = "Evaluation start date")
+    @Schema(description = "Evaluation start date", type = "string", example = "2021-07-01 14:00:00")
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime startDate;
@@ -43,7 +43,7 @@ public abstract class AbstractEvaluationDto {
     /**
      * Evaluation end date
      */
-    @Schema(description = "Evaluation end date")
+    @Schema(description = "Evaluation end date", type = "string", example = "2021-07-01 14:00:00")
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime endDate;

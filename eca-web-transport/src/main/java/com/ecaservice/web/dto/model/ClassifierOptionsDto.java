@@ -31,7 +31,7 @@ public class ClassifierOptionsDto {
     /**
      * Creation date
      */
-    @Schema(description = "Creation date", required = true)
+    @Schema(description = "Creation date", required = true, type = "string", example = "2021-07-01 14:00:00")
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime creationDate;

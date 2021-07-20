@@ -33,7 +33,7 @@ public class ClassifiersConfigurationDto {
      */
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @Schema(description = "Configuration creation date")
+    @Schema(description = "Configuration creation date", type = "string", example = "2021-07-01 14:00:00")
     private LocalDateTime creationDate;
 
     /**
@@ -47,7 +47,7 @@ public class ClassifiersConfigurationDto {
      */
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @Schema(description = "Configuration updated date")
+    @Schema(description = "Configuration updated date", type = "string", example = "2021-07-01 14:00:00")
     private LocalDateTime updated;
 
     /**

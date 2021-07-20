@@ -69,6 +69,6 @@ public class AuditLogDto {
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @Schema(description = "Event date")
+    @Schema(description = "Event date", type = "string", example = "2021-07-01 14:00:00")
     private LocalDateTime eventDate;
 }
