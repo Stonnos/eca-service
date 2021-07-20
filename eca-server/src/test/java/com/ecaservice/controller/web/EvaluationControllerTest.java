@@ -77,7 +77,7 @@ class EvaluationControllerTest extends PageRequestControllerTest {
 
     @Test
     void testGetEvaluationLogDetailsNotFound() throws Exception {
-        when(evaluationLogRepository.findByRequestId(TEST_UUID)).thenThrow(new EntityNotFoundException());
+        when(evaluationLogRepository.findByRequestId(TEST_UUID)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(DETAILS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());

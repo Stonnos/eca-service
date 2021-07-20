@@ -120,8 +120,8 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
 
     @Test
     void testGetClassifiersConfigurationDetailsNotFound() throws Exception {
-        doThrow(new EntityNotFoundException()).when(classifiersConfigurationService).getClassifiersConfigurationDetails(
-                ID);
+        doThrow(EntityNotFoundException.class).when(classifiersConfigurationService)
+                .getClassifiersConfigurationDetails(ID);
         mockMvc.perform(get(DETAIL_URL, ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
@@ -194,7 +194,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
 
     @Test
     void testSetActiveNotExistingClassifiersConfiguration() throws Exception {
-        doThrow(new EntityNotFoundException()).when(classifiersConfigurationService).setActive(ID);
+        doThrow(EntityNotFoundException.class).when(classifiersConfigurationService).setActive(ID);
         mockMvc.perform(post(SET_ACTIVE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(ID_PARAM, String.valueOf(ID)))
@@ -318,8 +318,8 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
 
     @Test
     void testDownloadClassifiersConfigurationReportNotFound() throws Exception {
-        doThrow(new EntityNotFoundException()).when(classifiersConfigurationService).getClassifiersConfigurationReport(
-                ID);
+        doThrow(EntityNotFoundException.class).when(classifiersConfigurationService)
+                .getClassifiersConfigurationReport(ID);
         mockMvc.perform(get(REPORT_URL, ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
