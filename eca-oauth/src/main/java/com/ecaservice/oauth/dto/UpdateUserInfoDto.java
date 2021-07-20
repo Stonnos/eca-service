@@ -8,6 +8,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import static com.ecaservice.oauth.util.FieldConstraints.PERSON_NAME_MAX_SIZE;
+import static com.ecaservice.oauth.util.FieldConstraints.PERSON_NAME_MIN_SIZE;
 import static com.ecaservice.oauth.util.FieldConstraints.PERSON_NAME_REGEX;
 
 /**
@@ -23,7 +24,7 @@ public class UpdateUserInfoDto {
      * First name
      */
     @NotBlank
-    @Size(max = PERSON_NAME_MAX_SIZE)
+    @Size(min = PERSON_NAME_MIN_SIZE, max = PERSON_NAME_MAX_SIZE)
     @Pattern(regexp = PERSON_NAME_REGEX)
     @Schema(description = "First name", example = "Roman", required = true)
     private String firstName;
@@ -32,7 +33,7 @@ public class UpdateUserInfoDto {
      * Last name
      */
     @NotBlank
-    @Size(max = PERSON_NAME_MAX_SIZE)
+    @Size(min = PERSON_NAME_MIN_SIZE, max = PERSON_NAME_MAX_SIZE)
     @Pattern(regexp = PERSON_NAME_REGEX)
     @Schema(description = "Last name", example = "Batygin", required = true)
     private String lastName;
@@ -41,7 +42,7 @@ public class UpdateUserInfoDto {
      * Middle name
      */
     @NotBlank
-    @Size(max = PERSON_NAME_MAX_SIZE)
+    @Size(min = PERSON_NAME_MIN_SIZE, max = PERSON_NAME_MAX_SIZE)
     @Pattern(regexp = PERSON_NAME_REGEX)
     @Schema(description = "Middle name", example = "Igorevich", required = true)
     private String middleName;
