@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -52,6 +54,8 @@ class GlobalExceptionHandlerTest {
 
     @Mock
     private MethodArgumentNotValidException methodArgumentNotValidException;
+    @Mock
+    private MethodArgumentTypeMismatchException methodArgumentTypeMismatchException;
     @Mock
     private BindException bindException;
     @Mock
@@ -103,6 +107,18 @@ class GlobalExceptionHandlerTest {
         mockBindException();
         var errorResponse = exceptionHandler.handleBindException(bindException);
         assertResponse(errorResponse, null, EMAIL_RECEIVER, ERROR_MESSAGE);
+    }
+
+    @Test
+    void testMethodArgumentMismatchError() {
+        when(methodArgumentTypeMismatchException.getMessage()).thenReturn(ERROR_MESSAGE);
+        when(methodArgumentTypeMismatchException.getErrorCode()).thenReturn(ERROR_CODE);
+        var methodParameter = mock(MethodParameter.class);
+        when(methodParameter.getParameterName()).thenReturn(EMAIL_RECEIVER);
+        when(methodArgumentTypeMismatchException.getParameter()).thenReturn(methodParameter);
+        var errorResponse =
+                exceptionHandler.handleMethodArgumentTypeMismatchException(methodArgumentTypeMismatchException);
+        assertResponse(errorResponse, ERROR_CODE, EMAIL_RECEIVER, ERROR_MESSAGE);
     }
 
     private void mockMethodArgumentNotValid() {

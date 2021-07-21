@@ -9,9 +9,9 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.validation.ConstraintViolationException;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -72,7 +72,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ValidationErrorException.class)
     public ResponseEntity<List<ValidationErrorDto>> handleValidationError(ValidationErrorException ex) {
         log.error("Validation error [{}]: {}", ex.getErrorCode(), ex.getMessage());
-        return buildBadRequestResponse(ex);
+        return ExceptionResponseHandler.handleValidationErrorException(ex);
     }
 
     /**
@@ -104,11 +104,18 @@ public class GlobalExceptionHandler {
         return response;
     }
 
-    private ResponseEntity<List<ValidationErrorDto>> buildBadRequestResponse(ValidationErrorException ex) {
-        var validationErrorDto = new ValidationErrorDto();
-        validationErrorDto.setCode(ex.getErrorCode());
-        validationErrorDto.setFieldName(ex.getFieldName());
-        validationErrorDto.setErrorMessage(ex.getMessage());
-        return ResponseEntity.badRequest().body(Collections.singletonList(validationErrorDto));
+    /**
+     * Handles method argument type mismatch exception.
+     *
+     * @param ex - constraint violation exception
+     * @return response entity
+     */
+    @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<List<ValidationErrorDto>> handleMethodArgumentTypeMismatchException(
+            MethodArgumentTypeMismatchException ex) {
+        log.error("Method argument type mismatch error: {}", ex.getMessage());
+        var response = ExceptionResponseHandler.handleMethodArgumentTypeMismatchException(ex);
+        log.error("Method argument type mismatch errors: {}", response.getBody());
+        return response;
     }
 }

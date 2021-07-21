@@ -1,20 +1,24 @@
 package com.ecaservice.common.web;
 
 import com.ecaservice.common.web.dto.ValidationErrorDto;
+import com.ecaservice.common.web.exception.ValidationErrorException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.google.common.collect.Iterables;
 import lombok.experimental.UtilityClass;
+import org.springframework.core.MethodParameter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.metadata.ConstraintDescriptor;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -112,6 +116,38 @@ public class ExceptionResponseHandler {
                 .map(fieldError -> new ValidationErrorDto(fieldError.getField(), fieldError.getCode(),
                         fieldError.getDefaultMessage())).collect(Collectors.toList());
         return ResponseEntity.badRequest().body(errors);
+    }
+
+    /**
+     * Handles method argument type mismatch exception.
+     *
+     * @param ex - exception object
+     * @return response entity
+     */
+    public static ResponseEntity<List<ValidationErrorDto>> handleMethodArgumentTypeMismatchException(
+            MethodArgumentTypeMismatchException ex) {
+        var validationErrorDto = new ValidationErrorDto();
+        validationErrorDto.setCode(ex.getErrorCode());
+        String fieldName = Optional.of(ex.getParameter())
+                .map(MethodParameter::getParameterName)
+                .orElse(null);
+        validationErrorDto.setFieldName(fieldName);
+        validationErrorDto.setErrorMessage(ex.getMessage());
+        return ResponseEntity.badRequest().body(Collections.singletonList(validationErrorDto));
+    }
+
+    /**
+     * Handles validation error exception.
+     *
+     * @param ex - exception object
+     * @return response entity
+     */
+    public static ResponseEntity<List<ValidationErrorDto>> handleValidationErrorException(ValidationErrorException ex) {
+        var validationErrorDto = new ValidationErrorDto();
+        validationErrorDto.setCode(ex.getErrorCode());
+        validationErrorDto.setFieldName(ex.getFieldName());
+        validationErrorDto.setErrorMessage(ex.getMessage());
+        return ResponseEntity.badRequest().body(Collections.singletonList(validationErrorDto));
     }
 
     private static String getPropertyPath(List<JsonMappingException.Reference> references) {
