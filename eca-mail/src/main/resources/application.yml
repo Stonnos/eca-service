@@ -60,7 +60,7 @@ open-api:
   projectVersion: @project.version@
 
 mail-config:
-  maxFailedAttemptsToSent: 10
+  maxFailedAttemptsToSent: 25
   pageSize: 10
   delaySeconds: 3
   sender: rbatsw@gmail.com
