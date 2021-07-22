@@ -7,17 +7,17 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 /**
- * Main class.
+ * Eca mail application main class.
  *
  * @author Roman Batygin
  */
 @SpringBootApplication
 @EnableEurekaClient
-public class NotificationApplication extends SpringBootServletInitializer {
+public class EcaMailApplication extends SpringBootServletInitializer {
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(NotificationApplication.class);
+        return builder.sources(EcaMailApplication.class);
     }
 
     /**
@@ -26,7 +26,7 @@ public class NotificationApplication extends SpringBootServletInitializer {
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        SpringApplication.run(NotificationApplication.class, args);
+        SpringApplication.run(EcaMailApplication.class, args);
     }
 
 }
