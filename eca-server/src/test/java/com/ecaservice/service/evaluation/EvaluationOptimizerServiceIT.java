@@ -35,13 +35,17 @@ import com.ecaservice.service.ers.ErsRequestSender;
 import com.ecaservice.service.ers.ErsRequestService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.ensemble.forests.DecisionTreeType;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
+import org.testcontainers.containers.DockerComposeContainer;
 
 import javax.inject.Inject;
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -89,6 +93,19 @@ class EvaluationOptimizerServiceIT extends AbstractJpaTest {
     private InstancesRequest instancesRequest;
 
     private String decisionTreeOptions;
+
+    private static DockerComposeContainer dockerComposeContainer =
+            new DockerComposeContainer(new File("src/test/resources/docker-compose-test.yaml"));
+
+    @BeforeAll
+    static void start() {
+        dockerComposeContainer.start();
+    }
+
+    @AfterAll
+    static void stop() {
+        dockerComposeContainer.stop();
+    }
 
     @Override
     public void init() throws Exception {

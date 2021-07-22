@@ -15,6 +15,8 @@
     <properties>
         <assertj.core.version>3.13.1</assertj.core.version>
         <mockito.version>3.2.4</mockito.version>
+        <testcontainers.version>1.15.3</testcontainers.version>
+        <testcontainers.docker-compose.version>0.9.9</testcontainers.docker-compose.version>
         <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
     </properties>
 
@@ -36,6 +38,23 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>${mockito.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${testcontainers.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${testcontainers.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>docker-compose</artifactId>
+            <version>${testcontainers.docker-compose.version}</version>
         </dependency>
     </dependencies>
 
