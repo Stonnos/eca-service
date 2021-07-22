@@ -230,8 +230,8 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
     }
 
     private ClassifiersConfiguration getById(long id) {
-        return classifiersConfigurationRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(ClassifiersConfiguration.class, id));
+        return classifiersConfigurationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(ClassifiersConfiguration.class, id));
     }
 
     private void copyClassifiersOptions(ClassifiersConfiguration classifiersConfiguration,

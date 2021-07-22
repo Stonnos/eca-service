@@ -47,8 +47,8 @@ public class TestWorkerService {
      * @param countDownLatch - count down latch
      */
     public void execute(long testId, TestDataModel testDataModel, CountDownLatch countDownLatch) {
-        AutoTestEntity autoTestEntity = autoTestRepository.findById(testId).orElseThrow(
-                () -> new EntityNotFoundException(AutoTestEntity.class, testId));
+        AutoTestEntity autoTestEntity = autoTestRepository.findById(testId)
+                .orElseThrow(() -> new EntityNotFoundException(AutoTestEntity.class, testId));
         try {
             autoTestEntity.setRequest(objectMapper.writeValueAsString(testDataModel.getRequest()));
             autoTestEntity.setExecutionStatus(ExecutionStatus.IN_PROGRESS);

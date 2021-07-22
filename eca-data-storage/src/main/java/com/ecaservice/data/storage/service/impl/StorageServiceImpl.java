@@ -107,8 +107,8 @@ public class StorageServiceImpl implements StorageService {
     }
 
     private InstancesEntity getById(long id) {
-        return instancesRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(InstancesEntity.class, id));
+        return instancesRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(InstancesEntity.class, id));
     }
 
     private InstancesEntity saveInstancesEntity(String tableName, Instances instances) {

@@ -162,8 +162,8 @@ public class ClassifierOptionsService {
     }
 
     private ClassifiersConfiguration getConfigurationById(long configurationId) {
-        return classifiersConfigurationRepository.findById(configurationId).orElseThrow(
-                () -> new EntityNotFoundException(ClassifiersConfiguration.class, configurationId));
+        return classifiersConfigurationRepository.findById(configurationId)
+                .orElseThrow(() -> new EntityNotFoundException(ClassifiersConfiguration.class, configurationId));
     }
 
     private boolean hasMoreThanOneOptionsForActiveConfiguration(ClassifiersConfiguration classifiersConfiguration) {

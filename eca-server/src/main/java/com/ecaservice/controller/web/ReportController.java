@@ -73,8 +73,10 @@ public class ReportController {
     }
 
     private AbstractBaseReportDataFetcher getReportDataFetcher(ReportType reportType) {
-        return reportDataFetchers.stream().filter(
-                fetcher -> fetcher.getReportType().equals(reportType)).findFirst().orElseThrow(
-                () -> new IllegalStateException(String.format("Can't handle [%s] report type", reportType)));
+        return reportDataFetchers.stream()
+                .filter(fetcher -> fetcher.getReportType().equals(reportType))
+                .findFirst()
+                .orElseThrow(
+                        () -> new IllegalStateException(String.format("Can't handle [%s] report type", reportType)));
     }
 }

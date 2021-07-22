@@ -35,8 +35,8 @@ public class TestWorkerService {
      * @param countDownLatch    - count down latch
      */
     public void sendRequest(long testId, EvaluationRequest evaluationRequest, CountDownLatch countDownLatch) {
-        EvaluationRequestEntity evaluationRequestEntity = evaluationRequestRepository.findById(testId).orElseThrow(
-                () -> new EntityNotFoundException(EvaluationRequestEntity.class, testId));
+        EvaluationRequestEntity evaluationRequestEntity = evaluationRequestRepository.findById(testId)
+                .orElseThrow(() -> new EntityNotFoundException(EvaluationRequestEntity.class, testId));
         try {
             evaluationRequestEntity.setStarted(LocalDateTime.now());
             rabbitSender.send(evaluationRequest, evaluationRequestEntity.getCorrelationId());

@@ -75,9 +75,8 @@ public class AutoTestController {
                                @PathVariable String jobUuid,
                                HttpServletResponse httpServletResponse) throws IOException {
         log.info("Starting to download auto tests [{}] report", jobUuid);
-        JobEntity jobEntity =
-                jobRepository.findByJobUuid(jobUuid).orElseThrow(
-                        () -> new EntityNotFoundException(JobEntity.class, jobUuid));
+        JobEntity jobEntity = jobRepository.findByJobUuid(jobUuid)
+                .orElseThrow(() -> new EntityNotFoundException(JobEntity.class, jobUuid));
         @Cleanup OutputStream outputStream = httpServletResponse.getOutputStream();
         httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
         String reportName = String.format(AUTO_TEST_REPORT_NAME, jobEntity.getJobUuid());

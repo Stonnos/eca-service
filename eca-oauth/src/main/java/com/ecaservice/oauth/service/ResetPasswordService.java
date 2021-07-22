@@ -49,8 +49,8 @@ public class ResetPasswordService {
      */
     @Audit(value = CREATE_RESET_PASSWORD_REQUEST, targetInitiator = "login")
     public TokenModel createResetPasswordRequest(ForgotPasswordRequest forgotPasswordRequest) {
-        UserEntity userEntity = userEntityRepository.findByEmail(forgotPasswordRequest.getEmail()).orElseThrow(
-                () -> new IllegalStateException(
+        UserEntity userEntity = userEntityRepository.findByEmail(forgotPasswordRequest.getEmail())
+                .orElseThrow(() -> new IllegalStateException(
                         String.format("Can't create reset password request, because user with email %s doesn't exists!",
                                 forgotPasswordRequest.getEmail())));
         if (userEntity.isLocked()) {

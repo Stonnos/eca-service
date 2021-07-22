@@ -123,7 +123,8 @@ public class UserService {
      * @return - user entity
      */
     public UserEntity getById(long id) {
-        return userEntityRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(UserEntity.class, id));
+        return userEntityRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, id));
     }
 
     /**
@@ -262,8 +263,9 @@ public class UserService {
     }
 
     private void populateUserRole(UserEntity userEntity) {
-        RoleEntity roleEntity = roleRepository.findByRoleName(ROLE_ECA_USER).orElseThrow(
-                () -> new IllegalStateException(String.format("Role with name [%s] doesn't exists", ROLE_ECA_USER)));
+        RoleEntity roleEntity = roleRepository.findByRoleName(ROLE_ECA_USER)
+                .orElseThrow(() -> new IllegalStateException(
+                        String.format("Role with name [%s] doesn't exists", ROLE_ECA_USER)));
         userEntity.setRoles(Sets.newHashSet(roleEntity));
     }
 

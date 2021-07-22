@@ -103,8 +103,8 @@ public class InstancesService {
     private DataResource<?> createDataResource(String urlString) throws MalformedURLException {
         if (urlString.startsWith(DATA_URL_PREFIX)) {
             String dataUuid = StringUtils.substringAfter(urlString, DATA_URL_PREFIX);
-            InstancesEntity instancesEntity = instancesRepository.findByUuid(dataUuid).orElseThrow(
-                    () -> new EntityNotFoundException(InstancesEntity.class, dataUuid));
+            InstancesEntity instancesEntity = instancesRepository.findByUuid(dataUuid)
+                    .orElseThrow(() -> new EntityNotFoundException(InstancesEntity.class, dataUuid));
             return new FileResource(new File(instancesEntity.getAbsolutePath()));
         }
         return new UrlResource(new URL(urlString));
