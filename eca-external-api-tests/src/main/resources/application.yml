@@ -42,7 +42,7 @@ process:
 ## Swagger properties
 open-api:
   basePath: /
-  title: External API auti tests execution
+  title: External API auto tests execution
   description: API provides operations for external API auto tests
   author: Roman Batygin
   email: roman.batygin@mail.ru
