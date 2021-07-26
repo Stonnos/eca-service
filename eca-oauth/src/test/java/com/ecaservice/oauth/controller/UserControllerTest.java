@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.ecaservice.oauth.TestHelperUtils.createPageRequestDto;
 import static com.ecaservice.oauth.TestHelperUtils.createUpdateUserInfoDto;
 import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
 import static com.ecaservice.oauth.util.FieldConstraints.EMAIL_MAX_SIZE;
@@ -75,9 +76,6 @@ class UserControllerTest extends AbstractControllerTest {
     private static final String UPDATE_USER_INFO = BASE_URL + "/update-info";
     private static final String DELETE_PHOTO_URL = BASE_URL + "/delete-photo";
     private static final String UPLOAD_PHOTO_URL = BASE_URL + "/upload-photo";
-
-    private static final String PAGE_PARAM = "page";
-    private static final String SIZE_PARAM = "size";
 
     private static final long TOTAL_ELEMENTS = 1L;
     private static final int PAGE_NUMBER = 0;
@@ -207,9 +205,9 @@ class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void testGetUsersPageUnauthorized() throws Exception {
-        mockMvc.perform(get(LIST_URL)
-                .param(PAGE_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(SIZE_PARAM, String.valueOf(TOTAL_ELEMENTS)))
+        mockMvc.perform(post(LIST_URL)
+                .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -221,10 +219,10 @@ class UserControllerTest extends AbstractControllerTest {
         PageDto<UserDto> expected = PageDto.of(userMapper.map(userEntityList), PAGE_NUMBER, TOTAL_ELEMENTS);
         when(userEntityPage.getContent()).thenReturn(userEntityList);
         when(userService.getNextPage(any(PageRequestDto.class))).thenReturn(userEntityPage);
-        mockMvc.perform(get(LIST_URL)
+        mockMvc.perform(post(LIST_URL)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken())
-                .param(PAGE_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(SIZE_PARAM, String.valueOf(TOTAL_ELEMENTS)))
+                .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));

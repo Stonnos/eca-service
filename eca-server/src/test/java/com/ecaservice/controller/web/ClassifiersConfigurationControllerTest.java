@@ -22,12 +22,10 @@ import org.springframework.http.MediaType;
 import java.util.Collections;
 
 import static com.ecaservice.PageRequestUtils.PAGE_NUMBER;
-import static com.ecaservice.PageRequestUtils.PAGE_NUMBER_PARAM;
-import static com.ecaservice.PageRequestUtils.PAGE_SIZE;
-import static com.ecaservice.PageRequestUtils.PAGE_SIZE_PARAM;
 import static com.ecaservice.PageRequestUtils.TOTAL_ELEMENTS;
 import static com.ecaservice.TestHelperUtils.bearerHeader;
 import static com.ecaservice.TestHelperUtils.createClassifiersConfigurationDto;
+import static com.ecaservice.TestHelperUtils.createPageRequestDto;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -105,10 +103,10 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
                 PageDto.of(Collections.singletonList(createClassifiersConfigurationDto()), PAGE_NUMBER, TOTAL_ELEMENTS);
         when(classifiersConfigurationService.getClassifiersConfigurations(any(PageRequestDto.class))).thenReturn(
                 pageDto);
-        mockMvc.perform(get(LIST_URL)
+        mockMvc.perform(post(LIST_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
+                .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(pageDto)));
@@ -122,8 +120,8 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
 
     @Test
     void testGetClassifiersConfigurationDetailsNotFound() throws Exception {
-        doThrow(new EntityNotFoundException()).when(classifiersConfigurationService).getClassifiersConfigurationDetails(
-                ID);
+        doThrow(EntityNotFoundException.class).when(classifiersConfigurationService)
+                .getClassifiersConfigurationDetails(ID);
         mockMvc.perform(get(DETAIL_URL, ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
@@ -196,7 +194,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
 
     @Test
     void testSetActiveNotExistingClassifiersConfiguration() throws Exception {
-        doThrow(new EntityNotFoundException()).when(classifiersConfigurationService).setActive(ID);
+        doThrow(EntityNotFoundException.class).when(classifiersConfigurationService).setActive(ID);
         mockMvc.perform(post(SET_ACTIVE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(ID_PARAM, String.valueOf(ID)))
@@ -320,8 +318,8 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
 
     @Test
     void testDownloadClassifiersConfigurationReportNotFound() throws Exception {
-        doThrow(new EntityNotFoundException()).when(classifiersConfigurationService).getClassifiersConfigurationReport(
-                ID);
+        doThrow(EntityNotFoundException.class).when(classifiersConfigurationService)
+                .getClassifiersConfigurationReport(ID);
         mockMvc.perform(get(REPORT_URL, ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());

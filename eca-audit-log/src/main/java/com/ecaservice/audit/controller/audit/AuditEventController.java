@@ -2,8 +2,10 @@ package com.ecaservice.audit.controller.audit;
 
 import com.ecaservice.audit.dto.AuditEventRequest;
 import com.ecaservice.audit.service.AuditLogService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,12 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import static com.ecaservice.audit.controller.doc.ApiExamples.AUDIT_EVENT_REQUEST_JSON;
+
 /**
  * Implements REST API for audit events.
  *
  * @author Roman Batygin
  */
-@Api(tags = "Audit events API for services")
+@Tag(name = "Audit events API for services")
 @Slf4j
 @RestController
 @RequestMapping("/api/audit/event")
@@ -32,9 +36,14 @@ public class AuditEventController {
      *
      * @param auditEventRequest - audit event request
      */
-    @ApiOperation(
-            value = "Saves audit event into database",
-            notes = "Saves audit event into database"
+    @Operation(
+            description = "Saves audit event into database",
+            summary = "Saves audit event into database",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = AUDIT_EVENT_REQUEST_JSON)
+                    })
+            })
     )
     @PostMapping(value = "/save")
     public void saveAuditEvent(@Valid @RequestBody AuditEventRequest auditEventRequest) {

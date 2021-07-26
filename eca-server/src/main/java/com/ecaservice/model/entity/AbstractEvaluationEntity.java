@@ -8,8 +8,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
@@ -31,13 +29,6 @@ public abstract class AbstractEvaluationEntity {
      */
     @Column(name = "request_id", nullable = false)
     private String requestId;
-
-    /**
-     * Linked app instance
-     */
-    @ManyToOne
-    @JoinColumn(name = "app_instance_id")
-    private AppInstanceEntity appInstanceEntity;
 
     /**
      * Request creation date

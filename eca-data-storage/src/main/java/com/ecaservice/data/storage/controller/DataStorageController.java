@@ -10,18 +10,22 @@ import com.ecaservice.web.dto.model.InstancesDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.file.FileDataLoader;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +37,9 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
 
+import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.data.storage.controller.doc.ApiExamples.SIMPLE_PAGE_REQUEST_JSON;
+
 /**
  * Data storage API for web application.
  *
@@ -40,7 +47,7 @@ import java.util.List;
  */
 @Validated
 @Slf4j
-@Api(tags = "Data storage API for web application")
+@Tag(name = "Data storage API for web application")
 @RestController
 @RequestMapping("/instances")
 @RequiredArgsConstructor
@@ -60,12 +67,18 @@ public class DataStorageController {
      * @return instances tables page
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Finds instances tables with specified options such as filter, sorting and paging",
-            notes = "Finds instances tables with specified options such as filter, sorting and paging"
+    @Operation(
+            description = "Finds instances tables with specified options such as filter, sorting and paging",
+            summary = "Finds instances tables with specified options such as filter, sorting and paging",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = SIMPLE_PAGE_REQUEST_JSON)
+                    })
+            })
     )
-    @GetMapping(value = "/list")
-    public PageDto<InstancesDto> getInstancesPage(@Valid PageRequestDto pageRequestDto) {
+    @PostMapping(value = "/list")
+    public PageDto<InstancesDto> getInstancesPage(@Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received instances page request: {}", pageRequestDto);
         Page<InstancesEntity> instancesPage = storageService.getNextPage(pageRequestDto);
         List<InstancesDto> instancesDtoList = instancesMapper.map(instancesPage.getContent());
@@ -80,14 +93,15 @@ public class DataStorageController {
      * @return create instances results dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Saves instances into database",
-            notes = "Saves instances into database"
+    @Operation(
+            description = "Saves instances into database",
+            summary = "Saves instances into database",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
-    @PostMapping(value = "/save")
+    @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CreateInstancesResultDto saveInstances(
-            @ApiParam(value = "Training data file", required = true) @RequestParam MultipartFile trainingData,
-            @ApiParam(value = "Table name", required = true)
+            @Parameter(description = "Training data file", required = true) @RequestParam MultipartFile trainingData,
+            @Parameter(description = "Table name", required = true)
             @Pattern(regexp = TABLE_NAME_REGEX)
             @Size(max = MAX_TABLE_NAME_LENGTH) @RequestParam String tableName) {
         log.info("Received request for saving instances '{}' into table [{}]",
@@ -121,13 +135,14 @@ public class DataStorageController {
      * @param tableName - new table name
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Renames data with specified id",
-            notes = "Renames data with specified id"
+    @Operation(
+            description = "Renames data with specified id",
+            summary = "Renames data with specified id",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @PutMapping(value = "/rename")
-    public void rename(@ApiParam(value = "Instances id", example = "1", required = true) @RequestParam long id,
-                       @ApiParam(value = "Table name", required = true)
+    public void rename(@Parameter(description = "Instances id", example = "1", required = true) @RequestParam long id,
+                       @Parameter(description = "Table name", required = true)
                        @Pattern(regexp = TABLE_NAME_REGEX)
                        @Size(max = MAX_TABLE_NAME_LENGTH) @RequestParam String tableName) {
         storageService.renameData(id, tableName);
@@ -139,12 +154,13 @@ public class DataStorageController {
      * @param id - instances id
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Deletes instances with specified id",
-            notes = "Deletes instances with specified id"
+    @Operation(
+            description = "Deletes instances with specified id",
+            summary = "Deletes instances with specified id",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @DeleteMapping(value = "/delete")
-    public void delete(@ApiParam(value = "Instances id", example = "1", required = true) @RequestParam long id) {
+    public void delete(@Parameter(description = "Instances id", example = "1", required = true) @RequestParam long id) {
         storageService.deleteData(id);
     }
 }

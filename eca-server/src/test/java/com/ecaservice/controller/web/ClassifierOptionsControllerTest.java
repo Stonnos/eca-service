@@ -31,12 +31,10 @@ import java.util.List;
 import java.util.Map;
 
 import static com.ecaservice.PageRequestUtils.PAGE_NUMBER;
-import static com.ecaservice.PageRequestUtils.PAGE_NUMBER_PARAM;
-import static com.ecaservice.PageRequestUtils.PAGE_SIZE;
-import static com.ecaservice.PageRequestUtils.PAGE_SIZE_PARAM;
 import static com.ecaservice.PageRequestUtils.TOTAL_ELEMENTS;
 import static com.ecaservice.TestHelperUtils.bearerHeader;
 import static com.ecaservice.TestHelperUtils.createClassifiersConfiguration;
+import static com.ecaservice.TestHelperUtils.createPageRequestDto;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
@@ -44,6 +42,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -103,10 +102,10 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
 
     @Test
     void testGetClassifiersOptionsPageWithNullConfigurationId() throws Exception {
-        mockMvc.perform(get(PAGE_URL)
+        mockMvc.perform(post(PAGE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
+                .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
@@ -152,11 +151,11 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
                         TOTAL_ELEMENTS);
         when(page.getContent()).thenReturn(classifierOptionsDatabaseModels);
         when(classifierOptionsService.getNextPage(anyLong(), any(PageRequestDto.class))).thenReturn(page);
-        mockMvc.perform(get(PAGE_URL)
+        mockMvc.perform(post(PAGE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
+                .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(pageDto)));
@@ -178,7 +177,7 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
 
     @Test
     void testDeleteNotExistingOptions() throws Exception {
-        doThrow(new EntityNotFoundException()).when(classifierOptionsService).deleteOptions(CONFIGURATION_ID);
+        doThrow(EntityNotFoundException.class).when(classifierOptionsService).deleteOptions(CONFIGURATION_ID);
         mockMvc.perform(delete(DELETE_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
                 .param(ID_PARAM, String.valueOf(CONFIGURATION_ID)))

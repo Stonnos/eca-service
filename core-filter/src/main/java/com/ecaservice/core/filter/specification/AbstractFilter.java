@@ -92,9 +92,10 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     private Predicate buildPredicateForGlobalFilter(Root<T> root, CriteriaBuilder criteriaBuilder) {
         String trimQuery = searchQuery.trim().toLowerCase();
-        Predicate[] predicates = globalFilterFields.stream().map(
-                field -> buildSinglePredicateForGlobalFilter(root, criteriaBuilder, field, trimQuery)).filter(
-                Objects::nonNull).toArray(Predicate[]::new);
+        Predicate[] predicates = globalFilterFields.stream()
+                .map(field -> buildSinglePredicateForGlobalFilter(root, criteriaBuilder, field, trimQuery))
+                .filter(Objects::nonNull)
+                .toArray(Predicate[]::new);
         return criteriaBuilder.or(predicates);
     }
 
@@ -102,8 +103,11 @@ public abstract class AbstractFilter<T> implements Specification<T> {
         List<Predicate> predicates = newArrayList();
         filters.forEach(filterRequestDto -> {
             if (!CollectionUtils.isEmpty(filterRequestDto.getValues())) {
-                List<String> values = filterRequestDto.getValues().stream().filter(StringUtils::isNotBlank).map(
-                        String::trim).collect(Collectors.toList());
+                List<String> values = filterRequestDto.getValues()
+                        .stream()
+                        .filter(StringUtils::isNotBlank)
+                        .map(String::trim)
+                        .collect(Collectors.toList());
                 if (!CollectionUtils.isEmpty(values)) {
                     predicates.add(buildPredicate(filterRequestDto, values, root, criteriaBuilder));
                 }
@@ -192,9 +196,10 @@ public abstract class AbstractFilter<T> implements Specification<T> {
                             filterRequestDto.getName(), clazz.getName()));
         } else {
             Expression<String> expression = buildExpression(root, filterRequestDto.getName());
-            Predicate[] predicates =
-                    values.stream().map(value -> criteriaBuilder.like(criteriaBuilder.lower(expression),
-                            MessageFormat.format(LIKE_FORMAT, value.toLowerCase()))).toArray(Predicate[]::new);
+            Predicate[] predicates = values.stream()
+                    .map(value -> criteriaBuilder.like(criteriaBuilder.lower(expression),
+                            MessageFormat.format(LIKE_FORMAT, value.toLowerCase())))
+                    .toArray(Predicate[]::new);
             return criteriaBuilder.or(predicates);
         }
     }

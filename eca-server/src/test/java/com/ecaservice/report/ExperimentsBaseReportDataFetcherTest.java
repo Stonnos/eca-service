@@ -5,6 +5,7 @@ import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
+import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentMapperImpl;
@@ -14,13 +15,11 @@ import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.ExperimentBean;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.AbstractJpaTest;
-import com.ecaservice.service.AppInstanceService;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.service.evaluation.CalculationExecutorServiceImpl;
 import com.ecaservice.service.experiment.DataService;
 import com.ecaservice.service.experiment.ExperimentProcessorService;
 import com.ecaservice.service.experiment.ExperimentService;
-import com.ecaservice.core.filter.service.FilterService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -49,7 +48,7 @@ import static com.google.common.collect.Lists.newArrayList;
  * @author Roman Batygin
  */
 @Import({ExperimentMapperImpl.class, ExperimentConfig.class, CommonConfig.class, CrossValidationConfig.class,
-        AppInstanceService.class, DateTimeConverter.class})
+       DateTimeConverter.class})
 class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
 
     private static final List<String> DATE_RANGE_VALUES = ImmutableList.of("2018-01-01", "2018-01-07");
@@ -62,8 +61,6 @@ class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
     @Mock
     private ExperimentProcessorService experimentProcessorService;
 
-    @Inject
-    private AppInstanceService appInstanceService;
     @Inject
     private ExperimentMapper experimentMapper;
     @Inject
@@ -86,7 +83,7 @@ class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
         ExperimentService experimentService =
                 new ExperimentService(experimentRepository, executorService, experimentMapper, dataService,
                         crossValidationConfig, experimentConfig, experimentProcessorService, entityManager,
-                        commonConfig, filterService, appInstanceService);
+                        commonConfig, filterService);
         experimentsBaseReportDataFetcher =
                 new ExperimentsBaseReportDataFetcher(filterService, experimentService, experimentMapper);
     }

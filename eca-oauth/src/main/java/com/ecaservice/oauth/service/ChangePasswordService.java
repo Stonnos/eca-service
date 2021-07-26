@@ -88,7 +88,7 @@ public class ChangePasswordService {
         String md5Hash = md5Hex(token);
         ChangePasswordRequestEntity changePasswordRequestEntity =
                 changePasswordRequestRepository.findByTokenAndExpireDateAfterAndConfirmationDateIsNull(md5Hash,
-                        LocalDateTime.now()).orElseThrow(() -> new InvalidTokenException(token));
+                        LocalDateTime.now()).orElseThrow(InvalidTokenException::new);
         UserEntity userEntity = changePasswordRequestEntity.getUserEntity();
         if (userEntity.isLocked()) {
             throw new UserLockedException(userEntity.getId());

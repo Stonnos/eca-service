@@ -66,3 +66,6 @@ management:
       show-details: always
   server:
     port: 8030
+
+server:
+  forward-headers-strategy: framework

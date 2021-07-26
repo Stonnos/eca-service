@@ -4,14 +4,12 @@ import com.ecaservice.config.ers.ErsConfig;
 import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.mapping.ClassifierOptionsRequestModelMapper;
-import com.ecaservice.model.entity.AppInstanceEntity;
 import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.model.entity.ErsResponseStatus;
 import com.ecaservice.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.repository.ClassifierOptionsRequestRepository;
-import com.ecaservice.service.AppInstanceService;
 import com.ecaservice.service.ers.ErsRequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +35,6 @@ public class ClassifierOptionsCacheService {
 
     private final ErsConfig ersConfig;
     private final ErsRequestService ersRequestService;
-    private final AppInstanceService appInstanceService;
     private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
     private final ClassifierOptionsRequestRepository classifierOptionsRequestRepository;
 
@@ -93,12 +90,10 @@ public class ClassifierOptionsCacheService {
 
     private ClassifierOptionsRequestModel createClassifierOptionsRequestModel(
             ClassifierOptionsRequest classifierOptionsRequest, String dataMd5Hash) {
-        AppInstanceEntity appInstanceEntity = appInstanceService.getAppInstanceEntity();
         ClassifierOptionsRequestModel requestModel =
                 classifierOptionsRequestModelMapper.map(classifierOptionsRequest);
         requestModel.setRelationName(classifierOptionsRequest.getRelationName());
         requestModel.setDataMd5Hash(dataMd5Hash);
-        requestModel.setAppInstanceEntity(appInstanceEntity);
         return requestModel;
     }
 
@@ -108,7 +103,9 @@ public class ClassifierOptionsCacheService {
                         Collections.singletonList(ErsResponseStatus.SUCCESS),
                         LocalDateTime.now().minusDays(ersConfig.getClassifierOptionsCacheDurationInDays()),
                         PageRequest.of(0, 1));
-        return requestModels.stream().findFirst().map(
-                ClassifierOptionsRequestEntity::getClassifierOptionsRequestModel).orElse(null);
+        return requestModels.stream()
+                .findFirst()
+                .map(ClassifierOptionsRequestEntity::getClassifierOptionsRequestModel)
+                .orElse(null);
     }
 }

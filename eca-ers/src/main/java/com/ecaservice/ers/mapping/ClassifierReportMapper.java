@@ -35,7 +35,8 @@ public abstract class ClassifierReportMapper {
     protected void mapInputOptions(ClassifierReport classifierReport,
                                    @MappingTarget ClassifierOptionsInfo classifierOptionsInfo) {
         if (!CollectionUtils.isEmpty(classifierReport.getClassifierInputOptions())) {
-            Map<String, String> inputOptionsMap = classifierReport.getClassifierInputOptions().stream()
+            Map<String, String> inputOptionsMap = classifierReport.getClassifierInputOptions()
+                    .stream()
                     .collect(Collectors.toMap(ClassifierInputOption::getKey, ClassifierInputOption::getValue));
             classifierOptionsInfo.setInputOptionsMap(inputOptionsMap);
         }

@@ -1,6 +1,6 @@
 package com.ecaservice.ers.dto;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -14,6 +14,7 @@ import static com.ecaservice.ers.dto.Constraints.MAX_LENGTH_255;
  * @author Roman Batygin
  */
 @Data
+@Schema(description = "Sort field model")
 public class SortField {
 
     /**
@@ -21,12 +22,12 @@ public class SortField {
      */
     @NotBlank
     @Size(max = MAX_LENGTH_255)
-    @ApiModelProperty(value = "Sort field name", example = "statistics.pctCorrect", required = true)
+    @Schema(description = "Sort field name", example = "statistics.pctCorrect", required = true)
     private String fieldName;
 
     /**
      * Sort direction
      */
-    @ApiModelProperty(value = "Sort direction")
+    @Schema(description = "Sort direction")
     private SortDirection direction;
 }

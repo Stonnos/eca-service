@@ -65,17 +65,23 @@ queue:
   evaluationRequestReplyToQueue: external-api-evaluation-response-queue
 
 ## Swagger properties
-swagger2:
+open-api:
+  basePath: /
+  title: Evaluation external API micriservice
+  description: API provides operations to performs classifiers evaluation requests
+  author: Roman Batygin
+  email: roman.batygin@mail.ru
   projectVersion: @project.version@
-  groups:
-    eca-external-api:
-      title: External API
-      description: Operations for external systems
-      author: Roman Batygin
-      email: roman.batygin@mail.ru
-  tokenBaseUrl: http://localhost:8085/eca-oauth
-  clientId: external-api
-  secret: external_api_secret
+  tokenBaseUrl: http://localhost:8080
+  apiAuth:
+    CLIENT_CREDENTIALS:
+      scopes: external-api
+
+springdoc:
+  swagger-ui:
+    oauth:
+      client-id: external-api
+      client-secret: external_api_secret
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth
@@ -93,3 +99,6 @@ management:
   endpoint:
     health:
       show-details: always
+
+server:
+  forward-headers-strategy: framework

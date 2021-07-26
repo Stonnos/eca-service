@@ -5,7 +5,6 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.TechnicalStatus;
-import com.ecaservice.config.CommonConfig;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.configuation.ExecutorConfiguration;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
@@ -15,10 +14,8 @@ import com.ecaservice.mapping.EvaluationLogMapperImpl;
 import com.ecaservice.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.model.entity.EvaluationLog;
 import com.ecaservice.model.entity.RequestStatus;
-import com.ecaservice.repository.AppInstanceRepository;
 import com.ecaservice.repository.EvaluationLogRepository;
 import com.ecaservice.service.AbstractJpaTest;
-import com.ecaservice.service.AppInstanceService;
 import eca.core.evaluation.EvaluationMethod;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
@@ -40,16 +37,12 @@ import static org.mockito.Mockito.mock;
  * @author Roman Batygin
  */
 @Import({ExecutorConfiguration.class, CrossValidationConfig.class,
-        EvaluationLogMapperImpl.class, EvaluationService.class, CommonConfig.class, DateTimeConverter.class,
+        EvaluationLogMapperImpl.class, EvaluationService.class, DateTimeConverter.class,
         InstancesInfoMapperImpl.class, ClassifierInfoMapperImpl.class})
 class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     @Inject
-    private CommonConfig commonConfig;
-    @Inject
     private CrossValidationConfig crossValidationConfig;
-    @Inject
-    private AppInstanceRepository appInstanceRepository;
     @Inject
     private EvaluationLogRepository evaluationLogRepository;
     @Inject
@@ -59,22 +52,18 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     @Inject
     private CalculationExecutorService calculationExecutorService;
 
-    private AppInstanceService appInstanceService;
-
     private EvaluationRequestService evaluationRequestService;
 
     @Override
     public void init() {
-        appInstanceService = new AppInstanceService(commonConfig, appInstanceRepository);
         evaluationRequestService =
                 new EvaluationRequestService(crossValidationConfig, calculationExecutorService, evaluationService,
-                        appInstanceService, evaluationLogRepository, evaluationLogMapper);
+                        evaluationLogRepository, evaluationLogMapper);
     }
 
     @Override
     public void deleteAll() {
         evaluationLogRepository.deleteAll();
-        appInstanceRepository.deleteAll();
     }
 
     @Test
@@ -97,7 +86,7 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
         EvaluationRequestService service =
                 new EvaluationRequestService(crossValidationConfig, executorService, evaluationService,
-                        appInstanceService, evaluationLogRepository, evaluationLogMapper);
+                        evaluationLogRepository, evaluationLogMapper);
         doThrow(new RuntimeException("Error")).when(executorService)
                 .execute(any(), anyLong(), any(TimeUnit.class));
         EvaluationResponse evaluationResponse = service.processRequest(request);
@@ -129,7 +118,7 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         CalculationExecutorServiceImpl executorService = mock(CalculationExecutorServiceImpl.class);
         EvaluationRequestService service =
                 new EvaluationRequestService(crossValidationConfig, executorService, evaluationService,
-                        appInstanceService, evaluationLogRepository, evaluationLogMapper);
+                        evaluationLogRepository, evaluationLogMapper);
         doThrow(TimeoutException.class).when(executorService).execute(any(), anyLong(), any(TimeUnit.class));
         EvaluationResponse evaluationResponse = service.processRequest(request);
         assertThat(evaluationResponse.getStatus()).isEqualTo(TechnicalStatus.TIMEOUT);

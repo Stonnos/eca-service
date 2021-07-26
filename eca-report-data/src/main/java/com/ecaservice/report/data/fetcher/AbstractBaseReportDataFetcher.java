@@ -87,8 +87,11 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
         if (!CollectionUtils.isEmpty(pageRequestDto.getFilters())) {
             pageRequestDto.getFilters().forEach(filterRequestDto -> {
                 if (!CollectionUtils.isEmpty(filterRequestDto.getValues())) {
-                    List<String> values = filterRequestDto.getValues().stream().filter(StringUtils::isNotBlank).map(
-                            String::trim).collect(Collectors.toList());
+                    List<String> values = filterRequestDto.getValues()
+                            .stream()
+                            .filter(StringUtils::isNotBlank)
+                            .map(String::trim)
+                            .collect(Collectors.toList());
                     if (!CollectionUtils.isEmpty(values)) {
                         FilterBean filterBean = new FilterBean();
                         FilterFieldDto filterFieldDto = filterFieldsMap.get(filterRequestDto.getName());

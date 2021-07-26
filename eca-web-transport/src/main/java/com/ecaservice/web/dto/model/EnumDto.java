@@ -1,7 +1,6 @@
 package com.ecaservice.web.dto.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,18 +13,18 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "Enum dto model")
+@Schema(description = "Enum dto model")
 public class EnumDto {
 
     /**
      * Enum value
      */
-    @ApiModelProperty(value = "Enum value", required = true)
+    @Schema(description = "Enum value", required = true)
     private String value;
 
     /**
      * Enum value description
      */
-    @ApiModelProperty(value = "Enum value description", required = true)
+    @Schema(description = "Enum value description", required = true)
     private String description;
 }

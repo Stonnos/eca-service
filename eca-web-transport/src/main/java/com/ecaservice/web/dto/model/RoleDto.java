@@ -1,7 +1,6 @@
 package com.ecaservice.web.dto.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
@@ -10,18 +9,18 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "User role model")
+@Schema(description = "User role model")
 public class RoleDto {
 
     /**
      * Role name
      */
-    @ApiModelProperty(value = "Role name")
+    @Schema(description = "Role name")
     private String roleName;
 
     /**
      * Role description
      */
-    @ApiModelProperty(value = "Role description")
+    @Schema(description = "Role description")
     private String description;
 }

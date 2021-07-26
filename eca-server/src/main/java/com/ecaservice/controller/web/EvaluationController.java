@@ -10,9 +10,12 @@ import com.ecaservice.web.dto.model.EvaluationLogDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -20,6 +23,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,6 +32,8 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.controller.doc.ApiExamples.EVALUATION_LOGS_PAGE_REQUEST_JSON;
 import static com.ecaservice.util.Utils.toRequestStatusesStatistics;
 
 /**
@@ -34,7 +41,7 @@ import static com.ecaservice.util.Utils.toRequestStatusesStatistics;
  *
  * @author Roman Batygin
  */
-@Api(tags = "Classifiers evaluation API for web application")
+@Tag(name = "Classifiers evaluation API for web application")
 @Slf4j
 @RestController
 @RequestMapping("/evaluation")
@@ -52,16 +59,24 @@ public class EvaluationController {
      * @return evaluations logs page
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Finds evaluation logs with specified options",
-            notes = "Finds evaluation logs with specified options"
+    @Operation(
+            description = "Finds evaluation logs with specified options",
+            summary = "Finds evaluation logs with specified options",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = EVALUATION_LOGS_PAGE_REQUEST_JSON)
+                    })
+            })
     )
-    @GetMapping(value = "/list")
-    public PageDto<EvaluationLogDto> getEvaluationLogs(@Valid PageRequestDto pageRequestDto) {
+    @PostMapping(value = "/list")
+    public PageDto<EvaluationLogDto> getEvaluationLogs(@Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received evaluation logs page request: {}", pageRequestDto);
         Page<EvaluationLog> evaluationLogs = evaluationLogService.getNextPage(pageRequestDto);
-        List<EvaluationLogDto> evaluationLogDtoList =
-                evaluationLogs.getContent().stream().map(evaluationLogMapper::map).collect(Collectors.toList());
+        List<EvaluationLogDto> evaluationLogDtoList = evaluationLogs.getContent()
+                .stream()
+                .map(evaluationLogMapper::map)
+                .collect(Collectors.toList());
         return PageDto.of(evaluationLogDtoList, pageRequestDto.getPage(), evaluationLogs.getTotalElements());
     }
 
@@ -72,13 +87,15 @@ public class EvaluationController {
      * @return evaluation log details report
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Gets evaluation log details",
-            notes = "Gets evaluation log details"
+    @Operation(
+            description = "Gets evaluation log details",
+            summary = "Gets evaluation log details",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @GetMapping(value = "/details/{requestId}")
     public ResponseEntity<EvaluationLogDetailsDto> getEvaluationLogDetails(
-            @ApiParam(value = "Evaluation log request id", required = true) @PathVariable String requestId) {
+            @Parameter(description = "Evaluation log request id", required = true)
+            @PathVariable String requestId) {
         log.info("Received request for evaluation log details for request id [{}]", requestId);
         EvaluationLog evaluationLog = evaluationLogRepository.findByRequestId(requestId)
                 .orElseThrow(() -> new EntityNotFoundException(EvaluationLog.class, requestId));
@@ -91,9 +108,10 @@ public class EvaluationController {
      * @return evaluations request statuses statistics dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Gets evaluations request statuses statistics",
-            notes = "Gets evaluations request statuses statistics"
+    @Operation(
+            description = "Gets evaluations request statuses statistics",
+            summary = "Gets evaluations request statuses statistics",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @GetMapping(value = "/request-statuses-statistics")
     public RequestStatusStatisticsDto getEvaluationRequestStatusesStatistics() {

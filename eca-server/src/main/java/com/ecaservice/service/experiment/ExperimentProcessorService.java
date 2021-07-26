@@ -49,8 +49,10 @@ public class ExperimentProcessorService {
     public ExperimentHistory processExperimentHistory(Experiment experiment,
                                                       InitializationParams initializationParams) {
         Assert.notNull(initializationParams, "Initialization params is not specified!");
+        log.info("Starting to initialize experiment [{}]", experiment.getRequestId());
         AbstractExperiment<?> abstractExperiment =
                 experiment.getExperimentType().handle(experimentInitializer, initializationParams);
+        log.info("Experiment has been initialized [{}]", experiment.getRequestId());
         IterativeExperiment iterativeExperiment = abstractExperiment.getIterativeExperiment();
         int currentPercent = 0;
 
@@ -91,6 +93,9 @@ public class ExperimentProcessorService {
         }
         experimentHistory.sort(new ClassifierComparator());
         int resultsSize = Integer.min(experimentHistory.size(), experimentConfig.getResultSize());
-        return experimentHistory.stream().limit(resultsSize).collect(Collectors.toList());
+        return experimentHistory
+                .stream()
+                .limit(resultsSize)
+                .collect(Collectors.toList());
     }
 }

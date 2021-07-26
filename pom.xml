@@ -71,7 +71,7 @@
         <inject.version>1</inject.version>
         <logback.version>1.2.3</logback.version>
         <slf4j.version>1.7.30</slf4j.version>
-        <eca.version>6.8.4</eca.version>
+        <eca.version>6.8.5</eca.version>
         <h2.version>1.4.199</h2.version>
         <postresql.version>42.2.6</postresql.version>
         <liquibase.version>3.7.0</liquibase.version>
@@ -85,7 +85,8 @@
         <commons.io.version>2.8.0</commons.io.version>
         <org.apache.commons.lang3.version>3.10</org.apache.commons.lang3.version>
         <javax-validation-api.version>2.0.1.Final</javax-validation-api.version>
-        <swagger-version>2.9.2</swagger-version>
+        <swagger-annotations.version>2.1.9</swagger-annotations.version>
+        <open-api.version>1.5.9</open-api.version>
         <guava.version>30.0-jre</guava.version>
         <jacoco-plugin.version>0.8.5</jacoco-plugin.version>
         <jacoco.minCoverage>0.70</jacoco.minCoverage>
@@ -121,14 +122,19 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger-ui</artifactId>
-                <version>${swagger-version}</version>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${swagger-annotations.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>${swagger-version}</version>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-ui</artifactId>
+                <version>${open-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-security</artifactId>
+                <version>${open-api.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security.oauth.boot</groupId>

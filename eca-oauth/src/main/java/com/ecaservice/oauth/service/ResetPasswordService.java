@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.common.web.util.RandomUtils.generateToken;
-import static com.ecaservice.oauth.config.audit.AuditCodes.CONFIRM_CHANGE_PASSWORD_REQUEST;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_RESET_PASSWORD_REQUEST;
 import static com.ecaservice.oauth.config.audit.AuditCodes.RESET_PASSWORD;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
@@ -50,8 +49,8 @@ public class ResetPasswordService {
      */
     @Audit(value = CREATE_RESET_PASSWORD_REQUEST, targetInitiator = "login")
     public TokenModel createResetPasswordRequest(ForgotPasswordRequest forgotPasswordRequest) {
-        UserEntity userEntity = userEntityRepository.findByEmail(forgotPasswordRequest.getEmail()).orElseThrow(
-                () -> new IllegalStateException(
+        UserEntity userEntity = userEntityRepository.findByEmail(forgotPasswordRequest.getEmail())
+                .orElseThrow(() -> new IllegalStateException(
                         String.format("Can't create reset password request, because user with email %s doesn't exists!",
                                 forgotPasswordRequest.getEmail())));
         if (userEntity.isLocked()) {
@@ -89,7 +88,7 @@ public class ResetPasswordService {
         ResetPasswordRequestEntity resetPasswordRequestEntity =
                 resetPasswordRequestRepository.findByTokenAndExpireDateAfterAndResetDateIsNull(md5Hash,
                         LocalDateTime.now())
-                        .orElseThrow(() -> new InvalidTokenException(resetPasswordRequest.getToken()));
+                        .orElseThrow(InvalidTokenException::new);
         UserEntity userEntity = resetPasswordRequestEntity.getUserEntity();
         if (userEntity.isLocked()) {
             throw new UserLockedException(userEntity.getId());

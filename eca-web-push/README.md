@@ -15,6 +15,16 @@
 Настройки для проекта находятся в файле application.yml. Ниже приведены основные параметры:
 1) queues - настройки очередей для веб - сокетов
     * experimentQueue - очередь для отправки веб - пуша об изменении данных эксперимента
+2) open-api - настройки Swagger
+   * open-api.tokenBaseUrl - базовый url - сервера авторизации
+   * open-api.projectVersion - версия API
+   * open-api.title - краткое название API
+   * open-api.description - описание API
+   * open-api.author - автор
+   * open-api.email - email для связи
+   * open-api.basePath - базовый префикс для API
+   * open-api.apiAuth - настройки авторизации
+   * open-api.apiAuth.scopes - список scopes
     
 Инструкция по развертыванию
 ----------------------------------------

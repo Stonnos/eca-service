@@ -47,8 +47,8 @@ public class LoadTestService {
      * @return load test entity
      */
     public LoadTestEntity getLoadTest(String testUuid) {
-        return loadTestRepository.findByTestUuid(testUuid).orElseThrow(
-                () -> new EntityNotFoundException(LoadTestEntity.class, testUuid));
+        return loadTestRepository.findByTestUuid(testUuid)
+                .orElseThrow(() -> new EntityNotFoundException(LoadTestEntity.class, testUuid));
     }
 
     private LoadTestEntity createLoadTestEntity(LoadTestRequest loadTestRequest) {

@@ -31,6 +31,8 @@ public class ExperimentNotificationEventListener {
     @EventListener
     public void handleExperimentEmailEvent(ExperimentEmailEvent experimentEmailEvent) {
         Experiment experiment = experimentEmailEvent.getExperiment();
+        log.info("Handles experiment [{}] email event from source [{}]", experiment.getRequestId(),
+                experimentEmailEvent.getSource().getClass().getSimpleName());
         experiment.getRequestStatus().handle(experimentEmailVisitor, experiment);
     }
 
@@ -41,6 +43,9 @@ public class ExperimentNotificationEventListener {
      */
     @EventListener
     public void handleExperimentPushEvent(ExperimentWebPushEvent experimentWebPushEvent) {
+        Experiment experiment = experimentWebPushEvent.getExperiment();
+        log.info("Handles experiment [{}] web push event from source [{}]", experiment.getRequestId(),
+                experimentWebPushEvent.getSource().getClass().getSimpleName());
         webPushService.sendWebPush(experimentWebPushEvent.getExperiment());
     }
 }

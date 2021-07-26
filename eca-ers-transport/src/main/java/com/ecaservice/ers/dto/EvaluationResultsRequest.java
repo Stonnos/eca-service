@@ -1,7 +1,6 @@
 package com.ecaservice.ers.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.Valid;
@@ -20,7 +19,7 @@ import static com.ecaservice.ers.dto.Constraints.UUID_PATTERN;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "Evaluation results request model")
+@Schema(description = "Evaluation results request model")
 public class EvaluationResultsRequest {
 
     /**
@@ -29,7 +28,7 @@ public class EvaluationResultsRequest {
     @NotBlank
     @Pattern(regexp = UUID_PATTERN)
     @Size(max = UUID_MAX_SIZE)
-    @ApiModelProperty(value = "Request id", example = "1d2de514-3a87-4620-9b97-c260e24340de", required = true)
+    @Schema(description = "Request id", example = "1d2de514-3a87-4620-9b97-c260e24340de", required = true)
     private String requestId;
 
     /**
@@ -37,7 +36,7 @@ public class EvaluationResultsRequest {
      */
     @NotNull
     @Valid
-    @ApiModelProperty(value = "Instances report", required = true)
+    @Schema(description = "Instances report", required = true)
     private InstancesReport instances;
 
     /**
@@ -45,7 +44,7 @@ public class EvaluationResultsRequest {
      */
     @NotNull
     @Valid
-    @ApiModelProperty(value = "Classifier report", required = true)
+    @Schema(description = "Classifier report", required = true)
     private ClassifierReport classifierReport;
 
     /**
@@ -53,7 +52,7 @@ public class EvaluationResultsRequest {
      */
     @NotNull
     @Valid
-    @ApiModelProperty(value = "Evaluation method report", required = true)
+    @Schema(description = "Evaluation method report", required = true)
     private EvaluationMethodReport evaluationMethodReport;
 
     /**
@@ -61,20 +60,20 @@ public class EvaluationResultsRequest {
      */
     @NotNull
     @Valid
-    @ApiModelProperty(value = "Statistics report", required = true)
+    @Schema(description = "Statistics report", required = true)
     private StatisticsReport statistics;
 
     /**
      * Classification costs report
      */
     @Valid
-    @ApiModelProperty(value = "Classification costs report")
+    @Schema(description = "Classification costs report")
     private List<ClassificationCostsReport> classificationCosts;
 
     /**
      * Confusion matrix report
      */
     @Valid
-    @ApiModelProperty(value = "Confusion matrix report")
+    @Schema(description = "Confusion matrix report")
     private List<ConfusionMatrixReport> confusionMatrix;
 }

@@ -53,17 +53,16 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.PageRequestUtils.PAGE_NUMBER;
-import static com.ecaservice.PageRequestUtils.PAGE_NUMBER_PARAM;
-import static com.ecaservice.PageRequestUtils.PAGE_SIZE;
-import static com.ecaservice.PageRequestUtils.PAGE_SIZE_PARAM;
 import static com.ecaservice.PageRequestUtils.TOTAL_ELEMENTS;
 import static com.ecaservice.TestHelperUtils.TEST_UUID;
 import static com.ecaservice.TestHelperUtils.bearerHeader;
 import static com.ecaservice.TestHelperUtils.buildRequestStatusStatisticsMap;
+import static com.ecaservice.TestHelperUtils.createPageRequestDto;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -152,7 +151,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
 
     @Test
     void testGetExperimentDetailsNotFound() throws Exception {
-        when(experimentService.getByRequestId(TEST_UUID)).thenThrow(new EntityNotFoundException());
+        when(experimentService.getByRequestId(TEST_UUID)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(DETAILS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
@@ -258,10 +257,10 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         PageDto<ExperimentDto> expected = PageDto.of(experimentMapper.map(experiments), PAGE_NUMBER, TOTAL_ELEMENTS);
         when(experimentPage.getContent()).thenReturn(experiments);
         when(experimentService.getNextPage(any(PageRequestDto.class))).thenReturn(experimentPage);
-        mockMvc.perform(get(LIST_URL)
+        mockMvc.perform(post(LIST_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
+                .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
@@ -325,7 +324,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
 
     @Test
     void testGetErsReportForNotExistingExperiment() throws Exception {
-        when(experimentService.getByRequestId(TEST_UUID)).thenThrow(new EntityNotFoundException());
+        when(experimentService.getByRequestId(TEST_UUID)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(ERS_REPORT_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
@@ -370,7 +369,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
 
     @Test
     void testGetExperimentProgressForNotExistingExperiment() throws Exception {
-        when(experimentService.getByRequestId(TEST_UUID)).thenThrow(new EntityNotFoundException());
+        when(experimentService.getByRequestId(TEST_UUID)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(EXPERIMENT_PROGRESS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
@@ -379,8 +378,8 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     @Test
     void testGetExperimentProgressForNotExistingExperimentProgress() throws Exception {
         when(experimentService.getByRequestId(TEST_UUID)).thenReturn(new Experiment());
-        when(experimentProgressService.getExperimentProgress(any(Experiment.class))).thenThrow(
-                new EntityNotFoundException());
+        when(experimentProgressService.getExperimentProgress(any(Experiment.class)))
+                .thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(EXPERIMENT_PROGRESS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
@@ -405,7 +404,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     }
 
     private void testDownloadFileForNotExistingExperiment(String url) throws Exception {
-        when(experimentService.getByRequestId(TEST_UUID)).thenThrow(new EntityNotFoundException());
+        when(experimentService.getByRequestId(TEST_UUID)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(url, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());

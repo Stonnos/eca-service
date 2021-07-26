@@ -1,8 +1,7 @@
 package com.ecaservice.oauth.dto;
 
 import com.ecaservice.oauth.validation.annotations.UserEmail;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(description = "Forgot password request model")
+@Schema(description = "Forgot password request model")
 public class ForgotPasswordRequest {
 
     /**
@@ -25,6 +24,6 @@ public class ForgotPasswordRequest {
      */
     @NotBlank
     @UserEmail
-    @ApiModelProperty(value = "User email", example = "bat1238@yandex.ru", required = true)
+    @Schema(description = "User email", example = "bat1238@yandex.ru", required = true)
     private String email;
 }

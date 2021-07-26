@@ -1,7 +1,6 @@
 package com.ecaservice.web.dto.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
@@ -10,36 +9,36 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "Classifier training data model")
+@Schema(description = "Classifier training data model")
 public class InstancesInfoDto {
 
     /**
      * Instances name
      */
-    @ApiModelProperty(value = "Instances name")
+    @Schema(description = "Instances name")
     private String relationName;
 
     /**
      * Instances size
      */
-    @ApiModelProperty(value = "Instances number")
+    @Schema(description = "Instances number")
     private Integer numInstances;
 
     /**
      * Attributes number
      */
-    @ApiModelProperty(value = "Attributes number")
+    @Schema(description = "Attributes number")
     private Integer numAttributes;
 
     /**
      * Classes number
      */
-    @ApiModelProperty(value = "Classes number")
+    @Schema(description = "Classes number")
     private Integer numClasses;
 
     /**
      * Class attribute name
      */
-    @ApiModelProperty(value = "Class name")
+    @Schema(description = "Class name")
     private String className;
 }

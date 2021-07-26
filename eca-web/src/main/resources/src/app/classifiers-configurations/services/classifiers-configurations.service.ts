@@ -6,7 +6,6 @@ import {
   PageRequestDto, UpdateClassifiersConfigurationDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
-import { PageRequestService } from "../../common/services/page-request.service";
 import { environment } from "../../../environments/environment";
 import { Utils } from "../../common/util/utils";
 
@@ -15,7 +14,7 @@ export class ClassifiersConfigurationsService {
 
   private serviceUrl = environment.serverUrl + '/experiment/classifiers-configurations';
 
-  public constructor(private http: HttpClient, private pageRequestService: PageRequestService) {
+  public constructor(private http: HttpClient) {
   }
 
   public getClassifiersConfigurations(pageRequest: PageRequestDto): Observable<PageDto<ClassifiersConfigurationDto>> {
@@ -23,9 +22,7 @@ export class ClassifiersConfigurationsService {
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': Utils.getBearerTokenHeader()
     });
-    const params: HttpParams = this.pageRequestService.convertToHttpRequestParams(pageRequest);
-    const options = { headers: headers, params: params };
-    return this.http.get<PageDto<ClassifiersConfigurationDto>>(this.serviceUrl + '/list', options);
+    return this.http.post<PageDto<ClassifiersConfigurationDto>>(this.serviceUrl + '/list', pageRequest, { headers: headers });
   }
 
   public getClassifiersConfigurationDetails(configurationId: number): Observable<ClassifiersConfigurationDto> {

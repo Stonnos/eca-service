@@ -10,7 +10,6 @@ import {
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { ExperimentRequest } from "../../create-experiment/model/experiment-request.model";
-import { PageRequestService } from "../../common/services/page-request.service";
 import { environment } from "../../../environments/environment";
 import { Utils } from "../../common/util/utils";
 
@@ -19,7 +18,7 @@ export class ExperimentsService {
 
   private serviceUrl = environment.serverUrl + '/experiment';
 
-  public constructor(private http: HttpClient, private pageRequestService: PageRequestService) {
+  public constructor(private http: HttpClient) {
   }
 
   public getExperiments(pageRequest: PageRequestDto): Observable<PageDto<ExperimentDto>> {
@@ -27,9 +26,7 @@ export class ExperimentsService {
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': Utils.getBearerTokenHeader()
     });
-    const params: HttpParams = this.pageRequestService.convertToHttpRequestParams(pageRequest);
-    const options = { headers: headers, params: params };
-    return this.http.get<PageDto<ExperimentDto>>(this.serviceUrl + '/list', options);
+    return this.http.post<PageDto<ExperimentDto>>(this.serviceUrl + '/list', pageRequest, { headers: headers });
   }
 
   public getExperiment(requestId: string): Observable<ExperimentDto> {

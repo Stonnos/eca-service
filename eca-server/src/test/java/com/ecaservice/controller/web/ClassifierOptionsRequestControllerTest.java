@@ -27,14 +27,12 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.ecaservice.PageRequestUtils.PAGE_NUMBER;
-import static com.ecaservice.PageRequestUtils.PAGE_NUMBER_PARAM;
-import static com.ecaservice.PageRequestUtils.PAGE_SIZE;
-import static com.ecaservice.PageRequestUtils.PAGE_SIZE_PARAM;
 import static com.ecaservice.PageRequestUtils.TOTAL_ELEMENTS;
 import static com.ecaservice.TestHelperUtils.bearerHeader;
+import static com.ecaservice.TestHelperUtils.createPageRequestDto;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -106,10 +104,10 @@ class ClassifierOptionsRequestControllerTest extends PageRequestControllerTest {
                         TOTAL_ELEMENTS);
         when(page.getContent()).thenReturn(classifierOptionsRequestModels);
         when(classifierOptionsRequestService.getNextPage(any(PageRequestDto.class))).thenReturn(page);
-        mockMvc.perform(get(LIST_URL)
+        mockMvc.perform(post(LIST_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_NUMBER_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE)))
+                .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(pageDto)));

@@ -8,9 +8,9 @@ import com.ecaservice.load.test.report.bean.LoadTestBean;
 import com.ecaservice.load.test.report.service.TestResultsReportDataFetcher;
 import com.ecaservice.load.test.report.service.TestResultsReportGenerator;
 import com.ecaservice.load.test.service.LoadTestService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +32,7 @@ import java.io.OutputStream;
  *
  * @author Roman Batygin
  */
-@Api(tags = "API for load tests execution")
+@Tag(name = "API for load tests execution")
 @Slf4j
 @RestController
 @RequestMapping("/load-tests")
@@ -53,9 +53,9 @@ public class LoadTestController {
      * @param loadTestRequest - load test request
      * @return load test uuid
      */
-    @ApiOperation(
-            value = "Creates load test",
-            notes = "Creates load test"
+    @Operation(
+            description = "Creates load test",
+            summary = "Creates load test"
     )
     @PostMapping(value = "/create")
     public LoadTestDto createTest(@Valid LoadTestRequest loadTestRequest) {
@@ -70,13 +70,13 @@ public class LoadTestController {
      *
      * @param testUuid - test uuid
      */
-    @ApiOperation(
-            value = "Gets load test details",
-            notes = "Gets load test details"
+    @Operation(
+            description = "Gets load test details",
+            summary = "Gets load test details"
     )
     @GetMapping(value = "/details/{testUuid}")
-    public LoadTestDto getLoadTestDetails(
-            @ApiParam(value = "Test uuid", required = true) @PathVariable String testUuid) {
+    public LoadTestDto getLoadTestDetails(@Parameter(description = "Test uuid", required = true)
+                                          @PathVariable String testUuid) {
         log.info("Gets load test [{}] details", testUuid);
         LoadTestEntity loadTestEntity = loadTestService.getLoadTest(testUuid);
         return loadTestMapper.mapToDto(loadTestEntity);
@@ -89,12 +89,13 @@ public class LoadTestController {
      * @param httpServletResponse - http servlet response
      * @throws IOException in case of I/O error
      */
-    @ApiOperation(
-            value = "Downloads load test report in xlsx format",
-            notes = "Downloads load test report in xlsx format"
+    @Operation(
+            description = "Downloads load test report in xlsx format",
+            summary = "Downloads load test report in xlsx format"
     )
     @GetMapping(value = "/report/{testUuid}")
-    public void downloadReport(@ApiParam(value = "Test uuid", required = true) @PathVariable String testUuid,
+    public void downloadReport(@Parameter(description = "Test uuid", required = true)
+                               @PathVariable String testUuid,
                                HttpServletResponse httpServletResponse) throws IOException {
         log.info("Starting to download load test [{}] report", testUuid);
         LoadTestEntity loadTestEntity = loadTestService.getLoadTest(testUuid);

@@ -6,24 +6,31 @@ import com.ecaservice.service.ers.ClassifierOptionsRequestService;
 import com.ecaservice.web.dto.model.ClassifierOptionsRequestDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
+
+import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.controller.doc.ApiExamples.CLASSIFIER_OPTIONS_REQUESTS_PAGE_REQUEST_JSON;
 
 /**
  * Classifier options requests API for web application.
  *
  * @author Roman Batygin
  */
-@Api(tags = "Classifier options requests API for web application")
+@Tag(name = "Classifier options requests API for web application")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -39,13 +46,19 @@ public class ClassifierOptionsRequestController {
      * @return classifiers options requests models page
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Finds classifiers options requests models with specified options",
-            notes = "Finds classifiers options requests models with specified options"
+    @Operation(
+            description = "Finds classifiers options requests models with specified options",
+            summary = "Finds classifiers options requests models with specified options",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(value = CLASSIFIER_OPTIONS_REQUESTS_PAGE_REQUEST_JSON)
+                    })
+            })
     )
-    @GetMapping(value = "/classifiers-options-requests")
+    @PostMapping(value = "/classifiers-options-requests")
     public PageDto<ClassifierOptionsRequestDto> getClassifierOptionsRequestModels(
-            @Valid PageRequestDto pageRequestDto) {
+            @Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received classifiers options requests models page request: {}", pageRequestDto);
         Page<ClassifierOptionsRequestModel> classifierOptionsRequestModelPage =
                 classifierOptionsRequestService.getNextPage(pageRequestDto);

@@ -1,7 +1,6 @@
 package com.ecaservice.web.dto.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,24 +13,24 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "Model for chart")
+@Schema(description = "Model for chart")
 public class ChartDataDto {
 
     /**
      * Chart item name
      */
-    @ApiModelProperty(value = "Chart item name", required = true)
+    @Schema(description = "Chart item name", required = true)
     private String name;
 
     /**
      * Chart item label
      */
-    @ApiModelProperty(value = "Chart item label", required = true)
+    @Schema(description = "Chart item label", required = true)
     private String label;
 
     /**
      * Chart item value
      */
-    @ApiModelProperty(value = "Chart item value", required = true)
+    @Schema(description = "Chart item value", required = true)
     private Long count;
 }

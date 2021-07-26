@@ -9,7 +9,7 @@ import com.ecaservice.external.api.metrics.MetricsService;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.service.EcaResponseHandler;
 import com.ecaservice.external.api.service.MessageCorrelationService;
-import com.ecaservice.external.api.service.ResponseBuilder;
+import com.ecaservice.external.api.service.EvaluationResponseBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 public class EcaResponseListener {
 
     private final EcaResponseHandler ecaResponseHandler;
-    private final ResponseBuilder responseBuilder;
+    private final EvaluationResponseBuilder evaluationResponseBuilder;
     private final MessageCorrelationService messageCorrelationService;
     private final MetricsService metricsService;
     private final EvaluationRequestRepository evaluationRequestRepository;
@@ -60,7 +60,7 @@ public class EcaResponseListener {
             ecaResponseHandler.handleResponse(evaluationRequestEntity, evaluationResponse);
             messageCorrelationService.pop(correlationId).ifPresent(sink -> {
                 ResponseDto<EvaluationResponseDto> evaluationResponseDto =
-                        responseBuilder.buildResponse(evaluationResponse, evaluationRequestEntity);
+                        evaluationResponseBuilder.buildResponse(evaluationResponse, evaluationRequestEntity);
                 metricsService.trackResponse(evaluationRequestEntity, evaluationResponseDto.getRequestStatus());
                 log.debug("Send response back for correlation id [{}]", correlationId);
                 sink.success(evaluationResponseDto);

@@ -19,7 +19,7 @@
             **/config/**/*,
             **/exception/**/*,
             **/util/**/*,
-            **/NotificationApplication.java
+            **/EcaMailApplication.java
         </sonar.coverage.exclusions>
     </properties>
 

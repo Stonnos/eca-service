@@ -7,6 +7,7 @@ import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.MatchMode;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
@@ -29,6 +30,18 @@ public class TestHelperUtils {
     private static final String MESSAGE = "audit message";
     private static final String FILTER_NAME = "name";
     private static final String FILTER_DESCRIPTION = "description";
+
+    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_NUMBER = 0;
+
+    /**
+     * Creates page request dto.
+     *
+     * @return page request dto
+     */
+    public static PageRequestDto createPageRequestDto() {
+        return new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, null, true, null, Collections.emptyList());
+    }
 
     /**
      * Creates audit event request.

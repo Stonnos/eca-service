@@ -1,7 +1,6 @@
 package com.ecaservice.web.dto.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,24 +13,24 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "Create experiment result model")
+@Schema(description = "Create experiment result model")
 public class CreateExperimentResultDto {
 
     /**
      * Experiment request id
      */
-    @ApiModelProperty(value = "Experiment request id", required = true)
+    @Schema(description = "Experiment request id", required = true)
     private String requestId;
 
     /**
      * Is experiment created?
      */
-    @ApiModelProperty(value = "Experiment creation boolean flag", required = true)
+    @Schema(description = "Experiment creation boolean flag", required = true)
     private boolean created;
 
     /**
      * Error message
      */
-    @ApiModelProperty(value = "Error message")
+    @Schema(description = "Error message")
     private String errorMessage;
 }

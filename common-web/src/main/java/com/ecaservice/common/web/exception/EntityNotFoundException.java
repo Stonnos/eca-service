@@ -1,25 +1,22 @@
 package com.ecaservice.common.web.exception;
 
-import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 /**
  * Entity not found exception class.
  *
  * @author Roman Batygin
  */
-@NoArgsConstructor
-@ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Entity not found")
-public class EntityNotFoundException extends RuntimeException {
+public class EntityNotFoundException extends ValidationErrorException {
+
+    private static final String ERROR_CODE = "DataNotFound";
 
     /**
      * Creates entity not found exception.
      *
-     * @param clazz    - entity class
+     * @param clazz     - entity class
      * @param searchKey - search key
      */
     public EntityNotFoundException(Class<?> clazz, Object searchKey) {
-        super(String.format("Entity [%s] with search key [%s] not found!", clazz.getSimpleName(), searchKey));
+        super(ERROR_CODE,
+                String.format("Entity [%s] with search key [%s] not found!", clazz.getSimpleName(), searchKey));
     }
 }

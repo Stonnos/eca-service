@@ -7,8 +7,10 @@ import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
+import com.ecaservice.oauth.entity.UserEntity_;
 import com.ecaservice.oauth.entity.UserPhoto;
 import com.ecaservice.oauth.exception.EmailDuplicationException;
+import com.ecaservice.oauth.filter.UserFilter;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.repository.RoleRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
@@ -21,7 +23,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_USER;
@@ -41,7 +43,6 @@ import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_EMAIL;
 import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_PERSONAL_DATA;
 import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_PHOTO;
 import static com.ecaservice.oauth.entity.UserEntity_.CREATION_DATE;
-import static com.ecaservice.oauth.util.FilterUtils.buildSpecification;
 import static com.ecaservice.oauth.util.Utils.isSuperAdmin;
 import static com.ecaservice.user.model.Role.ROLE_ECA_USER;
 
@@ -54,6 +55,12 @@ import static com.ecaservice.user.model.Role.ROLE_ECA_USER;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
+    private static final List<String> USER_GLOBAL_FILTER_FIELDS = List.of(
+            UserEntity_.LOGIN,
+            UserEntity_.EMAIL,
+            UserEntity_.FULL_NAME
+    );
 
     private final CommonConfig commonConfig;
     private final PasswordEncoder passwordEncoder;
@@ -71,9 +78,10 @@ public class UserService {
      */
     public Page<UserEntity> getNextPage(PageRequestDto pageRequestDto) {
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
-        Specification<UserEntity> specification = buildSpecification(pageRequestDto);
+        UserFilter filter =
+                new UserFilter(pageRequestDto.getSearchQuery(), USER_GLOBAL_FILTER_FIELDS, pageRequestDto.getFilters());
         int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
-        return userEntityRepository.findAll(specification, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        return userEntityRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
     }
 
     /**
@@ -115,7 +123,8 @@ public class UserService {
      * @return - user entity
      */
     public UserEntity getById(long id) {
-        return userEntityRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(UserEntity.class, id));
+        return userEntityRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, id));
     }
 
     /**
@@ -254,8 +263,9 @@ public class UserService {
     }
 
     private void populateUserRole(UserEntity userEntity) {
-        RoleEntity roleEntity = roleRepository.findByRoleName(ROLE_ECA_USER).orElseThrow(
-                () -> new IllegalStateException(String.format("Role with name [%s] doesn't exists", ROLE_ECA_USER)));
+        RoleEntity roleEntity = roleRepository.findByRoleName(ROLE_ECA_USER)
+                .orElseThrow(() -> new IllegalStateException(
+                        String.format("Role with name [%s] doesn't exists", ROLE_ECA_USER)));
         userEntity.setRoles(Sets.newHashSet(roleEntity));
     }
 

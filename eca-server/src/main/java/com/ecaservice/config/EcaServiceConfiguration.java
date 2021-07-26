@@ -4,6 +4,7 @@ import com.ecaservice.classifier.options.config.ClassifiersOptionsConfiguration;
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.config.ers.ErsConfig;
 import com.ecaservice.core.filter.annotation.EnableFilters;
+import com.ecaservice.core.filter.error.FilterExceptionHandler;
 import com.ecaservice.core.lock.redis.annotation.EnableRedisLocks;
 import com.ecaservice.model.entity.AbstractEvaluationEntity;
 import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
@@ -17,6 +18,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.integration.redis.util.RedisLockRegistry;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -43,10 +46,11 @@ import java.util.concurrent.Executors;
 @EnableConfigurationProperties(
         {CommonConfig.class, CrossValidationConfig.class, ExperimentConfig.class, ErsConfig.class,
                 NotificationConfig.class})
-@Import(ClassifiersOptionsConfiguration.class)
+@Import({ClassifiersOptionsConfiguration.class, FilterExceptionHandler.class})
 public class EcaServiceConfiguration {
 
     public static final String ECA_THREAD_POOL_TASK_EXECUTOR = "ecaThreadPoolTaskExecutor";
+    public static final String EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN = "experimentRedisLockRegistry";
 
     /**
      * Creates executor service bean.
@@ -96,5 +100,19 @@ public class EcaServiceConfiguration {
         executor.setCorePoolSize(commonConfig.getThreadPoolSize());
         executor.setMaxPoolSize(commonConfig.getThreadPoolSize());
         return executor;
+    }
+
+    /**
+     * Creates redis lock registry for experiments processing.
+     *
+     * @param redisConnectionFactory - redis connection factory
+     * @return experiment redis lock registry
+     */
+    @Bean(EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN)
+    public RedisLockRegistry redisLockRegistry(RedisConnectionFactory redisConnectionFactory,
+                                               ExperimentConfig experimentConfig) {
+        ExperimentConfig.LockProperties lockProperties = experimentConfig.getLock();
+        return new RedisLockRegistry(redisConnectionFactory, lockProperties.getRegistryKey(),
+                lockProperties.getExpireAfter());
     }
 }

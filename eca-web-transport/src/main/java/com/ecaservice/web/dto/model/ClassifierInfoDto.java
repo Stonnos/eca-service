@@ -1,7 +1,6 @@
 package com.ecaservice.web.dto.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.List;
@@ -12,18 +11,18 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "Classifier info model")
+@Schema(description = "Classifier info model")
 public class ClassifierInfoDto {
 
     /**
      * Classifier name
      */
-    @ApiModelProperty(value = "Classifier name")
+    @Schema(description = "Classifier name")
     private String classifierName;
 
     /**
      * Classifier input options map
      */
-    @ApiModelProperty(value = "Classifier input options list")
+    @Schema(description = "Classifier input options list")
     private List<InputOptionDto> inputOptions;
 }

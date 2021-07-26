@@ -32,6 +32,7 @@ import java.util.List;
 
 import static com.ecaservice.data.storage.TestHelperUtils.bearerHeader;
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
+import static com.ecaservice.data.storage.TestHelperUtils.createPageRequestDto;
 import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -39,8 +40,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -63,8 +64,6 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private static final String TRAINING_DATA_PARAM = "trainingData";
     private static final String TABLE_NAME = "table";
     private static final String TABLE_NAME_PARAM = "tableName";
-    private static final String PAGE_PARAM = "page";
-    private static final String SIZE_PARAM = "size";
 
     private static final String ERROR_MESSAGE = "Error";
     private static final String ID_PARAM = "id";
@@ -197,9 +196,9 @@ class DataStorageControllerTest extends AbstractControllerTest {
 
     @Test
     void testGetInstancesPageUnauthorized() throws Exception {
-        mockMvc.perform(get(LIST_URL)
-                .param(PAGE_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(SIZE_PARAM, String.valueOf(TOTAL_ELEMENTS)))
+        mockMvc.perform(post(LIST_URL)
+                .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -211,10 +210,10 @@ class DataStorageControllerTest extends AbstractControllerTest {
         PageDto<InstancesDto> expected = PageDto.of(instancesMapper.map(instancesDtoList), PAGE_NUMBER, TOTAL_ELEMENTS);
         when(instancesEntityPage.getContent()).thenReturn(instancesDtoList);
         when(storageService.getNextPage(any(PageRequestDto.class))).thenReturn(instancesEntityPage);
-        mockMvc.perform(get(LIST_URL)
+        mockMvc.perform(post(LIST_URL)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(PAGE_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(SIZE_PARAM, String.valueOf(TOTAL_ELEMENTS)))
+                .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));

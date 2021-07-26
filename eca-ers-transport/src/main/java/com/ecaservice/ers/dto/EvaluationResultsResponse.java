@@ -1,7 +1,6 @@
 package com.ecaservice.ers.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
@@ -10,17 +9,17 @@ import lombok.Data;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "Evaluation results response model")
+@Schema(description = "Evaluation results response model")
 public class EvaluationResultsResponse {
 
     /**
      * Request id
      */
-    @ApiModelProperty(value = "Request id")
+    @Schema(description = "Request id")
     private String requestId;
     /**
      * Response status
      */
-    @ApiModelProperty(value = "Response status")
+    @Schema(description = "Response status")
     private ResponseStatus status;
 }

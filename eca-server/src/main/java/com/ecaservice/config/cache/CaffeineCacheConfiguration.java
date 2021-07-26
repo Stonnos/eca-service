@@ -55,8 +55,10 @@ public class CaffeineCacheConfiguration {
     }
 
     private List<CaffeineCache> buildCaches() {
-        return cacheConfig.getSpecs().entrySet().stream().map(
-                entry -> buildCache(entry.getKey(), entry.getValue())).collect(Collectors.toList());
+        return cacheConfig.getSpecs().entrySet()
+                .stream()
+                .map(entry -> buildCache(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
     }
 
     private CaffeineCache buildCache(String cacheName, CacheSpec cacheSpec) {

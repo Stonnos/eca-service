@@ -12,7 +12,7 @@ ECA external API
 * Openjdk 1.11
 * maven => 3.3.9
 * Rabbit MQ => 3
-* eca-core 6.8.4
+* eca-core 6.8.5
 * Postgres Database для хранения информации => 9.6
 * Docker, Docker compose
 
@@ -33,11 +33,16 @@ ECA external API
 3) queue - настройки очередей rabbit mq
    * queue.evaluationRequestQueue - очередь запросов на построение классификаторов
    * queue.evaluationRequestReplyToQueue - очередь ответов от eca - server
-4) swagger2 - настройки Swagger
-   * swagger2.tokenBaseUrl - базовый url - сервера авторизации
-   * swagger2.clientId - идентификатор клиента
-   * swagger2.secret - пароль клиента
-   * swagger2.groups - Groups map с мета информацией для swagger
+4) open-api - настройки Swagger
+   * open-api.tokenBaseUrl - базовый url - сервера авторизации
+   * open-api.projectVersion - версия API
+   * open-api.title - краткое название API
+   * open-api.description - описание API
+   * open-api.author - автор
+   * open-api.email - email для связи
+   * open-api.basePath - базовый префикс для API
+   * open-api.apiAuth - настройки авторизации
+   * open-api.apiAuth.scopes - список scopes
 5) auth-server - настройки интеграции с eca-oauth
    * baseUrl - базовый url eca-oauth
    * clientId - идентификатор клиента

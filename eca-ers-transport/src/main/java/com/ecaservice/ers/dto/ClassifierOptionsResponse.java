@@ -1,7 +1,6 @@
 package com.ecaservice.ers.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.List;
@@ -12,24 +11,24 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "Classifier options response model")
+@Schema(description = "Classifier options response model")
 public class ClassifierOptionsResponse {
 
     /**
      * Request id
      */
-    @ApiModelProperty(value = "Request id")
+    @Schema(description = "Request id")
     private String requestId;
 
     /**
      * Optimal classifiers reports list
      */
-    @ApiModelProperty(value = "Optimal classifiers reports list")
+    @Schema(description = "Optimal classifiers reports list")
     private List<ClassifierReport> classifierReports;
 
     /**
      * Response status
      */
-    @ApiModelProperty(value = "Response status")
+    @Schema(description = "Response status")
     private ResponseStatus status;
 }

@@ -8,8 +8,8 @@ import com.ecaservice.ers.dto.GetEvaluationResultsRequest;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.ers.service.ClassifierOptionsRequestService;
 import com.ecaservice.ers.service.EvaluationResultsService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +25,7 @@ import javax.validation.Valid;
  * @author Roman Batygin
  */
 @Slf4j
-@Api(tags = "Evaluation results storage API")
+@Tag(name = "Evaluation results storage API")
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -40,9 +40,9 @@ public class EvaluationResultsController {
      * @param evaluationResultsRequest - evaluation result request
      * @return evaluation results response
      */
-    @ApiOperation(
-            value = "Saves evaluation results report",
-            notes = "Saves evaluation results report"
+    @Operation(
+            description = "Saves evaluation results report",
+            summary = "Saves evaluation results report"
     )
     @PostMapping(value = "/save")
     public EvaluationResultsResponse save(@Valid @RequestBody EvaluationResultsRequest evaluationResultsRequest) {
@@ -56,9 +56,9 @@ public class EvaluationResultsController {
      * @param request - get evaluation result request
      * @return evaluation results response
      */
-    @ApiOperation(
-            value = "Gets evaluation results simple report",
-            notes = "Gets evaluation results simple report"
+    @Operation(
+            description = "Gets evaluation results simple report",
+            summary = "Gets evaluation results simple report"
     )
     @PostMapping(value = "/results")
     public GetEvaluationResultsResponse getEvaluationResultsResponse(
@@ -73,9 +73,9 @@ public class EvaluationResultsController {
      * @param classifierOptionsRequest - classifier options request
      * @return classifier options response
      */
-    @ApiOperation(
-            value = "Endpoint for searching optimal classifiers options for specified request",
-            notes = "Endpoint for searching optimal classifiers options for specified request"
+    @Operation(
+            description = "Endpoint for searching optimal classifiers options for specified request",
+            summary = "Endpoint for searching optimal classifiers options for specified request"
     )
     @PostMapping(value = "/optimal-classifier-options")
     public ClassifierOptionsResponse findClassifierOptions(

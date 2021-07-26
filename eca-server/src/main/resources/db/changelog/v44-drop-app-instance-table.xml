@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v44-drop-app-instance-table.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <columnExists tableName="evaluation_log" columnName="app_instance_id"/>
+        </preConditions>
+        <dropColumn tableName="evaluation_log" columnName="app_instance_id"/>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <columnExists tableName="experiment" columnName="app_instance_id"/>
+        </preConditions>
+        <dropColumn tableName="experiment" columnName="app_instance_id"/>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options_request_model"/>
+            <columnExists tableName="classifier_options_request_model" columnName="app_instance_id"/>
+        </preConditions>
+        <dropColumn tableName="classifier_options_request_model" columnName="app_instance_id"/>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="app_instance"/>
+        </preConditions>
+        <dropTable tableName="app_instance"/>
+    </changeSet>
+</databaseChangeLog>

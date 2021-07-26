@@ -3,9 +3,9 @@ package com.ecaservice.controller.api;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.repository.ExperimentRepository;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
@@ -26,7 +26,7 @@ import static com.ecaservice.util.Utils.existsFile;
  *
  * @author Roman Batygin
  */
-@Api(tags = "API for ECA application")
+@Tag(name = "API for ECA application")
 @Slf4j
 @RestController
 @RequestMapping("/eca-api")
@@ -40,13 +40,14 @@ public class EcaController {
      *
      * @param token - experiment token
      */
-    @ApiOperation(
-            value = "Downloads experiment results by token",
-            notes = "Downloads experiment results by token"
+    @Operation(
+            description = "Downloads experiment results by token",
+            summary = "Downloads experiment results by token"
     )
     @GetMapping(value = "/experiment/download/{token}")
     public ResponseEntity<FileSystemResource> downloadExperiment(
-            @ApiParam(value = "Experiment token", required = true) @PathVariable String token) {
+            @Parameter(description = "Experiment token", required = true)
+            @PathVariable String token) {
         Experiment experiment = experimentRepository.findByToken(token)
                 .orElseThrow(() -> new EntityNotFoundException(Experiment.class, token));
         File experimentFile = getExperimentFile(experiment, Experiment::getExperimentAbsolutePath);

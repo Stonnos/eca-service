@@ -7,10 +7,12 @@ import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.user.model.Role;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import com.google.common.collect.Sets;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
@@ -33,6 +35,18 @@ public class TestHelperUtils {
     private static final String UPDATE_MIDDLE_NAME = "Иванович";
     private static final String UPDATE_LAST_NAME = "Иванов";
     private static final String UPDATE_FIRST_NAME = "Иван";
+
+    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_NUMBER = 0;
+
+    /**
+     * Creates page request dto.
+     *
+     * @return page request dto
+     */
+    public static PageRequestDto createPageRequestDto() {
+        return new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, null, true, null, Collections.emptyList());
+    }
 
     /**
      * Creates role entity.

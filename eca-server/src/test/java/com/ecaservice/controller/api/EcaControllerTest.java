@@ -39,7 +39,7 @@ class EcaControllerTest {
 
     @Test
     void testExperimentNotExists() throws Exception {
-        when(experimentRepository.findByToken(anyString())).thenThrow(new EntityNotFoundException());
+        when(experimentRepository.findByToken(anyString())).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(DOWNLOAD_URL, TOKEN)).andExpect(status().isBadRequest());
     }
 

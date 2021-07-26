@@ -62,17 +62,24 @@ change-password:
   baseUrl: http://localhost:8085
 
 ## Swagger properties
-swagger2:
+open-api:
+  basePath: /
+  title: Microservice for users managment
+  description: API provides operations with users for ECA web application
+  author: Roman Batygin
+  email: roman.batygin@mail.ru
   projectVersion: @project.version@
-  groups:
-    eca-web:
-      title: REST API for web application
-      description: Operations for ECA web application
-      author: Roman Batygin
-      email: roman.batygin@mail.ru
-  tokenBaseUrl: http://localhost:8085/eca-oauth
-  clientId: swagger
-  secret: swagger_secret
+  tokenBaseUrl: http://localhost:8080
+  apiAuth:
+    PASSWORD:
+      scopes: web
+
+springdoc:
+  packages-to-exclude: org.springframework.security.oauth2.provider.endpoint
+  swagger-ui:
+    oauth:
+      client-id: swagger
+      client-secret: swagger_secret
 
 management:
   metrics:
@@ -85,3 +92,6 @@ management:
   endpoint:
     health:
       show-details: always
+
+server:
+  forward-headers-strategy: framework

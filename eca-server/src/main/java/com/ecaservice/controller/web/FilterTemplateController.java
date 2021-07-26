@@ -1,12 +1,13 @@
 package com.ecaservice.controller.web;
 
-import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.core.filter.service.FilterService;
+import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.service.filter.dictionary.FilterDictionaries;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,12 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+
 /**
  * Filter templates controller for web application.
  *
  * @author Roman Batygin
  */
-@Api(tags = "Filter templates controller for web application")
+@Tag(name = "Filter templates controller for web application")
 @Slf4j
 @RestController
 @RequestMapping("/filter-templates")
@@ -36,9 +39,10 @@ public class FilterTemplateController {
      * @return filter fields list
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Gets experiment filter fields",
-            notes = "Gets experiment filter fields"
+    @Operation(
+            description = "Gets experiment filter fields",
+            summary = "Gets experiment filter fields",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @GetMapping(value = "/experiment")
     public List<FilterFieldDto> getExperimentFilter() {
@@ -51,9 +55,10 @@ public class FilterTemplateController {
      * @return filter fields list
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Gets evaluation log filter fields",
-            notes = "Gets evaluation log filter fields"
+    @Operation(
+            description = "Gets evaluation log filter fields",
+            summary = "Gets evaluation log filter fields",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @GetMapping(value = "/evaluation")
     public List<FilterFieldDto> getEvaluationLogFilter() {
@@ -66,9 +71,10 @@ public class FilterTemplateController {
      * @return filter fields list
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Gets classifier options request filter fields",
-            notes = "Gets classifier options request filter fields"
+    @Operation(
+            description = "Gets classifier options request filter fields",
+            summary = "Gets classifier options request filter fields",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @GetMapping(value = "/classifier-options-request")
     public List<FilterFieldDto> getClassifierOptionsRequestFilter() {
@@ -81,9 +87,10 @@ public class FilterTemplateController {
      * @return filter fields list
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Gets experiment types filter dictionary",
-            notes = "Gets experiment types filter dictionary"
+    @Operation(
+            description = "Gets experiment types filter dictionary",
+            summary = "Gets experiment types filter dictionary",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @GetMapping(value = "/experiment-types")
     public FilterDictionaryDto getExperimentTypeDictionary() {
@@ -96,9 +103,10 @@ public class FilterTemplateController {
      * @return filter fields list
      */
     @PreAuthorize("#oauth2.hasScope('web')")
-    @ApiOperation(
-            value = "Gets evaluation method filter dictionary",
-            notes = "Gets evaluation method filter dictionary"
+    @Operation(
+            description = "Gets evaluation method filter dictionary",
+            summary = "Gets evaluation method filter dictionary",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
     @GetMapping(value = "/evaluation-methods")
     public FilterDictionaryDto getEvaluationMethodDictionary() {

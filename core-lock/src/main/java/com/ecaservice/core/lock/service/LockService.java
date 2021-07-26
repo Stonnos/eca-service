@@ -44,4 +44,15 @@ public class LockService {
             log.error("There was an error while release lock with key [{}]: {}", lockKey, ex.getMessage());
         }
     }
+
+    /**
+     * Tries to acquire lock.
+     *
+     * @param lockKey - lock key
+     * @return {@code true} if lock has been acquired, {@code false} otherwise
+     */
+    public boolean tryLock(String lockKey) {
+        Lock lock = lockRegistry.obtain(lockKey);
+        return lock.tryLock();
+    }
 }

@@ -13,10 +13,8 @@ public class InvalidTokenException extends ValidationErrorException {
 
     /**
      * Constructor with parameters.
-     *
-     * @param token - token value
      */
-    public InvalidTokenException(String token) {
-        super(ERROR_CODE, String.format("Invalid token [%s]", token));
+    public InvalidTokenException() {
+        super(ERROR_CODE, "Invalid token");
     }
 }

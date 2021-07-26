@@ -1,7 +1,6 @@
 package com.ecaservice.web.dto.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.List;
@@ -12,36 +11,36 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "Experiment ERS report model")
+@Schema(description = "Experiment ERS report model")
 public class ExperimentErsReportDto {
 
     /**
      * Experiment request id
      */
-    @ApiModelProperty(value = "Experiment request id")
+    @Schema(description = "Experiment request id")
     private String experimentRequestId;
 
     /**
      * Total classifiers count that should be sent to ERS service
      */
-    @ApiModelProperty(value = "Total classifiers count")
+    @Schema(description = "Total classifiers count")
     private long classifiersCount;
 
     /**
      * Successfully sent classifiers count
      */
-    @ApiModelProperty(value = "Successfully sent classifiers count")
+    @Schema(description = "Successfully sent classifiers count")
     private long sentClassifiersCount;
 
     /**
      * Experiment results list
      */
-    @ApiModelProperty(value = "Experiment results list")
+    @Schema(description = "Experiment results list")
     private List<ExperimentResultsDto> experimentResults;
 
     /**
      * Ers report status
      */
-    @ApiModelProperty(value = "Ers report status")
+    @Schema(description = "Ers report status")
     private EnumDto ersReportStatus;
 }

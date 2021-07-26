@@ -1,6 +1,7 @@
 package com.ecaservice.data.storage;
 
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.file.resource.FileResource;
 import eca.data.file.xls.XLSLoader;
 import lombok.experimental.UtilityClass;
@@ -8,6 +9,7 @@ import weka.core.Instances;
 
 import java.io.File;
 import java.time.LocalDateTime;
+import java.util.Collections;
 
 /**
  * Test helper utility class.
@@ -23,6 +25,18 @@ public class TestHelperUtils {
     private static final int NUM_INSTANCES = 100;
     private static final int NUM_ATTRIBUTES = 14;
     private static final String BEARER_HEADER_FORMAT = "Bearer %s";
+
+    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_NUMBER = 0;
+
+    /**
+     * Creates page request dto.
+     *
+     * @return page request dto
+     */
+    public static PageRequestDto createPageRequestDto() {
+        return new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, null, true, null, Collections.emptyList());
+    }
 
     /**
      * Loads test data set.

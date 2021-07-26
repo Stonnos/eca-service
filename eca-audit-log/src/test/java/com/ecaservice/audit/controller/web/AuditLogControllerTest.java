@@ -26,10 +26,12 @@ import java.util.List;
 
 import static com.ecaservice.audit.TestHelperUtils.createAuditLog;
 import static com.ecaservice.audit.TestHelperUtils.createFilterFieldDto;
+import static com.ecaservice.audit.TestHelperUtils.createPageRequestDto;
 import static com.ecaservice.audit.dictionary.FilterDictionaries.AUDIT_LOG_TEMPLATE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -47,9 +49,6 @@ class AuditLogControllerTest extends AbstractControllerTest {
     private static final String AUDIT_LOG_TEMPLATE_URL = BASE_URL + "/filter-templates/fields";
     private static final String DOWNLOAD_REPORT_URL = BASE_URL + "/report/download";
 
-    private static final String PAGE_PARAM = "page";
-    private static final String SIZE_PARAM = "size";
-
     private static final long TOTAL_ELEMENTS = 1L;
     private static final int PAGE_NUMBER = 0;
 
@@ -65,9 +64,9 @@ class AuditLogControllerTest extends AbstractControllerTest {
 
     @Test
     void testGetAuditLogsPageUnauthorized() throws Exception {
-        mockMvc.perform(get(LIST_URL)
-                .param(PAGE_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(SIZE_PARAM, String.valueOf(TOTAL_ELEMENTS)))
+        mockMvc.perform(post(LIST_URL)
+                .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -79,10 +78,10 @@ class AuditLogControllerTest extends AbstractControllerTest {
         PageDto<AuditLogDto> expected = PageDto.of(auditLogMapper.map(auditLogs), PAGE_NUMBER, TOTAL_ELEMENTS);
         when(page.getContent()).thenReturn(auditLogs);
         when(auditLogService.getNextPage(any(PageRequestDto.class))).thenReturn(page);
-        mockMvc.perform(get(LIST_URL)
+        mockMvc.perform(post(LIST_URL)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken())
-                .param(PAGE_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(SIZE_PARAM, String.valueOf(TOTAL_ELEMENTS)))
+                .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
@@ -95,7 +94,7 @@ class AuditLogControllerTest extends AbstractControllerTest {
 
     @Test
     void testGetAuditLogFilterTemplateBadRequest() throws Exception {
-        when(filterService.getFilterFields(AUDIT_LOG_TEMPLATE)).thenThrow(new EntityNotFoundException());
+        when(filterService.getFilterFields(AUDIT_LOG_TEMPLATE)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(AUDIT_LOG_TEMPLATE_URL)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
@@ -114,9 +113,9 @@ class AuditLogControllerTest extends AbstractControllerTest {
 
     @Test
     void testDownloadReportUnauthorized() throws Exception {
-        mockMvc.perform(get(DOWNLOAD_REPORT_URL)
-                .param(PAGE_PARAM, String.valueOf(PAGE_NUMBER))
-                .param(SIZE_PARAM, String.valueOf(TOTAL_ELEMENTS)))
+        mockMvc.perform(post(DOWNLOAD_REPORT_URL)
+                .content(objectMapper.writeValueAsString(createPageRequestDto()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
 }

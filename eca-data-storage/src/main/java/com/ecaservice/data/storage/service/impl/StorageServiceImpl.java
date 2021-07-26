@@ -4,7 +4,9 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.data.storage.config.EcaDsConfig;
 import com.ecaservice.data.storage.entity.InstancesEntity;
+import com.ecaservice.data.storage.entity.InstancesEntity_;
 import com.ecaservice.data.storage.exception.TableExistsException;
+import com.ecaservice.data.storage.filter.InstancesFilter;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.InstancesService;
 import com.ecaservice.data.storage.service.StorageService;
@@ -16,19 +18,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import weka.core.Instances;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.data.storage.config.audit.AuditCodes.DELETE_INSTANCES;
 import static com.ecaservice.data.storage.config.audit.AuditCodes.RENAME_INSTANCES;
 import static com.ecaservice.data.storage.config.audit.AuditCodes.SAVE_INSTANCES;
 import static com.ecaservice.data.storage.entity.InstancesEntity_.CREATED;
-import static com.ecaservice.data.storage.util.FilterUtils.buildSpecification;
 
 /**
  * Service for saving data file into database.
@@ -40,6 +41,11 @@ import static com.ecaservice.data.storage.util.FilterUtils.buildSpecification;
 @RequiredArgsConstructor
 public class StorageServiceImpl implements StorageService {
 
+    private static final List<String> INSTANCES_GLOBAL_FILTER_FIELDS = List.of(
+            InstancesEntity_.TABLE_NAME,
+            InstancesEntity_.CREATED_BY
+    );
+
     private final EcaDsConfig ecaDsConfig;
     private final InstancesService instancesService;
     private final UserService userService;
@@ -49,9 +55,10 @@ public class StorageServiceImpl implements StorageService {
     @Override
     public Page<InstancesEntity> getNextPage(PageRequestDto pageRequestDto) {
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATED, pageRequestDto.isAscending());
-        Specification<InstancesEntity> specification = buildSpecification(pageRequestDto);
+        InstancesFilter filter = new InstancesFilter(pageRequestDto.getSearchQuery(), INSTANCES_GLOBAL_FILTER_FIELDS,
+                pageRequestDto.getFilters());
         int pageSize = Integer.min(pageRequestDto.getSize(), ecaDsConfig.getMaxPageSize());
-        return instancesRepository.findAll(specification, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
+        return instancesRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
     }
 
     @Override
@@ -100,8 +107,8 @@ public class StorageServiceImpl implements StorageService {
     }
 
     private InstancesEntity getById(long id) {
-        return instancesRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(InstancesEntity.class, id));
+        return instancesRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(InstancesEntity.class, id));
     }
 
     private InstancesEntity saveInstancesEntity(String tableName, Instances instances) {

@@ -19,7 +19,7 @@ ECA server
 * Openjdk 1.11
 * maven => 3.3.9
 * Rabbit MQ => 3
-* eca-core 6.8.4
+* eca-core 6.8.5
 * Postgres Database для хранения информации => 9.6
 
 Описание ключевой конфигурации модуля
@@ -53,19 +53,25 @@ ECA server
    * experiment.ensemble.multiThreadModeEnabled - многопоточный режим для ансамблевых алгоритмов (вкл./выкл.)
    * experiment.ensemble.numThreads - число используемых потоков
    * experiment.ensemble.numFoldsForStacking - число блоков V - блочной кросс - проверки для алгоритма Stacking
+   * experiment.lock.registryKey - ключ реестра для блокировок
+   * experiment.lock.expireAfter - время жизни блокировки
 4) ers - настройки интеграции с сервисом eca-ers
    * ers.useClassifierOptionsCache - вкл./выкл. кеширование оптимальных настроек классификатора
    * ers.classifierOptionsCacheDurationInDays - период хранения оптимальных настроек классификатора, полученных от сервиса ERS
 5) common - общие настройки
    * common.threadPoolSize - число потоков для асинхронных задач
    * common.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
-   * common.instance - уникальное имя инстанса (используется для кластерной среды)
 6) cache.specs - настройки spring cache
-7) swagger2 - настройки Swagger
-   * swagger2.tokenBaseUrl - базовый url - сервера авторизации
-   * swagger2.clientId - идентификатор клиента
-   * swagger2.secret - пароль клиента
-   * swagger2.groups - Groups map с мета информацией для swagger
+7) open-api - настройки Swagger
+   * open-api.tokenBaseUrl - базовый url - сервера авторизации
+   * open-api.projectVersion - версия API
+   * open-api.title - краткое название API
+   * open-api.description - описание API
+   * open-api.author - автор
+   * open-api.email - email для связи
+   * open-api.basePath - базовый префикс для API
+   * open-api.apiAuth - настройки авторизации
+   * open-api.apiAuth.scopes - список scopes
 8) queue - настройки очередей
    * queue.evaluationRequestQueue - входящая очередь для запросов на построение модели классификатора
    * queue.evaluationOptimizerRequestQueue - входящая очередь для запросов на построение оптимального классификатора

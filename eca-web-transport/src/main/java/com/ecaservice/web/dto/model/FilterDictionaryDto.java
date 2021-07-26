@@ -1,7 +1,6 @@
 package com.ecaservice.web.dto.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.List;
@@ -12,18 +11,18 @@ import java.util.List;
  * @author Roman Batygin
  */
 @Data
-@ApiModel(description = "Filter dictionary model")
+@Schema(description = "Filter dictionary model")
 public class FilterDictionaryDto {
 
     /**
      * Dictionary name
      */
-    @ApiModelProperty(value = "Filter dictionary name")
+    @Schema(description = "Filter dictionary name")
     private String name;
 
     /**
      * Values list for reference filter type
      */
-    @ApiModelProperty(value = "Filter dictionary values")
+    @Schema(description = "Filter dictionary values")
     private List<FilterDictionaryValueDto> values;
 }

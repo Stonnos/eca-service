@@ -1,5 +1,6 @@
 package com.ecaservice.config;
 
+import com.ecaservice.core.lock.redis.config.RedisLockProperties;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -46,6 +47,11 @@ public class ExperimentConfig {
      * Ensemble config
      */
     private EnsembleConfig ensemble;
+
+    /**
+     * Lock config
+     */
+    private LockProperties lock;
 
     /**
      * Experiment download base url
@@ -125,5 +131,22 @@ public class ExperimentConfig {
          * meta data set creation
          */
         private Integer numFoldsForStacking;
+    }
+
+    /**
+     * Lock properties
+     */
+    @Data
+    public static class LockProperties {
+
+        /**
+         * Registry key
+         */
+        private String registryKey;
+
+        /**
+         * Lock duration in millis.
+         */
+        private Long expireAfter;
     }
 }
