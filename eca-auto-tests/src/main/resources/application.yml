@@ -32,5 +32,9 @@ open-api:
   email: roman.batygin@mail.ru
   projectVersion: @project.version@
 
+mail:
+  userName: rbatsw@gmail.com
+  password: czawqizcrdxfqlrv
+
 server:
   port: 8093
