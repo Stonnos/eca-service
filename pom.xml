@@ -43,6 +43,7 @@
         <module>discovery-server</module>
         <module>eca-load-tests</module>
         <module>eca-external-api-tests</module>
+        <module>eca-auto-tests</module>
     </modules>
 
     <parent>
