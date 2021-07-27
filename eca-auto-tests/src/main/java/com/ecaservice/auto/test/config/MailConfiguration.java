@@ -4,6 +4,7 @@ import com.ecaservice.auto.test.model.EmailMessage;
 import com.ecaservice.auto.test.service.EmailMessageParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.config.EnableIntegration;
@@ -25,9 +26,13 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 @Configuration
 @EnableIntegration
+@EnableConfigurationProperties(MailProperties.class)
 @RequiredArgsConstructor
 public class MailConfiguration {
 
+    private static final String IMAPS_URL_FORMAT = "imaps://%s:%s@imap.gmail.com:993/inbox";
+
+    private final MailProperties mailProperties;
     private final EmailMessageParser emailMessageParser;
 
     /**
@@ -62,9 +67,7 @@ public class MailConfiguration {
     }
 
     private String getUrl() {
-        String login = "rbatsw@gmail.com";
-        String password = "";
-        return String.format("imaps://%s:%s@imap.gmail.com:993/inbox",
-                URLEncoder.encode(login, StandardCharsets.UTF_8), password);
+        return String.format(IMAPS_URL_FORMAT, URLEncoder.encode(mailProperties.getUserName(), StandardCharsets.UTF_8),
+                mailProperties.getPassword());
     }
 }

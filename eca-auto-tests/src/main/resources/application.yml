@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: eca-auto-tests
+  jmx:
+    default-domain: eca-auto-tests
+  ## Datasource properties
+  datasource:
+    jdbc-url: jdbc:h2:mem:autotestdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.H2Dialect
+  cache:
+    cache-names: instances
+    caffeine:
+      spec: maximumSize=10, expireAfterWrite=180s
+  rabbitmq:
+    listener:
+      simple:
+        concurrency: 10
+        maxConcurrency: 10
+
+## Swagger properties
+open-api:
+  basePath: /
+  title: Auto tests execution module
+  description: API provides operations for auto tests execution
+  author: Roman Batygin
+  email: roman.batygin@mail.ru
+  projectVersion: @project.version@
+
+server:
+  port: 8093
