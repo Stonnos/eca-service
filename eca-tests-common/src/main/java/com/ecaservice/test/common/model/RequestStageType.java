@@ -4,7 +4,7 @@ import eca.core.DescriptiveEnum;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Request stage type.
+ * Request stage type. Used for async integrations.
  *
  * @author Roman Batygin
  */
