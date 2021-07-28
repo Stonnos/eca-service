@@ -43,7 +43,7 @@ public abstract class AbstractTestDataLoader<T> implements ConfigService<T> {
      */
     @PostConstruct
     public void readTestData() throws IOException {
-        log.info("Starting to read test data from configs");
+        log.info("Starting to read test data [{}] from configs", testDataClass.getSimpleName());
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         Resource[] classifiersOptionsFiles = resolver.getResources(getTestDataPath());
         if (classifiersOptionsFiles.length == 0) {
@@ -63,7 +63,7 @@ public abstract class AbstractTestDataLoader<T> implements ConfigService<T> {
                                     resource.getFilename(), ex.getMessage()));
                 }
             }
-            log.info("All test data has been read from configs");
+            log.info("All test data [{}] has been read from configs", testDataClass.getSimpleName());
         }
     }
 

@@ -36,5 +36,10 @@ mail:
   userName: rbatsw@gmail.com
   password: czawqizcrdxfqlrv
 
+auto-tests:
+  pageSize: 25
+  delaySeconds: 2
+  experimentsDataPath: classpath*:experiments/**/*.json
+
 server:
   port: 8093

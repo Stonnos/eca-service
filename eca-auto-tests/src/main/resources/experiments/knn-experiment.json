@@ -1,0 +1,5 @@
+{
+  "experimentType": "KNN",
+  "trainDataPath": "",
+  "evaluationMethod": "CROSS_VALIDATION"
+}
