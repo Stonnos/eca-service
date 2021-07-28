@@ -1,11 +1,11 @@
 package com.ecaservice.auto.test.service;
 
+import com.ecaservice.auto.test.exception.EmailParseException;
 import com.ecaservice.auto.test.model.EmailMessage;
 import com.ecaservice.auto.test.model.EmailType;
 import com.ecaservice.auto.test.model.EmailTypeVisitor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -32,16 +32,17 @@ public class EmailMessageParser {
     /**
      * Parse email message.
      *
-     * @param message - input message
+     * @param mimeMessage - input message
      * @return email message model
      * @throws MessagingException in case of messaging errors
      * @throws IOException        in case of I/O errors
      */
-    public EmailMessage parse(Message<?> message) throws MessagingException, IOException {
-        log.info("Starting to parse email message");
-        MimeMessage mimeMessage = (MimeMessage) message.getPayload();
+    public EmailMessage parse(MimeMessage mimeMessage) throws MessagingException, IOException {
+        String messageId = mimeMessage.getMessageID();
+        String subject = mimeMessage.getSubject();
+        log.info("Starting to parse email message [{}] with subject [{}]", messageId, subject);
         String content = String.valueOf(mimeMessage.getContent());
-        EmailType emailType = getEmailType(mimeMessage);
+        EmailType emailType = EmailType.findByDescription(subject);
         String requestId = getRequestId(content);
         EmailMessage emailMessage = new EmailMessage();
         emailMessage.setEmailType(emailType);
@@ -57,19 +58,14 @@ public class EmailMessageParser {
         return emailMessage;
     }
 
-    private EmailType getEmailType(MimeMessage mimeMessage) throws MessagingException {
-        String subject = mimeMessage.getSubject();
-        return EmailType.findByDescription(subject);
-    }
-
     private String getRequestId(String content) {
         return getValueByRegex(REQUEST_ID_REGEX, content,
-                () -> new IllegalArgumentException("Can't find requestId value in message content!"));
+                () -> new EmailParseException("Can't find requestId value in message content!"));
     }
 
     private String getDownloadUrl(String content) {
         String value = getValueByRegex(URL_REGEX, content,
-                () -> new IllegalArgumentException("Can't find downloadUrl value in message content!"));
+                () -> new EmailParseException("Can't find downloadUrl value in message content!"));
         return StringUtils.remove(value, QUOTE);
     }
 

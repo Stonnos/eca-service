@@ -1,7 +1,6 @@
 package com.ecaservice.auto.test.config.mail;
 
-import com.ecaservice.auto.test.model.EmailMessage;
-import com.ecaservice.auto.test.service.EmailMessageParser;
+import com.ecaservice.auto.test.message.handler.EmailMessageHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -33,7 +32,7 @@ public class MailConfiguration {
     private static final String IMAPS_URL_FORMAT = "imaps://%s:%s@imap.gmail.com:993/inbox";
 
     private final MailProperties mailProperties;
-    private final EmailMessageParser emailMessageParser;
+    private final EmailMessageHandler emailMessageHandler;
 
     /**
      * Creates mail header mapper.
@@ -57,13 +56,7 @@ public class MailConfiguration {
                         .autoStartup(true)
                         .autoCloseFolder(false)
                         .shouldMarkMessagesAsRead(true)
-                ).handle(message -> {
-                    try {
-                        EmailMessage emailMessage = emailMessageParser.parse(message);
-                    } catch (Exception ex) {
-                        log.error("Email message parse error: {}", ex.getMessage());
-                    }
-                }).get();
+                ).handle(emailMessageHandler).get();
     }
 
     private String getUrl() {
