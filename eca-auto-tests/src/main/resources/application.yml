@@ -36,6 +36,10 @@ mail:
   userName: rbatsw@gmail.com
   password: czawqizcrdxfqlrv
 
+queue:
+  experimentReplyToQueue: experiment-response-queue
+  experimentRequestQueue: experiment-request-queue
+
 auto-tests:
   pageSize: 25
   delaySeconds: 2
