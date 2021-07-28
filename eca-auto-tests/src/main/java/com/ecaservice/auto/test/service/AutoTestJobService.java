@@ -18,7 +18,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AutoTestService {
+public class AutoTestJobService {
 
     private final AutoTestsJobRepository autoTestsJobRepository;
 

@@ -1,7 +1,6 @@
 package com.ecaservice.auto.test.entity;
 
 import com.ecaservice.base.model.ExperimentType;
-import com.ecaservice.test.common.model.RequestStageType;
 import com.ecaservice.test.common.model.TestResult;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
@@ -59,7 +58,7 @@ public class ExperimentRequestEntity extends BaseEntity {
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "stage_type")
-    private RequestStageType stageType;
+    private ExperimentRequestStageType stageType;
 
     /**
      * Test result

@@ -1,13 +1,19 @@
 package com.ecaservice.auto.test.mq.listener;
 
+import com.ecaservice.auto.test.entity.ExperimentRequestEntity;
+import com.ecaservice.auto.test.entity.ExperimentRequestStageType;
 import com.ecaservice.auto.test.repository.ExperimentRequestRepository;
+import com.ecaservice.auto.test.service.ExperimentRequestService;
 import com.ecaservice.base.model.EcaResponse;
-import com.ecaservice.test.common.model.RequestStageType;
+import com.ecaservice.base.model.MessageError;
+import com.ecaservice.base.model.TechnicalStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 /**
  * Implements rabbit message listener.
@@ -19,6 +25,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RabbitMessageListener {
 
+    private final ExperimentRequestService experimentRequestService;
     private final ExperimentRequestRepository experimentRequestRepository;
 
     /**
@@ -36,13 +43,25 @@ public class RabbitMessageListener {
             log.warn("Can't find request entity with correlation id [{}]", correlationId);
             return;
         }
-        if (RequestStageType.EXCEEDED.equals(experimentRequestEntity.getStageType())) {
+        if (ExperimentRequestStageType.EXCEEDED.equals(experimentRequestEntity.getStageType())) {
             log.warn("Got exceeded request entity with correlation id [{}]", correlationId);
         } else {
-            experimentRequestEntity.setStageType(RequestStageType.RESPONSE_RECEIVED);
-            experimentRequestEntity.setRequestId(ecaResponse.getRequestId());
-            experimentRequestRepository.save(experimentRequestEntity);
-            log.info("Message [{}] response has been processed", correlationId);
+            internalHandleResponse(experimentRequestEntity, ecaResponse);
         }
+    }
+
+    private void internalHandleResponse(ExperimentRequestEntity experimentRequestEntity, EcaResponse ecaResponse) {
+        experimentRequestEntity.setRequestId(ecaResponse.getRequestId());
+        if (TechnicalStatus.SUCCESS.equals(ecaResponse.getStatus())) {
+            experimentRequestEntity.setStageType(ExperimentRequestStageType.REQUEST_CREATED);
+        } else {
+            String errorMessage = Optional.ofNullable(ecaResponse.getErrors())
+                    .map(messageErrors -> messageErrors.iterator().next())
+                    .map(MessageError::getMessage)
+                    .orElse(null);
+            experimentRequestService.finishWithError(experimentRequestEntity, errorMessage);
+        }
+        experimentRequestRepository.save(experimentRequestEntity);
+        log.info("Message [{}] response has been processed", experimentRequestEntity.getCorrelationId());
     }
 }

@@ -1,6 +1,6 @@
 package com.ecaservice.auto.test.controller;
 
-import com.ecaservice.auto.test.service.AutoTestService;
+import com.ecaservice.auto.test.service.AutoTestJobService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AutoTestController {
 
-    private final AutoTestService autoTestService;
+    private final AutoTestJobService autoTestJobService;
 
     /**
      * Creates experiment requests auto tests job.
@@ -35,7 +35,7 @@ public class AutoTestController {
     @PostMapping(value = "/experiments/create")
     public String createExperimentsAutoTestsJob() {
         log.info("Request to create auto tests job for experiment requests");
-        var autoTestsJobEntity = autoTestService.createExperimentsAutoTestsJob();
+        var autoTestsJobEntity = autoTestJobService.createExperimentsAutoTestsJob();
         log.info("Experiment requests auto test job has been created with uuid [{}]", autoTestsJobEntity.getJobUuid());
         return autoTestsJobEntity.getJobUuid();
     }

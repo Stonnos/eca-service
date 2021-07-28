@@ -1,12 +1,12 @@
 package com.ecaservice.auto.test.service;
 
 import com.ecaservice.auto.test.entity.ExperimentRequestEntity;
+import com.ecaservice.auto.test.entity.ExperimentRequestStageType;
 import com.ecaservice.auto.test.repository.ExperimentRequestRepository;
 import com.ecaservice.auto.test.service.rabbit.RabbitSender;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.test.common.model.ExecutionStatus;
-import com.ecaservice.test.common.model.RequestStageType;
 import com.ecaservice.test.common.model.TestResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,23 +41,24 @@ public class AutoTestWorkerService {
         try {
             experimentRequestEntity.setStarted(LocalDateTime.now());
             rabbitSender.sendExperimentRequest(experimentRequest, experimentRequestEntity.getCorrelationId());
-            experimentRequestEntity.setStageType(RequestStageType.REQUEST_SENT);
+            experimentRequestEntity.setStageType(ExperimentRequestStageType.REQUEST_SENT);
             experimentRequestEntity.setExecutionStatus(ExecutionStatus.IN_PROGRESS);
             log.trace("Experiment request with correlation id [{}] has been sent",
                     experimentRequestEntity.getCorrelationId());
         } catch (Exception ex) {
             log.error("Unknown error while sending request with correlation id [{}]: {}",
                     experimentRequestEntity.getCorrelationId(), ex.getMessage());
-            handleErrorRequest(experimentRequestEntity);
+            handleErrorRequest(experimentRequestEntity, ex);
         } finally {
             experimentRequestRepository.save(experimentRequestEntity);
         }
     }
 
-    private void handleErrorRequest(ExperimentRequestEntity evaluationRequestEntity) {
+    private void handleErrorRequest(ExperimentRequestEntity evaluationRequestEntity, Exception ex) {
         evaluationRequestEntity.setTestResult(TestResult.ERROR);
-        evaluationRequestEntity.setStageType(RequestStageType.ERROR);
+        evaluationRequestEntity.setStageType(ExperimentRequestStageType.ERROR);
         evaluationRequestEntity.setExecutionStatus(ExecutionStatus.ERROR);
+        evaluationRequestEntity.setDetails(ex.getMessage());
         evaluationRequestEntity.setFinished(LocalDateTime.now());
     }
 }
