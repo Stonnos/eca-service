@@ -27,7 +27,7 @@ public class AutoTestService {
      *
      * @return auto tests job entity
      */
-    public AutoTestsJobEntity createExperimentsAutoTestJob() {
+    public AutoTestsJobEntity createExperimentsAutoTestsJob() {
         var autoTestsJobEntity = new AutoTestsJobEntity();
         autoTestsJobEntity.setJobUuid(UUID.randomUUID().toString());
         autoTestsJobEntity.setExecutionStatus(ExecutionStatus.NEW);
