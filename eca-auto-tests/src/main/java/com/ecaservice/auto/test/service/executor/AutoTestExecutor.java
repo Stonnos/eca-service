@@ -1,5 +1,7 @@
 package com.ecaservice.auto.test.service.executor;
 
+import com.ecaservice.auto.test.config.AutoTestsProperties;
+import com.ecaservice.auto.test.config.mail.MailProperties;
 import com.ecaservice.auto.test.entity.AutoTestsJobEntity;
 import com.ecaservice.auto.test.entity.ExperimentRequestEntity;
 import com.ecaservice.auto.test.model.ExperimentTestDataModel;
@@ -30,6 +32,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AutoTestExecutor {
 
+    private final AutoTestsProperties autoTestsProperties;
+    private final MailProperties mailProperties;
     private final InstancesLoader instancesLoader;
     private final ExperimentTestDataService experimentTestDataService;
     private final AutoTestWorkerService autoTestWorkerService;
@@ -63,8 +67,8 @@ public class AutoTestExecutor {
         Instances instances = instancesLoader.loadInstances(experimentTestDataModel.getTrainDataPath());
         ExperimentRequest experimentRequest = new ExperimentRequest();
         experimentRequest.setData(instances);
-        experimentRequest.setEmail("");
-        experimentRequest.setFirstName("");
+        experimentRequest.setEmail(mailProperties.getUserName());
+        experimentRequest.setFirstName(autoTestsProperties.getFirstName());
         experimentRequest.setEvaluationMethod(experimentTestDataModel.getEvaluationMethod());
         experimentRequest.setExperimentType(experimentTestDataModel.getExperimentType());
         return experimentRequest;

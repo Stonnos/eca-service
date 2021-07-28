@@ -1,4 +1,4 @@
-package com.ecaservice.auto.test.config;
+package com.ecaservice.auto.test.config.mail;
 
 import com.ecaservice.auto.test.model.EmailMessage;
 import com.ecaservice.auto.test.service.EmailMessageParser;

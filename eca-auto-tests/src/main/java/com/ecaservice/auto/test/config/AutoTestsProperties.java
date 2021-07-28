@@ -34,4 +34,10 @@ public class AutoTestsProperties {
      */
     @NotNull
     private Integer delaySeconds;
+
+    /**
+     * First name for experiment requests
+     */
+    @NotEmpty
+    private String firstName;
 }

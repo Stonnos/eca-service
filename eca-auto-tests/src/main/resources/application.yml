@@ -44,6 +44,7 @@ auto-tests:
   pageSize: 25
   delaySeconds: 2
   experimentsDataPath: classpath*:experiments/**/*.json
+  firstName: Roman
 
 server:
   port: 8093
