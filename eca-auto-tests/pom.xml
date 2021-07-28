@@ -26,12 +26,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-csv</artifactId>
-            <version>${commons.csv.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
@@ -74,12 +68,6 @@
 
         <dependency>
             <groupId>eca.service</groupId>
-            <artifactId>eca-model</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>eca.service</groupId>
             <artifactId>swagger-core</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -91,9 +79,8 @@
 
         <dependency>
             <groupId>eca.service</groupId>
-            <artifactId>core-test</artifactId>
+            <artifactId>eca-tests-common</artifactId>
             <version>${project.version}</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>

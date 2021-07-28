@@ -1,6 +1,8 @@
 package com.ecaservice.auto.test.entity;
 
 import com.ecaservice.base.model.ExperimentType;
+import com.ecaservice.test.common.model.RequestStageType;
+import com.ecaservice.test.common.model.TestResult;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

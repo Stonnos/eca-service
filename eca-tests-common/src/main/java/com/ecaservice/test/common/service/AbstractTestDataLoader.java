@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -25,13 +24,12 @@ import static com.google.common.collect.Lists.newArrayList;
  * @author Roman Batygin
  */
 @Slf4j
-@Service
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractTestDataLoader<T> implements ConfigService<T> {
 
     private static final String TEST_DATA_DIRECTORY_IS_EMPTY = "Test data directory is empty.";
 
-    private final ObjectMapper objectMapper;
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Getter
     private final Class<T> testDataClass;
@@ -55,7 +53,7 @@ public abstract class AbstractTestDataLoader<T> implements ConfigService<T> {
             for (Resource resource : classifiersOptionsFiles) {
                 try {
                     @Cleanup InputStream inputStream = resource.getInputStream();
-                    var testDataModel = objectMapper.readValue(inputStream, testDataClass);
+                    var testDataModel = OBJECT_MAPPER.readValue(inputStream, testDataClass);
                     testDataModels.add(testDataModel);
                 } catch (IOException ex) {
                     log.error("There was an error while parsing test data json file [{}]: {}",
