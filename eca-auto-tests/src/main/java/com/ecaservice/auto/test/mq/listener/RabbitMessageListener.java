@@ -54,6 +54,7 @@ public class RabbitMessageListener {
         experimentRequestEntity.setRequestId(ecaResponse.getRequestId());
         if (TechnicalStatus.SUCCESS.equals(ecaResponse.getStatus())) {
             experimentRequestEntity.setStageType(ExperimentRequestStageType.REQUEST_CREATED);
+            experimentRequestRepository.save(experimentRequestEntity);
         } else {
             String errorMessage = Optional.ofNullable(ecaResponse.getErrors())
                     .map(messageErrors -> messageErrors.iterator().next())
@@ -61,7 +62,6 @@ public class RabbitMessageListener {
                     .orElse(null);
             experimentRequestService.finishWithError(experimentRequestEntity, errorMessage);
         }
-        experimentRequestRepository.save(experimentRequestEntity);
         log.info("Message [{}] response has been processed", experimentRequestEntity.getCorrelationId());
     }
 }
