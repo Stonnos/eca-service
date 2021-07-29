@@ -62,12 +62,12 @@ public class AutoTestScheduler {
         LocalDateTime exceededTime = LocalDateTime.now().minusSeconds(autoTestsProperties.getRequestTimeoutInSeconds());
         List<Long> exceededIds = experimentRequestRepository.findExceededRequestIds(exceededTime, FINISHED_STAGES);
         processPaging(exceededIds, experimentRequestRepository::findByIdIn, pageContent ->
-                pageContent.forEach(evaluationRequestEntity -> {
-                    evaluationRequestEntity.setStageType(ExperimentRequestStageType.EXCEEDED);
-                    evaluationRequestEntity.setTestResult(TestResult.ERROR);
-                    evaluationRequestEntity.setFinished(LocalDateTime.now());
-                    experimentRequestRepository.save(evaluationRequestEntity);
-                    log.info("Exceeded request with correlation id [{}]", evaluationRequestEntity.getCorrelationId());
+                pageContent.forEach(experimentRequestEntity -> {
+                    experimentRequestEntity.setStageType(ExperimentRequestStageType.EXCEEDED);
+                    experimentRequestEntity.setTestResult(TestResult.ERROR);
+                    experimentRequestEntity.setFinished(LocalDateTime.now());
+                    experimentRequestRepository.save(experimentRequestEntity);
+                    log.info("Exceeded request with correlation id [{}]", experimentRequestEntity.getCorrelationId());
                 })
         );
         log.trace("Exceeded requests has been processed");
