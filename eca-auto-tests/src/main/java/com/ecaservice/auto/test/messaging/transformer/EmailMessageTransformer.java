@@ -1,4 +1,4 @@
-package com.ecaservice.auto.test.service;
+package com.ecaservice.auto.test.messaging.transformer;
 
 import com.ecaservice.auto.test.exception.EmailParseException;
 import com.ecaservice.auto.test.model.EmailMessage;
@@ -6,6 +6,8 @@ import com.ecaservice.auto.test.model.EmailType;
 import com.ecaservice.auto.test.model.EmailTypeVisitor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.integration.annotation.Transformer;
+import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -15,14 +17,17 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.ecaservice.auto.test.config.mail.Channels.MAIL_HANDLE_CHANNEL;
+import static com.ecaservice.auto.test.config.mail.Channels.MAIL_TRANSFORM_CHANNEL;
+
 /**
- * Implements email message parser.
+ * Email transformer service.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Service
-public class EmailMessageParser {
+public class EmailMessageTransformer {
 
     private static final String REQUEST_ID_REGEX =
             "[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}";
@@ -30,18 +35,19 @@ public class EmailMessageParser {
     private static final String QUOTE = "\"";
 
     /**
-     * Parse email message.
+     * Transforms message to payload.
      *
-     * @param mimeMessage - input message
-     * @return email message model
-     * @throws MessagingException in case of messaging errors
+     * @param message - message object
+     * @return email message payload
+     * @throws MessagingException in case of messaging exception
      * @throws IOException        in case of I/O errors
      */
-    public EmailMessage parse(MimeMessage mimeMessage) throws MessagingException, IOException {
-        String messageId = mimeMessage.getMessageID();
-        String subject = mimeMessage.getSubject();
-        log.info("Starting to parse email message [{}] with subject [{}]", messageId, subject);
-        String content = String.valueOf(mimeMessage.getContent());
+    @Transformer(inputChannel = MAIL_TRANSFORM_CHANNEL, outputChannel = MAIL_HANDLE_CHANNEL)
+    public EmailMessage transform(Message<?> message) throws MessagingException, IOException {
+        log.info("Starting to transform message: {}", message);
+        MimeMessage payload = (MimeMessage) message.getPayload();
+        String subject = payload.getSubject();
+        String content = String.valueOf(payload.getContent());
         EmailType emailType = EmailType.findByDescription(subject);
         String requestId = getRequestId(content);
         EmailMessage emailMessage = new EmailMessage();

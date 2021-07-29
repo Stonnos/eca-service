@@ -1,22 +1,26 @@
-package com.ecaservice.auto.test.service;
+package com.ecaservice.auto.test.messaging.handler;
 
 import com.ecaservice.auto.test.entity.ExperimentRequestStageType;
 import com.ecaservice.auto.test.model.EmailMessage;
 import com.ecaservice.auto.test.model.EmailTypeVisitor;
 import com.ecaservice.auto.test.repository.ExperimentRequestRepository;
+import com.ecaservice.auto.test.service.ExperimentRequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.stereotype.Service;
 
+import static com.ecaservice.auto.test.config.mail.Channels.MAIL_HANDLE_CHANNEL;
+
 /**
- * Email message processor service.
+ * Email message handler.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class EmailMessageProcessor {
+public class EmailMessageHandler {
 
     private static final String EXPERIMENT_FINISHED_WITH_TIMEOUT = "Experiment finished with timeout";
     private static final String EXPERIMENT_FINISHED_WITH_ERROR = "Experiment finished with error";
@@ -29,7 +33,8 @@ public class EmailMessageProcessor {
      *
      * @param emailMessage - email message
      */
-    public void processMessage(EmailMessage emailMessage) {
+    @ServiceActivator(inputChannel = MAIL_HANDLE_CHANNEL)
+    public void handleMessage(EmailMessage emailMessage) {
         log.info("Starting to process email message for experiment [{}]", emailMessage.getRequestId());
         var experimentRequestEntity = experimentRequestService.getByRequestId(emailMessage.getRequestId());
         emailMessage.getEmailType().handle(new EmailTypeVisitor() {
