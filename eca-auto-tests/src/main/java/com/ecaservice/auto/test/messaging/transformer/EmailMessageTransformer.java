@@ -53,6 +53,12 @@ public class EmailMessageTransformer {
         EmailMessage emailMessage = new EmailMessage();
         emailMessage.setEmailType(emailType);
         emailMessage.setRequestId(requestId);
+        populateAdditionalFields(emailMessage, content);
+        log.info("Got email message result model: {}", emailMessage);
+        return emailMessage;
+    }
+
+    private void populateAdditionalFields(EmailMessage emailMessage, String content) {
         emailMessage.getEmailType().handle(new EmailTypeVisitor() {
             @Override
             public void visitFinishedExperiment() {
@@ -60,8 +66,6 @@ public class EmailMessageTransformer {
                 emailMessage.setDownloadUrl(downloadUrl);
             }
         });
-        log.info("Got email message result model: {}", emailMessage);
-        return emailMessage;
     }
 
     private String getRequestId(String content) {
