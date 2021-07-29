@@ -1,6 +1,6 @@
 package com.ecaservice.test.common.config;
 
-import com.ecaservice.test.common.service.ConfigService;
+import com.ecaservice.test.common.service.TestDataProvider;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,6 +10,6 @@ import org.springframework.context.annotation.Configuration;
  * @author Roman Batygin
  */
 @Configuration
-@ComponentScan(basePackageClasses = ConfigService.class)
+@ComponentScan(basePackageClasses = TestDataProvider.class)
 public class EcaTestCommonAutoConfiguration {
 }

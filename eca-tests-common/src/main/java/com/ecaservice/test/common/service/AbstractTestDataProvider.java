@@ -18,14 +18,14 @@ import java.util.List;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
- * Service to read test data from resources.
+ * Abstract class for test data providing.
  *
  * @param <T> - tests data type
  * @author Roman Batygin
  */
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class AbstractTestDataLoader<T> implements ConfigService<T> {
+public abstract class AbstractTestDataProvider<T> implements TestDataProvider<T> {
 
     private static final String TEST_DATA_DIRECTORY_IS_EMPTY = "Test data directory is empty.";
 
@@ -73,7 +73,7 @@ public abstract class AbstractTestDataLoader<T> implements ConfigService<T> {
     }
 
     @Override
-    public T getConfig(int index) {
+    public T getTestData(int index) {
         return testDataModels.get(index);
     }
 

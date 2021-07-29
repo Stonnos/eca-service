@@ -9,7 +9,7 @@ import com.ecaservice.auto.test.model.ExperimentTestDataModel;
 import com.ecaservice.auto.test.repository.AutoTestsJobRepository;
 import com.ecaservice.auto.test.repository.ExperimentRequestRepository;
 import com.ecaservice.auto.test.service.AutoTestWorkerService;
-import com.ecaservice.auto.test.service.ExperimentTestDataService;
+import com.ecaservice.auto.test.service.ExperimentTestDataProvider;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.model.TestResult;
@@ -35,7 +35,7 @@ public class AutoTestExecutor {
     private final AutoTestsProperties autoTestsProperties;
     private final MailProperties mailProperties;
     private final InstancesLoader instancesLoader;
-    private final ExperimentTestDataService experimentTestDataService;
+    private final ExperimentTestDataProvider experimentTestDataProvider;
     private final AutoTestWorkerService autoTestWorkerService;
     private final AutoTestsJobRepository autoTestsJobRepository;
     private final ExperimentRequestRepository experimentRequestRepository;
@@ -55,7 +55,7 @@ public class AutoTestExecutor {
     }
 
     private void sendRequests(AutoTestsJobEntity autoTestsJobEntity) {
-        experimentTestDataService.getTestDataModels().forEach(experimentTestDataModel -> {
+        experimentTestDataProvider.getTestDataModels().forEach(experimentTestDataModel -> {
             ExperimentRequest experimentRequest = createExperimentRequest(experimentTestDataModel);
             ExperimentRequestEntity experimentRequestEntity =
                     createAndSaveExperimentRequestEntity(experimentRequest, autoTestsJobEntity);
