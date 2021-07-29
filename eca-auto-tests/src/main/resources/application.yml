@@ -5,14 +5,14 @@ spring:
     default-domain: eca-auto-tests
   ## Datasource properties
   datasource:
-    jdbc-url: jdbc:h2:mem:autotestdb
-    driverClassName: org.h2.Driver
-    username: sa
-    password: password
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/eca_auto_tests
+    username: postgres
+    password: postgres
   jpa:
     hibernate:
       ddl-auto: update
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
   cache:
     cache-names: instances
     caffeine:
