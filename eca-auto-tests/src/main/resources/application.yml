@@ -42,6 +42,7 @@ queue:
 
 auto-tests:
   pageSize: 25
+  schedulerPoolSize: 1
   delaySeconds: 2
   experimentsDataPath: classpath*:experiments/**/*.json
   requestTimeoutInSeconds: 600
