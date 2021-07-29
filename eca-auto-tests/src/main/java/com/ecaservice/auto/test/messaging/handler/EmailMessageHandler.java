@@ -35,7 +35,8 @@ public class EmailMessageHandler {
      */
     @ServiceActivator(inputChannel = MAIL_HANDLE_CHANNEL)
     public void handleMessage(EmailMessage emailMessage) {
-        log.info("Starting to process email message for experiment [{}]", emailMessage.getRequestId());
+        log.info("Starting to process email message [{}] for experiment [{}]",
+                emailMessage.getEmailType(), emailMessage.getRequestId());
         var experimentRequestEntity = experimentRequestService.getByRequestId(emailMessage.getRequestId());
         emailMessage.getEmailType().handle(new EmailTypeVisitor() {
             @Override
@@ -70,6 +71,7 @@ public class EmailMessageHandler {
                 experimentRequestService.finishWithError(experimentRequestEntity, EXPERIMENT_FINISHED_WITH_TIMEOUT);
             }
         });
-        log.info("Email message has been processed for experiment [{}]", emailMessage.getRequestId());
+        log.info("Email message [{}] has been processed for experiment [{}]", emailMessage.getEmailType(),
+                emailMessage.getRequestId());
     }
 }
