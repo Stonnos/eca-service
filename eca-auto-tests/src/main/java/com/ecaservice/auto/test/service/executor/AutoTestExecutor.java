@@ -15,6 +15,8 @@ import com.ecaservice.test.common.model.TestResult;
 import com.ecaservice.test.common.service.InstancesLoader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
 import weka.core.Instances;
 
@@ -37,6 +39,8 @@ public class AutoTestExecutor {
     private final AutoTestWorkerService autoTestWorkerService;
     private final AutoTestsJobRepository autoTestsJobRepository;
     private final ExperimentRequestRepository experimentRequestRepository;
+
+    private final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
     /**
      * Runs auto tests.
@@ -62,7 +66,8 @@ public class AutoTestExecutor {
     }
 
     private ExperimentRequest createExperimentRequest(ExperimentTestDataModel experimentTestDataModel) {
-        Instances instances = instancesLoader.loadInstances(experimentTestDataModel.getTrainDataPath());
+        Resource instancesResource = resolver.getResource(experimentTestDataModel.getTrainDataPath());
+        Instances instances = instancesLoader.loadInstances(instancesResource);
         ExperimentRequest experimentRequest = new ExperimentRequest();
         experimentRequest.setData(instances);
         experimentRequest.setEmail(mailProperties.getUserName());

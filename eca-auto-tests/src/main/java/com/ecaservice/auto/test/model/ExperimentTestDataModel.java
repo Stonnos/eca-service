@@ -3,7 +3,6 @@ package com.ecaservice.auto.test.model;
 import com.ecaservice.base.model.ExperimentType;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
-import org.springframework.core.io.Resource;
 
 /**
  * Experiment test data model.
@@ -26,7 +25,7 @@ public class ExperimentTestDataModel {
     /**
      * Train data path in resources directory
      */
-    private Resource trainDataPath;
+    private String trainDataPath;
 
     /**
      * Evaluation method
