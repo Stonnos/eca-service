@@ -1,8 +1,17 @@
 package com.ecaservice.auto.test.repository;
 
+import com.ecaservice.auto.test.entity.AutoTestsJobEntity;
 import com.ecaservice.auto.test.entity.ExperimentRequestEntity;
+import com.ecaservice.auto.test.entity.ExperimentRequestStageType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -27,4 +36,33 @@ public interface ExperimentRequestRepository extends JpaRepository<ExperimentReq
      * @return experiment request entity
      */
     Optional<ExperimentRequestEntity> findByRequestId(String requestId);
+
+    /**
+     * Finds exceeded requests ids.
+     *
+     * @param dateTime - date time value
+     * @return requests ids list
+     */
+    @Query("select er.id from ExperimentRequestEntity er where er.stageType not in (:finishedStages)" +
+            "and er.started < :dateTime order by er.started")
+    List<Long> findExceededRequestIds(@Param("dateTime") LocalDateTime dateTime,
+                                      @Param("finishedStages") Collection<ExperimentRequestStageType> finishedStages);
+
+    /**
+     * Gets max experiment request finished date for specified auto test job.
+     *
+     * @param autoTestsJobEntity - auto test job entity
+     * @return max finished date
+     */
+    @Query("select max(er.finished) from ExperimentRequestEntity er where er.job = :job")
+    LocalDateTime getMaxFinishedDate(@Param("job") AutoTestsJobEntity autoTestsJobEntity);
+
+    /**
+     * Finds experiment requests page with specified ids.
+     *
+     * @param ids      - ids list
+     * @param pageable - pageable object
+     * @return experiment requests page
+     */
+    Page<ExperimentRequestEntity> findByIdIn(Collection<Long> ids, Pageable pageable);
 }

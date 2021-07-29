@@ -40,4 +40,10 @@ public class AutoTestsProperties {
      */
     @NotEmpty
     private String firstName;
+
+    /**
+     * Request processing timeout in seconds
+     */
+    @NotNull
+    private Long requestTimeoutInSeconds;
 }

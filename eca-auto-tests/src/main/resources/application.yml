@@ -45,6 +45,7 @@ auto-tests:
   delaySeconds: 2
   experimentsDataPath: classpath*:experiments/**/*.json
   firstName: Roman
+  requestTimeoutInSeconds: 600
 
 server:
   port: 8093
