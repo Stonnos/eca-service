@@ -63,6 +63,7 @@ public class AutoTestScheduler {
         List<Long> exceededIds = experimentRequestRepository.findExceededRequestIds(exceededTime, FINISHED_STAGES);
         processPaging(exceededIds, experimentRequestRepository::findByIdIn, pageContent ->
                 pageContent.forEach(experimentRequestEntity -> {
+                    experimentRequestEntity.setExecutionStatus(ExecutionStatus.ERROR);
                     experimentRequestEntity.setStageType(ExperimentRequestStageType.EXCEEDED);
                     experimentRequestEntity.setTestResult(TestResult.ERROR);
                     experimentRequestEntity.setFinished(LocalDateTime.now());
