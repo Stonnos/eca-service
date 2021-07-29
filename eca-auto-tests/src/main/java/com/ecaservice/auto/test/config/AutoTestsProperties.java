@@ -36,12 +36,6 @@ public class AutoTestsProperties {
     private Integer delaySeconds;
 
     /**
-     * First name for experiment requests
-     */
-    @NotEmpty
-    private String firstName;
-
-    /**
      * Request processing timeout in seconds
      */
     @NotNull

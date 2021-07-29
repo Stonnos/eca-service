@@ -44,7 +44,6 @@ auto-tests:
   pageSize: 25
   delaySeconds: 2
   experimentsDataPath: classpath*:experiments/**/*.json
-  firstName: Roman
   requestTimeoutInSeconds: 600
 
 server:
