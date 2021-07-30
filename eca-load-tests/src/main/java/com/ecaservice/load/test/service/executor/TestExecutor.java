@@ -11,7 +11,7 @@ import com.ecaservice.load.test.model.TestDataModel;
 import com.ecaservice.load.test.repository.EvaluationRequestRepository;
 import com.ecaservice.load.test.repository.LoadTestRepository;
 import com.ecaservice.load.test.service.ClassifiersTestDataProvider;
-import com.ecaservice.load.test.service.InstancesConfigService;
+import com.ecaservice.load.test.service.InstancesTestDataProvider;
 import com.ecaservice.load.test.service.LoadTestDataIterator;
 import com.ecaservice.load.test.service.TestWorkerService;
 import com.ecaservice.test.common.model.ExecutionStatus;
@@ -43,7 +43,7 @@ import static com.ecaservice.load.test.util.Utils.createEvaluationRequestEntity;
 public class TestExecutor {
 
     private final EcaLoadTestsConfig ecaLoadTestsConfig;
-    private final InstancesConfigService instancesConfigService;
+    private final InstancesTestDataProvider instancesTestDataProvider;
     private final ClassifiersTestDataProvider classifiersTestDataProvider;
     private final TestWorkerService testWorkerService;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
@@ -67,11 +67,11 @@ public class TestExecutor {
     }
 
     private Iterator<TestDataModel> testDataIterator(LoadTestEntity loadTestEntity,
-                                                     InstancesConfigService instancesConfigService,
+                                                     InstancesTestDataProvider instancesTestDataProvider,
                                                      ClassifiersTestDataProvider classifiersTestDataProvider) {
         Random sampleRandom = new Random(ecaLoadTestsConfig.getSeed());
         Random classifiersRandom = new Random(ecaLoadTestsConfig.getSeed());
-        return new LoadTestDataIterator(loadTestEntity, sampleRandom, classifiersRandom, instancesConfigService,
+        return new LoadTestDataIterator(loadTestEntity, sampleRandom, classifiersRandom, instancesTestDataProvider,
                 classifiersTestDataProvider);
     }
 
@@ -80,7 +80,7 @@ public class TestExecutor {
         CountDownLatch countDownLatch = new CountDownLatch(loadTestEntity.getNumRequests());
         try {
             Iterator<TestDataModel> iterator =
-                    testDataIterator(loadTestEntity, instancesConfigService, classifiersTestDataProvider);
+                    testDataIterator(loadTestEntity, instancesTestDataProvider, classifiersTestDataProvider);
             while (iterator.hasNext()) {
                 TestDataModel testDataModel = iterator.next();
                 EvaluationRequest evaluationRequest = createEvaluationRequest(loadTestEntity, testDataModel);

@@ -2,6 +2,7 @@ package com.ecaservice.load.test.service;
 
 import com.ecaservice.load.test.config.EcaLoadTestsConfig;
 import com.ecaservice.load.test.exception.ConfigException;
+import com.ecaservice.test.common.service.TestDataProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Instances config service.
@@ -19,14 +21,14 @@ import java.io.IOException;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class InstancesConfigService implements ConfigService<Resource> {
+public class InstancesTestDataProvider implements TestDataProvider<Resource> {
 
     private static final String TRAINING_DATA_INPUT_OPTIONS_DIRECTORY_IS_EMPTY =
             "Training data input options directory is empty.";
 
     private final EcaLoadTestsConfig ecaLoadTestsConfig;
 
-    private Resource[] samplesFiles;
+    private List<Resource> samplesFiles;
 
     /**
      * Reads classifiers options from resources.
@@ -37,8 +39,8 @@ public class InstancesConfigService implements ConfigService<Resource> {
     public void readTrainingDataResources() throws IOException {
         log.info("Starting to read training data files info from configs");
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        samplesFiles = resolver.getResources(ecaLoadTestsConfig.getTrainingDataStoragePath());
-        if (samplesFiles.length == 0) {
+        samplesFiles = List.of(resolver.getResources(ecaLoadTestsConfig.getTrainingDataStoragePath()));
+        if (samplesFiles.isEmpty()) {
             log.error(TRAINING_DATA_INPUT_OPTIONS_DIRECTORY_IS_EMPTY);
             throw new ConfigException(TRAINING_DATA_INPUT_OPTIONS_DIRECTORY_IS_EMPTY);
         } else {
@@ -48,11 +50,16 @@ public class InstancesConfigService implements ConfigService<Resource> {
 
     @Override
     public int count() {
-        return samplesFiles.length;
+        return samplesFiles.size();
     }
 
     @Override
-    public Resource getConfig(int index) {
-        return samplesFiles[index];
+    public Resource getTestData(int index) {
+        return samplesFiles.get(index);
+    }
+
+    @Override
+    public List<Resource> getTestDataModels() {
+        return samplesFiles;
     }
 }
