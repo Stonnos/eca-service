@@ -78,6 +78,8 @@ public class ExperimentRequestService {
         experimentRequestEntity.setStageType(ExperimentRequestStageType.COMPLETED);
         experimentRequestEntity.setFinished(LocalDateTime.now());
         experimentRequestRepository.save(experimentRequestEntity);
+        log.info("Got experiment request [{}] test result: {}",
+                experimentRequestEntity.getRequestId(), experimentRequestEntity.getTestResult());
         log.info("Experiment [{}] results has been processed", experimentRequestEntity.getRequestId());
     }
 
