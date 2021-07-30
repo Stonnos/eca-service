@@ -14,6 +14,7 @@ import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,6 +43,8 @@ public class AutoTestScheduler {
             ExperimentRequestStageType.ERROR,
             ExperimentRequestStageType.EXCEEDED
     );
+
+    private static final String SLASH_SEPARATOR = "/";
 
     private final AutoTestsProperties autoTestsProperties;
     private final AutoTestExecutor autoTestExecutor;
@@ -72,7 +75,9 @@ public class AutoTestScheduler {
         processPaging(finishedIds, experimentRequestRepository::findByIdIn, pageContent ->
                 pageContent.forEach(experimentRequestEntity -> {
                     try {
-                        Resource modelResource = ecaServerClient.downloadModel("token");
+                        String token = StringUtils.substringAfterLast(experimentRequestEntity.getDownloadUrl(),
+                                SLASH_SEPARATOR);
+                        Resource modelResource = ecaServerClient.downloadModel(token);
                         @Cleanup InputStream inputStream = modelResource.getInputStream();
                         ExperimentHistory experimentHistory = SerializationUtils.deserialize(inputStream);
                         experimentRequestService.compareAndMatchResults(experimentRequestEntity, experimentHistory);
