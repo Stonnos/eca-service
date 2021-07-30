@@ -24,12 +24,6 @@ public class ExternalApiTestsConfig {
     private String url;
 
     /**
-     * Download model base url
-     */
-    @NotEmpty
-    private String downloadBaseUrl;
-
-    /**
      * Test data path
      */
     @NotEmpty

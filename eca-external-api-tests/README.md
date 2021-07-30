@@ -24,7 +24,6 @@
    * external-api-tests.pageSize - размер страницы для постраничной обработки
    * external-api-tests.delaySeconds - интервал между запусками scheduler для обработки тестов
    * external-api-tests.url - endpoint для внешнего API
-   * external-api-tests.downloadBaseUrl - базовый endpoint для скачивания модели
    * external-api-tests.testDataPath - относительный путь к директории (в resources) с автотестами
 3) security.oauth2.client - настройки клиента для oauth2 авторизации
    * security.oauth2.client.clientId - идентификатор клиента

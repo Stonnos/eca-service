@@ -30,7 +30,7 @@ import static com.ecaservice.external.api.test.util.Utils.getValueSafe;
 @Component
 public class EvaluationResponseComparisonHandler extends ComparisonTaskHandler {
 
-    private static final String DOWNLOAD_URL_FORMAT = "%s/download-model/%s";
+    private static final String DOWNLOAD_URL_FORMAT = "%s/external-api/download-model/%s";
 
     private final ExternalApiTestsConfig externalApiTestsConfig;
     private final ObjectMapper objectMapper;
@@ -75,9 +75,8 @@ public class EvaluationResponseComparisonHandler extends ComparisonTaskHandler {
                                          TestResultsMatcher matcher) {
         log.debug("Compare model url field for auto test [{}]", autoTestEntity.getId());
         String actualModelUrl = getValueSafe(responseDto, EvaluationResponseDto::getModelUrl);
-        String expectedModelUrl =
-                String.format(DOWNLOAD_URL_FORMAT, externalApiTestsConfig.getDownloadBaseUrl(),
-                        responseDto.getPayload().getRequestId());
+        String expectedModelUrl = String.format(DOWNLOAD_URL_FORMAT, externalApiTestsConfig.getUrl(),
+                responseDto.getPayload().getRequestId());
         autoTestEntity.setExpectedModelUrl(expectedModelUrl);
         autoTestEntity.setActualModelUrl(actualModelUrl);
         MatchResult modelUrlMatchResult = matcher.compareAndMatch(expectedModelUrl, actualModelUrl);
