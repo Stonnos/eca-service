@@ -130,16 +130,34 @@ public class ExperimentRequestEntity extends BaseEntity {
     private AutoTestsJobEntity job;
 
     /**
+     * Total matched
+     */
+    @Column(name = "total_matched")
+    private int totalMatched;
+
+    /**
+     * Total not matched
+     */
+    @Column(name = "total_not_matched")
+    private int totalNotMatched;
+
+    /**
+     * Total not found
+     */
+    @Column(name = "total_not_found")
+    private int totalNotFound;
+
+    /**
      * Expected experiment results size
      */
     @Column(name = "expected_results_size")
-    private Integer expectedResultsSize;
+    private int expectedResultsSize;
 
     /**
      * Actual experiment results size
      */
     @Column(name = "actual_results_size")
-    private Integer actualResultsSize;
+    private int actualResultsSize;
 
     /**
      * Experiment results size match result

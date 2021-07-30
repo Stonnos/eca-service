@@ -38,6 +38,15 @@ public interface ExperimentRequestRepository extends JpaRepository<ExperimentReq
     Optional<ExperimentRequestEntity> findByRequestId(String requestId);
 
     /**
+     * Gets experiment requests page for specified job.
+     *
+     * @param autoTestsJobEntity - auto tests job
+     * @param pageable           - pageable object
+     * @return experiment requests page
+     */
+    Page<ExperimentRequestEntity> findAllByJob(AutoTestsJobEntity autoTestsJobEntity, Pageable pageable);
+
+    /**
      * Finds exceeded requests ids.
      *
      * @param dateTime - date time value

@@ -69,6 +69,9 @@ public class ExperimentRequestService {
         log.info("Starting to compare and match experiment [{}] results", experimentRequestEntity.getRequestId());
         TestResultsMatcher matcher = new TestResultsMatcher();
         compareAndMatchResults(experimentRequestEntity, experimentHistory, matcher);
+        experimentRequestEntity.setTotalMatched(matcher.getTotalMatched());
+        experimentRequestEntity.setTotalNotMatched(matcher.getTotalNotMatched());
+        experimentRequestEntity.setTotalNotFound(matcher.getTotalNotFound());
         if (matcher.getTotalNotMatched() == 0 && matcher.getTotalNotFound() == 0) {
             experimentRequestEntity.setTestResult(TestResult.PASSED);
         } else {

@@ -48,9 +48,9 @@ public abstract class CsvTestResultsReportGenerator<T> implements TestResultsRep
         zipOutputStream.closeEntry();
     }
 
-    protected abstract String getResultsReportHeaders();
+    protected abstract String[] getResultsReportHeaders();
 
-    protected abstract String getTotalReportHeaders();
+    protected abstract String[] getTotalReportHeaders();
 
     protected abstract void printReportTestResults(CSVPrinter csvPrinter, T data,
                                                    TestResultsCounter testResultsCounter) throws IOException;
