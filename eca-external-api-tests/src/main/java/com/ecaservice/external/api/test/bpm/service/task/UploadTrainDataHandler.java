@@ -51,7 +51,7 @@ public class UploadTrainDataHandler extends ExternalApiTaskHandler {
         log.debug("Starting to uploads train data [{}] to server for test [{}]",
                 testDataModel.getTrainDataPath(), autoTestId);
         Resource resource = resolver.getResource(testDataModel.getTrainDataPath());
-        ResponseDto<InstancesDto> instancesDto = externalApiService.uploadInstances(resource);
+        var instancesDto = externalApiService.uploadInstances(resource);
         log.debug("Train data has been uploaded with status [{}] for test [{}]",
                 instancesDto.getRequestStatus(), autoTestId);
         setVariableSafe(execution, API_RESPONSE, instancesDto);

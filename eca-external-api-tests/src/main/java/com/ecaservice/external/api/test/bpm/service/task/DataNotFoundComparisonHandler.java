@@ -27,6 +27,10 @@ import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
 @Component
 public class DataNotFoundComparisonHandler extends ComparisonTaskHandler {
 
+    private static final ParameterizedTypeReference<ResponseDto<EvaluationResponseDto>> API_RESPONSE_TYPE_REFERENCE =
+            new ParameterizedTypeReference<ResponseDto<EvaluationResponseDto>>() {
+            };
+
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     /**
@@ -45,9 +49,7 @@ public class DataNotFoundComparisonHandler extends ComparisonTaskHandler {
         log.debug("Compare data not found status for execution id [{}], process key [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
         TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
-        ResponseDto<EvaluationResponseDto> responseDto = getVariable(execution, API_RESPONSE,
-                new ParameterizedTypeReference<ResponseDto<EvaluationResponseDto>>() {
-                });
+        var responseDto = getVariable(execution, API_RESPONSE, API_RESPONSE_TYPE_REFERENCE);
         autoTestEntity.setResponse(OBJECT_MAPPER.writeValueAsString(responseDto));
         compareAndMatchRequestStatus(autoTestEntity, testDataModel.getExpectedResponse().getRequestStatus(),
                 responseDto.getRequestStatus(), matcher);

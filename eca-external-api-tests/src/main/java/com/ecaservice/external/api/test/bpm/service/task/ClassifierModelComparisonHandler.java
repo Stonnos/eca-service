@@ -31,6 +31,10 @@ import static com.ecaservice.external.api.test.util.Utils.getScaledValue;
 @Component
 public class ClassifierModelComparisonHandler extends ComparisonTaskHandler {
 
+    private static final ParameterizedTypeReference<ResponseDto<EvaluationResponseDto>> API_RESPONSE_TYPE_REFERENCE =
+            new ParameterizedTypeReference<ResponseDto<EvaluationResponseDto>>() {
+            };
+
     private final ExternalApiService externalApiService;
 
     /**
@@ -51,9 +55,7 @@ public class ClassifierModelComparisonHandler extends ComparisonTaskHandler {
                                          TestResultsMatcher matcher) throws IOException {
         log.debug("Compare classifier model result for execution id [{}], process key [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
-        ResponseDto<EvaluationResponseDto> responseDto = getVariable(execution, API_RESPONSE,
-                new ParameterizedTypeReference<ResponseDto<EvaluationResponseDto>>() {
-                });
+        var responseDto = getVariable(execution, API_RESPONSE, API_RESPONSE_TYPE_REFERENCE);
         log.debug("Starting to download model for test [{}]", autoTestEntity.getId());
         ClassificationModel classificationModel =
                 externalApiService.downloadModel(responseDto.getPayload().getRequestId());
