@@ -1,7 +1,7 @@
 package com.ecaservice.load.test.service;
 
 import com.ecaservice.load.test.config.EcaLoadTestsConfig;
-import com.ecaservice.load.test.exception.ConfigException;
+import com.ecaservice.test.common.exception.ConfigException;
 import com.ecaservice.test.common.service.TestDataProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
