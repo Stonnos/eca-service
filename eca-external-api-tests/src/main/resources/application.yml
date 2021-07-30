@@ -35,6 +35,7 @@ external-api-tests:
   workerThreadTimeoutInSeconds: 180
   pageSize: 25
   delaySeconds: 2
+  expectedResultsSize: 5
 
 process:
   processId: ExternalApiAutoTestProcess

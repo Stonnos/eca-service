@@ -1,17 +1,22 @@
 package com.ecaservice.auto.test.service;
 
+import com.ecaservice.auto.test.config.AutoTestsProperties;
 import com.ecaservice.auto.test.entity.ExperimentRequestEntity;
 import com.ecaservice.auto.test.entity.ExperimentRequestStageType;
 import com.ecaservice.auto.test.repository.ExperimentRequestRepository;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.test.common.model.ExecutionStatus;
+import com.ecaservice.test.common.model.MatchResult;
 import com.ecaservice.test.common.model.TestResult;
+import com.ecaservice.test.common.service.TestResultsMatcher;
 import eca.converters.model.ExperimentHistory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Auto test service.
@@ -23,6 +28,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class ExperimentRequestService {
 
+    private final AutoTestsProperties autoTestsProperties;
     private final ExperimentRequestRepository experimentRequestRepository;
 
     /**
@@ -58,14 +64,33 @@ public class ExperimentRequestService {
      * @param experimentRequestEntity - experiment history entity
      * @param experimentHistory       - experiment history results
      */
-    public void compareAndMatchResults(ExperimentRequestEntity experimentRequestEntity,
-                                       ExperimentHistory experimentHistory) {
+    public void processExperimentHistory(ExperimentRequestEntity experimentRequestEntity,
+                                         ExperimentHistory experimentHistory) {
         log.info("Starting to compare and match experiment [{}] results", experimentRequestEntity.getRequestId());
-        experimentRequestEntity.setTestResult(TestResult.PASSED);
+        TestResultsMatcher matcher = new TestResultsMatcher();
+        compareAndMatchResults(experimentRequestEntity, experimentHistory, matcher);
+        if (matcher.getTotalNotMatched() == 0 && matcher.getTotalNotFound() == 0) {
+            experimentRequestEntity.setTestResult(TestResult.PASSED);
+        } else {
+            experimentRequestEntity.setTestResult(TestResult.FAILED);
+        }
         experimentRequestEntity.setExecutionStatus(ExecutionStatus.FINISHED);
         experimentRequestEntity.setStageType(ExperimentRequestStageType.COMPLETED);
         experimentRequestEntity.setFinished(LocalDateTime.now());
         experimentRequestRepository.save(experimentRequestEntity);
         log.info("Experiment [{}] results has been processed", experimentRequestEntity.getRequestId());
+    }
+
+    private void compareAndMatchResults(ExperimentRequestEntity experimentRequestEntity,
+                                        ExperimentHistory experimentHistory,
+                                        TestResultsMatcher matcher) {
+        int expectedResultsSize = autoTestsProperties.getExpectedResultsSize();
+        experimentRequestEntity.setExpectedResultsSize(expectedResultsSize);
+        int actualResultsSize = Optional.ofNullable(experimentHistory.getExperiment())
+                .map(List::size)
+                .orElse(0);
+        experimentRequestEntity.setActualResultsSize(actualResultsSize);
+        MatchResult statusMatchResult = matcher.compareAndMatch(expectedResultsSize, actualResultsSize);
+        experimentRequestEntity.setResultsSizeMatchResult(statusMatchResult);
     }
 }

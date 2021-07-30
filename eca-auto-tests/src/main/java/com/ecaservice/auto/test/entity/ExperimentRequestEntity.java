@@ -1,6 +1,7 @@
 package com.ecaservice.auto.test.entity;
 
 import com.ecaservice.base.model.ExperimentType;
+import com.ecaservice.test.common.model.MatchResult;
 import com.ecaservice.test.common.model.TestResult;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
@@ -127,4 +128,23 @@ public class ExperimentRequestEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "auto_tests_job_id", nullable = false)
     private AutoTestsJobEntity job;
+
+    /**
+     * Expected experiment results size
+     */
+    @Column(name = "expected_results_size")
+    private Integer expectedResultsSize;
+
+    /**
+     * Actual experiment results size
+     */
+    @Column(name = "actual_results_size")
+    private Integer actualResultsSize;
+
+    /**
+     * Experiment results size match result
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "results_size_match_result")
+    private MatchResult resultsSizeMatchResult;
 }

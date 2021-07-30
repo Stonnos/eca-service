@@ -83,7 +83,7 @@ public class AutoTestScheduler {
                         @Cleanup InputStream inputStream = modelResource.getInputStream();
                         ExperimentHistory experimentHistory = SerializationUtils.deserialize(inputStream);
                         log.info("Experiment [{}] history has been downloaded", experimentRequestEntity.getRequestId());
-                        experimentRequestService.compareAndMatchResults(experimentRequestEntity, experimentHistory);
+                        experimentRequestService.processExperimentHistory(experimentRequestEntity, experimentHistory);
                     } catch (Exception ex) {
                         log.error("There was an error while process finished experiment request [{}]: {}",
                                 experimentRequestEntity.getRequestId(), ex.getMessage());
