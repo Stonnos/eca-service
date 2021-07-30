@@ -27,6 +27,7 @@ public class Utils {
     private static final int SCALE = 2;
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final int THOUSAND = 1000;
 
     /**
      * Creates evaluation request entity.
@@ -65,10 +66,12 @@ public class Utils {
      */
     public static BigDecimal tps(LoadTestEntity loadTestEntity) {
         if (loadTestEntity.getStarted() != null && loadTestEntity.getFinished() != null) {
-            long totalTimeSec = ChronoUnit.SECONDS.between(loadTestEntity.getStarted(), loadTestEntity.getFinished());
-            if (totalTimeSec > 0) {
-                return BigDecimal.valueOf(loadTestEntity.getNumRequests()).divide(BigDecimal.valueOf(totalTimeSec),
-                        SCALE, RoundingMode.HALF_UP);
+            long totalTimeMillis = ChronoUnit.MILLIS.between(loadTestEntity.getStarted(), loadTestEntity.getFinished());
+            BigDecimal totalTimeSeconds = BigDecimal.valueOf(totalTimeMillis)
+                    .divide(BigDecimal.valueOf(THOUSAND), SCALE, RoundingMode.HALF_UP);
+            if (totalTimeMillis > 0) {
+                return BigDecimal.valueOf(loadTestEntity.getNumRequests())
+                        .divide(totalTimeSeconds, SCALE, RoundingMode.HALF_UP);
             } else {
                 return BigDecimal.valueOf(loadTestEntity.getNumRequests());
             }
