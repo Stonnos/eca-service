@@ -43,7 +43,7 @@ public class AutoTestWorkerService {
             rabbitSender.sendExperimentRequest(experimentRequest, experimentRequestEntity.getCorrelationId());
             experimentRequestEntity.setStageType(ExperimentRequestStageType.REQUEST_SENT);
             experimentRequestEntity.setExecutionStatus(ExecutionStatus.IN_PROGRESS);
-            log.trace("Experiment request with correlation id [{}] has been sent",
+            log.info("Experiment request with correlation id [{}] has been sent",
                     experimentRequestEntity.getCorrelationId());
         } catch (Exception ex) {
             log.error("Unknown error while sending request with correlation id [{}]: {}",
