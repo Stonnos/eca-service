@@ -57,12 +57,18 @@ public class AutoTestExecutor {
     }
 
     private void sendRequests(AutoTestsJobEntity autoTestsJobEntity) {
-        experimentTestDataProvider.getTestDataModels().forEach(experimentTestDataModel -> {
-            ExperimentRequest experimentRequest = createExperimentRequest(experimentTestDataModel);
-            ExperimentRequestEntity experimentRequestEntity =
-                    createAndSaveExperimentRequestEntity(experimentRequest, autoTestsJobEntity);
-            autoTestWorkerService.sendRequest(experimentRequestEntity.getId(), experimentRequest);
-        });
+        try {
+            experimentTestDataProvider.getTestDataModels().forEach(experimentTestDataModel -> {
+                ExperimentRequest experimentRequest = createExperimentRequest(experimentTestDataModel);
+                ExperimentRequestEntity experimentRequestEntity =
+                        createAndSaveExperimentRequestEntity(experimentRequest, autoTestsJobEntity);
+                autoTestWorkerService.sendRequest(experimentRequestEntity.getId(), experimentRequest);
+            });
+        } catch (Exception ex) {
+            log.error("There was an error while sending requests for job [{}]: {}", autoTestsJobEntity.getJobUuid(),
+                    ex.getMessage());
+            finishWithError(autoTestsJobEntity, ex);
+        }
     }
 
     private ExperimentRequest createExperimentRequest(ExperimentTestDataModel experimentTestDataModel) {
@@ -93,5 +99,12 @@ public class AutoTestExecutor {
         experimentRequestEntity.setNumInstances(instances.numInstances());
         experimentRequestEntity.setCreated(LocalDateTime.now());
         return experimentRequestRepository.save(experimentRequestEntity);
+    }
+
+    private void finishWithError(AutoTestsJobEntity loadTestEntity, Exception ex) {
+        loadTestEntity.setDetails(ex.getMessage());
+        loadTestEntity.setExecutionStatus(ExecutionStatus.ERROR);
+        loadTestEntity.setFinished(LocalDateTime.now());
+        autoTestsJobRepository.save(loadTestEntity);
     }
 }
