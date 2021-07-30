@@ -53,4 +53,10 @@ public class AutoTestsProperties {
      */
     @NotNull
     private Long requestTimeoutInSeconds;
+
+    /**
+     * Eca server base url
+     */
+    @NotEmpty
+    private String ecaServerBaseUrl;
 }
