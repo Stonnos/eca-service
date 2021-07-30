@@ -21,7 +21,9 @@ import org.springframework.stereotype.Service;
 import weka.core.Instances;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Auto tests executor.
@@ -58,8 +60,8 @@ public class AutoTestExecutor {
 
     private void sendRequests(AutoTestsJobEntity autoTestsJobEntity) {
         try {
-            experimentTestDataProvider.getTestDataModels().forEach(experimentTestDataModel -> {
-                ExperimentRequest experimentRequest = createExperimentRequest(experimentTestDataModel);
+            List<ExperimentRequest> experimentRequests = prepareAndBuildExperimentRequests();
+            experimentRequests.forEach(experimentRequest -> {
                 ExperimentRequestEntity experimentRequestEntity =
                         createAndSaveExperimentRequestEntity(experimentRequest, autoTestsJobEntity);
                 autoTestWorkerService.sendRequest(experimentRequestEntity.getId(), experimentRequest);
@@ -69,6 +71,12 @@ public class AutoTestExecutor {
                     ex.getMessage());
             finishWithError(autoTestsJobEntity, ex);
         }
+    }
+
+    private List<ExperimentRequest> prepareAndBuildExperimentRequests() {
+        return experimentTestDataProvider.getTestDataModels().stream()
+                .map(this::createExperimentRequest)
+                .collect(Collectors.toList());
     }
 
     private ExperimentRequest createExperimentRequest(ExperimentTestDataModel experimentTestDataModel) {
