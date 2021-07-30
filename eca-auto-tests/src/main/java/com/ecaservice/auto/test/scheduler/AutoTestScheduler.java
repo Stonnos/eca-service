@@ -58,11 +58,11 @@ public class AutoTestScheduler {
      */
     @Scheduled(fixedDelayString = "${auto-tests.delaySeconds}000")
     public void startNewTestsJobs() {
-        log.trace("Starting to processed new tests");
+        log.trace("Starting to processed new tests jobs");
         List<Long> testIds = autoTestsJobRepository.findNewTests();
         processPaging(testIds, autoTestsJobRepository::findByIdIn,
                 pageContent -> pageContent.forEach(autoTestExecutor::runTests));
-        log.trace("New tests has been processed");
+        log.trace("New tests has been processed jobs");
     }
 
     /**
@@ -119,17 +119,17 @@ public class AutoTestScheduler {
      */
     @Scheduled(fixedDelayString = "${auto-tests.delaySeconds}000")
     public void processFinishedTestJobs() {
-        log.trace("Starting to processed finished tests");
+        log.trace("Starting to processed finished tests jobs");
         List<Long> testIds = autoTestsJobRepository.findFinishedJobs(FINISHED_STAGES);
         processPaging(testIds, autoTestsJobRepository::findByIdIn, pageContent ->
                 pageContent.forEach(autoTestsJobEntity -> {
                     autoTestsJobEntity.setExecutionStatus(ExecutionStatus.FINISHED);
                     autoTestsJobEntity.setFinished(experimentRequestRepository.getMaxFinishedDate(autoTestsJobEntity));
                     autoTestsJobRepository.save(autoTestsJobEntity);
-                    log.info("Load test [{}] has been finished", autoTestsJobEntity.getJobUuid());
+                    log.info("Auto tests job [{}] has been finished", autoTestsJobEntity.getJobUuid());
                 })
         );
-        log.trace("Finished tests has been processed");
+        log.trace("Finished tests jobs has been processed");
     }
 
     private <T> void processPaging(List<Long> ids,

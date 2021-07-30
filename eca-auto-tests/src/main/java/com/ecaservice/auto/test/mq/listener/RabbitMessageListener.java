@@ -37,7 +37,7 @@ public class RabbitMessageListener {
     @RabbitListener(queues = "${queue.experimentReplyToQueue}")
     public void handleMessage(EcaResponse ecaResponse, Message message) {
         String correlationId = message.getMessageProperties().getCorrelationId();
-        log.info("Received message with correlation id [{}]", correlationId);
+        log.info("Received MQ message with correlation id [{}]", correlationId);
         var experimentRequestEntity = experimentRequestRepository.findByCorrelationId(correlationId);
         if (experimentRequestEntity == null) {
             log.warn("Can't find request entity with correlation id [{}]", correlationId);
@@ -46,15 +46,19 @@ public class RabbitMessageListener {
         if (ExperimentRequestStageType.EXCEEDED.equals(experimentRequestEntity.getStageType())) {
             log.warn("Got exceeded request entity with correlation id [{}]", correlationId);
         } else {
-            internalHandleResponse(experimentRequestEntity, ecaResponse);
+            internalHandleResponse(experimentRequestEntity, ecaResponse, correlationId);
         }
     }
 
-    private void internalHandleResponse(ExperimentRequestEntity experimentRequestEntity, EcaResponse ecaResponse) {
+    private void internalHandleResponse(ExperimentRequestEntity experimentRequestEntity,
+                                        EcaResponse ecaResponse,
+                                        String correlationId) {
         experimentRequestEntity.setRequestId(ecaResponse.getRequestId());
         if (TechnicalStatus.SUCCESS.equals(ecaResponse.getStatus())) {
             experimentRequestEntity.setStageType(ExperimentRequestStageType.REQUEST_CREATED);
             experimentRequestRepository.save(experimentRequestEntity);
+            log.info("Experiment request [{}] has been created for correlation id [{}]", ecaResponse.getRequestId(),
+                    correlationId);
         } else {
             String errorMessage = Optional.ofNullable(ecaResponse.getErrors())
                     .map(messageErrors -> messageErrors.iterator().next())
