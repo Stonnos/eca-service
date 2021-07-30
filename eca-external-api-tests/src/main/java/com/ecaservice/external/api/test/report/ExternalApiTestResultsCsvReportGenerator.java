@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Arrays;
 
-import static com.ecaservice.external.api.test.util.Utils.totalTime;
+import static com.ecaservice.test.common.util.Utils.totalTime;
 
 /**
  * External api auto tests csv report generator.
