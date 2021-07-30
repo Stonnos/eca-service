@@ -1,5 +1,6 @@
 package com.ecaservice.load.test.entity;
 
+import com.ecaservice.test.common.model.TestResult;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

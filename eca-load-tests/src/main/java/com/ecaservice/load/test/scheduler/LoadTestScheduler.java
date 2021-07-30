@@ -1,12 +1,12 @@
 package com.ecaservice.load.test.scheduler;
 
 import com.ecaservice.load.test.config.EcaLoadTestsConfig;
-import com.ecaservice.load.test.entity.ExecutionStatus;
 import com.ecaservice.load.test.entity.RequestStageType;
-import com.ecaservice.load.test.entity.TestResult;
 import com.ecaservice.load.test.repository.EvaluationRequestRepository;
 import com.ecaservice.load.test.repository.LoadTestRepository;
 import com.ecaservice.load.test.service.executor.TestExecutor;
+import com.ecaservice.test.common.model.ExecutionStatus;
+import com.ecaservice.test.common.model.TestResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

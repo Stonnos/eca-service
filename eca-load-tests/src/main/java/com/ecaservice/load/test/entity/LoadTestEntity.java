@@ -1,5 +1,6 @@
 package com.ecaservice.load.test.entity;
 
+import com.ecaservice.test.common.model.ExecutionStatus;
 import eca.core.evaluation.EvaluationMethod;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

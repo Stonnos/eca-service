@@ -5,17 +5,17 @@ import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.load.test.config.EcaLoadTestsConfig;
 import com.ecaservice.load.test.entity.EvaluationRequestEntity;
-import com.ecaservice.load.test.entity.ExecutionStatus;
 import com.ecaservice.load.test.entity.LoadTestEntity;
 import com.ecaservice.load.test.mapping.LoadTestMapper;
 import com.ecaservice.load.test.model.TestDataModel;
 import com.ecaservice.load.test.repository.EvaluationRequestRepository;
 import com.ecaservice.load.test.repository.LoadTestRepository;
-import com.ecaservice.load.test.service.ClassifiersConfigService;
+import com.ecaservice.load.test.service.ClassifiersTestDataProvider;
 import com.ecaservice.load.test.service.InstancesConfigService;
 import com.ecaservice.load.test.service.LoadTestDataIterator;
 import com.ecaservice.load.test.service.TestWorkerService;
-import com.ecaservice.load.test.service.data.InstancesLoader;
+import com.ecaservice.test.common.model.ExecutionStatus;
+import com.ecaservice.test.common.service.InstancesLoader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -44,7 +44,7 @@ public class TestExecutor {
 
     private final EcaLoadTestsConfig ecaLoadTestsConfig;
     private final InstancesConfigService instancesConfigService;
-    private final ClassifiersConfigService classifiersConfigService;
+    private final ClassifiersTestDataProvider classifiersTestDataProvider;
     private final TestWorkerService testWorkerService;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final InstancesLoader instancesLoader;
@@ -68,11 +68,11 @@ public class TestExecutor {
 
     private Iterator<TestDataModel> testDataIterator(LoadTestEntity loadTestEntity,
                                                      InstancesConfigService instancesConfigService,
-                                                     ClassifiersConfigService classifiersConfigService) {
+                                                     ClassifiersTestDataProvider classifiersTestDataProvider) {
         Random sampleRandom = new Random(ecaLoadTestsConfig.getSeed());
         Random classifiersRandom = new Random(ecaLoadTestsConfig.getSeed());
         return new LoadTestDataIterator(loadTestEntity, sampleRandom, classifiersRandom, instancesConfigService,
-                classifiersConfigService);
+                classifiersTestDataProvider);
     }
 
     private void sendRequests(LoadTestEntity loadTestEntity) {
@@ -80,7 +80,7 @@ public class TestExecutor {
         CountDownLatch countDownLatch = new CountDownLatch(loadTestEntity.getNumRequests());
         try {
             Iterator<TestDataModel> iterator =
-                    testDataIterator(loadTestEntity, instancesConfigService, classifiersConfigService);
+                    testDataIterator(loadTestEntity, instancesConfigService, classifiersTestDataProvider);
             while (iterator.hasNext()) {
                 TestDataModel testDataModel = iterator.next();
                 EvaluationRequest evaluationRequest = createEvaluationRequest(loadTestEntity, testDataModel);

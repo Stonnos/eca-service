@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-import static com.ecaservice.load.test.util.Utils.totalTime;
 import static com.ecaservice.load.test.util.Utils.tps;
+import static com.ecaservice.test.common.util.Utils.totalTime;
 
 /**
  * Load test mapper.

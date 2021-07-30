@@ -1,6 +1,6 @@
 package com.ecaservice.load.test.dto;
 
-import com.ecaservice.load.test.entity.ExecutionStatus;
+import com.ecaservice.test.common.model.ExecutionStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;

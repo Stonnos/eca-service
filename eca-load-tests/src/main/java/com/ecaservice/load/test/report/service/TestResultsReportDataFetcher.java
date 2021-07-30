@@ -7,6 +7,7 @@ import com.ecaservice.load.test.mapping.LoadTestMapper;
 import com.ecaservice.load.test.report.bean.EvaluationTestBean;
 import com.ecaservice.load.test.report.bean.LoadTestBean;
 import com.ecaservice.load.test.repository.EvaluationRequestRepository;
+import com.ecaservice.test.common.report.TestResultsCounter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

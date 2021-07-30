@@ -3,9 +3,9 @@ package com.ecaservice.load.test.mq.listener;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.load.test.entity.EvaluationRequestEntity;
 import com.ecaservice.load.test.entity.RequestStageType;
-import com.ecaservice.load.test.entity.TestResult;
 import com.ecaservice.load.test.mapping.TestResultMapper;
 import com.ecaservice.load.test.repository.EvaluationRequestRepository;
+import com.ecaservice.test.common.model.TestResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class EcaLoadTestsListener {
+public class RabbitMessageListener {
 
     private final TestResultMapper testResultMapper;
     private final EvaluationRequestRepository evaluationRequestRepository;

@@ -1,7 +1,7 @@
 package com.ecaservice.load.test.mapping;
 
 import com.ecaservice.base.model.TechnicalStatus;
-import com.ecaservice.load.test.entity.TestResult;
+import com.ecaservice.test.common.model.TestResult;
 import org.mapstruct.Mapper;
 import org.mapstruct.ValueMapping;
 
