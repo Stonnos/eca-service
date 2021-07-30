@@ -4,12 +4,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * Main class for auto tests application.
  *
  * @author Roman Batygin
  */
+@EnableFeignClients
 @SpringBootApplication
 public class EcaAutoTestsApplication extends SpringBootServletInitializer {
 
