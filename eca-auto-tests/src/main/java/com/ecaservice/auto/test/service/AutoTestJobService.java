@@ -2,6 +2,7 @@ package com.ecaservice.auto.test.service;
 
 import com.ecaservice.auto.test.entity.AutoTestsJobEntity;
 import com.ecaservice.auto.test.repository.AutoTestsJobRepository;
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,5 +34,16 @@ public class AutoTestJobService {
         autoTestsJobEntity.setExecutionStatus(ExecutionStatus.NEW);
         autoTestsJobEntity.setCreated(LocalDateTime.now());
         return autoTestsJobRepository.save(autoTestsJobEntity);
+    }
+
+    /**
+     * Finds auto tests job by uuid.
+     *
+     * @param jobUuid - job uuid
+     * @return auto tests job entity
+     */
+    public AutoTestsJobEntity getJob(String jobUuid) {
+        return autoTestsJobRepository.findByJobUuid(jobUuid)
+                .orElseThrow(() -> new EntityNotFoundException(AutoTestsJobEntity.class, jobUuid));
     }
 }

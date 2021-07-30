@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository to manage with {@link AutoTestsJobEntity} persistence entity.
@@ -44,4 +45,12 @@ public interface AutoTestsJobRepository extends JpaRepository<AutoTestsJobEntity
      * @return evaluation requests page
      */
     Page<AutoTestsJobEntity> findByIdIn(Collection<Long> ids, Pageable pageable);
+
+    /**
+     * Finds auto tests job by uuid.
+     *
+     * @param jobUuid - job uuid
+     * @return auto tests job entity
+     */
+    Optional<AutoTestsJobEntity> findByJobUuid(String jobUuid);
 }
