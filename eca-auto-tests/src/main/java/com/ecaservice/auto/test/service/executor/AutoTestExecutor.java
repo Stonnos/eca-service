@@ -48,12 +48,12 @@ public class AutoTestExecutor {
      * @param autoTestsJobEntity - load test entity
      */
     public void runTests(AutoTestsJobEntity autoTestsJobEntity) {
-        log.info("Runs new test with uuid [{}]", autoTestsJobEntity.getJobUuid());
+        log.info("Runs new tests job with uuid [{}]", autoTestsJobEntity.getJobUuid());
         autoTestsJobEntity.setStarted(LocalDateTime.now());
         autoTestsJobEntity.setExecutionStatus(ExecutionStatus.IN_PROGRESS);
         autoTestsJobRepository.save(autoTestsJobEntity);
         sendRequests(autoTestsJobEntity);
-        log.info("Test [{}] has been started", autoTestsJobEntity.getJobUuid());
+        log.info("Auto tests job [{}] has been started", autoTestsJobEntity.getJobUuid());
     }
 
     private void sendRequests(AutoTestsJobEntity autoTestsJobEntity) {
