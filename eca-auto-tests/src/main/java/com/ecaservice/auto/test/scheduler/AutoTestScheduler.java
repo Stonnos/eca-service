@@ -4,17 +4,24 @@ import com.ecaservice.auto.test.config.AutoTestsProperties;
 import com.ecaservice.auto.test.entity.ExperimentRequestStageType;
 import com.ecaservice.auto.test.repository.AutoTestsJobRepository;
 import com.ecaservice.auto.test.repository.ExperimentRequestRepository;
+import com.ecaservice.auto.test.service.ExperimentRequestService;
+import com.ecaservice.auto.test.service.api.EcaServerClient;
 import com.ecaservice.auto.test.service.executor.AutoTestExecutor;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.model.TestResult;
+import eca.converters.model.ExperimentHistory;
+import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.SerializationUtils;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -38,6 +45,8 @@ public class AutoTestScheduler {
 
     private final AutoTestsProperties autoTestsProperties;
     private final AutoTestExecutor autoTestExecutor;
+    private final ExperimentRequestService experimentRequestService;
+    private final EcaServerClient ecaServerClient;
     private final AutoTestsJobRepository autoTestsJobRepository;
     private final ExperimentRequestRepository experimentRequestRepository;
 
@@ -45,12 +54,35 @@ public class AutoTestScheduler {
      * Processes new auto tests.
      */
     @Scheduled(fixedDelayString = "${auto-tests.delaySeconds}000")
-    public void processNewTests() {
+    public void startNewTestsJobs() {
         log.trace("Starting to processed new tests");
         List<Long> testIds = autoTestsJobRepository.findNewTests();
         processPaging(testIds, autoTestsJobRepository::findByIdIn,
                 pageContent -> pageContent.forEach(autoTestExecutor::runTests));
         log.trace("New tests has been processed");
+    }
+
+    /**
+     * Processes finished requests.
+     */
+    @Scheduled(fixedDelayString = "${auto-tests.delaySeconds}000")
+    public void processFinishedRequests() {
+        log.trace("Starting to processed finished requests");
+        List<Long> finishedIds = experimentRequestRepository.findFinishedRequests();
+        processPaging(finishedIds, experimentRequestRepository::findByIdIn, pageContent ->
+                pageContent.forEach(experimentRequestEntity -> {
+                    try {
+                        Resource modelResource = ecaServerClient.downloadModel("token");
+                        @Cleanup InputStream inputStream = modelResource.getInputStream();
+                        ExperimentHistory experimentHistory = SerializationUtils.deserialize(inputStream);
+                        experimentRequestService.compareAndMatchResults(experimentRequestEntity, experimentHistory);
+                    } catch (Exception ex) {
+                        log.error("There was an error while process finished experiment request [{}]: {}",
+                                experimentRequestEntity.getRequestId(), ex.getMessage());
+                        experimentRequestService.finishWithError(experimentRequestEntity, ex.getMessage());
+                    }
+                })
+        );
     }
 
     /**
@@ -75,10 +107,10 @@ public class AutoTestScheduler {
     }
 
     /**
-     * Processes finished auto tests.
+     * Processes finished auto tests jobs.
      */
     @Scheduled(fixedDelayString = "${auto-tests.delaySeconds}000")
-    public void processFinishedTests() {
+    public void processFinishedTestJobs() {
         log.trace("Starting to processed finished tests");
         List<Long> testIds = autoTestsJobRepository.findFinishedJobs(FINISHED_STAGES);
         processPaging(testIds, autoTestsJobRepository::findByIdIn, pageContent ->

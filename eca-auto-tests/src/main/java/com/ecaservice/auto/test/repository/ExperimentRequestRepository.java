@@ -49,6 +49,14 @@ public interface ExperimentRequestRepository extends JpaRepository<ExperimentReq
                                       @Param("finishedStages") Collection<ExperimentRequestStageType> finishedStages);
 
     /**
+     * Finds finished requests ids.
+     *
+     * @return requests ids list
+     */
+    @Query("select er.id from ExperimentRequestEntity er where er.stageType = 'REQUEST_FINISHED' order by er.started")
+    List<Long> findFinishedRequests();
+
+    /**
      * Gets max experiment request finished date for specified auto test job.
      *
      * @param autoTestsJobEntity - auto test job entity
