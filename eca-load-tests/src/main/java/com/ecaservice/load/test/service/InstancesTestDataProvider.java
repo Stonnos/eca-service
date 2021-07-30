@@ -28,7 +28,7 @@ public class InstancesTestDataProvider implements TestDataProvider<Resource> {
 
     private final EcaLoadTestsConfig ecaLoadTestsConfig;
 
-    private List<Resource> samplesFiles;
+    private List<Resource> testDataModels;
 
     /**
      * Reads classifiers options from resources.
@@ -39,8 +39,8 @@ public class InstancesTestDataProvider implements TestDataProvider<Resource> {
     public void readTrainingDataResources() throws IOException {
         log.info("Starting to read training data files info from configs");
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        samplesFiles = List.of(resolver.getResources(ecaLoadTestsConfig.getTrainingDataStoragePath()));
-        if (samplesFiles.isEmpty()) {
+        testDataModels = List.of(resolver.getResources(ecaLoadTestsConfig.getTrainingDataStoragePath()));
+        if (testDataModels.isEmpty()) {
             log.error(TRAINING_DATA_INPUT_OPTIONS_DIRECTORY_IS_EMPTY);
             throw new ConfigException(TRAINING_DATA_INPUT_OPTIONS_DIRECTORY_IS_EMPTY);
         } else {
@@ -50,16 +50,16 @@ public class InstancesTestDataProvider implements TestDataProvider<Resource> {
 
     @Override
     public int count() {
-        return samplesFiles.size();
+        return testDataModels.size();
     }
 
     @Override
     public Resource getTestData(int index) {
-        return samplesFiles.get(index);
+        return testDataModels.get(index);
     }
 
     @Override
     public List<Resource> getTestDataModels() {
-        return samplesFiles;
+        return testDataModels;
     }
 }
