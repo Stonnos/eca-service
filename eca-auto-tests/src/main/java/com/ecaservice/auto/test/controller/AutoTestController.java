@@ -27,7 +27,7 @@ import java.io.IOException;
 @Tag(name = "API for auto tests execution")
 @Slf4j
 @RestController
-@RequestMapping("/auto-tests")
+@RequestMapping("/auto-tests/experiments")
 @RequiredArgsConstructor
 public class AutoTestController {
 
@@ -46,7 +46,7 @@ public class AutoTestController {
             description = "Creates experiment requests tests job",
             summary = "Creates experiment requests tests job"
     )
-    @PostMapping(value = "/experiments/create")
+    @PostMapping(value = "/create")
     public String createExperimentsAutoTestsJob() {
         log.info("Request to create auto tests job for experiment requests");
         var autoTestsJobEntity = autoTestJobService.createExperimentsAutoTestsJob();
@@ -65,7 +65,7 @@ public class AutoTestController {
             description = "Downloads experiment auto tests report zip file",
             summary = "Downloads experiment auto tests report zip file"
     )
-    @GetMapping(value = "/experiments/report/{jobUuid}")
+    @GetMapping(value = "/report/{jobUuid}")
     public void downloadReport(@Parameter(description = "Job uuid", required = true)
                                @PathVariable String jobUuid,
                                HttpServletResponse httpServletResponse) throws IOException {
