@@ -61,6 +61,10 @@ public class ExperimentRequestService {
     public void compareAndMatchResults(ExperimentRequestEntity experimentRequestEntity,
                                        ExperimentHistory experimentHistory) {
         log.info("Starting to compare and match experiment [{}] results", experimentRequestEntity.getRequestId());
-
+        experimentRequestEntity.setTestResult(TestResult.PASSED);
+        experimentRequestEntity.setExecutionStatus(ExecutionStatus.FINISHED);
+        experimentRequestEntity.setStageType(ExperimentRequestStageType.COMPLETED);
+        experimentRequestRepository.save(experimentRequestEntity);
+        log.info("Experiment [{}] results has been processed", experimentRequestEntity.getRequestId());
     }
 }

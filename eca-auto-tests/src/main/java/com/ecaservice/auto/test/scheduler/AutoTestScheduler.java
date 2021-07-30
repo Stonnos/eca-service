@@ -75,11 +75,14 @@ public class AutoTestScheduler {
         processPaging(finishedIds, experimentRequestRepository::findByIdIn, pageContent ->
                 pageContent.forEach(experimentRequestEntity -> {
                     try {
+                        log.info("Starting to download experiment [{}] history",
+                                experimentRequestEntity.getRequestId());
                         String token = StringUtils.substringAfterLast(experimentRequestEntity.getDownloadUrl(),
                                 SLASH_SEPARATOR);
                         Resource modelResource = ecaServerClient.downloadModel(token);
                         @Cleanup InputStream inputStream = modelResource.getInputStream();
                         ExperimentHistory experimentHistory = SerializationUtils.deserialize(inputStream);
+                        log.info("Experiment [{}] history has been downloaded", experimentRequestEntity.getRequestId());
                         experimentRequestService.compareAndMatchResults(experimentRequestEntity, experimentHistory);
                     } catch (Exception ex) {
                         log.error("There was an error while process finished experiment request [{}]: {}",
