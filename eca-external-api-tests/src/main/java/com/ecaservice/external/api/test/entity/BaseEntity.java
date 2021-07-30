@@ -1,5 +1,6 @@
 package com.ecaservice.external.api.test.entity;
 
+import com.ecaservice.test.common.model.ExecutionStatus;
 import lombok.Data;
 
 import javax.persistence.Column;

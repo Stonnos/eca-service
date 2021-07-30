@@ -4,7 +4,7 @@ import com.ecaservice.auto.test.config.AutoTestsProperties;
 import com.ecaservice.auto.test.entity.AutoTestsJobEntity;
 import com.ecaservice.auto.test.entity.ExperimentRequestEntity;
 import com.ecaservice.auto.test.repository.ExperimentRequestRepository;
-import com.ecaservice.test.common.report.CsvTestResultsReportGenerator;
+import com.ecaservice.test.common.report.AbstractCsvTestResultsReportGenerator;
 import com.ecaservice.test.common.report.TestResultsCounter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ import static com.ecaservice.test.common.util.Utils.totalTime;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class AutoTestsScvReportGenerator extends CsvTestResultsReportGenerator<AutoTestsJobEntity> {
+public class AutoTestsScvReportGenerator extends AbstractCsvTestResultsReportGenerator<AutoTestsJobEntity> {
 
     private static final String[] TEST_RESULTS_HEADERS = {
             "experiment type",

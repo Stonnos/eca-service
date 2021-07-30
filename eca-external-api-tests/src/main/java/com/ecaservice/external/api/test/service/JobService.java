@@ -1,9 +1,9 @@
 package com.ecaservice.external.api.test.service;
 
 import com.ecaservice.external.api.test.config.ExternalApiTestsConfig;
-import com.ecaservice.external.api.test.entity.ExecutionStatus;
 import com.ecaservice.external.api.test.entity.JobEntity;
 import com.ecaservice.external.api.test.repository.JobRepository;
+import com.ecaservice.test.common.model.ExecutionStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

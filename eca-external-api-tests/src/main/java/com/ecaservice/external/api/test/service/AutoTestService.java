@@ -2,9 +2,10 @@ package com.ecaservice.external.api.test.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
-import com.ecaservice.external.api.test.entity.ExecutionStatus;
-import com.ecaservice.external.api.test.entity.TestResult;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
+import com.ecaservice.test.common.model.ExecutionStatus;
+import com.ecaservice.test.common.model.TestResult;
+import com.ecaservice.test.common.service.TestResultsMatcher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

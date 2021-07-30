@@ -4,10 +4,10 @@ import com.ecaservice.external.api.test.config.ExternalApiTestsConfig;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
 import com.ecaservice.external.api.test.entity.JobEntity;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
-import lombok.Cleanup;
+import com.ecaservice.test.common.report.AbstractCsvTestResultsReportGenerator;
+import com.ecaservice.test.common.report.TestResultsCounter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,28 +15,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import static com.ecaservice.external.api.test.util.Utils.totalTime;
 
 /**
- * Csv report generator.
+ * External api auto tests csv report generator.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class CsvTestResultsReportGenerator implements TestResultsReportGenerator {
-
-    private static final char HEADER_DELIMITER = ';';
-    private static final String TEST_RUN_LOGS_CSV = "test-run-logs.csv";
-    private static final String TEST_RUN_TOTALS_CSV = "test-run-totals.csv";
+public class ExternalApiTestResultsCsvReportGenerator extends AbstractCsvTestResultsReportGenerator<JobEntity> {
 
     private static final String[] TEST_RESULTS_HEADERS = {
             "Display name",
@@ -81,29 +72,19 @@ public class CsvTestResultsReportGenerator implements TestResultsReportGenerator
     private final AutoTestRepository autoTestRepository;
 
     @Override
-    public void generateReport(JobEntity jobEntity, OutputStream outputStream) throws IOException {
-        TestResultsCounter counter = new TestResultsCounter();
-        @Cleanup ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
-        @Cleanup OutputStreamWriter writer = new OutputStreamWriter(zipOutputStream, StandardCharsets.UTF_8);
-
-        zipOutputStream.putNextEntry(new ZipEntry(TEST_RUN_LOGS_CSV));
-        printReportTestResults(writer, jobEntity, counter);
-        writer.flush();
-        zipOutputStream.flush();
-        zipOutputStream.closeEntry();
-
-        zipOutputStream.putNextEntry(new ZipEntry(TEST_RUN_TOTALS_CSV));
-        printReportTotal(writer, jobEntity, counter);
-        writer.flush();
-        zipOutputStream.flush();
-        zipOutputStream.closeEntry();
+    protected String[] getResultsReportHeaders() {
+        return TEST_RESULTS_HEADERS;
     }
 
-    private void printReportTestResults(OutputStreamWriter writer,
-                                        JobEntity jobEntity,
-                                        TestResultsCounter testResultsCounter) throws IOException {
-        CSVPrinter printer = new CSVPrinter(writer,
-                CSVFormat.EXCEL.withHeader(TEST_RESULTS_HEADERS).withDelimiter(HEADER_DELIMITER));
+    @Override
+    protected String[] getTotalReportHeaders() {
+        return HEADERS_TOTALS;
+    }
+
+    @Override
+    protected void printReportTestResults(CSVPrinter printer, JobEntity jobEntity,
+                                          TestResultsCounter testResultsCounter)
+            throws IOException {
         Pageable pageRequest = PageRequest.of(0, externalApiTestsConfig.getPageSize());
         Page<AutoTestEntity> page;
         do {
@@ -148,11 +129,9 @@ public class CsvTestResultsReportGenerator implements TestResultsReportGenerator
         } while (page.hasNext());
     }
 
-    private void printReportTotal(OutputStreamWriter writer,
-                                  JobEntity jobEntity,
-                                  TestResultsCounter testResultsCounter) throws IOException {
-        CSVPrinter printer = new CSVPrinter(writer,
-                CSVFormat.EXCEL.withHeader(HEADERS_TOTALS).withDelimiter(HEADER_DELIMITER));
+    @Override
+    protected void printReportTotal(CSVPrinter printer, JobEntity jobEntity, TestResultsCounter testResultsCounter)
+            throws IOException {
         printer.printRecord(Arrays.asList(
                 jobEntity.getJobUuid(),
                 jobEntity.getExecutionStatus(),

@@ -2,7 +2,7 @@ package com.ecaservice.external.api.test.controller;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.external.api.test.entity.JobEntity;
-import com.ecaservice.external.api.test.report.TestResultsReportGenerator;
+import com.ecaservice.external.api.test.report.ExternalApiTestResultsCsvReportGenerator;
 import com.ecaservice.external.api.test.repository.JobRepository;
 import com.ecaservice.external.api.test.service.JobService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,7 +31,7 @@ import java.io.OutputStream;
 @Tag(name = "API for auto tests execution")
 @Slf4j
 @RestController
-@RequestMapping("/auto-tests")
+@RequestMapping("/auto-tests/external-api")
 @RequiredArgsConstructor
 public class AutoTestController {
 
@@ -39,7 +39,7 @@ public class AutoTestController {
     private static final String AUTO_TEST_REPORT_NAME = "auto-tests-report%s.zip";
 
     private final JobService jobService;
-    private final TestResultsReportGenerator testResultsReportGenerator;
+    private final ExternalApiTestResultsCsvReportGenerator externalApiTestResultsCsvReportGenerator;
     private final JobRepository jobRepository;
 
     /**
@@ -81,7 +81,7 @@ public class AutoTestController {
         httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
         String reportName = String.format(AUTO_TEST_REPORT_NAME, jobEntity.getJobUuid());
         httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(ATTACHMENT_FORMAT, reportName));
-        testResultsReportGenerator.generateReport(jobEntity, outputStream);
+        externalApiTestResultsCsvReportGenerator.generateReport(jobEntity, outputStream);
         outputStream.flush();
         log.info("Auto tests [{}] report has been generated", jobUuid);
     }

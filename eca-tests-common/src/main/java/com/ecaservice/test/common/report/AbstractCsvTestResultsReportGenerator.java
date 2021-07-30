@@ -19,7 +19,7 @@ import java.util.zip.ZipOutputStream;
  * @author Roman Batygin
  */
 @Slf4j
-public abstract class CsvTestResultsReportGenerator<T> implements TestResultsReportGenerator<T> {
+public abstract class AbstractCsvTestResultsReportGenerator<T> implements TestResultsReportGenerator<T> {
 
     private static final char HEADER_DELIMITER = ';';
     private static final String TEST_RUN_LOGS_CSV = "test-run-logs.csv";
