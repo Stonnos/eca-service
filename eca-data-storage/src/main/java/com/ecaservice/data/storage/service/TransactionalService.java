@@ -31,8 +31,10 @@ public class TransactionalService {
      */
     @Transactional
     public void saveBatch(String tableName, Instances instances, int limit, int offset) {
+        String sqlQuery = sqlQueryHelper.buildPreparedInsertQuery(tableName, instances);
         for (int i = offset; i < Integer.min(instances.numInstances(), limit + offset); i++) {
-            jdbcTemplate.update(sqlQueryHelper.buildInsertQuery(tableName, instances, instances.instance(i)));
+            Object[] args = sqlQueryHelper.prepareQueryParameters(instances.instance(i));
+            jdbcTemplate.update(sqlQuery, args);
         }
     }
 }
