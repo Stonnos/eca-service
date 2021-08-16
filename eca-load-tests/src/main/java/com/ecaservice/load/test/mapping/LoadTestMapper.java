@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-import static com.ecaservice.load.test.util.Utils.tps;
 import static com.ecaservice.test.common.util.Utils.totalTime;
 
 /**
@@ -98,16 +97,6 @@ public abstract class LoadTestMapper {
         } else {
             loadTestBean.setEvaluationMethod(loadTestEntity.getEvaluationMethod().getDescription());
         }
-    }
-
-    @AfterMapping
-    protected void mapTotalTime(LoadTestEntity loadTestEntity, @MappingTarget LoadTestBean loadTestBean) {
-        loadTestBean.setTotalTime(totalTime(loadTestEntity.getStarted(), loadTestEntity.getFinished()));
-    }
-
-    @AfterMapping
-    protected void mapTps(LoadTestEntity jobEntity, @MappingTarget LoadTestBean loadTestBean) {
-        loadTestBean.setTps(tps(jobEntity));
     }
 
     @AfterMapping

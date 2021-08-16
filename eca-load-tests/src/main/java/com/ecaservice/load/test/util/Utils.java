@@ -13,6 +13,7 @@ import weka.core.Instances;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
@@ -61,19 +62,21 @@ public class Utils {
     /**
      * Calculates tps value.
      *
-     * @param loadTestEntity - load tests entity
+     * @param started     - started date
+     * @param finished    - finished date
+     * @param numRequests - requests number
      * @return tps value
      */
-    public static BigDecimal tps(LoadTestEntity loadTestEntity) {
-        if (loadTestEntity.getStarted() != null && loadTestEntity.getFinished() != null) {
-            long totalTimeMillis = ChronoUnit.MILLIS.between(loadTestEntity.getStarted(), loadTestEntity.getFinished());
+    public static BigDecimal tps(LocalDateTime started, LocalDateTime finished, int numRequests) {
+        if (started != null && finished != null) {
+            long totalTimeMillis = ChronoUnit.MILLIS.between(started, finished);
             BigDecimal totalTimeSeconds = BigDecimal.valueOf(totalTimeMillis)
                     .divide(BigDecimal.valueOf(THOUSAND), SCALE, RoundingMode.HALF_UP);
             if (totalTimeMillis > 0) {
-                return BigDecimal.valueOf(loadTestEntity.getNumRequests())
+                return BigDecimal.valueOf(numRequests)
                         .divide(totalTimeSeconds, SCALE, RoundingMode.HALF_UP);
             } else {
-                return BigDecimal.valueOf(loadTestEntity.getNumRequests());
+                return BigDecimal.valueOf(numRequests);
             }
         } else {
             return null;

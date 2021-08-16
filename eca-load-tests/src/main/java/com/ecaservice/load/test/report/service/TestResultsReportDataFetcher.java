@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.ecaservice.load.test.util.Utils.tps;
+import static com.ecaservice.test.common.util.Utils.totalTime;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
@@ -48,6 +50,8 @@ public class TestResultsReportDataFetcher {
                 evaluationRequestRepository.getMaxFinishedDate(loadTestEntity).orElse(loadTestEntity.getFinished());
         loadTestBean.setStarted(loadTestMapper.formatLocalDateTime(started));
         loadTestBean.setFinished(loadTestMapper.formatLocalDateTime(finished));
+        loadTestBean.setTotalTime(totalTime(started, finished));
+        loadTestBean.setTps(tps(started, finished, loadTestEntity.getNumRequests()));
         fetchEvaluationTestsResults(loadTestEntity, loadTestBean);
         return loadTestBean;
     }
