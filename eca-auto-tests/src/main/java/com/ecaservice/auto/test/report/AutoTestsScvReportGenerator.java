@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static com.ecaservice.test.common.util.Utils.totalTime;
@@ -124,10 +125,13 @@ public class AutoTestsScvReportGenerator extends AbstractCsvTestResultsReportGen
     @Override
     protected void printReportTotal(CSVPrinter printer, AutoTestsJobEntity jobEntity,
                                     TestResultsCounter testResultsCounter) throws IOException {
+        LocalDateTime started = experimentRequestRepository.getMinStartedDate(jobEntity).orElse(jobEntity.getStarted());
+        LocalDateTime finished =
+                experimentRequestRepository.getMaxFinishedDate(jobEntity).orElse(jobEntity.getFinished());
         printer.printRecord(Arrays.asList(
                 jobEntity.getJobUuid(),
                 jobEntity.getExecutionStatus(),
-                totalTime(jobEntity.getStarted(), jobEntity.getFinished()),
+                totalTime(started, finished),
                 testResultsCounter.getPassed(),
                 testResultsCounter.getFailed(),
                 testResultsCounter.getErrors())

@@ -72,7 +72,16 @@ public interface ExperimentRequestRepository extends JpaRepository<ExperimentReq
      * @return max finished date
      */
     @Query("select max(er.finished) from ExperimentRequestEntity er where er.job = :job")
-    LocalDateTime getMaxFinishedDate(@Param("job") AutoTestsJobEntity autoTestsJobEntity);
+    Optional<LocalDateTime> getMaxFinishedDate(@Param("job") AutoTestsJobEntity autoTestsJobEntity);
+
+    /**
+     * Gets min experiment request started date for specified auto test job.
+     *
+     * @param autoTestsJobEntity - auto tests job
+     * @return min started date
+     */
+    @Query("select min(er.started) from ExperimentRequestEntity er where er.job = :job")
+    Optional<LocalDateTime> getMinStartedDate(@Param("job") AutoTestsJobEntity autoTestsJobEntity);
 
     /**
      * Finds experiment requests page with specified ids.

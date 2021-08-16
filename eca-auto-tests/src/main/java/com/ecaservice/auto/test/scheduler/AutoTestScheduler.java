@@ -124,7 +124,7 @@ public class AutoTestScheduler {
         processPaging(testIds, autoTestsJobRepository::findByIdIn, pageContent ->
                 pageContent.forEach(autoTestsJobEntity -> {
                     autoTestsJobEntity.setExecutionStatus(ExecutionStatus.FINISHED);
-                    autoTestsJobEntity.setFinished(experimentRequestRepository.getMaxFinishedDate(autoTestsJobEntity));
+                    autoTestsJobEntity.setFinished(LocalDateTime.now());
                     autoTestsJobRepository.save(autoTestsJobEntity);
                     log.info("Auto tests job [{}] has been finished", autoTestsJobEntity.getJobUuid());
                 })
