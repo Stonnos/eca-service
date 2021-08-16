@@ -56,8 +56,8 @@ public abstract class LoadTestMapper {
      * @return load test bean
      */
     @Mapping(source = "executionStatus.description", target = "executionStatus")
-    @Mapping(source = "started", target = "started", qualifiedByName = "formatLocalDateTime")
-    @Mapping(source = "finished", target = "finished", qualifiedByName = "formatLocalDateTime")
+    @Mapping(target = "started", ignore = true)
+    @Mapping(target = "finished", ignore = true)
     @Mapping(target = "evaluationMethod", ignore = true)
     public abstract LoadTestBean mapToBean(LoadTestEntity loadTestEntity);
 
@@ -72,6 +72,17 @@ public abstract class LoadTestMapper {
     @Mapping(source = "started", target = "started", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "finished", target = "finished", qualifiedByName = "formatLocalDateTime")
     public abstract EvaluationTestBean map(EvaluationRequestEntity evaluationRequestEntity);
+
+    /**
+     * Format local date time to string.
+     *
+     * @param localDateTime - local date time
+     * @return local date time string
+     */
+    @Named("formatLocalDateTime")
+    public String formatLocalDateTime(LocalDateTime localDateTime) {
+        return Optional.ofNullable(localDateTime).map(dateTimeFormatter::format).orElse(null);
+    }
 
     @AfterMapping
     protected void mapEvaluationMethod(LoadTestEntity loadTestEntity, @MappingTarget LoadTestBean loadTestBean) {
@@ -104,10 +115,5 @@ public abstract class LoadTestMapper {
                                 @MappingTarget EvaluationTestBean evaluationTestBean) {
         evaluationTestBean.setTotalTime(
                 totalTime(evaluationRequestEntity.getStarted(), evaluationRequestEntity.getFinished()));
-    }
-
-    @Named("formatLocalDateTime")
-    protected String formatLocalDateTime(LocalDateTime localDateTime) {
-        return Optional.ofNullable(localDateTime).map(dateTimeFormatter::format).orElse(null);
     }
 }

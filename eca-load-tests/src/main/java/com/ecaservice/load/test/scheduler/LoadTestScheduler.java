@@ -77,7 +77,7 @@ public class LoadTestScheduler {
         processPaging(testIds, loadTestRepository::findByIdIn, pageContent ->
                 pageContent.forEach(loadTestEntity -> {
                     loadTestEntity.setExecutionStatus(ExecutionStatus.FINISHED);
-                    loadTestEntity.setFinished(evaluationRequestRepository.getMaxFinishedDate(loadTestEntity));
+                    loadTestEntity.setFinished(LocalDateTime.now());
                     loadTestRepository.save(loadTestEntity);
                     log.info("Load test [{}] has been finished", loadTestEntity.getTestUuid());
                 })

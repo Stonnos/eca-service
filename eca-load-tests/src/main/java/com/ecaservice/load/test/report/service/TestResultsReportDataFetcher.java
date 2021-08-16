@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -41,6 +42,12 @@ public class TestResultsReportDataFetcher {
      */
     public LoadTestBean fetchReportData(LoadTestEntity loadTestEntity) {
         LoadTestBean loadTestBean = loadTestMapper.mapToBean(loadTestEntity);
+        LocalDateTime started =
+                evaluationRequestRepository.getMinStartedDate(loadTestEntity).orElse(loadTestEntity.getStarted());
+        LocalDateTime finished =
+                evaluationRequestRepository.getMaxFinishedDate(loadTestEntity).orElse(loadTestEntity.getFinished());
+        loadTestBean.setStarted(loadTestMapper.formatLocalDateTime(started));
+        loadTestBean.setFinished(loadTestMapper.formatLocalDateTime(finished));
         fetchEvaluationTestsResults(loadTestEntity, loadTestBean);
         return loadTestBean;
     }

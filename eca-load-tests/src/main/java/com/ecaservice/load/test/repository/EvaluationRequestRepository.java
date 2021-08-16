@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository to manage with {@link EvaluationRequestEntity} persistence entity.
@@ -62,5 +63,14 @@ public interface EvaluationRequestRepository extends JpaRepository<EvaluationReq
      * @return max finished date
      */
     @Query("select max(er.finished) from EvaluationRequestEntity er where er.loadTestEntity = :loadTestEntity")
-    LocalDateTime getMaxFinishedDate(@Param("loadTestEntity") LoadTestEntity loadTestEntity);
+    Optional<LocalDateTime> getMaxFinishedDate(@Param("loadTestEntity") LoadTestEntity loadTestEntity);
+
+    /**
+     * Gets min evaluation request started date for specified load test.
+     *
+     * @param loadTestEntity - load test entity
+     * @return min started date
+     */
+    @Query("select min(er.started) from EvaluationRequestEntity er where er.loadTestEntity = :loadTestEntity")
+    Optional<LocalDateTime> getMinStartedDate(@Param("loadTestEntity") LoadTestEntity loadTestEntity);
 }
