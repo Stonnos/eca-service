@@ -44,7 +44,8 @@ public class RabbitMessageListener {
             return;
         }
         if (ExperimentRequestStageType.EXCEEDED.equals(experimentRequestEntity.getStageType())) {
-            log.warn("Got exceeded request entity with correlation id [{}]", correlationId);
+            log.warn("Can't handle message from MQ. Got exceeded request entity with correlation id [{}]",
+                    correlationId);
         } else {
             internalHandleResponse(experimentRequestEntity, ecaResponse, correlationId);
         }

@@ -1,5 +1,6 @@
 package com.ecaservice.auto.test.messaging.handler;
 
+import com.ecaservice.auto.test.entity.ExperimentRequestEntity;
 import com.ecaservice.auto.test.entity.ExperimentRequestStageType;
 import com.ecaservice.auto.test.model.EmailMessage;
 import com.ecaservice.auto.test.model.EmailTypeVisitor;
@@ -38,6 +39,15 @@ public class EmailMessageHandler {
         log.info("Starting to process email message [{}] for experiment [{}]",
                 emailMessage.getEmailType(), emailMessage.getRequestId());
         var experimentRequestEntity = experimentRequestService.getByRequestId(emailMessage.getRequestId());
+        if (ExperimentRequestStageType.EXCEEDED.equals(experimentRequestEntity.getStageType())) {
+            log.warn("Can't handle email message. Got exceeded request entity with request id [{}]",
+                    experimentRequestEntity.getRequestId());
+        } else {
+            internalHandleMessage(emailMessage, experimentRequestEntity);
+        }
+    }
+
+    private void internalHandleMessage(EmailMessage emailMessage, ExperimentRequestEntity experimentRequestEntity) {
         emailMessage.getEmailType().handle(new EmailTypeVisitor() {
             @Override
             public void visitNewExperiment() {

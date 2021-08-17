@@ -106,6 +106,8 @@ public class AutoTestScheduler {
                     experimentRequestEntity.setExecutionStatus(ExecutionStatus.ERROR);
                     experimentRequestEntity.setStageType(ExperimentRequestStageType.EXCEEDED);
                     experimentRequestEntity.setTestResult(TestResult.ERROR);
+                    experimentRequestEntity.setDetails(String.format("Request timeout exceeded after [%d] seconds!",
+                            autoTestsProperties.getRequestTimeoutInSeconds()));
                     experimentRequestEntity.setFinished(LocalDateTime.now());
                     experimentRequestRepository.save(experimentRequestEntity);
                     log.info("Exceeded request with correlation id [{}]", experimentRequestEntity.getCorrelationId());
