@@ -165,13 +165,14 @@ public class FilterController {
 @RequiredArgsConstructor
 public class AppService {
 
-    private final MyEntityRepository appRepository;
+    private final FilterService filterService;
+    private final MyEntityRepository myEntityRepository;
 
     public Page<MyEntity> getNextPage(PageRequestDto pageRequestDto) {
         List<String> globalFilterFields = filterService.getGlobalFilterFields("globalFilterName");
         AbstractFilter filter = new MyFilterImpl(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());
-        return auditLogRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize()));
+        return myEntityRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize()));
     }
 }
 ----
