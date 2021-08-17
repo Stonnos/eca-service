@@ -45,7 +45,7 @@ auto-tests:
   schedulerPoolSize: 1
   delaySeconds: 2
   experimentsDataPath: classpath*:experiments/**/*.json
-  requestTimeoutInSeconds: 600
+  requestTimeoutInSeconds: 1200
   ecaServerBaseUrl: http://localhost:8080/eca-server
   expectedResultsSize: 5
 
