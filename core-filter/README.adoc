@@ -119,3 +119,59 @@ spring:
 |filter_dictionary_id       |bigint           |-|-|fk_filter_field_dictionary_id     |Внешний ключ, ID словаря (заполняется для полей типа REFERENCE)
 |filter_template_id         |bigint           |-|+|fk_filter_template_id             |Внешний ключ, ID шаблона
 |===
+
+== 3. Примеры использования
+
+Ниже приведен пример контроллера для получения шаблона фильтра:
+
+[source,java]
+----
+@Slf4j
+@RestController
+@RequestMapping("/filters")
+@RequiredArgsConstructor
+public class FilterController {
+
+    private final FilterService filterService;
+
+    /**
+     * Gets filter fields.
+     *
+     * @return filter fields list
+     */
+    @GetMapping(value = "/fields")
+    public List<FilterFieldDto> getFilterFields() {
+        return filterService.getFilterFields("filterName");
+    }
+
+    /**
+     * Gets filter dictionary.
+     *
+     * @return filter dictionary
+     */
+    @GetMapping(value = "/dictionary")
+    public FilterDictionaryDto getFilterDictionary() {
+        return filterService.getFilterDictionary("dictionaryName");
+    }
+}
+----
+
+Ниже приведен пример использования класса AbstractFilter для фильтрации и сортировки данных:
+
+[source,java]
+----
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class AppService {
+
+    private final MyEntityRepository appRepository;
+
+    public Page<MyEntity> getNextPage(PageRequestDto pageRequestDto) {
+        List<String> globalFilterFields = filterService.getGlobalFilterFields("globalFilterName");
+        AbstractFilter filter = new MyFilterImpl(pageRequestDto.getSearchQuery(), globalFilterFields,
+                pageRequestDto.getFilters());
+        return auditLogRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize()));
+    }
+}
+----
