@@ -61,6 +61,7 @@ springdoc:
     oauth:
       client-id: swagger
       client-secret: swagger_secret
+    disable-swagger-default-url: true
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth

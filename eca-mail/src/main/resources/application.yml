@@ -59,6 +59,10 @@ open-api:
   email: roman.batygin@mail.ru
   projectVersion: @project.version@
 
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+
 mail-config:
   maxFailedAttemptsToSent: 25
   pageSize: 10

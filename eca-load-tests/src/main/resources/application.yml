@@ -28,7 +28,6 @@ spring:
         concurrency: 10
         maxConcurrency: 10
 
-
 eca-load-tests:
   numRequests: 100
   numThreads: 10
@@ -57,6 +56,10 @@ open-api:
   author: Roman Batygin
   email: roman.batygin@mail.ru
   projectVersion: @project.version@
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
 
 server:
   port: 8088
