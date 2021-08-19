@@ -1,4 +1,4 @@
-package com.ecaservice.listener;
+package com.ecaservice.mq.listener;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.base.model.EvaluationRequest;

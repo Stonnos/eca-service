@@ -1,7 +1,7 @@
-package com.ecaservice.listener;
+package com.ecaservice.mq.listener;
 
 import com.ecaservice.base.model.EcaResponse;
-import com.ecaservice.listener.support.AbstractExceptionTranslator;
+import com.ecaservice.mq.listener.support.AbstractExceptionTranslator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;

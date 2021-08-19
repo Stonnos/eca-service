@@ -1,4 +1,4 @@
-package com.ecaservice.listener;
+package com.ecaservice.mq.listener;
 
 import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.ExperimentRequest;

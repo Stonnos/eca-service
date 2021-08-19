@@ -1,4 +1,4 @@
-package com.ecaservice.listener.support;
+package com.ecaservice.mq.listener.support;
 
 import com.ecaservice.base.model.EcaResponse;
 import lombok.AccessLevel;
