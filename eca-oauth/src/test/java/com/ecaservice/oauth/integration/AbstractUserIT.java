@@ -7,6 +7,7 @@ import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.repository.ChangePasswordRequestRepository;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
+import com.ecaservice.oauth.repository.RoleRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.service.UserService;
 import com.ecaservice.oauth.service.mail.EmailClient;
@@ -80,6 +81,8 @@ abstract class AbstractUserIT {
     @Getter
     private UserEntityRepository userEntityRepository;
     @Inject
+    private RoleRepository roleRepository;
+    @Inject
     private ResetPasswordRequestRepository resetPasswordRequestRepository;
     @Inject
     private ChangePasswordRequestRepository changePasswordRequestRepository;
@@ -115,6 +118,7 @@ abstract class AbstractUserIT {
 
     void init() {
         when(emailClient.sendEmail(any(EmailRequest.class))).thenReturn(new EmailResponse());
+        roleRepository.save(TestHelperUtils.createRoleEntity());
         CreateUserDto createUserDto = TestHelperUtils.createUserDto();
         userEntity = userService.createUser(createUserDto, PASSWORD);
         webClient = createWebClient(getApiPrefix());
@@ -124,6 +128,7 @@ abstract class AbstractUserIT {
         changePasswordRequestRepository.deleteAll();
         resetPasswordRequestRepository.deleteAll();
         userEntityRepository.deleteAll();
+        roleRepository.deleteAll();
     }
 
     WebClient createWebClient(String apiPrefix) {
