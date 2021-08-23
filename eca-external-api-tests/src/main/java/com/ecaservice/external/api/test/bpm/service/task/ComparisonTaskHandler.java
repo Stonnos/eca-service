@@ -21,7 +21,7 @@ import static com.ecaservice.external.api.test.util.CamundaUtils.setVariableSafe
  * @author Roman Batygin
  */
 @Slf4j
-public abstract class ComparisonTaskHandler extends AbstractTaskHandler{
+public abstract class ComparisonTaskHandler extends AbstractTaskHandler {
 
     private final AutoTestRepository autoTestRepository;
 
