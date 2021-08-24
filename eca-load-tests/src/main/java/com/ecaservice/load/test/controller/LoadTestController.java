@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -58,7 +59,7 @@ public class LoadTestController {
             summary = "Creates load test"
     )
     @PostMapping(value = "/create")
-    public LoadTestDto createTest(@Valid LoadTestRequest loadTestRequest) {
+    public LoadTestDto createTest(@Valid @RequestBody LoadTestRequest loadTestRequest) {
         log.info("Request for load test with params: {}", loadTestRequest);
         LoadTestEntity loadTestEntity = loadTestService.createTest(loadTestRequest);
         log.info("Load test has been created with uuid [{}]", loadTestEntity.getTestUuid());

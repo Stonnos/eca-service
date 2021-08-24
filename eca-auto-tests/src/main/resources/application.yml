@@ -1,0 +1,57 @@
+spring:
+  application:
+    name: eca-auto-tests
+  jmx:
+    default-domain: eca-auto-tests
+  ## Datasource properties
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/eca_auto_tests
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+  cache:
+    cache-names: instances
+    caffeine:
+      spec: maximumSize=10, expireAfterWrite=180s
+  rabbitmq:
+    listener:
+      simple:
+        concurrency: 10
+        maxConcurrency: 10
+
+## Swagger properties
+open-api:
+  basePath: /
+  title: Auto tests execution module
+  description: API provides operations for auto tests execution
+  author: Roman Batygin
+  email: roman.batygin@mail.ru
+  projectVersion: @project.version@
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+
+mail:
+  userName: rbatsw@gmail.com
+  password: czawqizcrdxfqlrv
+
+queue:
+  experimentReplyToQueue: experiment-response-queue
+  experimentRequestQueue: experiment-request-queue
+
+auto-tests:
+  pageSize: 25
+  schedulerPoolSize: 1
+  delaySeconds: 2
+  experimentsDataPath: classpath*:experiments/**/*.json
+  requestTimeoutInSeconds: 1200
+  ecaServerBaseUrl: http://localhost:8080/eca-server
+  expectedResultsSize: 5
+
+server:
+  port: 8093

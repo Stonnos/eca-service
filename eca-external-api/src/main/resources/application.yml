@@ -82,6 +82,7 @@ springdoc:
     oauth:
       client-id: external-api
       client-secret: external_api_secret
+    disable-swagger-default-url: true
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth

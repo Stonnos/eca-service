@@ -15,8 +15,8 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import static com.ecaservice.external.api.test.bpm.CamundaVariables.AUTO_TEST_ID;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.API_RESPONSE;
+import static com.ecaservice.external.api.test.bpm.CamundaVariables.AUTO_TEST_ID;
 import static com.ecaservice.external.api.test.bpm.CamundaVariables.TEST_DATA_MODEL;
 import static com.ecaservice.external.api.test.util.CamundaUtils.getVariable;
 import static com.ecaservice.external.api.test.util.CamundaUtils.setVariableSafe;
@@ -29,6 +29,10 @@ import static com.ecaservice.external.api.test.util.CamundaUtils.setVariableSafe
 @Slf4j
 @Component
 public class InstancesResponseHandler extends AbstractTaskHandler {
+
+    private static final ParameterizedTypeReference<ResponseDto<InstancesDto>> API_RESPONSE_TYPE_REFERENCE =
+            new ParameterizedTypeReference<ResponseDto<InstancesDto>>() {
+            };
 
     private final ObjectMapper objectMapper;
     private final AutoTestRepository autoTestRepository;
@@ -52,9 +56,7 @@ public class InstancesResponseHandler extends AbstractTaskHandler {
                 execution.getProcessBusinessKey());
         Long autoTestId = getVariable(execution, AUTO_TEST_ID, Long.class);
         TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
-        ResponseDto<InstancesDto> responseDto =
-                getVariable(execution, API_RESPONSE, new ParameterizedTypeReference<ResponseDto<InstancesDto>>() {
-                });
+        var responseDto = getVariable(execution, API_RESPONSE, API_RESPONSE_TYPE_REFERENCE);
         Assert.notNull(responseDto.getPayload(),
                 String.format("Expected not null instances response for auto test [%d]", autoTestId));
         AutoTestEntity autoTestEntity = autoTestRepository.findById(autoTestId)

@@ -34,6 +34,10 @@ open-api:
   email: roman.batygin@mail.ru
   projectVersion: @project.version@
 
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+
 management:
   metrics:
     tags:

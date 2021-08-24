@@ -4,10 +4,10 @@ import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
-import com.ecaservice.external.api.test.entity.MatchResult;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
 import com.ecaservice.external.api.test.service.ExternalApiService;
-import com.ecaservice.external.api.test.service.TestResultsMatcher;
+import com.ecaservice.test.common.model.MatchResult;
+import com.ecaservice.test.common.service.TestResultsMatcher;
 import eca.converters.model.ClassificationModel;
 import eca.core.evaluation.Evaluation;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +31,10 @@ import static com.ecaservice.external.api.test.util.Utils.getScaledValue;
 @Component
 public class ClassifierModelComparisonHandler extends ComparisonTaskHandler {
 
+    private static final ParameterizedTypeReference<ResponseDto<EvaluationResponseDto>> API_RESPONSE_TYPE_REFERENCE =
+            new ParameterizedTypeReference<ResponseDto<EvaluationResponseDto>>() {
+            };
+
     private final ExternalApiService externalApiService;
 
     /**
@@ -51,9 +55,7 @@ public class ClassifierModelComparisonHandler extends ComparisonTaskHandler {
                                          TestResultsMatcher matcher) throws IOException {
         log.debug("Compare classifier model result for execution id [{}], process key [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
-        ResponseDto<EvaluationResponseDto> responseDto = getVariable(execution, API_RESPONSE,
-                new ParameterizedTypeReference<ResponseDto<EvaluationResponseDto>>() {
-                });
+        var responseDto = getVariable(execution, API_RESPONSE, API_RESPONSE_TYPE_REFERENCE);
         log.debug("Starting to download model for test [{}]", autoTestEntity.getId());
         ClassificationModel classificationModel =
                 externalApiService.downloadModel(responseDto.getPayload().getRequestId());

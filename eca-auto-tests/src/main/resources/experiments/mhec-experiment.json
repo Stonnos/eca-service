@@ -1,0 +1,6 @@
+{
+  "experimentType": "MODIFIED_HETEROGENEOUS_ENSEMBLE",
+  "firstName": "Roman",
+  "trainDataPath": "classpath:/data/glass.arff",
+  "evaluationMethod": "CROSS_VALIDATION"
+}

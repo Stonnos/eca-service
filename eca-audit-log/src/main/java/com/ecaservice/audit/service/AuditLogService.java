@@ -52,6 +52,12 @@ public class AuditLogService {
         return auditLogEntity;
     }
 
+    /**
+     * Gets audit logs page.
+     *
+     * @param pageRequestDto - page request dto
+     * @return audit logs page
+     */
     public Page<AuditLogEntity> getNextPage(PageRequestDto pageRequestDto) {
         Sort sort = buildSort(pageRequestDto.getSortField(), EVENT_DATE, pageRequestDto.isAscending());
         List<String> globalFilterFields = filterService.getGlobalFilterFields(AUDIT_LOG_TEMPLATE);

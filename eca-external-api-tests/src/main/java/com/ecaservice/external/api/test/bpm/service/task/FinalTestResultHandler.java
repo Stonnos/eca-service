@@ -2,7 +2,7 @@ package com.ecaservice.external.api.test.bpm.service.task;
 
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.service.AutoTestService;
-import com.ecaservice.external.api.test.service.TestResultsMatcher;
+import com.ecaservice.test.common.service.TestResultsMatcher;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.stereotype.Component;

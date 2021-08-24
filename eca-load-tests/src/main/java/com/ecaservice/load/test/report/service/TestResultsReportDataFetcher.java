@@ -7,6 +7,7 @@ import com.ecaservice.load.test.mapping.LoadTestMapper;
 import com.ecaservice.load.test.report.bean.EvaluationTestBean;
 import com.ecaservice.load.test.report.bean.LoadTestBean;
 import com.ecaservice.load.test.repository.EvaluationRequestRepository;
+import com.ecaservice.test.common.report.TestResultsCounter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -14,8 +15,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.ecaservice.load.test.util.Utils.tps;
+import static com.ecaservice.test.common.util.Utils.totalTime;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
@@ -40,6 +44,14 @@ public class TestResultsReportDataFetcher {
      */
     public LoadTestBean fetchReportData(LoadTestEntity loadTestEntity) {
         LoadTestBean loadTestBean = loadTestMapper.mapToBean(loadTestEntity);
+        LocalDateTime started =
+                evaluationRequestRepository.getMinStartedDate(loadTestEntity).orElse(loadTestEntity.getStarted());
+        LocalDateTime finished =
+                evaluationRequestRepository.getMaxFinishedDate(loadTestEntity).orElse(loadTestEntity.getFinished());
+        loadTestBean.setStarted(loadTestMapper.formatLocalDateTime(started));
+        loadTestBean.setFinished(loadTestMapper.formatLocalDateTime(finished));
+        loadTestBean.setTotalTime(totalTime(started, finished));
+        loadTestBean.setTps(tps(started, finished, loadTestEntity.getNumRequests()));
         fetchEvaluationTestsResults(loadTestEntity, loadTestBean);
         return loadTestBean;
     }

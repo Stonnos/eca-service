@@ -10,10 +10,23 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class Constraints {
 
-    public static final int MIN_THREADS = 1;
-    public static final int MAX_THREADS = 10;
+    /**
+     * Min. threads number
+     */
+    public static final int MIN_NUM_THREADS = 1;
 
+    /**
+     * Max. threads number
+     */
+    public static final int MAX_NUM_THREADS = 10;
+
+    /**
+     * Precision value
+     */
     public static final int PRECISION = 19;
 
+    /**
+     * Scale value
+     */
     public static final int SCALE = 4;
 }

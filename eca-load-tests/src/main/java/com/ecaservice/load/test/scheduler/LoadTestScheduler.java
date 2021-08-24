@@ -1,12 +1,12 @@
 package com.ecaservice.load.test.scheduler;
 
 import com.ecaservice.load.test.config.EcaLoadTestsConfig;
-import com.ecaservice.load.test.entity.ExecutionStatus;
 import com.ecaservice.load.test.entity.RequestStageType;
-import com.ecaservice.load.test.entity.TestResult;
 import com.ecaservice.load.test.repository.EvaluationRequestRepository;
 import com.ecaservice.load.test.repository.LoadTestRepository;
 import com.ecaservice.load.test.service.executor.TestExecutor;
+import com.ecaservice.test.common.model.ExecutionStatus;
+import com.ecaservice.test.common.model.TestResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -77,7 +77,7 @@ public class LoadTestScheduler {
         processPaging(testIds, loadTestRepository::findByIdIn, pageContent ->
                 pageContent.forEach(loadTestEntity -> {
                     loadTestEntity.setExecutionStatus(ExecutionStatus.FINISHED);
-                    loadTestEntity.setFinished(evaluationRequestRepository.getMaxFinishedDate(loadTestEntity));
+                    loadTestEntity.setFinished(LocalDateTime.now());
                     loadTestRepository.save(loadTestEntity);
                     log.info("Load test [{}] has been finished", loadTestEntity.getTestUuid());
                 })

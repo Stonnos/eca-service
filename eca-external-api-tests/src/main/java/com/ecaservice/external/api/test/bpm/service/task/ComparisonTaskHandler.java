@@ -4,9 +4,9 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.external.api.dto.RequestStatus;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
-import com.ecaservice.external.api.test.entity.MatchResult;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
-import com.ecaservice.external.api.test.service.TestResultsMatcher;
+import com.ecaservice.test.common.model.MatchResult;
+import com.ecaservice.test.common.service.TestResultsMatcher;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 
@@ -21,7 +21,7 @@ import static com.ecaservice.external.api.test.util.CamundaUtils.setVariableSafe
  * @author Roman Batygin
  */
 @Slf4j
-public abstract class ComparisonTaskHandler extends AbstractTaskHandler{
+public abstract class ComparisonTaskHandler extends AbstractTaskHandler {
 
     private final AutoTestRepository autoTestRepository;
 

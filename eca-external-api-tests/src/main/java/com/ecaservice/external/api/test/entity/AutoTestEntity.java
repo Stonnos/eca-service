@@ -1,6 +1,8 @@
 package com.ecaservice.external.api.test.entity;
 
 import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.test.common.model.MatchResult;
+import com.ecaservice.test.common.model.TestResult;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

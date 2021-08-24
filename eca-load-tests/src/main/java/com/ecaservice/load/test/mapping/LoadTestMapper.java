@@ -17,8 +17,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-import static com.ecaservice.load.test.util.Utils.totalTime;
-import static com.ecaservice.load.test.util.Utils.tps;
+import static com.ecaservice.test.common.util.Utils.totalTime;
 
 /**
  * Load test mapper.
@@ -56,8 +55,8 @@ public abstract class LoadTestMapper {
      * @return load test bean
      */
     @Mapping(source = "executionStatus.description", target = "executionStatus")
-    @Mapping(source = "started", target = "started", qualifiedByName = "formatLocalDateTime")
-    @Mapping(source = "finished", target = "finished", qualifiedByName = "formatLocalDateTime")
+    @Mapping(target = "started", ignore = true)
+    @Mapping(target = "finished", ignore = true)
     @Mapping(target = "evaluationMethod", ignore = true)
     public abstract LoadTestBean mapToBean(LoadTestEntity loadTestEntity);
 
@@ -72,6 +71,17 @@ public abstract class LoadTestMapper {
     @Mapping(source = "started", target = "started", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "finished", target = "finished", qualifiedByName = "formatLocalDateTime")
     public abstract EvaluationTestBean map(EvaluationRequestEntity evaluationRequestEntity);
+
+    /**
+     * Format local date time to string.
+     *
+     * @param localDateTime - local date time
+     * @return local date time string
+     */
+    @Named("formatLocalDateTime")
+    public String formatLocalDateTime(LocalDateTime localDateTime) {
+        return Optional.ofNullable(localDateTime).map(dateTimeFormatter::format).orElse(null);
+    }
 
     @AfterMapping
     protected void mapEvaluationMethod(LoadTestEntity loadTestEntity, @MappingTarget LoadTestBean loadTestBean) {
@@ -90,24 +100,9 @@ public abstract class LoadTestMapper {
     }
 
     @AfterMapping
-    protected void mapTotalTime(LoadTestEntity loadTestEntity, @MappingTarget LoadTestBean loadTestBean) {
-        loadTestBean.setTotalTime(totalTime(loadTestEntity.getStarted(), loadTestEntity.getFinished()));
-    }
-
-    @AfterMapping
-    protected void mapTps(LoadTestEntity jobEntity, @MappingTarget LoadTestBean loadTestBean) {
-        loadTestBean.setTps(tps(jobEntity));
-    }
-
-    @AfterMapping
     protected void mapTotalTime(EvaluationRequestEntity evaluationRequestEntity,
                                 @MappingTarget EvaluationTestBean evaluationTestBean) {
         evaluationTestBean.setTotalTime(
                 totalTime(evaluationRequestEntity.getStarted(), evaluationRequestEntity.getFinished()));
-    }
-
-    @Named("formatLocalDateTime")
-    protected String formatLocalDateTime(LocalDateTime localDateTime) {
-        return Optional.ofNullable(localDateTime).map(dateTimeFormatter::format).orElse(null);
     }
 }

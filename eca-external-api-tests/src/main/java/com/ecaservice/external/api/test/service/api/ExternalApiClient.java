@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
  *
  * @author Roman Batygin
  */
-@FeignClient(name = "external-api-client", url = "${external-api-tests.url}")
+@FeignClient(name = "external-api-client", url = "${external-api-tests.url}/external-api")
 public interface ExternalApiClient {
 
     /**

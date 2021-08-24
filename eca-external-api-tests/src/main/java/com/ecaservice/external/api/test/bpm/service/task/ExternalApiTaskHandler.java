@@ -56,7 +56,7 @@ public abstract class ExternalApiTaskHandler extends AbstractTaskHandler {
                 execution.getProcessBusinessKey());
         String responseBody = ex.contentUTF8();
         Assert.notNull(responseBody, "Expected not empty response body");
-        ResponseDto<List<ValidationErrorDto>> responseDto =
+        var responseDto =
                 OBJECT_MAPPER.readValue(responseBody, new TypeReference<>() {
                 });
         setVariableSafe(execution, API_RESPONSE, responseDto);

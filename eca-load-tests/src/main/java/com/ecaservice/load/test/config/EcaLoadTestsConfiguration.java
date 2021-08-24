@@ -1,6 +1,7 @@
 package com.ecaservice.load.test.config;
 
 import com.ecaservice.classifier.options.config.ClassifiersOptionsConfiguration;
+import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.config.swagger.annotation.EnableOpenApi;
 import org.jxls.util.JxlsHelper;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -19,6 +20,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableOpenApi
 @EnableCaching
 @EnableScheduling
+@EnableGlobalExceptionHandler
 @EnableConfigurationProperties(EcaLoadTestsConfig.class)
 @Import(ClassifiersOptionsConfiguration.class)
 public class EcaLoadTestsConfiguration {
