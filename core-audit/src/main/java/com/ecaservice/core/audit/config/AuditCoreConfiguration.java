@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
@@ -21,6 +22,7 @@ import java.util.concurrent.Executor;
  * @author Roman Batygin
  */
 @Configuration
+@EnableAsync
 @EnableConfigurationProperties(AuditProperties.class)
 @ComponentScan({"com.ecaservice.core.audit"})
 @EnableFeignClients(basePackageClasses = AuditEventSender.class)
@@ -30,12 +32,18 @@ import java.util.concurrent.Executor;
 public class AuditCoreConfiguration {
 
     /**
+     * Audit event thread pool task executor bean
+     */
+    public static final String AUDIT_EVENT_THREAD_POOL_TASK_EXECUTOR = "auditEventThreadPoolTaskExecutor";
+
+    /**
      * Creates thread pool task executor bean.
      *
      * @param auditProperties - audit properties
      * @return thread pool task executor
      */
-    @Bean
+    @Bean(name = AUDIT_EVENT_THREAD_POOL_TASK_EXECUTOR)
+    @ConditionalOnProperty(value = "audit.asyncEvents", havingValue = "true")
     public Executor auditEventThreadPoolTaskExecutor(AuditProperties auditProperties) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(auditProperties.getThreadPoolSize());
