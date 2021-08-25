@@ -5,7 +5,7 @@ import com.ecaservice.core.audit.service.AuditEventService;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Service for handling asynchronous audit events.
+ * Service for handling audit events.
  *
  * @author Roman Batygin
  */
