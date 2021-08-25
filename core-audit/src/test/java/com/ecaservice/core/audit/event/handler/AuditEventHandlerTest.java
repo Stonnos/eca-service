@@ -35,7 +35,6 @@ class AuditEventHandlerTest {
         var contextParams = new AuditContextParams();
         var auditEvent = new AuditEvent(this, AUDIT_CODE, EventType.SUCCESS, INITIATOR, contextParams);
         auditEventHandler.handleAuditEvent(auditEvent);
-        verify(auditEventService, atLeastOnce()).audit(auditEvent.getAuditCode(), auditEvent.getEventType(),
-                auditEvent.getInitiator(), auditEvent.getAuditContextParams());
+        verify(auditEventService, atLeastOnce()).audit(auditEvent);
     }
 }
