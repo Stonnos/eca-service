@@ -2,6 +2,7 @@ package com.ecaservice.core.audit.event.handler;
 
 import com.ecaservice.core.audit.event.AuditEvent;
 import com.ecaservice.core.audit.service.AuditEventService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -13,20 +14,13 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @ConditionalOnProperty(value = "audit.asyncEvents", havingValue = "false", matchIfMissing = true)
-public class SimpleAuditEventHandler extends DefaultAuditEventHandler {
+@RequiredArgsConstructor
+public class SimpleAuditEventHandler {
 
-    /**
-     * Constructor with spring dependency injection.
-     *
-     * @param auditEventService - audit event service
-     */
-    public SimpleAuditEventHandler(AuditEventService auditEventService) {
-        super(auditEventService);
-    }
+    private final AuditEventService auditEventService;
 
-    @Override
     @EventListener
     public void handleAuditEvent(AuditEvent auditEvent) {
-        super.handleAuditEvent(auditEvent);
+        auditEventService.audit(auditEvent);
     }
 }
