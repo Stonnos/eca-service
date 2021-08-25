@@ -440,8 +440,9 @@ class ExperimentServiceTest extends AbstractJpaTest {
         Map<ExperimentType, Long> experimentTypesMap =
                 experimentService.getExperimentTypesStatistics(LocalDate.of(2018, 1, 1), LocalDate.of(2018, 1, 3));
         Assertions.assertThat(experimentTypesMap).isNotNull();
-        Assertions.assertThat(experimentTypesMap).hasSameSizeAs(ExperimentType.values());
-        Assertions.assertThat(experimentTypesMap).containsEntry(ExperimentType.ADA_BOOST, 2L);
+        Assertions.assertThat(experimentTypesMap)
+                .hasSameSizeAs(ExperimentType.values())
+                .containsEntry(ExperimentType.ADA_BOOST, 2L);
         Assertions.assertThat(experimentTypesMap.get(ExperimentType.KNN)).isOne();
         Assertions.assertThat(experimentTypesMap.get(ExperimentType.DECISION_TREE)).isZero();
     }

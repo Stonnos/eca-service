@@ -41,7 +41,7 @@ public class ExperimentScheduler {
     public void processNewRequests() {
         log.trace("Starting to process new experiments.");
         Function<Pageable, Page<Experiment>> pageFunction =
-                (pageable) -> experimentRepository.findExperimentsForProcessing(NEW_STATUSES, pageable);
+                pageable -> experimentRepository.findExperimentsForProcessing(NEW_STATUSES, pageable);
         processPaging(pageFunction, experiments -> {
             log.info("Obtained {} new experiments", experiments.size());
             experiments.forEach(experimentRequestProcessor::processNewExperiment);
@@ -56,7 +56,7 @@ public class ExperimentScheduler {
     public void processRequestsToSent() {
         log.trace("Starting to sent experiment results.");
         Function<Pageable, Page<Experiment>> pageFunction =
-                (pageable) -> experimentRepository.findExperimentsForProcessing(FINISHED_STATUSES, pageable);
+                pageable -> experimentRepository.findExperimentsForProcessing(FINISHED_STATUSES, pageable);
         processPaging(pageFunction,
                 experiments -> experiments.forEach(experimentRequestProcessor::notifyExperimentFinished));
         log.trace("Sending experiments has been successfully finished.");

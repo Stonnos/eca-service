@@ -160,10 +160,8 @@ public class ExceptionResponseHandler {
                 stringBuilder.append(reference.getFieldName());
             }
             int nextIndex = i + 1;
-            if (nextIndex < references.size()) {
-                if (references.get(nextIndex).getIndex() < 0) {
-                    stringBuilder.append(POINT);
-                }
+            if (nextIndex < references.size() && references.get(nextIndex).getIndex() < 0) {
+                stringBuilder.append(POINT);
             }
         });
         return stringBuilder.toString();
