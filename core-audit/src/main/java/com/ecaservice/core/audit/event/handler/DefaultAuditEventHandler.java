@@ -2,31 +2,32 @@ package com.ecaservice.core.audit.event.handler;
 
 import com.ecaservice.core.audit.event.AuditEvent;
 import com.ecaservice.core.audit.service.AuditEventService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Service;
 
 /**
- * Service for handling audit events.
+ * Service for handling asynchronous audit events.
  *
  * @author Roman Batygin
  */
 @Slf4j
-@Service
-@ConditionalOnProperty(value = "audit.asyncEvents", havingValue = "false")
-@RequiredArgsConstructor
-public class AuditEventHandler {
+public class DefaultAuditEventHandler {
 
     private final AuditEventService auditEventService;
+
+    /**
+     * Constructor with spring dependency injection.
+     *
+     * @param auditEventService - audit event service
+     */
+    public DefaultAuditEventHandler(AuditEventService auditEventService) {
+        this.auditEventService = auditEventService;
+    }
 
     /**
      * Handles audit event.
      *
      * @param auditEvent - audit event
      */
-    @EventListener
     public void handleAuditEvent(AuditEvent auditEvent) {
         log.debug("Starting to handle audit event [{}] with type [{}]", auditEvent.getAuditCode(),
                 auditEvent.getEventType());
