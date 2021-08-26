@@ -19,6 +19,11 @@ public class SimpleAuditEventHandler {
 
     private final AuditEventService auditEventService;
 
+    /**
+     * Handles audit event.
+     *
+     * @param auditEvent - audit event
+     */
     @EventListener
     public void handleAuditEvent(AuditEvent auditEvent) {
         auditEventService.audit(auditEvent);

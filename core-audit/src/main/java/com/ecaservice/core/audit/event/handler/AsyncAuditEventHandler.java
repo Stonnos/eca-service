@@ -22,6 +22,11 @@ public class AsyncAuditEventHandler {
 
     private final AuditEventService auditEventService;
 
+    /**
+     * Handles audit event.
+     *
+     * @param auditEvent - audit event
+     */
     @Async(AUDIT_EVENT_THREAD_POOL_TASK_EXECUTOR)
     @EventListener
     public void handleAuditEvent(AuditEvent auditEvent) {
