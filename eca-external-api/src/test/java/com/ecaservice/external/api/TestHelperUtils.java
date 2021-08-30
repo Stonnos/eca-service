@@ -125,7 +125,7 @@ public class TestHelperUtils {
      */
     public static EvaluationRequestEntity createEvaluationRequestEntity(String correlationId) {
         EvaluationRequestEntity evaluationRequestEntity = new EvaluationRequestEntity();
-        evaluationRequestEntity.setRequestStage(RequestStageType.NOT_SEND);
+        evaluationRequestEntity.setRequestStage(RequestStageType.READY);
         evaluationRequestEntity.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         evaluationRequestEntity.setCreationDate(LocalDateTime.now());
         evaluationRequestEntity.setCorrelationId(correlationId);

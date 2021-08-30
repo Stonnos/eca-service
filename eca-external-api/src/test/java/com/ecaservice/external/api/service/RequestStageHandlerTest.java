@@ -34,7 +34,7 @@ class RequestStageHandlerTest extends AbstractJpaTest {
     @Test
     void testHandleError() {
         EvaluationRequestEntity evaluationRequestEntity =
-                createEvaluationRequestEntity(RequestStageType.NOT_SEND, null);
+                createEvaluationRequestEntity(RequestStageType.READY, null);
         evaluationRequestRepository.save(evaluationRequestEntity);
         requestStageHandler.handleError(evaluationRequestEntity, new IllegalStateException());
         assertRequestStage(evaluationRequestEntity.getId(), RequestStageType.ERROR);
@@ -43,7 +43,7 @@ class RequestStageHandlerTest extends AbstractJpaTest {
     @Test
     void testHandleExceeded() {
         EvaluationRequestEntity evaluationRequestEntity =
-                createEvaluationRequestEntity(RequestStageType.NOT_SEND, null);
+                createEvaluationRequestEntity(RequestStageType.READY, null);
         evaluationRequestRepository.save(evaluationRequestEntity);
         requestStageHandler.handleExceeded(evaluationRequestEntity);
         assertRequestStage(evaluationRequestEntity.getId(), RequestStageType.EXCEEDED);

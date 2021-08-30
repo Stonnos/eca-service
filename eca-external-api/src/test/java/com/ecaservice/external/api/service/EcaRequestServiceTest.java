@@ -36,7 +36,7 @@ class EcaRequestServiceTest extends AbstractJpaTest {
         assertThat(ecaRequestEntity).isNotNull();
         EvaluationRequestEntity actual = evaluationRequestRepository.findById(ecaRequestEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
-        assertThat(actual.getRequestStage()).isEqualTo(RequestStageType.NOT_SEND);
+        assertThat(actual.getRequestStage()).isEqualTo(RequestStageType.READY);
         assertThat(actual.getCreationDate()).isNotNull();
         assertThat(actual.getCorrelationId()).isNotNull();
     }

@@ -36,7 +36,7 @@ public class EcaRequestService {
     public EcaRequestEntity createAndSaveRequestEntity(EvaluationRequestDto evaluationRequestDto) {
         var ecaRequestEntity = ecaRequestMapper.map(evaluationRequestDto);
         ecaRequestEntity.setCorrelationId(UUID.randomUUID().toString());
-        ecaRequestEntity.setRequestStage(RequestStageType.NOT_SEND);
+        ecaRequestEntity.setRequestStage(RequestStageType.READY);
         ecaRequestEntity.setCreationDate(LocalDateTime.now());
         return evaluationRequestRepository.save(ecaRequestEntity);
     }
