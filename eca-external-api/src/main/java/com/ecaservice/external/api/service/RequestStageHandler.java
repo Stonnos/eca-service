@@ -25,10 +25,10 @@ public class RequestStageHandler {
      * Handle error request.
      *
      * @param ecaRequestEntity - eca request entity
-     * @param ex               - exception
+     * @param errorMessage     - error message
      */
-    public void handleError(EcaRequestEntity ecaRequestEntity, Exception ex) {
-        internalHandle(ecaRequestEntity, RequestStageType.ERROR, ex.getMessage());
+    public void handleError(EcaRequestEntity ecaRequestEntity, String errorMessage) {
+        internalHandle(ecaRequestEntity, RequestStageType.ERROR, errorMessage);
     }
 
     /**

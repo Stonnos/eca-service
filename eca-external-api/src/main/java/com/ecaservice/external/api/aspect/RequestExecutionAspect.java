@@ -77,7 +77,7 @@ public class RequestExecutionAspect {
     }
 
     private void handleError(EcaRequestEntity ecaRequestEntity, Exception ex) {
-        requestStageHandler.handleError(ecaRequestEntity, ex);
+        requestStageHandler.handleError(ecaRequestEntity, ex.getMessage());
         messageCorrelationService.pop(ecaRequestEntity.getCorrelationId()).ifPresent(sink -> {
             var requestStatus = exceptionTranslator.translate(ex);
             var evaluationResponseDto = EvaluationResponseDto.builder()
