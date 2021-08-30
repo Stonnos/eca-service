@@ -1,13 +1,11 @@
 package com.ecaservice.external.api.controller;
 
-import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.EvaluationStatus;
 import com.ecaservice.external.api.dto.RequestStatus;
 import com.ecaservice.external.api.dto.ResponseDto;
-import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.metrics.MetricsService;
-import com.ecaservice.external.api.repository.EcaRequestRepository;
+import com.ecaservice.external.api.service.EcaRequestService;
 import com.ecaservice.external.api.service.RequestStageHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +26,7 @@ public class TimeoutFallback {
 
     private final RequestStageHandler requestStageHandler;
     private final MetricsService metricsService;
-    private final EcaRequestRepository ecaRequestRepository;
+    private final EcaRequestService ecaRequestService;
 
     /**
      * Handles request timeout.
@@ -38,7 +36,7 @@ public class TimeoutFallback {
      */
     public Mono<ResponseDto<EvaluationResponseDto>> timeout(String correlationId) {
         return Mono.create(timeoutSink -> {
-            var ecaRequestEntity = getByCorrelationId(correlationId);
+            var ecaRequestEntity = ecaRequestService.getByCorrelationId(correlationId);
             requestStageHandler.handleExceeded(ecaRequestEntity);
             var evaluationResponseDto = EvaluationResponseDto.builder()
                     .requestId(ecaRequestEntity.getCorrelationId())
@@ -49,10 +47,5 @@ public class TimeoutFallback {
             log.debug("Send response with timeout for correlation id [{}]", ecaRequestEntity.getCorrelationId());
             timeoutSink.success(responseDto);
         });
-    }
-
-    private EcaRequestEntity getByCorrelationId(String correlationId) {
-        return ecaRequestRepository.findByCorrelationId(correlationId)
-                .orElseThrow(() -> new EntityNotFoundException(EcaRequestEntity.class, correlationId));
     }
 }
