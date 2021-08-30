@@ -10,7 +10,7 @@ import com.ecaservice.external.api.metrics.MetricsService;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.service.EcaResponseHandler;
 import com.ecaservice.external.api.service.MessageCorrelationService;
-import com.ecaservice.external.api.service.EvaluationResponseBuilder;
+import com.ecaservice.external.api.service.EvaluationResponseService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -43,7 +43,7 @@ class EcaResponseListenerTest {
     @Mock
     private EcaResponseHandler ecaResponseHandler;
     @Mock
-    private EvaluationResponseBuilder evaluationResponseBuilder;
+    private EvaluationResponseService evaluationResponseService;
     @Mock
     private MessageCorrelationService messageCorrelationService;
     @Mock
@@ -98,7 +98,7 @@ class EcaResponseListenerTest {
                 .requestId(messageProperties.getCorrelationId())
                 .build();
         ResponseDto<EvaluationResponseDto> responseDto = buildResponse(RequestStatus.SUCCESS, evaluationResponseDto);
-        when(evaluationResponseBuilder.buildResponse(any(EvaluationResponse.class),
+        when(evaluationResponseService.processResponse(any(EvaluationResponse.class),
                 any(EvaluationRequestEntity.class))).thenReturn(responseDto);
         //Verify that response is being sent to client
         ecaResponseListener.handleEvaluationMessage(new EvaluationResponse(), message);
