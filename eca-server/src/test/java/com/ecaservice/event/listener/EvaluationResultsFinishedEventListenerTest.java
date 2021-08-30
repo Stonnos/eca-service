@@ -14,7 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.ecaservice.TestHelperUtils.createEvaluationLog;
@@ -47,8 +47,8 @@ class EvaluationResultsFinishedEventListenerTest {
     @Test
     void testEvaluationResultsSentWithFinishedStatus() {
         EvaluationLog evaluationLog = createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        when(evaluationLogRepository.findByRequestIdAndRequestStatusIn(evaluationLog.getRequestId(),
-                Collections.singletonList(RequestStatus.FINISHED))).thenReturn(evaluationLog);
+        when(evaluationLogRepository.findByRequestId(evaluationLog.getRequestId())).thenReturn(
+                Optional.of(evaluationLog));
         EvaluationResponse evaluationResponse = createEvaluationResponse(evaluationLog.getRequestId());
         evaluationResponse.setEvaluationResults(getEvaluationResults());
         EvaluationFinishedEvent evaluationFinishedEvent = new EvaluationFinishedEvent(this, evaluationResponse);
@@ -63,8 +63,8 @@ class EvaluationResultsFinishedEventListenerTest {
     @Test
     void testEvaluationResultsSentWithErrorStatus() {
         EvaluationLog evaluationLog = createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR);
-        when(evaluationLogRepository.findByRequestIdAndRequestStatusIn(evaluationLog.getRequestId(),
-                Collections.singletonList(RequestStatus.FINISHED))).thenReturn(null);
+        when(evaluationLogRepository.findByRequestId(evaluationLog.getRequestId())).thenReturn(
+                Optional.of(evaluationLog));
         EvaluationResponse evaluationResponse = createEvaluationResponse(evaluationLog.getRequestId());
         EvaluationFinishedEvent evaluationFinishedEvent = new EvaluationFinishedEvent(this, evaluationResponse);
         evaluationFinishedEventListener.handleEvaluationFinishedEvent(evaluationFinishedEvent);
