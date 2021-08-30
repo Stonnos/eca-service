@@ -31,6 +31,7 @@ public class EvaluationResponseService {
      * @return evaluation response dto
      */
     public EvaluationResponseDto processResponse(String correlationId) {
+        log.debug("Starting to process evaluation response [{}]", correlationId);
         var ecaRequestEntity = ecaRequestService.getByCorrelationId(correlationId);
         var evaluationResponseDtoBuilder = EvaluationResponseDto.builder()
                 .requestId(ecaRequestEntity.getCorrelationId());
@@ -46,6 +47,7 @@ public class EvaluationResponseService {
                     .modelUrl(String.format(MODEL_DOWNLOAD_URL_FORMAT, externalApiConfig.getDownloadBaseUrl(),
                             ecaRequestEntity.getCorrelationId()));
         }
+        log.debug("Evaluation [{}] response has been built", correlationId);
         return evaluationResponseDtoBuilder.build();
     }
 }
