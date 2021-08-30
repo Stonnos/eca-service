@@ -3,8 +3,6 @@ package com.ecaservice.external.api;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
-import com.ecaservice.external.api.dto.EvaluationResponseDto;
-import com.ecaservice.external.api.dto.EvaluationStatus;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
@@ -186,19 +184,5 @@ public class TestHelperUtils {
         evaluationResponse.setRequestId(UUID.randomUUID().toString());
         evaluationResponse.setStatus(TechnicalStatus.ERROR);
         return evaluationResponse;
-    }
-
-    /**
-     * Creates evaluation response dto.
-     *
-     * @param requestId        - request id
-     * @param evaluationStatus - evaluation status
-     * @return evaluation response dto
-     */
-    public static EvaluationResponseDto createEvaluationResponseDto(String requestId, EvaluationStatus evaluationStatus) {
-        return EvaluationResponseDto.builder()
-                .requestId(requestId)
-                .evaluationStatus(evaluationStatus)
-                .build();
     }
 }
