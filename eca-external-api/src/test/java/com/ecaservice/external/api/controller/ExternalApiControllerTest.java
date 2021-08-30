@@ -12,6 +12,7 @@ import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.service.EcaRequestService;
 import com.ecaservice.external.api.service.EvaluationApiService;
+import com.ecaservice.external.api.service.EvaluationResponseService;
 import com.ecaservice.external.api.service.InstancesService;
 import com.ecaservice.external.api.service.MessageCorrelationService;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
@@ -57,6 +58,8 @@ class ExternalApiControllerTest extends AbstractControllerTest {
     private MetricsService metricsService;
     @MockBean
     private EvaluationApiService evaluationApiService;
+    @MockBean
+    private EvaluationResponseService evaluationResponseService;
     @MockBean
     private EcaRequestService ecaRequestService;
     @MockBean

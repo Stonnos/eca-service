@@ -1,12 +1,13 @@
 package com.ecaservice.external.api.service;
 
-import com.ecaservice.base.model.EvaluationResponse;
+import com.ecaservice.external.api.AbstractJpaTest;
 import com.ecaservice.external.api.config.ExternalApiConfig;
-import com.ecaservice.external.api.dto.EvaluationResponseDto;
-import com.ecaservice.external.api.dto.RequestStatus;
-import com.ecaservice.external.api.dto.ResponseDto;
+import com.ecaservice.external.api.dto.EvaluationStatus;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
+import com.ecaservice.external.api.mapping.EcaRequestMapperImpl;
+import com.ecaservice.external.api.mapping.EvaluationStatusMapperImpl;
+import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.annotation.Import;
@@ -16,8 +17,6 @@ import javax.inject.Inject;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.external.api.TestHelperUtils.createEvaluationRequestEntity;
-import static com.ecaservice.external.api.TestHelperUtils.errorEvaluationResponse;
-import static com.ecaservice.external.api.TestHelperUtils.successEvaluationResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -26,44 +25,50 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import({ExternalApiConfig.class, EvaluationResponseService.class})
-class EvaluationResponseServiceTest {
+@Import({ExternalApiConfig.class, EvaluationResponseService.class, EvaluationStatusMapperImpl.class,
+        EcaRequestService.class, EcaRequestMapperImpl.class})
+class EvaluationResponseServiceTest extends AbstractJpaTest {
 
     private static final String MODEL_DOWNLOAD_URL_FORMAT = "%s/download-model/%s";
 
     @Inject
     private ExternalApiConfig externalApiConfig;
     @Inject
+    private EvaluationRequestRepository evaluationRequestRepository;
+    @Inject
     private EvaluationResponseService evaluationResponseService;
+
+    @Override
+    public void deleteAll() {
+        evaluationRequestRepository.deleteAll();
+    }
 
     @Test
     void testBuildResponseWithError() {
-        EvaluationResponse evaluationResponse = errorEvaluationResponse();
-        EvaluationRequestEntity evaluationRequestEntity =
+        var evaluationRequestEntity =
                 createEvaluationRequestEntity(RequestStageType.ERROR, LocalDateTime.now());
-        ResponseDto<EvaluationResponseDto> evaluationResponseDto =
-                evaluationResponseService.processResponse(evaluationResponse, evaluationRequestEntity);
+        evaluationRequestRepository.save(evaluationRequestEntity);
+        var evaluationResponseDto =
+                evaluationResponseService.processResponse(evaluationRequestEntity.getCorrelationId());
         assertThat(evaluationResponseDto).isNotNull();
-        assertThat(evaluationResponseDto.getPayload()).isNotNull();
-        assertThat(evaluationResponseDto.getPayload().getRequestId()).isEqualTo(
+        assertThat(evaluationResponseDto.getRequestId()).isEqualTo(
                 evaluationRequestEntity.getCorrelationId());
-        assertThat(evaluationResponseDto.getRequestStatus()).isEqualTo(RequestStatus.ERROR);
+        assertThat(evaluationResponseDto.getEvaluationStatus()).isEqualTo(EvaluationStatus.ERROR);
     }
 
     @Test
     void testBuildSuccessResponse() {
-        EvaluationResponse evaluationResponse = successEvaluationResponse();
         EvaluationRequestEntity evaluationRequestEntity =
                 createEvaluationRequestEntity(RequestStageType.COMPLETED, LocalDateTime.now());
+        evaluationRequestRepository.save(evaluationRequestEntity);
         String expectedModelUrl = String.format(MODEL_DOWNLOAD_URL_FORMAT, externalApiConfig.getDownloadBaseUrl(),
                 evaluationRequestEntity.getCorrelationId());
-        ResponseDto<EvaluationResponseDto> evaluationResponseDto =
-                evaluationResponseService.processResponse(evaluationResponse, evaluationRequestEntity);
+        var evaluationResponseDto =
+                evaluationResponseService.processResponse(evaluationRequestEntity.getCorrelationId());
         assertThat(evaluationResponseDto).isNotNull();
-        assertThat(evaluationResponseDto.getRequestStatus()).isEqualTo(RequestStatus.SUCCESS);
-        assertThat(evaluationResponseDto.getPayload()).isNotNull();
-        assertThat(evaluationResponseDto.getPayload().getRequestId()).isEqualTo(
+        assertThat(evaluationResponseDto.getEvaluationStatus()).isEqualTo(EvaluationStatus.FINISHED);
+        assertThat(evaluationResponseDto.getRequestId()).isEqualTo(
                 evaluationRequestEntity.getCorrelationId());
-        assertThat(evaluationResponseDto.getPayload().getModelUrl()).isEqualTo(expectedModelUrl);
+        assertThat(evaluationResponseDto.getModelUrl()).isEqualTo(expectedModelUrl);
     }
 }

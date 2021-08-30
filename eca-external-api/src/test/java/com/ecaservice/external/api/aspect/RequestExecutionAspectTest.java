@@ -59,12 +59,12 @@ class RequestExecutionAspectTest {
     void testMethodExecutionWithError() throws Throwable {
         EvaluationRequestEntity evaluationRequestEntity = createEvaluationRequestEntity(UUID.randomUUID().toString());
         ProceedingJoinPoint joinPoint = createProceedingJoinPoint(evaluationRequestEntity);
-        doThrow(DataNotFoundException.class).when(joinPoint).proceed();
+        doThrow(new DataNotFoundException("error")).when(joinPoint).proceed();
         when(exceptionTranslator.translate(any(Exception.class))).thenReturn(RequestStatus.ERROR);
         MonoSink<ResponseDto<EvaluationResponseDto>> sink = mock(MonoSink.class);
         when(messageCorrelationService.pop(evaluationRequestEntity.getCorrelationId())).thenReturn(Optional.of(sink));
         requestExecutionAspect.around(joinPoint, null);
-        verify(requestStageHandler).handleError(any(EcaRequestEntity.class), any(Exception.class));
+        verify(requestStageHandler).handleError(any(EcaRequestEntity.class), any(String.class));
         verify(sink).success(evaluationResponseDtoArgumentCaptor.capture());
         ResponseDto<EvaluationResponseDto> evaluationResponseDto = evaluationResponseDtoArgumentCaptor.getValue();
         assertThat(evaluationResponseDto).isNotNull();
