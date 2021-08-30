@@ -97,57 +97,6 @@ services:
       - eca-db
       - discovery-server
 
-  eca-mail:
-    image: eca-mail
-    container_name: eca-mail
-    environment:
-      TZ: ${TIME_ZONE}
-      SPRING_PROFILES_ACTIVE: "docker"
-      DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
-      DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
-      JAVA_OPTS: "-Xmx512m"
-      OPENAPI_BASEPATH: "/eca-mail"
-    networks:
-      - default
-    depends_on:
-      - eca-db
-      - discovery-server
-
-  eca-data-storage:
-    image: eca-data-storage
-    container_name: eca-data-storage
-    environment:
-      TZ: ${TIME_ZONE}
-      SPRING_PROFILES_ACTIVE: "docker"
-      DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
-      DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
-      JAVA_OPTS: "-Xmx512m"
-      AUDIT_ENABLED: "true"
-      AUDIT_ASYNCEVENTS: ${AUDIT_ASYNC_EVENTS}
-      AUDIT_THREADPOOLSIZE: ${AUDIT_THREAD_POOL_SIZE}
-      OPENAPI_BASEPATH: "/eca-ds"
-    networks:
-      - default
-    depends_on:
-      - eca-db
-      - discovery-server
-
-  eca-ers:
-    image: eca-ers
-    container_name: eca-ers
-    environment:
-      TZ: ${TIME_ZONE}
-      SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx1g"
-      DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
-      DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
-      OPENAPI_BASEPATH: "/eca-ers"
-    networks:
-      - default
-    depends_on:
-      - eca-db
-      - discovery-server
-
   eca-external-api:
     image: eca-external-api
     container_name: eca-external-api
@@ -167,19 +116,6 @@ services:
       - rabbitmq
       - discovery-server
 
-  eca-web:
-    image: eca-web
-    container_name: eca-web
-    environment:
-      TZ: ${TIME_ZONE}
-      SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx512m"
-    networks:
-      - default
-    depends_on:
-      - eca-server
-      - discovery-server
-
   zuul-gate:
     image: zuul-gate
     container_name: zuul-gate
@@ -192,36 +128,6 @@ services:
     networks:
       - default
     depends_on:
-      - discovery-server
-
-  eca-web-push:
-    image: eca-web-push
-    container_name: eca-web-push
-    ports:
-      - "8099:8099"
-    environment:
-      TZ: ${TIME_ZONE}
-      SERVER_PORT: "8099"
-      SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx512m"
-      OPENAPI_BASEPATH: "/eca-web-push"
-    networks:
-      - default
-
-  eca-audit-log:
-    image: eca-audit-log
-    container_name: eca-audit-log
-    environment:
-      TZ: ${TIME_ZONE}
-      SPRING_PROFILES_ACTIVE: "docker"
-      DB_CONTAINER_WAIT: ${DB_CONTAINER_WAIT}
-      DB_CONTAINER_WAIT_TIMEOUT: ${DB_CONTAINER_WAIT_TIMEOUT}
-      JAVA_OPTS: "-Xmx512m"
-      OPENAPI_BASEPATH: "/eca-audit-log"
-    networks:
-      - default
-    depends_on:
-      - eca-db
       - discovery-server
 
 networks:
