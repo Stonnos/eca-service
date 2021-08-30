@@ -38,7 +38,7 @@ public class RequestStageHandler {
      */
     public void handleExceeded(EcaRequestEntity ecaRequestEntity) {
         internalHandle(ecaRequestEntity, RequestStageType.EXCEEDED,
-                String.format("Timeout after %d minutes", externalApiConfig.getRequestTimeoutMinutes()));
+                String.format("Timeout after %d seconds", externalApiConfig.getRequestTimeoutSeconds()));
     }
 
     private void internalHandle(EcaRequestEntity ecaRequestEntity, RequestStageType requestStageType,

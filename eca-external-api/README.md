@@ -22,8 +22,7 @@ ECA external API
 1) spring.datasource - настройки БД для хранения информации
 2) external-api - основные настройки модуля. Ниже приведено описание основных настроек:
    * external-api.batchSize - размер страницы (используется для постраничной обработки)
-   * external-api.requestTimeoutMinutes - таймаут запроса в мин.
-   * external-api.requestCacheDurationMinutes - таймаут кэша запросов в мин.
+   * external-api.requestTimeoutSeconds - таймаут запроса в сек.
    * external-api.classifiersPath - путь к папке с моделями классификаторов
    * external-api.trainDataPath - путь к папке с обучающими выборками
    * external-api.downloadBaseUrl - внешний url для скачивания моделей
