@@ -1,7 +1,6 @@
 package com.ecaservice.external.api.controller;
 
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
-import com.ecaservice.external.api.dto.EvaluationStatus;
 import com.ecaservice.external.api.dto.RequestStatus;
 import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.metrics.MetricsService;
@@ -37,12 +36,7 @@ public class TimeoutFallback {
     public Mono<ResponseDto<EvaluationResponseDto>> timeout(String correlationId) {
         return Mono.create(timeoutSink -> {
             var ecaRequestEntity = ecaRequestService.getByCorrelationId(correlationId);
-            requestStageHandler.handleExceeded(ecaRequestEntity);
-            var evaluationResponseDto = EvaluationResponseDto.builder()
-                    .requestId(ecaRequestEntity.getCorrelationId())
-                    .evaluationStatus(EvaluationStatus.ERROR)
-                    .build();
-            var responseDto = buildResponse(RequestStatus.TIMEOUT, evaluationResponseDto);
+            ResponseDto<EvaluationResponseDto> responseDto = buildResponse(RequestStatus.TIMEOUT);
             metricsService.trackResponse(ecaRequestEntity, responseDto.getRequestStatus());
             log.debug("Send response with timeout for correlation id [{}]", ecaRequestEntity.getCorrelationId());
             timeoutSink.success(responseDto);
