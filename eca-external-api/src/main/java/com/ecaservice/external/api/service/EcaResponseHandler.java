@@ -8,6 +8,7 @@ import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import eca.converters.model.ClassificationModel;
+import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 import weka.classifiers.AbstractClassifier;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 /**
@@ -47,21 +50,8 @@ public class EcaResponseHandler {
                 evaluationRequestEntity.setRequestStage(RequestStageType.ERROR);
             } else {
                 EvaluationResults evaluationResults = evaluationResponse.getEvaluationResults();
-                ClassificationModel classifierModel =
-                        new ClassificationModel((AbstractClassifier) evaluationResults.getClassifier(),
-                                evaluationResults.getEvaluation().getData(), evaluationResults.getEvaluation(),
-                                classifiersOptionsConfig.getMaximumFractionDigits(),
-                                evaluationResults.getClassifier().getClass().getSimpleName());
-                String fileName =
-                        String.format(MODEL_FILE_FORMAT, evaluationResults.getClassifier().getClass().getSimpleName(),
-                                evaluationRequestEntity.getCorrelationId());
-                File classifierFile = new File(externalApiConfig.getClassifiersPath(), fileName);
-                log.debug("Starting to save model [{}] into file {}", evaluationRequestEntity.getCorrelationId(),
-                        classifierFile.getAbsolutePath());
-                fileDataService.saveModel(classifierModel, classifierFile);
-                log.debug("Model [{}] has been saved into file {}", evaluationRequestEntity.getCorrelationId(),
-                        classifierFile.getAbsolutePath());
-                evaluationRequestEntity.setClassifierAbsolutePath(classifierFile.getAbsolutePath());
+                saveEvaluationResults(evaluationResults, evaluationRequestEntity);
+                saveClassifierToFile(evaluationResults, evaluationRequestEntity);
                 evaluationRequestEntity.setRequestStage(RequestStageType.COMPLETED);
             }
         } catch (Exception ex) {
@@ -73,5 +63,35 @@ public class EcaResponseHandler {
             evaluationRequestEntity.setEndDate(LocalDateTime.now());
             ecaRequestRepository.save(evaluationRequestEntity);
         }
+    }
+
+    private void saveEvaluationResults(EvaluationResults evaluationResults,
+                                       EvaluationRequestEntity evaluationRequestEntity) {
+        Evaluation evaluation = evaluationResults.getEvaluation();
+        evaluationRequestEntity.setNumTestInstances(BigInteger.valueOf((long) evaluation.numInstances()));
+        evaluationRequestEntity.setNumCorrect(BigInteger.valueOf((long) evaluation.correct()));
+        evaluationRequestEntity.setNumIncorrect(BigInteger.valueOf((long) evaluation.incorrect()));
+        evaluationRequestEntity.setPctCorrect(BigDecimal.valueOf(evaluation.pctCorrect()));
+        evaluationRequestEntity.setPctIncorrect(BigDecimal.valueOf(evaluation.pctIncorrect()));
+        evaluationRequestEntity.setMeanAbsoluteError(BigDecimal.valueOf(evaluation.meanAbsoluteError()));
+    }
+
+    private void saveClassifierToFile(EvaluationResults evaluationResults,
+                                      EvaluationRequestEntity evaluationRequestEntity) throws Exception {
+        ClassificationModel classifierModel =
+                new ClassificationModel((AbstractClassifier) evaluationResults.getClassifier(),
+                        evaluationResults.getEvaluation().getData(), evaluationResults.getEvaluation(),
+                        classifiersOptionsConfig.getMaximumFractionDigits(),
+                        evaluationResults.getClassifier().getClass().getSimpleName());
+        String fileName =
+                String.format(MODEL_FILE_FORMAT, evaluationResults.getClassifier().getClass().getSimpleName(),
+                        evaluationRequestEntity.getCorrelationId());
+        File classifierFile = new File(externalApiConfig.getClassifiersPath(), fileName);
+        log.debug("Starting to save model [{}] into file {}", evaluationRequestEntity.getCorrelationId(),
+                classifierFile.getAbsolutePath());
+        fileDataService.saveModel(classifierModel, classifierFile);
+        log.debug("Model [{}] has been saved into file {}", evaluationRequestEntity.getCorrelationId(),
+                classifierFile.getAbsolutePath());
+        evaluationRequestEntity.setClassifierAbsolutePath(classifierFile.getAbsolutePath());
     }
 }
