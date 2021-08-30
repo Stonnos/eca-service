@@ -23,7 +23,7 @@ public interface EvaluationStatusMapper {
     @ValueMapping(source = "RESPONSE_RECEIVED", target = "IN_PROGRESS")
     @ValueMapping(source = "COMPLETED", target = "FINISHED")
     @ValueMapping(source = "ERROR", target = "ERROR")
-    @ValueMapping(source = "NOT_SEND", target = "IN_PROGRESS")
+    @ValueMapping(source = "READY", target = "IN_PROGRESS")
     @ValueMapping(source = "EXCEEDED", target = "TIMEOUT")
     EvaluationStatus map(RequestStageType requestStageType);
 }
