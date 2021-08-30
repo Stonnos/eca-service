@@ -48,8 +48,7 @@ public class RequestExecutionAspect {
     @Around("execution(@com.ecaservice.external.api.aspect.RequestExecution * * (..)) && @annotation(requestExecution)")
     public Object around(ProceedingJoinPoint joinPoint, RequestExecution requestExecution) throws Throwable {
         metricsService.trackRequestsTotal();
-        EcaRequestEntity ecaRequestEntity =
-                getInputParameter(joinPoint.getArgs(), ECA_REQUEST_INDEX, EcaRequestEntity.class);
+        var ecaRequestEntity = getInputParameter(joinPoint.getArgs(), ECA_REQUEST_INDEX, EcaRequestEntity.class);
         try {
             log.debug("Starting to process request with correlation id [{}]", ecaRequestEntity.getCorrelationId());
             Object result = joinPoint.proceed();
@@ -66,10 +65,11 @@ public class RequestExecutionAspect {
     private void handleError(EcaRequestEntity ecaRequestEntity, Exception ex) {
         requestStageHandler.handleError(ecaRequestEntity, ex);
         messageCorrelationService.pop(ecaRequestEntity.getCorrelationId()).ifPresent(sink -> {
-            RequestStatus requestStatus = exceptionTranslator.translate(ex);
-            EvaluationResponseDto evaluationResponseDto =
-                    EvaluationResponseDto.builder().requestId(ecaRequestEntity.getCorrelationId()).build();
-            ResponseDto<EvaluationResponseDto> responseDto = buildResponse(requestStatus, evaluationResponseDto);
+            var requestStatus = exceptionTranslator.translate(ex);
+            var evaluationResponseDto = EvaluationResponseDto.builder()
+                    .requestId(ecaRequestEntity.getCorrelationId())
+                    .build();
+            var responseDto = buildResponse(requestStatus, evaluationResponseDto);
             metricsService.trackResponse(ecaRequestEntity, requestStatus);
             log.debug("Send error response for correlation id [{}]", ecaRequestEntity.getCorrelationId());
             sink.success(responseDto);
