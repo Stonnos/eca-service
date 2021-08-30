@@ -22,7 +22,12 @@ API предоставляет следующие методы:
 |application/json
 |http://eca-service:8080/external-api/evaluate
 |POST
-|Запрос на построение модели классификатора
+|Создание запроса на построение модели классификатора
+|application/json
+|application/json
+|http://eca-service:8080/external-api/evaluation-status/{requestId}
+|POST
+|Запрос на получение статуса построения модели классификатора
 |application/json
 |application/json
 |http://eca-service:8080/external-api/download-model/{requestId}
@@ -163,13 +168,100 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 |
 |===
 
-==== 3.6. Пример ответа на запрос на построение модели классификатора
+==== 3.6. Пример ответа на запрос построения модели классификатора
 
 [source,json]
 ----
 {
   "payload": {
     "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+    "evaluationStatus": "IN_PROGRESS"
+    "modelUrl": null,
+    "numTestInstances": null,
+    "numCorrect": null,
+    "numIncorrect": null,
+    "pctCorrect": null,
+    "pctIncorrect": null,
+    "meanAbsoluteError": null
+  },
+  "requestStatus": "SUCCESS",
+  "errorDescription": null
+}
+----
+
+==== 3.7. Описание параметров ответа на запрос построения модели классификатора
+
+|===
+|Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
+|requestId
+|string
+|+
+|Уникальный идентификатор запроса
+|
+|evaluationStatus
+|string
+|+
+|Статус построение модели
+|Заполняется по справочнику <<Справочник кодов EvaluationStatus>>
+|requestStatus
+|string
+|+
+|Статус ответа
+|Заполняется по справочнику <<Справочник кодов ответа>>
+|modelUrl
+|string
+|-
+|Ссылка на скачивание модели
+|Заполняется при evaluationStatus = FINISHED
+|numTestInstances
+|integer
+|-
+|Число объектов тестовых данных
+|Заполняется при evaluationStatus = FINISHED
+|numCorrect
+|integer
+|-
+|Число верно классифицированных объектов
+|Заполняется при evaluationStatus = FINISHED
+|numIncorrect
+|integer
+|-
+|Число неверно классифицированных объектов
+|Заполняется при evaluationStatus = FINISHED
+|pctCorrect
+|decimal
+|-
+|Точность классификатора
+|Доля верно классифицированных объектов. Заполняется при evaluationStatus = FINISHED
+|pctIncorrect
+|decimal
+|-
+|Ошибка классификатора
+|Доля неверно классифицированных объектов. Заполняется при evaluationStatus = FINISHED
+|meanAbsoluteError
+|decimal
+|-
+|Средняя абсолютная ошибка классификации
+|Заполняется при evaluationStatus = FINISHED
+|===
+
+* Примечание: данные с моделями хранятся 14 дней
+
+==== 3.8. Пример запроса на получение статуса построения модели
+
+[source,bash]
+----
+curl -X GET "http://localhost:8080/external-api/evaluation-status/1cbe6c49-8432-4c81-9afa-90f04a803fed" -H "accept: */*" -H "authorization: Bearer c166b245-b38b-49a7-8d92-5ec713f46faf"
+----
+
+=== 3.9. Пример ответа на запрос статуса построения модели
+
+[source,json]
+----
+{
+  "payload": {
+    "requestId": "1cbe6c49-8432-4c81-9afa-90f04a803fed",
+    "evaluationStatus": "FINISHED"
     "modelUrl": "http://localhost:8080/external-api/download-model/1cbe6c49-8432-4c81-9afa-90f04a803fed",
     "numTestInstances": 150,
     "numCorrect": 144,
@@ -183,60 +275,7 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 }
 ----
 
-==== 3.7. Описание параметров ответа на запрос на построение модели классификатора
-
-|===
-|Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
-|requestId
-|string
-|+
-|Уникальный идентификатор запроса
-|
-|requestStatus
-|string
-|+
-|Статус ответа
-|Заполняется по справочнику <<Справочник кодов ответа>>
-|modelUrl
-|string
-|-
-|Ссылка на скачивание модели
-|
-|numTestInstances
-|integer
-|-
-|Число объектов тестовых данных
-|
-|numCorrect
-|integer
-|-
-|Число верно классифицированных объектов
-|
-|numIncorrect
-|integer
-|-
-|Число неверно классифицированных объектов
-|
-|pctCorrect
-|decimal
-|-
-|Точность классификатора
-|Доля верно классифицированных объектов
-|pctIncorrect
-|decimal
-|-
-|Ошибка классификатора
-|Доля неверно классифицированных объектов
-|meanAbsoluteError
-|decimal
-|-
-|Средняя абсолютная ошибка классификации
-|
-|===
-
-* Примечание: данные с моделями хранятся 14 дней
-
-==== 3.8. Пример запроса на скачивание модели классификатора
+==== 3.10. Пример запроса на скачивание модели классификатора
 
 [source,bash]
 ----
@@ -279,4 +318,23 @@ curl -X GET "http://localhost:8080/external-api/download-model/1cbe6c49-8432-4c8
 |6
 |SERVICE_UNAVAILABLE
 |Сервис недоступен
+|===
+
+== Справочник кодов EvaluationStatus
+
+[options="header"]
+|===
+|№|Код|Описание
+|1
+|IN_PROGRESS
+|Запрос находится в обработке
+|2
+|FINISHED
+|Построение модели завершено
+|3
+|TIMEOUT
+|Таймаут при обработке запроса на построение модели
+|4
+|ERROR
+|Ошибка при построении модели
 |===
