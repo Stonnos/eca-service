@@ -2,6 +2,7 @@ package com.ecaservice.external.api.controller;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
+import com.ecaservice.external.api.dto.EvaluationStatus;
 import com.ecaservice.external.api.dto.RequestStatus;
 import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
@@ -41,6 +42,7 @@ public class TimeoutFallback {
             requestStageHandler.handleExceeded(ecaRequestEntity);
             var evaluationResponseDto = EvaluationResponseDto.builder()
                     .requestId(ecaRequestEntity.getCorrelationId())
+                    .evaluationStatus(EvaluationStatus.ERROR)
                     .build();
             var responseDto = buildResponse(RequestStatus.TIMEOUT, evaluationResponseDto);
             metricsService.trackResponse(ecaRequestEntity, responseDto.getRequestStatus());
