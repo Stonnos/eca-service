@@ -5,7 +5,6 @@ import com.ecaservice.external.api.dto.RequestStatus;
 import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.metrics.MetricsService;
 import com.ecaservice.external.api.service.EcaRequestService;
-import com.ecaservice.external.api.service.RequestStageHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,7 +22,6 @@ import static com.ecaservice.external.api.util.Utils.buildResponse;
 @RequiredArgsConstructor
 public class TimeoutFallback {
 
-    private final RequestStageHandler requestStageHandler;
     private final MetricsService metricsService;
     private final EcaRequestService ecaRequestService;
 
