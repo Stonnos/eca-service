@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -80,7 +81,7 @@ public class MetricsService {
      */
     public void trackResponse(EcaRequestEntity ecaRequestEntity, RequestStatus requestStatus) {
         trackRequestStatus(requestStatus);
-        long duration = ChronoUnit.MILLIS.between(ecaRequestEntity.getCreationDate(), ecaRequestEntity.getEndDate());
+        long duration = ChronoUnit.MILLIS.between(ecaRequestEntity.getCreationDate(), LocalDateTime.now());
         trackRequestDuration(duration);
         trackResponsesTotal();
     }
