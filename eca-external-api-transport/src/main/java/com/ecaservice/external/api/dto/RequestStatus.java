@@ -43,9 +43,9 @@ public enum RequestStatus {
     private final String description;
 
     /**
-     * ERS report status description.
+     * Request status description.
      *
-     * @return ERS report status status description
+     * @return evaluation status description
      */
     public String getDescription() {
         return description;

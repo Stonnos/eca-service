@@ -31,6 +31,12 @@ public class EvaluationResponseDto implements Serializable {
     private String requestId;
 
     /**
+     * Evaluation status
+     */
+    @Schema(description = "Evaluation status")
+    private EvaluationStatus evaluationStatus;
+
+    /**
      * Classifier model url
      */
     @Schema(description = "Model url")
