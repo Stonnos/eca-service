@@ -48,8 +48,7 @@ public class EvaluationResponseService {
                     .pctIncorrect(BigDecimal.valueOf(evaluation.pctIncorrect()))
                     .meanAbsoluteError(BigDecimal.valueOf(evaluation.meanAbsoluteError()))
                     .modelUrl(String.format(MODEL_DOWNLOAD_URL_FORMAT, externalApiConfig.getDownloadBaseUrl(),
-                            ecaRequestEntity.getCorrelationId()))
-                    .evaluationStatus(EvaluationStatus.FINISHED);
+                            ecaRequestEntity.getCorrelationId()));
         }
         return evaluationResponseDtoBuilder.build();
     }

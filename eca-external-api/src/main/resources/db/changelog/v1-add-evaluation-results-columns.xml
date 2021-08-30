@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v1-add-evaluation-results-columns.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_request"/>
+            <not>
+                <columnExists tableName="evaluation_request" columnName="num_test_instances"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_request">
+            <column name="num_test_instances" type="numeric(19,4)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_request"/>
+            <not>
+                <columnExists tableName="evaluation_request" columnName="num_correct"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_request">
+            <column name="num_correct" type="numeric(19,4)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_request"/>
+            <not>
+                <columnExists tableName="evaluation_request" columnName="num_incorrect"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_request">
+            <column name="num_incorrect" type="numeric(19,4)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_request"/>
+            <not>
+                <columnExists tableName="evaluation_request" columnName="pct_correct"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_request">
+            <column name="pct_correct" type="numeric(19,4)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="5" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_request"/>
+            <not>
+                <columnExists tableName="evaluation_request" columnName="pct_incorrect"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_request">
+            <column name="pct_incorrect" type="numeric(19,4)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="6" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_request"/>
+            <not>
+                <columnExists tableName="evaluation_request" columnName="mean_absolute_error"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_request">
+            <column name="mean_absolute_error" type="numeric(19,4)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>
