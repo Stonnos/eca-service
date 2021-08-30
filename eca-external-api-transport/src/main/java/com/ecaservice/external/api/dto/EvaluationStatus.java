@@ -22,6 +22,11 @@ public enum EvaluationStatus {
     FINISHED("Evaluation finished"),
 
     /**
+     * Timeout
+     */
+    TIMEOUT("Timeout"),
+
+    /**
      * Unknown error
      */
     ERROR("Unknown error");
