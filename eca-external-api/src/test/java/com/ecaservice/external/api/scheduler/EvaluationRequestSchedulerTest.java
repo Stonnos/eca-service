@@ -2,10 +2,12 @@ package com.ecaservice.external.api.scheduler;
 
 import com.ecaservice.external.api.AbstractJpaTest;
 import com.ecaservice.external.api.config.ExternalApiConfig;
+import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.external.api.repository.InstancesRepository;
 import com.ecaservice.external.api.service.FileDataService;
+import com.ecaservice.external.api.service.RequestStageHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -32,6 +34,8 @@ class EvaluationRequestSchedulerTest extends AbstractJpaTest {
 
     @MockBean
     private FileDataService fileDataService;
+    @MockBean
+    private RequestStageHandler requestStageHandler;
 
     @Inject
     private ExternalApiConfig externalApiConfig;
@@ -50,14 +54,36 @@ class EvaluationRequestSchedulerTest extends AbstractJpaTest {
     }
 
     @Test
+    void testProcessExceededRequests() {
+        LocalDateTime dateTime =
+                LocalDateTime.now().minusMinutes(externalApiConfig.getEvaluationRequestTimeoutMinutes() + 1);
+        ecaRequestRepository.save(createEvaluationRequestEntity(RequestStageType.REQUEST_SENT, null, dateTime));
+        ecaRequestRepository.save(
+                createEvaluationRequestEntity(RequestStageType.REQUEST_SENT, null, LocalDateTime.now()));
+        ecaRequestRepository.save(
+                createEvaluationRequestEntity(RequestStageType.ERROR, LocalDateTime.now(), LocalDateTime.now()));
+        ecaRequestRepository.save(
+                createEvaluationRequestEntity(RequestStageType.COMPLETED, LocalDateTime.now(), dateTime));
+        ecaRequestRepository.save(
+                createEvaluationRequestEntity(RequestStageType.EXCEEDED, LocalDateTime.now(), LocalDateTime.now()));
+        evaluationRequestScheduler.processExceededRequests();
+        verify(requestStageHandler, atLeastOnce()).handleExceeded(any(EcaRequestEntity.class));
+    }
+
+    @Test
     void testClearClassifiers() {
         LocalDateTime dateTime = LocalDateTime.now().minusDays(externalApiConfig.getNumberOfDaysForStorage() + 1);
-        ecaRequestRepository.save(createEvaluationRequestEntity(RequestStageType.REQUEST_SENT, null));
-        ecaRequestRepository.save(createEvaluationRequestEntity(RequestStageType.ERROR, LocalDateTime.now()));
-        ecaRequestRepository.save(createEvaluationRequestEntity(RequestStageType.ERROR, dateTime));
-        ecaRequestRepository.save(createEvaluationRequestEntity(RequestStageType.COMPLETED, dateTime));
-        ecaRequestRepository.save(createEvaluationRequestEntity(RequestStageType.COMPLETED, LocalDateTime.now()));
-        ecaRequestRepository.save(createEvaluationRequestEntity(RequestStageType.EXCEEDED, dateTime));
+        ecaRequestRepository.save(
+                createEvaluationRequestEntity(RequestStageType.REQUEST_SENT, null, LocalDateTime.now()));
+        ecaRequestRepository.save(
+                createEvaluationRequestEntity(RequestStageType.ERROR, LocalDateTime.now(), LocalDateTime.now()));
+        ecaRequestRepository.save(createEvaluationRequestEntity(RequestStageType.ERROR, dateTime, LocalDateTime.now()));
+        ecaRequestRepository.save(
+                createEvaluationRequestEntity(RequestStageType.COMPLETED, dateTime, LocalDateTime.now()));
+        ecaRequestRepository.save(
+                createEvaluationRequestEntity(RequestStageType.COMPLETED, LocalDateTime.now(), LocalDateTime.now()));
+        ecaRequestRepository.save(
+                createEvaluationRequestEntity(RequestStageType.EXCEEDED, dateTime, LocalDateTime.now()));
         when(fileDataService.delete(any())).thenReturn(true);
         evaluationRequestScheduler.clearClassifiers();
         verify(fileDataService, atLeastOnce()).delete(any());

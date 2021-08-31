@@ -46,7 +46,7 @@ class EvaluationResponseServiceTest extends AbstractJpaTest {
     @Test
     void testBuildResponseWithError() {
         var evaluationRequestEntity =
-                createEvaluationRequestEntity(RequestStageType.ERROR, LocalDateTime.now());
+                createEvaluationRequestEntity(RequestStageType.ERROR, LocalDateTime.now(), LocalDateTime.now());
         evaluationRequestRepository.save(evaluationRequestEntity);
         var evaluationResponseDto =
                 evaluationResponseService.processResponse(evaluationRequestEntity.getCorrelationId());
@@ -59,7 +59,7 @@ class EvaluationResponseServiceTest extends AbstractJpaTest {
     @Test
     void testBuildSuccessResponse() {
         EvaluationRequestEntity evaluationRequestEntity =
-                createEvaluationRequestEntity(RequestStageType.COMPLETED, LocalDateTime.now());
+                createEvaluationRequestEntity(RequestStageType.COMPLETED, LocalDateTime.now(), LocalDateTime.now());
         evaluationRequestRepository.save(evaluationRequestEntity);
         String expectedModelUrl = String.format(MODEL_DOWNLOAD_URL_FORMAT, externalApiConfig.getDownloadBaseUrl(),
                 evaluationRequestEntity.getCorrelationId());

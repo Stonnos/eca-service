@@ -139,13 +139,16 @@ public class TestHelperUtils {
      *
      * @param requestStageType - request stage type
      * @param endDate          - end date
+     * @param requestDate      - request date
      * @return evaluation request entity
      */
     public static EvaluationRequestEntity createEvaluationRequestEntity(RequestStageType requestStageType,
-                                                                        LocalDateTime endDate) {
+                                                                        LocalDateTime endDate,
+                                                                        LocalDateTime requestDate) {
         EvaluationRequestEntity evaluationRequestEntity = createEvaluationRequestEntity(UUID.randomUUID().toString());
         evaluationRequestEntity.setRequestStage(requestStageType);
         evaluationRequestEntity.setEndDate(endDate);
+        evaluationRequestEntity.setRequestDate(requestDate);
         return evaluationRequestEntity;
     }
 
@@ -195,7 +198,8 @@ public class TestHelperUtils {
      * @param evaluationStatus - evaluation status
      * @return evaluation response dto
      */
-    public static EvaluationResponseDto createEvaluationResponseDto(String requestId, EvaluationStatus evaluationStatus) {
+    public static EvaluationResponseDto createEvaluationResponseDto(String requestId,
+                                                                    EvaluationStatus evaluationStatus) {
         return EvaluationResponseDto.builder()
                 .requestId(requestId)
                 .evaluationStatus(evaluationStatus)

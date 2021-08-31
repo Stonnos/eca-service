@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Import;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.time.LocalDateTime;
 
 import static com.ecaservice.external.api.TestHelperUtils.createEvaluationRequestEntity;
 import static com.ecaservice.external.api.TestHelperUtils.errorEvaluationResponse;
@@ -51,7 +52,7 @@ class EcaResponseHandlerTest extends AbstractJpaTest {
     @Test
     void testSuccessResponseHandle() {
         EvaluationRequestEntity evaluationRequestEntity =
-                createEvaluationRequestEntity(RequestStageType.RESPONSE_RECEIVED, null);
+                createEvaluationRequestEntity(RequestStageType.RESPONSE_RECEIVED, null, LocalDateTime.now());
         evaluationRequestRepository.save(evaluationRequestEntity);
         EvaluationResponse evaluationResponse = successEvaluationResponse();
         String expectedClassifierPath =
@@ -67,7 +68,7 @@ class EcaResponseHandlerTest extends AbstractJpaTest {
     @Test
     void testResponseHandleWithErrorTechnicalStatus() {
         EvaluationRequestEntity evaluationRequestEntity =
-                createEvaluationRequestEntity(RequestStageType.RESPONSE_RECEIVED, null);
+                createEvaluationRequestEntity(RequestStageType.RESPONSE_RECEIVED, null, LocalDateTime.now());
         evaluationRequestRepository.save(evaluationRequestEntity);
         EvaluationResponse evaluationResponse = errorEvaluationResponse();
         internalTestResponseHandle(evaluationRequestEntity, evaluationResponse, RequestStageType.ERROR);
@@ -76,7 +77,7 @@ class EcaResponseHandlerTest extends AbstractJpaTest {
     @Test
     void testResponseHandleWithError() throws Exception {
         EvaluationRequestEntity evaluationRequestEntity =
-                createEvaluationRequestEntity(RequestStageType.RESPONSE_RECEIVED, null);
+                createEvaluationRequestEntity(RequestStageType.RESPONSE_RECEIVED, null, LocalDateTime.now());
         evaluationRequestRepository.save(evaluationRequestEntity);
         EvaluationResponse evaluationResponse = successEvaluationResponse();
         doThrow(IllegalStateException.class).when(fileDataService).saveModel(any(), any(File.class));
