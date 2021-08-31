@@ -4,6 +4,7 @@ import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.repository.InstancesRepository;
 import com.ecaservice.external.api.service.FileDataService;
+import com.ecaservice.external.api.service.RequestStageHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -18,19 +19,35 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 /**
- * Data scheduler.
+ * Evaluation request scheduler.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DataScheduler {
+public class EvaluationRequestScheduler {
 
     private final ExternalApiConfig externalApiConfig;
     private final FileDataService fileDataService;
+    private final RequestStageHandler requestStageHandler;
     private final EvaluationRequestRepository evaluationRequestRepository;
     private final InstancesRepository instancesRepository;
+
+    /**
+     * Processes exceeded requests.
+     */
+    @Scheduled(fixedDelayString = "${external-api.delaySeconds}000")
+    public void processExceededRequests() {
+        log.trace("Starting to processed exceeded requests");
+        LocalDateTime exceededTime =
+                LocalDateTime.now().minusMinutes(externalApiConfig.getEvaluationRequestTimeoutMinutes());
+        List<Long> exceededIds = evaluationRequestRepository.findExceededRequestIds(exceededTime);
+        processPaging(exceededIds, evaluationRequestRepository::findByIdIn, pageContent ->
+                pageContent.forEach(requestStageHandler::handleExceeded)
+        );
+        log.trace("Exceeded requests has been processed");
+    }
 
     /**
      * Removes classifiers data files from disk. Schedules by cron.

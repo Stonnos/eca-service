@@ -28,6 +28,11 @@ public class ExternalApiConfig {
     private Long requestTimeoutSeconds;
 
     /**
+     * Evaluation request timeout in minutes
+     */
+    private Long evaluationRequestTimeoutMinutes;
+
+    /**
      * Classifiers path on file system
      */
     private String classifiersPath;

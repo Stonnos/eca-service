@@ -5,6 +5,7 @@ import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
  *
  * @author Roman Batygin
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RequestStageHandler {
@@ -38,7 +40,8 @@ public class RequestStageHandler {
      */
     public void handleExceeded(EcaRequestEntity ecaRequestEntity) {
         internalHandle(ecaRequestEntity, RequestStageType.EXCEEDED,
-                String.format("Timeout after %d seconds", externalApiConfig.getRequestTimeoutSeconds()));
+                String.format("Timeout after %d seconds", externalApiConfig.getEvaluationRequestTimeoutMinutes()));
+        log.info("Exceeded request with correlation id [{}]", ecaRequestEntity.getCorrelationId());
     }
 
     private void internalHandle(EcaRequestEntity ecaRequestEntity, RequestStageType requestStageType,

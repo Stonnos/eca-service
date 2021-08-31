@@ -23,12 +23,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for checking {@link DataScheduler} functionality.
+ * Unit tests for checking {@link EvaluationRequestScheduler} functionality.
  *
  * @author Roman Batygin
  */
-@Import({ExternalApiConfig.class, DataScheduler.class})
-class DataSchedulerTest extends AbstractJpaTest {
+@Import({ExternalApiConfig.class, EvaluationRequestScheduler.class})
+class EvaluationRequestSchedulerTest extends AbstractJpaTest {
 
     @MockBean
     private FileDataService fileDataService;
@@ -41,7 +41,7 @@ class DataSchedulerTest extends AbstractJpaTest {
     private EcaRequestRepository ecaRequestRepository;
 
     @Inject
-    private DataScheduler dataScheduler;
+    private EvaluationRequestScheduler evaluationRequestScheduler;
 
     @Override
     public void deleteAll() {
@@ -59,7 +59,7 @@ class DataSchedulerTest extends AbstractJpaTest {
         ecaRequestRepository.save(createEvaluationRequestEntity(RequestStageType.COMPLETED, LocalDateTime.now()));
         ecaRequestRepository.save(createEvaluationRequestEntity(RequestStageType.EXCEEDED, dateTime));
         when(fileDataService.delete(any())).thenReturn(true);
-        dataScheduler.clearClassifiers();
+        evaluationRequestScheduler.clearClassifiers();
         verify(fileDataService, atLeastOnce()).delete(any());
     }
 
@@ -69,7 +69,7 @@ class DataSchedulerTest extends AbstractJpaTest {
         instancesRepository.save(createInstancesEntity(LocalDateTime.now()));
         instancesRepository.save(createInstancesEntity(dateTime));
         when(fileDataService.delete(anyString())).thenReturn(true);
-        dataScheduler.clearData();
+        evaluationRequestScheduler.clearData();
         verify(fileDataService, atLeastOnce()).delete(anyString());
         assertThat(instancesRepository.count()).isOne();
     }
