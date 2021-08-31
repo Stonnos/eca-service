@@ -4,6 +4,7 @@ import com.ecaservice.external.api.AbstractJpaTest;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.exception.DataNotFoundException;
+import com.ecaservice.external.api.exception.ProcessFileException;
 import com.ecaservice.external.api.repository.InstancesRepository;
 import eca.data.file.FileDataLoader;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ import static com.ecaservice.external.api.TestHelperUtils.loadInstances;
 import static com.ecaservice.external.api.util.Constants.DATA_URL_PREFIX;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 /**
@@ -32,7 +34,6 @@ import static org.mockito.Mockito.when;
 class InstancesServiceTest extends AbstractJpaTest {
 
     private static final String FILE_PATH_FORMAT = "%siris_%s.xls";
-    private static final String INVALID_URL = "xxx://data.xls";
     private static final String TEST_DATA_URL = "data://test-data";
     private static final String HTTP_TEST_DATA_URL = "http://test/data.csv";
 
@@ -91,6 +92,23 @@ class InstancesServiceTest extends AbstractJpaTest {
     @Test
     void testLoadInstancesFromUrl() throws Exception {
         internalTestLoadInstances(HTTP_TEST_DATA_URL);
+    }
+
+    @Test
+    void testDeleteInstancesSuccess() throws IOException {
+        MockMultipartFile multipartFile = createInstancesMockMultipartFile();
+        InstancesEntity instancesEntity = instancesService.uploadInstances(multipartFile);
+        instancesService.deleteInstances(instancesEntity);
+        assertThat(instancesRepository.existsById(instancesEntity.getId())).isFalse();
+    }
+
+    @Test
+    void testDeleteInstancesWithError() throws IOException {
+        MockMultipartFile multipartFile = createInstancesMockMultipartFile();
+        InstancesEntity instancesEntity = instancesService.uploadInstances(multipartFile);
+        doThrow(ProcessFileException.class).when(fileDataService).delete(instancesEntity.getAbsolutePath());
+        assertThrows(ProcessFileException.class, () -> instancesService.deleteInstances(instancesEntity));
+        assertThat(instancesRepository.existsById(instancesEntity.getId())).isTrue();
     }
 
     private void internalTestLoadInstances(String url) throws Exception {
