@@ -110,7 +110,7 @@ public class ExternalApiController {
                     })
             })
     )
-    @PostMapping(value = "/evaluate")
+    @PostMapping(value = "/evaluation-request")
     public Mono<ResponseDto<EvaluationResponseDto>> evaluateModel(
             @Valid @RequestBody EvaluationRequestDto evaluationRequestDto) {
         if (log.isDebugEnabled()) {

@@ -20,7 +20,7 @@ API предоставляет следующие методы:
 |Загрузка файла с обучающей выборкой на сервер
 |multipart/form-data
 |application/json
-|http://eca-service:8080/external-api/evaluate
+|http://eca-service:8080/external-api/evaluation-request
 |POST
 |Создание запроса на построение модели классификатора
 |application/json
