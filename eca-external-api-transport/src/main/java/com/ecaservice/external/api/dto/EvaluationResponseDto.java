@@ -7,7 +7,6 @@ import lombok.experimental.Tolerate;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 /**
  * Evaluation response dto.
@@ -46,19 +45,19 @@ public class EvaluationResponseDto implements Serializable {
      * Test instances number
      */
     @Schema(description = "Test instances number")
-    private BigInteger numTestInstances;
+    private Integer numTestInstances;
 
     /**
      * Correctly classified instances number
      */
     @Schema(description = "Correctly classified instances number")
-    private BigInteger numCorrect;
+    private Integer numCorrect;
 
     /**
      * Incorrectly classified instances number
      */
     @Schema(description = "Incorrectly classified instances number")
-    private BigInteger numIncorrect;
+    private Integer numIncorrect;
 
     /**
      * Correctly classified percentage

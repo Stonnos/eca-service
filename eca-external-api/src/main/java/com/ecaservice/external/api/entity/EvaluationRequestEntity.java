@@ -42,19 +42,19 @@ public class EvaluationRequestEntity extends EcaRequestEntity {
      * Test instances number
      */
     @Column(name = "num_test_instances")
-    private BigInteger numTestInstances;
+    private Integer numTestInstances;
 
     /**
      * Correctly classified instances number
      */
     @Column(name = "num_correct")
-    private BigInteger numCorrect;
+    private Integer numCorrect;
 
     /**
      * Incorrectly classified instances number
      */
     @Column(name = "num_incorrect")
-    private BigInteger numIncorrect;
+    private Integer numIncorrect;
 
     /**
      * Correctly classified percentage

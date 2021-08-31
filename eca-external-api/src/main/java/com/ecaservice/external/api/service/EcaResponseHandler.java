@@ -68,9 +68,9 @@ public class EcaResponseHandler {
     private void saveEvaluationResults(EvaluationResults evaluationResults,
                                        EvaluationRequestEntity evaluationRequestEntity) {
         Evaluation evaluation = evaluationResults.getEvaluation();
-        evaluationRequestEntity.setNumTestInstances(BigInteger.valueOf((long) evaluation.numInstances()));
-        evaluationRequestEntity.setNumCorrect(BigInteger.valueOf((long) evaluation.correct()));
-        evaluationRequestEntity.setNumIncorrect(BigInteger.valueOf((long) evaluation.incorrect()));
+        evaluationRequestEntity.setNumTestInstances((int) evaluation.numInstances());
+        evaluationRequestEntity.setNumCorrect((int) evaluation.correct());
+        evaluationRequestEntity.setNumIncorrect((int) evaluation.incorrect());
         evaluationRequestEntity.setPctCorrect(BigDecimal.valueOf(evaluation.pctCorrect()));
         evaluationRequestEntity.setPctIncorrect(BigDecimal.valueOf(evaluation.pctIncorrect()));
         evaluationRequestEntity.setMeanAbsoluteError(BigDecimal.valueOf(evaluation.meanAbsoluteError()));
