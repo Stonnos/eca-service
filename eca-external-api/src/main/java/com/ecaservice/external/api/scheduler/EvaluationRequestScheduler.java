@@ -61,7 +61,14 @@ public class EvaluationRequestScheduler {
         List<Long> ids = evaluationRequestRepository.findNotDeletedModels(dateTime);
         log.info("Obtained {} classifiers files to remove", ids.size());
         processPaging(ids, evaluationRequestRepository::findByIdIn,
-                pageContent -> pageContent.forEach(ecaRequestService::deleteClassifierModel));
+                pageContent -> pageContent.forEach(evaluationRequestEntity -> {
+                    try {
+                        ecaRequestService.deleteClassifierModel(evaluationRequestEntity);
+                    } catch (Exception ex) {
+                        log.error("There was an error while deleting evaluation request [{}] classifier model: {}",
+                                evaluationRequestEntity.getCorrelationId(), ex.getMessage());
+                    }
+                }));
         log.info("Classifiers data removing has been finished.");
     }
 
@@ -74,8 +81,14 @@ public class EvaluationRequestScheduler {
         LocalDateTime dateTime = LocalDateTime.now().minusDays(externalApiConfig.getNumberOfDaysForStorage());
         List<Long> ids = instancesRepository.findNotDeletedData(dateTime);
         log.info("Obtained {} data files to remove", ids.size());
-        processPaging(ids, instancesRepository::findByIdIn, pageContent -> pageContent.forEach(
-                instancesService::deleteInstances));
+        processPaging(ids, instancesRepository::findByIdIn, pageContent -> pageContent.forEach(instancesEntity -> {
+            try {
+                instancesService.deleteInstances(instancesEntity);
+            } catch (Exception ex) {
+                log.error("There was an error while deleting instances [{}]: {}", instancesEntity.getId(),
+                        ex.getMessage());
+            }
+        }));
         log.info("Train data removing has been finished.");
     }
 
