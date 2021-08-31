@@ -87,10 +87,8 @@ public class EvaluationResponseComparisonHandler extends ComparisonTaskHandler {
                 autoTestEntity.getId(), expectedModelUrl, actualModelUrl, modelUrlMatchResult);
     }
 
-    private void saveResponse(AutoTestEntity autoTestEntity, ResponseDto<EvaluationResponseDto> response)
-            throws JsonProcessingException {
+    private void saveResponse(AutoTestEntity autoTestEntity,
+                              ResponseDto<EvaluationResponseDto> response) throws JsonProcessingException {
         autoTestEntity.setResponse(objectMapper.writeValueAsString(response));
-        String requestId = getValueSafe(response, EvaluationResponseDto::getRequestId);
-        autoTestEntity.setRequestId(requestId);
     }
 }

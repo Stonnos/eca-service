@@ -33,13 +33,22 @@ public interface ExternalApiClient {
     ResponseDto<InstancesDto> uploadInstances(@RequestPart("trainingData") MultipartFile trainingData);
 
     /**
-     * Evaluates classifier model.
+     * Creates evaluation request.
      *
      * @param evaluationRequestDto - evaluation request dto
      * @return evaluation response dto
      */
-    @PostMapping(value = "/evaluate")
-    ResponseDto<EvaluationResponseDto> evaluateModel(@RequestBody EvaluationRequestDto evaluationRequestDto);
+    @PostMapping(value = "/evaluation-request")
+    ResponseDto<EvaluationResponseDto> evaluateRequest(@RequestBody EvaluationRequestDto evaluationRequestDto);
+
+    /**
+     * Creates evaluation response status.
+     *
+     * @param requestId - request id
+     * @return evaluation response dto
+     */
+    @GetMapping(value = "/evaluation-status/{requestId}")
+    ResponseDto<EvaluationResponseDto> evaluationStatus(@PathVariable String requestId);
 
     /**
      * Downloads model with specified request id.
