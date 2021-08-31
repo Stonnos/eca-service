@@ -53,7 +53,7 @@ external-api:
   trainDataPath: D:/data/
   downloadBaseUrl: http://localhost:8085/eca-external-api
   numberOfDaysForStorage: 14
-  delaySeconds: 30
+  delaySeconds: 10
   ## Each day at midnight
   removeClassifiersCron: 0 0 0 * * *
   removeDataCron: 0 0 0 * * *
