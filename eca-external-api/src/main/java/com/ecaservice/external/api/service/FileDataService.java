@@ -1,5 +1,6 @@
 package com.ecaservice.external.api.service;
 
+import com.ecaservice.external.api.exception.ProcessFileException;
 import eca.converters.ModelConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,22 +49,21 @@ public class FileDataService {
      *
      * @param fileName - file name
      */
-    public boolean delete(String fileName) {
+    public void delete(String fileName) {
         if (StringUtils.isEmpty(fileName)) {
-            return true;
+            log.warn("Got empty file name. Mark as deleted");
         }
         File file = new File(fileName);
         if (!file.isFile()) {
             log.warn("File with name [{}] doesn't exists. Mark as deleted", file.getAbsolutePath());
-            return true;
         } else {
-            boolean deleted = FileUtils.deleteQuietly(file);
-            if (deleted) {
+            try {
+                FileUtils.forceDelete(file);
                 log.info("File [{}] has been deleted from disk.", file.getAbsolutePath());
-            } else {
-                log.warn("There was an error while deleting [{}] file from disk.", file.getAbsolutePath());
+            } catch (IOException ex) {
+                log.error("There was an error while deleting [{}] file from disk.", file.getAbsolutePath());
+                throw new ProcessFileException(ex.getMessage());
             }
-            return deleted;
         }
     }
 }

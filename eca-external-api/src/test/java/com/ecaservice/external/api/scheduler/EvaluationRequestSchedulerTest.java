@@ -3,10 +3,13 @@ package com.ecaservice.external.api.scheduler;
 import com.ecaservice.external.api.AbstractJpaTest;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
+import com.ecaservice.external.api.entity.EvaluationRequestEntity;
+import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.external.api.repository.InstancesRepository;
-import com.ecaservice.external.api.service.FileDataService;
+import com.ecaservice.external.api.service.EcaRequestService;
+import com.ecaservice.external.api.service.InstancesService;
 import com.ecaservice.external.api.service.RequestStageHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -17,12 +20,9 @@ import java.time.LocalDateTime;
 
 import static com.ecaservice.external.api.TestHelperUtils.createEvaluationRequestEntity;
 import static com.ecaservice.external.api.TestHelperUtils.createInstancesEntity;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for checking {@link EvaluationRequestScheduler} functionality.
@@ -33,9 +33,11 @@ import static org.mockito.Mockito.when;
 class EvaluationRequestSchedulerTest extends AbstractJpaTest {
 
     @MockBean
-    private FileDataService fileDataService;
-    @MockBean
     private RequestStageHandler requestStageHandler;
+    @MockBean
+    private EcaRequestService ecaRequestService;
+    @MockBean
+    private InstancesService instancesService;
 
     @Inject
     private ExternalApiConfig externalApiConfig;
@@ -84,9 +86,8 @@ class EvaluationRequestSchedulerTest extends AbstractJpaTest {
                 createEvaluationRequestEntity(RequestStageType.COMPLETED, LocalDateTime.now(), LocalDateTime.now()));
         ecaRequestRepository.save(
                 createEvaluationRequestEntity(RequestStageType.EXCEEDED, dateTime, LocalDateTime.now()));
-        when(fileDataService.delete(any())).thenReturn(true);
         evaluationRequestScheduler.clearClassifiers();
-        verify(fileDataService, atLeastOnce()).delete(any());
+        verify(ecaRequestService, atLeastOnce()).deleteClassifierModel(any(EvaluationRequestEntity.class));
     }
 
     @Test
@@ -94,9 +95,7 @@ class EvaluationRequestSchedulerTest extends AbstractJpaTest {
         LocalDateTime dateTime = LocalDateTime.now().minusDays(externalApiConfig.getNumberOfDaysForStorage() + 1);
         instancesRepository.save(createInstancesEntity(LocalDateTime.now()));
         instancesRepository.save(createInstancesEntity(dateTime));
-        when(fileDataService.delete(anyString())).thenReturn(true);
         evaluationRequestScheduler.clearData();
-        verify(fileDataService, atLeastOnce()).delete(anyString());
-        assertThat(instancesRepository.count()).isOne();
+        verify(instancesService, atLeastOnce()).deleteInstances(any(InstancesEntity.class));
     }
 }

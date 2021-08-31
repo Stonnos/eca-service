@@ -3,7 +3,8 @@ package com.ecaservice.external.api.scheduler;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.repository.InstancesRepository;
-import com.ecaservice.external.api.service.FileDataService;
+import com.ecaservice.external.api.service.EcaRequestService;
+import com.ecaservice.external.api.service.InstancesService;
 import com.ecaservice.external.api.service.RequestStageHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +30,9 @@ import java.util.function.Consumer;
 public class EvaluationRequestScheduler {
 
     private final ExternalApiConfig externalApiConfig;
-    private final FileDataService fileDataService;
+    private final EcaRequestService ecaRequestService;
     private final RequestStageHandler requestStageHandler;
+    private final InstancesService instancesService;
     private final EvaluationRequestRepository evaluationRequestRepository;
     private final InstancesRepository instancesRepository;
 
@@ -59,14 +61,7 @@ public class EvaluationRequestScheduler {
         List<Long> ids = evaluationRequestRepository.findNotDeletedModels(dateTime);
         log.info("Obtained {} classifiers files to remove", ids.size());
         processPaging(ids, evaluationRequestRepository::findByIdIn,
-                pageContent -> pageContent.forEach(evaluationRequestEntity -> {
-                    boolean deleted = fileDataService.delete(evaluationRequestEntity.getClassifierAbsolutePath());
-                    if (deleted) {
-                        evaluationRequestEntity.setClassifierAbsolutePath(null);
-                        evaluationRequestEntity.setDeletedDate(LocalDateTime.now());
-                        evaluationRequestRepository.save(evaluationRequestEntity);
-                    }
-                }));
+                pageContent -> pageContent.forEach(ecaRequestService::deleteClassifierModel));
         log.info("Classifiers data removing has been finished.");
     }
 
@@ -79,12 +74,8 @@ public class EvaluationRequestScheduler {
         LocalDateTime dateTime = LocalDateTime.now().minusDays(externalApiConfig.getNumberOfDaysForStorage());
         List<Long> ids = instancesRepository.findNotDeletedData(dateTime);
         log.info("Obtained {} data files to remove", ids.size());
-        processPaging(ids, instancesRepository::findByIdIn, pageContent -> pageContent.forEach(instancesEntity -> {
-            boolean deleted = fileDataService.delete(instancesEntity.getAbsolutePath());
-            if (deleted) {
-                instancesRepository.delete(instancesEntity);
-            }
-        }));
+        processPaging(ids, instancesRepository::findByIdIn, pageContent -> pageContent.forEach(
+                instancesService::deleteInstances));
         log.info("Train data removing has been finished.");
     }
 
