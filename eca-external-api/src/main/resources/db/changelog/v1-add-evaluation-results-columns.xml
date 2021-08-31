@@ -13,7 +13,7 @@
             </not>
         </preConditions>
         <addColumn tableName="evaluation_request">
-            <column name="num_test_instances" type="numeric(19,4)"/>
+            <column name="num_test_instances" type="integer"/>
         </addColumn>
     </changeSet>
 
@@ -25,7 +25,7 @@
             </not>
         </preConditions>
         <addColumn tableName="evaluation_request">
-            <column name="num_correct" type="numeric(19,4)"/>
+            <column name="num_correct" type="integer"/>
         </addColumn>
     </changeSet>
 
@@ -37,7 +37,7 @@
             </not>
         </preConditions>
         <addColumn tableName="evaluation_request">
-            <column name="num_incorrect" type="numeric(19,4)"/>
+            <column name="num_incorrect" type="integer"/>
         </addColumn>
     </changeSet>
 
