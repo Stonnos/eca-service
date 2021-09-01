@@ -2,7 +2,7 @@ package com.ecaservice.external.api.aspect;
 
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.EvaluationStatus;
-import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
@@ -70,7 +70,7 @@ class RequestExecutionAspectTest {
         assertThat(evaluationResponseDto.getPayload().getRequestId()).isEqualTo(
                 evaluationRequestEntity.getCorrelationId());
         assertThat(evaluationResponseDto.getPayload().getEvaluationStatus()).isEqualTo(EvaluationStatus.IN_PROGRESS);
-        assertThat(evaluationResponseDto.getRequestStatus()).isEqualTo(RequestStatus.SUCCESS);
+        assertThat(evaluationResponseDto.getResponseCode()).isEqualTo(ResponseCode.SUCCESS);
     }
 
     @Test
@@ -78,7 +78,7 @@ class RequestExecutionAspectTest {
         EvaluationRequestEntity evaluationRequestEntity = createEvaluationRequestEntity(UUID.randomUUID().toString());
         ProceedingJoinPoint joinPoint = createProceedingJoinPoint(evaluationRequestEntity);
         doThrow(new DataNotFoundException("error")).when(joinPoint).proceed();
-        when(exceptionTranslator.translate(any(Exception.class))).thenReturn(RequestStatus.ERROR);
+        when(exceptionTranslator.translate(any(Exception.class))).thenReturn(ResponseCode.ERROR);
         MonoSink<ResponseDto<EvaluationResponseDto>> sink = mock(MonoSink.class);
         when(messageCorrelationService.pop(evaluationRequestEntity.getCorrelationId())).thenReturn(Optional.of(sink));
         requestExecutionAspect.around(joinPoint, null);
@@ -90,7 +90,7 @@ class RequestExecutionAspectTest {
         assertThat(evaluationResponseDto.getPayload().getRequestId()).isEqualTo(
                 evaluationRequestEntity.getCorrelationId());
         assertThat(evaluationResponseDto.getPayload().getEvaluationStatus()).isEqualTo(EvaluationStatus.ERROR);
-        assertThat(evaluationResponseDto.getRequestStatus()).isEqualTo(RequestStatus.ERROR);
+        assertThat(evaluationResponseDto.getResponseCode()).isEqualTo(ResponseCode.ERROR);
     }
 
     @Test

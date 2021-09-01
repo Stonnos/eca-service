@@ -1,7 +1,5 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
-import com.ecaservice.external.api.dto.InstancesDto;
-import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.model.TestDataModel;
 import com.ecaservice.external.api.test.service.ExternalApiService;
@@ -53,7 +51,7 @@ public class UploadTrainDataHandler extends ExternalApiTaskHandler {
         Resource resource = resolver.getResource(testDataModel.getTrainDataPath());
         var instancesDto = externalApiService.uploadInstances(resource);
         log.debug("Train data has been uploaded with status [{}] for test [{}]",
-                instancesDto.getRequestStatus(), autoTestId);
+                instancesDto.getResponseCode(), autoTestId);
         setVariableSafe(execution, API_RESPONSE, instancesDto);
         log.debug("Train data uploading has been finished for execution [{}], process key [{}]", execution.getId(),
                 execution.getProcessBusinessKey());

@@ -110,10 +110,10 @@
       <bpmn:outgoing>Flow_1klxt8x</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0pf83we" sourceRef="Gateway_0me8elr" targetRef="Activity_09gcibm">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${apiResponse.requestStatus == 'VALIDATION_ERROR'}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${apiResponse.responseCode == 'VALIDATION_ERROR'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0ofm4fx" sourceRef="Gateway_0me8elr" targetRef="Activity_0wck1ym">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${apiResponse.requestStatus == 'SUCCESS'}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${apiResponse.responseCode == 'SUCCESS'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1klxt8x" sourceRef="Gateway_0me8elr" targetRef="Activity_0au6vxc" />
     <bpmn:sequenceFlow id="Flow_039t8tp" sourceRef="Activity_0wck1ym" targetRef="Activity_0i734h5" />
@@ -125,10 +125,10 @@
       <bpmn:outgoing>Flow_0mgrdwc</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_10iwz9d" sourceRef="Gateway_1rkjop3" targetRef="Activity_0sw2wnj">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${apiResponse.requestStatus == 'VALIDATION_ERROR'}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${apiResponse.responseCode == 'VALIDATION_ERROR'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_146f0cb" sourceRef="Gateway_1rkjop3" targetRef="Activity_1b12y53">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${apiResponse.requestStatus == 'SUCCESS'}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${apiResponse.responseCode == 'SUCCESS'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0lzmeky" sourceRef="Gateway_1rkjop3" targetRef="Activity_0au6vxc" />
     <bpmn:sequenceFlow id="Flow_0cve2qf" sourceRef="Activity_0sw2wnj" targetRef="Activity_1vk8gb4" />
@@ -142,7 +142,7 @@
       <bpmn:outgoing>Flow_0pn1vrx</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0mgrdwc" sourceRef="Gateway_1rkjop3" targetRef="Activity_10bazct">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${apiResponse.requestStatus == 'DATA_NOT_FOUND'}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${apiResponse.responseCode == 'DATA_NOT_FOUND'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0pn1vrx" sourceRef="Activity_10bazct" targetRef="Activity_1vk8gb4" />
     <bpmn:serviceTask id="Activity_070x360" name="Скачать модель с сервера и сравнить результаты" camunda:modelerTemplate="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener" camunda:class="com.ecaservice.external.api.test.bpm.listeners.TaskExecutionListener">
@@ -204,7 +204,7 @@
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="Flow_1km68eq" sourceRef="Event_1horvp8" targetRef="Activity_0o3hr0a" />
     <bpmn:sequenceFlow id="Flow_0dwy85b" sourceRef="Gateway_15p6hxs" targetRef="Activity_0dsn777">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${apiResponse.requestStatus == 'SUCCESS' &amp;&amp; apiResponse.payload.evaluationStatus == 'FINISHED'}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${apiResponse.responseCode == 'SUCCESS' &amp;&amp; apiResponse.payload.evaluationStatus == 'FINISHED'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1dpx3b3" sourceRef="Activity_0jkpz24" targetRef="Gateway_0me8elr" />
     <bpmn:sequenceFlow id="Flow_0rj1wpt" sourceRef="Activity_0i734h5" targetRef="Gateway_1rkjop3" />

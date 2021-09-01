@@ -1,7 +1,7 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.external.api.test.bpm.model.TaskType;
 import com.ecaservice.external.api.test.entity.AutoTestEntity;
 import com.ecaservice.external.api.test.repository.AutoTestRepository;
@@ -56,16 +56,16 @@ public abstract class ComparisonTaskHandler extends AbstractTaskHandler {
                                                   AutoTestEntity autoTestEntity,
                                                   TestResultsMatcher matcher) throws Exception;
 
-    protected void compareAndMatchRequestStatus(AutoTestEntity autoTestEntity,
-                                                RequestStatus expectedStatus,
-                                                RequestStatus actualStatus,
-                                                TestResultsMatcher matcher) {
+    protected void compareAndMatchResponseCode(AutoTestEntity autoTestEntity,
+                                               ResponseCode expectedResponseCode,
+                                               ResponseCode actualResponseCode,
+                                               TestResultsMatcher matcher) {
         log.debug("Compare status field for auto test [{}]", autoTestEntity.getId());
-        autoTestEntity.setExpectedRequestStatus(expectedStatus);
-        autoTestEntity.setActualRequestStatus(actualStatus);
-        MatchResult statusMatchResult = matcher.compareAndMatch(expectedStatus, actualStatus);
-        autoTestEntity.setRequestStatusMatchResult(statusMatchResult);
-        log.debug("Auto test [{}] expected request status [{}], actual request status [{}], match result [{}]",
-                autoTestEntity.getId(), expectedStatus, actualStatus, statusMatchResult);
+        autoTestEntity.setExpectedResponseCode(expectedResponseCode);
+        autoTestEntity.setActualResponseCode(actualResponseCode);
+        MatchResult statusMatchResult = matcher.compareAndMatch(expectedResponseCode, actualResponseCode);
+        autoTestEntity.setResponseCodeMatchResult(statusMatchResult);
+        log.debug("Auto test [{}] expected response code [{}], actual response code [{}], match result [{}]",
+                autoTestEntity.getId(), expectedResponseCode, actualResponseCode, statusMatchResult);
     }
 }

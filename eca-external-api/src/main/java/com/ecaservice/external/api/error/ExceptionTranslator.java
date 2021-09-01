@@ -1,6 +1,6 @@
 package com.ecaservice.external.api.error;
 
-import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.external.api.exception.DataNotFoundException;
 import org.springframework.amqp.AmqpException;
 import org.springframework.stereotype.Component;
@@ -14,18 +14,18 @@ import org.springframework.stereotype.Component;
 public class ExceptionTranslator {
 
     /**
-     * Converts exception to request status.
+     * Converts exception to response code.
      *
      * @param ex - exception
-     * @return request status
+     * @return response code
      */
-    public RequestStatus translate(Exception ex) {
+    public ResponseCode translate(Exception ex) {
         if (ex instanceof AmqpException) {
-            return RequestStatus.SERVICE_UNAVAILABLE;
+            return ResponseCode.SERVICE_UNAVAILABLE;
         }
         if (ex instanceof DataNotFoundException) {
-            return RequestStatus.DATA_NOT_FOUND;
+            return ResponseCode.DATA_NOT_FOUND;
         }
-        return RequestStatus.ERROR;
+        return ResponseCode.ERROR;
     }
 }

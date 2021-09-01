@@ -1,6 +1,6 @@
 package com.ecaservice.external.api.controller;
 
-import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.external.api.metrics.MetricsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,8 +53,8 @@ class ErrorHandlerTest {
         assertThat(actualResponse).isNotNull();
         assertThat(actualResponse.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(actualResponse.getBody()).isNotNull();
-        assertThat(actualResponse.getBody().getRequestStatus()).isEqualTo(RequestStatus.VALIDATION_ERROR);
+        assertThat(actualResponse.getBody().getResponseCode()).isEqualTo(ResponseCode.VALIDATION_ERROR);
         verify(metricsService, atLeastOnce()).trackResponsesTotal();
-        verify(metricsService, atLeastOnce()).trackRequestStatus(RequestStatus.VALIDATION_ERROR);
+        verify(metricsService, atLeastOnce()).trackResponseCode(ResponseCode.VALIDATION_ERROR);
     }
 }

@@ -3,7 +3,7 @@ package com.ecaservice.external.api.controller;
 import com.ecaservice.common.web.ExceptionResponseHandler;
 import com.ecaservice.common.web.dto.ValidationErrorDto;
 import com.ecaservice.common.web.exception.ValidationErrorException;
-import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.metrics.MetricsService;
 import lombok.RequiredArgsConstructor;
@@ -90,7 +90,7 @@ public class ErrorHandler {
     public ResponseEntity<ResponseDto<List<ValidationErrorDto>>> handleValidationError(ValidationErrorException ex) {
         log.error("Validation error [{}]: {}", ex.getErrorCode(), ex.getMessage());
         var responseEntity = ExceptionResponseHandler.handleValidationErrorException(ex);
-        var responseDto = buildResponse(RequestStatus.VALIDATION_ERROR, responseEntity.getBody());
+        var responseDto = buildResponse(ResponseCode.VALIDATION_ERROR, responseEntity.getBody());
         return ResponseEntity.badRequest().body(responseDto);
     }
 
@@ -99,9 +99,9 @@ public class ErrorHandler {
         metricsService.trackRequestsTotal();
         ResponseEntity<List<ValidationErrorDto>> errorResponse = supplier.get();
         ResponseDto<List<ValidationErrorDto>> responseDto =
-                buildResponse(RequestStatus.VALIDATION_ERROR, errorResponse.getBody());
+                buildResponse(ResponseCode.VALIDATION_ERROR, errorResponse.getBody());
         log.error("Validation error: {}", responseDto);
-        metricsService.trackRequestStatus(responseDto.getRequestStatus());
+        metricsService.trackResponseCode(responseDto.getResponseCode());
         metricsService.trackResponsesTotal();
         return ResponseEntity.badRequest().body(responseDto);
     }

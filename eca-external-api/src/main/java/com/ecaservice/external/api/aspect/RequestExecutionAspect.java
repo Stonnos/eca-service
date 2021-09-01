@@ -2,7 +2,7 @@ package com.ecaservice.external.api.aspect;
 
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.EvaluationStatus;
-import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.error.ExceptionTranslator;
 import com.ecaservice.external.api.metrics.MetricsService;
@@ -69,8 +69,8 @@ public class RequestExecutionAspect {
                     .requestId(ecaRequestEntity.getCorrelationId())
                     .evaluationStatus(EvaluationStatus.IN_PROGRESS)
                     .build();
-            var responseDto = buildResponse(RequestStatus.SUCCESS, evaluationResponseDto);
-            metricsService.trackResponse(ecaRequestEntity, responseDto.getRequestStatus());
+            var responseDto = buildResponse(ResponseCode.SUCCESS, evaluationResponseDto);
+            metricsService.trackResponse(ecaRequestEntity, responseDto.getResponseCode());
             log.debug("Send response back for correlation id [{}]", ecaRequestEntity.getCorrelationId());
             sink.success(responseDto);
         });
@@ -79,13 +79,13 @@ public class RequestExecutionAspect {
     private void handleError(EcaRequestEntity ecaRequestEntity, Exception ex) {
         requestStageHandler.handleError(ecaRequestEntity, ex.getMessage());
         messageCorrelationService.pop(ecaRequestEntity.getCorrelationId()).ifPresent(sink -> {
-            var requestStatus = exceptionTranslator.translate(ex);
+            var responseCode = exceptionTranslator.translate(ex);
             var evaluationResponseDto = EvaluationResponseDto.builder()
                     .requestId(ecaRequestEntity.getCorrelationId())
                     .evaluationStatus(EvaluationStatus.ERROR)
                     .build();
-            var responseDto = buildResponse(requestStatus, evaluationResponseDto);
-            metricsService.trackResponse(ecaRequestEntity, requestStatus);
+            var responseDto = buildResponse(responseCode, evaluationResponseDto);
+            metricsService.trackResponse(ecaRequestEntity, responseCode);
             log.debug("Send error response for correlation id [{}]", ecaRequestEntity.getCorrelationId());
             sink.success(responseDto);
         });

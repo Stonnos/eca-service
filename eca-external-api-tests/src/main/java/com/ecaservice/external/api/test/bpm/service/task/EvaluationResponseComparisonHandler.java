@@ -64,8 +64,8 @@ public class EvaluationResponseComparisonHandler extends ComparisonTaskHandler {
         var responseDto = getVariable(execution, API_RESPONSE, API_RESPONSE_TYPE_REFERENCE);
         saveResponse(autoTestEntity, responseDto);
         //Compare and match evaluation response status
-        compareAndMatchRequestStatus(autoTestEntity, testDataModel.getExpectedResponse().getRequestStatus(),
-                responseDto.getRequestStatus(), matcher);
+        compareAndMatchResponseCode(autoTestEntity, testDataModel.getExpectedResponse().getResponseCode(),
+                responseDto.getResponseCode(), matcher);
         //Compare and match model url
         compareAndMatchModelUrl(responseDto, autoTestEntity, matcher);
         log.debug("Compare evaluation response has been finished for execution id [{}], process key [{}]",

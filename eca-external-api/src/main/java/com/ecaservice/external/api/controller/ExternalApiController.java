@@ -4,7 +4,7 @@ import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.InstancesDto;
-import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.service.EcaRequestService;
 import com.ecaservice.external.api.service.EvaluationApiService;
@@ -90,7 +90,7 @@ public class ExternalApiController {
         var instancesEntity = instancesService.uploadInstances(trainingData);
         var instancesDto = new InstancesDto(instancesEntity.getUuid(),
                 String.format("%s%s", DATA_URL_PREFIX, instancesEntity.getUuid()));
-        return buildResponse(RequestStatus.SUCCESS, instancesDto);
+        return buildResponse(ResponseCode.SUCCESS, instancesDto);
     }
 
     /**
@@ -141,7 +141,7 @@ public class ExternalApiController {
             @Parameter(description = "Request id", required = true) @PathVariable String requestId) {
         log.debug("Request to get evaluation [{}] response status", requestId);
         var evaluationResponseDto = evaluationResponseService.processResponse(requestId);
-        var responseDto = buildResponse(RequestStatus.SUCCESS, evaluationResponseDto);
+        var responseDto = buildResponse(ResponseCode.SUCCESS, evaluationResponseDto);
         log.debug("Got evaluation [{}] response: {}", requestId, responseDto);
         return responseDto;
     }

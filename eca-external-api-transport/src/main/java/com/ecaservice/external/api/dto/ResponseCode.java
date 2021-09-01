@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
  * @author Roman Batygin
  */
 @RequiredArgsConstructor
-public enum RequestStatus {
+public enum ResponseCode {
 
     /**
      * Success request

@@ -2,7 +2,7 @@ package com.ecaservice.external.api.controller;
 
 import com.ecaservice.external.api.AbstractJpaTest;
 import com.ecaservice.external.api.config.ExternalApiConfig;
-import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.external.api.mapping.EcaRequestMapperImpl;
 import com.ecaservice.external.api.metrics.MetricsService;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
@@ -52,6 +52,6 @@ class TimeoutFallbackTest extends AbstractJpaTest {
         assertThat(mono).isNotNull();
         var responseDto = mono.block();
         assertThat(responseDto).isNotNull();
-        assertThat(responseDto.getRequestStatus()).isEqualTo(RequestStatus.TIMEOUT);
+        assertThat(responseDto.getResponseCode()).isEqualTo(ResponseCode.TIMEOUT);
     }
 }

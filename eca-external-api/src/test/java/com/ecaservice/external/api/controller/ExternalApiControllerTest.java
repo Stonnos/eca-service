@@ -4,7 +4,7 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.EvaluationStatus;
 import com.ecaservice.external.api.dto.InstancesDto;
-import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.InstancesEntity;
@@ -92,7 +92,7 @@ class ExternalApiControllerTest extends AbstractControllerTest {
         InstancesDto instancesDto = new InstancesDto(instancesEntity.getUuid(),
                 String.format("%s%s", DATA_URL_PREFIX, instancesEntity.getUuid()));
         ResponseDto<InstancesDto> expected = ResponseDto.<InstancesDto>builder()
-                .requestStatus(RequestStatus.SUCCESS)
+                .responseCode(ResponseCode.SUCCESS)
                 .payload(instancesDto)
                 .build();
         mockMvc.perform(multipart(UPLOAD_DATA_URL)
@@ -113,7 +113,7 @@ class ExternalApiControllerTest extends AbstractControllerTest {
     void testGetEvaluationResultsStatusSuccess() throws Exception {
         String correlationId = UUID.randomUUID().toString();
         var evaluationResponseDto = createEvaluationResponseDto(correlationId, EvaluationStatus.IN_PROGRESS);
-        var expectedResponseDto = buildResponse(RequestStatus.SUCCESS, evaluationResponseDto);
+        var expectedResponseDto = buildResponse(ResponseCode.SUCCESS, evaluationResponseDto);
         when(evaluationResponseService.processResponse(correlationId)).thenReturn(evaluationResponseDto);
         mockMvc.perform(get(EVALUATION_RESULTS_STATUS_URL, correlationId)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))

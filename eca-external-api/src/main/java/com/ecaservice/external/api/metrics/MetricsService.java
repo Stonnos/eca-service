@@ -1,6 +1,6 @@
 package com.ecaservice.external.api.metrics;
 
-import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -17,8 +17,8 @@ import java.util.stream.Stream;
 import static com.ecaservice.external.api.config.metrics.MetricConstants.REQUESTS_METRIC;
 import static com.ecaservice.external.api.config.metrics.MetricConstants.REQUESTS_TOTAL_METRIC;
 import static com.ecaservice.external.api.config.metrics.MetricConstants.REQUEST_DURATION_METRIC;
-import static com.ecaservice.external.api.config.metrics.MetricConstants.REQUEST_STATUS_TAG;
 import static com.ecaservice.external.api.config.metrics.MetricConstants.RESPONSES_TOTAL_METRIC;
+import static com.ecaservice.external.api.config.metrics.MetricConstants.RESPONSE_CODE_TAG;
 import static com.google.common.collect.Maps.newHashMap;
 
 /**
@@ -37,7 +37,7 @@ public class MetricsService {
     private Counter requestsTotalCounter;
     private Counter responsesTotalCounter;
 
-    private Map<RequestStatus, Counter> requestStatusCounterMap = newHashMap();
+    private Map<ResponseCode, Counter> responseCodeCounterMap = newHashMap();
 
     /**
      * Initialize metrics.
@@ -47,7 +47,7 @@ public class MetricsService {
         requestDurationCounter = meterRegistry.counter(REQUEST_DURATION_METRIC);
         requestsTotalCounter = meterRegistry.counter(REQUESTS_TOTAL_METRIC);
         responsesTotalCounter = meterRegistry.counter(RESPONSES_TOTAL_METRIC);
-        configureRequestStatusCountersMap();
+        configureResponseCodeCountersMap();
     }
 
     /**
@@ -77,33 +77,33 @@ public class MetricsService {
      * Tracks response.
      *
      * @param ecaRequestEntity - eca request entity
-     * @param requestStatus    - request status
+     * @param responseCode     - response code
      */
-    public void trackResponse(EcaRequestEntity ecaRequestEntity, RequestStatus requestStatus) {
-        trackRequestStatus(requestStatus);
+    public void trackResponse(EcaRequestEntity ecaRequestEntity, ResponseCode responseCode) {
+        trackResponseCode(responseCode);
         long duration = ChronoUnit.MILLIS.between(ecaRequestEntity.getCreationDate(), LocalDateTime.now());
         trackRequestDuration(duration);
         trackResponsesTotal();
     }
 
     /**
-     * Tracks request status.
+     * Tracks response code.
      *
-     * @param requestStatus - request status
+     * @param responseCode - response code
      */
-    public void trackRequestStatus(RequestStatus requestStatus) {
-        Counter counter = requestStatusCounterMap.get(requestStatus);
+    public void trackResponseCode(ResponseCode responseCode) {
+        Counter counter = responseCodeCounterMap.get(responseCode);
         if (counter == null) {
-            log.warn("Counter not specified for request status [{}]", requestStatus);
+            log.warn("Counter not specified for response code [{}]", responseCode);
         } else {
             counter.increment();
         }
     }
 
-    private void configureRequestStatusCountersMap() {
-        Stream.of(RequestStatus.values()).forEach(requestStatus -> {
-            Counter counter = meterRegistry.counter(REQUESTS_METRIC, REQUEST_STATUS_TAG, requestStatus.name());
-            requestStatusCounterMap.put(requestStatus, counter);
+    private void configureResponseCodeCountersMap() {
+        Stream.of(ResponseCode.values()).forEach(responseCode -> {
+            Counter counter = meterRegistry.counter(REQUESTS_METRIC, RESPONSE_CODE_TAG, responseCode.name());
+            responseCodeCounterMap.put(responseCode, counter);
         });
     }
 }

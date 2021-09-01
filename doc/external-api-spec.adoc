@@ -88,7 +88,7 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
     "dataId": "2a35bffe-27ad-4a50-a7e0-8c871cfd7cc5",
     "dataUrl": "data://2a35bffe-27ad-4a50-a7e0-8c871cfd7cc5"
   },
-  "requestStatus": "SUCCESS",
+  "responseCode": "SUCCESS",
   "errorDescription": null
 }
 ----
@@ -107,7 +107,7 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 |+
 |Внутренняя ссылка на данные в формате data://dataId
 |Ссылка может быть передана в поле trainDataUrl для запроса на построение модели классификатора
-|requestStatus
+|responseCode
 |string
 |+
 |Статус ответа
@@ -184,7 +184,7 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
     "pctIncorrect": null,
     "meanAbsoluteError": null
   },
-  "requestStatus": "SUCCESS",
+  "responseCode": "SUCCESS",
   "errorDescription": null
 }
 ----
@@ -203,7 +203,7 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 |+
 |Статус построение модели
 |Заполняется по справочнику <<Справочник кодов EvaluationStatus>>
-|requestStatus
+|responseCode
 |string
 |+
 |Статус ответа
@@ -270,7 +270,7 @@ curl -X GET "http://localhost:8080/external-api/evaluation-status/1cbe6c49-8432-
     "pctIncorrect": 4,
     "meanAbsoluteError": 0.02869334024628254
   },
-  "requestStatus": "SUCCESS",
+  "responseCode": "SUCCESS",
   "errorDescription": null
 }
 ----

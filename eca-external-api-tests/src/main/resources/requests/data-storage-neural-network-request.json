@@ -12,6 +12,6 @@
     "evaluationMethod": "TRAINING_DATA"
   },
   "expectedResponse": {
-    "requestStatus": "SUCCESS"
+    "responseCode": "SUCCESS"
   }
 }

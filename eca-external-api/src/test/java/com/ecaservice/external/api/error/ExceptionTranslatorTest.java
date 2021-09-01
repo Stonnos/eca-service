@@ -1,6 +1,6 @@
 package com.ecaservice.external.api.error;
 
-import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.external.api.exception.DataNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
@@ -19,21 +19,21 @@ class ExceptionTranslatorTest {
 
     @Test
     void testDataNotFound() {
-        internalTestException(new DataNotFoundException(StringUtils.EMPTY), RequestStatus.DATA_NOT_FOUND);
+        internalTestException(new DataNotFoundException(StringUtils.EMPTY), ResponseCode.DATA_NOT_FOUND);
     }
 
     @Test
     void testServiceUnavailable() {
-        internalTestException(new AmqpException(StringUtils.EMPTY), RequestStatus.SERVICE_UNAVAILABLE);
+        internalTestException(new AmqpException(StringUtils.EMPTY), ResponseCode.SERVICE_UNAVAILABLE);
     }
 
     @Test
     void testError() {
-        internalTestException(new IllegalStateException(StringUtils.EMPTY), RequestStatus.ERROR);
+        internalTestException(new IllegalStateException(StringUtils.EMPTY), ResponseCode.ERROR);
     }
 
-    private void internalTestException(Exception ex, RequestStatus expected) {
-        RequestStatus actual = exceptionTranslator.translate(ex);
+    private void internalTestException(Exception ex, ResponseCode expected) {
+        ResponseCode actual = exceptionTranslator.translate(ex);
         assertThat(actual).isNotNull();
         assertThat(actual).isEqualTo(expected);
     }

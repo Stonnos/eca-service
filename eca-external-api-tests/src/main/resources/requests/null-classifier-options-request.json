@@ -9,6 +9,6 @@
     "seed": 1
   },
   "expectedResponse": {
-    "requestStatus": "VALIDATION_ERROR"
+    "responseCode": "VALIDATION_ERROR"
   }
 }
