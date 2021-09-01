@@ -40,7 +40,7 @@ public class NotificationEventListener {
         log.info("Received notification event [{}] from source [{}]", notificationEvent.getClass().getSimpleName(),
                 notificationEvent.getSource().getClass().getSimpleName());
         if (!Boolean.TRUE.equals(appProperties.getEmailsEnabled())) {
-            log.warn("Emails sending is disabled");
+            log.warn("Emails sending is disabled. You may set app.emailsEnabled property");
         } else {
             var eventHandler = notificationEventHandlers.stream()
                     .filter(handler -> handler.canHandle(notificationEvent))
