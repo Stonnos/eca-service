@@ -44,7 +44,7 @@ public class Utils {
         try {
             EvaluationRequestEntity evaluationRequestEntity = new EvaluationRequestEntity();
             evaluationRequestEntity.setCorrelationId(UUID.randomUUID().toString());
-            evaluationRequestEntity.setStageType(RequestStageType.NOT_SEND);
+            evaluationRequestEntity.setStageType(RequestStageType.READY);
             evaluationRequestEntity.setTestResult(TestResult.UNKNOWN);
             evaluationRequestEntity.setLoadTestEntity(loadTestEntity);
             evaluationRequestEntity.setClassifierOptions(OBJECT_MAPPER.writeValueAsString(classifierOptions));

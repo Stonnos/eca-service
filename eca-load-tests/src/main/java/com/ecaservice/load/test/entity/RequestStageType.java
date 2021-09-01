@@ -27,9 +27,9 @@ public enum RequestStageType implements DescriptiveEnum {
     ERROR("Ошибка"),
 
     /**
-     * Request not send
+     * Ready to sent
      */
-    NOT_SEND("Запрос не был отправлен"),
+    READY("Запрос готов к отправке"),
 
     /**
      * Request exceeded
