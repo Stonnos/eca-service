@@ -25,7 +25,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableGlobalExceptionHandler
 @EntityScan(basePackageClasses = UserEntity.class)
 @EnableJpaRepositories(basePackageClasses = UserEntityRepository.class)
-@EnableConfigurationProperties({CommonConfig.class, PasswordConfig.class, ResetPasswordConfig.class, TfaConfig.class,
+@EnableConfigurationProperties({AppProperties.class, PasswordConfig.class, ResetPasswordConfig.class, TfaConfig.class,
         ChangePasswordConfig.class})
 @Import(FilterExceptionHandler.class)
 public class EcaOauthConfiguration {

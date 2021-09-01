@@ -2,7 +2,7 @@ package com.ecaservice.oauth.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
-import com.ecaservice.oauth.config.CommonConfig;
+import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.RoleEntity;
@@ -62,7 +62,7 @@ public class UserService {
             UserEntity_.FULL_NAME
     );
 
-    private final CommonConfig commonConfig;
+    private final AppProperties appProperties;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final Oauth2TokenService oauth2TokenService;
@@ -80,7 +80,7 @@ public class UserService {
         Sort sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
         UserFilter filter =
                 new UserFilter(pageRequestDto.getSearchQuery(), USER_GLOBAL_FILTER_FIELDS, pageRequestDto.getFilters());
-        int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
+        int pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
         return userEntityRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
     }
 

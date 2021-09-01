@@ -4,16 +4,21 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * Application common config.
+ * Application properties.
  *
  * @author Roman Batygin
  */
 @Data
-@ConfigurationProperties("common")
-public class CommonConfig {
+@ConfigurationProperties("app")
+public class AppProperties {
 
     /**
      * Maximum page size for paging requests
      */
     private Integer maxPageSize;
+
+    /**
+     * Emails sending enabled?
+     */
+    private Boolean emailsEnabled;
 }
