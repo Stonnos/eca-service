@@ -35,7 +35,11 @@ public class ExperimentNotificationEventListener {
         Experiment experiment = experimentEmailEvent.getExperiment();
         log.info("Handles experiment [{}] email event from source [{}]", experiment.getRequestId(),
                 experimentEmailEvent.getSource().getClass().getSimpleName());
-        experiment.getRequestStatus().handle(experimentEmailVisitor, experiment);
+        if (!Boolean.TRUE.equals(appProperties.getNotifications().getEmailsEnabled())) {
+            log.warn("Emails sending are disabled. You may set [app.notifications.emailsEnabled] property");
+        } else {
+            experiment.getRequestStatus().handle(experimentEmailVisitor, experiment);
+        }
     }
 
     /**
@@ -48,6 +52,10 @@ public class ExperimentNotificationEventListener {
         Experiment experiment = experimentWebPushEvent.getExperiment();
         log.info("Handles experiment [{}] web push event from source [{}]", experiment.getRequestId(),
                 experimentWebPushEvent.getSource().getClass().getSimpleName());
-        webPushService.sendWebPush(experimentWebPushEvent.getExperiment());
+        if (!Boolean.TRUE.equals(appProperties.getNotifications().getWebPushesEnabled())) {
+            log.warn("Web pushes are disabled. You may set [app.notification.webPushesEnabled] property");
+        } else {
+            webPushService.sendWebPush(experimentWebPushEvent.getExperiment());
+        }
     }
 }

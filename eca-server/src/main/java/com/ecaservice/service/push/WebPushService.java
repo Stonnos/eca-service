@@ -1,6 +1,5 @@
 package com.ecaservice.service.push;
 
-import com.ecaservice.config.AppProperties;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.entity.Experiment;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class WebPushService {
 
-    private final AppProperties appProperties;
     private final ExperimentMapper experimentMapper;
     private final WebPushClient webPushClient;
 
@@ -27,18 +25,14 @@ public class WebPushService {
     public void sendWebPush(Experiment experiment) {
         log.info("Starting to sent web push for experiment [{}], request status [{}]", experiment.getRequestId(),
                 experiment.getRequestStatus());
-        if (!Boolean.TRUE.equals(appProperties.getNotification().getWebPushesEnabled())) {
-            log.warn("Web pushes are disabled. You may set [app.notification.webPushesEnabled] property");
-        } else {
-            try {
-                var experimentDto = experimentMapper.map(experiment);
-                webPushClient.push(experimentDto);
-                log.info("Web push has been sent for experiment [{}], request status [{}]", experiment.getRequestId(),
-                        experiment.getRequestStatus());
-            } catch (Exception ex) {
-                log.error("There was an error while sending web push for experiment [{}], status [{}]: {}",
-                        experiment.getRequestId(), experiment.getRequestStatus(), ex.getMessage());
-            }
+        try {
+            var experimentDto = experimentMapper.map(experiment);
+            webPushClient.push(experimentDto);
+            log.info("Web push has been sent for experiment [{}], request status [{}]", experiment.getRequestId(),
+                    experiment.getRequestStatus());
+        } catch (Exception ex) {
+            log.error("There was an error while sending web push for experiment [{}], status [{}]: {}",
+                    experiment.getRequestId(), experiment.getRequestStatus(), ex.getMessage());
         }
     }
 }

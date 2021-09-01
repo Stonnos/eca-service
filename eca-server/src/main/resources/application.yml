@@ -58,7 +58,7 @@ ribbon:
 app:
   maxPageSize: 50
   threadPoolSize: 10
-  notification:
+  notifications:
     webPushesEnabled: true
     emailsEnabled: true
 

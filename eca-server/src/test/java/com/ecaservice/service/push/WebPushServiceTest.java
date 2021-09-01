@@ -1,6 +1,5 @@
 package com.ecaservice.service.push;
 
-import com.ecaservice.config.AppProperties;
 import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentMapperImpl;
@@ -28,11 +27,9 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({DateTimeConverter.class, ExperimentMapperImpl.class, AppProperties.class})
+@Import({DateTimeConverter.class, ExperimentMapperImpl.class})
 class WebPushServiceTest {
 
-    @Inject
-    private AppProperties appProperties;
     @Inject
     private ExperimentMapper experimentMapper;
     @Mock
@@ -42,7 +39,7 @@ class WebPushServiceTest {
 
     @BeforeEach
     void init() {
-        webPushService = new WebPushService(appProperties, experimentMapper, webPushClient);
+        webPushService = new WebPushService(experimentMapper, webPushClient);
     }
 
     @Test

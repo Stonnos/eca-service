@@ -32,7 +32,7 @@ public class AppProperties {
      * Notification properties
      */
     @NotNull
-    private NotificationProperties notification;
+    private NotificationProperties notifications;
 
     /**
      * Notification properties
