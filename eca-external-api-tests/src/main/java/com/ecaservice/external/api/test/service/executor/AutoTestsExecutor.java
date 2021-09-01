@@ -64,18 +64,13 @@ public class AutoTestsExecutor {
                 String errorMessage =
                         String.format("Worker thread timeout occurred for auto test job [%s]", jobEntity.getJobUuid());
                 log.warn(errorMessage);
-                jobEntity.setDetails(errorMessage);
-                jobEntity.setExecutionStatus(ExecutionStatus.ERROR);
-                return;
+                failed(jobEntity, errorMessage);
             }
-            jobEntity.setExecutionStatus(ExecutionStatus.FINISHED);
         } catch (Exception ex) {
             log.error("There was an error while auto test job [{}]: {}", jobEntity.getJobUuid(),
                     ex.getMessage(), ex);
             failed(jobEntity, ex.getMessage());
         } finally {
-            jobEntity.setFinished(LocalDateTime.now());
-            jobRepository.save(jobEntity);
             executor.shutdown();
         }
     }
@@ -93,6 +88,8 @@ public class AutoTestsExecutor {
     private void failed(JobEntity jobEntity, String errorMessage) {
         jobEntity.setDetails(errorMessage);
         jobEntity.setExecutionStatus(ExecutionStatus.ERROR);
+        jobEntity.setFinished(LocalDateTime.now());
+        jobRepository.save(jobEntity);
     }
 
     private Runnable createTask(long testId, TestDataModel testDataModel, CountDownLatch countDownLatch) {
