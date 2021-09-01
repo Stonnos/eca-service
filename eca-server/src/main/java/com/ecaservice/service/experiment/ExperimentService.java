@@ -28,6 +28,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
 import weka.core.Instances;
 
@@ -49,8 +50,6 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
@@ -197,17 +196,15 @@ public class ExperimentService implements PageRequestService<Experiment> {
      *
      * @param experiment - experiment object
      */
-    public void removeExperimentData(Experiment experiment) {
-        boolean trainingDataDeleted = removeExperimentFile(experiment, Experiment::getTrainingDataAbsolutePath,
-                exp -> exp.setTrainingDataAbsolutePath(null));
-        if (trainingDataDeleted) {
-            boolean experimentResultsDeleted = removeExperimentFile(experiment, Experiment::getExperimentAbsolutePath,
-                    exp -> exp.setExperimentAbsolutePath(null));
-            if (experimentResultsDeleted) {
-                experiment.setDeletedDate(LocalDateTime.now());
-            }
-            experimentRepository.save(experiment);
-        }
+    @Transactional
+    public void removeExperimentModel(Experiment experiment) {
+        log.info("Starting to remove experiment [{}] model file", experiment.getRequestId());
+        String experimentAbsolutePath = experiment.getExperimentAbsolutePath();
+        experiment.setExperimentAbsolutePath(null);
+        experiment.setDeletedDate(LocalDateTime.now());
+        experimentRepository.save(experiment);
+        dataService.delete(experimentAbsolutePath);
+        log.info("Experiment [{}] model file has been deleted", experiment.getRequestId());
     }
 
     @Override
@@ -269,26 +266,5 @@ public class ExperimentService implements PageRequestService<Experiment> {
                 requestStatus -> !experimentTypesMap.containsKey(requestStatus)).forEach(
                 requestStatus -> experimentTypesMap.put(requestStatus, 0L));
         return experimentTypesMap;
-    }
-
-    /**
-     * Removes experiment associated file.
-     *
-     * @param experiment       - experiment entity
-     * @param filePathFunction - file path function
-     * @param callback         - callback
-     * @return {@code true} if file has been successfully removed or file path is empty
-     */
-    private boolean removeExperimentFile(Experiment experiment, Function<Experiment, String> filePathFunction,
-                                         Consumer<Experiment> callback) {
-        String filePath = filePathFunction.apply(experiment);
-        if (!StringUtils.isEmpty(filePath)) {
-            boolean deleted = dataService.delete(new File(filePath));
-            if (deleted) {
-                callback.accept(experiment);
-            }
-            return deleted;
-        }
-        return true;
     }
 }

@@ -141,7 +141,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         experiments.add(timeoutExperiment);
         experimentRepository.saveAll(experiments);
         experimentScheduler.processRequestsToRemove();
-        verify(experimentService).removeExperimentData(argumentCaptor.capture());
+        verify(experimentService).removeExperimentModel(argumentCaptor.capture());
         assertThat(argumentCaptor.getValue()).isEqualTo(experimentToRemove);
     }
 

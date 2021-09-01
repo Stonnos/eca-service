@@ -116,20 +116,20 @@ public class ExperimentRequestProcessor {
     }
 
     /**
-     * Removes experiments data files from disk.
+     * Removes experiments model files from disk.
      */
     @TryLocked(lockName = EXPERIMENTS_CRON_JOB_KEY, lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN)
-    public void removeExperimentsData() {
-        log.info("Starting to remove experiments data.");
+    public void removeExperimentsModels() {
+        log.info("Starting to remove experiments models.");
         LocalDateTime dateTime = LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage());
         List<Experiment> experiments = experimentRepository.findNotDeletedExperiments(dateTime);
         log.trace("Obtained {} experiments to remove data", experiments.size());
         experiments.forEach(experiment -> {
             putMdc(TX_ID, experiment.getRequestId());
             putMdc(EV_REQUEST_ID, experiment.getRequestId());
-            experimentService.removeExperimentData(experiment);
+            experimentService.removeExperimentModel(experiment);
         });
-        log.info("Experiments data removing has been finished.");
+        log.info("Experiments models removing has been finished.");
     }
 
     private void setInProgressStatus(Experiment experiment) {

@@ -1,6 +1,7 @@
 package com.ecaservice.service.experiment;
 
 
+import com.ecaservice.exception.experiment.ExperimentException;
 import eca.converters.ModelConverter;
 import eca.converters.model.ExperimentHistory;
 import eca.data.file.FileDataLoader;
@@ -9,11 +10,12 @@ import eca.data.file.resource.FileResource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 import weka.core.Instances;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Data service interface.
@@ -86,21 +88,23 @@ public class DataService {
     /**
      * Deletes file from disk.
      *
-     * @param file - file object
+     * @param fileName - file name
      */
-    public boolean delete(File file) {
-        Assert.notNull(file, "File isn't specified!");
+    public void delete(String fileName) {
+        if (StringUtils.isEmpty(fileName)) {
+            log.warn("Got empty file name. Mark as deleted");
+        }
+        File file = new File(fileName);
         if (!file.isFile()) {
-            log.warn("File with name '{}' doesn't exists.", file.getAbsolutePath());
-            return false;
+            log.warn("File with name [{}] doesn't exists. Mark as deleted", file.getAbsolutePath());
         } else {
-            boolean deleted = FileUtils.deleteQuietly(file);
-            if (deleted) {
-                log.info("File '{}' has been deleted from disk.", file.getAbsolutePath());
-            } else {
-                log.warn("There was an error while deleting '{}' file from disk.", file.getAbsolutePath());
+            try {
+                FileUtils.forceDelete(file);
+                log.info("File [{}] has been deleted from disk.", file.getAbsolutePath());
+            } catch (IOException ex) {
+                log.error("There was an error while deleting [{}] file from disk.", file.getAbsolutePath());
+                throw new ExperimentException(ex.getMessage());
             }
-            return deleted;
         }
     }
 }
