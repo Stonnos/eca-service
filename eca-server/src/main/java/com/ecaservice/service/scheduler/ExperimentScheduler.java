@@ -77,7 +77,9 @@ public class ExperimentScheduler {
     @Scheduled(cron = "${experiment.removeExperimentCron}")
     public void processRequestsToRemove() {
         log.info("Starting job to removes experiments data files from disk");
+        experimentRequestProcessor.removeExperimentsTrainingData();
         experimentRequestProcessor.removeExperimentsModels();
+        log.info("Removing experiments data files job has been finished");
     }
 
     private <T> void processPaging(Function<Pageable, Page<T>> pageFunction, Consumer<List<T>> pageContentAction) {

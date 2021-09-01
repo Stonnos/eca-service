@@ -192,9 +192,9 @@ public class ExperimentService implements PageRequestService<Experiment> {
     }
 
     /**
-     * Removes experiments data files from disk.
+     * Removes experiment model file from disk.
      *
-     * @param experiment - experiment object
+     * @param experiment - experiment entity
      */
     @Transactional
     public void removeExperimentModel(Experiment experiment) {
@@ -205,6 +205,21 @@ public class ExperimentService implements PageRequestService<Experiment> {
         experimentRepository.save(experiment);
         dataService.delete(experimentAbsolutePath);
         log.info("Experiment [{}] model file has been deleted", experiment.getRequestId());
+    }
+
+    /**
+     * Removes experiment training data file from disk.
+     *
+     * @param experiment - experiment entity
+     */
+    @Transactional
+    public void removeExperimentTrainingData(Experiment experiment) {
+        log.info("Starting to remove experiment [{}] training data file", experiment.getRequestId());
+        String trainingDataAbsolutePath = experiment.getTrainingDataAbsolutePath();
+        experiment.setTrainingDataAbsolutePath(null);
+        experimentRepository.save(experiment);
+        dataService.delete(trainingDataAbsolutePath);
+        log.info("Experiment [{}] training data file has been deleted", experiment.getRequestId());
     }
 
     @Override

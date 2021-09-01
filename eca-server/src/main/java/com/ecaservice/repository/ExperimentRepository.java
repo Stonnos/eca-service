@@ -50,14 +50,24 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
                                                   Pageable pageable);
 
     /**
-     * Finds experiments which sent date is after N days.
+     * Finds experiments models to delete.
      *
      * @param dateTime date time threshold value
      * @return experiments list
      */
     @Query("select exp from Experiment exp where exp.sentDate is not null and exp.deletedDate is null " +
             "and exp.sentDate < :dateTime order by exp.sentDate")
-    List<Experiment> findNotDeletedExperiments(@Param("dateTime") LocalDateTime dateTime);
+    List<Experiment> findExperimentsModelsToDelete(@Param("dateTime") LocalDateTime dateTime);
+
+    /**
+     * Finds experiments training data to delete.
+     *
+     * @param dateTime date time threshold value
+     * @return experiments list
+     */
+    @Query("select exp from Experiment exp where exp.sentDate is not null and " +
+            "exp.trainingDataAbsolutePath is not null and exp.sentDate < :dateTime order by exp.sentDate")
+    List<Experiment> findExperimentsTrainingDataToDelete(@Param("dateTime") LocalDateTime dateTime);
 
     /**
      * Calculates requests status counting statistics.

@@ -178,7 +178,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testSuccessRemoveExperiment() {
+    void testSuccessRemoveExperimentModel() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         experimentRepository.save(experiment);
         experimentService.removeExperimentModel(experiment);
@@ -186,6 +186,17 @@ class ExperimentServiceTest extends AbstractJpaTest {
         assertThat(experiment).isNotNull();
         assertThat(experiment.getExperimentAbsolutePath()).isNull();
         assertThat(experiment.getDeletedDate()).isNotNull();
+    }
+
+    @Test
+    void testSuccessRemoveExperimentTrainingData() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        experimentRepository.save(experiment);
+        experimentService.removeExperimentTrainingData(experiment);
+        experiment = experimentRepository.findById(experiment.getId()).orElse(null);
+        assertThat(experiment).isNotNull();
+        assertThat(experiment.getTrainingDataAbsolutePath()).isNull();
+        assertThat(experiment.getDeletedDate()).isNull();
     }
 
     @Test

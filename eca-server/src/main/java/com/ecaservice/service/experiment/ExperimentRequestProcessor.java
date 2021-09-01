@@ -122,14 +122,31 @@ public class ExperimentRequestProcessor {
     public void removeExperimentsModels() {
         log.info("Starting to remove experiments models.");
         LocalDateTime dateTime = LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage());
-        List<Experiment> experiments = experimentRepository.findNotDeletedExperiments(dateTime);
-        log.trace("Obtained {} experiments to remove data", experiments.size());
+        List<Experiment> experiments = experimentRepository.findExperimentsModelsToDelete(dateTime);
+        log.info("Obtained {} experiments to remove model files", experiments.size());
         experiments.forEach(experiment -> {
             putMdc(TX_ID, experiment.getRequestId());
             putMdc(EV_REQUEST_ID, experiment.getRequestId());
             experimentService.removeExperimentModel(experiment);
         });
         log.info("Experiments models removing has been finished.");
+    }
+
+    /**
+     * Removes experiments training data files from disk.
+     */
+    @TryLocked(lockName = EXPERIMENTS_CRON_JOB_KEY, lockRegistry = EXPERIMENT_REDIS_LOCK_REGISTRY_BEAN)
+    public void removeExperimentsTrainingData() {
+        log.info("Starting to remove experiments training data.");
+        LocalDateTime dateTime = LocalDateTime.now().minusDays(experimentConfig.getNumberOfDaysForStorage());
+        List<Experiment> experiments = experimentRepository.findExperimentsTrainingDataToDelete(dateTime);
+        log.info("Obtained {} experiments to remove training data files", experiments.size());
+        experiments.forEach(experiment -> {
+            putMdc(TX_ID, experiment.getRequestId());
+            putMdc(EV_REQUEST_ID, experiment.getRequestId());
+            experimentService.removeExperimentTrainingData(experiment);
+        });
+        log.info("Experiments training data removing has been finished.");
     }
 
     private void setInProgressStatus(Experiment experiment) {
