@@ -47,7 +47,7 @@ public class AutoTestsExecutor {
         jobEntity.setExecutionStatus(ExecutionStatus.IN_PROGRESS);
         jobRepository.save(jobEntity);
         runTests(jobEntity);
-        log.info("Auto tests job [{}] has been finished", jobEntity.getJobUuid());
+        log.info("Auto tests job [{}] has been started", jobEntity.getJobUuid());
     }
 
     private void runTests(JobEntity jobEntity) {
