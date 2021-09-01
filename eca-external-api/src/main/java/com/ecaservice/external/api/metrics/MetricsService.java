@@ -14,7 +14,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static com.ecaservice.external.api.config.metrics.MetricConstants.REQUESTS_METRIC;
+import static com.ecaservice.external.api.config.metrics.MetricConstants.RESPONSES_METRIC;
 import static com.ecaservice.external.api.config.metrics.MetricConstants.REQUESTS_TOTAL_METRIC;
 import static com.ecaservice.external.api.config.metrics.MetricConstants.REQUEST_DURATION_METRIC;
 import static com.ecaservice.external.api.config.metrics.MetricConstants.RESPONSES_TOTAL_METRIC;
@@ -102,7 +102,7 @@ public class MetricsService {
 
     private void configureResponseCodeCountersMap() {
         Stream.of(ResponseCode.values()).forEach(responseCode -> {
-            Counter counter = meterRegistry.counter(REQUESTS_METRIC, RESPONSE_CODE_TAG, responseCode.name());
+            Counter counter = meterRegistry.counter(RESPONSES_METRIC, RESPONSE_CODE_TAG, responseCode.name());
             responseCodeCounterMap.put(responseCode, counter);
         });
     }
