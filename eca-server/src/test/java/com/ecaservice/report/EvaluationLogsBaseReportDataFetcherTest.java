@@ -1,7 +1,7 @@
 package com.ecaservice.report;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.config.CommonConfig;
+import com.ecaservice.config.AppProperties;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.mapping.EvaluationLogMapper;
@@ -41,7 +41,7 @@ import static com.google.common.collect.Lists.newArrayList;
  *
  * @author Roman Batygin
  */
-@Import({CommonConfig.class, ClassifierInfoMapperImpl.class, EvaluationLogMapperImpl.class,
+@Import({AppProperties.class, ClassifierInfoMapperImpl.class, EvaluationLogMapperImpl.class,
         InstancesInfoMapperImpl.class, DateTimeConverter.class})
 class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
 
@@ -54,7 +54,7 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     private ErsService ersService;
 
     @Inject
-    private CommonConfig commonConfig;
+    private AppProperties appProperties;
     @Inject
     private EvaluationLogMapper evaluationLogMapper;
     @Inject
@@ -67,7 +67,7 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     @Override
     public void init() {
         EvaluationLogService evaluationLogService =
-                new EvaluationLogService(commonConfig, filterService, evaluationLogMapper, ersService,
+                new EvaluationLogService(appProperties, filterService, evaluationLogMapper, ersService,
                         evaluationLogRepository, evaluationResultsRequestEntityRepository);
         evaluationLogsBaseReportDataFetcher =
                 new EvaluationLogsBaseReportDataFetcher(filterService, evaluationLogService, evaluationLogMapper);

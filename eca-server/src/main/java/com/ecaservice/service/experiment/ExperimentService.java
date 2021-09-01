@@ -3,7 +3,7 @@ package com.ecaservice.service.experiment;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.config.CommonConfig;
+import com.ecaservice.config.AppProperties;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.core.filter.service.FilterService;
@@ -84,7 +84,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
     private final ExperimentConfig experimentConfig;
     private final ExperimentProcessorService experimentProcessorService;
     private final EntityManager entityManager;
-    private final CommonConfig commonConfig;
+    private final AppProperties appProperties;
     private final FilterService filterService;
 
     /**
@@ -228,7 +228,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
         List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT.name());
         ExperimentFilter filter =
                 new ExperimentFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
-        int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
+        int pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
         return experimentRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
     }
 

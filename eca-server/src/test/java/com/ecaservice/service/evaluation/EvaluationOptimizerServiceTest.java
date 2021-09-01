@@ -14,7 +14,7 @@ import com.ecaservice.classifier.options.model.KNearestNeighboursOptions;
 import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.classifier.options.model.NeuralNetworkOptions;
 import com.ecaservice.classifier.options.model.RandomForestsOptions;
-import com.ecaservice.config.CommonConfig;
+import com.ecaservice.config.AppProperties;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ers.ErsConfig;
 import com.ecaservice.configuation.ExecutorConfiguration;
@@ -87,7 +87,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExecutorConfiguration.class, ClassifiersOptionsConfiguration.class, CommonConfig.class,
+@Import({ExecutorConfiguration.class, ClassifiersOptionsConfiguration.class, AppProperties.class,
         CrossValidationConfig.class, EvaluationRequestService.class, InstancesInfoMapperImpl.class,
         ClassifierOptionsRequestModelMapperImpl.class, ClassifierReportMapperImpl.class,
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class,

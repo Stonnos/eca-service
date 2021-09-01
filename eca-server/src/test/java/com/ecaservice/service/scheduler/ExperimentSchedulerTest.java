@@ -1,7 +1,7 @@
 package com.ecaservice.service.scheduler;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.config.CommonConfig;
+import com.ecaservice.config.AppProperties;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.event.model.ExperimentEmailEvent;
 import com.ecaservice.event.model.ExperimentWebPushEvent;
@@ -46,7 +46,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentConfig.class, CommonConfig.class})
+@Import({ExperimentConfig.class, AppProperties.class})
 class ExperimentSchedulerTest extends AbstractJpaTest {
 
     private static final int EXPECTED_CHANGE_STATUS_EVENTS_COUNT = 2;
@@ -73,7 +73,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     @Inject
     private ExperimentConfig experimentConfig;
     @Inject
-    private CommonConfig commonConfig;
+    private AppProperties appProperties;
 
     private ExperimentScheduler experimentScheduler;
 

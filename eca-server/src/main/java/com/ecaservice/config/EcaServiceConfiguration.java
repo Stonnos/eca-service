@@ -44,8 +44,7 @@ import java.util.concurrent.Executors;
 @EntityScan(basePackageClasses = AbstractEvaluationEntity.class)
 @EnableJpaRepositories(basePackageClasses = EvaluationLogRepository.class)
 @EnableConfigurationProperties(
-        {CommonConfig.class, CrossValidationConfig.class, ExperimentConfig.class, ErsConfig.class,
-                NotificationConfig.class})
+        {AppProperties.class, CrossValidationConfig.class, ExperimentConfig.class, ErsConfig.class})
 @Import({ClassifiersOptionsConfiguration.class, FilterExceptionHandler.class})
 public class EcaServiceConfiguration {
 
@@ -91,14 +90,14 @@ public class EcaServiceConfiguration {
     /**
      * Creates thread pool task executor bean.
      *
-     * @param commonConfig - common config bean
+     * @param appProperties - common config bean
      * @return thread pool task executor
      */
     @Bean(name = ECA_THREAD_POOL_TASK_EXECUTOR)
-    public Executor ecaThreadPoolTaskExecutor(CommonConfig commonConfig) {
+    public Executor ecaThreadPoolTaskExecutor(AppProperties appProperties) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(commonConfig.getThreadPoolSize());
-        executor.setMaxPoolSize(commonConfig.getThreadPoolSize());
+        executor.setCorePoolSize(appProperties.getThreadPoolSize());
+        executor.setMaxPoolSize(appProperties.getThreadPoolSize());
         return executor;
     }
 

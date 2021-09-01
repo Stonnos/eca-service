@@ -1,5 +1,6 @@
 package com.ecaservice.event.listener;
 
+import com.ecaservice.config.AppProperties;
 import com.ecaservice.event.model.ExperimentEmailEvent;
 import com.ecaservice.event.model.ExperimentWebPushEvent;
 import com.ecaservice.model.entity.Experiment;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ExperimentNotificationEventListener {
 
+    private final AppProperties appProperties;
     private final ExperimentEmailVisitor experimentEmailVisitor;
     private final WebPushService webPushService;
 

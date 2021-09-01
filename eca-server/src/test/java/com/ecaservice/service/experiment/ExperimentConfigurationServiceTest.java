@@ -1,6 +1,6 @@
 package com.ecaservice.service.experiment;
 
-import com.ecaservice.config.CommonConfig;
+import com.ecaservice.config.AppProperties;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.exception.ClassifierOptionsException;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentConfig.class, CommonConfig.class, ClassifierOptionsService.class})
+@Import({ExperimentConfig.class, AppProperties.class, ClassifierOptionsService.class})
 class ExperimentConfigurationServiceTest extends AbstractJpaTest {
 
     @MockBean

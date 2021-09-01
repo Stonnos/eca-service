@@ -1,6 +1,6 @@
 package com.ecaservice.service.evaluation;
 
-import com.ecaservice.config.CommonConfig;
+import com.ecaservice.config.AppProperties;
 import com.ecaservice.filter.EvaluationLogFilter;
 import com.ecaservice.mapping.EvaluationLogMapper;
 import com.ecaservice.model.entity.ErsResponseStatus;
@@ -43,7 +43,7 @@ import static com.ecaservice.util.Utils.toRequestStatusStatisticsMap;
 @RequiredArgsConstructor
 public class EvaluationLogService implements PageRequestService<EvaluationLog> {
 
-    private final CommonConfig commonConfig;
+    private final AppProperties appProperties;
     private final FilterService filterService;
     private final EvaluationLogMapper evaluationLogMapper;
     private final ErsService ersService;
@@ -56,7 +56,7 @@ public class EvaluationLogService implements PageRequestService<EvaluationLog> {
         List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG.name());
         EvaluationLogFilter filter = new EvaluationLogFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());
-        int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
+        int pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
         return evaluationLogRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
     }
 

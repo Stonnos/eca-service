@@ -4,7 +4,7 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.classifier.options.model.AdaBoostOptions;
 import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.config.CommonConfig;
+import com.ecaservice.config.AppProperties;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
 import com.ecaservice.repository.ClassifierOptionsDatabaseModelRepository;
@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({CommonConfig.class, ClassifierOptionsService.class})
+@Import({AppProperties.class, ClassifierOptionsService.class})
 class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;

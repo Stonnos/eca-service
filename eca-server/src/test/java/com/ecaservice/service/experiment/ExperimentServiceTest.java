@@ -5,7 +5,7 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.config.CommonConfig;
+import com.ecaservice.config.AppProperties;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.core.filter.service.FilterService;
@@ -60,7 +60,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentMapperImpl.class, ExperimentConfig.class, CommonConfig.class, CrossValidationConfig.class,
+@Import({ExperimentMapperImpl.class, ExperimentConfig.class, AppProperties.class, CrossValidationConfig.class,
         DateTimeConverter.class})
 class ExperimentServiceTest extends AbstractJpaTest {
 
@@ -81,7 +81,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @Inject
     private EntityManager entityManager;
     @Inject
-    private CommonConfig commonConfig;
+    private AppProperties appProperties;
     @Mock
     private FilterService filterService;
     @Mock
@@ -97,7 +97,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         CalculationExecutorService executorService =
                 new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
         experimentService = new ExperimentService(experimentRepository, executorService, experimentMapper, dataService,
-                crossValidationConfig, experimentConfig, experimentProcessorService, entityManager, commonConfig,
+                crossValidationConfig, experimentConfig, experimentProcessorService, entityManager, appProperties,
                 filterService);
     }
 

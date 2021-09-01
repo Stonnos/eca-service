@@ -1,6 +1,6 @@
 package com.ecaservice.service.push;
 
-import com.ecaservice.config.NotificationConfig;
+import com.ecaservice.config.AppProperties;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.model.entity.Experiment;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class WebPushService {
 
-    private final NotificationConfig notificationConfig;
+    private final AppProperties appProperties;
     private final ExperimentMapper experimentMapper;
     private final WebPushClient webPushClient;
 
@@ -27,8 +27,8 @@ public class WebPushService {
     public void sendWebPush(Experiment experiment) {
         log.info("Starting to sent web push for experiment [{}], request status [{}]", experiment.getRequestId(),
                 experiment.getRequestStatus());
-        if (!Boolean.TRUE.equals(notificationConfig.getWebPushesEnabled())) {
-            log.warn("Web pushes are disabled");
+        if (!Boolean.TRUE.equals(appProperties.getNotification().getWebPushesEnabled())) {
+            log.warn("Web pushes are disabled. You may set [app.notification.webPushesEnabled] property");
         } else {
             try {
                 var experimentDto = experimentMapper.map(experiment);
