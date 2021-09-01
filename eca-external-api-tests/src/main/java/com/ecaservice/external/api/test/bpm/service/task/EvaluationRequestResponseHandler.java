@@ -44,7 +44,7 @@ public class EvaluationRequestResponseHandler extends AbstractTaskHandler {
 
     @Override
     public void handle(DelegateExecution execution) {
-        log.debug("Handles instances response for execution [{}], process key [{}]", execution.getId(),
+        log.debug("Handles evaluation request response for execution [{}], process key [{}]", execution.getId(),
                 execution.getProcessBusinessKey());
         Long autoTestId = getVariable(execution, AUTO_TEST_ID, Long.class);
         var responseDto = getVariable(execution, API_RESPONSE, API_RESPONSE_TYPE_REFERENCE);
@@ -53,8 +53,8 @@ public class EvaluationRequestResponseHandler extends AbstractTaskHandler {
         Assert.notNull(responseDto.getPayload().getRequestId(),
                 String.format("Expected not null evaluation request ID for auto test [%d]", autoTestId));
         saveRequestId(autoTestId, responseDto);
-        log.debug("Instances response for execution [{}], process key [{}] has been processed", execution.getId(),
-                execution.getProcessBusinessKey());
+        log.debug("Instances evaluation request for execution [{}], process key [{}] has been processed",
+                execution.getId(), execution.getProcessBusinessKey());
     }
 
     private void saveRequestId(long autoTestId, ResponseDto<EvaluationResponseDto> responseDto) {

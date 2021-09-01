@@ -11,11 +11,6 @@ import lombok.experimental.UtilityClass;
 public class CamundaVariables {
 
     /**
-     * Execution result variable
-     */
-    public static final String EXECUTION_RESULT = "executionResult";
-
-    /**
      * Task type variable
      */
     public static final String TASK_TYPE = "taskType";
