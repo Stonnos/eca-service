@@ -46,7 +46,7 @@ public class ExperimentScheduler {
             log.info("Obtained {} new experiments", experiments.size());
             experiments.forEach(experimentRequestProcessor::processNewExperiment);
         });
-        log.info("New experiments processing has been successfully finished.");
+        log.trace("New experiments processing has been successfully finished.");
     }
 
     /**
@@ -69,6 +69,7 @@ public class ExperimentScheduler {
     public void processRequestsToErs() {
         log.info("Starting job to sent experiments results to ERS service");
         experimentRequestProcessor.sentExperimentResultsToErs();
+        log.info("Experiments results sending job has been finished");
     }
 
     /**
