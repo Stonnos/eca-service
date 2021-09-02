@@ -53,7 +53,7 @@ public class ExperimentNotificationEventListener {
         log.info("Handles experiment [{}] web push event from source [{}]", experiment.getRequestId(),
                 experimentWebPushEvent.getSource().getClass().getSimpleName());
         if (!Boolean.TRUE.equals(appProperties.getNotifications().getWebPushesEnabled())) {
-            log.warn("Web pushes are disabled. You may set [app.notification.webPushesEnabled] property");
+            log.warn("Web pushes are disabled. You may set [app.notifications.webPushesEnabled] property");
         } else {
             webPushService.sendWebPush(experimentWebPushEvent.getExperiment());
         }
