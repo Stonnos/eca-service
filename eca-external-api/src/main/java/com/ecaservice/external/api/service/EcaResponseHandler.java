@@ -1,6 +1,7 @@
 package com.ecaservice.external.api.service;
 
 import com.ecaservice.base.model.EvaluationResponse;
+import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.classifier.options.config.ClassifiersOptionsConfig;
 import com.ecaservice.external.api.config.ExternalApiConfig;
@@ -17,8 +18,8 @@ import weka.classifiers.AbstractClassifier;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 /**
  * Eca response handler.
@@ -48,6 +49,11 @@ public class EcaResponseHandler {
         try {
             if (!TechnicalStatus.SUCCESS.equals(evaluationResponse.getStatus())) {
                 evaluationRequestEntity.setRequestStage(RequestStageType.ERROR);
+                String errorMessage = Optional.ofNullable(evaluationResponse.getErrors())
+                        .map(messageErrors -> messageErrors.iterator().next())
+                        .map(MessageError::getMessage)
+                        .orElse(null);
+                evaluationRequestEntity.setErrorMessage(errorMessage);
             } else {
                 EvaluationResults evaluationResults = evaluationResponse.getEvaluationResults();
                 saveEvaluationResults(evaluationResults, evaluationRequestEntity);
