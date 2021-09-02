@@ -50,9 +50,10 @@ public class RequestExecutionAspect {
         metricsService.trackRequestsTotal();
         var ecaRequestEntity = getInputParameter(joinPoint.getArgs(), ECA_REQUEST_INDEX, EcaRequestEntity.class);
         try {
-            log.debug("Starting to process request with correlation id [{}]", ecaRequestEntity.getCorrelationId());
+            log.debug("Around: starting to process request with correlation id [{}]",
+                    ecaRequestEntity.getCorrelationId());
             Object result = joinPoint.proceed();
-            log.debug("Request [{}] has been sent to eca - server", ecaRequestEntity.getCorrelationId());
+            log.debug("Around: request [{}] has been processed", ecaRequestEntity.getCorrelationId());
             handleSuccess(ecaRequestEntity);
             return result;
         } catch (Exception ex) {
@@ -71,7 +72,7 @@ public class RequestExecutionAspect {
                     .build();
             var responseDto = buildResponse(ResponseCode.SUCCESS, evaluationResponseDto);
             metricsService.trackResponse(ecaRequestEntity, responseDto.getResponseCode());
-            log.debug("Send response back for correlation id [{}]", ecaRequestEntity.getCorrelationId());
+            log.info("Send response back for correlation id [{}]", ecaRequestEntity.getCorrelationId());
             sink.success(responseDto);
         });
     }
@@ -86,7 +87,7 @@ public class RequestExecutionAspect {
                     .build();
             var responseDto = buildResponse(responseCode, evaluationResponseDto);
             metricsService.trackResponse(ecaRequestEntity, responseCode);
-            log.debug("Send error response for correlation id [{}]", ecaRequestEntity.getCorrelationId());
+            log.info("Send error response for correlation id [{}]", ecaRequestEntity.getCorrelationId());
             sink.success(responseDto);
         });
     }

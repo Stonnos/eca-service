@@ -46,6 +46,7 @@ public class EcaResponseHandler {
      */
     public void handleResponse(EvaluationRequestEntity evaluationRequestEntity,
                                EvaluationResponse evaluationResponse) {
+        log.info("Starting to process response with correlation id [{}]", evaluationRequestEntity.getCorrelationId());
         try {
             if (!TechnicalStatus.SUCCESS.equals(evaluationResponse.getStatus())) {
                 evaluationRequestEntity.setRequestStage(RequestStageType.ERROR);
@@ -60,6 +61,8 @@ public class EcaResponseHandler {
                 saveClassifierToFile(evaluationResults, evaluationRequestEntity);
                 evaluationRequestEntity.setRequestStage(RequestStageType.COMPLETED);
             }
+            log.info("Response with correlation id [{}] has been processed",
+                    evaluationRequestEntity.getCorrelationId());
         } catch (Exception ex) {
             log.error("There was an error while response [{}] handling: {}", evaluationRequestEntity.getCorrelationId(),
                     ex.getMessage(), ex);
@@ -93,10 +96,10 @@ public class EcaResponseHandler {
                 String.format(MODEL_FILE_FORMAT, evaluationResults.getClassifier().getClass().getSimpleName(),
                         evaluationRequestEntity.getCorrelationId());
         File classifierFile = new File(externalApiConfig.getClassifiersPath(), fileName);
-        log.debug("Starting to save model [{}] into file {}", evaluationRequestEntity.getCorrelationId(),
+        log.info("Starting to save model [{}] into file {}", evaluationRequestEntity.getCorrelationId(),
                 classifierFile.getAbsolutePath());
         fileDataService.saveModel(classifierModel, classifierFile);
-        log.debug("Model [{}] has been saved into file {}", evaluationRequestEntity.getCorrelationId(),
+        log.info("Model [{}] has been saved into file {}", evaluationRequestEntity.getCorrelationId(),
                 classifierFile.getAbsolutePath());
         evaluationRequestEntity.setClassifierAbsolutePath(classifierFile.getAbsolutePath());
     }

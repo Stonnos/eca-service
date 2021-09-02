@@ -60,7 +60,7 @@ public class InstancesService {
      */
     @Timed(value = UPLOAD_INSTANCES_METRIC)
     public InstancesEntity uploadInstances(MultipartFile trainingData) throws IOException {
-        log.debug("Starting to upload train data [{}] to file system", trainingData.getOriginalFilename());
+        log.info("Starting to upload train data [{}] to file system", trainingData.getOriginalFilename());
         String dataUuid = UUID.randomUUID().toString();
         File file = copyToFile(trainingData, dataUuid);
         InstancesEntity instancesEntity = new InstancesEntity();
@@ -68,7 +68,7 @@ public class InstancesService {
         instancesEntity.setUuid(dataUuid);
         instancesEntity.setCreationDate(LocalDateTime.now());
         instancesRepository.save(instancesEntity);
-        log.debug("Train data [{}] has been uploaded to file system with uuid [{}]",
+        log.info("Train data [{}] has been uploaded to file system with uuid [{}]",
                 trainingData.getOriginalFilename(), dataUuid);
         return instancesEntity;
     }

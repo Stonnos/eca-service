@@ -32,7 +32,7 @@ public class EcaResponseListener {
     @RabbitListener(queues = "${queue.evaluationRequestReplyToQueue}")
     public void handleEvaluationMessage(EvaluationResponse evaluationResponse, Message message) {
         String correlationId = message.getMessageProperties().getCorrelationId();
-        log.debug("Received response from eca - server with correlation id [{}], status [{}]", correlationId,
+        log.info("Received response from eca - server with correlation id [{}], status [{}]", correlationId,
                 evaluationResponse.getStatus());
         var evaluationRequestEntity =
                 evaluationRequestRepository.findByCorrelationId(correlationId)

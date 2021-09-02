@@ -86,7 +86,7 @@ public class ExternalApiController {
             @Parameter(description = "Training data file", required = true)
             @ValidTrainData
             @RequestParam MultipartFile trainingData) throws IOException {
-        log.debug("Received request to upload train data [{}]", trainingData.getOriginalFilename());
+        log.info("Received request to upload train data [{}]", trainingData.getOriginalFilename());
         var instancesEntity = instancesService.uploadInstances(trainingData);
         var instancesDto = new InstancesDto(instancesEntity.getUuid(),
                 String.format("%s%s", DATA_URL_PREFIX, instancesEntity.getUuid()));
@@ -168,7 +168,7 @@ public class ExternalApiController {
             log.error("Classifier model file not found for request id [{}]", requestId);
             return ResponseEntity.badRequest().build();
         }
-        log.debug("Downloads classifier model file {} for request id [{}]",
+        log.info("Downloads classifier model file {} for request id [{}]",
                 evaluationRequestEntity.getClassifierAbsolutePath(), evaluationRequestEntity.getCorrelationId());
         return buildAttachmentResponse(modelFile);
     }

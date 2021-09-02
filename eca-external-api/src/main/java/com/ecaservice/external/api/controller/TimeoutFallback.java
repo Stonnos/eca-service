@@ -36,7 +36,7 @@ public class TimeoutFallback {
             var ecaRequestEntity = ecaRequestService.getByCorrelationId(correlationId);
             ResponseDto<EvaluationResponseDto> responseDto = buildResponse(ResponseCode.TIMEOUT);
             metricsService.trackResponse(ecaRequestEntity, responseDto.getResponseCode());
-            log.debug("Send response with timeout for correlation id [{}]", ecaRequestEntity.getCorrelationId());
+            log.info("Send response with timeout for correlation id [{}]", ecaRequestEntity.getCorrelationId());
             timeoutSink.success(responseDto);
         });
     }
