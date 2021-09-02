@@ -4,6 +4,7 @@ import com.ecaservice.config.ers.ErsConfig;
 import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.mapping.ClassifierOptionsRequestModelMapper;
+import com.ecaservice.model.ClassifierOptionsResult;
 import com.ecaservice.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsResponseModel;
@@ -43,20 +44,21 @@ public class ClassifierOptionsCacheService {
      *
      * @param classifierOptionsRequest - classifier options request
      * @param dataMd5Hash              - data MD5 hash
-     * @return classifier options string
+     * @return classifier options
      */
-    public String getOptimalClassifierOptionsFromErs(ClassifierOptionsRequest classifierOptionsRequest,
-                                                     String dataMd5Hash) {
+    public ClassifierOptionsResult getOptimalClassifierOptionsFromErs(ClassifierOptionsRequest classifierOptionsRequest,
+                                                                      String dataMd5Hash) {
         log.info("Starting to get optimal classifiers options from ERS for data: {}",
                 classifierOptionsRequest.getRelationName());
         ClassifierOptionsRequestEntity requestEntity =
                 createClassifierOptionsRequestEntity(ClassifierOptionsRequestSource.ERS);
         ClassifierOptionsRequestModel requestModel =
                 createClassifierOptionsRequestModel(classifierOptionsRequest, dataMd5Hash);
-        String options = ersRequestService.getOptimalClassifierOptions(classifierOptionsRequest, requestModel);
+        ClassifierOptionsResult classifierOptionsResult =
+                ersRequestService.getOptimalClassifierOptions(classifierOptionsRequest, requestModel);
         requestEntity.setClassifierOptionsRequestModel(requestModel);
         classifierOptionsRequestRepository.save(requestEntity);
-        return options;
+        return classifierOptionsResult;
     }
 
     /**
@@ -67,11 +69,10 @@ public class ClassifierOptionsCacheService {
      * @return classifier options string
      */
     @Locked(lockName = "getOptimalClassifierOptions", key = "#dataMd5Hash")
-    public String getOptimalClassifierOptionsFromCache(ClassifierOptionsRequest classifierOptionsRequest,
-                                                       String dataMd5Hash) {
+    public ClassifierOptionsResult getOptimalClassifierOptionsFromCache(
+            ClassifierOptionsRequest classifierOptionsRequest, String dataMd5Hash) {
         log.info("Starting to get optimal classifiers options from cache for data: {}",
                 classifierOptionsRequest.getRelationName());
-        String options;
         ClassifierOptionsRequestModel requestModel = getLastClassifierOptionsRequestModel(dataMd5Hash);
         ClassifierOptionsResponseModel responseModel = getFirstResponseModel(requestModel);
         if (responseModel != null) {
@@ -81,11 +82,13 @@ public class ClassifierOptionsCacheService {
                     createClassifierOptionsRequestEntity(ClassifierOptionsRequestSource.CACHE);
             requestEntity.setClassifierOptionsRequestModel(requestModel);
             classifierOptionsRequestRepository.save(requestEntity);
-            options = responseModel.getOptions();
+            ClassifierOptionsResult classifierOptionsResult = new ClassifierOptionsResult();
+            classifierOptionsResult.setOptionsJson(responseModel.getOptions());
+            classifierOptionsResult.setFound(true);
+            return classifierOptionsResult;
         } else {
-            options = getOptimalClassifierOptionsFromErs(classifierOptionsRequest, dataMd5Hash);
+            return getOptimalClassifierOptionsFromErs(classifierOptionsRequest, dataMd5Hash);
         }
-        return options;
     }
 
     private ClassifierOptionsRequestModel createClassifierOptionsRequestModel(
