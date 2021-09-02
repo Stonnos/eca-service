@@ -44,16 +44,17 @@ public class EvaluationFinishedEventListener {
         if (!TechnicalStatus.SUCCESS.equals(evaluationResponse.getStatus())) {
             log.warn("Can't send evaluation [{}] results to ERS in technical status [{}]",
                     evaluationResponse.getRequestId(), evaluationResponse.getStatus());
-        }
-        EvaluationLog evaluationLog = evaluationLogRepository.findByRequestId(evaluationResponse.getRequestId())
-                .orElseThrow(() -> new EntityNotFoundException(EvaluationLog.class, evaluationResponse.getRequestId()));
-        if (!RequestStatus.FINISHED.equals(evaluationLog.getRequestStatus())) {
-            log.warn("Can't send evaluation [{}] results to ERS in request status [{}]", evaluationLog.getRequestId(),
-                    evaluationLog.getRequestStatus());
         } else {
-            EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
-            requestEntity.setEvaluationLog(evaluationLog);
-            ersRequestService.saveEvaluationResults(evaluationResponse.getEvaluationResults(), requestEntity);
+            EvaluationLog evaluationLog = evaluationLogRepository.findByRequestId(evaluationResponse.getRequestId())
+                    .orElseThrow(() -> new EntityNotFoundException(EvaluationLog.class, evaluationResponse.getRequestId()));
+            if (!RequestStatus.FINISHED.equals(evaluationLog.getRequestStatus())) {
+                log.warn("Can't send evaluation [{}] results to ERS in request status [{}]", evaluationLog.getRequestId(),
+                        evaluationLog.getRequestStatus());
+            } else {
+                EvaluationResultsRequestEntity requestEntity = new EvaluationResultsRequestEntity();
+                requestEntity.setEvaluationLog(evaluationLog);
+                ersRequestService.saveEvaluationResults(evaluationResponse.getEvaluationResults(), requestEntity);
+            }
         }
     }
 }
