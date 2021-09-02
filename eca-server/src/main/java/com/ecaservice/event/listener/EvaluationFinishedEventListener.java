@@ -1,6 +1,7 @@
 package com.ecaservice.event.listener;
 
 import com.ecaservice.base.model.EvaluationResponse;
+import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.event.model.EvaluationFinishedEvent;
 import com.ecaservice.model.entity.EvaluationLog;
@@ -40,6 +41,10 @@ public class EvaluationFinishedEventListener {
         EvaluationResponse evaluationResponse = evaluationFinishedEvent.getEvaluationResponse();
         log.info("Handles event to sent evaluation results to ERS for request id [{}]",
                 evaluationResponse.getRequestId());
+        if (!TechnicalStatus.SUCCESS.equals(evaluationResponse.getStatus())) {
+            log.warn("Can't send evaluation [{}] results to ERS in technical status [{}]",
+                    evaluationResponse.getRequestId(), evaluationResponse.getStatus());
+        }
         EvaluationLog evaluationLog = evaluationLogRepository.findByRequestId(evaluationResponse.getRequestId())
                 .orElseThrow(() -> new EntityNotFoundException(EvaluationLog.class, evaluationResponse.getRequestId()));
         if (!RequestStatus.FINISHED.equals(evaluationLog.getRequestStatus())) {
