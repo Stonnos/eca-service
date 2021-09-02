@@ -127,7 +127,12 @@ public class ExperimentRequestProcessor {
         experiments.forEach(experiment -> {
             putMdc(TX_ID, experiment.getRequestId());
             putMdc(EV_REQUEST_ID, experiment.getRequestId());
-            experimentService.removeExperimentModel(experiment);
+            try {
+                experimentService.removeExperimentModel(experiment);
+            } catch (Exception ex) {
+                log.error("There was an error while remove experiment [{}] model file: {}", experiment.getRequestId(),
+                        ex.getMessage());
+            }
         });
         log.info("Experiments models removing has been finished.");
     }
@@ -144,7 +149,12 @@ public class ExperimentRequestProcessor {
         experiments.forEach(experiment -> {
             putMdc(TX_ID, experiment.getRequestId());
             putMdc(EV_REQUEST_ID, experiment.getRequestId());
-            experimentService.removeExperimentTrainingData(experiment);
+            try {
+                experimentService.removeExperimentTrainingData(experiment);
+            } catch (Exception ex) {
+                log.error("There was an error while remove experiment [{}] training data file: {}",
+                        experiment.getRequestId(), ex.getMessage());
+            }
         });
         log.info("Experiments training data removing has been finished.");
     }
