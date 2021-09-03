@@ -201,7 +201,7 @@ curl -X POST "http://localhost:8080/external-api/uploads-train-data" -H "accept:
 |evaluationStatus
 |string
 |+
-|Статус построение модели
+|Статус построения модели
 |Заполняется по справочнику <<Справочник кодов EvaluationStatus>>
 |responseCode
 |string
