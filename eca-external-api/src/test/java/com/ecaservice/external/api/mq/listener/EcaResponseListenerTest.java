@@ -1,16 +1,10 @@
 package com.ecaservice.external.api.mq.listener;
 
 import com.ecaservice.base.model.EvaluationResponse;
-import com.ecaservice.external.api.dto.EvaluationResponseDto;
-import com.ecaservice.external.api.dto.RequestStatus;
-import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
-import com.ecaservice.external.api.metrics.MetricsService;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.service.EcaResponseHandler;
-import com.ecaservice.external.api.service.MessageCorrelationService;
-import com.ecaservice.external.api.service.EvaluationResponseBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,13 +13,11 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
-import reactor.core.publisher.MonoSink;
 
 import java.util.Optional;
 
 import static com.ecaservice.external.api.TestHelperUtils.buildMessageProperties;
 import static com.ecaservice.external.api.TestHelperUtils.createEvaluationRequestEntity;
-import static com.ecaservice.external.api.util.Utils.buildResponse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
@@ -42,12 +34,6 @@ class EcaResponseListenerTest {
 
     @Mock
     private EcaResponseHandler ecaResponseHandler;
-    @Mock
-    private EvaluationResponseBuilder evaluationResponseBuilder;
-    @Mock
-    private MessageCorrelationService messageCorrelationService;
-    @Mock
-    private MetricsService metricsService;
     @Mock
     private EvaluationRequestRepository evaluationRequestRepository;
 
@@ -83,7 +69,6 @@ class EcaResponseListenerTest {
 
     @Test
     void testHandleMessage() {
-        MonoSink<ResponseDto<EvaluationResponseDto>> sink = Mockito.mock(MonoSink.class);
         Message message = Mockito.mock(Message.class);
         MessageProperties messageProperties = buildMessageProperties();
         when(message.getMessageProperties()).thenReturn(messageProperties);
@@ -91,19 +76,11 @@ class EcaResponseListenerTest {
                 createEvaluationRequestEntity(messageProperties.getCorrelationId());
         evaluationRequestEntity.setRequestStage(RequestStageType.REQUEST_SENT);
         //Mock methods
-        when(evaluationRequestRepository.findByCorrelationId(messageProperties.getCorrelationId())).thenReturn(
-                Optional.of(evaluationRequestEntity));
-        when(messageCorrelationService.pop(messageProperties.getCorrelationId())).thenReturn(Optional.of(sink));
-        EvaluationResponseDto evaluationResponseDto = EvaluationResponseDto.builder()
-                .requestId(messageProperties.getCorrelationId())
-                .build();
-        ResponseDto<EvaluationResponseDto> responseDto = buildResponse(RequestStatus.SUCCESS, evaluationResponseDto);
-        when(evaluationResponseBuilder.buildResponse(any(EvaluationResponse.class),
-                any(EvaluationRequestEntity.class))).thenReturn(responseDto);
+        when(evaluationRequestRepository.findByCorrelationId(messageProperties.getCorrelationId()))
+                .thenReturn(Optional.of(evaluationRequestEntity));
         //Verify that response is being sent to client
         ecaResponseListener.handleEvaluationMessage(new EvaluationResponse(), message);
         verify(ecaResponseHandler, atLeastOnce()).handleResponse(any(EvaluationRequestEntity.class),
                 any(EvaluationResponse.class));
-        verify(sink).success(responseDto);
     }
 }

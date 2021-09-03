@@ -1,6 +1,5 @@
 package com.ecaservice.web.config;
 
-import com.google.common.collect.ImmutableList;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -18,7 +17,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     private static final String FORWARD = "forward:/";
 
     private static final List<String> URL_PATHS =
-            ImmutableList.of("/login", "/dashboard/**", "/forgot-password", "/reset-password/**",
+            List.of("/login", "/dashboard/**", "/forgot-password", "/reset-password/**",
                     "/change-password/**", "/access-denied");
 
     @Override

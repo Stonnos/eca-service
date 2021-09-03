@@ -28,6 +28,14 @@
             "value": "EVALUATION_REQUEST"
           },
           {
+            "name": "Обработка ответа на запрос построения модели",
+            "value": "PROCESS_EVALUATION_REQUEST_RESPONSE"
+          },
+          {
+            "name": "Получение статуса ответа на запрос на построения модели",
+            "value": "GET_EVALUATION_STATUS"
+          },
+          {
             "name": "Обработка ответа от сервиса загрузки данных",
             "value": "PROCESS_INSTANCES_RESPONSE"
           },

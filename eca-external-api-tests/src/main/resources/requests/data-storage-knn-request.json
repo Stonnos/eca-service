@@ -15,6 +15,6 @@
     "seed": 1
   },
   "expectedResponse": {
-    "requestStatus": "SUCCESS"
+    "responseCode": "SUCCESS"
   }
 }

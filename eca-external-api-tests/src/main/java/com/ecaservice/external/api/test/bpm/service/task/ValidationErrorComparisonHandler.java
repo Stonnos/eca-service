@@ -52,8 +52,8 @@ public class ValidationErrorComparisonHandler extends ComparisonTaskHandler {
         TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
         var responseDto = getVariable(execution, API_RESPONSE, API_RESPONSE_TYPE_REFERENCE);
         autoTestEntity.setResponse(OBJECT_MAPPER.writeValueAsString(responseDto));
-        compareAndMatchRequestStatus(autoTestEntity, testDataModel.getExpectedResponse().getRequestStatus(),
-                responseDto.getRequestStatus(), matcher);
+        compareAndMatchResponseCode(autoTestEntity, testDataModel.getExpectedResponse().getResponseCode(),
+                responseDto.getResponseCode(), matcher);
         log.debug("Comparison validation error status has been finished for execution id [{}], process key [{}]",
                 execution.getId(), execution.getProcessBusinessKey());
     }

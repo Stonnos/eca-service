@@ -3,7 +3,7 @@ package com.ecaservice.service.experiment;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.config.CommonConfig;
+import com.ecaservice.config.AppProperties;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.core.filter.service.FilterService;
@@ -28,6 +28,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
 import weka.core.Instances;
 
@@ -49,8 +50,6 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.common.web.util.LogHelper.EV_REQUEST_ID;
@@ -85,7 +84,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
     private final ExperimentConfig experimentConfig;
     private final ExperimentProcessorService experimentProcessorService;
     private final EntityManager entityManager;
-    private final CommonConfig commonConfig;
+    private final AppProperties appProperties;
     private final FilterService filterService;
 
     /**
@@ -193,21 +192,34 @@ public class ExperimentService implements PageRequestService<Experiment> {
     }
 
     /**
-     * Removes experiments data files from disk.
+     * Removes experiment model file from disk.
      *
-     * @param experiment - experiment object
+     * @param experiment - experiment entity
      */
-    public void removeExperimentData(Experiment experiment) {
-        boolean trainingDataDeleted = removeExperimentFile(experiment, Experiment::getTrainingDataAbsolutePath,
-                exp -> exp.setTrainingDataAbsolutePath(null));
-        if (trainingDataDeleted) {
-            boolean experimentResultsDeleted = removeExperimentFile(experiment, Experiment::getExperimentAbsolutePath,
-                    exp -> exp.setExperimentAbsolutePath(null));
-            if (experimentResultsDeleted) {
-                experiment.setDeletedDate(LocalDateTime.now());
-            }
-            experimentRepository.save(experiment);
-        }
+    @Transactional
+    public void removeExperimentModel(Experiment experiment) {
+        log.info("Starting to remove experiment [{}] model file", experiment.getRequestId());
+        String experimentAbsolutePath = experiment.getExperimentAbsolutePath();
+        experiment.setExperimentAbsolutePath(null);
+        experiment.setDeletedDate(LocalDateTime.now());
+        experimentRepository.save(experiment);
+        dataService.delete(experimentAbsolutePath);
+        log.info("Experiment [{}] model file has been deleted", experiment.getRequestId());
+    }
+
+    /**
+     * Removes experiment training data file from disk.
+     *
+     * @param experiment - experiment entity
+     */
+    @Transactional
+    public void removeExperimentTrainingData(Experiment experiment) {
+        log.info("Starting to remove experiment [{}] training data file", experiment.getRequestId());
+        String trainingDataAbsolutePath = experiment.getTrainingDataAbsolutePath();
+        experiment.setTrainingDataAbsolutePath(null);
+        experimentRepository.save(experiment);
+        dataService.delete(trainingDataAbsolutePath);
+        log.info("Experiment [{}] training data file has been deleted", experiment.getRequestId());
     }
 
     @Override
@@ -216,7 +228,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
         List<String> globalFilterFields = filterService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT.name());
         ExperimentFilter filter =
                 new ExperimentFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
-        int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
+        int pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
         return experimentRepository.findAll(filter, PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
     }
 
@@ -269,26 +281,5 @@ public class ExperimentService implements PageRequestService<Experiment> {
                 requestStatus -> !experimentTypesMap.containsKey(requestStatus)).forEach(
                 requestStatus -> experimentTypesMap.put(requestStatus, 0L));
         return experimentTypesMap;
-    }
-
-    /**
-     * Removes experiment associated file.
-     *
-     * @param experiment       - experiment entity
-     * @param filePathFunction - file path function
-     * @param callback         - callback
-     * @return {@code true} if file has been successfully removed or file path is empty
-     */
-    private boolean removeExperimentFile(Experiment experiment, Function<Experiment, String> filePathFunction,
-                                         Consumer<Experiment> callback) {
-        String filePath = filePathFunction.apply(experiment);
-        if (!StringUtils.isEmpty(filePath)) {
-            boolean deleted = dataService.delete(new File(filePath));
-            if (deleted) {
-                callback.accept(experiment);
-            }
-            return deleted;
-        }
-        return true;
     }
 }

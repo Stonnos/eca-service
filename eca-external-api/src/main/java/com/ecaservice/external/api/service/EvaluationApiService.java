@@ -39,19 +39,21 @@ public class EvaluationApiService {
      */
     @RequestExecution
     public void processRequest(EcaRequestEntity ecaRequestEntity, EvaluationRequestDto evaluationRequestDto) {
+        log.info("Starting to process evaluation request [{}]", ecaRequestEntity.getCorrelationId());
         EvaluationRequest evaluationRequest = createEvaluationRequest(ecaRequestEntity, evaluationRequestDto);
         rabbitSender.sendEvaluationRequest(evaluationRequest, ecaRequestEntity.getCorrelationId());
         ecaRequestEntity.setRequestStage(RequestStageType.REQUEST_SENT);
         ecaRequestEntity.setRequestDate(LocalDateTime.now());
         ecaRequestRepository.save(ecaRequestEntity);
+        log.info("Evaluation request [{}] has been sent to eca-server", ecaRequestEntity.getCorrelationId());
     }
 
     private EvaluationRequest createEvaluationRequest(EcaRequestEntity ecaRequestEntity,
                                                       EvaluationRequestDto evaluationRequestDto) {
-        log.debug("Starting to load train data from [{}] for request [{}]", evaluationRequestDto.getTrainDataUrl(),
+        log.info("Starting to load train data from [{}] for request [{}]", evaluationRequestDto.getTrainDataUrl(),
                 ecaRequestEntity.getCorrelationId());
         Instances instances = instancesService.loadInstances(evaluationRequestDto.getTrainDataUrl());
-        log.debug("Train data has been loaded from [{}] for request [{}]", evaluationRequestDto.getTrainDataUrl(),
+        log.info("Train data has been loaded from [{}] for request [{}]", evaluationRequestDto.getTrainDataUrl(),
                 ecaRequestEntity.getCorrelationId());
         AbstractClassifier classifier =
                 classifierOptionsAdapter.convert(evaluationRequestDto.getClassifierOptions());

@@ -18,6 +18,16 @@ public enum TaskType {
     EVALUATION_REQUEST,
 
     /**
+     * Process evaluation request response
+     */
+    PROCESS_EVALUATION_REQUEST_RESPONSE,
+
+    /**
+     * Get evaluation response status
+     */
+    GET_EVALUATION_STATUS,
+
+    /**
      * Process instances response
      */
     PROCESS_INSTANCES_RESPONSE,

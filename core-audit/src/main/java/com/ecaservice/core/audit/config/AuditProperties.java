@@ -12,8 +12,20 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("audit")
 public class AuditProperties {
 
+    private static final int DEFAULT_THREAD_POOL_SIZE = 1;
+
     /**
      * Is audit enabled?
      */
     private Boolean enabled;
+
+    /**
+     * Use async events?
+     */
+    private Boolean asyncEvents;
+
+    /**
+     * Thread pool size
+     */
+    private Integer threadPoolSize = DEFAULT_THREAD_POOL_SIZE;
 }

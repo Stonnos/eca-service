@@ -28,9 +28,9 @@ public enum RequestStageType {
     ERROR,
 
     /**
-     * Request not send
+     * Ready to send
      */
-    NOT_SEND,
+    READY,
 
     /**
      * Request exceeded

@@ -1,6 +1,6 @@
 package com.ecaservice.service.ers;
 
-import com.ecaservice.config.CommonConfig;
+import com.ecaservice.config.AppProperties;
 import com.ecaservice.filter.ClassifierOptionsRequestModelFilter;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.FilterTemplateType;
@@ -30,7 +30,7 @@ import static com.ecaservice.model.entity.ErsRequest_.REQUEST_DATE;
 @RequiredArgsConstructor
 public class ClassifierOptionsRequestService implements PageRequestService<ClassifierOptionsRequestModel> {
 
-    private final CommonConfig commonConfig;
+    private final AppProperties appProperties;
     private final FilterService filterService;
     private final ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
 
@@ -42,7 +42,7 @@ public class ClassifierOptionsRequestService implements PageRequestService<Class
         ClassifierOptionsRequestModelFilter filter =
                 new ClassifierOptionsRequestModelFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                         pageRequestDto.getFilters());
-        int pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
+        int pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
         return classifierOptionsRequestModelRepository.findAll(filter,
                 PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
     }

@@ -2,7 +2,7 @@ package com.ecaservice.report;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.base.model.ExperimentType;
-import com.ecaservice.config.CommonConfig;
+import com.ecaservice.config.AppProperties;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.core.filter.service.FilterService;
@@ -47,7 +47,7 @@ import static com.google.common.collect.Lists.newArrayList;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentMapperImpl.class, ExperimentConfig.class, CommonConfig.class, CrossValidationConfig.class,
+@Import({ExperimentMapperImpl.class, ExperimentConfig.class, AppProperties.class, CrossValidationConfig.class,
        DateTimeConverter.class})
 class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
 
@@ -70,7 +70,7 @@ class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
     @Inject
     private EntityManager entityManager;
     @Inject
-    private CommonConfig commonConfig;
+    private AppProperties appProperties;
     @Inject
     private ExperimentRepository experimentRepository;
 
@@ -83,7 +83,7 @@ class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
         ExperimentService experimentService =
                 new ExperimentService(experimentRepository, executorService, experimentMapper, dataService,
                         crossValidationConfig, experimentConfig, experimentProcessorService, entityManager,
-                        commonConfig, filterService);
+                        appProperties, filterService);
         experimentsBaseReportDataFetcher =
                 new ExperimentsBaseReportDataFetcher(filterService, experimentService, experimentMapper);
     }

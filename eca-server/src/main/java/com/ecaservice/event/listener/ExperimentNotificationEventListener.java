@@ -1,5 +1,6 @@
 package com.ecaservice.event.listener;
 
+import com.ecaservice.config.AppProperties;
 import com.ecaservice.event.model.ExperimentEmailEvent;
 import com.ecaservice.event.model.ExperimentWebPushEvent;
 import com.ecaservice.model.entity.Experiment;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ExperimentNotificationEventListener {
 
+    private final AppProperties appProperties;
     private final ExperimentEmailVisitor experimentEmailVisitor;
     private final WebPushService webPushService;
 
@@ -33,7 +35,11 @@ public class ExperimentNotificationEventListener {
         Experiment experiment = experimentEmailEvent.getExperiment();
         log.info("Handles experiment [{}] email event from source [{}]", experiment.getRequestId(),
                 experimentEmailEvent.getSource().getClass().getSimpleName());
-        experiment.getRequestStatus().handle(experimentEmailVisitor, experiment);
+        if (!Boolean.TRUE.equals(appProperties.getNotifications().getEmailsEnabled())) {
+            log.warn("Emails sending are disabled. You may set [app.notifications.emailsEnabled] property");
+        } else {
+            experiment.getRequestStatus().handle(experimentEmailVisitor, experiment);
+        }
     }
 
     /**
@@ -46,6 +52,10 @@ public class ExperimentNotificationEventListener {
         Experiment experiment = experimentWebPushEvent.getExperiment();
         log.info("Handles experiment [{}] web push event from source [{}]", experiment.getRequestId(),
                 experimentWebPushEvent.getSource().getClass().getSimpleName());
-        webPushService.sendWebPush(experimentWebPushEvent.getExperiment());
+        if (!Boolean.TRUE.equals(appProperties.getNotifications().getWebPushesEnabled())) {
+            log.warn("Web pushes are disabled. You may set [app.notifications.webPushesEnabled] property");
+        } else {
+            webPushService.sendWebPush(experimentWebPushEvent.getExperiment());
+        }
     }
 }

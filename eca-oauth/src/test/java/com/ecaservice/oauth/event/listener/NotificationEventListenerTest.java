@@ -2,6 +2,7 @@ package com.ecaservice.oauth.event.listener;
 
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.notification.dto.EmailResponse;
+import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.config.ChangePasswordConfig;
 import com.ecaservice.oauth.config.ResetPasswordConfig;
 import com.ecaservice.oauth.event.listener.handler.AbstractNotificationEventHandler;
@@ -45,7 +46,7 @@ import static org.mockito.Mockito.when;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @ComponentScan(basePackageClasses = AbstractNotificationEventHandler.class)
-@Import({ResetPasswordConfig.class, NotificationEventListener.class, ChangePasswordConfig.class})
+@Import({ResetPasswordConfig.class, NotificationEventListener.class, ChangePasswordConfig.class, AppProperties.class})
 class NotificationEventListenerTest {
 
     private static final String TFA_CODE = "code";

@@ -47,12 +47,13 @@ ribbon:
 external-api:
   dateFormat: yyyy-MM-dd HH:mm:ss
   batchSize: 25
-  requestTimeoutMinutes: 60
-  requestCacheDurationMinutes: 60
+  requestTimeoutSeconds: 60
+  evaluationRequestTimeoutMinutes: 120
   classifiersPath: D:/classifiers/
   trainDataPath: D:/data/
   downloadBaseUrl: http://localhost:8085/eca-external-api
   numberOfDaysForStorage: 14
+  delaySeconds: 10
   ## Each day at midnight
   removeClassifiersCron: 0 0 0 * * *
   removeDataCron: 0 0 0 * * *

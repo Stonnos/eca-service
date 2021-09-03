@@ -38,7 +38,7 @@ public class MessageCorrelationService {
     @PostConstruct
     public void initialize() {
         this.messagesCache = CacheBuilder.newBuilder()
-                .expireAfterWrite(Duration.ofMinutes(externalApiConfig.getRequestCacheDurationMinutes()))
+                .expireAfterWrite(Duration.ofSeconds(externalApiConfig.getRequestTimeoutSeconds()))
                 .build();
     }
 

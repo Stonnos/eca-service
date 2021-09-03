@@ -43,7 +43,7 @@ public class EvaluationRequestHandler extends ExternalApiTaskHandler {
         Long autoTestId = getVariable(execution, AUTO_TEST_ID, Long.class);
         TestDataModel testDataModel = getVariable(execution, TEST_DATA_MODEL, TestDataModel.class);
         log.debug("Starting to send evaluation request for test [{}]", autoTestId);
-        var response = externalApiClient.evaluateModel(testDataModel.getRequest());
+        var response = externalApiClient.evaluateRequest(testDataModel.getRequest());
         log.debug("Received evaluation response for test [{}]: {}", autoTestId, response);
         setVariableSafe(execution, API_RESPONSE, response);
         log.debug("Evaluation request execution [{}], process key [{}] has been finished", execution.getId(),

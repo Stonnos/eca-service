@@ -1,7 +1,8 @@
 package com.ecaservice.external.api.aspect;
 
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
-import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.EvaluationStatus;
+import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.entity.EcaRequestEntity;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
@@ -56,22 +57,40 @@ class RequestExecutionAspectTest {
     private ArgumentCaptor<ResponseDto<EvaluationResponseDto>> evaluationResponseDtoArgumentCaptor;
 
     @Test
-    void testMethodExecutionWithError() throws Throwable {
+    void testSuccessMethodExecution() throws Throwable {
         EvaluationRequestEntity evaluationRequestEntity = createEvaluationRequestEntity(UUID.randomUUID().toString());
         ProceedingJoinPoint joinPoint = createProceedingJoinPoint(evaluationRequestEntity);
-        doThrow(DataNotFoundException.class).when(joinPoint).proceed();
-        when(exceptionTranslator.translate(any(Exception.class))).thenReturn(RequestStatus.ERROR);
         MonoSink<ResponseDto<EvaluationResponseDto>> sink = mock(MonoSink.class);
         when(messageCorrelationService.pop(evaluationRequestEntity.getCorrelationId())).thenReturn(Optional.of(sink));
         requestExecutionAspect.around(joinPoint, null);
-        verify(requestStageHandler).handleError(any(EcaRequestEntity.class), any(Exception.class));
         verify(sink).success(evaluationResponseDtoArgumentCaptor.capture());
         ResponseDto<EvaluationResponseDto> evaluationResponseDto = evaluationResponseDtoArgumentCaptor.getValue();
         assertThat(evaluationResponseDto).isNotNull();
         assertThat(evaluationResponseDto.getPayload()).isNotNull();
         assertThat(evaluationResponseDto.getPayload().getRequestId()).isEqualTo(
                 evaluationRequestEntity.getCorrelationId());
-        assertThat(evaluationResponseDto.getRequestStatus()).isEqualTo(RequestStatus.ERROR);
+        assertThat(evaluationResponseDto.getPayload().getEvaluationStatus()).isEqualTo(EvaluationStatus.IN_PROGRESS);
+        assertThat(evaluationResponseDto.getResponseCode()).isEqualTo(ResponseCode.SUCCESS);
+    }
+
+    @Test
+    void testMethodExecutionWithError() throws Throwable {
+        EvaluationRequestEntity evaluationRequestEntity = createEvaluationRequestEntity(UUID.randomUUID().toString());
+        ProceedingJoinPoint joinPoint = createProceedingJoinPoint(evaluationRequestEntity);
+        doThrow(new DataNotFoundException("error")).when(joinPoint).proceed();
+        when(exceptionTranslator.translate(any(Exception.class))).thenReturn(ResponseCode.ERROR);
+        MonoSink<ResponseDto<EvaluationResponseDto>> sink = mock(MonoSink.class);
+        when(messageCorrelationService.pop(evaluationRequestEntity.getCorrelationId())).thenReturn(Optional.of(sink));
+        requestExecutionAspect.around(joinPoint, null);
+        verify(requestStageHandler).handleError(any(EcaRequestEntity.class), any(String.class));
+        verify(sink).success(evaluationResponseDtoArgumentCaptor.capture());
+        ResponseDto<EvaluationResponseDto> evaluationResponseDto = evaluationResponseDtoArgumentCaptor.getValue();
+        assertThat(evaluationResponseDto).isNotNull();
+        assertThat(evaluationResponseDto.getPayload()).isNotNull();
+        assertThat(evaluationResponseDto.getPayload().getRequestId()).isEqualTo(
+                evaluationRequestEntity.getCorrelationId());
+        assertThat(evaluationResponseDto.getPayload().getEvaluationStatus()).isEqualTo(EvaluationStatus.ERROR);
+        assertThat(evaluationResponseDto.getResponseCode()).isEqualTo(ResponseCode.ERROR);
     }
 
     @Test

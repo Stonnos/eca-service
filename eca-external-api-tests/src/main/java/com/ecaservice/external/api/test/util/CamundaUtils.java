@@ -1,7 +1,5 @@
 package com.ecaservice.external.api.test.util;
 
-import com.ecaservice.external.api.test.bpm.model.ExecutionResult;
-import com.ecaservice.external.api.test.bpm.model.TaskExecutionStatus;
 import com.ecaservice.external.api.test.exception.ProcessVariableNotFound;
 import lombok.experimental.UtilityClass;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -87,29 +85,5 @@ public class CamundaUtils {
             throw new ProcessVariableNotFound(variableName, execution.getProcessInstanceId());
         }
         return Enum.valueOf(enumType, String.valueOf(enumValue));
-    }
-
-    /**
-     * Creates execution result with success status.
-     *
-     * @return success result
-     */
-    public static ExecutionResult successResult() {
-        return ExecutionResult.builder()
-                .status(TaskExecutionStatus.SUCCESS)
-                .build();
-    }
-
-    /**
-     * Creates execution result with error status.
-     *
-     * @param errorMessage - error message
-     * @return error result
-     */
-    public static ExecutionResult errorResult(String errorMessage) {
-        return ExecutionResult.builder()
-                .status(TaskExecutionStatus.ERROR)
-                .errorMessage(errorMessage)
-                .build();
     }
 }

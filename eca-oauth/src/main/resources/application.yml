@@ -37,9 +37,10 @@ eureka:
 ribbon:
   ReadTimeout: 60000
 
-## Application common configs
-common:
+## Application properties
+app:
   maxPageSize: 50
+  emailsEnabled: true
 
 ## Password generator configs
 password:

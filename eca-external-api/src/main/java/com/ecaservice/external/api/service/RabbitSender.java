@@ -27,10 +27,12 @@ public class RabbitSender {
      * @param correlationId     - message correlation id
      */
     public void sendEvaluationRequest(EvaluationRequest evaluationRequest, String correlationId) {
+        log.debug("Starting to send evaluation request [{}] to rabbit mq", correlationId);
         rabbitTemplate.convertAndSend(queueConfig.getEvaluationRequestQueue(), evaluationRequest, message -> {
             message.getMessageProperties().setCorrelationId(correlationId);
             message.getMessageProperties().setReplyTo(queueConfig.getEvaluationRequestReplyToQueue());
             return message;
         });
+        log.debug("Evaluation request [{}] has been to rabbit mq", correlationId);
     }
 }

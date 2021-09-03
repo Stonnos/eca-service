@@ -1,9 +1,8 @@
 package com.ecaservice.core.audit.service;
 
 import com.ecaservice.audit.dto.AuditEventRequest;
-import com.ecaservice.audit.dto.EventType;
+import com.ecaservice.core.audit.event.AuditEvent;
 import com.ecaservice.core.audit.mapping.AuditMapper;
-import com.ecaservice.core.audit.model.AuditContextParams;
 import com.ecaservice.core.audit.model.AuditEventTemplateModel;
 import com.ecaservice.core.audit.service.template.AuditTemplateProcessorService;
 import lombok.RequiredArgsConstructor;
@@ -31,25 +30,24 @@ public class AuditEventService {
     /**
      * Send audit event.
      *
-     * @param auditCode          - audit code
-     * @param eventType          - event type
-     * @param initiator          - event initiator
-     * @param auditContextParams - audit context params
+     * @param auditEvent - audit event
      */
-    public void audit(String auditCode, EventType eventType, String initiator, AuditContextParams auditContextParams) {
+    public void audit(AuditEvent auditEvent) {
         String eventId = UUID.randomUUID().toString();
-        log.debug("Audit event [{}] type [{}] with event id [{}]", auditCode, eventType, eventId);
+        log.debug("Audit event [{}] type [{}] with event id [{}]", auditEvent.getAuditCode(),
+                auditEvent.getEventType(), eventId);
         try {
             AuditEventTemplateModel auditEventTemplate =
-                    auditEventTemplateStore.getAuditEventTemplate(auditCode, eventType);
+                    auditEventTemplateStore.getAuditEventTemplate(auditEvent.getAuditCode(), auditEvent.getEventType());
             if (!Boolean.TRUE.equals(auditEventTemplate.getAuditCode().isEnabled())) {
-                log.warn("Audit code [{}] is disabled", auditCode);
+                log.warn("Audit code [{}] is disabled", auditEvent.getAuditCode());
             } else {
-                String message = auditTemplateProcessorService.process(auditCode, eventType, auditContextParams);
+                String message = auditTemplateProcessorService.process(auditEvent.getAuditCode(),
+                        auditEvent.getEventType(), auditEvent.getAuditContextParams());
                 AuditEventRequest auditEventRequest = auditMapper.map(auditEventTemplate);
                 auditEventRequest.setEventId(eventId);
                 auditEventRequest.setMessage(message);
-                auditEventRequest.setInitiator(initiator);
+                auditEventRequest.setInitiator(auditEvent.getInitiator());
                 auditEventRequest.setEventDate(LocalDateTime.now());
                 log.info("Starting to send audit event [{}] with code [{}], type [{}]", auditEventRequest.getEventId(),
                         auditEventRequest.getCode(), auditEventRequest.getEventType());

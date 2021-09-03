@@ -4,10 +4,11 @@ import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.InstancesDto;
-import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.service.EcaRequestService;
 import com.ecaservice.external.api.service.EvaluationApiService;
+import com.ecaservice.external.api.service.EvaluationResponseService;
 import com.ecaservice.external.api.service.InstancesService;
 import com.ecaservice.external.api.service.MessageCorrelationService;
 import com.ecaservice.external.api.validation.annotations.ValidTrainData;
@@ -65,6 +66,7 @@ public class ExternalApiController {
     private final EcaRequestService ecaRequestService;
     private final TimeoutFallback timeoutFallback;
     private final InstancesService instancesService;
+    private final EvaluationResponseService evaluationResponseService;
 
     /**
      * Uploads train data file.
@@ -84,11 +86,11 @@ public class ExternalApiController {
             @Parameter(description = "Training data file", required = true)
             @ValidTrainData
             @RequestParam MultipartFile trainingData) throws IOException {
-        log.debug("Received request to upload train data [{}]", trainingData.getOriginalFilename());
+        log.info("Received request to upload train data [{}]", trainingData.getOriginalFilename());
         var instancesEntity = instancesService.uploadInstances(trainingData);
         var instancesDto = new InstancesDto(instancesEntity.getUuid(),
                 String.format("%s%s", DATA_URL_PREFIX, instancesEntity.getUuid()));
-        return buildResponse(RequestStatus.SUCCESS, instancesDto);
+        return buildResponse(ResponseCode.SUCCESS, instancesDto);
     }
 
     /**
@@ -108,7 +110,7 @@ public class ExternalApiController {
                     })
             })
     )
-    @PostMapping(value = "/evaluate")
+    @PostMapping(value = "/evaluation-request")
     public Mono<ResponseDto<EvaluationResponseDto>> evaluateModel(
             @Valid @RequestBody EvaluationRequestDto evaluationRequestDto) {
         if (log.isDebugEnabled()) {
@@ -119,8 +121,29 @@ public class ExternalApiController {
         return Mono.<ResponseDto<EvaluationResponseDto>>create(sink -> {
             messageCorrelationService.push(ecaRequestEntity.getCorrelationId(), sink);
             evaluationApiService.processRequest(ecaRequestEntity, evaluationRequestDto);
-        }).timeout(Duration.ofMinutes(externalApiConfig.getRequestTimeoutMinutes()),
+        }).timeout(Duration.ofSeconds(externalApiConfig.getRequestTimeoutSeconds()),
                 timeoutFallback.timeout(ecaRequestEntity.getCorrelationId()));
+    }
+
+    /**
+     * Gets evaluation response status.
+     *
+     * @param requestId - request id
+     */
+    @PreAuthorize("#oauth2.hasScope('external-api')")
+    @Operation(
+            description = "Gets evaluation response status",
+            summary = "Gets evaluation response status",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
+    )
+    @GetMapping(value = "/evaluation-status/{requestId}")
+    public ResponseDto<EvaluationResponseDto> getEvaluationResponseStatus(
+            @Parameter(description = "Request id", required = true) @PathVariable String requestId) {
+        log.debug("Request to get evaluation [{}] response status", requestId);
+        var evaluationResponseDto = evaluationResponseService.processResponse(requestId);
+        var responseDto = buildResponse(ResponseCode.SUCCESS, evaluationResponseDto);
+        log.debug("Got evaluation [{}] response: {}", requestId, responseDto);
+        return responseDto;
     }
 
     /**
@@ -145,7 +168,7 @@ public class ExternalApiController {
             log.error("Classifier model file not found for request id [{}]", requestId);
             return ResponseEntity.badRequest().build();
         }
-        log.debug("Downloads classifier model file {} for request id [{}]",
+        log.info("Downloads classifier model file {} for request id [{}]",
                 evaluationRequestEntity.getClassifierAbsolutePath(), evaluationRequestEntity.getCorrelationId());
         return buildAttachmentResponse(modelFile);
     }

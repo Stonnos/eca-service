@@ -6,7 +6,6 @@ import feign.form.spring.SpringFormEncoder;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.cloud.openfeign.support.SpringEncoder;
-import org.springframework.cloud.security.oauth2.client.feign.OAuth2FeignRequestInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
@@ -29,7 +28,7 @@ public class FeignClientConfiguration {
     @Bean
     public RequestInterceptor oauth2FeignRequestInterceptor(
             ClientCredentialsResourceDetails clientCredentialsResourceDetails) {
-        return new OAuth2FeignRequestInterceptor(new DefaultOAuth2ClientContext(), clientCredentialsResourceDetails);
+        return new BearerTokenRequestInterceptor(new DefaultOAuth2ClientContext(), clientCredentialsResourceDetails);
     }
 
     /**

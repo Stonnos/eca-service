@@ -29,10 +29,10 @@ public class ResponseDto<T> implements Serializable {
     private T payload;
 
     /**
-     * Request status
+     * Response code
      */
-    @Schema(description = "Request status")
-    private RequestStatus requestStatus;
+    @Schema(description = "Response code")
+    private ResponseCode responseCode;
 
     /**
      * Error message

@@ -1,6 +1,5 @@
 package com.ecaservice.config;
 
-import com.ecaservice.core.lock.redis.config.RedisLockProperties;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

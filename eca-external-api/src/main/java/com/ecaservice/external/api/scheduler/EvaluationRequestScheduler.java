@@ -3,7 +3,9 @@ package com.ecaservice.external.api.scheduler;
 import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.repository.InstancesRepository;
-import com.ecaservice.external.api.service.FileDataService;
+import com.ecaservice.external.api.service.EcaRequestService;
+import com.ecaservice.external.api.service.InstancesService;
+import com.ecaservice.external.api.service.RequestStageHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -18,19 +20,36 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 /**
- * Data scheduler.
+ * Evaluation request scheduler.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DataScheduler {
+public class EvaluationRequestScheduler {
 
     private final ExternalApiConfig externalApiConfig;
-    private final FileDataService fileDataService;
+    private final EcaRequestService ecaRequestService;
+    private final RequestStageHandler requestStageHandler;
+    private final InstancesService instancesService;
     private final EvaluationRequestRepository evaluationRequestRepository;
     private final InstancesRepository instancesRepository;
+
+    /**
+     * Processes exceeded requests.
+     */
+    @Scheduled(fixedDelayString = "${external-api.delaySeconds}000")
+    public void processExceededRequests() {
+        log.trace("Starting to processed exceeded requests");
+        LocalDateTime exceededTime =
+                LocalDateTime.now().minusMinutes(externalApiConfig.getEvaluationRequestTimeoutMinutes());
+        List<Long> exceededIds = evaluationRequestRepository.findExceededRequestIds(exceededTime);
+        processPaging(exceededIds, evaluationRequestRepository::findByIdIn, pageContent ->
+                pageContent.forEach(requestStageHandler::handleExceeded)
+        );
+        log.trace("Exceeded requests has been processed");
+    }
 
     /**
      * Removes classifiers data files from disk. Schedules by cron.
@@ -43,11 +62,11 @@ public class DataScheduler {
         log.info("Obtained {} classifiers files to remove", ids.size());
         processPaging(ids, evaluationRequestRepository::findByIdIn,
                 pageContent -> pageContent.forEach(evaluationRequestEntity -> {
-                    boolean deleted = fileDataService.delete(evaluationRequestEntity.getClassifierAbsolutePath());
-                    if (deleted) {
-                        evaluationRequestEntity.setClassifierAbsolutePath(null);
-                        evaluationRequestEntity.setDeletedDate(LocalDateTime.now());
-                        evaluationRequestRepository.save(evaluationRequestEntity);
+                    try {
+                        ecaRequestService.deleteClassifierModel(evaluationRequestEntity);
+                    } catch (Exception ex) {
+                        log.error("There was an error while deleting evaluation request [{}] classifier model: {}",
+                                evaluationRequestEntity.getCorrelationId(), ex.getMessage());
                     }
                 }));
         log.info("Classifiers data removing has been finished.");
@@ -63,9 +82,11 @@ public class DataScheduler {
         List<Long> ids = instancesRepository.findNotDeletedData(dateTime);
         log.info("Obtained {} data files to remove", ids.size());
         processPaging(ids, instancesRepository::findByIdIn, pageContent -> pageContent.forEach(instancesEntity -> {
-            boolean deleted = fileDataService.delete(instancesEntity.getAbsolutePath());
-            if (deleted) {
-                instancesRepository.delete(instancesEntity);
+            try {
+                instancesService.deleteInstances(instancesEntity);
+            } catch (Exception ex) {
+                log.error("There was an error while deleting instances [{}]: {}", instancesEntity.getId(),
+                        ex.getMessage());
             }
         }));
         log.info("Train data removing has been finished.");

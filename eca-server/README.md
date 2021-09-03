@@ -58,9 +58,11 @@ ECA server
 4) ers - настройки интеграции с сервисом eca-ers
    * ers.useClassifierOptionsCache - вкл./выкл. кеширование оптимальных настроек классификатора
    * ers.classifierOptionsCacheDurationInDays - период хранения оптимальных настроек классификатора, полученных от сервиса ERS
-5) common - общие настройки
-   * common.threadPoolSize - число потоков для асинхронных задач
-   * common.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
+5) app - общие настройки приложения
+   * app.threadPoolSize - число потоков для асинхронных задач
+   * app.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
+   * app.notifications.emailsEnabled - вкл./выкл. отправки email сообщений
+   * app.notifications.webPushesEnabled - вкл./выкл. отправки web пушей 
 6) cache.specs - настройки spring cache
 7) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации

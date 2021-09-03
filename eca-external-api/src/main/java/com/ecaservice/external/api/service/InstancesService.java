@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 import weka.core.Instances;
@@ -59,7 +60,7 @@ public class InstancesService {
      */
     @Timed(value = UPLOAD_INSTANCES_METRIC)
     public InstancesEntity uploadInstances(MultipartFile trainingData) throws IOException {
-        log.debug("Starting to upload train data [{}] to file system", trainingData.getOriginalFilename());
+        log.info("Starting to upload train data [{}] to file system", trainingData.getOriginalFilename());
         String dataUuid = UUID.randomUUID().toString();
         File file = copyToFile(trainingData, dataUuid);
         InstancesEntity instancesEntity = new InstancesEntity();
@@ -67,7 +68,7 @@ public class InstancesService {
         instancesEntity.setUuid(dataUuid);
         instancesEntity.setCreationDate(LocalDateTime.now());
         instancesRepository.save(instancesEntity);
-        log.debug("Train data [{}] has been uploaded to file system with uuid [{}]",
+        log.info("Train data [{}] has been uploaded to file system with uuid [{}]",
                 trainingData.getOriginalFilename(), dataUuid);
         return instancesEntity;
     }
@@ -87,6 +88,19 @@ public class InstancesService {
         } catch (Exception ex) {
             throw new DataNotFoundException(ex.getMessage());
         }
+    }
+
+    /**
+     * Deletes instances entity.
+     *
+     * @param instancesEntity - instances entity
+     */
+    @Transactional
+    public void deleteInstances(InstancesEntity instancesEntity) {
+        log.info("Starting to delete instances [{}]", instancesEntity.getId());
+        instancesRepository.delete(instancesEntity);
+        fileDataService.delete(instancesEntity.getAbsolutePath());
+        log.info("Instances [{}] has been deleted", instancesEntity.getId());
     }
 
     private File copyToFile(MultipartFile multipartFile, String dataUuid) throws IOException {

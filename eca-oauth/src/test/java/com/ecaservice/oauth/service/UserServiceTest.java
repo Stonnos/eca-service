@@ -3,7 +3,7 @@ package com.ecaservice.oauth.service;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.oauth.AbstractJpaTest;
 import com.ecaservice.oauth.TestHelperUtils;
-import com.ecaservice.oauth.config.CommonConfig;
+import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.RoleEntity;
@@ -52,7 +52,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({CommonConfig.class, UserMapperImpl.class, RoleMapperImpl.class})
+@Import({AppProperties.class, UserMapperImpl.class, RoleMapperImpl.class})
 class UserServiceTest extends AbstractJpaTest {
 
     private static final String PASSWORD = "pa66word!";
@@ -65,7 +65,7 @@ class UserServiceTest extends AbstractJpaTest {
     private static final int SIZE = 10;
 
     @Inject
-    private CommonConfig commonConfig;
+    private AppProperties appProperties;
     @Inject
     private UserMapper userMapper;
     @Inject
@@ -85,7 +85,7 @@ class UserServiceTest extends AbstractJpaTest {
         roleRepository.save(createRoleEntity());
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         userService =
-                new UserService(commonConfig, passwordEncoder, userMapper, oauth2TokenService, userEntityRepository,
+                new UserService(appProperties, passwordEncoder, userMapper, oauth2TokenService, userEntityRepository,
                         roleRepository, userPhotoRepository);
     }
 

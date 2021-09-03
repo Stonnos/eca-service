@@ -1,7 +1,7 @@
 package com.ecaservice.report;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.config.CommonConfig;
+import com.ecaservice.config.AppProperties;
 import com.ecaservice.mapping.ClassifierOptionsRequestModelMapperImpl;
 import com.ecaservice.mapping.ClassifierOptionsResponseModelMapperImpl;
 import com.ecaservice.mapping.DateTimeConverter;
@@ -37,7 +37,7 @@ import static com.google.common.collect.Lists.newArrayList;
  *
  * @author Roman Batygin
  */
-@Import({CommonConfig.class, ClassifierOptionsRequestModelMapperImpl.class, DateTimeConverter.class,
+@Import({AppProperties.class, ClassifierOptionsRequestModelMapperImpl.class, DateTimeConverter.class,
         ClassifierOptionsRequestsBaseReportDataFetcher.class, ErsEvaluationMethodMapperImpl.class,
         ClassifierOptionsResponseModelMapperImpl.class, ClassifierOptionsRequestService.class})
 class ClassifierOptionsRequestsBaseReportDataFetcherTest extends AbstractJpaTest {

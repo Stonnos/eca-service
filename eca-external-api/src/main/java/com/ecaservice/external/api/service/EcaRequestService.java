@@ -10,6 +10,7 @@ import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -25,6 +26,7 @@ import java.util.UUID;
 public class EcaRequestService {
 
     private final EcaRequestMapper ecaRequestMapper;
+    private final FileDataService fileDataService;
     private final EvaluationRequestRepository evaluationRequestRepository;
 
     /**
@@ -36,7 +38,7 @@ public class EcaRequestService {
     public EcaRequestEntity createAndSaveRequestEntity(EvaluationRequestDto evaluationRequestDto) {
         var ecaRequestEntity = ecaRequestMapper.map(evaluationRequestDto);
         ecaRequestEntity.setCorrelationId(UUID.randomUUID().toString());
-        ecaRequestEntity.setRequestStage(RequestStageType.NOT_SEND);
+        ecaRequestEntity.setRequestStage(RequestStageType.READY);
         ecaRequestEntity.setCreationDate(LocalDateTime.now());
         return evaluationRequestRepository.save(ecaRequestEntity);
     }
@@ -50,5 +52,23 @@ public class EcaRequestService {
     public EvaluationRequestEntity getByCorrelationId(String correlationId) {
         return evaluationRequestRepository.findByCorrelationId(correlationId)
                 .orElseThrow(() -> new EntityNotFoundException(EcaRequestEntity.class, correlationId));
+    }
+
+    /**
+     * Deletes classifier model file.
+     *
+     * @param evaluationRequestEntity - evaluation request entity
+     */
+    @Transactional
+    public void deleteClassifierModel(EvaluationRequestEntity evaluationRequestEntity) {
+        log.info("Starting to delete evaluation request [{}] classifier model file",
+                evaluationRequestEntity.getCorrelationId());
+        String classifierAbsolutePath = evaluationRequestEntity.getClassifierAbsolutePath();
+        evaluationRequestEntity.setClassifierAbsolutePath(null);
+        evaluationRequestEntity.setDeletedDate(LocalDateTime.now());
+        evaluationRequestRepository.save(evaluationRequestEntity);
+        fileDataService.delete(classifierAbsolutePath);
+        log.info("Evaluation request [{}] classifier model file has been deleted",
+                evaluationRequestEntity.getCorrelationId());
     }
 }

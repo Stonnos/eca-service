@@ -14,12 +14,12 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
 /**
- * Unit tests for {@link AuditEventHandler} class.
+ * Unit tests for {@link SimpleAuditEventHandler} class.
  *
  * @author Roman Batygin
  */
 @ExtendWith(MockitoExtension.class)
-class AuditEventHandlerTest {
+class SimpleAuditEventHandlerTest {
 
     private static final String AUDIT_CODE = "code";
     private static final String INITIATOR = "user";
@@ -28,14 +28,13 @@ class AuditEventHandlerTest {
     private AuditEventService auditEventService;
 
     @InjectMocks
-    private AuditEventHandler auditEventHandler;
+    private SimpleAuditEventHandler simpleAuditEventHandler;
 
     @Test
     void testHandleAuditEvent() {
         var contextParams = new AuditContextParams();
         var auditEvent = new AuditEvent(this, AUDIT_CODE, EventType.SUCCESS, INITIATOR, contextParams);
-        auditEventHandler.handleAuditEvent(auditEvent);
-        verify(auditEventService, atLeastOnce()).audit(auditEvent.getAuditCode(), auditEvent.getEventType(),
-                auditEvent.getInitiator(), auditEvent.getAuditContextParams());
+        simpleAuditEventHandler.handleAuditEvent(auditEvent);
+        verify(auditEventService, atLeastOnce()).audit(auditEvent);
     }
 }

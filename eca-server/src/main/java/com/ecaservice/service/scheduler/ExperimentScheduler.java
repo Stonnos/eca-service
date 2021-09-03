@@ -41,12 +41,12 @@ public class ExperimentScheduler {
     public void processNewRequests() {
         log.trace("Starting to process new experiments.");
         Function<Pageable, Page<Experiment>> pageFunction =
-                (pageable) -> experimentRepository.findExperimentsForProcessing(NEW_STATUSES, pageable);
+                pageable -> experimentRepository.findExperimentsForProcessing(NEW_STATUSES, pageable);
         processPaging(pageFunction, experiments -> {
             log.info("Obtained {} new experiments", experiments.size());
             experiments.forEach(experimentRequestProcessor::processNewExperiment);
         });
-        log.info("New experiments processing has been successfully finished.");
+        log.trace("New experiments processing has been successfully finished.");
     }
 
     /**
@@ -56,7 +56,7 @@ public class ExperimentScheduler {
     public void processRequestsToSent() {
         log.trace("Starting to sent experiment results.");
         Function<Pageable, Page<Experiment>> pageFunction =
-                (pageable) -> experimentRepository.findExperimentsForProcessing(FINISHED_STATUSES, pageable);
+                pageable -> experimentRepository.findExperimentsForProcessing(FINISHED_STATUSES, pageable);
         processPaging(pageFunction,
                 experiments -> experiments.forEach(experimentRequestProcessor::notifyExperimentFinished));
         log.trace("Sending experiments has been successfully finished.");
@@ -69,6 +69,7 @@ public class ExperimentScheduler {
     public void processRequestsToErs() {
         log.info("Starting job to sent experiments results to ERS service");
         experimentRequestProcessor.sentExperimentResultsToErs();
+        log.info("Experiments results sending job has been finished");
     }
 
     /**
@@ -77,7 +78,9 @@ public class ExperimentScheduler {
     @Scheduled(cron = "${experiment.removeExperimentCron}")
     public void processRequestsToRemove() {
         log.info("Starting job to removes experiments data files from disk");
-        experimentRequestProcessor.removeExperimentsData();
+        experimentRequestProcessor.removeExperimentsTrainingData();
+        experimentRequestProcessor.removeExperimentsModels();
+        log.info("Removing experiments data files job has been finished");
     }
 
     private <T> void processPaging(Function<Pageable, Page<T>> pageFunction, Consumer<List<T>> pageContentAction) {

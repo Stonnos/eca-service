@@ -1,7 +1,7 @@
 package com.ecaservice.service.classifiers;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.config.CommonConfig;
+import com.ecaservice.config.AppProperties;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.filter.ClassifiersConfigurationFilter;
@@ -55,7 +55,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
     private final FilterService filterService;
     private final ClassifiersConfigurationMapper classifiersConfigurationMapper;
     private final ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
-    private final CommonConfig commonConfig;
+    private final AppProperties appProperties;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
     private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
 
@@ -163,7 +163,7 @@ public class ClassifiersConfigurationService implements PageRequestService<Class
                 filterService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION.name());
         var filter = new ClassifiersConfigurationFilter(pageRequestDto.getSearchQuery(),
                 globalFilterFields, pageRequestDto.getFilters());
-        var pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
+        var pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
         return classifiersConfigurationRepository.findAll(filter,
                 PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
     }

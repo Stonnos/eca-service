@@ -78,7 +78,6 @@ public class LockExecutionAspect {
      *
      * @param joinPoint - give reflective access to the processed method
      * @param tryLocked - try locked annotation
-     * @return result object
      */
     @Around("execution(@com.ecaservice.core.lock.annotation.TryLocked * * (..)) && @annotation(tryLocked)")
     public void around(ProceedingJoinPoint joinPoint, TryLocked tryLocked) throws Throwable {

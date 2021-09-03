@@ -21,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import({RequestStageHandler.class, ExternalApiConfig.class})
 class RequestStageHandlerTest extends AbstractJpaTest {
 
+    private static final String ERROR_MESSAGE = "Error";
+
     @Inject
     private EvaluationRequestRepository evaluationRequestRepository;
     @Inject
@@ -34,16 +36,16 @@ class RequestStageHandlerTest extends AbstractJpaTest {
     @Test
     void testHandleError() {
         EvaluationRequestEntity evaluationRequestEntity =
-                createEvaluationRequestEntity(RequestStageType.NOT_SEND, null);
+                createEvaluationRequestEntity(RequestStageType.READY, null, null);
         evaluationRequestRepository.save(evaluationRequestEntity);
-        requestStageHandler.handleError(evaluationRequestEntity, new IllegalStateException());
+        requestStageHandler.handleError(evaluationRequestEntity, ERROR_MESSAGE);
         assertRequestStage(evaluationRequestEntity.getId(), RequestStageType.ERROR);
     }
 
     @Test
     void testHandleExceeded() {
         EvaluationRequestEntity evaluationRequestEntity =
-                createEvaluationRequestEntity(RequestStageType.NOT_SEND, null);
+                createEvaluationRequestEntity(RequestStageType.READY, null, null);
         evaluationRequestRepository.save(evaluationRequestEntity);
         requestStageHandler.handleExceeded(evaluationRequestEntity);
         assertRequestStage(evaluationRequestEntity.getId(), RequestStageType.EXCEEDED);

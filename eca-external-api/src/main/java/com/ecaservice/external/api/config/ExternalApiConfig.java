@@ -23,14 +23,14 @@ public class ExternalApiConfig {
     private Integer batchSize;
 
     /**
-     * Request timeout in minutes
+     * Request timeout in seconds
      */
-    private Long requestTimeoutMinutes;
+    private Long requestTimeoutSeconds;
 
     /**
-     * Request cache duration minutes (used for message correlation)
+     * Evaluation request timeout in minutes
      */
-    private Long requestCacheDurationMinutes;
+    private Long evaluationRequestTimeoutMinutes;
 
     /**
      * Classifiers path on file system

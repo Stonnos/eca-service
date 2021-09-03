@@ -1,6 +1,6 @@
 package com.ecaservice.external.api.test.entity;
 
-import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.test.common.model.MatchResult;
 import com.ecaservice.test.common.model.TestResult;
 import lombok.Data;
@@ -74,25 +74,25 @@ public class AutoTestEntity extends BaseEntity {
     private int totalNotFound;
 
     /**
-     * Expected request status
+     * Expected response code
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "expected_request_status")
-    private RequestStatus expectedRequestStatus;
+    @Column(name = "expected_response_code")
+    private ResponseCode expectedResponseCode;
 
     /**
-     * Actual request status
+     * Actual response code
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "actual_request_status")
-    private RequestStatus actualRequestStatus;
+    @Column(name = "actual_response_code")
+    private ResponseCode actualResponseCode;
 
     /**
-     * Request status match result
+     * Response code match result
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "request_status_match_result")
-    private MatchResult requestStatusMatchResult;
+    @Column(name = "response_code_match_result")
+    private MatchResult responseCodeMatchResult;
 
     /**
      * Expected model url

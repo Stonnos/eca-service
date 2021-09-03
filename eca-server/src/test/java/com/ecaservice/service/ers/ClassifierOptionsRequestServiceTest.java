@@ -1,7 +1,7 @@
 package com.ecaservice.service.ers;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.config.CommonConfig;
+import com.ecaservice.config.AppProperties;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel_;
 import com.ecaservice.model.entity.ErsResponseStatus;
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import(CommonConfig.class)
+@Import(AppProperties.class)
 class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
 
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -48,7 +48,7 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
     @Inject
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
     @Inject
-    private CommonConfig commonConfig;
+    private AppProperties appProperties;
     @Mock
     private FilterService filterService;
 
@@ -57,7 +57,7 @@ class ClassifierOptionsRequestServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        classifierOptionsRequestService = new ClassifierOptionsRequestService(commonConfig, filterService,
+        classifierOptionsRequestService = new ClassifierOptionsRequestService(appProperties, filterService,
                 classifierOptionsRequestModelRepository);
     }
 

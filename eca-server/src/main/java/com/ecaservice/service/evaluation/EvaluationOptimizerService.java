@@ -9,6 +9,7 @@ import com.ecaservice.config.ers.ErsConfig;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.mapping.ClassifierOptionsRequestMapper;
 import com.ecaservice.mapping.EvaluationRequestMapper;
+import com.ecaservice.model.ClassifierOptionsResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,8 +28,6 @@ import static com.ecaservice.util.Utils.buildEvaluationErrorResponse;
 @Service
 @RequiredArgsConstructor
 public class EvaluationOptimizerService {
-
-    private static final String RESULTS_NOT_FOUND_MESSAGE = "Can't find classifiers options for data '%s'";
 
     private final CrossValidationConfig crossValidationConfig;
     private final ErsConfig ersConfig;
@@ -50,15 +49,15 @@ public class EvaluationOptimizerService {
                 data.relationName());
         ClassifierOptionsRequest classifierOptionsRequest =
                 classifierOptionsRequestMapper.map(instancesRequest, crossValidationConfig);
-        String optimalOptions = getOptimalClassifierOptions(classifierOptionsRequest);
-        if (optimalOptions == null) {
-            return buildEvaluationErrorResponse(String.format(RESULTS_NOT_FOUND_MESSAGE, data.relationName()));
+        ClassifierOptionsResult classifierOptionsResult = getOptimalClassifierOptions(classifierOptionsRequest);
+        if (!classifierOptionsResult.isFound()) {
+            return buildEvaluationErrorResponse(classifierOptionsResult.getErrorMessage());
         } else {
-            return evaluateModel(classifierOptionsRequest, optimalOptions, data);
+            return evaluateModel(classifierOptionsRequest, classifierOptionsResult.getOptionsJson(), data);
         }
     }
 
-    private String getOptimalClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
+    private ClassifierOptionsResult getOptimalClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
         String dataMd5Hash = classifierOptionsRequest.getDataHash();
         if (isUseClassifierOptionsCache()) {
             return classifierOptionsCacheService.getOptimalClassifierOptionsFromCache(classifierOptionsRequest,

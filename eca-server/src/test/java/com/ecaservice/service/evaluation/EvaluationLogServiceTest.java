@@ -1,7 +1,7 @@
 package com.ecaservice.service.evaluation;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.config.CommonConfig;
+import com.ecaservice.config.AppProperties;
 import com.ecaservice.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.mapping.EvaluationLogMapper;
@@ -53,7 +53,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({CommonConfig.class, ClassifierInfoMapperImpl.class, EvaluationLogMapperImpl.class,
+@Import({AppProperties.class, ClassifierInfoMapperImpl.class, EvaluationLogMapperImpl.class,
         InstancesInfoMapperImpl.class, DateTimeConverter.class})
 class EvaluationLogServiceTest extends AbstractJpaTest {
 
@@ -67,7 +67,7 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
     @Inject
     private EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository;
     @Inject
-    private CommonConfig commonConfig;
+    private AppProperties appProperties;
     @Inject
     private EvaluationLogMapper evaluationLogMapper;
 
@@ -80,7 +80,7 @@ class EvaluationLogServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        evaluationLogService = new EvaluationLogService(commonConfig, filterService, evaluationLogMapper, ersService,
+        evaluationLogService = new EvaluationLogService(appProperties, filterService, evaluationLogMapper, ersService,
                 evaluationLogRepository, evaluationResultsRequestEntityRepository);
     }
 

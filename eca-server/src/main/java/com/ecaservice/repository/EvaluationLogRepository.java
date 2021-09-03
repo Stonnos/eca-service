@@ -1,13 +1,11 @@
 package com.ecaservice.repository;
 
 import com.ecaservice.model.entity.EvaluationLog;
-import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.projections.RequestStatusStatistics;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,15 +16,6 @@ import java.util.Optional;
  */
 public interface EvaluationLogRepository
         extends JpaRepository<EvaluationLog, Long>, JpaSpecificationExecutor<EvaluationLog> {
-
-    /**
-     * Finds evaluation log by request id and statuses.
-     *
-     * @param requestId          - request id
-     * @param requestStatuses - evaluation log statuses
-     * @return evaluation log entity
-     */
-    EvaluationLog findByRequestIdAndRequestStatusIn(String requestId, Collection<RequestStatus> requestStatuses);
 
     /**
      * Finds evaluation log by request id.

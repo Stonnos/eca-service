@@ -2,7 +2,7 @@ package com.ecaservice.service.classifiers;
 
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.config.CommonConfig;
+import com.ecaservice.config.AppProperties;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.model.entity.ClassifiersConfiguration;
@@ -41,7 +41,7 @@ import static com.ecaservice.util.ClassifierOptionsHelper.isEnsembleClassifierOp
 @RequiredArgsConstructor
 public class ClassifierOptionsService {
 
-    private final CommonConfig commonConfig;
+    private final AppProperties appProperties;
     private final UserService userService;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
     private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
@@ -104,7 +104,7 @@ public class ClassifierOptionsService {
     public Page<ClassifierOptionsDatabaseModel> getNextPage(long configurationId, PageRequestDto pageRequestDto) {
         var classifiersConfiguration = getConfigurationById(configurationId);
         var sort = buildSort(pageRequestDto.getSortField(), CREATION_DATE, pageRequestDto.isAscending());
-        var pageSize = Integer.min(pageRequestDto.getSize(), commonConfig.getMaxPageSize());
+        var pageSize = Integer.min(pageRequestDto.getSize(), appProperties.getMaxPageSize());
         return classifierOptionsDatabaseModelRepository.findAllByConfiguration(classifiersConfiguration,
                 PageRequest.of(pageRequestDto.getPage(), pageSize, sort));
     }

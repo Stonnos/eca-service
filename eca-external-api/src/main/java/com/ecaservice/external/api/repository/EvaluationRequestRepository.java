@@ -28,6 +28,16 @@ public interface EvaluationRequestRepository extends JpaRepository<EvaluationReq
     Optional<EvaluationRequestEntity> findByCorrelationId(String correlationId);
 
     /**
+     * Finds exceeded requests ids.
+     *
+     * @param dateTime - date time value
+     * @return requests ids list
+     */
+    @Query("select er.id from EvaluationRequestEntity er where er.requestStage = 'REQUEST_SENT' " +
+            "and er.requestDate < :dateTime order by er.requestDate")
+    List<Long> findExceededRequestIds(@Param("dateTime") LocalDateTime dateTime);
+
+    /**
      * Finds evaluation requests ids with not deleted classifiers models.
      *
      * @param dateTime - date time threshold value

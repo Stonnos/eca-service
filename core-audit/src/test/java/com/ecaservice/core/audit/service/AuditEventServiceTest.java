@@ -1,9 +1,9 @@
 package com.ecaservice.core.audit.service;
 
 import com.ecaservice.audit.dto.AuditEventRequest;
-import com.ecaservice.audit.dto.EventType;
 import com.ecaservice.core.audit.AbstractJpaTest;
 import com.ecaservice.core.audit.entity.AuditEventTemplateEntity;
+import com.ecaservice.core.audit.event.AuditEvent;
 import com.ecaservice.core.audit.mapping.AuditMapperImpl;
 import com.ecaservice.core.audit.model.AuditContextParams;
 import com.ecaservice.core.audit.repository.AuditCodeRepository;
@@ -77,7 +77,9 @@ class AuditEventServiceTest extends AbstractJpaTest {
         var contextParams = new AuditContextParams();
         when(auditTemplateProcessorService.process(auditCode, auditEventTemplateEntity.getEventType(),
                 contextParams)).thenReturn(MESSAGE);
-        auditEventService.audit(auditCode, auditEventTemplateEntity.getEventType(), INITIATOR, contextParams);
+        var auditEvent =
+                new AuditEvent(this, auditCode, auditEventTemplateEntity.getEventType(), INITIATOR, contextParams);
+        auditEventService.audit(auditEvent);
         verify(auditEventSender, atLeastOnce()).sendEvent(auditEventRequestArgumentCaptor.capture());
         var auditEventRequest = auditEventRequestArgumentCaptor.getValue();
         assertThat(auditEventRequest).isNotNull();

@@ -1,12 +1,14 @@
 package com.ecaservice.event.listener;
 
 import com.ecaservice.TestHelperUtils;
+import com.ecaservice.config.AppProperties;
 import com.ecaservice.event.model.ExperimentEmailEvent;
 import com.ecaservice.event.model.ExperimentWebPushEvent;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.service.experiment.visitor.ExperimentEmailVisitor;
 import com.ecaservice.service.push.WebPushService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,6 +20,7 @@ import java.util.UUID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for checking {@link ExperimentNotificationEventListener} functionality.
@@ -28,12 +31,22 @@ import static org.mockito.Mockito.verify;
 class ExperimentNotificationEventListenerTest {
 
     @Mock
+    private AppProperties appProperties;
+    @Mock
     private ExperimentEmailVisitor experimentEmailVisitor;
     @Mock
     private WebPushService webPushService;
 
     @InjectMocks
     private ExperimentNotificationEventListener experimentNotificationEventListener;
+
+    @BeforeEach
+    void init() {
+        AppProperties.NotificationProperties notificationProperties = new AppProperties.NotificationProperties();
+        notificationProperties.setEmailsEnabled(true);
+        notificationProperties.setWebPushesEnabled(true);
+        when(appProperties.getNotifications()).thenReturn(notificationProperties);
+    }
 
     @Test
     void testHandleEmailEventForNewRequest() {

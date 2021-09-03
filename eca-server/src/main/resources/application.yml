@@ -54,10 +54,13 @@ eureka:
 ribbon:
   ReadTimeout: 60000
 
-## Application common configs
-common:
+## Application properties
+app:
   maxPageSize: 50
   threadPoolSize: 10
+  notifications:
+    webPushesEnabled: true
+    emailsEnabled: true
 
 ## Queues properties
 queue:
@@ -132,9 +135,6 @@ experiment:
 ers:
   useClassifierOptionsCache: false
   classifierOptionsCacheDurationInDays: 2
-
-notification:
-  webPushesEnabled: true
 
 cache:
   specs:

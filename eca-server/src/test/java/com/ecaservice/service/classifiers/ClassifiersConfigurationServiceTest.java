@@ -2,7 +2,7 @@ package com.ecaservice.service.classifiers;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.config.CommonConfig;
+import com.ecaservice.config.AppProperties;
 import com.ecaservice.mapping.ClassifierOptionsDatabaseModelMapperImpl;
 import com.ecaservice.mapping.ClassifiersConfigurationMapperImpl;
 import com.ecaservice.mapping.DateTimeConverter;
@@ -42,7 +42,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ClassifiersConfigurationService.class, ClassifiersConfigurationMapperImpl.class, CommonConfig.class,
+@Import({ClassifiersConfigurationService.class, ClassifiersConfigurationMapperImpl.class, AppProperties.class,
         DateTimeConverter.class, ClassifierOptionsDatabaseModelMapperImpl.class})
 class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 

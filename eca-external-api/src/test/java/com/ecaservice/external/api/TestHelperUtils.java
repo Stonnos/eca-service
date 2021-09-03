@@ -3,6 +3,8 @@ package com.ecaservice.external.api;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
+import com.ecaservice.external.api.dto.EvaluationResponseDto;
+import com.ecaservice.external.api.dto.EvaluationStatus;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.InstancesEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
@@ -125,7 +127,7 @@ public class TestHelperUtils {
      */
     public static EvaluationRequestEntity createEvaluationRequestEntity(String correlationId) {
         EvaluationRequestEntity evaluationRequestEntity = new EvaluationRequestEntity();
-        evaluationRequestEntity.setRequestStage(RequestStageType.NOT_SEND);
+        evaluationRequestEntity.setRequestStage(RequestStageType.READY);
         evaluationRequestEntity.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         evaluationRequestEntity.setCreationDate(LocalDateTime.now());
         evaluationRequestEntity.setCorrelationId(correlationId);
@@ -137,13 +139,16 @@ public class TestHelperUtils {
      *
      * @param requestStageType - request stage type
      * @param endDate          - end date
+     * @param requestDate      - request date
      * @return evaluation request entity
      */
     public static EvaluationRequestEntity createEvaluationRequestEntity(RequestStageType requestStageType,
-                                                                        LocalDateTime endDate) {
+                                                                        LocalDateTime endDate,
+                                                                        LocalDateTime requestDate) {
         EvaluationRequestEntity evaluationRequestEntity = createEvaluationRequestEntity(UUID.randomUUID().toString());
         evaluationRequestEntity.setRequestStage(requestStageType);
         evaluationRequestEntity.setEndDate(endDate);
+        evaluationRequestEntity.setRequestDate(requestDate);
         return evaluationRequestEntity;
     }
 
@@ -184,5 +189,20 @@ public class TestHelperUtils {
         evaluationResponse.setRequestId(UUID.randomUUID().toString());
         evaluationResponse.setStatus(TechnicalStatus.ERROR);
         return evaluationResponse;
+    }
+
+    /**
+     * Creates evaluation response dto.
+     *
+     * @param requestId        - request id
+     * @param evaluationStatus - evaluation status
+     * @return evaluation response dto
+     */
+    public static EvaluationResponseDto createEvaluationResponseDto(String requestId,
+                                                                    EvaluationStatus evaluationStatus) {
+        return EvaluationResponseDto.builder()
+                .requestId(requestId)
+                .evaluationStatus(evaluationStatus)
+                .build();
     }
 }

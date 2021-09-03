@@ -5,7 +5,7 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.config.CommonConfig;
+import com.ecaservice.config.AppProperties;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.core.filter.service.FilterService;
@@ -60,7 +60,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentMapperImpl.class, ExperimentConfig.class, CommonConfig.class, CrossValidationConfig.class,
+@Import({ExperimentMapperImpl.class, ExperimentConfig.class, AppProperties.class, CrossValidationConfig.class,
         DateTimeConverter.class})
 class ExperimentServiceTest extends AbstractJpaTest {
 
@@ -81,7 +81,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @Inject
     private EntityManager entityManager;
     @Inject
-    private CommonConfig commonConfig;
+    private AppProperties appProperties;
     @Mock
     private FilterService filterService;
     @Mock
@@ -97,7 +97,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         CalculationExecutorService executorService =
                 new CalculationExecutorServiceImpl(Executors.newCachedThreadPool());
         experimentService = new ExperimentService(experimentRepository, executorService, experimentMapper, dataService,
-                crossValidationConfig, experimentConfig, experimentProcessorService, entityManager, commonConfig,
+                crossValidationConfig, experimentConfig, experimentProcessorService, entityManager, appProperties,
                 filterService);
     }
 
@@ -178,44 +178,25 @@ class ExperimentServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testSuccessRemoveExperiment() {
+    void testSuccessRemoveExperimentModel() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         experimentRepository.save(experiment);
-        when(dataService.delete(any(File.class))).thenReturn(true);
-        experimentService.removeExperimentData(experiment);
+        experimentService.removeExperimentModel(experiment);
         experiment = experimentRepository.findById(experiment.getId()).orElse(null);
         assertThat(experiment).isNotNull();
         assertThat(experiment.getExperimentAbsolutePath()).isNull();
-        assertThat(experiment.getTrainingDataAbsolutePath()).isNull();
         assertThat(experiment.getDeletedDate()).isNotNull();
     }
 
-    /**
-     * Case 1: Experiment training data isn't removed. Expected -> experiment results isn't removed
-     * and deleted date is null
-     * Case 2: experiment results file isn't removed. Expected -> Deleted date is null
-     */
     @Test
-    void testRemoveExperimentFailed() {
-        //Case 1
-        Experiment createdExperiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
-        experimentRepository.save(createdExperiment);
-        when(dataService.delete(any(File.class))).thenReturn(false).thenReturn(true);
-        experimentService.removeExperimentData(createdExperiment);
-        Experiment expectedExperiment = experimentRepository.findById(createdExperiment.getId()).orElse(null);
-        assertThat(expectedExperiment).isNotNull();
-        assertThat(expectedExperiment.getExperimentAbsolutePath()).isNotNull();
-        assertThat(expectedExperiment.getTrainingDataAbsolutePath()).isNotNull();
-        assertThat(expectedExperiment.getDeletedDate()).isNull();
-        //Case 2
-        createdExperiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
-        when(dataService.delete(any(File.class))).thenReturn(true).thenReturn(false);
-        experimentService.removeExperimentData(createdExperiment);
-        expectedExperiment = experimentRepository.findById(createdExperiment.getId()).orElse(null);
-        assertThat(expectedExperiment).isNotNull();
-        assertThat(expectedExperiment.getExperimentAbsolutePath()).isNotNull();
-        assertThat(expectedExperiment.getTrainingDataAbsolutePath()).isNull();
-        assertThat(expectedExperiment.getDeletedDate()).isNull();
+    void testSuccessRemoveExperimentTrainingData() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
+        experimentRepository.save(experiment);
+        experimentService.removeExperimentTrainingData(experiment);
+        experiment = experimentRepository.findById(experiment.getId()).orElse(null);
+        assertThat(experiment).isNotNull();
+        assertThat(experiment.getTrainingDataAbsolutePath()).isNull();
+        assertThat(experiment.getDeletedDate()).isNull();
     }
 
     @Test
@@ -440,8 +421,9 @@ class ExperimentServiceTest extends AbstractJpaTest {
         Map<ExperimentType, Long> experimentTypesMap =
                 experimentService.getExperimentTypesStatistics(LocalDate.of(2018, 1, 1), LocalDate.of(2018, 1, 3));
         Assertions.assertThat(experimentTypesMap).isNotNull();
-        Assertions.assertThat(experimentTypesMap).hasSameSizeAs(ExperimentType.values());
-        Assertions.assertThat(experimentTypesMap).containsEntry(ExperimentType.ADA_BOOST, 2L);
+        Assertions.assertThat(experimentTypesMap)
+                .hasSameSizeAs(ExperimentType.values())
+                .containsEntry(ExperimentType.ADA_BOOST, 2L);
         Assertions.assertThat(experimentTypesMap.get(ExperimentType.KNN)).isOne();
         Assertions.assertThat(experimentTypesMap.get(ExperimentType.DECISION_TREE)).isZero();
     }

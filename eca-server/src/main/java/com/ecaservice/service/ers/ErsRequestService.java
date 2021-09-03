@@ -10,6 +10,7 @@ import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.mapping.ClassifierReportMapper;
 import com.ecaservice.mapping.ErsResponseStatusMapper;
+import com.ecaservice.model.ClassifierOptionsResult;
 import com.ecaservice.model.entity.ClassifierOptionsRequestModel;
 import com.ecaservice.model.entity.ErsRequest;
 import com.ecaservice.model.entity.ErsResponseStatus;
@@ -39,6 +40,10 @@ import static com.ecaservice.util.Utils.isValid;
 @Service
 @RequiredArgsConstructor
 public class ErsRequestService {
+
+    private static final String RESULTS_NOT_FOUND_MESSAGE = "Can't find classifiers options for data '%s'";
+    private static final String SERVICE_UNAVAILABLE_ERROR_MESSAGE = "Service unavailable";
+    private static final String UNKNOWN_ERROR_MESSAGE = "Unknown error";
 
     private final ErsRequestSender ersRequestSender;
     private final ErsRequestRepository ersRequestRepository;
@@ -94,12 +99,12 @@ public class ErsRequestService {
      *
      * @param classifierOptionsRequest - classifier options request
      * @param requestModel             - classifier options request entity
-     * @return optimal classifier options json string
+     * @return optimal classifier options
      */
-    public String getOptimalClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest,
-                                              ClassifierOptionsRequestModel requestModel) {
+    public ClassifierOptionsResult getOptimalClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest,
+                                                               ClassifierOptionsRequestModel requestModel) {
         requestModel.setRequestDate(LocalDateTime.now());
-        String classifierOptions = null;
+        ClassifierOptionsResult classifierOptionsResult = new ClassifierOptionsResult();
         try {
             log.info("Sending request to find classifier optimal options for data '{}'.",
                     classifierOptionsRequest.getRelationName());
@@ -107,32 +112,53 @@ public class ErsRequestService {
                     ersRequestSender.getClassifierOptions(classifierOptionsRequest);
             log.info("Received response with requestId = {}, status = {} for data '{}'", response.getRequestId(),
                     response.getStatus(), classifierOptionsRequest.getRelationName());
-            requestModel.setRequestId(response.getRequestId());
-            requestModel.setResponseStatus(ersResponseStatusMapper.map(response.getStatus()));
-            if (ResponseStatus.SUCCESS.equals(response.getStatus())) {
-                ClassifierReport classifierReport = getFirstClassifierReport(response);
-                if (!isValid(classifierReport)) {
-                    handleErrorRequest(requestModel, ErsResponseStatus.ERROR, "Got empty classifier options string!");
-                } else {
-                    //Checks classifier options deserialization
-                    parseOptions(classifierReport.getOptions());
-                    classifierOptions = classifierReport.getOptions();
-                    log.info("Optimal classifier options [{}] has been found for data '{}'.", classifierOptions,
-                            classifierOptionsRequest.getRelationName());
-                    requestModel.setClassifierOptionsResponseModels(
-                            Collections.singletonList(classifierReportMapper.map(classifierReport)));
-                }
-            }
+            handleClassifierOptionsResponse(classifierOptionsRequest, response, requestModel, classifierOptionsResult);
         } catch (FeignException.ServiceUnavailable ex) {
             log.error("There was an error while sending classifier options request: {}.", ex.getMessage());
             handleErrorRequest(requestModel, ErsResponseStatus.SERVICE_UNAVAILABLE, ex.getMessage());
+            setClassifierOptionsResultError(classifierOptionsResult, SERVICE_UNAVAILABLE_ERROR_MESSAGE);
         } catch (Exception ex) {
             log.error("There was an error while sending classifier options request: {}.", ex.getMessage());
             handleErrorRequest(requestModel, ErsResponseStatus.ERROR, ex.getMessage());
+            setClassifierOptionsResultError(classifierOptionsResult, UNKNOWN_ERROR_MESSAGE);
         } finally {
             classifierOptionsRequestModelRepository.save(requestModel);
         }
-        return classifierOptions;
+        log.info("Got optimal classifier options result [{}] for data [{}]", classifierOptionsResult,
+                classifierOptionsRequest.getRelationName());
+        return classifierOptionsResult;
+    }
+
+    private void handleClassifierOptionsResponse(ClassifierOptionsRequest classifierOptionsRequest,
+                                                 ClassifierOptionsResponse response,
+                                                 ClassifierOptionsRequestModel requestModel,
+                                                 ClassifierOptionsResult classifierOptionsResult) {
+        requestModel.setRequestId(response.getRequestId());
+        requestModel.setResponseStatus(ersResponseStatusMapper.map(response.getStatus()));
+        if (!ResponseStatus.SUCCESS.equals(response.getStatus())) {
+            setClassifierOptionsResultError(classifierOptionsResult, RESULTS_NOT_FOUND_MESSAGE);
+        } else {
+            ClassifierReport classifierReport = getFirstClassifierReport(response);
+            if (!isValid(classifierReport)) {
+                handleErrorRequest(requestModel, ErsResponseStatus.ERROR, "Got empty classifier options string!");
+                setClassifierOptionsResultError(classifierOptionsResult, RESULTS_NOT_FOUND_MESSAGE);
+            } else {
+                //Checks classifier options deserialization
+                parseOptions(classifierReport.getOptions());
+                classifierOptionsResult.setOptionsJson(classifierReport.getOptions());
+                classifierOptionsResult.setFound(true);
+                log.info("Optimal classifier options [{}] has been found for data '{}'.",
+                        classifierReport.getOptions(), classifierOptionsRequest.getRelationName());
+                requestModel.setClassifierOptionsResponseModels(
+                        Collections.singletonList(classifierReportMapper.map(classifierReport)));
+            }
+        }
+    }
+
+    private void setClassifierOptionsResultError(ClassifierOptionsResult classifierOptionsResultError,
+                                                 String errorMessage) {
+        classifierOptionsResultError.setFound(false);
+        classifierOptionsResultError.setErrorMessage(errorMessage);
     }
 
     private void handleErrorRequest(ErsRequest ersRequest, ErsResponseStatus responseStatus, String errorMessage) {

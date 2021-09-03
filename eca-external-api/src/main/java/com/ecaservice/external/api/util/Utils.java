@@ -1,7 +1,7 @@
 package com.ecaservice.external.api.util;
 
 import com.ecaservice.classifier.options.model.ClassifierOptions;
-import com.ecaservice.external.api.dto.RequestStatus;
+import com.ecaservice.external.api.dto.ResponseCode;
 import com.ecaservice.external.api.dto.ResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -67,26 +67,26 @@ public class Utils {
     /**
      * Builds response with specified fields.
      *
-     * @param requestStatus - request status
-     * @param <T>           - payload generic type
+     * @param responseCode - response code
+     * @param <T>          - payload generic type
      * @return response object
      */
-    public static <T> ResponseDto<T> buildResponse(RequestStatus requestStatus) {
-        return buildResponse(requestStatus, null);
+    public static <T> ResponseDto<T> buildResponse(ResponseCode responseCode) {
+        return buildResponse(responseCode, null);
     }
 
     /**
      * Builds response with specified fields.
      *
-     * @param requestStatus - request status
-     * @param payload       - payload object
-     * @param <T>           - payload generic type
+     * @param responseCode - response code
+     * @param payload      - payload object
+     * @param <T>          - payload generic type
      * @return response object
      */
-    public static <T> ResponseDto<T> buildResponse(RequestStatus requestStatus, T payload) {
+    public static <T> ResponseDto<T> buildResponse(ResponseCode responseCode, T payload) {
         return ResponseDto.<T>builder()
-                .requestStatus(requestStatus)
-                .errorDescription(requestStatus.getDescription())
+                .responseCode(responseCode)
+                .errorDescription(responseCode.getDescription())
                 .payload(payload)
                 .build();
     }
