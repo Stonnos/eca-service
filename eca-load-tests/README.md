@@ -13,7 +13,7 @@
 * Openjdk 1.11
 * maven => 3.3.9
 * Rabbit MQ => 3
-* eca-core 6.8.7
+* eca-core 6.8.8
 * Postgres Database для хранения информации => 9.6
 
 Описание ключевой конфигурации модуля
