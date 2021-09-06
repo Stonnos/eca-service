@@ -20,7 +20,7 @@ import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.PageRequestService;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import eca.converters.model.ExperimentHistory;
+import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -122,7 +122,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
      * @param experiment - experiment to process
      * @return experiment history
      */
-    public ExperimentHistory processExperiment(final Experiment experiment) {
+    public AbstractExperiment<?> processExperiment(final Experiment experiment) {
         log.info("Starting to built experiment [{}].", experiment.getRequestId());
         try {
             if (StringUtils.isEmpty(experiment.getTrainingDataAbsolutePath())) {
@@ -140,16 +140,16 @@ public class ExperimentService implements PageRequestService<Experiment> {
             final InitializationParams initializationParams =
                     new InitializationParams(data, experiment.getEvaluationMethod());
             stopWatch.start(String.format("Experiment [%s] processing", experiment.getRequestId()));
-            Callable<ExperimentHistory> callable = () ->
+            Callable<AbstractExperiment<?>> callable = () ->
                     experimentProcessorService.processExperimentHistory(experiment, initializationParams);
-            ExperimentHistory experimentHistory =
+            AbstractExperiment<?> abstractExperiment =
                     executorService.execute(callable, experimentConfig.getTimeout(), TimeUnit.HOURS);
             stopWatch.stop();
 
             stopWatch.start(String.format("Experiment [%s] saving", experiment.getRequestId()));
             File experimentFile = new File(experimentConfig.getStoragePath(),
                     String.format(experimentConfig.getFileFormat(), experiment.getRequestId()));
-            dataService.saveExperimentHistory(experimentFile, experimentHistory);
+            dataService.saveExperimentHistory(experimentFile, abstractExperiment);
             stopWatch.stop();
 
             experiment.setExperimentAbsolutePath(experimentFile.getAbsolutePath());
@@ -157,7 +157,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
             experiment.setRequestStatus(RequestStatus.FINISHED);
             log.info("Experiment [{}] has been successfully built!", experiment.getRequestId());
             log.info(stopWatch.prettyPrint());
-            return experimentHistory;
+            return abstractExperiment;
         } catch (TimeoutException ex) {
             log.warn("There was a timeout while experiment [{}] built.", experiment.getRequestId());
             experiment.setRequestStatus(RequestStatus.TIMEOUT);
@@ -178,7 +178,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
      * @param experiment - experiment entity
      * @return experiment history
      */
-    public ExperimentHistory getExperimentHistory(Experiment experiment) {
+    public AbstractExperiment<?> getExperimentHistory(Experiment experiment) {
         File experimentFile = getExperimentFile(experiment, Experiment::getExperimentAbsolutePath);
         if (!existsFile(experimentFile)) {
             throw new ResultsNotFoundException(

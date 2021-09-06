@@ -12,7 +12,7 @@ import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.ers.ErsService;
-import eca.converters.model.ExperimentHistory;
+import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -61,7 +61,7 @@ public class ExperimentRequestProcessor {
         log.info("Starting to process new experiment [{}]", experiment.getRequestId());
         experimentProgressService.start(experiment);
         setInProgressStatus(experiment);
-        ExperimentHistory experimentHistory = experimentService.processExperiment(experiment);
+        AbstractExperiment<?> experimentHistory = experimentService.processExperiment(experiment);
         eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
         eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
         if (RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
@@ -103,10 +103,10 @@ public class ExperimentRequestProcessor {
             putMdc(TX_ID, experiment.getRequestId());
             putMdc(EV_REQUEST_ID, experiment.getRequestId());
             try {
-                ExperimentHistory experimentHistory = experimentService.getExperimentHistory(experiment);
+                AbstractExperiment<?> abstractExperiment = experimentService.getExperimentHistory(experiment);
                 experimentResultsEntityList.forEach(
                         experimentResultsEntity -> ersService.sentExperimentResults(experimentResultsEntity,
-                                experimentHistory, ExperimentResultsRequestSource.SYSTEM));
+                                abstractExperiment, ExperimentResultsRequestSource.SYSTEM));
             } catch (Exception ex) {
                 log.error("There was an error while sending experiment [{}] history: {}", experiment.getRequestId(),
                         ex.getMessage());

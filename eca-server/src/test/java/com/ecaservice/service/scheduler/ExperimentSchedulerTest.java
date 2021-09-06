@@ -19,7 +19,7 @@ import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.experiment.ExperimentProgressService;
 import com.ecaservice.service.experiment.ExperimentRequestProcessor;
 import com.ecaservice.service.experiment.ExperimentService;
-import eca.converters.model.ExperimentHistory;
+import eca.dataminer.AbstractExperiment;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import static com.ecaservice.TestHelperUtils.createExperimentHistory;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -174,9 +175,10 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         finishedExperiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experimentRepository.save(finishedExperiment);
         experimentResultsEntityRepository.save(TestHelperUtils.createExperimentResultsEntity(finishedExperiment));
-        when(experimentService.getExperimentHistory(any(Experiment.class))).thenReturn(new ExperimentHistory());
+        AbstractExperiment automatedKNearestNeighbours = createExperimentHistory();
+        when(experimentService.getExperimentHistory(any(Experiment.class))).thenReturn(automatedKNearestNeighbours);
         experimentScheduler.processRequestsToErs();
         verify(ersService, times(3)).sentExperimentResults(any(ExperimentResultsEntity.class),
-                any(ExperimentHistory.class), any(ExperimentResultsRequestSource.class));
+                any(AbstractExperiment.class), any(ExperimentResultsRequestSource.class));
     }
 }

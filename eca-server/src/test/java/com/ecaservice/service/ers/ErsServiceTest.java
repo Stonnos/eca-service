@@ -16,8 +16,8 @@ import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.AbstractJpaTest;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
-import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationResults;
+import eca.dataminer.AbstractExperiment;
 import feign.FeignException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -67,7 +67,7 @@ class ErsServiceTest extends AbstractJpaTest {
 
     @Test
     void testSentExperimentResults() {
-        ExperimentHistory experimentHistory = TestHelperUtils.createExperimentHistory();
+        AbstractExperiment experimentHistory = TestHelperUtils.createExperimentHistory();
         doNothing().when(ersRequestService).saveEvaluationResults(any(EvaluationResults.class), any(ErsRequest.class));
         ExperimentResultsEntity experimentResultsEntity = createExperimentResults();
         ersService.sentExperimentResults(experimentResultsEntity, experimentHistory,

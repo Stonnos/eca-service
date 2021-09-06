@@ -1,7 +1,7 @@
 package com.ecaservice.event.model;
 
 import com.ecaservice.model.entity.Experiment;
-import eca.converters.model.ExperimentHistory;
+import eca.dataminer.AbstractExperiment;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
@@ -22,7 +22,7 @@ public class ExperimentFinishedEvent extends ApplicationEvent {
      * Experiment history
      */
     @Getter
-    private final ExperimentHistory experimentHistory;
+    private final AbstractExperiment<?> experimentHistory;
 
     /**
      * Create a new ExperimentFinishedEvent.
@@ -31,7 +31,7 @@ public class ExperimentFinishedEvent extends ApplicationEvent {
      * @param experiment        - experiment entity
      * @param experimentHistory - experiment history
      */
-    public ExperimentFinishedEvent(Object source, Experiment experiment, ExperimentHistory experimentHistory) {
+    public ExperimentFinishedEvent(Object source, Experiment experiment, AbstractExperiment<?> experimentHistory) {
         super(source);
         this.experiment = experiment;
         this.experimentHistory = experimentHistory;

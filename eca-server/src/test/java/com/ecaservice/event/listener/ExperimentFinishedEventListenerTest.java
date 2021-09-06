@@ -8,7 +8,7 @@ import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.service.ers.ErsService;
 import com.ecaservice.service.experiment.ExperimentResultsService;
-import eca.converters.model.ExperimentHistory;
+import eca.dataminer.AbstractExperiment;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -40,7 +40,7 @@ class ExperimentFinishedEventListenerTest {
     @Test
     void testExperimentFinishedEvent() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
-        ExperimentHistory experimentHistory = TestHelperUtils.createExperimentHistory();
+        AbstractExperiment experimentHistory = TestHelperUtils.createExperimentHistory();
         ExperimentFinishedEvent experimentFinishedEvent =
                 new ExperimentFinishedEvent(this, experiment, experimentHistory);
         ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);

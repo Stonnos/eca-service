@@ -21,7 +21,7 @@ import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.ExperimentErsReportDto;
 import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
-import eca.converters.model.ExperimentHistory;
+import eca.dataminer.AbstractExperiment;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -75,10 +75,10 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
     void testSaveExperimentResultsForErsSent() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         experimentRepository.save(experiment);
-        ExperimentHistory experimentHistory = TestHelperUtils.createExperimentHistory();
+        AbstractExperiment experimentHistory = TestHelperUtils.createExperimentHistory();
         experimentResultsService.saveExperimentResultsToErsSent(experiment, experimentHistory);
         List<ExperimentResultsEntity> experimentResultsEntityList = experimentResultsEntityRepository.findAll();
-        Assertions.assertThat(experimentResultsEntityList).hasSameSizeAs(experimentHistory.getExperiment());
+        Assertions.assertThat(experimentResultsEntityList).hasSameSizeAs(experimentHistory.getHistory());
     }
 
     @Test

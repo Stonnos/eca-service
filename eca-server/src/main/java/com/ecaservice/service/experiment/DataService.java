@@ -2,11 +2,11 @@ package com.ecaservice.service.experiment;
 
 
 import com.ecaservice.exception.experiment.ExperimentException;
-import eca.converters.ModelConverter;
-import eca.converters.model.ExperimentHistory;
+import eca.core.ModelSerializationHelper;
 import eca.data.file.FileDataLoader;
 import eca.data.file.FileDataSaver;
 import eca.data.file.resource.FileResource;
+import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -61,13 +61,13 @@ public class DataService {
     /**
      * Saves experiment history to file.
      *
-     * @param file              - file object
-     * @param experimentHistory - experiment history
+     * @param file       - file object
+     * @param experiment - experiment history
      * @throws Exception in case of I/O error
      */
-    public void saveExperimentHistory(File file, ExperimentHistory experimentHistory) throws Exception {
+    public void saveExperimentHistory(File file, AbstractExperiment<?> experiment) throws Exception {
         log.info("Starting to save experiment history to file {}", file.getAbsolutePath());
-        ModelConverter.saveModel(file, experimentHistory);
+        ModelSerializationHelper.serialize(file, experiment);
         log.info("Experiment history has been successfully saved to file {}", file.getAbsolutePath());
     }
 
@@ -78,9 +78,10 @@ public class DataService {
      * @return experiment history
      * @throws Exception in case of I/O error
      */
-    public ExperimentHistory loadExperimentHistory(File file) throws Exception {
+    public AbstractExperiment<?> loadExperimentHistory(File file) throws Exception {
         log.info("Starting to load experiment history from file {}", file.getAbsolutePath());
-        ExperimentHistory experimentHistory = ModelConverter.loadModel(file, ExperimentHistory.class);
+        AbstractExperiment<?> experimentHistory =
+                ModelSerializationHelper.deserialize(new FileResource(file), AbstractExperiment.class);
         log.info("Experiment history has been loaded from file {}", file.getAbsolutePath());
         return experimentHistory;
     }

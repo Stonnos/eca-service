@@ -15,8 +15,8 @@ import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.ExperimentErsReportDto;
 import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
-import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationResults;
+import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -51,9 +51,9 @@ public class ExperimentResultsService {
      * @return experiment results entities list
      */
     public List<ExperimentResultsEntity> saveExperimentResultsToErsSent(Experiment experiment,
-                                                                        ExperimentHistory experimentHistory) {
+                                                                        AbstractExperiment<?> experimentHistory) {
         log.info("Starting to save experiment [{}] results to ERS sent", experiment.getRequestId());
-        List<EvaluationResults> evaluationResultsList = experimentHistory.getExperiment();
+        List<EvaluationResults> evaluationResultsList = experimentHistory.getHistory();
         List<ExperimentResultsEntity> experimentResultsEntities =
                 IntStream.range(0, evaluationResultsList.size()).mapToObj(i -> {
                     EvaluationResults evaluationResults = evaluationResultsList.get(i);

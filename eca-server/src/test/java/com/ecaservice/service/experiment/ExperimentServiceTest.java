@@ -25,7 +25,7 @@ import com.ecaservice.service.evaluation.CalculationExecutorServiceImpl;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import eca.converters.model.ExperimentHistory;
+import eca.dataminer.AbstractExperiment;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -46,6 +46,7 @@ import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 
+import static com.ecaservice.TestHelperUtils.createExperimentHistory;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -138,9 +139,10 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @Test
     void testProcessExperimentWithSuccessStatus() throws Exception {
         when(dataService.load(any(File.class))).thenReturn(data);
+        AbstractExperiment experimentHistory = createExperimentHistory(data);
         when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
-                any(InitializationParams.class))).thenReturn(new ExperimentHistory());
-        doNothing().when(dataService).saveExperimentHistory(any(File.class), any(ExperimentHistory.class));
+                any(InitializationParams.class))).thenReturn(experimentHistory);
+        doNothing().when(dataService).saveExperimentHistory(any(File.class), any(AbstractExperiment.class));
         experimentService.processExperiment(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.hasOneElement(experiments);
@@ -165,10 +167,11 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @Test
     void testProcessExperimentWithTimeoutStatus() throws Exception {
         when(dataService.load(any(File.class))).thenReturn(data);
+        AbstractExperiment experimentHistory = createExperimentHistory(data);
         when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
-                any(InitializationParams.class))).thenReturn(new ExperimentHistory());
+                any(InitializationParams.class))).thenReturn(experimentHistory);
         doThrow(TimeoutException.class).when(dataService).saveExperimentHistory(any(File.class),
-                any(ExperimentHistory.class));
+                any(AbstractExperiment.class));
         experimentService.processExperiment(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.hasOneElement(experiments);
