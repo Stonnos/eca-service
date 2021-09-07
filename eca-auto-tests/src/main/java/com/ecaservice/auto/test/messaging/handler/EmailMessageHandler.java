@@ -52,35 +52,29 @@ public class EmailMessageHandler {
             @Override
             public void visitNewExperiment() {
                 experimentRequestEntity.setNewStatusEmailReceived(true);
-                experimentRequestRepository.save(experimentRequestEntity);
             }
 
             @Override
             public void visitInProgressExperiment() {
                 experimentRequestEntity.setInProgressStatusEmailReceived(true);
-                experimentRequestRepository.save(experimentRequestEntity);
             }
 
             @Override
             public void visitFinishedExperiment() {
                 experimentRequestEntity.setFinishedStatusEmailReceived(true);
-                experimentRequestEntity.setDownloadUrl(emailMessage.getDownloadUrl());
-                experimentRequestEntity.setStageType(ExperimentRequestStageType.REQUEST_FINISHED);
-                experimentRequestRepository.save(experimentRequestEntity);
             }
 
             @Override
             public void visitErrorExperiment() {
                 experimentRequestEntity.setErrorStatusEmailReceived(true);
-                experimentRequestService.finishWithError(experimentRequestEntity, EXPERIMENT_FINISHED_WITH_ERROR);
             }
 
             @Override
             public void visitTimeoutExperiment() {
                 experimentRequestEntity.setTimeoutStatusEmailReceived(true);
-                experimentRequestService.finishWithError(experimentRequestEntity, EXPERIMENT_FINISHED_WITH_TIMEOUT);
             }
         });
+        experimentRequestRepository.save(experimentRequestEntity);
         log.info("Email message [{}] has been processed for experiment [{}]", emailMessage.getEmailType(),
                 emailMessage.getRequestId());
     }

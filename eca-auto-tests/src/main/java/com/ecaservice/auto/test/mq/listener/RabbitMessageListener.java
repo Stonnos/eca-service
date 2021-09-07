@@ -4,7 +4,7 @@ import com.ecaservice.auto.test.entity.ExperimentRequestEntity;
 import com.ecaservice.auto.test.entity.ExperimentRequestStageType;
 import com.ecaservice.auto.test.repository.ExperimentRequestRepository;
 import com.ecaservice.auto.test.service.ExperimentRequestService;
-import com.ecaservice.base.model.EcaResponse;
+import com.ecaservice.base.model.ExperimentResponse;
 import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.TechnicalStatus;
 import lombok.RequiredArgsConstructor;
@@ -31,11 +31,11 @@ public class RabbitMessageListener {
     /**
      * Handles response messages from eca - server.
      *
-     * @param ecaResponse - eca response
-     * @param message     - original message
+     * @param experimentResponse - experiment response
+     * @param message            - original message
      */
     @RabbitListener(queues = "${queue.experimentReplyToQueue}")
-    public void handleMessage(EcaResponse ecaResponse, Message message) {
+    public void handleMessage(ExperimentResponse experimentResponse, Message message) {
         String correlationId = message.getMessageProperties().getCorrelationId();
         log.info("Received MQ message with correlation id [{}]", correlationId);
         var experimentRequestEntity = experimentRequestRepository.findByCorrelationId(correlationId);
@@ -47,21 +47,31 @@ public class RabbitMessageListener {
             log.warn("Can't handle message from MQ. Got exceeded request entity with correlation id [{}]",
                     correlationId);
         } else {
-            internalHandleResponse(experimentRequestEntity, ecaResponse, correlationId);
+            internalHandleResponse(experimentRequestEntity, experimentResponse, correlationId);
         }
     }
 
     private void internalHandleResponse(ExperimentRequestEntity experimentRequestEntity,
-                                        EcaResponse ecaResponse,
+                                        ExperimentResponse experimentResponse,
                                         String correlationId) {
-        experimentRequestEntity.setRequestId(ecaResponse.getRequestId());
-        if (TechnicalStatus.SUCCESS.equals(ecaResponse.getStatus())) {
+        experimentRequestEntity.setRequestId(experimentResponse.getRequestId());
+        if (TechnicalStatus.IN_PROGRESS.equals(experimentResponse.getStatus())) {
             experimentRequestEntity.setStageType(ExperimentRequestStageType.REQUEST_CREATED);
             experimentRequestRepository.save(experimentRequestEntity);
-            log.info("Experiment request [{}] has been created for correlation id [{}]", ecaResponse.getRequestId(),
+            log.info("Experiment request [{}] has been created for correlation id [{}]",
+                    experimentResponse.getRequestId(),
+                    correlationId);
+        } else if (TechnicalStatus.SUCCESS.equals(experimentResponse.getStatus())) {
+            experimentRequestEntity.setStageType(ExperimentRequestStageType.REQUEST_FINISHED);
+            experimentRequestEntity.setDownloadUrl(experimentResponse.getDownloadUrl());
+            experimentRequestRepository.save(experimentRequestEntity);
+            log.info("Experiment request [{}] has been finished for correlation id [{}]",
+                    experimentResponse.getRequestId(),
                     correlationId);
         } else {
-            String errorMessage = Optional.ofNullable(ecaResponse.getErrors())
+            log.info("Got error response [{}] for experiment [{}], correlation id [{}]", experimentResponse.getStatus(),
+                    experimentResponse.getRequestId(), correlationId);
+            String errorMessage = Optional.ofNullable(experimentResponse.getErrors())
                     .map(messageErrors -> messageErrors.iterator().next())
                     .map(MessageError::getMessage)
                     .orElse(null);

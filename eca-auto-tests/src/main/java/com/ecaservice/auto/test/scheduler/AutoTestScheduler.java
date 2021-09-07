@@ -9,7 +9,7 @@ import com.ecaservice.auto.test.service.api.EcaServerClient;
 import com.ecaservice.auto.test.service.executor.AutoTestExecutor;
 import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.model.TestResult;
-import eca.converters.model.ExperimentHistory;
+import eca.dataminer.AbstractExperiment;
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -81,7 +81,7 @@ public class AutoTestScheduler {
                                 SLASH_SEPARATOR);
                         Resource modelResource = ecaServerClient.downloadModel(token);
                         @Cleanup InputStream inputStream = modelResource.getInputStream();
-                        ExperimentHistory experimentHistory = SerializationUtils.deserialize(inputStream);
+                        AbstractExperiment<?> experimentHistory = SerializationUtils.deserialize(inputStream);
                         log.info("Experiment [{}] history has been downloaded", experimentRequestEntity.getRequestId());
                         experimentRequestService.processExperimentHistory(experimentRequestEntity, experimentHistory);
                     } catch (Exception ex) {

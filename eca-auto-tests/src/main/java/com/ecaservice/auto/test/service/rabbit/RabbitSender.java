@@ -27,10 +27,12 @@ public class RabbitSender {
      * @param correlationId - message correlation id
      */
     public void sendExperimentRequest(ExperimentRequest experimentRequest, String correlationId) {
+        log.debug("Starting to sent request with correlation id [{}] to queue", correlationId);
         rabbitTemplate.convertAndSend(queueConfig.getExperimentRequestQueue(), experimentRequest, message -> {
             message.getMessageProperties().setCorrelationId(correlationId);
             message.getMessageProperties().setReplyTo(queueConfig.getExperimentReplyToQueue());
             return message;
         });
+        log.debug("Request with correlation id [{}] has been sent to queue", correlationId);
     }
 }

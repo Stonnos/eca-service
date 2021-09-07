@@ -9,7 +9,7 @@ import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.model.MatchResult;
 import com.ecaservice.test.common.model.TestResult;
 import com.ecaservice.test.common.service.TestResultsMatcher;
-import eca.converters.model.ExperimentHistory;
+import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -65,7 +65,7 @@ public class ExperimentRequestService {
      * @param experimentHistory       - experiment history results
      */
     public void processExperimentHistory(ExperimentRequestEntity experimentRequestEntity,
-                                         ExperimentHistory experimentHistory) {
+                                         AbstractExperiment<?> experimentHistory) {
         log.info("Starting to compare and match experiment [{}] results", experimentRequestEntity.getRequestId());
         TestResultsMatcher matcher = new TestResultsMatcher();
         compareAndMatchResults(experimentRequestEntity, experimentHistory, matcher);
@@ -87,11 +87,11 @@ public class ExperimentRequestService {
     }
 
     private void compareAndMatchResults(ExperimentRequestEntity experimentRequestEntity,
-                                        ExperimentHistory experimentHistory,
+                                        AbstractExperiment<?> experimentHistory,
                                         TestResultsMatcher matcher) {
         int expectedResultsSize = autoTestsProperties.getExpectedResultsSize();
         experimentRequestEntity.setExpectedResultsSize(expectedResultsSize);
-        int actualResultsSize = Optional.ofNullable(experimentHistory.getExperiment())
+        int actualResultsSize = Optional.ofNullable(experimentHistory.getHistory())
                 .map(List::size)
                 .orElse(0);
         experimentRequestEntity.setActualResultsSize(actualResultsSize);
