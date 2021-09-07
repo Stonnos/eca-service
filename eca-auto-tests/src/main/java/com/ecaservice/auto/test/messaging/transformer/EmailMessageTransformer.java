@@ -6,6 +6,7 @@ import com.ecaservice.auto.test.model.EmailType;
 import com.ecaservice.auto.test.model.EmailTypeVisitor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.integration.annotation.Transformer;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import static com.ecaservice.auto.test.config.mail.Channels.MAIL_TRANSFORM_CHANN
  */
 @Slf4j
 @Service
+@ConditionalOnProperty(value = "mail.enabled", havingValue = "true")
 public class EmailMessageTransformer {
 
     private static final String REQUEST_ID_REGEX =

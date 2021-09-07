@@ -2,7 +2,7 @@ package com.ecaservice.auto.test.config.mail;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.channel.DirectChannel;
@@ -28,8 +28,8 @@ import static com.ecaservice.auto.test.config.mail.Channels.MAIL_TRANSFORM_CHANN
  */
 @Slf4j
 @Configuration
+@ConditionalOnProperty(value = "mail.enabled", havingValue = "true")
 @EnableIntegration
-@EnableConfigurationProperties(MailProperties.class)
 @RequiredArgsConstructor
 public class MailIntegrationConfiguration {
 

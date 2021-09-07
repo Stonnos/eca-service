@@ -27,4 +27,9 @@ public class MailProperties {
      */
     @NotBlank
     private String password;
+
+    /**
+     * Mail receiving enabled?
+     */
+    private Boolean enabled;
 }

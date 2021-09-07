@@ -39,6 +39,7 @@ springdoc:
 mail:
   userName: rbatsw@gmail.com
   password: czawqizcrdxfqlrv
+  enabled: false
 
 queue:
   experimentReplyToQueue: experiment-response-queue

@@ -1,5 +1,6 @@
 package com.ecaservice.auto.test.config;
 
+import com.ecaservice.auto.test.config.mail.MailProperties;
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.config.swagger.annotation.EnableOpenApi;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 @EnableCaching
 @EnableScheduling
 @EnableGlobalExceptionHandler
-@EnableConfigurationProperties(AutoTestsProperties.class)
+@EnableConfigurationProperties({AutoTestsProperties.class, MailProperties.class})
 @RequiredArgsConstructor
 public class EcaAutoTestsConfiguration implements SchedulingConfigurer {
 

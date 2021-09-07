@@ -8,6 +8,7 @@ import com.ecaservice.auto.test.repository.ExperimentRequestRepository;
 import com.ecaservice.auto.test.service.ExperimentRequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ import static com.ecaservice.auto.test.config.mail.Channels.MAIL_HANDLE_CHANNEL;
  */
 @Slf4j
 @Service
+@ConditionalOnProperty(value = "mail.enabled", havingValue = "true")
 @RequiredArgsConstructor
 public class EmailMessageHandler {
 
