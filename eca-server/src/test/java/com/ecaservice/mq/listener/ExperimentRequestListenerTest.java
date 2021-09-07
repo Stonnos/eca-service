@@ -3,9 +3,10 @@ package com.ecaservice.mq.listener;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.ExperimentRequest;
+import com.ecaservice.base.model.ExperimentResponse;
 import com.ecaservice.event.model.ExperimentEmailEvent;
 import com.ecaservice.event.model.ExperimentWebPushEvent;
-import com.ecaservice.mapping.EcaResponseMapper;
+import com.ecaservice.mapping.ExperimentResponseMapper;
 import com.ecaservice.model.MsgProperties;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.service.experiment.ExperimentService;
@@ -44,7 +45,7 @@ class ExperimentRequestListenerTest {
     @Mock
     private ExperimentService experimentService;
     @Mock
-    private EcaResponseMapper ecaResponseMapper;
+    private ExperimentResponseMapper experimentResponseMapper;
     @Mock
     private ApplicationEventPublisher eventPublisher;
 
@@ -60,7 +61,7 @@ class ExperimentRequestListenerTest {
         Message message = Mockito.mock(Message.class);
         when(experimentService.createExperiment(any(ExperimentRequest.class), any(MsgProperties.class)))
                 .thenReturn(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
-        when(ecaResponseMapper.map(any(Experiment.class))).thenReturn(new EcaResponse());
+        when(experimentResponseMapper.map(any(Experiment.class))).thenReturn(new ExperimentResponse());
         MessageProperties messageProperties = TestHelperUtils.buildMessageProperties();
         when(message.getMessageProperties()).thenReturn(messageProperties);
         experimentRequestListener.handleMessage(evaluationRequest, message);

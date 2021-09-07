@@ -4,7 +4,7 @@ import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.event.model.ExperimentEmailEvent;
 import com.ecaservice.event.model.ExperimentWebPushEvent;
-import com.ecaservice.mapping.EcaResponseMapper;
+import com.ecaservice.mapping.ExperimentResponseMapper;
 import com.ecaservice.model.MsgProperties;
 import com.ecaservice.model.entity.Channel;
 import com.ecaservice.model.entity.Experiment;
@@ -33,7 +33,7 @@ public class ExperimentRequestListener {
 
     private final RabbitTemplate rabbitTemplate;
     private final ExperimentService experimentService;
-    private final EcaResponseMapper ecaResponseMapper;
+    private final ExperimentResponseMapper experimentResponseMapper;
     private final ApplicationEventPublisher eventPublisher;
 
     /**
@@ -61,6 +61,6 @@ public class ExperimentRequestListener {
         eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
         eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
         log.info("Experiment request [{}] has been created.", experiment.getRequestId());
-        return ecaResponseMapper.map(experiment);
+        return experimentResponseMapper.map(experiment);
     }
 }
