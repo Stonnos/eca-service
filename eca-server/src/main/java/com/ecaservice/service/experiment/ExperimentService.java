@@ -11,6 +11,8 @@ import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.exception.experiment.ResultsNotFoundException;
 import com.ecaservice.filter.ExperimentFilter;
 import com.ecaservice.mapping.ExperimentMapper;
+import com.ecaservice.model.MsgProperties;
+import com.ecaservice.model.entity.Channel;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.model.entity.RequestStatus;
@@ -29,6 +31,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.util.StopWatch;
 import weka.core.Instances;
 
@@ -91,17 +94,21 @@ public class ExperimentService implements PageRequestService<Experiment> {
      * Creates experiment request.
      *
      * @param experimentRequest - experiment request {@link ExperimentRequest}
+     * @param msgProperties     - message properties
      * @return created experiment entity
      */
-    public Experiment createExperiment(ExperimentRequest experimentRequest) {
+    public Experiment createExperiment(ExperimentRequest experimentRequest, MsgProperties msgProperties) {
         String requestId = UUID.randomUUID().toString();
         putMdc(TX_ID, requestId);
         putMdc(EV_REQUEST_ID, requestId);
         log.info("Received experiment [{}] request for data '{}', evaluation method [{}], email '{}'",
                 experimentRequest.getExperimentType(), experimentRequest.getData().relationName(),
                 experimentRequest.getEvaluationMethod(), experimentRequest.getEmail());
+        Assert.notNull(msgProperties, "Expected not null message properties");
+        Assert.notNull(msgProperties.getChannel(), "Expected not null channel");
         try {
             Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
+            setMessageProperties(experiment, msgProperties);
             experiment.setRequestStatus(RequestStatus.NEW);
             experiment.setRequestId(requestId);
             File dataFile = new File(experimentConfig.getData().getStoragePath(),
@@ -281,5 +288,13 @@ public class ExperimentService implements PageRequestService<Experiment> {
                 requestStatus -> !experimentTypesMap.containsKey(requestStatus)).forEach(
                 requestStatus -> experimentTypesMap.put(requestStatus, 0L));
         return experimentTypesMap;
+    }
+
+    private void setMessageProperties(Experiment experiment, MsgProperties msgProperties) {
+        experiment.setChannel(msgProperties.getChannel());
+        if (Channel.QUEUE.equals(experiment.getChannel())) {
+            experiment.setReplyTo(msgProperties.getReplyTo());
+            experiment.setCorrelationId(msgProperties.getCorrelationId());
+        }
     }
 }

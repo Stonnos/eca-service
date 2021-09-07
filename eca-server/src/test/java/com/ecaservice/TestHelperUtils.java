@@ -26,6 +26,8 @@ import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.ers.dto.RocCurveReport;
 import com.ecaservice.ers.dto.StatisticsReport;
+import com.ecaservice.model.MsgProperties;
+import com.ecaservice.model.entity.Channel;
 import com.ecaservice.model.entity.ClassifierInfo;
 import com.ecaservice.model.entity.ClassifierInputOptions;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
@@ -250,6 +252,9 @@ public class TestHelperUtils {
         experiment.setTrainingDataAbsolutePath(TRAINING_DATA_ABSOLUTE_PATH);
         experiment.setExperimentAbsolutePath(EXPERIMENT_ABSOLUTE_PATH);
         experiment.setRequestId(requestId);
+        experiment.setChannel(Channel.QUEUE);
+        experiment.setReplyTo(REPLY_TO);
+        experiment.setCorrelationId(UUID.randomUUID().toString());
         experiment.setClassIndex(0);
         return experiment;
     }
@@ -954,5 +959,18 @@ public class TestHelperUtils {
         classifierOptionsDatabaseModel.setOptionsName(DecisionTreeOptions.class.getSimpleName());
         classifierOptionsDatabaseModel.setCreatedBy(CREATED_BY);
         return classifierOptionsDatabaseModel;
+    }
+
+    /**
+     * Creates message properties.
+     *
+     * @return message properties
+     */
+    public static MsgProperties createMessageProperties() {
+        return MsgProperties.builder()
+                .channel(Channel.QUEUE)
+                .replyTo(REPLY_TO)
+                .correlationId(UUID.randomUUID().toString())
+                .build();
     }
 }

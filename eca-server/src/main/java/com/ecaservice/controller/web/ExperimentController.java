@@ -6,7 +6,9 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.event.model.ExperimentEmailEvent;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentProgressMapper;
+import com.ecaservice.model.MsgProperties;
 import com.ecaservice.model.MultipartFileResource;
+import com.ecaservice.model.entity.Channel;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentProgressEntity;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
@@ -157,7 +159,10 @@ public class ExperimentController {
         try {
             ExperimentRequest experimentRequest =
                     createExperimentRequest(trainingData, userDto, experimentType, evaluationMethod);
-            Experiment experiment = experimentService.createExperiment(experimentRequest);
+            MsgProperties msgProperties = MsgProperties.builder()
+                    .channel(Channel.WEB)
+                    .build();
+            Experiment experiment = experimentService.createExperiment(experimentRequest, msgProperties);
             resultDto.setRequestId(experiment.getRequestId());
             resultDto.setCreated(true);
             eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));

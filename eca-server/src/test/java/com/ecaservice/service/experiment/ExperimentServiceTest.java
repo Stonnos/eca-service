@@ -13,6 +13,7 @@ import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentMapperImpl;
+import com.ecaservice.model.MsgProperties;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.Experiment_;
 import com.ecaservice.model.entity.FilterTemplateType;
@@ -47,6 +48,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 
 import static com.ecaservice.TestHelperUtils.createExperimentHistory;
+import static com.ecaservice.TestHelperUtils.createMessageProperties;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -118,14 +120,18 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @Test
     void testSuccessExperimentRequestCreation() throws Exception {
         ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
+        MsgProperties msgProperties = createMessageProperties();
         doNothing().when(dataService).save(any(File.class), any(Instances.class));
-        experimentService.createExperiment(experimentRequest);
+        experimentService.createExperiment(experimentRequest, msgProperties);
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.hasOneElement(experiments);
-        Experiment experiment = experiments.get(0);
+        Experiment experiment = experiments.iterator().next();
         assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.NEW);
         assertThat(experiment.getRequestId()).isNotNull();
         assertThat(experiment.getCreationDate()).isNotNull();
+        assertThat(experiment.getChannel()).isEqualTo(msgProperties.getChannel());
+        assertThat(experiment.getReplyTo()).isEqualTo(msgProperties.getReplyTo());
+        assertThat(experiment.getCorrelationId()).isEqualTo(msgProperties.getCorrelationId());
         assertThat(experiment.getTrainingDataAbsolutePath()).isNotNull();
     }
 
@@ -133,7 +139,9 @@ class ExperimentServiceTest extends AbstractJpaTest {
     void testExperimentRequestCreationWithError() throws Exception {
         ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
         doThrow(Exception.class).when(dataService).save(any(File.class), any(Instances.class));
-        assertThrows(ExperimentException.class, () -> experimentService.createExperiment(experimentRequest));
+        MsgProperties msgProperties = createMessageProperties();
+        assertThrows(ExperimentException.class,
+                () -> experimentService.createExperiment(experimentRequest, msgProperties));
     }
 
     @Test

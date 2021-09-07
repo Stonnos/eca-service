@@ -9,6 +9,7 @@ import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentMapperImpl;
 import com.ecaservice.mapping.ExperimentProgressMapperImpl;
+import com.ecaservice.model.MsgProperties;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentProgressEntity;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
@@ -185,7 +186,8 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         expected.setCreated(true);
         expected.setRequestId(experiment.getRequestId());
         when(usersClient.getUserInfo()).thenReturn(new UserDto());
-        when(experimentService.createExperiment(any(ExperimentRequest.class))).thenReturn(experiment);
+        when(experimentService.createExperiment(any(ExperimentRequest.class), any(MsgProperties.class)))
+                .thenReturn(experiment);
         mockMvc.perform(multipart(CREATE_EXPERIMENT_URL)
                 .file(trainingData)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
@@ -201,8 +203,8 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         CreateExperimentResultDto expected = new CreateExperimentResultDto();
         expected.setErrorMessage(ERROR_MESSAGE);
         when(usersClient.getUserInfo()).thenReturn(new UserDto());
-        when(experimentService.createExperiment(any(ExperimentRequest.class))).thenThrow(
-                new ExperimentException(ERROR_MESSAGE));
+        when(experimentService.createExperiment(any(ExperimentRequest.class), any(MsgProperties.class)))
+                .thenThrow(new ExperimentException(ERROR_MESSAGE));
         mockMvc.perform(multipart(CREATE_EXPERIMENT_URL)
                 .file(trainingData)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))

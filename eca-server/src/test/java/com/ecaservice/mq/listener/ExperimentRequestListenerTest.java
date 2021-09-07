@@ -6,6 +6,7 @@ import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.event.model.ExperimentEmailEvent;
 import com.ecaservice.event.model.ExperimentWebPushEvent;
 import com.ecaservice.mapping.EcaResponseMapper;
+import com.ecaservice.model.MsgProperties;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.service.experiment.ExperimentService;
 import org.assertj.core.api.Assertions;
@@ -57,8 +58,8 @@ class ExperimentRequestListenerTest {
     void testHandleMessage() {
         ExperimentRequest evaluationRequest = TestHelperUtils.createExperimentRequest();
         Message message = Mockito.mock(Message.class);
-        when(experimentService.createExperiment(evaluationRequest)).thenReturn(
-                TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
+        when(experimentService.createExperiment(any(ExperimentRequest.class), any(MsgProperties.class)))
+                .thenReturn(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         when(ecaResponseMapper.map(any(Experiment.class))).thenReturn(new EcaResponse());
         MessageProperties messageProperties = TestHelperUtils.buildMessageProperties();
         when(message.getMessageProperties()).thenReturn(messageProperties);

@@ -5,6 +5,8 @@ import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.event.model.ExperimentEmailEvent;
 import com.ecaservice.event.model.ExperimentWebPushEvent;
 import com.ecaservice.mapping.EcaResponseMapper;
+import com.ecaservice.model.MsgProperties;
+import com.ecaservice.model.entity.Channel;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.service.experiment.ExperimentService;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +43,7 @@ public class ExperimentRequestListener {
      */
     @RabbitListener(queues = "${queue.experimentRequestQueue}")
     public void handleMessage(@Valid @Payload ExperimentRequest experimentRequest, Message inboundMessage) {
-        EcaResponse ecaResponse = createExperimentRequest(experimentRequest);
+        EcaResponse ecaResponse = createExperimentRequest(experimentRequest, inboundMessage);
         MessageProperties inboundMessageProperties = inboundMessage.getMessageProperties();
         rabbitTemplate.convertAndSend(inboundMessageProperties.getReplyTo(), ecaResponse, outboundMessage -> {
             outboundMessage.getMessageProperties().setCorrelationId(inboundMessageProperties.getCorrelationId());
@@ -49,8 +51,13 @@ public class ExperimentRequestListener {
         });
     }
 
-    private EcaResponse createExperimentRequest(ExperimentRequest evaluationRequest) {
-        Experiment experiment = experimentService.createExperiment(evaluationRequest);
+    private EcaResponse createExperimentRequest(ExperimentRequest evaluationRequest, Message message) {
+        MsgProperties msgProperties = MsgProperties.builder()
+                .channel(Channel.QUEUE)
+                .replyTo(message.getMessageProperties().getReplyTo())
+                .correlationId(message.getMessageProperties().getCorrelationId())
+                .build();
+        Experiment experiment = experimentService.createExperiment(evaluationRequest, msgProperties);
         eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
         eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
         log.info("Experiment request [{}] has been created.", experiment.getRequestId());
