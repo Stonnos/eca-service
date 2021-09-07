@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 
+import static com.ecaservice.common.web.util.MaskUtils.mask;
 import static com.ecaservice.util.ExperimentUtils.getExperimentFile;
 import static com.ecaservice.util.Utils.buildAttachmentResponse;
 import static com.ecaservice.util.Utils.existsFile;
@@ -52,10 +53,11 @@ public class EcaController {
                 .orElseThrow(() -> new EntityNotFoundException(Experiment.class, token));
         File experimentFile = getExperimentFile(experiment, Experiment::getExperimentAbsolutePath);
         if (!existsFile(experimentFile)) {
-            log.error("Experiment results file not found for token [{}]", token);
+            log.error("Experiment results file not found for token [{}]", mask(token));
             return ResponseEntity.badRequest().build();
         }
-        log.info("Downloads experiment file '{}' for token = '{}'", experiment.getExperimentAbsolutePath(), token);
+        log.info("Downloads experiment file '{}' for token = '{}'", experiment.getExperimentAbsolutePath(),
+                mask(token));
         return buildAttachmentResponse(experimentFile);
     }
 }
