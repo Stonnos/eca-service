@@ -1,9 +1,11 @@
 package com.ecaservice.event.listener;
 
 import com.ecaservice.base.model.ExperimentResponse;
+import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.event.model.ExperimentResponseEvent;
 import com.ecaservice.mapping.EcaResponseMapper;
 import com.ecaservice.model.entity.Experiment;
+import com.ecaservice.model.entity.RequestStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpAdmin;
@@ -11,6 +13,8 @@ import org.springframework.amqp.core.QueueInformation;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+
+import static com.ecaservice.util.Utils.buildExperimentDownloadUrl;
 
 /**
  * Experiment response event listener.
@@ -22,6 +26,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ExperimentResponseEventListener {
 
+    private final ExperimentConfig experimentConfig;
     private final AmqpAdmin amqpAdmin;
     private final RabbitTemplate rabbitTemplate;
     private final EcaResponseMapper ecaResponseMapper;
@@ -42,7 +47,7 @@ public class ExperimentResponseEventListener {
                     "Can't sent experiment [{}] response for request status [{}], because reply to queue doesn't exists",
                     experiment.getRequestId(), experiment.getRequestStatus());
         } else {
-            ExperimentResponse experimentResponse = ecaResponseMapper.map(experiment);
+            ExperimentResponse experimentResponse = processExperimentResponse(experiment);
             rabbitTemplate.convertAndSend(experiment.getReplyTo(), experimentResponse, outboundMessage -> {
                 outboundMessage.getMessageProperties().setCorrelationId(experiment.getCorrelationId());
                 return outboundMessage;
@@ -50,5 +55,15 @@ public class ExperimentResponseEventListener {
             log.info("Experiment [{}] response for request status [{}] has been sent to MQ",
                     experiment.getRequestId(), experiment.getRequestStatus());
         }
+    }
+
+    private ExperimentResponse processExperimentResponse(Experiment experiment) {
+        ExperimentResponse experimentResponse = ecaResponseMapper.map(experiment);
+        if (RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
+            String downloadUrl =
+                    buildExperimentDownloadUrl(experimentConfig.getDownloadBaseUrl(), experiment.getToken());
+            experimentResponse.setDownloadUrl(downloadUrl);
+        }
+        return experimentResponse;
     }
 }

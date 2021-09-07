@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 import static com.ecaservice.notification.util.Priority.MEDIUM;
+import static com.ecaservice.util.Utils.buildExperimentDownloadUrl;
 import static com.google.common.collect.Maps.newHashMap;
 
 /**
@@ -23,8 +24,6 @@ import static com.google.common.collect.Maps.newHashMap;
 @RequiredArgsConstructor
 public class EmailTemplateVisitor implements RequestStatusVisitor<EmailRequest, Experiment> {
 
-    private static final String DOWNLOAD_PATH_FORMAT = "%s/eca-api/experiment/download/%s";
-
     private final ExperimentConfig experimentConfig;
 
     @Override
@@ -35,8 +34,8 @@ public class EmailTemplateVisitor implements RequestStatusVisitor<EmailRequest, 
     @Override
     public EmailRequest caseFinished(Experiment parameter) {
         EmailRequest emailRequest = createEmailCommonRequest(parameter, Templates.FINISHED_EXPERIMENT);
-        emailRequest.getVariables().put(TemplateVariablesDictionary.DOWNLOAD_URL_KEY,
-                String.format(DOWNLOAD_PATH_FORMAT, experimentConfig.getDownloadBaseUrl(), parameter.getToken()));
+        String downloadUrl = buildExperimentDownloadUrl(experimentConfig.getDownloadBaseUrl(), parameter.getToken());
+        emailRequest.getVariables().put(TemplateVariablesDictionary.DOWNLOAD_URL_KEY, downloadUrl);
         return emailRequest;
     }
 
