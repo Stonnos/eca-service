@@ -20,20 +20,20 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import(ExperimentResponseMapperImpl.class)
-class ExperimentResponseMapperTest {
+@Import(EcaResponseMapperImpl.class)
+class EcaResponseMapperTest {
 
     @Inject
-    private ExperimentResponseMapper experimentResponseMapper;
+    private EcaResponseMapper ecaResponseMapper;
 
     @Test
     void testMapExperimentToEcaResponse() {
         Experiment experiment = new Experiment();
         experiment.setRequestStatus(RequestStatus.NEW);
         experiment.setRequestId(UUID.randomUUID().toString());
-        ExperimentResponse experimentResponse = experimentResponseMapper.map(experiment);
+        ExperimentResponse experimentResponse = ecaResponseMapper.map(experiment);
         assertThat(experimentResponse).isNotNull();
-        assertThat(experimentResponse.getStatus()).isEqualTo(TechnicalStatus.SUCCESS);
+        assertThat(experimentResponse.getStatus()).isEqualTo(TechnicalStatus.IN_PROGRESS);
         assertThat(experimentResponse.getRequestId()).isEqualTo(experiment.getRequestId());
     }
 }

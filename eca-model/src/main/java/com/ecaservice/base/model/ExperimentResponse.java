@@ -13,11 +13,6 @@ import lombok.EqualsAndHashCode;
 public class ExperimentResponse extends EcaResponse {
 
     /**
-     * Request stage
-     */
-    private RequestStage requestStage;
-
-    /**
      * Experiment download url
      */
     private String downloadUrl;
