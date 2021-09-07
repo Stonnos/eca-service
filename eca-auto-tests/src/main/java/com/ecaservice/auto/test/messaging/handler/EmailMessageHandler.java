@@ -23,9 +23,6 @@ import static com.ecaservice.auto.test.config.mail.Channels.MAIL_HANDLE_CHANNEL;
 @RequiredArgsConstructor
 public class EmailMessageHandler {
 
-    private static final String EXPERIMENT_FINISHED_WITH_TIMEOUT = "Experiment finished with timeout";
-    private static final String EXPERIMENT_FINISHED_WITH_ERROR = "Experiment finished with error";
-
     private final ExperimentRequestService experimentRequestService;
     private final ExperimentRequestRepository experimentRequestRepository;
 
