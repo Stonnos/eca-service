@@ -51,4 +51,5 @@
     <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v43-add-classifiers-configuration-id-global-filter.xml"/>
     <include file="db/changelog/v44-drop-app-instance-table.xml"/>
+    <include file="db/changelog/v45-add-channel-type-column.xml"/>
 </databaseChangeLog>

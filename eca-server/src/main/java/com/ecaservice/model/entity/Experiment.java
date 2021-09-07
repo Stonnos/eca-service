@@ -80,4 +80,23 @@ public class Experiment extends AbstractEvaluationEntity {
      * Unique token used to download experiment results for external API
      */
     private String token;
+
+    /**
+     * Channel type
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "channel_type", nullable = false)
+    private Channel channel;
+
+    /**
+     * Reply to queue
+     */
+    @Column(name = "reply_to")
+    private String replyTo;
+
+    /**
+     * MQ message correlation id
+     */
+    @Column(name = "correlation_id")
+    private String correlationId;
 }
