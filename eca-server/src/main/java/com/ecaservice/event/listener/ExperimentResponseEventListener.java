@@ -39,7 +39,7 @@ public class ExperimentResponseEventListener {
         QueueInformation queueInformation = amqpAdmin.getQueueInfo(experiment.getReplyTo());
         if (queueInformation == null) {
             log.warn(
-                    "Can't sent experiment [{}] response for request status [{}] because reply to queue doesn't exists",
+                    "Can't sent experiment [{}] response for request status [{}], because reply to queue doesn't exists",
                     experiment.getRequestId(), experiment.getRequestStatus());
         } else {
             ExperimentResponse experimentResponse = ecaResponseMapper.map(experiment);
