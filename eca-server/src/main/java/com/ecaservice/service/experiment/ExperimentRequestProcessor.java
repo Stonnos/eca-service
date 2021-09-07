@@ -4,7 +4,9 @@ import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.core.lock.annotation.TryLocked;
 import com.ecaservice.event.model.ExperimentEmailEvent;
 import com.ecaservice.event.model.ExperimentFinishedEvent;
+import com.ecaservice.event.model.ExperimentResponseEvent;
 import com.ecaservice.event.model.ExperimentWebPushEvent;
+import com.ecaservice.model.entity.Channel;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.RequestStatus;
@@ -62,6 +64,9 @@ public class ExperimentRequestProcessor {
         experimentProgressService.start(experiment);
         setInProgressStatus(experiment);
         AbstractExperiment<?> experimentHistory = experimentService.processExperiment(experiment);
+        if (Channel.QUEUE.equals(experiment.getChannel())) {
+            eventPublisher.publishEvent(new ExperimentResponseEvent(this, experiment));
+        }
         eventPublisher.publishEvent(new ExperimentWebPushEvent(this, experiment));
         eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
         if (RequestStatus.FINISHED.equals(experiment.getRequestStatus())) {
