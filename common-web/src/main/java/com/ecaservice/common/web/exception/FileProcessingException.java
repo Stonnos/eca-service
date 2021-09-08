@@ -1,13 +1,11 @@
-package com.ecaservice.exception;
-
-import com.ecaservice.common.web.exception.ValidationErrorException;
+package com.ecaservice.common.web.exception;
 
 /**
  * File processing exception.
  *
  * @author Roman Batygin
  */
-public class ProcessFileException extends ValidationErrorException {
+public class FileProcessingException extends ValidationErrorException {
 
     public static final String PROCESS_FILE_ERROR_CODE = "ProcessFileError";
 
@@ -16,7 +14,7 @@ public class ProcessFileException extends ValidationErrorException {
      *
      * @param message - error message
      */
-    public ProcessFileException(String message) {
+    public FileProcessingException(String message) {
         super(PROCESS_FILE_ERROR_CODE, message);
     }
 }

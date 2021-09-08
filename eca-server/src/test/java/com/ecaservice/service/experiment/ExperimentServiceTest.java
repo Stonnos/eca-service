@@ -5,11 +5,11 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.common.web.exception.FileProcessingException;
 import com.ecaservice.config.AppProperties;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.core.filter.service.FilterService;
-import com.ecaservice.exception.ProcessFileException;
 import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentMapperImpl;
@@ -140,9 +140,9 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @Test
     void testExperimentRequestCreationWithError() {
         ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
-        doThrow(ProcessFileException.class).when(dataService).save(any(File.class), any(Instances.class));
+        doThrow(FileProcessingException.class).when(dataService).save(any(File.class), any(Instances.class));
         MsgProperties msgProperties = createMessageProperties();
-        assertThrows(ProcessFileException.class,
+        assertThrows(FileProcessingException.class,
                 () -> experimentService.createExperiment(experimentRequest, msgProperties));
     }
 
@@ -165,7 +165,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
 
     @Test
     void testProcessExperimentWithErrorStatus() {
-        when(dataService.load(any(FileResource.class))).thenThrow(new ProcessFileException(StringUtils.EMPTY));
+        when(dataService.load(any(FileResource.class))).thenThrow(new FileProcessingException(StringUtils.EMPTY));
         experimentService.processExperiment(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.hasOneElement(experiments);

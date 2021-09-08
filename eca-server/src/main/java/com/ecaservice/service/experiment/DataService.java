@@ -1,7 +1,7 @@
 package com.ecaservice.service.experiment;
 
-import com.ecaservice.exception.InvalidFileException;
-import com.ecaservice.exception.ProcessFileException;
+import com.ecaservice.common.web.exception.FileProcessingException;
+import com.ecaservice.common.web.exception.InvalidFileException;
 import com.ecaservice.exception.experiment.ExperimentException;
 import eca.core.ModelSerializationHelper;
 import eca.data.DataFileExtension;
@@ -60,7 +60,7 @@ public class DataService {
         } catch (Exception ex) {
             log.error("There was an error while save data [{}] into file {}: {}", data.relationName(),
                     file.getAbsoluteFile(), ex.getMessage());
-            throw new ProcessFileException(String.format("Error while process train data file [%s]", file.getName()));
+            throw new FileProcessingException(String.format("Error while process train data file [%s]", file.getName()));
         }
     }
 
@@ -85,7 +85,7 @@ public class DataService {
             return data;
         } catch (Exception ex) {
             log.error("There was an error while load data from file {}: {}", dataResource.getFile(), ex.getMessage());
-            throw new ProcessFileException(String.format("Error while process train data file [%s]",
+            throw new FileProcessingException(String.format("Error while process train data file [%s]",
                     dataResource.getFile()));
         }
     }

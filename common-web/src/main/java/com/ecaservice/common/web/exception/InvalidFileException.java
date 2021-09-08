@@ -1,6 +1,4 @@
-package com.ecaservice.exception;
-
-import com.ecaservice.common.web.exception.ValidationErrorException;
+package com.ecaservice.common.web.exception;
 
 /**
  * Invalid file exception.
