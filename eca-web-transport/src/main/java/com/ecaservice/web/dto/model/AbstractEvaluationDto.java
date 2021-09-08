@@ -19,6 +19,12 @@ import static com.ecaservice.web.dto.util.FieldConstraints.DATE_TIME_PATTERN;
 public abstract class AbstractEvaluationDto {
 
     /**
+     * ID
+     */
+    @Schema(description = "ID")
+    private Long id;
+
+    /**
      * Request unique identifier
      */
     @Schema(description = "Request unique identifier")

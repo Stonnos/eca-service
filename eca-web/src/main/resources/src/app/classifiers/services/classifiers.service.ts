@@ -34,11 +34,11 @@ export class ClassifiersService {
     return this.http.get<RequestStatusStatisticsDto>(this.serviceUrl + '/request-statuses-statistics', { headers: headers });
   }
 
-  public getEvaluationLogDetails(requestId: string): Observable<EvaluationLogDetailsDto> {
+  public getEvaluationLogDetails(id: number): Observable<EvaluationLogDetailsDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': Utils.getBearerTokenHeader()
     });
-    return this.http.get<EvaluationLogDetailsDto>(this.serviceUrl + '/details/' + requestId, { headers: headers });
+    return this.http.get<EvaluationLogDetailsDto>(this.serviceUrl + '/details/' + id, { headers: headers });
   }
 }

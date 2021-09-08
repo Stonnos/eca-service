@@ -20,7 +20,7 @@ import { Utils } from "../../common/util/utils";
 })
 export class ExperimentResultsDetailsComponent implements OnInit, FieldLink {
 
-  private readonly evaluationResultsId: number;
+  private readonly experimentResultsId: number;
 
   public experimentFields: any[] = [];
   public loading: boolean = false;
@@ -34,7 +34,7 @@ export class ExperimentResultsDetailsComponent implements OnInit, FieldLink {
                      private route: ActivatedRoute,
                      private router: Router,
                      private fieldService: FieldService) {
-    this.evaluationResultsId = this.route.snapshot.params.id;
+    this.experimentResultsId = this.route.snapshot.params.id;
     this.initExperimentFields();
   }
 
@@ -44,7 +44,7 @@ export class ExperimentResultsDetailsComponent implements OnInit, FieldLink {
 
   public getExperimentResultsDetails(): void {
     this.loading = true;
-    this.experimentsService.getExperimentResultsDetails(this.evaluationResultsId)
+    this.experimentsService.getExperimentResultsDetails(this.experimentResultsId)
       .pipe(
         finalize(() => {
           this.loading = false;

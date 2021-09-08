@@ -121,7 +121,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
         this.getExperimentResultsFile(experiment);
         break;
       case ExperimentFields.REQUEST_ID:
-        this.router.navigate([RouterPaths.EXPERIMENT_DETAILS_URL, experiment.requestId]);
+        this.router.navigate([RouterPaths.EXPERIMENT_DETAILS_URL, experiment.id]);
         break;
       case ExperimentFields.EVALUATION_METHOD_DESCRIPTION:
         if (experiment.evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION) {
@@ -135,7 +135,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public getExperimentTrainingDataFile(experiment: ExperimentDto): void {
     this.loading = true;
-    this.experimentsService.getExperimentTrainingDataFile(experiment.requestId)
+    this.experimentsService.getExperimentTrainingDataFile(experiment.id)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -153,7 +153,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public getExperimentResultsFile(experiment: ExperimentDto): void {
     this.loading = true;
-    this.experimentsService.getExperimentResultsFile(experiment.requestId)
+    this.experimentsService.getExperimentResultsFile(experiment.id)
       .pipe(
         finalize(() => {
           this.loading = false;

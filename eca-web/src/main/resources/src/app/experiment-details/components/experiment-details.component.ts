@@ -23,7 +23,7 @@ import { RequestStatus } from "../../common/model/request-status.enum";
 })
 export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink {
 
-  private readonly experimentRequestId: string;
+  private readonly id: number;
 
   private readonly loadingFieldsMap = new Map<string, boolean>()
     .set(ExperimentFields.TRAINING_DATA_PATH, false)
@@ -48,7 +48,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
                      private messageService: MessageService,
                      private route: ActivatedRoute,
                      private fieldService: FieldService) {
-    this.experimentRequestId = this.route.snapshot.params.id;
+    this.id = this.route.snapshot.params.id;
     this.initExperimentFields();
   }
 
@@ -62,7 +62,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   }
 
   public getExperiment(): void {
-    this.experimentsService.getExperiment(this.experimentRequestId)
+    this.experimentsService.getExperiment(this.id)
       .subscribe({
         next: (experimentDto: ExperimentDto) => {
           this.experimentDto = experimentDto;
@@ -82,7 +82,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
 
   public getExperimentTrainingDataFile(): void {
     this.loadingFieldsMap.set(ExperimentFields.TRAINING_DATA_PATH, true);
-    this.experimentsService.getExperimentTrainingDataFile(this.experimentDto.requestId)
+    this.experimentsService.getExperimentTrainingDataFile(this.id)
       .pipe(
         finalize(() => {
           this.loadingFieldsMap.set(ExperimentFields.TRAINING_DATA_PATH, false);
@@ -100,7 +100,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
 
   public getExperimentResultsFile(): void {
     this.loadingFieldsMap.set(ExperimentFields.EXPERIMENT_PATH, true);
-    this.experimentsService.getExperimentResultsFile(this.experimentDto.requestId)
+    this.experimentsService.getExperimentResultsFile(this.id)
       .pipe(
         finalize(() => {
           this.loadingFieldsMap.set(ExperimentFields.EXPERIMENT_PATH, false);
@@ -117,7 +117,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   }
 
   public getExperimentErsReport(): void {
-    this.experimentsService.getExperimentErsReport(this.experimentRequestId)
+    this.experimentsService.getExperimentErsReport(this.id)
       .subscribe({
         next: (experimentErsReport: ExperimentErsReportDto) => {
           this.experimentErsReport = experimentErsReport;
@@ -168,7 +168,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   private updateExperimentStatus(): void {
     this.updateSubscription = timer(0, this.updateStatusInterval).subscribe({
       next: () => {
-        this.experimentsService.getExperiment(this.experimentRequestId)
+        this.experimentsService.getExperiment(this.id)
           .subscribe({
             next: (experimentDto: ExperimentDto) => {
               if (this.experimentDto.requestStatus.value != experimentDto.requestStatus.value) {
@@ -198,7 +198,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   private updateExperimentProgress(): void {
     this.updateSubscription = timer(0, this.updateProgressInterval).subscribe({
       next: () => {
-        this.experimentsService.getExperimentProgress(this.experimentRequestId)
+        this.experimentsService.getExperimentProgress(this.id)
           .subscribe({
             next: (experimentProgress: ExperimentProgressDto) => {
               if (!experimentProgress.finished) {
