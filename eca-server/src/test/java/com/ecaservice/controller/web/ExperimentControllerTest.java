@@ -184,7 +184,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         CreateExperimentResultDto expected = new CreateExperimentResultDto();
         expected.setCreated(true);
-        expected.setRequestId(experiment.getRequestId());
+        expected.setId(experiment.getId());
         when(usersClient.getUserInfo()).thenReturn(new UserDto());
         when(experimentService.createExperiment(any(ExperimentRequest.class), any(MsgProperties.class)))
                 .thenReturn(experiment);

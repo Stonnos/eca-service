@@ -163,7 +163,7 @@ public class ExperimentController {
                     .channel(Channel.WEB)
                     .build();
             Experiment experiment = experimentService.createExperiment(experimentRequest, msgProperties);
-            resultDto.setRequestId(experiment.getRequestId());
+            resultDto.setId(experiment.getId());
             resultDto.setCreated(true);
             eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
             log.info("Experiment request [{}] has been created.", experiment.getRequestId());

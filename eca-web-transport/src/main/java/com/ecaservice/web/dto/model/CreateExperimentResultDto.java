@@ -17,10 +17,10 @@ import lombok.NoArgsConstructor;
 public class CreateExperimentResultDto {
 
     /**
-     * Experiment request id
+     * Experiment id
      */
-    @Schema(description = "Experiment request id", required = true)
-    private String requestId;
+    @Schema(description = "Experiment id", required = true)
+    private Long id;
 
     /**
      * Is experiment created?

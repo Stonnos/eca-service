@@ -185,7 +185,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
         next: (result: CreateExperimentResultDto) => {
           if (result.created) {
             this.messageService.add({ severity: 'success', summary: `Эксперимент был успешно создан`, detail: '' });
-            this.lastCreatedId = result.requestId;
+            this.lastCreatedId = result.id;
             this.getRequestStatusesStatistics();
             this.reloadPageWithLoader();
           } else {
@@ -254,7 +254,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       .subscribe({
         next: (message) => {
           const experimentDto: ExperimentDto = JSON.parse(message.body);
-          this.lastCreatedId = experimentDto.requestId;
+          this.lastCreatedId = experimentDto.id;
           this.showMessage(experimentDto);
           this.reloadPage(false);
           this.getRequestStatusesStatistics();
