@@ -50,7 +50,7 @@ public class DataService {
     public void save(File file, Instances data) {
         if (!isValidTrainDataFile(file.getName())) {
             throw new InvalidFileException(
-                    String.format("Invalid file [%s] extension. Expected one of [%s]", file.getName(),
+                    String.format("Invalid file [%s] extension. Expected one of %s", file.getName(),
                             TRAIN_DATA_FILE_EXTENSIONS));
         }
         log.info("Starting to save {} data into file {}.", data.relationName(), file.getAbsolutePath());
@@ -73,7 +73,7 @@ public class DataService {
     public Instances load(DataResource<?> dataResource) {
         if (!isValidTrainDataFile(dataResource.getFile())) {
             throw new InvalidFileException(
-                    String.format("Invalid file [%s] extension. Expected one of [%s]", dataResource.getFile(),
+                    String.format("Invalid file [%s] extension. Expected one of %s", dataResource.getFile(),
                             TRAIN_DATA_FILE_EXTENSIONS));
         }
         log.info("Starting to load data from file {}", dataResource.getFile());
