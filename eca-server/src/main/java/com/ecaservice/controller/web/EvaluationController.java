@@ -83,7 +83,7 @@ public class EvaluationController {
     /**
      * Gets evaluation log details.
      *
-     * @param requestId - evaluation log request id
+     * @param id - evaluation log id
      * @return evaluation log details report
      */
     @PreAuthorize("#oauth2.hasScope('web')")
@@ -92,13 +92,13 @@ public class EvaluationController {
             summary = "Gets evaluation log details",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
-    @GetMapping(value = "/details/{requestId}")
+    @GetMapping(value = "/details/{id}")
     public ResponseEntity<EvaluationLogDetailsDto> getEvaluationLogDetails(
-            @Parameter(description = "Evaluation log request id", required = true)
-            @PathVariable String requestId) {
-        log.info("Received request for evaluation log details for request id [{}]", requestId);
-        EvaluationLog evaluationLog = evaluationLogRepository.findByRequestId(requestId)
-                .orElseThrow(() -> new EntityNotFoundException(EvaluationLog.class, requestId));
+            @Parameter(description = "Evaluation log id", required = true)
+            @PathVariable Long id) {
+        log.info("Received request for evaluation log details for id [{}]", id);
+        EvaluationLog evaluationLog = evaluationLogRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(EvaluationLog.class, id));
         return ResponseEntity.ok(evaluationLogService.getEvaluationLogDetails(evaluationLog));
     }
 
