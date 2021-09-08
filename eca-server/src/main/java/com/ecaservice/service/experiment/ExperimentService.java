@@ -240,14 +240,14 @@ public class ExperimentService implements PageRequestService<Experiment> {
     }
 
     /**
-     * Gets experiment by request id.
+     * Gets experiment by id.
      *
-     * @param requestId - request id
+     * @param id - experiment id
      * @return experiment entity
      */
-    public Experiment getByRequestId(String requestId) {
-        return experimentRepository.findByRequestId(requestId)
-                .orElseThrow(() -> new EntityNotFoundException(Experiment.class, requestId));
+    public Experiment getById(Long id) {
+        return experimentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Experiment.class, id));
     }
 
     /**

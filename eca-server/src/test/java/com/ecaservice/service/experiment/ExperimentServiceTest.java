@@ -69,7 +69,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
-    private static final String INVALID_UUID = "InvalidUuid";
+    private static final long INVALID_ID = 1000L;
 
     @Inject
     private ExperimentRepository experimentRepository;
@@ -443,13 +443,13 @@ class ExperimentServiceTest extends AbstractJpaTest {
     void testGetExperiment() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         experimentRepository.save(experiment);
-        Experiment actual = experimentService.getByRequestId(experiment.getRequestId());
+        Experiment actual = experimentService.getById(experiment.getId());
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isEqualTo(experiment.getId());
     }
 
     @Test
     void testGetExperimentShouldThrowEntityNotFoundException() {
-        assertThrows(EntityNotFoundException.class, () -> experimentService.getByRequestId(INVALID_UUID));
+        assertThrows(EntityNotFoundException.class, () -> experimentService.getById(INVALID_ID));
     }
 }
