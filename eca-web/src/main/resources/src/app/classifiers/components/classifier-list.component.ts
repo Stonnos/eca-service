@@ -99,7 +99,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   public onSelect(event, evaluationLog: EvaluationLogDto, column: string, overlayPanel: OverlayPanel): void {
     switch (column) {
       case EvaluationLogFields.REQUEST_ID:
-        this.router.navigate([RouterPaths.EVALUATION_DETAILS_URL, evaluationLog.requestId]);
+        this.router.navigate([RouterPaths.EVALUATION_DETAILS_URL, evaluationLog.id]);
         break;
       case EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION:
         if (evaluationLog.evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION) {
