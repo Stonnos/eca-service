@@ -14,6 +14,7 @@ import com.ecaservice.model.entity.ExperimentProgressEntity;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.auth.UsersClient;
+import com.ecaservice.service.experiment.DataService;
 import com.ecaservice.service.experiment.ExperimentProgressService;
 import com.ecaservice.service.experiment.ExperimentResultsService;
 import com.ecaservice.service.experiment.ExperimentService;
@@ -29,7 +30,6 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.ecaservice.web.dto.model.UserDto;
 import eca.core.evaluation.EvaluationMethod;
-import eca.data.file.FileDataLoader;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -53,6 +53,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import weka.core.Instances;
 
 import javax.validation.Valid;
 import java.io.File;
@@ -92,6 +93,7 @@ public class ExperimentController {
     private final UsersClient usersClient;
     private final ExperimentProgressService experimentProgressService;
     private final ApplicationEventPublisher eventPublisher;
+    private final DataService dataService;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
 
     /**
@@ -155,24 +157,18 @@ public class ExperimentController {
         log.info("Received experiment request for data '{}', experiment type {}, evaluation method {}",
                 trainingData.getOriginalFilename(), experimentType, evaluationMethod);
         UserDto userDto = usersClient.getUserInfo();
-        CreateExperimentResultDto resultDto = new CreateExperimentResultDto();
-        try {
-            ExperimentRequest experimentRequest =
-                    createExperimentRequest(trainingData, userDto, experimentType, evaluationMethod);
-            MsgProperties msgProperties = MsgProperties.builder()
-                    .channel(Channel.WEB)
-                    .build();
-            Experiment experiment = experimentService.createExperiment(experimentRequest, msgProperties);
-            resultDto.setId(experiment.getId());
-            resultDto.setCreated(true);
-            eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
-            log.info("Experiment request [{}] has been created.", experiment.getRequestId());
-        } catch (Exception ex) {
-            log.error("There was an error while experiment creation for data '{}': {}",
-                    trainingData.getOriginalFilename(), ex.getMessage());
-            resultDto.setErrorMessage(ex.getMessage());
-        }
-        return resultDto;
+        ExperimentRequest experimentRequest =
+                createExperimentRequest(trainingData, userDto, experimentType, evaluationMethod);
+        MsgProperties msgProperties = MsgProperties.builder()
+                .channel(Channel.WEB)
+                .build();
+        Experiment experiment = experimentService.createExperiment(experimentRequest, msgProperties);
+        eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
+        log.info("Experiment request [{}] has been created.", experiment.getRequestId());
+        return CreateExperimentResultDto.builder()
+                .id(experiment.getId())
+                .requestId(experiment.getRequestId())
+                .build();
     }
 
     /**
@@ -336,13 +332,12 @@ public class ExperimentController {
     private ExperimentRequest createExperimentRequest(MultipartFile trainingData,
                                                       UserDto userDto,
                                                       ExperimentType experimentType,
-                                                      EvaluationMethod evaluationMethod) throws Exception {
+                                                      EvaluationMethod evaluationMethod) {
         ExperimentRequest experimentRequest = new ExperimentRequest();
         experimentRequest.setFirstName(userDto.getFirstName());
         experimentRequest.setEmail(userDto.getEmail());
-        FileDataLoader fileDataLoader = new FileDataLoader();
-        fileDataLoader.setSource(new MultipartFileResource(trainingData));
-        experimentRequest.setData(fileDataLoader.loadInstances());
+        Instances data = dataService.load(new MultipartFileResource(trainingData));
+        experimentRequest.setData(data);
         experimentRequest.setExperimentType(experimentType);
         experimentRequest.setEvaluationMethod(evaluationMethod);
         return experimentRequest;

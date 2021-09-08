@@ -22,6 +22,7 @@ import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.PageRequestService;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import eca.data.file.resource.FileResource;
 import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -106,21 +107,16 @@ public class ExperimentService implements PageRequestService<Experiment> {
                 experimentRequest.getEvaluationMethod(), experimentRequest.getEmail());
         Assert.notNull(msgProperties, "Expected not null message properties");
         Assert.notNull(msgProperties.getChannel(), "Expected not null channel");
-        try {
-            Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
-            setMessageProperties(experiment, msgProperties);
-            experiment.setRequestStatus(RequestStatus.NEW);
-            experiment.setRequestId(requestId);
-            File dataFile = new File(experimentConfig.getData().getStoragePath(),
-                    String.format(experimentConfig.getData().getFileFormat(), experiment.getRequestId()));
-            dataService.save(dataFile, experimentRequest.getData());
-            experiment.setTrainingDataAbsolutePath(dataFile.getAbsolutePath());
-            experiment.setCreationDate(LocalDateTime.now());
-            return experimentRepository.save(experiment);
-        } catch (Exception ex) {
-            log.error(ex.getMessage());
-            throw new ExperimentException(ex.getMessage());
-        }
+        Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
+        setMessageProperties(experiment, msgProperties);
+        experiment.setRequestStatus(RequestStatus.NEW);
+        experiment.setRequestId(requestId);
+        File dataFile = new File(experimentConfig.getData().getStoragePath(),
+                String.format(experimentConfig.getData().getFileFormat(), experiment.getRequestId()));
+        dataService.save(dataFile, experimentRequest.getData());
+        experiment.setTrainingDataAbsolutePath(dataFile.getAbsolutePath());
+        experiment.setCreationDate(LocalDateTime.now());
+        return experimentRepository.save(experiment);
     }
 
     /**
@@ -140,7 +136,8 @@ public class ExperimentService implements PageRequestService<Experiment> {
             StopWatch stopWatch =
                     new StopWatch(String.format("Stop watching for experiment [%s]", experiment.getRequestId()));
             stopWatch.start(String.format("Loading data for experiment [%s]", experiment.getRequestId()));
-            Instances data = dataService.load(new File(experiment.getTrainingDataAbsolutePath()));
+            FileResource fileResource = new FileResource(new File(experiment.getTrainingDataAbsolutePath()));
+            Instances data = dataService.load(fileResource);
             data.setClassIndex(experiment.getClassIndex());
             stopWatch.stop();
 

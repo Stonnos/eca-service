@@ -4,7 +4,6 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentMapperImpl;
@@ -16,6 +15,7 @@ import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.model.entity.RequestStatus;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.auth.UsersClient;
+import com.ecaservice.service.experiment.DataService;
 import com.ecaservice.service.experiment.ExperimentProgressService;
 import com.ecaservice.service.experiment.ExperimentResultsService;
 import com.ecaservice.service.experiment.ExperimentService;
@@ -90,7 +90,6 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     private static final String EXPERIMENT_TYPE_PARAM = "experimentType";
     private static final String EVALUATION_METHOD_PARAM = "evaluationMethod";
     private static final String TRAINING_DATA_PARAM = "trainingData";
-    private static final String ERROR_MESSAGE = "Error";
     private static final long EXPERIMENT_RESULTS_ID = 1L;
     private static final int PROGRESS_VALUE = 100;
     private static final long ID = 1L;
@@ -105,6 +104,8 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     private ExperimentProgressService experimentProgressService;
     @MockBean
     private ApplicationEventPublisher eventPublisher;
+    @MockBean
+    private DataService dataService;
     @MockBean
     private ExperimentResultsEntityRepository experimentResultsEntityRepository;
 
@@ -182,29 +183,14 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     @Test
     void testCreateExperimentSuccess() throws Exception {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
-        CreateExperimentResultDto expected = new CreateExperimentResultDto();
-        expected.setCreated(true);
+        CreateExperimentResultDto expected = CreateExperimentResultDto.builder()
+                .id(experiment.getId())
+                .requestId(experiment.getRequestId())
+                .build();
         expected.setId(experiment.getId());
         when(usersClient.getUserInfo()).thenReturn(new UserDto());
         when(experimentService.createExperiment(any(ExperimentRequest.class), any(MsgProperties.class)))
                 .thenReturn(experiment);
-        mockMvc.perform(multipart(CREATE_EXPERIMENT_URL)
-                .file(trainingData)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(EXPERIMENT_TYPE_PARAM, ExperimentType.NEURAL_NETWORKS.name())
-                .param(EVALUATION_METHOD_PARAM, EvaluationMethod.CROSS_VALIDATION.name()))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(objectMapper.writeValueAsString(expected)));
-    }
-
-    @Test
-    void testCreateExperimentWithError() throws Exception {
-        CreateExperimentResultDto expected = new CreateExperimentResultDto();
-        expected.setErrorMessage(ERROR_MESSAGE);
-        when(usersClient.getUserInfo()).thenReturn(new UserDto());
-        when(experimentService.createExperiment(any(ExperimentRequest.class), any(MsgProperties.class)))
-                .thenThrow(new ExperimentException(ERROR_MESSAGE));
         mockMvc.perform(multipart(CREATE_EXPERIMENT_URL)
                 .file(trainingData)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))

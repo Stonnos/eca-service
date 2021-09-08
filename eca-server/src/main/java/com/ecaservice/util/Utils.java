@@ -17,7 +17,9 @@ import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import eca.core.evaluation.EvaluationMethod;
+import eca.data.DataFileExtension;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
@@ -38,6 +40,7 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.ecaservice.util.ClassifierOptionsHelper.isParsableOptions;
 
@@ -190,6 +193,21 @@ public class Utils {
      */
     public static boolean existsFile(File file) {
         return file != null && file.isFile();
+    }
+
+    /**
+     * Checks that input has valid extension (one of of xls, xlsx, csv, arff, json, xml, txt, data, docx).
+     *
+     * @param fileName - train data file name
+     * @return {@code true} if train data is valid
+     */
+    public static boolean isValidTrainDataFile(String fileName) {
+        if (fileName != null) {
+            String extension = FilenameUtils.getExtension(fileName);
+            return Stream.of(DataFileExtension.values()).anyMatch(
+                    dataFileExtension -> dataFileExtension.getExtension().equals(extension));
+        }
+        return false;
     }
 
     /**

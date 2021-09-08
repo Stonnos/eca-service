@@ -1,10 +1,13 @@
 package com.ecaservice.service.experiment;
 
-
+import com.ecaservice.exception.InvalidFileException;
+import com.ecaservice.exception.ProcessFileException;
 import com.ecaservice.exception.experiment.ExperimentException;
 import eca.core.ModelSerializationHelper;
+import eca.data.DataFileExtension;
 import eca.data.file.FileDataLoader;
 import eca.data.file.FileDataSaver;
+import eca.data.file.resource.DataResource;
 import eca.data.file.resource.FileResource;
 import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,11 @@ import weka.core.Instances;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.ecaservice.util.Utils.isValidTrainDataFile;
 
 /**
  * Data service interface.
@@ -27,35 +35,59 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class DataService {
 
+    private static final List<String> TRAIN_DATA_FILE_EXTENSIONS = Stream.of(DataFileExtension.values())
+            .map(DataFileExtension::getExtendedExtension)
+            .collect(Collectors.toList());
+
     private final FileDataSaver dataSaver;
-    private final FileDataLoader dataLoader;
 
     /**
      * Saves data to file.
      *
      * @param file - file object
      * @param data - training data
-     * @throws Exception in case of I/O error
      */
-    public void save(File file, Instances data) throws Exception {
+    public void save(File file, Instances data) {
+        if (!isValidTrainDataFile(file.getName())) {
+            throw new InvalidFileException(
+                    String.format("Invalid file [%s] extension. Expected one of [%s]", file.getName(),
+                            TRAIN_DATA_FILE_EXTENSIONS));
+        }
         log.info("Starting to save {} data into file {}.", data.relationName(), file.getAbsolutePath());
-        dataSaver.saveData(file, data);
-        log.info("{} data has been successfully saved to file {}.", data.relationName(), file.getAbsolutePath());
+        try {
+            dataSaver.saveData(file, data);
+            log.info("{} data has been successfully saved to file {}.", data.relationName(), file.getAbsolutePath());
+        } catch (Exception ex) {
+            log.error("There was an error while save data [{}] into file {}: {}", data.relationName(),
+                    file.getAbsoluteFile(), ex.getMessage());
+            throw new ProcessFileException(String.format("Error while process train data file [%s]", file.getName()));
+        }
     }
 
     /**
      * Loads data from file.
      *
-     * @param file - file object
+     * @param dataResource - data resource
      * @return training data
-     * @throws Exception in case of I/O error
      */
-    public Instances load(File file) throws Exception {
-        log.info("Starting to load data from file {}", file.getAbsolutePath());
-        dataLoader.setSource(new FileResource(file));
-        Instances data = dataLoader.loadInstances();
-        log.info("{} data has been successfully loaded from file {}", data.relationName(), file.getAbsolutePath());
-        return data;
+    public Instances load(DataResource<?> dataResource) {
+        if (!isValidTrainDataFile(dataResource.getFile())) {
+            throw new InvalidFileException(
+                    String.format("Invalid file [%s] extension. Expected one of [%s]", dataResource.getFile(),
+                            TRAIN_DATA_FILE_EXTENSIONS));
+        }
+        log.info("Starting to load data from file {}", dataResource.getFile());
+        FileDataLoader dataLoader = new FileDataLoader();
+        dataLoader.setSource(dataResource);
+        try {
+            Instances data = dataLoader.loadInstances();
+            log.info("{} data has been successfully loaded from file {}", data.relationName(), dataResource.getFile());
+            return data;
+        } catch (Exception ex) {
+            log.error("There was an error while load data from file {}: {}", dataResource.getFile(), ex.getMessage());
+            throw new ProcessFileException(String.format("Error while process train data file [%s]",
+                    dataResource.getFile()));
+        }
     }
 
     /**
