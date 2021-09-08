@@ -98,7 +98,8 @@
 {
   "requestId": "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
   "status": "SUCCESS",
-  "evaluationResults": "<Base64 evaluation results>"
+  "evaluationResults": "<Base64 evaluation results>",
+  "errors": null
 }
 ----
 
@@ -214,6 +215,8 @@
 {
   "requestId": "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
   "status": "SUCCESS"
+  "downloadUrl": "http://localhost:8080/eca-server/eca-api/experiment/download/YTcxNGUxNDcwYTM2NmUwNjRjZjA3ZmZkZDYyNTQzZWY6NTA0MjMzNDkwMDc0MzY3OTky",
+  "errors": null
 }
 ----
 
@@ -235,6 +238,12 @@
 |Статус ответа
 |Заполнятся по <<Справочник значений TechnicalStatus>>
 |3
+|downloadUrl
+|string
+|-
+|Ссылка на скачивание результатов эксперимента
+|Заполнятся только для статуса SUCCESS
+|4
 |errors
 |MessageError list
 |-
@@ -273,7 +282,8 @@
 {
   "requestId": "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
   "status": "SUCCESS",
-  "evaluationResults": "<Base64 evaluation results>"
+  "evaluationResults": "<Base64 evaluation results>",
+  "errors": null
 }
 ----
 
@@ -292,7 +302,7 @@
 |status
 |string
 |+
-|Статус ответа
+|Статус построения модели
 |Заполнятся по <<Справочник значений TechnicalStatus>>
 |2
 |errors
@@ -352,15 +362,18 @@
 |===
 |№|Код ответа|Описание
 |1
-|SUCCESS
-|Статус усешного ответа
+|IN_PROGRESS
+|Построение модели в процессе
 |2
-|ERROR
-|Произошла какая либо ошибка
+|SUCCESS
+|Модель успешно построена
 |3
+|ERROR
+|Произошла какая либо ошибка при построении модели
+|4
 |TIMEOUT
 |Произошел таймаут
-|4
+|5
 |VALIDATION_ERROR
 |Ошибки валидации входных параметров
 |===
