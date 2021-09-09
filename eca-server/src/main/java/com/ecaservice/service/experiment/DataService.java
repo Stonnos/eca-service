@@ -4,7 +4,6 @@ import com.ecaservice.common.web.exception.FileProcessingException;
 import com.ecaservice.common.web.exception.InvalidFileException;
 import com.ecaservice.exception.experiment.ExperimentException;
 import eca.core.ModelSerializationHelper;
-import eca.data.DataFileExtension;
 import eca.data.file.FileDataLoader;
 import eca.data.file.FileDataSaver;
 import eca.data.file.resource.DataResource;
@@ -19,11 +18,9 @@ import weka.core.Instances;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static com.ecaservice.util.Utils.isValidTrainDataFile;
+import static eca.data.FileUtils.ALL_EXTENSIONS;
+import static eca.data.FileUtils.isValidTrainDataFile;
 
 /**
  * Data service interface.
@@ -34,10 +31,6 @@ import static com.ecaservice.util.Utils.isValidTrainDataFile;
 @Service
 @RequiredArgsConstructor
 public class DataService {
-
-    private static final List<String> TRAIN_DATA_FILE_EXTENSIONS = Stream.of(DataFileExtension.values())
-            .map(DataFileExtension::getExtendedExtension)
-            .collect(Collectors.toList());
 
     private final FileDataSaver dataSaver;
 
@@ -51,7 +44,7 @@ public class DataService {
         if (!isValidTrainDataFile(file.getName())) {
             throw new InvalidFileException(
                     String.format("Invalid file [%s] extension. Expected one of %s", file.getName(),
-                            TRAIN_DATA_FILE_EXTENSIONS));
+                            ALL_EXTENSIONS));
         }
         log.info("Starting to save {} data into file {}.", data.relationName(), file.getAbsolutePath());
         try {
@@ -74,7 +67,7 @@ public class DataService {
         if (!isValidTrainDataFile(dataResource.getFile())) {
             throw new InvalidFileException(
                     String.format("Invalid file [%s] extension. Expected one of %s", dataResource.getFile(),
-                            TRAIN_DATA_FILE_EXTENSIONS));
+                            ALL_EXTENSIONS));
         }
         log.info("Starting to load data from file {}", dataResource.getFile());
         FileDataLoader dataLoader = new FileDataLoader();
