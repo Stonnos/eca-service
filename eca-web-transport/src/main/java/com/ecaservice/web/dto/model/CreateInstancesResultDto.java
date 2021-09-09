@@ -1,9 +1,8 @@
 package com.ecaservice.web.dto.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Create instances result dto model.
@@ -11,8 +10,7 @@ import lombok.NoArgsConstructor;
  * @author Roman Batygin
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
 @Schema(description = "Create instances result model")
 public class CreateInstancesResultDto {
 
@@ -33,16 +31,4 @@ public class CreateInstancesResultDto {
      */
     @Schema(description = "Database table name", required = true)
     private String tableName;
-
-    /**
-     * Is instances created?
-     */
-    @Schema(description = "Instances creation boolean flag", required = true)
-    private boolean created;
-
-    /**
-     * Error message
-     */
-    @Schema(description = "Error message")
-    private String errorMessage;
 }

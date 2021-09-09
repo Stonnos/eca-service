@@ -1,15 +1,14 @@
 package com.ecaservice.data.storage.controller;
 
-import com.ecaservice.common.web.exception.ValidationErrorException;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.mapping.InstancesMapper;
 import com.ecaservice.data.storage.model.MultipartFileResource;
+import com.ecaservice.data.storage.service.InstancesLoader;
 import com.ecaservice.data.storage.service.StorageService;
 import com.ecaservice.web.dto.model.CreateInstancesResultDto;
 import com.ecaservice.web.dto.model.InstancesDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import eca.data.file.FileDataLoader;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -57,7 +56,7 @@ public class DataStorageController {
     private static final int MAX_TABLE_NAME_LENGTH = 30;
 
     private final StorageService storageService;
-    private final FileDataLoader fileDataLoader;
+    private final InstancesLoader instancesLoader;
     private final InstancesMapper instancesMapper;
 
     /**
@@ -106,26 +105,14 @@ public class DataStorageController {
             @Size(max = MAX_TABLE_NAME_LENGTH) @RequestParam String tableName) {
         log.info("Received request for saving instances '{}' into table [{}]",
                 trainingData.getOriginalFilename(), tableName);
-        CreateInstancesResultDto createInstancesResultDto = new CreateInstancesResultDto();
-        createInstancesResultDto.setSourceFileName(trainingData.getOriginalFilename());
-        createInstancesResultDto.setTableName(tableName);
-        try {
-            MultipartFileResource dataResource = new MultipartFileResource(trainingData);
-            fileDataLoader.setSource(dataResource);
-            log.info("Starting to save file '{}'.", dataResource.getFile());
-            Instances instances = fileDataLoader.loadInstances();
-            log.info("Data has been loaded from file '{}'", dataResource.getFile());
-            InstancesEntity instancesEntity = storageService.saveData(instances, tableName);
-            createInstancesResultDto.setCreated(true);
-            createInstancesResultDto.setId(instancesEntity.getId());
-        } catch (ValidationErrorException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            log.error("There was an error while saving instances '{}' into table [{}]: {}",
-                    trainingData.getOriginalFilename(), tableName, ex.getMessage());
-            createInstancesResultDto.setErrorMessage(ex.getMessage());
-        }
-        return createInstancesResultDto;
+        MultipartFileResource multipartFileResource = new MultipartFileResource(trainingData);
+        Instances instances = instancesLoader.load(multipartFileResource);
+        InstancesEntity instancesEntity = storageService.saveData(instances, tableName);
+        return CreateInstancesResultDto.builder()
+                .id(instancesEntity.getId())
+                .sourceFileName(trainingData.getOriginalFilename())
+                .tableName(instancesEntity.getTableName())
+                .build();
     }
 
     /**
