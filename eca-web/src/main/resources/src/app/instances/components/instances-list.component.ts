@@ -58,15 +58,10 @@ export class InstancesListComponent extends BaseListComponent<InstancesDto> impl
   }
 
   public onCreateInstances(createInstancesResultDto: CreateInstancesResultDto): void {
-    if (createInstancesResultDto.created) {
-      this.messageService.add({ severity: 'success', summary: `Добавлен новый датасет ${createInstancesResultDto.tableName}`, detail: '' });
-      this.lastCreatedId = createInstancesResultDto.id;
-      this.reloadPageWithLoader();
-    } else {
-      this.messageService.add({ severity: 'error', summary:
-          `Возникла ошибка при добавлении датасета из файла ${createInstancesResultDto.sourceFileName}`,
-        detail: createInstancesResultDto.errorMessage });
-    }
+    this.messageService.add({ severity: 'success',
+      summary: `Добавлен новый датасет ${createInstancesResultDto.tableName}`, detail: '' });
+    this.lastCreatedId = createInstancesResultDto.id;
+    this.reloadPageWithLoader();
   }
 
   public onDeleteInstances(item: InstancesDto): void {
