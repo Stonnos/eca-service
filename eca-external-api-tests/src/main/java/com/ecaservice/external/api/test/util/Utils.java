@@ -2,8 +2,8 @@ package com.ecaservice.external.api.test.util;
 
 import com.ecaservice.external.api.dto.EvaluationResponseDto;
 import com.ecaservice.external.api.dto.ResponseDto;
-import eca.converters.model.ClassificationModel;
 import eca.core.evaluation.Evaluation;
+import eca.core.model.ClassificationModel;
 import lombok.Cleanup;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.io.IOUtils;
