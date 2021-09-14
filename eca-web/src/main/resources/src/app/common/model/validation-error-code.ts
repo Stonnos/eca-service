@@ -8,4 +8,6 @@ export class ValidationErrorCode {
   public static readonly ACTIVE_RESET_PASSWORD_REQUEST: string = 'ActiveResetPasswordRequest';
   public static readonly USER_LOCKED:  string = 'UserLocked';
   public static readonly INVALID_TOKEN: string = 'InvalidToken';
+  public static readonly INVALID_TRAIN_DATA_FILE: string = 'InvalidFile';
+  public static readonly PROCESS_FILE_ERROR: string = 'ProcessFileError';
 }

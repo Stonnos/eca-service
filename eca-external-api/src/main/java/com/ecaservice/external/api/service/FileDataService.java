@@ -1,7 +1,8 @@
 package com.ecaservice.external.api.service;
 
 import com.ecaservice.external.api.exception.ProcessFileException;
-import eca.converters.ModelConverter;
+import eca.core.ModelSerializationHelper;
+import eca.core.model.ClassificationModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -29,8 +30,8 @@ public class FileDataService {
      * @param file       - file object
      * @throws Exception in case of error
      */
-    public void saveModel(Object classifier, File file) throws Exception {
-        ModelConverter.saveModel(file, classifier);
+    public void saveModel(ClassificationModel classifier, File file) throws Exception {
+        ModelSerializationHelper.serialize(file, classifier);
     }
 
     /**

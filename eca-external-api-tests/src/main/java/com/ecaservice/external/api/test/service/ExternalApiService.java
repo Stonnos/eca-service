@@ -4,7 +4,7 @@ import com.ecaservice.external.api.dto.InstancesDto;
 import com.ecaservice.external.api.dto.ResponseDto;
 import com.ecaservice.external.api.test.multipart.ByteArrayMultipartFile;
 import com.ecaservice.external.api.test.service.api.ExternalApiClient;
-import eca.converters.model.ClassificationModel;
+import eca.core.model.ClassificationModel;
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

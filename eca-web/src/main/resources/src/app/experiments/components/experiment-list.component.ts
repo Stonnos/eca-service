@@ -2,7 +2,7 @@ import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import {
   CreateExperimentResultDto,
   ExperimentDto, FilterDictionaryDto, FilterDictionaryValueDto, FilterFieldDto, PageDto,
-  PageRequestDto, RequestStatusStatisticsDto
+  PageRequestDto, RequestStatusStatisticsDto, ValidationErrorDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ExperimentsService } from "../services/experiments.service";
 import { MessageService } from "primeng/api";
@@ -24,6 +24,9 @@ import { ReportType } from "../../common/model/report-type.enum";
 import { WsService } from "../../common/websockets/ws.service";
 import { Subscription } from "rxjs";
 import { RequestStatus } from "../../common/model/request-status.enum";
+import { HttpErrorResponse } from "@angular/common/http";
+import { ValidationService } from "../../common/services/validation.service";
+import { ValidationErrorCode } from "../../common/model/validation-error-code";
 
 @Component({
   selector: 'app-experiment-list',
@@ -54,6 +57,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
                      private experimentsService: ExperimentsService,
                      private filterService: FilterService,
                      private reportsService: ReportsService,
+                     private validationService: ValidationService,
                      private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = ExperimentFields.CREATION_DATE;
@@ -121,7 +125,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
         this.getExperimentResultsFile(experiment);
         break;
       case ExperimentFields.REQUEST_ID:
-        this.router.navigate([RouterPaths.EXPERIMENT_DETAILS_URL, experiment.requestId]);
+        this.router.navigate([RouterPaths.EXPERIMENT_DETAILS_URL, experiment.id]);
         break;
       case ExperimentFields.EVALUATION_METHOD_DESCRIPTION:
         if (experiment.evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION) {
@@ -135,7 +139,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public getExperimentTrainingDataFile(experiment: ExperimentDto): void {
     this.loading = true;
-    this.experimentsService.getExperimentTrainingDataFile(experiment.requestId)
+    this.experimentsService.getExperimentTrainingDataFile(experiment.id)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -153,7 +157,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
 
   public getExperimentResultsFile(experiment: ExperimentDto): void {
     this.loading = true;
-    this.experimentsService.getExperimentResultsFile(experiment.requestId)
+    this.experimentsService.getExperimentResultsFile(experiment.id)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -182,18 +186,15 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
         })
       )
       .subscribe({
-        next: (result: CreateExperimentResultDto) => {
-          if (result.created) {
-            this.messageService.add({ severity: 'success', summary: `Эксперимент был успешно создан`, detail: '' });
-            this.lastCreatedId = result.requestId;
-            this.getRequestStatusesStatistics();
-            this.reloadPageWithLoader();
-          } else {
-            this.messageService.add({ severity: 'error', summary: 'Не удалось создать эксперимент', detail: result.errorMessage });
-          }
+        next: (createExperimentResultDto: CreateExperimentResultDto) => {
+          this.messageService.add({ severity: 'success',
+            summary: `Эксперимент ${createExperimentResultDto.requestId} был успешно создан`, detail: '' });
+          this.lastCreatedId = createExperimentResultDto.id;
+          this.getRequestStatusesStatistics();
+          this.reloadPageWithLoader();
         },
         error: (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+          this.handleCreateExperimentError(error);
         }
       });
   }
@@ -239,7 +240,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
   }
 
   public isBlink(item: any): boolean {
-    return this.blinkId && this.blinkId == item.requestId;
+    return this.blinkId && this.blinkId == item.id;
   }
 
   private toggleOverlayPanel(event, experimentDto: ExperimentDto, column: string, overlayPanel: OverlayPanel): void {
@@ -254,7 +255,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       .subscribe({
         next: (message) => {
           const experimentDto: ExperimentDto = JSON.parse(message.body);
-          this.lastCreatedId = experimentDto.requestId;
+          this.lastCreatedId = experimentDto.id;
           this.showMessage(experimentDto);
           this.reloadPage(false);
           this.getRequestStatusesStatistics();
@@ -271,6 +272,22 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     } else if (experimentDto.requestStatus.value == RequestStatus.FINISHED) {
       this.messageService.add({ severity: 'info', summary: `Эксперимент ${experimentDto.requestId} успешно завершен`, detail: '' });
     }
+  }
+
+  private handleCreateExperimentError(error): void {
+    if (error instanceof HttpErrorResponse && error.status === 400) {
+      const errors: ValidationErrorDto[] = error.error;
+      if (this.validationService.hasErrorCode(errors, ValidationErrorCode.INVALID_TRAIN_DATA_FILE)) {
+        this.messageService.add({ severity: 'error',
+          summary: 'Не удалось создать эксперимент. Допускаются файлы только файлы форматов .csv,.xls,.xlsx,.arff,.xml,.json,.txt,.data,.docx', detail: '' });
+        return;
+      } else if (this.validationService.hasErrorCode(errors, ValidationErrorCode.PROCESS_FILE_ERROR)) {
+        this.messageService.add({ severity: 'error',
+          summary: 'Не удалось создать эксперимент. Файл с обучающей выборкой содержит ошибки', detail: '' });
+        return;
+      }
+    }
+    this.messageService.add({ severity: 'error', summary: 'Не удалось создать эксперимент', detail: error.message });
   }
 
   private initColumns() {

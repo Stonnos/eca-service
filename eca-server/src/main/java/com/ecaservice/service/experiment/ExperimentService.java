@@ -11,6 +11,8 @@ import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.exception.experiment.ResultsNotFoundException;
 import com.ecaservice.filter.ExperimentFilter;
 import com.ecaservice.mapping.ExperimentMapper;
+import com.ecaservice.model.MsgProperties;
+import com.ecaservice.model.entity.Channel;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.FilterTemplateType;
 import com.ecaservice.model.entity.RequestStatus;
@@ -20,7 +22,8 @@ import com.ecaservice.repository.ExperimentRepository;
 import com.ecaservice.service.PageRequestService;
 import com.ecaservice.service.evaluation.CalculationExecutorService;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import eca.converters.model.ExperimentHistory;
+import eca.data.file.resource.FileResource;
+import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +32,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.util.StopWatch;
 import weka.core.Instances;
 
@@ -91,29 +95,28 @@ public class ExperimentService implements PageRequestService<Experiment> {
      * Creates experiment request.
      *
      * @param experimentRequest - experiment request {@link ExperimentRequest}
+     * @param msgProperties     - message properties
      * @return created experiment entity
      */
-    public Experiment createExperiment(ExperimentRequest experimentRequest) {
+    public Experiment createExperiment(ExperimentRequest experimentRequest, MsgProperties msgProperties) {
         String requestId = UUID.randomUUID().toString();
         putMdc(TX_ID, requestId);
         putMdc(EV_REQUEST_ID, requestId);
         log.info("Received experiment [{}] request for data '{}', evaluation method [{}], email '{}'",
                 experimentRequest.getExperimentType(), experimentRequest.getData().relationName(),
                 experimentRequest.getEvaluationMethod(), experimentRequest.getEmail());
-        try {
-            Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
-            experiment.setRequestStatus(RequestStatus.NEW);
-            experiment.setRequestId(requestId);
-            File dataFile = new File(experimentConfig.getData().getStoragePath(),
-                    String.format(experimentConfig.getData().getFileFormat(), experiment.getRequestId()));
-            dataService.save(dataFile, experimentRequest.getData());
-            experiment.setTrainingDataAbsolutePath(dataFile.getAbsolutePath());
-            experiment.setCreationDate(LocalDateTime.now());
-            return experimentRepository.save(experiment);
-        } catch (Exception ex) {
-            log.error(ex.getMessage());
-            throw new ExperimentException(ex.getMessage());
-        }
+        Assert.notNull(msgProperties, "Expected not null message properties");
+        Assert.notNull(msgProperties.getChannel(), "Expected not null channel");
+        Experiment experiment = experimentMapper.map(experimentRequest, crossValidationConfig);
+        setMessageProperties(experiment, msgProperties);
+        experiment.setRequestStatus(RequestStatus.NEW);
+        experiment.setRequestId(requestId);
+        File dataFile = new File(experimentConfig.getData().getStoragePath(),
+                String.format(experimentConfig.getData().getFileFormat(), experiment.getRequestId()));
+        dataService.save(dataFile, experimentRequest.getData());
+        experiment.setTrainingDataAbsolutePath(dataFile.getAbsolutePath());
+        experiment.setCreationDate(LocalDateTime.now());
+        return experimentRepository.save(experiment);
     }
 
     /**
@@ -122,7 +125,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
      * @param experiment - experiment to process
      * @return experiment history
      */
-    public ExperimentHistory processExperiment(final Experiment experiment) {
+    public AbstractExperiment<?> processExperiment(final Experiment experiment) {
         log.info("Starting to built experiment [{}].", experiment.getRequestId());
         try {
             if (StringUtils.isEmpty(experiment.getTrainingDataAbsolutePath())) {
@@ -133,23 +136,24 @@ public class ExperimentService implements PageRequestService<Experiment> {
             StopWatch stopWatch =
                     new StopWatch(String.format("Stop watching for experiment [%s]", experiment.getRequestId()));
             stopWatch.start(String.format("Loading data for experiment [%s]", experiment.getRequestId()));
-            Instances data = dataService.load(new File(experiment.getTrainingDataAbsolutePath()));
+            FileResource fileResource = new FileResource(new File(experiment.getTrainingDataAbsolutePath()));
+            Instances data = dataService.load(fileResource);
             data.setClassIndex(experiment.getClassIndex());
             stopWatch.stop();
 
             final InitializationParams initializationParams =
                     new InitializationParams(data, experiment.getEvaluationMethod());
             stopWatch.start(String.format("Experiment [%s] processing", experiment.getRequestId()));
-            Callable<ExperimentHistory> callable = () ->
+            Callable<AbstractExperiment<?>> callable = () ->
                     experimentProcessorService.processExperimentHistory(experiment, initializationParams);
-            ExperimentHistory experimentHistory =
+            AbstractExperiment<?> abstractExperiment =
                     executorService.execute(callable, experimentConfig.getTimeout(), TimeUnit.HOURS);
             stopWatch.stop();
 
             stopWatch.start(String.format("Experiment [%s] saving", experiment.getRequestId()));
             File experimentFile = new File(experimentConfig.getStoragePath(),
                     String.format(experimentConfig.getFileFormat(), experiment.getRequestId()));
-            dataService.saveExperimentHistory(experimentFile, experimentHistory);
+            dataService.saveExperimentHistory(experimentFile, abstractExperiment);
             stopWatch.stop();
 
             experiment.setExperimentAbsolutePath(experimentFile.getAbsolutePath());
@@ -157,7 +161,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
             experiment.setRequestStatus(RequestStatus.FINISHED);
             log.info("Experiment [{}] has been successfully built!", experiment.getRequestId());
             log.info(stopWatch.prettyPrint());
-            return experimentHistory;
+            return abstractExperiment;
         } catch (TimeoutException ex) {
             log.warn("There was a timeout while experiment [{}] built.", experiment.getRequestId());
             experiment.setRequestStatus(RequestStatus.TIMEOUT);
@@ -178,7 +182,7 @@ public class ExperimentService implements PageRequestService<Experiment> {
      * @param experiment - experiment entity
      * @return experiment history
      */
-    public ExperimentHistory getExperimentHistory(Experiment experiment) {
+    public AbstractExperiment<?> getExperimentHistory(Experiment experiment) {
         File experimentFile = getExperimentFile(experiment, Experiment::getExperimentAbsolutePath);
         if (!existsFile(experimentFile)) {
             throw new ResultsNotFoundException(
@@ -233,14 +237,14 @@ public class ExperimentService implements PageRequestService<Experiment> {
     }
 
     /**
-     * Gets experiment by request id.
+     * Gets experiment by id.
      *
-     * @param requestId - request id
+     * @param id - experiment id
      * @return experiment entity
      */
-    public Experiment getByRequestId(String requestId) {
-        return experimentRepository.findByRequestId(requestId)
-                .orElseThrow(() -> new EntityNotFoundException(Experiment.class, requestId));
+    public Experiment getById(Long id) {
+        return experimentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Experiment.class, id));
     }
 
     /**
@@ -281,5 +285,13 @@ public class ExperimentService implements PageRequestService<Experiment> {
                 requestStatus -> !experimentTypesMap.containsKey(requestStatus)).forEach(
                 requestStatus -> experimentTypesMap.put(requestStatus, 0L));
         return experimentTypesMap;
+    }
+
+    private void setMessageProperties(Experiment experiment, MsgProperties msgProperties) {
+        experiment.setChannel(msgProperties.getChannel());
+        if (Channel.QUEUE.equals(experiment.getChannel())) {
+            experiment.setReplyTo(msgProperties.getReplyTo());
+            experiment.setCorrelationId(msgProperties.getCorrelationId());
+        }
     }
 }

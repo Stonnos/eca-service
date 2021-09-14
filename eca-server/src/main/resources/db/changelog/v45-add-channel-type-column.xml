@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v45-add-channel-type-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Add channel_type column to experiment table -->
+    <changeSet id="1" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <not>
+                <columnExists tableName="experiment" columnName="channel_type"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="experiment">
+            <column name="channel_type" type="varchar(255)"/>
+        </addColumn>
+        <addNotNullConstraint tableName="experiment" columnName="channel_type" defaultNullValue="QUEUE"/>
+    </changeSet>
+
+    <!-- Add reply_to column to experiment table -->
+    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <not>
+                <columnExists tableName="experiment" columnName="reply_to"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="experiment">
+            <column name="reply_to" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <!-- Add correlation_id column to experiment table -->
+    <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <not>
+                <columnExists tableName="experiment" columnName="correlation_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="experiment">
+            <column name="correlation_id" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

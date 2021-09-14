@@ -7,8 +7,8 @@ import com.ecaservice.model.entity.ExperimentResultsRequest;
 import com.ecaservice.model.experiment.ExperimentResultsRequestSource;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
-import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.EvaluationResults;
+import eca.dataminer.AbstractExperiment;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,16 +33,16 @@ public class ErsService {
      * Sent experiment results to ERS service.
      *
      * @param experimentResultsEntity - experiment entity
-     * @param experimentHistory       - experiment history
+     * @param abstractExperiment       - experiment history
      * @param source                  - experiment results request source
      */
     public void sentExperimentResults(ExperimentResultsEntity experimentResultsEntity,
-                                      ExperimentHistory experimentHistory, ExperimentResultsRequestSource source) {
+                                      AbstractExperiment<?> abstractExperiment, ExperimentResultsRequestSource source) {
         ExperimentResultsRequest experimentResultsRequest = new ExperimentResultsRequest();
         experimentResultsRequest.setRequestSource(source);
         experimentResultsRequest.setExperimentResults(experimentResultsEntity);
         EvaluationResults evaluationResults =
-                experimentHistory.getExperiment().get(experimentResultsEntity.getResultsIndex());
+                abstractExperiment.getHistory().get(experimentResultsEntity.getResultsIndex());
         ersRequestService.saveEvaluationResults(evaluationResults, experimentResultsRequest);
     }
 

@@ -4,14 +4,15 @@ import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.exception.TableExistsException;
 import com.ecaservice.data.storage.mapping.InstancesMapper;
 import com.ecaservice.data.storage.mapping.InstancesMapperImpl;
+import com.ecaservice.data.storage.model.MultipartFileResource;
 import com.ecaservice.data.storage.repository.InstancesRepository;
+import com.ecaservice.data.storage.service.InstancesLoader;
 import com.ecaservice.data.storage.service.impl.StorageServiceImpl;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.ecaservice.web.dto.model.CreateInstancesResultDto;
 import com.ecaservice.web.dto.model.InstancesDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import eca.data.file.FileDataLoader;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -76,7 +77,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     @MockBean
     private InstancesRepository instancesRepository;
     @MockBean
-    private FileDataLoader fileDataLoader;
+    private InstancesLoader instancesLoader;
     @MockBean
     private JdbcTemplate jdbcTemplate;
 
@@ -100,37 +101,14 @@ class DataStorageControllerTest extends AbstractControllerTest {
         Instances instances = loadInstances();
         InstancesEntity instancesEntity = createInstancesEntity();
         instancesEntity.setTableName(TABLE_NAME);
-        when(fileDataLoader.loadInstances()).thenReturn(instances);
+        when(instancesLoader.load(any(MultipartFileResource.class))).thenReturn(instances);
         when(jdbcTemplate.queryForObject(anyString(), eq(Boolean.class))).thenReturn(true);
         when(storageService.saveData(any(Instances.class), anyString())).thenReturn(instancesEntity);
-        CreateInstancesResultDto expected = new CreateInstancesResultDto();
-        expected.setId(instancesEntity.getId());
-        expected.setTableName(instancesEntity.getTableName());
-        expected.setSourceFileName(trainingData.getOriginalFilename());
-        expected.setCreated(true);
-        mockMvc.perform(multipart(SAVE_URL)
-                .file(trainingData)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
-                .param(TABLE_NAME_PARAM, TABLE_NAME))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(objectMapper.writeValueAsString(expected)));
-    }
-
-    @Test
-    void testSaveInstancesWithError() throws Exception {
-        Instances instances = loadInstances();
-        InstancesEntity instancesEntity = createInstancesEntity();
-        instancesEntity.setTableName(TABLE_NAME);
-        when(fileDataLoader.loadInstances()).thenReturn(instances);
-        when(jdbcTemplate.queryForObject(anyString(), eq(Boolean.class))).thenReturn(true);
-        when(storageService.saveData(any(Instances.class), anyString())).thenThrow(
-                new IllegalStateException(ERROR_MESSAGE));
-        CreateInstancesResultDto expected = new CreateInstancesResultDto();
-        expected.setTableName(instancesEntity.getTableName());
-        expected.setSourceFileName(trainingData.getOriginalFilename());
-        expected.setCreated(false);
-        expected.setErrorMessage(ERROR_MESSAGE);
+        CreateInstancesResultDto expected = CreateInstancesResultDto.builder()
+                .id(instancesEntity.getId())
+                .tableName(instancesEntity.getTableName())
+                .sourceFileName(trainingData.getOriginalFilename())
+                .build();
         mockMvc.perform(multipart(SAVE_URL)
                 .file(trainingData)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
@@ -143,7 +121,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     @Test
     void testSaveExistingInstances() throws Exception {
         Instances instances = loadInstances();
-        when(fileDataLoader.loadInstances()).thenReturn(instances);
+        when(instancesLoader.load(any(MultipartFileResource.class))).thenReturn(instances);
         when(storageService.saveData(any(Instances.class), anyString())).thenThrow(
                 new TableExistsException(TABLE_NAME));
         mockMvc.perform(multipart(SAVE_URL)

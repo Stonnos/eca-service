@@ -5,14 +5,15 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.base.model.ExperimentRequest;
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.common.web.exception.FileProcessingException;
 import com.ecaservice.config.AppProperties;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.core.filter.service.FilterService;
-import com.ecaservice.exception.experiment.ExperimentException;
 import com.ecaservice.mapping.DateTimeConverter;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentMapperImpl;
+import com.ecaservice.model.MsgProperties;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.Experiment_;
 import com.ecaservice.model.entity.FilterTemplateType;
@@ -25,7 +26,9 @@ import com.ecaservice.service.evaluation.CalculationExecutorServiceImpl;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import eca.converters.model.ExperimentHistory;
+import eca.data.file.resource.FileResource;
+import eca.dataminer.AbstractExperiment;
+import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -46,6 +49,8 @@ import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 
+import static com.ecaservice.TestHelperUtils.createExperimentHistory;
+import static com.ecaservice.TestHelperUtils.createMessageProperties;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -66,7 +71,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
-    private static final String INVALID_UUID = "InvalidUuid";
+    private static final long INVALID_ID = 1000L;
 
     @Inject
     private ExperimentRepository experimentRepository;
@@ -115,32 +120,39 @@ class ExperimentServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testSuccessExperimentRequestCreation() throws Exception {
+    void testSuccessExperimentRequestCreation() {
         ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
+        MsgProperties msgProperties = createMessageProperties();
         doNothing().when(dataService).save(any(File.class), any(Instances.class));
-        experimentService.createExperiment(experimentRequest);
+        experimentService.createExperiment(experimentRequest, msgProperties);
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.hasOneElement(experiments);
-        Experiment experiment = experiments.get(0);
+        Experiment experiment = experiments.iterator().next();
         assertThat(experiment.getRequestStatus()).isEqualTo(RequestStatus.NEW);
         assertThat(experiment.getRequestId()).isNotNull();
         assertThat(experiment.getCreationDate()).isNotNull();
+        assertThat(experiment.getChannel()).isEqualTo(msgProperties.getChannel());
+        assertThat(experiment.getReplyTo()).isEqualTo(msgProperties.getReplyTo());
+        assertThat(experiment.getCorrelationId()).isEqualTo(msgProperties.getCorrelationId());
         assertThat(experiment.getTrainingDataAbsolutePath()).isNotNull();
     }
 
     @Test
-    void testExperimentRequestCreationWithError() throws Exception {
+    void testExperimentRequestCreationWithError() {
         ExperimentRequest experimentRequest = TestHelperUtils.createExperimentRequest();
-        doThrow(Exception.class).when(dataService).save(any(File.class), any(Instances.class));
-        assertThrows(ExperimentException.class, () -> experimentService.createExperiment(experimentRequest));
+        doThrow(FileProcessingException.class).when(dataService).save(any(File.class), any(Instances.class));
+        MsgProperties msgProperties = createMessageProperties();
+        assertThrows(FileProcessingException.class,
+                () -> experimentService.createExperiment(experimentRequest, msgProperties));
     }
 
     @Test
     void testProcessExperimentWithSuccessStatus() throws Exception {
-        when(dataService.load(any(File.class))).thenReturn(data);
+        when(dataService.load(any(FileResource.class))).thenReturn(data);
+        AbstractExperiment experimentHistory = createExperimentHistory(data);
         when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
-                any(InitializationParams.class))).thenReturn(new ExperimentHistory());
-        doNothing().when(dataService).saveExperimentHistory(any(File.class), any(ExperimentHistory.class));
+                any(InitializationParams.class))).thenReturn(experimentHistory);
+        doNothing().when(dataService).saveExperimentHistory(any(File.class), any(AbstractExperiment.class));
         experimentService.processExperiment(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.hasOneElement(experiments);
@@ -152,8 +164,8 @@ class ExperimentServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testProcessExperimentWithErrorStatus() throws Exception {
-        when(dataService.load(any(File.class))).thenThrow(new Exception());
+    void testProcessExperimentWithErrorStatus() {
+        when(dataService.load(any(FileResource.class))).thenThrow(new FileProcessingException(StringUtils.EMPTY));
         experimentService.processExperiment(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.hasOneElement(experiments);
@@ -164,11 +176,12 @@ class ExperimentServiceTest extends AbstractJpaTest {
 
     @Test
     void testProcessExperimentWithTimeoutStatus() throws Exception {
-        when(dataService.load(any(File.class))).thenReturn(data);
+        when(dataService.load(any(FileResource.class))).thenReturn(data);
+        AbstractExperiment experimentHistory = createExperimentHistory(data);
         when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
-                any(InitializationParams.class))).thenReturn(new ExperimentHistory());
+                any(InitializationParams.class))).thenReturn(experimentHistory);
         doThrow(TimeoutException.class).when(dataService).saveExperimentHistory(any(File.class),
-                any(ExperimentHistory.class));
+                any(AbstractExperiment.class));
         experimentService.processExperiment(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         List<Experiment> experiments = experimentRepository.findAll();
         AssertionUtils.hasOneElement(experiments);
@@ -432,13 +445,13 @@ class ExperimentServiceTest extends AbstractJpaTest {
     void testGetExperiment() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         experimentRepository.save(experiment);
-        Experiment actual = experimentService.getByRequestId(experiment.getRequestId());
+        Experiment actual = experimentService.getById(experiment.getId());
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isEqualTo(experiment.getId());
     }
 
     @Test
     void testGetExperimentShouldThrowEntityNotFoundException() {
-        assertThrows(EntityNotFoundException.class, () -> experimentService.getByRequestId(INVALID_UUID));
+        assertThrows(EntityNotFoundException.class, () -> experimentService.getById(INVALID_ID));
     }
 }

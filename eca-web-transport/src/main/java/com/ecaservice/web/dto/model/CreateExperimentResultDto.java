@@ -1,9 +1,8 @@
 package com.ecaservice.web.dto.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Create experiment result dto model.
@@ -11,26 +10,19 @@ import lombok.NoArgsConstructor;
  * @author Roman Batygin
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
 @Schema(description = "Create experiment result model")
 public class CreateExperimentResultDto {
 
     /**
-     * Experiment request id
+     * Experiment id
      */
-    @Schema(description = "Experiment request id", required = true)
+    @Schema(description = "Experiment id", required = true)
+    private Long id;
+
+    /**
+     * Request id
+     */
+    @Schema(description = "Request id", required = true)
     private String requestId;
-
-    /**
-     * Is experiment created?
-     */
-    @Schema(description = "Experiment creation boolean flag", required = true)
-    private boolean created;
-
-    /**
-     * Error message
-     */
-    @Schema(description = "Error message")
-    private String errorMessage;
 }

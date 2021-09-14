@@ -8,7 +8,12 @@ package com.ecaservice.base.model;
 public enum TechnicalStatus {
 
     /**
-     * Success status.
+     * Evaluation in progress.
+     */
+    IN_PROGRESS,
+
+    /**
+     * Evaluation success status.
      */
     SUCCESS,
 

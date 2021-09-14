@@ -57,9 +57,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class EvaluationControllerTest extends PageRequestControllerTest {
 
     private static final String BASE_URL = "/evaluation";
-    private static final String DETAILS_URL = BASE_URL + "/details/{requestId}";
+    private static final String DETAILS_URL = BASE_URL + "/details/{id}";
     private static final String LIST_URL = BASE_URL + "/list";
     private static final String REQUEST_STATUS_STATISTICS_URL = BASE_URL + "/request-statuses-statistics";
+    private static final long ID = 1L;
 
     @MockBean
     private EvaluationLogService evaluationLogService;
@@ -71,13 +72,13 @@ class EvaluationControllerTest extends PageRequestControllerTest {
 
     @Test
     void testGetEvaluationLogDetailsUnauthorized() throws Exception {
-        mockMvc.perform(get(DETAILS_URL, TEST_UUID))
+        mockMvc.perform(get(DETAILS_URL, ID))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void testGetEvaluationLogDetailsNotFound() throws Exception {
-        when(evaluationLogRepository.findByRequestId(TEST_UUID)).thenThrow(EntityNotFoundException.class);
+        when(evaluationLogRepository.findById(ID)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(DETAILS_URL, TEST_UUID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isBadRequest());
@@ -86,10 +87,10 @@ class EvaluationControllerTest extends PageRequestControllerTest {
     @Test
     void testGetEvaluationLogDetailsOk() throws Exception {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog(TEST_UUID, RequestStatus.FINISHED);
-        when(evaluationLogRepository.findByRequestId(TEST_UUID)).thenReturn(Optional.of(evaluationLog));
+        when(evaluationLogRepository.findById(ID)).thenReturn(Optional.of(evaluationLog));
         EvaluationLogDetailsDto evaluationLogDetailsDto = evaluationLogMapper.mapDetails(evaluationLog);
         when(evaluationLogService.getEvaluationLogDetails(evaluationLog)).thenReturn(evaluationLogDetailsDto);
-        mockMvc.perform(get(DETAILS_URL, TEST_UUID)
+        mockMvc.perform(get(DETAILS_URL, ID)
                 .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

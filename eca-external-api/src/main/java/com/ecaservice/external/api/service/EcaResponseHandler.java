@@ -8,9 +8,9 @@ import com.ecaservice.external.api.config.ExternalApiConfig;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
-import eca.converters.model.ClassificationModel;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationResults;
+import eca.core.model.ClassificationModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -90,8 +90,7 @@ public class EcaResponseHandler {
         ClassificationModel classifierModel =
                 new ClassificationModel((AbstractClassifier) evaluationResults.getClassifier(),
                         evaluationResults.getEvaluation().getData(), evaluationResults.getEvaluation(),
-                        classifiersOptionsConfig.getMaximumFractionDigits(),
-                        evaluationResults.getClassifier().getClass().getSimpleName());
+                        classifiersOptionsConfig.getMaximumFractionDigits());
         String fileName =
                 String.format(MODEL_FILE_FORMAT, evaluationResults.getClassifier().getClass().getSimpleName(),
                         evaluationRequestEntity.getCorrelationId());

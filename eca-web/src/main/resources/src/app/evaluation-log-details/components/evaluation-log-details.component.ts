@@ -17,7 +17,7 @@ import { Utils } from "../../common/util/utils";
 })
 export class EvaluationLogDetailsComponent implements OnInit {
 
-  private readonly requestId: string;
+  private readonly id: number;
 
   public evaluationLogFields: any[] = [];
   public loading: boolean = false;
@@ -28,7 +28,7 @@ export class EvaluationLogDetailsComponent implements OnInit {
                      private messageService: MessageService,
                      private route: ActivatedRoute,
                      private fieldService: FieldService) {
-    this.requestId = this.route.snapshot.params.id;
+    this.id = this.route.snapshot.params.id;
     this.initEvaluationLogFields();
   }
 
@@ -38,7 +38,7 @@ export class EvaluationLogDetailsComponent implements OnInit {
 
   public getEvaluationLogDetails(): void {
     this.loading = true;
-    this.classifiersService.getEvaluationLogDetails(this.requestId)
+    this.classifiersService.getEvaluationLogDetails(this.id)
       .pipe(
         finalize(() => {
           this.loading = false;

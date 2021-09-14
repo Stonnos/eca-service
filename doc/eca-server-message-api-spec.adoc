@@ -11,7 +11,7 @@
 3. Интеграция с сервисом ERS (Evaluation results service). API предоставляет возможность отправки результатов классификации в сервис для последующего анализа, а также нахождение
 оптимальных конфигураций классификаторов для конкретной обучающей выборки на основе истории результатов классификации.
 
-Для интеграции с eca - service, на клиенте должна быть установлена самая последняя версия eca-core (6.8.7), в которой реализованы такие классы как: AbstractClassifier, Instances, EvaluationResults.
+Для интеграции с eca - service, на клиенте должна быть установлена самая последняя версия eca-core (6.8.8), в которой реализованы такие классы как: AbstractClassifier, Instances, EvaluationResults.
 
 == 2. Описание очередей
 
@@ -98,7 +98,8 @@
 {
   "requestId": "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
   "status": "SUCCESS",
-  "evaluationResults": "<Base64 evaluation results>"
+  "evaluationResults": "<Base64 evaluation results>",
+  "errors": null
 }
 ----
 
@@ -134,7 +135,7 @@
 |status
 |string
 |+
-|Статус ответа
+|Статус построения модели
 |Заполнятся по <<Справочник значений TechnicalStatus>>
 |3
 |errors
@@ -147,7 +148,7 @@
 |Base64 of EvaluationResults
 |-
 |Результаты классификации, включая построенную модель классификатора
-|Заполняется только в случае, если значение статуса ответа SUCCESS
+|Заполняется только в случае, если значение статуса SUCCESS
 |===
 
 == 4. Описание формата заявки на эксперимент
@@ -214,6 +215,8 @@
 {
   "requestId": "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
   "status": "SUCCESS"
+  "downloadUrl": "http://localhost:8080/eca-server/eca-api/experiment/download/YTcxNGUxNDcwYTM2NmUwNjRjZjA3ZmZkZDYyNTQzZWY6NTA0MjMzNDkwMDc0MzY3OTky",
+  "errors": null
 }
 ----
 
@@ -232,9 +235,15 @@
 |status
 |string
 |+
-|Статус ответа
+|Статус построения модели
 |Заполнятся по <<Справочник значений TechnicalStatus>>
 |3
+|downloadUrl
+|string
+|-
+|Ссылка на скачивание результатов эксперимента
+|Заполнятся только для статуса SUCCESS
+|4
 |errors
 |MessageError list
 |-
@@ -273,7 +282,8 @@
 {
   "requestId": "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
   "status": "SUCCESS",
-  "evaluationResults": "<Base64 evaluation results>"
+  "evaluationResults": "<Base64 evaluation results>",
+  "errors": null
 }
 ----
 
@@ -292,7 +302,7 @@
 |status
 |string
 |+
-|Статус ответа
+|Статус построения модели
 |Заполнятся по <<Справочник значений TechnicalStatus>>
 |2
 |errors
@@ -305,7 +315,7 @@
 |Base64 of EvaluationResults
 |-
 |Результаты классификации, включая построенную модель классификатора
-|Заполняется только в случае, если значение статуса ответа SUCCESS
+|Заполняется только в случае, если значение статуса SUCCESS
 |===
 
 == 6. Описание полей MessageError
@@ -352,15 +362,18 @@
 |===
 |№|Код ответа|Описание
 |1
-|SUCCESS
-|Статус усешного ответа
+|IN_PROGRESS
+|Построение модели в процессе
 |2
-|ERROR
-|Произошла какая либо ошибка
+|SUCCESS
+|Модель успешно построена
 |3
+|ERROR
+|Произошла какая либо ошибка при построении модели
+|4
 |TIMEOUT
 |Произошел таймаут
-|4
+|5
 |VALIDATION_ERROR
 |Ошибки валидации входных параметров
 |===

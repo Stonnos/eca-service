@@ -5,7 +5,7 @@ import com.ecaservice.config.ExperimentConfig;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.experiment.InitializationParams;
 import com.ecaservice.service.experiment.visitor.ExperimentInitializationVisitor;
-import eca.converters.model.ExperimentHistory;
+import eca.dataminer.AbstractExperiment;
 import eca.dataminer.AutomatedKNearestNeighbours;
 import eca.metrics.KNearestNeighbours;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,11 +63,10 @@ class ExperimentProcessorServiceTest {
                 new AutomatedKNearestNeighbours(data, new KNearestNeighbours());
         when(experimentInitializationVisitor.caseKNearestNeighbours(initializationParams))
                 .thenReturn(automatedKNearestNeighbours);
-        ExperimentHistory experimentHistory = experimentProcessorService.processExperimentHistory(
+        AbstractExperiment<?> experiment = experimentProcessorService.processExperimentHistory(
                 TestHelperUtils.createExperiment(null), initializationParams);
-        assertThat(experimentHistory).isNotNull();
-        assertThat(experimentHistory.getExperiment()).isNotNull();
-        assertThat(experimentHistory.getExperiment().size()).isEqualTo(experimentConfig.getResultSize().intValue());
+        assertThat(experiment).isNotNull();
+        assertThat(experiment.getHistory().size()).isEqualTo(experimentConfig.getResultSize().intValue());
     }
 
 }

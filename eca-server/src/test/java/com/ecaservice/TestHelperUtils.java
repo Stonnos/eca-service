@@ -26,6 +26,8 @@ import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.ers.dto.ResponseStatus;
 import com.ecaservice.ers.dto.RocCurveReport;
 import com.ecaservice.ers.dto.StatisticsReport;
+import com.ecaservice.model.MsgProperties;
+import com.ecaservice.model.entity.Channel;
 import com.ecaservice.model.entity.ClassifierInfo;
 import com.ecaservice.model.entity.ClassifierInputOptions;
 import com.ecaservice.model.entity.ClassifierOptionsDatabaseModel;
@@ -53,17 +55,19 @@ import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import eca.converters.model.ExperimentHistory;
 import eca.core.evaluation.Evaluation;
 import eca.core.evaluation.EvaluationMethod;
 import eca.core.evaluation.EvaluationResults;
 import eca.core.evaluation.EvaluationService;
 import eca.data.file.resource.FileResource;
 import eca.data.file.xls.XLSLoader;
+import eca.dataminer.AbstractExperiment;
+import eca.dataminer.AutomatedKNearestNeighbours;
 import eca.ensemble.forests.DecisionTreeType;
 import eca.ensemble.sampling.SamplingMethod;
 import eca.metrics.KNearestNeighbours;
 import eca.trees.CART;
+import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.util.DigestUtils;
@@ -136,6 +140,7 @@ public class TestHelperUtils {
     private static final String OPTION_NAME = "option";
     private static final String OPTION_VALUE = "value";
     private static final String CONFIGURATION_NAME = "configuration";
+    private static final int ITERATIONS = 1;
 
     /**
      * Creates page request dto.
@@ -247,6 +252,9 @@ public class TestHelperUtils {
         experiment.setTrainingDataAbsolutePath(TRAINING_DATA_ABSOLUTE_PATH);
         experiment.setExperimentAbsolutePath(EXPERIMENT_ABSOLUTE_PATH);
         experiment.setRequestId(requestId);
+        experiment.setChannel(Channel.QUEUE);
+        experiment.setReplyTo(REPLY_TO);
+        experiment.setCorrelationId(UUID.randomUUID().toString());
         experiment.setClassIndex(0);
         return experiment;
     }
@@ -845,13 +853,25 @@ public class TestHelperUtils {
     /**
      * Creates experiment history.
      *
+     * @param data - training data
      * @return experiment history
      */
-    public static ExperimentHistory createExperimentHistory() {
-        ExperimentHistory experimentHistory = new ExperimentHistory();
-        experimentHistory.setExperiment(newArrayList());
-        experimentHistory.getExperiment().add(getEvaluationResults());
-        return experimentHistory;
+    @SneakyThrows
+    public static AbstractExperiment createExperimentHistory(Instances data) {
+        var experiment = new AutomatedKNearestNeighbours(data, new KNearestNeighbours());
+        experiment.setNumIterations(ITERATIONS);
+        experiment.beginExperiment();
+        return experiment;
+    }
+
+    /**
+     * Creates experiment history.
+     *
+     * @return experiment history
+     */
+    @SneakyThrows
+    public static AbstractExperiment createExperimentHistory() {
+        return createExperimentHistory(loadInstances());
     }
 
     /**
@@ -939,5 +959,18 @@ public class TestHelperUtils {
         classifierOptionsDatabaseModel.setOptionsName(DecisionTreeOptions.class.getSimpleName());
         classifierOptionsDatabaseModel.setCreatedBy(CREATED_BY);
         return classifierOptionsDatabaseModel;
+    }
+
+    /**
+     * Creates message properties.
+     *
+     * @return message properties
+     */
+    public static MsgProperties createMessageProperties() {
+        return MsgProperties.builder()
+                .channel(Channel.QUEUE)
+                .replyTo(REPLY_TO)
+                .correlationId(UUID.randomUUID().toString())
+                .build();
     }
 }

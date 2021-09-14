@@ -6,12 +6,15 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.event.model.ExperimentEmailEvent;
 import com.ecaservice.mapping.ExperimentMapper;
 import com.ecaservice.mapping.ExperimentProgressMapper;
+import com.ecaservice.model.MsgProperties;
 import com.ecaservice.model.MultipartFileResource;
+import com.ecaservice.model.entity.Channel;
 import com.ecaservice.model.entity.Experiment;
 import com.ecaservice.model.entity.ExperimentProgressEntity;
 import com.ecaservice.model.entity.ExperimentResultsEntity;
 import com.ecaservice.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.service.auth.UsersClient;
+import com.ecaservice.service.experiment.DataService;
 import com.ecaservice.service.experiment.ExperimentProgressService;
 import com.ecaservice.service.experiment.ExperimentResultsService;
 import com.ecaservice.service.experiment.ExperimentService;
@@ -27,7 +30,6 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.ecaservice.web.dto.model.UserDto;
 import eca.core.evaluation.EvaluationMethod;
-import eca.data.file.FileDataLoader;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -51,6 +53,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import weka.core.Instances;
 
 import javax.validation.Valid;
 import java.io.File;
@@ -79,9 +82,9 @@ import static com.ecaservice.util.Utils.toRequestStatusesStatistics;
 public class ExperimentController {
 
     private static final String EXPERIMENT_RESULTS_FILE_NOT_FOUND =
-            "Experiment results file for request id = '%s' not found!";
+            "Experiment results file for id = '%d' not found!";
     private static final String EXPERIMENT_TRAINING_DATA_FILE_NOT_FOUND_FORMAT =
-            "Experiment training data file for request id = '%s' not found!";
+            "Experiment training data file for id = '%d' not found!";
 
     private final ExperimentService experimentService;
     private final ExperimentResultsService experimentResultsService;
@@ -90,44 +93,45 @@ public class ExperimentController {
     private final UsersClient usersClient;
     private final ExperimentProgressService experimentProgressService;
     private final ApplicationEventPublisher eventPublisher;
+    private final DataService dataService;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
 
     /**
-     * Downloads experiment training data by specified request id.
+     * Downloads experiment training data by specified id.
      *
-     * @param requestId - experiment request id
+     * @param id - experiment id
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
-            description = "Downloads experiment training data by specified request id",
-            summary = "Downloads experiment training data by specified request id",
+            description = "Downloads experiment training data by specified id",
+            summary = "Downloads experiment training data by specified id",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
-    @GetMapping(value = "/training-data/{requestId}")
+    @GetMapping(value = "/training-data/{id}")
     public ResponseEntity<FileSystemResource> downloadTrainingData(
-            @Parameter(description = "Experiment request id", required = true)
-            @PathVariable String requestId) {
-        return downloadExperimentFile(requestId, Experiment::getTrainingDataAbsolutePath,
-                String.format(EXPERIMENT_TRAINING_DATA_FILE_NOT_FOUND_FORMAT, requestId));
+            @Parameter(description = "Experiment id", required = true)
+            @PathVariable Long id) {
+        return downloadExperimentFile(id, Experiment::getTrainingDataAbsolutePath,
+                String.format(EXPERIMENT_TRAINING_DATA_FILE_NOT_FOUND_FORMAT, id));
     }
 
     /**
-     * Downloads experiment results by specified request id.
+     * Downloads experiment results by specified id.
      *
-     * @param requestId - experiment request id
+     * @param id - experiment id
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
-            description = "Downloads experiment results by specified request id",
-            summary = "Downloads experiment results by specified request id",
+            description = "Downloads experiment results by specified id",
+            summary = "Downloads experiment results by specified id",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
-    @GetMapping(value = "/results/{requestId}")
+    @GetMapping(value = "/results/{id}")
     public ResponseEntity<FileSystemResource> downloadExperiment(
-            @Parameter(description = "Experiment request id", required = true)
-            @PathVariable String requestId) {
-        return downloadExperimentFile(requestId, Experiment::getExperimentAbsolutePath,
-                String.format(EXPERIMENT_RESULTS_FILE_NOT_FOUND, requestId));
+            @Parameter(description = "Experiment id", required = true)
+            @PathVariable Long id) {
+        return downloadExperimentFile(id, Experiment::getExperimentAbsolutePath,
+                String.format(EXPERIMENT_RESULTS_FILE_NOT_FOUND, id));
     }
 
     /**
@@ -153,21 +157,18 @@ public class ExperimentController {
         log.info("Received experiment request for data '{}', experiment type {}, evaluation method {}",
                 trainingData.getOriginalFilename(), experimentType, evaluationMethod);
         UserDto userDto = usersClient.getUserInfo();
-        CreateExperimentResultDto resultDto = new CreateExperimentResultDto();
-        try {
-            ExperimentRequest experimentRequest =
-                    createExperimentRequest(trainingData, userDto, experimentType, evaluationMethod);
-            Experiment experiment = experimentService.createExperiment(experimentRequest);
-            resultDto.setRequestId(experiment.getRequestId());
-            resultDto.setCreated(true);
-            eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
-            log.info("Experiment request [{}] has been created.", experiment.getRequestId());
-        } catch (Exception ex) {
-            log.error("There was an error while experiment creation for data '{}': {}",
-                    trainingData.getOriginalFilename(), ex.getMessage());
-            resultDto.setErrorMessage(ex.getMessage());
-        }
-        return resultDto;
+        ExperimentRequest experimentRequest =
+                createExperimentRequest(trainingData, userDto, experimentType, evaluationMethod);
+        MsgProperties msgProperties = MsgProperties.builder()
+                .channel(Channel.WEB)
+                .build();
+        Experiment experiment = experimentService.createExperiment(experimentRequest, msgProperties);
+        eventPublisher.publishEvent(new ExperimentEmailEvent(this, experiment));
+        log.info("Experiment request [{}] has been created.", experiment.getRequestId());
+        return CreateExperimentResultDto.builder()
+                .id(experiment.getId())
+                .requestId(experiment.getRequestId())
+                .build();
     }
 
     /**
@@ -196,23 +197,23 @@ public class ExperimentController {
     }
 
     /**
-     * Finds experiment with specified request id.
+     * Finds experiment with specified id.
      *
-     * @param requestId - experiment request id
+     * @param id - experiment id
      * @return experiment dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
-            description = "Finds experiment with specified request id",
-            summary = "Finds experiment with specified request id",
+            description = "Finds experiment with specified id",
+            summary = "Finds experiment with specified id",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
-    @GetMapping(value = "/details/{requestId}")
+    @GetMapping(value = "/details/{id}")
     public ResponseEntity<ExperimentDto> getExperiment(
-            @Parameter(description = "Experiment request id", required = true)
-            @PathVariable String requestId) {
-        log.info("Received request to get experiment details for request id [{}]", requestId);
-        Experiment experiment = experimentService.getByRequestId(requestId);
+            @Parameter(description = "Experiment id", required = true)
+            @PathVariable Long id) {
+        log.info("Received request to get experiment details for id [{}]", id);
+        Experiment experiment = experimentService.getById(id);
         return ResponseEntity.ok(experimentMapper.map(experiment));
     }
 
@@ -257,7 +258,7 @@ public class ExperimentController {
     /**
      * Gets ERS report for specified experiment.
      *
-     * @param requestId - experiment request id
+     * @param id - experiment id
      * @return ers report dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
@@ -266,12 +267,12 @@ public class ExperimentController {
             summary = "Gets experiment ERS report",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
-    @GetMapping(value = "/ers-report/{requestId}")
+    @GetMapping(value = "/ers-report/{id}")
     public ResponseEntity<ExperimentErsReportDto> getExperimentErsReport(
-            @Parameter(description = "Experiment request id", required = true)
-            @PathVariable String requestId) {
-        log.info("Received request for ERS report for experiment [{}]", requestId);
-        Experiment experiment = experimentService.getByRequestId(requestId);
+            @Parameter(description = "Experiment id", required = true)
+            @PathVariable Long id) {
+        log.info("Received request for ERS report for experiment [{}]", id);
+        Experiment experiment = experimentService.getById(id);
         return ResponseEntity.ok(experimentResultsService.getErsReport(experiment));
     }
 
@@ -307,23 +308,23 @@ public class ExperimentController {
     }
 
     /**
-     * Finds experiment progress with specified request id.
+     * Finds experiment progress with specified id.
      *
-     * @param requestId - experiment request id
+     * @param id - experiment id
      * @return experiment progress dto
      */
     @PreAuthorize("#oauth2.hasScope('web')")
     @Operation(
-            description = "Finds experiment progress with specified request id",
-            summary = "Finds experiment progress with specified request id",
+            description = "Finds experiment progress with specified id",
+            summary = "Finds experiment progress with specified id",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
     )
-    @GetMapping(value = "/progress/{requestId}")
+    @GetMapping(value = "/progress/{id}")
     public ResponseEntity<ExperimentProgressDto> getExperimentProgress(
-            @Parameter(description = "Experiment request id", required = true)
-            @PathVariable String requestId) {
-        log.trace("Received request to get experiment progress for request id [{}]", requestId);
-        Experiment experiment = experimentService.getByRequestId(requestId);
+            @Parameter(description = "Experiment id", required = true)
+            @PathVariable Long id) {
+        log.trace("Received request to get experiment progress for id [{}]", id);
+        Experiment experiment = experimentService.getById(id);
         ExperimentProgressEntity experimentProgressEntity = experimentProgressService.getExperimentProgress(experiment);
         return ResponseEntity.ok(experimentProgressMapper.map(experimentProgressEntity));
     }
@@ -331,28 +332,27 @@ public class ExperimentController {
     private ExperimentRequest createExperimentRequest(MultipartFile trainingData,
                                                       UserDto userDto,
                                                       ExperimentType experimentType,
-                                                      EvaluationMethod evaluationMethod) throws Exception {
+                                                      EvaluationMethod evaluationMethod) {
         ExperimentRequest experimentRequest = new ExperimentRequest();
         experimentRequest.setFirstName(userDto.getFirstName());
         experimentRequest.setEmail(userDto.getEmail());
-        FileDataLoader fileDataLoader = new FileDataLoader();
-        fileDataLoader.setSource(new MultipartFileResource(trainingData));
-        experimentRequest.setData(fileDataLoader.loadInstances());
+        Instances data = dataService.load(new MultipartFileResource(trainingData));
+        experimentRequest.setData(data);
         experimentRequest.setExperimentType(experimentType);
         experimentRequest.setEvaluationMethod(evaluationMethod);
         return experimentRequest;
     }
 
-    private ResponseEntity<FileSystemResource> downloadExperimentFile(String requestId,
+    private ResponseEntity<FileSystemResource> downloadExperimentFile(Long id,
                                                                       Function<Experiment, String> filePathFunction,
                                                                       String errorMessage) {
-        Experiment experiment = experimentService.getByRequestId(requestId);
+        Experiment experiment = experimentService.getById(id);
         File experimentFile = getExperimentFile(experiment, filePathFunction);
         if (!existsFile(experimentFile)) {
             log.error(errorMessage);
             return ResponseEntity.badRequest().build();
         }
-        log.info("Downloads experiment file '{}' for request id = '{}'", filePathFunction.apply(experiment), requestId);
+        log.info("Downloads experiment file '{}' for id = '{}'", filePathFunction.apply(experiment), id);
         return Utils.buildAttachmentResponse(experimentFile);
     }
 }

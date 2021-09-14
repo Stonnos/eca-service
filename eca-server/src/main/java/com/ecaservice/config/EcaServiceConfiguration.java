@@ -9,7 +9,6 @@ import com.ecaservice.core.lock.redis.annotation.EnableRedisLocks;
 import com.ecaservice.model.entity.AbstractEvaluationEntity;
 import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
 import com.ecaservice.repository.EvaluationLogRepository;
-import eca.data.file.FileDataLoader;
 import eca.data.file.FileDataSaver;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -72,19 +71,6 @@ public class EcaServiceConfiguration {
         FileDataSaver dataSaver = new FileDataSaver();
         dataSaver.setDateFormat(experimentConfig.getData().getDateFormat());
         return dataSaver;
-    }
-
-    /**
-     * Creates file data loader bean.
-     *
-     * @param experimentConfig experiment config bean
-     * @return file data loader bean
-     */
-    @Bean
-    public FileDataLoader dataLoader(ExperimentConfig experimentConfig) {
-        FileDataLoader dataLoader = new FileDataLoader();
-        dataLoader.setDateFormat(experimentConfig.getData().getDateFormat());
-        return dataLoader;
     }
 
     /**
