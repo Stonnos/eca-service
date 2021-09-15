@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+import static com.ecaservice.common.web.util.MaskUtils.mask;
 import static com.ecaservice.common.web.util.RandomUtils.generateToken;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
@@ -77,6 +78,7 @@ public class ChangeEmailService {
      */
     @Transactional
     public ChangeEmailRequestEntity changeEmail(String token) {
+        log.info("Starting to change email for token [{}]", mask(token));
         String md5Hash = md5Hex(token);
         var changeEmailRequestEntity =
                 changeEmailRequestRepository.findByTokenAndExpireDateAfterAndConfirmationDateIsNull(md5Hash,
