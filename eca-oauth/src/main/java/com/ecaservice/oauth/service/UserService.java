@@ -39,7 +39,6 @@ import static com.ecaservice.oauth.config.audit.AuditCodes.DISABLE_2FA;
 import static com.ecaservice.oauth.config.audit.AuditCodes.ENABLE_2FA;
 import static com.ecaservice.oauth.config.audit.AuditCodes.LOCK_USER;
 import static com.ecaservice.oauth.config.audit.AuditCodes.UNLOCK_USER;
-import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_EMAIL;
 import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_PERSONAL_DATA;
 import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_PHOTO;
 import static com.ecaservice.oauth.entity.UserEntity_.CREATION_DATE;
@@ -133,7 +132,6 @@ public class UserService {
      * @param userId   - user id
      * @param newEmail - new email
      */
-    @Audit(UPDATE_EMAIL)
     public void updateEmail(long userId, String newEmail) {
         log.info("Starting to update email for user [{}]", userId);
         String emailToUpdate = newEmail.trim();

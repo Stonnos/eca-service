@@ -26,11 +26,6 @@ public class AuditCodes {
     public static final String UPDATE_PERSONAL_DATA = "UPDATE_PERSONAL_DATA";
 
     /**
-     * Updates user email
-     */
-    public static final String UPDATE_EMAIL = "UPDATE_EMAIL";
-
-    /**
      * Updates user photo
      */
     public static final String UPDATE_PHOTO = "UPDATE_PHOTO";
@@ -74,4 +69,14 @@ public class AuditCodes {
      * Reset password
      */
     public static final String RESET_PASSWORD = "RESET_PASSWORD";
+
+    /**
+     * Creates change email request
+     */
+    public static final String CREATE_CHANGE_EMAIL_REQUEST = "CREATE_CHANGE_EMAIL_REQUEST";
+
+    /**
+     * Confirm change email request
+     */
+    public static final String CONFIRM_CHANGE_EMAIL_REQUEST = "CONFIRM_CHANGE_EMAIL_REQUEST";
 }

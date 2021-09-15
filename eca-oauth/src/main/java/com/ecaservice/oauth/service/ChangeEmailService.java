@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.oauth.config.ChangeEmailConfig;
 import com.ecaservice.oauth.entity.ChangeEmailRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
@@ -20,6 +21,8 @@ import java.time.LocalDateTime;
 
 import static com.ecaservice.common.web.util.MaskUtils.mask;
 import static com.ecaservice.common.web.util.RandomUtils.generateToken;
+import static com.ecaservice.oauth.config.audit.AuditCodes.CONFIRM_CHANGE_EMAIL_REQUEST;
+import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_CHANGE_EMAIL_REQUEST;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 /**
@@ -43,6 +46,7 @@ public class ChangeEmailService {
      * @param newEmail - new email
      * @return token model
      */
+    @Audit(CREATE_CHANGE_EMAIL_REQUEST)
     public TokenModel createChangeEmailRequest(Long userId, String newEmail) {
         log.info("Starting to create change email request for user [{}]", userId);
         UserEntity userEntity = userEntityRepository.findById(userId)
@@ -75,6 +79,7 @@ public class ChangeEmailService {
      *
      * @param token - token value
      */
+    @Audit(value = CONFIRM_CHANGE_EMAIL_REQUEST, targetInitiator = "userEntity.login")
     @Transactional
     public ChangeEmailRequestEntity changeEmail(String token) {
         log.info("Starting to change email for token [{}]", mask(token));

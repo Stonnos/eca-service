@@ -2,13 +2,14 @@ id;event_type;message_template;audit_code_id
 1;SUCCESS;Включена двухфакторной аутентификации;ENABLE_2FA
 2;SUCCESS;Выключена двухфакторная аутентификация;DISABLE_2FA
 3;SUCCESS;Персональные данные были изменены;UPDATE_PERSONAL_DATA
-4;SUCCESS;Изменен email;UPDATE_EMAIL
-5;SUCCESS;Обновлена фотография профиля;UPDATE_PHOTO
-6;SUCCESS;Удалена фотография профиля;DELETE_PHOTO
-7;SUCCESS;Создан новый пользователь [${createUserDto.login}];CREATE_USER
-8;SUCCESS;Пользователь [${returnValue.login}] был заблокирован;LOCK_USER
-9;SUCCESS;Блокировка пользователя [${returnValue.login}] была снята;UNLOCK_USER
-10;SUCCESS;Создан запрос на изменение пароля;CREATE_CHANGE_PASSWORD_REQUEST
-11;SUCCESS;Пароль был изменен;CONFIRM_CHANGE_PASSWORD_REQUEST
-12;SUCCESS;Создан запрос на восстановление пароля;CREATE_RESET_PASSWORD_REQUEST
-13;SUCCESS;Пароль был восстановлен;RESET_PASSWORD
+4;SUCCESS;Обновлена фотография профиля;UPDATE_PHOTO
+5;SUCCESS;Удалена фотография профиля;DELETE_PHOTO
+6;SUCCESS;Создан новый пользователь [${createUserDto.login}];CREATE_USER
+7;SUCCESS;Пользователь [${returnValue.login}] был заблокирован;LOCK_USER
+8;SUCCESS;Блокировка пользователя [${returnValue.login}] была снята;UNLOCK_USER
+9;SUCCESS;Создан запрос на изменение пароля;CREATE_CHANGE_PASSWORD_REQUEST
+10;SUCCESS;Пароль был изменен;CONFIRM_CHANGE_PASSWORD_REQUEST
+11;SUCCESS;Создан запрос на восстановление пароля;CREATE_RESET_PASSWORD_REQUEST
+12;SUCCESS;Пароль был восстановлен;RESET_PASSWORD
+13;SUCCESS;Создан запрос на изменение Email;CREATE_CHANGE_EMAIL_REQUEST
+14;SUCCESS;Изменен Email;CONFIRM_CHANGE_EMAIL_REQUEST
