@@ -1,0 +1,60 @@
+<?xml version="1.1" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v10-insert-change-email-template.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Insert CHANGE_EMAIL template -->
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="template_code" value="CHANGE_EMAIL"/>
+            <column name="description" value="Сообщение с подтверждением изменения Email в личном кабинете Eca - service"/>
+            <column name="template_subject" value="Подтверждение изменения Email в личном кабинете Eca - service"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/change-email-template.html"/>
+            <where>template_code = 'CHANGE_EMAIL'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="3" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template_parameter">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="parameter_name" value="changeEmailUrl"/>
+            <column name="description" value="Ссылка на подтверждение изменения Email"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template_parameter">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="parameter_name" value="validityHours"/>
+            <column name="description" value="Время действия ссылки в часах"/>
+            <column name="regex_id" valueComputed="(select id from regex where regex_code = 'INTEGER')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="5" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'CHANGE_EMAIL')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'changeEmailUrl')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="6" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'CHANGE_EMAIL')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'validityHours')"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
