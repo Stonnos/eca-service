@@ -19,10 +19,10 @@ public interface ChangeEmailRequestRepository extends JpaRepository<ChangeEmailR
      *
      * @param userEntity - user entity
      * @param date       - search date
-     * @return change email request entity
+     * @return {@code true} if active change email request exists
      */
-    ChangeEmailRequestEntity findByUserEntityAndExpireDateAfterAndConfirmationDateIsNull(UserEntity userEntity,
-                                                                                         LocalDateTime date);
+    boolean existsByUserEntityAndExpireDateAfterAndConfirmationDateIsNull(UserEntity userEntity,
+                                                                          LocalDateTime date);
 
     /**
      * Finds active change email request for specified token.

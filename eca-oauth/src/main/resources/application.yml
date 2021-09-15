@@ -62,6 +62,10 @@ change-password:
   validityMinutes: 30
   baseUrl: http://localhost:8085
 
+change-email:
+  validityHours: 48
+  baseUrl: http://localhost:8085
+
 ## Swagger properties
 open-api:
   basePath: /
