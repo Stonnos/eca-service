@@ -29,4 +29,9 @@ public class Templates {
      * New user template
      */
     public static final String NEW_USER = "NEW_USER";
+
+    /**
+     * Change email template
+     */
+    public static final String CHANGE_EMAIL = "CHANGE_EMAIL";
 }

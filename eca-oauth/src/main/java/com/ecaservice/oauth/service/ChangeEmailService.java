@@ -50,8 +50,7 @@ public class ChangeEmailService {
         if (userEntity.isLocked()) {
             throw new UserLockedException(userEntity.getId());
         }
-        String emailToUpdate = newEmail.trim();
-        if (!userEntity.getEmail().equals(emailToUpdate) && userEntityRepository.existsByEmail(emailToUpdate)) {
+        if (!userEntity.getEmail().equals(newEmail) && userEntityRepository.existsByEmail(newEmail)) {
             throw new EmailDuplicationException(userId);
         } else {
             LocalDateTime now = LocalDateTime.now();
@@ -61,7 +60,7 @@ public class ChangeEmailService {
             }
             String token = generateToken();
             LocalDateTime expireDate = now.plusHours(changeEmailConfig.getValidityHours());
-            var changeEmailRequestEntity = saveChangeEmailRequest(emailToUpdate, userEntity, token, expireDate);
+            var changeEmailRequestEntity = saveChangeEmailRequest(newEmail, userEntity, token, expireDate);
             return TokenModel.builder()
                     .token(token)
                     .tokenId(changeEmailRequestEntity.getId())

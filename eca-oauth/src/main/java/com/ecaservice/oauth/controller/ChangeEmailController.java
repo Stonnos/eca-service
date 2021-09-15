@@ -1,5 +1,6 @@
 package com.ecaservice.oauth.controller;
 
+import com.ecaservice.oauth.event.model.ChangeEmailNotificationEvent;
 import com.ecaservice.oauth.service.ChangeEmailService;
 import com.ecaservice.user.model.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -59,7 +60,7 @@ public class ChangeEmailController {
         var tokenModel = changeEmailService.createChangeEmailRequest(userDetails.getId(), newEmail);
         log.info("Change email request [{}] has been created for user [{}]", tokenModel.getTokenId(),
                 userDetails.getId());
-        //applicationEventPublisher.publishEvent(new ChangePasswordNotificationEvent(this, tokenModel));
+        applicationEventPublisher.publishEvent(new ChangeEmailNotificationEvent(this, tokenModel, newEmail));
     }
 
     /**
