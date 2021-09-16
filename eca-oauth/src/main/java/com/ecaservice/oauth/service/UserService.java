@@ -9,7 +9,6 @@ import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserEntity_;
 import com.ecaservice.oauth.entity.UserPhoto;
-import com.ecaservice.oauth.exception.EmailDuplicationException;
 import com.ecaservice.oauth.filter.UserFilter;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.repository.RoleRepository;
@@ -124,26 +123,6 @@ public class UserService {
     public UserEntity getById(long id) {
         return userEntityRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, id));
-    }
-
-    /**
-     * Updates email for user.
-     *
-     * @param userId   - user id
-     * @param newEmail - new email
-     */
-    public void updateEmail(long userId, String newEmail) {
-        log.info("Starting to update email for user [{}]", userId);
-        String emailToUpdate = newEmail.trim();
-        UserEntity userEntity = getById(userId);
-        if (!userEntity.getEmail().equals(emailToUpdate)) {
-            if (userEntityRepository.existsByEmail(emailToUpdate)) {
-                throw new EmailDuplicationException(userId);
-            }
-            userEntity.setEmail(emailToUpdate);
-            userEntityRepository.save(userEntity);
-            log.info("Email has been updated for user [{}]", userId);
-        }
     }
 
     /**
