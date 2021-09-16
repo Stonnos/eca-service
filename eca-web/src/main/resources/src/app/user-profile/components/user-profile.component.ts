@@ -157,7 +157,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   public onChangeEmail(newEmail: string): void {
-    this.confirmDialogMessage = `На новый email ${newEmail} отправлено письмо со ссылкой для подтверждения`;
+    this.confirmDialogMessage = `На новый email '${newEmail}' отправлено письмо со ссылкой для подтверждения`;
     this.confirmDialogVisibility = true;
   }
 

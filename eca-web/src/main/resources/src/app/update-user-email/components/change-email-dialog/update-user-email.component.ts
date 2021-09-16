@@ -54,7 +54,7 @@ export class UpdateUserEmailComponent extends BaseCreateDialogComponent<string> 
         )
         .subscribe({
           next: () => {
-            this.itemEvent.emit();
+            this.itemEvent.emit(this.item);
             this.hide();
           },
           error: (error) => {
