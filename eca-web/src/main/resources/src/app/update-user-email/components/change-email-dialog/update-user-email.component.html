@@ -36,8 +36,8 @@
             Недопустимый формат Email
           </div>
         </div>
-        <div class="text-danger error-message" *ngIf="hasSameEmail && submitted">
-          Пользователь с таким Email уже вуществует
+        <div class="text-danger error-message" *ngIf="submitted && errorCode">
+          {{ getErrorMessage() }}
         </div>
       </div>
     </div>

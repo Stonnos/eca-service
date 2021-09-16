@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { BaseCreateDialogComponent } from "../../common/dialog/base-create-dialog.component";
-import { UsersService } from "../../users/services/users.service";
+import { BaseCreateDialogComponent } from "../../../common/dialog/base-create-dialog.component";
 import { finalize } from "rxjs/operators";
 import { HttpErrorResponse } from "@angular/common/http";
 import { MessageService } from "primeng/api";
-import { ValidationErrorDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
-import { ValidationService } from "../../common/services/validation.service";
-import { ValidationErrorCode } from "../../common/model/validation-error-code";
+import { ValidationErrorDto } from "../../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import { ValidationService } from "../../../common/services/validation.service";
+import { ValidationErrorCode } from "../../../common/model/validation-error-code";
+import { ChangeEmailService } from "../../services/change-email.service";
 
 @Component({
   selector: 'app-update-user-email',
@@ -19,9 +19,21 @@ export class UpdateUserEmailComponent extends BaseCreateDialogComponent<string> 
 
   public loading: boolean = false;
 
-  public hasSameEmail: boolean = false;
+  public errorCode: string;
 
-  public constructor(private usersService: UsersService,
+  private readonly validationErrorCodes: string[] = [
+    ValidationErrorCode.UNIQUE_EMAIL,
+    ValidationErrorCode.EMAIL_ALREADY_BOUND,
+    ValidationErrorCode.ACTIVE_CHANGE_EMAIL_REQUEST,
+  ];
+
+  private readonly errorsMap = new Map<string, string>()
+    .set(ValidationErrorCode.UNIQUE_EMAIL, 'Пользователь с таким Email уже вуществует')
+    .set(ValidationErrorCode.EMAIL_ALREADY_BOUND, 'Этот Email уже привязан к вашему аккаунту')
+    .set(ValidationErrorCode.ACTIVE_CHANGE_EMAIL_REQUEST, 'Вы уже отправили запрос на изменение Email');
+
+
+  public constructor(private changeEmailService: ChangeEmailService,
                      private messageService: MessageService,
                      private validationService: ValidationService) {
     super();
@@ -34,7 +46,7 @@ export class UpdateUserEmailComponent extends BaseCreateDialogComponent<string> 
     this.submitted = true;
     if (this.isValid()) {
       this.loading = true;
-      this.usersService.updateEmail(this.item)
+      this.changeEmailService.changeEmail(this.item)
         .pipe(
           finalize(() => {
             this.loading = false;
@@ -53,14 +65,18 @@ export class UpdateUserEmailComponent extends BaseCreateDialogComponent<string> 
   }
 
   public onEmailFocus(event): void {
-    this.hasSameEmail = false;
+    this.errorCode = null;
+  }
+
+  public getErrorMessage(): string {
+    return this.errorCode && this.errorsMap.get(this.errorCode);
   }
 
   private handleError(error): void {
     if (error instanceof HttpErrorResponse) {
       if (error.status === 400) {
         const errors: ValidationErrorDto[] = error.error;
-        this.hasSameEmail = this.validationService.hasErrorCode(errors, ValidationErrorCode.UNIQUE_EMAIL);
+        this.errorCode = this.validationService.getFirstErrorCode(errors, this.validationErrorCodes);
       } else {
         this.handleUnknownError(error);
       }
