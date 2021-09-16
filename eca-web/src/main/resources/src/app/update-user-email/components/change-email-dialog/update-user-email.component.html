@@ -21,7 +21,7 @@
           id="email"
           name="email"
           type="text"
-          placeholder="Введите Email"
+          placeholder="Введите новый Email"
           [(ngModel)]="item"
           [disabled]="loading"
           #email="ngModel"
@@ -30,7 +30,7 @@
           class="form-control d-block w-100">
         <div class="text-danger error-message" *ngIf="email.invalid && (email.dirty || email.touched || submitted)">
           <div *ngIf="email?.errors?.required">
-            Заполните новый Email
+            Заполните Email
           </div>
           <div *ngIf="email?.errors?.pattern">
             Недопустимый формат Email
