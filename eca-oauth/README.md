@@ -39,7 +39,12 @@
 5) reset-password - настройки для восстановления пароля
    * reset-password.validityMinutes - время действия токена в мин.
    * reset-password.baseUrl - базовый url для формирования ссылки для восстановления пароля
-
+6) change-password - настройки для изменения пароля
+   * change-password.validityMinutes - время действия токена в мин.
+   * change-password.baseUrl - базовый url для формирования ссылки для изменение пароля
+7) change-email - настройки для изменения Email
+   * change-email.validityHours - время действия токена в часах
+   * change-email.baseUrl - базовый url для формирования ссылки для изменение Email
 
 Инструкция по развертыванию
 ----------------------------------------
