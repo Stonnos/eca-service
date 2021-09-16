@@ -2,6 +2,7 @@ package com.ecaservice.oauth;
 
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
+import com.ecaservice.oauth.entity.ChangeEmailRequestEntity;
 import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
 import com.ecaservice.oauth.entity.ResetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.RoleEntity;
@@ -154,6 +155,19 @@ public class TestHelperUtils {
      */
     public static ChangePasswordRequestEntity createChangePasswordRequestEntity(String token) {
         ChangePasswordRequestEntity changePasswordRequestEntity = new ChangePasswordRequestEntity();
+        changePasswordRequestEntity.setToken(md5Hex(token));
+        changePasswordRequestEntity.setUserEntity(createUserEntity());
+        return changePasswordRequestEntity;
+    }
+
+    /**
+     * Creates change email request entity.
+     *
+     * @param token - token value
+     * @return change email request entity
+     */
+    public static ChangeEmailRequestEntity createChangeEmailRequestEntity(String token) {
+        ChangeEmailRequestEntity changePasswordRequestEntity = new ChangeEmailRequestEntity();
         changePasswordRequestEntity.setToken(md5Hex(token));
         changePasswordRequestEntity.setUserEntity(createUserEntity());
         return changePasswordRequestEntity;
