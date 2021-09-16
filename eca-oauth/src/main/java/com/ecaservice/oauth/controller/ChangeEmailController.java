@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,6 +32,7 @@ import static com.ecaservice.oauth.util.FieldConstraints.EMAIL_REGEX;
  */
 @Slf4j
 @Tag(name = "Change email API")
+@Validated
 @RestController
 @RequestMapping("/email/change")
 @RequiredArgsConstructor
