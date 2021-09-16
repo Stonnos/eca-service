@@ -5,6 +5,7 @@ import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.oauth.config.ChangeEmailConfig;
 import com.ecaservice.oauth.entity.ChangeEmailRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
+import com.ecaservice.oauth.exception.EmailAlreadyBoundException;
 import com.ecaservice.oauth.exception.ChangeEmailRequestAlreadyExistsException;
 import com.ecaservice.oauth.exception.EmailDuplicationException;
 import com.ecaservice.oauth.exception.InvalidTokenException;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import static com.ecaservice.common.web.util.MaskUtils.mask;
 import static com.ecaservice.common.web.util.RandomUtils.generateToken;
@@ -54,24 +56,26 @@ public class ChangeEmailService {
         if (userEntity.isLocked()) {
             throw new UserLockedException(userEntity.getId());
         }
-        if (!userEntity.getEmail().equals(newEmail) && userEntityRepository.existsByEmail(newEmail)) {
-            throw new EmailDuplicationException(userId);
-        } else {
-            LocalDateTime now = LocalDateTime.now();
-            if (changeEmailRequestRepository
-                    .existsByUserEntityAndExpireDateAfterAndConfirmationDateIsNull(userEntity, now)) {
-                throw new ChangeEmailRequestAlreadyExistsException(userId);
-            }
-            String token = generateToken();
-            LocalDateTime expireDate = now.plusHours(changeEmailConfig.getValidityHours());
-            var changeEmailRequestEntity = saveChangeEmailRequest(newEmail, userEntity, token, expireDate);
-            return TokenModel.builder()
-                    .token(token)
-                    .tokenId(changeEmailRequestEntity.getId())
-                    .login(userEntity.getLogin())
-                    .email(userEntity.getEmail())
-                    .build();
+        if (Objects.equals(userEntity.getEmail(), newEmail)) {
+            throw new EmailAlreadyBoundException(userId);
         }
+        if (userEntityRepository.existsByEmail(newEmail)) {
+            throw new EmailDuplicationException(userId);
+        }
+        LocalDateTime now = LocalDateTime.now();
+        if (changeEmailRequestRepository
+                .existsByUserEntityAndExpireDateAfterAndConfirmationDateIsNull(userEntity, now)) {
+            throw new ChangeEmailRequestAlreadyExistsException(userId);
+        }
+        String token = generateToken();
+        LocalDateTime expireDate = now.plusHours(changeEmailConfig.getValidityHours());
+        var changeEmailRequestEntity = saveChangeEmailRequest(newEmail, userEntity, token, expireDate);
+        return TokenModel.builder()
+                .token(token)
+                .tokenId(changeEmailRequestEntity.getId())
+                .login(userEntity.getLogin())
+                .email(userEntity.getEmail())
+                .build();
     }
 
     /**
