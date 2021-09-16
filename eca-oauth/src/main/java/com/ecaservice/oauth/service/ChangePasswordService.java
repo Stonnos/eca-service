@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+import static com.ecaservice.common.web.util.MaskUtils.mask;
 import static com.ecaservice.common.web.util.RandomUtils.generateToken;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CONFIRM_CHANGE_PASSWORD_REQUEST;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_CHANGE_PASSWORD_REQUEST;
@@ -85,6 +86,7 @@ public class ChangePasswordService {
     @Audit(value = CONFIRM_CHANGE_PASSWORD_REQUEST, targetInitiator = "userEntity.login")
     @Transactional
     public ChangePasswordRequestEntity changePassword(String token) {
+        log.info("Starting to change password for token [{}]", mask(token));
         String md5Hash = md5Hex(token);
         ChangePasswordRequestEntity changePasswordRequestEntity =
                 changePasswordRequestRepository.findByTokenAndExpireDateAfterAndConfirmationDateIsNull(md5Hash,
