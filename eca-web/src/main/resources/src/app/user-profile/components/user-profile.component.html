@@ -131,11 +131,11 @@
   </div>
 </app-confirm-dialog>
 
-<app-confirm-dialog [visible]="changePasswordRequestCreated"
-                    (closedEvent)="hideChangePasswordRequestCreatedModal()">
+<app-confirm-dialog [visible]="confirmDialogVisibility"
+                    (closedEvent)="hideConfirmDialog()">
   <div content>
     <div class="text-center justify-content-center align-items-center d-flex">
-      {{ changePasswordRequestCreatedMessage }}
+      {{ confirmDialogMessage }}
     </div>
   </div>
 </app-confirm-dialog>

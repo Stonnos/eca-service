@@ -38,8 +38,10 @@ export class UserProfileComponent implements OnInit {
 
   public loading: boolean = false;
 
-  public changePasswordRequestCreatedMessage: string =
+  private readonly changePasswordRequestCreatedMessage: string =
     'На ваш email отправлено письмо с подтверждением смены пароля';
+  private readonly changeEmailRequestCreatedMessage: string =
+    'На новый email отправлено письмо со ссылкой для подтверждения';
 
   public uploadPhotoErrorHeader: string = 'Не удалось загрузить фото';
 
@@ -51,7 +53,8 @@ export class UserProfileComponent implements OnInit {
   public personNameRegex: string = Utils.PERSON_NAME_REGEX;
   public personNameMaxLength: number = Utils.PERSON_NAME_MAX_LENGTH;
 
-  public changePasswordRequestCreated: boolean = false;
+  public confirmDialogVisibility: boolean = false;
+  public confirmDialogMessage: string;
 
   //Max file size: 10MB
   public maxFileSize: number = 10000000;
@@ -139,11 +142,12 @@ export class UserProfileComponent implements OnInit {
   }
 
   public onCreateChangePasswordRequest(): void {
-    this.changePasswordRequestCreated = true;
+    this.confirmDialogMessage = this.changePasswordRequestCreatedMessage;
+    this.confirmDialogVisibility = true;
   }
 
-  public hideChangePasswordRequestCreatedModal(): void {
-    this.changePasswordRequestCreated = false;
+  public hideConfirmDialog(): void {
+    this.confirmDialogVisibility = false;
   }
 
   public showChangeEmailDialog(): void {
@@ -155,7 +159,8 @@ export class UserProfileComponent implements OnInit {
   }
 
   public onChangeEmail(): void {
-    this.getUser(false);
+    this.confirmDialogMessage = this.changeEmailRequestCreatedMessage;
+    this.confirmDialogVisibility = true;
   }
 
   public updateFirstName(value: string): void {
