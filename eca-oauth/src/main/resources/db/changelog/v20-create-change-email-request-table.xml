@@ -32,4 +32,15 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="2" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from audit_code where id = 'UPDATE_EMAIL'
+            </sqlCheck>
+        </preConditions>
+        <delete tableName="audit_code">
+            <where>id = 'UPDATE_EMAIL'</where>
+        </delete>
+    </changeSet>
 </databaseChangeLog>
