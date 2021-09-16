@@ -40,8 +40,6 @@ export class UserProfileComponent implements OnInit {
 
   private readonly changePasswordRequestCreatedMessage: string =
     'На ваш email отправлено письмо с подтверждением смены пароля';
-  private readonly changeEmailRequestCreatedMessage: string =
-    'На новый email отправлено письмо со ссылкой для подтверждения';
 
   public uploadPhotoErrorHeader: string = 'Не удалось загрузить фото';
 
@@ -158,8 +156,8 @@ export class UserProfileComponent implements OnInit {
     this.changeEmailDialogVisibility = visible;
   }
 
-  public onChangeEmail(): void {
-    this.confirmDialogMessage = this.changeEmailRequestCreatedMessage;
+  public onChangeEmail(newEmail: string): void {
+    this.confirmDialogMessage = `На новый email ${newEmail} отправлено письмо со ссылкой для подтверждения`;
     this.confirmDialogVisibility = true;
   }
 
