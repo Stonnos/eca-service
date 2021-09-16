@@ -57,4 +57,16 @@
         </insert>
     </changeSet>
 
+    <changeSet id="7" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from template_parameter where parameter_name = 'validityMinutes'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="template_parameter">
+            <column name="description" value="Время действия ссылки в минутах"/>
+            <where>parameter_name = 'validityMinutes'</where>
+        </update>
+    </changeSet>
+
 </databaseChangeLog>
