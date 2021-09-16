@@ -20,6 +20,7 @@
 2) app - общие настройки приложения
    * app.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
    * app.emailsEnabled - вкл./выкл. отправки email сообщений
+   * app.threadPoolSize - размер пула потоков для асинхронных задач
 3) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации
    * open-api.projectVersion - версия API
