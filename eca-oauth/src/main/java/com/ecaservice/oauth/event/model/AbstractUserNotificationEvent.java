@@ -18,7 +18,7 @@ public abstract class AbstractUserNotificationEvent extends ApplicationEvent {
     private final UserEntity userEntity;
 
     /**
-     * Create a new {@code AbstractNotificationEvent}.
+     * Create a new {@code AbstractUserNotificationEvent}.
      *
      * @param source     the object on which the event initially occurred or with
      *                   which the event is associated (never {@code null})
