@@ -172,4 +172,13 @@
 |CHANGE_EMAIL
 |Сообщение с подтверждением изменения Email в личном кабинете Eca - service
 |changeEmailUrl, validityHours
+|EMAIL_CHANGED
+|Сообщение с успешным изменением Email в личном кабинете Eca - service
+|-
+|PASSWORD_CHANGED
+|Сообщение с успешным изменением пароля в личном кабинете Eca - service
+|-
+|PASSWORD_CHANGED
+|Сообщение с успешным восстановлением пароля в личном кабинете Eca - service
+|-
 |===
