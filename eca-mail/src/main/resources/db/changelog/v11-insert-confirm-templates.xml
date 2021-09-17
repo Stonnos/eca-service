@@ -32,7 +32,7 @@
         <insert tableName="template">
             <column name="id" valueComputed="nextval('hibernate_sequence')"/>
             <column name="created" valueDate="now()"/>
-            <column name="template_code" value="PASSWORD_CHANGED"/>
+            <column name="template_code" value="PASSWORD_RESET"/>
             <column name="description" value="Сообщение с успешным восстановлением пароля в личном кабинете Eca - service"/>
             <column name="template_subject" value="Восстановлен пароль от вашего аккаунта"/>
         </insert>
