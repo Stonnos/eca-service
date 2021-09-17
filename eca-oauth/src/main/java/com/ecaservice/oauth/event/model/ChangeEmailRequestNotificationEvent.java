@@ -8,7 +8,7 @@ import lombok.Getter;
  *
  * @author Roman Batygin
  */
-public class ChangeEmailNotificationEvent extends AbstractTokenNotificationEvent {
+public class ChangeEmailRequestNotificationEvent extends AbstractTokenNotificationEvent {
 
     /**
      * New email
@@ -24,7 +24,7 @@ public class ChangeEmailNotificationEvent extends AbstractTokenNotificationEvent
      * @param tokenModel - change email request token model
      * @param newEmail   - new email
      */
-    public ChangeEmailNotificationEvent(Object source, TokenModel tokenModel, String newEmail) {
+    public ChangeEmailRequestNotificationEvent(Object source, TokenModel tokenModel, String newEmail) {
         super(source, tokenModel);
         this.newEmail = newEmail;
     }

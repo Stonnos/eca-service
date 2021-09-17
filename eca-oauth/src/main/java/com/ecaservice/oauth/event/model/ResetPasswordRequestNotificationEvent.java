@@ -7,7 +7,7 @@ import com.ecaservice.oauth.model.TokenModel;
  *
  * @author Roman Batygin
  */
-public class ResetPasswordNotificationEvent extends AbstractTokenNotificationEvent {
+public class ResetPasswordRequestNotificationEvent extends AbstractTokenNotificationEvent {
 
     /**
      * Create a new {@code ResetPasswordNotificationEvent}.
@@ -16,7 +16,7 @@ public class ResetPasswordNotificationEvent extends AbstractTokenNotificationEve
      *                   associated (never {@code null})
      * @param tokenModel - reset password request model
      */
-    public ResetPasswordNotificationEvent(Object source, TokenModel tokenModel) {
+    public ResetPasswordRequestNotificationEvent(Object source, TokenModel tokenModel) {
         super(source, tokenModel);
     }
 }

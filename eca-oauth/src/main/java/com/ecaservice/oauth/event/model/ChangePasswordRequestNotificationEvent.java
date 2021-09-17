@@ -7,7 +7,7 @@ import com.ecaservice.oauth.model.TokenModel;
  *
  * @author Roman Batygin
  */
-public class ChangePasswordNotificationEvent extends AbstractTokenNotificationEvent {
+public class ChangePasswordRequestNotificationEvent extends AbstractTokenNotificationEvent {
 
     /**
      * Create a new {@code ChangePasswordNotificationEvent}.
@@ -16,7 +16,7 @@ public class ChangePasswordNotificationEvent extends AbstractTokenNotificationEv
      *                   associated (never {@code null})
      * @param tokenModel - change password request token model
      */
-    public ChangePasswordNotificationEvent(Object source, TokenModel tokenModel) {
+    public ChangePasswordRequestNotificationEvent(Object source, TokenModel tokenModel) {
         super(source, tokenModel);
     }
 }

@@ -2,7 +2,7 @@ package com.ecaservice.oauth.event.listener.handler;
 
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.oauth.config.ResetPasswordConfig;
-import com.ecaservice.oauth.event.model.ResetPasswordNotificationEvent;
+import com.ecaservice.oauth.event.model.ResetPasswordRequestNotificationEvent;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
@@ -20,15 +20,15 @@ import static com.ecaservice.oauth.TestHelperUtils.createResetPasswordRequestEnt
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests for class {@link ResetPasswordNotificationEventHandler}.
+ * Unit tests for class {@link ResetPasswordRequestNotificationEventHandler}.
  *
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({ResetPasswordConfig.class, ResetPasswordNotificationEventHandler.class})
-class ResetPasswordNotificationEventHandlerTest {
+@Import({ResetPasswordConfig.class, ResetPasswordRequestNotificationEventHandler.class})
+class ResetPasswordRequestNotificationEventHandlerTest {
 
     private static final String TOKEN = "token";
     private static final long USER_ID = 1L;
@@ -38,7 +38,7 @@ class ResetPasswordNotificationEventHandlerTest {
     @Inject
     private ResetPasswordConfig resetPasswordConfig;
     @Inject
-    private ResetPasswordNotificationEventHandler eventHandler;
+    private ResetPasswordRequestNotificationEventHandler eventHandler;
 
     @Test
     void testEvent() {
@@ -50,7 +50,7 @@ class ResetPasswordNotificationEventHandlerTest {
                 .login(resetPasswordRequestEntity.getUserEntity().getLogin())
                 .email(resetPasswordRequestEntity.getUserEntity().getEmail())
                 .build();;
-        var resetPasswordNotificationEvent = new ResetPasswordNotificationEvent(this, tokenModel);
+        var resetPasswordNotificationEvent = new ResetPasswordRequestNotificationEvent(this, tokenModel);
         EmailRequest actual = eventHandler.handle(resetPasswordNotificationEvent);
         assertThat(actual).isNotNull();
         assertThat(actual.getTemplateCode()).isEqualTo(Templates.RESET_PASSWORD);

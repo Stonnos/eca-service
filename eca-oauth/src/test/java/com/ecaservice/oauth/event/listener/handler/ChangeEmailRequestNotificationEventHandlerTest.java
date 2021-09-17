@@ -2,7 +2,7 @@ package com.ecaservice.oauth.event.listener.handler;
 
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.oauth.config.ChangeEmailConfig;
-import com.ecaservice.oauth.event.model.ChangeEmailNotificationEvent;
+import com.ecaservice.oauth.event.model.ChangeEmailRequestNotificationEvent;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
@@ -20,15 +20,15 @@ import static com.ecaservice.oauth.TestHelperUtils.createChangeEmailRequestEntit
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests for class {@link ChangeEmailNotificationEventHandler}.
+ * Unit tests for class {@link ChangeEmailRequestNotificationEventHandler}.
  *
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({ChangeEmailConfig.class, ChangeEmailNotificationEventHandler.class})
-class ChangeEmailNotificationEventHandlerTest {
+@Import({ChangeEmailConfig.class, ChangeEmailRequestNotificationEventHandler.class})
+class ChangeEmailRequestNotificationEventHandlerTest {
 
     private static final String TOKEN = "token";
     private static final long USER_ID = 1L;
@@ -39,7 +39,7 @@ class ChangeEmailNotificationEventHandlerTest {
     @Inject
     private ChangeEmailConfig changeEmailConfig;
     @Inject
-    private ChangeEmailNotificationEventHandler eventHandler;
+    private ChangeEmailRequestNotificationEventHandler eventHandler;
 
     @Test
     void testEvent() {
@@ -51,7 +51,7 @@ class ChangeEmailNotificationEventHandlerTest {
                 .login(changeEmailRequestEntity.getUserEntity().getLogin())
                 .email(changeEmailRequestEntity.getUserEntity().getEmail())
                 .build();
-        var changeEmailNotificationEvent = new ChangeEmailNotificationEvent(this, tokenModel, NEW_EMAIL);
+        var changeEmailNotificationEvent = new ChangeEmailRequestNotificationEvent(this, tokenModel, NEW_EMAIL);
         EmailRequest actual = eventHandler.handle(changeEmailNotificationEvent);
         assertThat(actual).isNotNull();
         assertThat(actual.getTemplateCode()).isEqualTo(Templates.CHANGE_EMAIL);

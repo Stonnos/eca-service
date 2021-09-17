@@ -1,7 +1,7 @@
 package com.ecaservice.oauth.controller;
 
 import com.ecaservice.oauth.dto.ChangePasswordRequest;
-import com.ecaservice.oauth.event.model.ChangePasswordNotificationEvent;
+import com.ecaservice.oauth.event.model.ChangePasswordRequestNotificationEvent;
 import com.ecaservice.oauth.event.model.PasswordChangedNotificationEvent;
 import com.ecaservice.oauth.service.ChangePasswordService;
 import com.ecaservice.user.model.UserDetailsImpl;
@@ -58,7 +58,7 @@ public class ChangePasswordController {
         var tokenModel = changePasswordService.createChangePasswordRequest(userDetails.getId(), changePasswordRequest);
         log.info("Change password request [{}] has been created for user [{}]", tokenModel.getTokenId(),
                 userDetails.getId());
-        applicationEventPublisher.publishEvent(new ChangePasswordNotificationEvent(this, tokenModel));
+        applicationEventPublisher.publishEvent(new ChangePasswordRequestNotificationEvent(this, tokenModel));
     }
 
     /**

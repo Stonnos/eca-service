@@ -8,11 +8,11 @@ import com.ecaservice.oauth.config.ChangePasswordConfig;
 import com.ecaservice.oauth.config.ResetPasswordConfig;
 import com.ecaservice.oauth.event.listener.handler.AbstractNotificationEventHandler;
 import com.ecaservice.oauth.event.model.AbstractNotificationEvent;
-import com.ecaservice.oauth.event.model.ChangeEmailNotificationEvent;
-import com.ecaservice.oauth.event.model.ChangePasswordNotificationEvent;
+import com.ecaservice.oauth.event.model.ChangeEmailRequestNotificationEvent;
+import com.ecaservice.oauth.event.model.ChangePasswordRequestNotificationEvent;
 import com.ecaservice.oauth.event.model.EmailChangedNotificationEvent;
 import com.ecaservice.oauth.event.model.PasswordChangedNotificationEvent;
-import com.ecaservice.oauth.event.model.ResetPasswordNotificationEvent;
+import com.ecaservice.oauth.event.model.ResetPasswordRequestNotificationEvent;
 import com.ecaservice.oauth.event.model.TfaCodeNotificationEvent;
 import com.ecaservice.oauth.event.model.UserCreatedEvent;
 import com.ecaservice.oauth.model.TokenModel;
@@ -94,7 +94,7 @@ class NotificationEventListenerTest {
                 .login(resetPasswordRequestEntity.getUserEntity().getLogin())
                 .email(resetPasswordRequestEntity.getUserEntity().getEmail())
                 .build();
-        var event = new ResetPasswordNotificationEvent(this, tokenModel);
+        var event = new ResetPasswordRequestNotificationEvent(this, tokenModel);
         internalTestEvent(event, Templates.RESET_PASSWORD, resetPasswordRequestEntity.getUserEntity().getEmail());
     }
 
@@ -108,7 +108,7 @@ class NotificationEventListenerTest {
                 .login(changePasswordRequestEntity.getUserEntity().getLogin())
                 .email(changePasswordRequestEntity.getUserEntity().getEmail())
                 .build();
-        var event = new ChangePasswordNotificationEvent(this, tokenModel);
+        var event = new ChangePasswordRequestNotificationEvent(this, tokenModel);
         internalTestEvent(event, Templates.CHANGE_PASSWORD, changePasswordRequestEntity.getUserEntity().getEmail());
     }
 
@@ -122,7 +122,7 @@ class NotificationEventListenerTest {
                 .login(changeEmailRequestEntity.getUserEntity().getLogin())
                 .email(changeEmailRequestEntity.getUserEntity().getEmail())
                 .build();
-        var event = new ChangeEmailNotificationEvent(this, tokenModel, NEW_EMAIL);
+        var event = new ChangeEmailRequestNotificationEvent(this, tokenModel, NEW_EMAIL);
         internalTestEvent(event, Templates.CHANGE_EMAIL, NEW_EMAIL);
     }
 

@@ -1,7 +1,7 @@
 package com.ecaservice.oauth.event.listener.handler;
 
 import com.ecaservice.oauth.config.ChangeEmailConfig;
-import com.ecaservice.oauth.event.model.ChangeEmailNotificationEvent;
+import com.ecaservice.oauth.event.model.ChangeEmailRequestNotificationEvent;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -19,8 +19,8 @@ import static com.google.common.collect.Maps.newHashMap;
  */
 @Slf4j
 @Component
-public class ChangeEmailNotificationEventHandler
-        extends AbstractNotificationEventHandler<ChangeEmailNotificationEvent> {
+public class ChangeEmailRequestNotificationEventHandler
+        extends AbstractNotificationEventHandler<ChangeEmailRequestNotificationEvent> {
 
     private static final String CHANGE_EMAIL_URL_FORMAT = "%s/change-email/?token=%s";
 
@@ -31,13 +31,13 @@ public class ChangeEmailNotificationEventHandler
      *
      * @param changeEmailConfig - change email config
      */
-    public ChangeEmailNotificationEventHandler(ChangeEmailConfig changeEmailConfig) {
-        super(ChangeEmailNotificationEvent.class, Templates.CHANGE_EMAIL);
+    public ChangeEmailRequestNotificationEventHandler(ChangeEmailConfig changeEmailConfig) {
+        super(ChangeEmailRequestNotificationEvent.class, Templates.CHANGE_EMAIL);
         this.changeEmailConfig = changeEmailConfig;
     }
 
     @Override
-    Map<String, String> createVariables(ChangeEmailNotificationEvent event) {
+    Map<String, String> createVariables(ChangeEmailRequestNotificationEvent event) {
         String changePasswordUrl = String.format(CHANGE_EMAIL_URL_FORMAT, changeEmailConfig.getBaseUrl(),
                 event.getTokenModel().getToken());
         Map<String, String> templateVariables = newHashMap();

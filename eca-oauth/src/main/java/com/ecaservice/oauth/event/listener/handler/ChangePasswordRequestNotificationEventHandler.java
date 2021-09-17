@@ -1,7 +1,7 @@
 package com.ecaservice.oauth.event.listener.handler;
 
 import com.ecaservice.oauth.config.ChangePasswordConfig;
-import com.ecaservice.oauth.event.model.ChangePasswordNotificationEvent;
+import com.ecaservice.oauth.event.model.ChangePasswordRequestNotificationEvent;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -19,8 +19,8 @@ import static com.google.common.collect.Maps.newHashMap;
  */
 @Slf4j
 @Component
-public class ChangePasswordNotificationEventHandler
-        extends AbstractNotificationEventHandler<ChangePasswordNotificationEvent> {
+public class ChangePasswordRequestNotificationEventHandler
+        extends AbstractNotificationEventHandler<ChangePasswordRequestNotificationEvent> {
 
     private static final String CHANGE_PASSWORD_URL_FORMAT = "%s/change-password/?token=%s";
 
@@ -31,13 +31,13 @@ public class ChangePasswordNotificationEventHandler
      *
      * @param changePasswordConfig - change password config
      */
-    public ChangePasswordNotificationEventHandler(ChangePasswordConfig changePasswordConfig) {
-        super(ChangePasswordNotificationEvent.class, Templates.CHANGE_PASSWORD);
+    public ChangePasswordRequestNotificationEventHandler(ChangePasswordConfig changePasswordConfig) {
+        super(ChangePasswordRequestNotificationEvent.class, Templates.CHANGE_PASSWORD);
         this.changePasswordConfig = changePasswordConfig;
     }
 
     @Override
-    Map<String, String> createVariables(ChangePasswordNotificationEvent event) {
+    Map<String, String> createVariables(ChangePasswordRequestNotificationEvent event) {
         String changePasswordUrl = String.format(CHANGE_PASSWORD_URL_FORMAT, changePasswordConfig.getBaseUrl(),
                 event.getTokenModel().getToken());
         Map<String, String> templateVariables = newHashMap();

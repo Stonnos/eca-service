@@ -2,7 +2,7 @@ package com.ecaservice.oauth.controller;
 
 import com.ecaservice.oauth.dto.ForgotPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
-import com.ecaservice.oauth.event.model.ResetPasswordNotificationEvent;
+import com.ecaservice.oauth.event.model.ResetPasswordRequestNotificationEvent;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.service.ResetPasswordService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -53,7 +53,7 @@ public class ResetPasswordController {
         var tokenModel = resetPasswordService.createResetPasswordRequest(forgotPasswordRequest);
         log.info("Reset password request [{}] has been created for user [{}]", tokenModel.getTokenId(),
                 tokenModel.getLogin());
-        applicationEventPublisher.publishEvent(new ResetPasswordNotificationEvent(this, tokenModel));
+        applicationEventPublisher.publishEvent(new ResetPasswordRequestNotificationEvent(this, tokenModel));
     }
 
     /**
