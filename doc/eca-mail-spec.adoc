@@ -178,7 +178,7 @@
 |PASSWORD_CHANGED
 |Сообщение с успешным изменением пароля в личном кабинете Eca - service
 |-
-|PASSWORD_CHANGED
+|PASSWORD_RESET
 |Сообщение с успешным восстановлением пароля в личном кабинете Eca - service
 |-
 |===
