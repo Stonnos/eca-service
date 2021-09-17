@@ -18,7 +18,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
     private static final List<String> URL_PATHS =
             List.of("/login", "/dashboard/**", "/forgot-password", "/reset-password/**",
-                    "/change-password/**", "/access-denied");
+                    "/change-password/**", "/access-denied", "/change-email/**");
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
