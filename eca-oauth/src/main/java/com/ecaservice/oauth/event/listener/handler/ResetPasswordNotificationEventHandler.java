@@ -45,9 +45,4 @@ public class ResetPasswordNotificationEventHandler
         templateVariables.put(VALIDITY_MINUTES_KEY, String.valueOf(resetPasswordConfig.getValidityMinutes()));
         return templateVariables;
     }
-
-    @Override
-    String getReceiver(ResetPasswordNotificationEvent event) {
-        return event.getTokenModel().getEmail();
-    }
 }

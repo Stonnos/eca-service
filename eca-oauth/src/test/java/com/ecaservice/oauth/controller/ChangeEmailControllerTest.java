@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
 
+import static com.ecaservice.oauth.TestHelperUtils.createChangeEmailRequestEntity;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.atLeastOnce;
@@ -85,6 +86,8 @@ class ChangeEmailControllerTest extends AbstractControllerTest {
 
     @Test
     void testConfirmChangeEmailRequest() throws Exception {
+        var changeEmailRequestEntity = createChangeEmailRequestEntity(TOKEN_VALUE);
+        when(changeEmailService.changeEmail(TOKEN_VALUE)).thenReturn(changeEmailRequestEntity);
         mockMvc.perform(post(CONFIRM_URL)
                 .param(TOKEN_PARAM, TOKEN_VALUE))
                 .andExpect(status().isOk());

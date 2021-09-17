@@ -45,9 +45,4 @@ public class ChangePasswordNotificationEventHandler
         templateVariables.put(VALIDITY_MINUTES_KEY, String.valueOf(changePasswordConfig.getValidityMinutes()));
         return templateVariables;
     }
-
-    @Override
-    String getReceiver(ChangePasswordNotificationEvent event) {
-        return event.getTokenModel().getEmail();
-    }
 }

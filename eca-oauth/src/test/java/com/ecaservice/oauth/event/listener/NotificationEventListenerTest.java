@@ -10,6 +10,8 @@ import com.ecaservice.oauth.event.listener.handler.AbstractNotificationEventHand
 import com.ecaservice.oauth.event.model.AbstractNotificationEvent;
 import com.ecaservice.oauth.event.model.ChangeEmailNotificationEvent;
 import com.ecaservice.oauth.event.model.ChangePasswordNotificationEvent;
+import com.ecaservice.oauth.event.model.EmailChangedNotificationEvent;
+import com.ecaservice.oauth.event.model.PasswordChangedNotificationEvent;
 import com.ecaservice.oauth.event.model.ResetPasswordNotificationEvent;
 import com.ecaservice.oauth.event.model.TfaCodeNotificationEvent;
 import com.ecaservice.oauth.event.model.UserCreatedEvent;
@@ -127,8 +129,26 @@ class NotificationEventListenerTest {
     @Test
     void testThrowIllegalStateException() {
         var event = new AbstractNotificationEvent(this) {
+            @Override
+            public String getReceiver() {
+                return NEW_EMAIL;
+            }
         };
         assertThrows(IllegalStateException.class, () -> notificationEventListener.handleNotificationEvent(event));
+    }
+
+    @Test
+    void testEmailChanged() {
+        var userEntity = createUserEntity();
+        var event = new EmailChangedNotificationEvent(this, userEntity);
+        internalTestEvent(event, Templates.EMAIL_CHANGED, userEntity.getEmail());
+    }
+
+    @Test
+    void testPasswordChanged() {
+        var userEntity = createUserEntity();
+        var event = new PasswordChangedNotificationEvent(this, userEntity);
+        internalTestEvent(event, Templates.PASSWORD_CHANGED, userEntity.getEmail());
     }
 
     private void internalTestEvent(AbstractNotificationEvent event,

@@ -27,4 +27,9 @@ public abstract class AbstractUserNotificationEvent extends AbstractNotification
         super(source);
         this.userEntity = userEntity;
     }
+
+    @Override
+    public String getReceiver() {
+        return userEntity.getEmail();
+    }
 }

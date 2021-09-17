@@ -45,9 +45,4 @@ public class ChangeEmailNotificationEventHandler
         templateVariables.put(VALIDITY_HOURS_KEY, String.valueOf(changeEmailConfig.getValidityHours()));
         return templateVariables;
     }
-
-    @Override
-    String getReceiver(ChangeEmailNotificationEvent event) {
-        return event.getNewEmail();
-    }
 }

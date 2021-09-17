@@ -5,9 +5,6 @@ import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.Map;
-
 /**
  * Password changed notification event handler.
  *
@@ -23,15 +20,5 @@ public class PasswordChangedNotificationEventHandler
      */
     public PasswordChangedNotificationEventHandler() {
         super(PasswordChangedNotificationEvent.class, Templates.PASSWORD_CHANGED);
-    }
-
-    @Override
-    Map<String, String> createVariables(PasswordChangedNotificationEvent event) {
-        return Collections.emptyMap();
-    }
-
-    @Override
-    String getReceiver(PasswordChangedNotificationEvent event) {
-        return event.getUserEntity().getEmail();
     }
 }
