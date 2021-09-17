@@ -2,6 +2,7 @@ package com.ecaservice.oauth.controller;
 
 import com.ecaservice.oauth.dto.ChangePasswordRequest;
 import com.ecaservice.oauth.event.model.ChangePasswordNotificationEvent;
+import com.ecaservice.oauth.event.model.PasswordChangedNotificationEvent;
 import com.ecaservice.oauth.service.ChangePasswordService;
 import com.ecaservice.user.model.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -73,6 +74,8 @@ public class ChangePasswordController {
     public void confirmChangePasswordRequest(
             @Parameter(description = "Token value", required = true) @RequestParam String token) {
         log.info("Received change password request confirmation");
-        changePasswordService.changePassword(token);
+        var changePasswordRequest = changePasswordService.changePassword(token);
+        applicationEventPublisher.publishEvent(
+                new PasswordChangedNotificationEvent(this, changePasswordRequest.getUserEntity()));
     }
 }
