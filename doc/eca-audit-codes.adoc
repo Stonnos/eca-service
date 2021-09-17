@@ -33,7 +33,6 @@
 |UPDATE_PERSONAL_DATA
 |Изменение персональных данных
 |USER_PROFILE_ACTIONS
-|USER_PROFILE_ACTIONS
 |UPDATE_PHOTO
 |Изменение фотографии профиля
 |USER_PROFILE_ACTIONS
