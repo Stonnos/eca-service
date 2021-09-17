@@ -20,6 +20,8 @@ export class ConfirmChangePasswordComponent implements OnInit {
 
   private errorCode: string;
 
+  private readonly passwordChangedMessageLife: number = 10000;
+
   private readonly errorCodes: string[] = [
     ValidationErrorCode.INVALID_TOKEN,
     ValidationErrorCode.USER_LOCKED
@@ -52,7 +54,7 @@ export class ConfirmChangePasswordComponent implements OnInit {
       .subscribe({
         next: () => {
           this.logoutService.logout();
-          this.messageService.add({ severity: 'success', summary: `Пароль был успешно изменен`, detail: '' });
+          this.messageService.add({ severity: 'info', summary: `Пароль был успешно изменен`, detail: '', life: this.passwordChangedMessageLife });
         },
         error: (error) => {
           this.errorCode = this.errorHandler.getFirstErrorCode(error, this.errorCodes);

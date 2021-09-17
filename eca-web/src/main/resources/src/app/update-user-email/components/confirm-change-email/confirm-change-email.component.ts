@@ -20,6 +20,8 @@ export class ConfirmChangeEmailComponent implements OnInit {
 
   private errorCode: string;
 
+  private readonly emailChangedMessageLife: number = 10000;
+
   private readonly errorCodes: string[] = [
     ValidationErrorCode.INVALID_TOKEN,
     ValidationErrorCode.USER_LOCKED
@@ -52,7 +54,7 @@ export class ConfirmChangeEmailComponent implements OnInit {
       )
       .subscribe({
         next: () => {
-          this.messageService.add({ severity: 'success', summary: `Email был успешно изменен`, detail: '' });
+          this.messageService.add({ severity: 'info', summary: `Email был успешно изменен`, detail: '', life: this.emailChangedMessageLife });
           this.router.navigate(['/dashboard/profile']);
         },
         error: (error) => {
