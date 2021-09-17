@@ -31,7 +31,17 @@ public class Templates {
     public static final String NEW_USER = "NEW_USER";
 
     /**
-     * Change email template
+     * Change email request template
      */
     public static final String CHANGE_EMAIL = "CHANGE_EMAIL";
+
+    /**
+     * Email changed template
+     */
+    public static final String EMAIL_CHANGED = "EMAIL_CHANGED";
+
+    /**
+     * Email changed template
+     */
+    public static final String PASSWORD_CHANGED = "PASSWORD_CHANGED";
 }

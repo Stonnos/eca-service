@@ -2,14 +2,13 @@ package com.ecaservice.oauth.event.model;
 
 import com.ecaservice.oauth.entity.UserEntity;
 import lombok.Getter;
-import org.springframework.context.ApplicationEvent;
 
 /**
  * Abstract user notification event.
  *
  * @author Roman Batygin
  */
-public abstract class AbstractUserNotificationEvent extends ApplicationEvent {
+public abstract class AbstractUserNotificationEvent extends AbstractNotificationEvent {
 
     /**
      * User entity
