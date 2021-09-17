@@ -169,7 +169,7 @@
 |CHANGE_PASSWORD
 |Сообщение с подтверждением изменения пароля в личном кабинете Eca - service
 |changePasswordUrl, validityMinutes
-|CHANGE_PASSWORD
+|CHANGE_EMAIL
 |Сообщение с подтверждением изменения Email в личном кабинете Eca - service
 |changeEmailUrl, validityHours
 |===
