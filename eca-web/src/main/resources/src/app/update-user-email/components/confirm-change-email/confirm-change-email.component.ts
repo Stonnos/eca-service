@@ -1,21 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from "primeng/api";
-import { ActivatedRoute } from "@angular/router";
-import { ChangePasswordService } from "../../services/change-password.service";
+import { ActivatedRoute, Router } from "@angular/router";
 import { LogoutService } from "../../../auth/services/logout.service";
 import { finalize } from "rxjs/operators";
 import { ValidationErrorCode } from "../../../common/model/validation-error-code";
+import { ChangeEmailService } from "../../services/change-email.service";
 import { ErrorHandler } from "../../../common/services/error-handler";
 
 @Component({
-  selector: 'app-confirm-change-password',
-  templateUrl: './confirm-change-password.component.html',
-  styleUrls: ['./confirm-change-password.component.scss']
+  selector: 'app-confirm-change-email',
+  templateUrl: './confirm-change-email.component.html',
+  styleUrls: ['./confirm-change-email.component.scss']
 })
-export class ConfirmChangePasswordComponent implements OnInit {
+export class ConfirmChangeEmailComponent implements OnInit {
 
   public loading: boolean = true;
-  public header = 'Подтверждение смены пароля';
+  public header = 'Подтверждение смены Email';
   public message: string;
 
   private errorCode: string;
@@ -26,14 +26,15 @@ export class ConfirmChangePasswordComponent implements OnInit {
   ];
 
   private readonly errorCodesMap = new Map<string, string>()
-    .set(ValidationErrorCode.INVALID_TOKEN, 'Не удалось изменить пароль, т.к. ссылка недействительна.')
-    .set(ValidationErrorCode.USER_LOCKED, 'Не удалось изменить пароль, т.к. ваш аккаунт заблокирован.');
+    .set(ValidationErrorCode.INVALID_TOKEN, 'Не удалось изменить Email, т.к. ссылка недействительна.')
+    .set(ValidationErrorCode.USER_LOCKED, 'Не удалось изменить Email, т.к. ваш аккаунт заблокирован.');
 
-  public constructor(private changePasswordService: ChangePasswordService,
+  public constructor(private changeEmailService: ChangeEmailService,
                      private messageService: MessageService,
                      private logoutService: LogoutService,
                      private errorHandler: ErrorHandler,
-                     private route: ActivatedRoute) {
+                     private route: ActivatedRoute,
+                     private router: Router) {
   }
 
   public ngOnInit(): void {
@@ -43,7 +44,7 @@ export class ConfirmChangePasswordComponent implements OnInit {
   private confirmChangePasswordRequest(): void {
     this.loading = true;
     const token = this.route.snapshot.queryParams['token'];
-    this.changePasswordService.confirmChangePasswordRequest(token)
+    this.changeEmailService.confirmChangeEmailRequest(token)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -51,8 +52,8 @@ export class ConfirmChangePasswordComponent implements OnInit {
       )
       .subscribe({
         next: () => {
-          this.logoutService.logout();
-          this.messageService.add({ severity: 'success', summary: `Пароль был успешно изменен`, detail: '' });
+          this.messageService.add({ severity: 'success', summary: `Email был успешно изменен`, detail: '' });
+          this.router.navigate(['/dashboard/profile']);
         },
         error: (error) => {
           this.errorCode = this.errorHandler.getFirstErrorCode(error, this.errorCodes);

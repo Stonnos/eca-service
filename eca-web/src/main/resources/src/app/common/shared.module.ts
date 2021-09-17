@@ -11,6 +11,8 @@ import { SearchQueryComponent } from "./search-query/search-query.component";
 import { UploadTrainingDataComponent } from "./upload-training-data/upload-training-data.component";
 import { ConfirmDialogComponent } from "./confirm-dialog/confirm-dialog.component";
 import { EditableInputTextComponent } from "./editable-input-text/editable-input-text.component";
+import { InfoPanelComponent } from "./info-panel/info-panel.component";
+import {ErrorHandler} from "./services/error-handler";
 
 @NgModule({
   imports: [
@@ -25,6 +27,7 @@ import { EditableInputTextComponent } from "./editable-input-text/editable-input
     EqualValidator,
     ConfirmDialogComponent,
     EditableInputTextComponent,
+    InfoPanelComponent
   ],
   exports: [
     RequestStatusComponent,
@@ -32,12 +35,14 @@ import { EditableInputTextComponent } from "./editable-input-text/editable-input
     UploadTrainingDataComponent,
     EqualValidator,
     ConfirmDialogComponent,
-    EditableInputTextComponent
+    EditableInputTextComponent,
+    InfoPanelComponent
   ],
   providers: [
     FieldService,
     ReportsService,
-    ValidationService
+    ValidationService,
+    ErrorHandler
   ]
 })
 export class SharedModule {

@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseCreateDialogComponent } from "../../../common/dialog/base-create-dialog.component";
 import { finalize } from "rxjs/operators";
-import { HttpErrorResponse } from "@angular/common/http";
 import { MessageService } from "primeng/api";
-import { ValidationErrorDto } from "../../../../../../../../target/generated-sources/typescript/eca-web-dto";
-import { ValidationService } from "../../../common/services/validation.service";
 import { ValidationErrorCode } from "../../../common/model/validation-error-code";
 import { ChangeEmailService } from "../../services/change-email.service";
+import { ErrorHandler } from "../../../common/services/error-handler";
 
 @Component({
   selector: 'app-update-user-email',
@@ -35,7 +33,7 @@ export class UpdateUserEmailComponent extends BaseCreateDialogComponent<string> 
 
   public constructor(private changeEmailService: ChangeEmailService,
                      private messageService: MessageService,
-                     private validationService: ValidationService) {
+                     private errorHandler: ErrorHandler) {
     super();
   }
 
@@ -73,19 +71,6 @@ export class UpdateUserEmailComponent extends BaseCreateDialogComponent<string> 
   }
 
   private handleError(error): void {
-    if (error instanceof HttpErrorResponse) {
-      if (error.status === 400) {
-        const errors: ValidationErrorDto[] = error.error;
-        this.errorCode = this.validationService.getFirstErrorCode(errors, this.validationErrorCodes);
-      } else {
-        this.handleUnknownError(error);
-      }
-    } else {
-      this.handleUnknownError(error);
-    }
-  }
-
-  private handleUnknownError(error): void {
-    this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+    this.errorCode = this.errorHandler.getFirstErrorCode(error, this.validationErrorCodes);
   }
 }

@@ -96,29 +96,21 @@ export class CreateEditInstancesComponent extends BaseCreateDialogComponent<Crea
   }
 
   private handleError(error): void {
-    if (error instanceof HttpErrorResponse) {
-      if (error.status === 400) {
-        const errors: ValidationErrorDto[] = error.error;
-        if (this.validationService.hasErrorCode(errors, ValidationErrorCode.INVALID_TRAIN_DATA_FILE)) {
-          this.messageService.add({ severity: 'error',
-            summary: 'Не удалось добавить датасет. Допускаются файлы только файлы форматов .csv,.xls,.xlsx,.arff,.xml,.json,.txt,.data,.docx', detail: '' });
-          return;
-        } else if (this.validationService.hasErrorCode(errors, ValidationErrorCode.PROCESS_FILE_ERROR)) {
-          this.messageService.add({ severity: 'error',
-            summary: 'Не удалось добавить датасет. Файл с обучающей выборкой содержит ошибки', detail: '' });
-          return;
-        }
-        this.hasSameTableName = this.validationService.hasErrorCode(errors, ValidationErrorCode.UNIQUE_TABLE_NAME);
-      } else {
-        this.handleUnknownError(error);
+    if (error instanceof HttpErrorResponse && error.status === 400) {
+      const errors: ValidationErrorDto[] = error.error;
+      if (this.validationService.hasErrorCode(errors, ValidationErrorCode.INVALID_TRAIN_DATA_FILE)) {
+        this.messageService.add({ severity: 'error',
+          summary: 'Не удалось добавить датасет. Допускаются файлы только файлы форматов .csv,.xls,.xlsx,.arff,.xml,.json,.txt,.data,.docx', detail: '' });
+        return;
+      } else if (this.validationService.hasErrorCode(errors, ValidationErrorCode.PROCESS_FILE_ERROR)) {
+        this.messageService.add({ severity: 'error',
+          summary: 'Не удалось добавить датасет. Файл с обучающей выборкой содержит ошибки', detail: '' });
+        return;
       }
+      this.hasSameTableName = this.validationService.hasErrorCode(errors, ValidationErrorCode.UNIQUE_TABLE_NAME);
     } else {
-      this.handleUnknownError(error);
+      this.messageService.add({ severity: 'error', summary: 'Не удалось загрузить датасет', detail: error.message });
     }
-  }
-
-  private handleUnknownError(error): void {
-    this.messageService.add({ severity: 'error', summary: 'Не удалось загрузить датасет', detail: error.message });
   }
 
   public clear(): void {

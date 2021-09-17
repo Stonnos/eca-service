@@ -17,6 +17,7 @@ import { UserProfileComponent } from "../user-profile/components/user-profile.co
 import { ConfirmChangePasswordComponent } from "../change-password/components/confirm-change-password/confirm-change-password.component";
 import { AccessDeniedComponent } from "../access-denied/components/access-denied.component";
 import { AuditLogsComponent } from "../audit-logs/components/audit-logs.component";
+import { ConfirmChangeEmailComponent } from "../update-user-email/components/confirm-change-email/confirm-change-email.component";
 
 const routes: Routes = [
   {
@@ -84,6 +85,10 @@ const routes: Routes = [
   {
     path: 'change-password',
     component: ConfirmChangePasswordComponent
+  },
+  {
+    path: 'change-email',
+    component: ConfirmChangeEmailComponent
   },
   {
     path: 'access-denied',
