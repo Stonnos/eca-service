@@ -68,20 +68,12 @@ export class CreateUserComponent extends BaseCreateDialogComponent<CreateUserMod
   }
 
   private handleError(error): void {
-    if (error instanceof HttpErrorResponse) {
-      if (error.status === 400) {
-        const errors: ValidationErrorDto[] = error.error;
-        this.hasSameLogin = this.validationService.hasError(errors, UserFields.LOGIN, ValidationErrorCode.UNIQUE_LOGIN);
-        this.hasSameEmail = this.validationService.hasError(errors, UserFields.EMAIL, ValidationErrorCode.UNIQUE_EMAIL);
-      } else {
-        this.handleUnknownError(error);
-      }
+    if (error instanceof HttpErrorResponse && error.status === 400) {
+      const errors: ValidationErrorDto[] = error.error;
+      this.hasSameLogin = this.validationService.hasError(errors, UserFields.LOGIN, ValidationErrorCode.UNIQUE_LOGIN);
+      this.hasSameEmail = this.validationService.hasError(errors, UserFields.EMAIL, ValidationErrorCode.UNIQUE_EMAIL);
     } else {
-      this.handleUnknownError(error);
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     }
-  }
-
-  private handleUnknownError(error): void {
-    this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
   }
 }

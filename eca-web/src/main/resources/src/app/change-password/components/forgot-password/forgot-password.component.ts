@@ -73,21 +73,13 @@ export class ForgotPasswordComponent implements BaseForm, OnInit {
   }
 
   private handleError(error): void {
-    if (error instanceof HttpErrorResponse) {
-      if (error.status === 400) {
-        this.emailNotExists = this.validationService.hasError(error.error, UserFields.EMAIL, ValidationErrorCode.USER_EMAIL);
-        this.userLocked = this.validationService.hasErrorCode(error.error, ValidationErrorCode.USER_LOCKED);
-        this.hasActiveResetPasswordRequest =
-          this.validationService.hasErrorCode(error.error, ValidationErrorCode.ACTIVE_RESET_PASSWORD_REQUEST);
-      } else {
-        this.handleUnknownError(error);
-      }
+    if (error instanceof HttpErrorResponse && error.status === 400) {
+      this.emailNotExists = this.validationService.hasError(error.error, UserFields.EMAIL, ValidationErrorCode.USER_EMAIL);
+      this.userLocked = this.validationService.hasErrorCode(error.error, ValidationErrorCode.USER_LOCKED);
+      this.hasActiveResetPasswordRequest =
+        this.validationService.hasErrorCode(error.error, ValidationErrorCode.ACTIVE_RESET_PASSWORD_REQUEST);
     } else {
-      this.handleUnknownError(error);
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     }
-  }
-
-  private handleUnknownError(error): void {
-    this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
   }
 }

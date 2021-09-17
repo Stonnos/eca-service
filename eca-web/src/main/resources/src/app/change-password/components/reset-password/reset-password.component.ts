@@ -100,19 +100,11 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
   }
 
   private handleError(error): void {
-    if (error instanceof HttpErrorResponse) {
-      if (error.status === 400) {
-        this.tokenValid = !this.validationService.hasErrorCode(error.error, ValidationErrorCode.INVALID_TOKEN);
-        this.userLocked = this.validationService.hasErrorCode(error.error, ValidationErrorCode.USER_LOCKED);
-      } else {
-        this.handleUnknownError(error);
-      }
+    if (error instanceof HttpErrorResponse && error.status === 400) {
+      this.tokenValid = !this.validationService.hasErrorCode(error.error, ValidationErrorCode.INVALID_TOKEN);
+      this.userLocked = this.validationService.hasErrorCode(error.error, ValidationErrorCode.USER_LOCKED);
     } else {
-      this.handleUnknownError(error);
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     }
-  }
-
-  private handleUnknownError(error): void {
-    this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
   }
 }
