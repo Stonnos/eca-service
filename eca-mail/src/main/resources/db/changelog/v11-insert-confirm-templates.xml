@@ -37,4 +37,25 @@
             <column name="template_subject" value="Восстановлен пароль от вашего аккаунта"/>
         </insert>
     </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/email-changed-template.html"/>
+            <where>template_code = 'EMAIL_CHANGED'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="5" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/password-changed-template.html"/>
+            <where>template_code = 'PASSWORD_CHANGED'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="6" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/password-reset-template.html"/>
+            <where>template_code = 'PASSWORD_RESET'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>
