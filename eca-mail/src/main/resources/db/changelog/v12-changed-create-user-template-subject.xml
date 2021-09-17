@@ -1,0 +1,19 @@
+<?xml version="1.1" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v12-changed-create-user-template-subject.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from template where template_code = 'NEW_USER'
+            </sqlCheck>
+        </preConditions>
+        <update tableName="template">
+            <column name="template_subject" value="Доступ к Eca - service"/>
+            <where>template_code = 'NEW_USER'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>
