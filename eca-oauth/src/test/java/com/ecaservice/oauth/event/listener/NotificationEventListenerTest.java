@@ -12,6 +12,7 @@ import com.ecaservice.oauth.event.model.ChangeEmailRequestNotificationEvent;
 import com.ecaservice.oauth.event.model.ChangePasswordRequestNotificationEvent;
 import com.ecaservice.oauth.event.model.EmailChangedNotificationEvent;
 import com.ecaservice.oauth.event.model.PasswordChangedNotificationEvent;
+import com.ecaservice.oauth.event.model.PasswordResetNotificationEvent;
 import com.ecaservice.oauth.event.model.ResetPasswordRequestNotificationEvent;
 import com.ecaservice.oauth.event.model.TfaCodeNotificationEvent;
 import com.ecaservice.oauth.event.model.UserCreatedEvent;
@@ -149,6 +150,13 @@ class NotificationEventListenerTest {
         var userEntity = createUserEntity();
         var event = new PasswordChangedNotificationEvent(this, userEntity);
         internalTestEvent(event, Templates.PASSWORD_CHANGED, userEntity.getEmail());
+    }
+
+    @Test
+    void testPasswordReset() {
+        var userEntity = createUserEntity();
+        var event = new PasswordResetNotificationEvent(this, userEntity);
+        internalTestEvent(event, Templates.PASSWORD_RESET, userEntity.getEmail());
     }
 
     private void internalTestEvent(AbstractNotificationEvent event,

@@ -41,7 +41,12 @@ public class Templates {
     public static final String EMAIL_CHANGED = "EMAIL_CHANGED";
 
     /**
-     * Email changed template
+     * Password changed template
      */
     public static final String PASSWORD_CHANGED = "PASSWORD_CHANGED";
+
+    /**
+     * Password reset template
+     */
+    public static final String PASSWORD_RESET = "PASSWORD_RESET";
 }
