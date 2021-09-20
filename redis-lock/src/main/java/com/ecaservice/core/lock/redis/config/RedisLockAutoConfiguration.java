@@ -1,6 +1,5 @@
 package com.ecaservice.core.lock.redis.config;
 
-import com.ecaservice.core.lock.annotation.EnableLocks;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,10 +11,9 @@ import org.springframework.integration.redis.util.RedisLockRegistry;
  *
  * @author Roman Batygin
  */
-@EnableLocks
 @Configuration
 @EnableConfigurationProperties(RedisLockProperties.class)
-public class RedisLockConfiguration {
+public class RedisLockAutoConfiguration {
 
     /**
      * Creates redis lock registry.
