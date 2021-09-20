@@ -18,6 +18,9 @@ import { EmailTemplatesService } from "../../services/email-templates.service";
 })
 export class TemplatesListComponent extends BaseListComponent<EmailTemplateDto> {
 
+  public templateDetailsVisibility: boolean = false;
+  public template: EmailTemplateDto;
+
   public constructor(private injector: Injector,
                      private emailTemplatesService: EmailTemplatesService) {
     super(injector.get(MessageService), injector.get(FieldService));
@@ -31,6 +34,19 @@ export class TemplatesListComponent extends BaseListComponent<EmailTemplateDto> 
 
   public getNextPageAsObservable(pageRequest: PageRequestDto): Observable<PageDto<EmailTemplateDto>> {
     return this.emailTemplatesService.getTemplates(pageRequest);
+  }
+
+  public onSelect(item: EmailTemplateDto, column: string): void {
+    if (column == EmailTemplateFields.CODE) {
+      this.template = item;
+      this.templateDetailsVisibility = true;
+    } else {
+      this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${column} as link`});
+    }
+  }
+
+  public onHide(): void {
+    this.templateDetailsVisibility = false;
   }
 
   private initColumns() {

@@ -5,7 +5,7 @@ import { EmailTemplateParameterFields } from "../../../common/util/field-names";
 @Component({
   selector: 'app-template-parameters-list',
   templateUrl: './template-parameters-list.component.html',
-  styleUrls: ['./template-parameters-list.scss']
+  styleUrls: ['./template-parameters-list.component.scss']
 })
 export class TemplateParametersListComponent implements OnInit {
 

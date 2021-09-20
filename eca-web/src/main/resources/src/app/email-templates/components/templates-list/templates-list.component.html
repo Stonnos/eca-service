@@ -40,7 +40,7 @@
     <ng-template pTemplate="body" let-item>
       <tr>
         <td *ngFor="let column of columns">
-          <a [routerLink]="" *ngIf="isLink(column.name)">
+          <a [routerLink]="" *ngIf="isLink(column.name)" (click)="onSelect(item, column.name)">
             {{ getColumnValue(column.name, item) }}
           </a>
           <div *ngIf="!isLink(column.name)">
@@ -58,3 +58,8 @@
     </ng-template>
   </p-table>
 </div>
+
+<app-template-details [visible]="templateDetailsVisibility"
+                      (visibilityChange)="onHide()"
+                      [template]="template">
+</app-template-details>
