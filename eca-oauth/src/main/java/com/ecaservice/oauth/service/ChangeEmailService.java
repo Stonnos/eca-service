@@ -28,7 +28,7 @@ import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_CHANGE_EMAIL_R
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 /**
- * Change password service.
+ * Change email service.
  *
  * @author Roman Batygin
  */
