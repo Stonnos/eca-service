@@ -1,7 +1,7 @@
 package com.ecaservice.classifier.options.adapter;
 
 import com.ecaservice.classifier.options.TestHelperUtils;
-import com.ecaservice.classifier.options.config.ClassifiersOptionsConfiguration;
+import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.classifier.options.model.AdaBoostOptions;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.classifier.options.model.DecisionTreeOptions;
@@ -50,7 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import({ClassifiersOptionsConfiguration.class, ClassifierOptionsAdapter.class})
+@Import({ClassifiersOptionsAutoConfiguration.class, ClassifierOptionsAdapter.class})
 class ClassifierOptionsAdapterTest {
 
     @Inject

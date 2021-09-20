@@ -5,7 +5,7 @@ import com.ecaservice.TestHelperUtils;
 import com.ecaservice.base.model.EvaluationResponse;
 import com.ecaservice.base.model.InstancesRequest;
 import com.ecaservice.base.model.TechnicalStatus;
-import com.ecaservice.classifier.options.config.ClassifiersOptionsConfiguration;
+import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.classifier.options.model.ActivationFunctionOptions;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.classifier.options.model.DecisionTreeOptions;
@@ -87,7 +87,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExecutorConfiguration.class, ClassifiersOptionsConfiguration.class, AppProperties.class,
+@Import({ExecutorConfiguration.class, ClassifiersOptionsAutoConfiguration.class, AppProperties.class,
         CrossValidationConfig.class, EvaluationRequestService.class, InstancesInfoMapperImpl.class,
         ClassifierOptionsRequestModelMapperImpl.class, ClassifierReportMapperImpl.class,
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class,

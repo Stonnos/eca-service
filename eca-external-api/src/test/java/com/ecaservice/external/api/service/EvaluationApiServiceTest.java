@@ -1,7 +1,7 @@
 package com.ecaservice.external.api.service;
 
 import com.ecaservice.base.model.EvaluationRequest;
-import com.ecaservice.classifier.options.config.ClassifiersOptionsConfiguration;
+import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.external.api.AbstractJpaTest;
 import com.ecaservice.external.api.dto.EvaluationRequestDto;
 import com.ecaservice.external.api.entity.EvaluationRequestEntity;
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({EvaluationApiService.class, ClassifiersOptionsConfiguration.class})
+@Import({EvaluationApiService.class, ClassifiersOptionsAutoConfiguration.class})
 class EvaluationApiServiceTest extends AbstractJpaTest {
 
     @MockBean

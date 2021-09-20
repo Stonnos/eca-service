@@ -1,7 +1,7 @@
 package com.ecaservice.service.evaluation;
 
 import com.ecaservice.TestHelperUtils;
-import com.ecaservice.classifier.options.config.ClassifiersOptionsConfiguration;
+import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.ers.dto.ClassificationCostsReport;
 import com.ecaservice.ers.dto.ClassifierReport;
@@ -48,7 +48,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @Import({EvaluationResultsService.class, CrossValidationConfig.class,
-        InstancesConverter.class, ClassifiersOptionsConfiguration.class})
+        InstancesConverter.class, ClassifiersOptionsAutoConfiguration.class})
 class EvaluationResultsServiceTest {
 
     @Inject

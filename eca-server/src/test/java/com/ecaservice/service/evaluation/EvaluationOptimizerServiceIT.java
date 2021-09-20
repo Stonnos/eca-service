@@ -2,7 +2,7 @@ package com.ecaservice.service.evaluation;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.base.model.InstancesRequest;
-import com.ecaservice.classifier.options.config.ClassifiersOptionsConfiguration;
+import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.classifier.options.model.DecisionTreeOptions;
 import com.ecaservice.config.AppProperties;
 import com.ecaservice.config.CrossValidationConfig;
@@ -63,7 +63,7 @@ import static org.mockito.Mockito.when;
  */
 @EnableAspectJAutoProxy
 @EnableRedisLocks
-@Import({ExecutorConfiguration.class, ClassifiersOptionsConfiguration.class, AppProperties.class,
+@Import({ExecutorConfiguration.class, ClassifiersOptionsAutoConfiguration.class, AppProperties.class,
         CrossValidationConfig.class, EvaluationRequestService.class, InstancesInfoMapperImpl.class,
         ClassifierOptionsRequestModelMapperImpl.class, ClassifierReportMapperImpl.class,
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class,
