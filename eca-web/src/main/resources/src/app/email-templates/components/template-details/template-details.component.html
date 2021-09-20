@@ -8,17 +8,22 @@
   [draggable]="false"
   [resizable]="false"
   (onHide)="hide()">
-  <p-scrollPanel [style]="{width: '100%', height: '500px'}">
+  <p-scrollPanel [style]="{width: '100%', height: '600px'}">
     <ng-container *ngFor="let field of templateFields">
       <div class="ui-g">
-        <div class="ui-g-5 text-right text-bold text-wrap">
+        <div class="ui-g-3 text-right text-bold text-wrap">
           {{ field.label }}
         </div>
-        <div class="ui-g-7 text-left text-wrap">
+        <div class="ui-g-9 text-left text-wrap">
           {{ getTemplateValue(field.name) }}
         </div>
       </div>
     </ng-container>
+    <p-fieldset legend="Текст шаблона" class="details-fieldset">
+      <p-editor [(ngModel)]="templateText"
+                [readonly]="true">
+      </p-editor>
+    </p-fieldset>
     <app-template-parameters-list *ngIf="template?.parameters?.length > 0" [items]="template?.parameters || []">
     </app-template-parameters-list>
   </p-scrollPanel>

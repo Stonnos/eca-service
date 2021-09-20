@@ -61,5 +61,6 @@
 
 <app-template-details [visible]="templateDetailsVisibility"
                       (visibilityChange)="onHide()"
-                      [template]="template">
+                      [template]="template"
+                      [templateText]="template?.body">
 </app-template-details>

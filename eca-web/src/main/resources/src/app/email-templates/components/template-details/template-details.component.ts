@@ -16,6 +16,8 @@ export class TemplateDetailsComponent implements BaseDialog, OnInit {
   public visibilityChange: EventEmitter<boolean> = new EventEmitter();
 
   @Input()
+  public templateText: string;
+  @Input()
   public template: EmailTemplateDto;
 
   public templateFields: any[] = [];
