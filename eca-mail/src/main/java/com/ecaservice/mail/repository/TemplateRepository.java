@@ -2,6 +2,7 @@ package com.ecaservice.mail.repository;
 
 import com.ecaservice.mail.model.TemplateEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -12,7 +13,8 @@ import java.util.Optional;
  *
  * @author Roman Batygin
  */
-public interface TemplateRepository extends JpaRepository<TemplateEntity, Long> {
+public interface TemplateRepository extends JpaRepository<TemplateEntity, Long>,
+        JpaSpecificationExecutor<TemplateEntity> {
 
     /**
      * Gets template body by code.
