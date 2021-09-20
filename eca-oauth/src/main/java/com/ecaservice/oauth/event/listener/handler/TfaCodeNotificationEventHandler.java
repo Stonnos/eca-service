@@ -33,11 +33,6 @@ public class TfaCodeNotificationEventHandler extends AbstractNotificationEventHa
     }
 
     @Override
-    String getReceiver(TfaCodeNotificationEvent event) {
-        return event.getUserEntity().getEmail();
-    }
-
-    @Override
     int getPriority() {
         return HIGHEST;
     }

@@ -2,13 +2,13 @@ package com.ecaservice.service.evaluation;
 
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.base.model.InstancesRequest;
-import com.ecaservice.classifier.options.config.ClassifiersOptionsConfiguration;
+import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.classifier.options.model.DecisionTreeOptions;
 import com.ecaservice.config.AppProperties;
 import com.ecaservice.config.CrossValidationConfig;
 import com.ecaservice.config.ers.ErsConfig;
 import com.ecaservice.configuation.ExecutorConfiguration;
-import com.ecaservice.core.lock.redis.annotation.EnableRedisLocks;
+import com.ecaservice.core.lock.redis.config.RedisLockAutoConfiguration;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
 import com.ecaservice.ers.dto.ResponseStatus;
@@ -62,8 +62,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @EnableAspectJAutoProxy
-@EnableRedisLocks
-@Import({ExecutorConfiguration.class, ClassifiersOptionsConfiguration.class, AppProperties.class,
+@Import({ExecutorConfiguration.class, ClassifiersOptionsAutoConfiguration.class, AppProperties.class,
         CrossValidationConfig.class, EvaluationRequestService.class, InstancesInfoMapperImpl.class,
         ClassifierOptionsRequestModelMapperImpl.class, ClassifierReportMapperImpl.class,
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class,
@@ -71,7 +70,7 @@ import static org.mockito.Mockito.when;
         EvaluationService.class, ErsEvaluationMethodMapperImpl.class, ErsResponseStatusMapperImpl.class,
         InstancesConverter.class, ClassifierOptionsResponseModelMapperImpl.class, ErsRequestService.class,
         EvaluationOptimizerService.class, ClassifierInfoMapperImpl.class, RedisAutoConfiguration.class,
-        ClassifierOptionsCacheService.class, DateTimeConverter.class})
+        ClassifierOptionsCacheService.class, DateTimeConverter.class, RedisLockAutoConfiguration.class})
 class EvaluationOptimizerServiceIT extends AbstractJpaTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();

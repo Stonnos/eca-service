@@ -1,0 +1,61 @@
+<?xml version="1.1" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v11-insert-confirm-templates.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Insert EMAIL_CHANGED template -->
+    <changeSet id="1" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="template_code" value="EMAIL_CHANGED"/>
+            <column name="description" value="Сообщение с успешным изменением Email в личном кабинете Eca - service"/>
+            <column name="template_subject" value="Изменен Email от вашего аккаунта"/>
+        </insert>
+    </changeSet>
+
+    <!-- Insert PASSWORD_CHANGED template -->
+    <changeSet id="2" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="template_code" value="PASSWORD_CHANGED"/>
+            <column name="description" value="Сообщение с успешным изменением пароля в личном кабинете Eca - service"/>
+            <column name="template_subject" value="Изменен пароль от вашего аккаунта"/>
+        </insert>
+    </changeSet>
+
+    <!-- Insert PASSWORD_RESET template -->
+    <changeSet id="3" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="template_code" value="PASSWORD_RESET"/>
+            <column name="description" value="Сообщение с успешным восстановлением пароля в личном кабинете Eca - service"/>
+            <column name="template_subject" value="Восстановлен пароль от вашего аккаунта"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="4" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/email-changed-template.html"/>
+            <where>template_code = 'EMAIL_CHANGED'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="5" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/password-changed-template.html"/>
+            <where>template_code = 'PASSWORD_CHANGED'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="6" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/password-reset-template.html"/>
+            <where>template_code = 'PASSWORD_RESET'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

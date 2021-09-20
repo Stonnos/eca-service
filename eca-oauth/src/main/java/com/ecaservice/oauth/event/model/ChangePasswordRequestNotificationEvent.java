@@ -1,20 +1,13 @@
 package com.ecaservice.oauth.event.model;
 
 import com.ecaservice.oauth.model.TokenModel;
-import lombok.Getter;
 
 /**
  * Change password notification event.
  *
  * @author Roman Batygin
  */
-public class ChangePasswordNotificationEvent extends AbstractNotificationEvent {
-
-    /**
-     * Change password request token model
-     */
-    @Getter
-    private final TokenModel tokenModel;
+public class ChangePasswordRequestNotificationEvent extends AbstractTokenNotificationEvent {
 
     /**
      * Create a new {@code ChangePasswordNotificationEvent}.
@@ -23,8 +16,7 @@ public class ChangePasswordNotificationEvent extends AbstractNotificationEvent {
      *                   associated (never {@code null})
      * @param tokenModel - change password request token model
      */
-    public ChangePasswordNotificationEvent(Object source, TokenModel tokenModel) {
-        super(source);
-        this.tokenModel = tokenModel;
+    public ChangePasswordRequestNotificationEvent(Object source, TokenModel tokenModel) {
+        super(source, tokenModel);
     }
 }

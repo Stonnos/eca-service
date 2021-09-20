@@ -69,7 +69,6 @@ class UserControllerTest extends AbstractControllerTest {
     private static final String DOWNLOAD_PHOTO_URL = BASE_URL + "/photo/{id}";
     private static final String LOCK_URL = BASE_URL + "/lock";
     private static final String UNLOCK_URL = BASE_URL + "/unlock";
-    private static final String UPDATE_EMAIL_URL = BASE_URL + "/update-email";
     private static final String GET_USER_INFO_URL = BASE_URL + "/user-info";
     private static final String LOGOUT_URL = BASE_URL + "/logout";
     private static final String TFA_ENABLED_URL = BASE_URL + "/tfa";
@@ -85,8 +84,6 @@ class UserControllerTest extends AbstractControllerTest {
     private static final long USER_ID = 1L;
     private static final String USER_ID_PARAM = "userId";
     private static final long LOCK_USER_ID = 2L;
-    private static final String TEST_EMAIL = "test@mail.ru";
-    private static final String NEW_EMAIL_PARAM = "newEmail";
     private static final String TFA_ENABLED_PARAM = "enabled";
     private static final String INVALID_PERSON_DATA = "ивfd";
 
@@ -307,37 +304,6 @@ class UserControllerTest extends AbstractControllerTest {
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk());
         verify(userService, atLeastOnce()).unlock(USER_ID);
-    }
-
-    @Test
-    void testUpdateEmailUnauthorized() throws Exception {
-        mockMvc.perform(post(UPDATE_EMAIL_URL)
-                .param(NEW_EMAIL_PARAM, TEST_EMAIL))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void testUpdateEmailWithNullEmailParam() throws Exception {
-        mockMvc.perform(post(UPDATE_EMAIL_URL)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void testUpdateEmailWithInvalidEmailParam() throws Exception {
-        mockMvc.perform(post(UPDATE_EMAIL_URL)
-                .param(NEW_EMAIL_PARAM, "abc")
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void testUpdateEmailOk() throws Exception {
-        mockMvc.perform(post(UPDATE_EMAIL_URL)
-                .param(NEW_EMAIL_PARAM, TEST_EMAIL)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
-                .andExpect(status().isOk());
-        verify(userService, atLeastOnce()).updateEmail(USER_ID, TEST_EMAIL);
     }
 
     @Test

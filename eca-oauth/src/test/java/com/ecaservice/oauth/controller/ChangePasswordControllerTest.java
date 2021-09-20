@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
 
+import static com.ecaservice.oauth.TestHelperUtils.createChangePasswordRequestEntity;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.atLeastOnce;
@@ -94,7 +95,9 @@ class ChangePasswordControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void testApproveChangePasswordRequest() throws Exception {
+    void testConfirmChangePasswordRequest() throws Exception {
+        var changePasswordRequestEntity = createChangePasswordRequestEntity(TOKEN_VALUE);
+        when(changePasswordService.changePassword(TOKEN_VALUE)).thenReturn(changePasswordRequestEntity);
         mockMvc.perform(post(CONFIRM_URL)
                 .param(TOKEN_PARAM, TOKEN_VALUE))
                 .andExpect(status().isOk());
@@ -102,7 +105,7 @@ class ChangePasswordControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void testApproveChangePasswordRequestWithNullToken() throws Exception {
+    void testConfirmChangePasswordRequestWithNullToken() throws Exception {
         mockMvc.perform(post(CONFIRM_URL))
                 .andExpect(status().isBadRequest());
     }

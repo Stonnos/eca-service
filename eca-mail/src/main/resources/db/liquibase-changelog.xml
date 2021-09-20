@@ -14,4 +14,7 @@
     <include file="db/changelog/v7-add-email-tx-id-column.xml"/>
     <include file="db/changelog/v8-add-not-null-constraints.xml"/>
     <include file="db/changelog/v9-add-priority-column.xml"/>
+    <include file="db/changelog/v10-insert-change-email-template.xml"/>
+    <include file="db/changelog/v11-insert-confirm-templates.xml"/>
+    <include file="db/changelog/v12-changed-create-user-template-subject.xml"/>
 </databaseChangeLog>

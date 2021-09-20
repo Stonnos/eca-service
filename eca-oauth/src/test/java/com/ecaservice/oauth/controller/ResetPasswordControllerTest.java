@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import javax.inject.Inject;
 import java.util.UUID;
 
+import static com.ecaservice.oauth.TestHelperUtils.createResetPasswordRequestEntity;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -117,6 +118,7 @@ class ResetPasswordControllerTest {
     @Test
     void testResetPassword() throws Exception {
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest(UUID.randomUUID().toString(), PASSWORD);
+        when(resetPasswordService.resetPassword(resetPasswordRequest)).thenReturn(createResetPasswordRequestEntity());
         mockMvc.perform(post(RESET_URL)
                 .content(objectMapper.writeValueAsString(resetPasswordRequest))
                 .contentType(MediaType.APPLICATION_JSON))

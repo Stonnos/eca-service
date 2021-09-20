@@ -18,4 +18,11 @@ public abstract class AbstractNotificationEvent extends ApplicationEvent {
     protected AbstractNotificationEvent(Object source) {
         super(source);
     }
+
+    /**
+     * Gets receiver.
+     *
+     * @return receiver
+     */
+    public abstract String getReceiver();
 }

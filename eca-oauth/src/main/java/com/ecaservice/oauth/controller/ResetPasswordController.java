@@ -2,7 +2,8 @@ package com.ecaservice.oauth.controller;
 
 import com.ecaservice.oauth.dto.ForgotPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
-import com.ecaservice.oauth.event.model.ResetPasswordNotificationEvent;
+import com.ecaservice.oauth.event.model.PasswordResetNotificationEvent;
+import com.ecaservice.oauth.event.model.ResetPasswordRequestNotificationEvent;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.service.ResetPasswordService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -53,7 +54,7 @@ public class ResetPasswordController {
         var tokenModel = resetPasswordService.createResetPasswordRequest(forgotPasswordRequest);
         log.info("Reset password request [{}] has been created for user [{}]", tokenModel.getTokenId(),
                 tokenModel.getLogin());
-        applicationEventPublisher.publishEvent(new ResetPasswordNotificationEvent(this, tokenModel));
+        applicationEventPublisher.publishEvent(new ResetPasswordRequestNotificationEvent(this, tokenModel));
     }
 
     /**
@@ -67,7 +68,8 @@ public class ResetPasswordController {
             summary = "Verify reset password token"
     )
     @PostMapping(value = "/verify-token")
-    public boolean verifyToken(@Parameter(description = "Reset password token", required = true) @RequestParam String token) {
+    public boolean verifyToken(
+            @Parameter(description = "Reset password token", required = true) @RequestParam String token) {
         log.info("Received request for reset password token verification");
         String md5Hash = md5Hex(token);
         return resetPasswordRequestRepository.existsByTokenAndExpireDateAfterAndResetDateIsNull(md5Hash,
@@ -86,6 +88,8 @@ public class ResetPasswordController {
     @PostMapping(value = "/reset")
     public void resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
         log.info("Received reset password request");
-        resetPasswordService.resetPassword(resetPasswordRequest);
+        var resetPasswordRequestEntity = resetPasswordService.resetPassword(resetPasswordRequest);
+        applicationEventPublisher.publishEvent(
+                new PasswordResetNotificationEvent(this, resetPasswordRequestEntity.getUserEntity()));
     }
 }

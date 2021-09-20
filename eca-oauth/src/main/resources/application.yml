@@ -40,6 +40,7 @@ ribbon:
 ## Application properties
 app:
   maxPageSize: 50
+  threadPoolSize: 10
   emailsEnabled: true
 
 ## Password generator configs
@@ -60,6 +61,10 @@ tfa:
 
 change-password:
   validityMinutes: 30
+  baseUrl: http://localhost:8085
+
+change-email:
+  validityHours: 48
   baseUrl: http://localhost:8085
 
 ## Swagger properties

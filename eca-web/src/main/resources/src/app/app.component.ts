@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'app';
-  messagesLife = 5000;
+  messagesLife = 8000;
 }

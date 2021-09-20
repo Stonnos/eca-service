@@ -1,11 +1,10 @@
 package com.ecaservice.config;
 
-import com.ecaservice.classifier.options.config.ClassifiersOptionsConfiguration;
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.config.ers.ErsConfig;
 import com.ecaservice.core.filter.annotation.EnableFilters;
 import com.ecaservice.core.filter.error.FilterExceptionHandler;
-import com.ecaservice.core.lock.redis.annotation.EnableRedisLocks;
+import com.ecaservice.core.lock.annotation.EnableLocks;
 import com.ecaservice.model.entity.AbstractEvaluationEntity;
 import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
 import com.ecaservice.repository.EvaluationLogRepository;
@@ -35,7 +34,7 @@ import java.util.concurrent.Executors;
 @Configuration
 @EnableScheduling
 @EnableCaching
-@EnableRedisLocks
+@EnableLocks
 @EnableAsync
 @EnableGlobalExceptionHandler
 @EnableFilters
@@ -44,7 +43,7 @@ import java.util.concurrent.Executors;
 @EnableJpaRepositories(basePackageClasses = EvaluationLogRepository.class)
 @EnableConfigurationProperties(
         {AppProperties.class, CrossValidationConfig.class, ExperimentConfig.class, ErsConfig.class})
-@Import({ClassifiersOptionsConfiguration.class, FilterExceptionHandler.class})
+@Import(FilterExceptionHandler.class)
 public class EcaServiceConfiguration {
 
     public static final String ECA_THREAD_POOL_TASK_EXECUTOR = "ecaThreadPoolTaskExecutor";

@@ -14,5 +14,5 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ComponentScan(basePackageClasses = {AbstractClassifierMapper.class, ClassifierOptionsAdapter.class})
 @EnableConfigurationProperties(ClassifiersOptionsConfig.class)
-public class ClassifiersOptionsConfiguration {
+public class ClassifiersOptionsAutoConfiguration {
 }

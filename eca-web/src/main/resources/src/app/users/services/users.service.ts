@@ -84,15 +84,6 @@ export class UsersService {
     return this.http.get<Blob>(this.serviceUrl + '/photo/' + id.toString(), options);
   }
 
-  public updateEmail(newEmail: string) {
-    const headers = new HttpHeaders({
-      'Authorization': Utils.getBearerTokenHeader()
-    });
-    const formData = new FormData();
-    formData.append('newEmail', newEmail);
-    return this.http.post(this.serviceUrl + '/update-email', formData, { headers: headers })
-  }
-
   public lock(userId: number) {
     const headers = new HttpHeaders({
       'Authorization': Utils.getBearerTokenHeader()

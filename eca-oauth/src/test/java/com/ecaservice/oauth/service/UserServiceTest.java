@@ -9,7 +9,6 @@ import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserPhoto;
-import com.ecaservice.oauth.exception.EmailDuplicationException;
 import com.ecaservice.oauth.mapping.RoleMapperImpl;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.mapping.UserMapperImpl;
@@ -123,25 +122,6 @@ class UserServiceTest extends AbstractJpaTest {
         assertThat(actual.getFirstName()).isEqualTo(updateUserInfoDto.getFirstName());
         assertThat(actual.getLastName()).isEqualTo(updateUserInfoDto.getLastName());
         assertThat(actual.getMiddleName()).isEqualTo(updateUserInfoDto.getMiddleName());
-    }
-
-    @Test
-    void testUpdateEmail() {
-        UserEntity userEntity = createAndSaveUser();
-        userService.updateEmail(userEntity.getId(), EMAIL_TO_UPDATE);
-        UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
-        assertThat(actual).isNotNull();
-        assertThat(actual.getEmail()).isEqualTo(EMAIL_TO_UPDATE);
-    }
-
-    @Test
-    void testEmailDuplicationError() {
-        Long firstUserId = createAndSaveUser().getId();
-        CreateUserDto createUserDto = TestHelperUtils.createUserDto();
-        createUserDto.setLogin(TEST_2_USER);
-        createUserDto.setEmail(EMAIL_TO_UPDATE);
-        userService.createUser(createUserDto, PASSWORD);
-        assertThrows(EmailDuplicationException.class, () -> userService.updateEmail(firstUserId, EMAIL_TO_UPDATE));
     }
 
     @Test

@@ -20,6 +20,7 @@
 2) app - общие настройки приложения
    * app.maxPageSize - максимальное число элементов на странице (используется для запросов с пагинацией)
    * app.emailsEnabled - вкл./выкл. отправки email сообщений
+   * app.threadPoolSize - размер пула потоков для асинхронных задач
 3) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации
    * open-api.projectVersion - версия API
@@ -38,7 +39,13 @@
 5) reset-password - настройки для восстановления пароля
    * reset-password.validityMinutes - время действия токена в мин.
    * reset-password.baseUrl - базовый url для формирования ссылки для восстановления пароля
-
+6) change-password - настройки для изменения пароля
+   * change-password.validityMinutes - время действия токена в мин.
+   * change-password.baseUrl - базовый url для формирования ссылки для изменение пароля
+7) change-email - настройки для изменения Email
+   * change-email.validityHours - время действия токена в часах
+   * change-email.baseUrl - базовый url для формирования ссылки для изменение Email
+8) audit.enabled - вкл./выкл. отправки событий аудита
 
 Инструкция по развертыванию
 ----------------------------------------

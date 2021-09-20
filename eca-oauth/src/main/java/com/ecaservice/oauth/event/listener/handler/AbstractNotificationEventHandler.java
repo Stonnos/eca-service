@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Collections;
 import java.util.Map;
 
 import static com.ecaservice.notification.util.Priority.MEDIUM;
@@ -44,7 +45,7 @@ public abstract class AbstractNotificationEventHandler<T extends AbstractNotific
     public EmailRequest handle(T event) {
         EmailRequest emailRequest = new EmailRequest();
         emailRequest.setTemplateCode(getTemplateCode());
-        emailRequest.setReceiver(getReceiver(event));
+        emailRequest.setReceiver(event.getReceiver());
         emailRequest.setVariables(createVariables(event));
         emailRequest.setPriority(getPriority());
         return emailRequest;
@@ -65,13 +66,7 @@ public abstract class AbstractNotificationEventHandler<T extends AbstractNotific
      * @param event - notification event
      * @return variables map
      */
-    abstract Map<String, String> createVariables(T event);
-
-    /**
-     * Gets receiver from event.
-     *
-     * @param event -  notification event
-     * @return receiver
-     */
-    abstract String getReceiver(T event);
+    Map<String, String> createVariables(T event) {
+        return Collections.emptyMap();
+    }
 }

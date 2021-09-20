@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+import static com.ecaservice.common.web.util.MaskUtils.mask;
 import static com.ecaservice.common.web.util.RandomUtils.generateToken;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_RESET_PASSWORD_REQUEST;
 import static com.ecaservice.oauth.config.audit.AuditCodes.RESET_PASSWORD;
@@ -84,6 +85,7 @@ public class ResetPasswordService {
     @Audit(value = RESET_PASSWORD, targetInitiator = "userEntity.login")
     @Transactional
     public ResetPasswordRequestEntity resetPassword(ResetPasswordRequest resetPasswordRequest) {
+        log.info("Starting to reset password for token [{}]", mask(resetPasswordRequest.getToken()));
         String md5Hash = md5Hex(resetPasswordRequest.getToken());
         ResetPasswordRequestEntity resetPasswordRequestEntity =
                 resetPasswordRequestRepository.findByTokenAndExpireDateAfterAndResetDateIsNull(md5Hash,

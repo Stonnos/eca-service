@@ -11,4 +11,10 @@ export class ValidationService {
   public hasErrorCode(errors: ValidationErrorDto[], code: string): boolean {
     return errors && errors.filter((validationError: ValidationErrorDto) => validationError.code == code).length > 0;
   }
+
+  public getFirstErrorCode(errors: ValidationErrorDto[], codes: string[]): string {
+    return errors && errors.filter((validationError: ValidationErrorDto) => codes.includes(validationError.code))
+      .map((validationError: ValidationErrorDto) => validationError.code)
+      .pop();
+  }
 }

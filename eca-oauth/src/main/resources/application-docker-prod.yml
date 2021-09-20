@@ -23,6 +23,9 @@ reset-password:
 change-password:
   baseUrl: http://localhost:8080
 
+change-email:
+  baseUrl: http://localhost:8080
+
 ## Swagger properties
 open-api:
   tokenBaseUrl: http://localhost:8080/eca-oauth

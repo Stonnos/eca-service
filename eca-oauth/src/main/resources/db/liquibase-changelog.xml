@@ -25,4 +25,5 @@
     <include file="db/changelog/v18-add-user-locked-column.xml"/>
     <include file="../audit-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v19-insert-audit-codes-and-events.xml"/>
+    <include file="db/changelog/v20-create-change-email-request-table.xml"/>
 </databaseChangeLog>

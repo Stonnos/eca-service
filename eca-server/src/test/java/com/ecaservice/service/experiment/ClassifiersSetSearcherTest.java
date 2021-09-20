@@ -3,7 +3,7 @@ package com.ecaservice.service.experiment;
 import com.ecaservice.TestHelperUtils;
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
-import com.ecaservice.classifier.options.config.ClassifiersOptionsConfiguration;
+import com.ecaservice.classifier.options.config.ClassifiersOptionsAutoConfiguration;
 import com.ecaservice.classifier.options.model.KNearestNeighboursOptions;
 import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.config.CrossValidationConfig;
@@ -54,7 +54,7 @@ import static org.mockito.Mockito.when;
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @Import({ExperimentConfig.class, CrossValidationConfig.class,
-        DecisionTreeInputDataHandler.class, NeuralNetworkInputDataHandler.class, ClassifiersOptionsConfiguration.class})
+        DecisionTreeInputDataHandler.class, NeuralNetworkInputDataHandler.class, ClassifiersOptionsAutoConfiguration.class})
 class ClassifiersSetSearcherTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();

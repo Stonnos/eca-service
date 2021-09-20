@@ -2,7 +2,7 @@ id;event_type;message_template;audit_code_id
 1;SUCCESS;Включена двухфакторной аутентификации;ENABLE_2FA
 2;SUCCESS;Выключена двухфакторная аутентификация;DISABLE_2FA
 3;SUCCESS;Персональные данные были изменены;UPDATE_PERSONAL_DATA
-4;SUCCESS;Изменен email;UPDATE_EMAIL
+4;SUCCESS;Создан запрос на изменение Email;CREATE_CHANGE_EMAIL_REQUEST
 5;SUCCESS;Обновлена фотография профиля;UPDATE_PHOTO
 6;SUCCESS;Удалена фотография профиля;DELETE_PHOTO
 7;SUCCESS;Создан новый пользователь [${createUserDto.login}];CREATE_USER
@@ -12,3 +12,4 @@ id;event_type;message_template;audit_code_id
 11;SUCCESS;Пароль был изменен;CONFIRM_CHANGE_PASSWORD_REQUEST
 12;SUCCESS;Создан запрос на восстановление пароля;CREATE_RESET_PASSWORD_REQUEST
 13;SUCCESS;Пароль был восстановлен;RESET_PASSWORD
+14;SUCCESS;Изменен Email;CONFIRM_CHANGE_EMAIL_REQUEST

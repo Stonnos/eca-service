@@ -30,11 +30,8 @@
 |DISABLE_2FA
 |Выключение двухфакторной аутентификации
 |USER_PROFILE_ACTIONS
-|UPDATE_PERSONAL_DATA|
-Изменение персональных данных
-|USER_PROFILE_ACTIONS
-|UPDATE_EMAIL
-|Изменение email
+|UPDATE_PERSONAL_DATA
+|Изменение персональных данных
 |USER_PROFILE_ACTIONS
 |UPDATE_PHOTO
 |Изменение фотографии профиля
@@ -62,6 +59,12 @@
 |USER_PROFILE_ACTIONS
 |RESET_PASSWORD
 |Восстановление пароля
+|USER_PROFILE_ACTIONS
+|CREATE_CHANGE_EMAIL_REQUEST
+|Создание запроса на изменение Email
+|USER_PROFILE_ACTIONS
+|CONFIRM_CHANGE_EMAIL_REQUEST
+|Подтверждение запроса на изменение Email
 |USER_PROFILE_ACTIONS
 |SAVE_INSTANCES
 |Сохранение файла с обучающей выборкой в базу данных

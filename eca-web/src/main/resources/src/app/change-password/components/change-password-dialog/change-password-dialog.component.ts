@@ -71,21 +71,13 @@ export class ChangePasswordDialogComponent extends BaseCreateDialogComponent<Cha
   }
 
   private handleError(error): void {
-    if (error instanceof HttpErrorResponse) {
-      if (error.status === 400) {
-        const errors: ValidationErrorDto[] = error.error;
-        this.invalidPassword = this.validationService.hasErrorCode(errors, ValidationErrorCode.INVALID_PASSWORD);
-        this.hasActiveChangePasswordRequest =
-          this.validationService.hasErrorCode(errors, ValidationErrorCode.ACTIVE_CHANGE_PASSWORD_REQUEST);
-      } else {
-        this.handleUnknownError(error);
-      }
+    if (error instanceof HttpErrorResponse && error.status === 400) {
+      const errors: ValidationErrorDto[] = error.error;
+      this.invalidPassword = this.validationService.hasErrorCode(errors, ValidationErrorCode.INVALID_PASSWORD);
+      this.hasActiveChangePasswordRequest =
+        this.validationService.hasErrorCode(errors, ValidationErrorCode.ACTIVE_CHANGE_PASSWORD_REQUEST);
     } else {
-      this.handleUnknownError(error);
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
     }
-  }
-
-  private handleUnknownError(error): void {
-    this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
   }
 }

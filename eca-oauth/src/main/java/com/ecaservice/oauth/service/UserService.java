@@ -9,7 +9,6 @@ import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserEntity_;
 import com.ecaservice.oauth.entity.UserPhoto;
-import com.ecaservice.oauth.exception.EmailDuplicationException;
 import com.ecaservice.oauth.filter.UserFilter;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.repository.RoleRepository;
@@ -39,7 +38,6 @@ import static com.ecaservice.oauth.config.audit.AuditCodes.DISABLE_2FA;
 import static com.ecaservice.oauth.config.audit.AuditCodes.ENABLE_2FA;
 import static com.ecaservice.oauth.config.audit.AuditCodes.LOCK_USER;
 import static com.ecaservice.oauth.config.audit.AuditCodes.UNLOCK_USER;
-import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_EMAIL;
 import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_PERSONAL_DATA;
 import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_PHOTO;
 import static com.ecaservice.oauth.entity.UserEntity_.CREATION_DATE;
@@ -125,27 +123,6 @@ public class UserService {
     public UserEntity getById(long id) {
         return userEntityRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, id));
-    }
-
-    /**
-     * Updates email for user.
-     *
-     * @param userId   - user id
-     * @param newEmail - new email
-     */
-    @Audit(UPDATE_EMAIL)
-    public void updateEmail(long userId, String newEmail) {
-        log.info("Starting to update email for user [{}]", userId);
-        String emailToUpdate = newEmail.trim();
-        UserEntity userEntity = getById(userId);
-        if (!userEntity.getEmail().equals(emailToUpdate)) {
-            if (userEntityRepository.existsByEmail(emailToUpdate)) {
-                throw new EmailDuplicationException(userId);
-            }
-            userEntity.setEmail(emailToUpdate);
-            userEntityRepository.save(userEntity);
-            log.info("Email has been updated for user [{}]", userId);
-        }
     }
 
     /**

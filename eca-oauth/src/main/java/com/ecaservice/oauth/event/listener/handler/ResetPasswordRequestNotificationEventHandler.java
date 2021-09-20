@@ -1,7 +1,7 @@
 package com.ecaservice.oauth.event.listener.handler;
 
 import com.ecaservice.oauth.config.ResetPasswordConfig;
-import com.ecaservice.oauth.event.model.ResetPasswordNotificationEvent;
+import com.ecaservice.oauth.event.model.ResetPasswordRequestNotificationEvent;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -19,8 +19,8 @@ import static com.google.common.collect.Maps.newHashMap;
  */
 @Slf4j
 @Component
-public class ResetPasswordNotificationEventHandler
-        extends AbstractNotificationEventHandler<ResetPasswordNotificationEvent> {
+public class ResetPasswordRequestNotificationEventHandler
+        extends AbstractNotificationEventHandler<ResetPasswordRequestNotificationEvent> {
 
     private static final String RESET_PASSWORD_URL_FORMAT = "%s/reset-password/?token=%s";
 
@@ -31,23 +31,18 @@ public class ResetPasswordNotificationEventHandler
      *
      * @param resetPasswordConfig - reset password config
      */
-    public ResetPasswordNotificationEventHandler(ResetPasswordConfig resetPasswordConfig) {
-        super(ResetPasswordNotificationEvent.class, Templates.RESET_PASSWORD);
+    public ResetPasswordRequestNotificationEventHandler(ResetPasswordConfig resetPasswordConfig) {
+        super(ResetPasswordRequestNotificationEvent.class, Templates.RESET_PASSWORD);
         this.resetPasswordConfig = resetPasswordConfig;
     }
 
     @Override
-    Map<String, String> createVariables(ResetPasswordNotificationEvent event) {
+    Map<String, String> createVariables(ResetPasswordRequestNotificationEvent event) {
         Map<String, String> templateVariables = newHashMap();
         String resetPasswordUrl = String.format(RESET_PASSWORD_URL_FORMAT, resetPasswordConfig.getBaseUrl(),
                 event.getTokenModel().getToken());
         templateVariables.put(RESET_PASSWORD_URL_KEY, resetPasswordUrl);
         templateVariables.put(VALIDITY_MINUTES_KEY, String.valueOf(resetPasswordConfig.getValidityMinutes()));
         return templateVariables;
-    }
-
-    @Override
-    String getReceiver(ResetPasswordNotificationEvent event) {
-        return event.getTokenModel().getEmail();
     }
 }

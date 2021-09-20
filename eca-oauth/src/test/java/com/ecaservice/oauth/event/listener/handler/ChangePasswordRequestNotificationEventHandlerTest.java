@@ -2,7 +2,7 @@ package com.ecaservice.oauth.event.listener.handler;
 
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.oauth.config.ChangePasswordConfig;
-import com.ecaservice.oauth.event.model.ChangePasswordNotificationEvent;
+import com.ecaservice.oauth.event.model.ChangePasswordRequestNotificationEvent;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
@@ -20,15 +20,15 @@ import static com.ecaservice.oauth.TestHelperUtils.createChangePasswordRequestEn
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests for class {@link ChangePasswordNotificationEventHandler}.
+ * Unit tests for class {@link ChangePasswordRequestNotificationEventHandler}.
  *
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({ChangePasswordConfig.class, ChangePasswordNotificationEventHandler.class})
-class ChangePasswordNotificationEventHandlerTest {
+@Import({ChangePasswordConfig.class, ChangePasswordRequestNotificationEventHandler.class})
+class ChangePasswordRequestNotificationEventHandlerTest {
 
     private static final String TOKEN = "token";
     private static final long USER_ID = 1L;
@@ -38,7 +38,7 @@ class ChangePasswordNotificationEventHandlerTest {
     @Inject
     private ChangePasswordConfig changePasswordConfig;
     @Inject
-    private ChangePasswordNotificationEventHandler eventHandler;
+    private ChangePasswordRequestNotificationEventHandler eventHandler;
 
     @Test
     void testEvent() {
@@ -50,7 +50,7 @@ class ChangePasswordNotificationEventHandlerTest {
                 .login(changePasswordRequestEntity.getUserEntity().getLogin())
                 .email(changePasswordRequestEntity.getUserEntity().getEmail())
                 .build();
-        var changePasswordNotificationEvent = new ChangePasswordNotificationEvent(this, tokenModel);
+        var changePasswordNotificationEvent = new ChangePasswordRequestNotificationEvent(this, tokenModel);
         EmailRequest actual = eventHandler.handle(changePasswordNotificationEvent);
         assertThat(actual).isNotNull();
         assertThat(actual.getTemplateCode()).isEqualTo(Templates.CHANGE_PASSWORD);

@@ -1,0 +1,29 @@
+<div class="container">
+  <div class="row h-100">
+    <div class="col-12 d-flex py-4">
+      <div class="form d-flex flex-column justify-content-center m-auto">
+        <p-panel [header]="header" class="info-panel">
+          <div *ngIf="loading" class="ui-g ui-fluid">
+            <div class="ui-g-10 mx-auto d-flex align-items-center justify-content-center text-center">
+              {{ loadingMessage }}
+            </div>
+          </div>
+          <div *ngIf="!loading" class="ui-g ui-fluid">
+            <div class="ui-g-10 mx-auto d-flex align-items-center justify-content-center text-center text-bold">
+              {{ message }}
+            </div>
+            <div class="ui-g-10 mx-auto mt-3">
+              <button
+                pButton
+                [routerLink]="[buttonLink]"
+                type="button"
+                label="На главную"
+                class="w-100 mb-1 mb-sm-2">
+              </button>
+            </div>
+          </div>
+        </p-panel>
+      </div>
+    </div>
+  </div>
+</div>

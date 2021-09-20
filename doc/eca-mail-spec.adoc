@@ -123,11 +123,19 @@
 |validityMinutes
 |string
 |[0-9]+
-|Время действия ссылки на восстановление пароля
+|Время действия ссылки в минутах
+|validityHours
+|string
+|[0-9]+
+|Время действия ссылки в часах
 |changePasswordUrl
 |string
 |-
 |Ссылка на подтверждение изменения пароля
+|changeEmailUrl
+|string
+|-
+|Ссылка на подтверждение изменения Email
 |===
 
 == 4. Описание шаблонов email сообщений
@@ -161,4 +169,16 @@
 |CHANGE_PASSWORD
 |Сообщение с подтверждением изменения пароля в личном кабинете Eca - service
 |changePasswordUrl, validityMinutes
+|CHANGE_EMAIL
+|Сообщение с подтверждением изменения Email в личном кабинете Eca - service
+|changeEmailUrl, validityHours
+|EMAIL_CHANGED
+|Сообщение с успешным изменением Email в личном кабинете Eca - service
+|-
+|PASSWORD_CHANGED
+|Сообщение с успешным изменением пароля в личном кабинете Eca - service
+|-
+|PASSWORD_RESET
+|Сообщение с успешным восстановлением пароля в личном кабинете Eca - service
+|-
 |===

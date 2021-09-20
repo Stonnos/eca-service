@@ -45,15 +45,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Size;
 import java.security.Principal;
 import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.oauth.controller.doc.ApiExamples.SIMPLE_PAGE_REQUEST_JSON;
-import static com.ecaservice.oauth.util.FieldConstraints.EMAIL_MAX_SIZE;
-import static com.ecaservice.oauth.util.FieldConstraints.EMAIL_REGEX;
 import static com.ecaservice.oauth.util.Utils.buildAttachmentResponse;
 
 /**
@@ -179,27 +175,6 @@ public class UserController {
         log.info("User {} has been created", userEntity.getId());
         applicationEventPublisher.publishEvent(new UserCreatedEvent(this, userEntity, password));
         return userMapper.map(userEntity);
-    }
-
-    /**
-     * Updates email for current authenticated user.
-     *
-     * @param userDetails - user details
-     * @param newEmail    - new email
-     */
-    @PreAuthorize("#oauth2.hasScope('web')")
-    @Operation(
-            description = "Updates email for current authenticated user",
-            summary = "Updates email for current authenticated user",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME)
-    )
-    @PostMapping(value = "/update-email")
-    public void updateEmail(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                            @Parameter(description = "User email", required = true)
-                            @Email(regexp = EMAIL_REGEX)
-                            @Size(max = EMAIL_MAX_SIZE) @RequestParam String newEmail) {
-        log.info("Received request to update user [{}] email", userDetails.getId());
-        userService.updateEmail(userDetails.getId(), newEmail);
     }
 
     /**

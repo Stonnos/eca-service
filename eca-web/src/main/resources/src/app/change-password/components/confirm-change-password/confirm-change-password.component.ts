@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from "primeng/api";
-import { HttpErrorResponse } from "@angular/common/http";
 import { ActivatedRoute } from "@angular/router";
 import { ChangePasswordService } from "../../services/change-password.service";
 import { LogoutService } from "../../../auth/services/logout.service";
 import { finalize } from "rxjs/operators";
 import { ValidationErrorCode } from "../../../common/model/validation-error-code";
-import { ValidationService } from "../../../common/services/validation.service";
+import { ErrorHandler } from "../../../common/services/error-handler";
 
 @Component({
   selector: 'app-confirm-change-password',
@@ -15,17 +14,26 @@ import { ValidationService } from "../../../common/services/validation.service";
 })
 export class ConfirmChangePasswordComponent implements OnInit {
 
-  public token: string;
-  public tokenValid: boolean = false;
-  public userLocked: boolean = false;
   public loading: boolean = true;
+  public header = 'Подтверждение смены пароля';
+  public message: string;
+
+  private errorCode: string;
+
+  private readonly errorCodes: string[] = [
+    ValidationErrorCode.INVALID_TOKEN,
+    ValidationErrorCode.USER_LOCKED
+  ];
+
+  private readonly errorCodesMap = new Map<string, string>()
+    .set(ValidationErrorCode.INVALID_TOKEN, 'Не удалось изменить пароль, т.к. ссылка недействительна.')
+    .set(ValidationErrorCode.USER_LOCKED, 'Не удалось изменить пароль, т.к. ваш аккаунт заблокирован.');
 
   public constructor(private changePasswordService: ChangePasswordService,
                      private messageService: MessageService,
                      private logoutService: LogoutService,
-                     private validationService: ValidationService,
+                     private errorHandler: ErrorHandler,
                      private route: ActivatedRoute) {
-    this.token = this.route.snapshot.queryParams['token'];
   }
 
   public ngOnInit(): void {
@@ -34,7 +42,8 @@ export class ConfirmChangePasswordComponent implements OnInit {
 
   private confirmChangePasswordRequest(): void {
     this.loading = true;
-    this.changePasswordService.confirmChangePasswordRequest(this.token)
+    const token = this.route.snapshot.queryParams['token'];
+    this.changePasswordService.confirmChangePasswordRequest(token)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -43,24 +52,12 @@ export class ConfirmChangePasswordComponent implements OnInit {
       .subscribe({
         next: () => {
           this.logoutService.logout();
-          this.messageService.add({ severity: 'success', summary: `Пароль был успешно изменен`, detail: '' });
+          this.messageService.add({ severity: 'info', summary: `Пароль был успешно изменен`, detail: '' });
         },
         error: (error) => {
-          this.handleError(error);
+          this.errorCode = this.errorHandler.getFirstErrorCode(error, this.errorCodes);
+          this.message = this.errorCodesMap.get(this.errorCode);
         }
       });
-  }
-
-  private handleError(error): void {
-    if (error instanceof HttpErrorResponse && error.status === 400) {
-        this.tokenValid = !this.validationService.hasErrorCode(error.error, ValidationErrorCode.INVALID_TOKEN);
-        this.userLocked = this.validationService.hasErrorCode(error.error, ValidationErrorCode.USER_LOCKED);
-    } else {
-      this.handleUnknownError(error);
-    }
-  }
-
-  private handleUnknownError(error): void {
-    this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
   }
 }

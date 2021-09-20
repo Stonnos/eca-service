@@ -127,6 +127,12 @@
 
         <dependency>
             <groupId>eca.service</groupId>
+            <artifactId>core-lock</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
             <artifactId>redis-lock</artifactId>
             <version>${project.version}</version>
         </dependency>

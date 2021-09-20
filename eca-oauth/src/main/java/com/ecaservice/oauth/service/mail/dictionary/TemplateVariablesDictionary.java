@@ -26,9 +26,14 @@ public class TemplateVariablesDictionary {
     public static final String RESET_PASSWORD_URL_KEY = "resetPasswordUrl";
 
     /**
-     * Reset password token validity in minutes variable
+     * Token validity in minutes variable
      */
     public static final String VALIDITY_MINUTES_KEY = "validityMinutes";
+
+    /**
+     * Token validity in hours variable
+     */
+    public static final String VALIDITY_HOURS_KEY = "validityHours";
 
     /**
      * Two factor authentication code
@@ -39,4 +44,9 @@ public class TemplateVariablesDictionary {
      * Change password url variable
      */
     public static final String CHANGE_PASSWORD_URL_KEY = "changePasswordUrl";
+
+    /**
+     * Change email url variable
+     */
+    public static final String CHANGE_EMAIL_URL_KEY = "changeEmailUrl";
 }

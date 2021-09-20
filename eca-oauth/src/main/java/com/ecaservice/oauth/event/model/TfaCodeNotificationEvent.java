@@ -8,13 +8,7 @@ import lombok.Getter;
  *
  * @author Roman Batygin
  */
-public class TfaCodeNotificationEvent extends AbstractNotificationEvent {
-
-    /**
-     * User entity
-     */
-    @Getter
-    private final UserEntity userEntity;
+public class TfaCodeNotificationEvent extends AbstractUserNotificationEvent {
 
     /**
      * Tfa code
@@ -31,8 +25,7 @@ public class TfaCodeNotificationEvent extends AbstractNotificationEvent {
      * @param tfaCode    - tfa code
      */
     public TfaCodeNotificationEvent(Object source, UserEntity userEntity, String tfaCode) {
-        super(source);
-        this.userEntity = userEntity;
+        super(source, userEntity);
         this.tfaCode = tfaCode;
     }
 }
