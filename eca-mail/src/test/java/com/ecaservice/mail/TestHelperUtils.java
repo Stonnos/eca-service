@@ -97,6 +97,18 @@ public class TestHelperUtils {
     }
 
     /**
+     * Creates template entity.
+     *
+     * @param code - template code
+     * @return template entity
+     */
+    public static TemplateEntity createTemplateEntity(String code) {
+        var templateEntity = createTemplateEntity();
+        templateEntity.setCode(code);
+        return templateEntity;
+    }
+
+    /**
      * Creates template parameter entity.
      *
      * @param name - parameter name
