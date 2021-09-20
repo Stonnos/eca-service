@@ -27,4 +27,14 @@
     <app-template-parameters-list *ngIf="template?.parameters?.length > 0" [items]="template?.parameters || []">
     </app-template-parameters-list>
   </p-scrollPanel>
+
+  <p-footer>
+    <button
+      pButton
+      label="Закрыть"
+      type="button"
+      (click)="hide()"
+      class="ml-auto">
+    </button>
+  </p-footer>
 </p-dialog>
