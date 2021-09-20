@@ -39,10 +39,10 @@ export class TemplateDetailsComponent implements BaseDialog, OnInit {
 
   private initTemplateFields(): void {
     this.templateFields = [
-      { name: EmailTemplateFields.CODE, label: "Код шаблона" },
-      { name: EmailTemplateFields.DESCRIPTION, label: "Описание шаблона" },
-      { name: EmailTemplateFields.SUBJECT, label: "Тема письма" },
-      { name: EmailTemplateFields.CREATED, label: "Дата создания" }
+      { name: EmailTemplateFields.CODE, label: "Код шаблона:" },
+      { name: EmailTemplateFields.DESCRIPTION, label: "Описание шаблона:" },
+      { name: EmailTemplateFields.SUBJECT, label: "Тема письма:" },
+      { name: EmailTemplateFields.CREATED, label: "Дата создания:" }
     ];
   }
 }
