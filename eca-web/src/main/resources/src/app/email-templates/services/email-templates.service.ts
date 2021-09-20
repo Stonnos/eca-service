@@ -12,7 +12,7 @@ import { Utils } from "../../common/util/utils";
 @Injectable()
 export class EmailTemplatesService {
 
-  private serviceUrl = environment.auditLogUrl + '/eca-mail';
+  private serviceUrl = environment.mailUrl + '/templates';
 
   public constructor(private http: HttpClient) {
   }
